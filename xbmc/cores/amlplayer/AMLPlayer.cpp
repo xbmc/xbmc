@@ -907,35 +907,33 @@ int CAMLPlayer::GetSubtitle()
     return -1;
 }
 
-void CAMLPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+void CAMLPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
 
-  strStreamName = "";
-
-  if (iStream > (int)m_subtitle_streams.size() || iStream < 0)
+  if (index > (int)m_subtitle_streams.size() -1 || index < 0)
     return;
 
   if (m_subtitle_streams[m_subtitle_index]->source == STREAM_SOURCE_NONE)
   {
-    if ( m_subtitle_streams[iStream]->language.size())
+    if ( m_subtitle_streams[index]->language.size())
     {
       CStdString name;
-      g_LangCodeExpander.Lookup(name, m_subtitle_streams[iStream]->language);
-      strStreamName = name;
+      g_LangCodeExpander.Lookup(name, m_subtitle_streams[index]->language);
+      info.name = name;
     }
     else
-      strStreamName = g_localizeStrings.Get(13205); // Unknown
+      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   else
   {
     if(m_subtitle_streams[m_subtitle_index]->name.length() > 0)
-      strStreamName = m_subtitle_streams[m_subtitle_index]->name;
+      info.name = m_subtitle_streams[m_subtitle_index]->name;
     else
-      strStreamName = g_localizeStrings.Get(13205); // Unknown
+      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   if (m_log_level > 5)
-    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", iStream);
+    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", index);
 }
  
 void CAMLPlayer::SetSubtitle(int iStream)

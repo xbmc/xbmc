@@ -226,10 +226,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
-        g_application.m_pPlayer->GetSubtitleName(g_application.m_pPlayer->GetSubtitle(),sub);
-        g_application.m_pPlayer->GetSubtitleLanguage(g_application.m_pPlayer->GetSubtitle(),lang);
-        if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        SPlayerSubtitleStreamInfo info;
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        sub = info.name;
+        if (sub != info.language)
+          sub.Format("%s [%s]", sub.c_str(), info.language.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -279,10 +280,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
-        g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
-        g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream,lang);
-        if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        SPlayerSubtitleStreamInfo info;
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        sub = info.name;
+        if (sub != info.language)
+          sub.Format("%s [%s]", sub.c_str(), info.language.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);

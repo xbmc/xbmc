@@ -1431,13 +1431,12 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
           int index = g_application.m_pPlayer->GetSubtitle();
           if (index >= 0)
           {
+            SPlayerSubtitleStreamInfo info;
+            g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
+
             result["index"] = index;
-            CStdString value;
-            g_application.m_pPlayer->GetSubtitleName(index, value);
-            result["name"] = value;
-            value.Empty();
-            g_application.m_pPlayer->GetSubtitleLanguage(index, value);
-            result["language"] = value;
+            result["name"] = info.name;
+            result["language"] = info.language;
           }
         }
         else
@@ -1461,14 +1460,13 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         {
           for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
           {
+            SPlayerSubtitleStreamInfo info;
+            g_application.m_pPlayer->GetSubtitleStreamInfo(index, info);
+
             CVariant subtitle(CVariant::VariantTypeObject);
             subtitle["index"] = index;
-            CStdString value;
-            g_application.m_pPlayer->GetSubtitleName(index, value);
-            subtitle["name"] = value;
-            value.Empty();
-            g_application.m_pPlayer->GetSubtitleLanguage(index, value);
-            subtitle["language"] = value;
+            subtitle["name"] = info.name;
+            subtitle["language"] = info.language;
 
             result.append(subtitle);
           }

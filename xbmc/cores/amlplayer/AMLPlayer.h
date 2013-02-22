@@ -101,7 +101,7 @@ public:
   virtual float GetSubTitleDelay();
   virtual int   GetSubtitleCount();
   virtual int   GetSubtitle();
-  virtual void  GetSubtitleName(int iStream, CStdString &strStreamName);
+  virtual void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
   virtual void  SetSubtitle(int iStream);
   virtual bool  GetSubtitleVisible();
   virtual void  SetSubtitleVisible(bool bVisible);
