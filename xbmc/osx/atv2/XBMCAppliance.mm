@@ -357,6 +357,12 @@ static id XBMCAppliance$controllerForIdentifier(XBMCAppliance* self, SEL _cmd, i
   return menuController;
 }
 
+static void XBMCPopUpManager$_displayPopUp(BRPopUpManager *self, SEL _cmd, id up)
+{
+  // suppress all popups
+  NSLog(@"%s suppressing popup - for the sake of XBMC.", __PRETTY_FUNCTION__);
+}
+
 // helper function. If the given class responds to the selector
 // we hook via MSHookMessageEx
 // bCheckSuperClass <- indicates if the hookClass or ist superclass should be checked for hookSelector
@@ -383,6 +389,14 @@ static BOOL safeHook(Class hookClass, SEL hookSelector, IMP ourMethod, IMP *thei
 // 4. register the classes to the objc runtime system
 static __attribute__((constructor)) void initApplianceRuntimeClasses()
 {
+  // Hook into the popup manager and prevent any popups
+  // the problem with popups is that when they disappear XBMC is
+  // getting 100% transparent (invisible). This can be tested with
+  // the new bluetooth feature in ios6 when a keyboard is connected
+  // a popup is shown (its behind XBMCs window). When it disappears
+  // XBMC does so too.
+  safeHook(objc_getClass("BRPopUpManager"), @selector(_displayPopUp:), (IMP)&XBMCPopUpManager$_displayPopUp, nil, NO);
+  
   // subclass BRApplianceInfo into XBMCApplianceInfo
   Class XBMCApplianceInfoCls = objc_allocateClassPair(objc_getClass("BRApplianceInfo"), "XBMCApplianceInfo", 0);
 
