@@ -74,6 +74,7 @@ void CNetworkManager::Initialize()
 
 bool CNetworkManager::PumpNetworkEvents()
 {
+#if defined(TARGET_ANDROID)
   if (!g_application.m_pPlayer)
   {
     if (!m_timer && !IsConnected())
@@ -89,6 +90,7 @@ bool CNetworkManager::PumpNetworkEvents()
     OnConnectionListChange(m_instance->GetConnections());
     delete m_timer, m_timer = NULL;
   }
+#endif
 
   return m_instance->PumpNetworkEvents(this);
 }
