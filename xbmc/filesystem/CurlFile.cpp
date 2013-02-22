@@ -53,6 +53,21 @@ using namespace XCURL;
 #define dllselect select
 
 
+void CurlSList::append(const char *val)
+{
+  if (val)
+    _lst = g_curlInterface.slist_append(_lst, val);
+}
+
+void CurlSList::release()
+{
+  if (_lst)
+  {
+    g_curlInterface.slist_free_all(_lst);
+    _lst = NULL;
+  }
+} 
+
 curl_proxytype proxyType2CUrlProxyType[] = {
   CURLPROXY_HTTP,
   CURLPROXY_SOCKS4,
@@ -349,8 +364,6 @@ CCurlFile::~CCurlFile()
 CCurlFile::CCurlFile()
 {
   g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
-  m_curlAliasList = NULL;
-  m_curlHeaderList = NULL;
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
@@ -393,13 +406,8 @@ void CCurlFile::Close()
   m_cookie.Empty();
 
   /* cleanup */
-  if( m_curlAliasList )
-    g_curlInterface.slist_free_all(m_curlAliasList);
-  if( m_curlHeaderList )
-    g_curlInterface.slist_free_all(m_curlHeaderList);
+  m_curlHeaderList.release();
 
-  m_curlAliasList = NULL;
-  m_curlHeaderList = NULL;
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
@@ -467,8 +475,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
 
   // enable support for icecast / shoutcast streams
-  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
-  g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList);
+  static CurlSList curlAliasList("ICY 200 OK");
+  g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, curlAliasList.get());
 
   // never verify peer, we don't have any certificates to do this
   g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 0);
@@ -577,22 +585,18 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
 {
-  if(m_curlHeaderList)
-  {
-    g_curlInterface.slist_free_all(m_curlHeaderList);
-    m_curlHeaderList = NULL;
-  }
+  m_curlHeaderList.release();
 
   MAPHTTPHEADERS::iterator it;
   for(it = m_requestheaders.begin(); it != m_requestheaders.end(); it++)
   {
     CStdString buffer = it->first + ": " + it->second;
-    m_curlHeaderList = g_curlInterface.slist_append(m_curlHeaderList, buffer.c_str());
+    m_curlHeaderList.append(buffer.c_str());
   }
 
   // add user defined headers
   if (m_curlHeaderList && state->m_easyHandle)
-    g_curlInterface.easy_setopt(state->m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList);
+    g_curlInterface.easy_setopt(state->m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList.get());
 }
 
 void CCurlFile::SetCorrectHeaders(CReadState* state)
