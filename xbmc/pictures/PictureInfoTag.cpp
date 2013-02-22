@@ -57,8 +57,8 @@ bool CPictureInfoTag::Load(const CStdString &path)
   /* Its possible that exiftime and resolution were already set externally */
   /* Retrieve them so they can be used if not found in file */
   if (m_isExternallyLoaded){
-	exiftime = GetInfo(TranslateString("exiftime"));
-	resolution = GetInfo(TranslateString("resolution"));
+    exiftime = GetInfo(TranslateString("exiftime"));
+    resolution = GetInfo(TranslateString("resolution"));
   }
   
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
@@ -610,14 +610,14 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
       {
         m_exifInfo.Width = atoi(dimension[0].c_str());
         m_exifInfo.Height = atoi(dimension[1].c_str());
-		m_isExternallyLoaded = true;
+        m_isExternallyLoaded = true;
       }
       break;
     }
   case SLIDE_EXIF_DATE_TIME:
     {
       strcpy(m_exifInfo.DateTime, value.c_str());
-	  m_isExternallyLoaded = true;
+      m_isExternallyLoaded = true;
       break;
     }
   default:
