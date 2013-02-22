@@ -1947,6 +1947,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     for (int j=0; common_sub_dirs[j]; j++)
     {
       CStdString strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j]);
+      URIUtils::AddSlashAtEnd(strPath2);
       if (CDirectory::Exists(strPath2))
         strLookInPaths.push_back(strPath2);
     }
