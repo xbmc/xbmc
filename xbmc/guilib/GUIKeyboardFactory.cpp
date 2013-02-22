@@ -112,7 +112,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
 bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetInput(aTextString, "", allowEmptyResult, autoCloseMs) != 0;
+  return ShowAndGetInput(aTextString, "", allowEmptyResult, autoCloseMs);
 }
 
 // Shows keyboard and prompts for a password.
