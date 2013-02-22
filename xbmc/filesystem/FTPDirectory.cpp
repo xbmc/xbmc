@@ -100,7 +100,12 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 bool CFTPDirectory::Exists(const char* strPath)
 {
+  // make sure ftp dir ends with slash,
+  // curl need to known it's a dir to check ftp directory existence.
+  CStdString file = strPath;
+  URIUtils::AddSlashAtEnd(file);
+
   CCurlFile ftp;
-  CURL url(strPath);
+  CURL url(file);
   return ftp.Exists(url);
 }
