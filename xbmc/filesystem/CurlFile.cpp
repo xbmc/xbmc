@@ -920,7 +920,7 @@ bool CCurlFile::Open(const CURL& url)
   }
 
   m_multisession = false;
-  if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
   {
     m_multisession = true;
     if(m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
