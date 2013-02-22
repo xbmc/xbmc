@@ -16,6 +16,7 @@ SRCS      += AndroidMouse.cpp
 SRCS      += GraphicBuffer.cpp
 SRCS      += EventLoop.cpp
 SRCS      += XBMCApp.cpp
+SRCS      += JNI.cpp
 
 OBJS      += $(APP_GLUE) $(CPU_OBJ)
 
