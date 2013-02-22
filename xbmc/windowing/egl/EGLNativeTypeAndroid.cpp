@@ -43,6 +43,10 @@ bool CEGLNativeTypeAndroid::CheckCompatibility()
 
 void CEGLNativeTypeAndroid::Initialize()
 {
+#if defined(TARGET_ANDROID) && (defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC))
+  aml_permissions();
+#endif
+
   return;
 }
 void CEGLNativeTypeAndroid::Destroy()
