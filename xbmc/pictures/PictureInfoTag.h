@@ -107,5 +107,6 @@ private:
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
   bool       m_isLoaded;
+  bool       m_isExternallyLoaded; // Distiguish between loaded from file and loaded by external call to SetInfo
 };
 
