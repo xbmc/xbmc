@@ -159,6 +159,17 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
+  //1 finger single tab - left mouse
+  UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
+                                                   initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];
+
+  singleFingerSingleTap.delaysTouchesBegan = YES;
+  singleFingerSingleTap.numberOfTapsRequired = 1;
+  singleFingerSingleTap.numberOfTouchesRequired = 1;
+
+  [m_glView addGestureRecognizer:singleFingerSingleTap];
+  [singleFingerSingleTap release];
+
   //2 finger single tab - right mouse
   //single finger double tab delays single finger single tab - so we
   //go for 2 fingers here - so single finger single tap is instant
@@ -366,6 +377,36 @@ extern NSString* kBRScreenSaverDismissed;
   CWinEventsIOS::MessagePush(&newEvent);
 }
 //--------------------------------------------------------------
+- (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
+    //NSLog(@"%s singleTap", __PRETTY_FUNCTION__);
+
+    [self postMouseMotionEvent:point];
+
+    XBMC_Event newEvent;
+    memset(&newEvent, 0, sizeof(newEvent));
+
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.button = XBMC_BUTTON_LEFT;
+    newEvent.button.x = point.x;
+    newEvent.button.y = point.y;
+
+    CWinEventsIOS::MessagePush(&newEvent);
+
+    newEvent.type = XBMC_MOUSEBUTTONUP;
+    newEvent.button.type = XBMC_MOUSEBUTTONUP;
+    CWinEventsIOS::MessagePush(&newEvent);
+
+    memset(&lastEvent, 0x0, sizeof(XBMC_Event));
+  }
+}
+//--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
@@ -411,62 +452,6 @@ extern NSString* kBRScreenSaverDismissed;
     if (sender.state == UIGestureRecognizerStateEnded)
     {
       [self handleDoubleFingerSingleTap:sender];
-    }
-  }
-}
-//--------------------------------------------------------------
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
-  {
-    UITouch *touch = [touches anyObject];
-    
-    if( [touches count] == 1 && [touch tapCount] == 1)
-    {
-      lastGesturePoint = [touch locationInView:m_glView];    
-      lastGesturePoint.x *= screenScale;
-      lastGesturePoint.y *= screenScale;  
-      [self postMouseMotionEvent:lastGesturePoint];//selects the current control
-
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
-      
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = lastGesturePoint.x;
-      newEvent.button.y = lastGesturePoint.y;  
-      CWinEventsIOS::MessagePush(&newEvent);    
-      
-      /* Store the tap action for later */
-      lastEvent = newEvent;
-    }
-  }
-}
-//--------------------------------------------------------------
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-  
-}
-//--------------------------------------------------------------
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
-  {
-    UITouch *touch = [touches anyObject];
-    
-    if( [touches count] == 1 && [touch tapCount] == 1 )
-    {
-      XBMC_Event newEvent = lastEvent;
-      
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = lastGesturePoint.x;
-      newEvent.button.y = lastGesturePoint.y;
-      CWinEventsIOS::MessagePush(&newEvent);
-      
-      memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
     }
   }
 }
