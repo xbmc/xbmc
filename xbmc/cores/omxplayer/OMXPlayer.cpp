@@ -3554,7 +3554,7 @@ bool COMXPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_LEFT_CLICK:
         {
           CRect rs, rd;
-          GetVideoRect(rs, rd);
+          g_renderManager.GetVideoRect(rs, rd);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -3814,9 +3814,16 @@ void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   }
 }
 
-int COMXPlayer::GetVideoBitrate()
+void COMXPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
-  return m_player_video.GetVideoBitrate();
+  info.bitrate = m_player_video.GetVideoBitrate();
+
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+  info.videoCodecName = retVal;
+  info.videoAspectRatio = g_renderManager.GetAspectRatio();
+  g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
 }
 
 int COMXPlayer::GetSourceBitrate()
@@ -4037,14 +4044,6 @@ bool COMXPlayer::Record(bool bOnOff)
   return false;
 }
 
-CStdString COMXPlayer::GetVideoCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
-  return retVal;
-}
-
 int COMXPlayer::GetPictureWidth()
 {
   if (m_pDemuxer && (m_CurrentVideo.id != -1))
@@ -4074,7 +4073,7 @@ bool COMXPlayer::GetStreamDetails(CStreamDetails &details)
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
-      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = g_renderManager.GetAspectRatio();
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime() / 1000;
     }
     return result;
@@ -4123,11 +4122,6 @@ bool COMXPlayer::CachePVRStream(void) const
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
 
-void COMXPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
 void COMXPlayer::SetMute(bool bOnOff)
 {
   m_current_mute = bOnOff;
@@ -4160,11 +4154,6 @@ bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
 void COMXPlayer::Update(bool bPauseDrawing)
 {
   g_renderManager.Update(bPauseDrawing);
-}
-
-void COMXPlayer::GetVideoAspectRatio(float &fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
 }
 
 void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)

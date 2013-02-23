@@ -995,16 +995,6 @@ void CAMLPlayer::Update(bool bPauseDrawing)
   g_renderManager.Update(bPauseDrawing);
 }
 
-void CAMLPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
-void CAMLPlayer::GetVideoAspectRatio(float &fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
-}
-
 int CAMLPlayer::GetChapterCount()
 {
   return m_chapter_count;
@@ -1132,13 +1122,16 @@ void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   }
 }
 
-int CAMLPlayer::GetVideoBitrate()
+void CAMLPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
   if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
-    return 0;
+    return;
 
-  return m_video_streams[m_video_index]->bit_rate;
+  info.bitrate = m_video_streams[m_video_index]->bit_rate;
+  info.videoCodecName = VideoCodecName(m_video_streams[m_video_index]->format);
+  info.videoAspectRatio = g_renderManager.GetAspectRatio();
+  g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
 }
 
 int CAMLPlayer::GetSourceBitrate()
@@ -1160,17 +1153,6 @@ int CAMLPlayer::GetSampleRate()
     return 0;
   
   return m_audio_streams[m_audio_index]->sample_rate;
-}
-
-CStdString CAMLPlayer::GetVideoCodecName()
-{
-  CStdString strVideoCodec = "";
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
-    return strVideoCodec;
-  
-  strVideoCodec = VideoCodecName(m_video_streams[m_video_index]->format);
-
-  return strVideoCodec;
 }
 
 int CAMLPlayer::GetPictureWidth()

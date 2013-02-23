@@ -235,8 +235,6 @@ public:
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
   virtual void  GetGeneralInfo(CStdString &strVideoInfo);
   virtual void  Update(bool bPauseDrawing);
-  virtual void  GetVideoRect(CRect& SrcRect, CRect& DestRect);
-  virtual void  GetVideoAspectRatio(float &fAR);
   virtual void  UpdateApplication(double timeout);
   virtual bool  CanRecord();
   virtual bool  IsRecording();
@@ -273,9 +271,8 @@ public:
   virtual int64_t GetTotalTime();
   virtual void  ToFFRW(int iSpeed = 0);
   virtual void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-  virtual int   GetVideoBitrate();
+  virtual void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual int   GetSourceBitrate();
-  virtual CStdString GetVideoCodecName();
   virtual int   GetPictureWidth();
   virtual int   GetPictureHeight();
   virtual bool  GetStreamDetails(CStreamDetails &details);

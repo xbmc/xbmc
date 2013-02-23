@@ -110,6 +110,23 @@ struct SPlayerSubtitleStreamInfo
   std::string name;
 };
 
+struct SPlayerVideoStreamInfo
+{
+  int bitrate;
+  float videoAspectRatio;
+  std::string language;
+  std::string name;
+  std::string videoCodecName;
+  CRect SrcRect;
+  CRect DestRect;
+
+  SPlayerVideoStreamInfo()
+  {
+    bitrate = 0;
+    videoAspectRatio = 1.0f;
+  }
+};
+
 class IPlayer
 {
 public:
@@ -143,8 +160,6 @@ public:
   virtual void GetVideoInfo( CStdString& strVideoInfo) = 0;
   virtual void GetGeneralInfo( CStdString& strVideoInfo) = 0;
   virtual void Update(bool bPauseDrawing = false) = 0;
-  virtual void GetVideoRect(CRect& SrcRect, CRect& DestRect) {}
-  virtual void GetVideoAspectRatio(float& fAR) { fAR = 1.0f; }
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
@@ -186,11 +201,10 @@ public:
    \brief total time in milliseconds
    */
   virtual int64_t GetTotalTime() { return 0; }
-  virtual int GetVideoBitrate(){ return 0;}
+  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info){};
   virtual int GetSourceBitrate(){ return 0;}
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};
-  virtual CStdString GetVideoCodecName(){ return "";}
   virtual int GetPictureWidth(){ return 0;}
   virtual int GetPictureHeight(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}

@@ -1452,7 +1452,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      strLabel = g_application.m_pPlayer->GetVideoCodecName();
+    {
+      SPlayerVideoStreamInfo info;
+      g_application.m_pPlayer->GetVideoStreamInfo(info);
+      strLabel = info.videoCodecName;
+    }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -1469,9 +1473,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_VIDEO_ASPECT:
     if (g_application.IsPlaying() && g_application.m_pPlayer)
     {
-      float aspect;
-      g_application.m_pPlayer->GetVideoAspectRatio(aspect);
-      strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+      SPlayerVideoStreamInfo info;
+      g_application.m_pPlayer->GetVideoStreamInfo(info);
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(info.videoAspectRatio);
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:

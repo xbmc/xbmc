@@ -88,8 +88,6 @@ public:
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
   virtual void  GetGeneralInfo(CStdString &strVideoInfo) {};
   virtual void  Update(bool bPauseDrawing);
-  virtual void  GetVideoRect(CRect& SrcRect, CRect& DestRect);
-  virtual void  GetVideoAspectRatio(float &fAR);
   virtual bool  CanRecord()                                       {return false;};
   virtual bool  IsRecording()                                     {return false;};
   virtual bool  Record(bool bOnOff)                               {return false;};
@@ -124,11 +122,10 @@ public:
   virtual __int64 GetTime();
   virtual __int64 GetTotalTime();
   virtual void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-  virtual int   GetVideoBitrate();
+  virtual void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual int   GetSourceBitrate();
   virtual int   GetBitsPerSample();
   virtual int   GetSampleRate();
-  virtual CStdString GetVideoCodecName();
   virtual int   GetPictureWidth();
   virtual int   GetPictureHeight();
   virtual bool  GetStreamDetails(CStreamDetails &details);
