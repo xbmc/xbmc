@@ -310,9 +310,15 @@ AC_ARG_ENABLE([fishbmc],
 
 AC_ARG_ENABLE([projectm],
   [AS_HELP_STRING([--enable-projectm],
-  [enable ProjectM visualisation (default is yes)])],
+  [enable ProjectM visualisation (default is auto)])],
   [use_projectm=$enableval],
-  [use_projectm=yes])
+  [use_projectm=auto])
+
+AC_ARG_WITH([projectm-presets-dir], [
+  [AS_HELP_STRING([--with-projectm-presets-dir], [
+  [path to ProjectM presets to incude in default list (default is bundled path)])],
+  [projectm_presets_dir=$withval],
+  [projectm_presets_dir=bundled])
 
 AC_ARG_ENABLE([x11],
   [AS_HELP_STRING([--enable-x11],
@@ -1313,10 +1319,39 @@ fi
 if test "$use_projectm" = "no" || test "$use_gl" = "no"; then
   AC_MSG_NOTICE($projectm_disabled)
   DISABLE_PROJECTM=1
+  DISABLE_INTERNAL_PROJECTM=1
   use_projectm="no"
 else
-  AC_MSG_NOTICE($projectm_enabled)
-  DISABLE_PROJECTM=0
+  if test "$host_vendor" != "apple" ; then
+    if test "$use_projectm" = "yes"; then
+      PKG_CHECK_MODULES([PROJECTM],[libprojectM],,[use_projectm="no";AC_MSG_ERROR([$projectm_disabled])])
+    else
+      PKG_CHECK_MODULES([PROJECTM],[libprojectM],,[use_projectm="no";AC_MSG_RESULT([$projectm_disabled])])
+    fi
+    if test "$use_projectm" != "no"; then
+      INCLUDES="$INCLUDES $PROJECTM_CFLAGS";LIBS="$LIBS $PROJECTM_LIBS"
+    fi
+    DISABLE_INTERNAL_PROJECTM=1
+  else
+    DISABLE_INTERNAL_PROJECTM=0
+  fi
+  if test "$use_projectm" != "no"; then
+    AC_MSG_NOTICE($projectm_enabled)
+    DISABLE_PROJECTM=0
+    # verify preset dir actually exist if user don't want to use bundled one
+    if test "$projectm_presets_dir" != "bundled" ; then
+      if ! test -d "$projectm_presets_dir"; then
+        AC_MSG_ERROR([$projectm_presets_dir is not existing directory])
+      fi
+      PROJECTM_PRESETS_DIR=$projectm_presets_dir
+    else
+      PROJECTM_PRESETS_DIR=libprojectM/presets/
+    fi
+    AC_SUBST(PROJECTM_PRESETS_DIR)
+  else
+    AC_MSG_NOTICE($projectm_disabled)
+    DISABLE_PROJECTM=1
+  fi
 fi
 
 # skin touched
@@ -2712,7 +2747,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
     sed -ie "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
   fi
   set +x
-], [$DISABLE_PROJECTM])
+], [$DISABLE_INTERNAL_PROJECTM])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   ./configure  \

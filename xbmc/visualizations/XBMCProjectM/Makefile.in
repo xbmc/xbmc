@@ -18,16 +18,14 @@ $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
-$(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
+$(SLIB): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -fPIC -shared $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o -o $(SLIB)
 	$(MAKE) $(PRESETS)
-
-libprojectM/libprojectM.so: 
-	$(MAKE) -C libprojectM
 endif
 
-$(PRESETS): libprojectM/presets/*
-	zip -j $@ libprojectM/presets/*
+$(PRESETS):
+	zip -j $@ @PROJECTM_PRESETS_DIR@/*
+
 
 CLEAN_FILES = \
 	libprojectM/libprojectM.so \
