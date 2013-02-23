@@ -727,7 +727,6 @@ void CSoftAE::PauseStream(CSoftAEStream *stream)
   CSingleLock streamLock(m_streamLock);
   RemoveStream(m_playingStreams, stream);
   stream->m_paused = true;
-  streamLock.Leave();
 
   m_reOpen = true;
   m_wake.Set();
@@ -873,7 +872,10 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
   RemoveStream(m_streams       , (CSoftAEStream*)stream);
   // Reopen is old behaviour. Not opening when masterstream stops means clipping on S/PDIF.
   if(!m_isSuspended && (m_masterStream == stream))
+  {
     m_reOpen = true;
+    m_masterStream = NULL;
+  }
 
   delete (CSoftAEStream*)stream;
   return NULL;
@@ -1057,11 +1059,11 @@ void CSoftAE::Run()
     bool restart = false;
 
     /* with the new non blocking implementation - we just reOpen here, when it tells reOpen */
-    if (!m_reOpen && (this->*m_outputStageFn)(hasAudio) > 0)
+    if ((this->*m_outputStageFn)(hasAudio) > 0)
       hasAudio = false; /* taken some audio - reset our silence flag */
 
     /* if we have enough room in the buffer */
-    if (!m_reOpen && m_buffer.Free() >= m_frameSize)
+    if (m_buffer.Free() >= m_frameSize)
     {
       /* take some data for our use from the buffer */
       uint8_t *out = (uint8_t*)m_buffer.Take(m_frameSize);
