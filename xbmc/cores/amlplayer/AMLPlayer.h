@@ -105,7 +105,6 @@ public:
   virtual void  SetSubtitle(int iStream);
   virtual bool  GetSubtitleVisible();
   virtual void  SetSubtitleVisible(bool bVisible);
-  virtual bool  GetSubtitleExtension(CStdString &strSubtitleExtension) { return false; }
   virtual int   AddSubtitle(const CStdString& strSubPath);
 
   virtual int   GetAudioStreamCount();
