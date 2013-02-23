@@ -112,7 +112,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
 bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetInput(aTextString, "", allowEmptyResult, autoCloseMs) != 0;
+  return ShowAndGetInput(aTextString, "", allowEmptyResult, false, autoCloseMs);
 }
 
 // Shows keyboard and prompts for a password.
@@ -132,7 +132,7 @@ bool CGUIKeyboardFactory::ShowAndGetNewPassword(CStdString& newPassword, unsigne
 bool CGUIKeyboardFactory::ShowAndGetFilter(CStdString &filter, bool searching, unsigned int autoCloseMs /* = 0 */)
 {
   m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
-  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true, autoCloseMs);
+  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true, false, autoCloseMs);
   m_filtering = FILTERING_NONE;
   return ret;
 }
