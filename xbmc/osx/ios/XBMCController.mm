@@ -258,6 +258,7 @@ extern NSString* kBRScreenSaverDismissed;
                                                                    [sender scale], 0), WINDOW_INVALID,false);
         break;
       case UIGestureRecognizerStateEnded:
+      case UIGestureRecognizerStateCancelled:
         CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_END, 0, 0, 0,
                                                         0, 0), WINDOW_INVALID,false);
         break;
@@ -345,6 +346,12 @@ extern NSString* kBRScreenSaverDismissed;
       CGPoint velocity = [sender velocityInView:m_glView];
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
       CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_END, 0, (float)velocity.x, (float)velocity.y, (int)lastGesturePoint.x, (int)lastGesturePoint.y),WINDOW_INVALID,false);
+      touchBeginSignaled = false;
+    }
+    else if( touchBeginSignaled && [sender state] == UIGestureRecognizerStateCancelled )
+    {
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_GESTURE_END, 0, 0, 0,
+                                                      0, 0), WINDOW_INVALID,false);
       touchBeginSignaled = false;
     }
   }
