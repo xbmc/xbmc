@@ -46,10 +46,11 @@ static CEvent keyboardFinishedEvent;
   if (self) 
   {
     _iosKeyboard = nil;
-    _keyboardIsShowing = NO;
+    _keyboardIsShowing = 0;
     _kbHeight = 0;
     _confirmed = NO;
     _canceled = NULL;
+    _deactivated = NO;
     
     self.text = [NSMutableString stringWithString:@""];
 
@@ -88,6 +89,10 @@ static CEvent keyboardFinishedEvent;
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
   }
   return self;
 }
@@ -113,13 +118,28 @@ static CEvent keyboardFinishedEvent;
   LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
   _kbHeight = kbRect.size.width;
   [self setNeedsLayout];
-  _keyboardIsShowing = YES;
+  _keyboardIsShowing = 1;
+}
+
+-(void)keyboardDidShow:(NSNotification *) notification{
+  LOG(@"keyboardDidShow: deactivated: %d", _deactivated);
+  _keyboardIsShowing = 2;
+  if (_deactivated)
+    [self doDeactivate:nil];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
   PRINT_SIGNATURE();
   [_textField resignFirstResponder];
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+  LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
+  // Do not break the keyboard show up process, else we will lost
+  // keyboard did hide notifaction.
+  return _keyboardIsShowing != 1;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -139,7 +159,7 @@ static CEvent keyboardFinishedEvent;
 {
   PRINT_SIGNATURE();
   
-  _keyboardIsShowing = NO;
+  _keyboardIsShowing = 0;
 
   if (_textField.editing)
   {
@@ -156,6 +176,7 @@ static CEvent keyboardFinishedEvent;
   [g_xbmcController activateKeyboard:self];
   [_textField becomeFirstResponder];
   [self setNeedsLayout];
+  keyboardFinishedEvent.Reset();
 }
 
 - (void)activate
@@ -170,8 +191,6 @@ static CEvent keyboardFinishedEvent;
     // this would be fatal! We never should be called from the ios mainthread
     return;
   }
-
-  keyboardFinishedEvent.Reset();
 
   // emulate a modale dialog here
   // we are waiting on the user finishing the keyboard
@@ -191,7 +210,14 @@ static CEvent keyboardFinishedEvent;
 
 - (void) doDeactivate:(NSDictionary *)dict
 {
-  PRINT_SIGNATURE();
+  LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
+  _deactivated = YES;
+  
+  // Do not break keyboard show up process, if so there's a bug of ios4 will not
+  // notify us keyboard hide.
+  if (_keyboardIsShowing == 1)
+    return;
+
   // invalidate our callback object
   if(_iosKeyboard)
   {
@@ -206,7 +232,7 @@ static CEvent keyboardFinishedEvent;
   [g_xbmcController deactivateKeyboard:self];
   
   // until keyboard did hide, we let the calling thread break loop
-  if (!_keyboardIsShowing)
+  if (0 == _keyboardIsShowing)
   {
     // no more notification we want to receive.
     [[NSNotificationCenter defaultCenter] removeObserver: self];
