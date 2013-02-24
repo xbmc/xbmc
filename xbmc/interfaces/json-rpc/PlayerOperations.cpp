@@ -231,7 +231,14 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
         CBuiltins::Execute("playercontrol(play)");
       else
       {
-        if (parameterObject["play"].asBoolean() == g_application.IsPaused())
+        if (parameterObject["play"].asBoolean())
+        {
+          if (g_application.IsPaused())
+            CApplicationMessenger::Get().MediaPause();
+          else if (g_application.GetPlaySpeed() != 1)
+            g_application.SetPlaySpeed(1);
+        }
+        else if (!g_application.IsPaused())
           CApplicationMessenger::Get().MediaPause();
       }
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
