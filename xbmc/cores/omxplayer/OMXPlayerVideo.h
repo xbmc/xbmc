@@ -61,6 +61,7 @@ protected:
   int                       m_audio_count;
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_flush;
   std::string               m_codecname;
   double                    m_droptime;
   double                    m_dropbase;

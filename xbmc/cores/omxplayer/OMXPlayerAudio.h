@@ -42,7 +42,6 @@ using namespace std;
 class OMXPlayerAudio : public CThread
 {
 protected:
-  CCriticalSection      m_flushLock;
   CDVDMessageQueue      m_messageQueue;
   CDVDMessageQueue      &m_messageParent;
 

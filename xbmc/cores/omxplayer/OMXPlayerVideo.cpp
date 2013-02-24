@@ -122,6 +122,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_Deinterlace = ( g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
+  m_flush       = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_autosync    = 1;
   m_iSleepEndTime = DVD_NOPTS_VALUE;
@@ -593,6 +594,7 @@ void OMXPlayerVideo::Process()
       m_omxVideo.Reset();
       m_av_clock->OMXReset(false);
       m_av_clock->UnLock();
+      m_flush = false;
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
@@ -633,6 +635,10 @@ void OMXPlayerVideo::Process()
 
       while (!m_bStop)
       {
+        // discard if flushing as clocks may be stopped and we'll never submit it
+        if (m_flush)
+           break;
+
         if((int)m_omxVideo.GetFreeSpace() < pPacket->iSize)
         {
           Sleep(10);
@@ -697,6 +703,7 @@ void OMXPlayerVideo::Process()
 
 void OMXPlayerVideo::Flush()
 {
+  m_flush = true;
   m_messageQueue.Flush();
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
