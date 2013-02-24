@@ -32,7 +32,7 @@
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
 
-namespace XFILE {
+using namespace XFILE;
 
 CCacheStrategy::CCacheStrategy() : m_bEndOfInput(false)
 {
@@ -247,4 +247,3 @@ void CSimpleFileCache::EndOfInput()
   m_hDataAvailEvent->Set();
 }
 
-}
