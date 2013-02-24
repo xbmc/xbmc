@@ -2833,7 +2833,7 @@ bool CApplication::OnAction(const CAction &action)
       if(core != EPC_NONE)
       {
         g_application.m_eForcedNextPlayer = core;
-        item.m_lStartOffset = GetTime() * 75;
+        item.m_lStartOffset = (int)(GetTime() * 75);
         PlayFile(item, true);
       }
     }
