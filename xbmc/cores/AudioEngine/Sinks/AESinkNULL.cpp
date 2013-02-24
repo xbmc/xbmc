@@ -52,7 +52,7 @@ bool CAESinkNULL::Initialize(AEAudioFormat &format, std::string &device)
 
   // setup a pretend 500ms internal buffer
   m_sink_frameSize = format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
-  m_sinkbuffer_size = (double)m_sink_frameSize * format.m_sampleRate / 2;
+  m_sinkbuffer_size = m_sink_frameSize * format.m_sampleRate / 2;
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_sink_frameSize * format.m_sampleRate);
 
   m_draining = false;
