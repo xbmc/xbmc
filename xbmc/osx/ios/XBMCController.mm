@@ -400,17 +400,39 @@ extern NSString* kBRScreenSaverDismissed;
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
     if (sender.state == UIGestureRecognizerStateBegan)
     {
-      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-      point.x *= screenScale;
-      point.y *= screenScale;
       [self postMouseMotionEvent:point];//selects the current control
-    }
+      XBMC_Event newEvent;
+      memset(&newEvent, 0, sizeof(newEvent));
 
-    if (sender.state == UIGestureRecognizerStateEnded)
+      newEvent.type = XBMC_MOUSEBUTTONDOWN;
+      newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+      newEvent.button.button = XBMC_BUTTON_RIGHT;
+      newEvent.button.x = point.x;
+      newEvent.button.y = point.y;
+
+      CWinEventsIOS::MessagePush(&newEvent);
+    }
+    else if (sender.state == UIGestureRecognizerStateChanged)
     {
-      [self handleDoubleFingerSingleTap:sender];
+      [self postMouseMotionEvent:point];
+    }
+    else if (sender.state == UIGestureRecognizerStateEnded)
+    {
+      XBMC_Event newEvent;
+      memset(&newEvent, 0, sizeof(newEvent));
+
+      newEvent.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.button = XBMC_BUTTON_RIGHT;
+      newEvent.button.x = point.x;
+      newEvent.button.y = point.y;
+
+      CWinEventsIOS::MessagePush(&newEvent);
     }
   }
 }
