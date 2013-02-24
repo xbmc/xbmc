@@ -268,6 +268,7 @@ bool CPVRChannel::SetHidden(bool bIsHidden)
   {
     /* update the hidden flag */
     m_bIsHidden = bIsHidden;
+	m_bEPGEnabled = !bIsHidden;
     SetChanged();
     m_bChanged = true;
 
