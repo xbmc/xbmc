@@ -353,9 +353,6 @@ extern NSString* kBRScreenSaverDismissed;
 {
   XBMC_Event newEvent;
 
-  point.x *= screenScale;
-  point.y *= screenScale;
-
   memset(&newEvent, 0, sizeof(newEvent));
 
   newEvent.type = XBMC_MOUSEMOTION;
@@ -406,6 +403,8 @@ extern NSString* kBRScreenSaverDismissed;
     if (sender.state == UIGestureRecognizerStateBegan)
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+      point.x *= screenScale;
+      point.y *= screenScale;
       [self postMouseMotionEvent:point];//selects the current control
     }
 
@@ -425,10 +424,10 @@ extern NSString* kBRScreenSaverDismissed;
     if( [touches count] == 1 && [touch tapCount] == 1)
     {
       lastGesturePoint = [touch locationInView:m_glView];    
-      [self postMouseMotionEvent:lastGesturePoint];//selects the current control
-
       lastGesturePoint.x *= screenScale;
       lastGesturePoint.y *= screenScale;  
+      [self postMouseMotionEvent:lastGesturePoint];//selects the current control
+
       XBMC_Event newEvent;
       memset(&newEvent, 0, sizeof(newEvent));
       
