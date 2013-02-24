@@ -96,7 +96,7 @@ namespace OVERLAY {
     void AddOverlay(CDVDOverlay* o, double pts, int index);
     void AddOverlay(COverlay*    o, double pts, int index);
     void AddCleanup(COverlay*    o);
-    void Flip();
+    void Flip(int source);
     void Render();
     void Flush();
     void SetNumBuffers(int numBuffers) { m_iNumBuffers = numBuffers; }

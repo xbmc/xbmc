@@ -161,10 +161,13 @@ void CRenderer::Flush()
   Release(m_cleanup);
 }
 
-void CRenderer::Flip()
+void CRenderer::Flip(int source)
 {
   CSingleLock lock(m_section);
-  m_render = (m_render + 1) % m_iNumBuffers;
+  if( source >= 0 && source < m_iNumBuffers )
+    m_render = source;
+  else
+    m_render = (m_render + 1) % m_iNumBuffers;
 }
 
 void CRenderer::ReleaseBuffer(int idx)
