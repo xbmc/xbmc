@@ -19,6 +19,8 @@
  *
  */
 
+#include <math.h>
+
 #include "DVDVideoCodecAmlogic.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
@@ -122,8 +124,14 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
   m_videobuffer.iWidth  = hints.width;
   m_videobuffer.iHeight = hints.height;
-  m_videobuffer.iDisplayWidth  = hints.width;
-  m_videobuffer.iDisplayHeight = hints.height;
+
+  m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
+  m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * hints.aspect)) & -3;
+  if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
+  {
+    m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
+    m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / hints.aspect)) & -3;
+  }
 
   CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
   if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
