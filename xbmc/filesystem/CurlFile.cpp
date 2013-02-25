@@ -340,8 +340,7 @@ void CCurlFile::CReadState::Disconnect()
 
 CCurlFile::~CCurlFile()
 {
-  if (m_opened)
-    Close();
+  Close();
   delete m_state;
   g_curlInterface.Unload();
 }
@@ -467,7 +466,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
 
   // enable support for icecast / shoutcast streams
-  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
+  if ( NULL == m_curlAliasList )
+    // m_curlAliasList is used only by this one place, but SetCommonOptions can
+    // be called multiple times, only append to list if it's empty.
+    m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
   g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList);
 
   // never verify peer, we don't have any certificates to do this
