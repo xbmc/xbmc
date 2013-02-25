@@ -914,13 +914,15 @@ bool CApplication::InitWindow()
   }
 #endif
 
+  // set GUI res and force the clear of the screen
+  // do this first because SetViewResolution will create an OpenGL context
+  // and then we can init the render system from there
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
   if (!g_Windowing.InitRenderSystem())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
     return false;
   }
-  // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
   g_fontManager.ReloadTTFFonts();
   return true;
 }
