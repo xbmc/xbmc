@@ -1686,7 +1686,8 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   
   m_viewControl.Clear();
   
-  CFileItemList items(m_vecItems->GetPath()); // use the original path - it'll likely be relied on for other things later.
+  CFileItemList items;
+  items.Copy(*m_vecItems, false); // use the original path - it'll likely be relied on for other things later.
   items.Append(*m_unfilteredItems);
   bool filtered = GetFilteredItems(filter, items);
 
