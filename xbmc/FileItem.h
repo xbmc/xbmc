@@ -475,7 +475,7 @@ public:
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
   void Assign(const CFileItemList& itemlist, bool append = false);
-  bool Copy  (const CFileItemList& item);
+  bool Copy  (const CFileItemList& item, bool copyItems = true);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SortOrder sortOrder);
   /* \brief Sorts the items based on the given sorting options
