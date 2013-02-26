@@ -114,6 +114,16 @@ public:
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
   static double CompareFuzzy(const CStdString &left, const CStdString &right);
   static int FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore);
+
+  /*! \brief Escapes the given string to be able to be used as a parameter.
+
+   Escapes backslashes and double-quotes with an additional backslash and
+   adds double-quotes around the whole string.
+
+   \param param String to escape/paramify
+   \return Escaped/Paramified string
+   */
+  static std::string Paramify(const std::string &param);
 private:
   static CStdString m_lastUUID;
 };
