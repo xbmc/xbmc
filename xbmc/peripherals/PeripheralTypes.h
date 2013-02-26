@@ -194,14 +194,16 @@ namespace PERIPHERALS
       m_iVendorId(0),
       m_iProductId(0),
       m_mappedType(PERIPHERAL_UNKNOWN),
-      m_busType(busType) {}
+      m_busType(busType),
+      m_mappedBusType(busType) {}
 
     PeripheralScanResult(void) :
       m_type(PERIPHERAL_UNKNOWN),
       m_iVendorId(0),
       m_iProductId(0),
       m_mappedType(PERIPHERAL_UNKNOWN),
-      m_busType(PERIPHERAL_BUS_UNKNOWN) {}
+      m_busType(PERIPHERAL_BUS_UNKNOWN),
+      m_mappedBusType(PERIPHERAL_BUS_UNKNOWN) {}
 
     bool operator ==(const PeripheralScanResult& right) const
     {
@@ -224,6 +226,7 @@ namespace PERIPHERALS
     PeripheralType    m_mappedType;
     CStdString        m_strDeviceName;
     PeripheralBusType m_busType;
+    PeripheralBusType m_mappedBusType;
   };
 
   struct PeripheralScanResults

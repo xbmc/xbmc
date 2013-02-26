@@ -41,6 +41,7 @@ struct SortBySettingsOrder
 CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
   m_type(scanResult.m_mappedType),
   m_busType(scanResult.m_busType),
+  m_mappedBusType(scanResult.m_mappedBusType),
   m_strLocation(scanResult.m_strLocation),
   m_strDeviceName(scanResult.m_strDeviceName),
   m_strFileLocation(StringUtils::EmptyString),
@@ -129,7 +130,7 @@ bool CPeripheral::Initialise(void)
     return bReturn;
 
   g_peripherals.GetSettingsFromMapping(*this);
-  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_busType), m_strVendorId.c_str(), m_strProductId.c_str());
+  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId.c_str(), m_strProductId.c_str());
   LoadPersistedSettings();
 
   for (unsigned int iFeaturePtr = 0; iFeaturePtr < m_features.size(); iFeaturePtr++)

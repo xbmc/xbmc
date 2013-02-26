@@ -97,10 +97,10 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
     {
     case ADAPTERTYPE_P8_EXTERNAL:
     case ADAPTERTYPE_P8_DAUGHTERBOARD:
-      result.m_busType = PERIPHERAL_BUS_USB;
+      result.m_mappedBusType = PERIPHERAL_BUS_USB;
       break;
     case ADAPTERTYPE_RPI:
-      result.m_busType = PERIPHERAL_BUS_RPI;
+      result.m_mappedBusType = PERIPHERAL_BUS_RPI;
       break;
     default:
       break;

@@ -159,6 +159,7 @@ namespace PERIPHERALS
 
     PeripheralType                   m_type;
     PeripheralBusType                m_busType;
+    PeripheralBusType                m_mappedBusType;
     CStdString                       m_strLocation;
     CStdString                       m_strDeviceName;
     CStdString                       m_strSettingsFile;
