@@ -235,10 +235,17 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   Float32* val = (Float32*)*mixMap;
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
-    for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
+    UInt32 j = 0;
+    for (; j < fmt->mChannelsPerFrame; ++j)
     {
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
+    }
+    // zero out additional outputs from this input
+    for (; j < dims[1]; ++j)
+    {
+      AudioUnitSetParameter(mixerUnit->GetUnit(),
+        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
     }
   }
 
