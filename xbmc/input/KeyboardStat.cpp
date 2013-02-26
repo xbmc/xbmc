@@ -35,6 +35,13 @@
 using namespace std;
 using namespace PERIPHERALS;
 
+bool operator==(const XBMC_keysym& lhs, const XBMC_keysym& rhs)
+{
+  return lhs.mod      == rhs.mod      &&
+         lhs.scancode == rhs.scancode &&
+         lhs.sym      == rhs.sym      &&
+         lhs.unicode  == rhs.unicode;
+}
 
 CKeyboardStat::CKeyboardStat()
 {
@@ -65,8 +72,9 @@ bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t 
   return false;
 }
 
-const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
-{ uint8_t vkey;
+CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
+{
+  uint8_t vkey;
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
@@ -148,16 +156,9 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     }
   }
 
-  // At this point update the key hold time
-  if (keysym.mod == m_lastKeysym.mod && keysym.scancode == m_lastKeysym.scancode && keysym.sym == m_lastKeysym.sym && keysym.unicode == m_lastKeysym.unicode)
+  if (keysym == m_lastKeysym)
   {
     held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
-  }
-  else
-  {
-    m_lastKeysym = keysym;
-    m_lastKeyTime = CTimeUtils::GetFrameTime();
-    held = 0;
   }
 
   // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the
@@ -175,6 +176,15 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   CKey key(vkey, unicode, ascii, modifiers, held);
 
   return key;
+}
+
+void CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
+{
+  if (!(m_lastKeysym == keysym))
+  {
+    m_lastKeysym = keysym;
+    m_lastKeyTime = CTimeUtils::GetFrameTime();
+  }
 }
 
 void CKeyboardStat::ProcessKeyUp(void)

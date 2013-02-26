@@ -51,8 +51,10 @@ public:
 
   void Initialize();
 
-  const CKey ProcessKeyDown(XBMC_keysym& keysym);
-  void       ProcessKeyUp(void);
+  CKey TranslateKey(XBMC_keysym& keysym) const;
+
+  void ProcessKeyDown(XBMC_keysym& keysym);
+  void ProcessKeyUp(void);
 
   std::string GetKeyName(int KeyID);
 
