@@ -229,13 +229,13 @@ bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, Per
   return (GetPeripheralsWithFeature(dummy, feature, busType) > 0);
 }
 
-CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralType type, const CStdString &strLocation, int iVendorId /* = 0 */, int iProductId /* = 0 */)
+CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanResult& result)
 {
   CPeripheral *peripheral = NULL;
   /* check whether there's something mapped in peripherals.xml */
-  PeripheralType mappedType = type;
+  PeripheralType mappedType = result.m_type;
   CStdString strDeviceName;
-  int iMappingPtr = GetMappingForDevice(bus, type, iVendorId, iProductId);
+  int iMappingPtr = GetMappingForDevice(bus, result.m_type, result.m_iVendorId, result.m_iProductId);
   bool bHasMapping(iMappingPtr >= 0);
   if (bHasMapping)
   {
@@ -251,33 +251,33 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   switch(mappedType)
   {
   case PERIPHERAL_HID:
-    peripheral = new CPeripheralHID(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralHID(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_NIC:
-    peripheral = new CPeripheralNIC(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralNIC(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_DISK:
-    peripheral = new CPeripheralDisk(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralDisk(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_NYXBOARD:
-    peripheral = new CPeripheralNyxboard(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralNyxboard(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_TUNER:
-    peripheral = new CPeripheralTuner(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralTuner(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_BLUETOOTH:
-    peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralBluetooth(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
     if (bus.Type() == PERIPHERAL_BUS_CEC)
-      peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+      peripheral = new CPeripheralCecAdapter(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
@@ -289,7 +289,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     break;
 
   case PERIPHERAL_IMON:
-    peripheral = new CPeripheralImon(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralImon(mappedType, bus.Type(), result.m_strLocation, strDeviceName, result.m_iVendorId, result.m_iProductId);
     break;
 
   default:
@@ -306,7 +306,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, strLocation.c_str());
+      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, result.m_strLocation.c_str());
       delete peripheral;
       peripheral = NULL;
     }

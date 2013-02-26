@@ -170,9 +170,9 @@ void CPeripheralBus::RegisterNewDevices(const PeripheralScanResults &results)
   CSingleLock lock(m_critSection);
   for (unsigned int iResultPtr = 0; iResultPtr < results.m_results.size(); iResultPtr++)
   {
-    PeripheralScanResult result = results.m_results.at(iResultPtr);
+    const PeripheralScanResult& result = results.m_results.at(iResultPtr);
     if (!HasPeripheral(result.m_strLocation))
-      g_peripherals.CreatePeripheral(*this, result.m_type, result.m_strLocation, result.m_iVendorId, result.m_iProductId);
+      g_peripherals.CreatePeripheral(*this, result);
   }
 }
 
