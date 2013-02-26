@@ -679,3 +679,15 @@ size_t StringUtils::utf8_strlen(const char *s)
   }
   return length;
 }
+
+std::string StringUtils::Paramify(const std::string &param)
+{
+  std::string result = param;
+  // escape backspaces
+  StringUtils::Replace(result, "\\", "\\\\");
+  // escape double quotes
+  StringUtils::Replace(result, "\"", "\\\"");
+
+  // add double quotes around the whole string
+  return "\"" + result + "\"";
+}
