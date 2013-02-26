@@ -1940,7 +1940,11 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 #endif
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
-      CURL plugin(m_vecItems->Get(itemNumber)->GetPath());
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      // CONTEXT_BUTTON_PLUGIN_SETTINGS can be called for plugin item
+      // or script item; or for the plugin directory current listing.
+      bool isPluginOrScriptItem = (item && (item->IsPlugin() || item->IsScript()));
+      CURL plugin(isPluginOrScriptItem ? item->GetPath() : m_vecItems->GetPath());
       ADDON::AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))

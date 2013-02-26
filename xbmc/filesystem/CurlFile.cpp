@@ -333,8 +333,7 @@ void CCurlFile::CReadState::Disconnect()
 
 CCurlFile::~CCurlFile()
 {
-  if (m_opened)
-    Close();
+  Close();
   delete m_state;
   g_curlInterface.Unload();
 }
@@ -470,7 +469,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 #endif
 
   // enable support for icecast / shoutcast streams
-  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
+  if ( NULL == m_curlAliasList )
+    // m_curlAliasList is used only by this one place, but SetCommonOptions can
+    // be called multiple times, only append to list if it's empty.
+    m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
   g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList);
 
   // never verify peer, we don't have any certificates to do this
@@ -1061,7 +1063,11 @@ bool CCurlFile::Exists(const CURL& url)
   if(url2.GetProtocol() == "ftp")
   {
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+    // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
+    if (url2.GetFileName().Right(1).Equals("/"))
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
+    else
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
@@ -1186,8 +1192,11 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   if(url2.GetProtocol() == "ftp")
   {
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+    // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
+    if (url2.GetFileName().Right(1).Equals("/"))
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
+    else
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
