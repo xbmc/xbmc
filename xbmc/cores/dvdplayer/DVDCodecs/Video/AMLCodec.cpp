@@ -1926,7 +1926,8 @@ double CAMLCodec::GetPlayerPtsSeconds()
 void CAMLCodec::SetVideoPtsSeconds(const double pts)
 {
   //CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoPtsSeconds: pts(%f)", pts);
-  set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
+  if (pts >= 0.0)
+      set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
 }
 
 void CAMLCodec::ShowMainVideo(const bool show)
