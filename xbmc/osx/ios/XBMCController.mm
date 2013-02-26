@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "ApplicationMessenger.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
+#include "guilib/GUIControl.h"
 
 #include "windowing/WindowingFactory.h"
 #include "video/VideoReferenceClock.h"
@@ -154,6 +155,11 @@ extern NSString* kBRScreenSaverDismissed;
     return YES;
   }
 
+  if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    return YES;
+  }
+
+  
   return NO;
 }
 //--------------------------------------------------------------
@@ -192,15 +198,60 @@ extern NSString* kBRScreenSaverDismissed;
   [singleFingerSingleLongTap release];
 
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
+  UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
+                                            initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipeLeft2.delaysTouchesBegan = YES;
+  swipeLeft2.numberOfTouchesRequired = 2;
+  swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
+  swipeLeft2.delegate = self;
+  [m_glView addGestureRecognizer:swipeLeft2];
+  [swipeLeft2 release];
+
+  //single finger swipe left
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleSwipeLeft:)];
+                                          initWithTarget:self action:@selector(handleSwipe:)];
 
   swipeLeft.delaysTouchesBegan = YES;
-  swipeLeft.numberOfTouchesRequired = 2;
+  swipeLeft.numberOfTouchesRequired = 1;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+  swipeLeft.delegate = self;
   [m_glView addGestureRecognizer:swipeLeft];
   [swipeLeft release];
+  
+  //single finger swipe right
+  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleSwipe:)];
+  
+  swipeRight.delaysTouchesBegan = YES;
+  swipeRight.numberOfTouchesRequired = 1;
+  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+  swipeRight.delegate = self;
+  [m_glView addGestureRecognizer:swipeRight];
+  [swipeRight release];
+  
+  //single finger swipe up
+  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleSwipe:)];
+  
+  swipeUp.delaysTouchesBegan = YES;
+  swipeUp.numberOfTouchesRequired = 1;
+  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+  swipeUp.delegate = self;
+  [m_glView addGestureRecognizer:swipeUp];
+  [swipeUp release];
 
+  //single finger swipe down
+  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self action:@selector(handleSwipe:)];
+  
+  swipeDown.delaysTouchesBegan = YES;
+  swipeDown.numberOfTouchesRequired = 1;
+  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
+  swipeDown.delegate = self;
+  [m_glView addGestureRecognizer:swipeDown];
+  [swipeDown release];
+  
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
@@ -300,7 +351,7 @@ extern NSString* kBRScreenSaverDismissed;
 
     if( [sender state] == UIGestureRecognizerStateBegan )
     {
-      CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= screenScale;
       point.y *= screenScale;
       touchBeginSignaled = false;
@@ -309,7 +360,7 @@ extern NSString* kBRScreenSaverDismissed;
 
     if( [sender state] == UIGestureRecognizerStateChanged )
     {
-      CGPoint point = [sender locationOfTouch:0 inView:m_glView];    
+      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= screenScale;
       point.y *= screenScale;
       bool bNotify = false;
@@ -353,30 +404,55 @@ extern NSString* kBRScreenSaverDismissed;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)handleSwipeLeft:(UISwipeGestureRecognizer *)sender 
+- (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    static CGPoint startPoint;
-    switch (sender.state)
+    
+    
+    if (sender.state == UIGestureRecognizerStateRecognized)
     {
-      case UIGestureRecognizerStateBegan:
-        startPoint = [sender locationOfTouch:0 inView:m_glView];    
-        startPoint.x *= screenScale;
-        startPoint.y *= screenScale;
-        break;
-      case UIGestureRecognizerStateChanged:
-        break;
-      case UIGestureRecognizerStateEnded:
+      bool swipeAllowed = false;
+      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+      point.x *= screenScale;
+      point.y *= screenScale;
+      swipeAllowed = false;
+
+      if ([sender numberOfTouches] == 2)
       {
-        CGPoint point = [sender locationOfTouch:0 inView:m_glView];    
-        point.x *= screenScale;
-        point.y *= screenScale;       
-        CGenericTouchActionHandler::Get().OnSwipe(TouchMoveDirectionLeft, 
-                                                  startPoint.x, startPoint.y, 
-                                                  point.x, point.y, 0, 0, 
-                                                  [sender numberOfTouchesRequired]);
-        break;
+        swipeAllowed = true;
+      }
+      else
+      {
+        int gestures = CGenericTouchActionHandler::Get().QuerySupportedGestures(point.x, point.y);
+        if (gestures & EVENT_RESULT_SWIPE)
+        {
+          swipeAllowed = true;
+        }
+      }
+
+      if (swipeAllowed)
+      {
+        TouchMoveDirection direction = TouchMoveDirectionNone;
+        switch ([sender direction])
+        {
+          case UISwipeGestureRecognizerDirectionRight:
+            direction = TouchMoveDirectionRight;
+            break;
+          case UISwipeGestureRecognizerDirectionLeft:
+            direction = TouchMoveDirectionLeft;
+            break;
+          case UISwipeGestureRecognizerDirectionUp:
+            direction = TouchMoveDirectionUp;
+            break;
+          case UISwipeGestureRecognizerDirectionDown:
+            direction = TouchMoveDirectionDown;
+            break;
+        }
+        CGenericTouchActionHandler::Get().OnSwipe(direction,
+                                                  0.0, 0.0,
+                                                  point.x, point.y, 0, 0,
+                                                  [sender numberOfTouches]);
       }
     }
   }
