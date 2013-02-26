@@ -199,7 +199,7 @@ namespace PERIPHERALS
   private:
     CPeripherals(void);
     bool LoadMappings(void);
-    int GetMappingForDevice(const CPeripheralBus &bus, const PeripheralType classType, int iVendorId, int iProductId) const;
+    int GetMappingForDevice(const CPeripheralBus &bus, const PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<CStdString, CSetting *> &m_settings);
 
     bool                                 m_bInitialised;

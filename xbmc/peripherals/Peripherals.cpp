@@ -235,7 +235,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   /* check whether there's something mapped in peripherals.xml */
   PeripheralType mappedType = result.m_type;
   CStdString strDeviceName;
-  int iMappingPtr = GetMappingForDevice(bus, result.m_type, result.m_iVendorId, result.m_iProductId);
+  int iMappingPtr = GetMappingForDevice(bus, result);
   bool bHasMapping(iMappingPtr >= 0);
   if (bHasMapping)
   {
@@ -341,7 +341,7 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
 
-int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const PeripheralType classType, int iVendorId, int iProductId) const
+int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const PeripheralScanResult& result) const
 {
   /* check all mappings in the order in which they are defined in peripherals.xml */
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
@@ -356,18 +356,18 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
     else
     {
       for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
-        if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
+        if (mapping.m_PeripheralID[i].m_iVendorId == result.m_iVendorId && mapping.m_PeripheralID[i].m_iProductId == result.m_iProductId)
           bProductMatch = true;
     }
 
     bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
-    bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == classType);
+    bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == result.m_type);
 
     if (bProductMatch && bBusMatch && bClassMatch)
     {
       CStdString strVendorId, strProductId;
-      PeripheralTypeTranslator::FormatHexString(iVendorId, strVendorId);
-      PeripheralTypeTranslator::FormatHexString(iProductId, strProductId);
+      PeripheralTypeTranslator::FormatHexString(result.m_iVendorId, strVendorId);
+      PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
       CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       return iMappingPtr;
     }
