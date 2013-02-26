@@ -35,7 +35,6 @@ namespace PERIPHERALS
 
   public:
     CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
-    CPeripheral(void);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;

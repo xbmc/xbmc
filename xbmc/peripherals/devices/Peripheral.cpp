@@ -56,23 +56,6 @@ CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busT
   m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(busType), strLocation.c_str());
 }
 
-CPeripheral::CPeripheral(void) :
-  m_type(PERIPHERAL_UNKNOWN),
-  m_busType(PERIPHERAL_BUS_UNKNOWN),
-  m_strLocation(StringUtils::EmptyString),
-  m_strDeviceName(StringUtils::EmptyString),
-  m_strFileLocation(StringUtils::EmptyString),
-  m_iVendorId(0),
-  m_strVendorId("0000"),
-  m_iProductId(0),
-  m_strProductId("0000"),
-  m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
-  m_bInitialised(false),
-  m_bHidden(false),
-  m_bError(false)
-{
-}
-
 CPeripheral::~CPeripheral(void)
 {
   PersistSettings(true);
