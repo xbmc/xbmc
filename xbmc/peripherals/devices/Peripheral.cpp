@@ -38,22 +38,22 @@ struct SortBySettingsOrder
   }
 };
 
-CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
-  m_type(type),
-  m_busType(busType),
-  m_strLocation(strLocation),
-  m_strDeviceName(strDeviceName),
+CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
+  m_type(scanResult.m_mappedType),
+  m_busType(scanResult.m_busType),
+  m_strLocation(scanResult.m_strLocation),
+  m_strDeviceName(scanResult.m_strDeviceName),
   m_strFileLocation(StringUtils::EmptyString),
-  m_iVendorId(iVendorId),
-  m_iProductId(iProductId),
+  m_iVendorId(scanResult.m_iVendorId),
+  m_iProductId(scanResult.m_iProductId),
   m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
   m_bInitialised(false),
   m_bHidden(false),
   m_bError(false)
 {
-  PeripheralTypeTranslator::FormatHexString(iVendorId, m_strVendorId);
-  PeripheralTypeTranslator::FormatHexString(iProductId, m_strProductId);
-  m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(busType), strLocation.c_str());
+  PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
+  PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
+  m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType), scanResult.m_strLocation.c_str());
 }
 
 CPeripheral::~CPeripheral(void)
@@ -517,4 +517,18 @@ void CPeripheral::ClearSettings(void)
     ++it;
   }
   m_settings.clear();
+}
+
+bool CPeripheral::operator ==(const PeripheralScanResult& right) const
+{
+  return m_iVendorId  == right.m_iVendorId &&
+         m_iProductId == right.m_iProductId &&
+         m_type       == right.m_type &&
+         m_busType    == right.m_busType &&
+         m_strLocation.Equals(right.m_strLocation);
+}
+
+bool CPeripheral::operator !=(const PeripheralScanResult& right) const
+{
+  return !(*this == right);
 }

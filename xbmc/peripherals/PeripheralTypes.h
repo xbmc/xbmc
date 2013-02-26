@@ -185,4 +185,67 @@ namespace PERIPHERALS
       strHexString.Format("%04X", iVal);
     };
   };
+
+  class PeripheralScanResult
+  {
+  public:
+    PeripheralScanResult(const PeripheralBusType busType) :
+      m_type(PERIPHERAL_UNKNOWN),
+      m_iVendorId(0),
+      m_iProductId(0),
+      m_mappedType(PERIPHERAL_UNKNOWN),
+      m_busType(busType) {}
+
+    PeripheralScanResult(void) :
+      m_type(PERIPHERAL_UNKNOWN),
+      m_iVendorId(0),
+      m_iProductId(0),
+      m_mappedType(PERIPHERAL_UNKNOWN),
+      m_busType(PERIPHERAL_BUS_UNKNOWN) {}
+
+    bool operator ==(const PeripheralScanResult& right) const
+    {
+      return m_iVendorId  == right.m_iVendorId &&
+             m_iProductId == right.m_iProductId &&
+             m_type       == right.m_type &&
+             m_busType    == right.m_busType &&
+             m_strLocation.Equals(right.m_strLocation);
+    }
+
+    bool operator !=(const PeripheralScanResult& right) const
+    {
+      return !(*this == right);
+    }
+
+    PeripheralType    m_type;
+    CStdString        m_strLocation;
+    int               m_iVendorId;
+    int               m_iProductId;
+    PeripheralType    m_mappedType;
+    CStdString        m_strDeviceName;
+    PeripheralBusType m_busType;
+  };
+
+  struct PeripheralScanResults
+  {
+    bool GetDeviceOnLocation(const CStdString& strLocation, PeripheralScanResult* result) const
+    {
+      for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); it++)
+      {
+        if ((*it).m_strLocation == strLocation)
+        {
+          *result = *it;
+          return true;
+        }
+      }
+      return false;
+    }
+
+    bool ContainsResult(const PeripheralScanResult& result) const
+    {
+      return std::find(m_results.begin(), m_results.end(), result) != m_results.end();
+    }
+
+    std::vector<PeripheralScanResult> m_results;
+  };
 }

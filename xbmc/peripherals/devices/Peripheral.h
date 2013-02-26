@@ -34,11 +34,13 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
+    CPeripheral(const PeripheralScanResult& scanResult);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
     bool operator !=(const CPeripheral &right) const;
+    bool operator ==(const PeripheralScanResult& right) const;
+    bool operator !=(const PeripheralScanResult& right) const;
 
     const CStdString &FileLocation(void) const     { return m_strFileLocation; }
     const CStdString &Location(void) const         { return m_strLocation; }

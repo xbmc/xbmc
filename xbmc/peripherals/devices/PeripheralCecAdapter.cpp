@@ -80,8 +80,8 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
   END_METHOD_RESOLVE()
 };
 
-CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
-  CPeripheralHID(type, busType, strLocation, strDeviceName, iVendorId, iProductId),
+CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult) :
+  CPeripheralHID(scanResult),
   CThread("CEC Adapter"),
   m_dll(NULL),
   m_cecAdapter(NULL)
