@@ -98,6 +98,7 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
     m_bStop = true;
   }
 
+  SAFE_DELETE(m_queryThread);
   StopThread(true);
 
   if (m_dll && m_cecAdapter)
@@ -430,8 +431,7 @@ void CPeripheralCecAdapter::Process(void)
       Sleep(5);
   }
 
-  delete m_queryThread;
-  m_queryThread = NULL;
+  SAFE_DELETE(m_queryThread);
 
   bool bSendStandbyCommands(false);
   {
