@@ -145,7 +145,10 @@ void aml_cpufreq_limit(bool limit)
 void aml_set_audio_passthrough(bool passthrough)
 {
   if (aml_present())
-    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? 1:0);
+  {
+    int raw = aml_get_cputype() < 3 ? 1:2;
+    aml_set_sysfs_int("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
+  }
 }
 
 void aml_probe_hdmi_audio()
