@@ -33,6 +33,7 @@ namespace PERIPHERALS
 
   struct PeripheralScanResult
   {
+    PeripheralScanResult(const PeripheralBusType busType);
     PeripheralScanResult(void);
     bool operator ==(const PeripheralScanResult &right) const;
     bool operator !=(const PeripheralScanResult &right) const;
@@ -40,12 +41,13 @@ namespace PERIPHERALS
     bool operator ==(const CPeripheral &right) const;
     bool operator !=(const CPeripheral &right) const;
 
-    PeripheralType m_type;
-    CStdString     m_strLocation;
-    int            m_iVendorId;
-    int            m_iProductId;
-    PeripheralType m_mappedType;
-    CStdString     m_strDeviceName;
+    PeripheralType    m_type;
+    CStdString        m_strLocation;
+    int               m_iVendorId;
+    int               m_iProductId;
+    PeripheralType    m_mappedType;
+    CStdString        m_strDeviceName;
+    PeripheralBusType m_busType;
   };
 
   struct PeripheralScanResults

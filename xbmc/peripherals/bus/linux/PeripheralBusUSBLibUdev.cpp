@@ -152,7 +152,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
         iClass = USB_CLASS_HID;
       }
 
-      PeripheralScanResult result;
+      PeripheralScanResult result(m_type);
       result.m_iVendorId   = PeripheralTypeTranslator::HexStringToInt(udev_device_get_sysattr_value(dev, "idVendor"));
       result.m_iProductId  = PeripheralTypeTranslator::HexStringToInt(udev_device_get_sysattr_value(dev, "idProduct"));
       result.m_type        = GetType(iClass);

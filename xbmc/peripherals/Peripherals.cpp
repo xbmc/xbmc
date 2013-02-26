@@ -233,6 +233,8 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
 {
   CPeripheral *peripheral = NULL;
   PeripheralScanResult mappedResult = result;
+  if (mappedResult.m_busType == PERIPHERAL_BUS_UNKNOWN)
+    mappedResult.m_busType = bus.Type();
 
   /* check whether there's something mapped in peripherals.xml */
   if (!GetMappingForDevice(bus, mappedResult))
@@ -244,33 +246,33 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   switch(mappedResult.m_mappedType)
   {
   case PERIPHERAL_HID:
-    peripheral = new CPeripheralHID(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralHID(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_NIC:
-    peripheral = new CPeripheralNIC(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralNIC(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_DISK:
-    peripheral = new CPeripheralDisk(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralDisk(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_NYXBOARD:
-    peripheral = new CPeripheralNyxboard(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralNyxboard(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_TUNER:
-    peripheral = new CPeripheralTuner(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralTuner(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_BLUETOOTH:
-    peripheral = new CPeripheralBluetooth(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralBluetooth(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
     if (bus.Type() == PERIPHERAL_BUS_CEC)
-      peripheral = new CPeripheralCecAdapter(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+      peripheral = new CPeripheralCecAdapter(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
@@ -282,7 +284,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     break;
 
   case PERIPHERAL_IMON:
-    peripheral = new CPeripheralImon(mappedResult.m_mappedType, bus.Type(), mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
+    peripheral = new CPeripheralImon(mappedResult.m_mappedType, mappedResult.m_busType, mappedResult.m_strLocation, mappedResult.m_strDeviceName, mappedResult.m_iVendorId, mappedResult.m_iProductId);
     break;
 
   default:

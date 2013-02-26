@@ -86,7 +86,7 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
 
   for (uint8_t iDevicePtr = 0; iDevicePtr < iFound; iDevicePtr++)
   {
-    PeripheralScanResult result;
+    PeripheralScanResult result(m_type);
     result.m_iVendorId   = deviceList[iDevicePtr].iVendorId;
     result.m_iProductId  = deviceList[iDevicePtr].iProductId;
     result.m_strLocation = deviceList[iDevicePtr].strComPath;

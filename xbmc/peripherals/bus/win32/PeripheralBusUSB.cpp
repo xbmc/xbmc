@@ -104,10 +104,10 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
         if ((strTmp.Find("&mi_") < 0) || (strTmp.Find("&mi_00") >= 0))
         {
-          PeripheralScanResult prevDevice;
+          PeripheralScanResult prevDevice(m_type);
           if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
           {
-            PeripheralScanResult result;
+            PeripheralScanResult result(m_type);
             result.m_strLocation  = devicedetailData->DevicePath;
             result.m_type         = type;
             result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());

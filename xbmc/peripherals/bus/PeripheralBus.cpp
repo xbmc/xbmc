@@ -29,12 +29,22 @@ using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 1000
 
+PeripheralScanResult::PeripheralScanResult(const PeripheralBusType busType)
+{
+  m_iVendorId  = 0;
+  m_iProductId = 0;
+  m_type       = PERIPHERAL_UNKNOWN;
+  m_mappedType = PERIPHERAL_UNKNOWN;
+  m_busType    = busType;
+}
+
 PeripheralScanResult::PeripheralScanResult(void)
 {
   m_iVendorId  = 0;
   m_iProductId = 0;
   m_type       = PERIPHERAL_UNKNOWN;
   m_mappedType = PERIPHERAL_UNKNOWN;
+  m_busType    = PERIPHERAL_BUS_UNKNOWN;
 }
 
 bool PeripheralScanResult::operator ==(const PeripheralScanResult &right) const
@@ -42,7 +52,8 @@ bool PeripheralScanResult::operator ==(const PeripheralScanResult &right) const
   return m_iVendorId == right.m_iVendorId &&
       m_iProductId == right.m_iProductId &&
       m_type == right.m_type &&
-      m_strLocation.Equals(right.m_strLocation);
+      m_strLocation.Equals(right.m_strLocation) &&
+      m_busType == right.m_busType;
 }
 
 bool PeripheralScanResult::operator !=(const PeripheralScanResult &right) const
@@ -55,7 +66,8 @@ bool PeripheralScanResult::operator ==(const CPeripheral &right) const
   return m_iVendorId == right.VendorId() &&
       m_iProductId == right.ProductId() &&
       m_type == right.Type() &&
-      m_strLocation.Equals(right.Location());
+      m_strLocation.Equals(right.Location()) &&
+      m_busType == right.GetBusType();
 }
 
 bool PeripheralScanResult::operator !=(const CPeripheral &right) const
@@ -145,7 +157,7 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
-    PeripheralScanResult updatedDevice;
+    PeripheralScanResult updatedDevice(m_type);
     if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
         updatedDevice != *peripheral)
     {

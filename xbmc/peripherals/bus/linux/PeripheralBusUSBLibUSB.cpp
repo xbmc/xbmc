@@ -43,7 +43,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
     struct usb_device *dev;
     for (dev = bus->devices; dev; dev = dev->next)
     {
-      PeripheralScanResult result;
+      PeripheralScanResult result(m_type);
       result.m_iVendorId  = dev->descriptor.idVendor;
       result.m_iProductId = dev->descriptor.idProduct;
       result.m_type       = (dev->descriptor.bDeviceClass == USB_CLASS_PER_INTERFACE && dev->descriptor.bNumConfigurations > 0 &&
