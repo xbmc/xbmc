@@ -29,6 +29,14 @@ using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 1000
 
+PeripheralScanResult::PeripheralScanResult(void)
+{
+  m_iVendorId  = 0;
+  m_iProductId = 0;
+  m_type       = PERIPHERAL_UNKNOWN;
+  m_mappedType = PERIPHERAL_UNKNOWN;
+}
+
 bool PeripheralScanResult::operator ==(const PeripheralScanResult &right) const
 {
   return m_iVendorId == right.m_iVendorId &&
