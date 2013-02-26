@@ -51,6 +51,7 @@ void CKeyboardStat::Initialize()
 {
 }
 
+/* static */
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
   vector<CPeripheral *> hidDevices;
@@ -66,8 +67,10 @@ bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t 
   return false;
 }
 
-const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
-{ uint8_t vkey;
+/* static */
+CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym)
+{
+  uint8_t vkey;
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
@@ -149,18 +152,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     }
   }
 
-  // At this point update the key hold time
-  if (keysym.mod == m_lastKeysym.mod && keysym.scancode == m_lastKeysym.scancode && keysym.sym == m_lastKeysym.sym && keysym.unicode == m_lastKeysym.unicode)
-  {
-    held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
-  }
-  else
-  {
-    m_lastKeysym = keysym;
-    m_lastKeyTime = CTimeUtils::GetFrameTime();
-    held = 0;
-  }
-
   // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the
   // shift modifier is ignored. This so that, for example, the * keypress (shift-8)
   // is seen as <asterisk> not <asterisk mod="shift">.
@@ -171,9 +162,31 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z') && (vkey < XBMCVK_F1 || vkey > XBMCVK_F24))
       modifiers = 0;
 
+  if (keysym.mod      == g_Keyboard.m_lastKeysym.mod &&
+      keysym.scancode == g_Keyboard.m_lastKeysym.scancode &&
+      keysym.sym      == g_Keyboard.m_lastKeysym.sym &&
+      keysym.unicode  == g_Keyboard.m_lastKeysym.unicode)
+  {
+    held = CTimeUtils::GetFrameTime() - g_Keyboard.m_lastKeyTime;
+  }
+
   // Create and return a CKey
 
   CKey key(vkey, unicode, ascii, modifiers, held);
+
+  return key;
+}
+
+const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
+{
+  CKey key = TranslateKey(keysym);
+
+  // Update the key held time
+  if (key.GetHeld() == 0)
+  {
+    m_lastKeysym = keysym;
+    m_lastKeyTime = CTimeUtils::GetFrameTime();
+  }
 
   return key;
 }
