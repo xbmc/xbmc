@@ -92,6 +92,20 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
     result.m_strLocation = deviceList[iDevicePtr].strComPath;
     result.m_type        = PERIPHERAL_CEC;
 
+    // override the bus type, so users don't have to reconfigure their adapters
+    switch(deviceList[iDevicePtr].adapterType)
+    {
+    case ADAPTERTYPE_P8_EXTERNAL:
+    case ADAPTERTYPE_P8_DAUGHTERBOARD:
+      result.m_busType = PERIPHERAL_BUS_USB;
+      break;
+    case ADAPTERTYPE_RPI:
+      result.m_busType = PERIPHERAL_BUS_RPI;
+      break;
+    default:
+      break;
+    }
+
     if (!results.ContainsResult(result))
       results.m_results.push_back(result);
   }
