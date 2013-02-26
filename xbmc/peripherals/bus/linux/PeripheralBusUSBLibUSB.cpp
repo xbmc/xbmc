@@ -55,6 +55,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 #else
       result.m_strLocation.Format("/bus%s/dev%s", bus->dirname, dev->filename);
 #endif
+      result.m_iSequence   = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
       if (!results.ContainsResult(result))
         results.m_results.push_back(result);
     }

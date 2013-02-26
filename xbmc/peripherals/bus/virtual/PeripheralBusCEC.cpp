@@ -106,6 +106,7 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
       break;
     }
 
+    result.m_iSequence = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
     if (!results.ContainsResult(result))
       results.m_results.push_back(result);
   }

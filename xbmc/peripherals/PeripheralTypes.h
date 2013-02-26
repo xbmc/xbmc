@@ -195,7 +195,8 @@ namespace PERIPHERALS
       m_iProductId(0),
       m_mappedType(PERIPHERAL_UNKNOWN),
       m_busType(busType),
-      m_mappedBusType(busType) {}
+      m_mappedBusType(busType),
+      m_iSequence(0) {}
 
     PeripheralScanResult(void) :
       m_type(PERIPHERAL_UNKNOWN),
@@ -203,7 +204,8 @@ namespace PERIPHERALS
       m_iProductId(0),
       m_mappedType(PERIPHERAL_UNKNOWN),
       m_busType(PERIPHERAL_BUS_UNKNOWN),
-      m_mappedBusType(PERIPHERAL_BUS_UNKNOWN) {}
+      m_mappedBusType(PERIPHERAL_BUS_UNKNOWN),
+      m_iSequence(0) {}
 
     bool operator ==(const PeripheralScanResult& right) const
     {
@@ -227,6 +229,7 @@ namespace PERIPHERALS
     CStdString        m_strDeviceName;
     PeripheralBusType m_busType;
     PeripheralBusType m_mappedBusType;
+    unsigned int      m_iSequence; // when more than one adapter of the same type is found
   };
 
   struct PeripheralScanResults

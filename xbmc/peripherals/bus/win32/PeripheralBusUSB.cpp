@@ -112,6 +112,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
             result.m_type         = type;
             result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
             result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
+            result.m_iSequence    = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
 
             if (!results.ContainsResult(result))
               results.m_results.push_back(result);

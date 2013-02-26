@@ -54,7 +54,7 @@ CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
 {
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
-  m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType), scanResult.m_strLocation.c_str());
+  m_strFileLocation.Format(scanResult.m_iSequence > 0 ? "peripherals://%s/%s_%d.dev" : "peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType), scanResult.m_strLocation.c_str(), scanResult.m_iSequence);
 }
 
 CPeripheral::~CPeripheral(void)

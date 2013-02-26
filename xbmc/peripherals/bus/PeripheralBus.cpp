@@ -187,6 +187,20 @@ int CPeripheralBus::GetPeripheralsWithFeature(vector<CPeripheral *> &results, co
   return iReturn;
 }
 
+size_t CPeripheralBus::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
+{
+  int iReturn(0);
+  CSingleLock lock(m_critSection);
+  for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < m_peripherals.size(); iPeripheralPtr++)
+  {
+    if (m_peripherals.at(iPeripheralPtr)->VendorId() == iVendorId &&
+        m_peripherals.at(iPeripheralPtr)->ProductId() == iProductId)
+      iReturn++;
+  }
+
+  return iReturn;
+}
+
 void CPeripheralBus::Process(void)
 {
   while (!m_bStop)

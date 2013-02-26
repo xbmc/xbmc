@@ -78,6 +78,7 @@ namespace PERIPHERALS
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const;
 
     virtual size_t GetNumberOfPeripherals() const;
+    virtual size_t GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
 
     /*!
      * @brief Get all features that are supported by devices on this bus.
