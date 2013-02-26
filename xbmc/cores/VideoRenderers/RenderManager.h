@@ -93,7 +93,7 @@ public:
    * available after the main thread has flipped front / back buffers.
    *
    * @param bStop reference to stop flag of calling thread
-   * @param timestamp pts of frame delivered with AddVideoPicture
+   * @param timestamp of frame delivered with AddVideoPicture
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
    * @param speed current speed of player, needed for some optimizations like keeping the gui responsive on rewind
@@ -259,13 +259,12 @@ protected:
 
   struct
   {
-    double pts;
+    double timestamp;
     EFIELDSYNC presentfield;
     EPRESENTMETHOD presentmethod;
   }m_renderBuffers[5];
 
   double     m_sleeptime;
-  double     m_presentPts;
 
   double     m_presenttime;
   double     m_presentcorr;
