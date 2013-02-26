@@ -72,6 +72,7 @@ static Class BRApplianceCategoryCls;
 @class XBMCAppliance;
 @class BRTopShelfView;
 @class XBMCApplianceInfo;
+@class BRMainMenuImageControl;
 
 // SECTIONCOMMENT
 // orig method handlers we wanna call in hooked methods
@@ -147,6 +148,7 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 }
 - (void) selectCategoryWithIdentifier:(id)identifier;
 - (id) topShelfView;
+- (id) mainMenuShelfView;
 // added in 4.1+
 - (void) refresh;
 @end
@@ -173,6 +175,29 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
     [imageControl setImage:gpImage];
   }
 
+  return topShelf;
+}
+
+// this method is called with the new ios ui (ios 5.1 and higher)
+// its similar to the topshelf view on the opd ios gui
+// but its more mighty (thats we we need to dig one level deeper here)
+// to get our loogo visible
+- (id) mainMenuShelfView;
+{
+  Class BRTopShelfViewCls = objc_getClass("BRTopShelfView");
+  Class BRImageCls = objc_getClass("BRImage");
+
+  id topShelf = [[BRTopShelfViewCls alloc] init];
+  
+  // first hook into the mainMenuImageControl
+  // which is a wrapper for an image control
+  BRMainMenuImageControl *mainMenuImageControl = (BRMainMenuImageControl *)MSHookIvar<id>(topShelf, "_productImage");
+  // now get the image instance
+  BRImageControl *imageControl = (BRImageControl *)MSHookIvar<id>(mainMenuImageControl, "_content");// hook the image so we can diddle with it
+  
+  // load our logo into it
+  BRImage *gpImage = [BRImageCls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"XBMC" ofType:@"png"]];
+  [imageControl setImage:gpImage];
   return topShelf;
 }
 
