@@ -205,6 +205,32 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   if (!mixerUnit || !inputFormat || !fmt)
     return false;
 
+  // Fetch the mixing unit size
+  UInt32 dims[2];
+  UInt32 size = sizeof(dims);
+  AudioUnitGetProperty(mixerUnit->GetUnit(),
+    kAudioUnitProperty_MatrixDimensions, kAudioUnitScope_Global, 0, dims, &size);
+
+  if(inputFormat->mChannelsPerFrame + channelOffset > dims[0])
+  {
+    CLog::Log(LOGERROR, "CCoreAudioMixMap::SetMixingMatrix - input format doesn't fit mixer size %u+%u > %u"
+                      , inputFormat->mChannelsPerFrame, channelOffset, dims[0]);
+    return false;
+  }
+
+  if(fmt->mChannelsPerFrame > dims[1])
+  {
+    CLog::Log(LOGERROR, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't fit mixer size %u > %u"
+              , fmt->mChannelsPerFrame, dims[0]);
+    return false;
+  }
+
+  if(fmt->mChannelsPerFrame < dims[1])
+  {
+    CLog::Log(LOGWARNING, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't specify all outputs %u < %u"
+              , fmt->mChannelsPerFrame, dims[0]);
+  }
+
   // Configure the mixing matrix
   Float32* val = (Float32*)*mixMap;
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
