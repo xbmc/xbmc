@@ -506,6 +506,7 @@ public:
   bool CanLoad();
   bool EnableDelayedUnload(bool bOnOff);
   bool SetFile(const CStdString& strDllName);
+  const CStdString &GetFile() const { return m_strDllName; }
 
 protected:
   virtual bool ResolveExports()=0;
