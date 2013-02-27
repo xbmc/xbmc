@@ -247,6 +247,7 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
   CStdString fromMode = mode;
   fromMode.Trim();
   // strips, for example, 720p* to 720p
+  // the * indicate the 'native' mode of the display
   if (fromMode.Right(1) == "*")
     fromMode = fromMode.Left(std::max(0, (int)fromMode.size() - 1));
 
