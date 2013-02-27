@@ -5380,7 +5380,7 @@ int CApplication::GetSubtitleDelay() const
 
 int CApplication::GetAudioDelay() const
 {
-  // converts subtitle delay to a percentage
+  // converts audio delay to a percentage
   return int(((float)(g_settings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
