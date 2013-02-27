@@ -13,13 +13,7 @@ set(CONFIG_INTERNAL_LIBS
 OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
 OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
 OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
-
-set(compress_default OFF)
-if(CREATE_BUNDLE AND NOT WIN32)
-  set(compress_default ON)
-endif()
-
-OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" compress_default)
+OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
 
 if(NOT DEFINED TARGET_PLATFORM)
   if(APPLE)
