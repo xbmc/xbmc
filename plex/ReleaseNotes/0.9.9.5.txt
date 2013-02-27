@@ -1,0 +1,18 @@
+[b]Upstream fixes[/b]
+
+[list]
+[*]Tons of AudioEngine fixes on all platforms
+[*]VDA flicking/green-line fixed
+[/list]
+
+[b]Plex fixes[/b]
+
+[list]
+[*]Deadlock fixes
+[*]Pre-cache posters and fanart
+[*]Always request utf-8 subtitles from PMS (will fix some subtitle wierdness)
+[*]Fixes the "unable to start webserver" notification on start
+[*]Better support fo nxyboard (Thanks Maxwell!)
+[*]Tons of work on Linux/Raspberry port (Thanks to the Rasplex team!)
+[*]Added recommendations (if you got any) to home screen.
+[/list]
