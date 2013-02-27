@@ -462,3 +462,12 @@ TEST(TestStringUtils, FindBestMatch)
   EXPECT_EQ(refint, varint);
   EXPECT_EQ(refdouble, vardouble);
 }
+
+TEST(TestStringUtils, Paramify)
+{
+  const char *input = "some, very \\ odd \"string\"";
+  const char *ref   = "\"some, very \\\\ odd \\\"string\\\"\"";
+
+  std::string result = StringUtils::Paramify(input);
+  EXPECT_STREQ(ref, result.c_str());
+}
