@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "video/VideoInfoTag.h"
@@ -148,37 +149,20 @@ bool CFavourites::IsFavourite(CFileItem *item, int contextWindow)
   return items.Contains(GetExecutePath(item, contextWindow));
 }
 
-static CStdString Paramify(const CStdString& param)
-{
-  CStdString result(param);
-  result.Replace("\\", "\\\\");
-  result.Replace("\"", "\\\"");
-  return "\"" + result + "\"";
-}
-
-#ifdef UNIT_TESTING
-bool CFavourites::TestParamify()
-{
-  return (Paramify("test") == "\"test\"" &&
-          Paramify("test\"foo\"test") == "\"test\\\"foo\\\"test\"" &&
-          Paramify("C:\\foo\\bar\\") == "\"C:\\\\foo\\\\bar\\\\\"");
-}
-#endif
-
 CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
 {
   CStdString execute;
   if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
                             !(item->IsSmartPlayList() || item->IsPlayList())))
-    execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->GetPath()));
+    execute.Format("ActivateWindow(%i,%s)", contextWindow, StringUtils::Paramify(item->GetPath()).c_str());
   else if (item->IsScript())
-    execute.Format("RunScript(%s)", Paramify(item->GetPath().Mid(9)));
+    execute.Format("RunScript(%s)", StringUtils::Paramify(item->GetPath().Mid(9)).c_str());
   else  // assume a media file
   {
     if (item->IsVideoDb() && item->HasVideoInfoTag())
-      execute.Format("PlayMedia(%s)", Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath));
+      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else
-      execute.Format("PlayMedia(%s)", Paramify(item->GetPath()));
+      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item->GetPath()).c_str());
   }
   return execute;
 }
