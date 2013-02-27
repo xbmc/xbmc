@@ -75,7 +75,6 @@ protected:
   EGLConfig             m_config;
 
   CEGLWrapper           *m_egl;
-  bool                  m_iVSyncMode;
   std::string           m_extensions;
 };
 
