@@ -31,28 +31,6 @@ namespace PERIPHERALS
 {
   class CPeripherals;
 
-  struct PeripheralScanResult
-  {
-    bool operator ==(const PeripheralScanResult &right) const;
-    bool operator !=(const PeripheralScanResult &right) const;
-
-    bool operator ==(const CPeripheral &right) const;
-    bool operator !=(const CPeripheral &right) const;
-
-    PeripheralType m_type;
-    CStdString     m_strLocation;
-    int            m_iVendorId;
-    int            m_iProductId;
-  };
-
-  struct PeripheralScanResults
-  {
-    bool GetDeviceOnLocation(const CStdString &strLocation, PeripheralScanResult *result) const;
-    bool ContainsResult(const PeripheralScanResult &result) const;
-
-    std::vector<PeripheralScanResult> m_results;
-  };
-
   /*!
    * @class CPeripheralBus
    * This represents a bus on the system. By default, this bus instance will scan for changes every second.
@@ -100,6 +78,7 @@ namespace PERIPHERALS
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const;
 
     virtual size_t GetNumberOfPeripherals() const;
+    virtual size_t GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
 
     /*!
      * @brief Get all features that are supported by devices on this bus.

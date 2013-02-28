@@ -43,7 +43,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
     struct usb_device *dev;
     for (dev = bus->devices; dev; dev = dev->next)
     {
-      PeripheralScanResult result;
+      PeripheralScanResult result(m_type);
       result.m_iVendorId  = dev->descriptor.idVendor;
       result.m_iProductId = dev->descriptor.idProduct;
       result.m_type       = (dev->descriptor.bDeviceClass == USB_CLASS_PER_INTERFACE && dev->descriptor.bNumConfigurations > 0 &&
@@ -55,6 +55,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 #else
       result.m_strLocation.Format("/bus%s/dev%s", bus->dirname, dev->filename);
 #endif
+      result.m_iSequence   = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
       if (!results.ContainsResult(result))
         results.m_results.push_back(result);
     }
