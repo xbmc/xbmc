@@ -125,12 +125,16 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_videobuffer.iWidth  = hints.width;
   m_videobuffer.iHeight = hints.height;
 
+  m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
-  m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * hints.aspect)) & -3;
-  if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
+  if (hints.aspect > 0.0 && !hints.forced_aspect)
   {
-    m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
-    m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / hints.aspect)) & -3;
+    m_videobuffer.iDisplayWidth  = ((int)lrint(m_videobuffer.iHeight * hints.aspect)) & -3;
+    if (m_videobuffer.iDisplayWidth > m_videobuffer.iWidth)
+    {
+      m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
+      m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / hints.aspect)) & -3;
+    }
   }
 
   CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
