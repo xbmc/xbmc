@@ -1,0 +1,21 @@
+diff -ru readline-6.0/support/shobj-conf readline-6.0.patched/support/shobj-conf
+--- readline-6.0/support/shobj-conf	2013-02-28 10:38:42.000000000 +0100
++++ readline-6.0.patched/support/shobj-conf	2013-02-28 10:39:35.000000000 +0100
+@@ -146,7 +146,7 @@
+ 	;;
+ 
+ # Darwin/MacOS X
+-darwin[89]*|darwin10*)
++darwin*)
+ 	SHOBJ_STATUS=supported
+ 	SHLIB_STATUS=supported
+ 	
+@@ -175,7 +175,7 @@
+ 	SHLIB_LIBSUFF='dylib'
+ 
+ 	case "${host_os}" in
+-	darwin[789]*|darwin10*)	SHOBJ_LDFLAGS=''
++	darwin*)	SHOBJ_LDFLAGS=''
+ 			SHLIB_XLDFLAGS='-dynamiclib -arch_only `/usr/bin/arch` -install_name $(libdir)/$@ -current_version $(SHLIB_MAJOR)$(SHLIB_MINOR) -compatibility_version $(SHLIB_MAJOR) -v'
+ 			;;
+ 	*)		SHOBJ_LDFLAGS='-dynamic'

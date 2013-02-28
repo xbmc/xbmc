@@ -1,8 +1,9 @@
 include ../Makefile.include
 
 # lib name, version
+BASE_URL=http://ftp.gnu.org/gnu/readline/
 LIBNAME=readline
-VERSION=6.0
+VERSION=6.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -20,6 +21,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p1 < ../fix_shobj.patch
 	cd $(SOURCE); autoconf
 	cd $(SOURCE); $(CONFIGURE)
 
