@@ -1,37 +1,12 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- common variables -->
-	<include name="ListTitleBgTop">
-		<posx>0</posx>
-		<width>870</width>
+	<include name="ListTitleBg">
+		<posx>22</posx>
+		<width>845</width>
 		<height>30</height>
-		<texture border="10" flipy="true">base-rounded-half-half.png</texture>
-		<colordiffuse>FF000000</colordiffuse>
+		<include>BlackRounded</include>
 		<animation effect="fade" start="40" end="60" time="0" condition="true">Conditional</animation>
-	</include>
-	<include name="ListTitleBgBottom">
-		<posx>0</posx>
-		<width>870</width>
-		<height>30</height>
-		<texture border="10">base-rounded-half-half.png</texture>
-		<colordiffuse>FF000000</colordiffuse>
-		<animation effect="fade" start="40" end="60" time="0" condition="true">Conditional</animation>
-	</include>
-	<include name="ListBgTop">
-		<posy>0</posy>
-		<posx>0</posx>
-		<width>870</width>
-		<height>236</height>
-		<include>BlackRoundedRight</include>
-		<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
-	</include>
-	<include name="ListBgBottom">
-		<posy>-207</posy>
-		<posx>0</posx>
-		<width>870</width>
-		<height>236</height>
-		<include>BlackRoundedRight</include>
-		<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 	</include>
 	<include name="ListTitle">
 		<posx>855</posx>
@@ -190,7 +165,11 @@
 			</control>
 		</control>
 	</include>
-	<!-- HomeListItemFullInfo -->
+	<!-- slide for HomeListItemFullInfo -->
+	<include name="HomeListItemFullInfoSlide">
+		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]]">Conditional</animation>
+	</include>
+	<!-- *NEW* Item Full Info -->
 	<include name="HomeListItemFullInfo">
 		<control type="group">
 			<!-- left side presentation -->
@@ -212,7 +191,6 @@
 						<colordiffuse>FF555555</colordiffuse>
 						<visible>true</visible>
 					</control>
-					<!-- plot bg -->
 					<control type="image">
 						<posx>0</posx>
 						<posy>333</posy>
@@ -220,17 +198,6 @@
 						<height>324</height>
 						<include>Black</include>
 						<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<!-- orange separator -->
-					<control type="image">
-						<posx>388</posx>
-						<posy>0</posy>
-						<width>3</width>
-						<height>720</height>
-						<texture border="1">base.png</texture>
-						<colordiffuse>FFd1801c</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
 						<visible>true</visible>
 					</control>
 					<!-- thumb -->
@@ -406,10 +373,6 @@
 			</control>
 		</control>
 	</include>
-	<!-- HomeListItemFullInfo slide animation -->
-	<include name="HomeListItemFullInfoSlide">
-		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]]">Conditional</animation>
-	</include>
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
 		<control type="image">
@@ -542,14 +505,14 @@
 	<!-- Square Items -->
 	<include name="ListItemSquare">
 		<control type="image">
-			<width>151</width>
-			<height>151</height>
+			<width>142</width>
+			<height>142</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>125</width>
-			<height>125</height>
+			<width>116</width>
+			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
 		</control>
@@ -558,14 +521,14 @@
 		<control type="image">
 			<posx>25</posx>
 			<posy>37</posy>
-			<width>149</width>
-			<height>149</height>
+			<width>140</width>
+			<height>140</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>131</width>
-			<height>131</height>
+			<width>122</width>
+			<height>122</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
 			<include>Border</include>
@@ -574,16 +537,16 @@
 	<include name="ListItemSquareCard">
 		<control type="image">
 			<posx>37</posx>
-			<posy>172</posy>
-			<width>125</width>
+			<posy>163</posy>
+			<width>116</width>
 			<height>60</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
 		</control>
 		<control type="image">
 			<posx>37</posx>
-			<posy>202</posy>
-			<width>125</width>
+			<posy>193</posy>
+			<width>116</width>
 			<height>30</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
@@ -591,21 +554,21 @@
 	</include>
 	<include name="ListItemSquareTitle">
 		<control type="label">
-			<posy>215</posy>
+			<posy>206</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Title]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleAlbum">
 		<control type="label">
-			<posy>215</posy>
+			<posy>206</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Album]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleArtist">
 		<control type="label">
-			<posy>188</posy>
+			<posy>179</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Artist]</label>
 		</control>
@@ -669,6 +632,10 @@
 	</include>
 	<!-- lists -->
 	<include name="HomeLists">
+		<!-- Infos -->
+		<control type="group">
+			<include>HomeListItemFullInfo</include>
+		</control>
 		<!-- lists -->
 		<control type="group" id="5000">
 			<include>FadeDialog</include>
@@ -684,12 +651,19 @@
 					<!-- with "recently added" or "recommended" -->
 					<control type="group">
 						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
-						<posy>215</posy>
+						<posy>217</posy>
 						<control type="image">
-							<include>ListBgTop</include>
+							<include>ListTitleBg</include>
 						</control>
 						<control type="image">
-							<include>ListTitleBgTop</include>
+							<posy>36</posy>
+							<posx>0</posx>
+							<width>900</width>
+							<height>200</height>
+							<include>Black</include>
+							<animation effect="fade" start="0" end="40" time="300" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="200" condition="true">Hidden</animation>
+							<visible>[Control.IsVisible(11000) + Control.HasFocus(11001)]</visible>
 						</control>
 						<control type="label" id="8002">
 							<include>ListTitle</include>
@@ -712,10 +686,7 @@
 						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
 						<posy>320</posy>
 						<control type="image">
-							<include>ListBgTop</include>
-						</control>
-						<control type="image">
-							<include>ListTitleBgTop</include>
+							<include>ListTitleBg</include>
 						</control>
 						<control type="label" id="8002">
 							<include>ListTitle</include>
@@ -740,12 +711,19 @@
 					<!-- with "on deck" or "queue + recommendations" -->
 					<control type="group">
 						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
-						<posy>666</posy>
+						<posy>664</posy>
 						<control type="image">
-							<include>ListBgBottom</include>
+							<posy>-207</posy>
+							<posx>0</posx>
+							<width>900</width>
+							<height>200</height>
+							<include>Black</include>
+							<animation effect="fade" start="0" end="40" time="300" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="200" condition="true">Hidden</animation>
+							<visible>[Control.IsVisible(11001) + Control.HasFocus(11000)]</visible>
 						</control>
 						<control type="image">
-							<include>ListTitleBgBottom</include>
+							<include>ListTitleBg</include>
 						</control>
 						<control type="label" id="8001">
 							<include>ListTitle</include>
@@ -766,12 +744,9 @@
 					<!-- alone -->
 					<control type="group">
 						<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002)</visible>
-						<posy>563</posy>
+						<posy>570</posy>
 						<control type="image">
-							<include>ListBgBottom</include>
-						</control>
-						<control type="image">
-							<include>ListTitleBgBottom</include>
+							<include>ListTitleBg</include>
 						</control>
 						<control type="label" id="8001">
 							<include>ListTitle</include>
@@ -789,7 +764,7 @@
 							<visible>Control.IsVisible(11004) + !Control.IsVisible(11003)</visible>
 						</control>
 						<control type="image">
-							<posy>-123</posy>
+							<posy>-130</posy>
 							<include>ListArrow</include>
 							<visible>Control.HasFocus(11000) | Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)</visible>
 						</control>
@@ -800,7 +775,7 @@
 			<!-- "On Deck" & "Recently Added" -->
 			<control type="grouplist" id="5100">
 				<visible>true</visible>
-				<posx>-3</posx>
+				<posx>0</posx>
 				<posy>84</posy>
 				<width>890</width>
 				<height>720</height>
@@ -819,14 +794,13 @@
 						<onup>-</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>0</posx>
-						<posy>129</posy>
-						<width>860</width>
+						<posx>-14</posx>
+						<posy>131</posy>
+						<width>880</width>
 						<height>330</height>
-						<itemlayout width="139" height="330">
+						<itemlayout width="145" height="330">
 							<!-- movie & episode when both lists are visible -->
 							<control type="group">
-								<posy>-3</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11000)</visible>
 								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7001).HasFocus">Conditional</animation>
 								<control type="group">
@@ -865,10 +839,9 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="139" height="330">
+						<focusedlayout width="145" height="330">
 							<!-- movie & episode when both lists are visible -->
 							<control type="group">
-								<posy>-3</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11000)</visible>
 								<include>ListItemPosterSelected</include>
 							</control>
@@ -985,11 +958,11 @@
 						<onup>7002</onup>
 						<onright>-</onright>
 						<onleft>300</onleft>
-						<posx>0</posx>
-						<posy>6</posy>
-						<width>860</width>
+						<posx>-14</posx>
+						<posy>0</posy>
+						<width>880</width>
 						<height>330</height>
-						<itemlayout width="139" height="230">
+						<itemlayout width="145" height="230">
 							<!-- album -->
 							<control type="group">
 								<visible>ListItem.Type(album)</visible>
@@ -1038,7 +1011,7 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="139" height="230">
+						<focusedlayout width="145" height="230">
 							<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7002).HasFocus">Conditional</animation>
 							<!-- album -->
 							<control type="group">
@@ -1641,10 +1614,6 @@
 					</control>
 				</control>
 			</control>
-		</control>
-		<!-- Item Full Info -->
-		<control type="group">
-			<include>HomeListItemFullInfo</include>
 		</control>
 	</include>
 </includes>
