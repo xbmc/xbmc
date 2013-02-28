@@ -27,18 +27,20 @@
   TIME_FORMAT_HH_MM_SS = TIME_FORMAT_HH | TIME_FORMAT_MM | TIME_FORMAT_SS
  \sa StringUtils::SecondsToTimeString
  */
-enum TIME_FORMAT { TIME_FORMAT_GUESS     =  0,
-                   TIME_FORMAT_SS        =  1,
-                   TIME_FORMAT_MM        =  2,
-                   TIME_FORMAT_MM_SS     =  3,
-                   TIME_FORMAT_HH        =  4,
-                   TIME_FORMAT_HH_SS     =  5, // not particularly useful
-                   TIME_FORMAT_HH_MM     =  6,
-                   TIME_FORMAT_HH_MM_SS  =  7,
-                   TIME_FORMAT_XX        =  8, // AM/PM
-                   TIME_FORMAT_HH_MM_XX  = 14,
-                   TIME_FORMAT_H         = 16,
-                   TIME_FORMAT_H_MM_SS   = 19};
+enum TIME_FORMAT { TIME_FORMAT_GUESS       =  0,
+                   TIME_FORMAT_SS          =  1,
+                   TIME_FORMAT_MM          =  2,
+                   TIME_FORMAT_MM_SS       =  3,
+                   TIME_FORMAT_HH          =  4,
+                   TIME_FORMAT_HH_SS       =  5, // not particularly useful
+                   TIME_FORMAT_HH_MM       =  6,
+                   TIME_FORMAT_HH_MM_SS    =  7,
+                   TIME_FORMAT_XX          =  8, // AM/PM
+                   TIME_FORMAT_HH_MM_XX    = 14,
+                   TIME_FORMAT_HH_MM_SS_XX = 15,
+                   TIME_FORMAT_H           = 16,
+                   TIME_FORMAT_H_MM_SS     = 19,
+                   TIME_FORMAT_H_MM_SS_XX  = 27};
 
 class CDateTime;
 
