@@ -131,35 +131,35 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-contentRating) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-contentRating)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-contentRating) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-contentRating)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-videoResolution) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoResolution)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-videoResolution) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-videoResolution)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-aspectRatio) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-aspectRatio)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-aspectRatio) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-aspectRatio)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-videoFrameRate) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoFrameRate)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-videoFrameRate) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-videoFrameRate)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-videoCodec) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoCodec)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-videoCodec) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-videoCodec)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-audioCodec) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-audioCodec)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-audioCodec) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-audioCodec)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-audioChannels) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-audioChannels)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-audioChannels) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-audioChannels)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Listitem.Art(mediaTag-Studio) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-Studio)][/COLOR]</label>
+					<label>Listitem.Property(mediaTag-Studio) : [COLOR=orangeLight]$INFO[Listitem.Property(mediaTag-Studio)][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
