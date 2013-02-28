@@ -14,13 +14,9 @@ SUBDIRS := \
 	libass libcdio libsamplerate libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl libffi \
-	libgpg-error libgcrypt \ # afpfs-ng \
+	libgpg-error libgcrypt \
 	libplist libshairport libcec tinyxml \
-# plex
-#        samba python26 distribute distutilscross \
-#	mysqlclient boost taglib xbmc-pvr-addons \
   python26 distribute distutilscross boost
-# plex
 
 ifeq ($(DARWIN), ios)
   EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
