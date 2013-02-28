@@ -43,8 +43,8 @@ outputpath=$ROOT/plex/Dependencies/xbmc-depends/$outputdir
 echo $outputpath
 cd $DEPENDDIR
 ./bootstrap
-./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=$ROOT/plex/Dependencies/xbmc-depends --with-darwin=$darwin
-make
+./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=$ROOT/plex/Dependencies/xbmc-depends --with-darwin=$darwin --arch=$arch
+make || exit 1
 
 cd $ROOT
 cd $ROOT/lib/ffmpeg
@@ -65,7 +65,7 @@ config="$config --enable-protocol=http --enable-runtime-cpudetect"
 config="$config --cc=clang --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
 
 ./configure $config --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib"
-make install
+make install || exit 1
 
 cd $ROOT/plex/Dependencies/xbmc-depends
 rm -f $ROOT/plex/Dependencies/*tar.xz
