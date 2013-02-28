@@ -57,6 +57,7 @@ protected:
   double          m_last_pts;
   pts_queue       *m_pts_queue;
   int32_t         m_queue_depth;
+  pthread_mutex_t m_queue_mutex;
   double          m_framerate;
   int             m_video_rate;
 };
