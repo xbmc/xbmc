@@ -63,28 +63,6 @@ void CEventLoop::run(IActivityHandler &activityHandler, IInputHandler &inputHand
   }
 }
 
-void CEventLoop::activate()
-{
-  if (m_enabled || m_application->window == NULL)
-    return;
-
-  m_enabled = true;
-  if (m_activityHandler->onActivate() != ActivityOK)
-  {
-    CXBMCApp::android_printf("CEventLoop: IActivityHandler::onActivate() failed");
-    ANativeActivity_finish(m_application->activity);
-  }
-}
-
-void CEventLoop::deactivate()
-{
-  if (!m_enabled)
-    return;
-
-  m_activityHandler->onDeactivate();
-  m_enabled = false;
-}
-
 void CEventLoop::processActivity(int32_t command)
 {
   switch (command)
@@ -109,17 +87,14 @@ void CEventLoop::processActivity(int32_t command)
     case APP_CMD_TERM_WINDOW:
       // The window is being hidden or closed, clean it up.
       m_activityHandler->onDestroyWindow();
-      deactivate();
       break;
 
     case APP_CMD_GAINED_FOCUS:
-      activate();
       m_activityHandler->onGainFocus();
       break;
 
     case APP_CMD_LOST_FOCUS:
       m_activityHandler->onLostFocus();
-      deactivate();
       break;
 
     case APP_CMD_LOW_MEMORY:
@@ -141,7 +116,6 @@ void CEventLoop::processActivity(int32_t command)
 
     case APP_CMD_PAUSE:
       m_activityHandler->onPause();
-      deactivate();
       break;
 
     case APP_CMD_STOP:

@@ -63,178 +63,138 @@ CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   : m_wakeLock(NULL)
 {
   m_activity = nativeActivity;
-  
+  m_firstrun = true;
+  m_exiting=false;
   if (m_activity == NULL)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
     exit(1);
     return;
   }
-
-  m_state.appState = Uninitialized;
-
-  if (pthread_mutex_init(&m_state.mutex, NULL) != 0)
-  {
-    android_printf("CXBMCApp: pthread_mutex_init() failed");
-    m_state.appState = Error;
-    exit(1);
-    return;
-  }
-
 }
 
 CXBMCApp::~CXBMCApp()
 {
-  stop();
-
-  pthread_mutex_destroy(&m_state.mutex);
-}
-
-ActivityResult CXBMCApp::onActivate()
-{
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-
-  switch (m_state.appState)
-  {
-    case Uninitialized:
-      acquireWakeLock();
-      
-      pthread_attr_t attr;
-      pthread_attr_init(&attr);
-      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-      pthread_create(&m_state.thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
-      pthread_attr_destroy(&attr);
-      break;
-      
-    case Unfocused:
-      XBMC_Pause(false);
-      setAppState(Rendering);
-      break;
-      
-    case Paused:
-      acquireWakeLock();
-      
-      XBMC_SetupDisplay();
-      XBMC_Pause(false);
-      setAppState(Rendering);
-      break;
-
-    case Initialized:
-    case Rendering:
-    case Stopping:
-    case Stopped:
-    case Error:
-    default:
-      break;
-  }
-  return ActivityOK;
-}
-
-void CXBMCApp::onDeactivate()
-{
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // this is called on pause, stop and window destroy which
-  // require specific (and different) actions
 }
 
 void CXBMCApp::onStart()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // wait for onCreateWindow() and onGainFocus()
+  android_printf("%s: ", __PRETTY_FUNCTION__);
+  if (!m_firstrun)
+  {
+    android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
+    return;
+  }
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+  pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
+  pthread_attr_destroy(&attr);
 }
 
 void CXBMCApp::onResume()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // wait for onCreateWindow() and onGainFocus()
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 void CXBMCApp::onPause()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // wait for onDestroyWindow() and/or onLostFocus()
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 void CXBMCApp::onStop()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // everything has been handled in onLostFocus() so wait
-  // if onDestroy() is called
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 void CXBMCApp::onDestroy()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  stop();
+  android_printf("%s", __PRETTY_FUNCTION__);
+
+  // If android is forcing us to stop, ask XBMC to exit then wait until it's
+  // been destroyed.
+  if (!m_exiting)
+  {
+    XBMC_Stop();
+    pthread_join(m_thread, NULL);
+    android_printf(" => XBMC finished");
+  }
+
+  if (m_wakeLock != NULL && m_activity != NULL)
+  {
+    JNIEnv *env = NULL;
+    m_activity->vm->AttachCurrentThread(&env, NULL);
+
+    env->DeleteGlobalRef(m_wakeLock);
+    DetachCurrentThread();
+    m_wakeLock = NULL;
+  }
 }
 
 void CXBMCApp::onSaveState(void **data, size_t *size)
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   // no need to save anything as XBMC is running in its own thread
 }
 
 void CXBMCApp::onConfigurationChanged()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   // ignore any configuration changes like screen rotation etc
 }
 
 void CXBMCApp::onLowMemory()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   // can't do much as we don't want to close completely
 }
 
 void CXBMCApp::onCreateWindow(ANativeWindow* window)
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   if (window == NULL)
   {
     android_printf(" => invalid ANativeWindow object");
     return;
   }
   m_window = window;
+  acquireWakeLock();
+  if(!m_firstrun)
+  {
+    XBMC_SetupDisplay();
+    XBMC_Pause(false);
+  }
 }
 
 void CXBMCApp::onResizeWindow()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
 
 void CXBMCApp::onDestroyWindow()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (m_state.appState < Paused)
+  // If we have exited XBMC, it no longer exists.
+  if (!m_exiting)
   {
     XBMC_DestroyDisplay();
-    setAppState(Paused);
-    releaseWakeLock();
+    XBMC_Pause(true);
   }
+
+  releaseWakeLock();
+  m_window=NULL;
 }
 
 void CXBMCApp::onGainFocus()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  // everything is handled in onActivate()
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 void CXBMCApp::onLostFocus()
 {
-  android_printf("%s: %d", __PRETTY_FUNCTION__, m_state.appState);
-  switch (m_state.appState)
-  {
-    case Initialized:
-    case Rendering:
-      XBMC_Pause(true);
-      setAppState(Unfocused);
-      break;
-
-    default:
-      break;
-  }
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 bool CXBMCApp::getWakeLock(JNIEnv *env)
@@ -322,69 +282,31 @@ void CXBMCApp::releaseWakeLock()
 
 void CXBMCApp::run()
 {
-    int status = 0;
-    setAppState(Initialized);
+  int status = 0;
 
-    android_printf(" => running XBMC_Run...");
-    try
-    {
-      setAppState(Rendering);
-      status = XBMC_Run(true);
-      android_printf(" => XBMC_Run finished with %d", status);
-    }
-    catch(...)
-    {
-      android_printf("ERROR: Exception caught on main loop. Exiting");
-      setAppState(Error);
-    }
-
-  bool finishActivity = false;
-  pthread_mutex_lock(&m_state.mutex);
-  finishActivity = m_state.appState != Stopping;
-  m_state.appState = Stopped;
-  pthread_mutex_unlock(&m_state.mutex);
-  
-  if (finishActivity)
+  android_printf(" => waiting for a window");
+  // Hack!
+  // TODO: Change EGL startup so that we can start headless, then create the
+  // window once android gives us a surface to play with.
+  while(!m_window)
+    usleep(1000);
+  m_firstrun=false;
+  android_printf(" => running XBMC_Run...");
+  try
   {
-    android_printf(" => calling ANativeActivity_finish()");
-    ANativeActivity_finish(m_activity);
+    status = XBMC_Run(true);
+    android_printf(" => XBMC_Run finished with %d", status);
   }
-}
-
-void CXBMCApp::stop()
-{
-  android_printf("%s", __PRETTY_FUNCTION__);
-
-  pthread_mutex_lock(&m_state.mutex);
-  if (m_state.appState < Stopped)
+  catch(...)
   {
-    m_state.appState = Stopping;
-    pthread_mutex_unlock(&m_state.mutex);
-    
-    android_printf(" => executing XBMC_Stop");
-    XBMC_Stop();
-    android_printf(" => waiting for XBMC to finish");
-    pthread_join(m_state.thread, NULL);
-    android_printf(" => XBMC finished");
+    android_printf("ERROR: Exception caught on main loop. Exiting");
   }
-  else
-    pthread_mutex_unlock(&m_state.mutex);
-  
-  if (m_wakeLock != NULL && m_activity != NULL)
-  {
-    JNIEnv *env = NULL;
-    m_activity->vm->AttachCurrentThread(&env, NULL);
-    
-    env->DeleteGlobalRef(m_wakeLock);
-    m_wakeLock = NULL;
-  }
-}
 
-void CXBMCApp::setAppState(AppState state)
-{
-  pthread_mutex_lock(&m_state.mutex);
-  m_state.appState = state;
-  pthread_mutex_unlock(&m_state.mutex);
+  // If we are have not been force by Android to exit, notify its finish routine.
+  // This will cause android to run through its teardown events, it calls:
+  // onPause(), onLostFocus(), onDestroyWindow(), onStop(), onDestroy().
+  ANativeActivity_finish(m_activity);
+  m_exiting=true;
 }
 
 void CXBMCApp::XBMC_Pause(bool pause)
