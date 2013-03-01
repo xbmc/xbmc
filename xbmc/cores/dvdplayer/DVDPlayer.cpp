@@ -1717,7 +1717,17 @@ void CDVDPlayer::UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket)
   || abs(current.dts - current.dts_state) > DVD_MSEC_TO_TIME(200))
   {
     current.dts_state = current.dts;
-    SendPlayerMessage(new CDVDMsgType<SPlayerState>(CDVDMsg::PLAYER_DISPLAYTIME, m_StateInput), current.player);
+    if (current.inited)
+    {
+      // make sure we send no outdated state to a/v players
+      UpdatePlayState(0);
+      SendPlayerMessage(new CDVDMsgType<SPlayerState>(CDVDMsg::PLAYER_DISPLAYTIME, m_StateInput), current.player);
+    }
+    else
+    {
+      CSingleLock lock(m_StateSection);
+      m_State = m_StateInput;
+    }
   }
 }
 
@@ -3859,10 +3869,8 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
 
 void CDVDPlayer::UpdatePlayState(double timeout)
 {
-  if((m_StateInput.timestamp != 0)
-     && (m_StateInput.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
-     && (m_StateInput.dts != DVD_NOPTS_VALUE)
-     && (abs(m_StateInput.dts - m_StateInput.dts_state) < DVD_MSEC_TO_TIME(timeout)))
+  if(m_StateInput.timestamp != 0
+  && m_StateInput.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
   SPlayerState state(m_StateInput);
@@ -3988,7 +3996,6 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.cache_bytes = 0;
 
   state.timestamp = CDVDClock::GetAbsoluteClock();
-  state.dts_state = state.dts;
 
   CSingleLock lock(m_StateSection);
   m_StateInput = state;
