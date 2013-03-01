@@ -5141,7 +5141,7 @@ void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
 {
   if (m_currentSlide->GetPath() != item.GetPath())
   {
-    if (!item.HasPictureInfoTag() && !item.GetPictureInfoTag()->Loaded())
+    if (!item.GetPictureInfoTag()->Loaded()) // If picture metadata has not been loaded yet, load it now
       item.GetPictureInfoTag()->Load(item.GetPath());
     *m_currentSlide = item;
   }

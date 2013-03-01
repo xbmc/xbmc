@@ -31,6 +31,7 @@ void CPictureInfoTag::Reset()
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
   m_isLoaded = false;
+  m_isInfoSetExternally = false;
 }
 
 const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
@@ -39,6 +40,7 @@ const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
   memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
   memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
   m_isLoaded = right.m_isLoaded;
+  m_isInfoSetExternally = right.m_isInfoSetExternally;
   return *this;
 }
 
@@ -61,6 +63,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_isLoaded;
+    ar << m_isInfoSetExternally;
     ar << m_exifInfo.ApertureFNumber;
     ar << CStdString(m_exifInfo.CameraMake);
     ar << CStdString(m_exifInfo.CameraModel);
@@ -124,6 +127,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
   else
   {
     ar >> m_isLoaded;
+    ar >> m_isInfoSetExternally;
     ar >> m_exifInfo.ApertureFNumber;
     GetStringFromArchive(ar, m_exifInfo.CameraMake, sizeof(m_exifInfo.CameraMake));
     GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
@@ -267,7 +271,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 
 const CStdString CPictureInfoTag::GetInfo(int info) const
 {
-  if (!m_isLoaded)
+  if (!m_isLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set with SetInfo(), just return
     return "";
 
   CStdString value;
@@ -590,21 +594,17 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
       {
         m_exifInfo.Width = atoi(dimension[0].c_str());
         m_exifInfo.Height = atoi(dimension[1].c_str());
+        m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
       }
       break;
     }
   case SLIDE_EXIF_DATE_TIME:
     {
       strcpy(m_exifInfo.DateTime, value.c_str());
+      m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
       break;
     }
   default:
     break;
   }
 }
-
-void CPictureInfoTag::SetLoaded(bool loaded)
-{
-  m_isLoaded = loaded;
-}
-
