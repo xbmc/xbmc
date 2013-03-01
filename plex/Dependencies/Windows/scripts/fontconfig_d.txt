@@ -1,4 +1,0 @@
-; filename                        mirror                                            source of the file
-fontconfig-dev_2.8.0-2_win32.zip  http://mirrors.xbmc.org/build-deps/win32/         http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies
-fontconfig_2.8.0-2_win32.zip      http://mirrors.xbmc.org/build-deps/win32/         http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies
-freetype-2.4.6-1-win32.zip       http://mirrors.xbmc.org/build-deps/win32/         http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies

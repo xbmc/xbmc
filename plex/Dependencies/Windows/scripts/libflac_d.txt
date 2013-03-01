@@ -1,2 +1,0 @@
-; filename                        mirror of the file								          source of the file
-flac-1.2.1-devel-win.zip          http://mirrors.xbmc.org/build-deps/win32/   http://sourceforge.net/projects/flac/files/flac-win/flac-1.2.1-win/

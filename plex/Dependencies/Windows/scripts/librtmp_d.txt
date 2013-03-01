@@ -1,2 +1,0 @@
-; filename                             mirror                                      source of the file
-librtmp-20110723-git-b627335-win32.7z  http://mirrors.xbmc.org/build-deps/win32/   http://rtmpdump.mplayerhq.hu/
