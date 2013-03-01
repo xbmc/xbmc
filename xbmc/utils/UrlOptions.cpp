@@ -22,15 +22,16 @@
 #include "UrlOptions.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 
 CUrlOptions::CUrlOptions()
-  : m_strLead("?")
+  : m_strLead("")
 { }
 
-CUrlOptions::CUrlOptions(const std::string &options)
-  : m_strLead("?")
+CUrlOptions::CUrlOptions(const std::string &options, const char *strLead /* = "" */)
+  : m_strLead(strLead)
 {
   AddOptions(options);
 }
@@ -52,7 +53,12 @@ std::string CUrlOptions::GetOptionsString(bool withLeadingSeperator /* = false *
   }
 
   if (withLeadingSeperator && !options.empty())
-    options = m_strLead + options;
+  {
+    if (m_strLead.empty())
+      options = "?" + options;
+    else
+      options = m_strLead + options;
+  }
 
   return options;
 }
@@ -112,14 +118,17 @@ void CUrlOptions::AddOptions(const std::string &options)
 
   string strOptions = options;
 
-  // remove leading ?, # or ; if present
-  if (strOptions.at(0) == '?' || strOptions.at(0) == '#' || strOptions.at(0) == ';')
+  // if matching the preset leading str, remove from options.
+  if (!m_strLead.empty() && strOptions.compare(0, m_strLead.length(), m_strLead) == 0)
+    strOptions.erase(0, m_strLead.length());
+  else if (strOptions.at(0) == '?' || strOptions.at(0) == '#' || strOptions.at(0) == ';' || strOptions.at(0) == '|')
   {
+    // remove leading ?, #, ; or | if present
+    if (!m_strLead.empty())
+      CLog::Log(LOGWARNING, "%s: original leading str %s overrided by %c", __FUNCTION__, m_strLead.c_str(), strOptions.at(0));
     m_strLead = strOptions.at(0);
     strOptions.erase(0, 1);
   }
-  else
-    m_strLead = "?";
 
   // split the options by & and process them one by one
   vector<string> optionList = StringUtils::Split(strOptions, "&");
