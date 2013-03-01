@@ -1133,35 +1133,35 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     {
       case RENDER_FMT_YUV420P:
         formatstr = "YV12";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_YUV420P16:
         formatstr = "YV12P16";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_YUV420P10:
         formatstr = "YV12P10";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_NV12:
         formatstr = "NV12";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_UYVY422:
         formatstr = "UYVY";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_YUYV422:
         formatstr = "YUY2";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_VDPAU:
         formatstr = "VDPAU";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_DXVA:
         formatstr = "DXVA";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_VAAPI:
         formatstr = "VAAPI";
