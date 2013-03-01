@@ -104,6 +104,7 @@ protected:
   friend class CAESinkAUDIOTRACK;
   friend class CAndroidFeatures;
   friend class CFileAndroidApp;
+  friend class CAndroidIntents;
 
   static int AttachCurrentThread(JNIEnv** p_env, void* thr_args = NULL);
   static int DetachCurrentThread();

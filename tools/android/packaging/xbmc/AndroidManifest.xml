@@ -45,6 +45,12 @@
                 android:name="android.app.lib_name"
                 android:value="xbmc" />
         </activity>
+        <receiver android:name="XBMCBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <data android:scheme="file"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest><!-- END_INCLUDE(manifest) -->
