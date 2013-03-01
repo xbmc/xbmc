@@ -616,9 +616,11 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     }
 
     FlipFreeBuffer();
-    m_renderBuffers[m_iOutputRenderBuffer].pts = timestamp;
+    m_renderBuffers[m_iOutputRenderBuffer].timestamp = timestamp;
     m_renderBuffers[m_iOutputRenderBuffer].presentfield = presentfield;
     m_renderBuffers[m_iOutputRenderBuffer].presentmethod = presentmethod;
+    if (!m_bUseBuffering)
+      PrepareNextRender();
     m_speed = speed;
   }
 
@@ -827,14 +829,14 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  if(m_pRenderer->AddVideoPicture(&pic, (m_iOutputRenderBuffer + 1) % m_iNumRenderBuffers))
+  int index = (m_iOutputRenderBuffer + 1) % m_iNumRenderBuffers;
+
+  if(m_pRenderer->AddVideoPicture(&pic, index))
     return 1;
 
   YV12Image image;
-  int index = m_pRenderer->GetImage(&image, (m_iOutputRenderBuffer + 1) % m_iNumRenderBuffers);
-
-  if(index < 0)
-    return index;
+  if (m_pRenderer->GetImage(&image, index) < 0)
+    return -1;
 
   if(pic.format == RENDER_FMT_YUV420P
   || pic.format == RENDER_FMT_YUV420P10
@@ -938,14 +940,14 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   if (!m_pRenderer)
     return -1;
 
-  double maxwait = GetPresentTime() + (float)timeout/1000;
+  XbmcThreads::EndTime endtime(timeout);
   while(!HasFreeBuffer() && !bStop)
   {
     lock.Leave();
     m_flipEvent.WaitMSec(std::min(50, timeout));
-    if(GetPresentTime() > maxwait && !bStop)
+    if(endtime.IsTimePast())
     {
-      if (timeout != 0)
+      if (timeout != 0 && !bStop)
         CLog::Log(LOGWARNING, "CRenderManager::WaitForBuffer - timeout waiting for buffer");
       return -1;
     }
