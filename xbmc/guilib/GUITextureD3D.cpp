@@ -31,6 +31,7 @@ CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height
 
 void CGUITextureD3D::Begin(color_t color)
 {
+  int unit = 0;
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
 
@@ -38,30 +39,50 @@ void CGUITextureD3D::Begin(color_t color)
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
   // Set state to render the image
-  texture->BindToUnit(0);
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+  texture->BindToUnit(unit);
+  p3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_MODULATE );
+  p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_TEXTURE   );
+  p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_DIFFUSE   );
+  p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP  , D3DTOP_MODULATE );
+  p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG1, D3DTA_TEXTURE   );
+  p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE   );
+  unit++;
+
   if (m_diffuse.size())
   {
     m_diffuse.m_textures[0]->BindToUnit(1);
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    p3DDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    p3DDevice->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_TEXTURE   );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_CURRENT   );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_MODULATE );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG1, D3DTA_TEXTURE   );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG2, D3DTA_CURRENT   );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP  , D3DTOP_MODULATE );
+    unit++;
+  }
+
+  if(g_Windowing.UseLimitedColor())
+  {
+    m_col = D3DCOLOR_RGBA(GET_R(color) * (235 - 16) / 255
+                        , GET_G(color) * (235 - 16) / 255
+                        , GET_B(color) * (235 - 16) / 255
+                        , GET_A(color));
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
+#if(1)
+    p3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16, 0) );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+#else
+    p3DDevice->SetTextureStageState( unit, D3DTSS_CONSTANT , D3DCOLOR_RGBA(16,16,16, 0) );
+    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_CONSTANT );
+#endif
+    unit++;
   }
   else
-  {
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-  }
+    m_col = color;
+
+  p3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_DISABLE);
+  p3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
   p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
   p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
   p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
@@ -76,7 +97,6 @@ void CGUITextureD3D::Begin(color_t color)
   p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
   p3DDevice->SetFVF( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
-  m_col = color;
 }
 
 void CGUITextureD3D::End()

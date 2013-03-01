@@ -57,17 +57,33 @@ void CGUIFontTTFDX::Begin()
 
   if (m_nestedBeginCount == 0)
   {
+    int unit = 0;
     // just have to blit from our texture.
-    m_texture->BindToUnit(0);
-    pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
-    pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    m_texture->BindToUnit(unit);
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    unit++;
+
+    if(g_Windowing.UseLimitedColor())
+    {
+      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
+      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
+#if(1)
+      pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16,0) );
+      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+#else
+      pD3DDevice->SetTextureStageState( unit, D3DTSS_CONSTANT , D3DCOLOR_RGBA(16,16,16,0) );
+      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_CONSTANT );
+#endif
+      unit++;
+    }
 
     // no other texture stages needed
-    pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-    pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP, D3DTOP_DISABLE);
+    pD3DDevice->SetTextureStageState( unit, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
     pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );

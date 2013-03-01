@@ -20,6 +20,7 @@
 
 #include "WinSystem.h"
 #include "settings/Settings.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 
@@ -199,4 +200,14 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> r
     }
   }
   return bestmatch;
+}
+
+bool CWinSystemBase::UseLimitedColor()
+{
+#if defined(HAS_GL) || defined(HAS_DX)
+  static CSettingBool* setting = (CSettingBool*)g_guiSettings.GetSetting("videoscreen.limitedrange");
+  return setting->GetData();
+#else
+  return false;
+#endif
 }

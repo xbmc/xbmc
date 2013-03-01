@@ -74,6 +74,9 @@ public:
   //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
   virtual bool HasInertialGestures(){ return false; }
 
+  //does the output expect limited color range (ie 16-235)
+  virtual bool UseLimitedColor();
+
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
   virtual bool Hide() { return false; }
