@@ -80,8 +80,8 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
   END_METHOD_RESOLVE()
 };
 
-CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
-  CPeripheralHID(type, busType, strLocation, strDeviceName, iVendorId, iProductId),
+CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult) :
+  CPeripheralHID(scanResult),
   CThread("CEC Adapter"),
   m_dll(NULL),
   m_cecAdapter(NULL)
@@ -98,6 +98,7 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
     m_bStop = true;
   }
 
+  SAFE_DELETE(m_queryThread);
   StopThread(true);
 
   if (m_dll && m_cecAdapter)
@@ -430,8 +431,7 @@ void CPeripheralCecAdapter::Process(void)
       Sleep(5);
   }
 
-  delete m_queryThread;
-  m_queryThread = NULL;
+  SAFE_DELETE(m_queryThread);
 
   bool bSendStandbyCommands(false);
   {
@@ -1255,8 +1255,7 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
 
 bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 {
-  if ((strLocation.Left(18).Equals("peripherals://usb/") ||
-         strLocation.Left(18).Equals("peripherals://rpi/")) &&
+  if ((strLocation.Left(18).Equals("peripherals://cec/")) &&
        strLocation.Right(4).Equals(".dev"))
   {
     strLocation = strLocation.Right(strLocation.length() - 18);
