@@ -1,40 +1,40 @@
 <playercorefactory>
-  <players>
-    <!-- These are compiled-in as re-ordering them would break scripts
+    <players>
+        <!-- These are compiled-in as re-ordering them would break scripts
     The following aliases may also be used:
       audiodefaultplayer, videodefaultplayer, videodefaultdvdplayer
-    <player name="DVDPlayer" audio="true" video="true" />
-    <player name="DVDPlayer" /> placeholder for MPlayer
-    <player name="PAPlayer" audio="true" />
+    <player name="DVDPlayer" audio="true" video="true"/>
+    <player name="DVDPlayer"/> placeholder for MPlayer
+    <player name="PAPlayer" audio="true"/>
     -->
-  </players>
+    </players>
 
-  <rules name="system rules">
-    <rule name="rtv" protocols="rtv" player="DVDPlayer" />
-    <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer" />
-    <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
-    <rule name="rtmp" protocols="rtmp" player="videodefaultplayer" />
+    <rules name="system rules">
+        <rule name="rtv" protocols="rtv" player="DVDPlayer"/>
+        <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer"/>
+        <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer"/>
+        <rule name="rtmp" protocols="rtmp" player="videodefaultplayer"/>
 
-    <!-- dvdplayer can play standard rtsp streams -->
-    <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
+        <!-- dvdplayer can play standard rtsp streams -->
+        <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer"/>
 
-    <!-- Internet streams -->
-    <rule name="streams" internetstream="true">
-      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer" />
-      <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
-    </rule>
+        <!-- Internet streams -->
+        <rule name="streams" internetstream="true">
+            <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer"/>
+            <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer"/>
+        </rule>
 
-    <!-- DVDs -->
-    <rule name="dvd" dvd="true" player="DVDPlayer" />
-    <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
+        <!-- DVDs -->
+        <rule name="dvd" dvd="true" player="DVDPlayer"/>
+        <rule name="dvdimage" dvdimage="true" player="DVDPlayer"/>
 
-    <!-- Only dvdplayer can handle these normally -->
-    <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
+        <!-- Only dvdplayer can handle these normally -->
+        <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer"/>
 
-    <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
-    <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
+        <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
+        <rule name="nsv" filetypes="nsv" player="DVDPlayer"/>
 
-    <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
-    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer" />
-  </rules>
+        <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
+        <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer"/>
+    </rules>
 </playercorefactory>
