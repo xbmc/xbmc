@@ -35,6 +35,12 @@ typedef void* GUIHANDLE;
 #define GUI_HELPER_DLL "/library.xbmc.gui/" GUI_HELPER_DLL_NAME
 #endif
 
+/* current ADDONGUI API version */
+#define XBMC_GUI_API_VERSION "1.0.0"
+
+/* min. ADDONGUI API version */
+#define XBMC_GUI_MIN_API_VERSION "1.0.0"
+
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
 
