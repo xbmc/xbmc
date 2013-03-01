@@ -64,7 +64,8 @@ config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --
 config="$config --enable-protocol=http --enable-runtime-cpudetect"
 config="$config --cc=clang --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
 
-./configure $config --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib"
+export PATH=/Users/Shared/xbmc-depends/toolchain/bin:$PATH
+./configure $config --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib" || exit 1
 make install || exit 1
 
 cd $ROOT/plex/Dependencies/xbmc-depends
