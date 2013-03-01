@@ -80,11 +80,11 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
   // Get the MASK flag
   m_masked = ((m_data[1] & MASK_MASK) == MASK_MASK);
 
-  // Get the playload length
+  // Get the payload length
   m_length = (uint64_t)(m_data[1] & MASK_LENGTH);
-  if ((m_length <= 125 && length  < m_length + LENGTH_MIN) ||
-      (m_length == 126 && length < LENGTH_MIN + 2) ||
-      (m_length == 127 && length < LENGTH_MIN + 8))
+  if ((m_length <= 125 && m_lengthFrame  < m_length + LENGTH_MIN) ||
+      (m_length == 126 && m_lengthFrame < LENGTH_MIN + 2) ||
+      (m_length == 127 && m_lengthFrame < LENGTH_MIN + 8))
   {
     CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received");
     reset();
@@ -110,7 +110,7 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
     offset = 8;
   }
 
-  if (length < LENGTH_MIN + offset + m_length)
+  if (m_lengthFrame < LENGTH_MIN + offset + m_length)
   {
     CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received");
     reset();
@@ -124,12 +124,8 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
     offset += 4;
   }
 
-  if (length != LENGTH_MIN + offset + m_length)
-  {
-    CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received");
-    reset();
-    return;
-  }
+  if (m_lengthFrame != LENGTH_MIN + offset + m_length)
+    m_lengthFrame = LENGTH_MIN + offset + m_length;
 
   // Get application data
   if (m_length > 0)
@@ -305,102 +301,122 @@ void CWebSocketMessage::Clear()
   m_frames.clear();
 }
 
-const CWebSocketMessage* CWebSocket::Handle(const char *buffer, size_t length, bool &send)
+const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length, bool &send)
 {
   send = false;
 
-  switch (m_state)
+  while (length > 0)
   {
-    case WebSocketStateConnected:
+    switch (m_state)
     {
-      CWebSocketFrame *frame = GetFrame(buffer, length);
-      if (!frame->IsValid())
+      case WebSocketStateConnected:
       {
-        CLog::Log(LOGINFO, "WebSocket: Invalid frame received");
-        delete frame;
-        return NULL;
-      }
-
-      if (frame->IsControlFrame())
-      {
-        if (!frame->IsFinal())
+        CWebSocketFrame *frame = GetFrame(buffer, length);
+        if (!frame->IsValid())
         {
+          CLog::Log(LOGINFO, "WebSocket: Invalid frame received");
           delete frame;
           return NULL;
         }
 
-        CWebSocketMessage *msg = NULL;
-        switch (frame->GetOpcode())
+        // adjust the length and the buffer values
+        length -= frame->GetFrameLength();
+        buffer += frame->GetFrameLength();
+
+        if (frame->IsControlFrame())
         {
-          case WebSocketPing:
-            msg = GetMessage();
-            if (msg != NULL)
-              msg->AddFrame(Pong(frame->GetApplicationData()));
-            break;
+          if (!frame->IsFinal())
+          {
+            delete frame;
+            return NULL;
+          }
+
+          CWebSocketMessage *msg = NULL;
+          switch (frame->GetOpcode())
+          {
+            case WebSocketPing:
+              msg = GetMessage();
+              if (msg != NULL)
+                msg->AddFrame(Pong(frame->GetApplicationData()));
+              break;
             
-          case WebSocketConnectionClose:
-            CLog::Log(LOGINFO, "WebSocket: connection closed by client");
+            case WebSocketConnectionClose:
+              CLog::Log(LOGINFO, "WebSocket: connection closed by client");
 
-            msg = GetMessage();
-            if (msg != NULL)
-              msg->AddFrame(Close());
+              msg = GetMessage();
+              if (msg != NULL)
+                msg->AddFrame(Close());
 
-            m_state = WebSocketStateClosed;
-            break;
+              m_state = WebSocketStateClosed;
+              break;
 
-          case WebSocketContinuationFrame:
-          case WebSocketTextFrame:
-          case WebSocketBinaryFrame:
-          case WebSocketPong:
-          case WebSocketUnknownFrame:
-          default:
-            break;
+            case WebSocketContinuationFrame:
+            case WebSocketTextFrame:
+            case WebSocketBinaryFrame:
+            case WebSocketPong:
+            case WebSocketUnknownFrame:
+            default:
+              break;
+          }
+
+          delete frame;
+
+          if (msg != NULL)
+            send = true;
+
+          return msg;
         }
 
-        delete frame;
+        if (m_message == NULL && (m_message = GetMessage()) == NULL)
+        {
+          CLog::Log(LOGINFO, "WebSocket: Could not allocate a new websocket message");
+          delete frame;
+          return NULL;
+        }
 
-        if (msg != NULL)
-          send = true;
+        m_message->AddFrame(frame);
+        if (!m_message->IsComplete())
+        {
+          if (length > 0)
+            continue;
+          else
+            return NULL;
+        }
 
+        CWebSocketMessage *msg = m_message;
+        m_message = NULL;
         return msg;
       }
 
-      if (m_message == NULL && (m_message = GetMessage()) == NULL)
+      case WebSocketStateClosing:
       {
-        CLog::Log(LOGINFO, "WebSocket: Could not allocate a new websocket message");
-        delete frame;
+        CWebSocketFrame *frame = GetFrame(buffer, length);
+
+        if (frame->IsValid())
+        {
+          // adjust the length and the buffer values
+          length -= frame->GetFrameLength();
+          buffer += frame->GetFrameLength();
+        }
+
+        if (!frame->IsValid() || frame->GetOpcode() == WebSocketConnectionClose)
+        {
+          CLog::Log(LOGINFO, "WebSocket: Invalid or unexpected frame received (only closing handshake expected)");
+          delete frame;
+          return NULL;
+        }
+
+        m_state = WebSocketStateClosed;
         return NULL;
       }
 
-      m_message->AddFrame(frame);
-      if (!m_message->IsComplete())
+      case WebSocketStateNotConnected:
+      case WebSocketStateClosed:
+      case WebSocketStateHandshaking:
+      default:
+        CLog::Log(LOGINFO, "WebSocket: No frame expected in the current state");
         return NULL;
-
-      CWebSocketMessage *msg = m_message;
-      m_message = NULL;
-      return msg;
     }
-
-    case WebSocketStateClosing:
-    {
-      CWebSocketFrame *frame = GetFrame(buffer, length);
-      if (!frame->IsValid() || frame->GetOpcode() == WebSocketConnectionClose)
-      {
-        CLog::Log(LOGINFO, "WebSocket: Invalid or unexpected frame received (only closing handshake expected)");
-        delete frame;
-        return NULL;
-      }
-
-      m_state = WebSocketStateClosed;
-      return NULL;
-    }
-
-    case WebSocketStateNotConnected:
-    case WebSocketStateClosed:
-    case WebSocketStateHandshaking:
-    default:
-      CLog::Log(LOGINFO, "WebSocket: No frame expected in the current state");
-      return NULL;
   }
 
   return NULL;
