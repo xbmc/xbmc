@@ -647,6 +647,15 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   if( strProtocol.Equals("ftp")
   ||  strProtocol.Equals("ftps") )
   {
+    // we was using url optons for urls, keep the old code work and warning
+    if (!url2.GetOptions().IsEmpty())
+    {
+      CLog::Log(LOGWARNING, "%s: ftp url option is deprecated, please switch to use protocol option (change '?' to '|'), url: [%s]", __FUNCTION__, url2.Get().c_str());
+      url2.SetProtocolOptions(url2.GetOptions().Mid(1));
+      /* ftp has no options */
+      url2.SetOptions("");
+    }
+
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */
     /* url encoded. if handed from ftpdirectory */
@@ -677,53 +686,21 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 
     url2.SetFileName(filename);
 
-    CStdString options = url2.GetOptions().Mid(1);
-    options.TrimRight('/'); // hack for trailing slashes being added from source
-
     m_ftpauth = "";
-    m_ftpport = "";
-    m_ftppasvip = false;
-
-    /* parse options given */
-    CUtil::Tokenize(options, array, "&");
-    for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+    if (url2.HasProtocolOption("auth"))
     {
-      CStdString name, value;
-      int pos = it->Find('=');
-      if(pos >= 0)
-      {
-        name = it->Left(pos);
-        value = it->Mid(pos+1, it->size());
-      }
-      else
-      {
-        name = (*it);
-        value = "";
-      }
-
-      if(name.Equals("auth"))
-      {
-        m_ftpauth = value;
-        if(m_ftpauth.IsEmpty())
-          m_ftpauth = "any";
-      }
-      else if(name.Equals("active"))
-      {
-        m_ftpport = value;
-        if(value.IsEmpty())
-          m_ftpport = "-";
-      }
-      else if(name.Equals("pasvip"))
-      {
-        if(value == "0")
-          m_ftppasvip = false;
-        else
-          m_ftppasvip = true;
-      }
+      m_ftpauth = url2.GetProtocolOption("auth");
+      if(m_ftpauth.IsEmpty())
+        m_ftpauth = "any";
     }
-
-    /* ftp has no options */
-    url2.SetOptions("");
+    m_ftpport = "";
+    if (url2.HasProtocolOption("active"))
+    {
+      m_ftpport = url2.GetProtocolOption("active");
+      if(m_ftpport.IsEmpty())
+        m_ftpport = "-";
+    }
+    m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
   }
   else if( strProtocol.Equals("http")
        ||  strProtocol.Equals("https"))
