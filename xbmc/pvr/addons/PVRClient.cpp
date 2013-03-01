@@ -257,6 +257,13 @@ bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, c
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
+bool CPVRClient::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
+{
+  AddonVersion myMinVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  AddonVersion myVersion = AddonVersion(XBMC_GUI_API_VERSION);
+  return (version >= myMinVersion && minVersion <= myVersion);
+}
+
 bool CPVRClient::CheckAPIVersion(void)
 {
   /* check the API version */
@@ -267,6 +274,18 @@ bool CPVRClient::CheckAPIVersion(void)
   if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
   {
     CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.c_str(), m_apiVersion.c_str());
+    return false;
+  }
+
+  /* check the GUI API version */
+  AddonVersion guiVersion = AddonVersion("0.0.0");
+  minVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
+  catch (exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
+
+  if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
+  {
+    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.c_str(), guiVersion.c_str());
     return false;
   }
 

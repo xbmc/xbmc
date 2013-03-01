@@ -294,6 +294,8 @@ extern "C" {
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
     const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
+    const char*  (__cdecl* GetGUIAPIVersion)(void);
+    const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);
