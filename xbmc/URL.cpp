@@ -66,6 +66,9 @@ void CURL::Reset()
   m_strFileName.clear();
   m_strProtocol.clear();
   m_strFileType.clear();
+  m_strOptions.clear();
+  m_strProtocolOptions.clear();
+  m_options.Clear();
   m_iPort = 0;
 }
 
