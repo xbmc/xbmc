@@ -126,6 +126,7 @@ void CXBMCApp::onDestroy()
     m_activity->vm->AttachCurrentThread(&env, NULL);
 
     env->DeleteGlobalRef(m_wakeLock);
+    DetachCurrentThread();
     m_wakeLock = NULL;
   }
 }
