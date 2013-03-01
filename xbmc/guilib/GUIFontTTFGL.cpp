@@ -28,9 +28,7 @@
 #include "gui3d.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
-#if HAS_GLES == 2
 #include "windowing/WindowingFactory.h"
-#endif
 
 // stuff for freetype
 #include <ft2build.h>
@@ -98,6 +96,26 @@ void CGUIFontTTFGL::Begin()
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
+
+    if(g_Windowing.UseLimitedColor())
+    {
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, m_nTexture); // dummy bind
+      glEnable(GL_TEXTURE_2D);
+
+      const GLfloat rgba[4] = {16.0f / 255.0f, 16.0f / 255.0f, 16.0f / 255.0f, 0.0f};
+      glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE , GL_COMBINE);
+      glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, rgba);
+      glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB      , GL_ADD);
+      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB      , GL_PREVIOUS);
+      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB      , GL_CONSTANT);
+      glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND0_RGB     , GL_SRC_COLOR);
+      glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND1_RGB     , GL_SRC_COLOR);
+      glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA    , GL_REPLACE);
+      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA    , GL_PREVIOUS);
+      VerifyGLState();
+    }
+
 #else
     g_Windowing.EnableGUIShader(SM_FONTS);
 #endif
@@ -127,6 +145,9 @@ void CGUIFontTTFGL::End()
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glActiveTexture(GL_TEXTURE0);
 #else
   // GLES 2.0 version. Cannot draw quads. Convert to triangles.
   GLint posLoc  = g_Windowing.GUIShaderGetPos();

@@ -24,6 +24,7 @@
 #include "YUV2RGBShader.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
@@ -106,8 +107,20 @@ void CalculateYUVMatrix(TransformMatrix &matrix
       coef.m[row][col] = conv[col][row];
   coef.identity = false;
 
+
+  if(g_Windowing.UseLimitedColor())
+  {
+    matrix *= TransformMatrix::CreateTranslation(+ 16.0f / 255
+                                               , + 16.0f / 255
+                                               , + 16.0f / 255);
+    matrix *= TransformMatrix::CreateScaler((235 - 16) / 255.0f
+                                          , (235 - 16) / 255.0f
+                                          , (235 - 16) / 255.0f);
+  }
+
   matrix *= coef;
   matrix *= TransformMatrix::CreateTranslation(0.0, -0.5, -0.5);
+
   if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
   {
     matrix *= TransformMatrix::CreateScaler(255.0f / (235 - 16)

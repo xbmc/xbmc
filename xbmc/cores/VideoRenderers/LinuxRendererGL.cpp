@@ -3187,7 +3187,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoscreen.limitedrange"))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
@@ -3200,7 +3200,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   
   if(feature == RENDERFEATURE_CONTRAST)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoscreen.limitedrange"))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
