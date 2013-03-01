@@ -22,19 +22,36 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/devices/Peripheral.h"
 
+// undefine macro isset, it collides with function in cectypes.h
+#ifdef isset
+#undef isset
+#endif
+#include <libcec/cectypes.h>
+
+namespace CEC
+{
+  class ICECAdapter;
+}
+
 namespace PERIPHERALS
 {
   class CPeripherals;
+  class DllLibCEC;
 
-  class CPeripheralBusRPi : public CPeripheralBus
+  class CPeripheralBusCEC : public CPeripheralBus
   {
   public:
-    CPeripheralBusRPi(CPeripherals *manager);
-    virtual ~CPeripheralBusRPi(void) {};
+    CPeripheralBusCEC(CPeripherals *manager);
+    virtual ~CPeripheralBusCEC(void);
 
+    /*!
+     * @see PeripheralBus::PerformDeviceScan()
+     */
     bool PerformDeviceScan(PeripheralScanResults &results);
 
   private:
-    bool FindAdapter(void);
+    DllLibCEC*                m_dll;
+    CEC::ICECAdapter*         m_cecAdapter;
+    CEC::libcec_configuration m_configuration;
   };
 }

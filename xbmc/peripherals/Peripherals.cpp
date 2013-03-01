@@ -31,8 +31,8 @@
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
-#ifdef HAVE_CEC_RPI_API
-#include "bus/linux/PeripheralBusRPi.h"
+#if defined(HAVE_LIBCEC)
+#include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
 #include "threads/SingleLock.h"
@@ -84,8 +84,8 @@ void CPeripherals::Initialise(void)
 #if defined(HAVE_PERIPHERAL_BUS_USB)
     m_busses.push_back(new CPeripheralBusUSB(this));
 #endif
-#ifdef HAVE_CEC_RPI_API
-    m_busses.push_back(new CPeripheralBusRPi(this));
+#if defined(HAVE_LIBCEC)
+    m_busses.push_back(new CPeripheralBusCEC(this));
 #endif
 
     /* initialise all known busses */
@@ -229,54 +229,50 @@ bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, Per
   return (GetPeripheralsWithFeature(dummy, feature, busType) > 0);
 }
 
-CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralType type, const CStdString &strLocation, int iVendorId /* = 0 */, int iProductId /* = 0 */)
+CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanResult& result)
 {
   CPeripheral *peripheral = NULL;
+  PeripheralScanResult mappedResult = result;
+  if (mappedResult.m_busType == PERIPHERAL_BUS_UNKNOWN)
+    mappedResult.m_busType = bus.Type();
+
   /* check whether there's something mapped in peripherals.xml */
-  PeripheralType mappedType = type;
-  CStdString strDeviceName;
-  int iMappingPtr = GetMappingForDevice(bus, type, iVendorId, iProductId);
-  bool bHasMapping(iMappingPtr >= 0);
-  if (bHasMapping)
-  {
-    mappedType    = m_mappings[iMappingPtr].m_mappedTo;
-    strDeviceName = m_mappings[iMappingPtr].m_strDeviceName;
-  }
-  else
+  if (!GetMappingForDevice(bus, mappedResult))
   {
     /* don't create instances for devices that aren't mapped in peripherals.xml */
     return NULL;
   }
 
-  switch(mappedType)
+  switch(mappedResult.m_mappedType)
   {
   case PERIPHERAL_HID:
-    peripheral = new CPeripheralHID(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralHID(mappedResult);
     break;
 
   case PERIPHERAL_NIC:
-    peripheral = new CPeripheralNIC(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralNIC(mappedResult);
     break;
 
   case PERIPHERAL_DISK:
-    peripheral = new CPeripheralDisk(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralDisk(mappedResult);
     break;
 
   case PERIPHERAL_NYXBOARD:
-    peripheral = new CPeripheralNyxboard(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralNyxboard(mappedResult);
     break;
 
   case PERIPHERAL_TUNER:
-    peripheral = new CPeripheralTuner(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralTuner(mappedResult);
     break;
 
   case PERIPHERAL_BLUETOOTH:
-    peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralBluetooth(mappedResult);
     break;
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
-    peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    if (bus.Type() == PERIPHERAL_BUS_CEC)
+      peripheral = new CPeripheralCecAdapter(mappedResult);
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
@@ -288,7 +284,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     break;
 
   case PERIPHERAL_IMON:
-    peripheral = new CPeripheralImon(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    peripheral = new CPeripheralImon(mappedResult);
     break;
 
   default:
@@ -305,7 +301,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, strLocation.c_str());
+      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, mappedResult.m_strLocation.c_str());
       delete peripheral;
       peripheral = NULL;
     }
@@ -340,7 +336,7 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
 
-int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const PeripheralType classType, int iVendorId, int iProductId) const
+bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const
 {
   /* check all mappings in the order in which they are defined in peripherals.xml */
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
@@ -355,24 +351,26 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
     else
     {
       for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
-        if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
+        if (mapping.m_PeripheralID[i].m_iVendorId == result.m_iVendorId && mapping.m_PeripheralID[i].m_iProductId == result.m_iProductId)
           bProductMatch = true;
     }
 
     bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
-    bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == classType);
+    bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == result.m_type);
 
     if (bProductMatch && bBusMatch && bClassMatch)
     {
       CStdString strVendorId, strProductId;
-      PeripheralTypeTranslator::FormatHexString(iVendorId, strVendorId);
-      PeripheralTypeTranslator::FormatHexString(iProductId, strProductId);
+      PeripheralTypeTranslator::FormatHexString(result.m_iVendorId, strVendorId);
+      PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
       CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
-      return iMappingPtr;
+      result.m_mappedType    = m_mappings[iMappingPtr].m_mappedTo;
+      result.m_strDeviceName = m_mappings[iMappingPtr].m_strDeviceName;
+      return true;
     }
   }
 
-  return -1;
+  return false;
 }
 
 void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const

@@ -173,6 +173,7 @@
 		18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E7CAC91578C26D001D4554 /* CDDARipJob.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		1D638128161E211E003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D638126161E211E003603ED /* PeripheralImon.cpp */; };
+		1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
@@ -1384,6 +1385,8 @@
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		1D638126161E211E003603ED /* PeripheralImon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralImon.cpp; sourceTree = "<group>"; };
 		1D638127161E211E003603ED /* PeripheralImon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralImon.h; sourceTree = "<group>"; };
+		1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusCEC.cpp; sourceTree = "<group>"; };
+		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -3741,6 +3744,15 @@
 				8DD76F7E0486A8DE00D96B5E /* XBMC */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1DAFDB7916DFDCA7007F8C68 /* virtual */ = {
+			isa = PBXGroup;
+			children = (
+				1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */,
+				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
+			);
+			path = virtual;
 			sourceTree = "<group>";
 		};
 		38F4E56013CCCB3B00664821 /* platform */ = {
@@ -6391,6 +6403,7 @@
 		F5E1050D140AA38000175026 /* bus */ = {
 			isa = PBXGroup;
 			children = (
+				1DAFDB7916DFDCA7007F8C68 /* virtual */,
 				F5E10512140AA38000175026 /* osx */,
 				F5E10515140AA38000175026 /* PeripheralBus.cpp */,
 				F5E10516140AA38000175026 /* PeripheralBus.h */,
@@ -7746,6 +7759,7 @@
 				DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */,
 				DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */,
 				DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */,
+				1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

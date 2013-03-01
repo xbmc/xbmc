@@ -38,39 +38,23 @@ struct SortBySettingsOrder
   }
 };
 
-CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
-  m_type(type),
-  m_busType(busType),
-  m_strLocation(strLocation),
-  m_strDeviceName(strDeviceName),
+CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
+  m_type(scanResult.m_mappedType),
+  m_busType(scanResult.m_busType),
+  m_mappedBusType(scanResult.m_mappedBusType),
+  m_strLocation(scanResult.m_strLocation),
+  m_strDeviceName(scanResult.m_strDeviceName),
   m_strFileLocation(StringUtils::EmptyString),
-  m_iVendorId(iVendorId),
-  m_iProductId(iProductId),
+  m_iVendorId(scanResult.m_iVendorId),
+  m_iProductId(scanResult.m_iProductId),
   m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
   m_bInitialised(false),
   m_bHidden(false),
   m_bError(false)
 {
-  PeripheralTypeTranslator::FormatHexString(iVendorId, m_strVendorId);
-  PeripheralTypeTranslator::FormatHexString(iProductId, m_strProductId);
-  m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(busType), strLocation.c_str());
-}
-
-CPeripheral::CPeripheral(void) :
-  m_type(PERIPHERAL_UNKNOWN),
-  m_busType(PERIPHERAL_BUS_UNKNOWN),
-  m_strLocation(StringUtils::EmptyString),
-  m_strDeviceName(StringUtils::EmptyString),
-  m_strFileLocation(StringUtils::EmptyString),
-  m_iVendorId(0),
-  m_strVendorId("0000"),
-  m_iProductId(0),
-  m_strProductId("0000"),
-  m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
-  m_bInitialised(false),
-  m_bHidden(false),
-  m_bError(false)
-{
+  PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
+  PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
+  m_strFileLocation.Format(scanResult.m_iSequence > 0 ? "peripherals://%s/%s_%d.dev" : "peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType), scanResult.m_strLocation.c_str(), scanResult.m_iSequence);
 }
 
 CPeripheral::~CPeripheral(void)
@@ -146,7 +130,7 @@ bool CPeripheral::Initialise(void)
     return bReturn;
 
   g_peripherals.GetSettingsFromMapping(*this);
-  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_busType), m_strVendorId.c_str(), m_strProductId.c_str());
+  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId.c_str(), m_strProductId.c_str());
   LoadPersistedSettings();
 
   for (unsigned int iFeaturePtr = 0; iFeaturePtr < m_features.size(); iFeaturePtr++)
@@ -534,4 +518,18 @@ void CPeripheral::ClearSettings(void)
     ++it;
   }
   m_settings.clear();
+}
+
+bool CPeripheral::operator ==(const PeripheralScanResult& right) const
+{
+  return m_iVendorId  == right.m_iVendorId &&
+         m_iProductId == right.m_iProductId &&
+         m_type       == right.m_type &&
+         m_busType    == right.m_busType &&
+         m_strLocation.Equals(right.m_strLocation);
+}
+
+bool CPeripheral::operator !=(const PeripheralScanResult& right) const
+{
+  return !(*this == right);
 }

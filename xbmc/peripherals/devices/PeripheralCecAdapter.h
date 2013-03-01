@@ -86,7 +86,7 @@ namespace PERIPHERALS
     friend class CPeripheralCecAdapterUpdateThread;
 
   public:
-    CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
+    CPeripheralCecAdapter(const PeripheralScanResult& scanResult);
     virtual ~CPeripheralCecAdapter(void);
 
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);

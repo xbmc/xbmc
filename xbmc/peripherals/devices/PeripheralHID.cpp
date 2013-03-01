@@ -27,10 +27,11 @@
 using namespace PERIPHERALS;
 using namespace std;
 
-CPeripheralHID::CPeripheralHID(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
-  CPeripheral(type, busType, strLocation, strDeviceName.IsEmpty() ? g_localizeStrings.Get(35001) : strDeviceName, iVendorId, iProductId),
+CPeripheralHID::CPeripheralHID(const PeripheralScanResult& scanResult) :
+  CPeripheral(scanResult),
   m_bInitialised(false)
 {
+  m_strDeviceName = scanResult.m_strDeviceName.IsEmpty() ? g_localizeStrings.Get(35001) : scanResult.m_strDeviceName;
   m_features.push_back(FEATURE_HID);
 }
 

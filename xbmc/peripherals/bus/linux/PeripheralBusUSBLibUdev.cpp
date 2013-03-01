@@ -152,12 +152,12 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
         iClass = USB_CLASS_HID;
       }
 
-      PeripheralScanResult result;
+      PeripheralScanResult result(m_type);
       result.m_iVendorId   = PeripheralTypeTranslator::HexStringToInt(udev_device_get_sysattr_value(dev, "idVendor"));
       result.m_iProductId  = PeripheralTypeTranslator::HexStringToInt(udev_device_get_sysattr_value(dev, "idProduct"));
       result.m_type        = GetType(iClass);
       result.m_strLocation = udev_device_get_syspath(dev);
-
+      result.m_iSequence   = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);
       if (!results.ContainsResult(result))
         results.m_results.push_back(result);
     }

@@ -2981,6 +2981,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\DAVCommon.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.cpp">
+      <Filter>peripherals\bus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5826,6 +5829,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\DAVCommon.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h">
+      <Filter>peripherals\bus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
