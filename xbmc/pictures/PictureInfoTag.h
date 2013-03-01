@@ -100,12 +100,12 @@ public:
   static int TranslateString(const CStdString &info);
 
   void SetInfo(int info, const CStdString& value);
-  void SetLoaded(bool loaded = true);
 
 private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
-  bool       m_isLoaded;
+  bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
+  bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
 };
 
