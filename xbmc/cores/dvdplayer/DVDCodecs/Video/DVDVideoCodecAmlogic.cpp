@@ -203,7 +203,8 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  m_Codec->GetPicture(&m_videobuffer);
+  if (m_Codec)
+    m_Codec->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
   return true;
@@ -215,17 +216,24 @@ void CDVDVideoCodecAmlogic::SetDropState(bool bDrop)
 
 void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)
 {
-  m_Codec->SetSpeed(iSpeed);
+  if (m_Codec)
+    m_Codec->SetSpeed(iSpeed);
 }
 
 int CDVDVideoCodecAmlogic::GetDataSize(void)
 {
-  return m_Codec->GetDataSize();
+  if (m_Codec)
+    return m_Codec->GetDataSize();
+  else
+    return 0;
 }
 
 double CDVDVideoCodecAmlogic::GetTimeSize(void)
 {
-  return m_Codec->GetTimeSize();
+  if (m_Codec)
+    return m_Codec->GetTimeSize();
+  else
+    return 0;
 }
 
 void CDVDVideoCodecAmlogic::PtsQueuePop(void)

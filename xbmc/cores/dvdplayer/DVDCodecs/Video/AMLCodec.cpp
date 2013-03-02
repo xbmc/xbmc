@@ -1427,6 +1427,7 @@ int set_header_info(am_private_t *para)
 /*************************************************************************/
 CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
 {
+  m_opened = false;
   am_private = new am_private_t;
   memset(am_private, 0, sizeof(am_private_t));
   m_dll = new DllLibAmCodec;
@@ -1647,6 +1648,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
+  m_opened = true;
+
   return true;
 }
 
@@ -1659,6 +1662,8 @@ void CAMLCodec::CloseDecoder()
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
 
   m_dll->codec_close(&am_private->vcodec);
+  m_opened = false;
+
   am_packet_release(&am_private->am_pkt);
   free(am_private->extradata);
   am_private->extradata = NULL;
@@ -1666,11 +1671,15 @@ void CAMLCodec::CloseDecoder()
   aml_set_sysfs_int("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
 }
 
 void CAMLCodec::Reset()
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::Reset");
+
+  if (!m_opened)
+    return;
 
   // set the system blackout_policy to leave the last frame showing
   int blackout_policy = aml_get_sysfs_int("/sys/class/video/blackout_policy");
@@ -1704,6 +1713,9 @@ void CAMLCodec::Reset()
 
 int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
 {
+  if (!m_opened)
+    return VC_BUFFER;
+
   // grr, m_RenderUpdateCallBackFn in g_renderManager is NULL'ed during
   // g_renderManager.Configure call by player, which happens after the codec
   // OpenDecoder call. So we need to restore it but it does not seem to stick :)
@@ -1781,6 +1793,9 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
 
 bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
+  if (!m_opened)
+    return false;
+
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->format = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
@@ -1797,6 +1812,10 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 void CAMLCodec::SetSpeed(int speed)
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::SetSpeed, speed(%d)", speed);
+
+  if (!m_opened)
+    return;
+
   if (m_speed != speed)
   {
     switch(speed)
@@ -1822,6 +1841,9 @@ void CAMLCodec::SetSpeed(int speed)
 
 int CAMLCodec::GetDataSize()
 {
+  if (!m_opened)
+    return 0;
+
   struct buf_status vbuf ={0};
   if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
     m_vbufsize = vbuf.size;
@@ -1831,6 +1853,9 @@ int CAMLCodec::GetDataSize()
 
 double CAMLCodec::GetTimeSize()
 {
+  if (!m_opened)
+    return 0;
+
   // if m_cur_pts is zero, hw decoder was not started yet
   // so we use the pts of the 1st demux packet that was send
   // to hw decoder to calc timesize.

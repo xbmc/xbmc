@@ -64,6 +64,7 @@ private:
   static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
   DllLibAmCodec *m_dll;
+  bool          m_opened;
   am_private_t  *am_private;
   volatile int  m_speed;
   volatile int64_t m_1st_pts;
