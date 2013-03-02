@@ -393,9 +393,10 @@ namespace XBMCAddon
       TRACE;
       if (g_application.m_pPlayer)
       {
+        SPlayerSubtitleStreamInfo info;
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
         int i = g_application.m_pPlayer->GetSubtitle();
-        CStdString strName;
-        g_application.m_pPlayer->GetSubtitleName(i, strName);
+        CStdString strName = info.name;
 
         if (strName == "Unknown(Invalid)")
           strName = "";
@@ -424,11 +425,12 @@ namespace XBMCAddon
         std::vector<String>* ret = new std::vector<String>(subtitleCount);
         for (int iStream=0; iStream < subtitleCount; iStream++)
         {
-          CStdString strName;
+          SPlayerSubtitleStreamInfo info;
+          g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, info);
+
           CStdString FullLang;
-          g_application.m_pPlayer->GetSubtitleName(iStream, strName);
-          if (!g_LangCodeExpander.Lookup(FullLang, strName))
-            FullLang = strName;
+          if (!g_LangCodeExpander.Lookup(FullLang, info.name))
+            FullLang = info.name;
           (*ret)[iStream] = FullLang;
         }
         return ret;
@@ -457,13 +459,14 @@ namespace XBMCAddon
         int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
         std::vector<String>* ret = new std::vector<String>(streamCount);
         for (int iStream=0; iStream < streamCount; iStream++)
-        {  
-          CStdString strName;
+        {
+          SPlayerAudioStreamInfo info;
+          g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
+
           CStdString FullLang;
-          g_application.m_pPlayer->GetAudioStreamLanguage(iStream, strName);
-          g_LangCodeExpander.Lookup(FullLang, strName);
+          g_LangCodeExpander.Lookup(FullLang, info.language);
           if (FullLang.IsEmpty())
-            g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
+            FullLang = info.name;
           (*ret)[iStream] = FullLang;
         }
         return ret;

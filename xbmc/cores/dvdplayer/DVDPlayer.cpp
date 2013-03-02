@@ -103,14 +103,6 @@ void CSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
-void CDVDPlayer::GetAudioStreamLanguage(int iStream, CStdString &strLanguage)
-{
-  strLanguage = "";
-  SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.language.length() > 0)
-    strLanguage = s.language;
-}
-
 SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
@@ -2687,24 +2679,25 @@ int CDVDPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
-void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
-  strStreamName = "";
-  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  if (index < 0 || index > (int) GetSubtitleCount() - 1)
+    return;
+
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
-    strStreamName = s.name;
+    info.name = s.name;
   else
-    strStreamName = g_localizeStrings.Get(13205); // Unknown
+    info.name = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
-    strStreamName += "(Invalid)";
-}
+    info.name += "(Invalid)";
 
-void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
-{
-  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  CStdString strStreamLang;
   if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
-    strStreamLang = g_localizeStrings.Get(13205); // Unknown
+    info.language = g_localizeStrings.Get(13205); // Unknown
+  else
+    info.language = strStreamLang;
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -2742,19 +2735,6 @@ int CDVDPlayer::GetAudioStreamCount()
 int CDVDPlayer::GetAudioStream()
 {
   return m_SelectionStreams.IndexOf(STREAM_AUDIO, *this);
-}
-
-void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
-{
-  strStreamName = "";
-  SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.name.length() > 0)
-    strStreamName += s.name;
-  else
-    strStreamName += "Unknown";
-
-  if(s.type == STREAM_NONE)
-    strStreamName += " (Invalid)";
 }
 
 void CDVDPlayer::SetAudioStream(int iStream)
@@ -3588,7 +3568,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_LEFT_CLICK:
         {
           CRect rs, rd;
-          GetVideoRect(rs, rd);
+          m_dvdPlayerVideo.GetVideoRect(rs, rd);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -3813,14 +3793,16 @@ double CDVDPlayer::GetQueueTime()
   return max(a, v) * 8000.0 / 100;
 }
 
-int CDVDPlayer::GetAudioBitrate()
+void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
-  return m_dvdPlayerAudio.GetAudioBitrate();
-}
+  info.bitrate = m_dvdPlayerVideo.GetVideoBitrate();
 
-int CDVDPlayer::GetVideoBitrate()
-{
-  return m_dvdPlayerVideo.GetVideoBitrate();
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+  info.videoCodecName = retVal;
+  info.videoAspectRatio = m_dvdPlayerVideo.GetAspectRatio();
+  m_dvdPlayerVideo.GetVideoRect(info.SrcRect, info.DestRect);
 }
 
 int CDVDPlayer::GetSourceBitrate()
@@ -3831,6 +3813,40 @@ int CDVDPlayer::GetSourceBitrate()
   return 0;
 }
 
+void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
+{
+  if (index < 0 || index > GetAudioStreamCount() - 1 )
+    return;
+
+  if (index == GetAudioStream())
+    info.bitrate = m_dvdPlayerAudio.GetAudioBitrate();
+  else
+    info.bitrate = m_pDemuxer->GetStreamFromAudioId(index)->iBitRate;
+
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
+  if(s.language.length() > 0)
+    info.language = s.language;
+
+  if(s.name.length() > 0)
+    info.name = s.name;
+  else
+    info.name += "Unknown";
+
+  if(s.type == STREAM_NONE)
+    info.name += " (Invalid)";
+
+  if (m_pDemuxer)
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
+    if (stream)
+    {
+      info.channels = stream->iChannels;
+      CStdString codecName;
+      m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
+      info.audioCodecName = codecName;
+    }
+  }
+}
 
 int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, CDemuxStream::EFlags flags)
 {
@@ -4043,33 +4059,6 @@ bool CDVDPlayer::Record(bool bOnOff)
   return false;
 }
 
-int CDVDPlayer::GetChannels()
-{
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-  {
-    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
-    if (stream)
-      return stream->iChannels;
-  }
-  return -1;
-}
-
-CStdString CDVDPlayer::GetAudioCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentAudio.id, retVal);
-  return retVal;
-}
-
-CStdString CDVDPlayer::GetVideoCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
-  return retVal;
-}
-
 int CDVDPlayer::GetPictureWidth()
 {
   if (m_pDemuxer && (m_CurrentVideo.id != -1))
@@ -4099,7 +4088,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
-      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = m_dvdPlayerVideo.GetAspectRatio();
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime() / 1000;
     }
     return result;

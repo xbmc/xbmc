@@ -235,8 +235,6 @@ public:
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
   virtual void  GetGeneralInfo(CStdString &strVideoInfo);
   virtual void  Update(bool bPauseDrawing);
-  virtual void  GetVideoRect(CRect& SrcRect, CRect& DestRect);
-  virtual void  GetVideoAspectRatio(float &fAR);
   virtual void  UpdateApplication(double timeout);
   virtual bool  CanRecord();
   virtual bool  IsRecording();
@@ -249,19 +247,15 @@ public:
   virtual float GetSubTitleDelay();
   virtual int   GetSubtitleCount();
   virtual int   GetSubtitle();
-  virtual void  GetSubtitleName(int iStream, CStdString &strStreamName);
-  virtual void  GetSubtitleLanguage(int iStream, CStdString &strStreamLang);
+  virtual void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
   virtual void  SetSubtitle(int iStream);
   virtual bool  GetSubtitleVisible();
   virtual void  SetSubtitleVisible(bool bVisible);
-  virtual bool  GetSubtitleExtension(CStdString &strSubtitleExtension) { return false; }
   virtual int   AddSubtitle(const CStdString& strSubPath);
 
   virtual int   GetAudioStreamCount();
   virtual int   GetAudioStream();
-  virtual void  GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void  SetAudioStream(int iStream);
-  virtual void  GetAudioStreamLanguage(int iStream, CStdString &strLanguage);
 
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void  LoadPage(int p, int sp, unsigned char* buffer);
@@ -276,12 +270,9 @@ public:
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
   virtual void  ToFFRW(int iSpeed = 0);
-  virtual int   GetAudioBitrate();
-  virtual int   GetVideoBitrate();
+  virtual void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
+  virtual void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual int   GetSourceBitrate();
-  virtual int   GetChannels();
-  virtual CStdString GetAudioCodecName();
-  virtual CStdString GetVideoCodecName();
   virtual int   GetPictureWidth();
   virtual int   GetPictureHeight();
   virtual bool  GetStreamDetails(CStreamDetails &details);
