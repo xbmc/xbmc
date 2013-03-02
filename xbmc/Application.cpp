@@ -2347,6 +2347,9 @@ void CApplication::Render()
 
   g_Windowing.EndRender();
 
+  // execute post rendering actions (finalize window closing)
+  g_windowManager.AfterRender();
+
   // reset our info cache - we do this at the end of Render so that it is
   // fresh for the next process(), or after a windowclose animation (where process()
   // isn't called)

@@ -595,16 +595,13 @@ bool CGUIWindowManager::Render()
       CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
 
-  m_tracker.CleanMarkedRegions();
-
-  // execute post rendering actions (finalize window closing)
-  AfterRender();
-
   return hasRendered;
 }
 
 void CGUIWindowManager::AfterRender()
 {
+  m_tracker.CleanMarkedRegions();
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
     pWindow->AfterRender();
