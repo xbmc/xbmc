@@ -53,7 +53,7 @@
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
-#define MAXPRESENTDELAY 0.500
+#define MAXPRESENTDELAY 0.200
 
 /* at any point we want an exclusive lock on rendermanager */
 /* we must make sure we don't have a graphiccontext lock */
@@ -1031,13 +1031,47 @@ void CXBMCRenderManager::PrepareNextRender()
   if (idx < 0)
     return;
 
-  double presenttime = m_renderBuffers[idx].timestamp;
   double clocktime = GetPresentTime();
+  double frametime = 1 / g_graphicsContext.GetFPS();
+
+  // look ahead in the queue
+  // if the next frame is already late, skip the one we are about to render
+  // drop buffers if time has jumped back
+  int skipToPos = 0;
+  int count = 1;
+  int i = idx;
+  while (i != m_iOutputRenderBuffer)
+  {
+    int idx_next = (i + 1) % m_iNumRenderBuffers;
+    if (m_renderBuffers[idx_next].timestamp < m_renderBuffers[i].timestamp-frametime ||
+        m_renderBuffers[idx_next].timestamp <= (clocktime-frametime))
+    {
+      skipToPos = count;
+    }
+    count++;
+    i = idx_next;
+  }
+  count = 1;
+  while (idx != m_iOutputRenderBuffer)
+  {
+    int idx_next = (idx + 1) % m_iNumRenderBuffers;
+    if (count <= skipToPos)
+    {
+      FlipRenderBuffer();
+      idx = idx_next;
+      CLog::Log(LOGDEBUG,"%s - skip frame at render buffer index: %d", __FUNCTION__, idx);
+    }
+    else
+      break;
+    count++;
+  }
+
+  double presenttime = m_renderBuffers[idx].timestamp;
+
   if(presenttime - clocktime > MAXPRESENTDELAY)
     presenttime = clocktime + MAXPRESENTDELAY;
 
   m_sleeptime = presenttime - clocktime;
-  double frametime = 1 / g_graphicsContext.GetFPS();
 
   if (g_graphicsContext.IsFullScreenVideo() || presenttime <= clocktime + frametime)
   {
