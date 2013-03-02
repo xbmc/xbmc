@@ -162,7 +162,11 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   {
     CStdString strItem;
     CStdString strName;
-    g_application.m_pPlayer->GetAudioStreamName(i, strName);
+
+    SPlayerAudioStreamInfo info;
+    g_application.m_pPlayer->GetAudioStreamInfo(i, info);
+
+    strName = info.name;
     if (strName.length() == 0)
       strName = "Unnamed";
 
@@ -198,17 +202,17 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
   // cycle through each subtitle and add it to our entry list
   for (int i = 0; i <= setting.max; ++i)
   {
+    SPlayerSubtitleStreamInfo info;
+    g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
+
     CStdString strItem;
-    CStdString strName;
-    g_application.m_pPlayer->GetSubtitleName(i, strName);
+    CStdString strName = info.name;
+
     if (strName.length() == 0)
       strName = "Unnamed";
 
-    CStdString strLanguage;
-    g_application.m_pPlayer->GetSubtitleLanguage(i, strLanguage);
-
-    if (strName != strLanguage)
-      strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+    if (strName != info.language)
+      strName.Format("%s [%s]", strName.c_str(), info.language.c_str());
 
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 

@@ -824,11 +824,6 @@ int PAPlayer::GetCacheLevel() const
   return m_playerGUIData.m_cacheLevel;
 }
 
-int PAPlayer::GetChannels()
-{
-  return m_playerGUIData.m_channelCount;
-}
-
 int PAPlayer::GetBitsPerSample()
 {
   return m_playerGUIData.m_bitsPerSample;
@@ -839,14 +834,11 @@ int PAPlayer::GetSampleRate()
   return m_playerGUIData.m_sampleRate;
 }
 
-CStdString PAPlayer::GetAudioCodecName()
+void PAPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
-  return m_playerGUIData.m_codec;
-}
-
-int PAPlayer::GetAudioBitrate()
-{
-  return m_playerGUIData.m_audioBitrate;
+  info.bitrate = m_playerGUIData.m_audioBitrate;
+  info.channels = m_playerGUIData.m_channelCount;
+  info.audioCodecName = m_playerGUIData.m_codec;
 }
 
 bool PAPlayer::CanSeek()

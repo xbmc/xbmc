@@ -226,10 +226,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
-        g_application.m_pPlayer->GetSubtitleName(g_application.m_pPlayer->GetSubtitle(),sub);
-        g_application.m_pPlayer->GetSubtitleLanguage(g_application.m_pPlayer->GetSubtitle(),lang);
-        if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        SPlayerSubtitleStreamInfo info;
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        sub = info.name;
+        if (sub != info.language)
+          sub.Format("%s [%s]", sub.c_str(), info.language.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -279,10 +280,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
-        g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
-        g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream,lang);
-        if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        SPlayerSubtitleStreamInfo info;
+        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        sub = info.name;
+        if (sub != info.language)
+          sub.Format("%s [%s]", sub.c_str(), info.language.c_str());
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -364,7 +366,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_AudioStream = 0;
       g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
       CStdString aud;
-      g_application.m_pPlayer->GetAudioStreamName(g_settings.m_currentVideoSettings.m_AudioStream,aud);
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(g_settings.m_currentVideoSettings.m_AudioStream, info);
+      aud = info.name;
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
       return true;
     }
@@ -947,10 +951,8 @@ void CGUIWindowFullScreen::FrameMove()
       OnMessage(msg);
     }
     // show sizing information
-    CRect SrcRect, DestRect;
-    float fAR;
-    g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
-    g_application.m_pPlayer->GetVideoAspectRatio(fAR);
+    SPlayerVideoStreamInfo info;
+    g_application.m_pPlayer->GetVideoStreamInfo(info);
     {
       // Splitres scaling factor
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
@@ -959,9 +961,9 @@ void CGUIWindowFullScreen::FrameMove()
 
       CStdString strSizing;
       strSizing.Format(g_localizeStrings.Get(245),
-                       (int)SrcRect.Width(), (int)SrcRect.Height(),
-                       (int)(DestRect.Width() * xscale), (int)(DestRect.Height() * yscale),
-                       g_settings.m_fZoomAmount, fAR*g_settings.m_fPixelRatio, 
+                       (int)info.SrcRect.Width(), (int)info.SrcRect.Height(),
+                       (int)(info.DestRect.Width() * xscale), (int)(info.DestRect.Height() * yscale),
+                       g_settings.m_fZoomAmount, info.videoAspectRatio*g_settings.m_fPixelRatio, 
                        g_settings.m_fPixelRatio, g_settings.m_fVerticalShift);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
@@ -1118,13 +1120,13 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
         y = (float) g_settings.m_ResInfo[res].iSubtitles - textHeight;
       else
       {
-        CRect SrcRect, DestRect;
-        g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
+        SPlayerVideoStreamInfo info;
+        g_application.m_pPlayer->GetVideoStreamInfo(info);
 
         if ((subalign == SUBTITLE_ALIGN_TOP_INSIDE) || (subalign == SUBTITLE_ALIGN_TOP_OUTSIDE))
-          y = DestRect.y1;
+          y = info.DestRect.y1;
         else
-          y = DestRect.y2;
+          y = info.DestRect.y2;
 
         // use the manual distance to the screenbottom as an offset to the automatic location
         if ((subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE) || (subalign == SUBTITLE_ALIGN_TOP_OUTSIDE))

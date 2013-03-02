@@ -104,14 +104,6 @@ void COMXSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
-void COMXPlayer::GetAudioStreamLanguage(int iStream, CStdString &strLanguage)
-{
-  strLanguage = "";
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.language.length() > 0)
-    strLanguage = s.language;
-}
-
 OMXSelectionStream& COMXSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
@@ -2698,24 +2690,25 @@ int COMXPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
-void COMXPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+void COMXPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
 {
-  strStreamName = "";
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  if (index < 0 || index > (int) GetSubtitleCount() - 1)
+    return;
+
+  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
-    strStreamName = s.name;
+    info.name = s.name;
   else
-    strStreamName = g_localizeStrings.Get(13205); // Unknown
+    info.name = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
-    strStreamName += "(Invalid)";
-}
+    info.name += "(Invalid)";
 
-void COMXPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
-{
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  CStdString strStreamLang;
   if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
-    strStreamLang = g_localizeStrings.Get(13205); // Unknown
+    info.language = g_localizeStrings.Get(13205); // Unknown
+  else
+    info.language = strStreamLang;
 }
 
 void COMXPlayer::SetSubtitle(int iStream)
@@ -2753,19 +2746,6 @@ int COMXPlayer::GetAudioStreamCount()
 int COMXPlayer::GetAudioStream()
 {
   return m_SelectionStreams.IndexOf(STREAM_AUDIO, *this);
-}
-
-void COMXPlayer::GetAudioStreamName(int iStream, CStdString &strStreamName)
-{
-  strStreamName = "";
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.name.length() > 0)
-    strStreamName += s.name;
-  else
-    strStreamName += "Unknown";
-
-  if(s.type == STREAM_NONE)
-    strStreamName += " (Invalid)";
 }
  
 void COMXPlayer::SetAudioStream(int iStream)
@@ -3574,7 +3554,7 @@ bool COMXPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_LEFT_CLICK:
         {
           CRect rs, rd;
-          GetVideoRect(rs, rd);
+          g_renderManager.GetVideoRect(rs, rd);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -3799,14 +3779,51 @@ double COMXPlayer::GetQueueTime()
   return max(a, v) * 8000.0 / 100;
 }
 
-int COMXPlayer::GetAudioBitrate()
+void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
-  return m_player_audio.GetAudioBitrate();
+  if (index < 0 || index > GetAudioStreamCount() - 1)
+    return;
+
+  if (index == GetAudioStream())
+    info.bitrate = m_player_audio.GetAudioBitrate();
+  else
+    info.bitrate = m_pDemuxer->GetStreamFromAudioId(index)->iBitRate;
+
+  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
+  if(s.language.length() > 0)
+    info.language = s.language;
+
+  if(s.name.length() > 0)
+    info.name = s.name;
+  else
+    info.name += "Unknown";
+
+  if(s.type == STREAM_NONE)
+    info.name += " (Invalid)";
+
+  if (m_pDemuxer)
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
+    if (stream)
+    {
+      info.channels = stream->iChannels;
+      CStdString codecName;
+      m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
+      info.audioCodecName = codecName;
+    }
+  }
 }
 
-int COMXPlayer::GetVideoBitrate()
+void COMXPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
-  return m_player_video.GetVideoBitrate();
+  info.bitrate = m_player_video.GetVideoBitrate();
+
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+  info.videoCodecName = retVal;
+  info.videoAspectRatio = g_renderManager.GetAspectRatio();
+  g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
 }
 
 int COMXPlayer::GetSourceBitrate()
@@ -4027,33 +4044,6 @@ bool COMXPlayer::Record(bool bOnOff)
   return false;
 }
 
-int COMXPlayer::GetChannels()
-{
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-  {
-    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
-    if (stream)
-      return stream->iChannels;
-  }
-  return -1;
-}
-
-CStdString COMXPlayer::GetAudioCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentAudio.id, retVal);
-  return retVal;
-}
-
-CStdString COMXPlayer::GetVideoCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
-  return retVal;
-}
-
 int COMXPlayer::GetPictureWidth()
 {
   if (m_pDemuxer && (m_CurrentVideo.id != -1))
@@ -4083,7 +4073,7 @@ bool COMXPlayer::GetStreamDetails(CStreamDetails &details)
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
-      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = g_renderManager.GetAspectRatio();
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime() / 1000;
     }
     return result;
@@ -4132,11 +4122,6 @@ bool COMXPlayer::CachePVRStream(void) const
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
 
-void COMXPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
 void COMXPlayer::SetMute(bool bOnOff)
 {
   m_current_mute = bOnOff;
@@ -4169,11 +4154,6 @@ bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
 void COMXPlayer::Update(bool bPauseDrawing)
 {
   g_renderManager.Update(bPauseDrawing);
-}
-
-void COMXPlayer::GetVideoAspectRatio(float &fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
 }
 
 void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)

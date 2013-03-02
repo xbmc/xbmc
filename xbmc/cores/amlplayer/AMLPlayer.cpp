@@ -846,25 +846,6 @@ int CAMLPlayer::GetAudioStream()
   return m_audio_index;
 }
 
-void CAMLPlayer::GetAudioStreamName(int iStream, CStdString &strStreamName)
-{
-  //CLog::Log(LOGDEBUG, "CAMLPlayer::GetAudioStreamName");
-  CSingleLock lock(m_aml_csection);
-
-  strStreamName.Format("Undefined");
-
-  if (iStream > (int)m_audio_streams.size() || iStream < 0)
-    return;
-
-  if ( m_audio_streams[iStream]->language.size())
-  {
-    CStdString name;
-    g_LangCodeExpander.Lookup( name, m_audio_streams[iStream]->language);
-    strStreamName = name;
-  }
-
-}
-
 void CAMLPlayer::SetAudioStream(int SetAudioStream)
 {
   //CLog::Log(LOGDEBUG, "CAMLPlayer::SetAudioStream");
@@ -926,35 +907,33 @@ int CAMLPlayer::GetSubtitle()
     return -1;
 }
 
-void CAMLPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+void CAMLPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
 
-  strStreamName = "";
-
-  if (iStream > (int)m_subtitle_streams.size() || iStream < 0)
+  if (index > (int)m_subtitle_streams.size() -1 || index < 0)
     return;
 
   if (m_subtitle_streams[m_subtitle_index]->source == STREAM_SOURCE_NONE)
   {
-    if ( m_subtitle_streams[iStream]->language.size())
+    if ( m_subtitle_streams[index]->language.size())
     {
       CStdString name;
-      g_LangCodeExpander.Lookup(name, m_subtitle_streams[iStream]->language);
-      strStreamName = name;
+      g_LangCodeExpander.Lookup(name, m_subtitle_streams[index]->language);
+      info.name = name;
     }
     else
-      strStreamName = g_localizeStrings.Get(13205); // Unknown
+      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   else
   {
     if(m_subtitle_streams[m_subtitle_index]->name.length() > 0)
-      strStreamName = m_subtitle_streams[m_subtitle_index]->name;
+      info.name = m_subtitle_streams[m_subtitle_index]->name;
     else
-      strStreamName = g_localizeStrings.Get(13205); // Unknown
+      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   if (m_log_level > 5)
-    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", iStream);
+    CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", index);
 }
  
 void CAMLPlayer::SetSubtitle(int iStream)
@@ -1014,16 +993,6 @@ int CAMLPlayer::AddSubtitle(const CStdString& strSubPath)
 void CAMLPlayer::Update(bool bPauseDrawing)
 {
   g_renderManager.Update(bPauseDrawing);
-}
-
-void CAMLPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
-void CAMLPlayer::GetVideoAspectRatio(float &fAR)
-{
-  fAR = g_renderManager.GetAspectRatio();
 }
 
 int CAMLPlayer::GetChapterCount()
@@ -1128,37 +1097,47 @@ __int64 CAMLPlayer::GetTotalTime()
   return m_duration_ms;
 }
 
-int CAMLPlayer::GetAudioBitrate()
+void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return 0;
+  if (index < 0 || m_audio_streams.size() == 0 || index > (int)(m_audio_streams.size() - 1))
+    return;
 
-  return m_audio_streams[m_audio_index]->bit_rate;
+  info.bitrate = m_audio_streams[index]->bit_rate;
+
+  if ( m_audio_streams[index]->language.size())
+    info.language = m_audio_streams[index]->language;
+
+  info.channels = m_audio_streams[index]->channel;
+
+  info.audioCodecName = AudioCodecName(m_audio_streams[index]->format);
+
+  info.name.Format("Undefined");
+    
+  if ( m_audio_streams[index]->language.size())
+  {
+    CStdString name;
+    g_LangCodeExpander.Lookup( name, m_audio_streams[index]->language);
+    info.name = name;
+  }
 }
 
-int CAMLPlayer::GetVideoBitrate()
+void CAMLPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
   if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
-    return 0;
+    return;
 
-  return m_video_streams[m_video_index]->bit_rate;
+  info.bitrate = m_video_streams[m_video_index]->bit_rate;
+  info.videoCodecName = VideoCodecName(m_video_streams[m_video_index]->format);
+  info.videoAspectRatio = g_renderManager.GetAspectRatio();
+  g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
 }
 
 int CAMLPlayer::GetSourceBitrate()
 {
   CLog::Log(LOGDEBUG, "CAMLPlayer::GetSourceBitrate");
   return 0;
-}
-
-int CAMLPlayer::GetChannels()
-{
-  CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return 0;
-  
-  return m_audio_streams[m_audio_index]->channel;
 }
 
 int CAMLPlayer::GetBitsPerSample()
@@ -1174,28 +1153,6 @@ int CAMLPlayer::GetSampleRate()
     return 0;
   
   return m_audio_streams[m_audio_index]->sample_rate;
-}
-
-CStdString CAMLPlayer::GetAudioCodecName()
-{
-  CStdString strAudioCodec = "";
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return strAudioCodec;
-
-  strAudioCodec = AudioCodecName(m_audio_streams[m_audio_index]->format);
-
-  return strAudioCodec;
-}
-
-CStdString CAMLPlayer::GetVideoCodecName()
-{
-  CStdString strVideoCodec = "";
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
-    return strVideoCodec;
-  
-  strVideoCodec = VideoCodecName(m_video_streams[m_video_index]->format);
-
-  return strVideoCodec;
 }
 
 int CAMLPlayer::GetPictureWidth()
