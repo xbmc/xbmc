@@ -169,7 +169,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
 int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
 {
   CSingleLock lock(m_sync);
-  uint64_t avail = m_end - m_cur;
+  int64_t avail = m_end - m_cur;
 
   if(millis == 0 || IsEndOfInput())
     return avail;
@@ -195,14 +195,14 @@ int64_t CCircularCache::Seek(int64_t pos)
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
   // we try to avoid a (heavy) seek on the source
-  if ((uint64_t)pos >= m_end && (uint64_t)pos < m_end + 100000)
+  if (pos >= m_end && pos < m_end + 100000)
   {
     lock.Leave();
     WaitForData((size_t)(pos - m_cur), 5000);
     lock.Enter();
   }
 
-  if((uint64_t)pos >= m_beg && (uint64_t)pos <= m_end)
+  if(pos >= m_beg && pos <= m_end)
   {
     m_cur = pos;
     return pos;
