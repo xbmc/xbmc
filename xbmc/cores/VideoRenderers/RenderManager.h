@@ -96,9 +96,8 @@ public:
    * @param timestamp of frame delivered with AddVideoPicture
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
-   * @param speed current speed of player, needed for some optimizations like keeping the gui responsive on rewind
    */
-  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE, int speed = 1000);
+  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
   bool Flush();
@@ -191,6 +190,11 @@ public:
    * Video player call this on flush in oder to discard any queued frames
    */
   void DiscardBuffer();
+
+  /**
+   * notify RenderManager about play speed
+   */
+  void SetSpeed(int speed);
 
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);
