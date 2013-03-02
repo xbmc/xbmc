@@ -271,6 +271,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_presentstep = PRESENT_IDLE;
     m_presentevent.Set();
     ResetRenderBuffer();
+    EnableBuffering(buffering);
   }
 
   return result;
@@ -1088,7 +1089,10 @@ void CXBMCRenderManager::EnableBuffering(bool enable)
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   if (m_iNumRenderBuffers < 3)
+  {
+    m_bUseBuffering = false;
     return;
+  }
 
   m_bUseBuffering = enable;
   if (!m_bUseBuffering)
