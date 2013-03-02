@@ -2004,13 +2004,7 @@ bool CApplication::RenderNoPresent()
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
   {
-    if (m_bPresentFrame && IsPlaying() && !IsPaused())
-    {
-      ResetScreenSaver();
-      g_renderManager.Present();
-    }
-    else
-      g_renderManager.RenderUpdate(true);
+    g_renderManager.Render(true, 0, 255);
 
     // close window overlays
     CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
@@ -2138,9 +2132,13 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
+  g_renderManager.FrameMove();
+
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
     hasRendered = true;
+
+  g_renderManager.FrameFinish();
 
   g_Windowing.EndRender();
 
