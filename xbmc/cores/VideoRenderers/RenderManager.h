@@ -54,7 +54,9 @@ public:
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio();
   void Update(bool bPauseDrawing);
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void FrameMove();
+  void FrameFinish();
+  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
   CRenderCapture* AllocRenderCapture();
@@ -127,7 +129,6 @@ public:
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats();
 
-  void Present();
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
@@ -136,7 +137,6 @@ public:
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
 protected:
-  void Render(bool clear, DWORD flags, DWORD alpha);
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);

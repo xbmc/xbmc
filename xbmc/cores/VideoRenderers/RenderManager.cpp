@@ -299,7 +299,7 @@ void CXBMCRenderManager::Update(bool bPauseDrawing)
   m_presentevent.Set();
 }
 
-void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::FrameMove()
 {
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (!m_pRenderer)
@@ -313,16 +313,32 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       m_presentevent.Set();
     }
   }
+}
 
-  if (g_advancedSettings.m_videoDisableBackgroundDeinterlace)
-  {
-    CSharedLock lock(m_sharedSection);
-    PresentSingle(clear, flags, alpha);
+void CXBMCRenderManager::FrameFinish()
+{
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+    WaitPresentTime(m_presenttime);
+
+  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+
+    if(m_presentstep == PRESENT_FRAME)
+    {
+      if( m_presentmethod == PRESENT_METHOD_BOB
+      ||  m_presentmethod == PRESENT_METHOD_WEAVE)
+      {
+        m_presentstep = PRESENT_FRAME2;
+        g_application.NewFrame();
+      }
+      else
+        m_presentstep = PRESENT_IDLE;
+    }
+    else if(m_presentstep == PRESENT_FRAME2)
+      m_presentstep = PRESENT_IDLE;
+
+    m_presentevent.Set();
   }
-  else
-    Render(clear, flags, alpha);
-
-  m_presentevent.Set();
 }
 
 unsigned int CXBMCRenderManager::PreInit()
@@ -580,6 +596,9 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     EDEINTERLACEMODE deinterlacemode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
     EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
 
+    if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
+      deinterlacemode = VS_DEINTERLACEMODE_OFF;
+
     if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
       m_presentmethod = PRESENT_METHOD_SINGLE;
     else
@@ -687,37 +706,12 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   m_overlays.Render();
 }
 
-void CXBMCRenderManager::Present()
-{
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-    if (!m_pRenderer)
-      return;
-
-    if(m_presentstep == PRESENT_FLIP)
-    {
-      m_overlays.Flip();
-      m_pRenderer->FlipPage(m_presentsource);
-      m_presentstep = PRESENT_FRAME;
-      m_presentevent.Set();
-    }
-  }
-
-  Render(true, 0, 255);
-
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
-
-  m_presentevent.Set();
-}
-
 /* simple present method */
 void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(clear, flags, alpha);
-  m_presentstep = PRESENT_IDLE;
 }
 
 /* new simpler method of handling interlaced material, *
@@ -732,8 +726,6 @@ void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
-    m_presentstep = PRESENT_FRAME2;
-    g_application.NewFrame();
   }
   else
   {
@@ -741,7 +733,6 @@ void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
-    m_presentstep = PRESENT_IDLE;
   }
 }
 
@@ -759,7 +750,6 @@ void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
     m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_BOT, alpha / 2);
   }
-  m_presentstep = PRESENT_IDLE;
 }
 
 void CXBMCRenderManager::Recover()
