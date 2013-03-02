@@ -109,6 +109,12 @@ struct Frame
   MediaBuffer* medbuf;
 };
 
+enum StageFrightQuirks
+{
+  QuirkNone = 0,
+  QuirkSWRender = 0x01,
+};
+
 class CStageFrightDecodeThread;
 
 class CStageFrightVideoPrivate : public MediaBufferObserver
@@ -119,7 +125,7 @@ public:
     , eglDisplay(EGL_NO_DISPLAY), eglSurface(EGL_NO_SURFACE), eglContext(EGL_NO_CONTEXT)
     , eglInitialized(false)
     , framecount(0)
-    , cur_frame(NULL), prev_frame(NULL)
+    , quirks(QuirkNone), cur_frame(NULL), prev_frame(NULL)
     , width(-1), height(-1)
     , texwidth(-1), texheight(-1)
     , client(NULL), decoder(NULL), decoder_component(NULL)
@@ -405,6 +411,7 @@ public:
   pthread_cond_t out_condition;
   pthread_mutex_t free_mutex;
 
+  int quirks;
   Frame *cur_frame;
   Frame *prev_frame;
   bool source_done;
@@ -514,7 +521,7 @@ public:
         outFormat->findInt32(kKeyWidth , &w);
         outFormat->findInt32(kKeyHeight, &h);
 
-         if (!outFormat->findInt32(kKeyDisplayWidth , &dw))
+        if (!outFormat->findInt32(kKeyDisplayWidth , &dw))
           dw = w;
         if (!outFormat->findInt32(kKeyDisplayHeight, &dh))
           dh = h;
@@ -530,11 +537,11 @@ public:
         if (p->decoder_component && !strncmp(p->decoder_component, "OMX.SEC", 7) &&
           (w & 15 || h & 15))
         {
-        if (((w + 15)&~15) * ((h + 15)&~15) * 3/2 == frame->medbuf->range_length())
-        {
-          w = (w + 15)&~15;
-          h = (h + 15)&~15;
-        }
+          if (((w + 15)&~15) * ((h + 15)&~15) * 3/2 == frame->medbuf->range_length())
+          {
+            w = (w + 15)&~15;
+            h = (h + 15)&~15;
+          }
         }
         frame->width = w;
         frame->height = h;
@@ -680,7 +687,7 @@ public:
       }
 
     #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s: >>> pushed OUT frame; w:%d, h:%d, dw:%d, dh:%d, kf:%d, ur:%d, tm:%d\n", CLASSNAME, w, h, dw, dh, keyframe, unreadable, XbmcThreads::SystemClockMillis() - time);
+      CLog::Log(LOGDEBUG, "%s: >>> pushed OUT frame; w:%d, h:%d, dw:%d, dh:%d, kf:%d, ur:%d, tm:%d\n", CLASSNAME, frame->width, frame->height, dw, dh, keyframe, unreadable, XbmcThreads::SystemClockMillis() - time);
     #endif
 
       pthread_mutex_lock(&p->out_mutex);
@@ -798,6 +805,9 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   p->width     = hints.width;
   p->height    = hints.height;
 
+  if (g_advancedSettings.m_stagefrightConfig.useSwRenderer)
+    p->quirks |= QuirkSWRender;
+    
   sp<MetaData> outFormat;
   int32_t cropLeft, cropTop, cropRight, cropBottom;
 
@@ -869,7 +879,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   }
 
   p->natwin = NULL;
-  if (!g_advancedSettings.m_stagefrightConfig.useSwRenderer)
+  if ((p->quirks & QuirkSWRender) == 0)
   {
     g_xbmcapp.InitStagefrightSurface();
     p->natwin = g_xbmcapp.GetAndroidVideoWindow();
@@ -885,7 +895,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
-                                         OMXCodec::kHardwareCodecsOnly | (g_advancedSettings.m_stagefrightConfig.useSwRenderer ? OMXCodec::kClientNeedsFramebuffer : 0),
+                                         OMXCodec::kHardwareCodecsOnly | (p->quirks & QuirkSWRender ? OMXCodec::kClientNeedsFramebuffer : 0),
                                          p->natwin
                                          );
 
@@ -910,14 +920,16 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1)
     {
       // Has issues with some XVID encoded MP4. Only fails after actual decoding starts...
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MP4)");
       goto fail;
       
     }
-    else if (!strncmp(component, "OMX.rk.", 7) && g_advancedSettings.m_stagefrightConfig.useAVCcodec != 1) 
+    else if (!strncmp(component, "OMX.rk.", 7) && g_advancedSettings.m_stagefrightConfig.useAVCcodec != 1 && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1) 
     {
-      if (p->height % 16 != 0)
+      if (p->width % 32 != 0 || p->height % 16 != 0)
       {
-        // Buggy. Hard crash on non MOD16 height videos
+        // Buggy. Hard crash on non MOD16 height videos and stride errors for non MOD32 width
+        CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MOD16)");
         goto fail;
         
       }
@@ -974,7 +986,7 @@ fail:
   }
   if (p->decoder_component)
     free(&p->decoder_component);
-  if (!g_advancedSettings.m_stagefrightConfig.useSwRenderer)
+  if ((p->quirks & QuirkSWRender) == 0)
     g_xbmcapp.UninitStagefrightSurface();
   return false;
 }
@@ -1221,7 +1233,7 @@ void CStageFrightVideo::Close()
 
   delete p->client;
 
-  if (!g_advancedSettings.m_stagefrightConfig.useSwRenderer)
+  if ((p->quirks & QuirkSWRender) == 0)
     g_xbmcapp.UninitStagefrightSurface();
 
   pthread_mutex_destroy(&p->in_mutex);
