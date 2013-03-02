@@ -4407,7 +4407,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
         *m_stackFileItemToUpdate,
         m_progressTrackingVideoResumeBookmark,
         m_progressTrackingPlayCountUpdate);
-    CJobManager::GetInstance().AddJob(job, NULL);
+    CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
   }
 }
 
