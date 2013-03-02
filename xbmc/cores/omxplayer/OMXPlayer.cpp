@@ -2690,7 +2690,7 @@ int COMXPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
-void COMXPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
+void COMXPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
 {
   if (index < 0 || index > (int) GetSubtitleCount() - 1)
     return;
