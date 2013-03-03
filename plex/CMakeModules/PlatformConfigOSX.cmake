@@ -104,6 +104,7 @@ set(non_link_libs
   png
   tiff
   cec
+  SDL_image
 )
 
 set(system_libs iconv stdc++)  
