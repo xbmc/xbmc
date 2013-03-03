@@ -44,7 +44,7 @@ echo $outputpath
 cd $DEPENDDIR
 ./bootstrap
 ./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
-#make || exit 1
+make || exit 1
 
 cd $ROOT
 
