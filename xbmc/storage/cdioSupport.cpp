@@ -725,6 +725,8 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.isofs_size = 0;
       ti.nJolietLevel = 0;
       ti.nFrames = 0;
+      ti.nMins = 0;
+      ti.nSecs = 0;
       info->SetTrackInformation( i, ti );
       CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.", i);
       delete info;
