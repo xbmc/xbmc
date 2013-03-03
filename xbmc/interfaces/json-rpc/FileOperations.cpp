@@ -113,7 +113,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
 
   if (CDirectory::GetDirectory(strPath, items, extensions))
   {
-    CFileItemList filteredDirectories, filteredFiles;
+    CFileItemList filteredFiles;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
       if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
@@ -131,9 +131,6 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
            media == "files" ||
            URIUtils::IsUPnP(items.GetPath()))
       {
-        if (items[i]->m_bIsFolder)
-          filteredDirectories.Add(items[i]);
-        else 
           filteredFiles.Add(items[i]);
       }
       else
@@ -141,16 +138,10 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
         CFileItemPtr fileItem(new CFileItem());
         if (FillFileItem(items[i], fileItem, media, parameterObject))
         {
-          if (items[i]->m_bIsFolder)
-            filteredDirectories.Add(fileItem);
-          else
             filteredFiles.Add(fileItem);
         }
         else
         {
-          if (items[i]->m_bIsFolder)
-            filteredDirectories.Add(items[i]);
-          else
             filteredFiles.Add(items[i]);
         }
       }
@@ -176,22 +167,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
     if (!hasFileField)
       param["properties"].append("file");
 
-    HandleFileItemList("id", true, "files", filteredDirectories, param, result);
-    for (unsigned int index = 0; index < result["files"].size(); index++)
-    {
-      result["files"][index]["filetype"] = "directory";
-    }
-    int count = (int)result["limits"]["total"].asInteger();
-
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
-    for (unsigned int index = count; index < result["files"].size(); index++)
-    {
-      result["files"][index]["filetype"] = "file";
-    }
-    count += (int)result["limits"]["total"].asInteger();
-
-    result["limits"]["end"] = count;
-    result["limits"]["total"] = count;
 
     return OK;
   }
