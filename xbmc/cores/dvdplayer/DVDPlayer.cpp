@@ -2699,8 +2699,6 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
   SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
     info.name += "(Invalid)";
@@ -3843,8 +3841,6 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name += "Unknown";
 
   if(s.type == STREAM_NONE)
     info.name += " (Invalid)";

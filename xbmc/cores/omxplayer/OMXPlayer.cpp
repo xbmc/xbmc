@@ -2700,8 +2700,6 @@ void COMXPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
   OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
     info.name += "(Invalid)";
@@ -3797,8 +3795,6 @@ void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name += "Unknown";
 
   if(s.type == STREAM_NONE)
     info.name += " (Invalid)";
