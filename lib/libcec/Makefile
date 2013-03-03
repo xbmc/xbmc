@@ -7,7 +7,7 @@
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.0.3
+VERSION=2.1.0
 SOURCE=$(LIBNAME)-$(VERSION)
 
 # download location and format
@@ -36,19 +36,19 @@ $(LIBNAME): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(LIBNAME)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(LIBNAME) > .gitignore
-	cd $(LIBNAME); autoreconf -vif
-	cd $(LIBNAME); $(CONFIGURE)
+	cd $(SOURCE); autoreconf -vif
+	cd $(SOURCE); $(CONFIGURE)
 
 $(SO_NAME): $(LIBNAME)
-	make -j 1 -C $(LIBNAME)
+	make -j 1 -C $(SOURCE)
 
 install:
-	make -C $(LIBNAME) install
+	make -C $(SOURCE) install
 	ldconfig
 
 clean:
-	rm -rf $(LIBNAME)
+	rm -rf $(SOURCE)
 
 distclean::
-	rm -rf $(LIBNAME)
+	rm -rf $(SOURCE)
 
