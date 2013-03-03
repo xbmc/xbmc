@@ -609,10 +609,9 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           }
           else
           {
-            Close();
             m_inputBuffer = pData;
             m_inputSize   = iSize;
-            CLog::Log(LOGERROR, "CBitstreamConverter::Convert error converting. disable converter\n");
+            CLog::Log(LOGERROR, "CBitstreamConverter::Convert error converting.\n");
           }
         }
         else
