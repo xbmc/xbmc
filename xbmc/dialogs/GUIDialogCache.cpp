@@ -33,7 +33,6 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, con
   m_strHeader = strHeader;
   m_strLinePrev = strMsg;
   bSentCancel = false;
-  dwDelay = 0;
 
   m_pDlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
