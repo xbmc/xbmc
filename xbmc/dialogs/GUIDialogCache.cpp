@@ -124,7 +124,7 @@ bool CGUIDialogCache::OnFileCallback(void* pContext, int ipercent, float avgSpee
 
 void CGUIDialogCache::Process()
 {
-  if (m_pDlg)
+  if (!m_pDlg)
     return;
 
   while( true )
