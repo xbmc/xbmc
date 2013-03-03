@@ -971,7 +971,7 @@ extern "C"
 
     // locate next free directory
     int iDirSlot=0;
-    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    while ((iDirSlot<MAX_OPEN_DIRS) && (vecDirsOpen[iDirSlot].curr_index != -1)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
     {
       CLog::Log(LOGDEBUG, "Dll: Max open dirs reached");
