@@ -914,20 +914,9 @@ void CAMLPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
   if (index > (int)m_subtitle_streams.size() -1 || index < 0)
     return;
 
-  if (m_subtitle_streams[m_subtitle_index]->source == STREAM_SOURCE_NONE)
-  {
-    if ( m_subtitle_streams[index]->language.size())
-    {
-      CStdString name;
-      g_LangCodeExpander.Lookup(name, m_subtitle_streams[index]->language);
-      info.name = name;
-    }
-  }
-  else
-  {
-    if(m_subtitle_streams[m_subtitle_index]->name.length() > 0)
-      info.name = m_subtitle_streams[m_subtitle_index]->name;
-  }
+  info.language = m_subtitle_streams[index]->language;
+  info.name = m_subtitle_streams[m_subtitle_index]->name;
+
   if (m_log_level > 5)
     CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", index);
 }
@@ -1101,8 +1090,7 @@ void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   info.bitrate = m_audio_streams[index]->bit_rate;
 
-  if ( m_audio_streams[index]->language.size())
-    info.language = m_audio_streams[index]->language;
+  info.language = m_audio_streams[index]->language;
 
   info.channels = m_audio_streams[index]->channel;
 
