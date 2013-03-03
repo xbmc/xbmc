@@ -803,7 +803,6 @@ void CGUIWindowSlideShow::RenderErrorMessage()
   const CGUIControl *control = GetControl(LABEL_ROW1);
   if (NULL == control || control->GetControlType() != CGUIControl::GUICONTROL_LABEL)
   {
-     CLog::Log(LOGERROR,"CGUIWindowSlideShow::RenderErrorMessage - cant get label control!");
      return;
   }
 
