@@ -183,7 +183,7 @@ int CNfoFile::Load(const CStdString& strFile)
 
 void CNfoFile::Close()
 {
-  delete m_doc;
+  delete[] m_doc;
   m_doc = NULL;
   m_scurl.Clear();
 }
