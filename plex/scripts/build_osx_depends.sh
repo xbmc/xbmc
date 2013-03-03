@@ -44,13 +44,17 @@ echo $outputpath
 cd $DEPENDDIR
 ./bootstrap
 ./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
-make || exit 1
+#make || exit 1
 
 cd $ROOT
+
+# read some variables
+source tools/darwin/depends/config.site
+
 cd $ROOT/lib/ffmpeg
 config="--target-os=darwin --disable-muxers --disable-encoders --disable-devices --disable-doc --disable-ffplay --disable-ffmpeg"
 config="$config --disable-ffprobe --disable-ffserver --disable-vda --disable-crystalhd --disable-decoder=mpeg_xvmc --disable-debug"
-if [ $arch = "arm" ]; then
+if [ $arch = "armv7" ]; then
   config="$config --arch=$arch --enable-cross-compile --enable-pic --disable-armv5te --disable-armv6t2 --enable-neon"
 elif [ $arch = "i386" ]; then
   config="$config --arch=x86 --enable-cross-compile --disable-amd3dnow"
@@ -62,10 +66,18 @@ config="$config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 config="$config --enable-gpl --enable-postproc --enable-static --enable-pthreads"
 config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac"
 config="$config --enable-protocol=http --enable-runtime-cpudetect"
-config="$config --cc=clang --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
+config="$config --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
 
-export PATH=/Users/Shared/xbmc-depends/toolchain/bin:$PATH
-./configure $config --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib" || exit 1
+case $CC in
+  *llvm-gcc-4.2*)
+    config="$config --cc=clang" ;;
+  *)
+    config="$config --cc=$CC" ;;
+esac
+
+#echo $config
+./configure $config --as="$AS" --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib" || exit 1
+make || exit 1
 make install || exit 1
 
 cd $ROOT/plex/Dependencies/xbmc-depends
