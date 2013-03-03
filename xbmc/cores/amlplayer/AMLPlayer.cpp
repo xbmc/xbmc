@@ -1942,7 +1942,16 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             info->format          = media_info.audio_info[i]->aformat;
 #if !defined(TARGET_ANDROID)
             if (media_info.audio_info[i]->audio_language[0] != 0)
+            {
               info->language = std::string(media_info.audio_info[i]->audio_language, 3);
+
+              if (info->language.length() == 2)
+              {
+                CStdString lang;
+                g_LangCodeExpander.ConvertToThreeCharCode(lang, info->language);
+                info->language = lang;
+              }
+            }
 #endif
             m_audio_streams.push_back(info);
           }
@@ -1966,7 +1975,16 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             info->id   = media_info.sub_info[i]->id;
             info->type = STREAM_SUBTITLE;
             if (media_info.sub_info[i]->sub_language && media_info.sub_info[i]->sub_language[0] != 0)
+            {
               info->language = std::string(media_info.sub_info[i]->sub_language, 3);
+
+              if (info->language.length() == 2)
+              {
+                CStdString lang;
+                g_LangCodeExpander.ConvertToThreeCharCode(lang, info->language);
+                info->language = lang;
+              }
+            }
             m_subtitle_streams.push_back(info);
           }
           m_subtitle_index = media_info.stream_info.cur_sub_index;
