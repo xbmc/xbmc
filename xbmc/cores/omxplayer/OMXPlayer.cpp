@@ -2712,11 +2712,7 @@ void COMXPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
   if(s.type == STREAM_NONE)
     info.name += "(Invalid)";
 
-  CStdString strStreamLang;
-  if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
-    info.language = g_localizeStrings.Get(13205); // Unknown
-  else
-    info.language = strStreamLang;
+  info.language = s.language;
 }
 
 void COMXPlayer::SetSubtitle(int iStream)
