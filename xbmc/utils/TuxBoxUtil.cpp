@@ -376,7 +376,6 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
     }
     while(pNode)
     {
-      pIt = pNode->FirstChildElement("e2servicereference");
       pIt = pNode->FirstChildElement("e2servicename");
       CStdString bqtName = pIt->FirstChild()->Value();
       pIt = pNode->FirstChildElement("e2servicelist");
