@@ -922,15 +922,11 @@ void CAMLPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
       g_LangCodeExpander.Lookup(name, m_subtitle_streams[index]->language);
       info.name = name;
     }
-    else
-      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   else
   {
     if(m_subtitle_streams[m_subtitle_index]->name.length() > 0)
       info.name = m_subtitle_streams[m_subtitle_index]->name;
-    else
-      info.name = g_localizeStrings.Get(13205); // Unknown
   }
   if (m_log_level > 5)
     CLog::Log(LOGDEBUG, "CAMLPlayer::GetSubtitleName, iStream(%d)", index);
@@ -1112,13 +1108,30 @@ void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   info.audioCodecName = AudioCodecName(m_audio_streams[index]->format);
 
-  info.name.Format("Undefined");
-    
-  if ( m_audio_streams[index]->language.size())
+  if (info.audioCodecName.size())
+    info.name = info.audioCodecName + " ";
+
+  switch(info.channels)
   {
-    CStdString name;
-    g_LangCodeExpander.Lookup( name, m_audio_streams[index]->language);
-    info.name = name;
+  case 1:
+    info.name += "Mono";
+    break;
+  case 2: 
+    info.name += "Stereo";
+    break;
+  case 6: 
+    info.name += "5.1";
+    break;
+  case 7:
+    info.name += "6.1";
+    break;
+  case 8:
+    info.name += "7.1";
+    break;
+  default:
+    char temp[32];
+    sprintf(temp, "%d-chs", info.channels);
+    info.name += temp;
   }
 }
 
