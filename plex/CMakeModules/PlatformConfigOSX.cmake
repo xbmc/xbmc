@@ -83,7 +83,7 @@ set(ffmpeg_libs
 )
 
 if(ENABLE_PYTHON)
-  list(APPEND external_libs python2.7)
+  list(APPEND external_libs python2.6)
 endif()
 
 set(non_link_libs
