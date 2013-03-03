@@ -89,6 +89,11 @@ public:
   virtual void  SetVolume(float volume) {};
 
   /*
+    This method gets the volume control, volume ranges from 0.0 to 1.0.
+  */
+  virtual float GetVolume() {return 1.0;};
+
+  /*
     Requests sink to prepare itself for a suspend state
     @return false if sink cannot be suspended
   */

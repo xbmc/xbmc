@@ -436,8 +436,6 @@ protected:
   void Mute();
   void UnMute();
 
-  void SetHardwareVolume(float hardwareVolume);
-
   void VolumeChanged() const;
 
   bool PlayStack(const CFileItem& item, bool bRestart);

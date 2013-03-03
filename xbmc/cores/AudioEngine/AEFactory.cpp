@@ -31,6 +31,9 @@
   #include "Engines/PulseAE/PulseAE.h"
 #endif
 
+#include "settings/Settings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+
 IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;
 static bool   g_bMute = false;
@@ -269,6 +272,39 @@ void CAEFactory::SetVolume(const float volume)
     AE->SetVolume(volume);
   else
     g_fVolume = volume;
+}
+
+float CAEFactory::GetScaledVolume()
+{
+  float value = 0.0f;
+  value = GetVolume();
+  if(value > VOLUME_MINIMUM)
+  {
+    float dB = CAEUtil::ScaleToGain(value);
+    value = CAEUtil::GainToPercent(dB);    
+  }
+  if (value >= 0.99f)
+    value = 1.0f;
+
+  g_settings.m_fVolumeLevel = value;
+  return value;
+}
+
+void CAEFactory::SetScaledVolume(const float volume)
+{
+  float fVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, volume));
+  g_settings.m_fVolumeLevel = fVolume;
+
+  float value = 0.0f;
+  if (fVolume > VOLUME_MINIMUM)
+  {
+    float dB = CAEUtil::PercentToGain(fVolume);
+    value = CAEUtil::GainToScale(dB);
+  }
+  if (value >= 0.99f)
+    value = 1.0f;
+
+  SetVolume(value);
 }
 
 void CAEFactory::Shutdown()
