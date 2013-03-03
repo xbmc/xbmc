@@ -1,6 +1,7 @@
 # vim: setlocal syntax=cmake:
 
 set(dependdir ${root}/plex/Dependencies/laika-depends)
+set(ffmpegdir ${root}/plex/Dependencies/ffmpeg-depends)
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
@@ -41,6 +42,8 @@ set(osx_frameworks
   QuartzCore
   SystemConfiguration
   IOSurface
+  bz2
+  z
 )
 
 set(external_libs
@@ -59,13 +62,15 @@ set(external_libs
   crypto
   SDL
   SDL_mixer
-  SDL_image
   tinyxml
   boost_thread
   boost_system
-  z
   GLEW
-  
+  vorbis
+  vorbisenc
+)
+
+set(ffmpeg_libs
   # ffmpeg libraries
   avcodec
   avutil
@@ -108,6 +113,11 @@ foreach(lib ${external_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
 endforeach()
 
+# find ffmpeg libs
+foreach(lib ${ffmpeg_libs})
+  plex_find_library(${lib} 0 1 ${ffmpegdir}/lib 1)
+endforeach()
+
 foreach(lib ${non_link_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
 endforeach()
@@ -129,7 +139,7 @@ set(ARCH "x86-osx")
 set(LIBPATH "${EXECUTABLE_NAME}.app/Contents/Frameworks")
 set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOSX")
 set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources/XBMC")
-set(FFMPEG_INCLUDE_DIRS ${dependdir}/include)
+set(FFMPEG_INCLUDE_DIRS ${ffmpegdir}/include)
 
 set(PLEX_LINK_WRAPPED "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
 

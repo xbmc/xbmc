@@ -57,12 +57,12 @@ if [ ! -d plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH -o ! -d plex/Dependenci
   echo "-- Unpacking $outputdir-xbmc-$DEPEND_HASH.tar.xz"
   gtar -xaf /tmp/$outputdir-xbmc-$DEPEND_HASH.tar.xz -C plex/Dependencies
   mv plex/Dependencies/$outputdir plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH
-  plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH
+  plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH/lib
   
   echo "-- Unpacking $outputdir-ffmpeg-$FFMPEG_HASH.tar.xz"
   gtar -xaf /tmp/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz -C plex/Dependencies
   mv plex/Dependencies/ffmpeg-$outputdir plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH
-  plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH
+  plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH/lib
 fi
 
 if [ -e plex/Dependencies/laika-depends ]; then

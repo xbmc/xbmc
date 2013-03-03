@@ -63,6 +63,7 @@ include_directories(
   ${dependdir}/include/freetype2
   ${dependdir}/include/python2.6
   ${dependdir}/include/python2.7
+  ${ffmpegdir}/include
   ${root}/xbmc
 )
 
