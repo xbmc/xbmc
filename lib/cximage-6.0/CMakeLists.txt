@@ -35,15 +35,15 @@ set(OBJECTS
   cx_jbig
   cx_raw
   cx_jasper
+  cx_zlib
 )
 set(SRC CxImage/DllInterface.cpp)
 
 if(NOT TARGET_WIN32)
   list(APPEND OBJECTS wrapper)
   add_library(ImageLib-${ARCH} MODULE ${SRC})
-  target_link_libraries(ImageLib-${ARCH} cx_zlib ${PLEX_LINK_WHOLEARCHIVE} ${OBJECTS} ${PLEX_LINK_NOWHOLEARCHIVE} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+  target_link_libraries(ImageLib-${ARCH} ${PLEX_LINK_WHOLEARCHIVE} ${OBJECTS} ${PLEX_LINK_NOWHOLEARCHIVE} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
 else(NOT TARGET_WIN32)
-  add_subdirectory(zlib)
   add_subdirectory(jpeg)
   add_subdirectory(mng)
   add_subdirectory(tiff)
@@ -54,7 +54,6 @@ else(NOT TARGET_WIN32)
     cx_jpeg
     cx_png
     cx_tiff
-    cx_zlib
   )
 
   add_library(ImageLib SHARED ${SRC})
