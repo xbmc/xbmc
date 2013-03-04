@@ -369,13 +369,9 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
       while(!m_bStop)
       {
+        // discard if flushing as clocks may be stopped and we'll never submit it
         if(m_flush)
-        {
-          CSingleLock lock(m_flushLock);
-          m_flush = false;
-          lock.Leave();
           break;
-        }
 
         if(m_omxAudio.GetSpace() < (unsigned int)pkt->iSize)
         {
@@ -420,12 +416,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
     while(!m_bStop)
     {
       if(m_flush)
-      {
-        CSingleLock lock(m_flushLock);
-        m_flush = false;
-        lock.Leave();
         break;
-      }
 
       if(m_omxAudio.GetSpace() < (unsigned int)pkt->iSize)
       {
@@ -544,6 +535,7 @@ void OMXPlayerAudio::Process()
       }
       else
         CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
+      m_flush = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -627,7 +619,6 @@ void OMXPlayerAudio::Process()
 
 void OMXPlayerAudio::Flush()
 {
-  CSingleLock lock(m_flushLock);
   m_flush = true;
   m_messageQueue.Flush();
   m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
