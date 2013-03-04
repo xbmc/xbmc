@@ -239,13 +239,13 @@ void GUIFontManager::ReloadTTFFonts(void)
 
 void GUIFontManager::UnloadTTFFonts()
 {
+  for (vector<CGUIFont*>::iterator i = m_vecFonts.begin(); i != m_vecFonts.end(); i++)
+    (*i)->SetFont(NULL);
+
   for (vector<CGUIFontTTFBase*>::iterator i = m_vecFontFiles.begin(); i != m_vecFontFiles.end(); i++)
     delete (*i);
 
   m_vecFontFiles.clear();
-
-  for (vector<CGUIFont*>::iterator i = m_vecFonts.begin(); i != m_vecFonts.end(); i++)
-    (*i)->SetFont(NULL);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)
