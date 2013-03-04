@@ -9,10 +9,11 @@ INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
 
 SRCS= UPnP.cpp \
+      UPnPInternal.cpp \
       UPnPPlayer.cpp \
       UPnPRenderer.cpp \
       UPnPServer.cpp \
-      UPnPInternal.cpp
+      UPnPSettings.cpp \
 
 LIB=upnp.a
 

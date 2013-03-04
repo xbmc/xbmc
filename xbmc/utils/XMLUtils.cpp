@@ -126,18 +126,26 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 
 bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
 {
+  std::string value;
+  bool ret = GetString(pRootNode, strTag, value);
+  strStringValue = value;
+  return ret;
+}
+
+bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue)
+{
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag );
   if (!pElement) return false;
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
   {
-    strStringValue = pNode->Value();
+    strStringValue = pNode->ValueStr();
     if (encoded && strcasecmp(encoded,"yes") == 0)
-      CURL::Decode(strStringValue);
+      strStringValue = CURL::Decode(strStringValue);
     return true;
   }
-  strStringValue.Empty();
+  strStringValue.clear();
   return false;
 }
 

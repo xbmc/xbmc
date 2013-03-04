@@ -1002,7 +1002,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
 
   // determine available players
   VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
+  CPlayerCoreFactory::Get().GetPlayers(*pItem, vecCores);
 
   // add the needed buttons
   CContextButtons choices;
@@ -1046,8 +1046,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (btnid == 3)
   {
     VECPLAYERCORES vecCores;
-    CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+    CPlayerCoreFactory::Get().GetPlayers(*pItem, vecCores);
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().SelectPlayerDialog(vecCores);
     if (g_application.m_eForcedNextPlayer != EPC_NONE)
       OnStart(pItem.get());
   }

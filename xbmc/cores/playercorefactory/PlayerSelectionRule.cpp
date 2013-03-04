@@ -168,7 +168,7 @@ PLAYERCOREID CPlayerSelectionRule::GetPlayerCore()
 {
   if (!m_playerCoreId)
   {
-    m_playerCoreId = CPlayerCoreFactory::GetPlayerCore(m_playerName);
+    m_playerCoreId = CPlayerCoreFactory::Get().GetPlayerCore(m_playerName);
   }
   return m_playerCoreId;
 }

@@ -20,10 +20,10 @@
 
 #include "GUIWindowSettingsProfile.h"
 #include "windows/GUIWindowFileManager.h"
-#include "Profile.h"
+#include "settings/Profile.h"
 #include "Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "GUIDialogProfileSettings.h"
+#include "settings/dialogs/GUIDialogProfileSettings.h"
 #include "network/Network.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
@@ -32,7 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace XFILE;

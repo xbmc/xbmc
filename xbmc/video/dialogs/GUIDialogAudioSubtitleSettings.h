@@ -20,7 +20,7 @@
  *
  */
 
-#include "settings/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettings.h"
 typedef std::vector<int> Features;
 
 class CGUIDialogAudioSubtitleSettings :

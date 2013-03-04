@@ -1,5 +1,6 @@
 SRCS=Application.cpp \
      ApplicationMessenger.cpp \
+     AppParamParser.cpp \
      Autorun.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \

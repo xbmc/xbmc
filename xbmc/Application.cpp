@@ -171,9 +171,9 @@
 // Windows includes
 #include "guilib/GUIWindowManager.h"
 #include "windows/GUIWindowHome.h"
-#include "settings/GUIWindowSettings.h"
+#include "settings/windows/GUIWindowSettings.h"
 #include "windows/GUIWindowFileManager.h"
-#include "settings/GUIWindowSettingsCategory.h"
+#include "settings/windows/GUIWindowSettingsCategory.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
 #include "music/windows/GUIWindowMusicSongs.h"
 #include "music/windows/GUIWindowMusicNav.h"
@@ -182,14 +182,14 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
-#include "settings/GUIWindowSettingsProfile.h"
+#include "settings/windows/GUIWindowSettingsProfile.h"
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
 #ifdef HAS_DX
 #include "rendering/dx/GUIWindowTestPatternDX.h"
 #endif
-#include "settings/GUIWindowSettingsScreenCalibration.h"
+#include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "programs/GUIWindowPrograms.h"
 #include "pictures/GUIWindowPictures.h"
 #include "windows/GUIWindowWeather.h"
@@ -218,9 +218,9 @@
 #include "video/dialogs/GUIDialogVideoSettings.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "settings/GUIDialogProfileSettings.h"
-#include "settings/GUIDialogLockSettings.h"
-#include "settings/GUIDialogContentSettings.h"
+#include "settings/dialogs/GUIDialogProfileSettings.h"
+#include "settings/dialogs/GUIDialogLockSettings.h"
+#include "settings/dialogs/GUIDialogContentSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -2828,8 +2828,8 @@ bool CApplication::OnAction(const CAction &action)
     {
       VECPLAYERCORES cores;
       CFileItem item(*m_itemCurrentFile.get());
-      CPlayerCoreFactory::GetPlayers(item, cores);
-      PLAYERCOREID core = CPlayerCoreFactory::SelectPlayerDialog(cores);
+      CPlayerCoreFactory::Get().GetPlayers(item, cores);
+      PLAYERCOREID core = CPlayerCoreFactory::Get().SelectPlayerDialog(cores);
       if(core != EPC_NONE)
       {
         g_application.m_eForcedNextPlayer = core;
@@ -2840,8 +2840,8 @@ bool CApplication::OnAction(const CAction &action)
     else
     {
       VECPLAYERCORES cores;
-      CPlayerCoreFactory::GetRemotePlayers(cores);
-      PLAYERCOREID core = CPlayerCoreFactory::SelectPlayerDialog(cores);
+      CPlayerCoreFactory::Get().GetRemotePlayers(cores);
+      PLAYERCOREID core = CPlayerCoreFactory::Get().SelectPlayerDialog(cores);
       if(core != EPC_NONE)
       {
         CFileItem item;
@@ -3964,7 +3964,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if( m_eForcedNextPlayer != EPC_NONE )
       eNewCore = m_eForcedNextPlayer;
     else if( m_eCurrentPlayer == EPC_NONE )
-      eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+      eNewCore = CPlayerCoreFactory::Get().GetDefaultPlayer(item);
     else
       eNewCore = m_eCurrentPlayer;
   }
@@ -4021,7 +4021,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (m_eForcedNextPlayer != EPC_NONE)
       eNewCore = m_eForcedNextPlayer;
     else
-      eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+      eNewCore = CPlayerCoreFactory::Get().GetDefaultPlayer(item);
   }
 
   // this really aught to be inside !bRestart, but since PlayStack
@@ -4076,7 +4076,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = eNewCore;
-    m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
+    m_pPlayer = CPlayerCoreFactory::Get().CreatePlayer(eNewCore, *this);
   }
 
   bool bResult;
@@ -4434,7 +4434,7 @@ void CApplication::UpdateFileState()
         }
 
         // Update bookmark for save
-        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 

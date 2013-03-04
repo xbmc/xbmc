@@ -20,7 +20,7 @@
  */
 
 #include "XBDateTime.h"
-#include "settings/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettings.h"
 #include "guilib/GUIListItem.h"
 
 class CFileItem;

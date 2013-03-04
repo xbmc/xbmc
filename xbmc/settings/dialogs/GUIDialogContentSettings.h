@@ -20,10 +20,11 @@
  *
  */
 
-#include "GUIDialogSettings.h"
+#include <vector>
+
 #include "addons/Scraper.h"
 #include "addons/AddonManager.h"
-#include <vector>
+#include "settings/dialogs/GUIDialogSettings.h"
 
 namespace VIDEO
 {

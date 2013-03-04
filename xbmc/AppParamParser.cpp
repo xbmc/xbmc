@@ -19,12 +19,12 @@
  */
 
 #include "AppParamParser.h"
-#include "AdvancedSettings.h"
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
