@@ -23,6 +23,10 @@ class CJob;
 
 #include <stddef.h>
 
+#define kJobTypeMediaFlags  "mediaflags"
+#define kJobTypeCacheImage  "cacheimage"
+#define kJobTypeDDSCompress "ddscompress"
+
 /*!
  \ingroup jobs
  \brief Callback interface for asynchronous jobs.

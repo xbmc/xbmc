@@ -64,7 +64,7 @@ public:
   CTextureCacheJob(const CStdString &url, const CStdString &oldHash = "");
   virtual ~CTextureCacheJob();
 
-  virtual const char* GetType() const { return "cacheimage"; };
+  virtual const char* GetType() const { return kJobTypeCacheImage; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
 
@@ -129,7 +129,7 @@ class CTextureDDSJob : public CJob
 public:
   CTextureDDSJob(const CStdString &original);
 
-  virtual const char* GetType() const { return "ddscompress"; };
+  virtual const char* GetType() const { return kJobTypeDDSCompress; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
 

@@ -1264,9 +1264,7 @@ void CAMLPlayer::Process()
   CLog::Log(LOGNOTICE, "CAMLPlayer::Process");
   try
   {
-    CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
-
-    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+    if (CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW))
     {
       if (!WaitForPausedThumbJobs(20000))
       {
@@ -1572,8 +1570,6 @@ void CAMLPlayer::Process()
 
   // reset ac3/dts passthough
   SetAudioPassThrough(AFORMAT_UNKNOWN);
-  // let thumbgen jobs resume.
-  CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
 
   if (m_log_level > 5)
     CLog::Log(LOGDEBUG, "CAMLPlayer::Process exit");
@@ -1679,7 +1675,7 @@ bool CAMLPlayer::WaitForPausedThumbJobs(int timeout_ms)
   // use m_bStop and Sleep so we can get canceled.
   while (!m_bStop && (timeout_ms > 0))
   {
-    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+    if (CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW))
     {
       Sleep(100);
       timeout_ms -= 100;
