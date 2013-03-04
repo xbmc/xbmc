@@ -4125,24 +4125,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if( options.fullscreen && g_renderManager.IsStarted()
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
-
-      if (!item.IsDVDImage() && !item.IsDVDFile())
-      {
-        CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
-        // Save information about the stream if we currently have no data
-        if (!details->HasStreamDetails() ||
-             details->m_streamDetails.GetVideoDuration() <= 0)
-        {
-          if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
-          {
-            CVideoDatabase dbs;
-            dbs.Open();
-            dbs.SetStreamDetailsForFileId(details->m_streamDetails, details->m_iFileId);
-            dbs.Close();
-            CUtil::DeleteVideoDatabaseDirectoryCache();
-          }
-        }
-      }
     }
 #endif
     else
@@ -4439,13 +4421,18 @@ void CApplication::UpdateFileState()
         m_progressTrackingPlayCountUpdate = true;
       }
 
-      if (m_progressTrackingItem->IsVideo())
+      // Check whether we're *really* playing video else we may race when getting eg. stream details
+      if (IsPlayingVideo())
       {
-        if ((m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) && m_pPlayer->GetTotalTime() > 15*60*1000)
+        // Special case for DVDs: Only extract streamdetails if title length > 15m. Should yield more correct info
+        if (!(m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
         {
-          m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
-          m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+          CStreamDetails details;
+          // Update with stream details from player, if any
+          if (m_pPlayer->GetStreamDetails(details))
+            m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails = details;
         }
+
         // Update bookmark for save
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
