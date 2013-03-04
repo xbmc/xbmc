@@ -20,6 +20,7 @@
  *
  */
 
+#include "PlatformDefs.h"
 #include "DVDOverlay.h"
 #include <string.h>
 #include <stdlib.h>
@@ -115,6 +116,11 @@ public:
   {
     if(data) free(data);
     if(palette) free(palette);
+  }
+
+  virtual CDVDOverlayImage* Clone()
+  {
+    return new CDVDOverlayImage(*this);
   }
 
   BYTE* data_at(int sub_x, int sub_y) const
