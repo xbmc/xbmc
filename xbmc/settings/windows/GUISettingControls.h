@@ -29,11 +29,11 @@ class CGUIRadioButtonControl;
 
 class CSetting;
 
-class CBaseSettingControl
+class CGUIBaseSettingControl
 {
 public:
-  CBaseSettingControl(int id, CSetting *pSetting);
-  virtual ~CBaseSettingControl() {}
+  CGUIBaseSettingControl(int id, CSetting *pSetting);
+  virtual ~CGUIBaseSettingControl() {}
   virtual bool OnClick() { return false; };
   virtual void Update() {};
   int GetID() { return m_id; };
@@ -64,11 +64,11 @@ protected:
   bool m_delayed;
 };
 
-class CRadioButtonSettingControl : public CBaseSettingControl
+class CGUIRadioButtonSettingControl : public CGUIBaseSettingControl
 {
 public:
-  CRadioButtonSettingControl(CGUIRadioButtonControl* pRadioButton, int id, CSetting *pSetting);
-  virtual ~CRadioButtonSettingControl();
+  CGUIRadioButtonSettingControl(CGUIRadioButtonControl* pRadioButton, int id, CSetting *pSetting);
+  virtual ~CGUIRadioButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
   virtual void Clear() { m_pRadioButton = NULL; }
@@ -77,11 +77,11 @@ private:
   CGUIRadioButtonControl *m_pRadioButton;
 };
 
-class CSpinExSettingControl : public CBaseSettingControl
+class CGUISpinExSettingControl : public CGUIBaseSettingControl
 {
 public:
-  CSpinExSettingControl(CGUISpinControlEx* pSpin, int id, CSetting *pSetting);
-  virtual ~CSpinExSettingControl();
+  CGUISpinExSettingControl(CGUISpinControlEx* pSpin, int id, CSetting *pSetting);
+  virtual ~CGUISpinExSettingControl();
   virtual bool OnClick();
   virtual void Update();
   virtual void Clear() { m_pSpin = NULL; }
@@ -89,11 +89,11 @@ private:
   CGUISpinControlEx *m_pSpin;
 };
 
-class CButtonSettingControl : public CBaseSettingControl
+class CGUIButtonSettingControl : public CGUIBaseSettingControl
 {
 public:
-  CButtonSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting);
-  virtual ~CButtonSettingControl();
+  CGUIButtonSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting);
+  virtual ~CGUIButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
   virtual void Clear() { m_pButton = NULL; }
@@ -101,11 +101,11 @@ private:
   CGUIButtonControl *m_pButton;
 };
 
-class CEditSettingControl : public CBaseSettingControl
+class CGUIEditSettingControl : public CGUIBaseSettingControl
 {
 public:
-  CEditSettingControl(CGUIEditControl* pButton, int id, CSetting *pSetting);
-  virtual ~CEditSettingControl();
+  CGUIEditSettingControl(CGUIEditControl* pButton, int id, CSetting *pSetting);
+  virtual ~CGUIEditSettingControl();
   virtual bool OnClick();
   virtual void Update();
   virtual bool NeedsUpdate() { return m_needsUpdate; };
@@ -117,11 +117,11 @@ private:
   bool m_needsUpdate;
 };
 
-class CSeparatorSettingControl : public CBaseSettingControl
+class CGUISeparatorSettingControl : public CGUIBaseSettingControl
 {
 public:
-  CSeparatorSettingControl(CGUIImage* pImage, int id, CSetting *pSetting);
-  virtual ~CSeparatorSettingControl();
+  CGUISeparatorSettingControl(CGUIImage* pImage, int id, CSetting *pSetting);
+  virtual ~CGUISeparatorSettingControl();
   virtual bool OnClick() { return false; };
   virtual void Update() {};
   virtual void Clear() { m_pImage = NULL; }

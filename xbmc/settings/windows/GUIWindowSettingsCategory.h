@@ -21,11 +21,11 @@
  */
 
 #include "guilib/GUIWindow.h"
-#include "SettingsControls.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
+#include "settings/windows/GUISettingControls.h"
 #include "utils/Stopwatch.h"
 
-typedef boost::shared_ptr<CBaseSettingControl> BaseSettingControlPtr;
+typedef boost::shared_ptr<CGUIBaseSettingControl> BaseSettingControlPtr;
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow
@@ -105,7 +105,7 @@ protected:
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 
-  boost::shared_ptr<CBaseSettingControl> m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
+  boost::shared_ptr<CGUIBaseSettingControl> m_delayedSetting; ///< Current delayed setting \sa CGUIBaseSettingControl::SetDelayed()
   CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
 

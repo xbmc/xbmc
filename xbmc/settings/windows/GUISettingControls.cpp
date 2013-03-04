@@ -18,49 +18,49 @@
  *
  */
 
-#include "SettingsControls.h"
+#include "GUISettingControls.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIEditControl.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "guilib/GUIImage.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
 
-CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
+CGUIBaseSettingControl::CGUIBaseSettingControl(int id, CSetting *pSetting)
 {
   m_id = id;
   m_pSetting = pSetting;
   m_delayed = false;
 }
 
-CRadioButtonSettingControl::CRadioButtonSettingControl(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
-    : CBaseSettingControl(id, pSetting)
+CGUIRadioButtonSettingControl::CGUIRadioButtonSettingControl(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
+    : CGUIBaseSettingControl(id, pSetting)
 {
   m_pRadioButton = pRadioButton;
   m_pRadioButton->SetID(id);
   Update();
 }
 
-CRadioButtonSettingControl::~CRadioButtonSettingControl()
+CGUIRadioButtonSettingControl::~CGUIRadioButtonSettingControl()
 {}
 
-bool CRadioButtonSettingControl::OnClick()
+bool CGUIRadioButtonSettingControl::OnClick()
 {
   ((CSettingBool *)m_pSetting)->SetData(!((CSettingBool *)m_pSetting)->GetData());
   return true;
 }
 
-void CRadioButtonSettingControl::Update()
+void CGUIRadioButtonSettingControl::Update()
 {
   if (m_pRadioButton)
     m_pRadioButton->SetSelected(((CSettingBool *)m_pSetting)->GetData());
 }
 
-CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, int id, CSetting *pSetting)
-    : CBaseSettingControl(id, pSetting)
+CGUISpinExSettingControl::CGUISpinExSettingControl(CGUISpinControlEx *pSpin, int id, CSetting *pSetting)
+    : CGUIBaseSettingControl(id, pSetting)
 {
   m_pSpin = pSpin;
   m_pSpin->SetID(id);
@@ -104,10 +104,10 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, int id, C
   Update();
 }
 
-CSpinExSettingControl::~CSpinExSettingControl()
+CGUISpinExSettingControl::~CGUISpinExSettingControl()
 {}
 
-bool CSpinExSettingControl::OnClick()
+bool CGUISpinExSettingControl::OnClick()
 {
   // TODO: Should really check for a change here (as end of spincontrols may
   //       cause no change)
@@ -124,7 +124,7 @@ bool CSpinExSettingControl::OnClick()
   return true;
 }
 
-void CSpinExSettingControl::Update()
+void CGUISpinExSettingControl::Update()
 {
   if (!m_pSpin)
     return;
@@ -140,25 +140,25 @@ void CSpinExSettingControl::Update()
   }
 }
 
-CButtonSettingControl::CButtonSettingControl(CGUIButtonControl *pButton, int id, CSetting *pSetting)
-    : CBaseSettingControl(id, pSetting)
+CGUIButtonSettingControl::CGUIButtonSettingControl(CGUIButtonControl *pButton, int id, CSetting *pSetting)
+    : CGUIBaseSettingControl(id, pSetting)
 {
   m_pButton = pButton;
   m_pButton->SetID(id);
   Update();
 }
 
-CButtonSettingControl::~CButtonSettingControl()
+CGUIButtonSettingControl::~CGUIButtonSettingControl()
 {}
 
-bool CButtonSettingControl::OnClick()
+bool CGUIButtonSettingControl::OnClick()
 {
   // this is pretty much a no-op as all click action is done in the calling class
   Update();
   return true;
 }
 
-void CButtonSettingControl::Update()
+void CGUIButtonSettingControl::Update()
 {
   CStdString strText = ((CSettingString *)m_pSetting)->GetData();
   if (m_pSetting->GetType() == SETTINGS_TYPE_ADDON)
@@ -181,8 +181,8 @@ void CButtonSettingControl::Update()
     m_pButton->SetLabel2(strText);
 }
 
-CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSetting *pSetting)
-    : CBaseSettingControl(id, pSetting)
+CGUIEditSettingControl::CGUIEditSettingControl(CGUIEditControl *pEdit, int id, CSetting *pSetting)
+    : CGUIBaseSettingControl(id, pSetting)
 {
   m_needsUpdate = false;
   m_pEdit = pEdit;
@@ -204,11 +204,11 @@ CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSettin
   Update();
 }
 
-CEditSettingControl::~CEditSettingControl()
+CGUIEditSettingControl::~CGUIEditSettingControl()
 {
 }
 
-bool CEditSettingControl::OnClick()
+bool CGUIEditSettingControl::OnClick()
 {
   // update our string
   ((CSettingString *)m_pSetting)->SetData(m_pEdit->GetLabel2());
@@ -217,13 +217,13 @@ bool CEditSettingControl::OnClick()
   return false;
 }
 
-void CEditSettingControl::Update()
+void CGUIEditSettingControl::Update()
 {
   if (!m_needsUpdate && m_pEdit)
     m_pEdit->SetLabel2(((CSettingString *)m_pSetting)->GetData());
 }
 
-bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)
+bool CGUIEditSettingControl::IsValidIPAddress(const CStdString &strIP)
 {
   const char* s = strIP.c_str();
   bool legalFormat = true;
@@ -286,13 +286,13 @@ bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)
   return legalFormat;
 }
 
-CSeparatorSettingControl::CSeparatorSettingControl(CGUIImage *pImage, int id, CSetting *pSetting)
-    : CBaseSettingControl(id, pSetting)
+CGUISeparatorSettingControl::CGUISeparatorSettingControl(CGUIImage *pImage, int id, CSetting *pSetting)
+    : CGUIBaseSettingControl(id, pSetting)
 {
   m_pImage = pImage;
   m_pImage->SetID(id);
 }
 
-CSeparatorSettingControl::~CSeparatorSettingControl()
+CGUISeparatorSettingControl::~CGUISeparatorSettingControl()
 {}
 

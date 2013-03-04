@@ -25,7 +25,7 @@
 #include "DbUrl.h"
 #include "dbwrappers/Database.h"
 #include "playlists/SmartPlayList.h"
-#include "settings/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettings.h"
 #include "threads/Timer.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/StdString.h"

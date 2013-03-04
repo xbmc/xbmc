@@ -288,7 +288,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
             // get playername
-            CStdString hddvdplayer = CPlayerCoreFactory::GetPlayerName(CPlayerCoreFactory::GetDefaultPlayer(item));
+            CStdString hddvdplayer = CPlayerCoreFactory::Get().GetPlayerName(CPlayerCoreFactory::Get().GetDefaultPlayer(item));
             
             // Single *.xpl or *.ifo files require an external player to handle playback.
             // If no matching rule was found, DVDPlayer will be default player.

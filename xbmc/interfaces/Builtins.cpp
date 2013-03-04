@@ -874,7 +874,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("playwith"))
   {
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().GetPlayerCore(parameter);
     g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
   }
   else if (execute.Equals("mute"))
