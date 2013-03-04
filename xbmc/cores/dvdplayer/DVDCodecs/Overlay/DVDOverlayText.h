@@ -46,6 +46,12 @@ public:
       m_type = type;
     }
 
+    CElement(CElement& src)
+    {
+      pNext  = NULL;
+      m_type = src.m_type;
+    }
+
     virtual ~CElement()
     {
     }
@@ -71,6 +77,12 @@ public:
       }
     }
 
+    CElementText(CElementText& src)
+     : CElement(src)
+    {
+      m_text = strdup(src.m_text);
+    }
+
     virtual ~CElementText()
     {
       if (m_text) free(m_text);
@@ -81,10 +93,18 @@ public:
 
   class CElementProperty : public CElement
   {
+  public:
     CElementProperty() : CElement(ELEMENT_TYPE_PROPERTY)
     {
       bItalic = false;
       bBold = false;
+    }
+
+    CElementProperty(CElementProperty& src)
+    : CElement(src)
+    {
+      bItalic = src.bItalic;
+      bBold   = src.bBold;
     }
 
   public:
@@ -99,6 +119,22 @@ public:
     m_pEnd = NULL;
   }
 
+  CDVDOverlayText(CDVDOverlayText& src)
+    : CDVDOverlay(src)
+  {
+    m_pHead = NULL;
+    m_pEnd = NULL;
+    for(CElement* e = src.m_pHead; e; e = e->pNext)
+    {
+      if(e->IsElementType(ELEMENT_TYPE_TEXT))
+        AddElement(new CElementText(*static_cast<CElementText*>(e)));
+      else if(e->IsElementType(ELEMENT_TYPE_PROPERTY))
+        AddElement(new CElementProperty(*static_cast<CElementProperty*>(e)));
+      else
+        AddElement(new CElement(*static_cast<CElement*>(e)));
+    }
+  }
+
   virtual ~CDVDOverlayText()
   {
     CElement* pTemp;
@@ -108,6 +144,11 @@ public:
       m_pHead = m_pHead->pNext;
       delete pTemp;
     }
+  }
+
+  virtual CDVDOverlayText* Clone()
+  {
+    return new CDVDOverlayText(*this);
   }
 
   void AddElement(CDVDOverlayText::CElement* pElement)
