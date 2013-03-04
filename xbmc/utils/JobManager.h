@@ -232,7 +232,7 @@ public:
    \return Number of matching jobs
    \sa Pause(), UnPause(), IsPaused()
    */
-  int IsProcessing(const std::string &pausedType);
+  int IsProcessing(const std::string &pausedType) const;
 
   /*!
    \brief Suspends queueing of the specified priority until unpaused
