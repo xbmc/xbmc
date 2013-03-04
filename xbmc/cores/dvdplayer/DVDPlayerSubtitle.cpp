@@ -222,6 +222,7 @@ void CDVDPlayerSubtitle::Process(double pts)
     while(pOverlay)
     {
       m_pOverlayContainer->Add(pOverlay);
+      pOverlay->Release();
       pOverlay = m_pSubtitleFileParser->Parse(pts);
     }
 

@@ -103,6 +103,12 @@ public:
 
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
 
+  /**
+   * return a copy to DVDPlayerSubtitle in order to have hw resources cleared
+   * after rendering
+   */
+  virtual CDVDOverlay* Clone() { return Acquire(); }
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what

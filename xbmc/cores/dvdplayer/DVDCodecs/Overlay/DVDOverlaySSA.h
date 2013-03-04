@@ -37,10 +37,21 @@ public:
     libass->Acquire();
   }
 
+  CDVDOverlaySSA(CDVDOverlaySSA& src)
+    : CDVDOverlay(src)
+    , m_libass(src.m_libass)
+  {
+    m_libass->Acquire();
+  }
+
   ~CDVDOverlaySSA()
   {
     if(m_libass)
       SAFE_RELEASE(m_libass);
   }
 
+  virtual CDVDOverlaySSA* Clone()
+  {
+    return new CDVDOverlaySSA(*this);
+  }
 };
