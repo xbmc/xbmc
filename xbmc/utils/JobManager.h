@@ -227,31 +227,6 @@ public:
   void CancelJobs();
 
   /*!
-   \brief Suspends queueing of the specified type until unpaused
-   Useful to (for ex) stop queuing thumb jobs during video playback. Only affects PRIORITY_LOW or lower.
-   Does not affect currently processing jobs, use IsProcessing to see if any need to be waited on
-   Types accumulate, so more than one can be set at a time.
-   Refcounted, so UnPause() must be called once for each Pause().
-   \param pausedType only jobs of this type will be affected
-   \sa UnPause(), IsPaused(), IsProcessing()
-   */
-  void Pause(const std::string &pausedType);
-
-  /*!
-   \brief Resumes queueing of the specified type
-   \param pausedType only jobs of this type will be affected
-   \sa Pause(), IsPaused(), IsProcessing()
-   */
-  void UnPause(const std::string &pausedType);
-
-  /*!
-   \brief Checks if jobs of specified type are paused.
-   \param pausedType only jobs of this type will be affected
-   \sa Pause(), UnPause(), IsProcessing()
-   */
-  bool IsPaused(const std::string &pausedType);
-
-  /*!
    \brief Checks to see if any jobs of a specific type are currently processing.
    \param pausedType Job type to search for
    \return Number of matching jobs
@@ -337,14 +312,6 @@ private:
   void RemoveWorker(const CJobWorker *worker);
   unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
 
-  /*! \brief skips over any paused jobs of given priority.
-   Moves any paused jobs at the front of the queue to the back of the
-   queue, allowing unpaused jobs to continue processing.
-   \param priority the priority queue to consider.
-   \return true if an unpaused job is available, false if no unpaused jobs are available.
-   */
-  bool SkipPausedJobs(CJob::PRIORITY priority);
-
   unsigned int m_jobCounter;
 
   typedef std::deque<CWorkItem>    JobQueue;
@@ -359,5 +326,4 @@ private:
   CCriticalSection m_section;
   CEvent           m_jobEvent;
   bool             m_running;
-  std::vector<std::string>  m_pausedTypes;
 };
