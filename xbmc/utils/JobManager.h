@@ -165,11 +165,12 @@ class CJobManager
   class CWorkItem
   {
   public:
-    CWorkItem(CJob *job, unsigned int id, IJobCallback *callback)
+    CWorkItem(CJob *job, unsigned int id, CJob::PRIORITY priority, IJobCallback *callback)
     {
       m_job = job;
       m_id = id;
       m_callback = callback;
+      m_priority = priority;
     }
     bool operator==(unsigned int jobID) const
     {
@@ -191,6 +192,7 @@ class CJobManager
     CJob         *m_job;
     unsigned int  m_id;
     IJobCallback *m_callback;
+    CJob::PRIORITY m_priority;
   };
 
 public:
@@ -225,37 +227,43 @@ public:
   void CancelJobs();
 
   /*!
-   \brief Suspends queueing of the specified type until unpaused
-   Useful to (for ex) stop queuing thumb jobs during video playback. Only affects PRIORITY_LOW or lower.
-   Does not affect currently processing jobs, use IsProcessing to see if any need to be waited on
-   Types accumulate, so more than one can be set at a time.
-   Refcounted, so UnPause() must be called once for each Pause().
-   \param pausedType only jobs of this type will be affected
-   \sa UnPause(), IsPaused(), IsProcessing()
-   */
-  void Pause(const std::string &pausedType);
-
-  /*!
-   \brief Resumes queueing of the specified type
-   \param pausedType only jobs of this type will be affected
-   \sa Pause(), IsPaused(), IsProcessing()
-   */
-  void UnPause(const std::string &pausedType);
-
-  /*!
-   \brief Checks if jobs of specified type are paused.
-   \param pausedType only jobs of this type will be affected
-   \sa Pause(), UnPause(), IsProcessing()
-   */
-  bool IsPaused(const std::string &pausedType);
-
-  /*!
    \brief Checks to see if any jobs of a specific type are currently processing.
    \param pausedType Job type to search for
    \return Number of matching jobs
    \sa Pause(), UnPause(), IsPaused()
    */
-  int IsProcessing(const std::string &pausedType);
+  int IsProcessing(const std::string &pausedType) const;
+
+  /*!
+   \brief Suspends queueing of the specified priority until unpaused
+   Useful to (for ex) stop queuing thumb jobs during video start/playback.
+   Does not affect currently processing jobs, use IsProcessing to see if any need to be waited on
+   \param priority only jobs of this priority will be affected
+   \sa UnPause(), IsPaused(), IsProcessing()
+   */
+  void Pause(const CJob::PRIORITY &priority);
+
+  /*!
+   \brief Resumes queueing of the specified priority
+   \param priority only jobs of this priority will be affected
+   \sa Pause(), IsPaused(), IsProcessing()
+   */
+  void UnPause(const CJob::PRIORITY &priority);
+
+  /*!
+   \brief Checks if jobs of specified priority are paused.
+   \param priority only jobs of this priority will be affected
+   \sa Pause(), UnPause(), IsProcessing()
+   */
+  bool IsPaused(const CJob::PRIORITY &priority) const;
+
+  /*!
+   \brief Checks to see if any jobs with specific priority are currently processing.
+   \param priority to search for
+   \return true if processing jobs, else returns false
+   \sa Pause(), UnPause(), IsPaused()
+   */
+  bool IsProcessing(const CJob::PRIORITY &priority) const;
 
 protected:
   friend class CJobWorker;
@@ -304,14 +312,6 @@ private:
   void RemoveWorker(const CJobWorker *worker);
   unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
 
-  /*! \brief skips over any paused jobs of given priority.
-   Moves any paused jobs at the front of the queue to the back of the
-   queue, allowing unpaused jobs to continue processing.
-   \param priority the priority queue to consider.
-   \return true if an unpaused job is available, false if no unpaused jobs are available.
-   */
-  bool SkipPausedJobs(CJob::PRIORITY priority);
-
   unsigned int m_jobCounter;
 
   typedef std::deque<CWorkItem>    JobQueue;
@@ -319,11 +319,11 @@ private:
   typedef std::vector<CJobWorker*> Workers;
 
   JobQueue   m_jobQueue[CJob::PRIORITY_HIGH+1];
+  bool       m_jobPause[CJob::PRIORITY_HIGH+1];
   Processing m_processing;
   Workers    m_workers;
 
   CCriticalSection m_section;
   CEvent           m_jobEvent;
   bool             m_running;
-  std::vector<std::string>  m_pausedTypes;
 };

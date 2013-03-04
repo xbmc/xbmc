@@ -4082,6 +4082,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   bool bResult;
   if (m_pPlayer)
   {
+    /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
+     * This should speed up player startup for files on internet filesystems (eg. webdav) and
+     * increase performance on low powered systems (Atom/ARM).
+     */
+    if (item.IsVideo())
+    {
+      CJobManager::GetInstance().Pause(CJob::PRIORITY_LOW); // Pause any low priority jobs
+    }
+
     // don't hold graphicscontext here since player
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
@@ -4170,9 +4179,6 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     return;
 
-  if (CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
-    CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
-
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4197,9 +4203,6 @@ void CApplication::OnPlayBackStarted()
 {
   if(m_bPlaybackStarting)
     return;
-
-  if (!CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
-    CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
 
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
@@ -4233,9 +4236,6 @@ void CApplication::OnPlayBackStopped()
 {
   if(m_bPlaybackStarting)
     return;
-
-  if (CJobManager::GetInstance().IsPaused(kJobTypeMediaFlags))
-    CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
@@ -4388,7 +4388,7 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
         *m_stackFileItemToUpdate,
         m_progressTrackingVideoResumeBookmark,
         m_progressTrackingPlayCountUpdate);
-    CJobManager::GetInstance().AddJob(job, NULL);
+    CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
   }
 }
 
@@ -5090,6 +5090,12 @@ void CApplication::ProcessSlow()
     Cocoa_HideMouse();
   }
 #endif
+
+  // Resume low priority jobs when current item is not video
+  if (!CurrentFileItem().IsVideo())
+  {
+    CJobManager::GetInstance().UnPause(CJob::PRIORITY_LOW);
+  }
 
   // Store our file state for use on close()
   UpdateFileState();

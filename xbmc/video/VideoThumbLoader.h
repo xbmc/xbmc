@@ -24,8 +24,6 @@
 #include "utils/JobManager.h"
 #include "FileItem.h"
 
-#define kJobTypeMediaFlags "mediaflags"
-
 class CStreamDetails;
 class IStreamDetailsObserver;
 class CVideoDatabase;
