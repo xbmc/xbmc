@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "guilib/Geometry.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
@@ -925,37 +926,101 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
   return activeStream;
 }
 
-std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
+void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t audio_attributes)
 {
-  if (!m_dvdnav) return NULL;
-
-  CStdString strLanguage;
-
-  audio_attr_t audio_attributes;
-  int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
-  if( m_dll.dvdnav_get_audio_info(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
+  switch( audio_attributes.code_extension )
   {
-    if (!g_LangCodeExpander.Lookup(strLanguage, audio_attributes.lang_code)) strLanguage = "Unknown";
-
-    switch( audio_attributes.lang_extension )
-    {
-      case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
-        strLanguage+= " (Visually Impaired)";
-        break;
-      case DVD_AUDIO_LANG_EXT_DirectorsComments1:
-        strLanguage+= " (Directors Comments)";
-        break;
-      case DVD_AUDIO_LANG_EXT_DirectorsComments2:
-        strLanguage+= " (Directors Comments 2)";
-        break;
-      case DVD_AUDIO_LANG_EXT_NotSpecified:
-      case DVD_AUDIO_LANG_EXT_NormalCaptions:
-      default:
-        break;
-    }
+  case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
+    info.name = "(Visually Impaired)";
+    break;
+  case DVD_AUDIO_LANG_EXT_DirectorsComments1:
+    info.name = "(Directors Comments)";
+    break;
+  case DVD_AUDIO_LANG_EXT_DirectorsComments2:
+    info.name = "(Directors Comments 2)";
+    break;
+  case DVD_AUDIO_LANG_EXT_NotSpecified:
+  case DVD_AUDIO_LANG_EXT_NormalCaptions:
+  default:
+    break;
   }
 
-  return strLanguage;
+  switch(audio_attributes.audio_format)
+  {
+  case DVD_AUDIO_FORMAT_AC3:
+    info.name += " AC3";
+    break;
+  case DVD_AUDIO_FORMAT_MPEG1:
+  case DVD_AUDIO_FORMAT_MPEG1_DRC:
+    info.name += " MP1";
+    break;
+  case DVD_AUDIO_FORMAT_MPEG2:
+  case DVD_AUDIO_FORMAT_MPEG2_DRC:
+    info.name += " MP2";
+    break;
+  case DVD_AUDIO_FORMAT_LPCM:
+    info.name += " LPCM";
+    break;
+  case DVD_AUDIO_FORMAT_DTS:
+    info.name += " DTS";
+    break;
+  case DVD_AUDIO_FORMAT_SDDS:
+    info.name += " SDDS";
+    break;
+  default:
+    info.name += " Other";
+    break;
+  }
+
+  switch(audio_attributes.channels + 1)
+  {
+  case 1:
+    info.name += " Mono";
+    break;
+  case 2: 
+    info.name += " Stereo";
+    break;
+  case 6: 
+    info.name += " 5.1";
+    break;
+  case 7:
+    info.name += " 6.1";
+    break;
+  default:
+    char temp[32];
+    sprintf(temp, " %d-chs", audio_attributes.channels + 1);
+    info.name += temp;
+  }
+
+  StringUtils::TrimLeft(info.name);
+
+}
+
+bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInfo &info)
+{
+  if (!m_dvdnav) return false;
+
+  int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
+  audio_attr_t audio_attributes;
+
+  if( m_dll.dvdnav_get_audio_info(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
+  {
+    SetAudioStreamName(info, audio_attributes);
+
+    char lang[3];
+    lang[2] = 0;
+    lang[1] = (audio_attributes.lang_code & 255);
+    lang[0] = (audio_attributes.lang_code >> 8) & 255;
+
+    CStdString temp;
+    g_LangCodeExpander.ConvertToThreeCharCode(temp, lang);
+    info.language = temp;
+
+    info.channels = audio_attributes.channels + 1;
+
+    return true;
+  }
+  return false;
 }
 
 int CDVDInputStreamNavigator::GetAudioStreamCount()
