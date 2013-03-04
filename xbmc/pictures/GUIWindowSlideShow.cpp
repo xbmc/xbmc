@@ -287,8 +287,12 @@ void CGUIWindowSlideShow::Add(const CFileItem *picture)
   CFileItemPtr item(new CFileItem(*picture));
   if (!item->HasVideoInfoTag() && !item->HasPictureInfoTag())
   {
-    // item without tag; assume it is a picture and force tag generation
-    item->GetPictureInfoTag();
+    // item without tag; get mimetype then we can tell whether it's video item
+    item->GetMimeType();
+
+    if (!item->IsVideo())
+      // then it is a picture and force tag generation
+      item->GetPictureInfoTag();
   }
   AnnouncePlaylistAdd(item, m_slides->Size());
 
