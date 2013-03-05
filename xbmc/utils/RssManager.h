@@ -19,10 +19,19 @@
  *
  */
 
+#include <map>
 #include <vector>
 
 class CRssReader;
 class IRssObserver;
+
+typedef struct
+{
+  bool rtl;
+  std::vector<int> interval;
+  std::vector<std::string> url;
+} RssSet;
+typedef std::map<int, RssSet> RssUrls;
 
 class CRssManager
 {
@@ -31,10 +40,13 @@ public:
 
   void Start();
   void Stop();
-  void Reset();
+  bool Load();
+  bool Reload();
+  void Clear();
   bool IsActive() const { return m_bActive; }
 
   bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
+  const RssUrls& GetUrls() const { return m_mapRssUrls; }
 
 protected:
   CRssManager();
@@ -51,5 +63,6 @@ private:
   };
 
   std::vector<READERCONTROL> m_readers;
+  RssUrls m_mapRssUrls;
   bool m_bActive;
 };
