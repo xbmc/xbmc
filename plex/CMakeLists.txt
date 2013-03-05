@@ -137,13 +137,13 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN xbmc.python EXCLUDE
 )
 
-if(ENABLE_PYTHON)
-  install(DIRECTORY ${dependdir}/lib/python2.7 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
-    PATTERN python2.7/test EXCLUDE
+if(ENABLE_PYTHON AND TARGET_OSX)
+  install(DIRECTORY ${dependdir}/lib/python2.6 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
+    PATTERN python2.6/test EXCLUDE
     REGEX .*\\.pyc$ EXCLUDE
     REGEX .*\\.pyo$ EXCLUDE
   )
-  install(FILES ${dependdir}/include/python2.7/pyconfig.h DESTINATION ${LIBPATH}/include/python2.7 COMPONENT RUNTIME)
+  install(FILES ${dependdir}/include/python2.6/pyconfig.h DESTINATION ${LIBPATH}/include/python2.6 COMPONENT RUNTIME)
 endif()
 
 if(NOT DEFINED PLEX_SPLASH)
