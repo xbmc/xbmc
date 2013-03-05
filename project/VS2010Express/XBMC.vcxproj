@@ -705,6 +705,7 @@
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\WINJoystickDX.cpp" />
+    <ClCompile Include="..\..\xbmc\input\windows\WINJoystickXInput.cpp" />
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
@@ -1047,6 +1048,7 @@
     <ClInclude Include="..\..\xbmc\input\IJoystick.h" />
     <ClInclude Include="..\..\xbmc\input\JoystickManager.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystickDX.h" />
+    <ClInclude Include="..\..\xbmc\input\windows\WINJoystickXInput.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Addon.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonCallback.h" />

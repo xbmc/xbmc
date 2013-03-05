@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,32 +19,24 @@
  *
  */
 
-#pragma once
-
 #include "input/IJoystick.h"
 
-#include <string>
+union SDL_Event;
 
-class CJoystickDX : public IJoystick
+class CJoystickXInput : public IJoystick
 {
 public:
   static void Initialize(JoystickArray &joysticks);
   static void DeInitialize(JoystickArray &joysticks);
 
-  virtual ~CJoystickDX() { Release(); }
+  virtual ~CJoystickXInput() { }
   virtual void Update();
   virtual const SJoystick &GetState() const { return m_state; }
 
 private:
-  CJoystickDX(LPDIRECTINPUTDEVICE8 joystickDevice, const std::string &name, const DIDEVCAPS &devCaps);
+  CJoystickXInput(unsigned int controllerID, unsigned int id);
 
-  static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE *pdidInstance, VOID *pContext);
-  static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCE *pdidoi, VOID *pContext);
-  static bool IsXInputDevice(const GUID *pGuidProductFromDirectInput);
-  bool InitAxes();
-  void Release();
-
-  static LPDIRECTINPUT8 m_pDirectInput;
-  LPDIRECTINPUTDEVICE8  m_joystickDevice;
-  SJoystick             m_state;
+  SJoystick    m_state;
+  unsigned int m_controllerID; // XInput port, in the range (0, 3)
+  DWORD        m_dwPacketNumber; // If unchanged, controller state hasn't changed
 };
