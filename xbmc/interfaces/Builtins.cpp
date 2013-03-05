@@ -97,6 +97,10 @@ using namespace ADDON;
 using namespace MEDIA_DETECT;
 #endif
 
+#if defined(TARGET_ANDROID)
+#include "xbmc/android/activity/XBMCApp.h"
+#endif
+
 typedef struct
 {
   const char* command;
@@ -211,6 +215,9 @@ const BUILT_IN commands[] = {
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
   { "StopPVRManager",             false,  "Stops the PVR manager" },
+#if defined(TARGET_ANDROID)
+  { "StartActivity",              true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
+#endif
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1624,6 +1631,36 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.StopPVRManager();
   }
+#if defined(TARGET_ANDROID)
+  else if (execute.Equals("StartActivity") && params.size() > 0)
+  {
+    bool ret = false;
+
+    std::string package = params[0];
+    std::string intent = "";
+    std::string dataType = "";
+    std::string dataURI = "";
+
+    if (params.size() >=2)
+    {
+      intent = params[1];
+    }
+    if (params.size() >= 3)
+    {
+      dataType = params[2];
+    }
+    if (params.size() >= 4)
+    {
+      dataURI = params[3];
+    }
+    ret = CXBMCApp::StartActivity(package, intent, dataType, dataURI);
+    
+    if (!ret)
+    {
+      CLog::Log(LOGERROR, "Error launching activity: %s with intent: '%s' dataType: '%s' dataURI: '%s'", package.c_str(), intent.c_str(), dataType.c_str(), dataURI.c_str());
+    }
+  }
+#endif
   else
     return -1;
   return 0;
