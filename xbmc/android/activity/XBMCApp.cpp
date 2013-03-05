@@ -44,6 +44,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
+#include "JNIThreading.h"
 
 #define GIGABYTES       1073741824
 
@@ -122,11 +123,8 @@ void CXBMCApp::onDestroy()
 
   if (m_wakeLock != NULL && m_activity != NULL)
   {
-    JNIEnv *env = NULL;
-    m_activity->vm->AttachCurrentThread(&env, NULL);
-
+    JNIEnv* env = xbmc_jnienv();
     env->DeleteGlobalRef(m_wakeLock);
-    DetachCurrentThread();
     m_wakeLock = NULL;
   }
 }
@@ -241,8 +239,7 @@ void CXBMCApp::acquireWakeLock()
   if (m_activity == NULL)
     return;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   if (!getWakeLock(env))
   {
@@ -254,8 +251,6 @@ void CXBMCApp::acquireWakeLock()
   jmethodID midWakeLockAcquire = env->GetMethodID(cWakeLock, "acquire", "()V");
   env->CallVoidMethod(m_wakeLock, midWakeLockAcquire);
   env->DeleteLocalRef(cWakeLock);
-
-  DetachCurrentThread();
 }
 
 void CXBMCApp::releaseWakeLock()
@@ -263,9 +258,7 @@ void CXBMCApp::releaseWakeLock()
   if (m_activity == NULL)
     return;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
-
+  JNIEnv* env = xbmc_jnienv();
   if (!getWakeLock(env))
   {
     android_printf("%s: unable to release a WakeLock");
@@ -276,8 +269,6 @@ void CXBMCApp::releaseWakeLock()
   jmethodID midWakeLockRelease = env->GetMethodID(cWakeLock, "release", "()V");
   env->CallVoidMethod(m_wakeLock, midWakeLockRelease);
   env->DeleteLocalRef(cWakeLock);
-
-  DetachCurrentThread();
 }
 
 void CXBMCApp::run()
@@ -336,24 +327,6 @@ bool CXBMCApp::XBMC_DestroyDisplay()
   return CApplicationMessenger::Get().DestroyDisplay();
 }
 
-int CXBMCApp::AttachCurrentThread(JNIEnv** p_env, void* thr_args /* = NULL */)
-{
-  // Until a thread is attached, it has no JNIEnv, and cannot make JNI calls.
-  // The JNIEnv is used for thread-local storage. For this reason,
-  //  you cannot share a JNIEnv between threads.
-  // If a thread is attached to JNIEnv and garbage collection is in progress,
-  //  or the debugger has issued a suspend request, Android will
-  //  pause the thread the next time it makes a JNI call.
-  return m_activity->vm->AttachCurrentThread(p_env, thr_args);
-}
-
-int CXBMCApp::DetachCurrentThread()
-{
-  // Threads attached through JNIEnv must
-  // call DetachCurrentThread before they exit
-  return m_activity->vm->DetachCurrentThread();
-}
-
 int CXBMCApp::SetBuffersGeometry(int width, int height, int format)
 {
   return ANativeWindow_setBuffersGeometry(m_window, width, height, format);
@@ -389,8 +362,7 @@ bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
   if (!m_activity)
     return false;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
   jobject oActivity = m_activity->clazz;
   jclass cActivity = env->GetObjectClass(oActivity);
 
@@ -453,7 +425,6 @@ bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
     applications->push_back(desc);
   }
   env->DeleteLocalRef(oPackageManager);
-  DetachCurrentThread();
   return true;
 }
 
@@ -463,8 +434,7 @@ bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
     return false;
 
   jthrowable exc;
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   jobject oActivity = m_activity->clazz;
   jclass cActivity = env->GetObjectClass(oActivity);
@@ -500,7 +470,6 @@ bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
     env->ExceptionDescribe();
     env->ExceptionClear();
     env->DeleteLocalRef(oBitmap);
-    DetachCurrentThread();
     return false;
   } 
   jclass cBitmap = env->GetObjectClass(oBitmap);
@@ -518,7 +487,6 @@ bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
     env->ExceptionDescribe();
     env->ExceptionClear();
     env->DeleteLocalRef(oBitmap);
-    DetachCurrentThread();
     return false;
   }
   // height = oBitmap.getHeight;
@@ -531,11 +499,8 @@ bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
     CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Error getting icon height for %s. Exception follows:", packageName.c_str());
     env->ExceptionDescribe();
     env->ExceptionClear();
-    DetachCurrentThread();
     return false;
   }
-
-  DetachCurrentThread();
   return true;
 }
 
@@ -545,8 +510,7 @@ bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int buf
     return false;
 
   jthrowable exc;
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Looking for: %s", packageName.c_str());
 
@@ -581,7 +545,6 @@ bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int buf
     CLog::Log(LOGERROR, "CXBMCApp::GetIcon Error getting icon for  %s. Exception follows:", packageName.c_str());
     env->ExceptionDescribe();
     env->ExceptionClear();
-    DetachCurrentThread();
     return false;
   }
   jobject oBitmap = env->CallObjectMethod(oBitmapDrawable, mgetBitmap);
@@ -601,10 +564,8 @@ bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int buf
     CLog::Log(LOGERROR, "CXBMCApp::GetIcon Error copying icon for  %s. Exception follows:", packageName.c_str());
     env->ExceptionDescribe();
     env->ExceptionClear();
-    DetachCurrentThread();
     return false;
   }
-  DetachCurrentThread();
   return true;
 }
 
@@ -614,8 +575,7 @@ bool CXBMCApp::HasLaunchIntent(const string &package)
   if (!m_activity)
     return false;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   jthrowable exc;
   jobject oActivity = m_activity->clazz;
@@ -660,9 +620,8 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
   CLog::Log(LOGDEBUG, "CXBMCApp::StartActivity package: '%s' intent: '%s' dataType: '%s' dataURI: '%s'", package.c_str(), intent.c_str(), dataType.c_str(), dataURI.c_str());
 
   jthrowable exc;
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
-  
+  JNIEnv* env = xbmc_jnienv();
+
   jobject oActivity = m_activity->clazz;
   jclass cActivity = env->GetObjectClass(oActivity);
 
@@ -701,14 +660,12 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
       env->ExceptionDescribe();
       env->ExceptionClear();
       env->DeleteLocalRef(cActivity);
-      DetachCurrentThread();
       return false;
     }
     if (!oIntent)
     {
       CLog::Log(LOGERROR, "CXBMCApp::StartActivity %s has no Launch Intent", package.c_str());
       env->DeleteLocalRef(cActivity);
-      DetachCurrentThread();
       return false;
     }
   }
@@ -771,11 +728,8 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
     CLog::Log(LOGERROR, "CXBMCApp::StartActivity Failed to load %s. Exception follows:", package.c_str());
     env->ExceptionDescribe();
     env->ExceptionClear();
-    DetachCurrentThread();
     return false;
   }
-
-  DetachCurrentThread();
   return true;
 }
 
@@ -784,8 +738,8 @@ int CXBMCApp::GetBatteryLevel()
   if (m_activity == NULL)
     return -1;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
+
   jobject oActivity = m_activity->clazz;
 
   // IntentFilter oIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -817,8 +771,6 @@ int CXBMCApp::GetBatteryLevel()
   env->DeleteLocalRef(oBatteryStatus);
   env->DeleteLocalRef(oIntentFilter);
 
-  DetachCurrentThread();
-
   if (iLevel <= 0 || iScale < 0)
     return iLevel;
 
@@ -830,8 +782,7 @@ bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* 
   if (m_activity == NULL)
     return false;
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   // check if external storage is available
   // String sStorageState = android.os.Environment.getExternalStorageState();
@@ -892,8 +843,6 @@ bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* 
 
   env->DeleteLocalRef(cEnvironment);
 
-  DetachCurrentThread();
-
   return mounted && !path.empty();
 }
 
@@ -915,8 +864,7 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
     return false;
   }
 
-  JNIEnv *env = NULL;
-  AttachCurrentThread(&env);
+  JNIEnv* env = xbmc_jnienv();
 
   // android.os.StatFs oStats = new android.os.StatFs(sPath);
   jclass cStatFs = env->FindClass("android/os/StatFs");
@@ -939,8 +887,6 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
 
   env->DeleteLocalRef(oStats);
   env->DeleteLocalRef(cStatFs);
-
-  DetachCurrentThread();
 
   if (iBlockSize <= 0 || iBlocksTotal <= 0 || iBlocksFree < 0)
     return false;
@@ -970,10 +916,8 @@ int CXBMCApp::GetMaxSystemVolume()
   static int maxVolume = -1;
   if (maxVolume == -1)
   {
-    JNIEnv *env = NULL;
-    AttachCurrentThread(&env);
+    JNIEnv* env = xbmc_jnienv();
     maxVolume = GetMaxSystemVolume(env);
-    DetachCurrentThread();
   }
   return maxVolume;
 }
