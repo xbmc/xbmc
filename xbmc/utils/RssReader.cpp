@@ -69,7 +69,7 @@ CRssReader::~CRssReader()
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(m_critical);
 
   m_pObserver = aObserver;
   m_spacesBetweenFeeds = spacesBetweenFeeds;
@@ -98,7 +98,7 @@ void CRssReader::requestRefresh()
 
 void CRssReader::AddToQueue(int iAdd)
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(m_critical);
   if (iAdd < (int)m_vecUrls.size())
     m_vecQueue.push_back(iAdd);
   if (!m_bIsRunning)
@@ -116,7 +116,7 @@ void CRssReader::OnExit()
 
 int CRssReader::GetQueueSize()
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(m_critical);
   return m_vecQueue.size();
 }
 
@@ -124,7 +124,7 @@ void CRssReader::Process()
 {
   while (GetQueueSize())
   {
-    CSingleLock lock(*this);
+    CSingleLock lock(m_critical);
 
     int iFeed = m_vecQueue.front();
     m_vecQueue.erase(m_vecQueue.begin());

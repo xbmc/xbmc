@@ -29,8 +29,7 @@
 #include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
 
-class CRssReader : public CThread,
-                   public CCriticalSection
+class CRssReader : public CThread
 {
 public:
   CRssReader();
@@ -72,6 +71,8 @@ private:
   CStdString m_encoding;
   bool m_rtlText;
   bool m_requestRefresh;
+
+  CCriticalSection m_critical;
 };
 
 class CRssManager
