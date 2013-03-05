@@ -522,11 +522,7 @@ void CPeripheral::ClearSettings(void)
 
 bool CPeripheral::operator ==(const PeripheralScanResult& right) const
 {
-  return m_iVendorId  == right.m_iVendorId &&
-         m_iProductId == right.m_iProductId &&
-         m_type       == right.m_type &&
-         m_busType    == right.m_busType &&
-         m_strLocation.Equals(right.m_strLocation);
+  return m_strLocation.Equals(right.m_strLocation);
 }
 
 bool CPeripheral::operator !=(const PeripheralScanResult& right) const
