@@ -464,6 +464,8 @@ void CGUISettings::Initialize()
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
 #if !defined(TARGET_RASPBERRY_PI)
   audiomode.insert(make_pair(339,AUDIO_IEC958));
+#else
+  audiomode.insert(make_pair(593,AUDIO_BOTH));
 #endif
   audiomode.insert(make_pair(420,AUDIO_HDMI  ));
 #if defined(TARGET_RASPBERRY_PI)
