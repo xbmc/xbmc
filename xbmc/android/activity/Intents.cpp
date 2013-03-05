@@ -20,6 +20,7 @@
 #include "Intents.h"
 #include "utils/log.h"
 #include "XBMCApp.h"
+#include "JNIThreading.h"
 
 CAndroidIntents::CAndroidIntents()
 {
@@ -34,12 +35,11 @@ void CAndroidIntents::ReceiveIntent(JNIEnv *env, const jobject &intent)
 std::string CAndroidIntents::GetIntentAction(const jobject &intent)
 {
   std::string action;
-  JNIEnv *env;
+  JNIEnv* env = xbmc_jnienv();
 
  if (!intent)
     return "";
 
-  CXBMCApp::AttachCurrentThread(&env, NULL);
   jclass cIntent = env->GetObjectClass(intent);
 
   //action = intent.getAction()
@@ -50,6 +50,5 @@ std::string CAndroidIntents::GetIntentAction(const jobject &intent)
   action = std::string(nativeString);
 
   env->ReleaseStringUTFChars(sAction, nativeString);
-  CXBMCApp::DetachCurrentThread();
   return action;
 }

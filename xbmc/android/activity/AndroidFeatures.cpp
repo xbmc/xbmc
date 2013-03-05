@@ -19,10 +19,10 @@
  */
 
 #include "AndroidFeatures.h"
-#include "XBMCApp.h"
 #include "utils/log.h"
 
 #include <cpu-features.h>
+#include "JNIThreading.h"
 
 bool CAndroidFeatures::HasNeon()
 {
@@ -39,8 +39,7 @@ int CAndroidFeatures::GetVersion()
   {
     version = 0;
 
-    JNIEnv *jenv = NULL;
-    CXBMCApp::AttachCurrentThread(&jenv, NULL);
+    JNIEnv *jenv = xbmc_jnienv();
 
     jclass jcOsBuild = jenv->FindClass("android/os/Build$VERSION");
     if (jcOsBuild == NULL) 
@@ -59,7 +58,6 @@ int CAndroidFeatures::GetVersion()
     version = iSdkVersion;
 
     jenv->DeleteLocalRef(jcOsBuild);
-    CXBMCApp::DetachCurrentThread();
   }
   return version;
 }

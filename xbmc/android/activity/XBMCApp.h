@@ -97,14 +97,8 @@ public:
 
   static int GetDPI();
 protected:
-  // limit who can access AttachCurrentThread/DetachCurrentThread
+  // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
-  friend class CAndroidFeatures;
-  friend class CFileAndroidApp;
-  friend class CAndroidIntents;
-
-  static int AttachCurrentThread(JNIEnv** p_env, void* thr_args = NULL);
-  static int DetachCurrentThread();
 
   static int GetMaxSystemVolume(JNIEnv *env);
   static void SetSystemVolume(JNIEnv *env, float percent);
