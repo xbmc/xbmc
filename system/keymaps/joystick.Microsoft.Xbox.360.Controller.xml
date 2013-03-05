@@ -73,6 +73,7 @@
 <keymap>
   <global>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -80,6 +81,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -161,6 +163,7 @@
   </global>
   <Home>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -168,6 +171,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -189,6 +193,7 @@
   </Home>
   <MyFiles>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -196,6 +201,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -217,6 +223,7 @@
   </MyFiles>
   <MyMusicPlaylist>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -224,6 +231,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -249,6 +257,7 @@
   </MyMusicLibrary>
   <FullscreenVideo>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -256,6 +265,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -326,6 +336,7 @@
   </FullscreenVideo>
   <FullscreenLiveTV>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -333,6 +344,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -368,6 +380,7 @@
   </FullscreenLiveTV>
   <FullscreenInfo>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -375,6 +388,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -404,6 +418,7 @@
   </FullscreenInfo>
   <PlayerControls>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -411,6 +426,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -436,6 +452,7 @@
   </PlayerControls>
   <Visualisation>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -443,6 +460,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -494,6 +512,7 @@
   </Visualisation>
   <MusicOSD>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -501,6 +520,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -524,6 +544,7 @@
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -531,6 +552,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -552,6 +574,7 @@
   </VisualisationSettings>
   <VisualisationPresetList>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -559,6 +582,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -580,6 +604,7 @@
   </VisualisationPresetList>
   <SlideShow>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -587,6 +612,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -640,6 +666,7 @@
   </SlideShow>
   <ScreenCalibration>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -647,6 +674,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -672,6 +700,7 @@
   </ScreenCalibration>
   <GUICalibration>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -679,6 +708,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -704,6 +734,7 @@
   </GUICalibration>
   <VideoOSD>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -711,6 +742,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -732,6 +764,7 @@
   </VideoOSD>
   <VideoMenu>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -739,6 +772,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -766,6 +800,7 @@
   </VideoMenu>
   <OSDVideoSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -773,6 +808,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -796,6 +832,7 @@
   </OSDVideoSettings>
   <OSDAudioSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -803,6 +840,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -826,6 +864,7 @@
   </OSDAudioSettings>
   <VideoBookmarks>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -833,6 +872,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -858,6 +898,7 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -865,6 +906,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -886,6 +928,7 @@
   </MyVideoPlaylist>
   <VirtualKeyboard>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -893,6 +936,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -924,6 +968,7 @@
   </VirtualKeyboard>
   <ContextMenu>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -931,6 +976,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -954,6 +1000,7 @@
   </ContextMenu>
   <Scripts>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -961,6 +1008,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -982,6 +1030,7 @@
   </Scripts>
   <Settings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -989,6 +1038,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1010,6 +1060,7 @@
   </Settings>
   <AddonInformation>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1017,6 +1068,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1038,6 +1090,7 @@
   </AddonInformation>
   <AddonSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1045,6 +1098,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1066,6 +1120,7 @@
   </AddonSettings>
   <TextViewer>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1073,6 +1128,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1094,6 +1150,7 @@
   </TextViewer>
   <shutdownmenu>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1101,6 +1158,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1124,6 +1182,7 @@
   </shutdownmenu>
   <submenu>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1131,6 +1190,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1152,6 +1212,7 @@
   </submenu>
   <MusicInformation>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1159,6 +1220,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1180,6 +1242,7 @@
   </MusicInformation>
   <MovieInformation>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1187,6 +1250,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1208,6 +1272,7 @@
   </MovieInformation>
   <NumericInput>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1215,6 +1280,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1238,6 +1304,7 @@
   </NumericInput>
   <GamepadInput>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1245,6 +1312,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1266,6 +1334,7 @@
   </GamepadInput>
   <LockSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1273,6 +1342,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
@@ -1296,6 +1366,7 @@
   </LockSettings>
   <ProfileSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
       <altname>Controller (Gamepad F310)</altname>
       <altname>Controller (Gamepad for Xbox 360)</altname>
       <altname>Controller (Rumble Gamepad F510)</altname>
@@ -1303,6 +1374,7 @@
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
       <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
       <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
