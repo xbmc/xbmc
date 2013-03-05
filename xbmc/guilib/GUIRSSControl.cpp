@@ -112,13 +112,13 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && CRssManager::Get().IsActive())
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL)
     {
-      if (g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+      if (CRssManager::Get().GetReader(GetID(), GetParentID(), this, m_pReader))
         m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos;
       else
       {

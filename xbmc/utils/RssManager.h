@@ -27,8 +27,7 @@ class IRssObserver;
 class CRssManager
 {
 public:
-  CRssManager();
-  ~CRssManager();
+  static CRssManager& Get();
 
   void Start();
   void Stop();
@@ -36,6 +35,12 @@ public:
   bool IsActive() const { return m_bActive; }
 
   bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
+
+protected:
+  CRssManager();
+  CRssManager(const CRssManager&);
+  CRssManager const& operator=(CRssManager const&);
+  ~CRssManager();
 
 private:
   struct READERCONTROL
@@ -48,5 +53,3 @@ private:
   std::vector<READERCONTROL> m_readers;
   bool m_bActive;
 };
-
-extern CRssManager g_rssManager;

@@ -21,8 +21,6 @@
 #include "RssManager.h"
 #include "utils/RssReader.h"
 
-CRssManager g_rssManager;
-
 CRssManager::CRssManager()
 {
   m_bActive = false;
@@ -31,6 +29,12 @@ CRssManager::CRssManager()
 CRssManager::~CRssManager()
 {
   Stop();
+}
+
+CRssManager& CRssManager::Get()
+{
+  static CRssManager sRssManager;
+  return sRssManager;
 }
 
 void CRssManager::Start()

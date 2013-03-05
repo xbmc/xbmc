@@ -667,9 +667,9 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("refreshrss"))
   {
-    g_rssManager.Stop();
+    CRssManager::Get().Stop();
     g_settings.LoadRSSFeeds();
-    g_rssManager.Start();
+    CRssManager::Get().Start();
   }
   else if (execute.Equals("playercontrol"))
   {
