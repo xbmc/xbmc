@@ -25,13 +25,9 @@
 #include "system.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
+#include "utils/IRssObserver.h"
 #include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
-
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
-
-class IRssObserver;
 
 class CRssReader : public CThread,
                    public CCriticalSection
