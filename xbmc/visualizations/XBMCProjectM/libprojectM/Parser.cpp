@@ -84,7 +84,7 @@ double fastatof (const char *p, bool &b_validformat)
     }
     b_validformat = true;
 
-    int frac;
+    int frac = 0;
     double sign, value, scale;
 
     // Skip leading white space, if any.
