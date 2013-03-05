@@ -23,6 +23,7 @@
 #include "settings/GUISettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
+#include "utils/RssManager.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
 

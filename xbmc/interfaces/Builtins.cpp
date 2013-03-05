@@ -45,7 +45,7 @@
 #include "addons/PluginSource.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
-#include "utils/RssReader.h"
+#include "utils/RssManager.h"
 #include "PartyModeManager.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"

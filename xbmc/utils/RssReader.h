@@ -22,7 +22,6 @@
 #include <list>
 #include <vector>
 
-#include "system.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/IRssObserver.h"
@@ -74,30 +73,3 @@ private:
 
   CCriticalSection m_critical;
 };
-
-class CRssManager
-{
-public:
-  CRssManager();
-  ~CRssManager();
-
-  void Start();
-  void Stop();
-  void Reset();
-  bool IsActive() const { return m_bActive; }
-
-  bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
-
-private:
-  struct READERCONTROL
-  {
-    int controlID;
-    int windowID;
-    CRssReader *reader;
-  };
-
-  std::vector<READERCONTROL> m_readers;
-  bool m_bActive;
-};
-
-extern CRssManager g_rssManager;

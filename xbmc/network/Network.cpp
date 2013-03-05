@@ -22,7 +22,7 @@
 #include "Network.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "utils/RssReader.h"
+#include "utils/RssManager.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
