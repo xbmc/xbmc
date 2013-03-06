@@ -288,6 +288,7 @@ extern "C" {
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
+    int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

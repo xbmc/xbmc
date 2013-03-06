@@ -178,15 +178,17 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
 
   memset(&addonRecording, 0, sizeof(addonRecording));
 
-  addonRecording.recordingTime  = recTime - g_advancedSettings.m_iPVRTimeCorrection;
+  addonRecording.recordingTime       = recTime - g_advancedSettings.m_iPVRTimeCorrection;
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
   strncpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(), sizeof(addonRecording.strPlotOutline) - 1);
   strncpy(addonRecording.strPlot, xbmcRecording.m_strPlot.c_str(), sizeof(addonRecording.strPlot) - 1);
   strncpy(addonRecording.strChannelName, xbmcRecording.m_strChannelName.c_str(), sizeof(addonRecording.strChannelName) - 1);
-  addonRecording.iDuration      = xbmcRecording.GetDuration();
-  addonRecording.iPriority      = xbmcRecording.m_iPriority;
-  addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
+  addonRecording.iDuration           = xbmcRecording.GetDuration();
+  addonRecording.iPriority           = xbmcRecording.m_iPriority;
+  addonRecording.iLifetime           = xbmcRecording.m_iLifetime;
+  addonRecording.iPlayCount          = xbmcRecording.m_playCount;
+  addonRecording.iLastPlayedPosition = (int)xbmcRecording.m_resumePoint.timeInSeconds;
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
