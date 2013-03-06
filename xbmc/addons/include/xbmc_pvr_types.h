@@ -74,10 +74,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.6.0"
+#define XBMC_PVR_API_VERSION "1.6.1"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.6.0"
+#define XBMC_PVR_MIN_API_VERSION "1.6.1"
 
 #ifdef __cplusplus
 extern "C" {
@@ -316,6 +316,8 @@ extern "C" {
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
     const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
+    const char*  (__cdecl* GetGUIAPIVersion)(void);
+    const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);
