@@ -127,9 +127,12 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
 {
   std::string value;
-  bool ret = GetString(pRootNode, strTag, value);
-  strStringValue = value;
-  return ret;
+  if (GetString(pRootNode, strTag, value))
+  {
+    strStringValue = value;
+    return true;
+  }
+  return false;
 }
 
 bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue)
