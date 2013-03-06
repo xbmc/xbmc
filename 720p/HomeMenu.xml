@@ -8,7 +8,7 @@
 				<width>391</width>
 				<height>720</height>
 				<include>Black</include>
-				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
 				<visible>true</visible>
 			</control>
 			<control type="image">
