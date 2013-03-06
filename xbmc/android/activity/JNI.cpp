@@ -17,34 +17,70 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <string>
-#include <jni.h>
-#include "Intents.h"
+#include "JNI.h"
+#include "XBMCApp.h"
+#include <android/log.h>
 
-extern "C"{
 
-  static void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
+CAndroidJNIManager::CAndroidJNIManager()
+{
+  m_oActivity = NULL;
+}
+
+
+CAndroidJNIManager::~CAndroidJNIManager()
+{
+}
+
+bool CAndroidJNIManager::RegisterClass(JNIEnv* env, CAndroidJNIBase *native)
+{
+    __android_log_print(ANDROID_LOG_VERBOSE, "XBMC", "Registering class");
+  jclass javaClass = NULL;
+  if (!native)
+    return false;
+
+  // Don't register more than once.
+  if (native->m_class)
+    return false;
+
+  try
   {
-     CAndroidIntents::getInstance().ReceiveIntent(env, intent);
+    javaClass = env->FindClass(native->GetClassName().c_str());
+    if (javaClass && native->m_jniMethods.size())
+    {
+      if(env->RegisterNatives(javaClass, (JNINativeMethod*)&native->m_jniMethods[0], native->m_jniMethods.size()) != 0)
+        return false;
+    }
   }
-
-  static JNINativeMethod jniMethods[] =
+  catch(...)
   {
-    {"ReceiveIntent", "(Landroid/content/Intent;)V", (void*)jni_ReceiveIntent}
-  };
+  }
+  if (javaClass)
+  {
+    native->m_class = reinterpret_cast<jclass>(env->NewGlobalRef(javaClass));
+    __android_log_print(ANDROID_LOG_VERBOSE, "XBMC", "Registered class %s",native->GetClassName().c_str());
+    return true;
+  }
+  return false;
+}
+
+bool CAndroidJNIManager::Load(JavaVM* vm, int jniVersion)
+  {
+    if (!vm)
+      return false;
+
+    JNIEnv* env;
+    if (vm->GetEnv(reinterpret_cast<void**>(&env), jniVersion) != JNI_OK) {
+        return false;
+    }
+    return true;
+  }
 
   // This is a special function called when libxbmc is loaded. It sets up our
   // internal functions so that we can use them in native code much more simply.
   // It loads a array of methods, params, and function-pointers.
-  jint JNI_OnLoad(JavaVM* vm, void* reserved)
-  {
-    JNIEnv* env;
-    if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
-        return -1;
-    }
-    jclass jniClass = env->FindClass("org/xbmc/xbmc/XBMCBroadcastReceiver");
-    env->RegisterNatives(jniClass, jniMethods, sizeof(jniMethods) / sizeof(jniMethods[0]));
-
-    return JNI_VERSION_1_6;
-  }
+extern "C"  jint JNI_OnLoad(JavaVM* vm, void* reserved)
+{
+  int jniVersion = JNI_VERSION_1_6;
+  return CAndroidJNIManager::GetInstance().Load(vm, jniVersion) == true ? jniVersion : -1;
 }
