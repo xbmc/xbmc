@@ -131,6 +131,7 @@ namespace XFILE
           bool         FillBuffer(unsigned int want);
           void         SetReadBuffer(const void* lpBuf, int64_t uiBufSize);
 
+          void         SetResume(void);
           long         Connect(unsigned int size);
           void         Disconnect();
       };
