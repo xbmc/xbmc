@@ -277,11 +277,6 @@ TEST_F(TestURIUtils, IsISO9660)
   EXPECT_TRUE(URIUtils::IsISO9660("iso9660://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsLastFM)
-{
-  EXPECT_TRUE(URIUtils::IsLastFM("lastfm://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsLiveTV)
 {
   EXPECT_TRUE(URIUtils::IsLiveTV("tuxbox://path/to/file"));
@@ -487,7 +482,6 @@ TEST_F(TestURIUtils, ProtocolHasEncodedFilename)
   EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("daap"));
   EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("dav"));
   EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("tuxbox"));
-  EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("lastfm"));
   EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("rss"));
   EXPECT_TRUE(URIUtils::ProtocolHasEncodedFilename("davs"));
 }

@@ -37,9 +37,6 @@ CPlayList* CPlayListFactory::Create(const CStdString& filename)
 
 CPlayList* CPlayListFactory::Create(const CFileItem& item)
 {
-  if(item.IsLastFM()) //lastfm is always a stream, and just silly to check content
-    return NULL;
-
   if( item.IsInternetStream() )
   {
     CStdString strMimeType = item.GetMimeType();

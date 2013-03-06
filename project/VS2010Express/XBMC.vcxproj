@@ -488,8 +488,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ISOFile.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\LastFMDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\LastFMFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\LibraryDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MemBufferCache.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathDirectory.cpp" />
@@ -796,7 +794,6 @@
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.cpp" />
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokewindowbackground.cpp" />
     <ClCompile Include="..\..\xbmc\music\karaoke\karaokevideobackground.cpp" />
-    <ClCompile Include="..\..\xbmc\music\LastFmManager.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicDbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp" />
@@ -835,9 +832,6 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp" />
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.cpp" />
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.cpp" />
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\scrobbler.cpp" />
     <ClCompile Include="..\..\xbmc\network\Network.cpp" />
     <ClCompile Include="..\..\xbmc\network\Socket.cpp" />
     <ClCompile Include="..\..\xbmc\network\TCPServer.cpp" />
@@ -1176,8 +1170,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ISO9660Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ISOFile.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\LastFMDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\LastFMFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\LibraryDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MultiPathDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MultiPathFile.h" />
@@ -2227,7 +2219,6 @@
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokewindowbackground.h" />
-    <ClInclude Include="..\..\xbmc\music\LastFmManager.h" />
     <ClInclude Include="..\..\xbmc\music\MusicDatabase.h" />
     <ClInclude Include="..\..\xbmc\music\MusicInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\music\Song.h" />
@@ -2257,10 +2248,6 @@
     <ClInclude Include="..\..\xbmc\network\EventServer.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogAccessPoints.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogNetworkSetup.h" />
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\errors.h" />
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.h" />
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.h" />
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\scrobbler.h" />
     <ClInclude Include="..\..\xbmc\network\Network.h" />
     <ClInclude Include="..\..\xbmc\network\Socket.h" />
     <ClInclude Include="..\..\xbmc\network\TCPServer.h" />

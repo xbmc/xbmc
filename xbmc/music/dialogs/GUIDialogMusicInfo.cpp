@@ -24,7 +24,6 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "music/MusicDatabase.h"
-#include "music/LastFmManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 #include "filesystem/File.h"
@@ -51,7 +50,6 @@ using namespace XFILE;
 #define CONTROL_BTN_TRACKS       5
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_BTN_GET_THUMB   10
-#define CONTROL_BTN_LASTFM      11
 #define  CONTROL_BTN_GET_FANART 12
 
 #define CONTROL_LIST            50
@@ -125,15 +123,6 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
           OnSearch(item.get());
           return true;
         }
-      }
-      else if (iControl == CONTROL_BTN_LASTFM)
-      {
-        CStdString strArtist = StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator);
-        CURL::Encode(strArtist);
-        CStdString strLink;
-        strLink.Format("lastfm://artist/%s/similarartists", strArtist.c_str());
-        CURL url(strLink);
-        CLastFmManager::GetInstance()->ChangeStation(url);
       }
       else if (iControl == CONTROL_BTN_GET_FANART)
       {
@@ -307,16 +296,6 @@ void CGUIDialogMusicInfo::Update()
 
   // disable the GetThumb button if the user isn't allowed it
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
-
-  if (!m_album.artist.empty() && CLastFmManager::GetInstance()->IsLastFmEnabled())
-  {
-    SET_CONTROL_VISIBLE(CONTROL_BTN_LASTFM);
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(CONTROL_BTN_LASTFM);
-  }
-
 }
 
 void CGUIDialogMusicInfo::SetLabel(int iControl, const CStdString& strLabel)

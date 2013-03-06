@@ -36,7 +36,6 @@
 #include "LibraryDirectory.h"
 #include "AddonsDirectory.h"
 #include "SourcesDirectory.h"
-#include "LastFMDirectory.h"
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
@@ -169,7 +168,6 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {
-    if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CTuxBoxDirectory();
     if (strProtocol == "ftp" || strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();

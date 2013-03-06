@@ -148,7 +148,6 @@
 		DF93D7D71444B105007C6459 /* FileReaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7A71444B105007C6459 /* FileReaderFile.cpp */; };
 		DF93D7D81444B105007C6459 /* HDFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7A91444B105007C6459 /* HDFile.cpp */; };
 		DF93D7D91444B105007C6459 /* ISOFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7AB1444B105007C6459 /* ISOFile.cpp */; };
-		DF93D7DA1444B105007C6459 /* LastFMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7AD1444B105007C6459 /* LastFMFile.cpp */; };
 		DF93D7DB1444B105007C6459 /* MusicDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7AF1444B105007C6459 /* MusicDatabaseFile.cpp */; };
 		DF93D7DC1444B105007C6459 /* NFSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7B11444B105007C6459 /* NFSFile.cpp */; };
 		DF93D7DD1444B105007C6459 /* PipeFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7B31444B105007C6459 /* PipeFile.cpp */; };
@@ -603,7 +602,6 @@
 		F56C898A131F42ED000AD0F6 /* IFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83DD131F42E8000AD0F6 /* IFile.cpp */; };
 		F56C898B131F42ED000AD0F6 /* iso9660.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83E0131F42E8000AD0F6 /* iso9660.cpp */; };
 		F56C898C131F42ED000AD0F6 /* ISO9660Directory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83E2131F42E8000AD0F6 /* ISO9660Directory.cpp */; };
-		F56C898D131F42ED000AD0F6 /* LastFMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83E4131F42E8000AD0F6 /* LastFMDirectory.cpp */; };
 		F56C898E131F42ED000AD0F6 /* MultiPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83E6131F42E8000AD0F6 /* MultiPathDirectory.cpp */; };
 		F56C898F131F42ED000AD0F6 /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83E8131F42E8000AD0F6 /* MultiPathFile.cpp */; };
 		F56C8990131F42ED000AD0F6 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83EB131F42E8000AD0F6 /* DirectoryNodeSingles.cpp */; };
@@ -814,13 +812,9 @@
 		F56C8A9F131F42ED000AD0F6 /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C861C131F42EA000AD0F6 /* Album.cpp */; };
 		F56C8AA0131F42ED000AD0F6 /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C861E131F42EA000AD0F6 /* Artist.cpp */; };
 		F56C8AA1131F42ED000AD0F6 /* GUIViewStateMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8620131F42EA000AD0F6 /* GUIViewStateMusic.cpp */; };
-		F56C8AA2131F42ED000AD0F6 /* LastFmManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8622131F42EA000AD0F6 /* LastFmManager.cpp */; };
 		F56C8AA3131F42ED000AD0F6 /* MusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8624131F42EA000AD0F6 /* MusicDatabase.cpp */; };
 		F56C8AA4131F42ED000AD0F6 /* MusicInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8626131F42EA000AD0F6 /* MusicInfoLoader.cpp */; };
 		F56C8AA5131F42ED000AD0F6 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8628131F42EA000AD0F6 /* Song.cpp */; };
-		F56C8AA6131F42ED000AD0F6 /* lastfmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C862D131F42EA000AD0F6 /* lastfmscrobbler.cpp */; };
-		F56C8AA7131F42ED000AD0F6 /* librefmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C862F131F42EA000AD0F6 /* librefmscrobbler.cpp */; };
-		F56C8AA8131F42ED000AD0F6 /* scrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8631131F42EA000AD0F6 /* scrobbler.cpp */; };
 		F56C8AA9131F42ED000AD0F6 /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8634131F42EA000AD0F6 /* NetworkLinux.cpp */; };
 		F56C8AAA131F42ED000AD0F6 /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8637131F42EA000AD0F6 /* ZeroconfBrowserOSX.cpp */; };
 		F56C8AAB131F42ED000AD0F6 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8639131F42EA000AD0F6 /* ZeroconfOSX.cpp */; };
@@ -1377,8 +1371,6 @@
 		DF93D7AA1444B105007C6459 /* HDFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDFile.h; sourceTree = "<group>"; };
 		DF93D7AB1444B105007C6459 /* ISOFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISOFile.cpp; sourceTree = "<group>"; };
 		DF93D7AC1444B105007C6459 /* ISOFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISOFile.h; sourceTree = "<group>"; };
-		DF93D7AD1444B105007C6459 /* LastFMFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFMFile.cpp; sourceTree = "<group>"; };
-		DF93D7AE1444B105007C6459 /* LastFMFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMFile.h; sourceTree = "<group>"; };
 		DF93D7AF1444B105007C6459 /* MusicDatabaseFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDatabaseFile.cpp; sourceTree = "<group>"; };
 		DF93D7B01444B105007C6459 /* MusicDatabaseFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDatabaseFile.h; sourceTree = "<group>"; };
 		DF93D7B11444B105007C6459 /* NFSFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSFile.cpp; sourceTree = "<group>"; };
@@ -2365,8 +2357,6 @@
 		F56C83E1131F42E8000AD0F6 /* iso9660.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iso9660.h; sourceTree = "<group>"; };
 		F56C83E2131F42E8000AD0F6 /* ISO9660Directory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISO9660Directory.cpp; sourceTree = "<group>"; };
 		F56C83E3131F42E8000AD0F6 /* ISO9660Directory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO9660Directory.h; sourceTree = "<group>"; };
-		F56C83E4131F42E8000AD0F6 /* LastFMDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFMDirectory.cpp; sourceTree = "<group>"; };
-		F56C83E5131F42E8000AD0F6 /* LastFMDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMDirectory.h; sourceTree = "<group>"; };
 		F56C83E6131F42E8000AD0F6 /* MultiPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathDirectory.cpp; sourceTree = "<group>"; };
 		F56C83E7131F42E8000AD0F6 /* MultiPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiPathDirectory.h; sourceTree = "<group>"; };
 		F56C83E8131F42E8000AD0F6 /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
@@ -2807,8 +2797,6 @@
 		F56C861F131F42EA000AD0F6 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
 		F56C8620131F42EA000AD0F6 /* GUIViewStateMusic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateMusic.cpp; sourceTree = "<group>"; };
 		F56C8621131F42EA000AD0F6 /* GUIViewStateMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateMusic.h; sourceTree = "<group>"; };
-		F56C8622131F42EA000AD0F6 /* LastFmManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFmManager.cpp; sourceTree = "<group>"; };
-		F56C8623131F42EA000AD0F6 /* LastFmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFmManager.h; sourceTree = "<group>"; };
 		F56C8624131F42EA000AD0F6 /* MusicDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDatabase.cpp; sourceTree = "<group>"; };
 		F56C8625131F42EA000AD0F6 /* MusicDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDatabase.h; sourceTree = "<group>"; };
 		F56C8626131F42EA000AD0F6 /* MusicInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoLoader.cpp; sourceTree = "<group>"; };
@@ -2816,12 +2804,6 @@
 		F56C8628131F42EA000AD0F6 /* Song.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Song.cpp; sourceTree = "<group>"; };
 		F56C8629131F42EA000AD0F6 /* Song.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Song.h; sourceTree = "<group>"; };
 		F56C862C131F42EA000AD0F6 /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errors.h; sourceTree = "<group>"; };
-		F56C862D131F42EA000AD0F6 /* lastfmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lastfmscrobbler.cpp; sourceTree = "<group>"; };
-		F56C862E131F42EA000AD0F6 /* lastfmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfmscrobbler.h; sourceTree = "<group>"; };
-		F56C862F131F42EA000AD0F6 /* librefmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = librefmscrobbler.cpp; sourceTree = "<group>"; };
-		F56C8630131F42EA000AD0F6 /* librefmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = librefmscrobbler.h; sourceTree = "<group>"; };
-		F56C8631131F42EA000AD0F6 /* scrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scrobbler.cpp; sourceTree = "<group>"; };
-		F56C8632131F42EA000AD0F6 /* scrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scrobbler.h; sourceTree = "<group>"; };
 		F56C8634131F42EA000AD0F6 /* NetworkLinux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkLinux.cpp; sourceTree = "<group>"; };
 		F56C8635131F42EA000AD0F6 /* NetworkLinux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkLinux.h; sourceTree = "<group>"; };
 		F56C8637131F42EA000AD0F6 /* ZeroconfBrowserOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowserOSX.cpp; sourceTree = "<group>"; };
@@ -5203,10 +5185,6 @@
 				F56C83E3131F42E8000AD0F6 /* ISO9660Directory.h */,
 				DF93D7AB1444B105007C6459 /* ISOFile.cpp */,
 				DF93D7AC1444B105007C6459 /* ISOFile.h */,
-				F56C83E4131F42E8000AD0F6 /* LastFMDirectory.cpp */,
-				F56C83E5131F42E8000AD0F6 /* LastFMDirectory.h */,
-				DF93D7AD1444B105007C6459 /* LastFMFile.cpp */,
-				DF93D7AE1444B105007C6459 /* LastFMFile.h */,
 				7C1F6F7813ED178F001726AB /* LibraryDirectory.cpp */,
 				7C1F6F7913ED178F001726AB /* LibraryDirectory.h */,
 				DFDB00221516403A005079A4 /* MemBufferCache.cpp */,
@@ -5717,8 +5695,6 @@
 				F56C861F131F42EA000AD0F6 /* Artist.h */,
 				F56C8620131F42EA000AD0F6 /* GUIViewStateMusic.cpp */,
 				F56C8621131F42EA000AD0F6 /* GUIViewStateMusic.h */,
-				F56C8622131F42EA000AD0F6 /* LastFmManager.cpp */,
-				F56C8623131F42EA000AD0F6 /* LastFmManager.h */,
 				F56C8624131F42EA000AD0F6 /* MusicDatabase.cpp */,
 				F56C8625131F42EA000AD0F6 /* MusicDatabase.h */,
 				36A9467215CF208B00727135 /* MusicDbUrl.cpp */,
@@ -5853,7 +5829,6 @@
 			isa = PBXGroup;
 			children = (
 				DFCA6ADD15224671000BFAAE /* httprequesthandler */,
-				F56C862B131F42EA000AD0F6 /* libscrobbler */,
 				F56C8633131F42EA000AD0F6 /* linux */,
 				F56C8636131F42EA000AD0F6 /* osx */,
 				DF23461715FA675200A934F6 /* upnp */,
@@ -5891,20 +5866,6 @@
 				F56C8655131F42EB000AD0F6 /* ZeroconfBrowser.h */,
 			);
 			path = network;
-			sourceTree = "<group>";
-		};
-		F56C862B131F42EA000AD0F6 /* libscrobbler */ = {
-			isa = PBXGroup;
-			children = (
-				F56C862C131F42EA000AD0F6 /* errors.h */,
-				F56C862D131F42EA000AD0F6 /* lastfmscrobbler.cpp */,
-				F56C862E131F42EA000AD0F6 /* lastfmscrobbler.h */,
-				F56C862F131F42EA000AD0F6 /* librefmscrobbler.cpp */,
-				F56C8630131F42EA000AD0F6 /* librefmscrobbler.h */,
-				F56C8631131F42EA000AD0F6 /* scrobbler.cpp */,
-				F56C8632131F42EA000AD0F6 /* scrobbler.h */,
-			);
-			path = libscrobbler;
 			sourceTree = "<group>";
 		};
 		F56C8633131F42EA000AD0F6 /* linux */ = {
@@ -7064,7 +7025,6 @@
 				F56C898A131F42ED000AD0F6 /* IFile.cpp in Sources */,
 				F56C898B131F42ED000AD0F6 /* iso9660.cpp in Sources */,
 				F56C898C131F42ED000AD0F6 /* ISO9660Directory.cpp in Sources */,
-				F56C898D131F42ED000AD0F6 /* LastFMDirectory.cpp in Sources */,
 				F56C898E131F42ED000AD0F6 /* MultiPathDirectory.cpp in Sources */,
 				F56C898F131F42ED000AD0F6 /* MultiPathFile.cpp in Sources */,
 				F56C8990131F42ED000AD0F6 /* DirectoryNodeSingles.cpp in Sources */,
@@ -7275,13 +7235,9 @@
 				F56C8A9F131F42ED000AD0F6 /* Album.cpp in Sources */,
 				F56C8AA0131F42ED000AD0F6 /* Artist.cpp in Sources */,
 				F56C8AA1131F42ED000AD0F6 /* GUIViewStateMusic.cpp in Sources */,
-				F56C8AA2131F42ED000AD0F6 /* LastFmManager.cpp in Sources */,
 				F56C8AA3131F42ED000AD0F6 /* MusicDatabase.cpp in Sources */,
 				F56C8AA4131F42ED000AD0F6 /* MusicInfoLoader.cpp in Sources */,
 				F56C8AA5131F42ED000AD0F6 /* Song.cpp in Sources */,
-				F56C8AA6131F42ED000AD0F6 /* lastfmscrobbler.cpp in Sources */,
-				F56C8AA7131F42ED000AD0F6 /* librefmscrobbler.cpp in Sources */,
-				F56C8AA8131F42ED000AD0F6 /* scrobbler.cpp in Sources */,
 				F56C8AA9131F42ED000AD0F6 /* NetworkLinux.cpp in Sources */,
 				F56C8AAA131F42ED000AD0F6 /* ZeroconfBrowserOSX.cpp in Sources */,
 				F56C8AAB131F42ED000AD0F6 /* ZeroconfOSX.cpp in Sources */,
@@ -7527,7 +7483,6 @@
 				DF93D7D71444B105007C6459 /* FileReaderFile.cpp in Sources */,
 				DF93D7D81444B105007C6459 /* HDFile.cpp in Sources */,
 				DF93D7D91444B105007C6459 /* ISOFile.cpp in Sources */,
-				DF93D7DA1444B105007C6459 /* LastFMFile.cpp in Sources */,
 				DF93D7DB1444B105007C6459 /* MusicDatabaseFile.cpp in Sources */,
 				DF93D7DC1444B105007C6459 /* NFSFile.cpp in Sources */,
 				DF93D7DD1444B105007C6459 /* PipeFile.cpp in Sources */,

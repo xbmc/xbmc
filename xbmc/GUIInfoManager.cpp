@@ -25,7 +25,6 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
 #include "Util.h"
-#include "network/libscrobbler/lastfmscrobbler.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
 #include "PartyModeManager.h"
@@ -36,7 +35,6 @@
 #include "utils/SystemInfo.h"
 #include "guilib/GUITextBox.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "music/LastFmManager.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
@@ -298,16 +296,6 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
                                   { "matchingsongsleft", MUSICPM_MATCHINGSONGSLEFT },
                                   { "relaxedsongspicked",MUSICPM_RELAXEDSONGSPICKED },
                                   { "randomsongspicked", MUSICPM_RANDOMSONGSPICKED }};
-
-const infomap audioscrobbler[] = {{ "enabled",           AUDIOSCROBBLER_ENABLED },
-                                  { "connectstate",      AUDIOSCROBBLER_CONN_STATE }, //labels from here
-                                  { "submitinterval",    AUDIOSCROBBLER_SUBMIT_INT },
-                                  { "filescached",       AUDIOSCROBBLER_FILES_CACHED },
-                                  { "submitstate",       AUDIOSCROBBLER_SUBMIT_STATE }};
-
-const infomap lastfm[] =         {{ "radioplaying",      LASTFM_RADIOPLAYING },
-                                  { "canlove",           LASTFM_CANLOVE},
-                                  { "canban",            LASTFM_CANBAN}};
 
 const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "album",            MUSICPLAYER_ALBUM },
@@ -800,22 +788,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (prop.name == musicpartymode[i].str)
           return musicpartymode[i].val;
-      }
-    }
-    else if (cat.name == "audioscrobbler")
-    {
-      for (size_t i = 0; i < sizeof(audioscrobbler) / sizeof(infomap); i++)
-      {
-        if (prop.name == audioscrobbler[i].str)
-          return audioscrobbler[i].val;
-      }
-    }
-    else if (cat.name == "lastfm")
-    {
-      for (size_t i = 0; i < sizeof(lastfm) / sizeof(infomap); i++)
-      {
-        if (prop.name == lastfm[i].str)
-          return lastfm[i].val;
       }
     }
     else if (cat.name == "system")
@@ -1786,12 +1758,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
 
-  case AUDIOSCROBBLER_CONN_STATE:
-  case AUDIOSCROBBLER_SUBMIT_INT:
-  case AUDIOSCROBBLER_FILES_CACHED:
-  case AUDIOSCROBBLER_SUBMIT_STATE:
-    strLabel=GetAudioScrobblerLabel(info);
-    break;
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -2350,18 +2316,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
-    case AUDIOSCROBBLER_ENABLED:
-      bReturn = CLastFmManager::GetInstance()->IsLastFmEnabled();
-    break;
-    case LASTFM_RADIOPLAYING:
-      bReturn = CLastFmManager::GetInstance()->IsRadioEnabled();
-      break;
-    case LASTFM_CANLOVE:
-      bReturn = CLastFmManager::GetInstance()->CanLove();
-      break;
-    case LASTFM_CANBAN:
-      bReturn = CLastFmManager::GetInstance()->CanBan();
-      break;
     case MUSICPLAYER_HASPREVIOUS:
       {
         // requires current playlist be PLAYLIST_MUSIC
@@ -4000,27 +3954,6 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
     return true;
   m_seekOffset = 0;
   return false;
-}
-
-CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
-{
-  switch (item)
-  {
-  case AUDIOSCROBBLER_CONN_STATE:
-    return CLastfmScrobbler::GetInstance()->GetConnectionState();
-    break;
-  case AUDIOSCROBBLER_SUBMIT_INT:
-    return CLastfmScrobbler::GetInstance()->GetSubmitInterval();
-    break;
-  case AUDIOSCROBBLER_FILES_CACHED:
-    return CLastfmScrobbler::GetInstance()->GetFilesCached();
-    break;
-  case AUDIOSCROBBLER_SUBMIT_STATE:
-    return CLastfmScrobbler::GetInstance()->GetSubmitState();
-    break;
-  }
-
-  return "";
 }
 
 void CGUIInfoManager::Clear()

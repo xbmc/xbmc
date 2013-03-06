@@ -418,7 +418,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
-  if (item && (item->GetExtraInfo().Find("lastfm") < 0)  && !item->GetPath().Left(14).Equals("addons://more/"))
+  if (item && !item->GetPath().Left(14).Equals("addons://more/"))
   {
     // are we in the playlists location?
     bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
@@ -427,7 +427,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
-       !item->IsLastFM() && !item->m_bIsFolder)
+        !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     }
@@ -446,7 +446,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (!inPlaylists && (dir.HasAlbumInfo(item->GetPath())||
                               dir.IsArtistDir(item->GetPath())   )      &&
              !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
-             !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
+             !item->IsPlugin() && !item->IsScript() &&
              !item->GetPath().Left(14).Equals("musicsearch://"))
     {
       if (dir.IsArtistDir(item->GetPath()))
@@ -458,7 +458,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable query all albums button only in album view
     if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
-       !item->IsLastFM()                                                     &&
        !item->IsPlugin() && !item->GetPath().Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
