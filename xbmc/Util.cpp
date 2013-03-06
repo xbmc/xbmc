@@ -50,9 +50,6 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #include "filesystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
@@ -2083,14 +2080,10 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
   else
   {
- #ifdef HAS_FILESYSTEM_RAR
-   // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
-   // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-   if( !g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, "") )
+   CStdString strRarPath;
+   URIUtils::CreateArchivePath(strRarPath,"rar",strArchivePath,"");
+   if (!CDirectory::GetDirectory(strRarPath,ItemList,"",DIR_FLAG_NO_FILE_DIRS))
     return false;
- #else
-   return false;
- #endif
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {
