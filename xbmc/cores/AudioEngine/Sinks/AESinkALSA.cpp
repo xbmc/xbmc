@@ -332,18 +332,31 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_get_period_size_max(hw_params, &periodSize, NULL);
 
   /* 
-   We want to make sure, that we have approx 500 to 800 ms Buffer with 
-   a periodSize of approx 100 ms.
+   We want to make sure, that we have max 400 ms Buffer with 
+   a periodSize of approx 50 ms. Choosing a higher ratio can
+   cause playback issues on broken hardware, e.g. Luckit USB Audio 2.0
+   We also must take menu sounds into account here.
    It is calced:
-   periodSize = sampleRate / 10 
+   periodSize = sampleRate / 20 
    buffersize = periodSize * 1 frame * 8.
+   Example (maxBuffer 16384, max periodSize 2048) (frames): 
+   44100 hz -> 2205(periodSize) -> 17640(bufferSize) -> Alsa: 2048 / 16384
+   192000 hz -> 9600(periodSize) -> 38400(bufferSize) -> Alsa: 2048 / 16384
+   
+   There exists rarely any hardware that can buffer that amount. So the periodSize gets 
+   reduced in the last example as gets the bufferSize (by Alsa).
+
+   For broken hardware we additionally limit the maxBufferSize to 16K.
   */
-  periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 10);
+  periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 20);
   bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) periodSize * 8);
   
+  /* Some hardware (driver) reports > 32K Buffer but cannot do it - limit to 16K */
+  bufferSize = std::min(bufferSize, (snd_pcm_uframes_t) 16384);
+  
   /* 
-     According to upstream we should set buffer size first - so make sure it is always at least
-     double of period size to not get underruns
+   According to upstream we should set buffer size first - so make sure it is always at least
+   double of period size to not get underruns
   */
   periodSize = std::min(periodSize, bufferSize / 2);
 
