@@ -84,6 +84,14 @@ DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t ty
   ((CB_AddOnLib*)cb)->QueueNotification(((AddonCB*)hdl)->addonData, type, msg);
 }
 
+DLLEXPORT bool XBMC_wake_on_lan(void* hdl, void* cb, char* mac)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->WakeOnLan(mac);
+}
+
 DLLEXPORT char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
 {
   if (cb == NULL)
