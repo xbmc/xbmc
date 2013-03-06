@@ -51,6 +51,22 @@ extern "C"
   const char* GetMininumPVRAPIVersion(void);
 
   /*!
+   * Get the XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * Used to check if this add-on is compatible with XBMC.
+   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * @remarks Valid implementation required.
+   */
+  const char* GetGUIAPIVersion(void);
+
+  /*!
+   * Get the XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * Used to check if this add-on is compatible with XBMC.
+   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * @remarks Valid implementation required.
+   */
+  const char* GetMininumGUIAPIVersion(void);
+
+  /*!
    * Get the list of features that this add-on provides.
    * Called by XBMC to query the add-on's capabilities.
    * Used to check which options should be presented in the UI, which methods to call, etc.
@@ -566,6 +582,8 @@ extern "C"
   {
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
+    pClient->GetGUIAPIVersion               = GetGUIAPIVersion;
+    pClient->GetMininumGUIAPIVersion        = GetMininumGUIAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
     pClient->GetStreamProperties            = GetStreamProperties;
     pClient->GetConnectionString            = GetConnectionString;
