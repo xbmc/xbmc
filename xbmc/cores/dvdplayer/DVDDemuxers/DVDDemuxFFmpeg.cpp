@@ -425,6 +425,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // set the interrupt callback, appeared in libavformat 53.15.0
   m_pFormatContext->interrupt_callback = int_cb;
+  
+  // Avoid detecting framerate if advancedsettings.xml says so
+  m_pFormatContext->fps_probe_size = (!g_advancedSettings.m_videoFpsDetect) ? 0 : -1;
 
   // analyse very short to speed up mjpeg playback start
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
