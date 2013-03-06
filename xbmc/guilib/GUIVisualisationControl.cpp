@@ -25,6 +25,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Visualisation.h"
 #include "utils/log.h"
+#include "guilib/IRenderingCallback.h"
 
 using namespace std;
 using namespace ADDON;
@@ -99,9 +100,14 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
 
     if (!m_addon && !m_bAttemptedLoad)
     {
-      AddonPtr viz;
-      if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
-        LoadAddon(viz);
+      AddonPtr addon;
+      if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, addon))
+      {
+        m_addon = boost::dynamic_pointer_cast<CVisualisation>(addon);
+        if (m_addon)
+          if (!InitCallback(m_addon.get()))
+            m_addon.reset();
+      }
 
       m_bAttemptedLoad = true;
     }
@@ -120,6 +126,7 @@ void CGUIVisualisationControl::FreeResources(bool immediately)
   g_windowManager.SendMessage(msg);
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   CGUIRenderingControl::FreeResources(immediately);
+  m_addon.reset();
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 

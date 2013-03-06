@@ -20,6 +20,7 @@
  */
 
 #include "GUIRenderingControl.h"
+#include "addons/IAddon.h"
 
 class CGUIVisualisationControl : public CGUIRenderingControl
 {
@@ -33,4 +34,5 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 private:
   bool m_bAttemptedLoad;
+  ADDON::VizPtr m_addon;
 };
