@@ -27,8 +27,6 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
-UInt32 CCoreAudioMixMap::m_deviceChannels = 0;
-
 CCoreAudioMixMap::CCoreAudioMixMap() :
   m_isValid(false)
 {
@@ -162,8 +160,6 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   CCoreAudioChannelLayout deviceLayout;
   if (!audioUnit->GetPreferredChannelLayout(deviceLayout))
     return NULL;
-    
-  m_deviceChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(*deviceLayout);
 
   // When all channels on the output device are unknown take the gui layout
   //if(deviceLayout.AllChannelUnknown())
@@ -209,15 +205,47 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   if (!mixerUnit || !inputFormat || !fmt)
     return false;
 
+  // Fetch the mixing unit size
+  UInt32 dims[2];
+  UInt32 size = sizeof(dims);
+  AudioUnitGetProperty(mixerUnit->GetUnit(),
+    kAudioUnitProperty_MatrixDimensions, kAudioUnitScope_Global, 0, dims, &size);
+
+  if(inputFormat->mChannelsPerFrame + channelOffset > dims[0])
+  {
+    CLog::Log(LOGERROR, "CCoreAudioMixMap::SetMixingMatrix - input format doesn't fit mixer size %u+%u > %u"
+                      , inputFormat->mChannelsPerFrame, channelOffset, dims[0]);
+    return false;
+  }
+
+  if(fmt->mChannelsPerFrame > dims[1])
+  {
+    CLog::Log(LOGERROR, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't fit mixer size %u > %u"
+              , fmt->mChannelsPerFrame, dims[0]);
+    return false;
+  }
+
+  if(fmt->mChannelsPerFrame < dims[1])
+  {
+    CLog::Log(LOGWARNING, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't specify all outputs %u < %u"
+              , fmt->mChannelsPerFrame, dims[0]);
+  }
+
   // Configure the mixing matrix
   Float32* val = (Float32*)*mixMap;
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
-    val = (Float32*)*mixMap + i*m_deviceChannels;
-    for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
+    UInt32 j = 0;
+    for (; j < fmt->mChannelsPerFrame; ++j)
     {
       AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
+    }
+    // zero out additional outputs from this input
+    for (; j < dims[1]; ++j)
+    {
+      AudioUnitSetParameter(mixerUnit->GetUnit(),
+        kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, 0.0f, 0);
     }
   }
 

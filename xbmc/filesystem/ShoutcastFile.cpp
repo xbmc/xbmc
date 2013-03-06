@@ -134,6 +134,7 @@ void CShoutcastFile::Close()
 {
   StopThread();
   delete[] m_buffer;
+  m_buffer = NULL;
   m_file.Close();
 }
 

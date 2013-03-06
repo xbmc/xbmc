@@ -492,39 +492,6 @@ bool StringUtils::IsInteger(const CStdString& str)
   return i == str.size() && n > 0;
 }
 
-bool StringUtils::Test()
-{
-  bool ret = true;
-
-  ret |= IsNaturalNumber("10");
-  ret |= IsNaturalNumber(" 10");
-  ret |= IsNaturalNumber("0");
-  ret |= !IsNaturalNumber(" 1 0");
-  ret |= !IsNaturalNumber("1.0");
-  ret |= !IsNaturalNumber("1.1");
-  ret |= !IsNaturalNumber("0x1");
-  ret |= !IsNaturalNumber("blah");
-  ret |= !IsNaturalNumber("120 h");
-  ret |= !IsNaturalNumber(" ");
-  ret |= !IsNaturalNumber("");
-  ret |= !IsNaturalNumber("ייטט");
-
-  ret |= IsInteger("10");
-  ret |= IsInteger(" -10");
-  ret |= IsInteger("0");
-  ret |= !IsInteger(" 1 0");
-  ret |= !IsInteger("1.0");
-  ret |= !IsInteger("1.1");
-  ret |= !IsInteger("0x1");
-  ret |= !IsInteger("blah");
-  ret |= !IsInteger("120 h");
-  ret |= !IsInteger(" ");
-  ret |= !IsInteger("");
-  ret |= !IsInteger("ייטט");
-
-  return ret;
-}
-
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
@@ -711,4 +678,16 @@ size_t StringUtils::utf8_strlen(const char *s)
       length++;
   }
   return length;
+}
+
+std::string StringUtils::Paramify(const std::string &param)
+{
+  std::string result = param;
+  // escape backspaces
+  StringUtils::Replace(result, "\\", "\\\\");
+  // escape double quotes
+  StringUtils::Replace(result, "\"", "\\\"");
+
+  // add double quotes around the whole string
+  return "\"" + result + "\"";
 }

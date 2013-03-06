@@ -255,6 +255,7 @@ bool CDAVDirectory::Exists(const char* strPath)
   // on the server's configuration
   CStdString strRequest = "PROPFIND";
   dav.SetCustomRequest(strRequest);
+  dav.SetRequestHeader("depth", 0);
 
   CURL url(strPath);
   return dav.Exists(url);
