@@ -28,6 +28,7 @@
 #include "filesystem/Directory.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
+#include "network/Network.h"
 
 using namespace XFILE;
 
@@ -42,6 +43,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   /* write XBMC addon-on specific add-on function addresses to the callback table */
   m_callbacks->Log                = AddOnLog;
   m_callbacks->QueueNotification  = QueueNotification;
+  m_callbacks->WakeOnLan          = WakeOnLan;
   m_callbacks->GetSetting         = GetAddonSetting;
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
@@ -155,6 +157,11 @@ void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t 
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - exception '%s' caught in call in add-on '%s'. please contact the developer of this addon: %s",
         __FUNCTION__, e.what(), addonHelper->m_addon->Name().c_str(), addonHelper->m_addon->Author().c_str());
   }
+}
+
+bool CAddonCallbacksAddon::WakeOnLan(const char *mac)
+{
+  return g_application.getNetwork().WakeOnLan(mac);
 }
 
 bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue)
