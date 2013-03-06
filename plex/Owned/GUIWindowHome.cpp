@@ -549,6 +549,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             if(p.second && p.second->Size() > 0)
             {
               CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p.first, 0, 0, p.second.get());
+              CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage sending BIND to %d", p.first);
               OnMessage(msg);
               SET_CONTROL_VISIBLE(p.first);
             }

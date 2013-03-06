@@ -75,6 +75,7 @@ endif(ENABLE_PYTHON)
 
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
+file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
 if(COMPRESS_TEXTURES)
   # Build the packed textures
@@ -97,10 +98,22 @@ if(COMPRESS_TEXTURES)
     DEPENDS TexturePacker
     WORKING_DIRECTORY ${WORKDIR}
   )
-
-  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
+
+  if(ENABLE_NEW_SKIN)
+    add_custom_command(
+      OUTPUT Textures_Plex.xbt
+      COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+      MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
+      DEPENDS TexturePacker
+    )
+    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
+  else(ENABLE_NEW_SKIN)
+    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+  endif(ENABLE_NEW_SKIN)
+
+  set(EXCLUDE_TEXTURES skin.(mediastream|plex)/Media/*)
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -132,9 +145,16 @@ install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN python EXCLUDE
         PATTERN peripherals.xml EXCLUDE)
 
+if(NOT ENABLE_NEW_SKIN)
+  set(EXCLUDE_NEW_SKIN skin.plex)
+else(NOT ENABLE_NEW_SKIN)
+  set(EXCLUDE_NEW_SKIN ^foo)
+endif(NOT ENABLE_NEW_SKIN)
+
 install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN skin.confluence EXCLUDE
         PATTERN skin.touched EXCLUDE
+        PATTERN ${EXCLUDE_NEW_SKIN} EXCLUDE
         REGEX screensaver.rsxs* EXCLUDE
         REGEX library.* EXCLUDE
         REGEX metadata.* EXCLUDE

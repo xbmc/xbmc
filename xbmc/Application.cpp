@@ -1370,7 +1370,9 @@ bool CApplication::Initialize()
 #endif
     g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);
     g_windowManager.Add(new CGUIWindowSettingsCategory);
+#ifndef PLEX_NEW_SKIN
     g_windowManager.Add(new CGUIWindowVideoNav);
+#endif
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
     g_windowManager.Add(new CGUIWindowLoginScreen);
     g_windowManager.Add(new CGUIWindowSettingsProfile);
@@ -1436,7 +1438,9 @@ bool CApplication::Initialize()
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);
     g_windowManager.Add(new CGUIWindowMusicSongs);
+#ifndef PLEX_NEW_SKIN
     g_windowManager.Add(new CGUIWindowMusicNav);
+#endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
 
     /* Load PVR related Windows and Dialogs */
@@ -1480,7 +1484,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
     g_windowManager.Add(new CGUIDialogFilterSort);
-#if 0 // Add these later to enable filtering again
+#ifdef PLEX_NEW_SKIN
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
 #endif
