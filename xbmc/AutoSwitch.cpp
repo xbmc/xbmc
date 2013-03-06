@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "guilib/Key.h"
+#include "view/ViewState.h"
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

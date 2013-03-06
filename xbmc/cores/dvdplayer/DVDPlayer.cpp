@@ -63,6 +63,7 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -137,8 +138,8 @@ std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
 
 static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
-  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_AudioStream
-                 , rh.type_index == g_settings.m_currentVideoSettings.m_AudioStream);
+  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream
+                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream);
 
   if(!g_guiSettings.GetString("locale.audiolanguage").Equals("original"))
   {
@@ -160,14 +161,14 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
 
 static bool PredicateSubtitlePriority(const SelectionStream& lh, const SelectionStream& rh)
 {
-  if(!g_settings.m_currentVideoSettings.m_SubtitleOn)
+  if(!CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
   {
     PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
                    , rh.flags & CDemuxStream::FLAG_FORCED);
   }
 
-  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream
-                 , rh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream);
+  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
+                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
 
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
@@ -611,11 +612,11 @@ bool CDVDPlayer::OpenInputStream()
       }
     } // end loop over all subtitle files
 
-    g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
-  SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
-  SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+  SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+  SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
@@ -711,7 +712,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     CloseAudioStream(true);
 
   // enable subtitles
-  m_dvdPlayerVideo.EnableSubtitle(g_settings.m_currentVideoSettings.m_SubtitleOn);
+  m_dvdPlayerVideo.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
   streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
@@ -920,9 +921,9 @@ void CDVDPlayer::Process()
     if(m_PlayerOptions.state.size() > 0)
       ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
     else
-      ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_settings.m_currentVideoSettings.m_SubtitleOn);
+      ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
-    g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
   if(!OpenDemuxStream())
@@ -2711,7 +2712,7 @@ bool CDVDPlayer::GetSubtitleVisible()
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     if(pStream->IsInMenu())
-      return g_settings.m_currentVideoSettings.m_SubtitleOn;
+      return CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
     else
       return pStream->IsSubtitleStreamEnabled();
   }
@@ -2721,7 +2722,7 @@ bool CDVDPlayer::GetSubtitleVisible()
 
 void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 {
-  g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
+  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
 }
 

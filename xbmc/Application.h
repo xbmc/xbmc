@@ -47,6 +47,7 @@ namespace MEDIA_DETECT
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
+#include "settings/ISubSettings.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -104,7 +105,7 @@ protected:
   int       m_iPlayList;
 };
 
-class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
+class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback, public ISubSettings
 {
 public:
 
@@ -363,6 +364,8 @@ public:
   CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);
 protected:
+  virtual bool OnSettingsSaving() const;
+
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 

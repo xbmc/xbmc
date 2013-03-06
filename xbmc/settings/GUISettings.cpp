@@ -22,7 +22,8 @@
 #include "GUISettings.h"
 #include <limits.h>
 #include <float.h>
-#include "Settings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "storage/MediaManager.h"
 #ifdef _LINUX

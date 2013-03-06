@@ -947,13 +947,17 @@
     <ClCompile Include="..\..\xbmc\rendering\RenderSystem.cpp" />
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\ApplicationSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogLockSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogProfileSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\GUISettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\MediaSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\MediaSourceSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Profile.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SkinSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\windows\GUISettingControls.cpp" />
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettings.cpp" />
@@ -1095,10 +1099,15 @@
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\ApplicationSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogLockSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogProfileSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\ISubSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\MediaSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\MediaSourceSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\SkinSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUISettingControls.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsCategory.h" />
@@ -1670,6 +1679,7 @@
     <ClCompile Include="..\..\xbmc\view\GUIViewControl.cpp" />
     <ClCompile Include="..\..\xbmc\view\GUIViewState.cpp" />
     <ClCompile Include="..\..\xbmc\view\ViewDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\view\ViewStateSettings.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
@@ -2505,6 +2515,7 @@
     <ClInclude Include="..\..\xbmc\view\GUIViewState.h" />
     <ClInclude Include="..\..\xbmc\view\ViewDatabase.h" />
     <ClInclude Include="..\..\xbmc\view\ViewState.h" />
+    <ClInclude Include="..\..\xbmc\view\ViewStateSettings.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />

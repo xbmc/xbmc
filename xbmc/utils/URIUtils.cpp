@@ -29,6 +29,7 @@
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "URL.h"
 #include "StringUtils.h"
 
@@ -100,9 +101,9 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     strExtension += "|";
 
     CStdString strFileMask;
-    strFileMask = g_settings.m_pictureExtensions;
-    strFileMask += "|" + g_settings.m_musicExtensions;
-    strFileMask += "|" + g_settings.m_videoExtensions;
+    strFileMask = CMediaSettings::Get().GetPictureExtensions();
+    strFileMask += "|" + CMediaSettings::Get().GetMusicExtensions();
+    strFileMask += "|" + CMediaSettings::Get().GetVideoExtensions();
 #if defined(TARGET_DARWIN)
     strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
 #else

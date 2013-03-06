@@ -23,6 +23,7 @@
 #include "CurlFile.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/HTMLUtil.h"
@@ -96,13 +97,13 @@ static bool IsPathToMedia(const CStdString& strPath )
 
   extension.ToLower();
 
-  if (g_settings.m_videoExtensions.Find(extension) != -1)
+  if (CMediaSettings::Get().GetVideoExtensions().find(extension) != string::npos)
     return true;
 
-  if (g_settings.m_musicExtensions.Find(extension) != -1)
+  if (CMediaSettings::Get().GetMusicExtensions().find(extension) != string::npos)
     return true;
 
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+  if (CMediaSettings::Get().GetPictureExtensions().find(extension) != string::npos)
     return true;
 
   return false;
@@ -120,7 +121,7 @@ static bool IsPathToThumbnail(const CStdString& strPath )
 
   extension.ToLower();
 
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+  if (CMediaSettings::Get().GetPictureExtensions().find(extension) != string::npos)
     return true;
 
   return false;

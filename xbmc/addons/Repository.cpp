@@ -22,6 +22,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "filesystem/File.h"
 #include "AddonDatabase.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
@@ -222,7 +223,7 @@ bool CRepositoryUpdateJob::DoWork()
     if (addon && addons[i]->Version() > addon->Version() &&
         !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()))
     {
-      if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
+      if (CApplicationSettings::Get().AutoUpdateAddons() || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
         CStdString referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
@@ -234,7 +235,7 @@ bool CRepositoryUpdateJob::DoWork()
         else
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
-      else if (g_settings.m_bAddonNotifications)
+      else if (CApplicationSettings::Get().ShowAddonNotifications())
       {
         CGUIDialogKaiToast::QueueNotification(addon->Icon(),
                                               g_localizeStrings.Get(24061),

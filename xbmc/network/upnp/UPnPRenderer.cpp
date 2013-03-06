@@ -12,6 +12,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "interfaces/AnnouncementManager.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/Settings.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
@@ -636,7 +637,7 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 {
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
-    if((mute == "1") ^ g_settings.m_bMute)
+    if((mute == "1") ^ CApplicationSettings::Get().GetMute())
         g_application.ToggleMute();
     return NPT_SUCCESS;
 }

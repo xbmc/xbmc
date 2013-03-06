@@ -23,6 +23,7 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "network/WebServer.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 
@@ -58,7 +59,7 @@ int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
         VECSOURCES *sources = NULL;
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
-          sources = g_settings.GetSourcesFromType(sourceTypes[index]);
+          sources = CMediaSourceSettings::Get().GetSources(sourceTypes[index]);
           if (sources == NULL)
             continue;
 

@@ -27,6 +27,8 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "Util.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
@@ -42,7 +44,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITran
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
 
-  VECSOURCES *sources = g_settings.GetSourcesFromType(media);
+  VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(media);
   if (sources)
   {
     CFileItemList items;
@@ -87,7 +89,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   bool isSource;
   for (unsigned int index = 0; index < SourcesSize; index++)
   {
-    sources = g_settings.GetSourcesFromType(SourceNames[index]);
+    sources = CMediaSourceSettings::Get().GetSources(SourceNames[index]);
     int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
       return InvalidParams;
@@ -98,17 +100,17 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   if (media.Equals("video"))
   {
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-    extensions = g_settings.m_videoExtensions;
+    extensions = CMediaSettings::Get().GetVideoExtensions();
   }
   else if (media.Equals("music"))
   {
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-    extensions = g_settings.m_musicExtensions;
+    extensions = CMediaSettings::Get().GetMusicExtensions();
   }
   else if (media.Equals("pictures"))
   {
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-    extensions = g_settings.m_pictureExtensions;
+    extensions = CMediaSettings::Get().GetPictureExtensions();
   }
 
   if (CDirectory::GetDirectory(strPath, items, extensions))
@@ -333,17 +335,17 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       if (media.Equals("video"))
       {
         regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        extensions = g_settings.m_videoExtensions;
+        extensions = CMediaSettings::Get().GetVideoExtensions();
       }
       else if (media.Equals("music"))
       {
         regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        extensions = g_settings.m_musicExtensions;
+        extensions = CMediaSettings::Get().GetMusicExtensions();
       }
       else if (media.Equals("pictures"))
       {
         regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-        extensions = g_settings.m_pictureExtensions;
+        extensions = CMediaSettings::Get().GetPictureExtensions();
       }
 
       CDirectory directory;

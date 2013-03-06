@@ -44,6 +44,7 @@
 #include "ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -100,7 +101,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
-        message.SetStringParam(g_settings.m_defaultMusicLibSource);
+        message.SetStringParam(CMediaSettings::Get().GetDefaultMusicLibrarySource());
       
       DisplayEmptyDatabaseMessage(false); // reset message state
 
@@ -481,9 +482,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->GetPath().Equals(g_settings.m_defaultMusicLibSource))
+      if (!item->GetPath().Equals(CMediaSettings::Get().GetDefaultMusicLibrarySource().c_str()))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (strcmp(g_settings.m_defaultMusicLibSource, ""))
+      if (!CMediaSettings::Get().GetDefaultMusicLibrarySource().empty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
@@ -620,12 +621,12 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_SET_DEFAULT:
-    g_settings.m_defaultMusicLibSource = GetQuickpathName(item->GetPath());
+    CMediaSettings::Get().SetDefaultMusicLibrarySource(GetQuickpathName(item->GetPath()));
     g_settings.Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    g_settings.m_defaultMusicLibSource.Empty();
+    CMediaSettings::Get().SetDefaultMusicLibrarySource("");
     g_settings.Save();
     return true;
 

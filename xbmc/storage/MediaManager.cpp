@@ -38,6 +38,7 @@
 #include "Autorun.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
+#include "settings/MediaSourceSettings.h"
 #include "utils/XBMCTinyXML.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -273,11 +274,11 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
-  g_settings.AddShare("files",share);
-  g_settings.AddShare("video",share);
-  g_settings.AddShare("pictures",share);
-  g_settings.AddShare("music",share);
-  g_settings.AddShare("programs",share);
+  CMediaSourceSettings::Get().AddShare("files", share);
+  CMediaSourceSettings::Get().AddShare("video", share);
+  CMediaSourceSettings::Get().AddShare("pictures", share);
+  CMediaSourceSettings::Get().AddShare("music", share);
+  CMediaSourceSettings::Get().AddShare("programs", share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   g_windowManager.SendThreadMessage( msg );
 
@@ -289,11 +290,11 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 {
-  g_settings.DeleteSource("files", share.strName, share.strPath, true);
-  g_settings.DeleteSource("video", share.strName, share.strPath, true);
-  g_settings.DeleteSource("pictures", share.strName, share.strPath, true);
-  g_settings.DeleteSource("music", share.strName, share.strPath, true);
-  g_settings.DeleteSource("programs", share.strName, share.strPath, true);
+  CMediaSourceSettings::Get().DeleteSource("files", share.strName, share.strPath, true);
+  CMediaSourceSettings::Get().DeleteSource("video", share.strName, share.strPath, true);
+  CMediaSourceSettings::Get().DeleteSource("pictures", share.strName, share.strPath, true);
+  CMediaSourceSettings::Get().DeleteSource("music", share.strName, share.strPath, true);
+  CMediaSourceSettings::Get().DeleteSource("programs", share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   g_windowManager.SendThreadMessage( msg );
 

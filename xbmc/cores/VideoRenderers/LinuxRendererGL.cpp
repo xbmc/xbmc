@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
@@ -291,7 +292,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -834,7 +835,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && !nonLinStretchChanged)
+  if (m_scalingMethodGui == CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
     return;
 
   //recompile YUV shader when non-linear stretch is turned on/off
@@ -842,7 +843,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_nonLinStretch || nonLinStretchChanged)
     m_reloadShaders = 1;
 
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -1246,8 +1247,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
 
@@ -1371,8 +1372,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field)
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
@@ -3097,11 +3098,11 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   }
 
   if (imaging==1 &&
-      ((g_settings.m_currentVideoSettings.m_Brightness!=50) ||
-       (g_settings.m_currentVideoSettings.m_Contrast!=50)))
+      ((CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness!=50) ||
+       (CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast!=50)))
   {
-    GLfloat brightness = ((GLfloat)g_settings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
-    GLfloat contrast   = ((GLfloat)g_settings.m_currentVideoSettings.m_Contrast)/50.0f;
+    GLfloat brightness = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50.0f)/100.0f;;
+    GLfloat contrast   = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)/50.0f;
 
     glPixelTransferf(GL_RED_SCALE  , contrast);
     glPixelTransferf(GL_GREEN_SCALE, contrast);
