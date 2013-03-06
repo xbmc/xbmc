@@ -33,7 +33,6 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, con
   m_strHeader = strHeader;
   m_strLinePrev = strMsg;
   bSentCancel = false;
-  dwDelay = 0;
 
   m_pDlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -124,7 +123,7 @@ bool CGUIDialogCache::OnFileCallback(void* pContext, int ipercent, float avgSpee
 
 void CGUIDialogCache::Process()
 {
-  if (m_pDlg)
+  if (!m_pDlg)
     return;
 
   while( true )

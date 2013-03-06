@@ -5010,7 +5010,8 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
         if ( !m_pDS->query(strSQL.c_str()) )
         {
             RollbackTransaction();
-            progress->Close();
+            if (progress)
+              progress->Close();
             m_pDS->close();
             return;
         }

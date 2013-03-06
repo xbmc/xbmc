@@ -398,7 +398,7 @@ void CAddonInstaller::PrunePackageCache()
 {
   std::map<CStdString,CFileItemList*> packs;
   int64_t size = EnumeratePackageFolder(packs);
-  int64_t limit = g_advancedSettings.m_addonPackageFolderSize*1024*1024;
+  int64_t limit = (int64_t)g_advancedSettings.m_addonPackageFolderSize*1024*1024;
   if (size < limit)
     return;
 

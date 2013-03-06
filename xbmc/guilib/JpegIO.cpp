@@ -248,6 +248,7 @@ CJpegIO::~CJpegIO()
 void CJpegIO::Close()
 {
   free(m_inputBuff);
+  m_inputBuff = NULL;
   m_inputBuffSize = 0;
   ReleaseThumbnailBuffer();
 }

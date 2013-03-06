@@ -171,6 +171,7 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
 CUPnPPlayer::~CUPnPPlayer()
 {
   CloseFile();
+  delete m_delegate;
 }
 
 static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUIDialogBusy*& dialog)
