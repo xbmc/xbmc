@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<window id="113">
+	<defaultcontrol>901</defaultcontrol>
+	<zorder>5</zorder>
+	<controls>
+		<control type="group">
+			<posx>10</posx>
+			<posy>34</posy>
+			<control type="image">
+				<description>Mute image</description>
+				<width>100</width>
+				<height>100</height>
+				<texture>Mute.png</texture>
+			</control>
+		</control>
+	</controls>
+</window>

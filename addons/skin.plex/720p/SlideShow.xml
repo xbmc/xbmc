@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<window id="2007">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="image" id="13">
+			<description>pause image</description>
+			<align>right</align>
+			<posx>1220</posx>
+			<posy>12</posy>
+			<height>48</height>
+			<width>48</width>
+			<visible>no</visible>
+			<texture>OSDPauseFO.png</texture>
+			<colorkey>0</colorkey>
+		</control>
+		<control type="group">
+			<include>VideoOSDSlide</include>
+			<visible>Slideshow.ShowDescription + !Skin.HasSetting(HideDescriptionInSlideshow)</visible>
+			<control type="image">
+				<description>OSD Background Image</description>
+				<include>OSDBottomBG</include>
+			</control>
+			<control type="textbox">
+				<posx>25</posx>
+				<posy>560</posy>
+				<width>1230</width>
+				<height>153</height>
+				<info>ListItem.Property(description)</info>
+				<wrapmultiline>true</wrapmultiline>
+				<autoscroll delay="3000" time="3000" repeat="3000">true</autoscroll>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>74</posy>
+			<visible>Player.ShowInfo + Player.HasMedia + Player.HasAudio + !Skin.HasSetting(HomeAudioNowPlaying)</visible>
+			<include>MusicNowPlayingSlideLeft</include>
+			<include>MusicNowPlaying</include>
+		</control>
+	</controls>
+</window>

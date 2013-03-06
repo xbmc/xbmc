@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="Base">
+		<texture border="5">base.png</texture>
+	</include>
+	<include name="BaseRounded">
+		<texture border="5">base-rounded.png</texture>
+	</include>
+	<include name="BaseArrowInsert">
+		<texture border="5">base-arrow-insert.png</texture>
+	</include>
+	<include name="Black">
+		<include>Base</include>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="BlackRounded">
+		<include>BaseRounded</include>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="BlackArrowInsertRight">
+		<include>BaseArrowInsert</include>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="BlackArrowInsertLeft">
+		<texture flipx="true">base-arrow-insert.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="WhiteArrowInsertRight">
+		<include>BaseArrowInsert</include>
+	</include>
+	<include name="WhiteArrowInsertLeft">
+		<texture flipx="true">base-arrow-insert.png</texture>
+	</include>
+	<include name="Shadow">
+		<!-- add +26 in width & length of thumb size -->
+		<posx>23</posx>
+		<posy>37</posy>
+		<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+		<texture background="true" border="50">shadow.png</texture>
+	</include>
+	<include name="Border">
+		<!-- BORDER: add 6px in width and height when applied -->
+		<posx>10</posx>
+		<posy>10</posy>
+		<texture>transparent.png</texture>
+		<bordertexture border="10">border.png</bordertexture>
+		<bordersize>3</bordersize>
+	</include>
+	<include name="BorderBlack">
+		<posx>10</posx>
+		<posy>10</posy>
+		<texture>transparent.png</texture>
+		<bordertexture border="10">border-black.png</bordertexture>
+		<bordersize>3</bordersize>
+	</include>
+	<include name="Card">
+		<texture border="10">base-rounded-half.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="ArrowBlack">
+		<texture>arrow-big.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="ArrowBlackLeft">
+		<texture flipx="true">arrow-big.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="ArrowBlackUp">
+		<texture>arrow-big-up.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="ArrowBlackDown">
+		<texture flipy="true">arrow-big-up.png</texture>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="FullScreenScaled">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>1280</width>
+		<height>720</height>
+		<aspectratio>scale</aspectratio>
+	</include>
+	<include name="FullScreenStretched">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>1280</width>
+		<height>720</height>
+		<aspectratio>stretch</aspectratio>
+	</include>
+	<!-- screen top bar -->
+	<!-- variables for item count in top bar -->
+	<variable name="TopBarItemCountStrings">
+		<value condition="Container.Content(tvshows)">$INFO[Container.NumItems] $LOCALIZE[31008]</value>
+		<value condition="Container.Content(seasons)">$INFO[Container.NumItems] $LOCALIZE[31021]</value>
+		<value condition="Container.Content(episodes)">$INFO[Container.NumItems] $LOCALIZE[20360]</value>
+		<value condition="Container.Content(movies)">$INFO[Container.NumItems] $LOCALIZE[342]</value>
+		<value condition="Container.Content(albums)">$INFO[Container.NumItems] $LOCALIZE[132]</value>
+		<value condition="Container.Content(artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
+		<value condition="Container.Content(songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
+		<value condition="Container.Content(genres)">$INFO[Container.NumItems] $LOCALIZE[135]</value>
+		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
+		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
+	</variable>
+	<variable name="TopBarSelectedItemStrings">
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<include name="TopBar">
+		<!-- bg -->
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>49</height>
+			<include>Black</include>
+		</control>
+		<!-- Clock -->
+		<include>Clock</include>
+		<!-- Selected title -->
+		<control type="group">
+			<posy>0</posy>
+			<posx>300</posx>
+			<control type="label">
+				<width>680</width>
+				<height>49</height>
+				<align>center</align>
+				<font>Condensed-17</font>
+				<label>$VAR[TopBarSelectedItemStrings]</label>
+				<textcolor>FF999999</textcolor>
+			</control>
+		</control>
+		<!-- item count -->
+		<control type="group">
+			<posy>0</posy>
+			<posx>30r</posx>
+			<control type="label">
+				<width>500</width>
+				<height>49</height>
+				<align>right</align>
+				<font>Condensed-17</font>
+				<label>$VAR[TopBarItemCountStrings]</label>
+				<textcolor>FF999999</textcolor>
+			</control>
+		</control>
+	</include>
+	<!-- plot formatting -->
+	<include name="Plot">
+		<label>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</label>
+		<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
+	</include>
+	<!-- clock -->
+	<include name="Clock">
+		<control type="group">
+			<include>HomeListItemFullInfoSlide</include>
+			<posx>30</posx>
+			<control type="label">
+				<label>$INFO[System.Time(short_no_meridian)]</label>
+				<width>200</width>
+				<height>49</height>
+				<font>Condensed-17</font>
+				<textcolor>FF999999</textcolor>
+			</control>
+		</control>
+	</include>
+	<!-- animations -->
+	<include name="FadeQuick">
+		<animation effect="fade" start="0" end="100" time="100">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="100">Hidden</animation>
+		<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+	</include>
+</includes>

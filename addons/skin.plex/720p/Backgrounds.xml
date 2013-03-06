@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="BGGrainy">
+		<control type="image">
+			<include>FullScreenScaled</include>
+			<texture>bg-overlay-grainy.png</texture>
+			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
+		</control>
+	</include>
+	<include name="BGFanart">
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<fadetime>400</fadetime>
+			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+		</control>
+	</include>
+	<include name="BGSharedContent">
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+			<texture background="true">bg-myplex.png</texture>
+		</control>
+	</include>
+	<include name="BGHomeList">
+		<include>FullScreenScaled</include>
+		<fadetime>400</fadetime>
+		<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+		<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+	</include>
+	<include name="BGOverlay">
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio aligny="top">stretch</aspectratio>
+			<texture>bg-overlay-grainy.png</texture>
+			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
+			<visible>true</visible>
+			<animation effect="fade" start="90" end="90" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="90" end="90" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		</control>
+		<!-- black overlay -->
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio aligny="top">stretch</aspectratio>
+			<texture background="true">bg-overlay-black.png</texture>
+			<visible>true</visible>
+			<animation effect="fade" start="90" end="40" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="40" end="90" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		</control>
+		<!-- white overlay -->
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>-50</posx>
+			<width>1330</width>
+			<height>720</height>
+			<aspectratio aligny="top">stretch</aspectratio>
+			<texture background="true">bg-overlay-white.png</texture>
+			<visible>true</visible>
+			<animation effect="fade" start="80" end="50" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="50" end="80" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		</control>
+	</include>
+	<include name="SlideshowHome">
+		<control type="group">
+			<!-- generic autopopulated fanart slideshow -->
+			<control type="multiimage" id="10101">
+				<include>FullScreenScaled</include>
+				<timeperimage>8000</timeperimage>
+				<fadetime>1000</fadetime>
+				<randomize>true</randomize>
+				<loop>yes</loop>
+				<animation effect="fade" start="100" end="0" time="400" condition="ControlGroup(5000).HasFocus">Conditional</animation>
+				<animation type="WindowClose">
+					<effect type="fade" start="100" end="0" time="800"/>
+				</animation>
+			</control>
+			<!-- a hack until the automatic home slideshow is fixed (starts correctly) -->
+			<!--><control type="multiimage">
+				<include>FullScreenScaled</include>
+				<timeperimage>8000</timeperimage>
+				<fadetime>1000</fadetime>
+				<randomize>true</randomize>
+				<loop>yes</loop>
+				<imagepath background="true">http://localhost:32400/library/arts</imagepath>
+				<animation effect="fade" start="100" end="0" time="400" condition="ControlGroup(5000).HasFocus">Conditional</animation>
+				<animation type="WindowClose">
+					<effect type="fade" start="100" end="0" time="800"/>
+				</animation>
+			</control>-->
+			<!-- "new list" focused item fanart while using inside the list -->
+			<!-- on deck -->
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7002).HasFocus</visible>
+				<info background="true">Container(11001).ListItem.Property(fanart_image)</info>
+			</control>
+			<!-- recently added -->
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7001).HasFocus</visible>
+				<info background="true">Container(11000).ListItem.Property(fanart_image)</info>
+			</control>
+			<!-- recently used -->
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7004).HasFocus</visible>
+				<info background="true">Container(11002).ListItem.Property(fanart_image)</info>
+			</control>
+			<!-- queue & recommendations (a dirty, dirty hack this one, not pretty) -->
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7003).HasFocus</visible>
+				<info background="true">Container(11003).ListItem.Thumb</info>
+			</control>
+			<control type="multiimage">
+				<include>BGHomeList</include>
+				<visible>ControlGroup(7005).HasFocus</visible>
+				<info background="true">Container(11004).ListItem.Thumb</info>
+			</control>
+			<!-- Fanart grainy overlay -->
+			<control type="image">
+				<width>1280</width>
+				<height>720</height>
+				<texture>bg-overlay-grainy.png</texture>
+				<aspectratio>stretch</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+			<!-- positioning grid -->
+			<control type="largeimage">
+				<posy>0</posy>
+				<posx>0</posx>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio aligny="top">scale</aspectratio>
+				<texture>grid-black_.jpg</texture>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+		</control>
+	</include>
+	<include name="SlideshowDimmed">
+		<control type="multiimage">
+			<include>FullScreenScaled</include>
+			<timeperimage>8000</timeperimage>
+			<fadetime>1000</fadetime>
+			<randomize>true</randomize>
+			<loop>yes</loop>
+			<imagepath background="true">http://localhost:32400/library/arts</imagepath>
+			<animation effect="fade" end="20" time="400" condition="true">Conditional</animation>
+			<animation type="WindowClose">
+				<effect type="fade" start="100" end="0" time="800"/>
+			</animation>
+		</control>
+		<control type="image">
+			<width>1280</width>
+			<height>720</height>
+			<texture>bg-overlay-grainy.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>true</visible>
+		</control>
+	</include>
+</includes>

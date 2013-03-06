@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<window id="1">
+	<defaultcontrol>777</defaultcontrol>
+	<views>40,74</views>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- views (Views.xml & ViewsChannels.xml) -->
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- ChannelsDirectory ID 74 -->
+		<include>ChannelsDirectory</include>
+		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
+		<include>TopBar</include>
+		<include>debugInfos</include>
+	</controls>
+</window>

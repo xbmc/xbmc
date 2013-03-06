@@ -1,0 +1,430 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- Common -->
+	<include name="MusicThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>173</posy>
+			<width>165</width>
+			<height>35</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="MusicSelectedBorder">
+		<control type="image">
+			<posx>12</posx>
+			<posy>12</posy>
+			<width>167</width>
+			<height>167</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MusicThumb">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>191</width>
+			<height>191</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>165</width>
+			<height>165</height>
+			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MusicLabel">
+		<posy>182</posy>
+		<posx>96</posx>
+		<width>150</width>
+		<height>20</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<!-- bg's -->
+	<include name="MusicPlotBG">
+		<control type="group">
+			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>385</posy>
+				<posx>15</posx>
+				<width>776</width>
+				<height>263</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posx>791</posx>
+				<posy>500</posy>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+		</control>
+	</include>
+	<include name="MusicRightBG">
+		<control type="group">
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>20</posy>
+				<posx>791</posx>
+				<include>WhiteArrowInsertLeft</include>
+			</control>
+		</control>
+	</include>
+	<!-- Library -->
+	<include name="LibraryMusic">
+		<control type="group">
+			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- Library -->
+			<control type="group" id="777">
+				<control type="panel" id="52">
+					<viewtype label="MusicLibrary">panel</viewtype>
+					<visible>!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+					<posy>56</posy>
+					<posx>105</posx>
+					<width>1200</width>
+					<height>645</height>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<onright>52</onright>
+					<onleft>1300</onleft>
+					<orientation>vertical</orientation>
+					<itemlayout width="190" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="190" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>MusicSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+			<!-- Artist Albums -->
+			<control type="group" id="777">
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+				<!-- backgrounds & plot -->
+				<control type="group">
+					<!-- backgrounds -->
+					<control type="group">
+						<include>MusicPlotBG</include>
+						<include>MusicRightBG</include>
+					</control>
+					<!-- artist thumb -->
+					<control type="group">
+						<posx>81</posx>
+						<posy>62</posy>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>299</width>
+							<height>299</height>
+							<include>Shadow</include>
+						</control>
+						<control type="image">
+							<description>Poster image</description>
+							<posx>13</posx>
+							<posy>13</posy>
+							<width>273</width>
+							<height>273</height>
+							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						</control>
+					</control>
+					<!-- plot text -->
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>412</posy>
+						<width>670</width>
+						<height>207</height>
+						<include>Plot</include>
+					</control>
+				</control>
+				<!-- Infos Left -->
+				<control type="group">
+					<posy>61</posy>
+					<posx>390</posx>
+					<!-- Title -->
+					<control type="label">
+						<width>370</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Artist]</label>
+						<font>CondensedBold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<!-- Genre -->
+					<control type="grouplist">
+						<posy>93</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="200">auto</width>
+							<height>15</height>
+							<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
+							<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+							<font>Condensed-18</font>
+							<include>Grey1</include>
+							<shadowcolor>ff333333</shadowcolor>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<width min="29" max="600">auto</width>
+							<height>15</height>
+							<!--><label>$INFO[ListItem.Genre]</label>-->
+							<label>Artist Genre</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<visible>true</visible>
+						</control>
+					</control>
+					<!-- Members -->
+					<control type="grouplist">
+						<posy>121</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="100">auto</width>
+							<height>15</height>
+							<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+							<label>[UPPERCASE]Members[/UPPERCASE]</label>
+							<font>Condensed-18</font>
+							<include>Grey1</include>
+							<shadowcolor>ff333333</shadowcolor>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<width min="29" max="330">auto</width>
+							<height>15</height>
+							<!--><label>$INFO[ListItem.Cast]</label>-->
+							<label>Band members</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<visible>true</visible>
+						</control>
+					</control>
+				</control>
+				<!-- list -->
+				<control type="panel" id="53">
+					<visible>Container.Content(Albums)</visible>
+					<viewtype label="MusicLibraryAlbums">panel</viewtype>
+					<onup>53</onup>
+					<ondown>53</ondown>
+					<onright>53</onright>
+					<onleft>1300</onleft>
+					<orientation>vertical</orientation>
+					<posx>832</posx>
+					<posy>57</posy>
+					<width>450</width>
+					<height>647</height>
+					<itemlayout width="220" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="220" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>MusicSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+			<!-- Album Tracks -->
+			<control type="group" id="777">
+				<visible>Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+				<!-- backgrounds & plot -->
+				<control type="group">
+					<!-- backgrounds -->
+					<control type="group">
+						<include>MusicPlotBG</include>
+						<include>MusicRightBG</include>
+					</control>
+					<!-- artist thumb -->
+					<control type="group">
+						<posx>81</posx>
+						<posy>62</posy>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>299</width>
+							<height>299</height>
+							<include>Shadow</include>
+						</control>
+						<control type="image">
+							<description>Poster image</description>
+							<posx>13</posx>
+							<posy>13</posy>
+							<width>273</width>
+							<height>273</height>
+							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						</control>
+					</control>
+					<!-- plot text -->
+					<control type="textbox">
+						<posx>95</posx>
+						<posy>412</posy>
+						<width>670</width>
+						<height>207</height>
+						<include>Plot</include>
+					</control>
+				</control>
+				<!-- Infos Left -->
+				<control type="group">
+					<posy>61</posy>
+					<posx>390</posx>
+					<!-- Titles -->
+					<control type="label">
+						<width>370</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Artist]</label>
+						<font>CondensedBold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<posy>40</posy>
+						<width>370</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Album]</label>
+						<font>CondensedBold-36</font>
+						<include>Grey1</include>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<!-- Genre -->
+					<control type="grouplist">
+						<posy>93</posy>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<width min="29" max="200">auto</width>
+							<height>15</height>
+							<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
+							<font>Condensed-18</font>
+							<include>White2</include>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>true</visible>
+						</control>
+					</control>
+					<!-- Duration -->
+					<control type="label">
+						<posy>121</posy>
+						<width min="29" max="200">auto</width>
+						<height>15</height>
+						<label>Placeholder for Duration</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<shadowcolor>ff222222</shadowcolor>
+						<visible>true</visible>
+					</control>
+				</control>
+				<!-- list -->
+				<control type="list" id="54">
+					<visible>Container.Content(Songs)</visible>
+					<viewtype label="MusicLibraryAlbumTracks">list</viewtype>
+					<posx>790</posx>
+					<posy>65</posy>
+					<width>490</width>
+					<height>450</height>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>61</pagecontrol>
+					<onleft>1300</onleft>
+					<onup>54</onup>
+					<ondown>54</ondown>
+					<itemlayout height="49" width="490">
+						<control type="image">
+							<posx>20</posx>
+							<posy>0</posy>
+							<width>600</width>
+							<height>50</height>
+							<texture>border-bottom-grey.png</texture>
+						</control>
+						<control type="label">
+							<posx>35</posx>
+							<width>434</width>
+							<height>50</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Condensed-17</font>
+							<include>White2</include>
+						</control>
+						<control type="label">
+							<posx>470</posx>
+							<width>120</width>
+							<height>50</height>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Duration]</label>
+							<font>Condensed-17</font>
+							<include>White2</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="49" width="490">
+						<control type="image">
+							<posx>20</posx>
+							<posy>0</posy>
+							<width>565</width>
+							<height>50</height>
+							<texture aspectratio="stretch">black.png</texture>
+							<animation effect="slide" start="0,-42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+							<animation effect="slide" start="0,42" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+						</control>
+						<control type="label">
+							<posx>35</posx>
+							<width>434</width>
+							<height>50</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>CondensedBold-17</font>
+							<scroll>true</scroll>
+							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<control type="label">
+							<posx>470</posx>
+							<width>120</width>
+							<height>50</height>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Duration]</label>
+							<font>CondensedBold-17</font>
+							<textcolor>orangeLight</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

@@ -1,0 +1,1438 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- -->
+	<!-- MODELS DURING DEV: TO DELETE WHEN FINISHED -->
+	<include name="devDummiesPreplay">
+		<!-- MODEL -->
+		<control type="largeimage">
+			<posy>-22</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>742</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<!--><texture background="true">library-posters-menu-closed.jpg</texture>-->
+			<!--><texture background="true">library-posters-menu-open_.jpg</texture>-->
+			<!--><texture>preplay-movie_.jpg</texture>-->
+			<visible>true</visible>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+		</control>
+		<!-- preplay movie model -->
+		<control type="largeimage">
+			<posy>-22</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>742</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture>preplay-movie.jpg</texture>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>Window.IsActive(41)</visible>
+		</control>
+		<!-- preplay tv show model -->
+		<control type="largeimage">
+			<posy>-22</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>742</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture>preplay-tv-show.jpg</texture>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>Container.Content(Seasons)</visible>
+		</control>
+		<!-- preplay tv season model -->
+		<control type="largeimage">
+			<posy>-22</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>742</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture>preplay-tv-season.jpg</texture>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>Container.Content(Episodes)</visible>
+		</control>
+		<!-- preplay tv episode model -->
+		<control type="largeimage">
+			<posy>-22</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>742</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture>preplay-tv-episode.jpg_</texture>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>Window.IsActive(41)</visible>
+		</control>
+		<!-- preplay movie fanart -->
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture>preplay-movie-fanart.jpg</texture>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			<visible>Window.IsActive(41)</visible>
+		</control>
+	</include>
+	<!-- -->
+	<!-- font colors -->
+	<include name="White1">
+		<textcolor>white</textcolor>
+	</include>
+	<include name="White2">
+		<textcolor>FFefedeb</textcolor>
+	</include>
+	<include name="Grey1">
+		<textcolor>FF999999</textcolor>
+	</include>
+	<!-- -->
+	<!-- bg's -->
+	<include name="PlotBG">
+		<control type="group">
+			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>385</posy>
+				<posx>15</posx>
+				<width>776</width>
+				<height>263</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posx>791</posx>
+				<posy>500</posy>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+		</control>
+	</include>
+	<include name="RightBG">
+		<control type="group">
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<posy>20</posy>
+				<posx>791</posx>
+				<include>WhiteArrowInsertLeft</include>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- thumbs -->
+	<include name="EpisodeThumb">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>224</width>
+			<height>131</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>105</height>
+			<texture background="true" diffuse="mask-clip-small.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="EpisodeThumbCard">
+		<control type="image">
+			<posx>13</posx>
+			<posy>117</posy>
+			<width>198</width>
+			<height>49</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>141</posy>
+			<width>198</width>
+			<height>25</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeTitle">
+		<posy>119</posy>
+		<posx>20</posx>
+		<width>174</width>
+		<height>20</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-14</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="EpisodeDate">
+		<control type="label">
+			<posy>142</posy>
+			<posx>20</posx>
+			<width>174</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Date]</label>
+			<font>Condensed-14</font>
+			<textcolor>FF999999</textcolor>
+			<shadowcolor>ff222222</shadowcolor>
+		</control>
+	</include>
+	<include name="EpisodeThumbOverlay">
+		<control type="image">
+			<posx>13</posx>
+			<posy>80</posy>
+			<width>198</width>
+			<height>38</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="EpisodeThumbOverlayTitle">
+		<posy>83</posy>
+		<posx>20</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<label>E$INFO[ListItem.Episode]</label>
+		<font>CondensedBold-26</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
+	<include name="EpisodeSelectedBorder">
+		<control type="image">
+			<posx>12</posx>
+			<posy>13</posy>
+			<width>200</width>
+			<height>105</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<!-- posters tv -->
+	<include name="TVPoster">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>208</width>
+			<height>299</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>182</width>
+			<height>273</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="TVPosterSelectedBorder">
+		<control type="image">
+			<width>188</width>
+			<height>279</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<!-- PRE-PLAY -->
+	<!-- Pre-play TV Show -->
+	<include name="PreplayShow">
+		<control type="group" id="777">
+			<include>FadeDialog</include>
+			<visible>Container.Content(Seasons)</visible>
+			<include>rightSideSlide</include>
+			<!-- backgrounds -->
+			<control type="group">
+				<include>PlotBG</include>
+				<include>RightBG</include>
+			</control>
+			<!-- poster -->
+			<control type="group">
+				<posx>80</posx>
+				<posy>74</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>208</width>
+					<height>299</height>
+					<include>Shadow</include>
+				</control>
+				<control type="image">
+					<description>Poster image</description>
+					<posx>13</posx>
+					<posy>13</posy>
+					<width>182</width>
+					<height>273</height>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				</control>
+			</control>
+			<!-- Infos Left -->
+			<control type="group">
+				<posy>71</posy>
+				<posx>302</posx>
+				<!-- Title -->
+				<control type="label">
+					<width>360</width>
+					<height>40</height>
+					<!--><label>$INFO[Container.SecondTitle]</label>-->
+					<label>Seasons view</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Genre -->
+				<control type="grouplist">
+					<posy>193</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="200">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="600">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Genre]</label>-->
+						<label>Genre placeholder</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+				<!-- Creator -->
+				<control type="grouplist">
+					<posy>221</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="100">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Creator[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="330">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Cast]</label>-->
+						<label>Creator placeholder</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+				<!-- Cast -->
+				<control type="grouplist">
+					<posy>249</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="100">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Cast[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="400">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Cast]</label>-->
+						<label>Timothy Oplyphant, Ian McShane, Molly Parker, some other name</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+			</control>
+			<!-- Infos Right -->
+			<control type="group">
+				<posy>71</posy>
+				<posx>560</posx>
+				<!-- Year -->
+				<control type="label">
+					<posy>0</posy>
+					<posx>203</posx>
+					<width>200</width>
+					<height>40</height>
+					<align>right</align>
+					<!--><label>$INFO[ListItem.Year]</label>-->
+					<label> 2009</label>
+					<font>CondensedBold-36</font>
+					<include>White1</include>
+					<visible>true</visible>
+				</control>
+				<!-- MPAA flag -->
+				<control type="image">
+					<posy>55</posy>
+					<width>200</width>
+					<height>17</height>
+					<!--><label>$INFO[ListItem.MPAA]</label>-->
+					<texture>PG-13.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Star Rating -->
+				<control type="image">
+					<posy>78</posy>
+					<width>200</width>
+					<height>20</height>
+					<!--><label>$INFO[ListItem.StarRating]</texture>-->
+					<texture>rating10-big.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- plot text -->
+			<!-- TO DELETE WHEN TVSHOWPLOT WORKS -->
+			<control type="textbox">
+				<posx>95</posx>
+				<posy>412</posy>
+				<width>670</width>
+				<height>207</height>
+				<include>Plot</include>
+				<visible>IsEmpty(Container.TVShowPlot)</visible>
+			</control>
+			<control type="textbox">
+				<posx>95</posx>
+				<posy>412</posy>
+				<width>670</width>
+				<height>207</height>
+				<label>$INFO[Container.TVShowPlot]</label>
+				<visible>!IsEmpty(Container.TVShowPlot)</visible>
+			</control>
+			<!-- main list -->
+			<control type="panel" id="60">
+				<visible>Container.Content(Seasons)</visible>
+				<viewtype label="PreplaySeasons">panel</viewtype>
+				<onup>60</onup>
+				<ondown>60</ondown>
+				<onright>60</onright>
+				<onleft>9100</onleft>
+				<orientation>vertical</orientation>
+				<posx>820</posx>
+				<posy>74</posy>
+				<width>500</width>
+				<height>630</height>
+				<itemlayout width="223" height="315">
+					<include>TVPoster</include>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>S $INFO[ListItem.Season]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<!--><control type="image">
+					<description>Overlay</description>
+					<posx>20</posx>
+					<posy>173</posy>
+					<include>WtchUnwtchOverlayDims</include>
+					<info>ListItem.Overlay</info>
+					<colordiffuse>FF999999</colordiffuse>
+					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+				</control>-->
+				</itemlayout>
+				<focusedlayout width="223" height="315">
+					<include>TVPoster</include>
+					<include>TVPosterSelectedBorder</include>
+					<control type="label">
+						<posy>250</posy>
+						<posx>23</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>S $INFO[ListItem.Season]</label>
+						<font>CondensedBold-26</font>
+						<textcolor>orangeLight</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<!--><control type="image">
+					<description>Overlay</description>
+					<posx>20</posx>
+					<posy>175</posy>
+					<include>WtchUnwtchOverlayDims</include>
+					<info>ListItem.Overlay</info>
+					<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+				</control>-->
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- Pre-play Season -->
+	<include name="PreplaySeason">
+		<control type="group" id="777">
+			<visible>Container.Content(episodes)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- backgrounds -->
+			<control type="group">
+				<include>PlotBG</include>
+				<include>RightBG</include>
+			</control>
+			<!-- poster -->
+			<control type="group">
+				<posx>80</posx>
+				<posy>74</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>208</width>
+					<height>299</height>
+					<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+					<texture background="true" border="40">shadow.png</texture>
+				</control>
+				<control type="image">
+					<description>Poster image</description>
+					<posx>13</posx>
+					<posy>13</posy>
+					<width>182</width>
+					<height>273</height>
+					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.SeasonThumb]</texture>
+					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				</control>
+			</control>
+			<!-- Infos Left -->
+			<control type="group">
+				<posy>71</posy>
+				<posx>302</posx>
+				<!-- Titles -->
+				<control type="label">
+					<width>360</width>
+					<height>40</height>
+					<label>$INFO[Container.FirstTitle]</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<posy>40</posy>
+					<width>360</width>
+					<height>40</height>
+					<!--><label>$INFO[Container.SecondTitle]</label>-->
+					<label>Episodes view</label>
+					<font>CondensedBold-36</font>
+					<include>Grey1</include>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Genre -->
+				<control type="grouplist">
+					<posy>193</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="200">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Genre[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="600">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Genre]</label>-->
+						<label>Genre placeholder</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+				<!-- Creator -->
+				<control type="grouplist">
+					<posy>221</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="100">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Creator[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="330">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Cast]</label>-->
+						<label>Creator placeholder</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+				<!-- Cast -->
+				<control type="grouplist">
+					<posy>249</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="label">
+						<width min="29" max="100">auto</width>
+						<height>15</height>
+						<label>[UPPERCASE]Cast[/UPPERCASE]</label>
+						<font>Condensed-18</font>
+						<include>Grey1</include>
+						<shadowcolor>ff333333</shadowcolor>
+						<visible>true</visible>
+					</control>
+					<control type="label">
+						<width min="29" max="400">auto</width>
+						<height>15</height>
+						<!--><label>$INFO[ListItem.Cast]</label>-->
+						<label>Timothy Oplyphant, Ian McShane, Molly Parker, some other name</label>
+						<font>Condensed-18</font>
+						<include>White2</include>
+						<visible>true</visible>
+					</control>
+				</control>
+			</control>
+			<!-- Infos Right -->
+			<control type="group">
+				<posy>71</posy>
+				<posx>560</posx>
+				<!-- MPAA flag -->
+				<control type="image">
+					<posy>21</posy>
+					<width>200</width>
+					<height>17</height>
+					<!--><label>$INFO[ListItem.MPAA]</label>-->
+					<texture>PG-13.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Year -->
+				<control type="label">
+					<posy>40</posy>
+					<posx>203</posx>
+					<width>200</width>
+					<height>40</height>
+					<align>right</align>
+					<!--><label>$INFO[ListItem.Year]</label>-->
+					<label> 2009</label>
+					<font>CondensedBold-36</font>
+					<include>White1</include>
+					<visible>true</visible>
+				</control>
+				<!-- Star Rating -->
+				<control type="image">
+					<posy>98</posy>
+					<width>200</width>
+					<height>20</height>
+					<!--><label>$INFO[ListItem.StarRating]</texture>-->
+					<texture>rating10-big.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- plot text -->
+			<!-- TO DELETE WHEN TVSEASONPLOT WORKS -->
+			<control type="textbox">
+				<posx>95</posx>
+				<posy>412</posy>
+				<width>670</width>
+				<height>207</height>
+				<include>Plot</include>
+				<visible>IsEmpty(Container.TVSeasonPlot)</visible>
+			</control>
+			<control type="textbox">
+				<posx>95</posx>
+				<posy>412</posy>
+				<width>670</width>
+				<height>207</height>
+				<label>$INFO[Container.TVShowPlot]</label>
+				<visible>!IsEmpty(Container.TVSeasonPlot)</visible>
+			</control>
+			<!-- main list -->
+			<control type="panel" id="61">
+				<visible>Container.Content(episodes)</visible>
+				<viewtype label="PreplayEpisodes">panel</viewtype>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onright>61</onright>
+				<onleft>9100</onleft>
+				<orientation>vertical</orientation>
+				<posx>810</posx>
+				<posy>47</posy>
+				<width>500</width>
+				<height>670</height>
+				<itemlayout width="226" height="165">
+					<include>EpisodeThumbCard</include>
+					<include>EpisodeThumb</include>
+					<control type="label">
+						<include>EpisodeTitle</include>
+						<textcolor>white</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlay</include>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle</include>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="image">
+						<posx>182</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+				</itemlayout>
+				<focusedlayout width="226" height="165">
+					<include>EpisodeThumbCard</include>
+					<include>EpisodeThumb</include>
+					<control type="label">
+						<include>EpisodeTitle</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>EpisodeDate</include>
+					<include>EpisodeThumbOverlay</include>
+					<control type="label">
+						<include>EpisodeThumbOverlayTitle</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<control type="image">
+						<posx>182</posx>
+						<posy>90</posy>
+						<info>ListItem.Overlay</info>
+					</control>
+					<include>EpisodeSelectedBorder</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- Pre-play Episode -->
+	<include name="PreplayEpisode">
+		<visible>Container.Content(Episode)</visible>
+		<control type="group" id="777">
+			<visible>Container.Content(Episode)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- backgrounds -->
+			<control type="group">
+				<!-- left side big bg -->
+				<control type="image">
+					<posy>49</posy>
+					<posx>74</posx>
+					<width>447</width>
+					<height>672</height>
+					<texture>preplay-left-big-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- left side small bg -->
+				<control type="image">
+					<posy>384</posy>
+					<posx>74</posx>
+					<width>447</width>
+					<height>263</height>
+					<texture border="50">preplay-left-small-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- right side plot bg -->
+				<control type="image">
+					<posy>384</posy>
+					<posx>506</posx>
+					<width>833</width>
+					<height>263</height>
+					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<!-- poster -->
+			<control type="largeimage">
+				<posy>77</posy>
+				<posx>285</posx>
+				<width>184</width>
+				<height>275</height>
+				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.TVShowPoster]</texture>-->
+				<texture background="true" diffuse="preplay-poster-big-mask.png">preplay-poster-dummy.png</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- thumb -->
+			<control type="largeimage">
+				<posy>420</posy>
+				<posx>117</posx>
+				<width>360</width>
+				<height>190</height>
+				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>-->
+				<texture background="true" diffuse="preplay-poster-big-mask.png">preplay-poster-dummy.png</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- Infos Left -->
+			<control type="grouplist">
+				<orientation>vertical</orientation>
+				<itemgap>10</itemgap>
+				<posy>61</posy>
+				<posx>560</posx>
+				<!-- Title -->
+				<control type="label">
+					<width>570</width>
+					<height>30</height>
+					<!--><label>$INFO[ListItem.TVShowTitle]</label>-->
+					<label>Deadwood</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Title Episode -->
+				<control type="label">
+					<width>600</width>
+					<height>40</height>
+					<!--><label>$INFO[ListItem.Title]</label>-->
+					<label>Childish Things</label>
+					<font>CondensedBold-36</font>
+					<textcolor>FF999999</textcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Season, Episode -->
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<!--><label>$LOCALIZE[31074,,]$INFO[ListItem.Date, &#xB7; ]</label>-->
+					<label>Season 2, Episode 8</label>
+					<font>Condensed-18</font>
+					<textcolor>white</textcolor>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Infos Right -->
+			<control type="group">
+				<posy>61</posy>
+				<!-- MPAA flag -->
+				<control type="image">
+					<posy>25</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>17</height>
+					<!--><label>$INFO[ListItem.MPAA]</label>-->
+					<texture>PG-13.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Duration -->
+				<control type="label">
+					<posy>40</posy>
+					<posx>40r</posx>
+					<width>200</width>
+					<height>40</height>
+					<align>right</align>
+					<!--><label>$INFO[ListItem.Duration]</label>-->
+					<label> 60min</label>
+					<font>CondensedBold-36</font>
+					<textcolor>FF999999</textcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Season, Episode -->
+				<control type="label">
+					<posy>90</posy>
+					<posx>40r</posx>
+					<width>200</width>
+					<height>20</height>
+					<align>right</align>
+					<!--><label>$LOCALIZE[31074,,]$INFO[ListItem.Date, &#xB7; ]</label>-->
+					<label>Season 2, Episode 8</label>
+					<font>Condensed-18</font>
+					<textcolor>white</textcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Star Rating -->
+				<control type="image">
+					<posy>130</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>20</height>
+					<!--><label>$INFO[ListItem.StarRating]</texture>-->
+					<texture>rating10-big.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Director -->
+			<control type="grouplist">
+				<posy>250</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Director[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>Zack Snyder</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Cast -->
+			<control type="grouplist">
+				<posy>278</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Cast[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="630">auto</width>
+					<height>15</height>
+					<!--><label>$INFO[ListItem.Cast]</label>-->
+					<label>Malin Ackerman, Billy Crudup, Matthew Goode, Patrick Wilson</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Audio -->
+			<control type="grouplist">
+				<posy>306</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Audio[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>English (2 more)</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Subtitles -->
+			<control type="grouplist">
+				<posy>334</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>French (1 more)</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- plot -->
+			<control type="textbox">
+				<posy>415</posy>
+				<posx>560</posx>
+				<width>685</width>
+				<height>195</height>
+				<!--><label>$INFO[ListItem.Plot]</label>-->
+				<label>The &#x201C;Minutemen&#x201D;, a collection of costumed crime fighters, form in 1938 in response to a rise in costumed gangs and criminals, and the &#x201C;Watchmen&#x201D; similarly form decades later. Their existence in America has dramatically affected world events: the super powers of Dr. Manhattan help the United States win the Vietnam War, resulting in President Richard Nixon being repeatedly reelected into the 1980s. The existence of Dr. Manhattan gives the U.S. a strategic advantage over the Soviet Union, which by the 1980s threatens to escalate the Cold War into nuclear war. During that time, growing anti-vigilante sentiment in the country leads to masked crime fighters being outlawed. While many of the heroes retire, Doctor Manhattan and the Comedian operate as government-sanctioned agents, and Rorschach continues to operate outside the law.</label>
+				<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
+				<font>Condensed-18</font>
+				<include>White2</include>
+				<shadowcolor>ff333333</shadowcolor>
+			</control>
+			<!-- MediaFlags -->
+			<control type="group">
+				<!-- Tech Flags -->
+				<control type="grouplist">
+					<posy>675</posy>
+					<posx>60</posx>
+					<width>447</width>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<!-- Default -->
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>-->
+						<texture>1080i.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>-->
+						<texture>dolbydigital.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>-->
+						<texture>6.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- Optional -->
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>-->
+						<texture>1080i.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>-->
+						<texture>dolbydigital.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>-->
+						<texture>6.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+				</control>
+				<!-- Studio -->
+				<control type="image">
+					<posy>658</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>50</height>
+					<!--><texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>-->
+					<texture>Warner_Bros.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Dummy Play Button -->
+			<control type="button" id="99">
+				<description>Dummy Play Button</description>
+				<posy>-1000</posy>
+				<posx>-1000</posx>
+				<label>PLAY</label>
+				<onleft>1300</onleft>
+				<onright>99</onright>
+			</control>
+		</control>
+	</include>
+	<!-- Pre-play Movie -->
+	<include name="PreplayMovie">
+		<visible>Container.Content(Movie)</visible>
+		<control type="group">
+			<visible>Container.Content(Movie)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- backgrounds -->
+			<control type="group">
+				<!-- left side big bg -->
+				<control type="image">
+					<posy>49</posy>
+					<posx>74</posx>
+					<width>447</width>
+					<height>672</height>
+					<texture>preplay-left-big-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- left side small bg -->
+				<control type="image">
+					<posy>384</posy>
+					<posx>74</posx>
+					<width>447</width>
+					<height>263</height>
+					<texture border="50">preplay-left-small-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- right side plot bg -->
+				<control type="image">
+					<posy>384</posy>
+					<posx>506</posx>
+					<width>833</width>
+					<height>263</height>
+					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<!-- poster -->
+			<control type="largeimage">
+				<posy>77</posy>
+				<posx>117</posx>
+				<width>360</width>
+				<height>540</height>
+				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>-->
+				<texture background="true" diffuse="preplay-poster-big-mask.png">preplay-poster-dummy.png</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- Infos Left -->
+			<control type="grouplist">
+				<orientation>vertical</orientation>
+				<itemgap>10</itemgap>
+				<posy>61</posy>
+				<posx>560</posx>
+				<!-- Title -->
+				<control type="label">
+					<width>570</width>
+					<height>40</height>
+					<!--><label>$INFO[ListItem.Title]</label>-->
+					<label>Watchmen</label>
+					<font>CondensedBold-36</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>ff333333</shadowcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Genre -->
+				<control type="label">
+					<width>600</width>
+					<height>15</height>
+					<!--><label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Action, Mystery[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<textcolor>FF999999</textcolor>
+					<visible>true</visible>
+				</control>
+				<!-- Duration -->
+				<control type="label">
+					<width>600</width>
+					<height>15</height>
+					<!--><label>$INFO[ListItem.Duration]</label>-->
+					<label>162 min</label>
+					<font>Condensed-18</font>
+					<textcolor>white</textcolor>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Infos Right -->
+			<control type="group">
+				<posy>61</posy>
+				<!-- Year -->
+				<control type="label">
+					<posy>0</posy>
+					<posx>40r</posx>
+					<width>200</width>
+					<height>40</height>
+					<align>right</align>
+					<!--><label>$INFO[ListItem.Year]</label>-->
+					<label> 2009</label>
+					<font>CondensedBold-36</font>
+					<include>White1</include>
+					<visible>true</visible>
+				</control>
+				<!-- MPAA flag -->
+				<control type="image">
+					<posy>55</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>17</height>
+					<!--><label>$INFO[ListItem.MPAA]</label>-->
+					<texture>PG-13.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Star Rating -->
+				<control type="image">
+					<posy>78</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>20</height>
+					<!--><label>$INFO[ListItem.StarRating]</texture>-->
+					<texture>rating10-big.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Director -->
+			<control type="grouplist">
+				<posy>250</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Director[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>Zack Snyder</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Cast -->
+			<control type="grouplist">
+				<posy>278</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Cast[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="630">auto</width>
+					<height>15</height>
+					<!--><label>$INFO[ListItem.Cast]</label>-->
+					<label>Malin Ackerman, Billy Crudup, Matthew Goode, Patrick Wilson</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Audio -->
+			<control type="grouplist">
+				<posy>306</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Audio[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>English (2 more)</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Subtitles -->
+			<control type="grouplist">
+				<posy>334</posy>
+				<posx>560</posx>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<control type="label">
+					<width min="29" max="200">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+					<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
+					<font>Condensed-18</font>
+					<include>Grey1</include>
+					<visible>true</visible>
+				</control>
+				<control type="label">
+					<width min="29" max="600">auto</width>
+					<height>15</height>
+					<!-- NOTE: NEED STRING FOR THIS -->
+					<!--><label>$INFO[ListItem.Director]</label>-->
+					<label>French (1 more)</label>
+					<font>Condensed-18</font>
+					<include>White2</include>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- plot -->
+			<control type="textbox">
+				<posy>415</posy>
+				<posx>560</posx>
+				<width>685</width>
+				<height>195</height>
+				<!--><label>$INFO[ListItem.Plot]</label>-->
+				<label>The &#x201C;Minutemen&#x201D;, a collection of costumed crime fighters, form in 1938 in response to a rise in costumed gangs and criminals, and the &#x201C;Watchmen&#x201D; similarly form decades later. Their existence in America has dramatically affected world events: the super powers of Dr. Manhattan help the United States win the Vietnam War, resulting in President Richard Nixon being repeatedly reelected into the 1980s. The existence of Dr. Manhattan gives the U.S. a strategic advantage over the Soviet Union, which by the 1980s threatens to escalate the Cold War into nuclear war. During that time, growing anti-vigilante sentiment in the country leads to masked crime fighters being outlawed. While many of the heroes retire, Doctor Manhattan and the Comedian operate as government-sanctioned agents, and Rorschach continues to operate outside the law.</label>
+				<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
+				<font>Condensed-18</font>
+				<include>White2</include>
+				<shadowcolor>ff333333</shadowcolor>
+			</control>
+			<!-- MediaFlags -->
+			<control type="group">
+				<!-- Tech Flags -->
+				<control type="grouplist">
+					<posy>675</posy>
+					<posx>60</posx>
+					<width>447</width>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<!-- Default -->
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>-->
+						<texture>1080i.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>-->
+						<texture>dolbydigital.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>-->
+						<texture>6.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- Optional -->
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>-->
+						<texture>1080i.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>-->
+						<texture>dolbydigital.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+					<control type="image">
+						<width min="29" max="100">auto</width>
+						<height>18</height>
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>-->
+						<texture>6.png</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<colordiffuse>FF999999</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+						<visible>false</visible>
+					</control>
+				</control>
+				<!-- Studio -->
+				<control type="image">
+					<posy>658</posy>
+					<posx>140r</posx>
+					<width>100</width>
+					<height>50</height>
+					<!--><texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>-->
+					<texture>Warner_Bros.png</texture>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+			</control>
+			<!-- Dummy Play Button -->
+			<control type="button" id="99">
+				<description>Dummy Play Button</description>
+				<posy>-1000</posy>
+				<posx>-1000</posx>
+				<label>PLAY</label>
+				<onleft>1300</onleft>
+				<onright>99</onright>
+			</control>
+		</control>
+	</include>
+</includes>

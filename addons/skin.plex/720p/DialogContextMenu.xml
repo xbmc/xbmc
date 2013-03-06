@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogContextMenu</include>
+	</controls>
+</window>

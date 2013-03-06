@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<window id="105">
+	<controls>
+		<control type="image" id="1">
+			<description>Pointer</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>40</width>
+			<height>38</height>
+			<texture>Pointer.png</texture>
+		</control>
+		<control type="image" id="2">
+			<description>Pointer Focus</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>40</width>
+			<height>38</height>
+			<texture>PointerFocus.png</texture>
+		</control>
+		<control type="image" id="3">
+			<description>Pointer Drag</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>40</width>
+			<height>38</height>
+			<texture>PointerDrag.png</texture>
+		</control>
+		<control type="image" id="4">
+			<description>Pointer Click</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>40</width>
+			<height>38</height>
+			<texture>PointerClick.png</texture>
+		</control>
+	</controls>
+</window>

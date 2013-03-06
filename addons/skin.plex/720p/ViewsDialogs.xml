@@ -1,0 +1,1759 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- global dialog includes -->
+	<include name="DialogBorder">
+		<posx>-1</posx>
+		<posy>-1</posy>
+		<texture>transparent.png</texture>
+		<bordertexture border="10">border-black.png</bordertexture>
+		<bordersize>1</bordersize>
+		<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
+	</include>
+	<include name="DialogBG">
+		<include>BlackRounded</include>
+		<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+	</include>
+	<include name="DialogBGContextMenu">
+		<texture border="30">bg-dialog-context-menu.png</texture>
+	</include>
+	<include name="DialogHeaderBG">
+		<texture border="10" flipy="true">base-rounded-half.png</texture>
+		<colordiffuse>FF111111</colordiffuse>
+	</include>
+	<include name="DialogHeaderBorder">
+		<posy>0</posy>
+		<height>50</height>
+		<texture>border-bottom-grey.png</texture>
+		<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
+	</include>
+	<include name="DialogArrow">
+		<width>30</width>
+		<height>14</height>
+		<include>ArrowBlackDown</include>
+	</include>
+	<include name="DialogPressButton">
+		<height>50</height>
+		<align>center</align>
+		<font>CondensedBold-18</font>
+		<texturefocus border="12">black-rounded.png</texturefocus>
+		<texturenofocus border="12">-</texturenofocus>
+	</include>
+	<include name="DialogHeading">
+		<align>center</align>
+		<font>Condensed-24</font>
+		<textcolor>white</textcolor>
+	</include>
+	<!-- animations open/close -->
+	<include name="DialogFadeInOut">
+		<animation effect="fade" time="300">WindowOpen</animation>
+		<animation effect="fade" time="100">WindowClose</animation>
+	</include>
+	<include name="DialogBottomRightSlide">
+		<animation effect="slide" start="0,200" time="300">WindowOpen</animation>
+		<animation effect="slide" end="0,200" time="300">WindowClose</animation>
+	</include>
+	<include name="FadeDialog">
+		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog)">Conditional</animation>
+	</include>
+	<!-- -->
+	<!-- DIALOG WINDOWS -->
+	<!-- DialogFilters.xml -->
+	<include name="DialogFilters">
+		<control type="group">
+			<posx>350</posx>
+			<posy>160</posy>
+			<!-- sub-list backgrounds -->
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>322</width>
+					<height>420</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>322</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>320</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>324</width>
+					<height>422</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>-14</posx>
+					<posy>100</posy>
+					<include>ArrowBlackLeft</include>
+				</control>
+			</control>
+			<!-- sub-list -->
+			<control type="group" id="1400">
+				<posy>24</posy>
+				<!-- sub-list title -->
+				<control type="label" id="19029">
+					<description>Heading</description>
+					<width>330</width>
+					<include>DialogHeading</include>
+				</control>
+				<control type="grouplist" id="19020">
+					<width>330</width>
+					<height>340</height>
+					<posy>40</posy>
+					<posx>7</posx>
+					<onup>19020</onup>
+					<ondown>19020</ondown>
+					<onleft>19000</onleft>
+					<onright>-</onright>
+					<itemgap>5</itemgap>
+					<pagecontrol>61</pagecontrol>
+					<scrolltime>200</scrolltime>
+				</control>
+				<!-- sub-list buttons -->
+				<control type="radiobutton" id="19021">
+					<include>leftSubMenuRadioButton</include>
+				</control>
+				<control type="scrollbar" id="61">
+					<description>Scroll Bar</description>
+					<posx>300</posx>
+					<posy>33</posy>
+					<width>24</width>
+					<height>353</height>
+					<showonepage>true</showonepage>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- DialogProgress.xml -->
+	<include name="DialogProgress">
+		<control type="group">
+			<posx>340</posx>
+			<posy>260</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>250</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>252</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>250</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>22</posy>
+				<control type="label" id="1">
+					<description>Heading</description>
+					<width>600</width>
+					<include>DialogHeading</include>
+				</control>
+				<control type="group">
+					<posy>20</posy>
+					<control type="label" id="2">
+						<description>Line 1</description>
+						<posy>30</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="3">
+						<description>Line 2</description>
+						<posy>50</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="4">
+						<description>Line 3</description>
+						<posy>70</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="progress" id="20">
+						<description>progress control</description>
+						<posx>11</posx>
+						<posy>95</posy>
+						<width>580</width>
+					</control>
+				</control>
+				<control type="group">
+					<posy>155</posy>
+					<posx>225</posx>
+					<control type="button" id="10">
+						<description>Cancel Button</description>
+						<width>150</width>
+						<label>$LOCALIZE[222]</label>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogOk.xml -->
+	<include name="DialogOK">
+		<control type="group">
+			<posx>340</posx>
+			<posy>260</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>200</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>202</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>200</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>22</posy>
+				<control type="label" id="1">
+					<description>Heading</description>
+					<width>600</width>
+					<include>DialogHeading</include>
+				</control>
+				<control type="group">
+					<posy>27</posy>
+					<control type="label" id="2">
+						<description>Line 1</description>
+						<posy>30</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="3">
+						<description>Line 2</description>
+						<posy>50</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="4">
+						<description>Line 3</description>
+						<posy>70</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="group">
+						<posy>90</posy>
+						<posx>260</posx>
+						<control type="button" id="10">
+							<description>OK Button</description>
+							<width>80</width>
+							<label>$LOCALIZE[186]</label>
+							<include>DialogPressButton</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogContextMenu.xml -->
+	<include name="DialogContextMenu">
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+		<control type="group">
+			<posy>-30</posy>
+			<control type="image" id="999">
+				<description>Background</description>
+				<width>340</width>
+				<height>500</height>
+				<include>DialogBGContextMenu</include>
+			</control>
+			<control type="image">
+				<description>Title bg</description>
+				<width>340</width>
+				<height>60</height>
+				<include>DialogHeaderBG</include>
+			</control>
+			<control type="image">
+				<description>Title bg bottom border</description>
+				<posy>10</posy>
+				<width>340</width>
+				<include>DialogHeaderBorder</include>
+			</control>
+		</control>
+		<control type="group">
+			<control type="label">
+				<posy>-20</posy>
+				<width>340</width>
+				<height>40</height>
+				<include>DialogHeading</include>
+				<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+				<!--><label>$LOCALIZE[31018]</label>-->
+			</control>
+			<control type="grouplist" id="996">
+				<description>grouplist for context buttons</description>
+				<posx>10</posx>
+				<posy>30</posy>
+				<width>320</width>
+				<height max="400">auto</height>
+				<itemgap>0</itemgap>
+			</control>
+			<control type="button" id="1000">
+				<description>Buttons</description>
+				<posx>20</posx>
+				<width>380</width>
+			</control>
+		</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogAddonSettings.xml -->
+	<!-- will probably need more work, but couldn't make it to show for any channels for now -->
+	<include name="DialogAddonSettings">
+		<control type="group">
+			<control type="group">
+				<posx>330</posx>
+				<posy>180</posy>
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>380</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>382</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>380</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posx>330</posx>
+				<posy>180</posy>
+				<control type="label" id="20">
+					<description>heading label</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeading</include>
+				</control>
+				<control type="grouplist" id="2">
+					<description>control area</description>
+					<posx>20</posx>
+					<width>560</width>
+					<height>230</height>
+					<itemgap>5</itemgap>
+					<onup>2</onup>
+					<ondown>9000</ondown>
+				</control>
+				<control type="button" id="3">
+					<description>Default Button</description>
+				</control>
+				<control type="radiobutton" id="4">
+					<description>Default RadioButton</description>
+				</control>
+				<control type="spincontrolex" id="5">
+					<description>Default SpinControlex</description>
+				</control>
+				<control type="grouplist" id="9000">
+					<posx>20</posx>
+					<width>560</width>
+					<posy>312</posy>
+					<orientation>horizontal</orientation>
+					<itemgap>37</itemgap>
+					<onup>2</onup>
+					<control type="button" id="10">
+						<description>OK button</description>
+						<label>186</label>
+						<width>150</width>
+						<include>DialogPressButton</include>
+					</control>
+					<control type="button" id="11">
+						<description>Cancel button</description>
+						<label>222</label>
+						<width>150</width>
+						<include>DialogPressButton</include>
+					</control>
+					<control type="button" id="12">
+						<description>Defaults button</description>
+						<label>409</label>
+						<width>150</width>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogYesNo.xml -->
+	<include name="DialogYesNo">
+		<control type="group">
+			<posx>340</posx>
+			<posy>260</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>200</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>202</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>200</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>22</posy>
+				<control type="label" id="1">
+					<description>Heading</description>
+					<width>600</width>
+					<include>DialogHeading</include>
+				</control>
+				<control type="group">
+					<posy>27</posy>
+					<control type="label" id="2">
+						<description>Line 1</description>
+						<posy>30</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="3">
+						<description>Line 2</description>
+						<posy>50</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="4">
+						<description>Line 3</description>
+						<posy>70</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="group">
+						<posy>90</posy>
+						<posx>200</posx>
+						<control type="button" id="10">
+							<description>NO Button</description>
+							<width>80</width>
+							<onleft>11</onleft>
+							<onright>11</onright>
+							<label>$LOCALIZE[106]</label>
+							<include>DialogPressButton</include>
+						</control>
+						<control type="button" id="11">
+							<description>YES Button</description>
+							<posx>120</posx>
+							<width>80</width>
+							<onleft>10</onleft>
+							<onright>10</onright>
+							<label>$LOCALIZE[107]</label>
+							<include>DialogPressButton</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogBusy.xml -->
+	<include name="DialogBusy">
+		<control type="group">
+			<posx>960</posx>
+			<posy>630</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>250</width>
+					<height>60</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>252</width>
+					<height>62</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>105</posx>
+					<posy>60</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(10)</visible>
+				<control type="label">
+					<description>"Please wait..." label</description>
+					<posx>10</posx>
+					<width>230</width>
+					<height>35</height>
+					<align>center</align>
+					<label>$LOCALIZE[20186]...</label>
+				</control>
+				<control type="progress" id="10">
+					<description>Progressbar</description>
+					<posx>10</posx>
+					<posy>32</posy>
+					<width>230</width>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!Control.IsVisible(10)</visible>
+				<control type="label">
+					<description>"Please wait..." label</description>
+					<posx>10</posx>
+					<width>230</width>
+					<height>60</height>
+					<align>center</align>
+					<label>$LOCALIZE[20186]...</label>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- (TO DO) DialogFileStacking.xml -->
+	<include name="DialogFileStacking">
+		<control type="list" id="450">
+			<posx>480</posx>
+			<posy>25</posy>
+			<width>440</width>
+			<height>125</height>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<orientation>horizontal</orientation>
+			<focusposition>2</focusposition>
+			<viewtype label="535">list</viewtype>
+			<scrolltime>200</scrolltime>
+			<itemlayout width="40">
+		</itemlayout>
+			<focusedlayout width="53">
+				<control type="label">
+					<posx>33</posx>
+					<posy>60</posy>
+					<width>80</width>
+					<height>28</height>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<posx>907</posx>
+			<posy>31</posy>
+			<height>28</height>
+			<align>right</align>
+			<info>ListItem.Label</info>
+		</control>
+	</include>
+	<!-- -->
+	<!-- DialogKaiToast.xml -->
+	<include name="DialogKaiToast">
+		<control type="group">
+			<posx>710</posx>
+			<posy>600</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>500</width>
+					<height>85</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>500</width>
+					<height>42</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>500</width>
+					<height>42</height>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>502</width>
+					<height>87</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>255</posx>
+					<posy>85</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>20</posy>
+				<control type="label" id="401">
+					<description>Header</description>
+					<width>500</width>
+					<label>-</label>
+					<include>DialogHeading</include>
+					<texturefocus>-</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="label" id="402">
+					<description>Message</description>
+					<posy>40</posy>
+					<posx>10</posx>
+					<width>480</width>
+					<label>-</label>
+					<align>center</align>
+					<texturefocus>-</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
+	<!-- KEYBOARDS -->
+	<!-- DialogKeyboard.xml -->
+	<!-- keyboard includes -->
+	<include name="KeyboardBG">
+		<control type="group">
+			<animation effect="fade" start="0" end="90" time="300">WindowOpen</animation>
+			<animation effect="fade" start="90" end="0" time="300">WindowClose</animation>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>black.png</texture>
+			</control>
+			<control type="image">
+				<include>FullScreenScaled</include>
+				<texture>bg-overlay-grainy.png</texture>
+			</control>
+		</control>
+	</include>
+	<include name="KeyboardFont">
+		<font>Condensed-16</font>
+		<align>center</align>
+		<aligny>center</aligny>
+	</include>
+	<include name="KeyboardButton">
+		<font>Condensed-18</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>orange.png</texturefocus>
+		<texturenofocus>black.png</texturenofocus>
+	</include>
+	<include name="KeyboardButtonFaded">
+		<font>Condensed-18</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>black.png</texturefocus>
+		<texturenofocus>black.png</texturenofocus>
+	</include>
+	<include name="KeyboardButtonDummy">
+		<width>60</width>
+		<height>50</height>
+	</include>
+	<include name="KeyboardButtonBig">
+		<font>Condensed-24</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>orange.png</texturefocus>
+		<texturenofocus>black.png</texturenofocus>
+	</include>
+	<include name="KeyboardButtonBigFaded">
+		<font>Condensed-24</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>black.png</texturefocus>
+		<texturenofocus>black.png</texturenofocus>
+	</include>
+	<include name="KeyboardNumericFade">
+		<animation effect="fade" start="100" end="30" time="300" condition="Window.IsActive(109)">Conditional</animation>
+	</include>
+	<include name="KeyboardButtonLighter">
+		<font>Condensed-18</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>orange.png</texturefocus>
+		<texturenofocus>darkgrey.png</texturenofocus>
+	</include>
+	<include name="KeyboardButtonLighterNumeric">
+		<font>Condensed-18</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<width>60</width>
+		<height>50</height>
+		<texturefocus>darkgrey.png</texturefocus>
+		<texturenofocus>darkgrey.png</texturenofocus>
+		<animation effect="fade" start="100" end="30" time="300" condition="true">Conditional</animation>
+	</include>
+	<include name="KeyboardTextFieldBG">
+		<control type="image">
+			<width>645</width>
+			<height>50</height>
+			<include>Black</include>
+		</control>
+	</include>
+	<!-- keyboards -->
+	<include name="KeyboardFull">
+		<control type="group">
+			<include>KeyboardBG</include>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="90" time="200">WindowOpen</animation>
+			<animation effect="fade" start="90" end="0" time="200">WindowClose</animation>
+			<animation effect="fade" start="100" end="0" time="300" condition="Window.IsVisible(109)">Conditional</animation>
+			<!-- text field bg -->
+			<control type="grouplist">
+				<posy>170</posy>
+				<width>1280</width>
+				<height>50</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>horizontal</orientation>
+				<include>KeyboardTextFieldBG</include>
+			</control>
+			<control type="grouplist">
+				<itemgap>5</itemgap>
+				<width>1280</width>
+				<height>720</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>vertical</orientation>
+				<!-- Row 0 -->
+				<control type="grouplist">
+					<width>1280</width>
+					<height>75</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="label" id="310">
+						<description>Edit Text</description>
+						<width>570</width>
+						<height>75</height>
+						<include>KeyboardFont</include>
+					</control>
+				</control>
+				<!-- Row 1 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="49">
+						<description>'1' button</description>
+						<onleft>305</onleft>
+						<onright>50</onright>
+						<onup>307</onup>
+						<ondown>303</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="50">
+						<description>'2' button</description>
+						<onleft>49</onleft>
+						<onright>51</onright>
+						<onup>32</onup>
+						<ondown>65</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="51">
+						<description>'3' button</description>
+						<onleft>50</onleft>
+						<onright>52</onright>
+						<onup>32</onup>
+						<ondown>66</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="52">
+						<description>'4' button</description>
+						<onleft>51</onleft>
+						<onright>53</onright>
+						<onup>32</onup>
+						<ondown>67</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="53">
+						<description>'5' button</description>
+						<onleft>52</onleft>
+						<onright>54</onright>
+						<onup>32</onup>
+						<ondown>68</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="54">
+						<description>'6' button</description>
+						<onleft>53</onleft>
+						<onright>55</onright>
+						<onup>32</onup>
+						<ondown>68</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="55">
+						<description>'7' button</description>
+						<onleft>54</onleft>
+						<onright>56</onright>
+						<onup>32</onup>
+						<ondown>69</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="56">
+						<description>'8' button</description>
+						<onleft>55</onleft>
+						<onright>57</onright>
+						<onup>8</onup>
+						<ondown>70</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="57">
+						<description>'9' button</description>
+						<onleft>56</onleft>
+						<onright>48</onright>
+						<onup>8</onup>
+						<ondown>71</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="48">
+						<description>'0' button</description>
+						<onleft>57</onleft>
+						<onright>306</onright>
+						<onup>300</onup>
+						<ondown>72</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- Row 2 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="65">
+						<description>'A' button</description>
+						<onleft>303</onleft>
+						<onright>66</onright>
+						<onup>50</onup>
+						<ondown>74</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="66">
+						<description>'B' button</description>
+						<onleft>65</onleft>
+						<onright>67</onright>
+						<onup>51</onup>
+						<ondown>75</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="67">
+						<description>'C' button</description>
+						<onleft>66</onleft>
+						<onright>68</onright>
+						<onup>52</onup>
+						<ondown>76</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="68">
+						<description>'D' button</description>
+						<onleft>67</onleft>
+						<onright>69</onright>
+						<onup>53</onup>
+						<ondown>77</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="69">
+						<description>'E' button</description>
+						<onleft>68</onleft>
+						<onright>70</onright>
+						<onup>55</onup>
+						<ondown>78</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="70">
+						<description>'F' button</description>
+						<onleft>69</onleft>
+						<onright>71</onright>
+						<onup>56</onup>
+						<ondown>79</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="71">
+						<description>'G' button</description>
+						<onleft>70</onleft>
+						<onright>72</onright>
+						<onup>57</onup>
+						<ondown>80</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="72">
+						<description>'H' button</description>
+						<onleft>71</onleft>
+						<onright>73</onright>
+						<onup>48</onup>
+						<ondown>81</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="73">
+						<description>'I' button</description>
+						<onleft>72</onleft>
+						<onright>303</onright>
+						<onup>306</onup>
+						<ondown>82</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="74">
+						<description>'J' button</description>
+						<onleft>302</onleft>
+						<onright>75</onright>
+						<onup>65</onup>
+						<ondown>83</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+				</control>
+				<!-- Row 3 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="75">
+						<description>'K' button</description>
+						<onleft>74</onleft>
+						<onright>76</onright>
+						<onup>66</onup>
+						<ondown>84</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="76">
+						<description>'L' button</description>
+						<onleft>75</onleft>
+						<onright>77</onright>
+						<onup>67</onup>
+						<ondown>85</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="77">
+						<description>'M' button</description>
+						<onleft>76</onleft>
+						<onright>78</onright>
+						<onup>68</onup>
+						<ondown>86</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="78">
+						<description>'N' button</description>
+						<onleft>77</onleft>
+						<onright>79</onright>
+						<onup>69</onup>
+						<ondown>87</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="79">
+						<description>'O' button</description>
+						<onleft>78</onleft>
+						<onright>80</onright>
+						<onup>70</onup>
+						<ondown>88</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="80">
+						<description>'P' button</description>
+						<onleft>79</onleft>
+						<onright>81</onright>
+						<onup>71</onup>
+						<ondown>89</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="81">
+						<description>'Q' button</description>
+						<onleft>80</onleft>
+						<onright>82</onright>
+						<onup>72</onup>
+						<ondown>90</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="82">
+						<description>'R' button</description>
+						<onleft>81</onleft>
+						<onright>302</onright>
+						<onup>73</onup>
+						<ondown>300</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="83">
+						<description>'S' button</description>
+						<onleft>304</onleft>
+						<onright>84</onright>
+						<onup>74</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="84">
+						<description>'T' button</description>
+						<onleft>83</onleft>
+						<onright>85</onright>
+						<onup>75</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+				</control>
+				<!-- Row 4 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="togglebutton" id="303">
+						<description>CAPS LOCK button</description>
+						<onleft>73</onleft>
+						<onright>65</onright>
+						<onup>305</onup>
+						<ondown>302</ondown>
+						<include>KeyboardButtonBig</include>
+						<label>&#x21EA;</label>
+						<alttexturenofocus>orange.png</alttexturenofocus>
+						<alttexturefocus>orange.png</alttexturefocus>
+					</control>
+					<control type="togglebutton" id="304">
+						<description>Symbols button</description>
+						<onleft>90</onleft>
+						<onright>83</onright>
+						<onup>302</onup>
+						<ondown>307</ondown>
+						<include>KeyboardButton</include>
+						<label>{~}</label>
+						<alttexturenofocus>orange.png</alttexturenofocus>
+						<alttexturefocus>orange.png</alttexturefocus>
+					</control>
+					<control type="button" id="85">
+						<description>'U' button</description>
+						<onleft>84</onleft>
+						<onright>86</onright>
+						<onup>76</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="86">
+						<description>'V' button</description>
+						<onleft>85</onleft>
+						<onright>87</onright>
+						<onup>77</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="87">
+						<description>'W' button</description>
+						<onleft>86</onleft>
+						<onright>88</onright>
+						<onup>78</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="88">
+						<description>'X' button</description>
+						<onleft>87</onleft>
+						<onright>89</onright>
+						<onup>79</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="89">
+						<description>'Y' button</description>
+						<onleft>88</onleft>
+						<onright>90</onright>
+						<onup>80</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="90">
+						<description>'Z' button</description>
+						<onleft>89</onleft>
+						<onright>304</onright>
+						<onup>81</onup>
+						<ondown>300</ondown>
+						<include>KeyboardButtonLighter</include>
+					</control>
+					<control type="button" id="305">
+						<description>Previous button</description>
+						<onup>307</onup>
+						<ondown>303</ondown>
+						<onleft>306</onleft>
+						<onright>49</onright>
+						<include>KeyboardButtonBig</include>
+						<label>&#x2190;</label>
+					</control>
+					<control type="button" id="306">
+						<description>Next button</description>
+						<onleft>48</onleft>
+						<onright>305</onright>
+						<onup>300</onup>
+						<ondown>73</ondown>
+						<label>&#x2192;</label>
+						<include>KeyboardButtonBig</include>
+					</control>
+				</control>
+				<!-- Row 5 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>60</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="307">
+						<description>IP Input button</description>
+						<width>125</width>
+						<onleft>300</onleft>
+						<onright>32</onright>
+						<onup>304</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButton</include>
+						<label>IP</label>
+					</control>
+					<control type="button" id="32">
+						<description>SPACE button</description>
+						<width>385</width>
+						<onleft>307</onleft>
+						<onright>8</onright>
+						<onup>85</onup>
+						<ondown>53</ondown>
+						<include>KeyboardButton</include>
+						<label/>
+					</control>
+					<control type="button" id="8">
+						<description>BACKSPACE button</description>
+						<width>125</width>
+						<onleft>32</onleft>
+						<onright>300</onright>
+						<onup>88</onup>
+						<ondown>56</ondown>
+						<include>KeyboardButtonBig</include>
+						<label>&#x21A4;</label>
+					</control>
+				</control>
+				<!-- Row 6 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="300">
+						<description>DONE button</description>
+						<width>385</width>
+						<onleft>8</onleft>
+						<onright>307</onright>
+						<onup>90</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="KeyboardNumeric">
+		<control type="group">
+			<include>KeyboardBG</include>
+			<visible>!Window.IsVisible(103)</visible>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="90" time="200">WindowOpen</animation>
+			<animation effect="fade" start="90" end="0" time="200">WindowClose</animation>
+			<!-- text field bg -->
+			<control type="grouplist">
+				<posy>170</posy>
+				<width>1280</width>
+				<height>50</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>horizontal</orientation>
+				<include>KeyboardTextFieldBG</include>
+			</control>
+			<control type="grouplist">
+				<itemgap>5</itemgap>
+				<width>1280</width>
+				<height>720</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<orientation>vertical</orientation>
+				<!-- Row 0 -->
+				<control type="grouplist">
+					<width>1280</width>
+					<height>75</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="label" id="4">
+						<description>Edit Text</description>
+						<width>570</width>
+						<height>75</height>
+						<label>$LOCALIZE[12323]</label>
+						<textcolor>orangeLight</textcolor>
+						<disabledcolor>white</disabledcolor>
+						<include>KeyboardFont</include>
+					</control>
+				</control>
+				<!-- Row 1 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="11">
+						<description>'1' button</description>
+						<onleft>305</onleft>
+						<onright>50</onright>
+						<onup>307</onup>
+						<ondown>303</ondown>
+						<label>$LOCALIZE[12311]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="12">
+						<description>'2' button</description>
+						<onleft>49</onleft>
+						<onright>51</onright>
+						<onup>32</onup>
+						<ondown>65</ondown>
+						<label>$LOCALIZE[12312]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="13">
+						<description>'3' button</description>
+						<onleft>50</onleft>
+						<onright>52</onright>
+						<onup>32</onup>
+						<ondown>66</ondown>
+						<label>$LOCALIZE[12313]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="14">
+						<description>'4' button</description>
+						<onleft>51</onleft>
+						<onright>53</onright>
+						<onup>32</onup>
+						<ondown>67</ondown>
+						<label>$LOCALIZE[12314]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="15">
+						<description>'5' button</description>
+						<onleft>52</onleft>
+						<onright>54</onright>
+						<onup>32</onup>
+						<ondown>68</ondown>
+						<label>$LOCALIZE[12315]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="16">
+						<description>'6' button</description>
+						<onleft>53</onleft>
+						<onright>55</onright>
+						<onup>32</onup>
+						<ondown>68</ondown>
+						<label>$LOCALIZE[12316]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="17">
+						<description>'7' button</description>
+						<onleft>54</onleft>
+						<onright>56</onright>
+						<onup>32</onup>
+						<ondown>69</ondown>
+						<label>$LOCALIZE[12317]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="18">
+						<description>'8' button</description>
+						<onleft>55</onleft>
+						<onright>57</onright>
+						<onup>8</onup>
+						<ondown>70</ondown>
+						<label>$LOCALIZE[12318]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="19">
+						<description>'9' button</description>
+						<onleft>56</onleft>
+						<onright>48</onright>
+						<onup>8</onup>
+						<ondown>71</ondown>
+						<label>$LOCALIZE[12319]</label>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="10">
+						<description>'0' button</description>
+						<onleft>57</onleft>
+						<onright>306</onright>
+						<onup>300</onup>
+						<ondown>72</ondown>
+						<label>$LOCALIZE[12310]</label>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- Row 2 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="65">
+						<description>'A' button</description>
+						<onleft>303</onleft>
+						<onright>66</onright>
+						<onup>50</onup>
+						<ondown>74</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>a</label>
+					</control>
+					<control type="button" id="66">
+						<description>'B' button</description>
+						<onleft>65</onleft>
+						<onright>67</onright>
+						<onup>51</onup>
+						<ondown>75</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>b</label>
+					</control>
+					<control type="button" id="67">
+						<description>'C' button</description>
+						<onleft>66</onleft>
+						<onright>68</onright>
+						<onup>52</onup>
+						<ondown>76</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>c</label>
+					</control>
+					<control type="button" id="68">
+						<description>'D' button</description>
+						<onleft>67</onleft>
+						<onright>69</onright>
+						<onup>53</onup>
+						<ondown>77</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>d</label>
+					</control>
+					<control type="button" id="69">
+						<description>'E' button</description>
+						<onleft>68</onleft>
+						<onright>70</onright>
+						<onup>55</onup>
+						<ondown>78</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>e</label>
+					</control>
+					<control type="button" id="70">
+						<description>'F' button</description>
+						<onleft>69</onleft>
+						<onright>71</onright>
+						<onup>56</onup>
+						<ondown>79</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>f</label>
+					</control>
+					<control type="button" id="71">
+						<description>'G' button</description>
+						<onleft>70</onleft>
+						<onright>72</onright>
+						<onup>57</onup>
+						<ondown>80</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>g</label>
+					</control>
+					<control type="button" id="72">
+						<description>'H' button</description>
+						<onleft>71</onleft>
+						<onright>73</onright>
+						<onup>48</onup>
+						<ondown>81</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>h</label>
+					</control>
+					<control type="button" id="73">
+						<description>'I' button</description>
+						<onleft>72</onleft>
+						<onright>303</onright>
+						<onup>306</onup>
+						<ondown>82</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>i</label>
+					</control>
+					<control type="button" id="74">
+						<description>'J' button</description>
+						<onleft>302</onleft>
+						<onright>75</onright>
+						<onup>65</onup>
+						<ondown>83</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>j</label>
+					</control>
+				</control>
+				<!-- Row 3 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="75">
+						<description>'K' button</description>
+						<onleft>74</onleft>
+						<onright>76</onright>
+						<onup>66</onup>
+						<ondown>84</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>k</label>
+					</control>
+					<control type="button" id="76">
+						<description>'L' button</description>
+						<onleft>75</onleft>
+						<onright>77</onright>
+						<onup>67</onup>
+						<ondown>85</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>l</label>
+					</control>
+					<control type="button" id="77">
+						<description>'M' button</description>
+						<onleft>76</onleft>
+						<onright>78</onright>
+						<onup>68</onup>
+						<ondown>86</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>m</label>
+					</control>
+					<control type="button" id="78">
+						<description>'N' button</description>
+						<onleft>77</onleft>
+						<onright>79</onright>
+						<onup>69</onup>
+						<ondown>87</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>n</label>
+					</control>
+					<control type="button" id="79">
+						<description>'O' button</description>
+						<onleft>78</onleft>
+						<onright>80</onright>
+						<onup>70</onup>
+						<ondown>88</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>o</label>
+					</control>
+					<control type="button" id="80">
+						<description>'P' button</description>
+						<onleft>79</onleft>
+						<onright>81</onright>
+						<onup>71</onup>
+						<ondown>89</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>p</label>
+					</control>
+					<control type="button" id="81">
+						<description>'Q' button</description>
+						<onleft>80</onleft>
+						<onright>82</onright>
+						<onup>72</onup>
+						<ondown>90</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>q</label>
+					</control>
+					<control type="button" id="82">
+						<description>'R' button</description>
+						<onleft>81</onleft>
+						<onright>302</onright>
+						<onup>73</onup>
+						<ondown>300</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>r</label>
+					</control>
+					<control type="button" id="83">
+						<description>'S' button</description>
+						<onleft>304</onleft>
+						<onright>84</onright>
+						<onup>74</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>s</label>
+					</control>
+					<control type="button" id="84">
+						<description>'T' button</description>
+						<onleft>83</onleft>
+						<onright>85</onright>
+						<onup>75</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>t</label>
+					</control>
+				</control>
+				<!-- Row 4 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="togglebutton" id="303">
+						<description>CAPS LOCK button</description>
+						<onleft>73</onleft>
+						<onright>65</onright>
+						<onup>305</onup>
+						<ondown>302</ondown>
+						<include>KeyboardButtonBigFaded</include>
+						<label>&#x21EA;</label>
+						<alttexturenofocus>black.png</alttexturenofocus>
+						<alttexturefocus>black.png</alttexturefocus>
+						<include>KeyboardNumericFade</include>
+					</control>
+					<control type="togglebutton" id="304">
+						<description>Symbols button</description>
+						<onleft>90</onleft>
+						<onright>83</onright>
+						<onup>302</onup>
+						<ondown>307</ondown>
+						<include>KeyboardButtonFaded</include>
+						<label>{~}</label>
+						<alttexturenofocus>black.png</alttexturenofocus>
+						<alttexturefocus>black.png</alttexturefocus>
+						<include>KeyboardNumericFade</include>
+					</control>
+					<control type="button" id="85">
+						<description>'U' button</description>
+						<onleft>84</onleft>
+						<onright>86</onright>
+						<onup>76</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>u</label>
+					</control>
+					<control type="button" id="86">
+						<description>'V' button</description>
+						<onleft>85</onleft>
+						<onright>87</onright>
+						<onup>77</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>v</label>
+					</control>
+					<control type="button" id="87">
+						<description>'W' button</description>
+						<onleft>86</onleft>
+						<onright>88</onright>
+						<onup>78</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>w</label>
+					</control>
+					<control type="button" id="88">
+						<description>'X' button</description>
+						<onleft>87</onleft>
+						<onright>89</onright>
+						<onup>79</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>x</label>
+					</control>
+					<control type="button" id="89">
+						<description>'Y' button</description>
+						<onleft>88</onleft>
+						<onright>90</onright>
+						<onup>80</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>y</label>
+					</control>
+					<control type="button" id="90">
+						<description>'Z' button</description>
+						<onleft>89</onleft>
+						<onright>304</onright>
+						<onup>81</onup>
+						<ondown>300</ondown>
+						<include>KeyboardButtonLighterNumeric</include>
+						<label>z</label>
+					</control>
+					<control type="button" id="20">
+						<description>Previous button</description>
+						<onup>307</onup>
+						<ondown>303</ondown>
+						<onleft>306</onleft>
+						<onright>49</onright>
+						<include>KeyboardButtonBig</include>
+						<label>&#x2190;</label>
+					</control>
+					<control type="button" id="22">
+						<description>Next button</description>
+						<onleft>48</onleft>
+						<onright>305</onright>
+						<onup>300</onup>
+						<ondown>73</ondown>
+						<label>&#x2192;</label>
+						<include>KeyboardButtonBig</include>
+					</control>
+				</control>
+				<!-- Row 5 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>60</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="307">
+						<description>IP Input button</description>
+						<width>125</width>
+						<onleft>300</onleft>
+						<onright>32</onright>
+						<onup>304</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButtonFaded</include>
+						<label>IP</label>
+						<include>KeyboardNumericFade</include>
+					</control>
+					<control type="button" id="32">
+						<description>SPACE button</description>
+						<width>385</width>
+						<onleft>307</onleft>
+						<onright>8</onright>
+						<onup>85</onup>
+						<ondown>53</ondown>
+						<include>KeyboardButtonFaded</include>
+						<label/>
+						<include>KeyboardNumericFade</include>
+					</control>
+					<control type="button" id="23">
+						<description>BACKSPACE button</description>
+						<width>125</width>
+						<onleft>32</onleft>
+						<onright>300</onright>
+						<onup>88</onup>
+						<ondown>56</ondown>
+						<include>KeyboardButtonBig</include>
+						<label>&#x21A4;</label>
+					</control>
+				</control>
+				<!-- Row 6 -->
+				<control type="grouplist">
+					<itemgap>5</itemgap>
+					<width>1280</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<orientation>horizontal</orientation>
+					<control type="button" id="21">
+						<description>DONE button</description>
+						<width>385</width>
+						<onleft>8</onleft>
+						<onright>307</onright>
+						<onup>90</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[20177]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

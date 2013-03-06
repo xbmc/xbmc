@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="leftMenuInitSlide">
+		<animation effect="slide" start="-100" end="0" time="400">Visible</animation>
+	</include>
+	<include name="leftMenuSlide">
+		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
+		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+	</include>
+	<include name="rightSideSlide">
+		<include>leftMenuSlide</include>
+		<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+	</include>
+	<include name="leftMenuBg">
+		<control type="group">
+			<!-- Background -->
+			<control type="image">
+				<posx>-253</posx>
+				<posy>48</posy>
+				<height>680</height>
+				<width>253</width>
+				<include>Black</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="75"/>
+				</animation>
+			</control>
+			<control type="image">
+				<posy>48</posy>
+				<posx>0</posx>
+				<width>74</width>
+				<height>720</height>
+				<include>Black</include>
+			</control>
+			<control type="image">
+				<posy>500</posy>
+				<posx>74</posx>
+				<width>15</width>
+				<height>31</height>
+				<aspectratio>scale</aspectratio>
+				<texture>arrow-big.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+			<control type="image">
+				<posy>70</posy>
+				<posx>25</posx>
+				<width>24</width>
+				<height>24</height>
+				<aspectratio>keep</aspectratio>
+				<texture>left-menu-filters-icon.png</texture>
+				<colordiffuse>FF999999</colordiffuse>
+				<visible>Container.content(movies) | Container.content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<posy>680</posy>
+				<posx>30</posx>
+				<width>12</width>
+				<height>17</height>
+				<aspectratio>scale</aspectratio>
+				<texture flipx="true">left-menu-indicator-arrow.png</texture>
+				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
+			</control>
+		</control>
+	</include>
+	<include name="leftMenuTitle">
+		<textoffsety>5</textoffsety>
+		<textoffsetx>20</textoffsetx>
+		<font>Condensed-26</font>
+		<height>55</height>
+		<textcolor>FFCCCCCC</textcolor>
+		<shadowcolor>black</shadowcolor>
+		<texturenofocus>-</texturenofocus>
+		<animation effect="fade" start="100" end="100" time="0" condition="true">Conditional</animation>
+		<align>right</align>
+		<width>253</width>
+	</include>
+	<include name="leftMenuSpacing">
+		<height>45</height>
+	</include>
+	<include name="leftMenuFormat">
+		<width>230</width>
+		<height>26</height>
+		<align>right</align>
+		<textoffsety>5</textoffsety>
+		<textoffsetx>34</textoffsetx>
+		<font>Condensed-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>FFCCCCCC</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus>-</texturefocus>
+		<texturenofocus>-</texturenofocus>
+		<animation type="Conditional" condition="true">
+			<effect type="fade" start="0" end="100"/>
+		</animation>
+	</include>
+	<include name="leftMenuFormatPreplay">
+		<width>230</width>
+		<height>24</height>
+		<align>right</align>
+		<textoffsety>5</textoffsety>
+		<textoffsetx>0</textoffsetx>
+		<font>Condensed-26</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>FFCCCCCC</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus>-</texturefocus>
+		<texturenofocus>-</texturenofocus>
+		<animation type="Conditional" condition="true">
+			<effect type="fade" start="0" end="100"/>
+		</animation>
+	</include>
+	<include name="leftMenuFilterRadioButton">
+		<description>default radio button</description>
+		<textureradiofocus>left-menu-ticked-icon.png</textureradiofocus>
+		<textureradionofocus>-</textureradionofocus>
+		<align>right</align>
+		<aligny>center</aligny>
+		<pulseonselect>false</pulseonselect>
+		<radioheight>14</radioheight>
+		<radiowidth>20</radiowidth>
+	</include>
+	<include name="leftSubMenuRadioButton">
+		<width>258</width>
+		<height>26</height>
+		<align>left</align>
+		<aligny>center</aligny>
+		<textoffsetx>10</textoffsetx>
+		<font>Condensed-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>FFCCCCCC</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus border="5">black-bottom-grey.png</texturefocus>
+		<texturenofocus border="5">-</texturenofocus>
+		<radioposx>265</radioposx>
+		<radioheight>26</radioheight>
+	</include>
+	<include name="leftMenuSortingButton">
+		<description>sorting radio button</description>
+		<textureradiofocus>arrow-big-up-orange.png</textureradiofocus>
+		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>
+		<textureradioon>arrow-big-up-orange.png</textureradioon>
+		<align>right</align>
+		<aligny>center</aligny>
+		<pulseonselect>false</pulseonselect>
+		<radioheight>14</radioheight>
+		<radiowidth>16</radiowidth>
+	</include>
+	<!-- Library menu -->
+	<include name="LeftSideMenu">
+		<control type="group">
+			<visible>!Container.Content(secondary)</visible>
+			<include>leftMenuInitSlide</include>
+			<include>leftMenuSlide</include>
+			<include>leftMenuBg</include>
+			<control type="image">
+				<posy>75</posy>
+				<posx>-217</posx>
+				<width>184</width>
+				<height>32</height>
+				<aspectratio>keep</aspectratio>
+				<texture>left-menu-search-field-bg.png</texture>
+				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
+			</control>
+			<!-- filters & sorting menu -->
+			<control type="group" id="1300">
+				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
+				<posx>-253</posx>
+				<posy>30</posy>
+				<width>253</width>
+				<height>650</height>
+				<ondown>19000</ondown>
+				<orientation>vertical</orientation>
+				<scrolltime>150</scrolltime>
+				<!-- FILTERS -->
+				<!-- filters list title -->
+				<control type="label" id="19009">
+					<description>Title</description>
+					<posy>110</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+				</control>
+				<!-- filters list -->
+				<control type="grouplist" id="19000">
+					<posy>175</posy>
+					<posx>15</posx>
+					<ondown>19010</ondown>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+				<!-- filters buttons -->
+				<control type="button" id="19001">
+					<textoffsetx>35</textoffsetx>
+					<include>leftMenuFormat</include>
+				</control>
+				<control type="radiobutton" id="19002">
+					<textoffsetx>35</textoffsetx>
+					<include>leftMenuFormat</include>
+					<include>leftMenuFilterRadioButton</include>
+				</control>
+				<!-- SORTING -->
+				<!-- sorting list title -->
+				<control type="label" id="19019">
+					<description>Title</description>
+					<posy>420</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+				</control>
+				<!-- sorting list -->
+				<control type="grouplist" id="19010">
+					<posy>485</posy>
+					<posx>10</posx>
+					<onup>19000</onup>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+				<!-- sorting buttons -->
+				<control type="radiobutton" id="19011">
+					<textoffsetx>30</textoffsetx>
+					<include>leftMenuFormat</include>
+					<include>leftMenuSortingButton</include>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

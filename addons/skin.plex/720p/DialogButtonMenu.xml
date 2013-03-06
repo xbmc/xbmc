@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<window type="buttonMenu" id="111">
+	<defaultcontrol always="true">3112</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>FadeDialog</include>
+	<controls>
+		<control type="group">
+			<posx>116</posx>
+			<posy>263</posy>
+			<control type="image">
+				<description>Title image</description>
+				<width>1041</width>
+				<height>50</height>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="image">
+				<description>Background image</description>
+				<posy>60</posy>
+				<width>1048</width>
+				<height>194</height>
+				<texture>ButtonMenuBack.png</texture>
+			</control>
+			<control type="label" id="3100">
+				<description>Title text</description>
+				<posy>10</posy>
+				<width>1048</width>
+				<height>50</height>
+				<scroll>yes</scroll>
+				<visible>!Control.HasFocus(3120)</visible>
+			</control>
+			<control type="label">
+				<description>Title text</description>
+				<posy>10</posy>
+				<width>1048</width>
+				<label>$LOCALIZE[20144]</label>
+				<scroll>yes</scroll>
+				<visible>Control.HasFocus(3120)</visible>
+			</control>
+			<control type="group">
+				<animation effect="slide" time="0" end="-84,0" condition="!System.HasLocks">Conditional</animation>
+				<control type="group">
+					<animation effect="slide" time="0" end="84,0" condition="!System.HasLoginScreen">Conditional</animation>
+					<control type="image">
+						<description>Master Button Overlay</description>
+						<posx>34</posx>
+						<texture>ButtonMenuGlass.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3118)</visible>
+					</control>
+					<control type="togglebutton" id="3118">
+						<description>Master mode button</description>
+						<visible>System.LoggedOn + System.HasLocks</visible>
+						<posx>40</posx>
+						<label>20046</label>
+						<altlabel>20045</altlabel>
+						<texturefocus>ButtonMenuMasterFO.png</texturefocus>
+						<texturenofocus diffuse="GreyDark.png">ButtonMenuMasterFO.png</texturenofocus>
+						<usealttexture>!System.IsMaster</usealttexture>
+						<alttexturefocus>ButtonMenuNoMasterFO.png</alttexturefocus>
+						<alttexturenofocus diffuse="GreyDark.png">ButtonMenuNoMasterFO.png</alttexturenofocus>
+						<onclick>xbmc.mastermode</onclick>
+						<pulseonselect>no</pulseonselect>
+						<onleft>3115</onleft>
+						<onright>3113</onright>
+						<onup>3118</onup>
+						<ondown>3118</ondown>
+						<font>-</font>
+					</control>
+				</control>
+				<control type="group">
+					<animation effect="slide" time="0" end="84,0" condition="!System.HasLoginScreen">Conditional</animation>
+					<control type="image">
+						<description>System Info Button Overlay</description>
+						<posx>202</posx>
+						<include>ButtonMenuOverlayDims</include>
+						<texture>ButtonMenuGlass.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3113)</visible>
+					</control>
+					<control type="button" id="3113">
+						<description>System Info button</description>
+						<visible>System.LoggedOn</visible>
+						<posx>208</posx>
+						<onclick>XBMC.ActivateWindow(7)</onclick>
+						<onleft>3118</onleft>
+						<onright>3117</onright>
+						<onup>3113</onup>
+						<ondown>3113</ondown>
+						<font>-</font>
+						<label>130</label>
+					</control>
+				</control>
+				<control type="group">
+					<animation effect="slide" time="0" end="-84,0" condition="!System.HasLoginScreen">Conditional</animation>
+					<control type="image">
+						<description>Profile LoggOff Button Overlay</description>
+						<posx>370</posx>
+						<texture>ButtonMenuGlass.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3117)</visible>
+					</control>
+					<control type="button" id="3117">
+						<description>Profile LogOff</description>
+						<visible>System.LoggedOn + System.HasLoginScreen</visible>
+						<posx>376</posx>
+						<onclick>dialog.close(all,true)</onclick>
+						<onclick>system.logoff</onclick>
+						<onleft>3113</onleft>
+						<onright>3112</onright>
+						<onup>3117</onup>
+						<ondown>3117</ondown>
+						<font>-</font>
+						<label>$LOCALIZE[20126] $INFO[system.profilename]</label>
+					</control>
+					<control type="image">
+						<description>Shutdown Timer Arrow</description>
+						<texture>ArrowDownNF.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3112) | Control.HasFocus(3120)</visible>
+					</control>
+					<control type="image">
+						<description>Shutdown Button Overlay</description>
+						<posx>538</posx>
+						<texture>ButtonMenuGlass.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3112) | Control.HasFocus(3120)</visible>
+					</control>
+					<control type="button" id="3112">
+						<description>Shutdown button</description>
+						<visible>System.LoggedOn</visible>
+						<posx>544</posx>
+						<onclick>XBMC.ShutDown()</onclick>
+						<onleft>3117</onleft>
+						<onright>3110</onright>
+						<onup>3120</onup>
+						<ondown>3120</ondown>
+						<label>13005</label>
+						<visible>!Control.HasFocus(3120)</visible>
+					</control>
+					<control type="image">
+						<description>Restart XBMC Button Overlay</description>
+						<posx>874</posx>
+						<texture>ButtonMenuGlass.png</texture>
+						<visible>System.LoggedOn</visible>
+						<visible>Control.HasFocus(3115)</visible>
+					</control>
+					<control type="button" id="3115">
+						<description>Restart XBMC button</description>
+						<visible>System.LoggedOn</visible>
+						<posx>880</posx>
+						<onclick>XBMC.SleepSystem()</onclick>
+						<onleft>3110</onleft>
+						<onright>3118</onright>
+						<onup>3115</onup>
+						<ondown>3115</ondown>
+						<label>$LOCALIZE[13450]</label>
+					</control>
+					<control type="wraplist" id="3120">
+						<description>Shutdown Timer Menu</description>
+						<posx>544</posx>
+						<posy>96</posy>
+						<width>130</width>
+						<height>130</height>
+						<onup>3120</onup>
+						<ondown>3120</ondown>
+						<onleft>3112</onleft>
+						<onright>3112</onright>
+						<orientation>vertical</orientation>
+						<scrolltime>200</scrolltime>
+						<itemgap>0</itemgap>
+						<visible allowhiddenfocus="true">Control.HasFocus(3120)</visible>
+						<animation effect="fade" start="0" end="100" time="300">focus</animation>
+						<itemlayout height="128" width="ButtonMenuButtonWidth">
+							<control type="label">
+								<posx>64</posx>
+								<posy>0</posy>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>-</label>
+								<info>listitem.label</info>
+								<scroll>false</scroll>
+							</control>
+						</itemlayout>
+						<focusedlayout height="128" width="ButtonMenuButtonWidth">
+							<control type="label">
+								<posx>64</posx>
+								<posy>0</posy>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>-</label>
+								<info>listitem.label</info>
+								<scroll>false</scroll>
+							</control>
+						</focusedlayout>
+						<content>
+							<item id="1">
+								<description>30 minutes</description>
+								<label>$INFO[,30]</label>
+								<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown(),30)</onclick>
+							</item>
+							<item id="2">
+								<description>60 minutes</description>
+								<label>$INFO[,60]</label>
+								<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown(),60)</onclick>
+							</item>
+							<item id="3">
+								<description>120 minutes</description>
+								<label>$INFO[,120]</label>
+								<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.ShutDown(),120)</onclick>
+							</item>
+							<item id="4">
+								<description>Cancel Timer</description>
+								<label>CL</label>
+								<onclick>XBMC.CancelAlarm(shutdowntimer)</onclick>
+							</item>
+						</content>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

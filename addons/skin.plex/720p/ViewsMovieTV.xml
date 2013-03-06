@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="MovieTVPoster">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>221</width>
+			<height>299</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>195</width>
+			<height>273</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MovieTVPosterSelectedBorder">
+		<control type="image">
+			<width>201</width>
+			<height>279</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MovieTVTitle">
+		<posy>288</posy>
+		<posx>105</posx>
+		<width>190</width>
+		<height>30</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVUnwatchedOverlay">
+		<control type="image">
+			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<posx>182</posx>
+			<posy>260</posy>
+			<info>ListItem.Overlay</info>
+		</control>
+	</include>
+	<!-- Library -->
+	<include name="LibraryPosters">
+		<!-- Library Movies & TV Shows -->
+		<control type="group" id="777">
+			<include>FadeDialog</include>
+			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+			<include>rightSideSlide</include>
+			<control type="panel" id="50">
+				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<viewtype label="LibraryPosters">panel</viewtype>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onright>50</onright>
+				<onleft>1300</onleft>
+				<orientation>vertical</orientation>
+				<posx>102</posx>
+				<posy>64</posy>
+				<width>1150</width>
+				<height>635</height>
+				<itemlayout width="223" height="315">
+					<include>MovieTVPoster</include>
+					<control type="label">
+						<include>MovieTVTitle</include>
+					</control>
+					<include>MovieTVUnwatchedOverlay</include>
+				</itemlayout>
+				<focusedlayout width="223" height="315">
+					<!--<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>317</height>
+						<include>BlackRounded</include>
+						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					</control>-->
+					<include>MovieTVPoster</include>
+					<control type="label">
+						<include>MovieTVTitle</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>MovieTVPosterSelectedBorder</include>
+					<include>MovieTVUnwatchedOverlay</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

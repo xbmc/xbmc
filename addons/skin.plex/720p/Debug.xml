@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="debugFont">
+		<width>570</width>
+		<height>20</height>
+		<font>Condensed-14</font>
+		<textcolor>white</textcolor>
+		<align>left</align>
+		<scroll>true</scroll>
+	</include>
+	<variable name="ContainerContent">
+		<value condition="Container.Content(files)">files</value>
+		<value condition="Container.Content(songs)">songs</value>
+		<value condition="Container.Content(artists)">artists</value>
+		<value condition="Container.Content(albums)">albums</value>
+		<value condition="Container.Content(movies)">movies</value>
+		<value condition="Container.Content(tvshows)">tvshows</value>
+		<value condition="Container.Content(seasons)">seasons</value>
+		<value condition="Container.Content(episodes)">episodes</value>
+		<value condition="Container.Content(musicvideos)">musicvideos</value>
+		<value condition="Container.Content(genres)">genres</value>
+		<value condition="Container.Content(years)">years</value>
+		<value condition="Container.Content(actors)">actors</value>
+		<value condition="Container.Content(playlists)">playlists</value>
+		<value condition="Container.Content(plugins)">plugins</value>
+		<value condition="Container.Content(studios)">studios</value>
+		<value condition="Container.Content(directors)">directors</value>
+		<value condition="Container.Content(plugincontent)">plugincontent</value>
+		<value condition="Container.Content(addons)">addons</value>
+		<value condition="Container.Content(secondary)">secondary</value>
+		<value></value>
+	</variable>
+	<include name="debugInfos">
+		<control type="group">
+			<visible>Skin.HasSetting(showdebug)</visible>
+			<control type="group">
+				<animation effect="fade" start="0" end="85" condition="true">Conditional</animation>
+				<control type="image">
+					<include>FullScreenScaled</include>
+					<texture>black.png</texture>
+				</control>
+				<control type="image">
+					<include>FullScreenScaled</include>
+					<texture>bg-overlay-grainy.png</texture>
+				</control>
+			</control>
+			<!-- left list -->
+			<control type="grouplist">
+				<posx>50</posx>
+				<posy>160</posy>
+				<width>590</width>
+				<height>600</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.CurrentWindow : [COLOR=orangeLight]$INFO[System.CurrentWindow][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Window.Property(xmlfile) : [COLOR=orangeLight]$INFO[Window.Property(xmlfile)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Viewmode : [COLOR=orangeLight]$INFO[Container.Viewmode][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Content : [COLOR=orangeLight]$VAR[ContainerContent][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.FolderName : [COLOR=orangeLight]$INFO[Container.FolderName][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.FolderPath : [COLOR=orangeLight]$INFO[Container.FolderPath][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.FirstTitle : [COLOR=orangeLight]$INFO[Container.FirstTitle][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.SecondTitle : [COLOR=orangeLight]$INFO[Container.SecondTitle][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.CurrentControl : [COLOR=orangeLight]$INFO[System.CurrentControl][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.Screenresolution : [COLOR=orangeLight]$INFO[System.Screenresolution][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.FreeMemory : [COLOR=orangeLight]$INFO[System.FreeMemory][/COLOR]</label>
+				</control>
+			</control>
+			<!-- right list -->
+			<control type="grouplist">
+				<posx>640</posx>
+				<posy>160</posy>
+				<width>570</width>
+				<height>600</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.FolderName : [COLOR=orangeLight]$INFO[ListItem.FolderName][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.MPAA : [COLOR=orangeLight]$INFO[Listitem.MPAA][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-contentRating) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-contentRating)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-videoResolution) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoResolution)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-aspectRatio) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-aspectRatio)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-videoFrameRate) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoFrameRate)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-videoCodec) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-videoCodec)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-audioCodec) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-audioCodec)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-audioChannels) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-audioChannels)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Listitem.Art(mediaTag-Studio) : [COLOR=orangeLight]$INFO[Listitem.Art(mediaTag-Studio)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.PluginName : [COLOR=orangeLight]$INFO[Container.PluginName][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(addoncategory) : [COLOR=orangeLight]$INFO[Container.Property(addoncategory)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(reponame) : [COLOR=orangeLight]$INFO[Container.Property(reponame)][/COLOR]</label>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

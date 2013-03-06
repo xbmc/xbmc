@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<includes>
+	<include file="Defaults.xml"/>
+	<include file="Backgrounds.xml"/>
+	<include file="LeftSideMenu.xml"/>
+	<include file="Views.xml"/>
+	<include file="ViewsChannels.xml"/>
+	<include file="ViewsMusic.xml"/>
+	<include file="ViewsPhoto.xml"/>
+	<include file="ViewsMovieTV.xml"/>
+	<include file="ViewsClip.xml"/>
+	<include file="ViewsSharedContent.xml"/>
+	<include file="ViewsPreplay.xml"/>
+	<include file="ViewNowPlaying.xml"/>
+	<include file="ViewsSettings.xml"/>
+	<include file="HomeLists.xml"/>
+	<include file="HomeMenu.xml"/>
+	<include file="IncludesGlobals.xml"/>
+	<include file="ViewsOSD.xml"/>
+	<include file="ViewsSearch.xml"/>
+	<include file="ViewsDialogs.xml"/>
+	<include file="Debug.xml"/>
+</includes>

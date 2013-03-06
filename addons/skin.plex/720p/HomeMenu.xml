@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="MenuSeparatorVertical">
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>391</width>
+				<height>720</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+			<control type="image">
+				<posx>377</posx>
+				<posy>440</posy>
+				<width>14</width>
+				<height>30</height>
+				<texture flipx="true">arrow-big.png</texture>
+				<colordiffuse>orange</colordiffuse>
+				<aspectratio>keep</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+			<control type="image">
+				<posx>372</posx>
+				<posy>0</posy>
+				<width>19</width>
+				<height>731</height>
+				<texture>separator.png</texture>
+				<aspectratio>stretch</aspectratio>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+		</control>
+	</include>
+	<include name="MenuFocusedLabel">
+			<control type="group">
+				<posx>363</posx>
+				<posy>450</posy>
+				<include>ShowHomeClassic</include>
+				<control type="label">
+					<width>600</width>
+					<height>0</height>
+					<label>$INFO[Container(300).ListItem(0).Label]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>CondensedBold-36</font>
+					<textcolor>orange</textcolor>
+					<shadowcolor>FF222222</shadowcolor>
+				</control>
+				<!-- with Label2 -->
+				<control type="label">
+					<posy>22</posy>
+					<width>600</width>
+					<height>20</height>
+					<label>$INFO[Container(300).ListItem(0).Label2]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>CondensedBold-16</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>FF222222</shadowcolor>
+					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
+					<animation effect="fade" end="100" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+	</include>
+	<include name="HomeMenu">
+		<!-- Main Menu -->
+		<control type="group">
+			<include>FadeDialog</include>
+			<include>MenuSeparatorVertical</include>
+			<include>MenuFocusedLabel</include>
+			<!-- list -->
+			<control type="wraplist" id="300">
+				<description>Home Main Menu</description>
+				<posx>0</posx>
+				<posy>97</posy>
+				<width>829</width>
+				<height>570</height>
+				<onup>300</onup>
+				<ondown>300</ondown>
+				<onleft>-</onleft>
+				<onright>5000</onright>
+				<focusposition>6</focusposition>
+				<scrolltime>200</scrolltime>
+				<visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
+				<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+				<animation effect="fade" start="0" end="100" time="500">WindowOpen</animation>
+				<itemlayout width="600" height="50">
+					<control type="label">
+						<posx>372</posx>
+						<posy>20</posy>
+						<width>600</width>
+						<height>0</height>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>Condensed-28</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF333333</shadowcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="600" height="120">
+					<control type="label">
+						<posx>363</posx>
+						<posy>53</posy>
+						<width>600</width>
+						<height>0</height>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posx>363</posx>
+						<posy>75</posy>
+						<width>250</width>
+						<height>20</height>
+						<label>$INFO[ListItem.Label2]</label>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-16</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+						<visible>!IsEmpty(ListItem.Label2)</visible>
+					</control>
+				</focusedlayout>
+				<!-- additional menu items -->
+				<content>
+					<!--><item id="5">
+						<description>DEV</description>
+						<label>DEV: osd</label>
+						<visible>true</visible>
+						<onclick>XBMC.ActivateWindow(41)</onclick>
+					</item>-->
+					<item id="10">
+						<description>DVD Button</description>
+						<label>DVD</label>
+						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
+						<onclick>XBMC.PlayDVD</onclick>
+					</item>
+					<item id="4">
+						<description>Applications</description>
+						<label>$LOCALIZE[31004]</label>
+						<visible>!Skin.HasSetting(HidePrograms)</visible>
+						<onclick>XBMC.ActivateWindow(1)</onclick>
+					</item>
+					<item id="12">
+						<description>Channel Directory</description>
+						<label> $LOCALIZE[31952]</label>
+						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/plexonline,return)</onclick>
+						<visible>!Skin.HasSetting(HideAppStore)</visible>
+						<textcolor>50FFFFFF</textcolor>
+					</item>
+					<item id="6">
+						<description>Preferences</description>
+						<label>$LOCALIZE[31955]</label>
+						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
+					</item>
+					<item id="7">
+						<description>Search</description>
+						<label>$LOCALIZE[137]</label>
+						<onclick>Plex.ActivateWindow(10051)</onclick>
+					</item>
+					<item id="111">
+						<description>Quit</description>
+						<label>$LOCALIZE[31007]</label>
+						<onclick>Plex.Quit</onclick>
+						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<item id="112">
+						<description>Sleep</description>
+						<label>$LOCALIZE[31960]</label>
+						<onclick>Plex.Suspend</onclick>
+						<visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<item id="113">
+						<description>Shut Down</description>
+						<label>$LOCALIZE[31961]</label>
+						<onclick>Plex.Powerdown</onclick>
+						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<!--
+					<item id="13">
+						<description>Help</description>
+						<label>$LOCALIZE[31954]</label>
+						<visible>!Skin.HasSetting(HideHelp)</visible>
+						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
+					</item>
+					-->
+					<item id="2">
+						<description>Music Plug-ins</description>
+						<label>$LOCALIZE[31972]</label>
+						<visible>[!Skin.HasSetting(HideMusic)]</visible>
+						<onclick>XBMC.ActivateWindow(5)</onclick>
+					</item>
+					<item id="1">
+						<description>Video Plug-ins</description>
+						<label>$LOCALIZE[31971]</label>
+						<visible>[!Skin.HasSetting(HideVideos)]</visible>
+						<onclick>XBMC.ActivateWindow(24)</onclick>
+					</item>
+					<item id="3">
+						<description>Picture Plug-ins</description>
+						<label>$LOCALIZE[31973]</label>
+						<visible>[!Skin.HasSetting(HidePictures)]</visible>
+						<onclick>XBMC.ActivateWindow(2)</onclick>
+					</item>
+					<!--<item id="114">
+						<label>Perplexe</label>
+						<onclick>XBMC.ActivateWindow(busydialog)</onclick>
+					</item>-->
+				</content>
+			</control>
+		</control>
+	</include>
+</includes>

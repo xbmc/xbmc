@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<window id="122">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group">
+			<posx>720</posx>
+			<posy>0</posy>
+			<include>VideoOSDSlideLeft</include>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>-38</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>720</height>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<control type="group">
+				<posx>-10</posx>
+				<posy>0</posy>
+				<control type="label">
+					<description>Current label</description>
+					<posy>14</posy>
+					<width>VisPresetTextWidth</width>
+					<aligny>bottom</aligny>
+					<label>$LOCALIZE[31607]</label>
+					<font>MediumDefaultCapsFont</font>
+				</control>
+				<control type="label">
+					<description>Visualisation label</description>
+					<posy>38</posy>
+					<width>VisPresetTextWidth</width>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[250]</label>
+					<font>TitleCapsFont</font>
+				</control>
+				<control type="label">
+					<description>heading label</description>
+					<posx>20</posx>
+					<posy>90</posy>
+					<width>VisPresetTextWidth</width>
+					<label>$INFO[Visualisation.Name]</label>
+					<font>MediumDefaultCapsFont</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				<control type="label" id="4">
+					<description>No presets label</description>
+					<posx>20</posx>
+					<posy>140</posy>
+					<width>VisPresetTextWidth</width>
+					<label>13389</label>
+					<align>center</align>
+				</control>
+				<control type="label">
+					<description>Change label</description>
+					<posy>134</posy>
+					<width>VisPresetTextWidth</width>
+					<aligny>bottom</aligny>
+					<label>$LOCALIZE[31226]</label>
+					<font>MediumDefaultCapsFont</font>
+					<visible>!Control.IsVisible(4)</visible>
+				</control>
+				<control type="label">
+					<description>Presets label</description>
+					<posy>158</posy>
+					<width>VisPresetTextWidth</width>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[31227]</label>
+					<font>TitleCapsFont</font>
+					<visible>!Control.IsVisible(4)</visible>
+				</control>
+				<control type="group">
+					<posy>220</posy>
+					<visible>!Control.IsVisible(4)</visible>
+					<control type="list" id="2">
+						<posx>-12</posx>
+						<width>570</width>
+						<height>470</height>
+						<onleft>-</onleft>
+						<onright>60</onright>
+						<onup>2</onup>
+						<ondown>2</ondown>
+						<pagecontrol>60</pagecontrol>
+						<itemlayout width="320" height="42">
+							<control type="image">
+								<posx>-66</posx>
+								<posy>-6</posy>
+								<width>679</width>
+								<height>54</height>
+								<texture>MediaItemBG.png</texture>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>VisPresetTextWidth</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<textcolor>Unfocused</textcolor>
+							</control>
+						</itemlayout>
+						<focusedlayout width="320" height="42">
+							<control type="image">
+								<posx>-66</posx>
+								<posy>-6</posy>
+								<width>679</width>
+								<height>54</height>
+								<texture>MediaItemBG.png</texture>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>VisPresetTextWidth</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<textcolor>Unfocused</textcolor>
+							</control>
+							<control type="image">
+								<posx>-44</posx>
+								<posy>0</posy>
+								<width>595</width>
+								<height>42</height>
+								<texture aspectratio="stretch">MenuItemFO.png</texture>
+								<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container(450).OnNext">focus</animation>
+								<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container(450).OnPrevious">focus</animation>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>VisPresetTextWidth</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnNext">Focus</animation>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnPrevious">Focus</animation>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="60">
+						<posx>534</posx>
+						<posy>0</posy>
+						<width>24</width>
+						<height>475</height>
+						<onleft>2</onleft>
+						<onright>2</onright>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

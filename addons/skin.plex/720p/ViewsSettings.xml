@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- bg's -->
+	<include name="SettingsBG">
+		<control type="group">
+			<include>FadeDialog</include>
+			<posy>190</posy>
+			<posx>100</posx>
+			<!-- left side -->
+			<control type="group">
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>342</width>
+					<height>402</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="40" time="300">WindowOpen</animation>
+					<animation effect="fade" start="40" end="0" time="0">WindowClose</animation>
+				</control>
+				<control type="image">
+					<width>340</width>
+					<height>400</height>
+					<texture border="10">base-rounded.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- arrow up -->
+				<control type="image">
+					<posx>156</posx>
+					<posy>-14</posy>
+					<include>ArrowBlackUp</include>
+				</control>
+			</control>
+			<!-- right side -->
+			<control type="group">
+				<posx>380</posx>
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>677</width>
+					<height>452</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="40" time="300">WindowOpen</animation>
+					<animation effect="fade" start="40" end="0" time="0">WindowClose</animation>
+				</control>
+				<control type="image">
+					<width>675</width>
+					<height>450</height>
+					<texture border="10">base-rounded.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- arrow left -->
+				<control type="image">
+					<posx>-14</posx>
+					<posy>35</posy>
+					<include>ArrowBlackLeft</include>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="MenuItemNFTextureNF">
+		<texturenofocus aspectratio="stretch">MenuItemNF.png</texturenofocus>
+	</include>
+	<!-- variables for page titles -->
+	<variable name="SettingsPageTitles">
+		<value condition="Window.IsActive(appearancesettings)">$LOCALIZE[480]</value>
+		<value condition="Window.IsActive(videossettings)">$LOCALIZE[31001]</value>
+		<value condition="Window.IsActive(musicsettings)">$LOCALIZE[2]</value>
+		<value condition="Window.IsActive(picturessettings)">$LOCALIZE[1]</value>
+		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[13000]</value>
+		<value condition="Window.IsActive(skinsettings)">Skin</value>
+	</variable>
+	<!-- categories menu (top) -->
+	<include name="SettingsCategoryMenu">
+		<control type="group">
+			<animation type="WindowOpen">
+				<effect type="fade" time="200"/>
+			</animation>
+			<animation type="WindowClose" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">
+				<effect type="fade" time="100"/>
+			</animation>
+			<animation effect="fade" time="300" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">WindowClose</animation>
+			<!-- left/right arrows -->
+			<control type="group">
+				<control type="group">
+					<posx>120</posx>
+					<posy>118</posy>
+					<control type="image">
+						<texture flipx="true">arrow-big.png</texture>
+					</control>
+					<control type="image">
+						<posx>25</posx>
+						<texture>arrow-big.png</texture>
+					</control>
+				</control>
+			</control>
+			<!-- page title while not focused -->
+			<control type="label">
+				<posy>130</posy>
+				<posx>198</posx>
+				<width>1400</width>
+				<height>0</height>
+				<label>$LOCALIZE[31606] $VAR[SettingsPageTitles]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>CondensedBold-36</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>ff111111</shadowcolor>
+				<visible>!Control.HasFocus(1000)</visible>
+			</control>
+			<control type="wraplist" id="1000">
+				<posx>-1210</posx>
+				<posy>100</posy>
+				<width>3000</width>
+				<height>100</height>
+				<onup>-</onup>
+				<ondown>302</ondown>
+				<onleft>1000</onleft>
+				<onright>1000</onright>
+				<focusposition>1</focusposition>
+				<scrolltime>0</scrolltime>
+				<orientation>horizontal</orientation>
+				<visible allowhiddenfocus="true">Control.HasFocus(1000)</visible>
+				<itemlayout width="1400" height="140">
+					<control type="label">
+						<posy>30</posy>
+						<posx>8</posx>
+						<width>1400</width>
+						<height>0</height>
+						<label>$LOCALIZE[31606] $INFO[ListItem.Label]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff111111</shadowcolor>
+						<animation effect="fade" time="300" start="0" end="100">Focus</animation>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1400" height="140">
+					<control type="label">
+						<posy>30</posy>
+						<posx>8</posx>
+						<width>1400</width>
+						<height>0</height>
+						<label>$LOCALIZE[31606] $INFO[ListItem.Label]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>orange</textcolor>
+					</control>
+				</focusedlayout>
+				<content>
+				<item id="1">
+					<description>Video Settings Button</description>
+					<label>$LOCALIZE[31001]</label>
+					<onclick>XBMC.ReplaceWindow(17)</onclick>
+				</item>
+					<item id="7">
+						<description>Appearance Settings Button</description>
+						<label>$LOCALIZE[31601]</label>
+						<onclick>XBMC.ReplaceWindow(19)</onclick>
+					</item>
+					<!--><item id="8">
+						<description>Skin Settings Button</description>
+						<label> $LOCALIZE[31603] </label>
+						<onclick>XBMC.ReplaceWindow(1001)</onclick>
+					</item>-->
+					<item id="2">
+						<description>Music Settings Button</description>
+						<label>$LOCALIZE[31002]</label>
+						<onclick>XBMC.ReplaceWindow(15)</onclick>
+					</item>
+					<item id="3">
+						<description>Pictures Settings Button</description>
+						<label>$LOCALIZE[31003]</label>
+						<onclick>XBMC.ReplaceWindow(12)</onclick>
+					</item>
+					<item id="8">
+						<description>System Settings Button</description>
+						<label>$LOCALIZE[31006]</label>
+						<onclick>XBMC.ReplaceWindow(16)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</include>
+	<!-- settings menu (left) -->
+	<include name="SettingsMenu">
+		<control type="group" id="302">
+			<include>FadeDialog</include>
+			<control type="grouplist" id="3">
+				<posy>215</posy>
+				<posx>120</posx>
+				<width>350</width>
+				<onleft>1000</onleft>
+				<onright>301</onright>
+				<onup>1000</onup>
+				<ondown>3</ondown>
+				<itemgap>0</itemgap>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="button" id="10">
+				<width>300</width>
+				<font>CondensedBold-18</font>
+				<textoffsetx>20</textoffsetx>
+				<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
+			</control>
+		</control>
+	</include>
+	<!-- setting options (right) -->
+	<include name="SettingOptions">
+		<control type="group" id="301">
+			<include>FadeDialog</include>
+			<posx>400</posx>
+			<posy>150</posy>
+			<width>750</width>
+			<animation type="WindowOpen">
+				<effect type="fade" time="200"/>
+			</animation>
+			<animation type="WindowClose" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">
+				<effect type="fade" time="100"/>
+			</animation>
+			<animation effect="fade" time="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">WindowClose</animation>
+			<!--><control type="label" id="2">
+				<posx>645</posx>
+				<posy>-20</posy>
+				<width>700</width>
+				<scroll>true</scroll>
+				<align>right</align>
+				<font>XXXLargeTitleCapsFont</font>
+				<visible>!Control.HasFocus(1000)</visible>
+			</control>-->
+			<control type="grouplist" id="5">
+				<posx>105</posx>
+				<posy>65</posy>
+				<width>625</width>
+				<height>400</height>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<onleft>302</onleft>
+				<onright>-</onright>
+				<itemgap>0</itemgap>
+				<pagecontrol>61</pagecontrol>
+			</control>
+			<control type="button" id="7">
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="8">
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="spincontrolex" id="9">
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="scrollbar" id="61">
+				<posy>60</posy>
+				<posx>732</posx>
+				<height>410</height>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+		</control>
+	</include>
+</includes>

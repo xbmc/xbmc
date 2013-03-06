@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<window id="6">
+	<defaultcontrol>777</defaultcontrol>
+	<views>40,50,60,61,70,71</views>
+	<allowoverlay>yes</allowoverlay>
+	<onunload>SetFocus(777)</onunload>
+	<controls>
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- views (ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml) -->
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- LibraryPosters ID 50 -->
+		<include>LibraryPosters</include>
+		<include>PreplayMovie</include>
+		<!-- PreplayShow ID 60 -->
+		<include>PreplayShow</include>
+		<!-- PreplaySeason ID 61 -->
+		<include>PreplaySeason</include>
+		<include>PreplayEpisode</include>
+		<!-- Channels ID 70 -->
+		<include>Channels</include>
+		<!-- ChannelVideo ID 71 -->
+		<include>ChannelVideo</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenu</include>
+		<include>TopBar</include>
+		<!--><include>CommonSortLetters</include>-->
+		<include>debugInfos</include>
+	</controls>
+</window>

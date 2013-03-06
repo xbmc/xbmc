@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<window id="0">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>BGGrainy</include>
+		<include>SlideshowHome</include>
+		<include>HomeMenu</include>
+		<include>HomeLists</include>
+		<include>Clock</include>
+		<!-- server title -->
+		<control type="label">
+			<posx>20r</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>49</height>
+			<align>right</align>
+			<label>$INFO[System.SelectedPlexMediaServer]</label>
+			<font>CondensedBold-16</font>
+			<scroll>false</scroll>
+			<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
+			<textcolor>50FFFFFF</textcolor>
+			<wrapmultiline>false</wrapmultiline>
+		</control>
+		<include>debugInfos</include>
+	</controls>
+</window>

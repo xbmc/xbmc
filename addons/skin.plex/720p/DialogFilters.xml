@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<window id="10202" type="dialog">
+	<defaultcontrol always="true">19020</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogFilters</include>
+	</controls>
+</window>
