@@ -425,7 +425,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // set the interrupt callback, appeared in libavformat 53.15.0
   m_pFormatContext->interrupt_callback = int_cb;
-
+  
+  // Analyze m_maxAnalyzeDuration microseconds of the stream. Default (as in ffmpeg): 5000000 usecs
+  m_pFormatContext->max_analyze_duration = g_advancedSettings.m_ffmpegMaxAnalyzeDuration;
+  
+  // For formats without headers, analyze m_probeSize bytes of the stream to get info about it. Default 5MB.
+  m_pFormatContext->probesize = g_advancedSettings.m_ffmpegProbeSize;
+  
+  
   // analyse very short to speed up mjpeg playback start
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
     m_pFormatContext->max_analyze_duration = 500000;
