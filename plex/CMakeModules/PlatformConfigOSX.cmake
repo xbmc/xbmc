@@ -1,7 +1,38 @@
 # vim: setlocal syntax=cmake:
 
-set(dependdir ${root}/plex/Dependencies/laika-depends)
-set(ffmpegdir ${root}/plex/Dependencies/ffmpeg-depends)
+if(NOT DEFINED OSX_ARCH)
+  set(OSX_ARCH i386)
+endif()
+
+if(NOT OSX_ARCH STREQUAL "i386" AND NOT OSX_ARCH STREQUAL "x86_64")
+  message(FATAL_ERROR "Architecture ${OSX_ARCH} is not supported")
+endif()
+
+find_package(OSXSDK)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch ${OSX_ARCH}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ${OSX_ARCH}")
+
+# we will test that our compiler handles the arch
+if(NOT CMAKE_C_FLAGS STREQUAL BASIC_COMPILE_TEST_FLAGS)
+  unset(BASIC_COMPILE_TEST CACHE)
+  unset(BASIC_COMPILE_TEST_FLAGS CACHE)
+endif()
+
+include(CheckCSourceCompiles)
+CHECK_C_SOURCE_COMPILES("
+  int main(int argc, char *argv[])
+  { 
+    return 0;
+  }
+" BASIC_COMPILE_TEST)
+
+if(NOT BASIC_COMPILE_TEST)
+  message(FATAL_ERROR "Compiler failed even the most basic compile test...")
+else()
+  set(BASIC_COMPILE_TEST_FLAGS ${CMAKE_C_FLAGS} CACHE STRING "CFLAGS for tests")
+endif()
+
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
@@ -18,10 +49,10 @@ endif()
 
 ######################### Compiler CFLAGS
 if(NOT DEFINED OSX_SDK)
-   set(OSX_SDK /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk)
+   set(OSX_SDK ${OSX_SDK_PATH})
 endif()
 
-set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot ${OSX_SDK}")
+set(EXTRA_CFLAGS "-mmacosx-version-min=10.6 -isysroot ${OSX_SDK}")
 
 ######################### CHECK LIBRARIES / FRAMEWORKS
 #### Frameworks for MacOSX
@@ -36,7 +67,6 @@ set(osx_frameworks
   AppKit
   ApplicationServices
   IOKit
-  QuickTime
   Carbon
   DiskArbitration
   QuartzCore
@@ -142,7 +172,7 @@ set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOSX")
 set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources/XBMC")
 set(FFMPEG_INCLUDE_DIRS ${ffmpegdir}/include)
 
-set(PLEX_LINK_WRAPPED "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+set(PLEX_LINK_WRAPPED "-arch ${OSX_ARCH} -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
 
 set(HAVE_LIBVDADECODER 1)
 set(AC_APPLE_UNIVERSAL_BUILD 0)
