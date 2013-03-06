@@ -49,7 +49,7 @@ public:
   /*
     Return true if the supplied format and device are compatible with the current open sink
   */
-  virtual bool IsCompatible(const AEAudioFormat format, const std::string device) = 0;
+  virtual bool IsCompatible(const AEAudioFormat format, const std::string &device) = 0;
 
   /*
     This method returns the time in seconds that it will take
