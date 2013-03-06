@@ -69,7 +69,6 @@ public:
   static bool IsInAPK(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
   static bool IsISO9660(const CStdString& strFile);
-  static bool IsLastFM(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
   static bool IsPVRRecording(const CStdString& strFile);
   static bool IsMultiPath(const CStdString& strPath);

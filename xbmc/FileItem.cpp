@@ -842,7 +842,6 @@ bool CFileItem::IsAudio() const
   if (HasVideoInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
-  if (!m_bIsFolder && IsLastFM()) return true;
 
   CStdString extension;
   if( m_mimetype.Left(12).Equals("application/") )
@@ -866,7 +865,7 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsKaraoke() const
 {
-  if ( !IsAudio() || IsLastFM())
+  if ( !IsAudio())
     return false;
 
   return CKaraokeLyricsFactory::HasLyrics( m_strPath );
@@ -892,11 +891,6 @@ bool CFileItem::IsLyrics() const
 bool CFileItem::IsCUESheet() const
 {
   return URIUtils::GetExtension(m_strPath).Equals(".cue", false);
-}
-
-bool CFileItem::IsLastFM() const
-{
-  return URIUtils::IsLastFM(m_strPath);
 }
 
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const

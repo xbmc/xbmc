@@ -170,7 +170,6 @@ public:
   CViewState m_viewStateMusicNavArtists;
   CViewState m_viewStateMusicNavAlbums;
   CViewState m_viewStateMusicNavSongs;
-  CViewState m_viewStateMusicLastFM;
   CViewState m_viewStateVideoNavActors;
   CViewState m_viewStateVideoNavYears;
   CViewState m_viewStateVideoNavGenres;

@@ -552,8 +552,6 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);
-    if (share.strPath.Find("lastfm://") == 0)//lastfm share
-      m_sources.push_back(share);
   }
 }
 
@@ -707,30 +705,3 @@ VECSOURCES& CGUIViewStateWindowMusicPlaylist::GetSources()
   // CGUIViewState::GetSources would add music plugins
   return m_sources;
 }
-
-CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
-{
-  CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
-  CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
-
-  AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
-  AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
-  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
-
-  SetSortMethod(g_settings.m_viewStateMusicLastFM.m_sortMethod);
-  SetSortOrder(g_settings.m_viewStateMusicLastFM.m_sortOrder);
-
-  SetViewAsControl(DEFAULT_VIEW_LIST);
-  LoadViewState(items.GetPath(), WINDOW_MUSIC_FILES);
-}
-
-bool CGUIViewStateMusicLastFM::AutoPlayNextItem()
-{
-  return false;
-}
-
-void CGUIViewStateMusicLastFM::SaveViewState()
-{
-  SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_FILES, &g_settings.m_viewStateMusicLastFM);
-}
-

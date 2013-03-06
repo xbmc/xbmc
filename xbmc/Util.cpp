@@ -146,15 +146,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
       return items.m_strTitle;
   }
 
-  // LastFM
-  if (url.GetProtocol() == "lastfm")
-  {
-    if (strFilename.IsEmpty())
-      strFilename = g_localizeStrings.Get(15200);
-    else
-      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename;
-  }
-
   // Shoutcast
   else if (url.GetProtocol() == "shout")
   {
@@ -1179,8 +1170,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
-  if (checkURL.GetProtocol() == "lastfm")
-    return 1;
   if (checkURL.GetProtocol() == "tuxbox")
     return 1;
   if (checkURL.GetProtocol() == "plugin")

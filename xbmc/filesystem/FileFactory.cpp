@@ -30,7 +30,6 @@
 #include "HTTPFile.h"
 #include "DAVFile.h"
 #include "ShoutcastFile.h"
-#include "LastFMFile.h"
 #include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -156,7 +155,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPFile();
 #endif
     else if (strProtocol == "shout") return new CShoutcastFile();
-    else if (strProtocol == "lastfm") return new CLastFMFile();
     else if (strProtocol == "tuxbox") return new CTuxBoxFile();
     else if (strProtocol == "hdhomerun") return new CHomeRunFile();
     else if (strProtocol == "sling") return new CSlingboxFile();

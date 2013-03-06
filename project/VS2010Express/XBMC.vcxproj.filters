@@ -142,9 +142,6 @@
     <Filter Include="music\windows">
       <UniqueIdentifier>{6589445b-fe8f-4083-ba15-3d0d45b8cd2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="network\libscrobbler">
-      <UniqueIdentifier>{cbd5c896-0dfc-4b84-9ef0-cdf7a49dc29a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="network\windows">
       <UniqueIdentifier>{3d43220c-4ea4-4da7-8ede-ef159da2cd25}</UniqueIdentifier>
     </Filter>
@@ -888,9 +885,6 @@
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\LastFmManager.cpp">
-      <Filter>music</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp">
       <Filter>music</Filter>
     </ClCompile>
@@ -1359,15 +1353,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\Zeroconf.cpp">
       <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.cpp">
-      <Filter>network\libscrobbler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.cpp">
-      <Filter>network\libscrobbler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\libscrobbler\scrobbler.cpp">
-      <Filter>network\libscrobbler</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\windows\NetworkWin32.cpp">
       <Filter>network\windows</Filter>
@@ -2156,12 +2141,6 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ISOFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\LastFMDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\LastFMFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\LibraryDirectory.cpp">
@@ -3728,9 +3707,6 @@
     <ClInclude Include="..\..\xbmc\music\GUIViewStateMusic.h">
       <Filter>music</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\LastFmManager.h">
-      <Filter>music</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\MusicInfoLoader.h">
       <Filter>music</Filter>
     </ClInclude>
@@ -4263,18 +4239,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\Zeroconf.h">
       <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\errors.h">
-      <Filter>network\libscrobbler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.h">
-      <Filter>network\libscrobbler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.h">
-      <Filter>network\libscrobbler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\libscrobbler\scrobbler.h">
-      <Filter>network\libscrobbler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h">
       <Filter>network\windows</Filter>
@@ -5091,12 +5055,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ISOFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\LastFMDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\LastFMFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\LibraryDirectory.h">

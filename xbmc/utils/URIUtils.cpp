@@ -840,11 +840,6 @@ bool URIUtils::IsVideoDb(const CStdString& strFile)
   return strFile.Left(8).Equals("videodb:");
 }
 
-bool URIUtils::IsLastFM(const CStdString& strFile)
-{
-  return strFile.Left(7).Equals("lastfm:");
-}
-
 bool URIUtils::IsBluray(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("bluray:");

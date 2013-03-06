@@ -312,7 +312,6 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("musicdb") == 0
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
-    || m_strProtocol.CompareNoCase("lastfm") == 0
     || m_strProtocol.CompareNoCase("pvr") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
@@ -755,7 +754,6 @@ CStdString CURL::TranslateProtocol(const CStdString& prot)
    || prot == "daap"
    || prot == "dav"
    || prot == "tuxbox"
-   || prot == "lastfm"
    || prot == "rss")
    return "http";
 

@@ -203,7 +203,6 @@ public:
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
-  void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
 
   virtual void Process();
