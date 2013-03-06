@@ -2192,13 +2192,15 @@ void CMixer::InitCycle()
     }
     else
     {
-      CLog::Log(LOGERROR, "CMixer::%s - interlace method not supported", __FUNCTION__);
+      CLog::Log(LOGERROR, "CMixer::%s - interlace method: %d not supported, setting to AUTO", __FUNCTION__, method);
       m_mixersteps = 1;
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
       m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
       m_mixerInput[1].DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                                         DVP_FLAG_REPEAT_TOP_FIELD |
                                         DVP_FLAG_INTERLACED);
+
+      CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
     }
   }
   else
