@@ -229,7 +229,7 @@
 						<width>3</width>
 						<height>720</height>
 						<texture border="1">base.png</texture>
-						<colordiffuse>FFd1801c</colordiffuse>
+						<colordiffuse>orange</colordiffuse>
 						<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
 						<visible>true</visible>
 					</control>
