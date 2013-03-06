@@ -212,6 +212,15 @@ int CPVRRecording::GetLastPlayedPosition() const
   return rc;
 }
 
+std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
+{
+  if (g_PVRClients->SupportsRecordingEdl(m_iClientId))
+  {
+    return g_PVRClients->GetRecordingEdl(*this);
+  }
+  return std::vector<PVR_EDL_ENTRY>();
+}
+
 void CPVRRecording::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)

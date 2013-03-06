@@ -698,6 +698,40 @@ int CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
   return iReturn;
 }
 
+std::vector<PVR_EDL_ENTRY> CPVRClient::GetRecordingEdl(const CPVRRecording &recording)
+{
+  std::vector<PVR_EDL_ENTRY> edl;
+  if (!m_bReadyToUse)
+    return edl;
+
+  if (!m_addonCapabilities.bSupportsRecordingEdl)
+    return edl;
+
+  try
+  {
+    PVR_RECORDING tag;
+    WriteClientRecordingInfo(recording, tag);
+
+    PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
+    int size = PVR_ADDON_EDL_LENGTH;
+    PVR_ERROR retval = m_pStruct->GetRecordingEdl(tag, edl_array, &size);
+    if (retval == PVR_ERROR_NO_ERROR)
+    {
+      edl.reserve(size);
+      for (int i = 0; i < size; ++i)
+      {
+        edl.push_back(edl_array[i]);
+      }
+    }
+  }
+  catch (exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return edl;
+}
+
 int CPVRClient::GetTimersAmount(void)
 {
   int iReturn(-EINVAL);
@@ -1150,6 +1184,11 @@ bool CPVRClient::SupportsRecordingFolders(void) const
 bool CPVRClient::SupportsRecordingPlayCount(void) const
 {
   return m_addonCapabilities.bSupportsRecordingPlayCount;
+}
+
+bool CPVRClient::SupportsRecordingEdl(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingEdl;
 }
 
 bool CPVRClient::SupportsTimers(void) const
