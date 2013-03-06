@@ -9,10 +9,6 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 
 add_definitions(-DUSE_LZO_PACKING)
-if(TARGET_COMMON_DARWIN)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
-endif(TARGET_COMMON_DARWIN)
 add_executable(TexturePacker ${SRC})
 target_link_libraries(TexturePacker
   ${CONFIG_LIBRARY_SDL_IMAGE}
