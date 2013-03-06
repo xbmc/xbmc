@@ -342,6 +342,14 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
   return ADDON_STATUS_OK;
 }
 
+//-- Announce -----------------------------------------------------------------
+// Receive announcements from XBMC
+//-----------------------------------------------------------------------------
+
+extern "C" void ADDON_Announce(const char *flag, const char *sender, const char *message, const void *data)
+{
+}
+
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
