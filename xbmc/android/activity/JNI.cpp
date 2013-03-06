@@ -19,17 +19,20 @@
  */
 #include "JNI.h"
 #include "XBMCApp.h"
+#include "BroadcastReceiver.h"
 #include <android/log.h>
 
 
 CAndroidJNIManager::CAndroidJNIManager()
 {
+  m_broadcastReceiver = NULL;
   m_oActivity = NULL;
 }
 
 
 CAndroidJNIManager::~CAndroidJNIManager()
 {
+  delete m_broadcastReceiver;
 }
 
 bool CAndroidJNIManager::RegisterClass(JNIEnv* env, CAndroidJNIBase *native)
@@ -73,6 +76,10 @@ bool CAndroidJNIManager::Load(JavaVM* vm, int jniVersion)
     if (vm->GetEnv(reinterpret_cast<void**>(&env), jniVersion) != JNI_OK) {
         return false;
     }
+
+    m_broadcastReceiver = new CBroadcastReceiver();
+    RegisterClass(env, m_broadcastReceiver);
+
     return true;
   }
 

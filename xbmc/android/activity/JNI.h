@@ -22,6 +22,8 @@
 #include <vector>
 #include <jni.h>
 
+class CBroadcastReceiver;
+
 struct jniNativeMethod
 {
   std::string name;
@@ -58,6 +60,7 @@ public:
   bool Load(JavaVM* vm, int jniVersion);
   jobject GetActivityInstance() const {return m_oActivity;};
 
+  CBroadcastReceiver* GetBroadcastReceiver() const {return m_broadcastReceiver;};
   void SetActivityInstance(jobject oActivity) {m_oActivity = oActivity;};
 private:
   CAndroidJNIManager();
@@ -65,6 +68,8 @@ private:
   CAndroidJNIManager(CAndroidJNIManager const&);
   void operator=(CAndroidJNIManager const&);
   bool RegisterClass(JNIEnv* env, CAndroidJNIBase *jniClass);
+
+  CBroadcastReceiver *m_broadcastReceiver;
 
   jobject m_oActivity;
 };
