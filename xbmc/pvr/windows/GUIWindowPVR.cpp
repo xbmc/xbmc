@@ -68,7 +68,7 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
   CSingleLock lock(m_critSection);
 
   if ((!window && m_currentSubwindow) || (window && !m_currentSubwindow) ||
-      (window->GetWindowId() != m_currentSubwindow->GetWindowId()))
+      (window && m_currentSubwindow && window->GetWindowId() != m_currentSubwindow->GetWindowId()))
   {
     // switched views, save current history
     if (m_currentSubwindow)

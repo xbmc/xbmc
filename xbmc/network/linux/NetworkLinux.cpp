@@ -539,6 +539,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    iwr.u.data.length = sizeof(rangebuffer);
    iwr.u.data.flags = 0;
    strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+   iwr.ifr_name[IFNAMSIZ - 1] = 0;
    if (ioctl(m_network->GetSocket(), SIOCGIWRANGE, &iwr) < 0)
    {
       CLog::Log(LOGWARNING, "%-8.16s  Driver has no Wireless Extension version information.",
@@ -549,6 +550,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    // Scan for wireless access points
    memset(&iwr, 0, sizeof(iwr));
    strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+   iwr.ifr_name[IFNAMSIZ - 1] = 0;
    if (ioctl(m_network->GetSocket(), SIOCSIWSCAN, &iwr) < 0)
    {
       CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s", strerror(errno));
@@ -574,6 +576,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       }
 
       strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+      iwr.ifr_name[IFNAMSIZ - 1] = 0;
       iwr.u.data.pointer = res_buf;
       iwr.u.data.length = res_buf_len;
       iwr.u.data.flags = 0;
@@ -645,8 +648,10 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
             if (first)
                first = false;
             else
+            {
                result.push_back(NetworkAccessPoint(essId, quality, encryption));
                encryption = ENC_NONE;
+            }
             break;
 
          case SIOCGIWESSID:

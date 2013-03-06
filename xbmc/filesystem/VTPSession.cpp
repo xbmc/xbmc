@@ -452,7 +452,10 @@ SOCKET CVTPSession::GetStreamLive(int channel)
   CLog::Log(LOGDEBUG, "CVTPSession::GetStreamLive - local address %s:%s", namebuf, portbuf );
 
   if(!OpenStreamSocket(sock, address))
+  {
+    closesocket(sock);
     return INVALID_SOCKET;
+  }
 
   int port = ntohs(address.sin_port);
   int addr = ntohl(address.sin_addr.s_addr);
@@ -466,7 +469,10 @@ SOCKET CVTPSession::GetStreamLive(int channel)
                 , (port & 0x00FF)>>0);
 
   if(!SendCommand(buffer, code, result))
+  {
+    closesocket(sock);
     return 0;
+  }
 
   if(!AcceptStreamSocket(sock))
   {

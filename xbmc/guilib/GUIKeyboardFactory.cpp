@@ -64,8 +64,8 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
       case FILTERING_NONE:
         break;
     }
+    ref->resetAutoCloseTimer();
   }
-  ref->resetAutoCloseTimer();
 }
 
 // Show keyboard with initial value (aTextString) and replace with result string.

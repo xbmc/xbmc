@@ -64,7 +64,7 @@ bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
 
 bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
 {
-  if (m_image.width == 0 || m_image.width == 0 || !m_dll.IsLoaded())
+  if (m_image.width == 0 || m_image.height == 0 || !m_dll.IsLoaded())
     return false;
 
   unsigned int dstPitch = pitch;
