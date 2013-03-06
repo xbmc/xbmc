@@ -19,7 +19,7 @@
  *
  */
 #include <jni.h>
-#include "JNI.h"
+#include "JNIManager.h"
 
 class CBroadcastReceiver : public CAndroidJNIBase
 {

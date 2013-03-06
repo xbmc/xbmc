@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "JNI.h"
+#include "JNIManager.h"
 #include "XBMCApp.h"
 #include "BroadcastReceiver.h"
 #include <android/log.h>
