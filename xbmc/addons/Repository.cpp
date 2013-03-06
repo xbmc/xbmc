@@ -271,6 +271,11 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
     addons = repo->Parse();
     if (addons.empty())
     {
+      CGUIDialogKaiToast::QueueNotification(repo->Icon(),
+                                            g_localizeStrings.Get(24024),
+                                            g_localizeStrings.Get(24025),
+                                            TOAST_DISPLAY_TIME, false,
+                                            TOAST_DISPLAY_TIME);
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
       reposum = checksum; // don't update the checksum
     }

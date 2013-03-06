@@ -10836,7 +10836,17 @@ msgctxt "#24023"
 msgid "Add-on disabled"
 msgstr ""
 
-#empty strings from id 24024 to 24026
+#: xbmc/addons/Repository.cpp
+msgctxt "#24024"
+msgid "Failed to update repository."
+msgstr ""
+
+#: xbmc/addons/Repository.cpp
+msgctxt "#24025"
+msgid "Refresh manually or wait 10 minutes"
+msgstr ""
+
+#empty string with id 24026
 
 #: xbmc/addons/addon.cpp
 msgctxt "#24027"
