@@ -4,7 +4,7 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH}0${PLEX_VERSION_SMALL})
 if(TARGET_OSX)
-  set(CPACK_SYSTEM_NAME "macosx-x86")
+  set(CPACK_SYSTEM_NAME "macosx-${OSX_ARCH}")
 elseif(TARGET_WIN32)
   set(CPACK_SYSTEM_NAME "windows-x86")
   # use a shorter path to hopefully avoid stupid windows 260 chars path.
