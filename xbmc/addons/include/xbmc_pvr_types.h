@@ -74,10 +74,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.6.1"
+#define XBMC_PVR_API_VERSION "1.7.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.6.1"
+#define XBMC_PVR_MIN_API_VERSION "1.7.0"
 
 #ifdef __cplusplus
 extern "C" {
