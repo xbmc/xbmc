@@ -355,6 +355,16 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   return(keysym);
 }
 
+void CWinEventsWin32::MessagePush(XBMC_Event *newEvent)
+{
+  // m_pEventFunc should be set because MessagePush is only executed by
+  // methods called from WndProc()
+  if (m_pEventFunc == NULL)
+    return;
+
+  m_pEventFunc(*newEvent);
+}
+
 bool CWinEventsWin32::MessagePump()
 {
   MSG  msg;

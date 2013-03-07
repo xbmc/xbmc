@@ -28,6 +28,7 @@
 class CWinEventsWin32 : public CWinEventsBase
 {
 public:
+  static void MessagePush(XBMC_Event *newEvent);
   static bool MessagePump();
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
   static PHANDLE_EVENT_FUNC m_pEventFunc;
