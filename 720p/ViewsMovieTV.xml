@@ -4,14 +4,14 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>221</width>
+			<width>208</width>
 			<height>299</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>195</width>
+			<width>185</width>
 			<height>273</height>
 			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
@@ -19,7 +19,7 @@
 	</include>
 	<include name="MovieTVPosterSelectedBorder">
 		<control type="image">
-			<width>201</width>
+			<width>192</width>
 			<height>279</height>
 			<include>Border</include>
 		</control>
@@ -27,7 +27,7 @@
 	<include name="MovieTVTitle">
 		<posy>288</posy>
 		<posx>105</posx>
-		<width>190</width>
+		<width>180</width>
 		<height>30</height>
 		<align>center</align>
 		<aligny>center</aligny>
@@ -38,8 +38,8 @@
 	<include name="MovieTVUnwatchedOverlay">
 		<control type="image">
 			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
-			<posx>182</posx>
-			<posy>260</posy>
+			<posx>174</posx>
+			<posy>262</posy>
 			<info>ListItem.Overlay</info>
 		</control>
 	</include>

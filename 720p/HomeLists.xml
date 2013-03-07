@@ -441,13 +441,13 @@
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
 		<control type="image">
-			<width>151</width>
+			<width>143</width>
 			<height>202</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>125</width>
+			<width>117</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
@@ -455,7 +455,7 @@
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>125</width>
+			<width>117</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -464,13 +464,13 @@
 	</include>
 	<include name="ListItemPosterSelected">
 		<control type="image">
-			<width>153</width>
+			<width>145</width>
 			<height>205</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>131</width>
+			<width>123</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
@@ -479,7 +479,7 @@
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>131</width>
+			<width>123</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -501,7 +501,7 @@
 			<control type="image">
 				<posx>37</posx>
 				<posy>202</posy>
-				<width>125</width>
+				<width>117</width>
 				<height>25</height>
 				<include>Card</include>
 				<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
@@ -548,7 +548,7 @@
 	<include name="ListItemInProgress">
 		<control type="image">
 			<visible>ListItem.Status(InProgress)</visible>
-			<posx>141</posx>
+			<posx>133</posx>
 			<posy>207</posy>
 			<width>15</width>
 			<height>15</height>
