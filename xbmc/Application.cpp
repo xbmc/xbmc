@@ -95,6 +95,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/RssManager.h"
@@ -711,6 +712,8 @@ bool CApplication::Create()
 #ifdef HAS_UPNP
   g_settings.RegisterSettingsHandler(&CUPnPSettings::Get());
 #endif
+
+  g_settings.RegisterSubSettings(&CSkinSettings::Get());
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();

@@ -84,21 +84,6 @@
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
-class CSkinString
-{
-public:
-  CStdString name;
-  CStdString value;
-};
-
-class CSkinBool
-{
-public:
-  CSkinBool() : value(false) {};
-  CStdString name;
-  bool value;
-};
-
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
@@ -135,14 +120,6 @@ public:
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
-  int TranslateSkinString(const CStdString &setting);
-  const CStdString &GetSkinString(int setting) const;
-  void SetSkinString(int setting, const CStdString &label);
-
-  int TranslateSkinBool(const CStdString &setting);
-  bool GetSkinBool(int setting) const;
-  void SetSkinBool(int setting, bool set);
-
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
    \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
@@ -162,9 +139,6 @@ public:
    \sa GetWatchMode, SetWatchMode
    */
   void CycleWatchMode(const CStdString& content);
-
-  void ResetSkinSetting(const CStdString &setting);
-  void ResetSkinSettings();
 
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
@@ -224,9 +198,6 @@ public:
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
   CStdString m_userAgent;
-
-  std::map<int, CSkinString> m_skinStrings;
-  std::map<int, CSkinBool> m_skinBools;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;
@@ -383,10 +354,6 @@ protected:
 
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
-
-  // skin activated settings
-  void LoadSkinSettings(const TiXmlElement* pElement);
-  void SaveSkinSettings(TiXmlNode *pElement) const;
 
   void LoadUserFolderLayout();
 
