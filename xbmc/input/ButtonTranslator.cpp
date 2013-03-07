@@ -234,6 +234,17 @@ static const ActionMapping actions[] =
         {"mousedrag"         , ACTION_MOUSE_DRAG},
         {"mousemove"         , ACTION_MOUSE_MOVE},
 
+        // Touch
+        {"tap"               , ACTION_TOUCH_TAP},
+        {"longpress"         , ACTION_TOUCH_LONGPRESS},
+        {"pangesture"        , ACTION_GESTURE_PAN},
+        {"zoomgesture"       , ACTION_GESTURE_ZOOM},
+        {"rotategesture"     , ACTION_GESTURE_ROTATE},
+        {"swipeleft"         , ACTION_GESTURE_SWIPE_LEFT},
+        {"swiperight"        , ACTION_GESTURE_SWIPE_RIGHT},
+        {"swipeup"           , ACTION_GESTURE_SWIPE_UP},
+        {"swipedown"         , ACTION_GESTURE_SWIPE_DOWN},
+
         // Do nothing action
         { "noop"             , ACTION_NOOP}
 };
@@ -365,6 +376,19 @@ static const ActionMapping mousecommands[] =
   { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
   { "mousedrag",   ACTION_MOUSE_DRAG },
   { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
+static const ActionMapping touchcommands[] =
+{
+  { "tap",                ACTION_TOUCH_TAP },
+  { "longpress",          ACTION_TOUCH_LONGPRESS },
+  { "pan",                ACTION_GESTURE_PAN },
+  { "zoom",               ACTION_GESTURE_ZOOM },
+  { "rotate",             ACTION_GESTURE_ROTATE },
+  { "swipeleft",          ACTION_GESTURE_SWIPE_LEFT },
+  { "swiperight",         ACTION_GESTURE_SWIPE_RIGHT },
+  { "swipeup",            ACTION_GESTURE_SWIPE_UP },
+  { "swipedown",          ACTION_GESTURE_SWIPE_DOWN }
 };
 
 static const WindowMapping fallbackWindows[] =
@@ -842,6 +866,35 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
   return (action > 0);
 }
 
+bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action)
+{
+  action = 0;
+  if (touchPointers <= 0)
+    touchPointers = 1;
+
+  touchAction += touchPointers - 1;
+  touchAction |= KEY_TOUCH;
+
+  action = GetTouchActionCode(window, touchAction);
+  if (action <= 0)
+    action = GetTouchActionCode(-1, touchAction);
+
+  return action > 0;
+}
+
+int CButtonTranslator::GetActionCode(int window, int action)
+{
+  map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  if (it == m_translatorMap.end())
+    return 0;
+
+  buttonMap::const_iterator it2 = it->second.find(action);
+  if (it2 == it->second.end())
+    return 0;
+
+  return it2->second.id;
+}
+
 /*
  * Translates a joystick input to an action code
  */
@@ -975,6 +1028,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   int action = ACTION_NONE;
   if (!TranslateActionString(szAction, action) || !buttonCode)
     return;   // no valid action, or an invalid buttoncode
+
   // have a valid action, and a valid button - map it.
   // check to see if we've already got this (button,action) pair defined
   buttonMap::iterator it = map.find(buttonCode);
@@ -1059,6 +1113,16 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     }
   }
 #endif
+
+  if ((pDevice = pWindow->FirstChild("touch")) != NULL)
+  {
+    // map touch actions
+    while (pDevice)
+    {
+      MapTouchActions(windowID, pDevice);
+      pDevice = pDevice->NextSibling("touch");
+    }
+  }
 }
 
 bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
@@ -1378,4 +1442,110 @@ void CButtonTranslator::Clear()
 #endif
 
   m_Loaded = false;
+}
+
+uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action)
+{
+  const char *szButton = pButton->Value();
+  if (szButton == NULL || pButton->FirstChild() == NULL)
+    return ACTION_NONE;
+
+  const char *szAction = pButton->FirstChild()->Value();
+  if (szAction == NULL)
+    return ACTION_NONE;
+
+  CStdString strTouchCommand = szButton;
+  strTouchCommand.ToLower();
+
+  std::string strTmp;
+  if (pButton->QueryStringAttribute("direction", &strTmp) == TIXML_SUCCESS)
+    strTouchCommand += strTmp;
+
+  uint32_t actionId = ACTION_NONE;
+  for (unsigned int i = 0; i < sizeof(touchcommands)/sizeof(touchcommands[0]); i++)
+  {
+    if (strTouchCommand.Equals(touchcommands[i].name))
+    {
+      actionId = touchcommands[i].action;
+      break;
+    }
+  }
+
+  if (actionId <= ACTION_NONE)
+  {
+    CLog::Log(LOGERROR, "%s: Can't find touch command %s", __FUNCTION__, szButton);
+    return ACTION_NONE;
+  }
+
+  strTmp.clear();
+  if (pButton->QueryStringAttribute("pointers", &strTmp) == TIXML_SUCCESS)
+  {
+    int pointers = (int)strtol(strTmp.c_str(), NULL, 0);
+    if (pointers >= 1)
+      actionId += pointers - 1;
+  }
+
+  action.strID = szAction;
+  if (!TranslateActionString(szAction, action.id) || action.id <= ACTION_NONE)
+    return ACTION_NONE;
+
+  return actionId | KEY_TOUCH;
+}
+
+void CButtonTranslator::MapTouchActions(int windowID, TiXmlNode *pTouch)
+{
+  if (pTouch == NULL)
+    return;
+
+  buttonMap map;
+  // check if there already is a touch map for the window ID
+  std::map<int, buttonMap>::iterator it = m_touchMap.find(windowID);
+  if (it != m_touchMap.end())
+  {
+    // get the existing touch map and remove it from the window mapping
+    // as it will be inserted later on
+    map = it->second;
+    m_touchMap.erase(it);
+  }
+
+  uint32_t actionId = 0;
+  TiXmlElement *pTouchElem = pTouch->ToElement();
+  if (pTouchElem == NULL)
+    return;
+
+  TiXmlElement *pButton = pTouchElem->FirstChildElement();
+  while (pButton != NULL)
+  {
+    CButtonAction action;
+    actionId = TranslateTouchCommand(pButton, action);
+    if (actionId > 0)
+    {
+      // check if there already is a mapping for the parsed action
+      // and remove it if necessary
+      buttonMap::iterator actionIt = map.find(actionId);
+      if (actionIt != map.end())
+        map.erase(actionIt);
+
+      map.insert(std::make_pair(actionId, action));
+    }
+
+    pButton = pButton->NextSiblingElement();
+  }
+
+  // add the modified touch map with the window ID
+  if (map.size() > 0)
+    m_touchMap.insert(std::pair<int, buttonMap>(windowID, map));
+}
+
+int CButtonTranslator::GetTouchActionCode(int window, int action)
+{
+  std::map<int, buttonMap>::const_iterator windowIt = m_touchMap.find(window);
+  if (windowIt == m_touchMap.end())
+    return ACTION_NONE;
+
+  buttonMap::const_iterator touchIt = windowIt->second.find(action);
+  if (touchIt == windowIt->second.end())
+    return ACTION_NONE;
+
+  return touchIt->second.id;
 }
