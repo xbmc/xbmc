@@ -3731,6 +3731,33 @@ bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, map<string, string>
   return false;
 }
 
+bool CVideoDatabase::GetArtTypes(const std::string &mediaType, std::vector<std::string> &artTypes)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("SELECT DISTINCT type FROM art WHERE media_type='%s'", mediaType.c_str());
+    int numRows = RunQuery(sql);
+    if (numRows <= 0)
+      return numRows == 0;
+
+    while (!m_pDS->eof())
+    {
+      artTypes.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, mediaType.c_str());
+  }
+  return false;
+}
+
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
 bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<int> &times)
