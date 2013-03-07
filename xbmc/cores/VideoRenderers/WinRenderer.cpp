@@ -94,7 +94,7 @@ static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
 {
   if      (format == RENDER_FMT_YUV420P)   return PIX_FMT_YUV420P;
   else if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P10;
-  else if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P16;
+  else if (format == RENDER_FMT_YUV420P16) return PIX_FMT_YUV420P16;
   else if (format == RENDER_FMT_NV12)      return PIX_FMT_NV12;
   else if (format == RENDER_FMT_UYVY422)   return PIX_FMT_UYVY422;
   else if (format == RENDER_FMT_YUYV422)   return PIX_FMT_YUYV422;

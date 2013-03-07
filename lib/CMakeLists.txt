@@ -6,11 +6,11 @@ if(ENABLE_DVD_DRIVE)
   add_subdirectory(libdvd)
 endif()
 
-if(UNIX AND NOT APPLE)
+if(TARGET_COMMON_LINUX)
   add_subdirectory(xbmc-dll-symbols)
 endif()
 
-if(WIN32)
+if(TARGET_WIN32)
   add_subdirectory(win32)
   add_subdirectory(libmad)
   add_subdirectory(libass)
@@ -19,13 +19,13 @@ endif()
 
 # build our external projects
 set(CMAKE_SHARED_MODULE_PREFIX "")
-if(NOT WIN32)
+if(TARGET_POSIX)
   set(CMAKE_SHARED_MODULE_SUFFIX ".so")
-endif()
+endif(TARGET_POSIX)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
 	set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS "-bundle")
-endif(APPLE)
+endif(TARGET_COMMON_DARWIN)
 
 add_subdirectory(cpluff)
 add_subdirectory(cximage-6.0)

@@ -14,8 +14,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "settings/GUISettings.h"
-#include "CocoaUtils.h"
-#include "CocoaUtilsPlus.h"
 #include "log.h"
 #include "filesystem/CurlFile.h"
 #include "FileSystem/PlexDirectory.h"
@@ -27,6 +25,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "plex/PlexUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -548,8 +547,8 @@ class MyPlexManager
     http.SetRequestHeader("X-Plex-Product", PLEX_TARGET_NAME);
     http.SetRequestHeader("X-Plex-Version", g_infoManager.GetVersion());
     http.SetRequestHeader("X-Plex-Provides", "player");
-    http.SetRequestHeader("X-Plex-Platform", Cocoa_GetMachinePlatform());
-    http.SetRequestHeader("X-Plex-Platform-Version", Cocoa_GetMachinePlatformVersion());
+    http.SetRequestHeader("X-Plex-Platform", PlexUtils::GetMachinePlatform());
+    http.SetRequestHeader("X-Plex-Platform-Version", PlexUtils::GetMachinePlatformVersion());
   }
   
   /// Utility method to retrieve the myPlex URL.

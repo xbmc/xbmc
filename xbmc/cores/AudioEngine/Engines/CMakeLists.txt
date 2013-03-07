@@ -1,8 +1,8 @@
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   add_subdirectory(CoreAudio)
-else()
+else(TARGET_COMMON_DARWIN)
   add_subdirectory(SoftAE)
-endif()
+endif(TARGET_COMMON_DARWIN)
 
 if(DEFINED HAVE_LIBPULSE)
   add_subdirectory(PulseAE)

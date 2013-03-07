@@ -40,6 +40,7 @@
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
 #include "utils/URIUtils.h"
+#include "powermanagement\PowerManager.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -263,6 +264,9 @@ bool CWIN32Util::PowerManagement(PowerState State)
   {
     return false;
   }
+
+  // process OnSleep() events. This is called in main thread.
+  g_powerManager.ProcessEvents();
 
   switch (State)
   {

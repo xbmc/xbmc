@@ -802,10 +802,29 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       CFRelease(avcCData);
       return false;
     }
- 
-    m_use_cvBufferRef = true;
-#if 0
-    //TODO fix after Frodo if (g_Windowing.GetRenderVendor().Find("Intel") > -1)
+
+    CStdString rendervendor = g_Windowing.GetRenderVendor();
+    rendervendor.MakeLower();
+    if (rendervendor.find("nvidia") != std::string::npos)
+    {
+      // Nvidia gpu's are all powerful and work the way god intended
+      m_decode_async = true;
+      m_use_cvBufferRef = true;
+    }
+    else if (rendervendor.find("intel") != std::string::npos)
+    {
+      // Intel gpu are borked when using cvBufferRef
+      m_decode_async = true;
+      m_use_cvBufferRef = false;
+    }
+    else
+    {
+      // ATI gpu's are borked when using async decode
+      m_decode_async = false;
+      m_use_cvBufferRef = true;
+    }
+
+    if (!m_use_cvBufferRef)
     {
       m_dllSwScale = new DllSwScale;
       if (!m_dllSwScale->Load())
@@ -845,10 +864,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       memset(m_videobuffer.data[0], 0, iPixels);
       memset(m_videobuffer.data[1], 0, iChromaPixels);
       memset(m_videobuffer.data[2], 0, iChromaPixels);
-
-      m_use_cvBufferRef = false;
     }
-#endif
 
     // setup the decoder configuration dict
     CFMutableDictionaryRef decoderConfiguration = CFDictionaryCreateMutable(
@@ -1023,9 +1039,12 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  // force synchronous decode to fix issues with ATI GPUs,
-  // we still have to sort returned frames by pts to handle out-of-order demuxer packets. 
-  m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, kVDADecoderFlush_EmitFrames);
+  if (!m_decode_async)
+  {
+    // force synchronous decode to fix issues with ATI GPUs,
+    // we still have to sort returned frames by pts to handle out-of-order demuxer packets. 
+    m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, kVDADecoderFlush_EmitFrames);
+  }
 
   if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;

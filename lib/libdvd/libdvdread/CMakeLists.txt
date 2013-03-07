@@ -1,5 +1,6 @@
 file(GLOB headers src/*h)
-file(COPY ${headers} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../includes/dvdread)
+file(GLOB headers2 src/dvdread/*h)
+file(COPY ${headers} ${headers2} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../includes/dvdread)
 
 set(DVDREAD_MAJOR 4)
 set(DVDREAD_MINOR 1)

@@ -16,15 +16,33 @@ AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
   [build depend libs using sdk 10.6 (default osx) or 4.2 (default ios).])],
   [use_sdk=$withval],)
+  
+AC_ARG_WITH([rootpath],
+  [AS_HELP_STRING([--with-rootpath],
+  [the root path])],
+  [use_staging=$withval],
+  [use_staging="/Users/Shared/xbmc-depends"])
+  
+AC_ARG_WITH([toolchain],
+  [AS_HELP_STRING([--with-toolchain],
+  [the toolchain path])],
+  [use_toolchain=$withval],
+  [use_toolchain=${use_staging}/toolchain])
 
-use_staging="/Users/Shared/xbmc-depends"
+# use_staging="/Users/Shared/xbmc-depends"
 
-# find xcodebuild, test in Xcode.app, if not there, fall back to normal location
-use_xcodepath="/Applications/Xcode.app/Contents/Developer"
-use_xcodebuild="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
-if [[ ! -f "$use_xcodebuild" ]]; then
-  use_xcodepath="/Developer"
-  use_xcodebuild="/usr/bin/xcodebuild"  
+# find xcodebuild and xcodepath by xcode-select
+# else test in Xcode.app, if not there, fall back to normal location
+if [[ -f "/usr/bin/xcode-select" ]]; then
+  use_xcodepath=`/usr/bin/xcode-select -print-path`
+  use_xcodebuild="$use_xcodepath/usr/bin/xcodebuild"
+else
+  use_xcodepath="/Applications/Xcode.app/Contents/Developer"
+  use_xcodebuild="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
+  if [[ ! -f "$use_xcodebuild" ]]; then
+    use_xcodepath="/Developer"
+    use_xcodebuild="/usr/bin/xcodebuild"  
+  fi
 fi
 AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
 use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
@@ -84,7 +102,7 @@ AC_MSG_RESULT(creating hostroot at $use_staging)
 OUTPUT_FILES+=${CONFIG_SITE}
 OUTPUT_FILES+=${MK_CONFIG_SITE}
 
-use_toolchain=${use_staging}/toolchain
+#use_toolchain=${use_staging}/toolchain
 AC_MSG_RESULT(creating build toolchain at $use_toolchain)
 mkdir -p ${use_toolchain}
 

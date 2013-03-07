@@ -155,7 +155,7 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
-  std::map<std::string, std::string> txt;  
+  std::vector<std::pair<std::string, std::string> > txt;
 
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 

@@ -49,6 +49,7 @@ protected:
   bool                      m_open;
   CDVDStreamInfo            m_hints;
   double                    m_iCurrentPts;
+  double                    m_iSleepEndTime;
   OMXClock                  *m_av_clock;
   COMXVideo                 m_omxVideo;
   float                     m_fFrameRate;

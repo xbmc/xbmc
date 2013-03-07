@@ -5,16 +5,19 @@
 
 namespace PlexUtils
 {
-std::string GetHostName();
-bool IsValidIP(const std::string& address);
-int FileAge(const CStdString &strFileName);
-bool IsPlexMediaServer(const CStdString& strFile);
-bool IsPlexWebKit(const CStdString& strFile);
-bool IsStack(const CStdString& strFile);
-std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
-int64_t Size(const CStdString& strFileName);
-std::string CacheImageUrl(const std::string& url);
-std::string CacheImageUrlAsync(const std::string &url);
+  std::string GetHostName();
+  bool IsValidIP(const std::string& address);
+  int FileAge(const CStdString &strFileName);
+  bool IsPlexMediaServer(const CStdString& strFile);
+  bool IsPlexWebKit(const CStdString& strFile);
+  bool IsStack(const CStdString& strFile);
+  std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
+  int64_t Size(const CStdString& strFileName);
+  std::string CacheImageUrl(const std::string& url);
+  std::string CacheImageUrlAsync(const std::string &url);
+
+  std::string GetMachinePlatform();
+  std::string GetMachinePlatformVersion();
 }
 
 #ifdef _WIN32

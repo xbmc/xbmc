@@ -116,6 +116,7 @@ private:
   void OpenSink();
 
   void InternalOpenSink();
+  void InternalCloseSink();
   void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
@@ -136,11 +137,13 @@ private:
 
   /* internal vars */
   bool             m_running, m_reOpen;
+  bool             m_sinkIsSuspended; /* The sink is in unusable state, e.g. SoftSuspended */
   bool             m_isSuspended;      /* engine suspended by external function to release audio context */
   bool             m_softSuspend;      /* latches after last stream or sound played for timer below for idle */
   unsigned int     m_softSuspendTimer; /* time in milliseconds to hold sink open before soft suspend for idle */
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
+  CEvent           m_saveSuspend;
 
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CCriticalSection m_streamLock;      /* m_streams lock */
@@ -242,5 +245,6 @@ private:
   void         RunNormalizeStage (unsigned int channelCount, void *out, unsigned int mixed);
 
   void         RemoveStream(StreamList &streams, CSoftAEStream *stream);
+  void         PrintSinks();
 };
 

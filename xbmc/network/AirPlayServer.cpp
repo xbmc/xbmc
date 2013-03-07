@@ -119,7 +119,7 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 "<key>features</key>\r\n"\
 "<integer>119</integer>\r\n"\
 "<key>model</key>\r\n"\
-"<string>AppleTV2,1</string>\r\n"\
+"<string>Xbmc,1</string>\r\n"\
 "<key>protovers</key>\r\n"\
 "<string>1.0</string>\r\n"\
 "<key>srcvers</key>\r\n"\
@@ -253,7 +253,15 @@ void CAirPlayServer::Process()
         newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
 
         if (newconnection.m_socket == INVALID_SOCKET)
-          CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed");
+        {
+          CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
+          if (EBADF == errno)
+          {
+            Sleep(1000);
+            Initialize();
+            break;
+          }
+        }
         else
         {
           CLog::Log(LOGINFO, "AIRPLAY Server: New connection added");

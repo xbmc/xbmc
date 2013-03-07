@@ -894,7 +894,7 @@
 		F56C7B8A131EC155000AD0F6 /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C780C131EC154000AD0F6 /* ViewDatabase.cpp */; };
 		F56C7B8B131EC155000AD0F6 /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C780E131EC154000AD0F6 /* XBApplicationEx.cpp */; };
 		F56C7B9B131EC1B4000AD0F6 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7B9A131EC1B4000AD0F6 /* AutoPool.mm */; };
-		F56C7BC9131EC2DB000AD0F6 /* XBMCAppliance.m in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.m */; };
+		F56C7BC9131EC2DB000AD0F6 /* XBMCAppliance.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.mm */; };
 		F56C7BCA131EC2DB000AD0F6 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BC5131EC2DB000AD0F6 /* XBMCController.mm */; };
 		F56C7BD0131EC301000AD0F6 /* XBMC.png in Resources */ = {isa = PBXBuildFile; fileRef = F56C7BCD131EC301000AD0F6 /* XBMC.png */; };
 		F56C7BDC131EC390000AD0F6 /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BD9131EC390000AD0F6 /* WinEventsIOS.mm */; };
@@ -2967,7 +2967,7 @@
 		F56C780F131EC154000AD0F6 /* XBApplicationEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBApplicationEx.h; sourceTree = "<group>"; };
 		F56C7B99131EC1B4000AD0F6 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F56C7B9A131EC1B4000AD0F6 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
-		F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCAppliance.m; sourceTree = "<group>"; };
+		F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCAppliance.mm; sourceTree = "<group>"; };
 		F56C7BC3131EC2DB000AD0F6 /* XBMCAppliance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCAppliance.h; sourceTree = "<group>"; };
 		F56C7BC4131EC2DB000AD0F6 /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
 		F56C7BC5131EC2DB000AD0F6 /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
@@ -5997,7 +5997,7 @@
 				F56C7F2D131F0BB4000AD0F6 /* English.lproj */,
 				F56C7BCD131EC301000AD0F6 /* XBMC.png */,
 				F56C7BC3131EC2DB000AD0F6 /* XBMCAppliance.h */,
-				F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.m */,
+				F56C7BC2131EC2DB000AD0F6 /* XBMCAppliance.mm */,
 				F56C7BCE131EC301000AD0F6 /* XBMCATV2-Info.plist */,
 				F56C7BC4131EC2DB000AD0F6 /* XBMCController.h */,
 				F56C7BC5131EC2DB000AD0F6 /* XBMCController.mm */,
@@ -7309,7 +7309,7 @@
 				F56C7B8A131EC155000AD0F6 /* ViewDatabase.cpp in Sources */,
 				F56C7B8B131EC155000AD0F6 /* XBApplicationEx.cpp in Sources */,
 				F56C7B9B131EC1B4000AD0F6 /* AutoPool.mm in Sources */,
-				F56C7BC9131EC2DB000AD0F6 /* XBMCAppliance.m in Sources */,
+				F56C7BC9131EC2DB000AD0F6 /* XBMCAppliance.mm in Sources */,
 				F56C7BCA131EC2DB000AD0F6 /* XBMCController.mm in Sources */,
 				F56C7BDC131EC390000AD0F6 /* WinEventsIOS.mm in Sources */,
 				F56C7BDD131EC390000AD0F6 /* WinSystemIOS.mm in Sources */,

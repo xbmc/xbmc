@@ -1,8 +1,8 @@
 find_all_sources(. au_SRCS)
 add_sources(${au_SRCS})
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   add_subdirectory(Mac)
-elseif(WIN32)
+elseif(TARGET_WIN32)
   add_subdirectory(Win)
-endif()
+endif(TARGET_COMMON_DARWIN)

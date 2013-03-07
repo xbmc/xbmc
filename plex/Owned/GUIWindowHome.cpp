@@ -210,7 +210,13 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
 {
   CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
   if (success)
+  {
     m_fileLists[load->GetContentType()] = load->GetFileItemList();
+    
+    /* Pre-cache stuff */
+    if (load->GetContentType() != CONTENT_LIST_FANART)
+      m_videoThumb.Load(*m_fileLists[load->GetContentType()].get());
+  }
 
   m_age.restart();
 
@@ -281,7 +287,9 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_gl
 //////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU && GetFocusedControlID() > 9000)
+  /* > 9000 is the fans and 506 is preferences */
+  if ((action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK) &&
+      (GetFocusedControlID() > 9000 || GetFocusedControlID() == 506))
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 300);
     OnMessage(msg);

@@ -24,9 +24,9 @@ add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
 
-if(APPLE)
+if(TARGET_OSX)
   add_subdirectory(Helper)
-endif(APPLE)
+endif(TARGET_OSX)
 
 find_all_sources(. plex_SRCS)
 
@@ -35,23 +35,23 @@ list(APPEND plex_SRCS Resources/Plex.rc)
 list(APPEND plex_SRCS Resources/Plex.rc2)
 
 set(Headers PlexTypes.h)
-if(APPLE)
+if(TARGET_OSX)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
-else(APPLE)
+else(TARGET_OSX)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.m)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtilsPlus.mm)
-endif(APPLE)
+endif(TARGET_OSX)
 
-if(NOT WIN32)
+if(NOT TARGET_WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
-endif(NOT WIN32)
+endif(NOT TARGET_WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
 set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${PLEX_ALL_SRCS})
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
@@ -75,13 +75,14 @@ endif(ENABLE_PYTHON)
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
 
-if(NOT WIN32)
+if(COMPRESS_TEXTURES)
   # Build the packed textures
   if(DEFINED USING_XCODE)
     set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/Debug/TexturePacker)
   else()
     set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker)
   endif()
+
   add_custom_command(
     OUTPUT Textures_MediaStream.xbt
     COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
@@ -89,13 +90,9 @@ if(NOT WIN32)
     DEPENDS TexturePacker
   )
 
-  if(PLEX_SKIP_BUNDLING STREQUAL "1")
-    set(EXCLUDE_TEXTURES ^foo)
-  else()
-    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-    set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
-  endif()
+  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -106,18 +103,18 @@ set(ROOTDIR ${root})
 set(DEPENDDIR ${dependdir})
 configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
-if(APPLE OR WIN32)
+if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
   install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION ${LIBPATH} COMPONENT RUNTIME)
 endif()
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
-else()
+else(TARGET_COMMON_DARWIN)
   install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-endif()
+endif(TARGET_COMMON_DARWIN)
 
 install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN Splash.png EXCLUDE
@@ -140,24 +137,33 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN xbmc.python EXCLUDE
 )
 
-if(ENABLE_PYTHON)
-  install(DIRECTORY ${dependdir}/lib/python2.7 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
-    PATTERN python2.7/test EXCLUDE
+if(ENABLE_PYTHON AND TARGET_OSX)
+  install(DIRECTORY ${dependdir}/lib/python2.6 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
+    PATTERN python2.6/test EXCLUDE
     REGEX .*\\.pyc$ EXCLUDE
     REGEX .*\\.pyo$ EXCLUDE
   )
-  install(FILES ${dependdir}/include/python2.7/pyconfig.h DESTINATION ${LIBPATH}/include/python2.7 COMPONENT RUNTIME)
+  install(FILES ${dependdir}/include/python2.6/pyconfig.h DESTINATION ${LIBPATH}/include/python2.6 COMPONENT RUNTIME)
 endif()
 
+if(NOT DEFINED PLEX_SPLASH)
+  if(TARGET_RPI)
+    set(PLEX_SPLASH Splash-RPI.png)
+  else(TARGET_RPI)
+    set(PLEX_SPLASH Splash.png)
+  endif(TARGET_RPI)
+endif(NOT DEFINED PLEX_SPLASH)
+
+install(FILES ${plexdir}/Resources/${PLEX_SPLASH} DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME RENAME Splash.png)
+
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/peripherals.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
-if(APPLE)
+if(TARGET_OSX)
   install(FILES ${plexdir}/Resources/com.plexapp.ht.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
-elseif(WIN32)
+elseif(TARGET_WIN32)
   install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${root}/project/Win32BuildSetup/dependencies/libcdio-13.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/build/dependencies/vcredist/2010/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST)
@@ -167,7 +173,7 @@ elseif(WIN32)
   install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 endif()
 
-if(APPLE)
+if(TARGET_OSX)
   add_custom_command(
     OUTPUT "${EXECUTABLE_NAME}.dSYM"
     COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
@@ -181,14 +187,11 @@ if(APPLE)
   add_custom_target(Symbols DEPENDS "${EXECUTABLE_NAME}.dSYM.zip")
 endif()
 
-OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
 if(CREATE_BUNDLE)
-  if(APPLE OR WIN32)
+  if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
     install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
   endif()
-  if(APPLE)
+  if(TARGET_OSX)
     add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
   endif()
-else()
-  message(STATUS "Skipping bundling")
 endif()

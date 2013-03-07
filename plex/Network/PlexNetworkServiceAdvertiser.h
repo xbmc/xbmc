@@ -9,7 +9,6 @@
 
 #include "GUISettings.h"
 #include "NetworkServiceAdvertiser.h"
-#include "CocoaUtils.h"
 #include "PlexUtils.h"
 #include "GUIInfoManager.h"
 

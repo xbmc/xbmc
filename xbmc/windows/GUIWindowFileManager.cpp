@@ -1178,8 +1178,7 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
     CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), false);
   }
 
-  if (success)
-    CJobQueue::OnJobComplete(jobID, success, job);
+  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)

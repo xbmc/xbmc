@@ -59,7 +59,6 @@
 #include "utils/Mime.h"
 
 /* PLEX */
-#include "plex/CocoaUtils.h"
 #include "plex/PlexTypes.h"
 /* END PLEX */
 
@@ -1941,7 +1940,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   /* END PLEX */
 }
 
-bool CFileItemList::Copy(const CFileItemList& items)
+bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */)
 {
   // assign all CFileItem parts
   *(CFileItem*)this = *(CFileItem*)&items;
@@ -1969,11 +1968,14 @@ bool CFileItemList::Copy(const CFileItemList& items)
   m_saveInHistory  = items.m_saveInHistory;
   /* END PLEX */
 
-  // make a copy of each item
-  for (int i = 0; i < items.Size(); i++)
+  if (copyItems)
   {
-    CFileItemPtr newItem(new CFileItem(*items[i]));
-    Add(newItem);
+    // make a copy of each item
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr newItem(new CFileItem(*items[i]));
+      Add(newItem);
+    }
   }
 
   return true;
@@ -2269,25 +2271,7 @@ void CFileItemList::FillInDefaultIcons()
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
-
-#ifdef __APPLE__ /* PLEX */
-    if (Cocoa_IsAppBundle(pItem->GetPath().c_str()))
-    {
-      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetAppIcon(pItem->GetPath()));
-      CStdString itemLabel = pItem->GetLabel();
-      URIUtils::RemoveExtension(itemLabel);
-      pItem->SetLabel(itemLabel);
-    }
-    else if (Cocoa_IsWflowBundle(pItem->GetPath().c_str()))
-    {
-      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
-      CStdString itemLabel = pItem->GetLabel();
-      URIUtils::RemoveExtension(itemLabel);
-      pItem->SetLabel(itemLabel);
-    }
-    else
-#endif /* END PLEX */
-      pItem->FillInDefaultIcon();
+    pItem->FillInDefaultIcon();
   }
 }
 

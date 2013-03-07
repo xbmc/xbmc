@@ -426,7 +426,6 @@ void CAESinkALSA::Deinitialize()
 
   if (m_pcm)
   {
-    snd_pcm_drop (m_pcm);
     snd_pcm_close(m_pcm);
     m_pcm = NULL;
   }
@@ -487,7 +486,13 @@ double CAESinkALSA::GetCacheTotal()
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   if (!m_pcm)
-    return 0;
+  {
+    SoftResume();
+    if(!m_pcm)
+      return 0;
+
+    CLog::Log(LOGDEBUG, "CAESinkALSA - the grAEken is hunger, feed it (I am the downmost fallback - fix your code)");
+  }
 
   int ret;
 
@@ -676,12 +681,17 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
   return false;
 }
 
-void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
+void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   /* ensure that ALSA has been initialized */
   snd_lib_error_set_handler(sndLibErrorHandler);
-  if(!snd_config)
+  if(!snd_config || force)
+  {
+    if(force)
+      snd_config_update_free_global();
+
     snd_config_update();
+  }
 
   snd_config_t *config;
   snd_config_copy(&config, snd_config);
@@ -1123,6 +1133,28 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
   info.m_deviceType = AE_DEVTYPE_HDMI;
   return true;
+}
+
+bool CAESinkALSA::SoftSuspend()
+{
+  if(m_pcm) // it is still there
+   Deinitialize();
+
+  return true;
+}
+bool CAESinkALSA::SoftResume()
+{
+    // reinit all the clibber
+    bool ret = true; // all fine
+    if(!m_pcm)
+    {
+      if (!snd_config)
+        snd_config_update();
+
+      ret = Initialize(m_initFormat, m_initDevice);
+    }
+   //we want that AE loves us again - reinit when initialize failed
+   return ret; // force reinit if false
 }
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)

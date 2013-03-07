@@ -1,5 +1,0 @@
-; filename                          	mirror of the file									source of the file
-libogg-vc100-1.2.0-bin.tar.bz2   		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libogg-vc100-1.2.0-bin.tar.bz2
-libogg-vc100-1.2.0-lib.tar.bz2   		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libogg-vc100-1.2.0-lib.tar.bz2
-libvorbis-vc100-1.3.1-bin.tar.bz2		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libvorbis-vc100-1.3.1-bin.tar.bz2
-libvorbis-vc100-1.3.1-lib.tar.bz2		http://mirrors.xbmc.org/build-deps/win32/			http://winkde.org/pub/kde/ports/win32/releases/stable/4.5.4/libvorbis-vc100-1.3.1-lib.tar.bz2

@@ -35,8 +35,8 @@ namespace XBMCAddon
      */
     PythonCallbackHandler::PythonCallbackHandler() : RetardedAsynchCallbackHandler("PythonCallbackHandler")
     {
+      TRACE;
       objectThreadState = PyThreadState_Get();
-      CLog::Log(LOGDEBUG,"NEWADDON PythonCallbackHandler construction with PyThreadState 0x%lx",(long)objectThreadState);
     }
 
     /**

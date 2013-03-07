@@ -116,6 +116,7 @@ namespace XBMCAddon
        */
       inline int waitForCaptureStateChangeEvent(unsigned int msecs = 0)
       {
+        DelayedCallGuard dg(languageHook);
         return msecs ? m_capture->GetEvent().WaitMSec(msecs) : m_capture->GetEvent().Wait();
       }
 

@@ -144,10 +144,11 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
     return CACHE_RC_ERROR;
   }
 
+  m_nWritePosition += iWritten;
+
   // when reader waits for data it will wait on the event.
   m_hDataAvailEvent->Set();
 
-  m_nWritePosition += iWritten;
   return iWritten;
 }
 
@@ -185,22 +186,16 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
     return GetAvailableRead();
 
   XbmcThreads::EndTime endTime(iMillis);
-  unsigned int millisLeft;
-  while ( !IsEndOfInput() && (millisLeft = endTime.MillisLeft()) > 0 )
+  while (!IsEndOfInput())
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
-    // busy look (sleep max 1 sec each round)
-    if (!m_hDataAvailEvent->WaitMSec(millisLeft>1000?millisLeft:1000 ))
-      return CACHE_RC_ERROR;
+    if (!m_hDataAvailEvent->WaitMSec(endTime.MillisLeft()))
+      return CACHE_RC_TIMEOUT;
   }
-
-  if( IsEndOfInput() )
-    return GetAvailableRead();
-
-  return CACHE_RC_TIMEOUT;
+  return GetAvailableRead();
 }
 
 int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
@@ -217,7 +212,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   }
 
   int64_t nDiff = iTarget - m_nWritePosition;
-  if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {
+  if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)  ) {
     CLog::Log(LOGWARNING,"%s - attempt to seek past read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64")", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition);
     return  CACHE_RC_ERROR;
   }

@@ -1,6 +1,10 @@
 if(NOT WIN32)
-  include(TestBigEndian)
-  TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+  if(TARGET_OSX)
+    set(WORDS_BIGENDIAN 0)
+  else()
+    include(TestBigEndian)
+    TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+  endif()
 
   add_subdirectory(libdvdnav)
   add_subdirectory(libdvdcss)

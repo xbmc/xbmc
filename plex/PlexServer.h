@@ -14,6 +14,7 @@
 #include <filesystem/CurlFile.h>
 #include <string>
 #include "XBMCTinyXML.h"
+#include "plex/Network/NetworkInterface.h"
 
 using namespace std;
 using namespace XFILE;
@@ -33,7 +34,7 @@ class PlexServer
   PlexServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token, const string& deviceClass="desktop")
     : uuid(uuid), name(name), address(addr), port(port), token(token), updatedAt(0), m_count(1), deviceClass(deviceClass), m_canDoWebkit(false)
   {
-    local = Cocoa_IsHostLocal(addr);
+    local = NetworkInterface::IsLocalAddress(addr);
 
     // Default to live if we detected it.
     live = detected();

@@ -47,6 +47,10 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p1 <../Python-2.6.5-xcompile.patch
 	sed -ie "s#/usr/include/ffi#$(PREFIX)/include/ffi#" $(SOURCE)/setup.py
 	cd $(SOURCE); $(CONFIGURE)
+	
+	# ugly and hardcoded
+	cp /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator6.1.sdk/usr/include/crt_externs.h $(PREFIX)/include
+	
 	cd $(SOURCE); make -j $(MAKE_JOBS) HOSTPYTHON=./hostpython HOSTPGEN=./Parser/hostpgen CROSS_COMPILE_TARGET=yes
 
 .installed:

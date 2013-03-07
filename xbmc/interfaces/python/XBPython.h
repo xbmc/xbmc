@@ -47,9 +47,12 @@ namespace XBMCAddon
   }
 }
 
-typedef std::vector<PyElem> PyList;
-typedef std::vector<PVOID> PlayerCallbackList;
-typedef std::vector<XBMCAddon::xbmc::Monitor*> MonitorCallbackList;
+template <class T> struct LockableType : public T, public CCriticalSection 
+{ bool hadSomethingRemoved; };
+
+typedef LockableType<std::vector<PVOID> > PlayerCallbackList;
+typedef LockableType<std::vector<XBMCAddon::xbmc::Monitor*> > MonitorCallbackList;
+typedef LockableType<std::vector<PyElem> > PyList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
 class XBPython : 
@@ -79,6 +82,7 @@ public:
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
   void OnDatabaseUpdated(const std::string &database);
+  void OnDatabaseScanStarted(const std::string &database);
   void OnAbortRequested(const CStdString &ID="");
   void Initialize();
   void FinalizeScript();
@@ -127,8 +131,8 @@ public:
   void* getMainThreadState();
 
   bool m_bLogin;
-  CCriticalSection    m_critSection;
 private:
+  CCriticalSection    m_critSection;
   bool              FileExist(const char* strFile);
 
   int               m_nextid;

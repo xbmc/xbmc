@@ -1,2 +1,0 @@
-; filename                          source of the file
-yajl_2.0.1_win32-lib.zip           http://mirrors.xbmc.org/build-deps/win32/

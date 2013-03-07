@@ -1,6 +1,6 @@
 set(main_SRCS main.cpp)
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   list(APPEND main_SRCS osx/SDLMain.mm)
   list(APPEND main_SRCS osx/SDLMain.h)
-endif()
+endif(TARGET_COMMON_DARWIN)
 add_sources(${main_SRCS})

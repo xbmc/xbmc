@@ -40,8 +40,7 @@
 
 #ifdef __APPLE__
 #include "Util.h"
-#include "CocoaUtilsPlus.h"
-#include "CocoaUtils.h"
+#include "PlexUtils.h"
 #endif
 using namespace std;
 
@@ -139,17 +138,10 @@ CHTTP::CHTTP(bool keepOpen)
   m_bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
   if (m_bProxyEnabled)
   {
-#ifdef __APPLE__
-    m_strProxyServer = Cocoa_Proxy_Host("http");
-    m_iProxyPort = atoi(Cocoa_Proxy_Port("http"));
-    m_strProxyUsername = Cocoa_Proxy_Username("http");
-    m_strProxyPassword = Cocoa_Proxy_Password("http");
-#else
     m_strProxyServer = g_guiSettings.GetString("network.httpproxyserver").c_str();
     m_iProxyPort = atoi(g_guiSettings.GetString("network.httpproxyport").c_str());
     m_strProxyUsername = g_guiSettings.GetString("network.httpproxyusername").c_str();
     m_strProxyPassword = g_guiSettings.GetString("network.httpproxypassword").c_str();
-#endif
   }
 
   m_strCookie = "";

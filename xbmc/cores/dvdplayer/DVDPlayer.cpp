@@ -698,7 +698,7 @@ bool CDVDPlayer::OpenInputStream()
           CStdString path = "special://temp/subtitle.plex." + boost::lexical_cast<string>(idxStream->id) + "." + stream->codec;
           CLog::Log(LOGINFO, "Considering caching Plex subtitle locally for stream %d (codec: %s) to %s (exists: %d)", stream->id, stream->codec.c_str(), path.c_str(), CFile::Exists(path));
 
-          if (CFile::Exists(path) || CFile::Cache(stream->key, path))
+          if (CFile::Exists(path) || CFile::Cache(stream->key + "?encoding=utf-8", path))
           {
             s.filename = path;
             m_SelectionStreams.Update(s);
@@ -4630,7 +4630,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     // If we ended up with a webkit URL which is local, restart the player. This
     // will be the case if we're resolving an indirect.
     //
-    if (Cocoa_IsHostLocal(serverHost) == true)
+    if (NetworkInterface::IsLocalAddress(serverHost) == true)
     {
       CApplicationMessenger::Get().RestartWithNewPlayer(0, item.GetPath());
       return false;
@@ -4666,7 +4666,9 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       transcode = true;
       quality = g_guiSettings.GetInt("myplex.remoteplexquality");
     }
-    else if (g_guiSettings.GetBool("plexmediaserver.forcelocaltranscode") == true && usingLocalPath == false && Cocoa_IsHostLocal(mediaURL.GetHostName()) == false)
+    else if (g_guiSettings.GetBool("plexmediaserver.forcelocaltranscode") == true &&
+             usingLocalPath == false &&
+             NetworkInterface::IsLocalAddress(mediaURL.GetHostName()) == false)
     {
       // This is a forced local transcode.
       transcode = true;

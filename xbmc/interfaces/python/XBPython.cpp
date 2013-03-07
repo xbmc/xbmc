@@ -26,6 +26,8 @@
 // python.h should always be included first before any other includes
 #include <Python.h>
 
+#include <algorithm>
+
 #include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
@@ -79,20 +81,24 @@ XBPython::~XBPython()
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
+#define LOCK_AND_COPY(type, dest, src) \
+  if (!m_bInitialized) return; \
+  CSingleLock lock(src); \
+  src.hadSomethingRemoved = false; \
+  type dest; \
+  dest = src
+
+#define CHECK_FOR_ENTRY(l,v) \
+  (l.hadSomethingRemoved ? (std::find(l.begin(),l.end(),v) != l.end()) : true)
+
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackEnded();
-      it++;
-    }
-  }
 }
 
 void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -100,12 +106,16 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   if (flag & VideoLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("video");
+     OnDatabaseUpdated("video");
+   else if (strcmp(message, "OnScanStarted") == 0)
+     OnDatabaseScanStarted("video");
   }
   else if (flag & AudioLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("music");
+     OnDatabaseUpdated("music");
+   else if (strcmp(message, "OnScanStarted") == 0)
+     OnDatabaseScanStarted("music");
   }
   else if (flag & GUI)
   {
@@ -120,145 +130,101 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
 void XBPython::OnPlayBackStarted()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackStarted();
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that we paused playing
 void XBPython::OnPlayBackPaused()
 {
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  TRACE;
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackPaused();
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that we resumed playing
 void XBPython::OnPlayBackResumed()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackResumed();
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackStopped();
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that playback speed changed (FF/RW)
 void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that player is seeking
 void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that player chapter seeked
 void XBPython::OnPlayBackSeekChapter(int iChapter)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
-      it++;
-    }
-  }
 }
 
 // message all registered callbacks that next item has been queued
 void XBPython::OnQueueNextItem()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
+  LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
+  for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
       ((IPlayerCallback*)(*it))->OnQueueNextItem();
-      it++;
-    }
-  }
 }
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPlayerCallbackList);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPlayerCallbackList);
   PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
   {
     if (*it == pCallback)
+    {
       it = m_vecPlayerCallbackList.erase(it);
+      m_vecPlayerCallbackList.hadSomethingRemoved = true;
+    }
     else
       it++;
   }
@@ -267,19 +233,22 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecMonitorCallbackList);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecMonitorCallbackList);
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
   {
     if (*it == pCallback)
+    {
       it = m_vecMonitorCallbackList.erase(it);
+      m_vecMonitorCallbackList.hadSomethingRemoved = true;
+    }
     else
       it++;
   }
@@ -288,83 +257,60 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
 void XBPython::OnSettingsChanged(const CStdString &ID)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    { 
-      if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)  
-        ((XBMCAddon::xbmc::Monitor*)(*it))->OnSettingsChanged();
-      it++;
-    }
-  }  
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)) && ((*it)->GetId() == ID))
+      (*it)->OnSettingsChanged();
 }  
 
 void XBPython::OnScreensaverActivated()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverActivated();
-      it++;
-    }
-  }  
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnScreensaverActivated();
 } 
 
 void XBPython::OnScreensaverDeactivated()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverDeactivated();
-      it++;
-    }
-  }  
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnScreensaverDeactivated();
 } 
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
 {
   TRACE;
- CSingleLock lock(m_critSection);
- if (m_bInitialized)
- {
-  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-  while (it != m_vecMonitorCallbackList.end())
-  {
-   ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseUpdated(database);
-   it++;
-  }
- }  
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDatabaseUpdated(database);
 } 
+
+void XBPython::OnDatabaseScanStarted(const std::string &database)
+{
+  TRACE;
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDatabaseScanStarted(database);
+}
 
 void XBPython::OnAbortRequested(const CStdString &ID)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
+  for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
   {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
     {
       if (ID.IsEmpty())
-      {    
-        ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
-      }
-      else
-      {
-        if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)
-          ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
-      }
-      it++;
+        (*it)->OnAbortRequested();
+      else if ((*it)->GetId() == ID)
+        (*it)->OnAbortRequested();
     }
   }  
 } 
@@ -614,6 +560,8 @@ void XBPython::FinalizeScript()
   m_endtime = XbmcThreads::SystemClockMillis();
 }
 
+
+// Always called with the lock held on m_critSection
 void XBPython::Finalize()
 {
   TRACE;
@@ -654,19 +602,14 @@ void XBPython::Finalize()
 
 void XBPython::FreeResources()
 {
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    // with the m_critSection held, we should copy the PyList so that 
-    // we can operate on the values once we release it.
-    PyList tmpvec = m_vecPyList;
-    m_vecPyList.clear();
+  LOCK_AND_COPY(std::vector<PyElem>,tmpvec,m_vecPyList);
+  m_vecPyList.clear();
+  m_vecPyList.hadSomethingRemoved = true;
 
-    lock.Leave(); //unlock here because the python thread might lock when it exits
+  lock.Leave(); //unlock here because the python thread might lock when it exits
 
-    // cleanup threads that are still running
-    tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls FinalizeScript
-  }
+  // cleanup threads that are still running
+  tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls FinalizeScript
 }
 
 void XBPython::Process()
@@ -684,7 +627,7 @@ void XBPython::Process()
       CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
 
   if (m_bInitialized)
   {
@@ -695,6 +638,7 @@ void XBPython::Process()
       {
         tmpvec.push_back(*it);
         it = m_vecPyList.erase(it);
+        m_vecPyList.hadSomethingRemoved = true;
       }
       else
         it++;
@@ -704,8 +648,11 @@ void XBPython::Process()
     //delete scripts which are done
     tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls FinalizeScript
 
+    CSingleLock l2(m_critSection);
     if(m_iDllScriptCounter == 0 && (XbmcThreads::SystemClockMillis() - m_endtime) > 10000 )
+    {
       Finalize();
+    }
   }
 }
 
@@ -747,7 +694,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   if (g_settings.GetCurrentProfile().programsLocked() && !g_passwordManager.IsMasterLockUnlocked(true))
     return -1;
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   Initialize();
 
   if (!m_bInitialized) return -1;
@@ -770,7 +717,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
 
 void XBPython::setDone(int id)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
@@ -789,7 +736,7 @@ void XBPython::setDone(int id)
 void XBPython::stopScript(int id)
 {
   CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
@@ -810,7 +757,7 @@ void* XBPython::getMainThreadState()
 
 int XBPython::ScriptsSize()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   return m_vecPyList.size();
 }
 
@@ -818,7 +765,7 @@ const char* XBPython::getFileName(int scriptId)
 {
   const char* cFileName = NULL;
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
@@ -834,7 +781,7 @@ int XBPython::getScriptId(const CStdString &strFile)
 {
   int iId = -1;
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
 
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
@@ -849,7 +796,7 @@ int XBPython::getScriptId(const CStdString &strFile)
 
 bool XBPython::isRunning(int scriptId)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
 
   for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); it++)
   {
@@ -868,7 +815,7 @@ bool XBPython::isStopping(int scriptId)
 {
   bool bStopping = false;
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
@@ -882,7 +829,7 @@ bool XBPython::isStopping(int scriptId)
 
 int XBPython::GetPythonScriptId(int scriptPosition)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_vecPyList);
   return (int)m_vecPyList[scriptPosition].id;
 }
 
@@ -926,6 +873,9 @@ int XBPython::evalString(const CStdString &src, const std::vector<CStdString> &a
   inf.bDone     = false;
   inf.strFile   = "<string>";
   inf.pyThread  = pyThread;
+
+  lock.Leave();
+  CSingleLock l2(m_vecPyList);
 
   m_vecPyList.push_back(inf);
 

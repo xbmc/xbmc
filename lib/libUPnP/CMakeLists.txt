@@ -68,7 +68,7 @@ set(SRCS
   Neptune/Source/System/Posix/NptPosixTime.cpp
 )
 
-if(UNIX)
+if(TARGET_POSIX)
   set(SRCS
     ${SRCS}
     Neptune/Source/System/Posix/NptPosixSystem.cpp
@@ -77,13 +77,13 @@ if(UNIX)
     Neptune/Source/System/Posix/NptPosixThreads.cpp
     Neptune/Source/System/Bsd/NptBsdNetwork.cpp
   )
-  if(APPLE)
+  if(TARGET_COMMON_DARWIN)
     list(APPEND SRCS Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm)
     list(APPEND SRCS Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm)
-  else()
+  else(TARGET_COMMON_DARWIN)
     list(APPEND SRCS Neptune/Source/System/Posix/NptPosixEnvironment.cpp)
   endif()
-elseif(WIN32)
+elseif(TARGET_WIN32)
   set(SRCS
     ${SRCS}
     Neptune/Source/System/Win32/NptWin32Debug.cpp
@@ -95,7 +95,7 @@ elseif(WIN32)
     Neptune/Source/System/Win32/NptWin32System.cpp
     Neptune/Source/System/Win32/NptWin32Threads.cpp
   )
-endif()
+endif(TARGET_POSIX)
 
 include_directories(
   Neptune/Source/Core

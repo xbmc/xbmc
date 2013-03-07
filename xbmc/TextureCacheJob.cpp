@@ -202,6 +202,13 @@ bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
 {
+  /* PLEX */
+  if (URIUtils::IsInternetStream(url))
+  {
+    /* Shortcut, instead of stating the URL let's just hash the URL */
+    return url;
+  }
+  /* END PLEX */
   struct __stat64 st;
   if (XFILE::CFile::Stat(url, &st) == 0)
   {

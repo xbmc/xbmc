@@ -30,10 +30,16 @@
 #include "Application.h"
 #include "XbmcContext.h"
 #include "GUIInfoManager.h"
+#include "utils/StringUtils.h"
+
+#ifndef _DEBUG
+#define XBMC_TRACK_EXCEPTIONS
+#endif
 
 // Minidump creation function
 LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 {
+  win32_exception::write_stacktrace(pEp);
   win32_exception::write_minidump(pEp);
   return pEp->ExceptionRecord->ExceptionCode;;
 }
@@ -131,35 +137,86 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   // use 1 ms timer precision - like SDL initialization used to do
   timeBeginPeriod(1);
 
-  // Create and run the app
-  if(!g_application.Create())
+#ifdef XBMC_TRACK_EXCEPTIONS
+  try
   {
-    CStdString errorMsg;
-    errorMsg.Format("CApplication::Create() failed - check log file and that it is writable");
-    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
-    return 0;
+#endif
+    // Create and run the app
+    if(!g_application.Create())
+    {
+      MessageBox(NULL, "ERROR: Unable to create application. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+      return 1;
+    }
+#ifdef XBMC_TRACK_EXCEPTIONS
   }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("CApplication::Create()");
+    MessageBox(NULL, "ERROR: Unable to create application. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "exception in CApplication::Create()");
+    MessageBox(NULL, "ERROR: Unable to create application. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+#endif
 
 #ifndef _DEBUG
   // we don't want to see the "no disc in drive" windows message box
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 #endif
 
-  if (!g_application.CreateGUI())
+#ifdef XBMC_TRACK_EXCEPTIONS
+  try
   {
-    CStdString errorMsg;
-    errorMsg.Format("CApplication::CreateGUI() failed - Check log file for display errors");
-    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
-    return 0;
+#endif
+    if (!g_application.CreateGUI())
+    {
+      MessageBox(NULL, "ERROR: Unable to create GUI. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+      return 1;
+    }
+#ifdef XBMC_TRACK_EXCEPTIONS
   }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("CApplication::CreateGUI()");
+    MessageBox(NULL, "ERROR: Unable to create GUI. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "exception in CApplication::CreateGUI()");
+    MessageBox(NULL, "ERROR: Unable to create GUI. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+#endif
 
-  if (!g_application.Initialize())
+#ifdef XBMC_TRACK_EXCEPTIONS
+  try
   {
-    CStdString errorMsg;
-    errorMsg.Format("CApplication::Initialize() failed - Check log file and that it is writable");
-    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
-    return 0;
+#endif
+    if (!g_application.Initialize())
+    {
+      MessageBox(NULL, "ERROR: Unable to Initialize. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+      return 1;
+    }
+#ifdef XBMC_TRACK_EXCEPTIONS
   }
+  catch (const XbmcCommons::UncheckedException &e)
+  {
+    e.LogThrowMessage("CApplication::Initialize()");
+    MessageBox(NULL, "ERROR: Unable to Initialize. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "exception in CApplication::Initialize()");
+    MessageBox(NULL, "ERROR: Unable to Initialize. Exiting.", "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 1;
+  }
+#endif
 
   g_application.Run();
 

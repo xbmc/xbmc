@@ -559,7 +559,7 @@ bool CAESinkWASAPI::SoftResume()
   return false;
 }
 
-void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
+void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;

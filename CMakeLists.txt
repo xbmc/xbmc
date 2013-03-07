@@ -30,7 +30,7 @@ configure_file(${plexdir}/git_revision.h.in git_revision.h)
 set(PLEX_VERSION_MAJOR 0)
 set(PLEX_VERSION_MINOR 9)
 set(PLEX_VERSION_PATCH 9)
-set(PLEX_VERSION_SMALL 5)
+set(PLEX_VERSION_SMALL 6)
 if(DEFINED ENV{BUILD_NUMBER})
   set(PLEX_VERSION_BUILD ".$ENV{BUILD_NUMBER}")
 else()
@@ -63,19 +63,20 @@ include_directories(
   ${dependdir}/include/freetype2
   ${dependdir}/include/python2.6
   ${dependdir}/include/python2.7
+  ${ffmpegdir}/include
   ${root}/xbmc
 )
 
 # Platfrom includes
-if(UNIX)
+if(TARGET_POSIX)
   include_directories(${root}/xbmc/linux)
-endif(UNIX)
+endif(TARGET_POSIX)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   include_directories(${root}/xbmc/osx)
-endif(APPLE)
+endif(TARGET_COMMON_DARWIN)
 
-if(WIN32)
+if(TARGET_WIN32)
   include_directories(
     ${root}/xbmc/win32
     ${root}/lib/ffmpeg
@@ -85,7 +86,7 @@ if(WIN32)
     ${root}/lib/win32
     "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
   )
-endif()
+endif(TARGET_WIN32)
 
 # Build the texturepacker
 add_subdirectory(tools/TexturePacker)
@@ -123,7 +124,7 @@ include_directories(
 )
 
 add_subdirectory(xbmc)
-if(APPLE)
+if(TARGET_OSX)
   add_subdirectory(tools/EventClients/Clients/OSXRemote)
 endif()
 add_subdirectory(plex)

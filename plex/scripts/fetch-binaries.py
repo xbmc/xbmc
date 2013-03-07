@@ -60,7 +60,6 @@ def platform_str(platform, arch):
 
 def fix_install_name(path):
   if os.path.exists(os.path.join(path, "install_name_fixed")):
-    print "Already done."
     return
   for root, dirs, files in os.walk(path):
     for f in files:
@@ -74,7 +73,7 @@ def fix_install_name(path):
           exec_cmd(["install_name_tool", "-id", fpath, fpath], supress_output=True)
           otoolout=exec_cmd(["otool", "-L", fpath], supress_output=True)
         except:
-          print "Fail when running installname on %s" % f
+          print "** Fail when running installname on %s" % f
           continue
         for l in otoolout.split("\n"):
           l=l.rstrip().strip()
@@ -109,15 +108,15 @@ if __name__=='__main__':
     os.chdir(options.output)
 
     for depend in config.sections():
-        print "Processing %s" % depend
+        print "-- Processing %s" % depend
         plat_str = platform_str(options.platform, options.arch)
         dirname="%s-%s"%(config.get(depend, "version"), plat_str)
 
         dirpath=os.path.join(options.output, dirname)
-        print "Want file %s.tar.bz2->%s" % (dirname, dirname)
+        print "-- Want file %s.tar.bz2->%s" % (dirname, dirname)
 
         if os.path.exists(dirname):
-            print "Looks like we have %s already" % dirpath
+            print "-- Looks like we have %s already" % dirpath
         else:
             build=""
             if config.has_option(depend, "build"):
@@ -127,25 +126,25 @@ if __name__=='__main__':
             if config.has_option(depend, plat_str+"_chksum"):
                 checksum=config.get(depend, plat_str+"_chksum")
             else:
-                print "No checksum for this platform, just skipping this dependency then"
+                print "** No checksum for this platform, just skipping this dependency then"
                 continue
 
-            print "Fetching: %s"%url
+            print "-- Fetching: %s"%url
             exec_cmd(["curl", "-o", "/tmp/%s.tbz2"%dirname, url])
             computed=sha1_for_file("/tmp/"+dirname+".tbz2")
             if not computed==checksum:
-                print "checksum didn't match!"
+                print "** checksum didn't match!"
                 sys.exit(1)
             else:
-                print "checksum match!"
+                print "** checksum match!"
 
-            print "Unpacking.../tmp/%s.tbz2" % dirname
+            print "-- Unpacking.../tmp/%s.tbz2" % dirname
             exec_cmd(["tar", "xjf", "/tmp/"+dirname+".tbz2"])
             os.unlink("/tmp/"+dirname+".tbz2")
 
         if os.path.islink(depend):
             if not os.path.realpath(depend) == os.path.realpath(dirname):
-                print "Removing old dependency tree"
+                print "-- Removing old dependency tree"
                 shutil.rmtree(os.path.realpath(depend), True)
                 os.unlink(depend)
                 os.symlink(dirname, depend)
@@ -153,13 +152,9 @@ if __name__=='__main__':
             os.symlink(dirname, depend)
             
         if platform.system() == "Darwin":
-          print "Fixing install names"
+          print "-- Fixing install names"
           fix_install_name(os.path.join(os.path.realpath(dirname), "lib"))
-          # fix sparkle framework, if we add more frameworks we probably have to do
-          # this more generic
-          sparklepath = os.path.join(os.path.realpath(dirname), "Frameworks", "Sparkle.framework", "Sparkle")
-          exec_cmd(["install_name_tool", "-id", sparklepath, sparklepath], supress_output=True)
         
-        print "Done with %s" % depend
+        print "-- Done with %s" % depend
 
 

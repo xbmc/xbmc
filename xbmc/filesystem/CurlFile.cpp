@@ -333,8 +333,7 @@ void CCurlFile::CReadState::Disconnect()
 
 CCurlFile::~CCurlFile()
 {
-  if (m_opened)
-    Close();
+  Close();
   delete m_state;
   g_curlInterface.Unload();
 }
@@ -470,7 +469,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 #endif
 
   // enable support for icecast / shoutcast streams
-  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
+  if ( NULL == m_curlAliasList )
+    // m_curlAliasList is used only by this one place, but SetCommonOptions can
+    // be called multiple times, only append to list if it's empty.
+    m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
   g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList);
 
   // never verify peer, we don't have any certificates to do this
@@ -595,6 +597,13 @@ void CCurlFile::SetCommonOptions(CReadState* state)
       g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, userAgent.c_str());
   }
   /* END PLEX */
+
+  if (m_skipshout)
+    // For shoutcast file, content-length should not be set, and in libcurl there is a bug, if the
+    // cast file was 302 redirected then getinfo of CURLINFO_CONTENT_LENGTH_DOWNLOAD will return
+    // the 302 response's body length, which cause the next read request failed, so we ignore
+    // content-length for shoutcast file to workaround this.
+    g_curlInterface.easy_setopt(h, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -1061,7 +1070,11 @@ bool CCurlFile::Exists(const CURL& url)
   if(url2.GetProtocol() == "ftp")
   {
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+    // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
+    if (url2.GetFileName().Right(1).Equals("/"))
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
+    else
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
@@ -1186,8 +1199,11 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   if(url2.GetProtocol() == "ftp")
   {
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+    // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
+    if (url2.GetFileName().Right(1).Equals("/"))
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
+    else
+      g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
@@ -1314,7 +1330,7 @@ unsigned int CCurlFile::CReadState::Read(void* lpBuf, int64_t uiBufSize)
 /* use to attempt to fill the read buffer up to requested number of bytes */
 bool CCurlFile::CReadState::FillBuffer(unsigned int want)
 {
-  int retry=0;
+  int retry = 0;
   fd_set fdread;
   fd_set fdwrite;
   fd_set fdexcep;
@@ -1362,18 +1378,19 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
 
             CLog::Log(LOGWARNING, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
-            // We need to check the data.result here as we don't want to retry on every error
+            // We need to check the result here as we don't want to retry on every error
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
                   msg->data.result == CURLE_PARTIAL_FILE       ||
+                  msg->data.result == CURLE_COULDNT_CONNECT    ||
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
-              CURLresult=msg->data.result;
+              CURLresult = msg->data.result;
             else
               return false;
           }
         }
 
-        // Don't retry, when we didn't "see" any error
+        // Don't retry when we didn't "see" any error
         if (CURLresult == CURLE_OK)
           return false;
 
@@ -1399,7 +1416,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
           return false;
         }
 
-        CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
+        CLog::Log(LOGWARNING, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
 
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);

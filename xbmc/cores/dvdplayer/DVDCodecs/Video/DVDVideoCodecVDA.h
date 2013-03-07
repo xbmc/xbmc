@@ -68,6 +68,7 @@ protected:
   int32_t           m_format;
   const char        *m_pFormatName;
   bool              m_DropPictures;
+  bool              m_decode_async;
 
   double            m_sort_time_offset;
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation

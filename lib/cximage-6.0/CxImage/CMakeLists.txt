@@ -6,8 +6,8 @@ set(cximage_srcs
 	xmemfile.cpp ximabmp.cpp ximaexif.cpp ximahist.cpp ximaint.cpp
 	ximajpg.cpp ximamng.cpp ximapng.cpp ximaska.cpp ximatif.cpp ximawmf.cpp
 )
-if(WIN32)
+if(TARGET_WIN32)
   list(APPEND cximage_srcs CxImageDLL/CxImageCrtDll.cpp)
-endif()
+endif(TARGET_WIN32)
 include_directories(../jasper/include)
 add_library(cximage STATIC ${cximage_srcs})

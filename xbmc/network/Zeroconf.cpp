@@ -43,7 +43,7 @@
 //should be optimized away
 class CZeroconfDummy : public CZeroconf
 {
-  virtual bool doPublishService(const std::string&, const std::string&, const std::string&, unsigned int, std::map<std::string, std::string>)
+  virtual bool doPublishService(const std::string&, const std::string&, const std::string&, unsigned int, const std::vector<std::pair<std::string, std::string> >&)
   {
     return false;
   }
@@ -68,7 +68,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                const std::string& fcr_type,
                                const std::string& fcr_name,
                                unsigned int f_port,
-                               std::map<std::string, std::string> txt)
+                               const std::vector<std::pair<std::string, std::string> >& txt)
 {
   CSingleLock lock(*mp_crit_sec);
   CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port, txt};

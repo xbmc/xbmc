@@ -98,11 +98,9 @@ protected:
   CCriticalSection m_section;
   DIRECTORY_STATUS m_directoryStatus;
   unsigned int m_jobID;
-
-  /* PLEX */
-  bool m_expireTimer;
   
-  CCriticalSection m_filesCritical;
+  /* PLEX */
+  std::vector<CStdString> m_plexFiles;
   /* END PLEX */
 };
 #endif

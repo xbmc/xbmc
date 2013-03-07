@@ -464,7 +464,7 @@ double CAESinkDirectSound::GetCacheTotal()
   return (double)m_dwBufferLen / (double)m_AvgBytesPerSec;
 }
 
-void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
+void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
   CAEDeviceInfo        deviceInfo;
 
@@ -607,10 +607,10 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     if (SUCCEEDED(hr) && varName.blob.cbSize > 0)
     {
       WAVEFORMATEX* smpwfxex = (WAVEFORMATEX*)varName.blob.pBlobData;
-      deviceInfo.m_channels = layoutsByChCount[std::min(smpwfxex->nChannels, (WORD) 2)];
+      deviceInfo.m_channels = layoutsByChCount[std::max(std::min(smpwfxex->nChannels, (WORD) DS_SPEAKER_COUNT), (WORD) 2)];
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
-      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 96000));
+      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 192000));
     }
     else
     {
@@ -626,10 +626,23 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     deviceInfo.m_displayNameExtra = std::string("DirectSound: ").append(strFriendlyName);
     deviceInfo.m_deviceType       = aeDeviceType;
 
-    /* Now logged by AESinkFactory on startup */
-    //CLog::Log(LOGDEBUG,"Audio Device %d:    %s", i, ((std::string)deviceInfo).c_str());
-
     deviceInfoList.push_back(deviceInfo);
+  }
+
+  // since AE takes the first device in deviceInfoList as default audio device we need
+  // to sort it in order to use the real default device
+  if(deviceInfoList.size() > 1)
+  {
+    std::string strDD = GetDefaultDevice();
+    for (AEDeviceInfoList::iterator itt = deviceInfoList.begin(); itt != deviceInfoList.end(); ++itt)
+    {
+      CAEDeviceInfo devInfo = *itt;
+      if(devInfo.m_deviceName == strDD)
+      {
+        deviceInfoList.erase(itt);
+        deviceInfoList.insert(deviceInfoList.begin(), devInfo);
+      }
+    }
   }
 
   return;
@@ -829,5 +842,73 @@ const char *CAESinkDirectSound::WASAPIErrToStr(HRESULT err)
   return NULL;
 }
 
+std::string CAESinkDirectSound::GetDefaultDevice()
+{
+  IMMDeviceEnumerator* pEnumerator = NULL;
+  IMMDevice*           pDevice = NULL;
+  IPropertyStore*      pProperty = NULL;
+  HRESULT              hr;
+  PROPVARIANT          varName;
+  std::string          strDevName = "default";
 
+  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %s", WASAPIErrToStr(hr));
+    goto failed;
+  }
 
+  hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &pDevice);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of audio endpoint enumeration failed.");
+    goto failed;
+  }
+
+  hr = pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint properties failed.");
+    goto failed;
+  }
+
+  PropVariantInit(&varName);
+  hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint form factor failed.");
+    goto failed;
+  }
+  AEDeviceType aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
+  PropVariantClear(&varName);
+
+  hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Retrieval of DirectSound endpoint GUID failed.");    
+    goto failed;
+  }
+
+  strDevName = localWideToUtf(varName.pwszVal);
+  PropVariantClear(&varName);
+
+failed:
+
+  SAFE_RELEASE(pProperty);
+  SAFE_RELEASE(pDevice);
+  SAFE_RELEASE(pEnumerator);
+
+  return strDevName;
+}
+
+bool CAESinkDirectSound::SoftSuspend()
+{
+  Deinitialize();
+  return true;
+}
+
+bool CAESinkDirectSound::SoftResume()
+{
+  /* Return false to force re-init by engine */
+  return false;
+}

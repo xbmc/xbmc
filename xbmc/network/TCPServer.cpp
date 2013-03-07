@@ -182,7 +182,15 @@ void CTCPServer::Process()
           newconnection->m_socket = accept(*it, (sockaddr*)&newconnection->m_cliaddr, &newconnection->m_addrlen);
 
           if (newconnection->m_socket == INVALID_SOCKET)
-            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
+          {
+            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed: %d", errno);
+            if (EBADF == errno)
+            {
+              Sleep(1000);
+              Initialize();
+              break;
+            }
+          }
           else
           {
             CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
@@ -646,23 +654,28 @@ void CTCPServer::CWebSocketClient::Send(const char *data, unsigned int size)
 void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buffer, int length)
 {
   bool send;
-  const CWebSocketMessage *msg;
-  if ((msg = m_websocket->Handle(buffer, length, send)) != NULL && msg->IsComplete())
+  const CWebSocketMessage *msg = NULL;
+  size_t len = length;
+  do
   {
-    std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
-    if (send)
+    if ((msg = m_websocket->Handle(buffer, len, send)) != NULL && msg->IsComplete())
     {
-      for (unsigned int index = 0; index < frames.size(); index++)
-        Send(frames.at(index)->GetFrameData(), (unsigned int)frames.at(index)->GetFrameLength());
-    }
-    else
-    {
-      for (unsigned int index = 0; index < frames.size(); index++)
-        CTCPClient::PushBuffer(host, frames.at(index)->GetApplicationData(), (int)frames.at(index)->GetLength());
-    }
+      std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
+      if (send)
+      {
+        for (unsigned int index = 0; index < frames.size(); index++)
+          Send(frames.at(index)->GetFrameData(), (unsigned int)frames.at(index)->GetFrameLength());
+      }
+      else
+      {
+        for (unsigned int index = 0; index < frames.size(); index++)
+          CTCPClient::PushBuffer(host, frames.at(index)->GetApplicationData(), (int)frames.at(index)->GetLength());
+      }
 
-    delete msg;
+      delete msg;
+    }
   }
+  while (len > 0 && msg != NULL);
 
   if (m_websocket->GetState() == WebSocketStateClosed)
     Disconnect();

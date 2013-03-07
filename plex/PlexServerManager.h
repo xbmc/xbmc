@@ -13,7 +13,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread.hpp>
 
-#include "CocoaUtilsPlus.h"
 #include "filesystem/CurlFile.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
@@ -125,26 +124,31 @@ public:
   /// Server disappeared.
   void removeServer(const string& uuid, const string& name, const string& addr, unsigned short port)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, ""));
-    
-    // Decrease reference count.
-    if (m_servers.find(server->key()) != m_servers.end())
-    {
-      if (m_servers[server->key()]->decRef() == 0)
-      {
-        dprintf("Plex Server Manager: removed existing server '%s' (%s).", name.c_str(), addr.c_str());
-        CPlexSourceScanner::RemoveHost(server, true);
+    bool removeServer = false;
 
-        m_servers.erase(server->key());
-      }
-      else
+    {
+      boost::recursive_mutex::scoped_lock lk(m_mutex);
+      // Decrease reference count.
+      if (m_servers.find(server->key()) != m_servers.end())
       {
-        dprintf("Plex Server Manager: lost a reference to server '%s' (%s) ref=%d.", name.c_str(), addr.c_str(), server->refCount());
-        /* We need to make sure that all other server refs with the same UUID runs their connectivity tests now
-         * because this can mean that we have lost the server */
+        if (m_servers[server->key()]->decRef() == 0)
+        {
+          dprintf("Plex Server Manager: removed existing server '%s' (%s).", name.c_str(), addr.c_str());
+          m_servers.erase(server->key());
+          removeServer = true;
+        }
+        else
+        {
+          dprintf("Plex Server Manager: lost a reference to server '%s' (%s) ref=%d.", name.c_str(), addr.c_str(), server->refCount());
+          /* We need to make sure that all other server refs with the same UUID runs their connectivity tests now
+           * because this can mean that we have lost the server */
+        }
       }
     }
+    
+    if (removeServer)
+      CPlexSourceScanner::RemoveHost(server, true);
 
     runRechabilityChecks();
     updateBestServer();
@@ -154,23 +158,29 @@ public:
   /// Server was updated.
   void updateServer(const string& uuid, const string& name, const string& addr, unsigned short port, time_t updatedAt)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
-    
+    bool scanServer = false;
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, ""));
-    if (m_servers.find(server->key()) != m_servers.end())
+    
     {
-      // See if anything actually changed.
-      if (m_servers[server->key()]->updatedAt < updatedAt)
+      boost::recursive_mutex::scoped_lock lk(m_mutex);
+      if (m_servers.find(server->key()) != m_servers.end())
       {
-        dprintf("Plex Server Manager: the server '%s' was updated, rescanning (updated at %ld)", name.c_str(), updatedAt);
-        m_servers[server->key()]->updatedAt = updatedAt;
-        CPlexSourceScanner::ScanHost(server);
-      }
-      else
-      {
-        dprintf("Plex Server Manager: the server '%s' was already up to date, not scanning.", name.c_str());
+        // See if anything actually changed.
+        if (m_servers[server->key()]->updatedAt < updatedAt)
+        {
+          dprintf("Plex Server Manager: the server '%s' was updated, rescanning (updated at %ld)", name.c_str(), updatedAt);
+          m_servers[server->key()]->updatedAt = updatedAt;
+          scanServer = true;
+        }
+        else
+        {
+          dprintf("Plex Server Manager: the server '%s' was already up to date, not scanning.", name.c_str());
+        }
       }
     }
+    
+    if (scanServer)
+      CPlexSourceScanner::ScanHost(server);
   }
   
   /// Return if server is reachable

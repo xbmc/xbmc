@@ -24,7 +24,6 @@
 #include <boost/thread/xtime.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
  
-#include "CocoaUtils.h"
 #include "PlexMediaServerPlayer.h"
 #include "PlexUtils.h"
 #include "FileItem.h"

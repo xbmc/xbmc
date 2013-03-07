@@ -1,16 +1,16 @@
-if(NOT WIN32)
+if(NOT TARGET_WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-common")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -fno-common")
   add_definitions(-D_DLL -DXBMC)
   include_directories(${dependdir}/include)
-else()
+else(NOT TARGET_WIN32)
   set(COMPILE_DEFINITIONS "")
   add_definitions(-D_DLL -DWIN32 -D_WINDOWS -D_USRDLL -D_AFXDLL -DJAS_WIN_MSVC_BUILD -D_CRT_SECURE_NO_DEPRECATE -D_CONSOLE)
   set(CMAKE_C_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MDd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
   set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
   set(CMAKE_C_FLAGS_RELEASE " /WX- /O2 /Ob1 /Oy- /DNDEBUG /GF /Gm- /EHa /MD /GS- /Gy /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope")
   set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-endif()
+endif(NOT TARGET_WIN32)
 
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}")
 
@@ -19,30 +19,31 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}
 #                                `cat ../../xbmc/cores/DllLoader/exports/wrapper.def` \
 #                                                ../../xbmc/cores/DllLoader/exports/wrapper.o
 
-if(WIN32)
+if(TARGET_WIN32)
   # Use the zlib that comes with cximage
   include_directories(zlib zlib/win32)
-endif()
+endif(TARGET_WIN32)
 
 add_subdirectory(CxImage)
 add_subdirectory(jbig)
 add_subdirectory(raw)
 add_subdirectory(jasper)
+add_subdirectory(zlib)
 
 set(OBJECTS
   cximage
   cx_jbig
   cx_raw
   cx_jasper
+  cx_zlib
 )
 set(SRC CxImage/DllInterface.cpp)
 
-if(NOT WIN32)
+if(NOT TARGET_WIN32)
   list(APPEND OBJECTS wrapper)
   add_library(ImageLib-${ARCH} MODULE ${SRC})
-  target_link_libraries(ImageLib-${ARCH} ${PLEX_LINK_WHOLEARCHIVE} ${OBJECTS} ${PLEX_LINK_NOWHOLEARCHIVE} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
-else()
-  add_subdirectory(zlib)
+  target_link_libraries(ImageLib-${ARCH} ${PLEX_LINK_WHOLEARCHIVE} ${OBJECTS} ${PLEX_LINK_NOWHOLEARCHIVE} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+else(NOT TARGET_WIN32)
   add_subdirectory(jpeg)
   add_subdirectory(mng)
   add_subdirectory(tiff)
@@ -53,7 +54,6 @@ else()
     cx_jpeg
     cx_png
     cx_tiff
-    cx_zlib
   )
 
   add_library(ImageLib SHARED ${SRC})
@@ -63,13 +63,13 @@ else()
   foreach(l ${LIBS})
     find_library(t ${l})
     target_link_libraries(ImageLib ${t})
-  endforeach()
-endif()
+  endforeach(l ${LIBS})
+endif(NOT TARGET_WIN32)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   install(TARGETS ImageLib-${ARCH} DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-elseif(UNIX)
+elseif(TARGET_COMMON_LINUX)
   install(TARGETS ImageLib-${ARCH} DESTINATION ${BINPATH}/system COMPONENT RUNTIME)
-elseif(WIN32)
+elseif(TARGET_WIN32)
   install(TARGETS ImageLib RUNTIME DESTINATION ${RESOURCEPATH}/system LIBRARY DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-endif()
+endif(TARGET_COMMON_DARWIN)

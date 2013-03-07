@@ -13,6 +13,12 @@
 #include "URL.h"
 #include "TextureCache.h"
 
+#include "SystemInfo.h"
+
+#ifdef TARGET_DARWIN_OSX
+#include <CoreServices/CoreServices.h>
+#endif
+
 using namespace std;
 using namespace boost;
 
@@ -151,6 +157,71 @@ bool PlexUtils::IsPlexWebKit(const CStdString& strFile)
   return strFile.Find("/:/webkit") != -1;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+string PlexUtils::GetMachinePlatform()
+{
+#ifdef TARGET_WINDOWS
+  return "Windows";
+#elif TARGET_LINUX
+  return "Linux";
+#elif TARGET_DARWIN_OSX
+  return "MacOSX";
+#elif TARGET_DARWIN_IOS_ATV
+  return "AppleTV2";
+#elif TARGET_RPI
+  return "RaspberryPI";
+#else
+  return "Unknown";
+#endif
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string PlexUtils::GetMachinePlatformVersion()
+{
+  string ver;
+
+#if TARGET_WINDOWS
+
+  DWORD dwVersion = GetVersion();
+  DWORD dwMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
+  DWORD dwMinorVersion = (DWORD)(HIBYTE(LOWORD(dwVersion)));
+  DWORD dwBuildNumber  = (DWORD)(HIWORD(dwVersion));
+
+  char str[256];
+  sprintf(str, "%d.%d (Build %d)", dwMajorVersion, dwMinorVersion, dwBuildNumber);
+  ver = str;
+
+#elif TARGET_LINUX
+
+  struct utsname buf;
+  if (uname(&buf) == 0)
+  {
+    ver = buf.release;
+    ver = " (" + string(buf.version) + ")";
+  }
+
+#elif TARGET_DARWIN_OSX
+
+  // TODO: Gestalt() is deprecated in 10.8!
+
+  SInt32 res = 0;
+  Gestalt(gestaltSystemVersionMajor, &res);
+  ver = boost::lexical_cast<string>(res) + ".";
+
+  Gestalt(gestaltSystemVersionMinor, &res);
+  ver += boost::lexical_cast<string>(res) + ".";
+
+  Gestalt(gestaltSystemVersionBugFix, &res);
+  ver += boost::lexical_cast<string>(res);
+
+#else
+
+  ver = "Unknown";
+
+#endif
+
+  return ver;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32

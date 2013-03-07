@@ -19,6 +19,12 @@
  *
  */
 
+
+#ifdef __PLEX__
+#include "plex/Owned/VideoThumbLoader.h"
+
+#else
+
 #include <map>
 #include "ThumbLoader.h"
 #include "utils/JobManager.h"
@@ -128,9 +134,9 @@ protected:
   virtual void OnLoaderFinish();
 
   IStreamDetailsObserver *m_pStreamDetailsObs;
-#ifndef __PLEX__
   CVideoDatabase *m_database;
-#endif
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_showArt;
 };
+
+#endif
