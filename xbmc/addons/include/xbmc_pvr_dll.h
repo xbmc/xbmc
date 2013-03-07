@@ -51,6 +51,22 @@ extern "C"
   const char* GetMininumPVRAPIVersion(void);
 
   /*!
+   * Get the XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * Used to check if this add-on is compatible with XBMC.
+   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * @remarks Valid implementation required.
+   */
+  const char* GetGUIAPIVersion(void);
+
+  /*!
+   * Get the XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * Used to check if this add-on is compatible with XBMC.
+   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * @remarks Valid implementation required.
+   */
+  const char* GetMininumGUIAPIVersion(void);
+
+  /*!
    * Get the list of features that this add-on provides.
    * Called by XBMC to query the add-on's capabilities.
    * Used to check which options should be presented in the UI, which methods to call, etc.
@@ -283,6 +299,16 @@ extern "C"
   * @remarks Required if bSupportsRecordingPlayCount is set to true. Return -1 if this add-on won't provide this function.
   */
   int GetRecordingLastPlayedPosition(const PVR_RECORDING& recording);
+
+  /*!
+  * Retrieve the edit decision list (EDL) of a recording on the backend.
+  * @param recording The recording.
+  * @param edl out: The function has to write the EDL list into this array.
+  * @param size in: The maximum size of the EDL, out: the actual size of the EDL.
+  * @return PVR_ERROR_NO_ERROR if the EDL was successfully read.
+  * @remarks Required if bSupportsRecordingEdl is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+  */
+  PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY edl[], int *size);
 
   //@}
   /** @name PVR timer methods
@@ -556,6 +582,8 @@ extern "C"
   {
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
+    pClient->GetGUIAPIVersion               = GetGUIAPIVersion;
+    pClient->GetMininumGUIAPIVersion        = GetMininumGUIAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
     pClient->GetStreamProperties            = GetStreamProperties;
     pClient->GetConnectionString            = GetConnectionString;
@@ -586,6 +614,7 @@ extern "C"
     pClient->SetRecordingPlayCount          = SetRecordingPlayCount;
     pClient->SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
     pClient->GetRecordingLastPlayedPosition = GetRecordingLastPlayedPosition;
+    pClient->GetRecordingEdl                = GetRecordingEdl;
 
     pClient->GetTimersAmount                = GetTimersAmount;
     pClient->GetTimers                      = GetTimers;

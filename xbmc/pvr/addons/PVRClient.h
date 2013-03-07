@@ -267,6 +267,13 @@ namespace PVR
     */
     int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
 
+    /*!
+    * @brief Retrieve the edit decision list (EDL) from the backend.
+    * @param recording The recording.
+    * @return The edit decision list (empty on error).
+    */
+    std::vector<PVR_EDL_ENTRY> GetRecordingEdl(const CPVRRecording &recording);
+
     //@}
     /** @name PVR timer methods */
     //@{
@@ -460,6 +467,7 @@ namespace PVR
     bool SupportsRecordings(void) const;
     bool SupportsRecordingFolders(void) const;
     bool SupportsRecordingPlayCount(void) const;
+    bool SupportsRecordingEdl(void) const;
     bool SupportsTimers(void) const;
     bool SupportsTV(void) const;
     bool HandlesDemuxing(void) const;
@@ -510,6 +518,14 @@ namespace PVR
      * @return True when compatible, false otherwise
      */
     static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
+
+    /*!
+     * @brief Checks whether the provided GUI API version is compatible with XBMC
+     * @param minVersion The add-on's XBMC_GUI_MIN_API_VERSION version
+     * @param version The add-on's XBMC_GUI_API_VERSION version
+     * @return True when compatible, false otherwise
+     */
+    static bool IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
 
     /*!
      * @brief Request the API version from the add-on, and check if it's compatible

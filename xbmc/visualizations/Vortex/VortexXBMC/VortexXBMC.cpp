@@ -238,3 +238,10 @@ extern "C"   unsigned int GetSubModules(char ***presets)
 {
   return 0; // this vis supports 0 sub modules
 }
+
+//-- Announce -----------------------------------------------------------------
+// Receive announcements from XBMC
+//-----------------------------------------------------------------------------
+extern "C" void ADDON_Announce(const char *flag, const char *sender, const char *message, const void *data)
+{
+}

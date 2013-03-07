@@ -158,6 +158,10 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_queue_notification");
       if (XBMC_queue_notification == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_wake_on_lan = (bool (*)(void* HANDLE, void *CB, const char *mac))
+        dlsym(m_libXBMC_addon, "XBMC_wake_on_lan");
+      if (XBMC_wake_on_lan == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       XBMC_unknown_to_utf8 = (char* (*)(void* HANDLE, void* CB, const char* str))
         dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
       if (XBMC_unknown_to_utf8 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -293,6 +297,16 @@ namespace ADDON
       vsprintf (buffer, format, args);
       va_end (args);
       return XBMC_queue_notification(m_Handle, m_Callbacks, type, buffer);
+    }
+
+    /*!
+     * @brief Send WakeOnLan magic packet.
+     * @param mac Network address of the host to wake.
+     * @return True if the magic packet was successfully sent, false otherwise.
+     */
+    bool WakeOnLan(const char* mac)
+    {
+      return XBMC_wake_on_lan(m_Handle, m_Callbacks, mac);
     }
 
     /*!
@@ -541,6 +555,7 @@ namespace ADDON
     void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
     bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
     void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
+    bool (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
     char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
     char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
     char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);

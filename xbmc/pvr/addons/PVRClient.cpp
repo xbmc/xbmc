@@ -178,15 +178,17 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
 
   memset(&addonRecording, 0, sizeof(addonRecording));
 
-  addonRecording.recordingTime  = recTime - g_advancedSettings.m_iPVRTimeCorrection;
+  addonRecording.recordingTime       = recTime - g_advancedSettings.m_iPVRTimeCorrection;
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
   strncpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(), sizeof(addonRecording.strPlotOutline) - 1);
   strncpy(addonRecording.strPlot, xbmcRecording.m_strPlot.c_str(), sizeof(addonRecording.strPlot) - 1);
   strncpy(addonRecording.strChannelName, xbmcRecording.m_strChannelName.c_str(), sizeof(addonRecording.strChannelName) - 1);
-  addonRecording.iDuration      = xbmcRecording.GetDuration();
-  addonRecording.iPriority      = xbmcRecording.m_iPriority;
-  addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
+  addonRecording.iDuration           = xbmcRecording.GetDuration();
+  addonRecording.iPriority           = xbmcRecording.m_iPriority;
+  addonRecording.iLifetime           = xbmcRecording.m_iLifetime;
+  addonRecording.iPlayCount          = xbmcRecording.m_playCount;
+  addonRecording.iLastPlayedPosition = (int)xbmcRecording.m_resumePoint.timeInSeconds;
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
@@ -257,6 +259,13 @@ bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, c
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
+bool CPVRClient::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
+{
+  AddonVersion myMinVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  AddonVersion myVersion = AddonVersion(XBMC_GUI_API_VERSION);
+  return (version >= myMinVersion && minVersion <= myVersion);
+}
+
 bool CPVRClient::CheckAPIVersion(void)
 {
   /* check the API version */
@@ -267,6 +276,18 @@ bool CPVRClient::CheckAPIVersion(void)
   if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
   {
     CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.c_str(), m_apiVersion.c_str());
+    return false;
+  }
+
+  /* check the GUI API version */
+  AddonVersion guiVersion = AddonVersion("0.0.0");
+  minVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
+  catch (exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
+
+  if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
+  {
+    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.c_str(), guiVersion.c_str());
     return false;
   }
 
@@ -696,6 +717,40 @@ int CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
   }
 
   return iReturn;
+}
+
+std::vector<PVR_EDL_ENTRY> CPVRClient::GetRecordingEdl(const CPVRRecording &recording)
+{
+  std::vector<PVR_EDL_ENTRY> edl;
+  if (!m_bReadyToUse)
+    return edl;
+
+  if (!m_addonCapabilities.bSupportsRecordingEdl)
+    return edl;
+
+  try
+  {
+    PVR_RECORDING tag;
+    WriteClientRecordingInfo(recording, tag);
+
+    PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
+    int size = PVR_ADDON_EDL_LENGTH;
+    PVR_ERROR retval = m_pStruct->GetRecordingEdl(tag, edl_array, &size);
+    if (retval == PVR_ERROR_NO_ERROR)
+    {
+      edl.reserve(size);
+      for (int i = 0; i < size; ++i)
+      {
+        edl.push_back(edl_array[i]);
+      }
+    }
+  }
+  catch (exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return edl;
 }
 
 int CPVRClient::GetTimersAmount(void)
@@ -1150,6 +1205,11 @@ bool CPVRClient::SupportsRecordingFolders(void) const
 bool CPVRClient::SupportsRecordingPlayCount(void) const
 {
   return m_addonCapabilities.bSupportsRecordingPlayCount;
+}
+
+bool CPVRClient::SupportsRecordingEdl(void) const
+{
+  return m_addonCapabilities.bSupportsRecordingEdl;
 }
 
 bool CPVRClient::SupportsTimers(void) const

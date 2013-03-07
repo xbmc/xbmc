@@ -33,6 +33,7 @@
 #endif
 #endif
 #include <string.h>
+#include <stdint.h>
 
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
@@ -67,15 +68,16 @@ struct DemuxPacket;
 #define PVR_ADDON_URL_STRING_LENGTH          1024
 #define PVR_ADDON_DESC_STRING_LENGTH         1024
 #define PVR_ADDON_INPUT_FORMAT_STRING_LENGTH 32
+#define PVR_ADDON_EDL_LENGTH                 32
 
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.6.0"
+#define XBMC_PVR_API_VERSION "1.7.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.6.0"
+#define XBMC_PVR_MIN_API_VERSION "1.7.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -154,6 +156,7 @@ extern "C" {
     bool bSupportsRecordingFolders;     /*!< @brief true if the backend supports timers / recordings in folders. */
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
+    bool bSupportsRecordingEdl;         /*!< @brief true if the backend supports retrieving an edit decision list for recordings. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -285,7 +288,26 @@ extern "C" {
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
+    int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
   } ATTRIBUTE_PACKED PVR_RECORDING;
+
+  /*!
+   * @brief Edit definition list (EDL)
+   */
+  typedef enum
+  {
+    PVR_EDL_TYPE_CUT      = 0, /*!< @brief cut (completly remove content) */
+    PVR_EDL_TYPE_MUTE     = 1, /*!< @brief mute audio */
+    PVR_EDL_TYPE_SCENE    = 2, /*!< @brief scene markers (chapter seeking) */
+    PVR_EDL_TYPE_COMBREAK = 3  /*!< @brief commercial breaks */
+  } PVR_EDL_TYPE;
+
+  typedef struct PVR_EDL_ENTRY
+  {
+    int64_t start;     // ms
+    int64_t end;       // ms
+    PVR_EDL_TYPE type;
+  } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
 
   /*!
    * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
@@ -294,6 +316,8 @@ extern "C" {
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
     const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
+    const char*  (__cdecl* GetGUIAPIVersion)(void);
+    const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);
@@ -320,6 +344,7 @@ extern "C" {
     PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
     PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
     int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);

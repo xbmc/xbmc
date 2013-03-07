@@ -63,7 +63,7 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
   for (int i = iSize; i < m_iLen; ++i) m_pBuffer[i] = 0;
 }
 
-bool CVisualisation::Create(int x, int y, int w, int h)
+bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
   m_pInfo = new VIS_PROPS;
   #ifdef HAS_DX

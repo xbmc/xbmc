@@ -352,7 +352,8 @@ static const ActionMapping windows[] =
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
         {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
-        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER},
+        {"addon"                    , WINDOW_ADDON_START}};
 
 static const ActionMapping mousecommands[] =
 {
@@ -908,6 +909,11 @@ int CButtonTranslator::GetFallbackWindow(int windowID)
     if (fallbackWindows[index].origin == windowID)
       return fallbackWindows[index].target;
   }
+  // for addon windows use WINDOW_ADDON_START
+  // because id is dynamic
+  if (windowID >= WINDOW_ADDON_START && windowID <= WINDOW_ADDON_END)
+    return WINDOW_ADDON_START;
+
   return -1;
 }
 
@@ -918,7 +924,14 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   int actionID = GetActionCode(window, key, strAction);
   // if it's invalid, try to get it from the global map
   if (actionID == 0 && fallback)
-    actionID = GetActionCode( -1, key, strAction);
+  {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      actionID = GetActionCode(fallbackWindow, key, strAction);
+    // still no valid action? use global map
+    if (actionID == 0)
+      actionID = GetActionCode( -1, key, strAction);
+  }
   // Now fill our action structure
   CAction action(actionID, strAction, key);
   return action;

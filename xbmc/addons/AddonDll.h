@@ -29,13 +29,15 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
+#include "interfaces/IAnnouncer.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace XFILE;
 
 namespace ADDON
 {
   template<class TheDll, typename TheStruct, typename TheProps>
-  class CAddonDll : public CAddon
+  class CAddonDll : public CAddon, public ANNOUNCEMENT::IAnnouncer
   {
   public:
     CAddonDll(const AddonProps &props);
@@ -54,6 +56,8 @@ namespace ADDON
     void Destroy();
 
     bool DllLoaded(void) const;
+
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   protected:
     void HandleException(std::exception &e, const char* context);
@@ -220,7 +224,10 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   {
     status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == ADDON_STATUS_OK)
+    {
       m_initialized = true;
+      ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
+    }
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
       m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
@@ -285,6 +292,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
+  ANNOUNCEMENT::CAnnouncementManager::RemoveAnnouncer(this);
+
   /* Unload library file */
   try
   {
@@ -518,6 +527,19 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
+}
+
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  try
+  {
+    m_pDll->Announce(ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message, &data);
+  }
+  catch (std::exception &e)
+  {
+    HandleException(e, "m_pDll->Announce()");
+  }
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

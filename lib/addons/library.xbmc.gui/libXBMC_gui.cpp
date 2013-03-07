@@ -300,6 +300,11 @@ void CAddonGUIWindow::SetControlLabel(int controlId, const char *label)
   ((CB_GUILib*)m_cb)->Window_SetControlLabel(((AddonCB*)m_Handle)->addonData, m_WindowHandle, controlId, label);
 }
 
+void CAddonGUIWindow::MarkDirtyRegion()
+{
+  ((CB_GUILib*)m_cb)->Window_MarkDirtyRegion(((AddonCB*)m_Handle)->addonData, m_WindowHandle);
+}
+
 ///-------------------------------------
 /// cGUISpinControl
 
@@ -555,5 +560,91 @@ void CAddonListItem::SetPath(const char *Path)
     ((CB_GUILib*)m_cb)->ListItem_SetPath(((AddonCB*)m_Handle)->addonData, m_ListItemHandle, Path);
 }
 
+///-------------------------------------
+/// cGUIRenderingControl
 
+DLLEXPORT CAddonGUIRenderingControl* GUI_control_get_rendering(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+{
+  return new CAddonGUIRenderingControl(hdl, cb, window, controlId);
+}
+
+DLLEXPORT void GUI_control_release_rendering(CAddonGUIRenderingControl* p)
+{
+  delete p;
+}
+
+DLLEXPORT bool GUI_control_rendering_create(GUIHANDLE handle, int x, int y, int w, int h, void *device)
+{
+  CAddonGUIRenderingControl *pControl = (CAddonGUIRenderingControl*) handle;
+  return pControl->Create(x,y,w,h,device);
+}
+
+DLLEXPORT void GUI_control_rendering_render(GUIHANDLE handle)
+{
+  CAddonGUIRenderingControl *pControl = (CAddonGUIRenderingControl*) handle;
+  pControl->Render();
+}
+
+DLLEXPORT void GUI_control_rendering_stop(GUIHANDLE handle)
+{
+  CAddonGUIRenderingControl *pControl = (CAddonGUIRenderingControl*) handle;
+  pControl->Stop();
+}
+
+DLLEXPORT bool GUI_control_rendering_dirty(GUIHANDLE handle)
+{
+  CAddonGUIRenderingControl *pControl = (CAddonGUIRenderingControl*) handle;
+  return pControl->Dirty();
+}
+
+CAddonGUIRenderingControl::CAddonGUIRenderingControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
+ : m_Window(window)
+ , m_ControlId(controlId)
+ , m_Handle(hdl)
+ , m_cb(cb)
+{
+  m_RenderingHandle = ((CB_GUILib*)m_cb)->Window_GetControl_RenderAddon(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
+}
+
+CAddonGUIRenderingControl::~CAddonGUIRenderingControl()
+{
+  ((CB_GUILib*)m_cb)->RenderAddon_Delete(((AddonCB*)m_Handle)->addonData, m_RenderingHandle);
+}
+
+void CAddonGUIRenderingControl::Init()
+{
+  ((CB_GUILib*)m_cb)->RenderAddon_SetCallbacks(((AddonCB*)m_Handle)->addonData, m_RenderingHandle, this, GUI_control_rendering_create, GUI_control_rendering_render, GUI_control_rendering_stop, GUI_control_rendering_dirty);
+}
+
+bool CAddonGUIRenderingControl::Create(int x, int y, int w, int h, void *device)
+{
+  if (!CBCreate)
+    return false;
+
+  return CBCreate(m_cbhdl, x, y, w, h, device);
+}
+
+void CAddonGUIRenderingControl::Render()
+{
+  if (!CBRender)
+    return;
+
+  CBRender(m_cbhdl);
+}
+
+void CAddonGUIRenderingControl::Stop()
+{
+  if (!CBStop)
+    return;
+
+  CBStop(m_cbhdl);
+}
+
+bool CAddonGUIRenderingControl::Dirty()
+{
+  if (!CBDirty)
+    return true;
+
+  return CBDirty(m_cbhdl);
+}
 };

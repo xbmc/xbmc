@@ -26,6 +26,7 @@
 
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
+typedef bool (*AddOnWakeOnLan)(const char* mac);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
@@ -56,6 +57,7 @@ typedef struct CB_AddOn
 {
   AddOnLogCallback        Log;
   AddOnQueueNotification  QueueNotification;
+  AddOnWakeOnLan          WakeOnLan;
   AddOnGetSetting         GetSetting;
   AddOnUnknownToUTF8      UnknownToUTF8;
   AddOnGetLocalizedString GetLocalizedString;
@@ -119,7 +121,9 @@ typedef GUIHANDLE   (*GUIWindow_GetControl_Button)(void *addonData, GUIHANDLE ha
 typedef GUIHANDLE   (*GUIWindow_GetControl_RadioButton)(void *addonData, GUIHANDLE handle, int controlId);
 typedef GUIHANDLE   (*GUIWindow_GetControl_Edit)(void *addonData, GUIHANDLE handle, int controlId);
 typedef GUIHANDLE   (*GUIWindow_GetControl_Progress)(void *addonData, GUIHANDLE handle, int controlId);
+typedef GUIHANDLE   (*GUIWindow_GetControl_RenderAddon)(void *addonData, GUIHANDLE handle, int controlId);
 typedef void        (*GUIWindow_SetControlLabel)(void *addonData, GUIHANDLE handle, int controlId, const char *label);
+typedef void        (*GUIWindow_MarkDirtyRegion)(void *addonData, GUIHANDLE handle);
 typedef void        (*GUIControl_Spin_SetVisible)(void *addonData, GUIHANDLE spinhandle, bool yesNo);
 typedef void        (*GUIControl_Spin_SetText)(void *addonData, GUIHANDLE spinhandle, const char *label);
 typedef void        (*GUIControl_Spin_Clear)(void *addonData, GUIHANDLE spinhandle);
@@ -146,6 +150,9 @@ typedef void        (*GUIListItem_SetInfo)(void *addonData, GUIHANDLE handle, co
 typedef void        (*GUIListItem_SetProperty)(void *addonData, GUIHANDLE handle, const char *key, const char *value);
 typedef const char* (*GUIListItem_GetProperty)(void *addonData, GUIHANDLE handle, const char *key);
 typedef void        (*GUIListItem_SetPath)(void *addonData, GUIHANDLE handle, const char *path);
+typedef void        (*GUIRenderAddon_SetCallbacks)(void *addonData, GUIHANDLE handle, GUIHANDLE clienthandle, bool (*createCB)(GUIHANDLE,int,int,int,int,void*), void (*renderCB)(GUIHANDLE), void (*stopCB)(GUIHANDLE), bool (*dirtyCB)(GUIHANDLE));
+typedef void        (*GUIRenderAddon_Delete)(void *addonData, GUIHANDLE handle);
+typedef void        (*GUIRenderAddon_MarkDirty)(void *addonData, GUIHANDLE handle);
 
 typedef struct CB_GUILib
 {
@@ -185,7 +192,9 @@ typedef struct CB_GUILib
   GUIWindow_GetControl_RadioButton    Window_GetControl_RadioButton;
   GUIWindow_GetControl_Edit           Window_GetControl_Edit;
   GUIWindow_GetControl_Progress       Window_GetControl_Progress;
+  GUIWindow_GetControl_RenderAddon    Window_GetControl_RenderAddon;
   GUIWindow_SetControlLabel           Window_SetControlLabel;
+  GUIWindow_MarkDirtyRegion           Window_MarkDirtyRegion;
   GUIControl_Spin_SetVisible          Control_Spin_SetVisible;
   GUIControl_Spin_SetText             Control_Spin_SetText;
   GUIControl_Spin_Clear               Control_Spin_Clear;
@@ -212,6 +221,8 @@ typedef struct CB_GUILib
   GUIListItem_SetProperty             ListItem_SetProperty;
   GUIListItem_GetProperty             ListItem_GetProperty;
   GUIListItem_SetPath                 ListItem_SetPath;
+  GUIRenderAddon_SetCallbacks         RenderAddon_SetCallbacks;
+  GUIRenderAddon_Delete               RenderAddon_Delete;
 
 } CB_GUILib;
 
