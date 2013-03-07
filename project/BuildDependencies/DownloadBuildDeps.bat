@@ -36,3 +36,5 @@ FOR /F "tokens=*" %%S IN ('dir /B "*_d.bat"') DO (
 cd %CUR_PATH% || EXIT /B 1
 
 rmdir %TMP_PATH% /S /Q || EXIT /B 6
+
+echo %0 - OK.

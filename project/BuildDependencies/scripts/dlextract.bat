@@ -25,6 +25,6 @@ FOR /F "eol=; tokens=1,2" %%f IN (%2) DO (
   %ZIP% x %%f || EXIT /B 4
 )
 
-FOR /F "tokens=*" %%f IN ('dir /B "*.tar"') DO (
+FOR %%f IN (*.tar) DO (
   %ZIP% x -y %%f || EXIT /B 4
 )
