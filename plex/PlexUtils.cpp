@@ -15,6 +15,10 @@
 
 #include "SystemInfo.h"
 
+#ifdef TARGET_DARWIN_OSX
+#include <CoreServices/CoreServices.h>
+#endif
+
 using namespace std;
 using namespace boost;
 
@@ -197,6 +201,8 @@ string PlexUtils::GetMachinePlatformVersion()
   }
 
 #elif TARGET_DARWIN_OSX
+
+  // TODO: Gestalt() is deprecated in 10.8!
 
   SInt32 res = 0;
   Gestalt(gestaltSystemVersionMajor, &res);

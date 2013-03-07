@@ -6,8 +6,13 @@
 
 #ifdef TARGET_DARWIN_OSX
 
-#import <CoreFoundation/CoreFoundation.h>
-#import <Foundation/Foundation.h>
+#include <Cocoa/Cocoa.h>
+#import <AddressBook/AddressBook.h>
+#include <CoreFoundation/CFString.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreServices/CoreServices.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+
 
 using namespace std;
 

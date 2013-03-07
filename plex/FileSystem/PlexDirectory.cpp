@@ -54,8 +54,6 @@ using namespace XFILE;
 #define MAX_THUMBNAIL_AGE (3600*24*2)
 #define MAX_FANART_AGE    (3600*24*7)
 
-bool Cocoa_IsHostLocal(const string& host);
-
 CFileItemListPtr CPlexDirectory::g_filterList;
 std::vector<CStdString> g_homeVideoMap;
 boost::mutex g_homeVideoMapMutex;
@@ -212,7 +210,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
 
   // Is the server local?
   CURL url(m_url);
-  bool localServer = Cocoa_IsHostLocal(url.GetHostName());
+  bool localServer = NetworkInterface::IsLocalAddress(url.GetHostName());
   
   // Save some properties.
   if (root->Attribute("updatedAt"))
