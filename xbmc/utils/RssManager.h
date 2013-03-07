@@ -25,6 +25,8 @@
 
 #include "threads/CriticalSection.h"
 
+#include "settings/ISettingsHandler.h"
+
 class CRssReader;
 class IRssObserver;
 
@@ -36,10 +38,13 @@ typedef struct
 } RssSet;
 typedef std::map<int, RssSet> RssUrls;
 
-class CRssManager
+class CRssManager : public ISettingsHandler
 {
 public:
   static CRssManager& Get();
+
+  virtual void OnSettingsLoaded();
+  virtual void OnSettingsCleared();
 
   void Start();
   void Stop();

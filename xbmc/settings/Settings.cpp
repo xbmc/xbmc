@@ -203,7 +203,6 @@ bool CSettings::Load()
   }
 
   LoadSources();
-  CRssManager::Get().Load();
   LoadUserFolderLayout();
 
   OnSettingsLoaded();
@@ -1458,7 +1457,6 @@ void CSettings::Clear()
 #ifdef HAS_UPNP
   CUPnPSettings::Get().Clear();
 #endif
-  CRssManager::Get().Clear();
 
   OnSettingsCleared();
 }

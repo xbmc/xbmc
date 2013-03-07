@@ -97,6 +97,7 @@
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
+#include "utils/RssManager.h"
 #include "utils/SeekHandler.h"
 
 #include "input/KeyboardStat.h"
@@ -703,6 +704,7 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSettingsHandler(&CPlayerCoreFactory::Get());
+  g_settings.RegisterSettingsHandler(&CRssManager::Get());
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
