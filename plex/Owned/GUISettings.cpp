@@ -888,10 +888,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "services.upnpannounce", 20188, false);
 
 
-  CStdString name;
-  name.Format("%s on %s", PLEX_TARGET_NAME, PlexUtils::GetHostName());
-
-  AddString(srvGeneral,"services.devicename", 1271, name, EDIT_CONTROL_INPUT);
+  AddString(srvGeneral,"services.devicename", 1271, PlexUtils::GetHostName().c_str(), EDIT_CONTROL_INPUT);
   AddBool(srvGeneral, "services.plexplayer", 44300, true);
 
   AddBool(srvGeneral, "services.upnprenderer", 21881, false);
