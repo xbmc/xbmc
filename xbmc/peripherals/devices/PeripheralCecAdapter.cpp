@@ -382,13 +382,6 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     libcec_configuration config;
     if (m_cecAdapter->GetCurrentConfiguration(&config))
     {
-      // wake devices
-      for (uint8_t iDevice = CECDEVICE_TV; iDevice < CECDEVICE_BROADCAST; iDevice++)
-      {
-        if ((config.bActivateSource == 0 || iDevice != CECDEVICE_TV) && config.wakeDevices.IsSet((cec_logical_address)iDevice))
-          m_cecAdapter->PowerOnDevices((cec_logical_address)iDevice);
-      }
-
       // update the local configuration
       CSingleLock lock(m_critSection);
       SetConfigurationFromLibCEC(config);
@@ -1593,13 +1586,15 @@ CStdString CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
 bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
 {
-  // devices to wake are set
-  if (!m_configuration.wakeDevices.IsEmpty())
-    m_adapter->m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
-
   // the option to make XBMC the active source is set
   if (m_configuration.bActivateSource == 1)
     m_adapter->m_cecAdapter->SetActiveSource();
+
+  // devices to wake are set
+  cec_logical_addresses tvOnly;
+  tvOnly.Clear(); tvOnly.Set(CECDEVICE_TV);
+  if (!m_configuration.wakeDevices.IsEmpty() && (m_configuration.wakeDevices != tvOnly || m_configuration.bActivateSource == 0))
+    m_adapter->m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
 
   // wait until devices are powered up
   if (!WaitReady())
