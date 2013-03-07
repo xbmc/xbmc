@@ -44,7 +44,7 @@ using namespace ANNOUNCEMENT;
 using namespace CEC;
 using namespace std;
 
-#define CEC_LIB_SUPPORTED_VERSION 0x2000
+#define CEC_LIB_SUPPORTED_VERSION 0x2100
 
 /* time in seconds to ignore standby commands from devices after the screensaver has been activated */
 #define SCREENSAVER_TIMEOUT       10
@@ -1340,8 +1340,8 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
-  // client version 2.0.0
-  m_configuration.clientVersion = CEC_CLIENT_VERSION_2_0_0;
+  // use the same client version as libCEC version
+  m_configuration.clientVersion = CEC_CLIENT_VERSION_CURRENT;
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
