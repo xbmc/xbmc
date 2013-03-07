@@ -610,10 +610,16 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
 {
   if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
-    if (m_iZoomFactor == 1) //zoomed out - no inertial scrolling
-      return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
+    int result = EVENT_RESULT_ROTATE | EVENT_RESULT_ZOOM;
+    if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveHorizontally)
+      result |= EVENT_RESULT_SWIPE;
+    else
+      result |= EVENT_RESULT_PAN_HORIZONTAL;
 
-    return EVENT_RESULT_PAN_HORIZONTAL;
+    if (m_Image[m_iCurrentPic].m_bCanMoveVertically)
+      result |= EVENT_RESULT_PAN_VERTICAL;
+
+    return (EVENT_RESULT)result;
   }  
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   {
@@ -623,25 +629,28 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
-  { // on zoomlevel 1 just detect swipe left and right
-    if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveHorizontally)
-    {
-      if (m_firstGesturePoint.x > 0 && fabs(point.x - m_firstGesturePoint.x) > 100)
-      {
-        if (point.x < m_firstGesturePoint.x)
-          OnAction(CAction(ACTION_NEXT_PICTURE));
-        else 
-          OnAction(CAction(ACTION_PREV_PICTURE));
-
-        m_firstGesturePoint.x = 0;
-      }
-    }
-    else //zoomed in - free move mode
+  {
+    // zoomed in - free move mode
+    if (m_iZoomFactor != 1 &&
+       (m_Image[m_iCurrentPic].m_bCanMoveHorizontally || m_Image[m_iCurrentPic].m_bCanMoveVertically))
     {
       Move(PICTURE_MOVE_AMOUNT_TOUCH / m_iZoomFactor * (m_firstGesturePoint.x - point.x), PICTURE_MOVE_AMOUNT_TOUCH / m_iZoomFactor * (m_firstGesturePoint.y - point.y));
       m_firstGesturePoint = point;
     }
     return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_SWIPE_LEFT || event.m_id == ACTION_GESTURE_SWIPE_RIGHT)
+  {
+    if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveHorizontally)
+    {
+      // on zoomlevel 1 just detect swipe left and right
+      if (point.x < m_firstGesturePoint.x)
+        OnAction(CAction(ACTION_NEXT_PICTURE));
+      else
+        OnAction(CAction(ACTION_PREV_PICTURE));
+      
+      m_firstGesturePoint.x = 0;
+    }
   }
   else if (event.m_id == ACTION_GESTURE_END)
   {

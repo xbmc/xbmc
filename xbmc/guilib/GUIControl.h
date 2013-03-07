@@ -56,14 +56,16 @@ public:
  \brief Results of OnMouseEvent()
  Any value not equal to EVENT_RESULT_UNHANDLED indicates that the event was handled.
  */
-enum EVENT_RESULT { EVENT_RESULT_UNHANDLED = 0,
-                    EVENT_RESULT_HANDLED,
-                    EVENT_RESULT_PAN_HORIZONTAL,
-                    EVENT_RESULT_PAN_VERTICAL,
-                    EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA,
-                    EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA,                    
-                    EVENT_RESULT_ROTATE,
-                    EVENT_RESULT_ZOOM };
+enum EVENT_RESULT { EVENT_RESULT_UNHANDLED                      = 0x00,
+                    EVENT_RESULT_HANDLED                        = 0x01,
+                    EVENT_RESULT_PAN_HORIZONTAL                 = 0x02,
+                    EVENT_RESULT_PAN_VERTICAL                   = 0x04,
+                    EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA   = 0x08,
+                    EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA = 0x10,
+                    EVENT_RESULT_ROTATE                         = 0x20,
+                    EVENT_RESULT_ZOOM                           = 0x40,
+                    EVENT_RESULT_SWIPE                          = 0x80
+};
 
 /*!
  \ingroup controls

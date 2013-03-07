@@ -53,6 +53,7 @@ typedef enum {
        XBMC_VIDEOMOVE,          /* User moved the window */
        XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
        XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
+       XBMC_TOUCH,
        XBMC_USEREVENT,
 
        XBMC_MAXEVENT = 256      /* XBMC_EventType is represented as uchar */
@@ -179,6 +180,15 @@ typedef struct XBMC_AppCommandEvent {
   unsigned int action; /* One of ACTION_... */  
 } XBMC_AppCommandEvent;
 
+/* Mouse motion event structure */
+typedef struct XBMC_TouchEvent {
+  unsigned char type;   /* XBMC_TOUCH */
+  int action;           /* action ID */
+  float x, y;           /* The X/Y coordinates of the mouse */
+  float x2, y2;         /* Additional X/Y coordinates */
+  int pointers;         /* number of touch pointers */
+} XBMC_TouchEvent;
+
 /* General event structure */
 typedef union XBMC_Event {
   unsigned char type;
@@ -197,6 +207,7 @@ typedef union XBMC_Event {
   XBMC_UserEvent user;
   XBMC_SysWMEvent syswm;
   XBMC_AppCommandEvent appcommand;
+  XBMC_TouchEvent touch;
 } XBMC_Event;
 
 #endif /* _XBMC_events_h */

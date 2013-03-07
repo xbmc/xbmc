@@ -81,6 +81,9 @@
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
 
+// 0xF000 -> 0xF0FF is reserved for mouse actions
+#define KEY_TOUCH           0xF000
+
 #define KEY_INVALID         0xFFFF
 
 // actions that we have defined...
@@ -293,21 +296,10 @@
 #define ACTION_INCREASE_PAR           219
 #define ACTION_DECREASE_PAR           220
 
-#define ACTION_GESTURE_NOTIFY         221
-#define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
-#define ACTION_GESTURE_ROTATE         224
-#define ACTION_GESTURE_PAN            225
-#define ACTION_GESTURE_END            226
 #define ACTION_VSHIFT_UP              227 // shift up video image in DVDPlayer
 #define ACTION_VSHIFT_DOWN            228 // shift down video image in DVDPlayer
 
 #define ACTION_PLAYER_PLAYPAUSE       229 // Play/pause. If playing it pauses, if paused it plays.
-
-// The NOOP action can be specified to disable an input event. This is
-// useful in user keyboard.xml etc to disable actions specified in the
-// system mappings.
-#define ACTION_NOOP                   999
 
 #define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in DVDPlayer
 #define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
@@ -316,6 +308,34 @@
 #define ACTION_FILTER                 233
 
 #define ACTION_SWITCH_PLAYER          234
+
+// touch actions
+#define ACTION_TOUCH_TAP              401
+#define ACTION_TOUCH_TAP_TEN          410
+#define ACTION_TOUCH_LONGPRESS        411
+#define ACTION_TOUCH_LONGPRESS_TEN    420
+
+#define ACTION_GESTURE_NOTIFY         500
+#define ACTION_GESTURE_BEGIN          501
+#define ACTION_GESTURE_ZOOM           502 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
+#define ACTION_GESTURE_ROTATE         503
+#define ACTION_GESTURE_PAN            504
+
+#define ACTION_GESTURE_SWIPE_LEFT       511
+#define ACTION_GESTURE_SWIPE_LEFT_TEN   520
+#define ACTION_GESTURE_SWIPE_RIGHT      521
+#define ACTION_GESTURE_SWIPE_RIGHT_TEN  530
+#define ACTION_GESTURE_SWIPE_UP         531
+#define ACTION_GESTURE_SWIPE_UP_TEN     540
+#define ACTION_GESTURE_SWIPE_DOWN       541
+#define ACTION_GESTURE_SWIPE_DOWN_TEN   550
+// 5xx is reserved for additional gesture actions
+#define ACTION_GESTURE_END            599
+
+// The NOOP action can be specified to disable an input event. This is
+// useful in user keyboard.xml etc to disable actions specified in the
+// system mappings.
+#define ACTION_NOOP                   999
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
