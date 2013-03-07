@@ -34,7 +34,6 @@ set(LINK_PKG
   Xrandr
   LibDl
   LibRt
-  CDIO
 )
 
 foreach(l ${LINK_PKG})
