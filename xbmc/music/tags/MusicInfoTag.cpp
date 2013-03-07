@@ -591,6 +591,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
+  value["compilationartist"] = m_bCompilation;
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable)
