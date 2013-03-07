@@ -99,6 +99,8 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
+  static bool IsAnalog(int actionID);
+
   /*! \brief Translate between a window name and it's id
    \param window name of the window
    \return id of the window, or WINDOW_INVALID if not found
