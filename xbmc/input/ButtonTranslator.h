@@ -75,6 +75,8 @@ public:
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
+  static bool IsAnalog(int actionID);
+
   /*! \brief Translate between a window name and it's id
    \param window name of the window
    \return id of the window, or WINDOW_INVALID if not found
