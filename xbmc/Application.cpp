@@ -3709,6 +3709,8 @@ void CApplication::Stop(int exitCode)
     /* PLEX */
 #ifdef TARGET_WINDOWS
     ExitProcess(exitCode);
+#else
+    _exit(exitCode);
 #endif
     /* END PLEX */
 
