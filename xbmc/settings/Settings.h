@@ -36,7 +36,7 @@
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #else  // MID
-#if defined(TARGET_DARWIN) || defined(_WIN32)
+#if defined(TARGET_DARWIN) || defined(_WIN32) || defined(TARGET_RASPBERRY_PI)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
