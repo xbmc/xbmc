@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="SearchScreenListTitle">
-		<posy>7</posy>
+		<posy>5</posy>
 		<posx>855</posx>
 		<font>CondensedBold-16</font>
 		<shadowcolor>FF222222</shadowcolor>
@@ -10,11 +10,12 @@
 		<align>right</align>
 	</include>
 	<include name="SearchScreenListArrow">
+		<posy>130</posy>
 		<posx>0</posx>
 		<texture background="true">arrow-big.png</texture>
 		<colordiffuse>orange</colordiffuse>
-		<animation effect="fade" start="0" end="100" time="600" condition="true">Visible</animation>
-		<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
+		<!--<animation effect="fade" start="0" end="100" time="300" condition="true">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>-->
 	</include>
 	<include name="SearchScreenListItemTitle1">
 		<posx>95</posx>
@@ -42,17 +43,6 @@
 	<include name="SearchScreenPosListItemSelected">
 		<posy>47</posy>
 		<posx>34</posx>
-	</include>
-	<include name="SearchScreenInProgress">
-		<control type="image">
-			<visible>ListItem.Status(InProgress)</visible>
-			<posx>133</posx>
-			<posy>207</posy>
-			<width>15</width>
-			<height>15</height>
-			<info>ListItem.Overlay</info>
-			<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7001).HasFocus">Conditional</animation>
-		</control>
 	</include>
 	<include name="SearchScreenPosterDimmer">
 		<posx>37</posx>
@@ -175,8 +165,8 @@
 	<include name="SearchScreenInProgress">
 		<control type="image">
 			<visible>ListItem.Status(InProgress)</visible>
-			<posx>133</posx>
-			<posy>207</posy>
+			<posx>134</posx>
+			<posy>208</posy>
 			<width>15</width>
 			<height>15</height>
 			<info>ListItem.Overlay</info>
@@ -595,9 +585,9 @@
 		</focusedlayout>
 	</include>
 	<include name="Search_Keyboard_Button">
-		<width>45</width>
-		<height>45</height>
-		<font>Bold-26</font>
+		<width>60</width>
+		<height>60</height>
+		<font>Bold-17</font>
 		<textcolor>FF999999</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
 		<align>center</align>
@@ -676,17 +666,6 @@
 				<posy>74</posy>
 				<height>25</height>
 				<control type="group">
-					<!-- bg -->
-					<!--><control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>376</width>
-						<height>720</height>
-						<include>Base</include>
-						<colordiffuse>FF111111</colordiffuse>
-						<animation effect="fade" start="0" end="50" time="400" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>-->
 					<control type="image">
 						<posx>22</posx>
 						<posy>333</posy>
@@ -694,6 +673,17 @@
 						<height>235</height>
 						<include>BlackRounded</include>
 						<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- orange separator -->
+					<control type="image">
+						<posx>375</posx>
+						<posy>-72</posy>
+						<width>1</width>
+						<height>720</height>
+						<texture border="1">base.png</texture>
+						<colordiffuse>orange</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
 						<visible>true</visible>
 					</control>
 					<!-- thumb -->
@@ -773,7 +763,7 @@
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>235</posy>
+						<posy>255</posy>
 						<posx>34</posx>
 						<control type="label">
 							<width>285</width>
@@ -808,7 +798,7 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="textbox">
-							<posy>107</posy>
+							<posy>87</posy>
 							<width>300</width>
 							<height>215</height>
 							<label>$VAR[SearchItemFullInfoPlot]</label>
@@ -1391,7 +1381,7 @@
 			<!-- results -->
 			<control type="group" id="5000">
 				<visible>true</visible>
-				<posx>369</posx>
+				<posx>376</posx>
 				<width>910</width>
 				<height>720</height>
 				<!-- Container for the result categories -->
@@ -1411,6 +1401,10 @@
 						<height>230</height>
 						<control type="image">
 							<include>Search_Header_background</include>
+						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9001)</visible>
 						</control>
 						<control type="label" id="8001">
 							<visible>Control.HasFocus(9001)</visible>
@@ -1530,6 +1524,10 @@
 						<control type="image">
 							<include>Search_Header_background</include>
 						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9002)</visible>
+						</control>
 						<control type="label" id="8002">
 							<visible>Control.HasFocus(9002)</visible>
 							<include>SearchScreenListTitle</include>
@@ -1643,6 +1641,10 @@
 						<height>218</height>
 						<control type="image">
 							<include>Search_Header_background</include>
+						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9004)</visible>
 						</control>
 						<control type="label" id="8004">
 							<visible>Control.HasFocus(9004)</visible>
@@ -1783,6 +1785,10 @@
 						<control type="image">
 							<include>Search_Header_background</include>
 						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9008)</visible>
+						</control>
 						<control type="label" id="8008">
 							<visible>Control.HasFocus(9008)</visible>
 							<include>SearchScreenListTitle</include>
@@ -1868,6 +1874,10 @@
 						<height>226</height>
 						<control type="image">
 							<include>Search_Header_background</include>
+						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9009)</visible>
 						</control>
 						<control type="label" id="8009">
 							<visible>Control.HasFocus(9009)</visible>
@@ -1976,6 +1986,10 @@
 						<control type="image">
 							<include>Search_Header_background</include>
 						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9010)</visible>
+						</control>
 						<control type="label" id="8010">
 							<visible>Control.HasFocus(9010)</visible>
 							<include>SearchScreenListTitle</include>
@@ -2083,6 +2097,10 @@
 						<control type="image">
 							<include>Search_Header_background</include>
 						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9013)</visible>
+						</control>
 						<control type="label" id="8013">
 							<visible>Control.HasFocus(9013)</visible>
 							<include>SearchScreenListTitle</include>
@@ -2168,6 +2186,10 @@
 						<height>700</height>
 						<control type="image">
 							<include>Search_Header_background</include>
+						</control>
+						<control type="image">
+							<include>SearchScreenListArrow</include>
+							<visible>Control.HasFocus(9012)</visible>
 						</control>
 						<control type="label" id="8012">
 							<visible>Control.HasFocus(9012)</visible>
