@@ -49,7 +49,6 @@
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "filesystem/SMBDirectory.h"
 #endif
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
@@ -815,10 +814,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
   LoadSkinSettings(pRootElement);
-
-  // Configure the PlayerCoreFactory
-  CPlayerCoreFactory::Get().LoadConfiguration("special://xbmc/system/playercorefactory.xml", true);
-  CPlayerCoreFactory::Get().LoadConfiguration(GetUserDataItem("playercorefactory.xml"), false);
 
   // Advanced settings
   g_advancedSettings.Load();
