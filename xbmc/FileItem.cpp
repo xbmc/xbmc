@@ -59,7 +59,6 @@
 #include "utils/Mime.h"
 
 /* PLEX */
-#include "plex/CocoaUtils.h"
 #include "plex/PlexTypes.h"
 /* END PLEX */
 
@@ -2272,25 +2271,7 @@ void CFileItemList::FillInDefaultIcons()
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
-
-#ifdef __APPLE__ /* PLEX */
-    if (Cocoa_IsAppBundle(pItem->GetPath().c_str()))
-    {
-      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetAppIcon(pItem->GetPath()));
-      CStdString itemLabel = pItem->GetLabel();
-      URIUtils::RemoveExtension(itemLabel);
-      pItem->SetLabel(itemLabel);
-    }
-    else if (Cocoa_IsWflowBundle(pItem->GetPath().c_str()))
-    {
-      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
-      CStdString itemLabel = pItem->GetLabel();
-      URIUtils::RemoveExtension(itemLabel);
-      pItem->SetLabel(itemLabel);
-    }
-    else
-#endif /* END PLEX */
-      pItem->FillInDefaultIcon();
+    pItem->FillInDefaultIcon();
   }
 }
 

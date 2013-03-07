@@ -54,8 +54,8 @@
 #include "FileSystem/PlexDirectory.h"
 #include "HTTP.h"
 #include "PlexUtils.h"
-#include "CocoaUtilsPlus.h"
 #include "pictures/Picture.h"
+#include "plex/Network/NetworkInterface.h"
 /* END PLEX */
 
 using namespace std;
@@ -1053,7 +1053,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   finalURL.SetFileName(strData.substr(1));
   finalURL.SetOptions("");
 
-  bool local = Cocoa_IsHostLocal(finalURL.GetHostName());
+  bool local = NetworkInterface::IsLocalAddress(finalURL.GetHostName());
   return CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
 }
 /* END PLEX */

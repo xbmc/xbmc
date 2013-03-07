@@ -14,7 +14,6 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/timer.hpp>
 
-#include "CocoaUtilsPlus.h"
 #include "threads/CriticalSection.h"
 #include "FileItem.h"
 #include "threads/SingleLock.h"

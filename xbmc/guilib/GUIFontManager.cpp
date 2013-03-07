@@ -35,9 +35,7 @@
 #include "URL.h"
 
 /* PLEX */
-#ifdef __APPLE__
-#include "CocoaUtilsPlus.h"
-#endif
+#include "plex/PlexMacUtils.h"
 /* END PLEX */
 
 using namespace std;
@@ -134,8 +132,8 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   /* PLEX */
   if (!FindSystemFontPath(URIUtils::GetFileName(strFilename), &strPath))
   {
-    #ifdef __APPLE__
-    CStdString fontPath = Cocoa_GetSystemFontPathFromDisplayName(strFilename);
+    #ifdef TARGET_DARWIN_OSX
+    CStdString fontPath = PlexMacUtils::GetSystemFontPathFromDisplayName(strFilename);
     if (XFILE::CFile::Exists(fontPath))
       strPath = fontPath;
     #endif
@@ -746,7 +744,7 @@ bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdStrin
 
 std::vector<std::string> GUIFontManager::GetSystemFontNames()
 {
-#ifndef __APPLE__
+#ifndef TARGET_DARWIN_OSX
 #ifdef _MSC_VER
 #pragma message(__WARNING__"TODO: IMPLEMENT ME")
 #else
@@ -755,7 +753,7 @@ std::vector<std::string> GUIFontManager::GetSystemFontNames()
   return std::vector<std::string>();
 #else
   // should we add all the fonts found in the skin's path?
-  return Cocoa_GetSystemFonts();
+  return PlexMacUtils::GetSystemFonts();
 #endif
 }
 

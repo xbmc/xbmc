@@ -17,8 +17,6 @@
 #include "TimeUtils.h"
 #include "Album.h"
 #include "AdvancedSettings.h"
-#include "CocoaUtilsPlus.h"
-#include "CocoaUtils.h"
 #include "File.h"
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
@@ -46,6 +44,8 @@
 #include "LocalizeStrings.h"
 
 #include "GUIInfoManager.h"
+
+#include "LangInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1914,7 +1914,7 @@ void CPlexDirectory::Process()
 
   // Only send headers if we're NOT going to the node.
   if (url.Get().find("http://node.plexapp.com") == -1 && url.Get().find("http://nodedev.plexapp.com") == -1)
-    m_http.SetRequestHeader("X-Plex-Language", Cocoa_GetLanguage());
+    m_http.SetRequestHeader("X-Plex-Language", g_langInfo.GetLanguageLocale());
 
 #ifdef __APPLE__
   m_http.SetRequestHeader("X-Plex-Client-Platform", "MacOSX");

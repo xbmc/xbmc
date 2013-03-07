@@ -13,7 +13,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread.hpp>
 
-#include "CocoaUtilsPlus.h"
 #include "filesystem/CurlFile.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"

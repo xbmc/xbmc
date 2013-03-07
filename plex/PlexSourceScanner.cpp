@@ -18,7 +18,6 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
-#include "CocoaUtilsPlus.h"
 #include "PlexLibrarySectionManager.h"
 #include "URIUtils.h"
 #include "TextureCache.h"
@@ -77,7 +76,7 @@ void CPlexSourceScanner::Process()
         url.find(g_guiSettings.GetString("myplex.token")) != string::npos)
       remoteOwned = true;
     
-    if (Cocoa_IsHostLocal(m_sources->host) == true)
+    if (NetworkInterface::IsLocalAddress(m_sources->host) == true)
     {
       realHostLabel = "";
       onlyShared = false;
@@ -173,7 +172,7 @@ void CPlexSourceScanner::ScanHost(PlexServerPtr server)
     if (!found)
       sources->servers.insert(server);
     
-    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f)", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
+    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f)", server->name.c_str(), NetworkInterface::IsLocalAddress(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
     if (sources->m_lastScan.elapsed() < 5 && (oldScore >= server->score()))
     {
       dprintf("Plex Source Scanner: Scanned in the last 5 seconds, let's just assume nothing changed..");
@@ -185,7 +184,7 @@ void CPlexSourceScanner::ScanHost(PlexServerPtr server)
     // New one.
     sources = HostSourcesPtr(new HostSources(server));
     g_hostSourcesMap[server->uuid] = sources;
-    dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size());
+    dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", server->name.c_str(), NetworkInterface::IsLocalAddress(server->address), sources->servers.size());
   }
 
   new CPlexSourceScanner(sources);
