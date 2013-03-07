@@ -43,14 +43,17 @@
 #endif
 #endif // MID
 
+#include "settings/ISettingsHandler.h"
 #include "settings/VideoSettings.h"
 #include "Profile.h"
 #include "view/ViewState.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 #include <map>
+#include <set>
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -100,11 +103,14 @@ class TiXmlElement;
 class TiXmlNode;
 class CMediaSource;
 
-class CSettings
+class CSettings : private ISettingsHandler
 {
 public:
   CSettings(void);
   virtual ~CSettings(void);
+
+  void RegisterSettingsHandler(ISettingsHandler *settingsHandler);
+  void UnregisterSettingsHandler(ISettingsHandler *settingsHandler);
 
   void Initialize();
 
@@ -382,6 +388,17 @@ protected:
   void LoadUserFolderLayout();
 
 private:
+  // implementation of ISettingsHandler
+  virtual bool OnSettingsLoading();
+  virtual void OnSettingsLoaded();
+  virtual bool OnSettingsSaving() const;
+  virtual void OnSettingsSaved() const;
+  virtual void OnSettingsCleared();
+
+  CCriticalSection m_critical;
+  typedef std::set<ISettingsHandler*> SettingsHandlers;
+  SettingsHandlers m_settingsHandlers;
+
   std::vector<CProfile> m_vecProfiles;
   std::map<CStdString, int> m_watchMode;
   bool m_usingLoginScreen;
