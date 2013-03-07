@@ -2859,11 +2859,15 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    switch(g_guiSettings.GetInt("audiooutput.mode"))
+    // we are only allowed to SetInt to a value supported in GUISettings, so we keep trying until it sticks
+    int mode = g_guiSettings.GetInt("audiooutput.mode");
+    for (int i = 0; i < AUDIO_COUNT; i++)
     {
-      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958); break;
-      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI  ); break;
-      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG); break;
+      if (++mode == AUDIO_COUNT)
+        mode = 0;
+      g_guiSettings.SetInt("audiooutput.mode", mode);
+      if (g_guiSettings.GetInt("audiooutput.mode") == mode)
+         break;
     }
 
     g_application.Restart();
