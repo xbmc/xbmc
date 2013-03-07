@@ -44,6 +44,7 @@ static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 #define CTL_BUTTON_LEFT       305
 #define CTL_BUTTON_RIGHT      306
 #define CTL_BUTTON_IP_ADDRESS 307
+#define CTL_BUTTON_CLEAR      308
 
 #define CTL_LABEL_EDIT        310
 #define CTL_LABEL_HEADING     311
@@ -260,6 +261,9 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         break;
       case CTL_BUTTON_IP_ADDRESS:
         OnIPAddress();
+        break;
+      case CTL_BUTTON_CLEAR:
+        SetText("");
         break;
       default:
         m_lastRemoteKeyClicked = 0;
