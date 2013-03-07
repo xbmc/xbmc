@@ -749,8 +749,16 @@ void COMXAudio::Flush()
 
   m_omx_decoder.FlushInput();
   m_omx_tunnel_decoder.Flush();
-  if(!m_Passthrough)
+  if ( m_omx_mixer.IsInitialized() )
+    m_omx_mixer.FlushAll();
+  if( m_omx_tunnel_mixer.IsInitialized() )
     m_omx_tunnel_mixer.Flush();
+  if ( m_omx_splitter.IsInitialized() )
+    m_omx_splitter.FlushAll();
+  if ( m_omx_tunnel_splitter_analog.IsInitialized() )
+    m_omx_tunnel_splitter_analog.Flush();
+  if ( m_omx_tunnel_splitter_HDMI.IsInitialized() )
+    m_omx_tunnel_splitter_HDMI.Flush();
   
   m_last_pts      = DVD_NOPTS_VALUE;
   m_LostSync      = true;
