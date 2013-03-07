@@ -544,7 +544,8 @@
       { "name": "directory", "type": "string", "required": true },
       { "name": "media", "$ref": "Files.Media", "default": "files" },
       { "name": "properties", "$ref": "List.Fields.Files" },
-      { "name": "sort", "$ref": "List.Sort" }
+      { "name": "sort", "$ref": "List.Sort" },
+      { "name": "limits", "$ref": "List.Limits", "description": "Limits are applied after getting the directory content thus retrieval is not faster when they are applied." }
     ],
     "returns": {
       "type": "object",
