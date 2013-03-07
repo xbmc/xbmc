@@ -2576,7 +2576,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case MUSICPLAYER_HAS_NEW_COVER_NEXT:
       {
         bReturn = false;
-        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC /*PLEX*/ && g_playlistPlayer.GetCurrentSong() >= 0 /* END PLEX */)
         {
           if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
           {
