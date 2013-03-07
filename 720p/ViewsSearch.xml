@@ -382,7 +382,7 @@
 		<height>30</height>
 		<align>left</align>
 		<aligny>center</aligny>
-		<label>E$INFO[ListItem.Episode]</label>
+		<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
 		<font>CondensedBold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
