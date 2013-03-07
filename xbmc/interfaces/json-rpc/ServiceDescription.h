@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://www.xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.0.3";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.1.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1794,7 +1794,8 @@ namespace JSONRPC
         "{ \"name\": \"directory\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"media\", \"$ref\": \"Files.Media\", \"default\": \"files\" },"
         "{ \"name\": \"properties\", \"$ref\": \"List.Fields.Files\" },"
-        "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" }"
+        "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" },"
+        "{ \"name\": \"limits\", \"$ref\": \"List.Limits\", \"description\": \"Limits are applied after getting the directory content thus retrieval is not faster when they are applied.\" }"
       "],"
       "\"returns\": {"
         "\"type\": \"object\","
