@@ -21,11 +21,11 @@
 #ifndef _BITSTREAMCONVERTER_H_
 #define _BITSTREAMCONVERTER_H_
 
+#include <stdio.h>
 #include <stdint.h>
+
 #include "DllAvUtil.h"
 #include "DllAvFormat.h"
-#include "DllAvFilter.h"
-#include "DllAvCodec.h"
 
 typedef struct {
   uint8_t *buffer, *start;

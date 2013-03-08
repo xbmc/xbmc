@@ -24,7 +24,7 @@
 
 #include "BitstreamConverter.h"
 
-void CBitstreamConverter::bits_reader_set( bits_reader_t *br, uint8_t *buf, int len )
+void CBitstreamConverter::bits_reader_set(bits_reader_t *br, uint8_t *buf, int len)
 {
   br->buffer = br->start = buf;
   br->offbits = 0;
@@ -32,7 +32,7 @@ void CBitstreamConverter::bits_reader_set( bits_reader_t *br, uint8_t *buf, int 
   br->oflow = 0;
 }
 
-uint32_t CBitstreamConverter::read_bits( bits_reader_t *br, int nbits )
+uint32_t CBitstreamConverter::read_bits(bits_reader_t *br, int nbits)
 {
   int i, nbytes;
   uint32_t ret = 0;
@@ -58,7 +58,7 @@ uint32_t CBitstreamConverter::read_bits( bits_reader_t *br, int nbits )
   return ret;
 }
 
-void CBitstreamConverter::skip_bits( bits_reader_t *br, int nbits )
+void CBitstreamConverter::skip_bits(bits_reader_t *br, int nbits)
 {
   br->offbits += nbits;
   br->buffer += br->offbits / 8;
@@ -68,7 +68,7 @@ void CBitstreamConverter::skip_bits( bits_reader_t *br, int nbits )
   }
 }
 
-uint32_t CBitstreamConverter::get_bits( bits_reader_t *br, int nbits )
+uint32_t CBitstreamConverter::get_bits(bits_reader_t *br, int nbits)
 {
   int i, nbytes;
   uint32_t ret = 0;
@@ -174,7 +174,8 @@ int CBitstreamConverter::nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
-void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
+void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size,
+  bool *interlaced, int32_t *max_ref_frames)
 {
   nal_bitstream bs;
   sps_info_struct sps_info;
@@ -214,7 +215,9 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
   if (sps_info.log2_max_frame_num_minus4 > 12)
   { // must be between 0 and 12
-    return;
+    // don't early return here - the bits we are using (profile/level/interlaced/ref frames)
+    // might still be valid - let the parser go on and pray.
+    //return;
   }
   sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
   if (sps_info.pic_order_cnt_type == 0)
@@ -229,7 +232,7 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
     offset_for_top_to_bottom_field = gst_nal_bs_read_se (bs);
 
     num_ref_frames_in_pic_order_cnt_cycle = gst_nal_bs_read_ue (bs);
-    for( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
+    for ( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
     offset_for_ref_frame[i] = gst_nal_bs_read_se (bs);
     */
   }
@@ -316,7 +319,8 @@ const int CBitstreamConverter::avc_parse_nal_units(AVIOContext *pb, const uint8_
   size = 0;
   nal_start = avc_find_startcode(p, end);
 
-  for (;;) {
+  for (;;)
+  {
     while (nal_start < end && !*(nal_start++));
     if (nal_start == end)
       break;
@@ -433,9 +437,8 @@ CBitstreamConverter::~CBitstreamConverter()
 
 bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb)
 {
-  m_to_annexb = to_annexb;
-
   m_codec = codec;
+  m_to_annexb = to_annexb;
 
   switch(codec)
   {
@@ -446,7 +449,7 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
         return false;
       }
       // valid avcC data (bitstream) always starts with the value 1 (version)
-      if(m_to_annexb)
+      if (m_to_annexb)
       {
         if ( *(char*)in_extradata == 1 )
         {
@@ -517,10 +520,8 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
           }
         }
       }
-      return false;
       break;
     default:
-      return false;
       break;
   }
   return false;
@@ -531,65 +532,47 @@ void CBitstreamConverter::Close(void)
   if (m_convert_bitstream)
   {
     if (m_sps_pps_context.sps_pps_data)
-    {
-      free(m_sps_pps_context.sps_pps_data);
-      m_sps_pps_context.sps_pps_data = NULL;
-    }
-    if(m_convertBuffer)
-    {
-      free(m_convertBuffer);
-      m_convertBuffer = NULL;
-    }
-    m_convertSize       = 0;
+      free(m_sps_pps_context.sps_pps_data), m_sps_pps_context.sps_pps_data = NULL;
+    if (m_convertBuffer)
+      free(m_convertBuffer), m_convertBuffer = NULL;
+    m_convertSize = 0;
   }
 
   if (m_convert_bytestream)
   {
-    if(m_convertBuffer)
-    {
-      m_dllAvUtil->av_free(m_convertBuffer);
-      m_convertBuffer = NULL;
-    }
+    if (m_convertBuffer)
+      m_dllAvUtil->av_free(m_convertBuffer), m_convertBuffer = NULL;
     m_convertSize = 0;
   }
 
-  if(m_extradata)
-    free(m_extradata);
-  m_extradata = NULL;
+  if (m_extradata)
+    free(m_extradata), m_extradata = NULL;
   m_extrasize = 0;
-
-  m_inputBuffer       = NULL;
-  m_inputSize         = 0;
+  
+  m_inputSize = 0;
+  m_inputBuffer = NULL;
+  m_convert_bitstream = false;
   m_convert_3byteTo4byteNALSize = false;
 
-  m_convert_bitstream = false;
-
   if (m_dllAvUtil)
-  {
-    delete m_dllAvUtil;
-    m_dllAvUtil = NULL;
-  }
+    delete m_dllAvUtil, m_dllAvUtil = NULL;
   if (m_dllAvFormat)
-  {
-    delete m_dllAvFormat;
-    m_dllAvFormat = NULL;
-  }
+    delete m_dllAvFormat, m_dllAvFormat = NULL;
 }
 
 bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 {
-  if(m_convertBuffer)
-    free(m_convertBuffer);
-  m_convertBuffer = NULL;
-  m_convertSize   = 0;
-  m_inputBuffer   = NULL;
-  m_inputSize     = 0;
+  if (m_convertBuffer)
+    free(m_convertBuffer), m_convertBuffer = NULL;
+  m_convertSize = 0;
+  m_inputBuffer = NULL;
+  m_inputSize = 0;
 
   if (pData)
   {
-    if(m_codec == CODEC_ID_H264)
+    if (m_codec == CODEC_ID_H264)
     {
-      if(m_to_annexb)
+      if (m_to_annexb)
       {
         int demuxer_bytes = iSize;
   
@@ -619,7 +602,6 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
           m_inputBuffer = pData;
           m_inputSize   = iSize;
         }
-
         return true;
       }
       else
@@ -627,34 +609,21 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
         m_inputBuffer = pData;
         m_inputSize   = iSize;
   
+        if (m_convertBuffer)
+          m_dllAvUtil->av_free(m_convertBuffer), m_convertBuffer = NULL;
+        m_convertSize = 0;
+
         if (m_convert_bytestream)
         {
-          if(m_convertBuffer)
-          {
-            m_dllAvUtil->av_free(m_convertBuffer);
-            m_convertBuffer = NULL;
-          }
-          m_convertSize = 0;
-
           // convert demuxer packet from bytestream (AnnexB) to bitstream
           AVIOContext *pb;
-  
-          if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
-          {
+          if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
             return false;
-          }
           m_convertSize = avc_parse_nal_units(pb, pData, iSize);
           m_convertSize = m_dllAvFormat->avio_close_dyn_buf(pb, &m_convertBuffer);
         }
         else if (m_convert_3byteTo4byteNALSize)
         {
-          if(m_convertBuffer)
-          {
-            m_dllAvUtil->av_free(m_convertBuffer);
-            m_convertBuffer = NULL;
-          }
-          m_convertSize = 0;
-
           // convert demuxer packet from 3 byte NAL sizes to 4 byte
           AVIOContext *pb;
           if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
@@ -671,7 +640,6 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
             m_dllAvFormat->avio_write(pb, nal_start, nal_size);
             nal_start += nal_size;
           }
-  
           m_convertSize = m_dllAvFormat->avio_close_dyn_buf(pb, &m_convertBuffer);
         }
         return true;
@@ -685,33 +653,35 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
 uint8_t *CBitstreamConverter::GetConvertBuffer()
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if ((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize)
+    && m_convertBuffer != NULL)
     return m_convertBuffer;
-  else
-    return m_inputBuffer;
+
+  return m_inputBuffer;
 }
 
 int CBitstreamConverter::GetConvertSize()
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if ((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize)
+    && m_convertBuffer != NULL)
     return m_convertSize;
-  else
-    return m_inputSize; 
+
+  return m_inputSize; 
 }
 
 uint8_t *CBitstreamConverter::GetExtraData()
 {
-  if(m_convert_bitstream)
+  if (m_convert_bitstream)
     return m_sps_pps_context.sps_pps_data;
-  else
-    return m_extradata;
+
+  return m_extradata;
 }
 int CBitstreamConverter::GetExtraSize()
 {
-  if(m_convert_bitstream)
+  if (m_convert_bitstream)
     return m_sps_pps_context.size;
-  else
-    return m_extrasize;
+
+  return m_extrasize;
 }
 
 bool CBitstreamConverter::BitstreamConvertInit(void *in_extradata, int in_extrasize)
