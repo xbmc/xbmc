@@ -58,12 +58,13 @@ public:
   virtual int codec_resume(codec_para_t *pcodec)=0;
   virtual int codec_write(codec_para_t *pcodec, void *buffer, int len)=0;
   virtual int codec_checkin_pts(codec_para_t *pcodec, unsigned long pts)=0;
-  virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *)=0;
+  virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *buf)=0;
+  virtual int codec_get_vdec_state(codec_para_t *pcodec, struct vdec_status *vdec)=0;
 
   virtual int codec_init_cntl(codec_para_t *pcodec)=0;
   virtual int codec_poll_cntl(codec_para_t *pcodec)=0;
   virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode)=0;
-  virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int)=0;
+  virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh)=0;
   virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
 
   // grab these from libamplayer
@@ -87,6 +88,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
   DEFINE_METHOD3(int, codec_write,              (codec_para_t *p1, void *p2, int p3))
   DEFINE_METHOD2(int, codec_checkin_pts,        (codec_para_t *p1, unsigned long p2))
   DEFINE_METHOD2(int, codec_get_vbuf_state,     (codec_para_t *p1, struct buf_status * p2))
+  DEFINE_METHOD2(int, codec_get_vdec_state,     (codec_para_t *p1, struct vdec_status * p2))
 
   DEFINE_METHOD1(int, codec_init_cntl,          (codec_para_t *p1))
   DEFINE_METHOD1(int, codec_poll_cntl,          (codec_para_t *p1))
@@ -108,6 +110,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
     RESOLVE_METHOD(codec_write)
     RESOLVE_METHOD(codec_checkin_pts)
     RESOLVE_METHOD(codec_get_vbuf_state)
+    RESOLVE_METHOD(codec_get_vdec_state)
 
     RESOLVE_METHOD(codec_init_cntl)
     RESOLVE_METHOD(codec_poll_cntl)
@@ -320,8 +323,8 @@ static vformat_t codecid_to_vformat(enum CodecID id)
       break;
     case CODEC_ID_AVS:
     case CODEC_ID_CAVS:
-        format = VFORMAT_AVS;
-        break;
+      format = VFORMAT_AVS;
+      break;
 
     default:
       format = VFORMAT_UNSUPPORT;
@@ -341,29 +344,35 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case CODEC_TAG_mjpeg:
     case CODEC_TAG_jpeg:
     case CODEC_TAG_mjpa:
+      // mjpeg
       dec_type = VIDEO_DEC_FORMAT_MJPEG;
       break;
     case CODEC_TAG_XVID:
     case CODEC_TAG_xvid:
     case CODEC_TAG_XVIX:
+      // xvid
       dec_type = VIDEO_DEC_FORMAT_MPEG4_5;
       break;
     case CODEC_TAG_COL1:
     case CODEC_TAG_DIV3:
     case CODEC_TAG_MP43:
+      // divx3.11
       dec_type = VIDEO_DEC_FORMAT_MPEG4_3;
       break;
     case CODEC_TAG_DIV4:
     case CODEC_TAG_DIVX:
+      // divx4
       dec_type = VIDEO_DEC_FORMAT_MPEG4_4;
       break;
     case CODEC_TAG_DIV5:
     case CODEC_TAG_DX50:
     case CODEC_TAG_M4S2:
     case CODEC_TAG_FMP4:
+      // divx5
       dec_type = VIDEO_DEC_FORMAT_MPEG4_5;
       break;
     case CODEC_TAG_DIV6:
+      // divx6
       dec_type = VIDEO_DEC_FORMAT_MPEG4_5;
       break;
     case CODEC_TAG_MP4V:
@@ -371,6 +380,7 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case CODEC_TAG_MPG4:
     case CODEC_TAG_mp4v:
     case CODEC_ID_MPEG4:
+      // mp4
       dec_type = VIDEO_DEC_FORMAT_MPEG4_5;
       break;
     case CODEC_ID_H263:
@@ -378,23 +388,15 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case CODEC_TAG_h263:
     case CODEC_TAG_s263:
     case CODEC_TAG_F263:
+      // h263
       dec_type = VIDEO_DEC_FORMAT_H263;
       break;
     case CODEC_TAG_AVC1:
     case CODEC_TAG_avc1:
     case CODEC_TAG_H264:
     case CODEC_TAG_h264:
-      dec_type = VIDEO_DEC_FORMAT_H264;
-      break;
-    case CODEC_ID_RV30:
-    case CODEC_TAG_RV30:
-      dec_type = VIDEO_DEC_FORMAT_REAL_8;
-      break;
-    case CODEC_ID_RV40:
-    case CODEC_TAG_RV40:
-      dec_type = VIDEO_DEC_FORMAT_REAL_9;
-      break;
     case CODEC_ID_H264:
+      // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
     /*
@@ -402,17 +404,35 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
     */
+    case CODEC_ID_RV30:
+    case CODEC_TAG_RV30:
+      // realmedia 3
+      dec_type = VIDEO_DEC_FORMAT_REAL_8;
+      break;
+    case CODEC_ID_RV40:
+    case CODEC_TAG_RV40:
+      // realmedia 4
+      dec_type = VIDEO_DEC_FORMAT_REAL_9;
+      break;
     case CODEC_TAG_WMV3:
+      // wmv3
       dec_type = VIDEO_DEC_FORMAT_WMV3;
       break;
     case CODEC_ID_VC1:
     case CODEC_TAG_VC_1:
     case CODEC_TAG_WVC1:
     case CODEC_TAG_WMVA:
+      // vc1
       dec_type = VIDEO_DEC_FORMAT_WVC1;
       break;
     case CODEC_ID_VP6F:
+      // vp6
       dec_type = VIDEO_DEC_FORMAT_SW;
+      break;
+    case CODEC_ID_CAVS:
+    case CODEC_ID_AVS:
+      // avs
+      dec_type = VIDEO_DEC_FORMAT_AVS;
       break;
     default:
       dec_type = VIDEO_DEC_FORMAT_UNKNOW;
@@ -1457,6 +1477,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_contrast       = -1;
   m_brightness     = -1;
   m_vbufsize = 500000 * 2;
+  m_hints = hints;
 
   ShowMainVideo(false);
 
@@ -1563,8 +1584,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
     hints.aspect, video_ratio.num, video_ratio.den);
-  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d)",
-    hints.orientation, hints.forced_aspect);
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d), hints.extrasize(%d)",
+    hints.orientation, hints.forced_aspect, hints.extrasize);
 
   // default video codec params
   am_private->vcodec.has_video   = 1;

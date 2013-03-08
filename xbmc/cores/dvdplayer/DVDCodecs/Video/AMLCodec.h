@@ -63,21 +63,22 @@ private:
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
-  DllLibAmCodec *m_dll;
-  bool          m_opened;
-  am_private_t  *am_private;
-  volatile int  m_speed;
+  DllLibAmCodec   *m_dll;
+  bool             m_opened;
+  am_private_t    *am_private;
+  CDVDStreamInfo   m_hints;
+  volatile int     m_speed;
   volatile int64_t m_1st_pts;
   volatile int64_t m_cur_pts;
   volatile int64_t m_cur_pictcnt;
   volatile int64_t m_old_pictcnt;
   volatile double  m_timesize;
   volatile int64_t m_vbufsize;
-  CEvent        m_ready_event;
+  CEvent           m_ready_event;
 
-  CRect         m_dst_rect;
-  int           m_view_mode;
-  float         m_zoom;
-  int           m_contrast;
-  int           m_brightness;
+  CRect            m_dst_rect;
+  int              m_view_mode;
+  float            m_zoom;
+  int              m_contrast;
+  int              m_brightness;
 };
