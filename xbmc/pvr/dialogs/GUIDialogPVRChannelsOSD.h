@@ -21,6 +21,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "view/GUIViewControl.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "utils/Observer.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include <map>
@@ -46,6 +47,9 @@ namespace PVR
     void Clear();
     void Update();
     void Update(bool selectPlayingChannel);
+	bool OnPopupMenu(int iItem);
+	bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
     CPVRChannelGroupPtr GetPlayingGroup();
     CGUIControl *GetFirstFocusableControl(int id);
 

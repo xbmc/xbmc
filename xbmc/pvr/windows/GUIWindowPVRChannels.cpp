@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -93,6 +94,8 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   }
   else
   {
+    buttons.Add(CONTEXT_BUTTON_JUMP_TO_GROUP, "Jump to Group");
+    buttons.Add(CONTEXT_BUTTON_ADD_TO_GROUP, "Add to Group");
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);                                     /* switch to channel */
@@ -125,10 +128,12 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
   return OnContextButtonPlay(pItem.get(), button) ||
+	OnContextButtonJumpToGroup(pItem.get(), button) || 	
+	  OnContextButtonAddToGroup(pItem.get(), button) ||
       OnContextButtonMove(pItem.get(), button) ||
       OnContextButtonHide(pItem.get(), button) ||
       OnContextButtonShowHidden(pItem.get(), button) ||
-      OnContextButtonSetThumb(pItem.get(), button) ||
+	  OnContextButtonSetThumb(pItem.get(), button) ||
       OnContextButtonAdd(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonGroupManager(pItem.get(), button) ||
@@ -312,6 +317,84 @@ bool CGUIWindowPVRChannels::OnClickList(CGUIMessage &message)
       m_parent->OnPopupMenu(iItem);
     else
       bReturn = false;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonJumpToGroup(CFileItem *item, CONTEXT_BUTTON button)
+{
+	bool bReturn = false;
+  
+  	if (button == CONTEXT_BUTTON_JUMP_TO_GROUP)
+	{
+  		CFileItemList 			*channelGroups = new CFileItemList;
+  		CPVRChannelGroupPtr		pChannelGroup;  
+  	
+  		CGUIDialogSelect		*pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  	
+  		if (!pDlgSelect)
+    		return false;
+
+  		pDlgSelect->SetHeading(19146); // Select Groups
+  	
+  		g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(channelGroups);
+  	
+  		pDlgSelect->Add(*channelGroups);
+  	
+ 		pDlgSelect->DoModal();
+	
+		pChannelGroup = g_PVRChannelGroups->Get(m_bRadio)->GetByName(pDlgSelect->GetSelectedLabelText());
+	
+		if(pChannelGroup)
+		{	
+    		SetSelectedGroup(pChannelGroup);
+    		UpdateData();
+		}
+
+		delete channelGroups;
+    	bReturn = true;
+    } 
+
+	bReturn = true;
+
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonAddToGroup(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_ADD_TO_GROUP)
+  {
+  	CFileItemList 			*channelGroups = new CFileItemList;
+  	CPVRChannelGroupPtr		pChannelGroup;  
+  	
+  	CGUIDialogSelect		*pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  	
+  	if (!pDlgSelect)
+    	return false;
+
+  	pDlgSelect->SetHeading(19146); // Select Groups
+  	
+  	g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(channelGroups);
+  	
+  	pDlgSelect->Add(*channelGroups);
+  	
+ 	pDlgSelect->DoModal();
+	
+	pChannelGroup = g_PVRChannelGroups->Get(m_bRadio)->GetByName(pDlgSelect->GetSelectedLabelText());
+	
+	if(pChannelGroup)
+	{	
+		if(pChannelGroup->AddToGroup(*item->GetPVRChannelInfoTag()))
+		{
+			pChannelGroup->Persist();	
+			UpdateData();
+		}
+	}
+
+	delete channelGroups;
+    bReturn = true;
   }
 
   return bReturn;
