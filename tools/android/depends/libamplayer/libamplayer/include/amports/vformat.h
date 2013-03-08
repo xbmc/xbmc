@@ -48,6 +48,7 @@ typedef enum {
     VIDEO_DEC_FORMAT_WMV3,
     VIDEO_DEC_FORMAT_WVC1,
     VIDEO_DEC_FORMAT_SW,
+    VIDEO_DEC_FORMAT_AVS,
     VIDEO_DEC_FORMAT_MAX
 } vdec_type_t;
 
