@@ -519,6 +519,11 @@ bool CBitstreamConverter::Open(enum CodecID codec, uint8_t *in_extradata, int in
             return true;
           }
         }
+        // valid avcC atom 
+        m_extradata = (uint8_t*)malloc(in_extrasize);
+        memcpy(m_extradata, in_extradata, in_extrasize);
+        m_extrasize = in_extrasize;
+        return true;
       }
       break;
     default:
