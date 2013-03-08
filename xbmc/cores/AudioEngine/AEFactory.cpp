@@ -202,7 +202,7 @@ void CAEFactory::VerifyOutputDevice(std::string &device, bool passthrough)
   EnumerateOutputDevices(devices, passthrough);
   std::string firstDevice;
 
-  for (AEDeviceList::const_iterator deviceIt = devices.begin(); deviceIt != devices.end(); deviceIt++)
+  for (AEDeviceList::const_iterator deviceIt = devices.begin(); deviceIt != devices.end(); ++deviceIt)
   {
     /* remember the first device so we can default to it if required */
     if (firstDevice.empty())
