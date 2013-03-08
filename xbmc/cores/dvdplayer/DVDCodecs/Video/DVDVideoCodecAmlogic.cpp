@@ -26,25 +26,27 @@
 #include "DVDStreamInfo.h"
 #include "AMLCodec.h"
 #include "video/VideoThumbLoader.h"
+#include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 
-typedef struct pts_queue {
-  double            dts;
-  double            pts;
-  double            sort_time;
-  struct pts_queue  *nextpts;
-} pts_queue;
+typedef struct frame_queue {
+  double dts;
+  double pts;
+  double sort_time;
+  struct frame_queue *nextframe;
+} frame_queue;
 
 CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_Codec(NULL),
   m_pFormatName("amcodec"),
   m_last_pts(0.0),
-  m_pts_queue(NULL),
+  m_frame_queue(NULL),
   m_queue_depth(0),
   m_framerate(0.0),
-  m_video_rate(0)
+  m_video_rate(0),
+  m_mpeg2_aspect(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -65,6 +67,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case CODEC_ID_MPEG1VIDEO:
     case CODEC_ID_MPEG2VIDEO:
     case CODEC_ID_MPEG2VIDEO_XVMC:
+      m_mpeg2_aspect_pts = 0;
+      m_mpeg2_aspect = new mpeg2_aspect;
+      m_mpeg2_aspect->ratio = hints.aspect;
       m_pFormatName = "am-mpeg2";
       break;
     case CODEC_ID_H264:
@@ -106,6 +111,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   }
 
   m_hints = hints;
+  m_aspect_ratio = hints.aspect;
   m_Codec = new CAMLCodec();
   if (!m_Codec)
   {
@@ -165,8 +171,11 @@ void CDVDVideoCodecAmlogic::Dispose(void)
     m_Codec->CloseDecoder(), m_Codec = NULL;
   if (m_videobuffer.iFlags)
     m_videobuffer.iFlags = 0;
+  if (m_mpeg2_aspect)
+    delete m_mpeg2_aspect, m_mpeg2_aspect = NULL;
+
   while (m_queue_depth)
-    PtsQueuePop();
+    FrameQueuePop();
 
   // let thumbgen jobs resume.
   CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
@@ -188,7 +197,7 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
     pts = DVD_NOPTS_VALUE;
 
   if (pData)
-    FrameRateTracking(dts, pts);
+    FrameRateTracking( pData, iSize, dts, pts);
 
   return m_Codec->Decode(pData, iSize, dts, pts);
 }
@@ -196,9 +205,10 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
 void CDVDVideoCodecAmlogic::Reset(void)
 {
   while (m_queue_depth)
-    PtsQueuePop();
+    FrameQueuePop();
 
   m_Codec->Reset();
+  m_mpeg2_aspect_pts = 0;
 }
 
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -206,6 +216,22 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (m_Codec)
     m_Codec->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
+
+  // check for mpeg2 aspect ratio changes
+  if (m_mpeg2_aspect && pDvdVideoPicture->pts >= m_mpeg2_aspect_pts)
+    m_aspect_ratio = m_mpeg2_aspect->ratio;
+
+  pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+  pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
+  if (m_aspect_ratio > 0.0 && !m_hints.forced_aspect)
+  {
+    pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_aspect_ratio)) & -3;
+    if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
+    {
+      pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+      pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_aspect_ratio)) & -3;
+    }
+  }
 
   return true;
 }
@@ -224,91 +250,106 @@ int CDVDVideoCodecAmlogic::GetDataSize(void)
 {
   if (m_Codec)
     return m_Codec->GetDataSize();
-  else
-    return 0;
+
+  return 0;
 }
 
 double CDVDVideoCodecAmlogic::GetTimeSize(void)
 {
   if (m_Codec)
     return m_Codec->GetTimeSize();
-  else
-    return 0;
+
+  return 0.0;
 }
 
-void CDVDVideoCodecAmlogic::PtsQueuePop(void)
+void CDVDVideoCodecAmlogic::FrameQueuePop(void)
 {
-  if (!m_pts_queue || m_queue_depth == 0)
+  if (!m_frame_queue || m_queue_depth == 0)
     return;
 
   pthread_mutex_lock(&m_queue_mutex);
   // pop the top frame off the queue
-  pts_queue *top_pts = m_pts_queue;
-  m_pts_queue = top_pts->nextpts;
+  frame_queue *top = m_frame_queue;
+  m_frame_queue = top->nextframe;
   m_queue_depth--;
   pthread_mutex_unlock(&m_queue_mutex);
 
   // and release it
-  free(top_pts);
+  free(top);
 }
 
-void CDVDVideoCodecAmlogic::PtsQueuePush(double dts, double pts)
+void CDVDVideoCodecAmlogic::FrameQueuePush(double dts, double pts)
 {
-  pts_queue *newpts = (pts_queue*)calloc(sizeof(pts_queue), 1);
-  newpts->dts = dts;
-  newpts->pts = pts;
+  frame_queue *newframe = (frame_queue*)calloc(sizeof(frame_queue), 1);
+  newframe->dts = dts;
+  newframe->pts = pts;
   // if both dts or pts are good we use those, else use decoder insert time for frame sort
-  if ((newpts->pts != DVD_NOPTS_VALUE) || (newpts->dts != DVD_NOPTS_VALUE))
+  if ((newframe->pts != DVD_NOPTS_VALUE) || (newframe->dts != DVD_NOPTS_VALUE))
   {
     // if pts is borked (stupid avi's), use dts for frame sort
-    if (newpts->pts == DVD_NOPTS_VALUE)
-      newpts->sort_time = newpts->dts;
+    if (newframe->pts == DVD_NOPTS_VALUE)
+      newframe->sort_time = newframe->dts;
     else
-      newpts->sort_time = newpts->pts;
+      newframe->sort_time = newframe->pts;
   }
 
   pthread_mutex_lock(&m_queue_mutex);
-  pts_queue *queueWalker = m_pts_queue;
-  if (!queueWalker || (newpts->sort_time < queueWalker->sort_time))
+  frame_queue *queueWalker = m_frame_queue;
+  if (!queueWalker || (newframe->sort_time < queueWalker->sort_time))
   {
     // we have an empty queue, or this frame earlier than the current queue head.
-    newpts->nextpts = queueWalker;
-    m_pts_queue = newpts;
-  } else {
+    newframe->nextframe = queueWalker;
+    m_frame_queue = newframe;
+  }
+  else
+  {
     // walk the queue and insert this frame where it belongs in display order.
     bool ptrInserted = false;
-    pts_queue *nextpts = NULL;
+    frame_queue *nextframe = NULL;
     //
     while (!ptrInserted)
     {
-      nextpts = queueWalker->nextpts;
-      if (!nextpts || (newpts->sort_time < nextpts->sort_time))
+      nextframe = queueWalker->nextframe;
+      if (!nextframe || (newframe->sort_time < nextframe->sort_time))
       {
         // if the next frame is the tail of the queue, or our new frame is earlier.
-        newpts->nextpts = nextpts;
-        queueWalker->nextpts = newpts;
+        newframe->nextframe = nextframe;
+        queueWalker->nextframe = newframe;
         ptrInserted = true;
       }
-      queueWalker = nextpts;
+      queueWalker = nextframe;
     }
   }
   m_queue_depth++;
   pthread_mutex_unlock(&m_queue_mutex);	
 }
 
-void CDVDVideoCodecAmlogic::FrameRateTracking(double dts, double pts)
+void CDVDVideoCodecAmlogic::FrameRateTracking(BYTE *pData, int iSize, double dts, double pts)
 {
-  PtsQueuePush(dts, pts);
+  FrameQueuePush(dts, pts);
+
+  if (m_mpeg2_aspect)
+  {
+    // if mpeg2, probe demux data for aspect_ratio_information
+    // in the sequence_header_code.
+    if (CBitstreamConverter::mpeg2_aspect_ratio_information(pData, iSize, m_mpeg2_aspect))
+    {
+      m_mpeg2_aspect_pts = pts;
+      if (m_mpeg2_aspect_pts == DVD_NOPTS_VALUE)
+        m_mpeg2_aspect_pts = dts;
+      CLog::Log(LOGDEBUG, "%s: detected new aspect ratio(%f)", __MODULE_NAME__, m_mpeg2_aspect->ratio);
+    }
+  }
 
   // we might have out-of-order pts,
-  // so make sure we wait for at least 16 values in sorted queue.
+  // so make sure we wait for at least 8 values in sorted queue.
   if (m_queue_depth > 16)
   {
     pthread_mutex_lock(&m_queue_mutex);
 
-    float cur_pts = m_pts_queue->pts;
+    float cur_pts = m_frame_queue->pts;
     if (cur_pts == DVD_NOPTS_VALUE)
-      cur_pts = m_pts_queue->dts;
+      cur_pts = m_frame_queue->dts;
 
     pthread_mutex_unlock(&m_queue_mutex);	
 
@@ -367,8 +408,8 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(double dts, double pts)
 
         default:
           framerate = 0.0;
-          CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
-            __MODULE_NAME__, duration, cur_pts);
+          //CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
+          //  __MODULE_NAME__, duration, cur_pts);
           break;
       }
 
@@ -381,6 +422,6 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(double dts, double pts)
       }
     }
 
-    PtsQueuePop();
+    FrameQueuePop();
   }
 }
