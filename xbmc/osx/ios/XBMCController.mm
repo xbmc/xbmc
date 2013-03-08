@@ -28,16 +28,25 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
+#include "MusicInfoTag.h"
+#include "SpecialProtocol.h"
+#include "PlayList.h"
+#include "AEFactory.h"
 #include "ApplicationMessenger.h"
+#include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
-
 #include "windowing/WindowingFactory.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #include "threads/Event.h"
+#define id _id
+#include "TextureCache.h"
+#undef id
 #include <math.h>
 
 #ifndef M_PI
@@ -47,12 +56,23 @@
 
 #undef BOOL
 
+#import <AVFoundation/AVAudioSession.h>
+#import <MediaPlayer/MPMediaItem.h>
+#ifdef __IPHONE_5_0
+#import <MediaPlayer/MPNowPlayingInfoCenter.h>
+#else
+const NSString *MPNowPlayingInfoPropertyElapsedPlaybackTime = @"MPNowPlayingInfoPropertyElapsedPlaybackTime";
+const NSString *MPNowPlayingInfoPropertyPlaybackRate = @"MPNowPlayingInfoPropertyPlaybackRate";
+const NSString *MPNowPlayingInfoPropertyPlaybackQueueIndex = @"MPNowPlayingInfoPropertyPlaybackQueueIndex";
+const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoPropertyPlaybackQueueCount";
+#endif
 #import "IOSEAGLView.h"
 
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
+#import "AutoPool.h"
 
 XBMCController *g_xbmcController;
 static CEvent screenChangeEvent;
@@ -61,6 +81,146 @@ static CEvent screenChangeEvent;
 // notification messages
 extern NSString* kBRScreenSaverActivated;
 extern NSString* kBRScreenSaverDismissed;
+
+id objectFromVariant(const CVariant &data);
+
+NSArray *arrayFromVariantArray(const CVariant &data)
+{
+  if (!data.isArray())
+    return nil;
+  NSMutableArray *array = [[[NSMutableArray alloc] initWithCapacity:data.size()] autorelease];
+  for (CVariant::const_iterator_array itr = data.begin_array(); itr != data.end_array(); ++itr)
+  {
+    [array addObject:objectFromVariant(*itr)];
+  }
+  return array;
+}
+
+NSDictionary *dictionaryFromVariantMap(const CVariant &data)
+{
+  if (!data.isObject())
+    return nil;
+  NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithCapacity:data.size()] autorelease];
+  for (CVariant::const_iterator_map itr = data.begin_map(); itr != data.end_map(); ++itr)
+  {
+    [dict setValue:objectFromVariant(itr->second) forKey:[NSString stringWithUTF8String:itr->first.c_str()]];
+  }
+  return dict;
+}
+
+id objectFromVariant(const CVariant &data)
+{
+  if (data.isNull())
+    return nil;
+  if (data.isString())
+    return [NSString stringWithUTF8String:data.asString().c_str()];
+  if (data.isWideString())
+    return [NSString stringWithCString:(const char *)data.asWideString().c_str() encoding:NSUnicodeStringEncoding];
+  if (data.isInteger())
+    return [NSNumber numberWithLongLong:data.asInteger()];
+  if (data.isUnsignedInteger())
+    return [NSNumber numberWithUnsignedLongLong:data.asUnsignedInteger()];
+  if (data.isBoolean())
+    return [NSNumber numberWithInt:data.asBoolean()?1:0];
+  if (data.isDouble())
+    return [NSNumber numberWithDouble:data.asDouble()];
+  if (data.isArray())
+    return arrayFromVariantArray(data);
+  if (data.isObject())
+    return dictionaryFromVariantMap(data);
+  return nil;
+}
+
+void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
+  const std::string msg(message);
+  if (msg == "OnPlay")
+  {
+    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
+    std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
+    if (!thumb.empty())
+    {
+      bool needsRecaching;
+      CStdString cachedThumb(CTextureCache::Get().CheckCachedImage(thumb, false, needsRecaching));
+      LOG("thumb: %s, %s", thumb.c_str(), cachedThumb.c_str());
+      if (!cachedThumb.empty())
+      {
+        CStdString thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
+        [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
+      }
+    }
+    double duration = g_application.GetTotalTime();
+    if (duration > 0)
+      [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
+    [item setValue:[NSNumber numberWithInt:g_application.GetPlaySpeed()] forKey:@"speed"];
+    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+    int current = g_playlistPlayer.GetCurrentSong();
+    if (current >= 0)
+    {
+      [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
+      [item setValue:[NSNumber numberWithInt:g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size()] forKey:@"total"];
+    }
+    if (g_application.CurrentFileItem().HasMusicInfoTag())
+    {
+      const std::vector<std::string> &genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
+      if (!genre.empty())
+      {
+        NSMutableArray *genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
+        for(std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
+        {
+          [genreArray addObject:[NSString stringWithUTF8String:it->c_str()]];
+        }
+        [item setValue:genreArray forKey:@"genre"];
+      }
+    }
+    LOG(@"data: %@", item.description);
+    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+  }
+  else if (msg == "OnPause")
+  {
+    CAEFactory::Suspend();
+    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
+    LOG(@"data: %@", item.description);
+    [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:item  waitUntilDone:NO];
+  }
+  else if (msg == "OnStop")
+  {
+    CAEFactory::Suspend();
+    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
+    LOG(@"data: %@", item.description);
+    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:item  waitUntilDone:NO];
+  }
+}
+
+class AnnounceReceiver : public ANNOUNCEMENT::IAnnouncer
+{
+public:
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+  {
+    // not all Announce called from xbmc main thread, we need an auto poll here.
+    CCocoaAutoPool pool;
+    AnnounceBridge(flag, sender, message, data);
+  }
+  virtual ~AnnounceReceiver() {}
+  static void init()
+  {
+    if (NULL==g_announceReceiver) {
+      g_announceReceiver = new AnnounceReceiver();
+      ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(g_announceReceiver);
+    }
+  }
+  static void dealloc()
+  {
+    ANNOUNCEMENT::CAnnouncementManager::RemoveAnnouncer(g_announceReceiver);
+    delete g_announceReceiver;
+  }
+private:
+  AnnounceReceiver() {}
+  static AnnounceReceiver *g_announceReceiver;
+};
+
+AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
 //--------------------------------------------------------------
 //
@@ -80,6 +240,7 @@ extern NSString* kBRScreenSaverDismissed;
 @synthesize touchBeginSignaled;
 @synthesize m_screenIdx;
 @synthesize screensize;
+@synthesize m_networkAutoSuspendTimer;
 //--------------------------------------------------------------
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {  
@@ -290,6 +451,7 @@ extern NSString* kBRScreenSaverDismissed;
 {
   [view removeFromSuperview];
   m_glView.userInteractionEnabled = YES; 
+  [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender 
@@ -528,11 +690,16 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   m_screenIdx = 0;
   self = [super init];
   if ( !self )
     return ( nil );
+
+  m_isPlayingBeforeInactive = NO;
+  m_isInterrupted = NO;
+  m_bgTask = UIBackgroundTaskInvalid;
+  m_playbackState = IOS_PLAYBACK_STOPPED;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
@@ -567,6 +734,8 @@ extern NSString* kBRScreenSaverDismissed;
   [m_window makeKeyAndVisible];
   g_xbmcController = self;  
   
+  AnnounceReceiver::init();
+
   return self;
 }
 //--------------------------------------------------------------
@@ -577,6 +746,11 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (void)dealloc
 {
+  // stop background task
+  [m_networkAutoSuspendTimer invalidate];
+  [self enableNetworkAutoSuspend:nil];
+
+  AnnounceReceiver::dealloc();
   [m_glView stopAnimation];
   [m_glView release];
   [m_window release];
@@ -591,7 +765,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   // move this later into CocoaPowerSyscall
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -601,9 +775,17 @@ extern NSString* kBRScreenSaverDismissed;
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
+-(void) viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+
+  [self becomeFirstResponder];
+  [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+}
+//--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {  
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   [self pauseAnimation];
   
@@ -613,8 +795,16 @@ extern NSString* kBRScreenSaverDismissed;
   [super viewWillDisappear:animated];
 }
 //--------------------------------------------------------------
+- (BOOL) canBecomeFirstResponder
+{
+  return YES;
+}
+//--------------------------------------------------------------
 - (void)viewDidUnload
 {
+  [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+  [self resignFirstResponder];
+
 	[super viewDidUnload];	
 }
 //--------------------------------------------------------------
@@ -658,7 +848,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (BOOL) recreateOnReselect
 { 
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   return YES;
 }
 //--------------------------------------------------------------
@@ -668,6 +858,35 @@ extern NSString* kBRScreenSaverDismissed;
   [super didReceiveMemoryWarning];
   
   // Release any cached data, images, etc. that aren't in use.
+}
+//--------------------------------------------------------------
+- (void)disableNetworkAutoSuspend
+{
+  PRINT_SIGNATURE();
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
+  // we have to alloc the background task for keep network working after screen lock and dark.
+  UIBackgroundTaskIdentifier newTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+  m_bgTask = newTask;
+
+  if (m_networkAutoSuspendTimer)
+  {
+    [m_networkAutoSuspendTimer invalidate];
+    self.m_networkAutoSuspendTimer = nil;
+  }
+}
+//--------------------------------------------------------------
+- (void)enableNetworkAutoSuspend:(id)obj
+{
+  PRINT_SIGNATURE();
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
 }
 //--------------------------------------------------------------
 - (void) disableSystemSleep
@@ -709,48 +928,239 @@ extern NSString* kBRScreenSaverDismissed;
   m_window.screen = screen;
 }
 //--------------------------------------------------------------
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+  LOG(@"%s: type %d, subtype: %d", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
+  if (receivedEvent.type == UIEventTypeRemoteControl)
+  {
+    [self disableNetworkAutoSuspend];
+    switch (receivedEvent.subtype)
+    {
+      case UIEventSubtypeRemoteControlTogglePlayPause:
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAYPAUSE);
+        break;
+      case UIEventSubtypeRemoteControlPlay:
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+        break;
+      case UIEventSubtypeRemoteControlPause:
+        // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
+        CApplicationMessenger::Get().MediaPauseIfPlaying();
+        break;
+      case UIEventSubtypeRemoteControlNextTrack:
+        CApplicationMessenger::Get().SendAction(ACTION_NEXT_ITEM);
+        break;
+      case UIEventSubtypeRemoteControlPreviousTrack:
+        CApplicationMessenger::Get().SendAction(ACTION_PREV_ITEM);
+        break;
+      case UIEventSubtypeRemoteControlBeginSeekingForward:
+        // use 4X speed forward.
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
+        break;
+      case UIEventSubtypeRemoteControlBeginSeekingBackward:
+        // use 4X speed rewind.
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
+        break;
+      case UIEventSubtypeRemoteControlEndSeekingForward:
+      case UIEventSubtypeRemoteControlEndSeekingBackward:
+        // restore to normal playback speed.
+        if (g_application.IsPlaying() && !g_application.IsPaused())
+          CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+        break;
+      default:
+        LOG(@"unhandled subtype: %d", receivedEvent.subtype);
+        break;
+    }
+    [self rescheduleNetworkAutoSuspend];
+  }
+}
+//--------------------------------------------------------------
+- (void)enterBackground
+{
+  PRINT_SIGNATURE();
+  if (g_application.IsPlaying() && !g_application.IsPaused())
+  {
+    m_isPlayingBeforeInactive = YES;
+    CApplicationMessenger::Get().MediaPauseIfPlaying();
+  }
+}
+
+- (void)enterForeground
+{
+  PRINT_SIGNATURE();
+  // when we come back, restore playing if we were.
+  if (m_isPlayingBeforeInactive)
+  {
+    CApplicationMessenger::Get().MediaUnPause();
+    m_isPlayingBeforeInactive = NO;
+  }
+  m_isInterrupted = NO;
+}
+
+- (void)becomeInactive
+{
+  LOG(@"%s: was interrupted: %d", __PRETTY_FUNCTION__,  m_isInterrupted);
+  // if we were interrupted, already paused here
+  // else if user background us or lock screen, only pause video here, audio keep playing.
+  if (g_application.IsPlayingVideo() && !g_application.IsPaused())
+  {
+    m_isPlayingBeforeInactive = YES;
+    CApplicationMessenger::Get().MediaPauseIfPlaying();
+  }
+  // check whether we need disable network auto suspend.
+  [self rescheduleNetworkAutoSuspend];
+}
+
+- (void)beginInterruption
+{
+  PRINT_SIGNATURE();
+  m_isInterrupted = YES;
+  CAEFactory::Suspend();
+}
+
+- (void)endInterruption
+{
+  PRINT_SIGNATURE();
+  if (CAEFactory::IsSuspended())
+    CAEFactory::Resume();
+}
+//--------------------------------------------------------------
 - (void)pauseAnimation
 {
-  XBMC_Event newEvent;
-  
-  newEvent.appcommand.type = XBMC_APPCOMMAND;
-  newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-  CWinEventsIOS::MessagePush(&newEvent);
-  
-  /* Give player time to pause */
-  Sleep(2000);
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   [m_glView pauseAnimation];
-  
 }
 //--------------------------------------------------------------
 - (void)resumeAnimation
 {  
-  XBMC_Event newEvent;
-  
-  newEvent.appcommand.type = XBMC_APPCOMMAND;
-  newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
+  PRINT_SIGNATURE();
+
   [m_glView resumeAnimation];
 }
 //--------------------------------------------------------------
 - (void)startAnimation
 {
+  PRINT_SIGNATURE();
+
   [m_glView startAnimation];
 }
 //--------------------------------------------------------------
 - (void)stopAnimation
 {
+  PRINT_SIGNATURE();
+
   [m_glView stopAnimation];
 }
+//--------------------------------------------------------------
+- (void)onPlay:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  // MPNowPlayingInfoCenter is an ios5+ class, following code will work on ios5 even if compiled by xcode3
+  Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+  if (NowPlayingInfoCenter)
+  {
+    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+
+    NSString *title = [item objectForKey:@"title"];
+    if (title && title.length > 0)
+      [dict setObject:title forKey:MPMediaItemPropertyTitle];
+    NSString *album = [item objectForKey:@"album"];
+    if (album && album.length > 0)
+      [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
+    NSArray *artists = [item objectForKey:@"artist"];
+    if (artists && artists.count > 0)
+      [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
+    NSNumber *track = [item objectForKey:@"track"];
+    if (track)
+      [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
+    NSNumber *duration = [item objectForKey:@"duration"];
+    if (duration)
+      [dict setObject:duration forKey:MPMediaItemPropertyPlaybackDuration];
+    NSArray *genres = [item objectForKey:@"genre"];
+    if (genres && genres.count > 0)
+      [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
+    NSString *thumb = [item objectForKey:@"thumb"];
+    if (thumb && thumb.length > 0)
+    {
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithContentsOfFile:thumb]];
+      [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+      [mArt release];
+    }
+    // these proprity keys are ios5+ only
+    NSNumber *elapsed = [item objectForKey:@"elapsed"];
+    if (elapsed)
+      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    NSNumber *speed = [item objectForKey:@"speed"];
+    if (speed)
+      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+    NSNumber *current = [item objectForKey:@"current"];
+    if (current)
+      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+    NSNumber *total = [item objectForKey:@"total"];
+    if (total)
+      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
+    /*
+     other properities can be set:
+     MPMediaItemPropertyAlbumTrackCount
+     MPMediaItemPropertyComposer
+     MPMediaItemPropertyDiscCount
+     MPMediaItemPropertyDiscNumber
+     MPMediaItemPropertyPersistentID
+
+     Additional metadata properties:
+     MPNowPlayingInfoPropertyChapterNumber;
+     MPNowPlayingInfoPropertyChapterCount;
+     */
+
+    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
+    [dict release];
+  }
+  m_playbackState = IOS_PLAYBACK_PLAYING;
+  [self disableNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)onPause:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  m_playbackState = IOS_PLAYBACK_PAUSED;
+  // schedule set network auto suspend state for save power if idle.
+  [self rescheduleNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)onStop:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+  if (NowPlayingInfoCenter)
+    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nil];
+  m_playbackState = IOS_PLAYBACK_STOPPED;
+  // delay set network auto suspend state in case we are switching playing item.
+  [self rescheduleNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)rescheduleNetworkAutoSuspend
+{
+  LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__,  m_playbackState);
+  if (m_playbackState == IOS_PLAYBACK_PLAYING)
+  {
+    [self disableNetworkAutoSuspend];
+    return;
+  }
+  if (m_networkAutoSuspendTimer)
+    [m_networkAutoSuspendTimer invalidate];
+
+  int delay = m_playbackState == IOS_PLAYBACK_PAUSED ? 60 : 30;  // wait longer if paused than stopped
+  self.m_networkAutoSuspendTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(enableNetworkAutoSuspend:) userInfo:nil repeats:NO];
+}
+
 #pragma mark -
 #pragma mark private helper methods
 //
 - (void)observeDefaultCenterStuff: (NSNotification *) notification
 {
-  //NSLog(@"default: %@", [notification name]);
+//  LOG(@"default: %@", [notification name]);
+//  LOG(@"userInfo: %@", [notification userInfo]);
 }
 
 @end

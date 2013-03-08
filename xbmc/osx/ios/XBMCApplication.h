@@ -19,7 +19,8 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
-@interface XBMCApplicationDelegate : NSObject <UIApplicationDelegate> {
+@interface XBMCApplicationDelegate : NSObject <UIApplicationDelegate, AVAudioSessionDelegate> {
 }
 @end

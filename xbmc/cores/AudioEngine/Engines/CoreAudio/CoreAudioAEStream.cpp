@@ -596,6 +596,10 @@ void CCoreAudioAEStream::Pause()
 
 void CCoreAudioAEStream::Resume()
 {
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV)
+  if (CAEFactory::IsSuspended())
+    CAEFactory::Resume();
+#endif
   m_paused = false;
 }
 

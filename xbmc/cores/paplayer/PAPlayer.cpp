@@ -91,8 +91,8 @@ void PAPlayer::SoftStart(bool wait/* = false */)
     if (si->m_fadeOutTriggered)
       continue;
 
-    si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
     si->m_stream->Resume();
+    si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
   }
   
   if (wait)
