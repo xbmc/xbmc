@@ -34,10 +34,10 @@ typedef struct frame_queue {
   struct frame_queue  *nextframe;
 } frame_queue;
 
-class DllAvUtil;
 class DllSwScale;
-class DllAvFormat;
 class DllLibVDADecoder;
+class CBitstreamConverter;
+
 class CDVDVideoCodecVDA : public CDVDVideoCodec
 {
 public:
@@ -76,11 +76,8 @@ protected:
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
   int32_t           m_max_ref_frames;
   bool              m_use_cvBufferRef;
-  
-  bool              m_convert_bytestream;
-  bool              m_convert_3byteTo4byteNALSize;
-  DllAvUtil         *m_dllAvUtil;
-  DllAvFormat       *m_dllAvFormat;
+
+  CBitstreamConverter *m_bitstream;
 
   DllSwScale        *m_dllSwScale;
   DVDVideoPicture   m_videobuffer;
