@@ -277,6 +277,9 @@
 #define ACTION_CHANNEL_DOWN           185
 #define ACTION_NEXT_CHANNELGROUP      186
 #define ACTION_PREVIOUS_CHANNELGROUP  187
+#define ACTION_PVR_PLAY               188
+#define ACTION_PVR_PLAY_TV            189
+#define ACTION_PVR_PLAY_RADIO         190
 
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)

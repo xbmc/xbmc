@@ -2733,6 +2733,10 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  // forward action to g_PVRManager and break if it was able to handle it
+  if (g_PVRManager.OnAction(action))
+    return true;
+
   if (IsPlaying())
   {
     // forward channel switches to the player - he knows what to do

@@ -223,6 +223,9 @@ static const ActionMapping actions[] =
         {"channeldown"           , ACTION_CHANNEL_DOWN},
         {"previouschannelgroup"  , ACTION_PREVIOUS_CHANNELGROUP},
         {"nextchannelgroup"      , ACTION_NEXT_CHANNELGROUP},
+        {"playpvr"               , ACTION_PVR_PLAY},
+        {"playpvrtv"             , ACTION_PVR_PLAY_TV},
+        {"playpvrradio"          , ACTION_PVR_PLAY_RADIO},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},

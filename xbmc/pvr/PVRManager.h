@@ -27,6 +27,7 @@
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
+class CAction;
 
 namespace EPG
 {
@@ -55,6 +56,13 @@ namespace PVR
     ManagerStateStopping,
     ManagerStateInterrupted,
     ManagerStateStarted
+  };
+
+  enum PlaybackType
+  {
+    PlaybackTypeAny = 0,
+    PlaybackTypeTv,
+    PlaybackTypeRadio
   };
 
   #define g_PVRManager       CPVRManager::Get()
@@ -389,6 +397,13 @@ namespace PVR
     bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
 
     /*!
+     * @brief Start playback of the last used channel, and if it fails use first channel in the current channelgroup.
+     * @param type The type of playback to be started (any, radio, tv). See PlaybackType enum
+     * @return True if playback was started, false otherwise.
+     */
+    bool StartPlayback(PlaybackType type = PlaybackTypeAny);
+
+    /*!
      * @brief Update the current playing file in the guiinfomanager and application.
      */
     void UpdateCurrentFile(void);
@@ -472,6 +487,13 @@ namespace PVR
      * @return True when loaded, false otherwise
      */
     bool WaitUntilInitialised(void);
+
+    /*!
+     * @brief Handle PVR specific cActions
+     * @param action The action to process
+     * @return True if action could be handled, false otherwise.
+     */
+    bool OnAction(const CAction &action);
 
   protected:
     /*!
