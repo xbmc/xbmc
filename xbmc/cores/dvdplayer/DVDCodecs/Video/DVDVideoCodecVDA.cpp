@@ -18,25 +18,22 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "config.h"
 
 #if defined(HAVE_LIBVDADECODER)
 #include "system_gl.h"
-#include "DynamicDll.h"
-#include "settings/GUISettings.h"
+#include "DVDVideoCodecVDA.h"
+
+#include "DllSwScale.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
-#include "DVDVideoCodecVDA.h"
-#include "DllAvFormat.h"
-#include "DllSwScale.h"
+#include "osx/CocoaInterface.h"
+#include "settings/GUISettings.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "windowing/WindowingFactory.h"
-#include "osx/CocoaInterface.h"
 
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -57,6 +54,16 @@
    field_pic_flag: 0 on the frames,
    (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
+
+// tracks a frame in and output queue in display order
+typedef struct frame_queue {
+  double              dts;
+  double              pts;
+  double              sort_time;
+  FourCharCode        pixel_buffer_format;
+  CVBufferRef         pixel_buffer_ref;
+  struct frame_queue  *nextframe;
+} frame_queue;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // http://developer.apple.com/mac/library/technotes/tn2010/tn2267.html

@@ -26,7 +26,9 @@
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 
+#if defined(HAVE_LIBVDADECODER)
 #include "Video/DVDVideoCodecVDA.h"
+#endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
