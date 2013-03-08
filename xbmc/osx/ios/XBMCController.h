@@ -28,6 +28,13 @@
 
 @class IOSEAGLView;
 
+typedef enum
+{
+  IOS_PLAYBACK_STOPPED,
+  IOS_PLAYBACK_PAUSED,
+  IOS_PLAYBACK_PLAYING
+} IOSPlaybackState;
+
 @interface XBMCController : UIViewController <UIGestureRecognizerDelegate>
 {
   UIWindow *m_window;
@@ -46,6 +53,8 @@
   bool m_isPlayingBeforeInactive;
   bool m_isInterrupted;
   UIBackgroundTaskIdentifier m_bgTask;
+  NSTimer *m_networkAutoSuspendTimer;
+  IOSPlaybackState m_playbackState;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
@@ -53,6 +62,7 @@
 @property bool touchBeginSignaled;
 @property int  m_screenIdx;
 @property CGSize screensize;
+@property (nonatomic, retain) NSTimer *m_networkAutoSuspendTimer;
 
 // message from which our instance is obtained
 - (void) pauseAnimation;
@@ -79,7 +89,7 @@
 - (void) deactivateKeyboard:(UIView *)view;
 
 - (void) disableNetworkAutoSuspend;
-- (void) enableNetworkAutoSuspend;
+- (void) enableNetworkAutoSuspend:(id)obj;
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;

@@ -240,6 +240,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize touchBeginSignaled;
 @synthesize m_screenIdx;
 @synthesize screensize;
+@synthesize m_networkAutoSuspendTimer;
 //--------------------------------------------------------------
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {  
@@ -698,6 +699,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   m_isPlayingBeforeInactive = NO;
   m_isInterrupted = NO;
   m_bgTask = UIBackgroundTaskInvalid;
+  m_playbackState = IOS_PLAYBACK_STOPPED;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
@@ -745,7 +747,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)dealloc
 {
   // stop background task
-  [self enableNetworkAutoSuspend];
+  [m_networkAutoSuspendTimer invalidate];
+  [self enableNetworkAutoSuspend:nil];
 
   AnnounceReceiver::dealloc();
   [m_glView stopAnimation];
@@ -867,10 +870,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
   // we have to alloc the background task for keep network working after screen lock and dark.
   UIBackgroundTaskIdentifier newTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-  m_bgTask = newTask;  
+  m_bgTask = newTask;
+
+  if (m_networkAutoSuspendTimer)
+  {
+    [m_networkAutoSuspendTimer invalidate];
+    self.m_networkAutoSuspendTimer = nil;
+  }
 }
 //--------------------------------------------------------------
-- (void)enableNetworkAutoSuspend
+- (void)enableNetworkAutoSuspend:(id)obj
 {
   PRINT_SIGNATURE();
   if (m_bgTask != UIBackgroundTaskInvalid)
@@ -923,6 +932,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   LOG(@"%s: type %d, subtype: %d", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
   if (receivedEvent.type == UIEventTypeRemoteControl)
   {
+    [self disableNetworkAutoSuspend];
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
@@ -945,6 +955,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
         LOG(@"unhandled subtype: %d", receivedEvent.subtype);
         break;
     }
+    [self rescheduleNetworkAutoSuspend];
   }
 }
 //--------------------------------------------------------------
@@ -980,8 +991,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::Get().MediaPauseIfPlaying();
   }
-  // TODO: only disable network auto-suspend when app is playing
-  [self disableNetworkAutoSuspend];
+  // check whether we need disable network auto suspend.
+  [self rescheduleNetworkAutoSuspend];
 }
 
 - (void)beginInterruption
@@ -1089,11 +1100,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
     [dict release];
   }
+  m_playbackState = IOS_PLAYBACK_PLAYING;
+  [self disableNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
+  m_playbackState = IOS_PLAYBACK_PAUSED;
+  // schedule set network auto suspend state for save power if idle.
+  [self rescheduleNetworkAutoSuspend];
 }
 //--------------------------------------------------------------
 - (void)onStop:(NSDictionary *)item
@@ -1102,6 +1118,24 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
   if (NowPlayingInfoCenter)
     [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nil];
+  m_playbackState = IOS_PLAYBACK_STOPPED;
+  // delay set network auto suspend state in case we are switching playing item.
+  [self rescheduleNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)rescheduleNetworkAutoSuspend
+{
+  LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__,  m_playbackState);
+  if (m_playbackState == IOS_PLAYBACK_PLAYING)
+  {
+    [self disableNetworkAutoSuspend];
+    return;
+  }
+  if (m_networkAutoSuspendTimer)
+    [m_networkAutoSuspendTimer invalidate];
+
+  int delay = m_playbackState == IOS_PLAYBACK_PAUSED ? 60 : 30;  // wait longer if paused than stopped
+  self.m_networkAutoSuspendTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(enableNetworkAutoSuspend:) userInfo:nil repeats:NO];
 }
 
 #pragma mark -
