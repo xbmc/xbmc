@@ -6815,7 +6815,7 @@ msgid "Already started recording on this channel"
 msgstr ""
 
 msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
+msgid "%s could not be played. Check the log for details."
 msgstr ""
 
 msgctxt "#19036"

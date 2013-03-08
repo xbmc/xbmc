@@ -429,7 +429,11 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
   bool bReturn = g_application.PlayFile(CFileItem(*channel));
   if (!bReturn)
-    CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+  {
+    CStdString msg;
+    msg.Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
+    CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
+  }
 
   return bReturn;
 }

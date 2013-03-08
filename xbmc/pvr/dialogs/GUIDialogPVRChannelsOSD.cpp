@@ -209,9 +209,11 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     if (!g_PVRManager.CheckParentalLock(*channel) ||
         !g_application.m_pPlayer->SwitchChannel(*channel))
     {
+      CStdString msg;
+      msg.Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
               g_localizeStrings.Get(19166), // PVR information
-              g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
+              msg);
       return;
     }
   }

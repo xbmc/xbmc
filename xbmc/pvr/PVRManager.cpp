@@ -1082,9 +1082,12 @@ bool CPVRManager::StartPlayback(PlaybackType type /* = PlaybackTypeAny */)
   if (!bReturn)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - could not determine %s channel to start playback with. No last played channel found, and first channel of active group could also not be determined.", __FUNCTION__, bIsRadio ? "radio": "tv");
+
+    CStdString msg;
+    msg.Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str()); // RADIO/TV could not be played. Check the log for details.
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
             g_localizeStrings.Get(19166), // PVR information
-            g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
+            msg);
   }
 
   return bReturn;
@@ -1151,9 +1154,11 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'", __FUNCTION__, channel.ChannelName().c_str());
 
+    CStdString msg;
+    msg.Format(g_localizeStrings.Get(19035).c_str(), channel.ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
         g_localizeStrings.Get(19166), // PVR information
-        g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
+        msg);
   }
   else
   {
