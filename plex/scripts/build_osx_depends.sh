@@ -43,26 +43,32 @@ outputpath=$ROOT/plex/Dependencies/xbmc-depends/$outputdir
 echo $outputpath
 cd $DEPENDDIR
 ./bootstrap
-./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
-make || exit 1
+#./configure --with-rootpath=$ROOT/plex/Dependencies/xbmc-depends --with-toolchain=/Users/Shared/xbmc-depends/toolchain --with-darwin=$darwin --with-arch=$arch
+#make || exit 1
 
 cd $ROOT
 
 # read some variables
 source tools/darwin/depends/config.site
 
+# ./configure --extra-cflags="-O2  -std=gnu99 -no-cpp-precomp -miphoneos-version-min=4.2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk -arch armv7 -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 -I/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/usr/include  -g -D_DEBUG -Wall  -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" --target-os=darwin --disable-muxers   --disable-encoders --disable-devices  --disable-doc --disable-ffplay   --disable-ffmpeg --disable-ffprobe  --disable-ffserver --disable-vda      --disable-crystalhd --disable-decoder=mpeg_xvmc --cpu=cortex-a8 --arch=arm --enable-cross-compile --enable-pic --disable-armv5te --disable-armv6t2 --enable-neon --disable-libvorbis --enable-gpl --enable-postproc --enable-static      --enable-pthreads --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac --enable-protocol=http --enable-runtime-cpudetect --cc=clang --as="/Users/Shared/xbmc-depends/toolchain/bin/gas-preprocessor.pl /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2"
+
+# ./configure --target-os=darwin --disable-muxers --disable-encoders --disable-devices --disable-doc --disable-ffplay --disable-ffmpeg --disable-ffprobe --disable-ffserver --disable-vda --disable-crystalhd --disable-decoder=mpeg_xvmc --disable-debug --cpu=cortex-a8 --arch=arm --enable-cross-compile --enable-pic --disable-armv5te --disable-armv6t2 --enable-neon --disable-libvorbis --enable-gpl --enable-postproc --enable-static --enable-pthreads --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac --enable-protocol=http --enable-runtime-cpudetect --prefix=/Users/tru/Documents/Code/Plex/plex-home-theater/plex/Dependencies/xbmc-depends/ffmpeg-iphoneos6.1_armv7 --cc=clang --as=/Users/Shared/xbmc-depends/toolchain/bin/gas-preprocessor.pl /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 --extra-cflags=-mfpu=neon  -std=gnu99 -no-cpp-precomp -miphoneos-version-min=4.2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk -arch armv7 -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 -I/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/usr/include -I/Users/tru/Documents/Code/Plex/plex-home-theater/plex/Dependencies/xbmc-depends/iphoneos6.1_armv7/include --extra-ldflags=-arch armv7 -L/Users/tru/Documents/Code/Plex/plex-home-theater/plex/Dependencies/xbmc-depends/iphoneos6.1_armv7/lib
+
 cd $ROOT/lib/ffmpeg
 config="--target-os=darwin --disable-muxers --disable-encoders --disable-devices --disable-doc --disable-ffplay --disable-ffmpeg"
 config="$config --disable-ffprobe --disable-ffserver --disable-vda --disable-crystalhd --disable-decoder=mpeg_xvmc --disable-debug"
 if [ $arch = "armv7" ]; then
-  config="$config --arch=$arch --enable-cross-compile --enable-pic --disable-armv5te --disable-armv6t2 --enable-neon"
+  config="$config --cpu=cortex-a8 --arch=arm --enable-cross-compile --enable-pic --disable-armv5te --disable-armv6t2 --enable-neon"
+  extra_cflags="-mfpu=neon $CFLAGS"
 elif [ $arch = "i386" ]; then
   config="$config --arch=x86 --enable-cross-compile --disable-amd3dnow"
 else
   config="$config --disable-amd3dnow"
 fi
 
-config="$config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis"
+#config="$config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis"
+config="$config --disable-libvorbis"
 config="$config --enable-gpl --enable-postproc --enable-static --enable-pthreads"
 config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac"
 config="$config --enable-protocol=http --enable-runtime-cpudetect"
@@ -75,9 +81,18 @@ case $CC in
     config="$config --cc=$CC" ;;
 esac
 
+extra_cflags="$extra_cflags -I$outputpath/include"
+
 #echo $config
-./configure $config --as="$AS" --extra-cflags="-arch $arch -I$outputpath/include" --extra-ldflags="-arch $arch -L$outputpath/lib" || exit 1
+echo ./configure $config --as="$AS" --extra-cflags="$extra_cflags" --extra-ldflags="-arch $arch -L$outputpath/lib"
+./configure $config --as="$AS" --extra-cflags="$extra_cflags" --extra-ldflags="$LDFLAGS -arch $arch -L$outputpath/lib" || exit 1
+
+sed -ie "s#YASM=yasm#YASM=${outputpath}/bin/yasm#" config.mak
+sed -ie "s#YASMDEP=yasm#YASMDEP=${outputpath}/bin/yasm#" config.mak
+sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+
 make || exit 1
+ar d libavcodec/libavcodec.a inverse.o
 make install || exit 1
 
 cd $ROOT/plex/Dependencies/xbmc-depends

@@ -48,9 +48,12 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 		rm $(PREFIX)/lib/libboost_thread.so; \
 		mv $(PREFIX)/lib/libboost_date_time.so.$(LIBVERSION) $(PREFIX)/lib/libboost_date_time.dylib; \
 		rm $(PREFIX)/lib/libboost_date_time.so; \
+		mv $(PREFIX)/lib/libboost_system.so.$(LIBVERSION) $(PREFIX)/lib/libboost_system.dylib; \
+		rm $(PREFIX)/lib/libboost_system.so; \
 	fi
 	install_name_tool -id $(PREFIX)/lib/libboost_thread.dylib $(PREFIX)/lib/libboost_thread.dylib
 	install_name_tool -id $(PREFIX)/lib/libboost_date_time.dylib $(PREFIX)/lib/libboost_date_time.dylib
+	install_name_tool -id $(PREFIX)/lib/libboost_system.dylib $(PREFIX)/lib/libboost_system.dylib
 	touch .installed
 
 clean:
