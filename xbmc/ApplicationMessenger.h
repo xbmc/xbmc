@@ -52,9 +52,11 @@ namespace MUSIC_INFO
 
 #define TMSG_MEDIA_PLAY           200
 #define TMSG_MEDIA_STOP           201
+// the PAUSE is indeed a PLAYPAUSE
 #define TMSG_MEDIA_PAUSE          202
 #define TMSG_MEDIA_RESTART        203
 #define TMSG_MEDIA_UNPAUSE        204
+#define TMSG_MEDIA_PAUSE_IF_PLAYING   205
 
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
@@ -168,6 +170,8 @@ public:
   void MediaPlay(int playlistid, int song = -1);
   void MediaStop(bool bWait = true, int playlistid = -1);
   void MediaPause();
+  void MediaUnPause();
+  void MediaPauseIfPlaying();
   void MediaRestart(bool bWait);
 
   void PlayListPlayerPlay();
