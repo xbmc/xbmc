@@ -243,8 +243,9 @@ void CGUIMultiImage::LoadDirectory()
   /* PLEX - first check our own vector */
   if (!m_plexFiles.empty())
   {
-    m_files = m_plexFiles;
-    CSingleLock lk(m_section);
+    for (int i = 0 ; i < m_plexFiles.size(); i++)
+      m_files.push_back(m_plexFiles[i]);
+    
     OnDirectoryLoaded();
     return;
   }
