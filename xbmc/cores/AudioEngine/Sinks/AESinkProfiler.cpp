@@ -56,7 +56,7 @@ void CAESinkProfiler::Deinitialize()
 {
 }
 
-bool CAESinkProfiler::IsCompatible(const AEAudioFormat format, const std::string device)
+bool CAESinkProfiler::IsCompatible(const AEAudioFormat format, const std::string &device)
 {
   if (AE_IS_RAW(format.m_dataFormat))
     return false;

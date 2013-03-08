@@ -74,6 +74,15 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
 {
   m_sinkbuffer = NULL;
   m_alignedS16LE = NULL;
+  m_volume_changed = false;
+  m_min_frames = 0;
+  m_sink_frameSize = 0;
+  m_sinkbuffer_sec = 0.0;
+  m_sinkbuffer_sec_per_byte = 0.0;
+  m_draining = false;
+  m_audiotrackbuffer_sec = 0.0;
+  m_audiotrack_empty_sec = 0.0;
+  m_volume = 0.0;
 #if defined(HAS_AMLPLAYER)
   aml_cpufreq_limit(true);
 #endif
@@ -151,7 +160,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
     _aligned_free(m_alignedS16LE), m_alignedS16LE = NULL;
 }
 
-bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat format, const std::string device)
+bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat format, const std::string &device)
 {
   return ((m_format.m_sampleRate    == format.m_sampleRate) &&
           (m_format.m_dataFormat    == format.m_dataFormat) &&

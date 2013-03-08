@@ -70,7 +70,7 @@ enum AEDataFormat
 /**
  * The audio format structure that fully defines a stream's audio information
  */
-typedef struct {
+typedef struct AEAudioFormat{
   /**
    * The stream's data format (eg, AE_FMT_S16LE)
    */
@@ -105,5 +105,16 @@ typedef struct {
    * The size of one frame in bytes
    */
   unsigned int m_frameSize;
+ 
+  AEAudioFormat()
+  {
+    m_dataFormat = AE_FMT_INVALID;
+    m_sampleRate = 0;
+    m_encodedRate = 0;
+    m_frames = 0;
+    m_frameSamples = 0;
+    m_frameSize = 0;
+  }
+ 
 } AEAudioFormat;
 
