@@ -951,6 +951,22 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
       case UIEventSubtypeRemoteControlPreviousTrack:
         CApplicationMessenger::Get().SendAction(ACTION_PREV_ITEM);
         break;
+      case UIEventSubtypeRemoteControlBeginSeekingForward:
+        // use 4X speed forward.
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
+        break;
+      case UIEventSubtypeRemoteControlBeginSeekingBackward:
+        // use 4X speed rewind.
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
+        break;
+      case UIEventSubtypeRemoteControlEndSeekingForward:
+      case UIEventSubtypeRemoteControlEndSeekingBackward:
+        // restore to normal playback speed.
+        if (g_application.IsPlaying() && !g_application.IsPaused())
+          CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+        break;
       default:
         LOG(@"unhandled subtype: %d", receivedEvent.subtype);
         break;
