@@ -174,6 +174,63 @@ int CBitstreamConverter::nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
+bool CBitstreamConverter::mpeg2_aspect_ratio_information(const uint8_t *data, const uint32_t size, mpeg2_aspect *aspect)
+{
+  // parse nal's until a sequence_header_code is found
+  // and return the aspect_ratio_information if changed.
+  bool changed = false;
+
+  if (!data)
+    return changed;
+
+  const uint8_t *p = data;
+  const uint8_t *end = p + size;
+  const uint8_t *nal_start, *nal_end;
+
+  nal_start = avc_find_startcode(p, end);
+  while (nal_start < end)
+  {
+    while (!*(nal_start++));
+    nal_end = avc_find_startcode(nal_start, end);
+    if (*nal_start == 0xB3)
+    {
+      float ratio;
+      // nal_start == sequence_header_code
+      // nal_start + 12 bits == horizontal_size_value
+      // nal_start + 24 bits == vertical_size_value
+      // nal_start + 28 bits == aspect_ratio_information
+      // nal_start + 32 bits == frame_rate_code
+      // so nal_start + 4 bytes >> 4 bits == aspect_ratio_information
+      const uint8_t aspect_ratio_information = *(nal_start + 4) & 0xF0;
+      switch(aspect_ratio_information)
+      {
+        case 0x10:
+          ratio = 1.0;
+          break;
+        default:
+        case 0x20:
+          ratio = 4.0/3.0;
+          break;
+        case 0x30:
+          ratio = 16.0/9.0;
+          break;
+        case 0x40:
+          ratio = 2.21;
+          break;
+      }
+      if (aspect_ratio_information != aspect->ratio_info)
+      {
+        changed = true;
+        aspect->ratio = ratio;
+        aspect->ratio_info = aspect_ratio_information;
+      }
+    }
+    nal_start = nal_end;
+  }
+
+  return changed;
+}
+
 void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
 {
   nal_bitstream bs;

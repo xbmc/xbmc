@@ -69,6 +69,12 @@ typedef struct
   uint64_t cache;
 } nal_bitstream;
 
+typedef struct mpeg2_aspect
+{
+  float  ratio;
+  int    ratio_info;
+} mpeg2_aspect;
+
 typedef struct
 {
   int profile_idc;
@@ -122,15 +128,17 @@ public:
   int GetConvertSize();
   uint8_t *GetExtraData(void);
   int GetExtraSize();
-  void parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
+
+  static void parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
+  static bool mpeg2_aspect_ratio_information(const uint8_t *data, const uint32_t size, mpeg2_aspect *aspect);
 protected:
   // bytestream (Annex B) to bistream conversion support.
-  void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size);
-  uint32_t nal_bs_read(nal_bitstream *bs, int n);
-  bool nal_bs_eos(nal_bitstream *bs);
-  int nal_bs_read_ue(nal_bitstream *bs);
-  const uint8_t *avc_find_startcode_internal(const uint8_t *p, const uint8_t *end);
-  const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end);
+  static void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size);
+  static uint32_t nal_bs_read(nal_bitstream *bs, int n);
+  static bool nal_bs_eos(nal_bitstream *bs);
+  static int nal_bs_read_ue(nal_bitstream *bs);
+  static const uint8_t *avc_find_startcode_internal(const uint8_t *p, const uint8_t *end);
+  static const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end);
   const int avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size);
   const int avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
   const int isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len);
