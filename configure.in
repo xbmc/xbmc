@@ -1012,6 +1012,7 @@ if test "$target_platform" = "target_android" ; then
   #android hack for static python. Required to maintain correct linking order.
   AC_CHECK_LIB([python$PYTHON_VERSION],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([android],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([log],         [__android_log_vprint],, AC_MSG_ERROR($missing_library))
 fi
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
   [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
