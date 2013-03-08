@@ -64,6 +64,7 @@ static int OSSSampleRateList[] =
 
 CAESinkOSS::CAESinkOSS()
 {
+  m_fd = 0;
 }
 
 CAESinkOSS::~CAESinkOSS()
@@ -71,7 +72,7 @@ CAESinkOSS::~CAESinkOSS()
   Deinitialize();
 }
 
-std::string CAESinkOSS::GetDeviceUse(const AEAudioFormat format, const std::string device)
+std::string CAESinkOSS::GetDeviceUse(const AEAudioFormat format, const std::string &device)
 {
 #ifdef OSS4
   if (AE_IS_RAW(format.m_dataFormat))
@@ -287,7 +288,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     if (ioctl(m_fd, SNDCTL_DSP_GET_CHNORDER, &order) == -1)
     {
       CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get the channel order, assuming CHNORDER_NORMAL");
-      order = CHNORDER_NORMAL;
     }
   }
 #endif
@@ -367,7 +367,7 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(AEAudioFormat format)
   return info;
 }
 
-bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const std::string device)
+bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const std::string &device)
 {
   AEAudioFormat tmp  = format;
   tmp.m_channelLayout = GetChannelLayout(format);

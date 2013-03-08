@@ -187,7 +187,11 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_encodedSampleRate(0),
   m_uiBufferLen(0),
   m_avgTimeWaiting(50),
-  m_isDirty(false)
+  m_isDirty(false),
+  sinkReqFormat(AE_FMT_INVALID),
+  sinkRetFormat(AE_FMT_INVALID),
+  m_isSuspended(false),
+  m_sinkLatency(0.0)
 {
   m_channelLayout.Reset();
 }
@@ -350,7 +354,7 @@ void CAESinkWASAPI::Deinitialize()
   m_initialized = false;
 }
 
-bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string device)
+bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string &device)
 {
   if (!m_initialized || m_isDirty)
     return false;
@@ -472,7 +476,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
       return INT_MAX;
     }
     hr = m_pAudioClient->Start(); //start the audio driver running
-    if FAILED(hr)
+    if (FAILED(hr))
       CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
     m_running = true; //signal that we're processing frames
     return g_advancedSettings.m_streamSilence ? NumFramesRequested : 0U;
@@ -567,7 +571,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   CAEChannelInfo       deviceChannels;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
-  WAVEFORMATEX*        pwfxex = NULL;
   HRESULT              hr;
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -890,17 +893,8 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     if (format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_DTS)
     {
-      wfxex.dwChannelMask          = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1;
-
-      if (format.m_dataFormat == AE_FMT_AC3)
-      {
-        wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
-      }
-      else
-      {
-        wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
-       }
-
+      wfxex.dwChannelMask               = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1;
+      wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
       wfxex.Format.wBitsPerSample       = 16;
       wfxex.Samples.wValidBitsPerSample = 16;
       wfxex.Format.nChannels            = (WORD)format.m_channelLayout.Count();
@@ -1168,6 +1162,12 @@ initialize:
   /* second buffer is filled. Multiplying the returned 100ns intervals by 0.0000002 */
   /* is handles both the unit conversion and twin buffers.                          */
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetStreamLatency Failed : %s", WASAPIErrToStr(hr));
+    return false;
+  }
+
   m_sinkLatency = hnsLatency * 0.0000002;
 
   CLog::Log(LOGINFO, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized using: %s, %d, %d",

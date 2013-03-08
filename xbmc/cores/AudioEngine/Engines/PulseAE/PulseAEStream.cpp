@@ -556,8 +556,10 @@ void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userda
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
   if(stream)
+  {
     stream->SetDrained();
-  pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+    pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+  }
 }
 
 void CPulseAEStream::ProcessCallbacks()
