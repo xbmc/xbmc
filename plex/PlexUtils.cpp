@@ -19,6 +19,10 @@
 #include <CoreServices/CoreServices.h>
 #endif
 
+#ifdef TARGET_LINUX // For uname()
+#include <sys/utsname.h>
+#endif
+
 using namespace std;
 using namespace boost;
 
