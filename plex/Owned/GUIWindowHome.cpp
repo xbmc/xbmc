@@ -274,7 +274,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(true), m_lastSelectedItem("Search")
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
   if (g_advancedSettings.m_iShowFirstRun != 77)
   {
@@ -321,7 +321,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       if (pItem)
       {
         m_lastSelectedItem = GetCurrentItemName();
-        if (!ShowSection(pItem->GetProperty("sectionPath").asString()))
+        if (!ShowSection(pItem->GetProperty("sectionPath").asString()) && !m_globalArt)
         {
           HideAllLists();
           ShowSection("global://art");
@@ -887,6 +887,12 @@ bool CGUIWindowHome::ShowSection(const CStdString &url)
   {
     CPlexSectionFanout* section = m_sections[url];
     section->Show();
+    
+    if (url == "global://art")
+      m_globalArt = true;
+    else
+      m_globalArt = false;
+    
     return true;
   }
   return false;
