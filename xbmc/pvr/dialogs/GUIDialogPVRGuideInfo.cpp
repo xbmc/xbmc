@@ -23,6 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/LocalizeStrings.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -170,9 +171,15 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
 
     if (!m_progItem->GetEPGInfoTag()->HasPVRChannel() ||
         !g_application.PlayFile(CFileItem(*m_progItem->GetEPGInfoTag()->ChannelTag())))
-      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+    {
+      CStdString msg;
+      msg.Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(19029).c_str()); // Channel could not be played. Check the log for details.
+      CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
+    }
     else
+    {
       bReturn = true;
+    }
   }
 
   return bReturn;
