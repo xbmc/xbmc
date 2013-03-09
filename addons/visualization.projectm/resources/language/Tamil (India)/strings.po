@@ -1,0 +1,77 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "பதிப்புவரைதல் தரம்"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "குறைவு"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "மிதம்"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "அதிகம்"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "உச்ச அளவு"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "குலை முறை"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "மிருது முன்னமைவு காலம்"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "முன்னமைவு காலம்"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Beat உணர்திறன்"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "முன்னமைவு தொகுப்பு"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "இயல்புநிலை தொகுப்பு"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "பயனர் வரையறுக்கப்பட்ட முன்னமைவு கோப்புறை"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "பயனர் முன்னமைவு கோப்புறை"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f நொடிகள்"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

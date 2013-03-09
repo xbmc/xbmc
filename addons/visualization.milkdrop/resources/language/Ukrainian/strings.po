@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: MilkDrop
 # Addon id: visualization.milkdrop
-# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -56,6 +55,10 @@ msgstr "Увімкнути стерео 3D"
 msgctxt "#30009"
 msgid "Preset Pack"
 msgstr "Набір ефектів"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Тека з типовими налаштуваннями користувача"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"

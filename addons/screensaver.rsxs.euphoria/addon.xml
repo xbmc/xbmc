@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.2"
+  version="1.0.3"
   name="Euphoria"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -48,8 +48,11 @@
     <summary lang="sk">Tak psychodelický ako to len ide</summary>
     <summary lang="sl">Najbolj psihadelični ohranjevalnik zaslona</summary>
     <summary lang="sv">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
+    <summary lang="ta_IN">மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான்</summary>
     <summary lang="uk">Настільки психоделічна наскільки можливо для заставки</summary>
+    <summary lang="vi">Tạo ra ảo giác mạnh nhất mà trình bảo vệ màn hình có thể có được</summary>
     <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
+    <summary lang="zh_TW">最具夢幻效果的螢幕保護程式</summary>
     <description lang="af">Die is omtrent so psigedelies soos sluimerskerm kan kom. mogumbo het gedink sy Plasma beskermer was heel voor in die koor, maar die een sal jou maag selfs meer laat draai. Jy beter een van daardie vlug siekte sakke kry voor jy te lank na hierdie een staar.</description>
     <description lang="ar">هذا حول الحصول على مهدء كشاشة التوقف. اعتقد موغمبو أن شاشة توقف البلازمة خاصته في قمة الجدول, لكن هذا مقرف أكثر. الأفضل أن تجد أحد أكياس الغثيان قبل أن تنظر لهذا لوقت طويل.</description>
     <description lang="be">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
@@ -86,7 +89,10 @@
     <description lang="sk">Tento šetrič je tak psychodelický ako to len ide. Mogumbo myslel, že Plasma šetrič je na vrchole rebríčka, ale tento je ešte viac zvrátený. Radšej si nájdite hygienické vrecko skôr než naň budete civieť pridlho.</description>
     <description lang="sl">Težko bi si zamislili bolj psihadeličen ohranjevalnik zaslona. Stranski učinki daljše uporabe vključujejo slabost, glavobol in bruhanje.</description>
     <description lang="sv">Detta är ungefär så psykedelisk som en skärmsläckare kan bli. mogumbo trodde att hans Plasma Saver var toppen på skalan, men denna gör dig ännu mer illamående. Det är nog bäst att du letar upp en påse för flygsjuka innan du sätter dig ned och stirrar på denna för länge.</description>
+    <description lang="ta_IN">மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான் இதுபோல் இல்லை. mogumbo நினைத்தார் பிளாஸ்மா திரைகாப்பன்தான் இப்படி தோற்றம் தரக்கூடியது என்று, ஆனால் இந்த திரைகாப்பன் அதைவிட உகட்டுதலை உண்டாக்கும். எச்சரிக்கை வெகு நேரம் இதை பார்க்கதிர்கள் - தலை சுற்றகூடும்.</description>
+    <description lang="vi">Chú trọng để tạo ra ảo giác mạnh nhất mà trình bảo vệ màn hình có thể có được. Mogumbo từng nghĩ trình bảo vệ Plasma của mình đã đỉnh, nhưng trình này còn kinh khủng hơn. Tốt hơn hết là bạn nên chuẩn bị một túi chống nôn cho mình trước khi bắt đầu nhìn vào nó quá lâu</description>
     <description lang="zh">这大概是最具迷幻效果的屏幕保护程序了。mogumbo以为他的Plasma屏保已经是数一数二了，但这个更令人作犯晕。如果你要长时间盯视它最好先准备一个晕机袋。</description>
+    <description lang="zh_TW">這大概是最具夢幻效果的屏幕保護程序了。 mogumbo以為他的電漿螢幕保護程式已經是數一數二了，但這個更令人頭昏腦脹。如果你要長時間盯視它最好先準備一個夠用的暈機嘔吐袋。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>
