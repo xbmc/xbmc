@@ -179,6 +179,7 @@
 		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAB4BE615FCCA5000E1BAF6 /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE215FCCA5000E1BAF6 /* TagLibVFSStream.cpp */; };
 		DFAB4BE715FCCA5000E1BAF6 /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */; };
+		DFAF6A6D16EBAF4800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A6B16EBAF4800D6AE12 /* RssManager.cpp */; };
 		DFB02DFB16629DF200F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02DF916629DF200F37752 /* PyContext.cpp */; };
 		DFB25CB1163D3A04006C4A48 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD10415FCE71000E10810 /* Addon.cpp */; };
 		DFB25CB2163D3A04006C4A48 /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD10815FCE71000E10810 /* AddonCallback.cpp */; };
@@ -1438,6 +1439,9 @@
 		DFAB4BE315FCCA5000E1BAF6 /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
 		DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		DFAB4BE515FCCA5000E1BAF6 /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
+		DFAF6A6A16EBAF4800D6AE12 /* IRssObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRssObserver.h; sourceTree = "<group>"; };
+		DFAF6A6B16EBAF4800D6AE12 /* RssManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssManager.cpp; sourceTree = "<group>"; };
+		DFAF6A6C16EBAF4800D6AE12 /* RssManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssManager.h; sourceTree = "<group>"; };
 		DFB02DF916629DF200F37752 /* PyContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PyContext.cpp; path = python/PyContext.cpp; sourceTree = "<group>"; };
 		DFB02DFA16629DF200F37752 /* PyContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PyContext.h; path = python/PyContext.h; sourceTree = "<group>"; };
 		DFB6620515376791006B8FF1 /* AEAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAudioFormat.h; sourceTree = "<group>"; };
@@ -6195,6 +6199,7 @@
 				DF52775F151BAFA000B5B63B /* HttpResponse.h */,
 				F56C8730131F42EC000AD0F6 /* InfoLoader.cpp */,
 				F56C8731131F42EC000AD0F6 /* InfoLoader.h */,
+				DFAF6A6A16EBAF4800D6AE12 /* IRssObserver.h */,
 				36A9444F15821F3B00727135 /* ISortable.h */,
 				F56C8736131F42EC000AD0F6 /* Job.h */,
 				F56C8734131F42EC000AD0F6 /* JobManager.cpp */,
@@ -6228,6 +6233,8 @@
 				F56C8748131F42EC000AD0F6 /* RegExp.h */,
 				F56C8749131F42EC000AD0F6 /* RingBuffer.cpp */,
 				F56C874A131F42EC000AD0F6 /* RingBuffer.h */,
+				DFAF6A6B16EBAF4800D6AE12 /* RssManager.cpp */,
+				DFAF6A6C16EBAF4800D6AE12 /* RssManager.h */,
 				F56C874B131F42EC000AD0F6 /* RssReader.cpp */,
 				F56C874C131F42EC000AD0F6 /* RssReader.h */,
 				7C1A495415A96908004AF4A4 /* SaveFileStateJob.h */,
@@ -7743,6 +7750,7 @@
 				1D04C1DA16E67B5A0001BA1E /* Vector.cpp in Sources */,
 				1D04C23B16E67BA20001BA1E /* GenericTouchActionHandler.cpp in Sources */,
 				1D04C24116E67BA20001BA1E /* ITouchInputHandling.cpp in Sources */,
+				DFAF6A6D16EBAF4800D6AE12 /* RssManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
