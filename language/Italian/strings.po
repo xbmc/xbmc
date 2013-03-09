@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -44,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "File"
+msgstr "Gestore File"
 
 msgctxt "#8"
 msgid "Weather"
@@ -316,15 +315,15 @@ msgstr "Scansiona"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Ordina per: nome"
+msgstr "Ordina per: Nome"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Ordina per: data"
+msgstr "Ordina per: Data"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Ordina per: dimensione"
+msgstr "Ordina per: Dimensione"
 
 msgctxt "#106"
 msgid "No"
@@ -400,11 +399,11 @@ msgstr "Copio questi file?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "Muovo questi file?"
+msgstr "Sposto questi file?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Elimino questi file? - I file potranno essere recuperati!"
+msgstr "Elimino questi file? - I file non potranno essere recuperati!"
 
 msgctxt "#126"
 msgid "Status"
@@ -420,7 +419,7 @@ msgstr "Generale"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Slideshow"
+msgstr "Presentazione"
 
 msgctxt "#130"
 msgid "System info"
@@ -560,7 +559,7 @@ msgstr "Lettura"
 
 msgctxt "#164"
 msgid "No disc"
-msgstr "Senza disco"
+msgstr "Nessun disco"
 
 msgctxt "#165"
 msgid "Disc present"
@@ -592,7 +591,7 @@ msgstr "Mostra video 4:3 come"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Atteggiamenti"
+msgstr "Moods"
 
 msgctxt "#176"
 msgid "Styles"
@@ -620,7 +619,7 @@ msgstr "Recensione"
 
 msgctxt "#184"
 msgid "Refresh"
-msgstr "Ricarica"
+msgstr "Aggiorna"
 
 msgctxt "#185"
 msgid "Searching album"
@@ -652,7 +651,7 @@ msgstr "Casuale"
 
 msgctxt "#192"
 msgid "Clear"
-msgstr "Eliminare"
+msgstr "Elimina"
 
 msgctxt "#193"
 msgid "Scan"
@@ -684,11 +683,11 @@ msgstr "Interfaccia web"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "Tema"
+msgstr "Slogan"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Sintesi"
+msgstr "Riassunto Trama"
 
 msgctxt "#205"
 msgid "Votes"
@@ -696,7 +695,7 @@ msgstr "Voti"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "Attori"
+msgstr "Cast"
 
 msgctxt "#207"
 msgid "Plot"
@@ -732,7 +731,7 @@ msgstr "Livello di zoom"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Pixel ratio"
+msgstr "Proporzione Pixel"
 
 msgctxt "#218"
 msgid "DVD drive"
@@ -776,7 +775,7 @@ msgstr "Mescola playlist all'avvio"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "Autospegnimento disco rigido"
+msgstr "temporizzatore Stop disco rigido"
 
 msgctxt "#230"
 msgid "Video filters"
@@ -788,7 +787,7 @@ msgstr "Nessuno"
 
 msgctxt "#232"
 msgid "Point"
-msgstr "Puntuale"
+msgstr "Puntiforme"
 
 msgctxt "#233"
 msgid "Linear"
@@ -804,7 +803,7 @@ msgstr "Quincunx"
 
 msgctxt "#236"
 msgid "Gaussian cubic"
-msgstr "Cubico gaussiano"
+msgstr "Cubico Gaussiano"
 
 msgctxt "#237"
 msgid "Minification"
@@ -820,7 +819,7 @@ msgstr "Cancella playlist alla fine"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Modalità display"
+msgstr "Modalità Display"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -832,7 +831,7 @@ msgstr "In finestra"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Frequenza di refresh"
+msgstr "Frequenza di Refresh"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -844,7 +843,7 @@ msgstr "Dimensione: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1)  
 
 msgctxt "#247"
 msgid "Scripts"
-msgstr "Script"
+msgstr "Scripts"
 
 msgctxt "#248"
 msgid "Language"
@@ -872,7 +871,7 @@ msgstr "Numero di canali"
 
 msgctxt "#254"
 msgid "- DTS capable receiver"
-msgstr "- Amplificatore con DTS"
+msgstr "- ricevitore compatibile DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -888,7 +887,7 @@ msgstr "Errore"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Abilita la lettura dell'etichetta"
+msgstr "Abilita lettura etichetta"
 
 msgctxt "#259"
 msgid "Opening"
@@ -900,11 +899,11 @@ msgstr "Shoutcast"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "Aspetta un momento..."
+msgstr "Attendere l'inizio..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Script output"
+msgstr "Esito Scripts"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -916,7 +915,7 @@ msgstr "Registra"
 
 msgctxt "#265"
 msgid "Stop Rec."
-msgstr "Interrompi reg."
+msgstr "Interrompi Reg."
 
 msgctxt "#266"
 msgid "Sort by: Track"
@@ -1016,7 +1015,7 @@ msgstr "- Dimensione"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
-msgstr "Ampiezza compressione dinamica"
+msgstr "Compressione Dinamica d'Ampiezza"
 
 msgctxt "#291"
 msgid "Video"
@@ -1036,11 +1035,11 @@ msgstr "Crea segnalibro"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Cancella segnalibri"
+msgstr "Elimina segnalibri"
 
 msgctxt "#297"
 msgid "Audio offset"
-msgstr "Sfasamento audio"
+msgstr "Compensazione Audio"
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -1076,7 +1075,7 @@ msgstr "Attivo"
 
 msgctxt "#306"
 msgid "Non-interleaved"
-msgstr "Non-interlacciato"
+msgstr "Non-Interleaved"
 
 msgctxt "#308"
 msgid "Original stream's language"
@@ -1092,7 +1091,7 @@ msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Riorganizza archivio"
+msgstr "Riorganizza Archivio"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -1100,11 +1099,11 @@ msgstr "Preparazione..."
 
 msgctxt "#315"
 msgid "Database error"
-msgstr "Errore nell'archivio"
+msgstr "Errore nell'Archivio"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "Ricerca delle canzoni in corso..."
+msgstr "Ricerca delle canzoni..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1112,7 +1111,7 @@ msgstr "Archivio riorganizzato con successo"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "Riorganizzazione delle canzoni in corso..."
+msgstr "Riorganizzazione delle canzoni..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
@@ -1120,7 +1119,7 @@ msgstr "Errore nella riorganizzazione delle canzoni"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "Riorganizzazione degli artisti in corso..."
+msgstr "Riorganizzazione degli artisti..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
@@ -1128,7 +1127,7 @@ msgstr "Errore nella riorganizzazione artisti"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "Riorganizzazione generi musicali in corso..."
+msgstr "Riorganizzazione generi musicali..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
@@ -1136,7 +1135,7 @@ msgstr "Errore nella riorganizzazione dei generi musicali"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "Riorganizzazione dei percorsi in corso..."
+msgstr "Riorganizzazione dei percorsi..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
@@ -1144,7 +1143,7 @@ msgstr "Errore nella riorganizzazione dei percorsi"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "Riorganizzazione degli album in corso..."
+msgstr "Riorganizzazione degli album..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
@@ -1152,7 +1151,7 @@ msgstr "Errore durante la riorganizzazione degli album"
 
 msgctxt "#328"
 msgid "Writing changes..."
-msgstr "Salvo le modifche..."
+msgstr "Salvataggio modifche..."
 
 msgctxt "#329"
 msgid "Error writing changes"
@@ -1172,11 +1171,11 @@ msgstr "Errore durante la compressione dell'archivio"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Vuoi riorganizzare l'archivio?"
+msgstr "Vuoi riorganizzare l'Archivio?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Riorganizza l'archivio..."
+msgstr "Riorganizza l'Archivio..."
 
 msgctxt "#335"
 msgid "Start"
@@ -1184,7 +1183,7 @@ msgstr "Avvia"
 
 msgctxt "#336"
 msgid "Framerate conversion"
-msgstr "Conversione framerate"
+msgstr "Conversione Framerate"
 
 msgctxt "#337"
 msgid "Audio output"
@@ -1228,15 +1227,15 @@ msgstr "Aumenta il livello del volume nella conversione"
 
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
-msgstr "Ricevitore con supporto DTS-HD"
+msgstr "Ricevitore compatibile DTS-HD"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr "Ricevitore con supporto LPCM multicanale"
+msgstr "Ricevitore compatibile LPCM multicanale"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
-msgstr "Ricevitore con supporto TrueHD"
+msgstr "Ricevitore compatibile TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1284,7 +1283,7 @@ msgstr "Salvaschermo"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "R. SlideShow"
+msgstr "R. Presentazione"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -1296,7 +1295,7 @@ msgstr "Ordina per: File"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Amplificatore con AC3"
+msgstr "- Ricevitore compatibile Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -5944,7 +5943,7 @@ msgstr "Cerca programmi simili"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Importazione EPG dai clienti"
+msgstr "Importazione EPG dai client"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6368,7 +6367,7 @@ msgstr "Su quale server vuoi cercate?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr "Numero cliente"
+msgstr "Numero client"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
@@ -6652,11 +6651,11 @@ msgstr "Continua?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr "Azioni cliente"
+msgstr "Azioni client"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "Azioni specifiche cliente PVR"
+msgstr "Azioni specifiche client PVR"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6712,7 +6711,7 @@ msgstr "Backend virtuale XBMC"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr "Cliente"
+msgstr "Client"
 
 msgctxt "#19211"
 msgid "Delete channel"
@@ -6992,7 +6991,7 @@ msgstr "Specifico cliente"
 
 msgctxt "#19280"
 msgid "Client specific settings"
-msgstr "Impostazioni specifiche cliente"
+msgstr "Impostazioni specifiche client"
 
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
@@ -9804,7 +9803,7 @@ msgstr "Servizi"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "Clienti PVR"
+msgstr "Client PVR"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9944,7 +9943,7 @@ msgstr "Aggiornamento per l'Addon-on disponibile!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Abilita Add-ons"
+msgstr "Add-ons Abilitati"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -10016,7 +10015,7 @@ msgstr "Blocca il manager degli Add-on"
 
 msgctxt "#24094"
 msgid "(current)"
-msgstr "(currente)"
+msgstr "(attuale)"
 
 msgctxt "#24095"
 msgid "(blacklisted)"

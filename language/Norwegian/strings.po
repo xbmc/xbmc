@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1288,7 +1287,7 @@ msgstr "Bildefremvisning"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "Uttoningsnivå på skjermbeskytter (%)"
+msgstr "Uttoningsnivå på skjermbeskytter"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -2202,6 +2201,10 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Skriv inn nummer"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bit/stykke"
+
 msgctxt "#613"
 msgid "Sample rate"
 msgstr "Samplingsrate"
@@ -2444,7 +2447,7 @@ msgstr "- Standard gateway"
 
 msgctxt "#722"
 msgid "- DNS server"
-msgstr "- DNS server"
+msgstr "- DNS-server"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2721,6 +2724,10 @@ msgstr "Internettilgang"
 msgctxt "#799"
 msgid "Library Update"
 msgstr "Bibliotekoppdatering"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Musikkbiblioteket må skannes på nytt for kunst ut fra nøkkelord"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3174,6 +3181,10 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "vind"
 
+msgctxt "#1413"
+msgid "Patches"
+msgstr "Flekker"
+
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "lyn og torden"
@@ -3194,6 +3205,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "lyn og torden"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Grunt"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "moderat"
@@ -3209,6 +3224,14 @@ msgstr "vind"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "disig"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Overskyet"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Hagl"
 
 msgctxt "#1426"
 msgid "Hail"
@@ -3226,6 +3249,10 @@ msgctxt "#1429"
 msgid "Ash"
 msgstr "Aske"
 
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Bredt"
+
 msgctxt "#1431"
 msgid "Dust"
 msgstr "Støv"
@@ -3233,6 +3260,14 @@ msgstr "Støv"
 msgctxt "#1432"
 msgid "Sand"
 msgstr "Sand"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Spredt"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Kast"
 
 msgctxt "#1435"
 msgid "Sandstorm"
@@ -3242,6 +3277,10 @@ msgctxt "#1436"
 msgid "Blowing"
 msgstr "Blåser"
 
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "-"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Liten"
@@ -3249,6 +3288,10 @@ msgstr "Liten"
 msgctxt "#1439"
 msgid "and"
 msgstr "og"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Sludd"
 
 msgctxt "#1441"
 msgid "with"
@@ -3258,6 +3301,14 @@ msgctxt "#1442"
 msgid "Chance"
 msgstr "Sjanse"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "-"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Trakt-sky"
+
 msgctxt "#1445"
 msgid "Cloud"
 msgstr "Sky"
@@ -3266,9 +3317,17 @@ msgctxt "#1446"
 msgid "Unknown"
 msgstr "Ukjent"
 
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Bygelinjer"
+
 msgctxt "#1448"
 msgid "Precipitation"
 msgstr "Nedbør"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Delvis"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3281,6 +3340,10 @@ msgstr "Spilletid"
 msgctxt "#2080"
 msgid "Empty list"
 msgstr "Tom liste"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Gikk tilbake til forrige liste fordi den aktive listen har blitt tømt"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3694,6 +3757,18 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Låst oppføring"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Oppdaterer videobibliotekets media-kunst"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Behandler %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Mellomlageret for media-kunst trenger oppdatering"
+
 msgctxt "#12352"
 msgid "No downloading is needed."
 msgstr "Ingen nedlasting er nødvendig."
@@ -4094,6 +4169,10 @@ msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
 
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Avbrutt med %im%is igjen"
+
 msgctxt "#13213"
 msgid "%2.0fm"
 msgstr "%2.0fm"
@@ -4492,7 +4571,7 @@ msgstr "Format på høyre del av musikkliste"
 
 msgctxt "#13388"
 msgid "Preset"
-msgstr "%s forhåndsinnstillinger"
+msgstr "Forhåndsinnstillinger"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
@@ -4500,7 +4579,7 @@ msgstr "Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualise
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "Det er ingen innstillinger tilgjengelige&#10;for denne visualiseringen"
+msgstr "Det er ingen innstillinger tilgjengelige\nfor denne visualiseringen"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4674,6 +4753,10 @@ msgctxt "#13433"
 msgid "Play the next video automatically"
 msgstr "Spill av neste video automatisk"
 
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Spill kun dette"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Synkroniseringsmetode"
@@ -4729,6 +4812,10 @@ msgstr "Gjeldende"
 msgctxt "#13513"
 msgid "Remote art"
 msgstr "Ekstern"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Lokal media-kunst"
 
 msgctxt "#13515"
 msgid "No art"
@@ -5145,6 +5232,10 @@ msgstr "Spill av"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Løs ut CD når rippingen er ferdig"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Stopp ripping av CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5882,6 +5973,14 @@ msgctxt "#19011"
 msgid "UNC"
 msgstr "UNC"
 
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Backend"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Ukodet"
+
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Fast"
@@ -5889,6 +5988,10 @@ msgstr "Fast"
 msgctxt "#19015"
 msgid "Encryption"
 msgstr "Kryptering"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -5925,6 +6028,10 @@ msgstr "Radiokanaler"
 msgctxt "#19025"
 msgid "Upcoming recordings"
 msgstr "Planlagte opptak"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Legg til timer..."
 
 msgctxt "#19027"
 msgid "No search results"
@@ -5970,13 +6077,25 @@ msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Vis signalkvalitet"
 
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "Ikke støttet av PVR backend."
+
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr "Er du sikker på at du vil skjule denne kanalen?"
 
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Timer"
+
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
 msgstr "Er du sikker på at du vil gi nytt navn til dette opptaket?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Er du sikker på at du vil gi denne timer et nytt navn?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -5997,6 +6116,10 @@ msgstr "Ny kanal"
 msgctxt "#19047"
 msgid "Programme info"
 msgstr "Programinfo"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Administrering av Grupper"
 
 msgctxt "#19049"
 msgid "Show channel"
@@ -6026,9 +6149,29 @@ msgctxt "#19055"
 msgid "No information available"
 msgstr "Ingen informasjon tilgjengelig"
 
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Ny timer"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Rediger timer"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Timer aktivert"
+
 msgctxt "#19059"
 msgid "Stop recording"
 msgstr "Stopp opptak"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Slett timer"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Legg til timer"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6106,6 +6249,10 @@ msgctxt "#19082"
 msgid "Priority:"
 msgstr "Prioritet"
 
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Levetid (dager):"
+
 msgctxt "#19084"
 msgid "First day:"
 msgstr "Første dag:"
@@ -6174,9 +6321,25 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Skriv inn mappenavnet for opptaket"
 
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Neste timer aktivert"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "på"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Kunne ikke lagre timer. Sjekk logg for detaljer."
+
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
 msgstr "En uventet feil oppstod. Prøv igjen senere eller sjekk logg for detaljer."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR backend feil. Sjekk logg for detaljer."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6209,6 +6372,22 @@ msgstr "Klientnummer"
 msgctxt "#19121"
 msgid "Avoid repeats"
 msgstr "Unngå gjentagelser"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Denne timer tar fortsatt opp. Er du sikker på at du vil slette denne timer?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Kun ukodede kanaler"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Ignorer nåværende timere"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Ignorer nåværende opptak"
 
 msgctxt "#19126"
 msgid "Start time"
@@ -6246,6 +6425,10 @@ msgctxt "#19134"
 msgid "Include description"
 msgstr "Inkluder beskrivelse"
 
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Forskjell på store / små bokstaver"
+
 msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr "Kanal utilgjengelig"
@@ -6270,6 +6453,10 @@ msgctxt "#19142"
 msgid "Search guide"
 msgstr "Søkeguide"
 
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Administrering av Grupper"
+
 msgctxt "#19144"
 msgid "No groups defined"
 msgstr "Ingen grupper definert"
@@ -6282,9 +6469,17 @@ msgctxt "#19146"
 msgid "Groups"
 msgstr "Grupper"
 
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR backend støtter ikke denne handling. Sjekk logg for detaljer."
+
 msgctxt "#19148"
 msgid "Channel"
 msgstr "Kanal"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Mo"
 
 msgctxt "#19150"
 msgid "Tu"
@@ -6317,6 +6512,10 @@ msgstr "fra"
 msgctxt "#19157"
 msgid "Next recording"
 msgstr "Neste opptak"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Opptak pågår"
 
 msgctxt "#19159"
 msgid "from"
@@ -6354,13 +6553,25 @@ msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Skjul videoinformasjonsboks"
 
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Tidsfrist for start av avspilling"
+
 msgctxt "#19171"
 msgid "Start playback minimized"
 msgstr "Start avspilling minimert"
 
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Øyeblikkelig opptaksvarighet"
+
 msgctxt "#19173"
 msgid "Default recording priority"
 msgstr "Standard opptaksprioritet"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Standard levetid for opptak"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
@@ -6414,6 +6625,10 @@ msgctxt "#19188"
 msgid "EPG is being reset"
 msgstr "EPG blir tilbakestilt"
 
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Fortsett siste kanal ved oppstart"
+
 msgctxt "#19190"
 msgid "Minimized"
 msgstr "Minimert"
@@ -6421,6 +6636,10 @@ msgstr "Minimert"
 msgctxt "#19191"
 msgid "PVR service"
 msgstr "PVR-tjeneste"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Ingen av de tilkoplede PVR backends støtter skanning av kanaler."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -6434,6 +6653,10 @@ msgctxt "#19195"
 msgid "Client actions"
 msgstr "Klienthandlinger"
 
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR-klientspesifikke handlinger"
+
 msgctxt "#19197"
 msgid "Recording started on: %s"
 msgstr "Opptak startet: %s"
@@ -6441,6 +6664,10 @@ msgstr "Opptak startet: %s"
 msgctxt "#19198"
 msgid "Recording finished on: %s"
 msgstr "Opptak sluttet: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Kanalhåndtering"
 
 msgctxt "#19200"
 msgid "EPG source:"
@@ -6462,6 +6689,10 @@ msgctxt "#19204"
 msgid "New channel"
 msgstr "Ny kanal"
 
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Administrering av Grupper"
+
 msgctxt "#19206"
 msgid "Activate EPG:"
 msgstr "Aktiver EPG:"
@@ -6473,6 +6704,10 @@ msgstr "Gruppe:"
 msgctxt "#19208"
 msgid "Enter the name of the new channel"
 msgstr "Skriv inn navn på den nye kanalen"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC virtuell backend"
 
 msgctxt "#19210"
 msgid "Client"
@@ -6486,9 +6721,17 @@ msgctxt "#19212"
 msgid "This list contains changes"
 msgstr "Denne listen inneholder endringer"
 
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Velg backend"
+
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
 msgstr "Skriv inn gyldig URL for ny kanal"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "Denne PVR backend støtter ikke timere."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6509,6 +6752,10 @@ msgstr "Ugrupperte kanaler"
 msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanaler i"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Synkroniser kanalgrupper med backender"
 
 msgctxt "#19222"
 msgid "EPG"
@@ -6546,13 +6793,33 @@ msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
 msgstr "Hindre EPG-oppdateringer når en TV-strøm spilles"
 
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Bruk alltid kanalrekkefølge fra backend(er)"
+
 msgctxt "#19232"
 msgid "Clear search results"
 msgstr "Fjern søkeresultat"
 
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "Vis melding ved oppdatering av timer"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "Bruk kanalnumre fra backend (fungerer kun med 1 aktivert PVR add-on)"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "PVR-håndtering starter"
+
 msgctxt "#19236"
 msgid "Loading channels from clients"
 msgstr "Laster kanaler fra klienter"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Laster timere fra klienter"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
@@ -6561,6 +6828,26 @@ msgstr "Laster opptak fra klienter"
 msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter bakgrunnstråder"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Ingen PVR-tillegg aktivert"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR-håndteringen er blitt aktivert uten et"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "aktivert PVR-add-on. Aktivér minst én add-on"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "for å bruke PVR-funksjonaliteten."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Backend ventetid"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
@@ -6622,6 +6909,10 @@ msgctxt "#19259"
 msgid "Parental control"
 msgstr "Foreldrekontroll"
 
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Varighet av opplåsing"
+
 msgctxt "#19261"
 msgid "Change PIN"
 msgstr "Endre PIN"
@@ -6642,9 +6933,17 @@ msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Innskrevet PIN-nummer var feil."
 
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Låst av foreldrekontroll"
+
 msgctxt "#19267"
 msgid "Parental locked:"
 msgstr "Låst av foreldrekontroll:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Skjul \"ingen informasjon tilgjengelig\"-etiketter"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
@@ -6657,6 +6956,18 @@ msgstr "* Alle opptak"
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "Ingen PVR-tillegg ble funnet"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Du trenger en tuner, tilhørende programvare, og et"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "tillegg for programvaren for å kunne bruke PVR."
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Besøk xbmc.org/pvr for mer informasjon"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -6682,29 +6993,97 @@ msgctxt "#19280"
 msgid "Client specific settings"
 msgstr "Klientspesifikke innstillinger"
 
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Bekreft kanalbytte ved å trykke OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Annet/Ukjent"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Film/drama"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Detektiv/thriller"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Eventyr/western/krig"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Science-fiction/fantasi/grøsser"
 
 msgctxt "#19504"
 msgid "Comedy"
 msgstr "Komedie"
 
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Såpe/melodramatisk/folklore"
+
 msgctxt "#19506"
 msgid "Romance"
 msgstr "Romantikk"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Seriøst/klassisk/religiøs/historisk film/drama"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Voksenfilm/drama"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Nyheter/nåværende affærer"
 
 msgctxt "#19517"
 msgid "News/Weather Report"
 msgstr "Nyheter/værmelding"
 
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Nyhetsmagasin"
+
 msgctxt "#19519"
 msgid "Documentary"
 msgstr "Dokumentar"
 
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Diskusjon/intervju/debatt"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Show/game-show"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Game-show/spørrekonkurranse"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Varieté-show"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Talkshow"
+
 msgctxt "#19548"
 msgid "Sports"
 msgstr "Sport"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Spesiell hendelse"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Sports-magasin"
 
 msgctxt "#19551"
 msgid "Football"
@@ -6717,6 +7096,10 @@ msgstr "Tennis/Squash"
 msgctxt "#19553"
 msgid "Team Sports"
 msgstr "Lagsport"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Atletisk "
 
 msgctxt "#19555"
 msgid "Motor Sport"
@@ -6742,9 +7125,13 @@ msgctxt "#19564"
 msgid "Children's/Youth Programmes"
 msgstr "Barne- og ungdomsprogram"
 
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Førskole- og barneprogram"
+
 msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
-msgstr "Underholdningsprogram for 6 til 14"
+msgstr "Underholdningsprogram (6-14 år)"
 
 msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
@@ -6752,7 +7139,7 @@ msgstr "Underholdningsprogram for 10 til 16"
 
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
-msgstr "Informasjons-/Undervisnings-/Skoleprogram"
+msgstr "Informasjons-/undervisnings-/skoleprogram"
 
 msgctxt "#19569"
 msgid "Cartoons/Puppets"
@@ -6766,6 +7153,10 @@ msgctxt "#19581"
 msgid "Rock/Pop"
 msgstr "Rock/Pop"
 
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Seriøst/klassisk musikk"
+
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
 msgstr "Tradisjonell- og folkemusikk"
@@ -6778,13 +7169,93 @@ msgctxt "#19585"
 msgid "Ballet"
 msgstr "Ballett"
 
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Kunst/kultur"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Scenekunst"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Elegant kunst"
+
 msgctxt "#19599"
 msgid "Religion"
 msgstr "Religion"
 
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "Pop-kultur/tradisjonell kunst"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Litteratur"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Film/kino"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Eksperimental film"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Kringkasting/presse"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Ny media"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Kunst/kulturmagasiner"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Mote"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Sosialt/politisk/økonomi"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Magasiner/rapporter/dokumentar"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Økonomi/samfunnsråd"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Bemerkelsesverdige personer"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Utdanning/vitenskap/fakta"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Natur/dyr/miljø"
+
 msgctxt "#19630"
 msgid "Technology/Natural Sciences"
 msgstr "Teknologi/Naturvitenskap"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Medisin/fysiologi/psykologi "
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Utlandet/ekspedisjoner"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Sosialt/spirituell viten"
 
 msgctxt "#19634"
 msgid "Further Education"
@@ -6794,17 +7265,49 @@ msgctxt "#19635"
 msgid "Languages"
 msgstr "Velg språk"
 
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Fritid/hobbyer"
+
 msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Turisme/Reise"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Håndverk"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Motor"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Helse &amp; velvære"
 
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Matlaging"
 
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Reklame/shopping"
+
 msgctxt "#19651"
 msgid "Gardening"
 msgstr "Hage"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Spesielle karakteristikker"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Originalspråk"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Svart-hvitt"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -6814,13 +7317,41 @@ msgctxt "#19664"
 msgid "Live Broadcast"
 msgstr "Live-sendinger"
 
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Detektiv/thriller"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Eventyr/western/krig"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Science-fiction/fantasi/grøsser"
+
 msgctxt "#19680"
 msgid "Comedy"
 msgstr "Komedie"
 
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Såpe/melodramatisk/folklore"
+
 msgctxt "#19682"
 msgid "Romance"
 msgstr "Romantikk"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Seriøst/klassisk religion/historisk"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Voksent"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7554,6 +8085,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Nedlasting av artistinfo mislyktes"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android-musikk"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android-videoer"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android-bilder"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Android-fotografier"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Android-apps"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Party on! (filmer)"
@@ -7653,6 +8204,26 @@ msgstr "Videoer - Bibliotek"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sorter etter: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Skanner filmer med %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Skanner musikkvideoer med %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Skanner TV-serier med %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Skanner artister med %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Skanner album med %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8178,6 +8749,10 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Grupper filmer i sett"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Etiketter"
+
 msgctxt "#20460"
 msgid "Add %s"
 msgstr "Legg til %s"
@@ -8185,6 +8760,14 @@ msgstr "Legg til %s"
 msgctxt "#20461"
 msgid "Remove %s"
 msgstr "Fjern %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Ny etikett..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "En etikett med navnet '%s' eksisterer allerede."
 
 msgctxt "#20464"
 msgid "Select %s"
@@ -8625,6 +9208,18 @@ msgstr "Toppen av video"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Over video"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f til %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d til %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s til %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9986,6 +10581,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktiver joystick- og gamepadstøtte"
 
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Deaktiver joystick når enheten er tilkoblet"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokasjon"
@@ -10046,6 +10645,14 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Sett enheter i strømsparing når skjermbeskytteren aktiveres"
 
+msgctxt "#36011"
+msgid "Could not detect the CEC com port. Set it up manually."
+msgstr "Kunne ikke oppdage CEC-kommunikasjonsport. Manuelt oppsett nødvendig."
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr "Kunne ikke starte CEC-adapteren. Sjekk dine innstillinger."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI port nummer"
@@ -10053,6 +10660,10 @@ msgstr "HDMI port nummer"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Tilkoblet"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "Kunne ikke starte CEC-adapteren: libCEC ble ikke funnet på ditt system."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10086,6 +10697,14 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Send 'inaktiv kilde'-kommando når XBMC slutter"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "Sett enheter inn i strømsparingmodus når datamaskinen går inn i strømsparemodus."
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr "Enheten trenger service"
+
 msgctxt "#36028"
 msgid "Ignore"
 msgstr "Ignorer"
@@ -10097,6 +10716,14 @@ msgstr "Når TV-en er avslått"
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Tilkoblingen ble brutt"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Brukeren har ikke rettigheter til å åpne CEC-adapteren"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "Porten er opptatt. Kun ett program kan bruke CEC-adapteren samtidig."
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
@@ -10117,3 +10744,15 @@ msgstr "TV"
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
 msgstr "Forsterker / AVR-enhet"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "TV og AVR-enhet (uttrykkelig)"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "libCECs grensesnittversjon er ikke støttet. %x er lavere enn versjonen XBMC støtter (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Innholdsmappe"

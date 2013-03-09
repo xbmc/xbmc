@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3178,6 +3177,14 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Lanbroa"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "/"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Lainoa"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Ezezaguna"
@@ -3193,6 +3200,10 @@ msgstr "Jarri pantaila lotan inaktibo dagoenean"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Runtime"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Zerrenda hutsa"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3605,6 +3616,10 @@ msgstr "Sistema orain itzaliko da."
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elementua blokeatuta"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "%s prozesatzen"
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -6350,6 +6365,26 @@ msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR kudeatzailea abiarazten ari da"
 
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Kanalak bezerotarik kargatzen"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Ez dago PVR gehigarririk gaiturik"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR kudeatzailea gaitu da behitzat PVR "
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "gehigarririk gaiturik izan gabe. Gaitu bat behitzat"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "PVR funtzioa erabili ahal izateko"
+
 msgctxt "#19249"
 msgid "Filter channels"
 msgstr "Iragazi kateak"
@@ -6413,6 +6448,10 @@ msgstr "Ez bistarazi 'konexioa galdua' oharrak"
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Grabaketa guztiak"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Mesedez jo xbmc.org/pvr helbidera argibide gehiagorako"
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -9322,6 +9361,10 @@ msgctxt "#24102"
 msgid "Unable to load skin"
 msgstr "Ezin da itxura kargatu"
 
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "Itxurari fitxategi batzuek falta zaizkio"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Jakinarazpenak"
@@ -9801,6 +9844,10 @@ msgstr "Teklatu-mapa gaiturik"
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "e"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Gaitu joystick eta gamepad euskarria"
 
 msgctxt "#35500"
 msgid "Location"

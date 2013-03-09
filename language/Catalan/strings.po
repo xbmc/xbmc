@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2206,6 +2205,10 @@ msgctxt "#612"
 msgid "Bits/sample"
 msgstr "Bits/Mostra"
 
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Freqüència de mostreig"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Els CD d'àudio"
@@ -3226,6 +3229,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Cobert"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pedres"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Calamarsa"
@@ -3254,6 +3261,10 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "Sorra"
 
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Plovisqueig"
+
 msgctxt "#1434"
 msgid "Whirls"
 msgstr "Remolins"
@@ -3261,6 +3272,10 @@ msgstr "Remolins"
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Tempesta de sorra"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Pedra"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3285,6 +3300,10 @@ msgstr "Oportunitat"
 msgctxt "#1443"
 msgid "of"
 msgstr "de"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Embut"
 
 msgctxt "#1445"
 msgid "Cloud"
@@ -3726,6 +3745,10 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Element bloquejat"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "S'està actualitzant l'art de la videoteca."
+
 msgctxt "#12350"
 msgid "Processing %s"
 msgstr "S'està processant %s"
@@ -4129,6 +4152,10 @@ msgstr "Iniciada, alarma en %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarma!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Cancel·lat quan quedava %im%is"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4758,6 +4785,26 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sync playback to display"
 
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Escull l'art"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Art actual"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Art remot"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Art local"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Sense art"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Pause during refresh rate change"
@@ -5169,6 +5216,10 @@ msgstr "Reprodueix"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Expulsa el disc quan s'hagi completat l'extracció del CD"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Atura l'extracció del CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6918,6 +6969,14 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Error d'enregistrament"
 
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Específic del client"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Configuració específica del client"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Un altre / Desconegut"
@@ -7958,6 +8017,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Anuncia les actualitzacions de la biblioteca via UPnP"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Enable auto scrolling for plot & review"
@@ -8121,6 +8184,22 @@ msgstr "Vídeos - Biblioteca"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Ordena per: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "S'estan escanejant les pel·lícules utilitzant %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "S'estan escanejant els vídeos de música utilitzant %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "S'estan escanejant els artistes utilitzant %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "S'estan escanejant els àlbums utilitzant %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -9077,6 +9156,10 @@ msgstr "Caché necessària abans de permetre la reproducció fluïda"
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Emmagatzemament extern"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Comptador d'episodis vistos"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -10474,6 +10557,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activa el suport de manaments de joc"
 
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Desactiva la palanca de control (joystick) quan el dispositiu està present"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Ubicació"
@@ -10641,3 +10728,7 @@ msgstr "TV i dispositiu AVR (explícit)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "La versió d'interfície de libCEC no està suportada. %x és menor que la versió que XBMC suporta (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Carpeta d'elements"

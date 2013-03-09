@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -273,6 +272,22 @@ msgstr "شمال/شمال غربي"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "جنوب"
+
+msgctxt "#89"
+msgid "North"
+msgstr "شمال"
+
+msgctxt "#90"
+msgid "West"
+msgstr "غرب"
+
+msgctxt "#91"
+msgid "East"
+msgstr "شرق"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -3185,6 +3200,10 @@ msgstr "ضباب"
 msgctxt "#1438"
 msgid "Small"
 msgstr "صغير"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "من"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -6846,6 +6865,14 @@ msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
 msgstr "برامج مسلية للاعمار 10 الى 16"
 
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "البرامج الاخبارية/التربوية/المدرسية"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "الرسوم المتحركة/الكراكيز"
+
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
 msgstr "موسيقى/باليه/رقص"
@@ -6878,9 +6905,17 @@ msgctxt "#19597"
 msgid "Performing Arts"
 msgstr "فنون استعراضية"
 
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "الفنون الجميلة"
+
 msgctxt "#19599"
 msgid "Religion"
 msgstr "الدين"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "الثقافة الشعبية/الفنون التقليدية"
 
 msgctxt "#19601"
 msgid "Literature"
@@ -6890,6 +6925,10 @@ msgctxt "#19602"
 msgid "Film/Cinema"
 msgstr "فيلم سينمائي"
 
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "الفلام و الفيديوهات الاختبارية"
+
 msgctxt "#19606"
 msgid "Arts/Culture Magazines"
 msgstr "مجلات فنون/ثقافة"
@@ -6898,9 +6937,33 @@ msgctxt "#19607"
 msgid "Fashion"
 msgstr "الموضة"
 
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "المجتمع/السياية/الاقتصاد"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "المشاهير"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "التربية/العلوم/"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "الطبيعة/الحيوانات/البيئة"
+
 msgctxt "#19630"
 msgid "Technology/Natural Sciences"
 msgstr "علوم الطبيعع/التكنولوجيا"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "البلدان الاجنبية/البعثات"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "العلوم الاجتماعية و الروحية"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -6918,9 +6981,21 @@ msgctxt "#19650"
 msgid "Advertisement/Shopping"
 msgstr "إعلان/تسوق"
 
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "الخاصيات الخاصة"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "اللغة الاصلية"
+
 msgctxt "#19663"
 msgid "Unpublished"
 msgstr "غير منشور"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "نقل مباشر"
 
 msgctxt "#19676"
 msgid "Drama"
@@ -10149,6 +10224,10 @@ msgstr "المزود"
 msgctxt "#35504"
 msgid "Product ID"
 msgstr "معرف المنتج"
+
+msgctxt "#36004"
+msgid "Press \"user\" button command"
+msgstr "اضغط على الزر \"user\""
 
 msgctxt "#36006"
 msgid "Could not open the adapter"

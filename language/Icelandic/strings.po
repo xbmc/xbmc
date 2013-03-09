@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3162,6 +3161,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "Lítið"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "af"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Óþekkt"
@@ -5818,6 +5821,10 @@ msgctxt "#19080"
 msgid "Begin:"
 msgstr "Byrja:"
 
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Athugið"
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Útgáfa"
@@ -6848,7 +6855,7 @@ msgstr "Kvikmyndir"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "Sjónvarpsþættir"
+msgstr "Þættir"
 
 msgctxt "#20344"
 msgid "This directory contains"

@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -4576,11 +4575,11 @@ msgstr "Önayar"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "Bu görsel öğenin kullanılabilir önayarları yok"
+msgstr "Bu görsel öğenin\nkullanılabilir önayarları yok"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "Bu görsel öğenin kullanılabilir ayarları yok"
+msgstr "Bu görsel öğenin\nkullanılabilir ayarları yok"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -10556,7 +10555,7 @@ msgstr "Genel disk"
 
 msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
-msgstr "Bu çevre birimi için ayar mevcut değil."
+msgstr "Bu çevre birimi için\nayar mevcut değil."
 
 msgctxt "#35005"
 msgid "New device configured"
