@@ -60,6 +60,7 @@
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 #include "settings/Settings.h"
+#include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
 
@@ -1064,8 +1065,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       labelInfo, textColor3, headlineColor, strRSSTags);
 
-    std::map<int,CSettings::RssSet>::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
-    if (iter != g_settings.m_mapRssUrls.end())
+    RssUrls::const_iterator iter = CRssManager::Get().GetUrls().find(iUrlSet);
+    if (iter != CRssManager::Get().GetUrls().end())
     {
       ((CGUIRSSControl *)control)->SetUrls(iter->second.url,iter->second.rtl);
       ((CGUIRSSControl *)control)->SetIntervals(iter->second.interval);

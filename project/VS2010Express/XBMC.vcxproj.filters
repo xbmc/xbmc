@@ -2970,6 +2970,9 @@
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowTestPattern.cpp">
       <Filter>settings\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\RssManager.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5797,6 +5800,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowTestPattern.h">
       <Filter>settings\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\IRssObserver.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\RssManager.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

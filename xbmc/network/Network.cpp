@@ -22,7 +22,7 @@
 #include "Network.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "utils/RssReader.h"
+#include "utils/RssManager.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -300,7 +300,7 @@ void CNetwork::StartServices()
 #ifdef HAS_AIRPLAY
   g_application.StartAirplayServer();
 #endif
-  g_rssManager.Start();
+  CRssManager::Get().Start();
 }
 
 void CNetwork::StopServices(bool bWait)
@@ -318,7 +318,7 @@ void CNetwork::StopServices(bool bWait)
 #endif    
     // smb.Deinit(); if any file is open over samba this will break.
 
-    g_rssManager.Stop();
+    CRssManager::Get().Stop();
   }
 
 #ifdef HAS_EVENT_SERVER

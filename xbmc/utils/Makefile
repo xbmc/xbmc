@@ -45,6 +45,7 @@ SRCS=AlarmClock.cpp \
      RecentlyAddedJob.cpp \
      RegExp.cpp \
      RingBuffer.cpp \
+     RssManager.cpp \
      RssReader.cpp \
      ScraperParser.cpp \
      ScraperUrl.cpp \

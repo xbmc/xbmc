@@ -216,14 +216,6 @@ public:
 
   CStdString m_userAgent;
 
-  struct RssSet
-  {
-    bool rtl;
-    std::vector<int> interval;
-    std::vector<std::string> url;
-  };
-
-  std::map<int,RssSet> m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
@@ -360,7 +352,6 @@ public:
   void LoadSources();
   bool SaveSources();
 
-  void LoadRSSFeeds();
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);

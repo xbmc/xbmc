@@ -30,21 +30,12 @@
 
 #include "GUIControl.h"
 #include "GUILabel.h"
+#include "utils/IRssObserver.h"
 
-typedef uint32_t character_t;
 typedef uint32_t color_t;
-typedef std::vector<character_t> vecText;
 typedef std::vector<color_t> vecColors;
 
 class CRssReader;
-
-class IRssObserver
-{
-public:
-  virtual void OnFeedUpdate(const vecText &feed) = 0;
-  virtual void OnFeedRelease() = 0;
-  virtual ~IRssObserver() {}
-};
 
 /*!
 \ingroup controls
