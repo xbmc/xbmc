@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -183,7 +182,7 @@ msgstr "Απόκρυψη πλήκτρων του Κεντρικού Μενού"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Ενεργοποίηση Προσωπικού Υποβάθρου"
+msgstr "Ενεργοποίηση Προσαρμοσμένου Υποβάθρου"
 
 msgctxt "#31110"
 msgid "Background path:"
