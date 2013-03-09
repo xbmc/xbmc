@@ -1,0 +1,27 @@
+diff -ruN mysql-5.1.55.org/include/my_global.h mysql-5.1.55/include/my_global.h
+--- mysql-5.1.55.org/include/my_global.h	2011-01-25 16:04:37.000000000 +0100
++++ mysql-5.1.55/include/my_global.h	2011-05-19 22:12:13.000000000 +0200
+@@ -132,7 +132,7 @@
+ #  define SIZEOF_INT 4
+ #  define SIZEOF_LONG_LONG 8
+ #  define SIZEOF_OFF_T 8
+-#  if defined(__i386__) || defined(__ppc__)
++#  if defined(__i386__) || defined(__ppc__) || defined(__arm__)
+ #    define SIZEOF_CHARP 4
+ #    define SIZEOF_LONG 4
+ #  elif defined(__x86_64__) || defined(__ppc64__)
+diff -ruN mysql-5.1.55.org/include/my_net.h mysql-5.1.55/include/my_net.h
+--- mysql-5.1.55.org/include/my_net.h	2011-01-25 16:04:48.000000000 +0100
++++ mysql-5.1.55/include/my_net.h	2011-05-19 22:13:39.000000000 +0200
+@@ -44,9 +44,9 @@
+ #endif
+ 
+ #if !defined(__WIN__) && !defined(HAVE_BROKEN_NETINET_INCLUDES) && !defined(__BEOS__) && !defined(__NETWARE__)
+-#include <netinet/in_systm.h>
++/* #include <netinet/in_systm.h> */
+ #include <netinet/in.h>
+-#include <netinet/ip.h>
++/* #include <netinet/ip.h> */
+ #if !defined(alpha_linux_port)
+ #include <netinet/tcp.h>
+ #endif

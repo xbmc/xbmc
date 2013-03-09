@@ -1,0 +1,13 @@
+--- src/gcrypt.h.in	2007-12-03 03:48:19.000000000 -0500
++++ src/gcrypt.h.in	2013-01-21 00:31:48.772740461 -0500
+@@ -41,6 +41,10 @@
+ 
+ #include <sys/time.h>
+ 
++#if defined(ANDROID)
++#include <sys/select.h>
++#endif
++
+ /* This is required for error code compatibility. */
+ #define _GCRY_ERR_SOURCE_DEFAULT GPG_ERR_SOURCE_GCRYPT
+ 

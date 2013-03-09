@@ -1,0 +1,11 @@
+--- gettext-0.17.orig/gettext-tools/gnulib-lib/stpncpy.c       2010-05-24 05:42:47.000000000 -0400
++++ gettext-0.17/gettext-tools/gnulib-lib/stpncpy.c    2013-01-18 00:46:43.000000000 -0500
+@@ -24,7 +24,7 @@
+ /* Specification.  */
+ #include <string.h>
+ 
+-#ifndef weak_alias
++#ifndef HAVE_STPNCPY
+ # define __stpncpy stpncpy
+ #endif
+ 

@@ -1,0 +1,10 @@
+--- src/hairtunes.c.orig	2011-09-25 21:58:08.000000000 +0200
++++ src/hairtunes.c	2011-09-25 21:58:12.000000000 +0200
+@@ -991,6 +991,7 @@
+ 
+ void hairtunes_cleanup(void)
+ {
++  pthread_cond_signal(&ab_buffer_ready);
+   clean_output();
+   clean_rtp();
+   clean_buffer();

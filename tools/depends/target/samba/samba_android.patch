@@ -1,0 +1,210 @@
+diff -ruN source/lib/fault.c source/lib/fault.c
+--- source/lib/fault.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/fault.c	2013-01-14 20:14:16.393077102 -0500
+@@ -136,7 +136,7 @@
+ #endif
+ #endif
+ 
+-#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
++#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) && !defined(ANDROID)
+ 	/* On Linux we lose the ability to dump core when we change our user
+ 	 * ID. We know how to dump core safely, so let's make sure we have our
+ 	 * dumpable flag set.
+diff -ruN source/lib/iconv.c source/lib/iconv.c
+--- source/lib/iconv.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/iconv.c	2013-01-14 20:33:18.813076383 -0500
+@@ -20,7 +20,10 @@
+ */
+ 
+ #include "includes.h"
+-
++#if defined(ANDROID)
++#include <stdint.h>
++#include <asm/byteorder.h>
++#endif
+ /*
+  * We have to use strcasecmp here as the character conversions
+  * haven't been initialised yet. JRA.
+@@ -489,6 +492,19 @@
+ 	return 0;
+ }
+ 
++#if defined(ANDROID)
++void swab(const void *from, void*to, ssize_t n)
++{
++  ssize_t i;
++
++  if (n < 0)
++    return;
++
++  for (i = 0; i < (n/2)*2; i += 2)
++    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
++}
++#endif
++
+ static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
+ 			 char **outbuf, size_t *outbytesleft)
+ {
+diff -ruN source/lib/replace/system/passwd.h source/lib/replace/system/passwd.h
+--- source/lib/replace/system/passwd.h	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/replace/system/passwd.h	2013-01-14 20:21:58.013076811 -0500
+@@ -62,6 +62,8 @@
+ 
+ #ifdef REPLACE_GETPASS
+ #define getpass(prompt) getsmbpass((prompt))
++#else
++#define getpass(prompt) NULL
+ #endif
+ 
+ #ifndef NGROUPS_MAX
+diff -ruN source/lib/system.c source/lib/system.c
+--- source/lib/system.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/system.c	2013-01-14 20:27:18.453076610 -0500
+@@ -476,7 +476,10 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
+ 	seekdir64(dirp, offset);
+ #else
+-	seekdir(dirp, offset);
++#if !defined(ANDROID)
++	seekdir(dirp, offset);
++#endif
++	return;
+ #endif
+ }
+ 
+@@ -489,7 +492,11 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_TELLDIR64)
+ 	return (long)telldir64(dirp);
+ #else
++#if !defined(ANDROID)
+ 	return (long)telldir(dirp);
++#else
++	return(0);
++#endif
+ #endif
+ }
+ 
+@@ -985,17 +992,25 @@
+ 
+ void sys_setpwent(void)
+ {
++#if !defined(ANDROID)
+ 	setpwent();
++#endif
+ }
+ 
+ struct passwd *sys_getpwent(void)
+ {
++#if !defined(ANDROID)
+ 	return getpwent();
++#else
++	return NULL;
++#endif	
+ }
+ 
+ void sys_endpwent(void)
+ {
++#if !defined(ANDROID)
+ 	endpwent();
++#endif
+ }
+ 
+ /**************************************************************************
+@@ -1065,7 +1080,9 @@
+ 	new_pwd.pw_passwd = SMB_STRDUP("x");
+ 	new_pwd.pw_uid = uid;
+ 	new_pwd.pw_gid = 100;
++#if !defined(ANDROID)
+ 	new_pwd.pw_gecos = SMB_STRDUP("faked user");
++#endif
+ 	new_pwd.pw_dir = SMB_STRDUP("/nodir");
+ 	new_pwd.pw_shell = SMB_STRDUP("/bin/false");
+ 
+@@ -1241,7 +1258,9 @@
+ 	retval.pw_passwd = pwret->pw_passwd;
+ 	retval.pw_uid = pwret->pw_uid;
+ 	retval.pw_gid = pwret->pw_gid;
++#if !defined(ANDROID)
+ 	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
++#endif
+ 	unix_to_unicode(retval.pw_dir, pwret->pw_dir, sizeof(retval.pw_dir));
+ 	unix_to_unicode(retval.pw_shell, pwret->pw_shell, sizeof(retval.pw_shell));
+ 
+@@ -1264,7 +1283,9 @@
+ 	retval.pw_passwd = pwret->pw_passwd;
+ 	retval.pw_uid = pwret->pw_uid;
+ 	retval.pw_gid = pwret->pw_gid;
++#if !defined(ANDROID)
+ 	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
++#endif
+ 	unix_to_unicode(retval.pw_dir, pwret->pw_dir, sizeof(retval.pw_dir));
+ 	unix_to_unicode(retval.pw_shell, pwret->pw_shell, sizeof(retval.pw_shell));
+ 
+diff -ruN source/lib/util_pw.c source/lib/util_pw.c
+--- source/lib/util_pw.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/util_pw.c	2013-01-14 20:17:49.293076968 -0500
+@@ -32,7 +32,9 @@
+ 	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
+ 	ret->pw_uid = from->pw_uid;
+ 	ret->pw_gid = from->pw_gid;
++#if !defined(ANDROID)
+ 	ret->pw_gecos = talloc_strdup(ret, from->pw_gecos);
++#endif
+ 	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
+ 	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
+ 	return ret;
+diff -ruN source/libads/dns.c source/libads/dns.c
+--- source/libads/dns.c	2009-09-30 08:21:56.000000000 -0400
++++ source/libads/dns.c	2013-01-14 20:14:16.393077102 -0500
+@@ -38,6 +38,15 @@
+ 
+ #define MAX_DNS_PACKET_SIZE 0xffff
+ 
++#if defined(ANDROID)
++#  define NS_HFIXEDSZ   12
++#  define C_IN          1
++#  define T_A           1
++#  define ns_t_srv      33
++#  define NS_PACKETSZ	512
++#  define T_NS          2
++#endif
++
+ #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
+ #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
+ #  define C_IN		ns_c_in
+diff -ruN source/passdb/passdb.c source/passdb/passdb.c
+--- source/passdb/passdb.c	2009-09-30 08:21:56.000000000 -0400
++++ source/passdb/passdb.c	2013-01-14 20:18:18.533076949 -0500
+@@ -143,7 +143,9 @@
+ 	/* Basic properties based upon the Unix account information */
+ 	
+ 	pdb_set_username(user, pwd->pw_name, PDB_SET);
++#if !defined(ANDROID)
+ 	pdb_set_fullname(user, pwd->pw_gecos, PDB_SET);
++#endif
+ 	pdb_set_domain (user, get_global_sam_name(), PDB_DEFAULT);
+ #if 0
+ 	/* This can lead to a primary group of S-1-22-2-XX which 
+diff -ruN source/passdb/pdb_interface.c source/passdb/pdb_interface.c
+--- source/passdb/pdb_interface.c	2009-09-30 08:21:56.000000000 -0400
++++ source/passdb/pdb_interface.c	2013-01-14 20:14:16.393077102 -0500
+@@ -1380,8 +1380,8 @@
+ 	}
+ 
+ 	/* Primary group members */
+-	setpwent();
+-	while ((pwd = getpwent()) != NULL) {
++	sys_setpwent();
++	while ((pwd = sys_getpwent()) != NULL) {
+ 		if (pwd->pw_gid == gid) {
+ 			if (!add_uid_to_array_unique(mem_ctx, pwd->pw_uid,
+ 						pp_uids, p_num)) {
+@@ -1389,7 +1389,7 @@
+ 			}
+ 		}
+ 	}
+-	endpwent();
++	sys_endpwent();
+ 
+ 	/* Secondary group members */
+ 	for (gr = grp->gr_mem; (*gr != NULL) && ((*gr)[0] != '\0'); gr += 1) {
