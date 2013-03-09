@@ -105,10 +105,10 @@ public:
   virtual ~InfoExpression() {};
 
   virtual void Update(const CGUIListItem *item);
+  static short GetOperator(const char ch);
 private:
   void Parse(const CStdString &expression);
   bool Evaluate(const CGUIListItem *item, bool &result);
-  short GetOperator(const char ch) const;
 
   std::vector<short> m_postfix;         ///< the postfix form of the expression (operators and operand indicies)
   std::vector<unsigned int> m_operands; ///< the operands in the expression

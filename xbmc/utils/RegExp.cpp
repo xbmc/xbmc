@@ -267,3 +267,9 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   str += "}";
   CLog::Log(iLog, "regexp ovector=%s", str.c_str());
 }
+
+bool CRegExp::operator ==(const CRegExp &rhs) const
+{
+  return m_iOptions == rhs.m_iOptions
+      && m_pattern == rhs.m_pattern;
+}
