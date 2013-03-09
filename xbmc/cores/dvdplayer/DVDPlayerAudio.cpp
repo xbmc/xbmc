@@ -660,7 +660,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_pClock->Discontinuity(clock+error);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity 1 - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
     m_errorbuff = 0;
     m_errorcount = 0;
