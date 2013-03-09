@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "FileItem.h"
 #include "StringUtils.h"
 #include "URIUtils.h"
@@ -96,9 +97,10 @@ using namespace MUSIC_INFO;
  *  %Z - tvshow title
  *  %a - Date Added
  *  %p - Last Played
+ *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWap"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWapt"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -150,6 +152,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   if (!item) return "";
   const CMusicInfoTag *music = item->GetMusicInfoTag();
   const CVideoInfoTag *movie = item->GetVideoInfoTag();
+  const CPictureInfoTag *pic = item->GetPictureInfoTag();
   CStdString value;
   switch (mask.m_content)
   {
@@ -311,6 +314,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'p': // Last played
     if (movie && movie->m_lastPlayed.IsValid())
       value = movie->m_lastPlayed.GetAsLocalizedDate();
+    break;
+  case 't': // Date Taken
+    if (pic && pic->GetDateTimeTaken().IsValid())
+      value = pic->GetDateTimeTaken().GetAsLocalizedDate();
     break;
   }
   if (!value.IsEmpty())

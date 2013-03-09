@@ -23,6 +23,7 @@
 #include "utils/ISortable.h"
 #include "utils/Archive.h"
 #include "DllLibExif.h"
+#include "XBDateTime.h"
 
 #define SLIDE_FILE_NAME             900         // Note that not all image tags will be present for each image
 #define SLIDE_FILE_PATH             901
@@ -101,11 +102,20 @@ public:
 
   void SetInfo(int info, const CStdString& value);
 
+  /**
+   * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
+   * 
+   * The exif library returns DateTimeOriginal if available else the other
+   * DateTime tags. See libexif CExifParse::ProcessDir for details.
+   */
+  const CDateTime& GetDateTimeTaken() const;
 private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
   bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
   bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
+  CDateTime  m_dateTimeTaken;
+  void ConvertDateTime();
 };
 
