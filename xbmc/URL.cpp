@@ -206,12 +206,11 @@ void CURL::Parse(const CStdString& strURL1)
       if (iProto >= 0)
       {
         m_strProtocolOptions = strURL.substr(iProto+1);
-        m_strOptions = strURL.substr(iOptions,iProto-iOptions);
+        SetOptions(strURL.substr(iOptions,iProto-iOptions));
       }
       else
-        m_strOptions = strURL.substr(iOptions);
+        SetOptions(strURL.substr(iOptions));
       iEnd = iOptions;
-      m_options.AddOptions(m_strOptions);
     }
   }
 
