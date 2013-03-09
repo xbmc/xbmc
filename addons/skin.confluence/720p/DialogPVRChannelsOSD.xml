@@ -87,7 +87,7 @@
 				<posy>70</posy>
 				<width>410</width>
 				<height>520</height>
-				<onleft>60</onleft>
+				<onleft>PreviousChannelGroup</onleft>
 				<onright>60</onright>
 				<onup>11</onup>
 				<ondown>11</ondown>
@@ -334,7 +334,7 @@
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 				<onleft>11</onleft>
-				<onright>11</onright>
+				<onright>NextChannelGroup</onright>
 				<ondown>61</ondown>
 				<onup>61</onup>
 				<showonepage>false</showonepage>

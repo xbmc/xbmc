@@ -35,6 +35,7 @@ namespace PVR
     CGUIDialogPVRChannelsOSD(void);
     virtual ~CGUIDialogPVRChannelsOSD(void);
     virtual bool OnMessage(CGUIMessage& message);
+    virtual bool OnAction(const CAction &action);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
