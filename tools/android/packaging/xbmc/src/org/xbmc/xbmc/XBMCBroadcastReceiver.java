@@ -7,10 +7,6 @@ import android.content.Intent;
 public class XBMCBroadcastReceiver extends BroadcastReceiver
 {
   native void ReceiveIntent(Intent intent);
-  static
-  {
-    System.loadLibrary("xbmc");
-  }
 
   @Override
   public void onReceive(Context context, Intent intent)

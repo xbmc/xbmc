@@ -31,6 +31,11 @@ import android.widget.TextView;
 
 public class Splash extends Activity {
 
+	static
+	{
+		System.loadLibrary("xbmc");
+	}
+
 	public enum State {
 		Uninitialized, InError, Checking, Caching, StartingXBMC
 	}
