@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -4712,7 +4711,7 @@ msgstr "Начать слайдшоу отсюда"
 
 msgctxt "#13423"
 msgid "Remember for this path"
-msgstr "Запомнить путь"
+msgstr "Запомнить логин/пароль для ресурса"
 
 msgctxt "#13424"
 msgid "Use pixel buffer objects"
@@ -6632,7 +6631,7 @@ msgstr "Продолжить с последнего канала при зап�
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr "Свернуто"
+msgstr "В окне"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -8212,7 +8211,7 @@ msgstr "Сканирование фильмов с помощью %s"
 
 msgctxt "#20318"
 msgid "Scanning music videos using %s"
-msgstr "Сканирование муз. клипов с помощью %s"
+msgstr "Сканирование муз. видео с помощью %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
@@ -8488,27 +8487,27 @@ msgstr "Студии"
 
 msgctxt "#20389"
 msgid "Music videos"
-msgstr "Муз. клипы"
+msgstr "Муз. видео"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Последние клипы"
+msgstr "Последние муз. видео"
 
 msgctxt "#20391"
 msgid "Music video"
-msgstr "Музыкальный клип"
+msgstr "Муз. видео"
 
 msgctxt "#20392"
 msgid "Remove music video from library"
-msgstr "Удалить музыкальный клип из медиатеки"
+msgstr "Удалить муз. видео из медиатеки"
 
 msgctxt "#20393"
 msgid "Music video information"
-msgstr "Сведения о клипе"
+msgstr "Сведения о муз. видео"
 
 msgctxt "#20394"
 msgid "Loading music video information"
-msgstr "Загрузка сведений о клипе…"
+msgstr "Загрузка сведений о муз. видео…"
 
 msgctxt "#20395"
 msgid "Mixed"
@@ -8528,15 +8527,15 @@ msgstr "Играть песню"
 
 msgctxt "#20399"
 msgid "Go to music videos from album"
-msgstr "Перейти к музыкальным клипам из альбома"
+msgstr "Перейти к музыкальным видео из альбома"
 
 msgctxt "#20400"
 msgid "Go to music videos by artist"
-msgstr "Перейти к музыкальным клипам по исполнителю"
+msgstr "Перейти к музыкальным видео по исполнителю"
 
 msgctxt "#20401"
 msgid "Play music video"
-msgstr "Играть музыкальный клип"
+msgstr "Играть муз. видео"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
@@ -8560,7 +8559,7 @@ msgstr "Настройки инфоресурса"
 
 msgctxt "#20408"
 msgid "Downloading music video information"
-msgstr "Загрузка сведений о музыкальном клипе…"
+msgstr "Загрузка сведений о муз. видео…"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
@@ -9020,7 +9019,7 @@ msgstr "Инфоресурс для сериалов по умолчанию"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
-msgstr "Инфоресурс для клипов по умолчанию"
+msgstr "Инфоресурс для муз. видео по умолчанию"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -9788,7 +9787,7 @@ msgstr "Сведения о сериалах"
 
 msgctxt "#24015"
 msgid "Music video information"
-msgstr "Сведения о муз. клипах"
+msgstr "Сведения о муз. видео"
 
 msgctxt "#24016"
 msgid "Album information"

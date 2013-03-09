@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -432,7 +431,7 @@ msgstr "Display"
 
 msgctxt "#132"
 msgid "Albums"
-msgstr "Álbumes"
+msgstr "Álbums"
 
 msgctxt "#133"
 msgid "Artists"
@@ -632,7 +631,7 @@ msgstr "Aceptar"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Non se atoparon albumes!"
+msgstr "Non se atoparon álbums!"
 
 msgctxt "#188"
 msgid "Select all"
@@ -1144,11 +1143,11 @@ msgstr "Houbo un erro ao limpar os camiños"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "A limpar os álbumes..."
+msgstr "A limpar os álbums..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
-msgstr "Houbo un erro ao limpar os álbumees"
+msgstr "Houbo un erro ao limpar os álbums"
 
 msgctxt "#328"
 msgid "Writing changes..."
@@ -1808,7 +1807,7 @@ msgstr "Fallo descargando a información do álbum"
 
 msgctxt "#501"
 msgid "Looking for album names..."
-msgstr "Buscando os nomes dos álbumes..."
+msgstr "Buscando os nomes dos álbums..."
 
 msgctxt "#502"
 msgid "Open"
@@ -2202,6 +2201,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Introducir número"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/mostraxe"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Taxa de mostraxe"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "CDs de audio"
@@ -2225,6 +2232,10 @@ msgstr "Incluír número de pista"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Tódalas cancións de"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Series de TV en progreso"
 
 msgctxt "#629"
 msgid "View mode"
@@ -3170,6 +3181,10 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "ventoso"
 
+msgctxt "#1413"
+msgid "Patches"
+msgstr "Parches"
+
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Tempestade"
@@ -3325,6 +3340,10 @@ msgstr "Execución"
 msgctxt "#2080"
 msgid "Empty list"
 msgstr "Listaxe baleira"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Volvemos á listaxe superior xa que a activa foi baleirada"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3738,9 +3757,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elemento bloqueado"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Actualizanco a arte da biblioteca de vídeos"
+
 msgctxt "#12350"
 msgid "Processing %s"
 msgstr "Procesando %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "A caché de arte da súa biblioteca de vídeo necesita actualizarse."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4774,6 +4801,26 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sincronizar reprodución coa pantalla"
 
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Escoller arte"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Arte actual"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Arte remoto"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Arte local"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Sen arte"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Pausar durante o troco do ratio de refresco"
@@ -5032,7 +5079,7 @@ msgstr "Imposible nametras se escanea información dos medios"
 
 msgctxt "#14058"
 msgid "Film grain effect"
-msgstr "Efecto de grao de película"
+msgstr "Efecto de grao do Filme"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
@@ -5854,6 +5901,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Mestura Software"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - Optimizado para ION"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesamento"
@@ -5885,6 +5936,10 @@ msgstr "Separa as palabras de busca con AND, OR e/ou NOT."
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "ou usa frases para buscar coincidencias totais, como \"A língua das volvoretas\""
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Buscar programas semellantes"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -5921,6 +5976,10 @@ msgstr "UNC"
 msgctxt "#19012"
 msgid "PVR Backend"
 msgstr "Motor do PVR"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "En aberto"
 
 msgctxt "#19014"
 msgid "Fixed"
@@ -6126,9 +6185,33 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Ir ao final"
 
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Xanela da Guía Predefinida"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Este evento estase a gravar."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "A gravación no se pode eliminar, verifique o rexistro para máis detalles."
+
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "Intervalo de actualización da Guía"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Non gardar a Guía na base de datos"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Atrasar o troco de canle"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -6238,9 +6321,21 @@ msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "Introducir o nome do cartafol das gravacións"
 
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Próximo temporizador activo"
+
 msgctxt "#19107"
 msgid "at"
 msgstr "ás"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Non se puido gardar o temporizador, verifique o rexistro para máis detalles."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Produciuse un erro inesperado, ténteo de novo máis tarde ou verifique o rexistro para máis detalles."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
@@ -6274,6 +6369,26 @@ msgctxt "#19120"
 msgid "Client number"
 msgstr "Número de cliente"
 
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Evitar repeticións"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Este temporizador aínda está gravando, Ten a certeza de querer eliminalo?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Só canles en aberto"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Ignorar temporizadores actuais"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Ignorar gravacións actuais"
+
 msgctxt "#19126"
 msgid "Start time"
 msgstr "Hora de inicio"
@@ -6298,6 +6413,10 @@ msgctxt "#19131"
 msgid "Maximum duration"
 msgstr "Duración máxima"
 
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Incluír xéneros descoñecidos"
+
 msgctxt "#19133"
 msgid "Search string"
 msgstr "Cadea de busca"
@@ -6305,6 +6424,10 @@ msgstr "Cadea de busca"
 msgctxt "#19134"
 msgid "Include description"
 msgstr "Incluir descrición"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Sensible a capitalización"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
@@ -6345,6 +6468,10 @@ msgstr "Agrupado"
 msgctxt "#19146"
 msgid "Groups"
 msgstr "Grupos"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "O motor PVR non soporta esta acción, verifique o rexistro para máis detalles."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6406,13 +6533,53 @@ msgctxt "#19163"
 msgid "Recordings"
 msgstr "Gravacións"
 
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Non se pode iniciar a gravación, verifique o rexistro para máis detalles."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Trocar"
+
 msgctxt "#19166"
 msgid "PVR information"
 msgstr "Información do PVR"
 
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Buscar as iconas ausentes"
+
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Agochar a caixa de información do vídeo"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Tempo de espera cando se inicie a reprodución"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Iniciar a reprodución minimizada"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "duración da gravación instantánea"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Prioridade de gravación predefinida"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Tempo de vida predefinido das gravacións"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Marxe no inicio dunha gravación"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Marx no final dunha gravación"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -6430,6 +6597,14 @@ msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Menu/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Días a amosar na Guía"
+
 msgctxt "#19184"
 msgid "Channel information duration"
 msgstr "Duración da información da canle"
@@ -6438,13 +6613,37 @@ msgctxt "#19185"
 msgid "Reset the PVR database"
 msgstr "Restabelecer a base de datos do PVR"
 
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Toda a información da base de datos do PVR está a ser eliminada"
+
 msgctxt "#19187"
 msgid "Reset the EPG database"
 msgstr "Restabelecer a base de datos do EPG"
 
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Estase a restabelecer a Guía"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Continuar na última canle ao iniciar"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Minimizada"
+
 msgctxt "#19191"
 msgid "PVR service"
 msgstr "Servizo PVR"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Ningún dos motores PRV soporta a busca de canles."
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Non se puido inicar o análise da canle, verifique o rexistro para máis detalles."
 
 msgctxt "#19194"
 msgid "Continue?"
@@ -6453,6 +6652,10 @@ msgstr "Continuar?"
 msgctxt "#19195"
 msgid "Client actions"
 msgstr "accións do cliente"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "Accións especificas do cliente PVR"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6514,6 +6717,22 @@ msgctxt "#19211"
 msgid "Delete channel"
 msgstr "Eliminar o canle"
 
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Esta listaxe contén cambios"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Seleccionar motor"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Introducir un URL válido para a nova canle"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "O motor do PVR non soporta temporizadores."
+
 msgctxt "#19216"
 msgid "All radio channels"
 msgstr "Todas as canles de radio"
@@ -6526,9 +6745,25 @@ msgctxt "#19218"
 msgid "Visible"
 msgstr "Visible"
 
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Canles non agrupados"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Canles en"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Sincronizar os grupos de canles cos motores"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Non se puido habilitar o complemento PRV. Verifique os axustes ou o rexistro para máis información."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6550,6 +6785,18 @@ msgctxt "#19228"
 msgid "Recording deleted"
 msgstr "Gravación eliminada"
 
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Pechar o OSD despois de trocar de canle"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Impedir a actualización da Guía mentes se está a reproducir un fluxo de TV"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Usar sempre a orde das canles do/s motor(es)"
+
 msgctxt "#19232"
 msgid "Clear search results"
 msgstr "Limpar os resultados da busca"
@@ -6557,6 +6804,10 @@ msgstr "Limpar os resultados da busca"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Amosar unha notificación cando se actualice o temporizador"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "Usar os números das canles do motor (só funciona 1 complemento PRV habilitado)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6574,6 +6825,10 @@ msgctxt "#19238"
 msgid "Loading recordings from clients"
 msgstr "Cargando as gravacións dende os clientes"
 
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "Iniciando fíos en segundo plano"
+
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
 msgstr "Non se habilitou ningún engadido de PVR"
@@ -6586,6 +6841,30 @@ msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
 msgstr "engadido de PVR habilitado. Polo menos un foi habilitado"
 
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "para usar a funcionalidade PRV."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Tempo de inactividade do motor"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Definir o comando de despertar (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Despertar antes de gravar"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Despertar diario"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Hora do despertar diario (HH:MM:SS)"
+
 msgctxt "#19249"
 msgid "Filter channels"
 msgstr "Filtrar canles"
@@ -6597,6 +6876,18 @@ msgstr "Cargando a Guía dende a base de datos"
 msgctxt "#19251"
 msgid "Update EPG information"
 msgstr "Actualizar a información do EPG"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Programar actualización desta canle da Guía?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "Actualización programada da canle da Guía"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "Fallou a actualización da canle da Guía"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -6618,6 +6909,10 @@ msgctxt "#19259"
 msgid "Parental control"
 msgstr "Control Parental"
 
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Duración descoñecida"
+
 msgctxt "#19261"
 msgid "Change PIN"
 msgstr "Mudar o PIN"
@@ -6638,17 +6933,49 @@ msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "o número de PIN introducido no é correcto."
 
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Bloqueo parental"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Bloqueo parental:"
+
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
 msgstr "Non amosar as etiquetas 'sen información dispoñíbel'"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Non amosar advertencias de 'conexión perdida'"
 
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Todas as gravacións"
 
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Non se puido atopar complementos PVR"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Necesita dun sintonizador, un software motor, e un"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "complemento para o motor que lle permita usar o PVR."
+
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr "Por favor visita xbmc.org/pvr para saber máis."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Advertencia de conflito"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Erro de conflito"
 
 msgctxt "#19277"
 msgid "Recording conflict"
@@ -6742,9 +7069,21 @@ msgctxt "#19534"
 msgid "Variety Show"
 msgstr "Programa de variedades"
 
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Programa de Entrevistas"
+
 msgctxt "#19548"
 msgid "Sports"
 msgstr "Deportes"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Evento especial"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Programa de deportes"
 
 msgctxt "#19551"
 msgid "Football"
@@ -6782,9 +7121,29 @@ msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Artes Marciais"
 
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Programas Infantís/Xuvenís"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Programas para idade Pre-Escolar"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Programas de lecer do 6 ó 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Programas de lecer do 10 ó 16"
+
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
 msgstr "Informativo/Educativo/Programa Escolar"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Debuxos Animados/Monicreques"
 
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
@@ -6793,6 +7152,10 @@ msgstr "Música/Ballet/Danza"
 msgctxt "#19581"
 msgid "Rock/Pop"
 msgstr "Rock/Pop"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Serios/Música clasica"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
@@ -6838,6 +7201,10 @@ msgctxt "#19603"
 msgid "Experimental Film/Video"
 msgstr "Filme Experimental/Vídeo"
 
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Transmisiones/Prensa"
+
 msgctxt "#19605"
 msgid "New Media"
 msgstr "Novo Medio"
@@ -6846,9 +7213,21 @@ msgctxt "#19606"
 msgid "Arts/Culture Magazines"
 msgstr "Artes/Revistas de cultura"
 
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Moda"
+
 msgctxt "#19612"
 msgid "Social/Political/Economics"
 msgstr "Sociedade/Política/Economía"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Revistas/Reportaxes/Documentais"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Consultoría Económico/Social"
 
 msgctxt "#19615"
 msgid "Remarkable People"
@@ -6873,6 +7252,14 @@ msgstr "Medicina/Fisioloxía/Psicoloxía"
 msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
 msgstr "Extranxeiro/Expedicións"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Ciencias Sociais/Espirituais"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Educación para Adultos"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -6902,6 +7289,10 @@ msgctxt "#19649"
 msgid "Cooking"
 msgstr "Cociña"
 
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Publicidade/Compras"
+
 msgctxt "#19651"
 msgid "Gardening"
 msgstr "Xardinería"
@@ -6930,6 +7321,10 @@ msgctxt "#19676"
 msgid "Drama"
 msgstr "Drama"
 
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Policíaca/Suspense"
+
 msgctxt "#19678"
 msgid "Adventure/Western/War"
 msgstr "Aventuras/Oeste/Guerra"
@@ -6949,6 +7344,10 @@ msgstr "Comedia/Melodrama/Folclórico"
 msgctxt "#19682"
 msgid "Romance"
 msgstr "Romantica"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Serio/Relixión/Histórico"
 
 msgctxt "#19684"
 msgid "Adult"
@@ -7637,6 +8036,10 @@ msgstr "Agarde por favor"
 msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Anunciar actualizacións da biblioteca mediante UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8777,6 +9180,10 @@ msgstr "A caché encheuse antes de acadar a cantidade requerida para a reproduci
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Almacenamento externo"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Contador de episodios vistos"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -10238,6 +10645,14 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Por dispositivos en modo de espera cando se active o gardapantallas"
 
+msgctxt "#36011"
+msgid "Could not detect the CEC com port. Set it up manually."
+msgstr "Non se puido detectar o porto CEC. Estabrézao manualmente."
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr "Non se puido inicializar o adaptador CEC. Comprobe a súa configuración."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Número de porto HDMI"
@@ -10245,6 +10660,10 @@ msgstr "Número de porto HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Conectado"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "Non se puido inicializar o adaptador CEC: non se atopou libCEC no sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10278,6 +10697,14 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Enviar o comando 'inactive source' cando se apague XBMC"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "Por os dispositivos en modo de espera cando se poña tamén o PC"
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr "Ten de levar este dispositivo ao servizo técnico"
+
 msgctxt "#36028"
 msgid "Ignore"
 msgstr "Ignorar"
@@ -10290,9 +10717,25 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Perdeuse a conexión"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Este usuario non ten permisos para abrir o adaptador CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "O porto está ocupado, só un programa pode acceder ó adaptador CEC"
+
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Pausar a reprodución cando se cambie a outra fonte"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "Sempre"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Ó iniciar/deter"
 
 msgctxt "#36037"
 msgid "TV"
@@ -10305,6 +10748,10 @@ msgstr "Amplificador / Vídeo"
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
 msgstr "TV e Vídeo (explícito)"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr " Versión da interface libCEC non soportada. %x é menor que a versión (%x) que soporta XBMC"
 
 msgctxt "#36041"
 msgid "* Item folder"

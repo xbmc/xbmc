@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -7036,7 +7035,7 @@ msgstr "Σοβαρή/Κλασική/Θρησκευτική/Ιστορική Τα
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr "Πορνό/Δράμα"
+msgstr "Για Ενήλικες/Δράμα"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"
@@ -7352,7 +7351,7 @@ msgstr "Σοβαρή/Κλασική/Θρησκευτική/Ιστορική"
 
 msgctxt "#19684"
 msgid "Adult"
-msgstr "Πορνό"
+msgstr "Για Ενήλικες"
 
 msgctxt "#20000"
 msgid "Saved music folder"

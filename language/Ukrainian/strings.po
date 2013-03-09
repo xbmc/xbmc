@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3332,7 +3331,7 @@ msgstr "місцями"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Вимикати екран під час перегляду"
+msgstr "Вимикати екран під час простою"
 
 msgctxt "#2050"
 msgid "Runtime"

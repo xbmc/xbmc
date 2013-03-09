@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -215,7 +214,7 @@ msgstr "Ocultar el Fanart del fondo"
 
 msgctxt "#31122"
 msgid "Weather Page"
-msgstr "El Clima"
+msgstr "Clima"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -227,7 +226,7 @@ msgstr "Mostrar visualización en el fondo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproducir canciones de series en la colección de video (complemento TvTunes)"
+msgstr "Reproducir canciones de series en la colección de video (add-on TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -423,23 +422,23 @@ msgstr "Basada en Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin - Cambia el idioma y la configuración regional - Cambia opciones de listas de archivos[CR]Establece un salvapantallas"
+msgstr "[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin - Cambia el idioma y la configuración regional - Modifica opciones de listas de archivos[CR]Establece un salvapantallas"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]Configura las opciones de VIDEO[/B][CR][CR]Administra tu colección de video · Ajusta reproducción de video · Cambia opciones de listas de video[CR]Configura fuentes de subtítulos"
+msgstr "[B]Configura las opciones de VIDEO[/B][CR][CR]Administra tu colección de video · Ajusta reproducción de video · Modifica opciones de listas de video[CR]Configura fuentes de subtítulos"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administra tu colección de música · Ajusta reproducción de música · Cambia opciones de listas de música[CR]Configura sumisión de canciones · Configura el karaoke"
+msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administra tu colección de música · Ajusta reproducción de música · Modifica opciones de listas de música[CR]Configura sumisión de canciones · Configura el karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]Configura las opciones de IMAGEN[/B][CR][CR]Cambia opciones de listas de imágenes - Configura presentación de diapositivas"
+msgstr "[B]Configura las opciones de IMAGEN[/B][CR][CR]Modifica opciones de listas de imágenes - Configura presentación de diapositivas"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]Configura las opciones de EL TIEMPO[/B][CR][CR]Establece tres ciudades para información metereológica"
+msgstr "[B]Configura las opciones de CLIMA[/B][CR][CR]Establece tres ciudades para información meteorológica"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -447,11 +446,11 @@ msgstr "[B]Configura las opciones de SISTEMA[/B][CR][CR]Configura y calibra la p
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · Busca e instala addons desde xbmc.org[CR]Modifica la configuración de los addons"
+msgstr "[B]Configura los ADD-ONS[/B][CR][CR]Administra tus add-ons instalados · Busca e instala add-ons desde xbmc.org[CR]Modifica la configuración de los add-ons"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR OPCIONES DE TV[/B][CR][CR]Cambiar info pantalla completa ·  Especificar datos de guía EPG"
+msgstr "[B]CONFIGURAR OPCIONES DE TV[/B][CR][CR]Modifica información en pantalla completa ·  Especifica datos de guía EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"

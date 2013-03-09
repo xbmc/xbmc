@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10716,7 +10715,7 @@ msgstr "Quand la TV est éteinte"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr "Connection perdue"
+msgstr "Connexion perdue"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"

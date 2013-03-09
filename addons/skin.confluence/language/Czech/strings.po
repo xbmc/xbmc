@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -275,7 +274,7 @@ msgstr "Zkratky"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Vyberte Vaši skladbu"
+msgstr "Vyberte vaši skladbu"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -463,7 +462,7 @@ msgstr "Nejprve spusťte nápovědu..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi.\nPro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
+msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi. Pro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

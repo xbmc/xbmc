@@ -1,0 +1,2194 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "நிரல்கள்"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "படங்கள்"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "இசை"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "நிகழ்படம்"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "தொலைக்காட்சி வழிகாட்டி"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "அமைப்புக்கள்"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "கோப்பு மேலாளர்"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "வானிலை"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "XBMC ஊடகமையம்"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "திங்கள்"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "செவ்வாய்"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "புதன்"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "வியாழன்"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "வெள்ளி"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "சனி"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "ஞாயிறு "
+
+msgctxt "#21"
+msgid "January"
+msgstr "சனவரி"
+
+msgctxt "#22"
+msgid "February"
+msgstr "பிப்ரவரி"
+
+msgctxt "#23"
+msgid "March"
+msgstr "மார்ச்சு"
+
+msgctxt "#24"
+msgid "April"
+msgstr "ஏப்ரில்"
+
+msgctxt "#25"
+msgid "May"
+msgstr "மே"
+
+msgctxt "#26"
+msgid "June"
+msgstr "ஜூன்"
+
+msgctxt "#27"
+msgid "July"
+msgstr "ஜூலை"
+
+msgctxt "#28"
+msgid "August"
+msgstr "ஆகஸ்து"
+
+msgctxt "#29"
+msgid "September"
+msgstr "செப்டெம்பர்"
+
+msgctxt "#30"
+msgid "October"
+msgstr "அக்டோபர்"
+
+msgctxt "#31"
+msgid "November"
+msgstr "நவம்பர்"
+
+msgctxt "#32"
+msgid "December"
+msgstr "டிசம்பர்"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "திங்கள்"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "செவ்வாய்"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "புதன்"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "வியாழன்"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "வெள்ளி"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "சனி"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "ஞாயிறு"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "சனவரி"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "பிப்ரவரி"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "மார்ச்சு"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "ஏப்ரில்"
+
+msgctxt "#55"
+msgid "May"
+msgstr "மே"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "ஜூன்"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "ஜூலை"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "ஆகஸ்து"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "செப்டெம்பர்"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "அக்டோபர்"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "நவம்பர்"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "டிசம்பர்"
+
+msgctxt "#71"
+msgid "N"
+msgstr "வடக்கு"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "வட வட கிழக்கு"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "வட கிழக்கு"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "கிழ வட கிழக்கு"
+
+msgctxt "#75"
+msgid "E"
+msgstr "கிழக்கு"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "கிழ தென் கிழக்கு"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "தென் கிழக்கு"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "தென் தென் கிழக்கு"
+
+msgctxt "#79"
+msgid "S"
+msgstr "தெற்கு"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "தென் தென் மேற்கு"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "தென் மேற்கு"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "மேற் தென் மேற்கு"
+
+msgctxt "#83"
+msgid "W"
+msgstr "மேற்கு"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "மேற் வட மேற்கு"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "வட மேற்கு"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "வட வட மேற்கு"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "காட்சி : தானியங்கு"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "காட்சி : பெரிய தானியங்கு"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "காட்சி : சின்னங்கள்"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "காட்சி :பட்டியல்"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "தேடல்"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "வரிசைபடுத்து : பெயரிபடி"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "வரிசைபடுத்து : தேதிபடி"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "வரிசைபடுத்து : அளவுபடி"
+
+msgctxt "#106"
+msgid "No"
+msgstr "இல்லை"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "ஆம்"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "காட்சியளிக்கை"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "உருவாக்கு சிறு உருவம்"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "உருவாக்கு சிறு உருவம்"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "குறுக்குவழிகள்"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "தற்காலிக நிறுத்து"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "புதுபித்தல் இயலவில்லை"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "நிறுவல் இயலவில்லை"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "கோப்பு நகலெடுத்தலை உறுதிசெய்"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "நகர்த்து"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "நீக்கு"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "மாற்றுபெயரிடு"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "புதிய கோப்புறை"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "கோப்பு நகர்த்தலை உறுதிசெய்"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "கோப்பு நகர்த்தலை உறுதிசெய்"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "கோப்பு நீக்கலை உறுதிசெய்"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "அனைத்து கோப்புகளையும் நகலெடு?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "அனைத்து கோப்புகளையும் நகர்த்து?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "அனைத்து கோப்புகளையும் நீக்கு? கோப்புகளை திருப்பிபெற இயலாது!"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "நிலைமை"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "பொருள்"
+
+msgctxt "#128"
+msgid "General"
+msgstr "பொதுவானவை"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "காட்சியளிக்கை"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "அமைப்பு தகவல்கள்"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "காட்சி"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "ஆல்பங்கள்"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "கலைஞர்"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "பாடல்கள்"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "பிரிவுகள்"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "இசைபட்டியல்கள்"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "தேடல்"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "அமைப்பு தகவல்கள்"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "வெப்பநிலை:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "நேரம்:"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "நிகழ்விலுள்ள:"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "உருவாக்கு:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "பிணையம்:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "வகை:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "நிலையான"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "மாக் முகவரி"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP முகவரி"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "இணைப்பு:"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "அரை-இருதிசை"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "முழு-இருதிசை"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "சேமிப்பகம்"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "இயக்கி"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "வட்டு இடம்"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "படக்காட்சி"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "பயன்படுத்தபடாத நினைவகம்"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "இணைப்பு இல்லை"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "காலி"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "இருப்பிலில்லாத"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "தட்டு திறந்துள்ளது"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "படித்துகொண்டிருகிறது"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "தட்டு இல்லை"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "தட்டு இருக்கிறது"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "அலங்கார அமைப்பு"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "திரைத்திறன்"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr "காட்சி புதுப்பிக்கும் விதத்தை படக்காட்சிக்கு ஏற்ப சரிசெய்"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "வெளியீடு தேதி"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "காட்டு 4:3 நிகழ்படங்கள்"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "விதங்கள்"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "பாணிகள்"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "பாடல்"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "இடைநேரம்"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "ஆல்பம் தேர்வு செய்க"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "தடங்கல்"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "விமரிசம்"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "புதுப்பி"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "ஆல்பம் தேடல்"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "சரி"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "ஒரு ஆல்பம்கூட காணவில்லை!"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "அனைத்தையும் தேர்வுசெய்"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "ஊடக தகவல் தேடல்"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "பதிவுசெய்"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "குலை"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "நீக்கு"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "தேடல்"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "தேடல்..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "ஒரு தகவல்கூட காணவில்லை!"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "திரைப்படம் தேர்வு செய்க"
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "வினவல் %s தகவல்"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "திரைப்பட விவரங்கள் ஏற்றபடுகின்றது"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "வலை இடைமுகம்"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "குறிக்குழு"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "வெளிவரை"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "வாக்குகள்"
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "நடித்துள்ளவர்கள்"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "கதைச்சுருக்கம்"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "வாசி"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "அடுத்து"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "முந்தையது"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "பயன்படுத்துவோர் இடைமுக அளவுத்திருத்தம்..."
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "நிகழ்பட அளவுத்திருத்தம்..."
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "மென்மையாக்கு"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "பெரிதாக்கு அளவு"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "படப்புள்ளி விகிதம்"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD இயக்கி"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "வட்டினை உள்ளே அனுப்பவும்"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "தொலை பகிர்ப்பு"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "பிணையம் செயற்படுத்தப்படவில்லை"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "இரத்துக"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "வேகம்"
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "செங்குத்தாக நகற்று"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "உருவகைகளை  சரிபார்க்கவும்"
+
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "கேட்பொலி தட்டு தடங்கல் பெயரினை freedb.org இருந்து தேடவும்"
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "கலைத்த பட்டியலை ஏற்றவும்"
+
+msgctxt "#229"
+msgid "HDD spindown time"
+msgstr "HDD இயக்கநிருத்தபடும் நேரம்"
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "நிகழ்பட வடிகட்டிகள்"
+
+msgctxt "#231"
+msgid "None"
+msgstr "எதுவுமில்லை"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "குறி"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "நேராக"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "அனைசோத்ரோபிக்கு"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Quincunx"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "காசியன் கனசதுரம்"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "சுருக்கிப்பிடி"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "பெரிதாக்குதல்"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "முடியும்போது பட்டியலை நீக்கு"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "காட்சி முறை"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "முழுத்திரை #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "சாளரமாக்கு"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "புதுப்பிக்கும் வீதம்"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "முழுத்திரை"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "அளவு: (%i,%i)->(%i,%i) (பெரிதாக்கு x%2.2f) AR:%2.2f:1 (படப்புள்ளி: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "வாய்ப்பாடுகள்"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "மொழி"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "இசை"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "காட்சியாளிப்பு"
+
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "சேருமிடத்தை தேர்வு செய்"
+
+msgctxt "#252"
+msgid "Output stereo to all speakers"
+msgstr "ஸ்டீரியோ முறையில் அணைத்து ஒலிபெருக்கிக்கு அனுப்பவும்"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "தடங்களின் எண்ணிக்கை"
+
+msgctxt "#254"
+msgid "- DTS capable receiver"
+msgstr "- DTS ஆற்றல் பெறுநர்"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "தட்டு தகவல்கள் இட்டுவரப்படுகின்றன"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "பிழை"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "குறிக்குழு படித்தலை செயல்படுத்து"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "திறக்கபடுகின்றது"
+
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "ஷாஉட்டுகாசுட்டு"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "தொடக்கத்திருக்கு காத்திருக்கிறது"
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "வாய்ப்பாடுகளின் வெளியீடு"
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "XBMC கட்டுபாட்டை HTTP வழியாக கொடுத்தல்"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "பதிவுசெய்"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "பதிவுசெய்வதை நிறுத்து"
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "வரிசைபடுத்து : தடம்படி"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "வரிசைபடுத்து : நேரம்படி"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "வரிசைபடுத்து : தலைப்புபடி"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "வரிசைபடுத்து : கலைஞர்படி"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "வரிசைபடுத்து : ஆல்பம்படி"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "உச்சி 100"
+
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "மேல்-இடது ஓவர் ஸ்கேன் பிரதி"
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "கீழ்-வலது ஓவர் ஸ்கேன் பிரதி"
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "துணைத்தலைப்பு இடநிலைப்படுத்தல்"
+
+msgctxt "#275"
+msgid "Pixel ratio adjustment"
+msgstr "படப்புள்ளிகளின் விகிதம் சரிசெய்தல்"
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "ஓவர் ஸ்கேன் எண்ணிகையை சரிசெய்ய அம்புக்குறியை அழுத்தவும்"
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "துணைத்தலைப்பு நிலையை சரிசெய்ய பட்டையை நகர்த்தவும்"
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "நீள்சதுரத்தை சரிசெய்து முற்றிலும் சதுரமாக மாற்றவும்"
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "அமைப்புக்கள் ஏற்று செய்ய இயலவில்லை"
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "இயல்பு அமைப்புகள் உபயோகிக்கபடுகின்றன"
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "தயவுகூர்ந்து XML கோப்புகளை சரிபார்க்கவும்"
+
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "%i உருப்படிகள் கண்டுபிடிக்கபட்டுள்ளன"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "தேடுதல் முடிவுகள்"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "ஏதும் கண்டுபிடிக்கபடவில்லை "
+
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "விரும்பிய கேட்பொலி மொழி"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "விரும்பிய துணைத்தலைப்பு மொழி"
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "துணைத்தலைப்பு"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "எழுத்துரு"
+
+msgctxt "#289"
+msgid "- Size"
+msgstr "- அளவு"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr "இயங்குநிலை கோண சுருக்கம்"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "படக்காட்சி"
+
+msgctxt "#292"
+msgid "Audio"
+msgstr "கேட்பொலி"
+
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "துனைதளைப்புகாக உலாவு"
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "புதிய அடையாளக்குறி"
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "அடையாளக்குறியை நீக்கு"
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "கேட்பொலி எதிரீடு"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "அடையாளக்குறிகள்"
+
+msgctxt "#299"
+msgid "- AAC capable receiver"
+msgstr "- AAC ஆற்றல் பெறுனர்"
+
+msgctxt "#300"
+msgid "- MP1 capable receiver"
+msgstr "- MP1 ஆற்றல் பெறுனர்"
+
+msgctxt "#301"
+msgid "- MP2 capable receiver"
+msgstr "- MP2 ஆற்றல் பெறுனர்"
+
+msgctxt "#302"
+msgid "- MP3 capable receiver"
+msgstr "- MP3 ஆற்றல் பெறுனர்"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "காலங்கடத்துதல்"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "மொழி"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "செயல்படுத்தபட்டுள்ளது"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "கலக்கபடாதது"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "மூல ஒலிப்பேழையின் மொழி"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "பயனர் இடைமுகப்பு மொழி"
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=தானாக)"
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "தரவுத்தளம் சுத்தபடுத்தல்"
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "தயார்படுத்தபடுகிறது "
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "தரவுத்தளம் பிழை"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "பாடல்கள் தேடப்படுகின்றது..."
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "தரவுத்தளம் சுத்தபடுத்தபட்டுள்ளது"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "பாடல்கள் சுத்தபடுத்தல்..."
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "பாடல்கள் சுத்தபடுத்துதலில் பிழை..."
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "கலைஞர்கள் சுத்தபடுத்தல்"
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "கலைஞர்கள் சுத்தபடுத்துதலில் பிழை..."
+
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "பகுப்புகள் சுத்தபடுத்தல்"
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "பகுப்புகள் சுத்தபடுத்துதலில் பிழை..."
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "பாதை சுத்தபடுத்தல்"
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "பாதை சுத்தபடுத்துதலில் பிழை..."
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "ஆல்பம்கள் சுத்தபடுத்தல்"
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "ஆல்பம்கள் சுத்தபடுத்துதலில் பிழை..."
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "மாற்றங்கள் எழுதப்படுகின்றன..."
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "மாற்றங்கள் எழுதப்படுவதில் பிழை"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "இந்தசெயல் சிறிது நேரம் எடுக்கலாம்..."
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "தரவுத்தளம் சுருக்கப்படுகின்றது..."
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "தரவுத்தளம் சுருக்கப்படுவதில் பிழை"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "நூலகத்தை சுத்தம் செய்ய வேண்டுமா?"
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "நூலகம் சுத்தபடுத்தல்..."
+
+msgctxt "#335"
+msgid "Start"
+msgstr "தொடங்கு"
+
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "சட்டவிகிதம் மாற்றுதல்"
+
+msgctxt "#337"
+msgid "Audio output"
+msgstr "கேட்பொலி வெளியீடு"
+
+msgctxt "#338"
+msgid "Analog"
+msgstr "தொடர்முறை"
+
+msgctxt "#339"
+msgid "Optical/Coax"
+msgstr "ஆப்டிகல்/கோஆக்ஸ்"
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "பல்வேறு கலைஞர்கள்"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "தட்டை வாசிக்க துவக்கு "
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "திரைப்படங்கள்"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "சட்டவிகிதத்தை மாற்று"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "கலைஞர்கள்"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "ஆண்டு"
+
+msgctxt "#346"
+msgid "Boost volume level on downmix"
+msgstr "Downmix மீது ஒலியளவு அதிகரிக்கவும்"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD ஆற்றல் பெறுநர்"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Multichannel LPCM ஆற்றல் பெறுனர்"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD ஆற்றல் பெறுநர்"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "நிரல்கள்"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "மங்கு"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "கருப்பு"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "மேட்ரிக்ஸ் திரேயில்"
+
+msgctxt "#355"
+msgid "Screensaver time"
+msgstr "திரைக்காப்பு நேரம்"
+
+msgctxt "#356"
+msgid "Screensaver mode"
+msgstr "திரைக்காப்பு விதம்"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "செயல்பாட்டு நேரத்தை நிறுத்து"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "அனைத்து ஆல்பங்கள்"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "சமிபத்தில் சேர்க்கப்பட்ட ஆல்பம்"
+
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "திரைக்காப்பு"
+
+msgctxt "#361"
+msgid "R. Slideshow"
+msgstr "காட்சியளிக்கை"
+
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "திரைக்காப்பு மங்கு நிலை"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "வரிசைபடுத்து : கொப்புபடி"
+
+msgctxt "#364"
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Dolby Digital (AC3) ஆற்றல் பெறுனர்"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "வரிசைபடுத்து : பெயர்படி"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "வரிசைபடுத்து : வருடம்படி"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "வரிசைபடுத்து : தரம்படி"
+
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "தலைப்பு"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "புயல்"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "இருக்கலாம்"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "பெரும்பாலும் இருக்கலாம்"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "வெயில்"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "மேகமூட்டம்"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "பனிபொழிவு"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "மழை"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "வெளிச்சம்"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "காலை"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "மாலை"
+
+msgctxt "#380"
+msgid "Showers"
+msgstr "சாரல்"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "கொஞ்சம்"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "ஆங்காங்கே"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "காற்று"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "வலிமை"
+
+msgctxt "#385"
+msgid "Fair"
+msgstr "நடுவுநிலை"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "நீக்கு"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "மேகங்கள்"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "சீக்கிரமாக"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "சாரல்"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "பனிபொழிவு"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "குறைவு"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "மிதம்"
+
+msgctxt "#393"
+msgid "High"
+msgstr "அதிகம்"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "மூடுபனி"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "பனிப்படலம்"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "இருப்பிடம் தேர்வு செய்க"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "புதுப்பிக்கும் நேரம்"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "வெப்பநிலை அலகுகள்"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "வேக அலகுகள்"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "வானிலை"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "வெப்பநிலை"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "இருப்பதுபோல்"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "புற ஊதாக் கதிர் சுட்டி"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "காற்று"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "பனி புள்ளி"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "ஈரப்பதம்"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "இயல்புநிலை"
+
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "வானிலை சேவையை அணுகுகிறது..."
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr "வானிலை தகவல்கள் சேகரிப்பு :"
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "வானிலை தகவல்கள் பெறஇயலவில்லை"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "கைமுறை"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "ஆல்பத்திருக்கு விமர்சனம் ஏதுமில்லை"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "குறுபடம் பதிவிறக்கபடுகின்றது..."
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "கிடைக்கவில்லை"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "காட்சி : பெரிய சின்னங்கள்"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "குறைவு"
+
+msgctxt "#419"
+msgid "High"
+msgstr "அதிகம்"
+
+msgctxt "#420"
+msgid "HDMI"
+msgstr "HDMI"
+
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "ஆல்பம் தகவல்களை நீக்கு"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "தட்டு தகவல்கள் நீக்கு"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "தேர்வு செய்க"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "ஒரு ஆல்பம் தகவல் கூட காணவில்லை!"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "ஒரு தட்டு தகவல் கூட காணவில்லை!"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "வட்டு"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "சரியான குறுவட்டு / DVD நுழைக்கவும்"
+
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "தயவுகூர்ந்து பின்வரும் வட்டை நுழைக்கவும்"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "வரிசைபடுத்து : DVD#"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "தேக்ககமில்லை"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "நோலகத்திலிருந்து திரைப்படத்தை நீக்கு"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "நிச்சயமாக நிக்கவா '%s'?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "%s முதற்கொண்டு %i -இல் %s"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "நீக்ககூடிய வட்டு"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "கோப்பு திறக்கபடுகிறது"
+
+msgctxt "#439"
+msgid "Cache"
+msgstr "தேக்கு"
+
+msgctxt "#440"
+msgid "Harddisk"
+msgstr "நிலைவட்டு"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "குறும்பரப்புப் பிணையம்"
+
+msgctxt "#443"
+msgid "Internet"
+msgstr "இணையம்"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "நிகழ்படம்"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "கேட்பொலி"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "ஊடகத்தை தானியக்கு"
+
+msgctxt "#448"
+msgid "LCD"
+msgstr "LCD"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "செயல்படுத்தபட்டுள்ளது"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "நெடுவரிசைகள்"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "வரிசை 1 முகவரி"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "முகவரி வரிசை 2"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "முகவரி வரிசை 3"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "முகவரி வரிசை 4"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "வரிசைகள்"
+
+msgctxt "#456"
+msgid "Mode"
+msgstr "முறை"
+
+msgctxt "#457"
+msgid "Switch view"
+msgstr "பார்வை மாற்று"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "Subs"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "கேட்பொலி ஒலிப்பேழை"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[செயலில்]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "துணைத்தலைப்பு"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "பின்னொளி"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "ஒளிர்வு"
+
+msgctxt "#465"
+msgid "Contrast"
+msgstr "வேறுபாடு"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "காமா"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "வகை:"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "OSD நிலையை சரிசெய்ய பட்டையை நகர்த்தவும்"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "OSD நிலை"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "வரவுகள்"
+
+msgctxt "#471"
+msgid "Modchip"
+msgstr "Modchip"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "இசை மட்டுமே"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "இசை & வீடியோ"
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "பட்டியலை ஏற்று செய்ய இயலவில்லை"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "OSD"
+
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "அலங்காரம் & மொழி"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "தோற்றம்"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "கேட்பொலி விருப்பங்கள்"
+
+msgctxt "#482"
+msgid "About XBMC"
+msgstr "XBMC பற்றி"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "ஆல்பம் நீக்கு"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "திரும்பசெய்"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "ஒன்றை திரும்பசெய்"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "கோப்புறை திரும்பசெய்"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "தானாக அடுத்த பாடல் இசைத்திடு"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "- பெரிய சின்னங்கள் பயன்படுத்த"
+
+msgctxt "#492"
+msgid "Resize VobSubs"
+msgstr "VobSubs அளவை மாற்று"
+
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "கூடுதல் விருப்பங்கள் (வல்லுனர்கள் மட்டுமே!)"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "அளவுத்திருத்தம்"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "கோப்பு விரிவுகளை காட்டு"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "வரிசைபடுத்து : வகைப்படி"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "ஆல்பம் பெயர்க்காக காத்துகொண்டு இருக்கிறது ..."
+
+msgctxt "#502"
+msgid "Open"
+msgstr "திற"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "பணிமிகுதி"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "காலியான"
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "வரிசைபடுத்து : பயன்பாடுபடி"
+
+msgctxt "#510"
+msgid "Enable visualizations"
+msgstr "காட்சியாளிப்பு பயன்படுத்து"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "தொடக்க சாளரம்"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "முதன்மை சாளரம்"
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "கைமுறை அமைப்புகள்"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "பிரிவுகள்"
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "சமிபத்தில் வாசிக்கப்பட்ட ஆல்பம்"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "துவக்க"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "பட்டியலை தேர்வுசெய்"
+
+msgctxt "#535"
+msgid "List"
+msgstr "பட்டியல்"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "சின்னங்கள்"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "தலைப்பு"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "ஆண்டு"
+
+msgctxt "#563"
+msgid "Rating"
+msgstr "மதிப்பீடு"
+
+msgctxt "#564"
+msgid "Type"
+msgstr "வகை:"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "இயல்புநிலை"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "நாடு"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#593"
+msgid "All"
+msgstr "அனைத்தும்"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "மிதம்"
+
+msgctxt "#705"
+msgid "Network"
+msgstr "பிணையம்"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "கேட்பொலி வெளியீடு"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP முகவரி"
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "பயனர்பெயர்"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "இசை"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "படக்காட்சி"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "படங்கள்"
+
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டன"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "ஞாயிறு"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "புயல்"
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "மிதமான"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "சிறிய"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "நிரல்கள்"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "படங்கள்"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "கோப்பு மேலாளர்"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "அமைப்புக்கள்"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "இசை"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "நிகழ்படம்"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "வாய்ப்பாடுகள்"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "நிகழ்படம்"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "நிரல்கள்"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "அமைப்பு தகவல்கள்"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "வானிலை"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "திரைக்காப்பு"
+
+msgctxt "#13000"
+msgid "System"
+msgstr "கணிணி"
+
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டன"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டன"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டன"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "சேமிப்பகம்"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "இயல்புநிலை"
+
+msgctxt "#13279"
+msgid "Network"
+msgstr "பிணையம்"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "படக்காட்சி"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "குறுக்குவழிகள்"
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "இங்கிருந்து வாசி"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "பதிவிறக்கபடுகின்றது"
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "மிதம்"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "அதிகம்"
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "முடக்கப்பட்டன"
+
+msgctxt "#14036"
+msgid "Services"
+msgstr "சேவைகள்"
+
+msgctxt "#14086"
+msgid "Playback"
+msgstr "பின்னணி"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "வாசி"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "அடையாளச் சொல்"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "இயல்புநிலை அலங்கார அமைப்பு"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "பொதுவானவை"
+
+msgctxt "#16018"
+msgid "None"
+msgstr "எதுவுமில்லை"
+
+msgctxt "#16026"
+msgid "Playback failed"
+msgstr "பின்னணி தோற்றுவிட்டது"
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "நிறுத்து"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "சேனல்கள்"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV சேனல்கள்"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "வானொலி சேனல்கள்"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "அடுத்து"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "எச்சரிக்கை"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "சேனல் கிடைக்கவில்லை"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "குழுக்கள்"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "பின்னணி"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "மொழி"
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "பயனர்பெயர்"
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "நிகழ்பட தகவல்கள்"
+
+msgctxt "#20334"
+msgid "Folder"
+msgstr "கோப்புறை"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "திரைப்படங்கள்"
+
+msgctxt "#20445"
+msgid "Fanart"
+msgstr "விசிறிபடம்"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "திற"
+
+msgctxt "#21387"
+msgid "Fast"
+msgstr "வேகமாக"
+
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "நிகழ்பட கோடெக் குறியாக்கி / விலக்கி"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "கேட்பொலி கோடெக் குறியாக்கி / விலக்கி"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "திரைத்திறன்"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "நாடு"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "எழுத்துரு"
+
+msgctxt "#22031"
+msgid "- Size"
+msgstr "- அளவு"
+
+msgctxt "#23054"
+msgid "Running"
+msgstr "ஓடிகொண்டிருக்கிறது"
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "திரைக்காப்பு"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "காட்சியாளிப்பு"
+
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "பாடல்வரிகள்"
+
+msgctxt "#24018"
+msgid "Services"
+msgstr "சேவைகள்"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "வானிலை"
+
+msgctxt "#33006"
+msgid "Today"
+msgstr "இன்று"
+
+msgctxt "#33030"
+msgid "Outlook"
+msgstr "கண்ணோட்டம்"
+
+msgctxt "#33037"
+msgid "Weekend"
+msgstr "வார இறுதி"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "விருப்பங்கள்"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "பின்னணி"
+
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "கோப்பு அடுக்கப்பட்டுள்ளது - வாசிக்கப்பட வேண்டியதை தேர்வு செய்க"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "இருப்பிடம்"

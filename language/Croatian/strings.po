@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -273,6 +272,26 @@ msgstr "SSZ"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Jug"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Sjever"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Zapad"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Istok"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Vrijednosti"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -636,7 +655,7 @@ msgstr "Skeniraj"
 
 msgctxt "#194"
 msgid "Searching..."
-msgstr "Pretraživanje..."
+msgstr "Pretražujem..."
 
 msgctxt "#195"
 msgid "No info found!"
@@ -812,7 +831,7 @@ msgstr "Osvježenje zaslona"
 
 msgctxt "#244"
 msgid "Full screen"
-msgstr "Puni zaslon"
+msgstr "Puni ekran"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
@@ -920,11 +939,11 @@ msgstr "Top 100"
 
 msgctxt "#272"
 msgid "Top-Left overscan compensation"
-msgstr "Gornja lijeva ivica ekrana"
+msgstr "Gornji lijevi rub zaslona"
 
 msgctxt "#273"
 msgid "Bottom-Right overscan compensation"
-msgstr "Donja desna ivica ekrana"
+msgstr "Donji desni rub zaslona"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
@@ -936,7 +955,7 @@ msgstr "Ugađanje omjera točke"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "Pomakni strelicu za izmjenu količine količine ekrana"
+msgstr "Pomakni strelicu za izmjenu veličine zaslona"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
@@ -2202,6 +2221,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "Sve pjesme od"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "TV emisija u tijeku "
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "Način prikaza"
@@ -2528,7 +2551,7 @@ msgstr "Dodaj programsku vezu"
 
 msgctxt "#755"
 msgid "Edit program path"
-msgstr "Uredi programsku putanju"
+msgstr "Uredi putanju do programa"
 
 msgctxt "#756"
 msgid "Edit program name"
@@ -2685,6 +2708,18 @@ msgstr "Maksimalan broj klijenta"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Internet pristup"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Osvježi zbirku"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Glazbena knjižnica treba ponovo skenirajte umjetnosti iz oznake"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Želite li skenirati sada?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3054,6 +3089,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Filter %s"
+
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "Prelagođeni audio uređaj"
@@ -3170,6 +3209,22 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "Malo"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "i"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "sa"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "iz"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Oblak"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Nepoznato"
@@ -3180,11 +3235,15 @@ msgstr "Padaline"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Postavi ekran \"na spavanje\" kada se ne koristi"
+msgstr "Postavi zaslon \"na spavanje\" kada se ne koristi"
 
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Trajanje"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Prazna lista"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3228,7 +3287,7 @@ msgstr "Video"
 
 msgctxt "#10007"
 msgid "System information"
-msgstr "Sistemske informacije"
+msgstr "Informacije sustava"
 
 msgctxt "#10008"
 msgid "Settings - General"
@@ -3236,7 +3295,7 @@ msgstr "Postavke->Općenito"
 
 msgctxt "#10009"
 msgid "Settings - Screen"
-msgstr "Postavke->Ekran"
+msgstr "Postavke - Ekran"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
@@ -3244,7 +3303,7 @@ msgstr "Postavke - Izgled - GUI Kalibracija"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
-msgstr "Postavke - Video - Kalibracija Ekrana"
+msgstr "Postavke - Video - Kalibracija ekrana"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
@@ -3264,7 +3323,7 @@ msgstr "Postavke - Glazba"
 
 msgctxt "#10016"
 msgid "Settings - System"
-msgstr "Postavke - Sistem"
+msgstr "Postavke - Sustava"
 
 msgctxt "#10017"
 msgid "Settings - Videos"
@@ -3380,7 +3439,7 @@ msgstr "Ekstenzije"
 
 msgctxt "#10511"
 msgid "System info"
-msgstr "Sistem info"
+msgstr "Info sustava"
 
 msgctxt "#10516"
 msgid "Music - Library"
@@ -3440,11 +3499,11 @@ msgstr "Obnovi index..."
 
 msgctxt "#12010"
 msgid "Return to music window"
-msgstr "Vrati se na ekran glazbe"
+msgstr "Vrati se na zaslon glazbe"
 
 msgctxt "#12011"
 msgid "Return to videos window"
-msgstr "Vrati se na ekran video"
+msgstr "Vrati se na zaslon videa"
 
 msgctxt "#12021"
 msgid "Start from beginning"
@@ -3592,11 +3651,15 @@ msgstr "Premašen limit pokušaja za zaporku."
 
 msgctxt "#12347"
 msgid "The system will now shut off."
-msgstr "Sistem će se sada ugasiti."
+msgstr "Sustav će se sada isključiti."
 
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Stvar zaključana"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Process %s"
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3620,7 +3683,7 @@ msgstr "Glavni ključ"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Ugasi sistem kod prevelikog pokušaja upisa glavnog ključa"
+msgstr "Ugasi sustav kod prevelikog pokušaja upisa glavnog ključa"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
@@ -3664,7 +3727,7 @@ msgstr "Mjesec/Dan"
 
 msgctxt "#12390"
 msgid "System uptime"
-msgstr "Sistem pokrenut"
+msgstr "Sustav pokrenut"
 
 msgctxt "#12391"
 msgid "Minutes"
@@ -3684,7 +3747,7 @@ msgstr "Totalno pokrenut"
 
 msgctxt "#12395"
 msgid "Battery level"
-msgstr "Razina Baterije"
+msgstr "Razina baterije"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -3696,11 +3759,11 @@ msgstr "Čuvar zaslona"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
-msgstr "OSD Puni zaslon"
+msgstr "OSD puni zaslon"
 
 msgctxt "#13000"
 msgid "System"
-msgstr "Sistem"
+msgstr "Sustav"
 
 msgctxt "#13001"
 msgid "Immediate HD spindown"
@@ -3757,6 +3820,14 @@ msgstr "Radnja gumba za paljenje"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "Ugasi sustav"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Spriječite gašenje pri mirovanju"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Dopustite gašenje pri mirovanju"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3868,7 +3939,7 @@ msgstr "VDPAU Studio level color conversion"
 
 msgctxt "#13130"
 msgid "Blank other displays"
-msgstr "Zacrni ostale ekrane"
+msgstr "Zacrni ostale zaslone"
 
 msgctxt "#13131"
 msgid "Disabled"
@@ -3876,7 +3947,7 @@ msgstr "Onemogućeno"
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr "Zacrni ekrane"
+msgstr "Zacrni zaslon"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -4048,7 +4119,7 @@ msgstr "Hardvare"
 
 msgctxt "#13283"
 msgid "Operating system:"
-msgstr "Operativni sistem:"
+msgstr "Operativni sustav:"
 
 msgctxt "#13284"
 msgid "CPU speed:"
@@ -4120,7 +4191,7 @@ msgstr "Shema imenovanja pjesama"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
-msgstr "Da li želite ponovo pokrenuti sistem"
+msgstr "Da li želite ponovo pokrenuti sustav"
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
@@ -4224,7 +4295,7 @@ msgstr "Pomakni dolje"
 
 msgctxt "#13334"
 msgid "Edit label"
-msgstr "Uredi oznaku"
+msgstr "Uredi natpis"
 
 msgctxt "#13335"
 msgid "Make default"
@@ -5080,7 +5151,7 @@ msgstr "Dostavi pjesme na Last.FM"
 
 msgctxt "#15202"
 msgid "Last.fm username"
-msgstr "Last.FM Korisničko Ime"
+msgstr "Last.FM korisničko Ime"
 
 msgctxt "#15203"
 msgid "Last.fm password"
@@ -5674,6 +5745,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Softverski stopljen"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - ION optimizacija"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -5698,13 +5773,69 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Prebaci na kanal"
 
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Odvojite riječi za pretraživanje pomoću I, ILI i / ili NE."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "ili koristite fraze za  točno podudaranje, poput \"Čarobnjak iz Oza\"."
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Uvoz EPG od klijenata"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR tok informacija"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Prijamni uređaj"
+
 msgctxt "#19007"
 msgid "Device status"
 msgstr "Status uređaja"
 
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Kvaliteta signala"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Povratak na kraj"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Slobodni"
+
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Fiksni"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Šifriranje"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR Povratak na kraj %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV snimanje"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
@@ -5734,33 +5865,117 @@ msgctxt "#19024"
 msgid "Radio channels"
 msgstr "Radio kanali"
 
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Nadolazeće snimke"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Dodaj tajmer..."
+
 msgctxt "#19027"
 msgid "No search results"
 msgstr "Nema rezultata pretraživanja"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Nema EPG unosa"
 
 msgctxt "#19029"
 msgid "Channel"
 msgstr "Kanal"
 
+msgctxt "#19030"
+msgid "Now"
+msgstr "Sad"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Slijedeći"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Kronologija"
 
 msgctxt "#19033"
 msgid "Information"
 msgstr "Obavjesti"
 
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Već je započeto snimanje na ovom kanalu"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Ovaj kanal ne može se pokrenuti. Provjerite zapisnik za detalje."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Ova se snimka ne može pokrenuti. Provjerite zapisnik za detalje."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Prikaži signal kvalitete"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "Ne podržava PVR pozadinu."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Jeste li sigurni da želite sakriti ovaj program?"
+
 msgctxt "#19040"
 msgid "Timer"
 msgstr "Tajmer"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Jeste li sigurni da želite preimenovati snimku?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Jeste li sigurni da želite preimenovati ovaj timer?"
 
 msgctxt "#19043"
 msgid "Recording"
 msgstr "Snimanje"
 
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Provjerite konfiguraciju ili provjeriti zapisnik za detalje."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "Nema PVR klijentajoš. Pričekajte PVR klijente da se pokrenu ili provjeriti zapisnik za detalje."
+
 msgctxt "#19046"
 msgid "New channel"
 msgstr "Novi kanal"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Program info"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Grupa za upravljanje"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Prikaži kanal"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Prikaži vidljive kanale"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Prikaži skrivene kanale"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Premjesti program u:"
 
 msgctxt "#19053"
 msgid "Recording information"
@@ -5774,9 +5989,77 @@ msgctxt "#19055"
 msgid "No information available"
 msgstr "Informacija nije dostupna"
 
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Novi tajmer"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Uredi tajmer"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Omogući tajmer"
+
 msgctxt "#19059"
 msgid "Stop recording"
 msgstr "Zaustavi snimanje"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Obriši tajmer"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Dodaj tajmer"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Uredi po: Kanalima"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Idi na početak"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Idi na kraj"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Zadani EPG prozor"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Ovaj događaj već se snima."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Snimka ne može biti izbrisana. Provjerite log za detalje."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "EPG ažuriranje u intervalima"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Ne izlažite EPG u bazi podataka"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Prekidač kašnjenja kanala "
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktivnost:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Ime:"
 
 msgctxt "#19076"
 msgid "Folder:"
@@ -5806,6 +6089,18 @@ msgctxt "#19082"
 msgid "Priority:"
 msgstr "Prioritet:"
 
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Životni vijek (dana):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Prvi dan:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Nepoznati program %u"
+
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
 msgstr "Pon-__-__-__-__-__-__"
@@ -5834,13 +6129,189 @@ msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
 msgstr "__-__-__-__-__-__-Ned"
 
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Pon-Uto-Sri-Čet-Pet-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Pon-Uto-Sri-Čet-Pet-Sub-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Pon-Uto-Sri-Čet-Pet-Sub-Ned"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Sub-Ned"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Upišite ime za snimku"
+
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Upozorenje"
 
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Molimo prebaciti na drugi kanal."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Unesite naziv mape za snimanje"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Sljedeći vremenski brojač uključen"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "na"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Ne mogu spremiti vremenski brojač. Provjerite zapisnik za detalje."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Pojavila se neočekivana pogreška. Pokušajte ponovno kasnije ili pogledajte zapisnik za detalje."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR pozadinska pogreška. Provjerite zapisnik za detalje."
+
 msgctxt "#19114"
 msgid "Version"
 msgstr "Verzija"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adresa"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Veličina diska"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Traži kanale"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Ne mogu koristiti PVR funkcije, dok pretražujem"
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Sa kojeg servera želite pretraživati?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Broj klijenta"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Izbjegni ponavljanja"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Ovaj brojač još uvijek snima. Jeste li sigurni da želite izbrisati ovaj brojač?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Samo besplatni Kanali"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Zanemari prisutne Brojače"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Zanemari prisutni Snimač"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Vrijeme početka"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Vrijeme završetka"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Datum početka"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Datum završetka"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Minimalno trajanje"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Maksimalno trajanje"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Uključi nepoznate žanrova"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Traži niz"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Uključite opis"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Slučaj osjetljivi"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanal nije dostupan"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Grupa nije definirana"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Molimo kreirajte grupu prvo"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Ime nove grupe"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grupa"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Traži vodič"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Grupa za upravljanje"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Grupa nije definirana"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Grupe"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupe"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR pozadinska pogreška. Provjerite zapisnik za detalje."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -5874,13 +6345,93 @@ msgctxt "#19155"
 msgid "Su"
 msgstr "Ned"
 
+msgctxt "#19156"
+msgid "from"
+msgstr "šalje"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Sljedeće snimanje "
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Trenutno snimanje"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "šalje"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "prima"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Snimanje aktivno"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Snimke"
 
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Ne mogu pokrenuti snimanje. Provjerite zapisnik za detalje."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Zamjeni"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR informacije"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Skeniranje za nestalim ikonama"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Sakrij okvir informacija od videa"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Istek vremena kada počinje reprodukcija"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Početak reprodukcije minimiziran"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Trajanje snimanja Instant"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Zadani prioritet snimanja"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Zadano vrijeme snimanja"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Margina na početku snimanja"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Margina na kraju snimanja"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Reprodukcija"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Prikaži informacije kanala pri mijenjanju kanala"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Automatski sakrij informacije kanala"
 
 msgctxt "#19180"
 msgid "TV"
@@ -5889,6 +6440,30 @@ msgstr "TV"
 msgctxt "#19181"
 msgid "Menu/OSD"
 msgstr "Izbornik/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Dane prikazati u EPG-u"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr " Trajanje informacija Kanala"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Reset baze podataka PVR-a"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Svi podaci u bazi podataka PVR-a se brišu"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Reset  EPG  podatke"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Minimiziraj"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -5914,6 +6489,18 @@ msgctxt "#19204"
 msgid "New channel"
 msgstr "Novi kanal"
 
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Grupa za upravljanje"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Klijent"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Obriši kanal"
+
 msgctxt "#19216"
 msgid "All radio channels"
 msgstr "Svi radio kanali"
@@ -5921,6 +6508,10 @@ msgstr "Svi radio kanali"
 msgctxt "#19217"
 msgid "All TV channels"
 msgstr "Svi TV kanali"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -5930,9 +6521,121 @@ msgctxt "#19256"
 msgid "Stop recording"
 msgstr "Zaustavi snimanje"
 
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Roditeljski Nadzor"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Promjeni PIN"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Neispravan PIN"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Krimić"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komedija"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romansa"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentarni"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Nogomet"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tenis/Squash"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Timski Sportovi"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Atletika"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motor Sport"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Vodeni Sportovi"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Zimski Sportovi"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rock/Pop"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Balet"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Religija"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Književnost"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Moda"
+
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Odaberi jezike"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Kuhanje"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Vrtlarstvo"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Orginalni Jezik"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Krimić"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komedija"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romansa"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Odrasli"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5952,7 +6655,7 @@ msgstr "Mapa Trainera"
 
 msgctxt "#20004"
 msgid "Screenshot folder"
-msgstr "Mapa ssnimke zaslona"
+msgstr "Mapa snimke zaslona"
 
 msgctxt "#20006"
 msgid "Playlists folder"
@@ -5964,7 +6667,7 @@ msgstr "Snimke"
 
 msgctxt "#20008"
 msgid "Screenshots"
-msgstr "Screenshots"
+msgstr "Snimke zaslona"
 
 msgctxt "#20009"
 msgid "Use XBMC"
@@ -6152,7 +6855,7 @@ msgstr "Ne mogu stvoriti mapu"
 
 msgctxt "#20070"
 msgid "Profile directory"
-msgstr "Profil direktorija"
+msgstr "Profil mape"
 
 msgctxt "#20071"
 msgid "Start with fresh media sources"
@@ -6172,11 +6875,11 @@ msgstr "MPAA Ocjena:"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
-msgstr "Upiši Glavni kod ključa"
+msgstr "Upiši glavni kod ključa"
 
 msgctxt "#20076"
 msgid "Ask for master lock code on startup"
-msgstr "Pitaj za Glavni kod ključa pri početku"
+msgstr "Pitaj za glavni kod ključa pri početku"
 
 msgctxt "#20077"
 msgid "Skin settings"
@@ -6212,7 +6915,7 @@ msgstr "Prikaži info o vremenskoj prognozi"
 
 msgctxt "#20085"
 msgid "Show system info"
-msgstr "Prikaži info o sistemu"
+msgstr "Prikaži info o sustavu"
 
 msgctxt "#20086"
 msgid "Show available disc space C: E: F:"
@@ -6276,7 +6979,7 @@ msgstr "Glavni kod ključa i postavke"
 
 msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
-msgstr "Upisivanje glavnog ključa uvijek omogućuje Glavni način rada"
+msgstr "Upisivanje glavnog ključa uvijek omogućuje glavni način rada"
 
 msgctxt "#20102"
 msgid "or copy from default?"
@@ -6336,7 +7039,7 @@ msgstr "Korisnička prijava / Odaberi profil"
 
 msgctxt "#20116"
 msgid "Use lock on login screen"
-msgstr "Koristi ključ pri zaslonu prijave"
+msgstr "Koristi ključ za prijavu"
 
 msgctxt "#20117"
 msgid "Invalid lock code."
@@ -6344,7 +7047,7 @@ msgstr "Nevaljan kod ključa."
 
 msgctxt "#20118"
 msgid "This requires the master lock to be set."
-msgstr "Ovo zahtjeva postavku Glavnog ključa."
+msgstr "Ovo zahtjeva postavku glavnog ključa."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
@@ -6420,7 +7123,7 @@ msgstr "Memorijska jedinica ubačena"
 
 msgctxt "#20138"
 msgid "Unable to mount memory unit"
-msgstr "Ne mogu ubaciti memorijsku Jedinicu"
+msgstr "Ne mogu ubaciti memorijsku jedinicu"
 
 msgctxt "#20139"
 msgid "In port %i, slot %i"
@@ -6662,6 +7365,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Preuzimanje info izvođača neuspio"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android muzika"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android video"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android slika"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Android foto"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Android Aplikacija"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Party on! (videa)"
@@ -6700,7 +7423,7 @@ msgstr "MythTV korisnik"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
-msgstr "Network Filesystem (NFS)"
+msgstr "Mrežni datotečni sustav (NFS)"
 
 msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
@@ -7184,7 +7907,7 @@ msgstr "Izvezi sličice i fanart?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
-msgstr "Memorirati preko starih datoteka?"
+msgstr "Prepisati preko starih datoteka?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
@@ -7286,6 +8009,22 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Grupiraj filmove u setove"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Oznake"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Dodaj %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Ukloni %s"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Obilježi %s"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Prikaži skrivene datoteke i mape"
@@ -7328,7 +8067,7 @@ msgstr "Dijeli video i glazbene library-e putem UPnP-a"
 
 msgctxt "#21364"
 msgid "Edit media share"
-msgstr "Uredi dijeljenu mediu"
+msgstr "Uredi dijeljenje medija"
 
 msgctxt "#21365"
 msgid "Remove media share"
@@ -7348,7 +8087,7 @@ msgstr "Prepiši preko ASS/SSA podnapis fontova"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
-msgstr "Uključi miš"
+msgstr "Uključi miša i podršku dodirnog ekrana"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -7380,7 +8119,7 @@ msgstr "Letterbox"
 
 msgctxt "#21377"
 msgid "Widescreen"
-msgstr "Široki Zaslon"
+msgstr "Široki ekran"
 
 msgctxt "#21378"
 msgid "Enable 480p"
@@ -7596,7 +8335,7 @@ msgstr "silazno"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
-msgstr "Uredi pametnu Listu izvedbi"
+msgstr "Uredi pametnu listu izvedbi"
 
 msgctxt "#21433"
 msgid "Name of the playlist"
@@ -7680,7 +8419,7 @@ msgstr "Nabavi Više..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
-msgstr "Root filesystem"
+msgstr "Root datotečni sustav"
 
 msgctxt "#21454"
 msgid "Cache full"
@@ -7689,6 +8428,10 @@ msgstr "Predmemorija puna"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Predmemorija se popunjava prije nego što dosegne potrebnu količinu za kontinuirano reproduciranje"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Vanjska memorija"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7713,6 +8456,18 @@ msgstr "Na vrhu videa"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Iznad videa"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f to %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d to %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s to %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -8068,7 +8823,7 @@ msgstr "Profil podaci"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Zatamni ekran ako je pauzirana video reprodukcija"
+msgstr "Zatamni zaslon ako je pauzirana video reprodukcija"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -8290,9 +9045,13 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Usluge"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR client"
+
 msgctxt "#24020"
 msgid "Configure"
-msgstr "Podesi"
+msgstr "Konfiguriraj"
 
 msgctxt "#24021"
 msgid "Disable"
@@ -8728,7 +9487,7 @@ msgstr "Upozorenja"
 
 msgctxt "#33051"
 msgid "Choose Your"
-msgstr "Odaberite Vaš"
+msgstr "Odaberite vaš"
 
 msgctxt "#33052"
 msgid "Check"
@@ -8736,7 +9495,7 @@ msgstr "Provjeri"
 
 msgctxt "#33053"
 msgid "Configure the"
-msgstr "Podesi"
+msgstr "Konfiguriraj"
 
 msgctxt "#33054"
 msgid "Seasons"
@@ -8760,7 +9519,7 @@ msgstr "Pregledaj svoje"
 
 msgctxt "#33059"
 msgid "Configure the"
-msgstr "Podesi"
+msgstr "Konfiguriraj"
 
 msgctxt "#33060"
 msgid "Power"
@@ -8784,7 +9543,7 @@ msgstr "Urednik"
 
 msgctxt "#33066"
 msgid "About your"
-msgstr "O vašoj"
+msgstr "O vama"
 
 msgctxt "#33067"
 msgid "Star rating"
@@ -9050,6 +9809,10 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Ne koristi prilagođenu mapu tipki za ovaj uređaj"
 
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Onemogući joystik kada je uređaj prisutan"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokacija"
@@ -9118,6 +9881,10 @@ msgctxt "#36016"
 msgid "Connected"
 msgstr "Spojen"
 
+msgctxt "#36017"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "Ne mogu pokrenuti CEC adapter: libCEC nije pronađen na vašem sustavu."
+
 msgctxt "#36018"
 msgid "Use the TV's language setting"
 msgstr "Koristi jezične postavke TV-a"
@@ -9150,6 +9917,14 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Pošaljite \"neaktivan izvor' naredbu kod zaustavljanja XBMC-a"
 
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Ignoriraj"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Ovaj korisnik nema ovlasti za otvaranje CEC adaptera"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "Uvijek"
@@ -9157,3 +9932,7 @@ msgstr "Uvijek"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Stavka mapa"
