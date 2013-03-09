@@ -90,6 +90,12 @@ public:
   const CStdString& GetUrlWithoutOptions() const;
   /* END PLEX */
 
+  void GetProtocolOptions(std::map<CStdString, CStdString> &options) const;
+  bool HasProtocolOption(const CStdString &key) const;
+  bool GetProtocolOption(const CStdString &key, CStdString &value) const;
+  CStdString GetProtocolOption(const CStdString &key) const;
+  void SetProtocolOption(const CStdString &key, const CStdString &value);
+  void RemoveProtocolOption(const CStdString &key);
 
 protected:
   int m_iPort;
@@ -108,4 +114,6 @@ protected:
   /* PLEX */
   CStdString m_strWithoutOptions;
   /* END PLEX */
+
+  CUrlOptions m_protocolOptions;
 };
