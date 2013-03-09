@@ -885,10 +885,10 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
           {
             CLog::Log(LOGERROR, "%s::%s - error m_omx_image_fx.SetParameter(OMX_IndexParamPortDefinition) omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
           }
-          omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged);
+          omx_err = m_omx_image_fx.WaitForEvent(OMX_EventPortSettingsChanged);
           if(omx_err != OMX_ErrorNone)
           {
-             CLog::Log(LOGERROR, "%s::%s - error m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged) omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
+             CLog::Log(LOGERROR, "%s::%s - error m_omx_image_fx.WaitForEvent(OMX_EventPortSettingsChanged) omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
           }
           port_image.nPortIndex = m_omx_image_fx.GetOutputPort();
           omx_err = m_omx_image_fx.GetParameter(OMX_IndexParamPortDefinition, &port_image);
