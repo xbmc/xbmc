@@ -1094,33 +1094,41 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   NSArray *genres = [item objectForKey:@"genre"];
   if (genres && genres.count > 0)
     [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
-  NSString *thumb = [item objectForKey:@"thumb"];
-  if (thumb && thumb.length > 0)
+
+  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
   {
-    UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-    if (image)
+    NSString *thumb = [item objectForKey:@"thumb"];
+    if (thumb && thumb.length > 0)
     {
       MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
       if (mArt)
       {
-        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-        [mArt release];
+        UIImage *image = [UIImage imageWithContentsOfFile:thumb];
+        if (image)
+        {
+          MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+          if (mArt)
+          {
+            [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+            [mArt release];
+          }
+        }
       }
     }
+    // these proprity keys are ios5+ only
+    NSNumber *elapsed = [item objectForKey:@"elapsed"];
+    if (elapsed)
+      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    NSNumber *speed = [item objectForKey:@"speed"];
+    if (speed)
+      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+    NSNumber *current = [item objectForKey:@"current"];
+    if (current)
+      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+    NSNumber *total = [item objectForKey:@"total"];
+    if (total)
+      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   }
-  // these proprity keys are ios5+ only
-  NSNumber *elapsed = [item objectForKey:@"elapsed"];
-  if (elapsed)
-    [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  NSNumber *speed = [item objectForKey:@"speed"];
-  if (speed)
-    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-  NSNumber *current = [item objectForKey:@"current"];
-  if (current)
-    [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-  NSNumber *total = [item objectForKey:@"total"];
-  if (total)
-    [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   /*
    other properities can be set:
    MPMediaItemPropertyAlbumTrackCount
@@ -1144,15 +1152,18 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)OnSpeedChanged:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
-  NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
-  NSNumber *elapsed = [item objectForKey:@"elapsed"];
-  if (elapsed)
-    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  NSNumber *speed = [item objectForKey:@"speed"];
-  if (speed)
-    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
+  {
+    NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
+    NSNumber *elapsed = [item objectForKey:@"elapsed"];
+    if (elapsed)
+      [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    NSNumber *speed = [item objectForKey:@"speed"];
+    if (speed)
+      [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
-  [self setIOSNowPlayingInfo:info];
+    [self setIOSNowPlayingInfo:info];
+  }
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
