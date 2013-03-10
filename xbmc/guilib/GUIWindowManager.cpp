@@ -782,26 +782,72 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0
 
 void CGUIWindowManager::DispatchThreadMessages()
 {
+  // This method only be called in the xbmc main thread.
+
+  // XXX: for more info of this method
+  //      check the pr here: https://github.com/xbmc/xbmc/pull/2253
+
+  // As a thread message queue service, it should follow these rules:
+  // 1. [Must] Thread safe, message can be pushed into queue in arbitrary thread context.
+  // 2. Messages [must] be processed in dispatch message thread context with the same
+  //    order as they be pushed into the queue.
+  // 3. Dispatch function [must] support call itself during message process procedure,
+  //    and do not break other rules listed here. to make it clear: in the
+  //    SendMessage(), it could start another xbmc main thread loop, calling
+  //    DispatchThreadMessages() in it's internal loop, this must be supported.
+  // 4. During DispatchThreadMessages() processing, any new pushed message [should] not
+  //    be processed by the current loop in DispatchThreadMessages(), prevent dead loop.
+  // 5. If possible, queued messages can be removed by certain filter condition
+  //    and not break above.
+
   CSingleLock lock(m_critSection);
-  vector< pair<CGUIMessage*,int> > messages(m_vecThreadMessages);
-  m_vecThreadMessages.erase(m_vecThreadMessages.begin(), m_vecThreadMessages.end());
-  lock.Leave();
 
-  while ( messages.size() > 0 )
+  for(int msgCount = m_vecThreadMessages.size(); m_vecThreadMessages.size() > 0 && msgCount > 0; --msgCount)
   {
-    vector< pair<CGUIMessage*,int> >::iterator it = messages.begin();
-    CGUIMessage* pMsg = it->first;
-    int window = it->second;
-    // first remove the message from the queue,
-    // else the message could be processed more then once
-    it = messages.erase(it);
+    // pop up one message per time to make messages be processed by order.
+    // this will ensure rule No.2 & No.3
+    CGUIMessage *pMsg = m_vecThreadMessages.front().first;
+    int window = m_vecThreadMessages.front().second;
+    m_vecThreadMessages.pop_front();
 
+    lock.Leave();
+
+    // XXX: during SendMessage(), there could be a deeper 'xbmc main loop' inited by e.g. doModal
+    //      which may loop there and callback to DispatchThreadMessages() multiple times.
     if (window)
       SendMessage( *pMsg, window );
     else
       SendMessage( *pMsg );
     delete pMsg;
+
+    lock.Enter();
   }
+}
+
+int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
+{
+  CSingleLock lock(m_critSection);
+  int removedMsgCount = 0;
+  for (std::list < std::pair<CGUIMessage*,int> >::iterator it = m_vecThreadMessages.begin();
+       it != m_vecThreadMessages.end();)
+  {
+    CGUIMessage *pMsg = it->first;
+    int *pMsgID;
+    for(pMsgID = pMessageIDList; *pMsgID != 0; ++pMsgID)
+      if (pMsg->GetMessage() == *pMsgID)
+        break;
+    if (*pMsgID)
+    {
+      it = m_vecThreadMessages.erase(it);
+      delete pMsg;
+      ++removedMsgCount;
+    }
+    else
+    {
+      ++it;
+    }
+  }
+  return removedMsgCount;
 }
 
 void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
