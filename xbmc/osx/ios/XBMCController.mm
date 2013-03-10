@@ -1083,9 +1083,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     NSString *thumb = [item objectForKey:@"thumb"];
     if (thumb && thumb.length > 0)
     {
-      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithContentsOfFile:thumb]];
-      [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-      [mArt release];
+      UIImage *image = [UIImage imageWithContentsOfFile:thumb];
+      if (image)
+      {
+        MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+        if (mArt)
+        {
+          [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+          [mArt release];
+        }
+      }
     }
     // these proprity keys are ios5+ only
     NSNumber *elapsed = [item objectForKey:@"elapsed"];
