@@ -346,9 +346,9 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   
   /* 
    According to upstream we should set buffer size first - so make sure it is always at least
-   double of period size to not get underruns
+   4x period size to not get underruns (some systems seem to have issues with only 2 periods)
   */
-  periodSize = std::min(periodSize, bufferSize / 2);
+  periodSize = std::min(periodSize, bufferSize / 4);
 
   CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: periodSize %lu, bufferSize %lu", periodSize, bufferSize);
 
