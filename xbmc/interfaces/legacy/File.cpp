@@ -26,7 +26,7 @@ namespace XBMCAddon
 
   namespace xbmcvfs
   {
-    XbmcCommons::Buffer File::read(unsigned long numBytes)
+    XbmcCommons::Buffer File::readBytes(unsigned long numBytes)
     {
       DelayedCallGuard dg(languageHook);
       int64_t size = file->GetLength();

@@ -58,7 +58,25 @@ namespace XBMCAddon
       /**
        * read(bytes)
        * 
-       * bytes : how many bytes to read [opt]- if not set it will read the whole fi
+       * bytes : how many bytes to read [opt]- if not set it will read the whole file
+       *
+       * returns: string
+       * 
+       * example:
+       *  f = xbmcvfs.File(file)
+       *  b = f.read()
+       *  f.close()
+       */
+      inline String read(unsigned long numBytes = 0) 
+      { 
+        XbmcCommons::Buffer b = readBytes(numBytes);
+        return b.getString(numBytes == 0 ? b.limit() : numBytes);
+      }
+
+      /**
+       * readBytes(numbytes)
+       * 
+       * numbytes : how many bytes to read [opt]- if not set it will read the whole file
        *
        * returns: bytearray
        * 
@@ -67,7 +85,7 @@ namespace XBMCAddon
        *  b = f.read()
        *  f.close()
        */
-      XbmcCommons::Buffer read(unsigned long numBytes = 0);
+      XbmcCommons::Buffer readBytes(unsigned long numBytes = 0);
 
       /**
        * write(buffer)
