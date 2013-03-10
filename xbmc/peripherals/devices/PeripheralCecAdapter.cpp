@@ -1184,19 +1184,6 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
   return 1;
 }
 
-bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
-{
-  if ((strLocation.Left(18).Equals("peripherals://cec/")) &&
-       strLocation.Right(4).Equals(".dev"))
-  {
-    strLocation = strLocation.Right(strLocation.length() - 18);
-    strLocation = strLocation.Left(strLocation.length() - 4);
-    return true;
-  }
-
-  return false;
-}
-
 void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configuration &config)
 {
   bool bChanged(false);

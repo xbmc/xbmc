@@ -134,8 +134,6 @@ namespace PERIPHERALS
     void Process(void);
     void ProcessVolumeChange(void);
     void SetMenuLanguage(const char *strLanguage);
-    static bool FindConfigLocation(CStdString &strString);
-    static bool TranslateComPort(CStdString &strPort);
 
     void ResetMembers(void);
 
