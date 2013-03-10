@@ -33,6 +33,7 @@
 #include "IMsgTargetCallback.h"
 #include "DirtyRegionTracker.h"
 #include "utils/GlobalsHandling.h"
+#include <list>
 
 class CGUIDialog;
 
@@ -120,6 +121,9 @@ public:
 
   void SendThreadMessage(CGUIMessage& message, int window = 0);
   void DispatchThreadMessages();
+  // method to removed queued messages with message id in the requested message id list.
+  // pMessageIDList: point to first integer of a 0 ends integer array.
+  int RemoveThreadMessageByMessageIds(int *pMessageIDList);
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
   int GetFocusedWindow() const;
@@ -164,7 +168,7 @@ private:
   std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
+  std::list < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CCriticalSection m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 
