@@ -55,7 +55,9 @@
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
 #include "DatabaseManager.h"
+#ifdef HAS_UPNP
 #include "network/upnp/UPnPSettings.h"
+#endif
 #include "utils/RssManager.h"
 
 using namespace std;
@@ -1428,7 +1430,9 @@ void CSettings::Clear()
   m_ResInfo.clear();
   m_Calibrations.clear();
 
+#ifdef HAS_UPNP
   CUPnPSettings::Get().Clear();
+#endif
   CRssManager::Get().Clear();
 }
 
