@@ -318,10 +318,20 @@ void CWinSystemEGL::UpdateResolutions()
   RESOLUTION_INFO resDesktop, curDisplay;
   std::vector<RESOLUTION_INFO> resolutions;
 
-  if (!m_egl->ProbeResolutions(resolutions) || !resolutions.size())
+  if (!m_egl->ProbeResolutions(resolutions) || resolutions.empty())
   {
-    CLog::Log(LOGERROR, "%s: Could not find any possible resolutions",__FUNCTION__);
-    return;
+    CLog::Log(LOGWARNING, "%s: ProbeResolutions failed. Trying safe default.",__FUNCTION__);
+
+    RESOLUTION_INFO fallback;
+    if (m_egl->GetPreferredResolution(&fallback))
+    {
+      resolutions.push_back(fallback);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "%s: Fatal Error, GetPreferredResolution failed",__FUNCTION__);
+      return;
+    }
   }
 
   /* ProbeResolutions includes already all resolutions.
