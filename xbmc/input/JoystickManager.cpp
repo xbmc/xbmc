@@ -33,9 +33,6 @@
 #include "input/windows/WINJoystickDX.h"
 #elif defined(TARGET_LINUX)
 #include "input/linux/LinuxJoystick.h"
-#if defined(HAS_SDL_JOYSTICK)
-#include "input/linux/LinuxJoystickSDL.h"
-#endif
 #endif // TARGET_LINUX
 
 
@@ -66,9 +63,6 @@ void CJoystickManager::Initialize()
   CJoystickDX::Initialize(m_joysticks);
 #elif defined(TARGET_LINUX)
   CLinuxJoystick::Initialize(m_joysticks);
-#if defined(HAS_SDL_JOYSTICK)
-  CLinuxJoystickSDL::Initialize(m_joysticks);
-#endif
 #endif // TARGET_LINUX
 
   while (m_joysticks.size() > JOY_ARRAY_LENGTH(m_states))
@@ -86,9 +80,6 @@ void CJoystickManager::DeInitialize()
   CJoystickDX::DeInitialize(m_joysticks);
 #elif defined(TARGET_LINUX)
   CLinuxJoystick::DeInitialize(m_joysticks);
-#if defined(HAS_SDL_JOYSTICK)
-  CLinuxJoystickSDL::DeInitialize(m_joysticks);
-#endif
 #endif // TARGET_LINUX
 
   for (unsigned int i = 0; i < JOY_ARRAY_LENGTH(m_states); i++)
