@@ -195,18 +195,13 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
 
 bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
 {
-  res->iWidth = 1280;
-  res->iHeight= 720;
-  res->fRefreshRate = 60;
-  res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-  res->iScreen       = 0;
-  res->bFullScreen   = true;
-  res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
-  res->iScreenWidth  = res->iWidth;
-  res->iScreenHeight = res->iHeight;
-  res->strMode.Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-     res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  // check display/mode, it gets defaulted at boot
+  if (!GetNativeResolution(res))
+  {
+    // punt to 720p if we get nothing
+    ModeToResolution("720p", res);
+  }
+
   return true;
 }
 
