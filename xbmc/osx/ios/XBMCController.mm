@@ -134,10 +134,14 @@ id objectFromVariant(const CVariant &data)
 void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
+  NSDictionary *dict = dictionaryFromVariantMap(data);
+  LOG(@"data: %@", dict.description);
   const std::string msg(message);
   if (msg == "OnPlay")
   {
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
+    NSDictionary *item = [dict valueForKey:@"item"];
+    NSDictionary *player = [dict valueForKey:@"player"];
+    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
     std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
     if (!thumb.empty())
     {
@@ -153,7 +157,6 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     double duration = g_application.GetTotalTime();
     if (duration > 0)
       [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithInt:g_application.GetPlaySpeed()] forKey:@"speed"];
     [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
     int current = g_playlistPlayer.GetCurrentSong();
     if (current >= 0)
@@ -174,22 +177,27 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
         [item setValue:genreArray forKey:@"genre"];
       }
     }
-    LOG(@"data: %@", item.description);
+    LOG(@"item: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+  }
+  else if (msg == "OnSpeedChanged")
+  {
+    NSDictionary *item = [dict valueForKey:@"item"];
+    NSDictionary *player = [dict valueForKey:@"player"];
+    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
+    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+    LOG(@"item: %@", item.description);
+    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
   }
   else if (msg == "OnPause")
   {
     CAEFactory::Suspend();
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
-    LOG(@"data: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
     CAEFactory::Suspend();
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
-    LOG(@"data: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
 }
 
@@ -241,6 +249,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 @synthesize m_screenIdx;
 @synthesize screensize;
 @synthesize m_networkAutoSuspendTimer;
+@synthesize nowPlayingInfo;
 //--------------------------------------------------------------
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {  
@@ -1053,78 +1062,97 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_glView stopAnimation];
 }
 //--------------------------------------------------------------
-- (void)onPlay:(NSDictionary *)item
+- (void)setIOSNowPlayingInfo:(NSDictionary *)info
 {
-  PRINT_SIGNATURE();
+  self.nowPlayingInfo = info;
   // MPNowPlayingInfoCenter is an ios5+ class, following code will work on ios5 even if compiled by xcode3
   Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
   if (NowPlayingInfoCenter)
-  {
-    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
+}
+//--------------------------------------------------------------
+- (void)onPlay:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
 
-    NSString *title = [item objectForKey:@"title"];
-    if (title && title.length > 0)
-      [dict setObject:title forKey:MPMediaItemPropertyTitle];
-    NSString *album = [item objectForKey:@"album"];
-    if (album && album.length > 0)
-      [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
-    NSArray *artists = [item objectForKey:@"artist"];
-    if (artists && artists.count > 0)
-      [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
-    NSNumber *track = [item objectForKey:@"track"];
-    if (track)
-      [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
-    NSNumber *duration = [item objectForKey:@"duration"];
-    if (duration)
-      [dict setObject:duration forKey:MPMediaItemPropertyPlaybackDuration];
-    NSArray *genres = [item objectForKey:@"genre"];
-    if (genres && genres.count > 0)
-      [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
-    NSString *thumb = [item objectForKey:@"thumb"];
-    if (thumb && thumb.length > 0)
+  NSString *title = [item objectForKey:@"title"];
+  if (title && title.length > 0)
+    [dict setObject:title forKey:MPMediaItemPropertyTitle];
+  NSString *album = [item objectForKey:@"album"];
+  if (album && album.length > 0)
+    [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
+  NSArray *artists = [item objectForKey:@"artist"];
+  if (artists && artists.count > 0)
+    [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
+  NSNumber *track = [item objectForKey:@"track"];
+  if (track)
+    [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
+  NSNumber *duration = [item objectForKey:@"duration"];
+  if (duration)
+    [dict setObject:duration forKey:MPMediaItemPropertyPlaybackDuration];
+  NSArray *genres = [item objectForKey:@"genre"];
+  if (genres && genres.count > 0)
+    [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
+  NSString *thumb = [item objectForKey:@"thumb"];
+  if (thumb && thumb.length > 0)
+  {
+    UIImage *image = [UIImage imageWithContentsOfFile:thumb];
+    if (image)
     {
-      UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-      if (image)
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+      if (mArt)
       {
-        MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-        if (mArt)
-        {
-          [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-          [mArt release];
-        }
+        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+        [mArt release];
       }
     }
-    // these proprity keys are ios5+ only
-    NSNumber *elapsed = [item objectForKey:@"elapsed"];
-    if (elapsed)
-      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-    NSNumber *speed = [item objectForKey:@"speed"];
-    if (speed)
-      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-    NSNumber *current = [item objectForKey:@"current"];
-    if (current)
-      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-    NSNumber *total = [item objectForKey:@"total"];
-    if (total)
-      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
-    /*
-     other properities can be set:
-     MPMediaItemPropertyAlbumTrackCount
-     MPMediaItemPropertyComposer
-     MPMediaItemPropertyDiscCount
-     MPMediaItemPropertyDiscNumber
-     MPMediaItemPropertyPersistentID
-
-     Additional metadata properties:
-     MPNowPlayingInfoPropertyChapterNumber;
-     MPNowPlayingInfoPropertyChapterCount;
-     */
-
-    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
-    [dict release];
   }
+  // these proprity keys are ios5+ only
+  NSNumber *elapsed = [item objectForKey:@"elapsed"];
+  if (elapsed)
+    [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  NSNumber *current = [item objectForKey:@"current"];
+  if (current)
+    [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+  NSNumber *total = [item objectForKey:@"total"];
+  if (total)
+    [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
+  /*
+   other properities can be set:
+   MPMediaItemPropertyAlbumTrackCount
+   MPMediaItemPropertyComposer
+   MPMediaItemPropertyDiscCount
+   MPMediaItemPropertyDiscNumber
+   MPMediaItemPropertyPersistentID
+
+   Additional metadata properties:
+   MPNowPlayingInfoPropertyChapterNumber;
+   MPNowPlayingInfoPropertyChapterCount;
+   */
+
+  [self setIOSNowPlayingInfo:dict];
+  [dict release];
+
   m_playbackState = IOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)OnSpeedChanged:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [item objectForKey:@"elapsed"];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+
+  [self setIOSNowPlayingInfo:info];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
@@ -1138,9 +1166,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)onStop:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
-  Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
-  if (NowPlayingInfoCenter)
-    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nil];
+  [self setIOSNowPlayingInfo:nil];
+
   m_playbackState = IOS_PLAYBACK_STOPPED;
   // delay set network auto suspend state in case we are switching playing item.
   [self rescheduleNetworkAutoSuspend];
