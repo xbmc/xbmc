@@ -235,6 +235,13 @@ namespace XbmcCommons
     inline Buffer& putString(const std::string& str) throw (BufferException) { size_t len = str.length() + 1; check(len); put(str.c_str(), len); return (*this); }
 
     inline std::string getString() throw (BufferException) { std::string ret((const char*)(buffer + mposition)); size_t len = ret.length() + 1; check(len); mposition += len; return ret; }
+    inline std::string getString(size_t length) throw (BufferException) 
+    { 
+      check(length); 
+      std::string ret((const char*)(buffer + mposition),length);
+      mposition += length;
+      return ret;
+    }
     inline char* getCharPointerDirect() throw (BufferException) { char* ret = (char*)(buffer + mposition); size_t len = strlen(ret) + 1; check(len); mposition += len; return ret; }
 
   };
