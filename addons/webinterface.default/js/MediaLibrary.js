@@ -126,25 +126,41 @@ MediaLibrary.prototype = {
     }
 
     var keys = {
-      8: "back",        // Back space
-      13: "ok",         // Enter
-      27: "home",       // Escape
-      32: "playpause",  // Space bar
-      37: "left",       // Left
-      38: "up",         // Up
-      39: "right",      // Right
-      40: "down",       // Down
-      107: "volumeup",  // +
-      109: "volumedown" // -
+      8: 'back',        // Back space
+      13: 'ok',         // Enter
+      27: 'home',       // Escape
+      32: 'playpause',  // Space bar
+      37: 'left',       // Left
+      38: 'up',         // Up
+      39: 'right',      // Right
+      40: 'down',       // Down
+      107: 'volumeup',  // +
+      109: 'volumedown' // -
     };
 
-    var key = keys[event.which];
+    var which = event.which;
+    var key = keys[which];
 
-    if (key) {
-      event.data = {
-        key: key
-      };
+    event.data = {
+      key: key
+    };
 
+    if (!key) {
+      event.data.key = 'text';
+
+      // Letters
+      if (which >= 65 && which <= 90) {
+        var offset = event.shiftKey ? 0 : 32;
+        event.data.text = String.fromCharCode(which + offset);
+      }
+
+      // Digits
+      if (which >= 96 && which <= 105) {
+        event.data.text = (which-96)+"";
+      }
+    }
+
+    if (event.data.key) {
       this.pressRemoteKey(event);
       return false;
     }
@@ -244,6 +260,13 @@ MediaLibrary.prototype = {
                 'volume': volume
               }
             });
+          }
+        });
+      case 'text':
+        return xbmc.rpc.request({
+          'method': 'Input.SendText',
+          'params': {
+            'text': event.data.text
           }
         });
     }
