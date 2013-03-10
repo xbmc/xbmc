@@ -84,7 +84,8 @@ namespace XBMCAddon
       {
         if (GetUserState() != CAPTURESTATE_DONE)
           throw RenderCaptureException("illegal user state");
-        return XbmcCommons::Buffer(this->GetPixels(), getWidth() * getHeight() * 4);
+        size_t size = getWidth() * getHeight() * 4;
+        return XbmcCommons::Buffer(this->GetPixels(), size).forward(size).flip();
       }
 
       /**
