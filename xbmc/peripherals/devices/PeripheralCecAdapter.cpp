@@ -448,33 +448,6 @@ void CPeripheralCecAdapter::SetAudioSystemConnected(bool bSetTo)
   m_bHasConnectedAudioSystem = bSetTo;
 }
 
-void CPeripheralCecAdapter::ScheduleVolumeUp(void)
-{
-  {
-    CSingleLock lock(m_critSection);
-    m_volumeChangeQueue.push(VOLUME_CHANGE_UP);
-  }
-  Sleep(5);
-}
-
-void CPeripheralCecAdapter::ScheduleVolumeDown(void)
-{
-  {
-    CSingleLock lock(m_critSection);
-    m_volumeChangeQueue.push(VOLUME_CHANGE_DOWN);
-  }
-  Sleep(5);
-}
-
-void CPeripheralCecAdapter::ScheduleMute(void)
-{
-  {
-    CSingleLock lock(m_critSection);
-    m_volumeChangeQueue.push(VOLUME_CHANGE_MUTE);
-  }
-  Sleep(5);
-}
-
 void CPeripheralCecAdapter::ProcessVolumeChange(void)
 {
   bool bSendRelease(false);
@@ -557,7 +530,7 @@ void CPeripheralCecAdapter::VolumeDown(void)
   }
 }
 
-void CPeripheralCecAdapter::Mute(void)
+void CPeripheralCecAdapter::ToggleMute(void)
 {
   if (HasConnectedAudioSystem())
   {

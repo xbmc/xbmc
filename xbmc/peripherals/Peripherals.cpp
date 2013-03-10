@@ -606,9 +606,9 @@ bool CPeripherals::OnAction(const CAction &action)
         if (cecDevice && cecDevice->HasConnectedAudioSystem())
         {
           if (action.GetID() == ACTION_VOLUME_UP)
-            cecDevice->ScheduleVolumeUp();
+            cecDevice->VolumeUp();
           else
-            cecDevice->ScheduleVolumeDown();
+            cecDevice->VolumeDown();
           return true;
         }
       }
@@ -644,7 +644,7 @@ bool CPeripherals::ToggleMute(void)
       CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
       if (cecDevice && cecDevice->HasConnectedAudioSystem())
       {
-        cecDevice->ScheduleMute();
+        cecDevice->ToggleMute();
         return true;
       }
     }

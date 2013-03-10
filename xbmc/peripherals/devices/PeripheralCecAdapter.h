@@ -92,12 +92,9 @@ namespace PERIPHERALS
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
     bool HasConnectedAudioSystem(void);
     void SetAudioSystemConnected(bool bSetTo);
-    void ScheduleVolumeUp(void);
     void VolumeUp(void);
-    void ScheduleVolumeDown(void);
     void VolumeDown(void);
-    void ScheduleMute(void);
-    void Mute(void);
+    void ToggleMute(void);
     bool IsMuted(void);
 
     void OnSettingChanged(const CStdString &strChangedSetting);
