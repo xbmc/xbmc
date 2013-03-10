@@ -211,7 +211,7 @@ void* CAndroidDyload::Open(const char * path)
     return handle;
   }
   bool checkSystem = IsSystemLib(path);
-  handle = Open_Internal(filename, checkSystem);
+  handle = Open_Internal(std::string(path), checkSystem);
   if (handle != NULL)
   {
     CSingleLock lock(m_depsLock);
@@ -271,7 +271,7 @@ void* CAndroidDyload::Open_Internal(string filename, bool checkSystem)
 
   recursivelibdep dep;
   dep.handle = handle;
-  dep.filename = filename;
+  dep.filename = filename.substr(filename.find_last_of('/') +1);
   m_lib.deps.push_back(dep);
 
   lib.refcount = 1;
