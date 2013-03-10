@@ -93,8 +93,18 @@ namespace XbmcCommons
      * Construct a buffer given an externally managed memory buffer.
      * The ownership of the buffer is assumed to be the code that called
      * this constructor, therefore the Buffer descrutor will not free it.
+     *
+     * The newly constructed buffer is considered empty and is ready to
+     * have data written into it.
+     *
+     * If you want to read from the buffer you just created, you can use:
+     *
+     * Buffer b = Buffer(buf,bufSize).forward(bufSize).flip();
      */
-    inline Buffer(void* buffer_, size_t bufferSize) : buffer((unsigned char*)buffer_), mcapacity(bufferSize) { clear(); }
+    inline Buffer(void* buffer_, size_t bufferSize) : buffer((unsigned char*)buffer_), mcapacity(bufferSize) 
+    {
+      clear();
+    }
 
     /**
      * Construct a buffer buffer using the size buffer provided. The
@@ -136,12 +146,13 @@ namespace XbmcCommons
       return *this;
     }
 
-    inline void allocate(size_t bufferSize)
+    inline Buffer& allocate(size_t bufferSize)
     {
       buffer = bufferSize ? new unsigned char[bufferSize] : NULL;
       bufferRef.reset(buffer);
       mcapacity = bufferSize;
-      clear();      
+      clear();
+      return *this;
     }
 
     /**
@@ -198,9 +209,9 @@ namespace XbmcCommons
 
     inline unsigned char* array() { return buffer; }
     inline unsigned char* curPosition() { return buffer + mposition; }
-    inline void setPosition(size_t position) { mposition = position; }
-    inline void forward(size_t positionIncrement) throw(BufferException)
-    { check(positionIncrement); mposition += positionIncrement; }
+    inline Buffer& setPosition(size_t position) { mposition = position; return *this; }
+    inline Buffer& forward(size_t positionIncrement) throw(BufferException)
+    { check(positionIncrement); mposition += positionIncrement; return *this; }
 
     inline size_t limit() const { return mlimit; }
     inline size_t capacity() const { return mcapacity; }
