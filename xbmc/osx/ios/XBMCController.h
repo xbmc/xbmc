@@ -55,6 +55,7 @@ typedef enum
   UIBackgroundTaskIdentifier m_bgTask;
   NSTimer *m_networkAutoSuspendTimer;
   IOSPlaybackState m_playbackState;
+  NSDictionary *nowPlayingInfo;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
@@ -63,6 +64,7 @@ typedef enum
 @property int  m_screenIdx;
 @property CGSize screensize;
 @property (nonatomic, retain) NSTimer *m_networkAutoSuspendTimer;
+@property (nonatomic, retain) NSDictionary *nowPlayingInfo;
 
 // message from which our instance is obtained
 - (void) pauseAnimation;
@@ -74,6 +76,7 @@ typedef enum
 - (void) becomeInactive;
 - (void) beginInterruption;
 - (void) endInterruption;
+- (void) setIOSNowPlayingInfo:(NSDictionary *)info;
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (void) initDisplayLink;
