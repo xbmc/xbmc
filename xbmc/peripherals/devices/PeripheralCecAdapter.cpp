@@ -88,6 +88,7 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanRes
 {
   ResetMembers();
   m_features.push_back(FEATURE_CEC);
+  m_strComPort = scanResult.m_strLocation;
 }
 
 CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
@@ -303,38 +304,6 @@ void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration &configura
   }
 }
 
-CStdString CPeripheralCecAdapter::GetComPort(void)
-{
-  CStdString strPort = GetSettingString("port");
-  if (strPort.IsEmpty())
-  {
-    strPort = m_strFileLocation;
-    cec_adapter deviceList[10];
-    TranslateComPort(strPort);
-    uint8_t iFound = m_cecAdapter->FindAdapters(deviceList, 10, strPort.c_str());
-
-    if (iFound <= 0)
-    {
-      CLog::Log(LOGWARNING, "%s - no CEC adapters found on %s", __FUNCTION__, strPort.c_str());
-      // display warning: couldn't set up com port
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36011));
-      strPort = "";
-    }
-    else
-    {
-      cec_adapter *dev = &deviceList[0];
-      if (iFound > 1)
-        CLog::Log(LOGDEBUG, "%s - multiple com ports found for device. taking the first one", __FUNCTION__);
-      else
-        CLog::Log(LOGDEBUG, "%s - autodetect com port '%s'", __FUNCTION__, dev->comm);
-
-      strPort = dev->comm;
-    }
-  }
-
-  return strPort;
-}
-
 bool CPeripheralCecAdapter::OpenConnection(void)
 {
   bool bIsOpen(false);
@@ -346,12 +315,8 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     return bIsOpen;
   }
   
-  CStdString strPort = GetComPort();
-  if (strPort.empty())
-    return bIsOpen;
-
   // open the CEC adapter
-  CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, strPort.c_str());
+  CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that we're busy
   CStdString strMessage;
@@ -362,7 +327,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   while (!m_bStop && !bIsOpen)
   {
-    if ((bIsOpen = m_cecAdapter->Open(strPort.c_str(), 10000)) == false)
+    if ((bIsOpen = m_cecAdapter->Open(m_strComPort.c_str(), 10000)) == false)
     {
       // display warning: couldn't initialise libCEC
       CLog::Log(LOGERROR, "%s - could not opening a connection to the CEC adapter", __FUNCTION__);

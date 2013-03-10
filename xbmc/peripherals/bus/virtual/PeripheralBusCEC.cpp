@@ -89,7 +89,7 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
     PeripheralScanResult result(m_type);
     result.m_iVendorId   = deviceList[iDevicePtr].iVendorId;
     result.m_iProductId  = deviceList[iDevicePtr].iProductId;
-    result.m_strLocation = deviceList[iDevicePtr].strComPath;
+    result.m_strLocation = deviceList[iDevicePtr].strComName;
     result.m_type        = PERIPHERAL_CEC;
 
     // override the bus type, so users don't have to reconfigure their adapters
