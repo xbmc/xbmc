@@ -375,7 +375,7 @@ using namespace XbmcThreads;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
-  : m_pPlayer(NULL)
+  : m_pPlayer()
   , m_itemCurrentFile(new CFileItem)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
@@ -3375,8 +3375,8 @@ void CApplication::Stop(int exitCode)
     if (m_pPlayer)
     {
       CLog::Log(LOGNOTICE, "stop player");
-      delete m_pPlayer;
-      m_pPlayer = NULL;
+      m_pPlayer->CloseFile();
+      m_pPlayer.reset();
     }
 
 #if HAS_FILESYTEM_DAAP
@@ -3904,8 +3904,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif            
             )) )
     {
-      delete m_pPlayer;
-      m_pPlayer = NULL;
+      m_pPlayer->CloseFile();
+      m_pPlayer.reset();
     }
     else
     {
@@ -3925,7 +3925,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = eNewCore;
-    m_pPlayer = CPlayerCoreFactory::Get().CreatePlayer(eNewCore, *this);
+    m_pPlayer.reset(CPlayerCoreFactory::Get().CreatePlayer(eNewCore, *this));
   }
 
   bool bResult;
@@ -3943,7 +3943,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // don't hold graphicscontext here since player
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
-    bResult = m_pPlayer->OpenFile(item, options);
+    // In busy dialog of OpenFile there's a chance to call another place delete the player
+    // e.g. another PlayFile call switch player.
+    // Here we use a holdPlace to keep the player not be deleted during OpenFile call
+    boost::shared_ptr<IPlayer> holdPlace(m_pPlayer);
+    // if holdPlace is the unique reference, the player need be deleted, return false.
+    bResult = m_pPlayer->OpenFile(item, options) && !holdPlace.unique();
   }
   else
   {
@@ -4815,8 +4820,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // reset any forced player
         m_eForcedNextPlayer = EPC_NONE;
 
-        delete m_pPlayer;
-        m_pPlayer = 0;
+        if (m_pPlayer)
+        {
+          m_pPlayer->CloseFile();
+          m_pPlayer.reset();
+        }
 
         // Reset playspeed
         m_iPlaySpeed = 1;
