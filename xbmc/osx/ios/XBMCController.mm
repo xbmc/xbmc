@@ -134,10 +134,14 @@ id objectFromVariant(const CVariant &data)
 void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
+  NSDictionary *dict = dictionaryFromVariantMap(data);
+  LOG(@"data: %@", dict.description);
   const std::string msg(message);
   if (msg == "OnPlay")
   {
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
+    NSDictionary *item = [dict valueForKey:@"item"];
+    NSDictionary *player = [dict valueForKey:@"player"];
+    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
     std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
     if (!thumb.empty())
     {
@@ -153,7 +157,6 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     double duration = g_application.GetTotalTime();
     if (duration > 0)
       [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithInt:g_application.GetPlaySpeed()] forKey:@"speed"];
     [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
     int current = g_playlistPlayer.GetCurrentSong();
     if (current >= 0)
@@ -174,22 +177,27 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
         [item setValue:genreArray forKey:@"genre"];
       }
     }
-    LOG(@"data: %@", item.description);
+    LOG(@"item: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+  }
+  else if (msg == "OnSpeedChanged")
+  {
+    NSDictionary *item = [dict valueForKey:@"item"];
+    NSDictionary *player = [dict valueForKey:@"player"];
+    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
+    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+    LOG(@"item: %@", item.description);
+    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
   }
   else if (msg == "OnPause")
   {
     CAEFactory::Suspend();
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
-    LOG(@"data: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
     CAEFactory::Suspend();
-    NSDictionary *item = dictionaryFromVariantMap(data["item"]);
-    LOG(@"data: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
   }
 }
 
@@ -1131,6 +1139,20 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
   m_playbackState = IOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
+}
+//--------------------------------------------------------------
+- (void)OnSpeedChanged:(NSDictionary *)item
+{
+  PRINT_SIGNATURE();
+  NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [item objectForKey:@"elapsed"];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+
+  [self setIOSNowPlayingInfo:info];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item
