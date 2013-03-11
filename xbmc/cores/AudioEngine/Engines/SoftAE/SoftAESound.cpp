@@ -34,12 +34,6 @@
 /* typecast AE to CSoftAE */
 #define AE (*((CSoftAE*)CAEFactory::GetEngine()))
 
-typedef struct
-{
-  char     chunk_id[4];
-  uint32_t chunksize;
-} WAVE_CHUNK;
-
 CSoftAESound::CSoftAESound(const std::string &filename) :
   IAESound         (filename),
   m_filename       (filename),
