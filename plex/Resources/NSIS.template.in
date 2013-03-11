@@ -19,6 +19,8 @@
   Var ADD_TO_PATH_CURRENT_USER
   Var INSTALL_DESKTOP
   Var IS_DEFAULT_INSTALLDIR
+  Var SupportedMCEDetected
+  Var MCERegistrationFile
 ;--------------------------------
 ;Include Modern UI
 
@@ -764,6 +766,38 @@ Function un.onInit
     ;Get installation folder from registry if available
 
   done:
+  
+  Push $0
+  System::Call 'shell32::SHGetFolderPathA(i, i, i, i, t) i(0, ${CSIDL_LOCAL_APPDATA}|${CSIDL_FLAG_CREATE}, 0, ${SHGFP_TYPE_DEFAULT}, .r0).r1'
+  StrCpy $LocalAppDataFolder $0
+  Pop $0
+
+  ; Detect Media Center
+  ; 4.0 - Media Center 2005 with Update Rollup 2
+  ; 5.0 - Media Center on Windows Vista
+  ; 6.0 - Media Center on Windows 7
+  StrCpy $0 "0"
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center" "Ident"
+  DetailPrint "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center\Ident is $0"
+
+  ${If} $0 < 4.0
+    DetailPrint "No MCE detected, or unsupported MCE version"
+    SectionSetFlags ${UnSecMCE} ${SF_RO}
+    SectionSetText ${UnSecMCE} ""
+    StrCpy $SupportedMCEDetected "0"
+  ${Else}
+    DetailPrint "Detected supported MCE version"
+    StrCpy $SupportedMCEDetected "1"
+
+    ${If} $0 == 4.0
+      StrCpy $MCERegistrationFile "plex-mce-registration-xp.xml"
+    ${ElseIf} $0 == 5.0
+      StrCpy $MCERegistrationFile "plex-mce-registration-vista.xml"
+    ${Else}
+      StrCpy $MCERegistrationFile "plex-mce-registration-7.xml"
+    ${EndIf}
+
+  ${EndIf}
 
 FunctionEnd
 
@@ -925,6 +959,40 @@ uninst_failed:
 
 
 inst:
+  Push $0
+  ; Set $LocalAppDataFolder variable
+  System::Call 'shell32::SHGetFolderPathA(i, i, i, i, t) i(0, ${CSIDL_LOCAL_APPDATA}|${CSIDL_FLAG_CREATE}, 0, ${SHGFP_TYPE_DEFAULT}, .r0).r1'
+  StrCpy $LocalAppDataFolder $0
+  
+  ; Detect Media Center
+  ; 4.0 - Media Center 2005 with Update Rollup 2
+  ; 5.0 - Media Center on Windows Vista
+  ; 6.0 - Media Center on Windows 7
+  StrCpy $0 "0"
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center" "Ident"
+  DetailPrint "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center\Ident is $0"
+
+  ${If} $0 < 4.0
+    DetailPrint "No MCE detected, or unsupported MCE version"
+    SectionSetFlags ${SecMCE} ${SF_RO}
+    SectionSetText ${SecMCE} ""
+    StrCpy $SupportedMCEDetected "0"
+  ${Else}
+    DetailPrint "Detected supported MCE version"
+    StrCpy $SupportedMCEDetected "1"
+
+    ${If} $0 == 4.0
+      StrCpy $MCERegistrationFile "plex-mce-registration-xp.xml"
+    ${ElseIf} $0 == 5.0
+      StrCpy $MCERegistrationFile "plex-mce-registration-vista.xml"
+    ${Else}
+      StrCpy $MCERegistrationFile "plex-mce-registration-7.xml"
+    ${EndIf}
+
+  ${EndIf}
+  
+  Pop $0
+
   ; Reads components status for registry
   !insertmacro SectionList "InitSection"
 
@@ -973,3 +1041,35 @@ inst:
 
   noOptionsPage:
 FunctionEnd
+
+; MCE Stuff
+Section "Media Center Launcher for PlexHT" SecMCE
+
+  SectionIn 1 #section is in installtype Full, not minimal
+
+  ${If} $SupportedMCEDetected == "1"
+    DetailPrint "Running $WINDIR\eHome\RegisterMCEApp.exe /allusers /u $INSTDIR\$MCERegistrationFile"
+    StrCpy $0 "?"
+    nsExec::ExecToStack '"$WINDIR\eHome\RegisterMCEApp.exe" /allusers /u "$INSTDIR\$MCERegistrationFile"'
+    pop $0
+    DetailPrint "RegisterMCEApp /u returned $0"
+
+    DetailPrint "Running $WINDIR\eHome\RegisterMCEApp.exe /allusers $INSTDIR\$MCERegistrationFile"
+    StrCpy $0 "?"
+    nsExec::ExecToStack '"$WINDIR\eHome\RegisterMCEApp.exe" /allusers "$INSTDIR\$MCERegistrationFile"'
+    pop $0
+    DetailPrint "RegisterMCEApp returned $0"
+
+    DetailPrint "MCE integration installed"
+  ${EndIf}
+SectionEnd
+
+Section "Un.Media Center Launcher for PlexHT" UnSecMCE
+  ${If} $SupportedMCEDetected == "1"
+    DetailPrint "Running $WINDIR\eHome\RegisterMCEApp.exe /allusers /u $INSTDIR\$MCERegistrationFile"
+    StrCpy $0 "?"
+    nsExec::ExecToStack '"$WINDIR\eHome\RegisterMCEApp.exe" /allusers /u "$INSTDIR\$MCERegistrationFile"'
+    pop $0
+    DetailPrint "RegisterMCEApp /u returned $0"
+  ${EndIf}
+SectionEnd

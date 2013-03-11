@@ -1,0 +1,29 @@
+<!-- Windows Media Center registration file for Plex on Windows Vista -->
+<application title="Plex Home Theater"
+             id="{93f14705-bda5-4110-8f7b-43cd68eb26fd}"
+             companyname="Plex Inc."
+             description="The solution for your local and online media"
+             StartMenuStripTitle="Plex Home Theater"
+             StartMenuStripCategory="Custom Start Menu\Plex Home Theater">
+
+  <entrypoint id="{8625c3c3-b217-4df0-927d-81c3a53ab586}"
+              run=".\Plex Home Theater.exe"
+              title="Plex Home Theater"
+              nowPlayingDirective="stop"
+              description="The solution for your local and online media"
+              imageUrl=".\plex-mce-icon-square.png"
+              inactiveImageURL=".\plex-mce-icon-square.png">
+    <category category="More Programs" />
+  </entrypoint>
+
+  <entrypoint id="{b5ff74d5-affc-46a5-be85-668e06376eae}"
+              run=".\Plex Home Theater.exe"
+              title="Plex Home Theater"
+              nowPlayingDirective="stop"
+              description="The solution for your local and online media"
+              imageUrl=".\plex-mce-icon-square.png"
+              inactiveImageURL=".\plex-mce-icon-square.png">
+    <category category="Custom Start Menu\Plex Home Theater" order="1" />
+  </entrypoint>
+
+</application>
