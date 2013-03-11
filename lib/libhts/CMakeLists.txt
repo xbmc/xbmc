@@ -4,6 +4,9 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 
 find_all_sources(. hts_SRCS)
+
+list(REMOVE_ITEM hts_SRCS ./htsatomic.c)
+
 if(TARGET_WIN32)
   list(REMOVE_ITEM hts_SRCS ./net_posix.c)
 else(TARGET_WIN32)

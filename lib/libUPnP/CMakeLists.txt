@@ -24,32 +24,32 @@ set(SRCS
   Platinum/Source/Devices/MediaServer/PltDidl.cpp
   Platinum/Source/Devices/MediaServer/PltFileMediaServer.cpp
   Platinum/Source/Devices/MediaServer/PltMediaBrowser.cpp
-  Platinum/Source/Devices/MediaServer/PltMediaCache.cpp
+#  Platinum/Source/Devices/MediaServer/PltMediaCache.cpp
   Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
   Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
   Platinum/Source/Devices/MediaServer/ConnectionManagerSCPD.cpp
   Platinum/Source/Devices/MediaServer/ContentDirectorySCPD.cpp
   Platinum/Source/Devices/MediaServer/ContentDirectorywSearchSCPD.cpp
   Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
-  Neptune/Source/Core/Neptune.cpp
+#  Neptune/Source/Core/Neptune.cpp
   Neptune/Source/Core/NptBase64.cpp
   Neptune/Source/Core/NptBufferedStreams.cpp
-  Neptune/Source/Core/NptCommon.cpp
+#  Neptune/Source/Core/NptCommon.cpp
   Neptune/Source/Core/NptDataBuffer.cpp
   Neptune/Source/Core/NptDebug.cpp
   Neptune/Source/Core/NptFile.cpp
   Neptune/Source/Core/NptHash.cpp
   Neptune/Source/Core/NptHttp.cpp
-  Neptune/Source/Core/NptList.cpp
+#  Neptune/Source/Core/NptList.cpp
   Neptune/Source/Core/NptMessaging.cpp
   Neptune/Source/Core/NptNetwork.cpp
-  Neptune/Source/Core/NptQueue.cpp
+#  Neptune/Source/Core/NptQueue.cpp
   Neptune/Source/Core/NptRingBuffer.cpp
   Neptune/Source/Core/NptSimpleMessageQueue.cpp
   Neptune/Source/Core/NptSockets.cpp
   Neptune/Source/Core/NptStreams.cpp
   Neptune/Source/Core/NptStrings.cpp
-  Neptune/Source/Core/NptSystem.cpp
+#  Neptune/Source/Core/NptSystem.cpp
   Neptune/Source/Core/NptThreads.cpp
   Neptune/Source/Core/NptTime.cpp
   Neptune/Source/Core/NptUri.cpp

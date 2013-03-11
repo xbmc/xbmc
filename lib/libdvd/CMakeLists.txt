@@ -5,6 +5,10 @@ if(NOT WIN32)
     include(TestBigEndian)
     TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
   endif()
+  
+  if(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format -Wno-parentheses-equality -Wno-enum-conversion")
+  endif(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
 
   add_subdirectory(libdvdnav)
   add_subdirectory(libdvdcss)

@@ -78,6 +78,10 @@ set(libcpluff_srcs
   libcpluff/util.c
 )
 
+if(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
+endif(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+
 if(TARGET_WIN32)
   set(libcpluff_srcs ${libcpluff_srcs} libcpluff/thread_windows.c libcpluff/win32/dirent.c)
   add_library(cpluff SHARED ${libcpluff_srcs})

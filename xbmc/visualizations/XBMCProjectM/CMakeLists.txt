@@ -45,6 +45,10 @@ else(TARGET_COMMON_LINUX)
   ADD_DEFINITIONS(-DLINUX -DSTBI_NO_DDS)
 endif(TARGET_COMMON_DARWIN)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format -Wno-parentheses-equality -Wno-enum-conversion -Wno-deprecated-writable-strings -Wno-default-arg-special-member")
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}")
 find_program(ZIP zip)
 

@@ -1,4 +1,6 @@
-add_subdirectory(Encoders)
+
+#add_subdirectory(Encoders)
+
 add_subdirectory(Engines)
 if(NOT APPLE)
   add_subdirectory(Sinks)
