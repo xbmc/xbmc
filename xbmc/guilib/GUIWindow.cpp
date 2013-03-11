@@ -389,7 +389,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
   }
 
   m_closing = false;
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, nextWindowID);
   OnMessage(msg);
 }
 
