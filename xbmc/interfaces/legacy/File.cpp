@@ -56,11 +56,9 @@ namespace XBMCAddon
     bool File::write(XbmcCommons::Buffer& buffer)
     {
       DelayedCallGuard dg(languageHook);
-      unsigned long totalBytesWritten = 0;
       while (buffer.remaining() > 0)
       {
         int bytesWritten = file->Write( buffer.curPosition(), buffer.remaining());
-        totalBytesWritten += bytesWritten;
         if (bytesWritten == 0)       // this could be a failure (see HDFile, and XFileUtils) or
                                      //  it could mean something else when a negative number means an error
                                      //  (see CCurlFile). There is no consistency so we can only assume we're
