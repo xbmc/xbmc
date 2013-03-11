@@ -808,8 +808,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     if (rendervendor.find("nvidia") != std::string::npos)
     {
       // Nvidia gpu's are all powerful and work the way god intended
+
       m_decode_async = true;
+#ifndef __PLEX__ // my testing shows me that cvBufferRef is NOT working on nvidia
+      m_use_cvBufferRef = false;
+#else
       m_use_cvBufferRef = true;
+#endif
     }
     else if (rendervendor.find("intel") != std::string::npos)
     {
