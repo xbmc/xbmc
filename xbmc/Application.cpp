@@ -113,6 +113,7 @@
 #endif
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
+#include "network/upnp/UPnPSettings.h"
 #include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
@@ -705,6 +706,9 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSettingsHandler(&CPlayerCoreFactory::Get());
   g_settings.RegisterSettingsHandler(&CRssManager::Get());
+#ifdef HAS_UPNP
+  g_settings.RegisterSettingsHandler(&CUPnPSettings::Get());
+#endif
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
