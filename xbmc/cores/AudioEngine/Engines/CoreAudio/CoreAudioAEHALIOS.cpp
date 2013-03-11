@@ -637,10 +637,10 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, boo
 
   UInt32 bufferFrames = m_audioUnit->GetBufferFrameSize();
 
-  m_audioUnit->SetMaxFramesPerSlice(bufferFrames);
-
   if (!m_audioUnit->EnableInputOuput())
     return false;
+
+  m_audioUnit->SetMaxFramesPerSlice(bufferFrames);
 
   m_audioUnit->GetFormatDesc(format, &inputFormat);
 
