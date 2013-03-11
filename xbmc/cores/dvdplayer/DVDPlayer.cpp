@@ -28,6 +28,7 @@
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/DVDInputStreamTV.h"
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
+#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -84,6 +85,7 @@
 #include "Util.h"
 #include "LangInfo.h"
 #include "ApplicationMessenger.h"
+#include "boost/tokenizer.hpp"
 
 using namespace std;
 using namespace PVR;
@@ -576,6 +578,52 @@ bool CDVDPlayer::OpenInputStream()
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;
+  }
+
+  std::map<CStdString, CStdString> arguments;
+  // parse given stream arguments
+  if (filename.Left(strlen("udp://")) == "udp://")
+  {
+    int argstart = filename.Find("?");
+    if (argstart != -1)
+    {
+      CStdString args = filename.substr(argstart+1);
+      boost::char_separator<char> sep("&");
+      typedef boost::tokenizer< boost::char_separator<char> > t_tokenizer;
+      t_tokenizer tok(args, sep);
+
+      t_tokenizer::iterator it = tok.begin();
+      t_tokenizer::iterator end = tok.end();
+      for (; it!= end; ++it)
+      {
+        CStdString tmp(*it);
+        int tmpidx = tmp.Find("=");
+
+        if (tmpidx != -1)
+          arguments.insert(std::make_pair(tmp.substr(0,tmpidx), tmp.substr(tmpidx+1)));
+      }
+    }
+  }
+
+  // set arguments for ffmpeg streams
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+  {
+    CDVDInputStreamFFmpeg *stream = static_cast<CDVDInputStreamFFmpeg*>(m_pInputStream);
+    std::map<CStdString, CStdString>::iterator it;
+
+    it = arguments.find("seekable");
+    if (it != arguments.end())
+    {
+      if (it->second == "false")
+        stream->setSeekable(false);
+    }
+
+    it = arguments.find("pauseable");
+    if (it != arguments.end())
+    {
+      if (it->second == "false")
+        stream->setPauseable(false);
+    }
   }
 
   // find any available external subtitles for non dvd files
@@ -3943,6 +3991,12 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       CDVDInputStreamPVRManager* pvrinputstream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
       state.canpause = pvrinputstream->CanPause();
       state.canseek  = pvrinputstream->CanSeek();
+    }
+    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+    {
+      CDVDInputStreamFFmpeg *ffmpeginputstream = static_cast<CDVDInputStreamFFmpeg*>(m_pInputStream);
+      state.canseek = ffmpeginputstream->getSeekable();
+      state.canpause = ffmpeginputstream->getPauseable();
     }
     else
     {
