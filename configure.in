@@ -157,8 +157,6 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
-libcec_disabled_missing_libs="== libcec disabled because it either needs libudev, or libusb a compatible version of the RPi API. CEC adapter support will not be available. =="
-cec_rpi_api_missing="== no compatible RPi API found =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -1455,46 +1453,18 @@ fi
 
 # libcec
 USE_LIBCEC=0
-USE_CEC_RPI_API=0
-use_rpi_cec_api="auto"
 if test "x$use_libcec" != "xno"; then
-  case "${host_cpu}" in
-    arm*)
-      echo "will check for RPi support"
-      AC_CHECK_HEADER(interface/vmcs_host/vc_cec.h,,use_rpi_cec_api="no")
-      ;;
-    *)
-      echo "will not check for RPi support (unsupported cpu: ${host_cpu})"
-      use_rpi_cec_api="no"
-      ;;
-  esac
-
-  # libcec needs libudev, libusb or the RPi API under linux, or the device will never be detected.
-  if test "$host_vendor" != "apple" && test "$use_libusb" = "no" && test "$use_libudev" = "no" && test "$use_rpi_cec_api" = "no"; then
-    if test "x$use_libcec" != "xauto"; then
-      AC_MSG_ERROR($libcec_disabled_missing_libs)
-    else
-      use_libcec="no"
-      AC_MSG_NOTICE($libcec_disabled_missing_libs)
-    fi
-  fi
-
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   if test "x$use_libcec" != "xno"; then
     if test "x$use_libcec" != "xauto"; then
-      PKG_CHECK_MODULES([CEC],[libcec >= 2.0.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 2.1.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
     else
-      PKG_CHECK_MODULES([CEC],[libcec >= 2.0.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 2.1.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
     fi
 
     if test "x$use_libcec" != "xno"; then
       INCLUDES="$INCLUDES $CEC_CFLAGS"
       USE_LIBCEC=1;AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"])
-      if test "x$use_rpi_cec_api" != "xno"; then
-        LIBS+=" -lvcos -lvchiq_arm"
-        AC_DEFINE([HAVE_CEC_RPI_API],[1],["Define to 1 if the CEC RPi API is installed"])
-        USE_CEC_RPI_API=1
-      fi
       XB_FIND_SONAME([LIBCEC],[cec],[use_libcec])
       AC_MSG_NOTICE($libcec_enabled)
     else
@@ -2255,11 +2225,6 @@ fi
 
 if test "x$use_libcec" != "xno"; then
   final_message="$final_message\n  libcec support:\tYes"
-  if test "x$use_rpi_cec_api" != "xno"; then
-    final_message="$final_message\n  libcec RPi support:\tYes"
-  else
-    final_message="$final_message\n  libcec RPi support:\tNo"
-  fi
 else
   final_message="$final_message\n  libcec support:\tNo"
 fi
@@ -2451,7 +2416,6 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
-AC_SUBST(USE_CEC_RPI_API)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_UPNP)
