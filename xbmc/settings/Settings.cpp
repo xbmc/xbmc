@@ -176,8 +176,12 @@ void CSettings::Initialize()
 
 CSettings::~CSettings(void)
 {
+  // first clear all registered settings handler and subsettings
+  // implementations because we can't be sure that they are still valid
   m_settingsHandlers.clear();
   m_subSettings.clear();
+
+  Clear();
 }
 
 
