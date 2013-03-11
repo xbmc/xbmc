@@ -810,31 +810,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
   LoadSkinSettings(pRootElement);
-
-  // Advanced settings
-  g_advancedSettings.Load();
-
-  // Add the list of disc stub extensions (if any) to the list of video extensions
-  if (!m_discStubExtensions.IsEmpty())
-    g_settings.m_videoExtensions += "|" + m_discStubExtensions;
-
-  // Default players?
-  CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
-  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
-  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
-
-  // setup any logging...
-  if (g_guiSettings.GetBool("debug.showloginfo"))
-  {
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
-  }
-  else
-  {
-    g_advancedSettings.m_logLevel = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
-    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", g_advancedSettings.m_logLevel);
-  }  
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   return true;
 }
 

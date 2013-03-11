@@ -704,6 +704,7 @@ bool CApplication::Create()
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
+  g_settings.RegisterSettingsHandler(&g_advancedSettings);
   g_settings.RegisterSettingsHandler(&CPlayerCoreFactory::Get());
   g_settings.RegisterSettingsHandler(&CRssManager::Get());
 #ifdef HAS_UPNP

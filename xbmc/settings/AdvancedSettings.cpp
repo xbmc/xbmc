@@ -43,6 +43,34 @@ CAdvancedSettings::CAdvancedSettings()
   m_initialized = false;
 }
 
+void CAdvancedSettings::OnSettingsLoaded()
+{
+  // load advanced settings
+  Load();
+
+  // Add the list of disc stub extensions (if any) to the list of video extensions
+  if (!g_settings.m_discStubExtensions.IsEmpty())
+    g_settings.m_videoExtensions += "|" + g_settings.m_discStubExtensions;
+
+  // default players?
+  CLog::Log(LOGNOTICE, "Default DVD Player: %s", m_videoDefaultDVDPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Video Player: %s", m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Audio Player: %s", m_audioDefaultPlayer.c_str());
+
+  // setup any logging...
+  if (g_guiSettings.GetBool("debug.showloginfo"))
+  {
+    m_logLevel = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", m_logLevel);
+  }
+  else
+  {
+    m_logLevel = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", m_logLevel);
+  }
+  CLog::SetLogLevel(m_logLevel);
+}
+
 void CAdvancedSettings::Initialize()
 {
   m_audioHeadRoom = 0;
