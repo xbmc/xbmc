@@ -206,6 +206,12 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
         object["item"]["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
   }
+  else if (item->IsVideo())
+  {
+    // video item but has no video info tag.
+    type = "movies";
+    object["item"]["title"] = item->GetLabel();
+  }
   else if (item->HasPictureInfoTag())
   {
     type = "picture";
