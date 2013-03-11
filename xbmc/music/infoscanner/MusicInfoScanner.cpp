@@ -660,6 +660,7 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
     // map the songs to their primary artists
     bool tracksOverlap = false;
     bool hasAlbumArtist = false;
+    bool isCompilation = true;
 
     map<string, vector<CSong *> > artists;
     for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
@@ -668,6 +669,9 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
       // test for song overlap
       if (j != songs.begin() && song->iTrack == (*(j-1))->iTrack)
         tracksOverlap = true;
+
+      if (! song->bCompilation)
+        isCompilation = false;
 
       // get primary artist
       string primary;
@@ -686,11 +690,12 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
     /*
      We have a compilation if
      1. album name is non-empty AND
-     2. no tracks overlap AND
+     2a. no tracks overlap OR
+     2b. all tracks are marked as part of compilation AND
      3a. a unique primary artist is specified as "various" or "various artists" OR
      3b. we have at least two primary artists and no album artist specified.
      */
-    bool compilation = !i->first.empty() && !tracksOverlap; // 1+2
+    bool compilation = !i->first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
       string artist = artists.begin()->first; StringUtils::ToLower(artist);
