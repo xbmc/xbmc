@@ -1,0 +1,12 @@
+--- include/nfsc/libnfs.h	2012-12-03 09:38:18.000000000 -0500
++++ include/nfsc/libnfs.h	2013-01-17 23:04:35.000000000 -0500
+@@ -18,9 +18,7 @@
+  * This is the highlevel interface to access NFS resources using a posix-like interface
+  */
+ #include <stdint.h>
+-#if defined(ANDROID)
+ #include <sys/time.h>
+-#endif
+ 
+ struct nfs_context;
+ struct rpc_context;

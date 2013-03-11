@@ -1,0 +1,187 @@
+From: Sean McNeil <sean.mcneil@windriver.com>
+Date: Wed, 7 Jul 2010 02:03:47 +0000 (+0700)
+Subject: Remove shared memory access.
+X-Git-Tag: tegra-10.11.0~2
+X-Git-Url: http://nv-tegra.nvidia.com/gitweb/?p=android%2Fplatform%2Fexternal%2Falsa-lib.git;a=commitdiff_plain;h=24def9277c1bf4ed5c19b73ed3e76d761f992ddb
+
+Remove shared memory access.
+
+Somehow these changes didn't get committed.
+
+Change-Id: Ida7b706de56d95c8fb22d2708711a4d68c41ddaa
+---
+
+diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
+index f3580f9..279a24c 100644
+--- a/src/alisp/alisp.c
++++ b/src/alisp/alisp.c
+@@ -1025,6 +1025,7 @@ static const char *obj_type_str(struct alisp_object * p)
+ 	case ALISP_OBJ_CONS: return "cons";
+ 	default: assert(0);
+ 	}
++	return 0; /* make compiler happy */
+ }
+ 
+ static void print_obj_lists(struct alisp_instance *instance, snd_output_t *out)
+diff --git a/src/dlmisc.c b/src/dlmisc.c
+index a0d62d3..b84eaf6 100644
+--- a/src/dlmisc.c
++++ b/src/dlmisc.c
+@@ -27,6 +27,7 @@
+  *
+  */
+ 
++#define _GNU_SOURCE
+ #include "list.h"
+ #include "local.h"
+ 
+@@ -53,13 +54,13 @@ void *snd_dlopen(const char *name, int mode)
+ #else
+ #ifdef HAVE_LIBDL
+ 	if (name == NULL) {
+-		static const char * self = NULL;
+-		if (self == NULL) {
+-			Dl_info dlinfo;
+-			if (dladdr(snd_dlopen, &dlinfo) > 0)
+-				self = dlinfo.dli_fname;
+-		}
+-		name = self;
++#ifdef ANDROID
++		return RTLD_DEFAULT;
++#else
++		Dl_info dlinfo;
++		if (dladdr(snd_dlopen, &dlinfo) > 0)
++			name = dlinfo.dli_fname;
++#endif
+ 	}
+ #endif
+ #endif
+@@ -85,6 +86,10 @@ int snd_dlclose(void *handle)
+ 		return 0;
+ #endif
+ #ifdef HAVE_LIBDL
++#ifdef ANDROID
++	if (handle == RTLD_DEFAULT)
++		return 0;
++#endif
+ 	return dlclose(handle);
+ #else
+ 	return 0;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index f910189..71d5e99 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -634,7 +634,6 @@ playback devices.
+ #include <stdarg.h>
+ #include <signal.h>
+ #include <sys/poll.h>
+-#include <sys/shm.h>
+ #include <sys/mman.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+diff --git a/src/pcm/pcm_generic.c b/src/pcm/pcm_generic.c
+index 84ea85f..d26aead 100644
+--- a/src/pcm/pcm_generic.c
++++ b/src/pcm/pcm_generic.c
+@@ -26,7 +26,6 @@
+  *
+  */
+ 
+-#include <sys/shm.h>
+ #include <sys/ioctl.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 9d243d5..7f88a5b 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -36,7 +36,6 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <sys/shm.h>
+ #include "pcm_local.h"
+ #include "../control/control_local.h"
+ #include "../timer/timer_local.h"
+diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
+index 4621fe6..4b7a353 100644
+--- a/src/pcm/pcm_mmap.c
++++ b/src/pcm/pcm_mmap.c
+@@ -23,7 +23,9 @@
+ #include <string.h>
+ #include <sys/poll.h>
+ #include <sys/mman.h>
++#ifndef ANDROID
+ #include <sys/shm.h>
++#endif
+ #include "pcm_local.h"
+ 
+ size_t page_size(void)
+@@ -371,6 +373,7 @@ int snd_pcm_mmap(snd_pcm_t *pcm)
+ 			}
+ 			i->addr = ptr;
+ 			break;
++#ifndef ANDROID
+ 		case SND_PCM_AREA_SHM:
+ 			if (i->u.shm.shmid < 0) {
+ 				int id;
+@@ -416,6 +419,7 @@ int snd_pcm_mmap(snd_pcm_t *pcm)
+ 			}
+ 			i->addr = ptr;
+ 			break;
++#endif
+ 		case SND_PCM_AREA_LOCAL:
+ 			ptr = malloc(size);
+ 			if (ptr == NULL) {
+@@ -496,6 +500,7 @@ int snd_pcm_munmap(snd_pcm_t *pcm)
+ 			}
+ 			errno = 0;
+ 			break;
++#ifndef ANDROID
+ 		case SND_PCM_AREA_SHM:
+ 			if (i->u.shm.area) {
+ 				snd_shm_area_destroy(i->u.shm.area);
+@@ -513,6 +518,7 @@ int snd_pcm_munmap(snd_pcm_t *pcm)
+ 				}
+ 			}
+ 			break;
++#endif
+ 		case SND_PCM_AREA_LOCAL:
+ 			free(i->addr);
+ 			break;
+diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
+index 692254a..2f2a42f 100644
+--- a/src/pcm/pcm_null.c
++++ b/src/pcm/pcm_null.c
+@@ -28,7 +28,6 @@
+   
+ #include <byteswap.h>
+ #include <limits.h>
+-#include <sys/shm.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+ 
+diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
+index 0ef394a..a751deb 100644
+--- a/src/pcm/pcm_plugin.c
++++ b/src/pcm/pcm_plugin.c
+@@ -82,7 +82,6 @@ pcm.rate44100Hz {
+ 
+ */
+   
+-#include <sys/shm.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
+index 56a8685..72084fc 100644
+--- a/src/pcm/pcm_share.c
++++ b/src/pcm/pcm_share.c
+@@ -35,7 +35,6 @@
+ #include <math.h>
+ #include <sys/socket.h>
+ #include <sys/poll.h>
+-#include <sys/shm.h>
+ #include <pthread.h>
+ #include "pcm_local.h"
+ 

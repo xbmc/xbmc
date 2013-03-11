@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Some platforms may not have m4/autoconf. If not, build temporary copies in
+# order to bootstrap.
+DEPENDS=`dirname $0`
+export PATH=$DEPENDS/pre-build-deps/bin:$PATH
+which m4 >/dev/null 2>/dev/null || make -C $DEPENDS/pre-depends/m4-pre-depends
+which autoconf >/dev/null 2>/dev/null || make -C $DEPENDS/pre-depends/autoconf-pre-depends
+which autoconf >/dev/null 2>/dev/null || \
+  (echo "autoconf was not found and could not be built. Aborting." && exit 1)
+
+autoconf -f

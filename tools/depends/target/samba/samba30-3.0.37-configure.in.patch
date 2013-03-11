@@ -1,0 +1,64 @@
+--- samba-3.0.25borig/source/configure.in	2007-05-23 08:29:20.000000000 -0700
++++ samba3025bfinal/source/configure.in	2007-07-24 12:15:13.000000000 -0700
+@@ -1374,31 +1374,40 @@
+ #
+ case "$host_os" in
+     *linux*)
+-       # glibc <= 2.3.2 has a broken getgrouplist
+-       AC_TRY_RUN([
++
++AC_CACHE_CHECK([for a broken Linux getgrouplist API],
++             linux_getgrouplist_ok,
++             [
++                 AC_TRY_RUN([
+ #include <unistd.h>
+ #include <sys/utsname.h>
+-main() {
+-       /* glibc up to 2.3 has a broken getgrouplist */
++
++                     int main() {
++                            /* glibc up to 2.3 has a broken
++getgrouplist */
+ #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
+-       int libc_major = __GLIBC__;
+-       int libc_minor = __GLIBC_MINOR__;
++                            int libc_major = __GLIBC__;
++                            int libc_minor = __GLIBC_MINOR__;
++
++                            if (libc_major < 2)
++                                   return 1;
++                            if ((libc_major == 2) && (libc_minor <= 3))
++                                   return 1;
++#endif
++                            return 0;
++                     }
++
++                 ],
++                 [linux_getgrouplist_ok=yes],
++                 [linux_getgrouplist_ok=no],
++                 [linux_getgrouplist_ok=cross])
++        ])
++
++        if test x"$linux_getgrouplist_ok" = x"yes"; then
++           AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
++        fi
++
+ 
+-       if (libc_major < 2)
+-              exit(1);
+-       if ((libc_major == 2) && (libc_minor <= 3))
+-              exit(1);
+-#endif
+-       exit(0);
+-}
+-], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])
+-       if test x"$linux_getgrouplist_ok" = x"yes"; then
+-          AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
+-       fi
+-       ;;
+-    *)
+-       AC_CHECK_FUNCS(getgrouplist)
+-       ;;
+ esac
+ 
+ #

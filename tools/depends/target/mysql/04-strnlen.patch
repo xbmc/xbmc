@@ -1,0 +1,43 @@
+--- strings/strnlen.c	2011-01-25 10:04:52.000000000 -0500
++++ strings/strnlen.c	2013-01-20 22:37:24.000000000 -0500
+@@ -23,12 +23,15 @@
+ #include <my_global.h>
+ #include "m_string.h"
+ 
+-#ifndef HAVE_STRNLEN
+ 
+-size_t strnlen(register const char *s, register size_t maxlen)
++size_t strnlen_int(register const char *s, register size_t maxlen)
+ {
++#ifndef HAVE_STRNLEN
+   const char *end= (const char *)memchr(s, '\0', maxlen);
+   return end ? (size_t) (end - s) : maxlen;
++#else
++  return strnlen(s,maxlen);
++#endif
++
+ }
+ 
+-#endif
+--- include/m_string.h	2011-01-25 10:04:38.000000000 -0500
++++ include/m_string.h	2013-01-20 22:35:23.000000000 -0500
+@@ -160,7 +160,7 @@
+ #endif
+ #endif
+ #ifndef HAVE_STRNLEN
+-extern size_t strnlen(const char *s, size_t n);
++extern size_t strnlen_int(const char *s, size_t n);
+ #endif
+ 
+ #if !defined(__cplusplus)
+--- strings/my_vsnprintf.c	2011-01-25 10:04:48.000000000 -0500
++++ strings/my_vsnprintf.c	2013-01-20 22:34:21.000000000 -0500
+@@ -97,7 +97,7 @@
+       reg2 char	*par = va_arg(ap, char *);
+       size_t plen,left_len = (size_t) (end - to) + 1;
+       if (!par) par = (char*)"(null)";
+-      plen= (uint) strnlen(par, width);
++      plen= (uint) strnlen_int(par, width);
+       if (left_len <= plen)
+ 	plen = left_len - 1;
+       to=strnmov(to,par,plen);

@@ -960,10 +960,7 @@
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE6131F5DC6000AD0F6 /* libz.dylib */; };
-		F56C8CED131F5DE7000AD0F6 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CEC131F5DE7000AD0F6 /* libbz2.dylib */; };
-		F56C8CF0131F5DED000AD0F6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */; };
 		F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */; };
-		F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */; };
 		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
@@ -3105,10 +3102,7 @@
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56C8CE6131F5DC6000AD0F6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		F56C8CEC131F5DE7000AD0F6 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
-		F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
-		F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
 		F57A1D1C1329B15300498CC7 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F57A1D1D1329B15300498CC7 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
@@ -3296,10 +3290,7 @@
 				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */,
-				F56C8CED131F5DE7000AD0F6 /* libbz2.dylib in Frameworks */,
-				F56C8CF0131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
-				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
 				F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */,
 				E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */,
 				E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */,
@@ -3346,10 +3337,7 @@
 			children = (
 				F56C8CE6131F5DC6000AD0F6 /* libz.dylib */,
 				F5364D54155B3C7B0016D00B /* libm.dylib */,
-				F56C8CEC131F5DE7000AD0F6 /* libbz2.dylib */,
-				F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */,
 				F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */,
-				F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
@@ -7839,6 +7827,14 @@
 					"-headerpad_max_install_names",
 					"-all_load",
 					"-L$XBMC_DEPENDS/lib",
+					"-Wl,-search_paths_first",
+					"-lffi",
+					"-lintl",
+					"-lssl",
+					"-lbz2",
+					"-lexpat",
+					"-lresolv",
+					"-lgpg-error",
 					"-lssh",
 					"-llzo2",
 					"-lpcre",
@@ -7865,7 +7861,6 @@
 					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
-					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
 					"-ltag",
@@ -7957,8 +7952,16 @@
 				);
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
+					"-Wl,-search_paths_first",
 					"-all_load",
 					"-L$XBMC_DEPENDS/lib",
+					"-lffi",
+					"-lintl",
+					"-lssl",
+					"-lbz2",
+					"-lexpat",
+					"-lresolv",
+					"-lgpg-error",
 					"-lssh",
 					"-llzo2",
 					"-lpcre",
@@ -7985,7 +7988,6 @@
 					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
-					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
 					"-ltag",

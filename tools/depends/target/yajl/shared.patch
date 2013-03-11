@@ -1,0 +1,20 @@
+--- src/CMakeLists.txt.orig	2012-06-22 21:09:34.000000000 +0200
++++ src/CMakeLists.txt	2012-06-22 21:11:49.000000000 +0200
+@@ -40,6 +40,8 @@
+ 
+ TARGET_LINK_LIBRARIES(yajl_s m) 
+ 
++TARGET_LINK_LIBRARIES(yajl m) 
++
+ #### setup shared library version number
+ SET_TARGET_PROPERTIES(yajl PROPERTIES
+                       DEFINE_SYMBOL YAJL_SHARED
+@@ -79,7 +79,7 @@
+ IF(NOT WIN32)
+   # at build time you may specify the cmake variable LIB_SUFFIX to handle
+   # 64-bit systems which use 'lib64'
+-  INSTALL(TARGETS yajl LIBRARY DESTINATION lib${LIB_SUFFIX})
++#  INSTALL(TARGETS yajl LIBRARY DESTINATION lib${LIB_SUFFIX})
+   INSTALL(TARGETS yajl_s ARCHIVE DESTINATION lib${LIB_SUFFIX})
+   INSTALL(FILES ${PUB_HDRS} DESTINATION include/yajl)
+   INSTALL(FILES ${incDir}/yajl_version.h DESTINATION include/yajl)
