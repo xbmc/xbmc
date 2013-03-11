@@ -64,15 +64,3 @@ if [ ! -d plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH -o ! -d plex/Dependenci
   mv plex/Dependencies/ffmpeg-$outputdir plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH
   plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH/lib
 fi
-
-if [ -e plex/Dependencies/laika-depends ]; then
-  rm plex/Dependencies/laika-depends
-fi
-
-if [ -e plex/Dependencies/ffmpeg-depends ]; then
-  rm plex/Dependencies/ffmpeg-depends
-fi
-
-
-ln -s $outputdir-xbmc-$DEPEND_HASH plex/Dependencies/laika-depends
-ln -s $outputdir-ffmpeg-$FFMPEG_HASH plex/Dependencies/ffmpeg-depends

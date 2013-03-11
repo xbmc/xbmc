@@ -11,7 +11,12 @@ endif()
 execute_process(
   COMMAND ${plexdir}/scripts/fetch-depends.sh ${DEPEND_ARGS}
   WORKING_DIRECTORY ${root}
+  RESULT_VARIABLE result
 )
+
+if(result)
+  message(FATAL_ERROR "Fetch depends returned ${result}")
+endif(result)
 
 find_program(GIT_PATH git HINTS /usr/bin /usr/local/bin)
 if(GIT_PATH MATCHES "NOTFOUND")
@@ -40,5 +45,9 @@ elseif(TARGET_IOS)
   set(dependdir ${plexdir}/Dependencies/iphoneos${IPHONEOS_SDK_VERSION}_armv7-xbmc-${DEPEND_HASH})
   set(ffmpegdir ${plexdir}/Dependencies/iphoneos${IPHONEOS_SDK_VERSION}_armv7-ffmpeg-${DEPEND_HASH})
 endif()
+
+if(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
+  message(FATAL_ERROR "Couldn't fetch dependencies")
+endif(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
 
 file(COPY ${root}/tools/darwin/depends/libcrystalhd/libcrystalhd DESTINATION ${dependdir}/include)
