@@ -1858,7 +1858,7 @@ case $add_players in
 esac
 
 # platform specific bin utilities
-if test "$host_vendor" != "apple" ; then
+if test "$build_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
   if test "$HAVE_GAWK" = "no" ; then
     AC_MSG_ERROR($missing_program)
