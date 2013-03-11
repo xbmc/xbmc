@@ -70,7 +70,7 @@ namespace XBMCAddon
           return false;
         buffer.forward(bytesWritten);// Otherwise, we advance the buffer by the amount written.
       }
-      return totalBytesWritten;
+      return true;
     }
 
   }
