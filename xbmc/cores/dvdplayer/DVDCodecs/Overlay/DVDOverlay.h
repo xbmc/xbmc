@@ -75,8 +75,8 @@ public:
   }
 
   /**
-   * decrease the reference counter by one.
-   */
+  * increase the reference counter by one.
+  */
   CDVDOverlay* Acquire()
   {
     AtomicIncrement(&m_references);
@@ -84,8 +84,8 @@ public:
   }
 
   /**
-   * increase the reference counter by one.
-   */
+  * decrease the reference counter by one.
+  */
   long Release()
   {
     long count = AtomicDecrement(&m_references);
