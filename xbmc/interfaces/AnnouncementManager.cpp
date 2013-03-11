@@ -137,7 +137,10 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       // TODO: Can be removed once this is properly handled when starting playback of a file
       item->SetProperty(LOOKUP_PROPERTY, false);
 
-      object["item"]["title"] = item->GetVideoInfoTag()->m_strTitle;
+      CStdString title = item->GetVideoInfoTag()->m_strTitle;
+      if (title.IsEmpty())
+        title = item->GetLabel();
+      object["item"]["title"] = title;
 
       switch (item->GetVideoContentType())
       {
