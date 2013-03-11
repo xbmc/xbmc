@@ -21,15 +21,21 @@
 #include <string>
 #include <jni.h>
 
+class ANativeActivity;
+
 class CAndroidIntents
 {
 public:
   void ReceiveIntent(JNIEnv *env, const jobject &intent);
+  void ReceiveInitialIntent(ANativeActivity *activity);
+  void ReceiveViewIntent(JNIEnv *env, const jobject &intent);
   static CAndroidIntents& getInstance() {static CAndroidIntents temp; return temp;};
 
-private:
+protected:
   CAndroidIntents();
   CAndroidIntents(CAndroidIntents const&);
   void operator=(CAndroidIntents const&);
-  std::string GetIntentAction(const jobject &intent);
+
+  std::string GetIntentAction(JNIEnv *env, const jobject &intent);
+  std::string GetIntentData(JNIEnv *env, const jobject &intent);
 };

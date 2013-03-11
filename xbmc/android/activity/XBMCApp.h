@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <android/native_activity.h>
+#include "JNIManager.h"
 
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
@@ -50,8 +51,12 @@ struct androidPackage
 };
 
 
-class CXBMCApp : public IActivityHandler
+class CXBMCApp : public IActivityHandler, public CAndroidJNIBase
 {
+friend class CAndroidJNIManager;
+public:
+  void ReceiveViewIntent(JNIEnv *env, jobject thiz, jobject intent);
+
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
@@ -125,3 +130,5 @@ private:
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 };
+
+extern "C" void jni_MainReceiveViewIntent(JNIEnv *env, jobject thiz, jobject intent);

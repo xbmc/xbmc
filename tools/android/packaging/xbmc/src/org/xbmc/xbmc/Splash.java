@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import android.database.Cursor;
+import android.provider.MediaStore.MediaColumns;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -22,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -236,10 +239,35 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
+    Intent xbmcIntent = new Intent();
+    xbmcIntent.setClass(this, org.xbmc.xbmc.Main.class);
+    
+    // Check incoming intent
+    Intent intent = getIntent();
+    String action = intent.getAction();
+
+    if (action.equals(Intent.ACTION_VIEW)) {
+      Uri data = intent.getData();
+      Log.i(TAG, "Incoming Uri: " + data.toString());
+      
+      // Translate "content://" uri's to "file://" ones
+      if (data.getScheme().equalsIgnoreCase("content"))
+      {
+        String[] filePathColumn = {MediaColumns.DATA};
+        Cursor cursor = getContentResolver().query(data, filePathColumn, null, null, null);
+        if(cursor.moveToFirst())
+        {
+          int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+          data = Uri.parse(cursor.getString(columnIndex));
+        }
+        cursor.close();
+      }
+      xbmcIntent.setAction(Intent.ACTION_VIEW);
+      xbmcIntent.setData(data);
+    }
+
     // Run XBMC
-    Intent intent = new Intent();
-    intent.setClass(this, org.xbmc.xbmc.Main.class);
-    startActivity(intent);
+    startActivity(xbmcIntent);
     finish();
   }
 
