@@ -45,6 +45,7 @@ public:
   std::string       m_displayNameExtra;	/* additional display name info, ie, monitor name from ELD */
   enum AEDeviceType m_deviceType;	/* the device type, PCM, IEC958 or HDMI */
   CAEChannelInfo    m_channels;		/* the channels the device is capable of rendering */
+  bool              m_hwMixer;		/* determine whether device has a harware mixer */
   AESampleRateList  m_sampleRates;	/* the samplerates the device is capable of rendering */
   AEDataFormatList  m_dataFormats;	/* the dataformats the device is capable of rendering */
 

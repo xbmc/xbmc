@@ -30,6 +30,7 @@ CAEDeviceInfo::operator std::string()
   ss << "m_displayNameExtra: " << m_displayNameExtra << '\n';
   ss << "m_deviceType      : " << DeviceTypeToString(m_deviceType) + '\n';
   ss << "m_channels        : " << (std::string)m_channels << '\n';
+  ss << "m_hwMixer         : " << m_hwMixer << '\n';
 
   ss << "m_sampleRates     : ";
   for (AESampleRateList::iterator itt = m_sampleRates.begin(); itt != m_sampleRates.end(); ++itt)

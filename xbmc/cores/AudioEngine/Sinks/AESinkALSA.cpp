@@ -65,6 +65,8 @@ static unsigned int ALSASampleRateList[] =
   0
 };
 
+AEDeviceInfoList DeviceInfoList;
+
 CAESinkALSA::CAESinkALSA() :
   m_pcm(NULL),
   m_bufferSize(0),
@@ -134,6 +136,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 {
   m_initDevice = device;
   m_initFormat = format;
+  bool hwMixer = false;
 
   /* if we are raw, correct the data format */
   if (AE_IS_RAW(format.m_dataFormat))
@@ -184,9 +187,18 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
       || snd_config_get_integer(dmixRateConf, &dmixRate) < 0)
     dmixRate = 48000; /* assume default */
 
+  /* check if device has a harware mixer */
+  for (AEDeviceInfoList::iterator itl = DeviceInfoList.begin(); itl != DeviceInfoList.end(); ++itl)
+  {
+    if (itl->m_deviceName == device)
+    {
+      hwMixer = itl->m_hwMixer;
+      break;
+    }
+  }
 
   /* Prefer dmix for non-passthrough stereo when sample rate matches */
-  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config, format.m_sampleRate == (unsigned int) dmixRate && !m_passthrough))
+  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config, (format.m_sampleRate == (unsigned int) dmixRate && !m_passthrough) || hwMixer))
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"%s\"", device.c_str());
     snd_config_delete(config);
@@ -910,6 +922,8 @@ std::string CAESinkALSA::GetParamFromName(const std::string &name, const std::st
 
 void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config)
 {
+  DeviceInfoList = list;
+
   snd_pcm_t *pcmhandle = NULL;
   if (!OpenPCMDevice(device, "", ALSA_MAX_CHANNELS, &pcmhandle, config, false))
     return;
@@ -1069,6 +1083,9 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
       break;
     }
   }
+
+  /* detect the available subdevices count, for harware mixer > 1 */
+  info.m_hwMixer = snd_pcm_info_get_subdevices_count(pcminfo) > 1;
 
   if (device == "default" && channels == 2)
   {
