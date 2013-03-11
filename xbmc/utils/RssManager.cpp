@@ -37,7 +37,6 @@ CRssManager::CRssManager()
 CRssManager::~CRssManager()
 {
   Stop();
-  Clear();
 }
 
 CRssManager& CRssManager::Get()
