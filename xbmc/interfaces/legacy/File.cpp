@@ -53,7 +53,7 @@ namespace XBMCAddon
       return ret;
     }
 
-    long File::write(XbmcCommons::Buffer& buffer)
+    bool File::write(XbmcCommons::Buffer& buffer)
     {
       DelayedCallGuard dg(languageHook);
       unsigned long totalBytesWritten = 0;
@@ -65,9 +65,9 @@ namespace XBMCAddon
                                      //  it could mean something else when a negative number means an error
                                      //  (see CCurlFile). There is no consistency so we can only assume we're
                                      //  done when we get a 0.
-          return totalBytesWritten;  // And we'll return what we've already read.
+          return false;
         else if (bytesWritten < 0)   // But, if we get something less than zero, we KNOW it's an error.
-          return bytesWritten;       //  so we'll return whatever the indication was.
+          return false;
         buffer.forward(bytesWritten);// Otherwise, we advance the buffer by the amount written.
       }
       return totalBytesWritten;

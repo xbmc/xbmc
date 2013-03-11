@@ -90,14 +90,16 @@ namespace XBMCAddon
       /**
        * write(buffer)
        * 
-       * buffer : buffer to write to fi
+       * buffer : buffer to write to file
+       *
+       * returns: true on success.
        * 
        * example:
        *  f = xbmcvfs.File(file, 'w', True)
        *  result = f.write(buffer)
        *  f.close()
        */
-      long write(XbmcCommons::Buffer& buffer);
+      bool write(XbmcCommons::Buffer& buffer);
 
       /**
        * size()
