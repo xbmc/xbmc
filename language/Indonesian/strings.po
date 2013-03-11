@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -38,6 +37,10 @@ msgctxt "#5"
 msgid "Settings"
 msgstr "Setelan"
 
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
 msgctxt "#7"
 msgid "File manager"
 msgstr "File"
@@ -45,6 +48,10 @@ msgstr "File"
 msgctxt "#8"
 msgid "Weather"
 msgstr "Cuaca"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "xbmc media center"
 
 msgctxt "#11"
 msgid "Monday"
@@ -130,13 +137,29 @@ msgctxt "#55"
 msgid "May"
 msgstr "Mei"
 
+msgctxt "#59"
+msgid "Sep"
+msgstr "Pasang"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Okt"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Des"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Lihat: Otomatis"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Lihat Otomatis Besar"
+msgstr "Lihat: Otomatis Besar"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -660,7 +683,7 @@ msgstr "CD-Audio Mainkan Secara Otomatis"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Permainan XBOX Mainkan Secara Otomatis"
+msgstr "Waktu Penyegaran"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -668,7 +691,7 @@ msgstr "Video Mainkan Secara Otomatis"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Musik Mainkan Secara Otomatis"
+msgstr "Penskalaan: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1) (VShift: %2.2f)"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -812,7 +835,7 @@ msgstr "Harap periksa file .xml"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "ditemukan %i item"
+msgstr "Ditemukan %i item"
 
 msgctxt "#283"
 msgid "Search results"
@@ -861,6 +884,22 @@ msgstr "Kosongkan bookmark"
 msgctxt "#297"
 msgid "Audio offset"
 msgstr "AVDelay"
+
+msgctxt "#299"
+msgid "- AAC capable receiver"
+msgstr "- Penerima berkemampuan AAC"
+
+msgctxt "#300"
+msgid "- MP1 capable receiver"
+msgstr "- Penerima berkemampuan MP1"
+
+msgctxt "#301"
+msgid "- MP2 capable receiver"
+msgstr "- Penerima berkemampuan MP2"
+
+msgctxt "#302"
+msgid "- MP3 capable receiver"
+msgstr "- Penerima berkemampuan MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1013,6 +1052,18 @@ msgstr "Aktor"
 msgctxt "#345"
 msgid "Year"
 msgstr "Tahun"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- Penerima berkemampuan DTS-HD"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Penerima berkemampuan Multichannel LPCM"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- Penerima berkemampuan TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -2078,6 +2129,18 @@ msgctxt "#774"
 msgid "Slideshow folder"
 msgstr "Folder Slideshow"
 
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
 msgctxt "#792"
 msgid "Port"
 msgstr "Port"
@@ -2405,6 +2468,10 @@ msgstr "berangin"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Badai"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "%s: %s MB of %s MB Bebas"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -2788,7 +2855,7 @@ msgstr "Batas memasukan Password telah lewat."
 
 msgctxt "#12347"
 msgid "The system will now shut off."
-msgstr "XBOX akan dimatikan sekarang."
+msgstr "XBMC akan dimatikan sekarang."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -3024,7 +3091,7 @@ msgstr "Kecepatan CPU:"
 
 msgctxt "#13274"
 msgid "Connected, but no DNS is available."
-msgstr "Xbox Tersambung, tetapi tidak tersedia DNS."
+msgstr "XBMC Tersambung, tetapi tidak tersedia DNS."
 
 msgctxt "#13275"
 msgid "Hard Disk"
@@ -3084,11 +3151,11 @@ msgstr "Internet:"
 
 msgctxt "#13296"
 msgid "Connected"
-msgstr "Xbox sedang Tersambung"
+msgstr "XBMC sedang Tersambung"
 
 msgctxt "#13297"
 msgid "Not connected. Check network settings."
-msgstr "Xbox tidak Tersambung. Periksa setelan Jaringan."
+msgstr "XBMC tidak Tersambung. Periksa setelan Jaringan."
 
 msgctxt "#13299"
 msgid "Target temperature"
@@ -3128,7 +3195,7 @@ msgstr "Template Penamaan Folder"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
-msgstr "Anda yakin ingin mem-boot xbox"
+msgstr "Anda yakin ingin mem-boot XBMC"
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
@@ -3469,6 +3536,14 @@ msgstr "Tinggi"
 msgctxt "#13551"
 msgid "Off"
 msgstr "Mati"
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f Detik"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f Detik"
 
 msgctxt "#13610"
 msgid "Disabled"
@@ -4194,6 +4269,14 @@ msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
 
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i jam"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i hari"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Berikut"
@@ -4340,7 +4423,7 @@ msgstr "Terbaik yg Tersedia"
 
 msgctxt "#20050"
 msgid "Auto-switch between 16x9 and 4x3"
-msgstr "Otomatis berganti anatara 16x9 dan 4x3"
+msgstr "Otomatis berganti anatara 16:9 dan 4:3"
 
 msgctxt "#20051"
 msgid "Treat stacked files as single file"
@@ -4924,11 +5007,11 @@ msgstr "Mendeteksi Status Online"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
-msgstr "Mendeteksi Versi Xbox, Serial dan CPU"
+msgstr "Mendownload informasi artist gagal"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
-msgstr "Mendeteksi Perangkat Keras Xbox"
+msgstr "Web server folder (HTTP)"
 
 msgctxt "#20301"
 msgid "Web server directory (HTTPS)"
@@ -4944,7 +5027,7 @@ msgstr "Mendeteksi Kecepatan CPU"
 
 msgctxt "#20304"
 msgid "RSS Feed"
-msgstr "Mendeteksi Tanggal Produksi"
+msgstr "RSS Feed"
 
 msgctxt "#20307"
 msgid "Secondary DNS"
@@ -4974,6 +5057,10 @@ msgctxt "#20342"
 msgid "Movies"
 msgstr "Film"
 
+msgctxt "#20358"
+msgid "Season %i"
+msgstr "Musim %i"
+
 msgctxt "#20420"
 msgid "Never"
 msgstr "Tidak Pernah"
@@ -4981,6 +5068,10 @@ msgstr "Tidak Pernah"
 msgctxt "#20429"
 msgid "Separate"
 msgstr "Pisahkan"
+
+msgctxt "#20434"
+msgid "Sets"
+msgstr "Pasang"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -4990,9 +5081,29 @@ msgctxt "#21385"
 msgid "Open"
 msgstr "Buka"
 
+msgctxt "#21436"
+msgid "%i items"
+msgstr "%i Item"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f ke %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d ke %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s ke %s"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Resolusi"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "Wilayah"
 
 msgctxt "#22030"
 msgid "Font"
@@ -5034,13 +5145,17 @@ msgctxt "#24027"
 msgid "Weather"
 msgstr "Cuaca"
 
+msgctxt "#33038"
+msgid "%s day"
+msgstr "%s hari"
+
 msgctxt "#34123"
 msgid "Never"
 msgstr "Tidak Pernah"
 
 msgctxt "#36016"
 msgid "Connected"
-msgstr "Xbox sedang Tersambung"
+msgstr "XBMC sedang Tersambung"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"

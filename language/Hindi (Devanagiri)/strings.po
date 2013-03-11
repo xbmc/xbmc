@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3201,6 +3200,10 @@ msgstr "संकल्प"
 msgctxt "#21806"
 msgid "Comment"
 msgstr "टिप्पणी"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "क्षेत्र"
 
 msgctxt "#21875"
 msgid "Country"

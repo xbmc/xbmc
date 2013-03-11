@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -16,27 +15,27 @@ msgstr ""
 
 msgctxt "#0"
 msgid "Programs"
-msgstr "Programi"
+msgstr "Програми"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "Slike"
+msgstr "Слике"
 
 msgctxt "#2"
 msgid "Music"
-msgstr "Muzika"
+msgstr "Музика"
 
 msgctxt "#3"
 msgid "Videos"
-msgstr "Filmovi"
+msgstr "Видео"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "TV vodič"
+msgstr "ТВ водич"
 
 msgctxt "#5"
 msgid "Settings"
-msgstr "Postavke"
+msgstr "Поставке"
 
 msgctxt "#6"
 msgid "XBMC SVN"
@@ -44,431 +43,431 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Upr. datotekama"
+msgstr "Упр. датотекама"
 
 msgctxt "#8"
 msgid "Weather"
-msgstr "Vreme"
+msgstr "Време"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc medija centar"
+msgstr "XBMC Media Center"
 
 msgctxt "#11"
 msgid "Monday"
-msgstr "Ponedeljak"
+msgstr "понедељак"
 
 msgctxt "#12"
 msgid "Tuesday"
-msgstr "Utorak"
+msgstr "уторак"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "Sreda"
+msgstr "среда"
 
 msgctxt "#14"
 msgid "Thursday"
-msgstr "Četvrtak"
+msgstr "четвртак"
 
 msgctxt "#15"
 msgid "Friday"
-msgstr "Petak"
+msgstr "петак"
 
 msgctxt "#16"
 msgid "Saturday"
-msgstr "Subota"
+msgstr "субота"
 
 msgctxt "#17"
 msgid "Sunday"
-msgstr "Nedelja"
+msgstr "недеља"
 
 msgctxt "#21"
 msgid "January"
-msgstr "januar"
+msgstr "јануар"
 
 msgctxt "#22"
 msgid "February"
-msgstr "februar"
+msgstr "фебруар"
 
 msgctxt "#23"
 msgid "March"
-msgstr "mart"
+msgstr "март"
 
 msgctxt "#24"
 msgid "April"
-msgstr "april"
+msgstr "април"
 
 msgctxt "#25"
 msgid "May"
-msgstr "maj"
+msgstr "мај"
 
 msgctxt "#26"
 msgid "June"
-msgstr "jun"
+msgstr "јун"
 
 msgctxt "#27"
 msgid "July"
-msgstr "jul"
+msgstr "јул"
 
 msgctxt "#28"
 msgid "August"
-msgstr "avgust"
+msgstr "август"
 
 msgctxt "#29"
 msgid "September"
-msgstr "septembar"
+msgstr "септембар"
 
 msgctxt "#30"
 msgid "October"
-msgstr "oktobar"
+msgstr "октобар"
 
 msgctxt "#31"
 msgid "November"
-msgstr "novembar"
+msgstr "новембар"
 
 msgctxt "#32"
 msgid "December"
-msgstr "decembar"
+msgstr "децембар"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "pon"
+msgstr "пон"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "uto"
+msgstr "уто"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "sre"
+msgstr "сре"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "čet"
+msgstr "чет"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "pet"
+msgstr "пет"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "sub"
+msgstr "суб"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "ned"
+msgstr "нед"
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "jan"
+msgstr "јан"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "feb"
+msgstr "феб"
 
 msgctxt "#53"
 msgid "Mar"
-msgstr "mar"
+msgstr "мар"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "apr"
+msgstr "апр"
 
 msgctxt "#55"
 msgid "May"
-msgstr "maj"
+msgstr "мај"
 
 msgctxt "#56"
 msgid "Jun"
-msgstr "jun"
+msgstr "јун"
 
 msgctxt "#57"
 msgid "Jul"
-msgstr "jul"
+msgstr "јул"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "avg"
+msgstr "авг"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "sep"
+msgstr "сеп"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "okt"
+msgstr "окт"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "nov"
+msgstr "нов"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "dec"
+msgstr "дец"
 
 msgctxt "#71"
 msgid "N"
-msgstr "S"
+msgstr "С"
 
 msgctxt "#72"
 msgid "NNE"
-msgstr "SSI"
+msgstr "ССИ"
 
 msgctxt "#73"
 msgid "NE"
-msgstr "SI"
+msgstr "СИ"
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ISI"
+msgstr "ИСИ"
 
 msgctxt "#75"
 msgid "E"
-msgstr "I"
+msgstr "И"
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "IJI"
+msgstr "ИЈИ"
 
 msgctxt "#77"
 msgid "SE"
-msgstr "JI"
+msgstr "ЈИ"
 
 msgctxt "#78"
 msgid "SSE"
-msgstr "JJI"
+msgstr "ЈЈИ"
 
 msgctxt "#79"
 msgid "S"
-msgstr "J"
+msgstr "Ј"
 
 msgctxt "#80"
 msgid "SSW"
-msgstr "JJZ"
+msgstr "ЈЈЗ"
 
 msgctxt "#81"
 msgid "SW"
-msgstr "JZ"
+msgstr "ЈЗ"
 
 msgctxt "#82"
 msgid "WSW"
-msgstr "ZJZ"
+msgstr "ЗЈЗ"
 
 msgctxt "#83"
 msgid "W"
-msgstr "Z"
+msgstr "З"
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "ZSZ"
+msgstr "ЗСЗ"
 
 msgctxt "#85"
 msgid "NW"
-msgstr "SZ"
+msgstr "СЗ"
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "SSZ"
+msgstr "ССЗ"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "Prikaz: Autom."
+msgstr "Приказ: аутом."
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Prikaz: Autom. veliko"
+msgstr "Приказ: аутом. велико"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Prikaz: Ikone"
+msgstr "Приказ: иконе"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "Prikaz: Spisak"
+msgstr "Приказ: списак"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Analiziraj"
+msgstr "Скенирај"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Složi po: Imenu"
+msgstr "Поређај по: имену"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Složi po: Datumu"
+msgstr "Поређај по: датуму"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Složi po: Veli."
+msgstr "Поређај по: велич."
 
 msgctxt "#106"
 msgid "No"
-msgstr "Ne"
+msgstr "Не"
 
 msgctxt "#107"
 msgid "Yes"
-msgstr "Da"
+msgstr "Да"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Reprod. slajdova"
+msgstr "Покретни приказ"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "Napravi omote"
+msgstr "Направи омоте"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "Napravi sličice"
+msgstr "Направи сличице"
 
 msgctxt "#111"
 msgid "Shortcuts"
-msgstr "Prečice"
+msgstr "Пречице"
 
 msgctxt "#112"
 msgid "Paused"
-msgstr "Pauzirano"
+msgstr "Паузирано"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Ažuriranje nije uspelo"
+msgstr "Ажурирање није успело"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Instalacija nije uspela"
+msgstr "Инсталација није успела"
 
 msgctxt "#115"
 msgid "Copy"
-msgstr "Kopiraj"
+msgstr "Копирај"
 
 msgctxt "#116"
 msgid "Move"
-msgstr "Premesti"
+msgstr "Премести"
 
 msgctxt "#117"
 msgid "Delete"
-msgstr "Izbriši"
+msgstr "Обриши"
 
 msgctxt "#118"
 msgid "Rename"
-msgstr "Preimenuj"
+msgstr "Преименуј"
 
 msgctxt "#119"
 msgid "New folder"
-msgstr "Nova fascikla"
+msgstr "Нова фасцикла"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Potvrdite kopiranje"
+msgstr "Потврди копирање"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Potvrdite premeštanje"
+msgstr "Потврди премештање"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Potvrđujete li brisanje?"
+msgstr "Потврдити премештање?"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "Kopiranje ovih datoteka?"
+msgstr "Копирати ове датотеке?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "Premeštanje ovih datoteka?"
+msgstr "Преместити ове датотеке?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Brisanje ovih datoteka? - Nakon brisanja, datoteke nije moguće povratiti!"
+msgstr "Обрисати ове датотеке? Ова радња се не може опозвати."
 
 msgctxt "#126"
 msgid "Status"
-msgstr "Stanje"
+msgstr "Статус"
 
 msgctxt "#127"
 msgid "Objects"
-msgstr "Objekata"
+msgstr "Објеката"
 
 msgctxt "#128"
 msgid "General"
-msgstr "Opšte"
+msgstr "Опште"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Projekcija slajdova"
+msgstr "Покретни приказ"
 
 msgctxt "#130"
 msgid "System info"
-msgstr "Podaci o sistemu"
+msgstr "Подаци о систему"
 
 msgctxt "#131"
 msgid "Display"
-msgstr "Prikaz"
+msgstr "Приказ"
 
 msgctxt "#132"
 msgid "Albums"
-msgstr "Albumi"
+msgstr "Албуми"
 
 msgctxt "#133"
 msgid "Artists"
-msgstr "Izvođači"
+msgstr "Извођачи"
 
 msgctxt "#134"
 msgid "Songs"
-msgstr "Numere"
+msgstr "Песме"
 
 msgctxt "#135"
 msgid "Genres"
-msgstr "Žanrovi"
+msgstr "Жанрови"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Spiskovi za repro."
+msgstr "Спискови нумера"
 
 msgctxt "#137"
 msgid "Search"
-msgstr "Pretraži"
+msgstr "Претражи"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Podaci o sistemu"
+msgstr "Подаци о систему"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "Temperature:"
+msgstr "Температуре:"
 
 msgctxt "#140"
 msgid "CPU:"
-msgstr "Centralnog procesora:"
+msgstr "Централни процесор:"
 
 msgctxt "#141"
 msgid "GPU:"
-msgstr "Grafičkog procesora:"
+msgstr "Графички процесор:"
 
 msgctxt "#142"
 msgid "Time:"
-msgstr "Vreme:"
+msgstr "Време:"
 
 msgctxt "#143"
 msgid "Current:"
-msgstr "Trenutno:"
+msgstr "Тренутно:"
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "Izdanje:"
+msgstr "Израда:"
 
 msgctxt "#145"
 msgid "Network:"
-msgstr "Mreža:"
+msgstr "Мрежа:"
 
 msgctxt "#146"
 msgid "Type:"
-msgstr "Tip:"
+msgstr "Врста:"
 
 msgctxt "#147"
 msgid "Static"
-msgstr "Statički"
+msgstr "Статички"
 
 msgctxt "#148"
 msgid "DHCP"
@@ -476,295 +475,295 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC adresa"
+msgstr "MAC адреса"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP adresa"
+msgstr "IP адреса"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "Veza:"
+msgstr "Веза:"
 
 msgctxt "#152"
 msgid "Half duplex"
-msgstr "Polu dupleks"
+msgstr "Полудуплекс"
 
 msgctxt "#153"
 msgid "Full duplex"
-msgstr "Puni dupleks"
+msgstr "Пуни дуплекс"
 
 msgctxt "#154"
 msgid "Storage"
-msgstr "Skladišta"
+msgstr "Складиште"
 
 msgctxt "#155"
 msgid "Drive"
-msgstr "Uređaj"
+msgstr "Уређај"
 
 msgctxt "#156"
 msgid "Free"
-msgstr "Slobodno"
+msgstr "Слободно"
 
 msgctxt "#157"
 msgid "Video"
-msgstr "Video"
+msgstr "Видео"
 
 msgctxt "#158"
 msgid "Free memory"
-msgstr "Slobodna memorija"
+msgstr "Слободна меморија"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "nije uspostavljena"
+msgstr "није успостављена"
 
 msgctxt "#160"
 msgid "Free"
-msgstr "slobodno"
+msgstr "слободно"
 
 msgctxt "#161"
 msgid "Unavailable"
-msgstr "Nedostupno"
+msgstr "Недоступно"
 
 msgctxt "#162"
 msgid "Tray open"
-msgstr "Vrata otvorena"
+msgstr "Касета отворена"
 
 msgctxt "#163"
 msgid "Reading"
-msgstr "Čitanje"
+msgstr "Читање"
 
 msgctxt "#164"
 msgid "No disc"
-msgstr "Disk nije umetnut"
+msgstr "Нема диска"
 
 msgctxt "#165"
 msgid "Disc present"
-msgstr "Disk je prepoznat"
+msgstr "Диск је препознат"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "Maska"
+msgstr "Маска"
 
 msgctxt "#169"
 msgid "Resolution"
-msgstr "Rezolucija"
+msgstr "Резолуција"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Prilagodi brzinu osvežavanja monitoru"
+msgstr "Прилагоди брзину освежавања монитора видео-снимку"
 
 msgctxt "#172"
 msgid "Release date"
-msgstr "Datum izdavanja"
+msgstr "Датум издавања"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "Prikaži 4:3 video materijal kao"
+msgstr "Прикажи 4:3 видео-снимке као"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Raspoloženja"
+msgstr "Расположења"
 
 msgctxt "#176"
 msgid "Styles"
-msgstr "Stilovi"
+msgstr "Стилови"
 
 msgctxt "#179"
 msgid "Song"
-msgstr "Pesma"
+msgstr "Песма"
 
 msgctxt "#180"
 msgid "Duration"
-msgstr "Trajanje"
+msgstr "Трајање"
 
 msgctxt "#181"
 msgid "Select album"
-msgstr "Izaberite album"
+msgstr "Изаберите албум"
 
 msgctxt "#182"
 msgid "Tracks"
-msgstr "Numere"
+msgstr "Записи"
 
 msgctxt "#183"
 msgid "Review"
-msgstr "Pregled"
+msgstr "Преглед"
 
 msgctxt "#184"
 msgid "Refresh"
-msgstr "Osveži"
+msgstr "Освежи"
 
 msgctxt "#185"
 msgid "Searching album"
-msgstr "Pretraživanje albuma"
+msgstr "Тражим албум"
 
 msgctxt "#186"
 msgid "OK"
-msgstr "U redu"
+msgstr "У реду"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Ni jedan album nije pronađen!"
+msgstr "Ниједан албум није пронађен."
 
 msgctxt "#188"
 msgid "Select all"
-msgstr "Izaberi sve"
+msgstr "Изабери све"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Analiziranje informacija"
+msgstr "Скенирање података о албуму"
 
 msgctxt "#190"
 msgid "Save"
-msgstr "Sačuvaj"
+msgstr "Сачувај"
 
 msgctxt "#191"
 msgid "Shuffle"
-msgstr "Nasumično"
+msgstr "Насумично"
 
 msgctxt "#192"
 msgid "Clear"
-msgstr "Poništi"
+msgstr "Очисти"
 
 msgctxt "#193"
 msgid "Scan"
-msgstr "Analiziraj"
+msgstr "Скенирај"
 
 msgctxt "#194"
 msgid "Searching..."
-msgstr "Pretraživanje..."
+msgstr "Тражим…"
 
 msgctxt "#195"
 msgid "No info found!"
-msgstr "Nisu pronađene informacije!"
+msgstr "Подаци нису пронађени."
 
 msgctxt "#196"
 msgid "Select movie:"
-msgstr "Izaberite film:"
+msgstr "Изаберите филм:"
 
 msgctxt "#197"
 msgid "Querying %s info"
-msgstr "Zahtevanje podataka o %s"
+msgstr "Захтевам податке о %s"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "Učitavanje podataka o filmu"
+msgstr "Учитавам податке о филму"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "Tagline"
+msgstr "Слоган"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Kratak opis"
+msgstr "Кратак опис"
 
 msgctxt "#205"
 msgid "Votes"
-msgstr "Glasova"
+msgstr "Гласова"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "Uloge"
+msgstr "Улоге"
 
 msgctxt "#207"
 msgid "Plot"
-msgstr "Opis"
+msgstr "Опис"
 
 msgctxt "#208"
 msgid "Play"
-msgstr "Reprodukuj"
+msgstr "Пусти"
 
 msgctxt "#209"
 msgid "Next"
-msgstr "Sledeće"
+msgstr "Следеће"
 
 msgctxt "#210"
 msgid "Previous"
-msgstr "Prethodno"
+msgstr "Претходно"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Prilagodite korisničko okruženje..."
+msgstr "Калибриши корисничко окружење…"
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Kalibracija slike..."
+msgstr "Калибрација видеа…"
 
 msgctxt "#215"
 msgid "Soften"
-msgstr "Omekšano"
+msgstr "Омекшано"
 
 msgctxt "#216"
 msgid "Zoom amount"
-msgstr "Nivo uvećanja"
+msgstr "Ниво увећања"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Odnos pikselizacije"
+msgstr "Однос пиксела"
 
 msgctxt "#218"
 msgid "DVD drive"
-msgstr "DVD uređaj"
+msgstr "DVD уређај"
 
 msgctxt "#219"
 msgid "Please insert disc"
-msgstr "Molimo, umetnite disk"
+msgstr "Убаците диск"
 
 msgctxt "#220"
 msgid "Remote share"
-msgstr "Daljinsko deljenje"
+msgstr "Даљинско дељење"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Mreža nije povezana"
+msgstr "Мрежа није повезана"
 
 msgctxt "#222"
 msgid "Cancel"
-msgstr "Otkaži"
+msgstr "Откажи"
 
 msgctxt "#224"
 msgid "Speed"
-msgstr "Brzina"
+msgstr "Брзина"
 
 msgctxt "#225"
 msgid "Vertical Shift"
-msgstr "Vertikalno Pomeranje"
+msgstr "Усправно померање"
 
 msgctxt "#226"
 msgid "Test patterns..."
-msgstr "Isprobaj šablon..."
+msgstr "Тестирај обрасце…"
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Potraži imena numera, muzičkog CD-a, na freedb.org"
+msgstr "Потражи имена нумера са аудио CD-а на freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
-msgstr "Izmešaj spisak pri učitavanju"
+msgstr "Измешај списак нумера при учитавању"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "Vreme usporenja HDD-a"
+msgstr "Време успорења чврстог диска"
 
 msgctxt "#230"
 msgid "Video filters"
-msgstr "Video filteri"
+msgstr "Видео-филтери"
 
 msgctxt "#231"
 msgid "None"
-msgstr "Ništa"
+msgstr "Нема"
 
 msgctxt "#232"
 msgid "Point"
-msgstr "Tačka"
+msgstr "Тачка"
 
 msgctxt "#233"
 msgid "Linear"
-msgstr "Linearno"
+msgstr "Линеарно"
 
 msgctxt "#234"
 msgid "Anisotropic"
-msgstr "Anizotropija"
+msgstr "Анизотропично"
 
 msgctxt "#235"
 msgid "Quincunx"
@@ -3093,6 +3092,10 @@ msgstr "grad"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "grmljavina"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "od"
 
 msgctxt "#1446"
 msgid "Unknown"

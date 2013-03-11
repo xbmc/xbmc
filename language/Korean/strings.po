@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1240,7 +1239,7 @@ msgstr "프로그램"
 
 msgctxt "#351"
 msgid "Off"
-msgstr "사용 안 함"
+msgstr "끄기"
 
 msgctxt "#352"
 msgid "Dim"
@@ -1344,7 +1343,7 @@ msgstr "비"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "천둥"
+msgstr "가벼운"
 
 msgctxt "#378"
 msgid "AM"
@@ -1488,7 +1487,7 @@ msgstr "이 앨범의 리뷰 없음"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "미리보기 다운로드중..."
+msgstr "미리보기 다운로드 중..."
 
 msgctxt "#416"
 msgid "Not available"
@@ -1788,7 +1787,7 @@ msgstr "조정"
 
 msgctxt "#497"
 msgid "Show file extensions"
-msgstr "파일 확장자 보이기"
+msgstr "파일 확장자 보기"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -2336,7 +2335,7 @@ msgstr "라이브러리 업데이트"
 
 msgctxt "#654"
 msgid "Show debug info"
-msgstr "디버그 정보 보이기"
+msgstr "디버그 정보 보기"
 
 msgctxt "#655"
 msgid "Browse for executable"
@@ -2864,7 +2863,7 @@ msgstr "%s 소스 수정"
 
 msgctxt "#1029"
 msgid "Enter the new label"
-msgstr "새 라벨 입력"
+msgstr "새 레이블 입력"
 
 msgctxt "#1030"
 msgid "Browse for image"
@@ -2948,7 +2947,7 @@ msgstr "스크립트 설정"
 
 msgctxt "#1050"
 msgid "Singles"
-msgstr "단일"
+msgstr "싱글"
 
 msgctxt "#1051"
 msgid "Enter web address"
@@ -3500,7 +3499,7 @@ msgstr "환경설정"
 
 msgctxt "#10508"
 msgid "Weather forecast"
-msgstr "일기예보"
+msgstr "닐씨예보"
 
 msgctxt "#10509"
 msgid "Network gaming"
@@ -3876,7 +3875,7 @@ msgstr "- 최소 파일 재생시간:"
 
 msgctxt "#13005"
 msgid "Shutdown"
-msgstr "종료"
+msgstr "시스템 종료"
 
 msgctxt "#13008"
 msgid "Shutdown function"
@@ -3996,7 +3995,7 @@ msgstr "사용 안 함"
 
 msgctxt "#13114"
 msgid "Enabled for SD content"
-msgstr "SD 컨텐츠 사용함"
+msgstr "SD 콘텐츠 사용함"
 
 msgctxt "#13115"
 msgid "Always enabled"
@@ -4276,11 +4275,11 @@ msgstr "역방향 문자열의 뒤집기 사용"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
-msgstr "RSS 뉴스 피드 보이기"
+msgstr "RSS 뉴스 피드 보기"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "상위 폴더 항목 보이기"
+msgstr "상위 폴더 항목 보기"
 
 msgctxt "#13307"
 msgid "Track naming template"
@@ -4392,7 +4391,7 @@ msgstr "아래로 이동"
 
 msgctxt "#13334"
 msgid "Edit label"
-msgstr "라벨 수정"
+msgstr "레이블 수정"
 
 msgctxt "#13335"
 msgid "Make default"
@@ -4440,7 +4439,7 @@ msgstr "IMDb 찾기..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#13350"
 msgid "Now playing..."
@@ -4600,7 +4599,7 @@ msgstr "%s 찾기"
 
 msgctxt "#13402"
 msgid "Show track position"
-msgstr "트랙 위치 보이기"
+msgstr "트랙 위치 보기"
 
 msgctxt "#13403"
 msgid "Clear default"
@@ -4856,11 +4855,11 @@ msgstr "연결재생 해제"
 
 msgctxt "#14003"
 msgid "Downloading playlist file..."
-msgstr "재생목록 파일 다운로드중..."
+msgstr "재생목록 파일 다운로드 중..."
 
 msgctxt "#14004"
 msgid "Downloading streams list..."
-msgstr "스트림 목록 다운로드중..."
+msgstr "스트림 목록 다운로드 중..."
 
 msgctxt "#14005"
 msgid "Parsing streams list..."
@@ -6100,7 +6099,7 @@ msgstr "채널 보기"
 
 msgctxt "#19050"
 msgid "Show visible channels"
-msgstr "볼수있는 채널 보이기"
+msgstr "볼 수 있는 채널 보기"
 
 msgctxt "#19051"
 msgid "Show hidden channels"
@@ -6404,7 +6403,7 @@ msgstr "대소문자 구분"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
-msgstr "채널 사용할수 없음"
+msgstr "채널 사용할 수 없음"
 
 msgctxt "#19137"
 msgid "No groups defined"
@@ -7608,11 +7607,11 @@ msgstr "시스템 정보 보기"
 
 msgctxt "#20086"
 msgid "Show available disc space C: E: F:"
-msgstr "C: E: F: 디스크의 남은 공간 보이기"
+msgstr "C: E: F: 디스크의 남은 공간 보기"
 
 msgctxt "#20087"
 msgid "Show available disc space E: F: G:"
-msgstr "E: F: G: 디스크의 남은 공간 보이기"
+msgstr "E: F: G: 디스크의 남은 공간 보기"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8236,7 +8235,7 @@ msgstr "검색에 파일이나 폴더 이름을 사용 하시겠습니까?"
 
 msgctxt "#20333"
 msgid "Set content"
-msgstr "컨텐츠 설정"
+msgstr "콘텐츠 설정"
 
 msgctxt "#20334"
 msgid "Folder"
@@ -8244,7 +8243,7 @@ msgstr "폴더"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "컨텐츠를 순환 찾기 하시겠습니까?"
+msgstr "콘텐츠를 순환 찾기 하겠습니까?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8372,7 +8371,7 @@ msgstr "* 모든 시즌"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "시청한것 숨기기"
+msgstr "시청한 것 숨기기"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -8404,7 +8403,7 @@ msgstr "영화 정보 다운로드"
 
 msgctxt "#20375"
 msgid "Unassign content"
-msgstr "컨텐츠 할당해제"
+msgstr "콘텐츠 할당해제"
 
 msgctxt "#20376"
 msgid "Original title"
@@ -8556,11 +8555,11 @@ msgstr "팬아트 가져오기"
 
 msgctxt "#20414"
 msgid "Show Fanart in video and music libraries"
-msgstr "비디오 및 음악 라이브러리에 팬아트 보이기"
+msgstr "비디오 및 음악 라이브러리에 팬아트 보기"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
-msgstr "새 컨텐츠 검색"
+msgstr "새 콘텐츠 검색"
 
 msgctxt "#20416"
 msgid "First aired"
@@ -8660,7 +8659,7 @@ msgstr "원격 팬아트"
 
 msgctxt "#20442"
 msgid "Change content"
-msgstr "컨텐츠 변경"
+msgstr "콘텐츠 변경"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
@@ -8748,7 +8747,7 @@ msgstr "%s 선택"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
-msgstr "숨김 파일 및 디렉터리 보이기"
+msgstr "숨김 파일 및 디렉터리 보기"
 
 msgctxt "#21331"
 msgid "TuxBox client"
@@ -8860,7 +8859,7 @@ msgstr "새 재생목록 이름 입력"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
-msgstr "파일 목록에서 \"소스 추가\" 버튼 보이기"
+msgstr "파일 목록에서 \"소스 추가\" 버튼 보기"
 
 msgctxt "#21383"
 msgid "Enable scrollbars"
@@ -8936,7 +8935,7 @@ msgstr "포함"
 
 msgctxt "#21401"
 msgid "does not contain"
-msgstr "포함안됨"
+msgstr "포함 안 함"
 
 msgctxt "#21402"
 msgid "is"
@@ -8948,11 +8947,11 @@ msgstr "은(는) 아님"
 
 msgctxt "#21404"
 msgid "starts with"
-msgstr "시작"
+msgstr "다음으로 시작"
 
 msgctxt "#21405"
 msgid "ends with"
-msgstr "종료"
+msgstr "다음으로 끝남"
 
 msgctxt "#21406"
 msgid "greater than"
@@ -9012,7 +9011,7 @@ msgstr "일치하는 값"
 
 msgctxt "#21421"
 msgid "Smart playlist rule"
-msgstr "지능형 재생목록 규칙"
+msgstr "스마트 재생목록 규칙"
 
 msgctxt "#21422"
 msgid "Match items where"
@@ -9056,7 +9055,7 @@ msgstr "내림차순"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
-msgstr "지능형 재생목록 수정"
+msgstr "스마트 재생목록 수정"
 
 msgctxt "#21433"
 msgid "Name of the playlist"
@@ -9076,7 +9075,7 @@ msgstr "%i 항목"
 
 msgctxt "#21437"
 msgid "New smart playlist..."
-msgstr "새 지능형 재생목록..."
+msgstr "새 스마트 재생목록..."
 
 msgctxt "#21438"
 msgid "%c Drive"
@@ -9153,6 +9152,10 @@ msgstr "연속 재생에 필요한 양에 도달하기 전에 캐시가 채워�
 msgctxt "#21456"
 msgid "External storage"
 msgstr "외부 저장장치"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "시청한 에피소드"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9480,7 +9483,7 @@ msgstr "활동기간"
 
 msgctxt "#21899"
 msgid "Label"
-msgstr "라벨"
+msgstr "레이블"
 
 msgctxt "#21900"
 msgid "Born/Formed"
@@ -9576,7 +9579,7 @@ msgstr "검은 여백 최소화시 가로세로 비 허용 오류"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
-msgstr "목록에 비디오 파일 보이기"
+msgstr "목록에 비디오 파일 보기"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
@@ -9616,7 +9619,7 @@ msgstr "노래방 제목 가져오기..."
 
 msgctxt "#22037"
 msgid "Show song selector automatically"
-msgstr "자동으로 노래 선택기 보이기"
+msgstr "자동으로 노래 선택기 보기"
 
 msgctxt "#22038"
 msgid "Export karaoke titles..."
@@ -9788,7 +9791,7 @@ msgstr "사용함"
 
 msgctxt "#24023"
 msgid "Add-on disabled"
-msgstr "추가기능 사용불가"
+msgstr "추가기능 사용 안 함"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -9852,7 +9855,7 @@ msgstr "압축 파일에서 설치"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
-msgstr "%i%% 다운로드중"
+msgstr "%i%% 다운로드 중"
 
 msgctxt "#24043"
 msgid "Available Updates"
@@ -10180,7 +10183,7 @@ msgstr "상세"
 
 msgctxt "#33030"
 msgid "Outlook"
-msgstr "아웃룩"
+msgstr "개황"
 
 msgctxt "#33031"
 msgid "Coverflow"
@@ -10721,3 +10724,7 @@ msgstr "TV와 리시버 장치"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "지원하지 않는 libCEC 버전. %x 는 XBMC가 지원하는 것보다 낮은 버전입니다 (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* 항목 폴더"

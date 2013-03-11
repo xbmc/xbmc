@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.2"
+  version="1.0.3"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -48,8 +48,11 @@
     <summary lang="sk">Fascinujúci šetrič s efektom častíc</summary>
     <summary lang="sl">Ohranjevalnik zaslona z učinkom hipnotičnih delčkov</summary>
     <summary lang="sv">En hypnotiserande partikeleffektskärmsläckare</summary>
+    <summary lang="ta_IN">மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான்</summary>
     <summary lang="uk">Заставка із частинок, що має гіпнотизуючий ефект</summary>
+    <summary lang="vi">Một trình bảo vệ màn hình với hiệu ứng thôi miên tạo từ các hạt</summary>
     <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
+    <summary lang="zh_TW">一個令人著迷的粒子效果的螢幕保護程式</summary>
     <description lang="af">Hierdie is 'n uiters betoverende deeltjie effek sluimerskerm. Jy sal vind dat jy 'n ongelooflike aantal verskillende patrone kan bewerkstellig.</description>
     <description lang="ar">أداة ساحرة جدا تؤثر بشاشة التوقف. ستجد أنك تستطيع أن تحقق عدد مذهل من الأنماط المختلفة.</description>
     <description lang="be">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
@@ -86,8 +89,11 @@
     <description lang="sk">Toto je veľmi fascinujúci šetrič s efektom častíc. Zistíte, že môžete dosiahnuť neskutočné číslo rôznych vzorov.</description>
     <description lang="sl">To je ohranjevalnik zaslona s presenetiljivim hipnotičnim učinkom delcev. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
     <description lang="sv">Detta är en väldigt hypnotiserande partikeleffektskärmsläckare. Du kommer att upptäcka att du kan åstadkomma ett häpnadsväckande antal olika mönster.</description>
+    <description lang="ta_IN">இது ஒருவிதமான மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான். நீங்கள் எண்ணற்ற அற்புதமான வெவ்வேறு வகைகளின் வடிவங்களை பார்க்கலாம்.</description>
     <description lang="uk">Це дуже гіпнотизуюча заставка із різноманітних ефектів частинок. Ви побачите надзвичайно велику кількість різноманітних візерунків.</description>
+    <description lang="vi">Đây là trình bảo vệ có hiệu ứng thôi miên cục kỳ lợi hại. Bạn sẽ thấy sự sáng tạo từ những kiểu kết hợp có thể là không giới hạn</description>
     <description lang="zh">这是一个非常迷人的粒子效果屏幕保护程序。你会发现你能看到惊人数量的不同图案。</description>
+    <description lang="zh_TW">這是一個非常令人著迷的粒子效果螢幕保護程式。您會發現可以達到一個另人驚豔的圖形數。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>

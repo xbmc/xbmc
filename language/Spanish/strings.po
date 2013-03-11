@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -4576,11 +4575,11 @@ msgstr "Ajustes predeterminados"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "No hay ajustes por defecto disponibles⏎ para esta visualización"
+msgstr "No hay ajustes por defecto disponibles\\n para esta visualización"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "No hay ajustes disponibles para esta visualización"
+msgstr "No hay ajustes disponibles\\n para esta visualización"
 
 msgctxt "#13391"
 msgid "Eject/Load"

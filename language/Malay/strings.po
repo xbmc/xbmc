@@ -1,0 +1,1406 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ms/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "Program"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Gambar"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "Video"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "Panduan TV"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "Seting"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "Pengurus Fail"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "Cuaca"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "xbmc media center"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "Isnin"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "Selasa"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "Rabu"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "Khamis"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "Jumaat"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "Sabtu"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "Ahad"
+
+msgctxt "#21"
+msgid "January"
+msgstr "Januari"
+
+msgctxt "#22"
+msgid "February"
+msgstr "Februari"
+
+msgctxt "#23"
+msgid "March"
+msgstr "Mac"
+
+msgctxt "#24"
+msgid "April"
+msgstr "April"
+
+msgctxt "#25"
+msgid "May"
+msgstr "Mei"
+
+msgctxt "#26"
+msgid "June"
+msgstr "Jun"
+
+msgctxt "#27"
+msgid "July"
+msgstr "Julai"
+
+msgctxt "#28"
+msgid "August"
+msgstr "Ogos"
+
+msgctxt "#29"
+msgid "September"
+msgstr "September"
+
+msgctxt "#30"
+msgid "October"
+msgstr "Oktober"
+
+msgctxt "#31"
+msgid "November"
+msgstr "November"
+
+msgctxt "#32"
+msgid "December"
+msgstr "Disember"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "Mon"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Tue"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Wed"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Thu"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Fri"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Sat"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "Sun"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Jan"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Feb"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Mar"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Apr"
+
+msgctxt "#55"
+msgid "May"
+msgstr "Mei"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Jun"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Jul"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Aug"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Sep"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Oct"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Dec"
+
+msgctxt "#71"
+msgid "N"
+msgstr "N"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "NNE"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "NE"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "ENE"
+
+msgctxt "#75"
+msgid "E"
+msgstr "E"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "ESE"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "SE"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "SSE"
+
+msgctxt "#79"
+msgid "S"
+msgstr "S"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "SSW"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "SW"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "WSW"
+
+msgctxt "#83"
+msgid "W"
+msgstr "W"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "WNW"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "NW"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "NNW"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Selatan"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Utara"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Barat"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Timur"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Pembolehubah"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "Lihat: Auto"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "Lihat: Auto Besar"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "Lihat: Ikon"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "Lihat: Senarai"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "Imbas"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "Isihan: Nama"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "Isihan: Tarikh"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "Isihan: Saiz"
+
+msgctxt "#106"
+msgid "No"
+msgstr "Tidak"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "Ya"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "Berhenti Sekejap"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Pengemaskinian tidak berjaya"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Instalasi tidak berjaya"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "Salin"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "Pindah"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "Hapus"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "Menamakan Semula"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "Folder Baru"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "Sahkan Menyalin Fail"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "Sahkan Pindahan Fail"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "Hapuskan Fail?"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "Salin fail ini?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "Pindahkan fail ini?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Hapuskan fail ini? - Fail yang dihapuskan tidak boleh dicari semula!"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "Info sistem"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "Album"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "Artis"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "Lagu"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "Genre"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "Cari"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "Informasi Sistem"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "Suhu:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "Masa:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "Rangkaian:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "Jenis:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "Statik:"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "Alamat MAC"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "Alamat IP"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Pautan:"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "Dupleks Setengah"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "Dupleks Penuh"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "Simpanan"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "Pemacu"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "Bebas"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "Ingatan Bebas"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "Tiada pautan"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "Bebas"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "Tidak terdapat"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "Buka Talam"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "Membaca"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "Tiada disk"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "Disk wujud"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "Kulit"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Batalkan operasi fail"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "Resolusi"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "Tarikh Keluaran"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "Paparkan video 4:3 sebagai"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "Stail"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "Lagu"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "Tempoh"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "Pilih Album"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "Trek"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "Ulasan"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "Penyegaran"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "Mencari Album"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "Tiada album dijumpai!"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "Pilih Semua"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "Mengimbas info media"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "Simpan"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "Imbas"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "Mencari.."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "Tiada Info dijumpai!"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "Pilih filem:"
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "Mencari info %s"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "Memuatkan butiran filem"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Antara Muka Web"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "Tagline"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "Plot kasar"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "Undian"
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "Barisan Pelakon"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "Plot"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Main"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "Seterusnya"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "Sebelumnya"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "Mengkalibrasi antara muka pengguna..."
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "Mengkalibrasi video..."
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "Jumlah zum"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "Nisbah piksel"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "Pemacu DVD"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "Sila masukan disk"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "Perkongsian jauh"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "Tiada sambungan rangkaian"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "Batal"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "Kelajuan"
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Anjakan Tegak"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "Menguji corak..."
+
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Mencari nama trek CD audio dari freedb.org"
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "Penyaring video"
+
+msgctxt "#231"
+msgid "None"
+msgstr "Tiada"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "Menunjuk"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "Linear"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "Anisotropik"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Siku keluang"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Gaussian cubic"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Proses Pengecilan"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Proses Pembesaran"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "Mod Paparan"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Skrin Penuh #%d "
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "Windowed"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Kadar Segar Semula"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Skrin Penuh"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Pensaizan: (%i,%i)->(%i,%i) (Zumx%2.2f) AR:%2.2f:1 (Piksel: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "Skrip"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "Bahasa"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "Visualisasi"
+
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "Pilih destinasi direktori"
+
+msgctxt "#252"
+msgid "Output stereo to all speakers"
+msgstr "Output stereo ke semua pembesar suara"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "Jumlah saluran"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "Mengambil Informasi CD"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "Error"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "Bolehkan membaca tag"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "Membuka"
+
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "Tunggu untuk mula"
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "Output skrip"
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "Benarkan kawalan XBMC melalui HTTP"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "Rakam"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "Berhenti Rakam"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "Isihan: Masa"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "Isihan: Tajuk"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "Isihan: Artis"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "Isihan: Album"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "100 Teratas"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "Program"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "Isihan: Fail"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "Isihan: Nama"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "Isihan: Tahun"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Isihan: Rating"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "Cuaca"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "Isihan: DVD#"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Isihan: Jenis"
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Isihan: Penggunaan"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Isihan: %s"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Panduan isihan"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Kaedah isihan"
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/sampel"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Kadar sampel"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Zum"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "Zum Lebar"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "Ribut Petir"
+
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Cetek"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Mendung"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Ketulan"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Ribut"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Asap"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Volkano"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Abu"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Meluas"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Debu"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Pasir"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Semburan"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Berpusing"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Ribut Pasir"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Bertiup"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Kecil"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "dan"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Slit"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "dengan"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Peluang"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Corong"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Awan"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Tidak Diketahui"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Presipitasi"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Separa"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Senarai kosong"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "Program"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "Seting"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "Program"
+
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Mengemaskini perpustakaan karya seni untuk video"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Memproses %s"
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Tidak memerlukan sebarang muat turun."
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Adakah anda ingin mengemaskinikannya sekarang?"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Tetapkan nilai lalai untuk semua video"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "Cuaca"
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "Kesan zum"
+
+msgctxt "#13399"
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Abaikan artikel apabila mengisih (cth: \"the\")"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Mainkan video seterusnya secara automatik"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Mainkan ini sahaja"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Pilih karya seni"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Karya seni semasa"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Capaian jauh karya seni"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Karya seni tempatan"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Tiada karya seni"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Main"
+
+msgctxt "#16018"
+msgid "None"
+msgstr "Tiada"
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Cari program yang sama"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Seterusnya"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Isihan: Saluran"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Jangan tayangkan label  'no information available'"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Jangan tayangkan label amaran 'connection lost'"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "*semua rakaman"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Amaran konflik"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Ralat konflik"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Konflik merakam"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Ralat semasa merakam"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Lain-lain/Tidak diketahui"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Filem/Drama"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Detektif/Ngeri"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Pengembaraan/Barat/Perang"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Sains Fiksyen/Fantasi/Seram"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komedi"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Lipur Lara/Mélodrama/Budaya Rakyat"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Percintaan"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Serius/Klasik/Keagamaan/Filem/Drama Sejarah"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Filem/Drama Dewasa"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Berita Semasa"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Berita Cuaca"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Berita Majalah"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentari"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Perbincangan/Temu Bual/Debat"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Rancangan/Rancangan Mainan Akal"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Rancangan Mainan Akal/Kuiz/Pertandingan"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Pertunjukan Aneka Ragam"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Rancangan Temu Bual"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sukan"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Peristiwa Khas"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Majalah Sukan"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Bola Sepak"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tenis/Skuash"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Sukan Berpasukan"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Olahraga"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Sukan Bermotor"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Sukan Air"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Sukan Musim Sejuk"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Sukan Berkuda"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Sukan Seni Mempertahankan Diri"
+
+msgctxt "#20109"
+msgid "- Zoom"
+msgstr "- Zum"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Gambar Android"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Gambar Android"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Aplikasi Android"
+
+msgctxt "#20316"
+msgid "Sort by: ID"
+msgstr "Isihan: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Mengimbas filem menggunakan %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Mengimbas video musik menggunakan %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Mengimbas rancangan TV menggunakan %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Mengimbas artis menggunakan %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Mengimbas album menggunakan %s"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Tag"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Tambah %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Keluarkan %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Tag baru..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "Tag dengan nama %s sudah wujud."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Pilih %s"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Simpanan Luaran."
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Kiraan episod yang telah dilihat"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f ke %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d ke %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s ke %s"
+
+msgctxt "#21838"
+msgid "Digital zoom"
+msgstr "Zum Digital"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Pengskalaan Teleteks ke 4:3"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "klien PVR"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "Cuaca"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Servis untuk informasi cuaca"
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Abaikan"
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr "Apabila TV dimatikan"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "Sambungan hilang"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Pengguna ini tidak mempunyai kebenaran untuk mengakses adapter CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "Port ini sibuk. Hanya satu program boleh mengakses adapter CEC"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "Sentiasa"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"

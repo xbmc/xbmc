@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -459,7 +458,7 @@ msgstr "[B]AJUSTES DE SERVIÇOS[/B][CR][CR]Configure o controle do XBMC via UPnP
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Executar ajuda primeiro..."
+msgstr "Ajuda de primeira execução..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."

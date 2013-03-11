@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -20,3 +19,7 @@ msgstr ""
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "കുറുക്കുവഴി"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "വ്യക്തത"

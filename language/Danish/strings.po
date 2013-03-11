@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2900,15 +2899,15 @@ msgstr "Favoritter"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Video Add-ons"
+msgstr "Video Addons"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Musik Add-ons"
+msgstr "Musik Addons"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Billede Add-ons"
+msgstr "Billede Addons"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -2924,7 +2923,7 @@ msgstr "Hentede %i af %i emner"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
-msgstr "Program Add-ons"
+msgstr "Program Addons"
 
 msgctxt "#1044"
 msgid "Set plugin thumb"
@@ -2932,7 +2931,7 @@ msgstr "Vælg miniaturebillede til plugin"
 
 msgctxt "#1045"
 msgid "Add-on settings"
-msgstr "Indstillinger til Add-ons"
+msgstr "Indstillinger til Addons"
 
 msgctxt "#1046"
 msgid "Access points"
@@ -3464,7 +3463,7 @@ msgstr "Indstillinger - Profiler"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr "Add-on katalog"
+msgstr "Addon katalog"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -6764,7 +6763,7 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Intet PVR-add-on kunne aktiveres. Tjek dine indstillinger eller log'en for mere information."
+msgstr "Intet PVR-addon kunne aktiveres. Tjek dine indstillinger eller log'en for mere information."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6808,7 +6807,7 @@ msgstr "Vis en besked ved opdatering af timer"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Brug kanalnumre fra backend (fungerer kun med 1 aktiveret PVR add-on)"
+msgstr "Brug kanalnumre fra backend (fungerer kun med 1 aktiveret PVR addon)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6832,7 +6831,7 @@ msgstr "Starter baggrundstråde"
 
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
-msgstr "Intet PVR add-on aktiveret"
+msgstr "Intet PVR-addon aktiveret"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -6840,7 +6839,7 @@ msgstr "PVR-håndteringen er blevet aktiveret uden et"
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "aktiveret PVR-add-on. Aktivér mindst én add-on"
+msgstr "aktiveret PVR-addon. Aktiver mindst én addon"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6956,7 +6955,7 @@ msgstr "* Alle optagelser"
 
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
-msgstr "Ingen PVR-add-ons kunne findes"
+msgstr "Ingen PVR-addons kunne findes"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -6964,7 +6963,7 @@ msgstr "Du skal bruge en tuner, backend-software og en"
 
 msgctxt "#19273"
 msgid "add-on for the backend to be able to use PVR."
-msgstr "add-on, som muliggør at backend'en kan bruge PVR."
+msgstr "addon, som muliggør at backend'en kan bruge PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9736,19 +9735,19 @@ msgstr "Tryk OK når afspilningen er slut"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr "Add-on"
+msgstr "Addon"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Add-ons"
+msgstr "Addons"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr "Indstillinger til Add-ons"
+msgstr "Indstillinger til Addons"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "Add-on-information"
+msgstr "Addon-information"
 
 msgctxt "#24005"
 msgid "Media sources"
@@ -9772,7 +9771,7 @@ msgstr "Visualisering"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr "Add-on fjernlager"
+msgstr "Addon-fjernlager"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -9820,7 +9819,7 @@ msgstr "Aktiver"
 
 msgctxt "#24023"
 msgid "Add-on disabled"
-msgstr "Add-on deaktiveret"
+msgstr "Addon deaktiveret"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -9836,7 +9835,7 @@ msgstr "Vejrinformationstjeneste"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
-msgstr "Denne Add-on kan ikke konfigureres"
+msgstr "Denne Addon kan ikke konfigureres"
 
 msgctxt "#24031"
 msgid "Error loading settings"
@@ -9844,11 +9843,11 @@ msgstr "Kunne ikke indlæse indstillingerne"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "Alle Add-ons"
+msgstr "Alle Addons"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "Hent Add-ons"
+msgstr "Hent Addons"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -9872,7 +9871,7 @@ msgstr "Installer"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Deaktiverede Add-ons"
+msgstr "Deaktiverede Addons"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -9896,15 +9895,15 @@ msgstr "Afhængigheder ikke opfyldt"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
-msgstr "Add-on har ikke den korrekte struktur"
+msgstr "Addon har ikke den korrekte struktur"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed add-on(s)"
-msgstr "%s bliver brugt af det/de følgende installerede add-on(s)"
+msgstr "%s bliver brugt af det/de følgende installerede addon(s)"
 
 msgctxt "#24047"
 msgid "This add-on cannot be uninstalled"
-msgstr "Denne add-on kan ikke afinstalleres"
+msgstr "Denne addon kan ikke afinstalleres"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9912,7 +9911,7 @@ msgstr "Tilbagerulning"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
-msgstr "Tilgængelige Add-ons"
+msgstr "Tilgængelige Addons"
 
 msgctxt "#24051"
 msgid "Version:"
@@ -9932,19 +9931,19 @@ msgstr "Ændringslog"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "Vil du aktivere denne Add-on?"
+msgstr "Vil du aktivere denne Addon?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "Vil du deaktivere denne Add-on?"
+msgstr "Vil du deaktivere denne Addon?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Opdatering til Add-on tilgængelig!"
+msgstr "Opdatering til Addon tilgængelig!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Aktiverede Add-ons"
+msgstr "Aktiverede Addons"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -9952,19 +9951,19 @@ msgstr "Automatisk opdatering"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Add-on aktiveret"
+msgstr "Addon aktiveret"
 
 msgctxt "#24065"
 msgid "Add-on updated"
-msgstr "Add-on opdateret"
+msgstr "Addon opdateret"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Annuller hent af Add-on?"
+msgstr "Annuller hent af Addon?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Henter Add-ons i øjeblikket"
+msgstr "Henter Addons i øjeblikket"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -9976,7 +9975,7 @@ msgstr "Opdater"
 
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
-msgstr "Add-on kunne ikke indlæses."
+msgstr "Addon kunne ikke indlæses."
 
 msgctxt "#24071"
 msgid "An unknown error has occurred."
@@ -10000,7 +9999,7 @@ msgstr "Deaktiver"
 
 msgctxt "#24076"
 msgid "Add-on Required"
-msgstr "Add-on krævet"
+msgstr "Addon krævet"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -10008,11 +10007,11 @@ msgstr "Prøv at oprette forbindelse igen?"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
-msgstr "Add-on genstarter"
+msgstr "Addon genstarter"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Lås håndtering af Add-ons"
+msgstr "Lås håndtering af Addons"
 
 msgctxt "#24094"
 msgid "(current)"
@@ -10024,7 +10023,7 @@ msgstr "(sortlistet)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr "Add-on er markeret som ødelagt i fjernlageret."
+msgstr "Addon er markeret som ødelagt i fjernlageret."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10040,11 +10039,11 @@ msgstr "Vil du skifte til dette skin?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "For at benytte denne funktion må du hente en Add-on:"
+msgstr "For at benytte denne funktion må du hente en Addon:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Vil du hente denne Add-on?"
+msgstr "Vil du hente denne Addon?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"

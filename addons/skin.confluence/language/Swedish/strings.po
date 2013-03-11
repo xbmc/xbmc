@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -119,11 +118,11 @@ msgstr "Sluttid"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sortering: Stigande"
+msgstr "Sortera: Stigande"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sortering: Fallande"
+msgstr "Sortera: Fallande"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -219,7 +218,7 @@ msgstr "Vädersida"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Visa bakgrund \"Nu spelas\" filmer"
+msgstr "Visa bakgrund i \"Nu spelas\" filmer"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"

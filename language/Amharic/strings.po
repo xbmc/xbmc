@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -646,6 +645,10 @@ msgctxt "#210"
 msgid "Previous"
 msgstr "ቀደም ያለው "
 
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "ቪዲዮ ማስተካከያ..."
+
 msgctxt "#216"
 msgid "Zoom amount"
 msgstr "ማሳያ መጠን"
@@ -830,6 +833,10 @@ msgctxt "#292"
 msgid "Audio"
 msgstr "ድምፅ "
 
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "ንዑስ አርእስቶችን መቃኛ"
+
 msgctxt "#294"
 msgid "Create bookmark"
 msgstr "ምልክት ማድረጊያ መፍጠሪያ"
@@ -837,6 +844,10 @@ msgstr "ምልክት ማድረጊያ መፍጠሪያ"
 msgctxt "#296"
 msgid "Clear bookmarks"
 msgstr "ምልክት ማድረጊያውን ማጽጃ "
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "ድምፅ ማካካሻ "
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -1429,6 +1440,10 @@ msgstr "በእጅ ማሰናጃ "
 msgctxt "#517"
 msgid "Recently played albums"
 msgstr "በቅርብ ጊዜ የተጫወቱት አልበሞች "
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "ማስጀመሪያ"
 
 msgctxt "#522"
 msgid "Remove source"
@@ -2598,6 +2613,10 @@ msgctxt "#13551"
 msgid "Off"
 msgstr "ማጥፊያ "
 
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "ተሰናክሏል "
+
 msgctxt "#14018"
 msgid "View options"
 msgstr "ምርጫዎችን መመልከቻ"
@@ -2670,6 +2689,10 @@ msgctxt "#20142"
 msgid "Username"
 msgstr "የተጠቃሚ ስም "
 
+msgctxt "#20159"
+msgid "Video information"
+msgstr "የቪዲዮ መረጃ"
+
 msgctxt "#20177"
 msgid "Done"
 msgstr "እሺ "
@@ -2689,6 +2712,10 @@ msgstr "ሙቪዎች"
 msgctxt "#21373"
 msgid "Video output"
 msgstr "ቪዲዮ "
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "መደበኛ "
 
 msgctxt "#21387"
 msgid "Fast"
@@ -2714,6 +2741,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "በማስኬድ ላይ"
 
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "ንዑስ አርእስት"
+
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr "ግጥም"
@@ -2725,6 +2756,10 @@ msgstr "ግልጋሎቶች"
 msgctxt "#24027"
 msgid "Weather"
 msgstr "የአየር ንብረት"
+
+msgctxt "#33006"
+msgid "Today"
+msgstr "ዛሬ"
 
 msgctxt "#33037"
 msgid "Weekend"

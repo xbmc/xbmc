@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -16,6 +15,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Pilihan Batere"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Mengerjakan..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Sembunyikan Informasi"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Tampilan Penuh"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Durasi Total"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Halaman"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Sembunyikan"
 
 msgctxt "#31200"
 msgid "Shortcuts"

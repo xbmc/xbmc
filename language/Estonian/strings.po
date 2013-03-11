@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -282,6 +281,14 @@ msgctxt "#89"
 msgid "North"
 msgstr "Põhi"
 
+msgctxt "#90"
+msgid "West"
+msgstr "Lääs"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Ida"
+
 msgctxt "#92"
 msgid "Variable"
 msgstr "Muutuja"
@@ -561,6 +568,10 @@ msgstr "Plaat saadaval"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Rüü"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Tühista faili operatsioonid"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2190,6 +2201,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Sisesta number"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bitid/diskreet"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Diskreetimissagedus"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Heliplaadid"
@@ -3082,6 +3101,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Filtreeri %s"
+
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "Kohandatud heliseade"
@@ -3206,9 +3229,37 @@ msgctxt "#1425"
 msgid "Pellets"
 msgstr "Pelletid"
 
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Rahe"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Suits"
+
 msgctxt "#1428"
 msgid "Volcanic"
 msgstr "Vulkaaniline"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Tuhk"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "laiaulatuslik"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Tolm"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Liiv"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Liivatorm"
 
 msgctxt "#1437"
 msgid "Pellet"
@@ -3218,13 +3269,33 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "Väike"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "ja"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Lörts"
+
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Võimalus"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "/"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Pilv"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Teadmata"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Tuulepuhang"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3241,6 +3312,10 @@ msgstr "Lülita tegevusetu ekraan välja"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Kestvus"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tühjenda nimekiri"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3654,9 +3729,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Nimetus lukustatud"
 
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "%s töötlemine"
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Taasaktiveeri lukk"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Soovid kohe uuendada?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -4622,6 +4705,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Luba riistvara kiirendus (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Esita järgmine video automaatselt"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Esita ainult see"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sünkro meetod"
@@ -5078,6 +5169,10 @@ msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "CD rippimise lõpetamisel ava kettaseade"
 
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Peata CD rippimine"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Eemalda"
@@ -5518,6 +5613,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (pööratud)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Tühistamine…"
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Sisesta artisti nimi"
@@ -5773,6 +5872,10 @@ msgstr "Eralda otsingusõnad kasutades \"AND\", \"OR\" ja/või \"NOT\""
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "või kasuta täpsemaks otsinguks väljendeid, näiteks \"The wizard of Oz\"."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Leia sarnaseid programme"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6402,9 +6505,21 @@ msgctxt "#19173"
 msgid "Default recording priority"
 msgstr "Vaikimisi salvestuse prioriteet"
 
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Varu salvestuse alguses"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Varu salvestuse lõpus"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Taasesitus"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Kanaleid vahetades näita kanali infot"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
@@ -6458,6 +6573,10 @@ msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr "Ükski ühendatud videosalvestaja põhi ei toeta kanalite skaneerimist."
 
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Kanaliotsingut ei saa alustada. Detailsema info saamiseks kontrolli logi."
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "Jätka?"
@@ -6465,6 +6584,10 @@ msgstr "Jätka?"
 msgctxt "#19195"
 msgid "Client actions"
 msgstr "Kliendi tegevused"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR kliendile iseloomulikud tegevused"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6610,6 +6733,46 @@ msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR haldur käivitub"
 
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Kliendist kanalite laadimine"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Kliendist salvestuste laadimine"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Ühtegi PVR lisamoodulit pole lubatud"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR haldur lubati ilma ühegi"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "lubatud PVR lisamoodulita. Luba vähemalt üks lisamoodul"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "PVR funktsionaalsuse kasutamiseks."
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Määra üles äratus käsk (cmd [ajatempel])"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Päevane äratus"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Päevase äratuse aeg (TT:MM:SS)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Filtreeri kanaleid"
+
 msgctxt "#19250"
 msgid "Loading EPG from database"
 msgstr "Andmebaasist elektroonilise saatekava laadimine"
@@ -6638,17 +6801,81 @@ msgctxt "#19256"
 msgid "Stop recording"
 msgstr "Peata salvestamine"
 
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Lukusta kanal"
+
 msgctxt "#19258"
 msgid "Unlock channel"
 msgstr "Ava kanal"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Vanemlik kontroll"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Avatud olemise kestvus"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Muuda PINi"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Vanemlik kontroll. Sisesta PIN:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Lukustatud kanal. Sisesta PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Vale PIN"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Sisestatud PIN kood ei ole õige."
 
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Vanemlik lukustus"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Vanemlik lukustus:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Ära näita 'Informatsioon puudub' silte"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Ära näita 'Ühendus kadus' hoiatusi"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Kõik salvestised"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Ühtegi PVR lisamoodulit ei leitud"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Sa vajad tuunerit, põhja tarkvara, ja"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Lisainfo saamiseks külasta xbmc.org/pvr"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Konflikti hoiatus"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Konflikti tõrge"
 
 msgctxt "#19277"
 msgid "Recording conflict"
@@ -6658,17 +6885,81 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Salvestamise viga"
 
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Kinnita kanali vahetus vajutades OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Muu/Tundmatu"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Film/Draama"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Detektiiv/Põnevus"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Seiklus/Vestern/Sõda"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Ulme/Fantaasia/Õudus"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komöödia"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Seebiooper/Melodraama/Folkloor"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Täiskasvanute film/Draama"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Uudised/Ilmateade"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentaal"
 
 msgctxt "#19535"
 msgid "Talk Show"
 msgstr "Jutusaade"
 
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Jalgpall"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tennis/Squash"
+
 msgctxt "#19553"
 msgid "Team Sports"
 msgstr "Meeskonnasport"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Kergejõustik"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motosport"
 
 msgctxt "#19556"
 msgid "Water Sport"
@@ -6678,25 +6969,125 @@ msgctxt "#19557"
 msgid "Winter Sports"
 msgstr "Talisport"
 
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Ratsutamine"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Võitluskunst"
+
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
 msgstr "Laste/noorte programmid"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Eelkooliealiste programmid"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Meelelahutusprogrammid 6 kuni 14 aastatele"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Meelelahutusprogrammid 10 kuni 16 aastastele"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Muusika/Ballett/Tants"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rokk/Popp"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Muusikal/Ooper"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Ballett"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Kunst/Kultuur"
 
 msgctxt "#19597"
 msgid "Performing Arts"
 msgstr "Lavakunst"
 
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Kujutav kunst"
+
 msgctxt "#19599"
 msgid "Religion"
 msgstr "Religioon"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Kirjandus"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Film/Kino"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Eksperimentaalne film/Video"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Uus meedia"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Mood"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Tehnoloogia/Loodusteadus"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Meditsiin/Füsioloogia/Psühholoogia"
 
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Keeled"
 
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Vaba aeg/Hobid"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Turism/Reisimine"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Käsitöö"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Kokandus"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Reklaam/Ostlemine"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Aiandus"
+
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Algupärane keel"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Must &amp; Valge"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -6705,6 +7096,34 @@ msgstr "Avaldamata"
 msgctxt "#19664"
 msgid "Live Broadcast"
 msgstr "Otseülekanne"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Detektiiv/Põnevus"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Seiklus/Vestern/Sõda"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Ulme/Fantaasia/Õudus"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komöödia"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Seebiooper/Melodraama/Folkloor"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Täiskasvanute"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7434,6 +7853,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Artisti andmete allalaadimine ebaõnnestus"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Androidi muusika"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Androidi videod"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Androidi pildid"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Androidi fotod"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Androidi rakendused"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Videesitus algab"
@@ -8082,9 +8521,21 @@ msgctxt "#20459"
 msgid "Tags"
 msgstr "Sildid"
 
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Lisa %s"
+
 msgctxt "#20461"
 msgid "Remove %s"
 msgstr "Eemalda %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Uus silt…"
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "'%s' nimeline silt on juba olemas."
 
 msgctxt "#20464"
 msgid "Select %s"
@@ -9098,6 +9549,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Teenused"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR kliendid"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Seadista"
@@ -9337,6 +9792,14 @@ msgstr "See funktsioon vajab järgmist lisamoodulit:"
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Kas soovid selle lisamooduli alla laadida?"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Rüü laadimine nurjus"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "Rüül puuduvad mõned failid"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9862,6 +10325,10 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Ära kausta selle seadme jaoks kohandatud klahvitabelit"
 
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Luba juhtkangi ja puldi tugi"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Asukoht"
@@ -9974,13 +10441,25 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "XBMC sulgemisel edasta käsk 'allikas pole aktiive'"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "Pane seade ooterežiimi kui arvuti läheb ooterežiimile"
+
 msgctxt "#36027"
 msgid "This device needs servicing"
 msgstr "See seade vajab hooldamist"
 
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Eira"
+
 msgctxt "#36029"
 msgid "When the TV is switched off"
 msgstr "Kui teler on välja lülitatud"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "Ühendus kadus"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
@@ -9994,9 +10473,17 @@ msgctxt "#36035"
 msgid "Always"
 msgstr "Alati"
 
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Käivitamisel/peatamisel"
+
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Võimendi /AVR seade"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
