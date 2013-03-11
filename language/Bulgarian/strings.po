@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1060,7 +1059,7 @@ msgstr "Език на оригиналния поток"
 
 msgctxt "#309"
 msgid "User Interface language"
-msgstr "Език на потренителския интерфейс"
+msgstr "Език на потребителския интерфейс"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -3185,6 +3184,10 @@ msgstr "с"
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Вероятност"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "от"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -5900,7 +5903,7 @@ msgstr " Таймер"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr "Наистина ли желаете да \nпреименувате записа?"
+msgstr "Наистина ли желаете да\nпреименувате записа?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"

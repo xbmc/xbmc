@@ -1,0 +1,77 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "முறை"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "பூர்த்தி"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "கம்பிச்சட்டம்"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "புள்ளிகள்"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "பட்டை உயரம்"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "சிறிய"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "இயல்புநிலை"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "பெரிய"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "மிக பெரிய"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "வேகம்"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "மிகவும் மெதுவாக"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "மெதுவாக"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "இயல்புநிலை"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "வேகமாக"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "மிக வேகமாக"

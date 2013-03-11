@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -776,7 +775,7 @@ msgstr "Zufällige Reihenfolge der Wiedergabeliste nach dem Laden"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "Festplatten Abschaltzeit"
+msgstr "Festplatten-Abschaltzeit"
 
 msgctxt "#230"
 msgid "Video filters"
@@ -920,7 +919,7 @@ msgstr "Aufnahme beenden"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sortie nach: Titel-Nr."
+msgstr "Sortiere nach: Titel-Nr."
 
 msgctxt "#267"
 msgid "Sort by: Time"
@@ -1080,7 +1079,7 @@ msgstr "Nicht-interleaved"
 
 msgctxt "#308"
 msgid "Original stream's language"
-msgstr "ursprüngliche Sprache des Stream"
+msgstr "ursprüngliche Sprache des Streams"
 
 msgctxt "#309"
 msgid "User Interface language"
@@ -1284,7 +1283,7 @@ msgstr "Bildschirmschoner"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "Rekurs. Diashow"
+msgstr "Rekursive Diashow"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -2152,7 +2151,7 @@ msgstr "Wiederholung: Aus"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "Wiederholung: Eins"
+msgstr "Wiederholung: Eines"
 
 msgctxt "#597"
 msgid "Repeat: All"
@@ -2552,7 +2551,7 @@ msgstr "Spiegelbild"
 
 msgctxt "#750"
 msgid "Are you sure?"
-msgstr "Bist du dir sicher?"
+msgstr "Bist Du Dir sicher?"
 
 msgctxt "#751"
 msgid "Removing source"
@@ -2768,7 +2767,7 @@ msgstr "XBMC konnte sich nicht mit der Netzwerkfreigabe verbinden."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
-msgstr "Es könnte sein, daß das Netzwerk nicht verbunden ist."
+msgstr "Es könnte sein, dass das Netzwerk nicht verbunden ist."
 
 msgctxt "#1004"
 msgid "Would you like to add it anyway?"
@@ -3168,7 +3167,7 @@ msgstr "Eis"
 
 msgctxt "#1409"
 msgid "Crystals"
-msgstr "Kristall"
+msgstr "Kristalle"
 
 msgctxt "#1410"
 msgid "Calm"

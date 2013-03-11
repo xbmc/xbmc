@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -199,7 +198,7 @@ msgstr "Opcións"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Mostrar albumes engadidos recentemente"
+msgstr "Mostrar álbums engadidos recentemente"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"

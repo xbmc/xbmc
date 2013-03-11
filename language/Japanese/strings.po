@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3214,6 +3213,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "小さく"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "of"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "不明"
@@ -6317,6 +6320,10 @@ msgstr "まで"
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "録音"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "録画が開始できませんでした。詳しくはログをチェックしてください。"
 
 msgctxt "#19165"
 msgid "Switch"

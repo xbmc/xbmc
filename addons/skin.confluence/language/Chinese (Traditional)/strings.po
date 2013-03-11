@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -476,6 +475,10 @@ msgstr "錄影計時器"
 msgctxt "#31501"
 msgid "Scheduled Time"
 msgstr "已排程的時間"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "電視"
 
 msgctxt "#31503"
 msgid "Add Group"

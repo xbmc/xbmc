@@ -383,7 +383,7 @@ bool CWinEventsSDL::MessagePump()
         g_windowManager.MarkDirty();
         break;
     }
-    memset(&event, 0, sizeof(XBMC_Event));
+    memset(&event, 0, sizeof(SDL_Event));
   }
 
   return ret;

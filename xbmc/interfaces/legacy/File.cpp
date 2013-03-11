@@ -26,18 +26,49 @@ namespace XBMCAddon
 
   namespace xbmcvfs
   {
-    unsigned long File::read(void* buffer, unsigned long numBytes)
+    XbmcCommons::Buffer File::readBytes(unsigned long numBytes)
     {
       DelayedCallGuard dg(languageHook);
-      if (!numBytes)
-        numBytes = (unsigned long)file->GetLength();
-      return (unsigned long)file->Read(buffer, numBytes);
+      int64_t size = file->GetLength();
+      if (!numBytes || (((int64_t)numBytes) > size))
+        numBytes = (unsigned long) size;
+
+      
+      XbmcCommons::Buffer ret(numBytes);
+
+      if (numBytes == 0)
+        return ret;
+
+      while(ret.remaining() > 0)
+      {
+        int bytesRead = file->Read(ret.curPosition(), ret.remaining());
+        if (bytesRead == 0) // we consider this a failure or a EOF, can't tell which,
+        {                   //  return whatever we have already.
+          ret.flip();
+          return ret;
+        }
+        ret.forward(bytesRead);
+      }
+      ret.flip();
+      return ret;
     }
 
-    bool File::write(const char* pBuffer)
+    bool File::write(XbmcCommons::Buffer& buffer)
     {
       DelayedCallGuard dg(languageHook);
-      return file->Write( (void*) pBuffer, strlen( pBuffer ) ) > 0;
+      while (buffer.remaining() > 0)
+      {
+        int bytesWritten = file->Write( buffer.curPosition(), buffer.remaining());
+        if (bytesWritten == 0)       // this could be a failure (see HDFile, and XFileUtils) or
+                                     //  it could mean something else when a negative number means an error
+                                     //  (see CCurlFile). There is no consistency so we can only assume we're
+                                     //  done when we get a 0.
+          return false;
+        else if (bytesWritten < 0)   // But, if we get something less than zero, we KNOW it's an error.
+          return false;
+        buffer.forward(bytesWritten);// Otherwise, we advance the buffer by the amount written.
+      }
+      return true;
     }
 
   }

@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: DirectX Spectrum
 # Addon id: visualization.dxspectrum
-# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -20,6 +19,22 @@ msgstr ""
 msgctxt "#30000"
 msgid "Mode"
 msgstr "Mod"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Dolu"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Telkafes"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Noktalar"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Çubuk Yüksekliği"
 
 msgctxt "#30005"
 msgid "Small"

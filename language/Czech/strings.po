@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1732,7 +1731,7 @@ msgstr "Motiv a Jazyk"
 
 msgctxt "#480"
 msgid "Appearance"
-msgstr "Vzhled"
+msgstr "Motiv"
 
 msgctxt "#481"
 msgid "Audio options"
@@ -2232,7 +2231,7 @@ msgstr "Všechny skladby od"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Vysílané seriály"
+msgstr "Rozkoukané seriály"
 
 msgctxt "#629"
 msgid "View mode"
@@ -3332,7 +3331,7 @@ msgstr "Nastavení - Obrazovka"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Nastavení - Vzhled - Kalibrace GUI"
+msgstr "Nastavení - Motiv - Kalibrace GUI"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
@@ -3368,7 +3367,7 @@ msgstr "Nastavení - Síť"
 
 msgctxt "#10019"
 msgid "Settings - Appearance"
-msgstr "Nastavení - Vzhled"
+msgstr "Nastavení - Motiv"
 
 msgctxt "#10020"
 msgid "Scripts"
@@ -5464,7 +5463,7 @@ msgstr "Nejoblíbenější značky uživatele %name%"
 
 msgctxt "#15287"
 msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Přejete si přidat aktuální skladbu k Vašim oblíbeným?"
+msgstr "Přejete si přidat aktuální skladbu k vašim oblíbeným?"
 
 msgctxt "#15288"
 msgid "Do you want to ban the current track?"
@@ -5504,7 +5503,7 @@ msgstr "Odblokovat"
 
 msgctxt "#15297"
 msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Přejete si odebrat tuto skladbu z Vašich oblíbených?"
+msgstr "Přejete si odebrat tuto skladbu z vašich oblíbených?"
 
 msgctxt "#15298"
 msgid "Do you want to un-ban this track?"
@@ -6036,7 +6035,7 @@ msgstr "Nahrávání"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Prosím zkontrolujte Vaše nastavení, nebo zkontrolujte záznam pro více informací."
+msgstr "Prosím zkontrolujte vaše nastavení, nebo zkontrolujte záznam pro více informací."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
@@ -8060,7 +8059,7 @@ msgstr "WebDAV server (HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
-msgstr "První přihlášení, upravte Váš profil"
+msgstr "První přihlášení, upravte svůj profil"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
@@ -9960,7 +9959,7 @@ msgstr "Doplněk byl ve zdroji označen jako nefunkční."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
-msgstr "Přejete si jej zakázat na Vašem systému?"
+msgstr "Přejete si jej zakázat na vašem systému?"
 
 msgctxt "#24098"
 msgid "Broken"
@@ -10188,7 +10187,7 @@ msgstr "Upozornění"
 
 msgctxt "#33051"
 msgid "Choose Your"
-msgstr "Vyberte Vaši"
+msgstr "Vyberte vaši"
 
 msgctxt "#33052"
 msgid "Check"
@@ -10244,7 +10243,7 @@ msgstr "Editor"
 
 msgctxt "#33066"
 msgid "About your"
-msgstr "O Vaši"
+msgstr "O vaši"
 
 msgctxt "#33067"
 msgid "Star rating"
@@ -10596,7 +10595,7 @@ msgstr "Připojeno"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Nelze inicializovat adaptér CEC: libCEC nebyla nalezena na Vašem systému."
+msgstr "Nelze inicializovat adaptér CEC: libCEC nebyla nalezena na vašem systému."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10624,7 +10623,7 @@ msgstr "Nastavení aktualizováno"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr "Načtení nového nastavení selhalo. Prosím zkontrolujte Vaše nastavení."
+msgstr "Načtení nového nastavení selhalo. Prosím zkontrolujte vaše nastavení."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"

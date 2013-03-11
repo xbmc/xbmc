@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3261,6 +3260,14 @@ msgstr "Pölyä"
 msgctxt "#1432"
 msgid "Sand"
 msgstr "Hiekkaa"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Kastetta"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Pyörteitä"
 
 msgctxt "#1435"
 msgid "Sandstorm"

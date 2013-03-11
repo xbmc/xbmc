@@ -964,6 +964,7 @@
 		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
+		F58A858616EDA041003504C7 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		F58E293911FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
 		F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
 		F595994510E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */; };
@@ -1382,6 +1383,8 @@
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		1D638126161E211E003603ED /* PeripheralImon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralImon.cpp; sourceTree = "<group>"; };
 		1D638127161E211E003603ED /* PeripheralImon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralImon.h; sourceTree = "<group>"; };
+		1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusCEC.cpp; sourceTree = "<group>"; };
+		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -3729,6 +3732,15 @@
 				8DD76F7E0486A8DE00D96B5E /* XBMC */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1DAFDB7916DFDCA7007F8C68 /* virtual */ = {
+			isa = PBXGroup;
+			children = (
+				1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */,
+				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
+			);
+			path = virtual;
 			sourceTree = "<group>";
 		};
 		38F4E56013CCCB3B00664821 /* platform */ = {
@@ -6371,6 +6383,7 @@
 		F5E1050D140AA38000175026 /* bus */ = {
 			isa = PBXGroup;
 			children = (
+				1DAFDB7916DFDCA7007F8C68 /* virtual */,
 				F5E10512140AA38000175026 /* osx */,
 				F5E10515140AA38000175026 /* PeripheralBus.cpp */,
 				F5E10516140AA38000175026 /* PeripheralBus.h */,
@@ -7724,6 +7737,7 @@
 				DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */,
 				DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				F58A858616EDA041003504C7 /* PeripheralBusCEC.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -25,6 +24,10 @@ msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "تمام‌صفحه"
 
+msgctxt "#31023"
+msgid "Playing"
+msgstr "در حال پخش"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "صفحه"
@@ -33,6 +36,22 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "پس‌زمینه"
 
+msgctxt "#31111"
+msgid "Hide"
+msgstr "مخفی"
+
 msgctxt "#31112"
 msgid "Options"
 msgstr "تنظیمات"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "نشانک‌ها"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "استاندارد"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "تلوزیون"

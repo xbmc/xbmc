@@ -42,9 +42,9 @@ public class SwigTypeParser
    public static String convertTypeToLTypeForParam(String ty)
    {
       // in the case where we're converting from a type to an ltype for a parameter,
-      //  and the type is a r.q(const).*, we are going to assume the ltype is
+      //  and the type is a r.*, we are going to assume the ltype is
       //  a "pass-by-value" on the stack.
-      return (ty.trim().startsWith('r.q(const).') ? SwigTypeParser.SwigType_ltype(ty.trim().substring(11)) : SwigTypeParser.SwigType_ltype(ty.trim()))
+      return (ty.trim().startsWith('r.') ? SwigTypeParser.SwigType_ltype(ty.trim().substring(2)) : SwigTypeParser.SwigType_ltype(ty.trim()))
    }
 
   /**
@@ -248,8 +248,16 @@ public class SwigTypeParser
 
    public static boolean SwigType_ispointer(String t)
    {
-      if (t.startsWith('q(')) t = t.substring(t.indexOf('.') + 1,)
+      if (t.startsWith('q(')) t = t.substring(t.indexOf('.') + 1)
       return t.startsWith('p.')
+   }
+
+   public static String SwigType_makepointer(String t)
+   {
+     String prefix = (t.startsWith('q(')) ? t.substring(0,t.indexOf('.') + 1) : ""
+     String remainder = (t.startsWith('q(')) ? t.substring(t.indexOf('.') + 1) : t
+     
+     return prefix + "p." + remainder
    }
 
    public static boolean SwigType_isarray(String t) { return t.startsWith('a(') }
@@ -542,11 +550,12 @@ public class SwigTypeParser
       //System.out.println "${convertTypeToLType('bool')}"
       //testPrint('p.q(const).XBMCAddon::xbmcgui::ListItemList')
       //testPrint('p.q(const).XBMCAddon::xbmcgui::ListItemList')
-      testPrint('r.q(const).std::map<(String,String)>', 'foo')
+      //testPrint(SwigTypeParser.SwigType_makepointer('r.q(const).std::map<(String,String)>'), 'foo')
+      testPrint(SwigTypeParser.SwigType_makepointer('q(const).p.q(const).char'),'bfoo')
    }
 
    private static void testPrint(String ty, String id = 'foo')
    {
-      println SwigTypeParser.SwigType_ltype(ty) + "|" + SwigTypeParser.SwigType_str(SwigTypeParser.SwigType_ltype(ty),id) + ' ' + " = " + SwigTypeParser.SwigType_str(ty,id)
+      println SwigTypeParser.SwigType_ltype(ty) + "|" + SwigTypeParser.SwigType_str(SwigTypeParser.SwigType_ltype(ty),id) + ' ' + " = " + ty + '|' + SwigTypeParser.SwigType_str(ty,id)
    }
 }

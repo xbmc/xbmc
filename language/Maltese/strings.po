@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -133,6 +132,10 @@ msgstr "Xemx"
 msgctxt "#55"
 msgid "May"
 msgstr "Mejju"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Issettja"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -2733,6 +2736,10 @@ msgstr "T-Storm"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Tempesti"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "%s: %s MB of %s MB Vojta"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -5753,6 +5760,10 @@ msgstr "Qatt"
 msgctxt "#20429"
 msgid "Separate"
 msgstr "Separati"
+
+msgctxt "#20434"
+msgid "Sets"
+msgstr "Issettja"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"

@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -5288,7 +5287,7 @@ msgstr "Navigatiegeluiden"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Standaarduiterijk"
+msgstr "Standaarduiterlijk"
 
 msgctxt "#15111"
 msgid "- Theme"
@@ -7548,7 +7547,7 @@ msgstr "Gebruik standaard (alleen-lezen)"
 
 msgctxt "#20064"
 msgid "Copy default"
-msgstr "Kopiëren"
+msgstr "Kopieer standaard"
 
 msgctxt "#20065"
 msgid "Profile picture"
@@ -7700,7 +7699,7 @@ msgstr "Invoeren vergrendelcode activeert altijd de ontgrendelde modus"
 
 msgctxt "#20102"
 msgid "or copy from default?"
-msgstr "of maak een kopie van de huidige instellingen?"
+msgstr "of maak een kopie van standaard instellingen?"
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
@@ -8060,11 +8059,11 @@ msgstr "Extra informatie downloaden tijdens het scannen"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Standaardscraper voor albuminformatie"
+msgstr "Standaardservice voor albuminformatie"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Standaardscraper voor artiestinformatie"
+msgstr "Standaardservice voor artiestenformatie"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -10060,7 +10059,7 @@ msgstr "Mededelingen"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr "Verberg onbekende"
+msgstr "Verberg buitenlandse"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."

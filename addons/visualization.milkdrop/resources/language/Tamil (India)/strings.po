@@ -1,0 +1,89 @@
+# XBMC Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "தானியங்கி கலப்பு நேரம்"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "அடுக்கு குணங்கலுக்கு இடையேயான நேரம்"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "கூடுதல் குறிப்பிலாத நேரம்"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "திசையற்ற வடித்தல் செயல்படுத்த"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "கடின குறைப்புக்கள் செயல்படுத்த"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "கடின குறைப்புக்கள் உரத்தல் எல்லையளவு"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "கடின குறைப்புக்கள் இடையே சராசரி நேரம்"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "அதிகபட்ச புதுப்பிக்கும் வீதம்"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "ஸ்டீரியோ 3D செயல்படுத்த"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "முன்னமைவு தொகுப்பு"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "பயனர் முன்னமைவு கோப்புறை"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "முன்னமைவு குலை முறை"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 முன்னமைவுகள்"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp முன்னமைவுகள்"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "பயனர் வரையறுக்கப்பட்ட முன்னமைவு கோப்புறை"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f நொடிகள்"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

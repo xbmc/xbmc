@@ -29,65 +29,6 @@ using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 1000
 
-bool PeripheralScanResult::operator ==(const PeripheralScanResult &right) const
-{
-  return m_iVendorId == right.m_iVendorId &&
-      m_iProductId == right.m_iProductId &&
-      m_type == right.m_type &&
-      m_strLocation.Equals(right.m_strLocation);
-}
-
-bool PeripheralScanResult::operator !=(const PeripheralScanResult &right) const
-{
-  return !(*this == right);
-}
-
-bool PeripheralScanResult::operator ==(const CPeripheral &right) const
-{
-  return m_iVendorId == right.VendorId() &&
-      m_iProductId == right.ProductId() &&
-      m_type == right.Type() &&
-      m_strLocation.Equals(right.Location());
-}
-
-bool PeripheralScanResult::operator !=(const CPeripheral &right) const
-{
-  return !(*this == right);
-}
-
-bool PeripheralScanResults::GetDeviceOnLocation(const CStdString &strLocation, PeripheralScanResult *result) const
-{
-  bool bReturn(false);
-
-  for (unsigned int iDevicePtr = 0; iDevicePtr < m_results.size(); iDevicePtr++)
-  {
-    if (m_results.at(iDevicePtr).m_strLocation == strLocation)
-    {
-      *result = m_results.at(iDevicePtr);
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
-}
-
-bool PeripheralScanResults::ContainsResult(const PeripheralScanResult &result) const
-{
-  bool bReturn(false);
-
-  for (unsigned int iDevicePtr = 0; iDevicePtr < m_results.size(); iDevicePtr++)
-  {
-    if (m_results.at(iDevicePtr) == result)
-    {
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
-}
-
 CPeripheralBus::CPeripheralBus(CPeripherals *manager, PeripheralBusType type) :
     CThread("XBMC Peripherals"),
     m_iRescanTime(PERIPHERAL_DEFAULT_RESCAN_INTERVAL),
@@ -137,9 +78,9 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
-    PeripheralScanResult updatedDevice;
+    PeripheralScanResult updatedDevice(m_type);
     if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
-        updatedDevice != *peripheral)
+        *peripheral != updatedDevice)
     {
       /* device removed */
       removedPeripherals.push_back(peripheral);
@@ -170,9 +111,9 @@ void CPeripheralBus::RegisterNewDevices(const PeripheralScanResults &results)
   CSingleLock lock(m_critSection);
   for (unsigned int iResultPtr = 0; iResultPtr < results.m_results.size(); iResultPtr++)
   {
-    PeripheralScanResult result = results.m_results.at(iResultPtr);
+    const PeripheralScanResult& result = results.m_results.at(iResultPtr);
     if (!HasPeripheral(result.m_strLocation))
-      g_peripherals.CreatePeripheral(*this, result.m_type, result.m_strLocation, result.m_iVendorId, result.m_iProductId);
+      g_peripherals.CreatePeripheral(*this, result);
   }
 }
 
@@ -241,6 +182,20 @@ int CPeripheralBus::GetPeripheralsWithFeature(vector<CPeripheral *> &results, co
       results.push_back(m_peripherals.at(iPeripheralPtr));
       ++iReturn;
     }
+  }
+
+  return iReturn;
+}
+
+size_t CPeripheralBus::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
+{
+  int iReturn(0);
+  CSingleLock lock(m_critSection);
+  for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < m_peripherals.size(); iPeripheralPtr++)
+  {
+    if (m_peripherals.at(iPeripheralPtr)->VendorId() == iVendorId &&
+        m_peripherals.at(iPeripheralPtr)->ProductId() == iProductId)
+      iReturn++;
   }
 
   return iReturn;

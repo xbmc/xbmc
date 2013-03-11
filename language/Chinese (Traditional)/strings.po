@@ -1,5 +1,4 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -420,7 +419,7 @@ msgstr "一般設定"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "播放圖片"
+msgstr "幻燈片播放"
 
 msgctxt "#130"
 msgid "System info"
@@ -2234,6 +2233,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "所有歌曲"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "當季的電視劇"
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "顯示模式"
@@ -3246,6 +3249,10 @@ msgctxt "#1429"
 msgid "Ash"
 msgstr "灰"
 
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "廣佈"
+
 msgctxt "#1431"
 msgid "Dust"
 msgstr "塵"
@@ -3282,9 +3289,21 @@ msgctxt "#1439"
 msgid "and"
 msgstr "且"
 
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "	\n霰雨"
+
 msgctxt "#1441"
 msgid "with"
 msgstr "有"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "機會"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "的"
 
 msgctxt "#1444"
 msgid "Funnel"
@@ -3297,6 +3316,10 @@ msgstr "雲"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "未知"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "獨特"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -4145,6 +4168,10 @@ msgstr "鬧鈴啟動，倒數計時 %i 分鐘"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "響鈴！"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "鬧鈴取消，剩下 %i 分 %i 秒"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5998,6 +6025,10 @@ msgctxt "#19024"
 msgid "Radio channels"
 msgstr "無線電廣播頻道"
 
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "預備錄影"
+
 msgctxt "#19026"
 msgid "Add timer..."
 msgstr "新增定時器..."
@@ -6182,6 +6213,10 @@ msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr "延遲頻道切換"
 
+msgctxt "#19074"
+msgid "Active:"
+msgstr "	\n現行"
+
 msgctxt "#19075"
 msgid "Name:"
 msgstr "名稱："
@@ -6217,6 +6252,10 @@ msgstr "優先權："
 msgctxt "#19083"
 msgid "Lifetime (days):"
 msgstr "生命周期(天)"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "首日"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
@@ -6281,6 +6320,10 @@ msgstr "請切換到另一個頻道"
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
 msgstr "輸入存放這個錄影的資料夾名稱"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "下一個定時器"
 
 msgctxt "#19107"
 msgid "at"
@@ -6482,6 +6525,10 @@ msgctxt "#19160"
 msgid "to"
 msgstr "到"
 
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "錄影開始於：%s"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "錄影"
@@ -6505,6 +6552,10 @@ msgstr "尋找遺失的圖示"
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "隱藏視訊資訊盒"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "開始播放時超時"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
