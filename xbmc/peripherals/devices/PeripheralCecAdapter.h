@@ -86,7 +86,7 @@ namespace PERIPHERALS
     friend class CPeripheralCecAdapterUpdateThread;
 
   public:
-    CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
+    CPeripheralCecAdapter(const PeripheralScanResult& scanResult);
     virtual ~CPeripheralCecAdapter(void);
 
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
@@ -106,7 +106,6 @@ namespace PERIPHERALS
     int GetButton(void);
     unsigned int GetHoldTime(void);
     void ResetButton(void);
-    CStdString GetComPort(void);
 
     void PushCecKeypress(const CEC::cec_keypress &key);
 
@@ -171,6 +170,7 @@ namespace PERIPHERALS
     bool                              m_bActiveSourceBeforeStandby;
     bool                              m_bOnPlayReceived;
     bool                              m_bPlaybackPaused;
+    CStdString                        m_strComPort;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread
