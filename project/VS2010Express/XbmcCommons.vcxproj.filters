@@ -7,5 +7,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\commons\ilog.h" />
     <ClInclude Include="..\..\xbmc\commons\Exception.h" />
+    <ClInclude Include="..\..\xbmc\commons\Buffer.h" />
   </ItemGroup>
 </Project>
