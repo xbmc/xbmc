@@ -353,6 +353,8 @@
 #include "plex/GUI/GUIPlexMusicWindow.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
+   
+#include "settings/GUISettings.h"
 /* END PLEX */
 
 #if defined(TARGET_ANDROID)
