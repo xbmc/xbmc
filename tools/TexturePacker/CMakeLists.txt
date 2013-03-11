@@ -4,6 +4,22 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 include_directories(${root}/lib ${root}/xbmc ${CMAKE_BINARY_DIR}/xbmc ${root}/xbmc/linux)
 
+if(CMAKE_SSE_CFLAGS)
+  add_definitions(-DSQUISH_USE_SSE=2)
+
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_SSE_CFLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_SSE_CFLAGS}")
+
+  if(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_C_FLAGS_DEBUG "-O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+  elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    set(CMAKE_C_FLAGS_DEBUG "/O2")
+    set(CMAKE_CXX_FLAGS_DEBUG "/O2")
+  endif(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+
+endif(CMAKE_SSE_CFLAGS)
+
 if(TARGET_WIN32)
   include_directories(Win32)
 endif(TARGET_WIN32)

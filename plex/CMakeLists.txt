@@ -83,11 +83,18 @@ if(COMPRESS_TEXTURES)
     set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker)
   endif()
 
+  if(WIN32)
+    set(WORKDIR ${root}/tools/TexturePacker)
+  else(WIN32)
+    set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR})
+  endif(WIN32)
+
   add_custom_command(
     OUTPUT Textures_MediaStream.xbt
-    COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
+    COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt
     MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
     DEPENDS TexturePacker
+    WORKING_DIRECTORY ${WORKDIR}
   )
 
   add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)

@@ -102,7 +102,7 @@ if(NOT TARGET_WIN32)
     set(CMAKE_SSE_CFLAGS "-msse2")
   endif(SSSE3_FOUND)
 else(NOT TARGET_WIN32)
-  set(CMAKE_SSE_CFLAGS "/arch:sse2")
+  set(CMAKE_SSE_CFLAGS "/arch:SSE2")
 endif(NOT TARGET_WIN32)
 
 message(STATUS "-- Configuration Summary:")
