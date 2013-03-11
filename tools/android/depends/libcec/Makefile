@@ -3,7 +3,7 @@ DEPS= ../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.1.0
+VERSION=2.1.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
