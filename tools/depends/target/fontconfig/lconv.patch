@@ -1,0 +1,18 @@
+--- fontconfig-2.6.0.old/src/fcxml.c    2011-10-15 16:16:43.809967115 -0400
++++ fontconfig-2.6.0/src/fcxml.c        2011-10-15 16:18:39.059967042 -0400
+@@ -1139,6 +1139,7 @@
+ static double
+ FcStrtod (char *s, char **end)
+ {
++#if 0
+     struct lconv    *locale_data;
+     char           *dot;
+     double         v;
+@@ -1185,6 +1186,7 @@
+     else
+        v = strtod (s, end);
+     return v;
++#endif
+ }
+
+ static void

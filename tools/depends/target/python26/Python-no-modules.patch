@@ -1,0 +1,12 @@
+diff -ruN setup.py /setup.py
+--- setup.py	2012-06-22 19:56:02.633319969 -0400
++++ setup.py	2012-06-22 19:56:49.403319941 -0400
+@@ -98,7 +98,7 @@
+         self.failed = []
+ 
+     def build_extensions(self):
+-
++	return
+         # Detect which modules should be compiled
+         missing = self.detect_modules()
+

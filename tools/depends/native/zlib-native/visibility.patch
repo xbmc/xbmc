@@ -1,0 +1,15 @@
+--- zconf.h.in	2013-01-23 21:22:22.512584179 -0500
++++ zconf.h.in	2013-01-23 21:21:56.312584196 -0500
+@@ -348,7 +348,11 @@
+ #endif
+ 
+ #ifndef ZEXTERN
+-#  define ZEXTERN extern
++#  ifdef HAVE_HIDDEN
++#    define ZEXTERN extern __attribute__((visibility ("default")))
++#  else
++#    define ZEXTERN extern
++#  endif
+ #endif
+ #ifndef ZEXPORT
+ #  define ZEXPORT

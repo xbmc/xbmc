@@ -1,0 +1,26 @@
+LD="${LD:-@LD_FOR_BUILD@}"
+CC="${CC:-@CC_FOR_BUILD@}"
+CXX="${CXX:-@CXX_FOR_BUILD@}"
+AR="${AR:-@AR_FOR_BUILD@}"
+RANLIB="${RANLIB:-@RANLIB_FOR_BUILD@}"
+AS="${AS:-@AS_FOR_BUILD@}"
+NM="${NM:-@NM_FOR_BUILD@}"
+STRIP="${STRIP:-@STRIP_FOR_BUILD@}"
+READELF="${READELF:-@READELF_FOR_BUILD@}"
+OBJDUMP="${OBJDUMP:-@OBJDUMP_FOR_BUILD@}"
+
+CFLAGS="-I@prefix@/@build_cpu@-@build_os@-native/include $CFLAGS"
+LDFLAGS="-L@prefix@/@build_cpu@-@build_os@-native/lib $LDFLAGS"
+CPPFLAGS="-I@prefix@/@build_cpu@-@build_os@-native/include $CPPFLAGS"
+CXXFLAGS="-I@prefix@/@build_cpu@-@build_os@-native/include $CXXFLAGS"
+
+PKG_CONFIG=@prefix@/@build_cpu@-@build_os@-native/bin/pkg-config
+export PKG_CONFIG_PATH=@prefix@/@build_cpu@-@build_os@-native/lib/pkgconfig
+
+PATH=@prefix@/@build_cpu@-@build_os@-native/bin:$PATH
+if test -n "@use_build_toolchain@"; then
+  PATH=@use_build_toolchain@/usr/bin:@use_build_toolchain@/bin:$PATH
+fi
+
+LD_LIBRARY_PATH=@prefix@/@build_cpu@-@build_os@-native/lib:$LD_LIBRARY_PATH
+NASM=@prefix@/@build_cpu@-@build_os@-native/bin/yasm

@@ -1,0 +1,81 @@
+TOOLCHAIN=@use_toolchain@
+NDKROOT=@use_ndk@
+SDKROOT=@use_sdk_path@
+TARBALLS_LOCATION=@use_tarballs@
+PLATFORM=@deps_dir@
+HOST=@use_host@
+CPU=@use_cpu@
+NATIVEPLATFORM=@build_cpu@-@build_os@-native
+SDK_PLATFORM=@use_sdk@
+RETRIEVE_TOOL=@CURL@
+ARCHIVE_TOOL=@TAR@
+PREFIX=@prefix@/@deps_dir@
+NATIVEPREFIX=@prefix@/@build_cpu@-@build_os@-native
+OS=@platform_os@
+CROSS_COMPILING=@cross_compiling@
+
+HAS_ZLIB=@has_zlib@
+NEED_LIBICONV=@need_libiconv@
+LINK_ICONV=@link_iconv@
+ENABLE_GPLV3=@use_gplv3@
+HAS_LIBCRYSTAX=@has_libcrystax@
+
+BASE_URL=http://mirrors.xbmc.org/build-deps/sources
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f -O
+ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
+CONFIG_SUB=@prefix@/@build_cpu@-@build_os@-native/share/automake-1.11/config.sub
+CONFIG_GUESS=@prefix@/@build_cpu@-@build_os@-native/share/automake-1.11/config.guess
+
+RPL=@prefix@/@build_cpu@-@build_os@-native/bin/python @prefix@/@build_cpu@-@build_os@-native/bin/rpl
+
+LD=@LD@
+CC=@CC@
+CXX=@CXX@
+CPP=@CPP@
+AR=@AR@
+RANLIB=@RANLIB@
+AS=@AS@
+NM=@NM@
+STRIP=@STRIP@
+READELF=@READELF@
+OBJDUMP=@OBJDUMP@
+
+CMAKE=@prefix@/@build_cpu@-@build_os@-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+CFLAGS=@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
+LDFLAGS=-L@prefix@/@deps_dir@/lib @platform_ldflags@
+CXXFLAGS=@platform_cxxflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
+CPPFLAGS=@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
+
+PATH:=@prefix@/@build_cpu@-@build_os@-native/bin:$(PATH)
+ifneq (@use_build_toolchain@,)
+  PATH:=@use_build_toolchain@/bin:@use_build_toolchain@/usr/bin:$(PATH)
+endif
+LD_FOR_BUILD=@LD_FOR_BUILD@
+CC_FOR_BUILD=@CC_FOR_BUILD@
+CXX_FOR_BUILD=@CXX_FOR_BUILD@
+AR_FOR_BUILD=@AR_FOR_BUILD@
+RANLIB_FOR_BUILD=@RANLIB_FOR_BUILD@
+AS_FOR_BUILD=@AS_FOR_BUILD@
+NM_FOR_BUILD=@NM_FOR_BUILD@
+STRIP_FOR_BUILD=@STRIP_FOR_BUILD@
+READELF_FOR_BUILD=@READELF_FOR_BUILD@
+OBJDUMP_FOR_BUILD=@OBJDUMP_FOR_BUILD@
+
+NATIVE_CFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
+NATIVE_LDFLAGS=-L@prefix@/@build_cpu@-@build_os@-native/lib
+NATIVE_CPPFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
+NATIVE_CXXFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
+
+
+export AUTOM4TE=@prefix@/@build_cpu@-@build_os@-native/bin/autom4te
+export AUTOMAKE=@prefix@/@build_cpu@-@build_os@-native/bin/automake
+export AUTOCONF=@prefix@/@build_cpu@-@build_os@-native/bin/autoconf
+export ACLOCAL=@prefix@/@build_cpu@-@build_os@-native/bin/aclocal
+export ACLOCAL_PATH=@prefix@/@deps_dir@/share/aclocal:@prefix@/@build_cpu@-@build_os@-native/share/aclocal
+export AUTOPOINT=@prefix@/@build_cpu@-@build_os@-native/bin/autopoint
+export AUTOHEADER=@prefix@/@build_cpu@-@build_os@-native/bin/autoheader
+export LIBTOOL=@prefix@/@build_cpu@-@build_os@-native/bin/libtool
+export LIBTOOLIZE=@prefix@/@build_cpu@-@build_os@-native/bin/libtoolize
+
+export AUTORECONF=@prefix@/@build_cpu@-@build_os@-native/bin/autoreconf
+

@@ -1,0 +1,48 @@
+diff -ru mysql-5.1.55.org/include/my_dir.h mysql-5.1.55/include/my_dir.h
+--- mysql-5.1.55.org/include/my_dir.h	2011-01-25 16:04:48.000000000 +0100
++++ mysql-5.1.55/include/my_dir.h	2011-11-15 20:15:46.000000000 +0100
+@@ -35,9 +35,15 @@
+ #define MY_S_ISUID	S_ISUID /* set user id on execution */
+ #define MY_S_ISGID	S_ISGID /* set group id on execution */
+ #define MY_S_ISVTX	S_ISVTX /* save swapped text even after use */
++#if defined(__ANDROID__)
++#define MY_S_IREAD      S_IRUSR /* read permission, owner */
++#define MY_S_IWRITE     S_IWUSR /* write permission, owner */
++#define MY_S_IEXEC     S_IEXEC /* execute/search permission, owner */
++#else
+ #define MY_S_IREAD	S_IREAD /* read permission, owner */
+ #define MY_S_IWRITE	S_IWRITE	/* write permission, owner */
+ #define MY_S_IEXEC	S_IEXEC /* execute/search permission, owner */
++#endif
+ 
+ #define MY_S_ISDIR(m)	(((m) & MY_S_IFMT) == MY_S_IFDIR)
+ #define MY_S_ISCHR(m)	(((m) & MY_S_IFMT) == MY_S_IFCHR)
+diff -ru mysql-5.1.55.org/include/my_global.h mysql-5.1.55/include/my_global.h
+--- mysql-5.1.55.org/include/my_global.h	2011-11-15 20:14:37.000000000 +0100
++++ mysql-5.1.55/include/my_global.h	2011-11-15 20:15:13.000000000 +0100
+@@ -979,6 +979,10 @@
+ typedef unsigned char	uchar;	/* Short for unsigned char */
+ #endif
+ 
++#ifndef HAVE_USHORT
++typedef unsigned short ushort;
++#endif
++
+ #ifndef HAVE_INT8
+ typedef signed char int8;       /* Signed integer >= 8  bits */
+ #endif
+diff -ru mysql-5.1.55.org/mysys/my_gethwaddr.c mysql-5.1.55/mysys/my_gethwaddr.c
+--- mysql-5.1.55.org/mysys/my_gethwaddr.c	2011-01-25 16:04:35.000000000 +0100
++++ mysql-5.1.55/mysys/my_gethwaddr.c	2011-11-15 20:19:11.000000000 +0100
+@@ -66,7 +66,11 @@
+ 
+ #include <net/if.h>
+ #include <sys/ioctl.h>
++#ifdef __ANDROID__
++#include <net/if_ether.h>
++#else
+ #include <net/ethernet.h>
++#endif
+ 
+ my_bool my_gethwaddr(uchar *to)
+ {

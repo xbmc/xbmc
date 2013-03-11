@@ -1,0 +1,22 @@
+Temporary readme:
+
+Examples:
+
+OSX:
+  x64:
+    ./configure --host=x86_64-apple-darwin # (defaults chosen)
+  x86:
+    ./configure --host=i386-apple-darwin
+
+IOS:
+  ./configure --host=arm-apple-darwin # (defaults chosen)
+  ./configure --host=arm-apple-darwin --with-sdk=4.3 --prefix=home/foo/xbmc-deps
+
+Android:
+  ./configure --with-toolchain=/opt/toolchains/android-ndk-r7-crystax-5.beta3-toolchain --prefix=/opt/xbmc-deps --host=arm-linux-androideabi
+
+Linux:
+  ARM toolchain (codesourcery/lenaro/etc)
+    ./configure --with-toolchain=/opt/toolchains/my-example-toolchain/  --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi
+  Native toolchain
+    ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu

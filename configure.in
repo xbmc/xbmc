@@ -632,6 +632,12 @@ case $host in
      ARCH="arm"
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
      ;;
   arm*-*linux-android*)
      target_platform=target_android
@@ -639,6 +645,13 @@ case $host in
      use_cpu=cortex-a9
      ARCH="arm"
      ffmpeg_target_os=linux
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_optical_drive=no
+     use_sdl=no
+     use_x11=no
+     build_shared_lib=yes
      ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
@@ -996,9 +1009,8 @@ AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
 if test "$target_platform" = "target_android" ; then
-  #android hack for static python. Required to maintain correct linking order.
-  AC_CHECK_LIB([python$PYTHON_VERSION],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([android],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([log],         [__android_log_vprint],, AC_MSG_ERROR($missing_library))
 fi
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
   [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
@@ -1017,9 +1029,6 @@ PKG_CHECK_MODULES([PCRE],       [libpcre],
   [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([CDIO],       [libcdio],
-  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
   [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -1029,6 +1038,12 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
 PKG_CHECK_MODULES([TAGLIB],  [taglib >= 1.8],
   [INCLUDES="$INCLUDES $TAGLIB_CFLAGS"; LIBS="$LIBS $TAGLIB_LIBS"],
   AC_MSG_ERROR($missing_library))
+
+if test "$use_optical_drive" = "yes"; then
+  PKG_CHECK_MODULES([CDIO],       [libcdio],
+    [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
+    AC_MSG_ERROR($missing_library))
+fi
 
 if test "$target_platform" = "target_android" ; then
 PKG_CHECK_MODULES([ZIP],       [libzip],
@@ -1060,29 +1075,23 @@ AS_CASE([x$use_libbluray],
   ]
 )
 
+#Check to see if libs are needed for functions that are often built-in to libc
+AC_SEARCH_LIBS([iconv_open],iconv,,AC_SEARCH_LIBS([libiconv_open],iconv,,AC_MSG_ERROR($missing_library)))
+AC_SEARCH_LIBS([dlopen],dl)
+AC_SEARCH_LIBS([clock_gettime],rt)
+AC_SEARCH_LIBS([dn_expand],  resolv)
+AC_SEARCH_LIBS([_dn_expand], resolv)
+AC_SEARCH_LIBS([__dn_expand],resolv)
+
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
-  AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 else
-  case $host_os in
-    linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
-    freebsd*) AC_CHECK_LIB([iconv], [main],, AC_MSG_ERROR($missing_library)) ;;
-  esac
-  case $host_os in
-    freebsd*) ;;
-    *)
-     if test "$target_platform" != "target_android" ; then
-        AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
-     fi
-  ;;
-  esac
 if test "$target_platform" != "target_android" ; then
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-  AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
 fi
 if test "x$use_alsa" != "xno"; then
   PKG_CHECK_MODULES([ALSA],  [alsa],
@@ -1849,7 +1858,7 @@ case $add_players in
 esac
 
 # platform specific bin utilities
-if test "$host_vendor" != "apple" ; then
+if test "$build_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
   if test "$HAVE_GAWK" = "no" ; then
     AC_MSG_ERROR($missing_program)
@@ -2575,7 +2584,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     # extra-cflags must be passed alone or it gets expanded wrong by the ffmpeg configure
     FFMPEG_EXTRACFLAGS="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated="
 
-    ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
+    LDFLAGS="$LDFLAGS" ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
 
     # if using llvm-gcc-4.2 as assembler, -MMD is not enough to generate
     # dependency files in the right place, replace it with something that works
@@ -2586,8 +2595,8 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
 
     # ffmpeg will use yasm found at ${prefix}/bin during configure
     # but then hardcodes 'yasm' in config.mak, fix it.
-    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak
-    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak
+    sed -ie "s#YASM=yasm#YASM=${YASM}#" config.mak
+    sed -ie "s#YASMDEP=yasm#YASMDEP=${YASM}#" config.mak
     sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
   else
     CFLAGS="" \

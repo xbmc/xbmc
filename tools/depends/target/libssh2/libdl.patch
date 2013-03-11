@@ -1,0 +1,10 @@
+--- configure.ac	2010-04-14 17:35:40.000000000 -0400
++++ configure.ac	2013-01-14 14:59:23.183089017 -0500
+@@ -62,6 +62,7 @@
+ 
+ # Solaris has inet_addr() in -lnsl.
+ AC_SEARCH_LIBS(inet_addr, nsl)
++AC_SEARCH_LIBS(dlopen, dl)
+ 
+ AC_SUBST(LIBS)
+ 

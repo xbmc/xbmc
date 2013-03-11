@@ -1,4 +1,4 @@
-include ../depends/Makefile.include
+include ../../depends/Makefile.include
 
 OBJS = libcurl.so \
   librtmp.so  libmad.so \
@@ -22,15 +22,29 @@ ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(
 #this fixes a android ndk fuckup where the pathes to 
 #prebuilt stuff follow different name shemes for
 #arm and x86
-ifeq ($(findstring x86,$(PLATFORM)),x86)
-GDBPATH=$(NDKROOT)/toolchains/$(PLATFORM)-$(GCC_VERSION)/prebuilt/gdbserver
-else
+ifeq ($(findstring x86,$$(CPU)),x86)
+ARCH=x86
+endif
+ifeq ($(findstring arm,$(CPU)),arm)
+ARCH=arm
+endif
+
+#older ndk x86
+GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
+
+ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
+#older ndk arm
 GDBPATH=$(NDKROOT)/toolchains/$(HOST)-$(GCC_VERSION)/prebuilt/gdbserver
+endif
+
+ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
+#vanilla ndk >= 8
+GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
 endif
 
 all: package
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
-DSTLIBS = $(PLATFORM)/lib/libxbmc.so $(addprefix $(PLATFORM)/lib/,$(OBJS)) $(addprefix $(PLATFORM)/lib/,$(PLATFORM_OBJS))
+DSTLIBS = $(CPU)/lib/libxbmc.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
 libs= $(DSTLIBS)
 
 multi: x86 arm
@@ -42,15 +56,15 @@ multi: x86 arm
 	@echo "$(XBMCROOT)/xbmcapp-multi-debug.apk created"
 
 package: extras
-	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(PLATFORM)-unaligned.apk
+	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(CPU)-unaligned.apk
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
-	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(PLATFORM)-unaligned.apk lib/$(PLATFORM) assets classes.dex
-	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(PLATFORM)-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(PLATFORM)-unaligned.apk $(XBMCROOT)/xbmcapp-$(PLATFORM)-debug.apk
-	@rm images/xbmcapp-debug-$(PLATFORM)-unaligned.apk
-	@echo "$(XBMCROOT)/xbmcapp-$(PLATFORM)-debug.apk created"
+	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
+	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
+	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
+	@rm images/xbmcapp-debug-$(CPU)-unaligned.apk
+	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
 
 extras: libs
 	rm -rf xbmc/assets/python2.6/lib/
@@ -68,20 +82,20 @@ extras: libs
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/xbmc/libxbmc.so
-	rm -rf xbmc/lib/$(PLATFORM) xbmc/libs/$(PLATFORM) xbmc/obj/local/$(PLATFORM)
-	mkdir -p xbmc/lib/$(PLATFORM) images xbmc/assets/python2.6/lib/ xbmc/libs/$(PLATFORM) xbmc/obj/local/$(PLATFORM)
-	cp -fp $(SRCLIBS) xbmc/obj/local/$(PLATFORM)/
-	cp -fp $(PREFIX)/lib/xbmc/libxbmc.so xbmc/obj/local/$(PLATFORM)/
-	find $(PREFIX)/lib/xbmc/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
-	find $(PREFIX)/lib/xbmc/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
-	cd xbmc/obj/local/$(PLATFORM)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
-	cp -fp xbmc/obj/local/$(PLATFORM)/*.so xbmc/lib/$(PLATFORM)/
-	$(STRIP) --strip-unneeded xbmc/lib/$(PLATFORM)/*.so
-	install -p $(GDBPATH) ./xbmc/libs/$(PLATFORM)/gdbserver
-	echo "set solib-search-path ./obj/local/$(PLATFORM)" > ./xbmc/libs/$(PLATFORM)/gdb.setup
+	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
+	mkdir -p xbmc/lib/$(CPU) images xbmc/assets/python2.6/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
+	cp -fp $(SRCLIBS) xbmc/obj/local/$(CPU)/
+	cp -fp $(PREFIX)/lib/xbmc/libxbmc.so xbmc/obj/local/$(CPU)/
+	find $(PREFIX)/lib/xbmc/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
+	find $(PREFIX)/lib/xbmc/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
+	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
+	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
+	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
+	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
+	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/include/$(GCC_VERSION) $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(PLATFORM)/gdb.setup
-	cp -fp xbmc/libs/$(PLATFORM)/* xbmc/lib/$(PLATFORM)
+	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/include/$(GCC_VERSION) $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
+	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
 
 $(PREFIX)/lib/xbmc/libxbmc.so: $(SRCLIBS)
 	$(MAKE) -C ../depends/xbmc

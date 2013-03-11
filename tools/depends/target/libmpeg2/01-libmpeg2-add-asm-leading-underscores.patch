@@ -1,0 +1,62 @@
+--- libmpeg2-0.5.1.org/libmpeg2/motion_comp_arm_s.S	2008-07-09 15:16:05.000000000 -0400
++++ libmpeg2-0.5.1/libmpeg2/motion_comp_arm_s.S	2013-01-18 01:53:04.692900836 -0500
+@@ -23,8 +23,13 @@
+ 
+ @ ----------------------------------------------------------------
+ 	.align
+-	.global MC_put_o_16_arm
++#if defined(__APPLE__) && defined(__arm__)
++	.global _MC_put_o_16_arm
++_MC_put_o_16_arm:
++#else
++        .global MC_put_o_16_arm
+ MC_put_o_16_arm:
++#endif
+ 	@@ void func(uint8_t * dest, const uint8_t * ref, int stride, int height)
+ 	pld [r1]
+         stmfd sp!, {r4-r11, lr} @ R14 is also called LR
+@@ -83,8 +88,13 @@
+ 
+ @ ----------------------------------------------------------------
+ 	.align
+-	.global MC_put_o_8_arm
++#if defined(__APPLE__) && defined(__arm__)
++	.global _MC_put_o_8_arm
++_MC_put_o_8_arm:
++#else
++        .global MC_put_o_8_arm
+ MC_put_o_8_arm:
++#endif
+ 	@@ void func(uint8_t * dest, const uint8_t * ref, int stride, int height)
+ 	pld [r1]
+         stmfd sp!, {r4-r10, lr} @ R14 is also called LR
+@@ -152,8 +162,13 @@
+ .endm
+ 
+ 	.align
+-	.global MC_put_x_16_arm
++#if defined(__APPLE__) && defined(__arm__)
++	.global _MC_put_x_16_arm
++_MC_put_x_16_arm:
++#else
++        .global MC_put_x_16_arm
+ MC_put_x_16_arm:
++#endif
+ 	@@ void func(uint8_t * dest, const uint8_t * ref, int stride, int height)
+ 	pld [r1]
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR
+@@ -244,8 +259,13 @@
+ 
+ @ ----------------------------------------------------------------
+ 	.align
+-	.global MC_put_x_8_arm
++#if defined(__APPLE__) && defined(__arm__)
++	.global _MC_put_x_8_arm
++_MC_put_x_8_arm:
++#else
++        .global MC_put_x_8_arm
+ MC_put_x_8_arm:
++#endif
+ 	@@ void func(uint8_t * dest, const uint8_t * ref, int stride, int height)
+ 	pld [r1]
+         stmfd sp!, {r4-r11,lr} @ R14 is also called LR

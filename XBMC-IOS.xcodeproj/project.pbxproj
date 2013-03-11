@@ -1000,10 +1000,7 @@
 		F5899DD01287212700D8079E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5899DCC1287212700D8079E /* UIKit.framework */; };
 		F5899DD11287212700D8079E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5899DCD1287212700D8079E /* Foundation.framework */; };
 		F589AE431288E02000D8079E /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE421288E02000D8079E /* libiconv.dylib */; };
-		F589AE451288E06100D8079E /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE441288E06100D8079E /* libbz2.dylib */; };
 		F589AE471288E07400D8079E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE461288E07400D8079E /* libz.dylib */; };
-		F589AE491288E07D00D8079E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE481288E07D00D8079E /* libxml2.dylib */; };
-		F589AE4B1288E09200D8079E /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE4A1288E09200D8079E /* libncurses.dylib */; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5AE415B134175520004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4140134175520004BD79 /* AudioLibrary.cpp */; };
@@ -3192,10 +3189,7 @@
 		F5899DCC1287212700D8079E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F5899DCD1287212700D8079E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F589AE421288E02000D8079E /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
-		F589AE441288E06100D8079E /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		F589AE461288E07400D8079E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		F589AE481288E07D00D8079E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		F589AE4A1288E09200D8079E /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5AE4140134175520004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
@@ -3277,10 +3271,7 @@
 				F5899DD01287212700D8079E /* UIKit.framework in Frameworks */,
 				F5899DD11287212700D8079E /* Foundation.framework in Frameworks */,
 				F589AE431288E02000D8079E /* libiconv.dylib in Frameworks */,
-				F589AE451288E06100D8079E /* libbz2.dylib in Frameworks */,
 				F589AE471288E07400D8079E /* libz.dylib in Frameworks */,
-				F589AE491288E07D00D8079E /* libxml2.dylib in Frameworks */,
-				F589AE4B1288E09200D8079E /* libncurses.dylib in Frameworks */,
 				F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */,
 				F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */,
 				3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */,
@@ -6442,10 +6433,7 @@
 		F5899DC91287212700D8079E /* System Libs and Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F589AE441288E06100D8079E /* libbz2.dylib */,
 				F589AE421288E02000D8079E /* libiconv.dylib */,
-				F589AE4A1288E09200D8079E /* libncurses.dylib */,
-				F589AE481288E07D00D8079E /* libxml2.dylib */,
 				F589AE461288E07400D8079E /* libz.dylib */,
 				F56B14A412CAF523009B4C96 /* AudioToolbox.framework */,
 				8253940416B25C2C00A85509 /* AVFoundation.framework */,
@@ -7846,12 +7834,18 @@
 					"-Wl,-headerpad_max_install_names",
 					"-Wl,-all_load",
 					"-L$XBMC_DEPENDS/lib",
+					"-lbz2",
+					"-lintl",
+					"-lexpat",
+					"-lssl",
+					"-lgpg-error",
+					"-lresolv",
+					"-lffi",
 					"-lssh",
 					"-llzo2",
 					"-lpcre",
 					"-lpcrecpp",
 					"-lfribidi",
-					"-lcdio",
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",
@@ -7968,12 +7962,18 @@
 					"-Wl,-headerpad_max_install_names",
 					"-Wl,-all_load",
 					"-L$XBMC_DEPENDS/lib",
+					"-lbz2",
+					"-lintl",
+					"-lexpat",
+					"-lssl",
+					"-lgpg-error",
+					"-lresolv",
+					"-lffi",
 					"-lssh",
 					"-llzo2",
 					"-lpcre",
 					"-lpcrecpp",
 					"-lfribidi",
-					"-lcdio",
 					"-lfreetype",
 					"-lfontconfig",
 					"-lsqlite3",

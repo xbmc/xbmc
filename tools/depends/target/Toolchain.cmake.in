@@ -1,0 +1,26 @@
+SET(OS "@platform_os@")
+IF("${OS}" STREQUAL "linux" OR "${OS}" STREQUAL "android")
+SET(CMAKE_SYSTEM_NAME Linux)
+ENDIF()
+SET(CMAKE_SYSTEM_VERSION 1)
+
+# specify the cross compiler
+SET(CMAKE_C_COMPILER   @CC@)
+SET(CMAKE_CXX_COMPILER @CXX@)
+
+# where is the target environment 
+SET(CMAKE_FIND_ROOT_PATH  @prefix@/@deps_dir@ @use_toolchain@ @use_toolchain@/usr @use_sdk_path@ @use_sdk_path@/usr @use_toolchain@/sysroot/usr)
+SET(CMAKE_LIBRARY_PATH @prefix@/@deps_dir@/lib:@use_toolchain@/usr/lib/@use_host@:@use_toolchain@/lib/@use_host@)
+
+SET(CMAKE_C_FLAGS "@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include")
+SET(CMAKE_CXX_FLAGS "@platform_cxxflags@ @platform_includes@ -I@prefix@/@deps_dir@/include")
+SET(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include")
+SET(ENV{CFLAGS} ${CMAKE_C_FLAGS})
+SET(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
+SET(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
+SET(ENV{LDFLAGS} "-L@prefix@/@deps_dir@/lib @platform_ldflags@")
+# search for programs in the build host directories
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
