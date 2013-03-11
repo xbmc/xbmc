@@ -1100,18 +1100,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     NSString *thumb = [item objectForKey:@"thumb"];
     if (thumb && thumb.length > 0)
     {
-      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-      if (mArt)
+      UIImage *image = [UIImage imageWithContentsOfFile:thumb];
+      if (image)
       {
-        UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-        if (image)
+        MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+        if (mArt)
         {
-          MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-          if (mArt)
-          {
-            [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-            [mArt release];
-          }
+          [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+          [mArt release];
         }
       }
     }
