@@ -1,5 +1,7 @@
 
-#add_subdirectory(Encoders)
+if(NOT TARGET_COMMON_DARWIN)
+  add_subdirectory(Encoders)
+endif(NOT TARGET_COMMON_DARWIN)
 
 add_subdirectory(Engines)
 if(NOT APPLE)

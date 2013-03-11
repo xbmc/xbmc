@@ -14,8 +14,8 @@ else(TARGET_COMMON_DARWIN)
   endif()
 endif()
 
-if(HAVE_LIBCEC)
+if(HAVE_LIBCEC OR TARGET_WIN32)
   list(APPEND bus_SRCS virtual/PeripheralBusCEC.cpp)
-endif(HAVE_LIBCEC)
+endif(HAVE_LIBCEC OR TARGET_WIN32)
 
 add_sources(${bus_SRCS} ${bus_os_SRCS})
