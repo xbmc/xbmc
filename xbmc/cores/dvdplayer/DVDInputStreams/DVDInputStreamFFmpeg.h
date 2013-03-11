@@ -25,7 +25,7 @@
 class CDVDInputStreamFFmpeg : public CDVDInputStream
 {
 public:
-  CDVDInputStreamFFmpeg();
+  CDVDInputStreamFFmpeg(bool canseek = true, bool canpause = true);
   virtual ~CDVDInputStreamFFmpeg();
   virtual bool Open(const char* strFile, const std::string &content);
   virtual void Close();
@@ -34,6 +34,11 @@ public:
   virtual bool Pause(double dTime) { return false; };
   virtual bool IsEOF();
   virtual int64_t GetLength();
+  virtual bool CanSeek() { return m_canseek; };
+  virtual bool CanPause() { return m_canpause; };
 
 protected:
+  bool m_canseek;
+  bool m_canpause;
 };
+

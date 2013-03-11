@@ -22,10 +22,11 @@
 
 using namespace XFILE;
 
-CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
+CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(bool canseek /* =true */, bool canpause /* =true */)
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
 {
-
+  m_canseek = canseek;
+  m_canpause = canpause;
 }
 
 CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()

@@ -84,13 +84,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"
-       || file.substr(0, 6) == "udp://"
        || file.substr(0, 6) == "tcp://"
        || file.substr(0, 6) == "mms://"
        || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://"
        || (item.IsInternetStream() && item.IsType(".m3u8")))
     return new CDVDInputStreamFFmpeg();
+  else if(file.substr(0, 6) == "udp://")
+    return new CDVDInputStreamFFmpeg(false, false);
   else if(file.substr(0, 8) == "sling://"
        || file.substr(0, 7) == "myth://"
        || file.substr(0, 8) == "cmyth://"
