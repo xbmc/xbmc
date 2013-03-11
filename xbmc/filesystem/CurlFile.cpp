@@ -749,30 +749,17 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_password = url2.GetPassWord();
 
     // handle any protocol options
-    CStdString options = url2.GetProtocolOptions();
-    options.TrimRight('/'); // hack for trailing slashes being added from source
-    if (options.length() > 0)
+    std::map<CStdString, CStdString> options;
+    url2.GetProtocolOptions(options);
+    if (options.size() > 0)
     {
       // clear protocol options
       url2.SetProtocolOptions("");
       // set xbmc headers
-      CStdStringArray array;
-      CUtil::Tokenize(options, array, "&");
-      for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+      for(std::map<CStdString, CStdString>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
-        // parse name, value
-        CStdString name, value;
-        int pos = it->Find('=');
-        if(pos >= 0)
-        {
-          name = it->Left(pos);
-          value = it->Mid(pos+1, it->size());
-        }
-        else
-        {
-          name = (*it);
-          value = "";
-        }
+        const CStdString &name = it->first;
+        CStdString value = it->second;
 
         // url decode value
         CURL::Decode(value);
