@@ -92,7 +92,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
   m_send_eos              = false;
-  m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
+  m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
   m_dst_rect.SetRect(0, 0, 0, 0);
