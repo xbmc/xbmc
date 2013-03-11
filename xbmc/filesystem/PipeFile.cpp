@@ -90,7 +90,8 @@ int CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
   if (!m_pipe)
     return -1;
   
-  return (int)(m_pipe->Write((const char *)lpBuf,(int)uiBufSize)); // its not the size. its bool. either all was written or not.
+  // m_pipe->Write return bool. either all was written or not.
+  return m_pipe->Write((const char *)lpBuf,(int)uiBufSize) ? (int)uiBufSize : 0;
 }
 
 void CPipeFile::SetEof()
