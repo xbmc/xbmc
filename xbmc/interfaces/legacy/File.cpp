@@ -34,10 +34,10 @@ namespace XBMCAddon
       return (unsigned long)file->Read(buffer, numBytes);
     }
 
-    bool File::write(const char* pBuffer)
+    bool File::write(const char* pBuffer, unsigned long numBytes)
     {
       DelayedCallGuard dg(languageHook);
-      return file->Write( (void*) pBuffer, strlen( pBuffer ) ) > 0;
+      return file->Write( (void*) pBuffer, numBytes ) == numBytes;
     }
 
   }
