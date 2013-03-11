@@ -70,7 +70,7 @@ namespace XBMCAddon
       inline String read(unsigned long numBytes = 0) 
       { 
         XbmcCommons::Buffer b = readBytes(numBytes);
-        return b.getString(numBytes == 0 ? b.limit() : numBytes);
+        return b.getString(numBytes == 0 ? b.remaining() : std::min(b.remaining(),numBytes));
       }
 
       /**
