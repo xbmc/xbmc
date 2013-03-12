@@ -40,5 +40,5 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}
 add_library(Goom MODULE ${goom_src})
 target_link_libraries(Goom ${CONFIG_LIBRARY_PNG} ${PLEX_LINK_WHOLEARCHIVE} wrapper ${PLEX_LINK_NOWHOLEARCHIVE})
 
-install(DIRECTORY visualization.goom DESTINATION ${RESOURCEPATH}/addons)
-install(TARGETS Goom DESTINATION ${RESOURCEPATH}/addons/visualization.goom)
+install(DIRECTORY visualization.goom DESTINATION ${RESOURCEPATH}/addons COMPONENT RUNTIME)
+install(TARGETS Goom DESTINATION ${RESOURCEPATH}/addons/visualization.goom COMPONENT RUNTIME)

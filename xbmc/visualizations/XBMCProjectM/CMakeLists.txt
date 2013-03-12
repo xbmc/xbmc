@@ -58,9 +58,9 @@ if(ZIP)
     COMMAND ${ZIP} -q -j presets.zip ${CMAKE_CURRENT_SOURCE_DIR}/libprojectM/presets/*
   )
   add_custom_target(ProjectMPresets ALL DEPENDS presets.zip)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/presets.zip DESTINATION ${RESOURCEPATH}/addons/visualization.projectm/resources)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/presets.zip DESTINATION ${RESOURCEPATH}/addons/visualization.projectm/resources COMPONENT RUNTIME)
 endif()
 
 add_library(projectM MODULE ${src})
 target_link_libraries(projectM wrapper ${CONFIG_LIBRARY_OPENGL})
-install(TARGETS projectM DESTINATION ${RESOURCEPATH}/addons/visualization.projectm)
+install(TARGETS projectM DESTINATION ${RESOURCEPATH}/addons/visualization.projectm COMPONENT RUNTIME)

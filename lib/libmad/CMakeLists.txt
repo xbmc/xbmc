@@ -2,4 +2,4 @@ add_definitions(-DFPM_DEFAULT -DASO_ZEROCHECK -DHAVE_CONFIG_H -D_LIB -D_WINDLL -
 set(mad_SRCS bit.c decoder.c fixed.c frame.c huffman.c layer12.c layer3.c stream.c synth.c timer.c version.c msvc++/libmad.def)
 include_directories(msvc++)
 add_library(libmad SHARED ${mad_SRCS})
-install(TARGETS libmad RUNTIME DESTINATION ${RESOURCEPATH}/system/players/dvdplayer LIBRARY DESTINATION ${RESOURCEPATH}/system/players/dvdplayer)
+install(TARGETS libmad RUNTIME DESTINATION ${RESOURCEPATH}/system/players/dvdplayer LIBRARY DESTINATION ${RESOURCEPATH}/system/players/dvdplayer COMPONENT RUNTIME)

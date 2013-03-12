@@ -9,4 +9,4 @@ include_directories(libass xbmc/libass_win32
                            ${root}/lib/libiconv/include)
 add_library(libass SHARED ${ass_SRCS})
 target_link_libraries(libass enca ${CONFIG_LIBRARY_LIBICONV} ${CONFIG_LIBRARY_FREETYPE246MT} ${CONFIG_LIBRARY_LIBFRIBIDI} ${CONFIG_LIBRARY_FONTCONFIG})
-install(TARGETS libass RUNTIME DESTINATION ${RESOURCEPATH}/system/players/dvdplayer LIBRARY DESTINATION ${RESOURCEPATH}/system/players/dvdplayer)
+install(TARGETS libass RUNTIME DESTINATION ${RESOURCEPATH}/system/players/dvdplayer LIBRARY DESTINATION ${RESOURCEPATH}/system/players/dvdplayer COMPONENT RUNTIME)

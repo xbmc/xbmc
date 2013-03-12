@@ -33,4 +33,4 @@ add_definitions(
 
 add_library(Milkdrop_win32dx MODULE ${mdrop_SRC} ${eval_SRC} MilkdropXBMC.cpp XMLDocument.cpp)
 target_link_libraries(Milkdrop_win32dx ${CONFIG_LIBRARY_D3DX9})
-install(TARGETS Milkdrop_win32dx LIBRARY DESTINATION ${RESOURCEPATH}/addons/visualization.milkdrop)
+install(TARGETS Milkdrop_win32dx LIBRARY DESTINATION ${RESOURCEPATH}/addons/visualization.milkdrop COMPONENT RUNTIME)
