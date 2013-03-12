@@ -32,7 +32,7 @@
              This will take care of integrating with our NDK code.
         -->
         <activity
-            android:name="android.app.NativeActivity"
+            android:name=".Main"
             android:configChanges="orientation|keyboardHidden"
             android:finishOnTaskLaunch="true"
             android:label="XBMC"

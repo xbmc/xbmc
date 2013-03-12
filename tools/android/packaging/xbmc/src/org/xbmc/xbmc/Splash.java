@@ -238,7 +238,7 @@ public class Splash extends Activity {
   protected void startXBMC() {
     // Run XBMC
     Intent intent = new Intent();
-    intent.setClass(this, android.app.NativeActivity.class);
+    intent.setClass(this, org.xbmc.xbmc.Main.class);
     startActivity(intent);
     finish();
   }
@@ -254,7 +254,7 @@ public class Splash extends Activity {
         .getRunningTasks(Integer.MAX_VALUE);
     for (RunningTaskInfo task : tasks)
       if (task.topActivity.toString().equalsIgnoreCase(
-          "ComponentInfo{org.xbmc.xbmc/android.app.NativeActivity}")) {
+          "ComponentInfo{org.xbmc.xbmc/org.xbmc.xbmc.Main}")) {
         // XBMC already running; just activate it
         startXBMC();
         return;
