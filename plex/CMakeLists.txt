@@ -24,6 +24,10 @@ add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(AutoUpdate)
 
+if(TARGET_WIN32)
+  add_subdirectory(Resources/MCE)
+endif(TARGET_WIN32)
+
 if(TARGET_OSX)
   add_subdirectory(Helper)
 endif(TARGET_OSX)
