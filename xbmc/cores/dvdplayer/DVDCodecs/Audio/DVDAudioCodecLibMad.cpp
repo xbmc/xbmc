@@ -36,6 +36,8 @@ CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
   m_iSourceBitrate = 0;
   
   m_iInputBufferSize = 0;
+  memset(&m_decodedData, 0, MAD_DECODED_SIZE);
+  memset(&m_inputBuffer, 0, MAD_INPUT_SIZE);
 }
 
 CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()

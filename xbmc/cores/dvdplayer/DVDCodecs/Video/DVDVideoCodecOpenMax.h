@@ -55,6 +55,15 @@ protected:
       uint8_t  first_idr;
       uint8_t *sps_pps_data;
       uint32_t size;
+
+      omx_bitstream_ctx()
+      {
+        length_size = 0;
+        first_idr = 0;
+        sps_pps_data = NULL;
+        size = 0;
+      }
+
   } omx_bitstream_ctx;
 
   uint32_t          m_sps_pps_size;

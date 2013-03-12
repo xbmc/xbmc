@@ -86,6 +86,15 @@ COpenMaxVideo::COpenMaxVideo()
 
   m_omx_decoder_state_change = (sem_t*)malloc(sizeof(sem_t));
   sem_init(m_omx_decoder_state_change, 0, 0);
+  memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+  m_drop_state = false;
+  m_decoded_width = 0;
+  m_decoded_height = 0;
+  m_omx_input_eos = false;
+  m_omx_input_port = 0;
+  m_omx_output_eos = false;
+  m_omx_output_port = 0;
+  m_videoplayback_done = false;
 }
 
 COpenMaxVideo::~COpenMaxVideo()

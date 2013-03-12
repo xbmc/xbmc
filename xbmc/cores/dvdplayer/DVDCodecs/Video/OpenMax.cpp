@@ -103,6 +103,9 @@ COpenMax::COpenMax()
   m_is_open = false;
 
   m_omx_decoder = NULL;
+  m_omx_client_state = DEAD;
+  m_omx_decoder_state = 0;
+  sem_init(m_omx_decoder_state_change, 0, 0);
   /*
   m_omx_flush_input  = (sem_t*)malloc(sizeof(sem_t));
   sem_init(m_omx_flush_input, 0, 0);

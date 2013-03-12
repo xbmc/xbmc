@@ -32,7 +32,11 @@
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
-  m_NeedRecalc = true;
+  m_NeedRecalc  = true;
+  m_blacklevel  = 0.0f;
+  m_contrast    = 0.0f;
+  m_flags       = 0;
+  m_format      = RENDER_FMT_NONE;
 }
 
 void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)

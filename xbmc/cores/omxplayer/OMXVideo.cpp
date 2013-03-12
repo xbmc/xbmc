@@ -86,6 +86,13 @@ COMXVideo::COMXVideo()
   m_video_codec_name  = "";
   m_deinterlace       = false;
   m_hdmi_clock_sync   = false;
+  m_drop_state        = false;
+  m_decoded_width     = 0;
+  m_decoded_height    = 0;
+  m_omx_clock         = NULL;
+  m_av_clock          = NULL;
+  m_res_callback      = NULL;
+  m_res_ctx           = NULL;
 }
 
 COMXVideo::~COMXVideo()

@@ -115,6 +115,13 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 
   m_dllSwScale = new DllSwScale;
   m_sw_context = NULL;
+  m_NumYV12Buffers = 0;
+  m_iLastRenderBuffer = 0;
+  m_bConfigured = false;
+  m_bValidated = false;
+  m_bImageReady = false;
+  m_StrictBinding = false;
+  m_clearColour = 0.0f;
 }
 
 CLinuxRendererGLES::~CLinuxRendererGLES()

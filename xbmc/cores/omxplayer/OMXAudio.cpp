@@ -112,7 +112,9 @@ COMXAudio::COMXAudio() :
   m_extradata       (NULL   ),
   m_extrasize       (0      ),
   m_last_pts        (DVD_NOPTS_VALUE),
-  m_omx_render      (NULL   )
+  m_omx_render      (NULL   ),
+  m_drc             (0      ),
+  m_vizBufferSamples(0      )
 {
   m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
   m_vizRemapBuffer  = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);

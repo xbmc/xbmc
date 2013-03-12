@@ -46,7 +46,12 @@ private:
 class CWinShader
 {
 protected:
-  CWinShader() {}
+  CWinShader() :
+    m_vbsize(0),
+    m_FVF(0),
+    m_vertsize(0),
+    m_primitivesCount(0)
+  {}
   virtual ~CWinShader();
   virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
   virtual bool LockVertexBuffer(void **data);

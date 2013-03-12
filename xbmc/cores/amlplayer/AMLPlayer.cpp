@@ -502,8 +502,34 @@ void CAMLSubTitleThread::Process(void)
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAMLPlayer::CAMLPlayer(IPlayerCallback &callback)
   : IPlayer(callback),
-  CThread("CAMLPlayer"),
-  m_ready(true)
+  CThread                 ("CAMLPlayer" ),
+  m_ready                 (true         ),
+  m_audio_delay           (0            ),
+  m_audio_passthrough_ac3 (false        ),
+  m_audio_passthrough_dts (false        ),
+  m_video_width           (0            ),
+  m_video_height          (0            ),
+  m_video_fps_numerator   (0            ),
+  m_video_fps_denominator (0            ),
+  m_subtitle_delay        (0            ),
+  m_subtitle_thread       (NULL         ),
+  m_chapter_index         (0            ),
+  m_chapter_count         (0            ),
+  m_show_mainvideo        (0            ),
+  m_zoom                  (0            ),
+  m_contrast              (0            ),
+  m_brightness            (0            ),
+  m_subtitle_index        (0            ),
+  m_subtitle_count        (0            ),
+  m_subtitle_show         (false        ),
+  m_audio_index           (0            ),
+  m_audio_count           (0            ),
+  m_audio_mute            (false        ),
+  m_audio_volume          (0.0f         ),
+  m_video_index           (0            ),
+  m_video_count           (0            ),
+  m_cpu                   (0            ),
+  m_view_mode             (0            )
 {
   m_dll = new DllLibAmplayer;
   m_dll->Load();

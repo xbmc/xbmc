@@ -175,6 +175,19 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbBufferSize = 0;
   m_context = NULL;
   m_rgbPbo = 0;
+  m_fbo.width = 0.0;
+  m_fbo.height = 0.0;
+  m_NumYV12Buffers = 0;
+  m_iLastRenderBuffer = 0;
+  m_bConfigured = false;
+  m_bValidated = false;
+  m_bImageReady = false;
+  m_clearColour = 0.0f;
+  m_pboSupported = false;
+  m_pboUsed = false;
+  m_nonLinStretch = false;
+  m_nonLinStretchGui = false;
+  m_pixelRatio = 0.0f;
 
   m_dllSwScale = new DllSwScale;
 }

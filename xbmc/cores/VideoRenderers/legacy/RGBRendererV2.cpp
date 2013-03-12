@@ -37,6 +37,8 @@ CRGBRendererV2::CRGBRendererV2(LPDIRECT3DDEVICE8 pDevice)
   m_UVLookup = NULL;
   m_UVErrorLookup = NULL;
   m_motionpass = 5;
+  m_444GeneratedFull = false;
+  m_444RenderBuffer = 0;
   memset(&m_yuvcoef_last, 0, sizeof(YUVCOEF));
   memset(&m_yuvrange_last, 0, sizeof(YUVRANGE));
 }

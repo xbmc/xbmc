@@ -107,6 +107,7 @@ namespace OVERLAY {
       {
         overlay_dvd = NULL;
         overlay     = NULL;
+        pts         = 0.0;
       }
       double pts;
       CDVDOverlay* overlay_dvd;

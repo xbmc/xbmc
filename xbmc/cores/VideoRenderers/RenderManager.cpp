@@ -65,7 +65,8 @@ class CRetakeLock
 {
 public:
   CRetakeLock(CSharedSection &section, bool immidiate = true, CCriticalSection &owned = g_graphicsContext)
-    : m_owned(owned)
+    : m_owned(owned ),
+      m_lock (NULL  )
   {
     m_count = m_owned.exit();
     m_lock  = new T(section);
@@ -104,6 +105,10 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_bReconfigured = false;
   m_hasCaptures = false;
   m_displayLatency = 0.0f;
+  m_presentcorr = 0.0;
+  m_presenterr = 0.0;
+  memset(&m_errorbuff, 0, ERRORBUFFSIZE);
+  m_errorindex = 0;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()

@@ -97,6 +97,12 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_messageQueue.SetMaxTimeSize(8.0);
 
   m_dst_rect.SetRect(0, 0, 0, 0);
+  m_iSleepEndTime = 0.0;
+  m_Deinterlace = false;
+  m_audio_count = 0;
+  m_started = false;
+  m_flush = false;
+  m_view_mode = 0;
 }
 
 OMXPlayerVideo::~OMXPlayerVideo()

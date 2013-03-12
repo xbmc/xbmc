@@ -1046,6 +1046,8 @@ CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
   m_dllAvUtil   = NULL;
   m_dllAvFormat = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+  m_DropPictures = false;
+  m_sort_time_offset = 0.0;
 }
 
 CDVDVideoCodecVideoToolBox::~CDVDVideoCodecVideoToolBox()
