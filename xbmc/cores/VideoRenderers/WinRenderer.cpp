@@ -124,6 +124,13 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
+  /* PLEX */
+  if (m_flags & CONF_FLAGS_RGB)
+  {
+    m_renderMethod = RENDER_RGB;
+  }
+  else
+  /* END PLEX */
   // Set rendering to dxva before trying it, in order to open the correct processor immediately, when deinterlacing method is auto.
 
   // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
@@ -645,6 +652,10 @@ void CWinRenderer::Render(DWORD flags)
     RenderSW();
   else if (m_renderMethod == RENDER_PS)
     RenderPS();
+  /* PLEX */
+  else if (m_renderMethod == RENDER_RGB)
+    RenderRGB();
+  /* END PLEX */
 
   pD3DDevice->SetDepthStencilSurface(pZBuffer);
   pZBuffer->Release();
@@ -1262,4 +1273,130 @@ void DXVABuffer::StartDecode()
 {
   Release();
 }
+
+/* PLEX */
+void CWinRenderer::RenderRGB()
+{
+  // TODO(schuyler) We should be able to combine this with the second half
+  // of RenderSW.
+
+  D3DLOCKED_RECT rect;
+  LPDIRECT3DSURFACE9 videoSurface;
+  D3DSURFACE_DESC desc;
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  HRESULT hr;
+
+  if (!m_rgbTexture)
+  {
+    hr = pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1,
+        D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &m_rgbTexture, NULL);
+    if (hr != D3D_OK)
+    {
+      CLog::Log(LOGERROR, "Failed to create RGB texture: 0x%08x", hr);
+      return;
+    }
+  }
+
+  // Copy our RGB buffer onto our texture.
+  if (m_rgbBuffer)
+  {
+    BYTE* src = m_rgbBuffer;
+    m_rgbTexture->GetSurfaceLevel(0, &videoSurface);
+    videoSurface->GetDesc(&desc);
+    if (videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
+    {
+      for (unsigned int j = 0; j < std::min(m_sourceHeight, desc.Height); j++)
+        memcpy((BYTE*)rect.pBits + (j * rect.Pitch), src + (j * m_sourceWidth * 4), m_sourceWidth * 4);
+
+      videoSurface->UnlockRect();
+      videoSurface->Release();
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Failed to lock RGB texture rect");
+      videoSurface->Release();
+      return;
+    }
+  }
+
+  pD3DDevice->SetTexture(0, m_rgbTexture);
+  pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+  pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+  pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+
+  struct CUSTOMVERTEX {
+    FLOAT x, y, z;
+    FLOAT rhw;
+    FLOAT tu, tv;
+  };
+
+  // Create vertices for triangle fan rendering.
+  CUSTOMVERTEX verts[4] =
+  {
+    {
+      m_destRect.x1, m_destRect.y1, 0.0f,
+      1.0f,
+      m_sourceRect.x1 / m_sourceWidth, m_sourceRect.y1 / m_sourceHeight
+    },
+    {
+      m_destRect.x2, m_destRect.y1, 0.0f,
+      1.0f,
+      m_sourceRect.x2 / m_sourceWidth, m_sourceRect.y1 / m_sourceHeight
+    },
+    {
+      m_destRect.x2, m_destRect.y2, 0.0f,
+      1.0f,
+      m_sourceRect.x2 / m_sourceWidth, m_sourceRect.y2 / m_sourceHeight
+    },
+    {
+      m_destRect.x1, m_destRect.y2, 0.0f,
+      1.0f,
+      m_sourceRect.x1 / m_sourceWidth, m_sourceRect.y2 / m_sourceHeight
+    }
+  };
+
+  pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+  pD3DDevice->SetTexture(0, NULL);
+}
+
+void CWinRenderer::SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+{
+  CSingleLock lock(g_graphicsContext);
+
+  if (!m_rgbBuffer || m_renderMethod != RENDER_RGB)
+  {
+    CLog::Log(LOGERROR, "%s called without first calling Configure", __FUNCTION__);
+    return;
+  }
+
+  if (nHeight * nWidth * 4 != m_rgbBufferSize)
+  {
+    CLog::Log(LOGERROR, "%s, incorrect image size", __FUNCTION__);
+    return;
+  }
+
+  if (nPitch == nWidth * 4)
+    memcpy(m_rgbBuffer, image, nHeight * nPitch);
+  else
+    for (int i = 0; i < nHeight; i++)
+      memcpy(m_rgbBuffer + (i * nWidth * 4), image + (i * nPitch), nWidth * 4);
+
+  m_bRGBImageSet = true;
+}
+
+/* END PLEX */
+
 #endif
+
+

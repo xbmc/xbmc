@@ -178,7 +178,7 @@ public:
   virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
   
   /* PLEX */
-  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch) {};
+  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch);
   /* END PLEX */
   
 
@@ -195,6 +195,10 @@ protected:
   bool         CreateYV12Texture(int index);
   void         CopyYV12Texture(int dest);
   int          NextYV12Texture();
+  
+  /* PLEX */
+  void         RenderRGB();
+  /* END PLEX */
 
   void SelectRenderMethod();
   bool UpdateRenderMethod();
