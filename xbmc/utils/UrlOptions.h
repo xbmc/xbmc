@@ -24,6 +24,8 @@
 #include "utils/Variant.h"
 
 /* PLEX */
+#include "xbmc/config.h"
+
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
