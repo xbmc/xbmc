@@ -81,6 +81,9 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
     return;
   }
 
+  /* PLEX */
+  CSingleLock lk(m_section);
+  /* END PLEX */
   // we are either delayed or visible, so we can allocate our resources
   if (m_directoryStatus == UNLOADED)
     LoadDirectory();
@@ -114,6 +117,10 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 
 void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  /* PLEX */
+  CSingleLock lk(m_section);
+  /* END PLEX */
+
   // Set a viewport so that we don't render outside the defined area
   if (m_directoryStatus == READY && !m_files.empty())
   {
@@ -179,6 +186,9 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
     for (int i = 0; i < list->Size(); i ++)
       m_plexFiles.push_back(list->Get(i)->GetPath());
     
+    /* PLEX */
+    CSingleLock lk(m_section);
+    /* END PLEX */
     m_directoryStatus = UNLOADED;
     AllocResources();
     
@@ -193,6 +203,9 @@ void CGUIMultiImage::AllocResources()
   FreeResources();
   CGUIControl::AllocResources();
 
+  /* PLEX */
+  CSingleLock lk(m_section);
+  /* END PLEX */
   if (m_directoryStatus == UNLOADED)
     LoadDirectory();
 }
@@ -284,6 +297,9 @@ void CGUIMultiImage::OnDirectoryLoaded()
     sort(m_files.begin(), m_files.end());
 
   // flag as loaded - no point in constantly reloading them
+  /* PLEX */
+  CSingleLock lk(m_section);
+  /* END PLEX */
   m_directoryStatus = READY;
   m_imageTimer.StartZero();
   m_currentImage = 0;
