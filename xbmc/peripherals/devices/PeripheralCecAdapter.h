@@ -31,10 +31,10 @@ namespace PERIPHERALS
   {
   public:
     bool HasAudioControl(void) { return false; }
-    void ScheduleVolumeUp(void) {}
-    void ScheduleVolumeDown(void) {}
+    void VolumeUp(void) {}
+    void VolumeDown(void) {}
     bool IsMuted(void) { return false; }
-    void ScheduleMute(void) {}
+    void ToggleMute(void) {}
 
     int GetButton(void) { return 0; }
     unsigned int GetHoldTime(void) { return 0; }
