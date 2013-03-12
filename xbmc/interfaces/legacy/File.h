@@ -27,6 +27,8 @@
 #include "LanguageHook.h"
 #include "commons/Buffer.h"
 
+#include <algorithm>
+
 namespace XBMCAddon
 {
 
@@ -70,7 +72,7 @@ namespace XBMCAddon
       inline String read(unsigned long numBytes = 0) 
       { 
         XbmcCommons::Buffer b = readBytes(numBytes);
-        return b.getString(numBytes == 0 ? b.remaining() : std::min(b.remaining(),numBytes));
+        return b.getString(numBytes == 0 ? b.remaining() : std::min((unsigned long)b.remaining(),numBytes));
       }
 
       /**
