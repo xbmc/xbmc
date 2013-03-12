@@ -125,7 +125,7 @@ void CWinRenderer::ManageTextures()
 void CWinRenderer::SelectRenderMethod()
 {
   /* PLEX */
-  if (m_flags & CONF_FLAGS_RGB)
+  if (m_iFlags & CONF_FLAGS_RGB)
   {
     m_renderMethod = RENDER_RGB;
   }

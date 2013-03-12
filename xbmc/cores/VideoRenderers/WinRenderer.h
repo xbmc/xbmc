@@ -83,6 +83,8 @@ enum RenderMethod
   RENDER_PS      = 0x01,
   RENDER_SW      = 0x02,
   RENDER_DXVA    = 0x03,
+  /* PLEX */
+  RENDER_RGB     = 0x04,
 };
 
 #define PLANE_Y 0
@@ -254,6 +256,13 @@ protected:
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
   unsigned int         m_destWidth;
   unsigned int         m_destHeight;
+
+  /* PLEX - RGB rendering */
+  BYTE                *m_rgbBuffer;
+  int                  m_rgbBufferSize;
+  bool                 m_bRGBImageSet;
+  LPDIRECT3DTEXTURE9   m_rgbTexture;
+  /* END PLEX */
 };
 
 #else
