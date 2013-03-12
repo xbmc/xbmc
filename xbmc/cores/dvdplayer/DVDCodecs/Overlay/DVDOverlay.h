@@ -145,8 +145,8 @@ public:
   CDVDOverlayGroup(CDVDOverlayGroup& src)
     : CDVDOverlay(src)
   {
-    for(VecOverlaysIter it = m_overlays.begin(); it != m_overlays.end(); ++it)
-      m_overlays.push_back((*it)->Acquire());
+    for(VecOverlaysIter it = src.m_overlays.begin(); it != src.m_overlays.end(); ++it)
+      m_overlays.push_back((*it)->Clone());
   }
   VecOverlays m_overlays;
 };
