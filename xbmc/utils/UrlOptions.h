@@ -24,6 +24,10 @@
 #include "utils/Variant.h"
 
 /* PLEX */
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 struct PlexUrlComp : std::binary_function<std::string, std::string, bool>
 {
   bool operator() (const std::string& a, const std::string& b) const
@@ -33,9 +37,14 @@ struct PlexUrlComp : std::binary_function<std::string, std::string, bool>
     if(b.find("X-Plex") != std::string::npos)
       return true;
     
+#ifndef TARGET_WINDOWS
     return ::strcasecmp(a.c_str(), b.c_str()) < 0 ? 1 : 0;
+#else
+    return _stricmp(a.c_str(), b.c_str()) < 0 ? 1 : 0;
+#endif
   }
 };
+
 /* END PLEX */
 
 class CUrlOptions
