@@ -27,7 +27,7 @@ GENERATED += $(GENDIR)/AddonModuleXbmcplugin.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcaddon.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcvfs.cpp
 
-GENERATE_DEPS += $(TOPDIR)/xbmc/interfaces/legacy/*.h
+GENERATE_DEPS += $(TOPDIR)/xbmc/interfaces/legacy/*.h $(TOPDIR)/xbmc/interfaces/python/typemaps/*.intm $(TOPDIR)/xbmc/interfaces/python/typemaps/*.outtm
 
 vpath %.i $(INTERFACES_DIR)/swig
 
