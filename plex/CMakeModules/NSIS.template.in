@@ -767,11 +767,6 @@ Function un.onInit
 
   done:
   
-  Push $0
-  System::Call 'shell32::SHGetFolderPathA(i, i, i, i, t) i(0, ${CSIDL_LOCAL_APPDATA}|${CSIDL_FLAG_CREATE}, 0, ${SHGFP_TYPE_DEFAULT}, .r0).r1'
-  StrCpy $LocalAppDataFolder $0
-  Pop $0
-
   ; Detect Media Center
   ; 4.0 - Media Center 2005 with Update Rollup 2
   ; 5.0 - Media Center on Windows Vista
@@ -958,12 +953,7 @@ uninst_failed:
   Abort
 
 
-inst:
-  Push $0
-  ; Set $LocalAppDataFolder variable
-  System::Call 'shell32::SHGetFolderPathA(i, i, i, i, t) i(0, ${CSIDL_LOCAL_APPDATA}|${CSIDL_FLAG_CREATE}, 0, ${SHGFP_TYPE_DEFAULT}, .r0).r1'
-  StrCpy $LocalAppDataFolder $0
-  
+inst:  
   ; Detect Media Center
   ; 4.0 - Media Center 2005 with Update Rollup 2
   ; 5.0 - Media Center on Windows Vista

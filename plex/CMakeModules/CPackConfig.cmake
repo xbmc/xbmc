@@ -72,11 +72,9 @@ set(CPACK_SOURCE_IGNORE_FILES
   "^${PROJECT_SOURCE_DIR}/upload"
 )
 
-# We want to make sure that CPack uses our own NSIS.template.in
-list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
-
 if(TARGET_WIN32)
   add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
 endif()
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/plex/CMakeModules ${CMAKE_MODULE_PATH})
 include(CPack)
