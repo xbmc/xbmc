@@ -150,6 +150,11 @@ if test "@platform_os@" = "ios"; then
   fi
 fi
 
+#Fix for older, broken android toolchains
+if test "${PACKAGE_NAME}" = "FreeType" -a "@platform_os@" = "android"; then
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
 # These libs do not correctly export their symbols. Force them in case
 # -fvisibility=hidden is set.
 if test "${ac_unique_file}" = "src/flac/main.c" || \
