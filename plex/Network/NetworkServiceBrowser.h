@@ -341,7 +341,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
     sendSearch();
     
     // Wait again.
-    m_timer.expires_at(m_timer.expires_at() + boost::posix_time::milliseconds(m_refreshTime));
+    m_timer.expires_from_now(boost::posix_time::milliseconds(m_refreshTime));
     m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this, boost::asio::placeholders::error));
   }
   
