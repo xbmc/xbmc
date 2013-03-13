@@ -36,7 +36,8 @@ class CConvolutionKernel
     uint8_t* GetUint8Pixels()    { return m_uint8pixels; }
 
   private:
-
+    CConvolutionKernel(const CConvolutionKernel&);
+    CConvolutionKernel& operator=(const CConvolutionKernel&);
     void Lanczos2();
     void Lanczos3Fast();
     void Lanczos3();
