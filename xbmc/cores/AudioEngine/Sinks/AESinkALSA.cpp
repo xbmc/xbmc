@@ -340,17 +340,15 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
    a periodSize of approx 50 ms. Choosing a higher bufferSize
    will cause problems with menu sounds. Buffer will be increased
    after those are fixed.
-   periodSize = sampleRate / 20 
-   bufferSize = periodSize * 1 frame * 4.
   */
   periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 20);
-  bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) periodSize * 4);
+  bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) sampleRate / 5);
   
   /* 
    According to upstream we should set buffer size first - so make sure it is always at least
-   double of period size to not get underruns
+   4x period size to not get underruns (some systems seem to have issues with only 2 periods)
   */
-  periodSize = std::min(periodSize, bufferSize / 2);
+  periodSize = std::min(periodSize, bufferSize / 4);
 
   CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: periodSize %lu, bufferSize %lu", periodSize, bufferSize);
 
