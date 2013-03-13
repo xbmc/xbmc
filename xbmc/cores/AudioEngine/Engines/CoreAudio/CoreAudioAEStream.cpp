@@ -148,6 +148,9 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
   //_aligned_free(m_resampleBuffer); m_resampleBuffer = NULL;
   _aligned_free(m_remapBuffer); m_remapBuffer = NULL;
   _aligned_free(m_vizRemapBuffer); m_vizRemapBuffer = NULL;
+  /* PLEX */
+  _aligned_free(m_upmixBuffer); m_upmixBuffer = NULL;
+  /* END PLEX */
 
   delete m_Buffer; m_Buffer = NULL;
 
