@@ -50,45 +50,50 @@ public:
   /// Get me the best server.
   PlexServerPtr bestServer()
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    CSingleLock lk(m_bestServerSection);
     return m_bestServer;
   }
 
   PlexServerPtr bestServerForTranscoding(bool webkit = false)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
-    if (m_bestServer->canTranscode())
     {
-      if (webkit)
+      CSingleLock lk(m_bestServerSection);
+      if (m_bestServer->canTranscode())
       {
-        if (m_bestServer->canDoWebkit())
+        if (webkit)
+        {
+          if (m_bestServer->canDoWebkit())
+            return m_bestServer;
+        }
+        else
           return m_bestServer;
       }
-      else
-          return m_bestServer;
     }
 
     int bestScore = 0;
     PlexServerPtr bestTranscoder;
-    BOOST_FOREACH(key_server_pair p, m_servers)
     {
-      PlexServerPtr server = p.second;
-
-      if (server->canTranscode())
+      CSingleLock lk(m_serverSection);
+      BOOST_FOREACH(key_server_pair p, m_servers)
       {
-        if (webkit)
+        PlexServerPtr server = p.second;
+        
+        if (server->canTranscode())
         {
-          if (server->canDoWebkit() && server->score() > bestScore)
+          if (webkit)
+          {
+            if (server->canDoWebkit() && server->score() > bestScore)
+            {
+              bestTranscoder = server;
+              bestScore = server->score();
+            }
+            continue;
+          }
+          if (server->score() > bestScore)
           {
             bestTranscoder = server;
             bestScore = server->score();
           }
-          continue;
-        }
-        if (server->score() > bestScore)
-        {
-          bestTranscoder = server;
-          bestScore = server->score();
         }
       }
     }
@@ -99,8 +104,9 @@ public:
   /// Server appeared.
   void addServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token="", const string& deviceClass="desktop")
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, token, deviceClass));
+    
+    CSingleLock lk(m_serverSection);
     
     // Keep a reference count for servers in case we get updated.
     if (m_servers.find(server->key()) != m_servers.end())
@@ -128,7 +134,7 @@ public:
     bool removeServer = false;
 
     {
-      boost::recursive_mutex::scoped_lock lk(m_mutex);
+      CSingleLock lk(m_serverSection);
       // Decrease reference count.
       if (m_servers.find(server->key()) != m_servers.end())
       {
@@ -162,7 +168,7 @@ public:
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, ""));
     
     {
-      boost::recursive_mutex::scoped_lock lk(m_mutex);
+      CSingleLock lk(m_serverSection);
       if (m_servers.find(server->key()) != m_servers.end())
       {
         // See if anything actually changed.
@@ -186,7 +192,7 @@ public:
   /// Return if server is reachable
   bool checkServerReachability(const string& uuid, const string& addr, unsigned short port)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    CSingleLock lk(m_serverSection);
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, "", addr, port, ""));
     if (m_servers.find(server->key()) != m_servers.end())
     {
@@ -204,24 +210,22 @@ public:
   /// Set the shared servers.
   void setSharedServers(const vector<PlexServerPtr>& sharedServers)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    CSingleLock lk(m_serverSection);
     m_sharedServers.assign(sharedServers.begin(), sharedServers.end());
   }
   
   /// Get shared servers.
   void getSharedServers(vector<PlexServerPtr>& sharedServers)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    CSingleLock lk(m_serverSection);
     sharedServers.assign(m_sharedServers.begin(), m_sharedServers.end());
   }
 
   /// Remove all non-detected servers.
   void setRemoteServers(const vector<PlexServerPtr>& remoteServers)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
-
     // See which ones are actually new.
-    set<string> addedServers;
+    set<PlexServerPtr> addedServers;
     set<PlexServerPtr> deletedServers;
     computeAddedAndRemoved(remoteServers, addedServers, deletedServers);
     dprintf("Plex Server Manager: Setting %ld remote servers (%ld new, %ld deleted)", remoteServers.size(), addedServers.size(), deletedServers.size());
@@ -232,19 +236,19 @@ public:
       if (pair.second->detected() == false)
         detected.insert(pair.first);
     
-    BOOST_FOREACH(string key, detected)
-      m_servers.erase(key);
-    
-    // Add the new ones.
-    BOOST_FOREACH(PlexServerPtr server, remoteServers)
-      m_servers[server->key()] = server;
+    {
+      CSingleLock lk(m_serverSection);
+      BOOST_FOREACH(string key, detected)
+        m_servers.erase(key);
+      
+      // Add the new ones.
+      BOOST_FOREACH(PlexServerPtr server, remoteServers)
+        m_servers[server->key()] = server;
+    }
     
     // Notify the source scanner.
-    BOOST_FOREACH(string s, addedServers)
-    {
-      PlexServerPtr server = m_servers[s];
+    BOOST_FOREACH(PlexServerPtr server, addedServers)
       CPlexSourceScanner::ScanHost(server);
-    }
     
     BOOST_FOREACH(PlexServerPtr server, deletedServers)
       CPlexSourceScanner::RemoveHost(server);
@@ -255,10 +259,9 @@ public:
 
   bool getServerByKey(const CStdString& uuid, const CStdString& address, int port, PlexServerPtr& server)
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
-
     PlexServer tmpServer(uuid, "", address, port, "");
 
+    CSingleLock lk(m_serverSection);
     BOOST_FOREACH(key_server_pair pair, m_servers)
     {
       if (pair.second->key() == tmpServer.key())
@@ -274,14 +277,15 @@ public:
  private:
   
   /// Compute added and removed sets.
-  void computeAddedAndRemoved(const vector<PlexServerPtr>& remoteServers, set<string>& addedServers, set<PlexServerPtr>& deletedServers)
+  void computeAddedAndRemoved(const vector<PlexServerPtr>& remoteServers, set<PlexServerPtr>& addedServers, set<PlexServerPtr>& deletedServers)
   {
     set<string> remoteServerKeys;
     
+    CSingleLock lk(m_serverSection);
     BOOST_FOREACH(PlexServerPtr server, remoteServers)
     {
       if (m_servers.find(server->key()) == m_servers.end())
-        addedServers.insert(server->key());
+        addedServers.insert(server);
       remoteServerKeys.insert(server->key());
     }
     
@@ -294,22 +298,23 @@ public:
   /// Figure out what the best server is.
   void updateBestServer()
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
-    
     PlexServerPtr bestServer;
     int bestScore = 0;
-    
-    BOOST_FOREACH(key_server_pair pair, m_servers)
+
     {
-      if (pair.second->score() > bestScore && pair.second->score() >= PMS_LIVE_SCORE)
+      CSingleLock lk(m_serverSection);
+      BOOST_FOREACH(key_server_pair pair, m_servers)
       {
-        // Compute the score.
-        bestScore = pair.second->score();
-        bestServer = pair.second;
-        
-        // Bonus if it's the current server.
-        if (bestServer->equals(m_bestServer))
-          bestScore++;
+        if (pair.second->score() > bestScore && pair.second->score() >= PMS_LIVE_SCORE)
+        {
+          // Compute the score.
+          bestScore = pair.second->score();
+          bestServer = pair.second;
+          
+          // Bonus if it's the current server.
+          if (bestServer->equals(m_bestServer))
+            bestScore++;
+        }
       }
     }
     
@@ -318,6 +323,9 @@ public:
     else
       dprintf("Plex Server Manager: There is no worthy server.");
     
+    CSingleLock lk(m_bestServerSection);
+    m_bestServer = bestServer;
+
     // If the server changed, notify the home screen, there may be repercussions.
     if ((!m_bestServer && bestServer) ||
         (m_bestServer && !bestServer) ||
@@ -329,12 +337,12 @@ public:
       g_windowManager.SendThreadMessage(msg);
     }
     
-    m_bestServer = bestServer;
+
   }
   
   void dump()
   {
-    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    CSingleLock lk(m_serverSection);
     
     dprintf("SERVERS:");
     BOOST_FOREACH(key_server_pair pair, m_servers)
@@ -357,9 +365,10 @@ public:
     while (true)
     {
       // Get servers.
-      m_mutex.lock();
-      servers = m_servers;
-      m_mutex.unlock();
+      {
+        CSingleLock lk(m_serverSection);
+        servers = m_servers;
+      }
       
       // Run connectivity checks.
       dprintf("Plex Server Manager: Running connectivity check.");
@@ -384,9 +393,11 @@ public:
     m_connectivityEvent.Set();
   }
   
+  CCriticalSection           m_bestServerSection;
+  CCriticalSection           m_serverSection;
+  
   PlexServerPtr              m_bestServer;
   map<string, PlexServerPtr> m_servers;
   vector<PlexServerPtr>      m_sharedServers;
-  boost::recursive_mutex     m_mutex;
   CEvent                     m_connectivityEvent;
 };
