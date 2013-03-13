@@ -234,7 +234,7 @@ case $host in
     platform_cflags+=" -arch $use_cpu -m$platform_min_version "
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path "
     platform_cxxflags="$platform_cflags"
-    deps_dir=$sdk_name"_"$use_cpu
+    deps_dir=$sdk_name"_"$use_cpu-target
     tool_dir=buildtools-native;
   ;;
   *)
