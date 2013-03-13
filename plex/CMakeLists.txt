@@ -39,11 +39,8 @@ list(APPEND plex_SRCS Resources/Plex.rc)
 list(APPEND plex_SRCS Resources/Plex.rc2)
 
 set(Headers PlexTypes.h)
-if(TARGET_OSX)
-  list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
-else(TARGET_OSX)
-  list(REMOVE_ITEM plex_SRCS ./CocoaUtils.m)
-  list(REMOVE_ITEM plex_SRCS ./CocoaUtilsPlus.mm)
+if(NOT TARGET_OSX)
+  list(REMOVE_ITEM plex_SRCS ./PlexMacUtils.mm)
 endif(TARGET_OSX)
 
 if(NOT TARGET_WIN32)
