@@ -88,7 +88,7 @@ class CPlexSectionLoadJob : public CJob
 class CPlexSectionFanout : public IJobCallback
 {
   public:
-    CPlexSectionFanout(CGUIWindowHome *home, const CStdString& url, int sectionType);
+    CPlexSectionFanout(const CStdString& url, int sectionType);
 
     std::vector<contentListPair> GetContentLists();
     CFileItemListPtr GetContentList(int type);
@@ -107,7 +107,6 @@ class CPlexSectionFanout : public IJobCallback
     CStdString m_url;
     boost::timer m_age;
     CCriticalSection m_critical;
-    CGUIWindowHome *m_home;
     int m_sectionType;
     std::vector<int> m_outstandingJobs;
   
