@@ -22,4 +22,4 @@
 %>
 ${result} = <% 
   if(method.@feature_python_coerceToUnicode) { %>PyUnicode_DecodeUTF8(${api}.c_str(),${api}.size(),"replace");<% }
-  else { %>PyString_FromString(${api}.c_str());<% } %>
+  else { %>PyString_FromStringAndSize(${api}.c_str(), ${api}.length());<% } %>

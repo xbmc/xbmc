@@ -99,8 +99,8 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
     m_bStop = true;
   }
 
-  SAFE_DELETE(m_queryThread);
   StopThread(true);
+  delete m_queryThread;
 
   if (m_dll && m_cecAdapter)
   {
@@ -135,6 +135,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bActiveSourceBeforeStandby = false;
   m_bOnPlayReceived          = false;
   m_bPlaybackPaused          = false;
+  m_queryThread              = NULL;
 
   m_currentButton.iButton    = 0;
   m_currentButton.iDuration  = 0;
@@ -389,7 +390,7 @@ void CPeripheralCecAdapter::Process(void)
       Sleep(5);
   }
 
-  SAFE_DELETE(m_queryThread);
+  m_queryThread->StopThread(true);
 
   bool bSendStandbyCommands(false);
   {
@@ -1132,9 +1133,12 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
   }
   else if (IsRunning())
   {
-    CLog::Log(LOGDEBUG, "%s - sending the updated configuration to libCEC", __FUNCTION__);
-    SetConfigurationFromSettings();
-    m_queryThread->UpdateConfiguration(&m_configuration);
+    if (m_queryThread->IsRunning())
+    {
+      CLog::Log(LOGDEBUG, "%s - sending the updated configuration to libCEC", __FUNCTION__);
+      SetConfigurationFromSettings();
+      m_queryThread->UpdateConfiguration(&m_configuration);
+    }
   }
   else
   {
