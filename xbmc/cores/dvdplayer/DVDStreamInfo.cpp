@@ -155,6 +155,8 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   forced_aspect = right.forced_aspect;
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
+  vfr = right.vfr;
+  software = right.software;
 
   // AUDIO
   channels      = right.channels;
