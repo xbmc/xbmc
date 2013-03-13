@@ -79,6 +79,13 @@ public:
                       float brightness,
                       unsigned int flags,
                       YUVBuffer* YUVbuf);
+  CYUV2RGBShader() : 
+    m_sourceWidth (0),
+    m_sourceHeight(0),
+    m_format      (RENDER_FMT_NONE)    
+    {
+      memset(&m_texSteps,0,sizeof(m_texSteps));
+    }
   virtual ~CYUV2RGBShader();
 
 protected:
@@ -143,6 +150,7 @@ public:
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
                                CRect destRect);
+    CConvolutionShader1Pass() : m_sourceWidth (0), m_sourceHeight(0) {}
 
 protected:
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
