@@ -95,6 +95,8 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
                                                   );
                                                   
       CFDictionaryAddValue(txtDict,key, value);
+      CFRelease(key);
+      CFRelease(value);
     }    
     
     //add txt records to service
