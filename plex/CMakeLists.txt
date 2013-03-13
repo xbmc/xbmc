@@ -41,7 +41,7 @@ list(APPEND plex_SRCS Resources/Plex.rc2)
 set(Headers PlexTypes.h)
 if(NOT TARGET_OSX)
   list(REMOVE_ITEM plex_SRCS ./PlexMacUtils.mm)
-endif(TARGET_OSX)
+endif(NOT TARGET_OSX)
 
 if(NOT TARGET_WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
@@ -182,7 +182,7 @@ elseif(TARGET_WIN32)
 endif()
 
 if(TARGET_OSX)
-  set(DSYM_FNAME "${EXECUTABLE_NAME}-${PLEX_VERSION_STRING_SHORT}-${OSX_ARCH}.dSYM")
+  set(DSYM_FNAME "${EXECUTABLE_NAME}-${PLEX_VERSION_STRING}-${OSX_ARCH}.dSYM")
   add_custom_command(
     OUTPUT "${DSYM_FNAME}"
     COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
