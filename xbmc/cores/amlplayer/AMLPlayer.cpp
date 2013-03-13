@@ -968,7 +968,7 @@ bool CAMLPlayer::GetSubtitleVisible()
 void CAMLPlayer::SetSubtitleVisible(bool bVisible)
 {
   m_subtitle_show = (bVisible && m_subtitle_count);
-  g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
+  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
 
   if (m_subtitle_show  && m_subtitle_count)
   {
@@ -1436,11 +1436,11 @@ void CAMLPlayer::Process()
       // check for video in media content
       if (GetVideoStreamCount() > 0)
       {
-        SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
+        SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
 
         // turn on/off subs
-        SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-        SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+        SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+        SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
 
         // setup renderer for bypass. This tell renderer to get out of the way as
         // hw decoder will be doing the actual video rendering in a video plane
@@ -2198,20 +2198,20 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // do not do anything stupid here.
 
   // video zoom adjustment.
-  float zoom = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
+  float zoom = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount;
   if ((int)(zoom * 1000) != (int)(m_zoom * 1000))
   {
     m_zoom = zoom;
   }
   // video contrast adjustment.
-  int contrast = g_settings.m_currentVideoSettings.m_Contrast;
+  int contrast = CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast;
   if (contrast != m_contrast)
   {
     SetVideoContrast(contrast);
     m_contrast = contrast;
   }
   // video brightness adjustment.
-  int brightness = g_settings.m_currentVideoSettings.m_Brightness;
+  int brightness = CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness;
   if (brightness != m_brightness)
   {
     SetVideoBrightness(brightness);
@@ -2219,10 +2219,10 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   // check if destination rect or video view mode has changed
-  if ((m_dst_rect != DestRect) || (m_view_mode != g_settings.m_currentVideoSettings.m_ViewMode))
+  if ((m_dst_rect != DestRect) || (m_view_mode != CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode))
   {
     m_dst_rect  = DestRect;
-    m_view_mode = g_settings.m_currentVideoSettings.m_ViewMode;
+    m_view_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode;
   }
   else
   {

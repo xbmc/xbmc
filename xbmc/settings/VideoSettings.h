@@ -94,6 +94,16 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
 };
 
+typedef enum {
+  ViewModeNormal      = 0,
+  ViewModeZoom,
+  ViewModeStretch4x3,
+  ViewModeWideZoom,
+  ViewModeStretch16x9,
+  ViewModeOriginal,
+  ViewModeCustom
+} ViewMode;
+
 class CVideoSettings
 {
 public:

@@ -63,20 +63,6 @@
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
 #define VOLUME_CONTROL_STEPS 90    // 90 steps
-#define VOLUME_DRC_MINIMUM 0    // 0dB
-#define VOLUME_DRC_MAXIMUM 6000 // 60dB
-
-#define VIEW_MODE_NORMAL        0
-#define VIEW_MODE_ZOOM          1
-#define VIEW_MODE_STRETCH_4x3   2
-#define VIEW_MODE_WIDE_ZOOM    3
-#define VIEW_MODE_STRETCH_16x9  4
-#define VIEW_MODE_ORIGINAL      5
-#define VIEW_MODE_CUSTOM        6
-
-#define VIDEO_SHOW_ALL 0
-#define VIDEO_SHOW_UNWATCHED 1
-#define VIDEO_SHOW_WATCHED 2
 
 /* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
    makes sense to leave all the profile settings in a user writeable location
@@ -110,26 +96,6 @@ public:
   bool DeleteProfile(unsigned int index);
   void CreateProfileFolders();
 
-  /*! \brief Retreive the watched mode for the given content type
-   \param content Current content type
-   \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
-   \sa SetWatchMode, IncrementWatchMode
-   */
-  int GetWatchMode(const CStdString& content) const;
-
-  /*! \brief Set the watched mode for the given content type
-   \param content Current content type
-   \param value Watched mode to set
-   \sa GetWatchMode, IncrementWatchMode
-   */
-  void SetWatchMode(const CStdString& content, int value);
-
-  /*! \brief Cycle the watched mode for the given content type
-   \param content Current content type
-   \sa GetWatchMode, SetWatchMode
-   */
-  void CycleWatchMode(const CStdString& content);
-
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
   CStdString m_videoExtensions;
@@ -142,9 +108,6 @@ public:
   bool m_bMyMusicPlaylistRepeat;
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
-
-  CVideoSettings m_defaultVideoSettings;
-  CVideoSettings m_currentVideoSettings;
 
   float m_fZoomAmount;      // current zoom amount
   float m_fPixelRatio;      // current pixel ratio
@@ -326,7 +289,6 @@ private:
   SubSettings m_subSettings;
 
   std::vector<CProfile> m_vecProfiles;
-  std::map<CStdString, int> m_watchMode;
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;

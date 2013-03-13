@@ -773,11 +773,11 @@ void CGUISettings::Initialize()
   AddInt(vp, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 
   map<int,int> stretch;
-  stretch.insert(make_pair(630,VIEW_MODE_NORMAL));
-  stretch.insert(make_pair(633,VIEW_MODE_WIDE_ZOOM));
-  stretch.insert(make_pair(634,VIEW_MODE_STRETCH_16x9));
-  stretch.insert(make_pair(631,VIEW_MODE_ZOOM));
-  AddInt(vp, "videoplayer.stretch43", 173, VIEW_MODE_NORMAL, stretch, SPIN_CONTROL_TEXT);
+  stretch.insert(make_pair(630,ViewModeNormal));
+  stretch.insert(make_pair(633,ViewModeWideZoom));
+  stretch.insert(make_pair(634,ViewModeStretch16x9));
+  stretch.insert(make_pair(631,ViewModeZoom));
+  AddInt(vp, "videoplayer.stretch43", 173, ViewModeNormal, stretch, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
