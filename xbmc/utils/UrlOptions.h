@@ -26,7 +26,7 @@
 /* PLEX */
 #include "xbmc/config.h"
 
-#ifdef HAVE_STRINGS_H
+#if defined(HAVE_STRINGS_H) && !defined(TARGET_WINDOWS)
 #include <strings.h>
 #endif
 
