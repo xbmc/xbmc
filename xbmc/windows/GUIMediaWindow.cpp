@@ -2076,7 +2076,9 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
       m_strFilterPath = items.GetPath();
   }
   
+#ifndef __PLEX__
   GetGroupedItems(*m_vecItems);
+#endif
   FormatAndSort(*m_vecItems);
 
   // get the "filter" option
