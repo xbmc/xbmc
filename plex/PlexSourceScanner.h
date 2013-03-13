@@ -91,9 +91,7 @@ public:
   
   static void MergeSourcesForWindow(int windowId);
   
-  static void Lock() { g_lock.lock(); }
-  static std::map<std::string, HostSourcesPtr>& GetMap() { return g_hostSourcesMap; }
-  static void Unlock() { g_lock.unlock(); }
+  static void GetMap(std::map<std::string, HostSourcesPtr> &map);
 
   static int GetActiveScannerCount() { return g_activeScannerCount; } 
   

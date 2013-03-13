@@ -200,6 +200,7 @@ void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
     HostSourcesPtr sources = g_hostSourcesMap[server->uuid];
     if (sources)
     {
+      boost::recursive_mutex::scoped_lock sLock(sources->lock);
       // Remove the URL, and if we still have routes to the sources, get out.
       std::set<PlexServerPtr> newSet;
       BOOST_FOREACH(PlexServerPtr serv, sources->servers)
@@ -212,8 +213,6 @@ void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
       dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), server->url().c_str(), sources->servers.size());
       if (sources->servers.size() > 0)
         return;
-      
-      boost::recursive_mutex::scoped_lock sLock(sources->lock);
       
       // If the count went down to zero, whack it.
       g_hostSourcesMap.erase(server->uuid);
@@ -416,4 +415,15 @@ void CPlexSourceScanner::RemovePlexSources(CStdString strPlexPath, VECSOURCES& d
     if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
       dstSources.erase(dstSources.begin()+i);
   }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+void CPlexSourceScanner::GetMap(std::map<std::string, HostSourcesPtr> &map)
+{
+  boost::recursive_mutex::scoped_lock(g_lock);
+  
+  map.clear();
+  
+  BOOST_FOREACH(StringSourcesPair p, g_hostSourcesMap)
+    map[p.first] = p.second;
 }

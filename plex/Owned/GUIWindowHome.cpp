@@ -613,10 +613,9 @@ void CGUIWindowHome::UpdateSections()
         newList.push_back(item);
     }
 
-    // Now collect all the added items.
-    CPlexSourceScanner::Lock();
 
-    map<string, HostSourcesPtr>& sourcesMap = CPlexSourceScanner::GetMap();
+    map<string, HostSourcesPtr> sourcesMap;
+    CPlexSourceScanner::GetMap(sourcesMap);
 
     // Collect the channels, keeping track of how many there are.
     int numVideo = 0;
@@ -631,9 +630,7 @@ void CGUIWindowHome::UpdateSections()
       numMusic += nameSource.second->musicSources.size();
       numApplication += nameSource.second->applicationSources.size();
     }
-
-    CPlexSourceScanner::Unlock();
-
+    
     // Now collect the library sections.
     vector<CFileItemPtr> newSections;
     PlexLibrarySectionManager::Get().getOwnedSections(newSections);
