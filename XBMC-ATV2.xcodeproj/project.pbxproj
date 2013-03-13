@@ -7801,7 +7801,7 @@
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = frappliance;
-				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(ARCHS)";
+				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/$(SDK_NAME)_$(CURRENT_ARCH)";
 			};
 			name = Debug;
 		};
