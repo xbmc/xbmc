@@ -29,6 +29,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-crosscompiling-0.1.patch
 	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch
 	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-access.patch
+	cd $(PLATFORM); patch -p0 < ../Imaging-1.1.7-zip-include.patch
 	cd $(PLATFORM); sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"
 	sed -ie "s|ZLIB_ROOT = None|ZLIB_ROOT = libinclude(\"$(ZLIBROOT)\")|" $(PLATFORM)/setup.py
 
