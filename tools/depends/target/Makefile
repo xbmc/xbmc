@@ -82,6 +82,7 @@ libzip: $(ZLIB)
 libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
+pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
