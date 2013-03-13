@@ -153,6 +153,7 @@ void CAirPlayServer::Announce(AnnouncementFlag flag, const char *sender, const c
   {
     if (strcmp(message, "OnStop") == 0)
     {
+      restoreVolume();
       ServerInstance->AnnounceToClients(EVENT_STOPPED);
     }
     else if (strcmp(message, "OnPlay") == 0)
@@ -255,6 +256,7 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer
   m_nonlocal = nonlocal;
   m_ServerSocket = INVALID_SOCKET;
   m_usePassword = false;
+  m_origVolume = -1;
   CAnnouncementManager::AddAnnouncer(this);
 }
 
@@ -680,6 +682,23 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr,
   return m_bAuthenticated;
 }
 
+void CAirPlayServer::backupVolume()
+{
+  if (ServerInstance->m_origVolume == -1)
+    ServerInstance->m_origVolume = g_application.GetVolume();
+}
+
+void CAirPlayServer::restoreVolume()
+{
+  if (ServerInstance->m_origVolume != -1)
+  {
+    float oldVolume = g_application.GetVolume();
+    g_application.SetVolume((float)ServerInstance->m_origVolume);
+    CApplicationMessenger::Get().ShowVolumeBar(oldVolume < (float)ServerInstance->m_origVolume);
+    ServerInstance->m_origVolume = -1;
+  }
+}
+
 int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
                                                 CStdString& responseBody)
 {
@@ -767,6 +786,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         volume *= 100;
         if(oldVolume != (int)volume)
         {
+          backupVolume();
           g_application.SetVolume(volume);          
           CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
         }
