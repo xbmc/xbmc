@@ -101,6 +101,7 @@ namespace XBMCAddon
                             const char* focusedColor = NULL,
                             const String& label2 = emptyString) DECL_UNIMP("Control");
       virtual void reset() DECL_UNIMP("Control");
+      virtual void removeItem(int index) DECL_UNIMP2("Control",WindowException);
       virtual void setSelected(bool selected) DECL_UNIMP("Control");
       virtual void setPercent(float pct) DECL_UNIMP("Control");
       virtual void setDisabledColor(const char* color) DECL_UNIMP("Control");
@@ -654,6 +655,16 @@ namespace XBMCAddon
        *   - cList.selectItem(12)
        */
       virtual void selectItem(long item) throw(UnimplementedException);
+
+      /**
+       * removeItem(index) -- Remove an item by index number.
+       *
+       * index              : integer - index number of the item to remove.
+       *
+       * example:
+       *   - cList.removeItem(12)
+       */
+      virtual void removeItem(int index) throw (UnimplementedException,WindowException);
 
       /**
        * reset() -- Clear all ListItems in this control list.
