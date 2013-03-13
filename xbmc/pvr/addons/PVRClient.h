@@ -612,7 +612,5 @@ namespace PVR
     bool           m_bIsPlayingRecording;
     CPVRRecording  m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
-    bool           m_bCanPauseStream;
-    bool           m_bCanSeekStream;
   };
 }

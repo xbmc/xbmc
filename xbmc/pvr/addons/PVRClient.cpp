@@ -78,8 +78,6 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
   ResetQualityData(m_qualityInfo);
   m_apiVersion = AddonVersion("0.0.0");
-  m_bCanPauseStream       = false;
-  m_bCanSeekStream        = false;
 }
 
 ADDON_STATUS CPVRClient::Create(int iClientId)
@@ -989,11 +987,6 @@ bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
     try
     {
       bSwitched = m_pStruct->SwitchChannel(tag);
-      if (bSwitched)
-      {
-        m_bCanPauseStream = m_pStruct->CanPauseStream();
-        m_bCanSeekStream = m_pStruct->CanSeekStream();
-      }
     }
     catch (exception &e) { LogException(e, __FUNCTION__); }
   }
@@ -1324,11 +1317,6 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
     try
     {
       bReturn = m_pStruct->OpenLiveStream(tag);
-      if (bReturn)
-      {
-        m_bCanPauseStream = m_pStruct->CanPauseStream();
-        m_bCanSeekStream = m_pStruct->CanSeekStream();
-      }
     }
     catch (exception &e) { LogException(e, __FUNCTION__); }
   }
@@ -1358,11 +1346,6 @@ bool CPVRClient::OpenStream(const CPVRRecording &recording)
     try
     {
       bReturn = m_pStruct->OpenRecordedStream(tag);
-      if (bReturn)
-      {
-        m_bCanPauseStream = m_pStruct->CanPauseStream();
-        m_bCanSeekStream = m_pStruct->CanSeekStream();
-      }
     }
     catch (exception &e) { LogException(e, __FUNCTION__); }
   }
@@ -1396,9 +1379,6 @@ void CPVRClient::CloseStream(void)
     CSingleLock lock(m_critSection);
     m_bIsPlayingRecording = false;
   }
-
-  m_bCanPauseStream = false;
-  m_bCanSeekStream = false;
 }
 
 void CPVRClient::PauseStream(bool bPaused)
@@ -1421,18 +1401,31 @@ void CPVRClient::SetSpeed(int speed)
 
 bool CPVRClient::CanPauseStream(void) const
 {
+  bool bReturn(false);
   if (IsPlaying())
-    return m_bCanPauseStream;
+  {
+    try
+    {
+      bReturn = m_pStruct->CanPauseStream();
+    }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
 
-  return false;
+  return bReturn;
 }
 
 bool CPVRClient::CanSeekStream(void) const
 {
+  bool bReturn(false);
   if (IsPlaying())
-    return m_bCanSeekStream;
-
-  return false;
+  {
+    try
+    {
+      bReturn = m_pStruct->CanSeekStream();
+    }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+  return bReturn;
 }
 
 void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
