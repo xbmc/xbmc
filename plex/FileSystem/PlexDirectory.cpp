@@ -357,6 +357,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     items.SetDefaultViewMode(boost::lexical_cast<int>(viewMode));
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
     viewState->SaveViewAsControl(boost::lexical_cast<int>(viewMode));
+    delete viewState;
   }
 
   // The view group.
