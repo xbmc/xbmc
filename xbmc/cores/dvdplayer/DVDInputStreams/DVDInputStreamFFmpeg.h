@@ -34,6 +34,13 @@ public:
   virtual bool Pause(double dTime) { return false; };
   virtual bool IsEOF();
   virtual int64_t GetLength();
+  virtual void setSeekable(bool seekable) { m_seekable = seekable; };
+  virtual bool getSeekable() { return m_seekable; };
+  virtual void setPauseable(bool pauseable) { m_pauseable = pauseable; };
+  virtual bool getPauseable() { return m_pauseable; };
 
 protected:
+  bool m_seekable;
+  bool m_pauseable;
 };
+
