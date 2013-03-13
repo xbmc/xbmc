@@ -7825,9 +7825,9 @@
 				);
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
+					"-Wl,-search_paths_first",
 					"-all_load",
 					"-L$XBMC_DEPENDS/lib",
-					"-Wl,-search_paths_first",
 					"-lffi",
 					"-lintl",
 					"-lssl",
