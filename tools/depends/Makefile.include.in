@@ -10,7 +10,7 @@ SDK_PLATFORM=@use_sdk@
 RETRIEVE_TOOL=@CURL@
 ARCHIVE_TOOL=@TAR@
 PREFIX=@prefix@/@deps_dir@
-NATIVEPREFIX=@prefix@/@build_cpu@-@build_os@-native
+NATIVEPREFIX=@prefix@/@tool_dir@
 OS=@platform_os@
 CROSS_COMPILING=@cross_compiling@
 
@@ -23,10 +23,10 @@ HAS_LIBCRYSTAX=@has_libcrystax@
 BASE_URL=http://mirrors.xbmc.org/build-deps/sources
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f -O
 ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
-CONFIG_SUB=@prefix@/@build_cpu@-@build_os@-native/share/automake-1.11/config.sub
-CONFIG_GUESS=@prefix@/@build_cpu@-@build_os@-native/share/automake-1.11/config.guess
+CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.11/config.sub
+CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.11/config.guess
 
-RPL=@prefix@/@build_cpu@-@build_os@-native/bin/python @prefix@/@build_cpu@-@build_os@-native/bin/rpl
+RPL=@prefix@/@tool_dir@/bin/python @prefix@/@tool_dir@/bin/rpl
 
 LD=@LD@
 CC=@CC@
@@ -40,13 +40,13 @@ STRIP=@STRIP@
 READELF=@READELF@
 OBJDUMP=@OBJDUMP@
 
-CMAKE=@prefix@/@build_cpu@-@build_os@-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+CMAKE=@prefix@/@tool_dir@/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
 CFLAGS=@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
 LDFLAGS=-L@prefix@/@deps_dir@/lib @platform_ldflags@
 CXXFLAGS=@platform_cxxflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
 CPPFLAGS=@platform_cflags@ @platform_includes@ -I@prefix@/@deps_dir@/include
 
-PATH:=@prefix@/@build_cpu@-@build_os@-native/bin:$(PATH)
+PATH:=@prefix@/@tool_dir@/bin:$(PATH)
 ifneq (@use_build_toolchain@,)
   PATH:=@use_build_toolchain@/bin:@use_build_toolchain@/usr/bin:$(PATH)
 endif
@@ -61,21 +61,21 @@ STRIP_FOR_BUILD=@STRIP_FOR_BUILD@
 READELF_FOR_BUILD=@READELF_FOR_BUILD@
 OBJDUMP_FOR_BUILD=@OBJDUMP_FOR_BUILD@
 
-NATIVE_CFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
-NATIVE_LDFLAGS=-L@prefix@/@build_cpu@-@build_os@-native/lib
-NATIVE_CPPFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
-NATIVE_CXXFLAGS=-I@prefix@/@build_cpu@-@build_os@-native/include
+NATIVE_CFLAGS=-I@prefix@/@tool_dir@/include
+NATIVE_LDFLAGS=-L@prefix@/@tool_dir@/lib
+NATIVE_CPPFLAGS=-I@prefix@/@tool_dir@/include
+NATIVE_CXXFLAGS=-I@prefix@/@tool_dir@/include
 
 
-export AUTOM4TE=@prefix@/@build_cpu@-@build_os@-native/bin/autom4te
-export AUTOMAKE=@prefix@/@build_cpu@-@build_os@-native/bin/automake
-export AUTOCONF=@prefix@/@build_cpu@-@build_os@-native/bin/autoconf
-export ACLOCAL=@prefix@/@build_cpu@-@build_os@-native/bin/aclocal
-export ACLOCAL_PATH=@prefix@/@deps_dir@/share/aclocal:@prefix@/@build_cpu@-@build_os@-native/share/aclocal
-export AUTOPOINT=@prefix@/@build_cpu@-@build_os@-native/bin/autopoint
-export AUTOHEADER=@prefix@/@build_cpu@-@build_os@-native/bin/autoheader
-export LIBTOOL=@prefix@/@build_cpu@-@build_os@-native/bin/libtool
-export LIBTOOLIZE=@prefix@/@build_cpu@-@build_os@-native/bin/libtoolize
+export AUTOM4TE=@prefix@/@tool_dir@/bin/autom4te
+export AUTOMAKE=@prefix@/@tool_dir@/bin/automake
+export AUTOCONF=@prefix@/@tool_dir@/bin/autoconf
+export ACLOCAL=@prefix@/@tool_dir@/bin/aclocal
+export ACLOCAL_PATH=@prefix@/@deps_dir@/share/aclocal:@prefix@/@tool_dir@/share/aclocal
+export AUTOPOINT=@prefix@/@tool_dir@/bin/autopoint
+export AUTOHEADER=@prefix@/@tool_dir@/bin/autoheader
+export LIBTOOL=@prefix@/@tool_dir@/bin/libtool
+export LIBTOOLIZE=@prefix@/@tool_dir@/bin/libtoolize
 
-export AUTORECONF=@prefix@/@build_cpu@-@build_os@-native/bin/autoreconf
+export AUTORECONF=@prefix@/@tool_dir@/bin/autoreconf
 
