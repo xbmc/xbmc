@@ -128,7 +128,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
 
 void CDVDOverlayContainer::Remove()
 {
-  if (m_overlays.size() > 0)
+  if (!m_overlays.empty())
   {
     CDVDOverlay* pOverlay;
 
@@ -144,7 +144,7 @@ void CDVDOverlayContainer::Remove()
 
 void CDVDOverlayContainer::Clear()
 {
-  while (m_overlays.size() > 0) Remove();
+  while (!m_overlays.empty()) Remove();
 }
 
 int CDVDOverlayContainer::GetSize()

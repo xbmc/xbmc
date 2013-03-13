@@ -1972,7 +1972,7 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   // Player controls render, let it pick the auto-deinterlace method
   if((m_renderMethod & RENDER_BYPASS))
   {
-    if (m_deinterlaceMethods.size())
+    if (!m_deinterlaceMethods.empty())
       return ((EINTERLACEMETHOD)m_deinterlaceMethods[0]);
     else
       return VS_INTERLACEMETHOD_NONE;

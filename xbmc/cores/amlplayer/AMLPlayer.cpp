@@ -316,7 +316,7 @@ CAMLSubTitleThread::~CAMLSubTitleThread()
 void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms)
 {
   CSingleLock lock(m_subtitle_csection);
-  if (m_subtitle_strings.size())
+  if (!m_subtitle_strings.empty())
   {
     AMLSubtitle *amlsubtitle;
     // remove any expired subtitles
@@ -840,7 +840,7 @@ void CAMLPlayer::SetVolume(float volume)
 void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
+  if (m_audio_streams.empty() || m_audio_index > (int)(m_audio_streams.size() - 1))
     return;
 
   strAudioInfo.Format("Audio stream (%s) [Kb/s:%.2f]",
@@ -851,7 +851,7 @@ void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
 void CAMLPlayer::GetVideoInfo(CStdString &strVideoInfo)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
+  if (m_video_streams.empty() || m_video_index > (int)(m_video_streams.size() - 1))
     return;
 
   strVideoInfo.Format("Video stream (%s) [fr:%.3f Mb/s:%.2f]",
@@ -1111,7 +1111,7 @@ __int64 CAMLPlayer::GetTotalTime()
 void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (index < 0 || m_audio_streams.size() == 0 || index > (int)(m_audio_streams.size() - 1))
+  if (index < 0 || m_audio_streams.empty() || index > (int)(m_audio_streams.size() - 1))
     return;
 
   info.bitrate = m_audio_streams[index]->bit_rate;
@@ -1152,7 +1152,7 @@ void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 void CAMLPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
+  if (m_video_streams.empty() || m_video_index > (int)(m_video_streams.size() - 1))
     return;
 
   info.bitrate = m_video_streams[m_video_index]->bit_rate;
@@ -1176,7 +1176,7 @@ int CAMLPlayer::GetBitsPerSample()
 int CAMLPlayer::GetSampleRate()
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
+  if (m_audio_streams.empty() || m_audio_index > (int)(m_audio_streams.size() - 1))
     return 0;
   
   return m_audio_streams[m_audio_index]->sample_rate;

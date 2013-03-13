@@ -86,7 +86,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
 IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const
 {
   CSingleLock lock(m_section);
-  if (!m_vecCoreConfigs.size() || eCore-1 > m_vecCoreConfigs.size()-1)
+  if (m_vecCoreConfigs.empty() || eCore-1 > m_vecCoreConfigs.size()-1)
     return NULL;
 
   return m_vecCoreConfigs[eCore-1]->CreatePlayer(callback);
@@ -260,7 +260,7 @@ PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item ) const
   GetPlayers(item, vecCores);
 
   //If we have any players return the first one
-  if( vecCores.size() > 0 ) return vecCores.at(0);
+  if( !vecCores.empty() ) return vecCores.at(0);
 
   return EPC_NONE;
 }

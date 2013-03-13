@@ -88,7 +88,7 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
     m_files.push_back(segment);
   }
 
-  if(m_files.size() == 0)
+  if(m_files.empty())
     return false;
 
   m_file = m_files[0].file;

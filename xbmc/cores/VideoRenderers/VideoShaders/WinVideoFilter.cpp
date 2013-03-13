@@ -163,7 +163,7 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
   LPDIRECT3DSURFACE9 oldRT = 0;
   // The render target will be overriden: save the caller's original RT
-  if (vecRT != NULL && vecRT->size() > 0)
+  if (vecRT != NULL && !vecRT->empty())
     pD3DDevice->GetRenderTarget(0, &oldRT);
 
   pD3DDevice->SetFVF(m_FVF);

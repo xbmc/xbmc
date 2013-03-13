@@ -92,7 +92,7 @@ public:
 
   bool enabled()
   {
-    return m_pattern.size() > 0;
+    return !m_pattern.empty();
   }
 private:
   double                     m_duration;
