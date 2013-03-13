@@ -9,7 +9,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native python26-native zlib-native \
         pcre-native swig-native rpl-native libsdl_image-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native \
-        libsdl-native
+        libsdl-native setuptools-native
 
 
 ifeq ($(OS),ios)
@@ -29,6 +29,7 @@ libpng-native: zlib-native
 tiff-native: libjpeg-turbo-native
 swig-native: pcre-native
 libsdl_image-native: libsdl-native libpng-native libjpeg-turbo-native tiff-native
+setuptools-native: python26-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
