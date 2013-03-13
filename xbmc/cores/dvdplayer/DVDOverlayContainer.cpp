@@ -121,7 +121,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
         continue;
       }
     }
-    it++;
+    ++it;
   }
 
 }
@@ -162,7 +162,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   while (!result && it != m_overlays.end())
   {
     if (((CDVDOverlay*)*it)->IsOverlayType(type)) result = true;
-    it++;
+    ++it;
   }
 
   return result;
@@ -176,7 +176,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
   CSingleLock lock(*this);
 
   //Update any forced overlays.
-  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); it++ )
+  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); ++it )
   {
     if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {

@@ -327,7 +327,7 @@ void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms
       if (elapsed_ms > amlsubtitle->endtime)
         it = m_subtitle_strings.erase(it);
       else
-        it++;
+        ++it;
     }
 
     // find the current subtitle
@@ -340,7 +340,7 @@ void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms
         subtitle = amlsubtitle->string;
         break;
       }
-      it++;
+      ++it;
     }
   }
 }

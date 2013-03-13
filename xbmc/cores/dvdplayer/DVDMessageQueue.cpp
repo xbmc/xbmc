@@ -67,7 +67,7 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
     if (it->message->IsType(type) ||  type == CDVDMsg::NONE)
       it = m_list.erase(it);
     else
-      it++;
+      ++it;
   }
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
@@ -121,7 +121,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   {
     if(priority <= it->priority)
       break;
-    it++;
+    ++it;
   }
   m_list.insert(it, DVDMessageListItem(pMsg, priority));
 
@@ -230,7 +230,7 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
     return 0;
 
   unsigned count = 0;
-  for(SList::iterator it = m_list.begin(); it != m_list.end();it++)
+  for(SList::iterator it = m_list.begin(); it != m_list.end();++it)
   {
     if(it->message->IsType(type))
       count++;

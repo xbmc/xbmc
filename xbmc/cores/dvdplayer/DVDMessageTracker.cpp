@@ -76,7 +76,7 @@ void CDVDMessageTracker::UnRegister(CDVDMsg* pMsg)
       delete pItem;
       break;
     }
-    iter++;
+    ++iter;
   }
 
 }
@@ -108,7 +108,7 @@ void CDVDMessageTracker::Process()
           pItem->m_debug_logged = true;
         }
       }
-      iter++;
+      ++iter;
     }
 
   }

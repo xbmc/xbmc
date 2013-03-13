@@ -63,7 +63,7 @@ double CPTSInputQueue::Get(int64_t bytes, bool consume)
   CSingleLock lock(m_sync);
 
   IT it = m_list.begin();
-  for(; it != m_list.end(); it++)
+  for(; it != m_list.end(); ++it)
   {
     if(bytes <= it->first)
     {

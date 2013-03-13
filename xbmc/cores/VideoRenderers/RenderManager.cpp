@@ -501,7 +501,7 @@ void CXBMCRenderManager::ManageCaptures()
         if (capture->IsAsync() && !(capture->GetFlags() & CAPTUREFLAG_IMMEDIATELY))
           RenderCapture(capture);
 
-        it++;
+        ++it;
       }
       else
       {
@@ -510,7 +510,7 @@ void CXBMCRenderManager::ManageCaptures()
     }
     else
     {
-      it++;
+      ++it;
     }
   }
 

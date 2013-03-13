@@ -46,9 +46,9 @@ CPlayerCoreFactory::CPlayerCoreFactory()
 
 CPlayerCoreFactory::~CPlayerCoreFactory()
 {
-  for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecCoreConfigs.begin(); it != m_vecCoreConfigs.end(); it++)
+  for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecCoreConfigs.begin(); it != m_vecCoreConfigs.end(); ++it)
     delete *it;
-  for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); it++)
+  for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
     delete *it;
 }
 
@@ -321,7 +321,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 
   if (clear)
   {
-    for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecCoreConfigs.begin(); it != m_vecCoreConfigs.end(); it++)
+    for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecCoreConfigs.begin(); it != m_vecCoreConfigs.end(); ++it)
       delete *it;
     m_vecCoreConfigs.clear();
     // Builtin players; hard-coded because re-ordering them would break scripts
@@ -351,7 +351,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecCoreConfigs.push_back(omxplayer);
 #endif
 
-    for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); it++)
+    for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
       delete *it;
     m_vecCoreSelectionRules.clear();
   }
@@ -427,7 +427,7 @@ void CPlayerCoreFactory::OnPlayerDiscovered(const CStdString& id, const CStdStri
   std::vector<CPlayerCoreConfig *>::iterator it;
   for(it  = m_vecCoreConfigs.begin();
       it != m_vecCoreConfigs.end();
-      it++)
+      ++it)
   {
     if ((*it)->GetId() == id)
     {
@@ -449,7 +449,7 @@ void CPlayerCoreFactory::OnPlayerRemoved(const CStdString& id)
   std::vector<CPlayerCoreConfig *>::iterator it;
   for(it  = m_vecCoreConfigs.begin();
       it != m_vecCoreConfigs.end();
-      it++)
+      ++it)
   {
     if ((*it)->GetId() == id)
       (*it)->m_eCore = EPC_NONE;
