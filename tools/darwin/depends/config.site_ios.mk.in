@@ -47,3 +47,4 @@ export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}
+export YASM=@use_toolchain@/bin/yasm
