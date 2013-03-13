@@ -235,7 +235,7 @@ case $host in
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path "
     platform_cxxflags="$platform_cflags"
     deps_dir=$sdk_name"_"$use_cpu
-    tool_dir=toolchain;
+    tool_dir=buildtools-native;
   ;;
   *)
     AC_MSG_ERROR(unsupported host ($use_host))

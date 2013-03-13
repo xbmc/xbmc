@@ -6697,7 +6697,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=$PATH:/Users/Shared/xbmc-depends/toolchain/bin\n\nif [ \"$ACTION\" = build ] ; then\nmake -f ${SRCROOT}/codegenerator.mk\nfi";
+			shellScript = "if [ -d \"/Users/Shared/xbmc-depends/buildtools-native/bin\" ]; then\nPATH=$PATH:/Users/Shared/xbmc-depends/buildtools-native/bin\nelse\nPATH=$PATH:/Users/Shared/xbmc-depends/toolchain/bin\nfi\n\nif [ \"$ACTION\" = build ] ; then\nmake -f ${SRCROOT}/codegenerator.mk\nfi";
 		};
 		F589B48B128A696700D8079E /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
