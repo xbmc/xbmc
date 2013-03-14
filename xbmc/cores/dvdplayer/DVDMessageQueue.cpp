@@ -27,9 +27,8 @@
 
 using namespace std;
 
-CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true)
+CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true), m_owner(owner)
 {
-  m_owner = owner;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bInitialized  = false;

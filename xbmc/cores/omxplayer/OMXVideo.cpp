@@ -76,14 +76,13 @@
 
 #define MAX_TEXT_LENGTH 1024
 
-COMXVideo::COMXVideo()
+COMXVideo::COMXVideo() : m_video_codec_name("")
 {
   m_is_open           = false;
   m_Pause             = false;
   m_extradata         = NULL;
   m_extrasize         = 0;
   m_video_convert     = false;
-  m_video_codec_name  = "";
   m_deinterlace       = false;
   m_hdmi_clock_sync   = false;
   m_drop_state        = false;

@@ -70,6 +70,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
 : CThread("COMXPlayerVideo")
 , m_messageQueue("video")
 , m_messageParent(parent)
+, m_codecname("")
 {
   m_av_clock              = av_clock;
   m_pOverlayContainer     = pOverlayContainer;
@@ -80,7 +81,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_hdmi_clock_sync       = false;
   m_speed                 = DVD_PLAYSPEED_NORMAL;
   m_stalled               = false;
-  m_codecname             = "";
   m_iSubtitleDelay        = 0;
   m_FlipTimeStamp         = 0.0;
   m_bRenderSubs           = false;
