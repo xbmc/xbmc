@@ -36,6 +36,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../010_handle_metadata.patch
 	cd $(PLATFORM); patch -p0 < ../011_fix_ipv4_fallback.patch
 	cd $(PLATFORM); patch -p0 < ../android.patch
+	cd $(PLATFORM); patch -p0 < ../012_add_volume_control.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
