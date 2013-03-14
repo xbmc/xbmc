@@ -1115,6 +1115,7 @@
 		7CCFD9A91514952700211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
 		7CEE2E6B13D6B7A8000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
 		7CEE2E6C13D6B7A8000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
+		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
 		8316267613B670FF004AED87 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
 		C807119D135DB842002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
@@ -3556,6 +3557,7 @@
 		DF33C2AA15509C5A0046CDCB /* commons */ = {
 			isa = PBXGroup;
 			children = (
+				82F6F0EA16F269BB0081CC3C /* Buffer.h */,
 				DF08E84315829BA600058C77 /* Exception.cpp */,
 				DF08E84415829BA600058C77 /* Exception.h */,
 				DF33C2AB15509C5A0046CDCB /* ilog.cpp */,

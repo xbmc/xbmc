@@ -1134,6 +1134,7 @@
 		7CEE2E7E13D6B7D4000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
 		8253940416B25C2C00A85509 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8253940616B25C2C00A85509 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
 		83D619BB13C0D25300418A0F /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80711AB135DB85F002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
@@ -3604,6 +3605,7 @@
 		DF33C29015509BF50046CDCB /* commons */ = {
 			isa = PBXGroup;
 			children = (
+				82F6F0EA16F269BB0081CC3C /* Buffer.h */,
 				DFC3867C158296EC008AE277 /* Exception.cpp */,
 				DFC3867D158296EC008AE277 /* Exception.h */,
 				DF33C29115509BF50046CDCB /* ilog.cpp */,

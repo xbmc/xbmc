@@ -1659,6 +1659,7 @@
 		810C9FA80D67D1FB0095F5DD /* MythFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythFile.h; sourceTree = "<group>"; };
 		815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
+		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = commons/Buffer.h; sourceTree = "<group>"; };
 		83A72B950FBC8E3B00171871 /* LockFree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LockFree.cpp; sourceTree = "<group>"; };
 		83A72B960FBC8E3B00171871 /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
@@ -6250,6 +6251,7 @@
 		EC720A91155091CA00FFD782 /* commons */ = {
 			isa = PBXGroup;
 			children = (
+				82F6F0EA16F269BB0081CC3C /* Buffer.h */,
 				1DE0443315828F4B005DDB4D /* Exception.cpp */,
 				1DE0443415828F4B005DDB4D /* Exception.h */,
 				EC720A8D155091BB00FFD782 /* ilog.cpp */,
