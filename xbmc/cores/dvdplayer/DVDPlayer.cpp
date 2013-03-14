@@ -717,9 +717,9 @@ bool CDVDPlayer::OpenInputStream()
               
               CURL subUrl(stream->key);
               subUrl.SetFileName(subUrl.GetFileName() + ".sub");
-              subUrl.SetOption("encoding", "utf-8");
               
               CFile::Cache(subUrl.Get(), path);
+              CLog::Log(LOGINFO, "Done caching %s", subUrl.Get().c_str());
             }
 
             // Remember the last IDX stream.
