@@ -805,46 +805,46 @@ void CWinRenderer::ScaleFixedPipeline()
 
   if (!cbcontrol)
   {
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
   }
   else
   {
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE2X );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE2X );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
 
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_SPECULAR );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_SPECULAR );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
 
-    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+    pD3DDev->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    pD3DDev->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
   }
 
-  hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-  hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+  pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+  pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+  pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+  pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
 
-  hr = pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
-  hr = pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
-  hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-  hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
+  pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
+  pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
+  pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
 
   if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
     CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
