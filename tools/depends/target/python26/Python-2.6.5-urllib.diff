@@ -1,0 +1,15 @@
+--- Lib/urllib.py	2010-02-20 17:13:01.000000000 -0500
++++ Lib/urllib.py	2013-03-14 01:11:49.000000000 -0400
+@@ -1401,10 +1401,10 @@
+         if getproxies_environment():
+             return proxy_bypass_environment(host)
+         else:
+-            return proxy_bypass_macosx_sysconf(host)
++            return false
+ 
+     def getproxies():
+-        return getproxies_environment() or getproxies_macosx_sysconf()
++        return getproxies_environment()
+ 
+ elif os.name == 'nt':
+     def getproxies_registry():

@@ -15,10 +15,6 @@ CONFIGURE=OPT="$(CFLAGS)" \
   ./configure --prefix=$(PREFIX) \
   --disable-toolbox-glue --disable-framework --with-system-ffi \
 
-ifeq ($(OS),ios)
-CONFIGURE+=LDFLAGS="$(LDFLAGS) -miphoneos-version-min=3.0"
-endif
-
 LIBDYLIB=$(PLATFORM)/libpython2.6.a
 
 all: .installed-$(PLATFORM)
@@ -37,16 +33,14 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../python-osx-environ-fix.patch
 	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-ffi-static.patch
 ifeq ($(OS),ios)
-	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-scproxy.patch
+	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
 #Add -liconv as needed, and add the _scproxy module for darwin
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
-ifeq (darwin, $(findstring darwin, $(HOST)))
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) -framework SystemConfiguration -framework CoreFoundation |' Modules/Setup.dist
+ifeq ($(OS),osx)
 	echo "_scproxy \$$(srcdir)/Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
-else
-	cd $(PLATFORM); sed -ie 's|-framework CoreFoundation||' configure.in
 endif
 
 	cd $(PLATFORM); $(AUTORECONF)
