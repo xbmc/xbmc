@@ -3711,6 +3711,14 @@ void CApplication::Stop(int exitCode)
 #else
     UpdateFileState("stop");
 #endif
+    
+    
+#ifdef TARGET_DARWIN_OSX
+    /* PLEX */
+    if (PlexHTHelper::GetInstance().IsAlwaysOn() == false)
+      PlexHTHelper::GetInstance().Stop();
+    /* END PLEX */
+#endif
 
     /* PLEX */
 #ifdef TARGET_WINDOWS
