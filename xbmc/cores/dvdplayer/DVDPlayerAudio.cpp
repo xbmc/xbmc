@@ -368,7 +368,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (ret == MSGQ_TIMEOUT)
       return DECODE_FLAG_TIMEOUT;
 
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
+    if (MSGQ_IS_ERROR(ret))
       return DECODE_FLAG_ABORT;
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))

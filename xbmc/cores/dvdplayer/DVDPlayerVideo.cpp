@@ -337,7 +337,7 @@ void CDVDPlayerVideo::Process()
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
 
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
+    if (MSGQ_IS_ERROR(ret))
     {
       CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
       break;
