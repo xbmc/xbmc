@@ -1351,7 +1351,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
       if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
-      demux_size = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
+      avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
       demux_size = m_dllAvFormat->avio_close_dyn_buf(pb, &demux_buff);
       sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
     }

@@ -527,8 +527,7 @@ void CVDPAU::CheckFeatures()
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
 
-    VdpStatus vdp_st = VDP_STATUS_ERROR;
-    vdp_st = vdp_video_mixer_create(vdp_device,
+    VdpStatus vdp_st = vdp_video_mixer_create(vdp_device,
                                     m_feature_count,
                                     m_features,
                                     ARSIZE(parameters),
@@ -1542,7 +1541,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     }
   }
 
-  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+  vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   VdpRect sourceRect = {0,0,vid_width, vid_height};
 

@@ -317,9 +317,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
   if(m_deinterlace)
     CLog::Log(LOGDEBUG, "COMXVideo::Open : enable deinterlace\n");
 
-  std::string componentName = "";
-
-  componentName = decoder_name;
+  std::string componentName = decoder_name;
   if(!m_omx_decoder.Initialize((const std::string)componentName, OMX_IndexParamVideoInit))
     return false;
 

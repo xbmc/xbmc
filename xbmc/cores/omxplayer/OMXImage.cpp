@@ -59,7 +59,6 @@ COMXImage::COMXImage()
   m_width         = 0;
   m_height        = 0;
 
-  m_is_open       = false;
   m_decoded_buffer = NULL;
   m_encoded_buffer = NULL;
 
