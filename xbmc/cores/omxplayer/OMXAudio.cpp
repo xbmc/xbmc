@@ -706,7 +706,6 @@ bool COMXAudio::SetCurrentVolume(float fVolume)
   {
     double r = fVolume;
     const float* coeff = downmixing_coefficients_8;
-    int input_channels = 0;
 
     // normally we normalalise the levels, can be skipped (boosted) at risk of distortion
     if(!g_guiSettings.GetBool("audiooutput.normalizelevels"))

@@ -2129,11 +2129,11 @@ void CAMLPlayer::FindSubtitleFiles()
 int CAMLPlayer::AddSubtitleFile(const std::string &filename, const std::string &subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
-  std::string vobsubfile = subfilename;
 
   if(ext == ".idx")
   {
     /* TODO: we do not handle idx/sub binary subs yet.
+    std::string vobsubfile = subfilename;
     if (vobsubfile.empty())
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
 

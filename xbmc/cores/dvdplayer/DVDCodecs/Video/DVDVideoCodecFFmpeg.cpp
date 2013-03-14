@@ -839,7 +839,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
   {
 
     result = m_dllAvFilter.av_buffersink_get_buffer_ref(m_pFilterOut, &m_pBufferRef, 0);
-    if(!m_pBufferRef)
+    if(!m_pBufferRef || result < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - cur_buf");
       return VC_ERROR;

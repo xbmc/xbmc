@@ -98,8 +98,6 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     // allocate a YV12 DVDVideoPicture buffer.
     // first make sure all properties are reset.
     memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
-    unsigned int luma_pixels = hints.width * hints.height;
-    unsigned int chroma_pixels = luma_pixels/4;
 
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
