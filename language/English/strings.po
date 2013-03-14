@@ -5348,7 +5348,11 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr ""
 
-#empty strings from id 13435 to 13499
+msgctxt "#13435"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr ""
+
+#empty strings from id 13436 to 13499
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#13500"

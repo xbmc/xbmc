@@ -441,6 +441,11 @@ EGLContext CWinSystemEGL::GetEGLContext()
   return m_context;
 }
 
+EGLConfig CWinSystemEGL::GetEGLConfig()
+{
+  return m_config;
+}
+
 // the logic in this function should match whether CBaseRenderer::FindClosestResolution picks a 3D mode
 bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
 {

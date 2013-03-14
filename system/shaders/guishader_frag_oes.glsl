@@ -1,7 +1,5 @@
-#ifndef _RENDER_FORMATS_H_
-#define _RENDER_FORMATS_H_
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,26 +13,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#extension GL_OES_EGL_image_external : require
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_OMXEGL,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_EGLIMG,
-};
+precision mediump float;
+uniform samplerExternalOES m_samp0;
+uniform samplerExternalOES m_samp1;
+varying vec4      m_cord0;
+varying vec4      m_cord1;
+varying lowp vec4 m_colour;
+uniform int       m_method;
 
-#endif
+// SM_TEXTURE_OES
+void main ()
+{
+  gl_FragColor = texture2D(m_samp0, m_cord0.xy);
+}

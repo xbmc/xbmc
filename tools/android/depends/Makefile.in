@@ -3,6 +3,7 @@
 BUILDTOOLS = help2man gettext-native autoconf automake libtool pkg-config yasm cmake
 
 SUBDIRS = \
+	android-sources-ics \
 	ncurses pcre expat libiconv gettext readline sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl libssh2 curl \

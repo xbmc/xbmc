@@ -303,5 +303,4 @@ public class Splash extends Activity {
 
     new Work(this).execute();
   }
-
 }

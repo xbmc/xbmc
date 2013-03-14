@@ -39,6 +39,7 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
+class CStageFrightVideo;
 typedef std::vector<int>     Features;
 
 #define NUM_BUFFERS 3
@@ -86,7 +87,8 @@ enum RenderMethod
   RENDER_POT    = 0x010,
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
-  RENDER_BYPASS = 0x100
+  RENDER_BYPASS = 0x100,
+  RENDER_EGLIMG = 0x200
 };
 
 enum RenderQuality
@@ -158,6 +160,9 @@ public:
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
+#ifdef HAVE_LIBSTAGEFRIGHT
+  virtual void         AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg);
+#endif
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -186,6 +191,10 @@ protected:
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
 
+  void UploadEGLIMGTexture(int index);
+  void DeleteEGLIMGTexture(int index);
+  bool CreateEGLIMGTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -193,6 +202,7 @@ protected:
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
+  void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
   CFrameBufferObject m_fbo;
@@ -216,7 +226,7 @@ protected:
   // Raw data used by renderer
   int m_currentField;
   int m_reloadShaders;
-
+  
   struct YUVPLANE
   {
     GLuint id;
@@ -247,9 +257,12 @@ protected:
     OpenMaxVideoBuffer *openMaxBuffer;
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  struct __CVBuffer *cvBufferRef;
+    struct __CVBuffer *cvBufferRef;
 #endif
-
+#ifdef HAVE_LIBSTAGEFRIGHT
+    CStageFrightVideo* stf;
+    EGLImageKHR eglimg;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

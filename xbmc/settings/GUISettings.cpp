@@ -707,6 +707,9 @@ void CGUISettings::Initialize()
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   AddBool(g_sysinfo.HasVideoToolBoxDecoder() ? vp: NULL, "videoplayer.usevideotoolbox", 13432, true);
 #endif
+#ifdef HAVE_LIBSTAGEFRIGHT
+  AddBool(vp, "videoplayer.usestagefright", 13435, true);
+#endif
 
 #ifdef HAS_GL
   AddBool(NULL, "videoplayer.usepbo", 13424, true);
