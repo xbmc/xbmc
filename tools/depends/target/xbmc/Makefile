@@ -7,7 +7,7 @@ export CFLAGS+=-O3
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
-  ./configure --prefix=$(PREFIX)
+  ./configure --prefix=$(PREFIX) --enable-libstagefright
 
 
 all: $(SOURCE)/libxbmc.so

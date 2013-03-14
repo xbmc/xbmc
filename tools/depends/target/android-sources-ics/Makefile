@@ -1,5 +1,5 @@
-include ../Makefile.include
-DEPS= ../Makefile.include Makefile 
+include ../../Makefile.include
+DEPS= ../../Makefile.include Makefile 
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/native/include
 INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefright
