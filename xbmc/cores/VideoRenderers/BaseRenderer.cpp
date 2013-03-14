@@ -672,12 +672,10 @@ void CBaseRenderer::SetViewMode(int viewMode)
     // calculate the desired output ratio
     float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full width.
-    float newWidth = screenWidth;
-    float newHeight = newWidth / outputFrameRatio;
+    float newHeight = screenWidth / outputFrameRatio;
     if (newHeight > screenHeight)
     { // zoom to full height
       newHeight = screenHeight;
-      newWidth = newHeight * outputFrameRatio;
     }
     // now work out the zoom amount so that no zoom is done
     g_settings.m_fZoomAmount = (m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom) / newHeight;
