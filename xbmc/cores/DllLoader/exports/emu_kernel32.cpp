@@ -218,13 +218,6 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 #endif
 }
 
-struct SThreadWrapper
-{
-  LPTHREAD_START_ROUTINE lpStartAddress;
-  LPVOID lpParameter;
-  PCHAR lpDLL;
-};
-
 extern "C" void WINAPI dllSleep(DWORD dwTime)
 {
   return ::Sleep(dwTime);
