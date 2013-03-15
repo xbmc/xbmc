@@ -410,3 +410,7 @@ fi
 cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
+echo setting */$tool_dir/ to native/.gitignore
+echo "*/$tool_dir/" > native/.gitignore
+echo setting */$tool_dir/ to target/.gitignore
+echo "*/$deps_dir/" > target/.gitignore
