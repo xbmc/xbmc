@@ -999,11 +999,11 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   // doesn't like negative coordinates on dest_rect. So adjust by increasing src_rect
   if (dx1 < 0.0f) {
     sx1 -= dx1 * sw;
-    dx1 -= dx1;
+    dx1 = 0;
   }
   if (dy1 < 0.0f) {
     sy1 -= dy1 * sh;
-    dy1 -= dy1;
+    dy1 = 0;
   }
 
   OMX_INIT_STRUCTURE(configDisplay);
