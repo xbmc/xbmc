@@ -1,0 +1,21 @@
+diff -ru iphoneos5.1_armv7-target/src/arm/sysv.S iphoneos5.1_armv7-target.patched/src/arm/sysv.S
+--- src/arm/sysv.S	2012-04-12 10:46:06.000000000 +0800
++++ src/arm/sysv.S	2013-03-15 09:43:06.000000000 +0800
+@@ -113,7 +113,7 @@
+ #if defined(__thumb__) && !defined(__THUMB_INTERWORK__)
+ .macro	ARM_FUNC_START name
+ 	.text
+-	.align 0
++	.align 2
+ 	.thumb
+ 	.thumb_func
+ #ifdef __APPLE__
+@@ -136,7 +136,7 @@
+ #else
+ .macro	ARM_FUNC_START name
+ 	.text
+-	.align 0
++	.align 2
+ 	.arm
+ #ifdef __APPLE__
+ 	ENTRY($0)
