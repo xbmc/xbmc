@@ -38,7 +38,7 @@ endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
 #Add -liconv as needed, and add the _scproxy module for darwin
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) -framework SystemConfiguration -framework CoreFoundation |' Modules/Setup.dist
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
 ifeq ($(OS),osx)
 	echo "_scproxy \$$(srcdir)/Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
 endif
