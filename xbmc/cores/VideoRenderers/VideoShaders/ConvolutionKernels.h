@@ -45,9 +45,9 @@ class CConvolutionKernel
     void Spline36();
     void Bicubic(double B, double C);
 
-    double LanczosWeight(double x, double radius);
-    double Spline36Weight(double x);
-    double BicubicWeight(double x, double B, double C);
+    static double LanczosWeight(double x, double radius);
+    static double Spline36Weight(double x);
+    static double BicubicWeight(double x, double B, double C);
 
     void ToIntFract();
     void ToUint8();

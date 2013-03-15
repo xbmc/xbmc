@@ -43,7 +43,7 @@ protected:
   inline void ReleaseBuffer(DVDVideoPicture* pPic);
   inline void DeleteBuffer(DVDVideoPicture* pPic);
 
-  int GuessAspect(const mpeg2_sequence_t *sequence, unsigned int *pixel_width, unsigned int *pixel_height);
+  static int GuessAspect(const mpeg2_sequence_t *sequence, unsigned int *pixel_width, unsigned int *pixel_height);
 
   mpeg2dec_t* m_pHandle;
   const mpeg2_info_t* m_pInfo;

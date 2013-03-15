@@ -36,9 +36,9 @@ public:
   void GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores);
 
 private:
-  int GetTristate(const char* szValue) const;
-  bool CompileRegExp(const CStdString& str, CRegExp& regExp) const;
-  bool MatchesRegExp(const CStdString& str, CRegExp& regExp) const;
+  static int GetTristate(const char* szValue);
+  static bool CompileRegExp(const CStdString& str, CRegExp& regExp);
+  static bool MatchesRegExp(const CStdString& str, CRegExp& regExp);
   void Initialize(TiXmlElement* pRule);
   PLAYERCOREID GetPlayerCore();
 

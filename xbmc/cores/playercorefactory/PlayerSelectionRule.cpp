@@ -83,7 +83,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   }
 }
 
-int CPlayerSelectionRule::GetTristate(const char* szValue) const
+int CPlayerSelectionRule::GetTristate(const char* szValue)
 {
   if (szValue)
   {
@@ -93,12 +93,12 @@ int CPlayerSelectionRule::GetTristate(const char* szValue) const
   return -1;
 }
 
-bool CPlayerSelectionRule::CompileRegExp(const CStdString& str, CRegExp& regExp) const
+bool CPlayerSelectionRule::CompileRegExp(const CStdString& str, CRegExp& regExp)
 {
   return str.length() > 0 && regExp.RegComp(str.c_str());
 }
 
-bool CPlayerSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp) const
+bool CPlayerSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp)
 {
   return regExp.RegFind(str, 0) == 0;
 }

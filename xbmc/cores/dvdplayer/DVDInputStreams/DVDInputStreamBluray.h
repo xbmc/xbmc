@@ -114,8 +114,8 @@ protected:
 
   void OverlayFlush(int64_t pts);
   void OverlayClose();
-  void OverlayClear(SPlane& plane, int x, int y, int w, int h);
-  void OverlayInit (SPlane& plane, int w, int h);
+  static void OverlayClear(SPlane& plane, int x, int y, int w, int h);
+  static void OverlayInit (SPlane& plane, int w, int h);
 
   IDVDPlayer*   m_player;
   DllLibbluray *m_dll;
