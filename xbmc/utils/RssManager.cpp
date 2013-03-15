@@ -21,6 +21,7 @@
 #include "RssManager.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
@@ -36,7 +37,6 @@ CRssManager::CRssManager()
 CRssManager::~CRssManager()
 {
   Stop();
-  Clear();
 }
 
 CRssManager& CRssManager::Get()
@@ -52,6 +52,7 @@ void CRssManager::Start()
 
 void CRssManager::Stop()
 {
+  CSingleLock lock(m_critical);
   m_bActive = false;
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
@@ -63,6 +64,7 @@ void CRssManager::Stop()
 
 bool CRssManager::Load()
 {
+  CSingleLock lock(m_critical);
   string rssXML = g_settings.GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
@@ -134,12 +136,14 @@ bool CRssManager::Reload()
 
 void CRssManager::Clear()
 {
+  CSingleLock lock(m_critical);
   m_mapRssUrls.clear();
 }
 
 // returns true if the reader doesn't need creating, false otherwise
 bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader)
 {
+  CSingleLock lock(m_critical);
   // check to see if we've already created this reader
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {

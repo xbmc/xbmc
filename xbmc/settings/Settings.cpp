@@ -141,9 +141,7 @@ void CSettings::Initialize()
 }
 
 CSettings::~CSettings(void)
-{
-  Clear();
-}
+{ }
 
 
 void CSettings::Save() const
