@@ -3626,10 +3626,6 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
-    /* PLEX */
-    if (m_pLaunchHost)
-      m_pLaunchHost->OnShutdown();
-    /* END PLEX */
 
 #ifndef __PLEX__
     CAddonMgr::Get().DeInit();
@@ -3712,15 +3708,15 @@ void CApplication::Stop(int exitCode)
     UpdateFileState("stop");
 #endif
     
-    
-#ifdef TARGET_DARWIN_OSX
     /* PLEX */
+#ifdef TARGET_DARWIN_OSX
     if (PlexHTHelper::GetInstance().IsAlwaysOn() == false)
       PlexHTHelper::GetInstance().Stop();
-    /* END PLEX */
 #endif
+    
+    if (m_pLaunchHost)
+      m_pLaunchHost->OnShutdown();
 
-    /* PLEX */
 #ifdef TARGET_WINDOWS
     ExitProcess(exitCode);
 #else
