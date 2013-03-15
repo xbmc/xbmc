@@ -1,0 +1,25 @@
+[b]Upstream fixes[/b]
+
+[list]
+[*]Bonjour fixes
+[*]CoreAudio mixer fixes
+[*]libCEC updated
+[*]Volume controls now change the system volume
+[*]Many other small fixes
+[/list]
+
+[b]PLEX/HT Fixes[/b]
+[list]
+[*]Better dependency handling, leads to...
+[*]...MacOSX 64Bit build
+[*]Fix a crash when using mobile client as remote
+[*]Faster quit behaviour on OSX/Linux
+[*]Fix crash on homescreen
+[*]Possible fix for Hardware acceleration on Nvidia chipsets (is the ugly lines really gone now?)
+[*]Experimental support for Windows Media Center.
+[*]Maybe(?) fixed webkit channels on Windows
+[*]Lot of crashes / hangs / bugs on homescreen fixed.
+[*]Locking and hanging in relation to network code fixed
+[*]Quite a few memory leaks fixed (some really bad ones).
+[*]Subtitles requested from remote servers correctly.
+[/list]
