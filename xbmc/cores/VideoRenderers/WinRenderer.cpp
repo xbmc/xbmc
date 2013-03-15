@@ -519,7 +519,7 @@ void CWinRenderer::SelectPSVideoFilter()
     bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
     bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
 
-    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
+    if (scaleSD && scaleUp && scaleFps && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
     {
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
       m_bUseHQScaler = true;
