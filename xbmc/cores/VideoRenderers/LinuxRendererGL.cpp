@@ -1019,14 +1019,14 @@ void CLinuxRendererGL::LoadShaders(int field)
           UpdateVideoFilter();
           break;
         }
-        else
+        else if (m_pYUVShader)
         {
           m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
-          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
-          // drop through and try ARB
         }
+        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+        // drop through and try ARB
       }
       case RENDER_METHOD_ARB:
       // Try ARB shaders if supported and user requested it or GLSL shaders failed.
@@ -1045,14 +1045,14 @@ void CLinuxRendererGL::LoadShaders(int field)
           UpdateVideoFilter();
           break;
         }
-        else
+        else if (m_pYUVShader)
         {
           m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
-          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
-          // drop through and use SW
         }
+        CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
+        // drop through and use SW
       }
       case RENDER_METHOD_SOFTWARE:
       default:

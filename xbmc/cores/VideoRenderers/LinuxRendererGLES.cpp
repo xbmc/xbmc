@@ -674,7 +674,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
           UpdateVideoFilter();
           break;
         }
-        else
+        else if (m_pYUVShader)
         {
           m_pYUVShader->Free();
           delete m_pYUVShader;
