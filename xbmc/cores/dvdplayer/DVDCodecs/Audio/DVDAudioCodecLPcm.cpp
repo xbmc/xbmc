@@ -47,12 +47,12 @@ int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
 {
   BYTE* d = m_buffer;
   BYTE* s = pData;
-  int iDecoded = 0;
 
   if (iSize > m_bufferSize) iSize = m_bufferSize;
 
   if (iSize >= 12)
   {
+    int iDecoded = 0;
 #if 0
     if (m_codecID == CODEC_ID_LPCM_S24BE)
 #endif

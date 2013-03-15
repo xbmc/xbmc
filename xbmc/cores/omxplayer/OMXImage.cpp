@@ -319,12 +319,12 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
       else if(marker == M_APP1)
       {
         int readBits = 2;
-        bool bMotorolla = false;
-        bool bError = false;
 
         // Exif header
         if(CBitstreamConverter::read_bits(&br, 32) == 0x45786966)
         {
+          bool bMotorolla = false;
+          bool bError = false;
           CBitstreamConverter::skip_bits(&br, 8 * 2);
           readBits += 2;
         

@@ -276,8 +276,6 @@ int MP3Codec::Read(int size, bool init)
   // Decode data if we have some to decode
   if ( m_InputBufferPos || m_CallAgainWithSameBuffer || (m_eof && m_Decoding) )
   {
-    int result;
-
     m_Decoding = true;
 
     if ( size )
@@ -306,7 +304,7 @@ int MP3Codec::Read(int size, bool init)
       }
 
       // Now decode data into the vacant frame buffer.
-      result = Decode(&outputsize);
+      int result = Decode(&outputsize);
       if ( result != DECODING_ERROR)
       {
         if (init)

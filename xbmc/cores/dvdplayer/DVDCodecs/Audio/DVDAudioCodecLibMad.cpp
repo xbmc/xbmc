@@ -88,7 +88,6 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 {
   BYTE* pBuffer = m_inputBuffer;
   //int iBufferSize = iSize;
-  bool bFullOutputBuffer = false;
 
   m_iDecodedDataSize = 0;
 
@@ -102,6 +101,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
   if (m_bInitialized)
   {
+    bool bFullOutputBuffer = false;
     m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
 
     while (true)

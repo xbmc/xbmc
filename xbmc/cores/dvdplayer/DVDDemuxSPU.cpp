@@ -582,10 +582,10 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
   else
   {
     // old code
-    int i, i_inner = -1, i_shade = -1;
 
     if (last_color >= 0 && last_color < 4)
     {
+      int i, i_inner = -1, i_shade = -1;
       // Set the border color, the last color is probably the border color
       pSPU->color[last_color][0] = custom_subtitle_color[COLOR_BORDER][0];
       pSPU->color[last_color][1] = custom_subtitle_color[COLOR_BORDER][1];
