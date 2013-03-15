@@ -23,6 +23,8 @@
 #include <vector>
 #include <string>
 
+#include "threads/CriticalSection.h"
+
 class CRssReader;
 class IRssObserver;
 
@@ -66,4 +68,5 @@ private:
   std::vector<READERCONTROL> m_readers;
   RssUrls m_mapRssUrls;
   bool m_bActive;
+  CCriticalSection m_critical;
 };
