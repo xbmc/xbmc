@@ -34,6 +34,7 @@
 #include "GUIUserMessages.h"
 #include "XBDateTime.h"
 #include "LangInfo.h"
+#include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
 #include "StringUtils.h"

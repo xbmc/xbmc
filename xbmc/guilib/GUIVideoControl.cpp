@@ -22,6 +22,9 @@
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
+#include "Key.h"
+#include "WindowIDs.h"
+#include "cores/IPlayer.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #else

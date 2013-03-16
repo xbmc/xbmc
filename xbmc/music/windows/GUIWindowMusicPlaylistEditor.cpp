@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 #define CONTROL_LABELFILES        12

@@ -34,6 +34,7 @@
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/Variant.h"
+#include "Key.h"
 
 using namespace std;
 

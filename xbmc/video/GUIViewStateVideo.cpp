@@ -29,7 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace XFILE;

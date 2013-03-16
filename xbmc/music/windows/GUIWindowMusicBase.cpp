@@ -46,6 +46,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -64,6 +65,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 using namespace XFILE;

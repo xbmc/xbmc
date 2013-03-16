@@ -34,6 +34,7 @@
 #include "utils/TimeUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace EVENTCLIENT;

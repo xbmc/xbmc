@@ -168,7 +168,7 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
     return CURL_READFUNC_PAUSE;
   }
 
-  int64_t retSize = XMIN(m_fileSize - m_filePos, nitems * size);
+  int64_t retSize = XMIN(m_fileSize - m_filePos, int64_t(nitems * size));
   memcpy(buffer, m_readBuffer + m_filePos, retSize);
   m_filePos += retSize;
 

@@ -28,6 +28,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -45,6 +46,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 using namespace PVR;

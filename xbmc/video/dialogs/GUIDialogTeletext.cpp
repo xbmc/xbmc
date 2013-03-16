@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 

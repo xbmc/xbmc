@@ -28,6 +28,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace std;

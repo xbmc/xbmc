@@ -20,15 +20,20 @@
  *
  */
 
-#include "cores/IPlayer.h"
+#include "cores/IPlayerCallback.h"
 #include "threads/CriticalSection.h"
+#include "utils/StdString.h"
+
+#include <vector>
 
 /*----------------------------------------------------------------------
 |   forward references
 +---------------------------------------------------------------------*/
 class TiXmlElement;
+class CFileItem;
 class CPlayerCoreConfig;
 class CPlayerSelectionRule;
+class IPlayer;
 
 // do not remove mplayer - will break scripts
 enum EPLAYERCORES

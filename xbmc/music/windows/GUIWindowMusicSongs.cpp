@@ -32,11 +32,13 @@
 #include "storage/MediaManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "cdrip/CDDARipper.h"
+#include "cores/IPlayer.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3

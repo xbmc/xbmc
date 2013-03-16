@@ -34,12 +34,14 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
+#include "cores/IPlayer.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
@@ -566,14 +568,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
-      if (pMsg->dwParam1 != (DWORD) -1)
+      if (pMsg->dwParam1 != (unsigned int) -1)
         g_playlistPlayer.Play(pMsg->dwParam1);
       else
         g_playlistPlayer.Play();
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
-      if (pMsg->dwParam1 != (DWORD) -1)
+      if (pMsg->dwParam1 != (unsigned int) -1)
       {
         bool *result = (bool*)pMsg->lpVoid;
         *result = g_playlistPlayer.PlaySongId(pMsg->dwParam1);
@@ -610,7 +612,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_REMOVE:
-      if (pMsg->dwParam1 != (DWORD) -1)
+      if (pMsg->dwParam1 != (unsigned int) -1)
         g_playlistPlayer.Remove(pMsg->dwParam1,pMsg->dwParam2);
       break;
 
@@ -958,20 +960,20 @@ void CApplicationMessenger::MediaRestart(bool bWait)
 
 void CApplicationMessenger::PlayListPlayerPlay()
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (unsigned int) -1};
   SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD)iSong};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (unsigned int)iSong};
   SendMessage(tMsg, true);
 }
 
 bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
   bool returnState;
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, (DWORD)songId};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, (unsigned int)songId};
   tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
   return returnState;
@@ -1027,7 +1029,7 @@ void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItemLi
 
 void CApplicationMessenger::PlayListPlayerRemove(int playlist, int position)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, (DWORD)playlist, (DWORD)position};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, (unsigned int)playlist, (unsigned int)position};
   SendMessage(tMsg, true);
 }
 
@@ -1082,7 +1084,7 @@ void CApplicationMessenger::PictureShow(string filename)
 
 void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN /* = false */)
 {
-  DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
+  unsigned int dwMessage = TMSG_PICTURE_SLIDESHOW;
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   tMsg.dwParam1 = addTBN ? 1 : 0;
@@ -1146,11 +1148,11 @@ void CApplicationMessenger::RestartApp()
 
 void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
 {
-  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (DWORD)inhibit};
+  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (unsigned int)inhibit};
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
+void CApplicationMessenger::NetworkMessage(unsigned int dwMessage, unsigned int dwParam)
 {
   ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
   SendMessage(tMsg);
@@ -1175,7 +1177,7 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
-  tMsg.dwParam1 = (DWORD)iWindowID;
+  tMsg.dwParam1 = (unsigned int)iWindowID;
   tMsg.strParam = param;
   SendMessage(tMsg, true);
 }
@@ -1184,13 +1186,13 @@ void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_OS};
   tMsg.strParam = command;
-  tMsg.dwParam1 = (DWORD)waitExit;
+  tMsg.dwParam1 = (unsigned int)waitExit;
   SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::UserEvent(int code)
 {
-  ThreadMessage tMsg = {(DWORD)code};
+  ThreadMessage tMsg = {(unsigned int)code};
   SendMessage(tMsg, false);
 }
 
@@ -1203,15 +1205,15 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 
 void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, (DWORD)nextWindowID};
-  tMsg.dwParam2 = (DWORD)((forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0));
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, (unsigned int)nextWindowID};
+  tMsg.dwParam2 = (unsigned int)((forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0));
   tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
 
 void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
 {
-  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (DWORD)windowID, swappingWindows ? 1u : 0u};
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (unsigned int)windowID, swappingWindows ? 1u : 0u};
   tMsg.params = params;
   SendMessage(tMsg, true);
 }

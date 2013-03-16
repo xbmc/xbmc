@@ -1,5 +1,3 @@
-INCLUDES=-I../../.. -I. -I../../ -I../../linux -I../../../guilib -I.
-
 ifeq (@USE_DOXYGEN@,1)
 DOXYGEN=@DOXYGEN_EXE@
 endif

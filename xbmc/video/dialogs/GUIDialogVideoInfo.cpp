@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "TextureCache.h"

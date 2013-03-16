@@ -24,6 +24,7 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "GUIUserMessages.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"
@@ -41,6 +42,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "cores/IPlayer.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;

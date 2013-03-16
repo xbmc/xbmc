@@ -24,6 +24,7 @@
 #include "GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "input/XBMC_vkeys.h"
+#include "Key.h"
 #include "LocalizeStrings.h"
 #include "XBDateTime.h"
 #include "utils/md5.h"

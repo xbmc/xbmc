@@ -31,6 +31,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/Key.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -53,6 +54,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "music/MusicDatabase.h"
+#include "cores/IPlayer.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR

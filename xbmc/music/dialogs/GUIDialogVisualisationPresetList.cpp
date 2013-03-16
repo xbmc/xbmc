@@ -24,6 +24,7 @@
 #include "guilib/GUIListContainer.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 #define CONTROL_LIST           2
