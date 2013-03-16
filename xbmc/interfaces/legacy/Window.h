@@ -170,6 +170,7 @@ namespace XBMCAddon
       //  into Python anyway. This must result in a problem when 
       virtual void onControl(Control* control);
       virtual void onClick(int controlId);
+      virtual void onDoubleClick(int controlId);
       virtual void onFocus(int controlId);
       virtual void onInit();
 
