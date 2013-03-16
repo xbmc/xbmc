@@ -239,7 +239,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
             uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2], 0 };
             int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2], 0 };
             uint8_t *dst[] = { pOutBuf, 0, 0, 0 };
-            int     dstStride[] = { nWidth*4, 0, 0, 0 };
+            int     dstStride[] = { (int)nWidth*4, 0, 0, 0 };
 
             if (context)
             {
