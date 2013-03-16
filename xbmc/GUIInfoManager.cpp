@@ -43,6 +43,7 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
@@ -1507,14 +1508,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
+        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenWidth,
+        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenHeight,
+        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).fRefreshRate,
         g_localizeStrings.Get(244), GetFPS());
     else
       strLabel.Format("%ix%i - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
+        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenWidth,
+        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenHeight,
         g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
@@ -1631,13 +1632,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case SYSTEM_SCREEN_MODE:
-    strLabel = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].strMode;
+    strLabel = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenWidth);
+    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenHeight);
+    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());

@@ -23,6 +23,7 @@
 #include <math.h>
 
 #include "utils/CharsetConverter.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUITextLayout.h"
@@ -315,7 +316,7 @@ void CKaraokeLyricsText::Render()
   // Calculate drawing parameters
   RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-  float maxWidth = (float) g_settings.m_ResInfo[resolution].Overscan.right - g_settings.m_ResInfo[resolution].Overscan.left;
+  float maxWidth = (float) CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
   if ( updateText )
@@ -375,9 +376,9 @@ void CKaraokeLyricsText::Render()
     m_preambleLayout->Update( m_currentPreamble, maxWidth * 0.9f );
   }
 
-  float x = maxWidth * 0.5f + g_settings.m_ResInfo[resolution].Overscan.left;
-  float y = (float)g_settings.m_ResInfo[resolution].Overscan.top +
-      (g_settings.m_ResInfo[resolution].Overscan.bottom - g_settings.m_ResInfo[resolution].Overscan.top) / 8;
+  float x = maxWidth * 0.5f + CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.left;
+  float y = (float)CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.top +
+      (CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.top) / 8;
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
@@ -461,7 +462,7 @@ void CKaraokeLyricsText::rescanLyrics()
   // Second, add spaces if less than 5%, and rescan to gather more data.
   bool add_spaces = (syllables && (spaces * 100 / syllables < 5)) ? true : false;
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
+  float maxWidth = (float) CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
 
   CStdString line_text;
   int prev_line_idx = -1;

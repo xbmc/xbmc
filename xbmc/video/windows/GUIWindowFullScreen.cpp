@@ -41,6 +41,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUISliderControl.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "guilib/GUISelectButtonControl.h"
@@ -533,7 +534,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
   case ACTION_SUBTITLE_VSHIFT_UP:
     {
-      RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
       int subalign = g_guiSettings.GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
@@ -559,7 +560,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
   case ACTION_SUBTITLE_VSHIFT_DOWN:
     {
-      RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
       int subalign = g_guiSettings.GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
@@ -585,7 +586,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
   case ACTION_SUBTITLE_ALIGN:
     {
-      RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
       int subalign = g_guiSettings.GetInt("subtitles.align");
 
       subalign++;
@@ -961,8 +962,8 @@ void CGUIWindowFullScreen::FrameMove()
     {
       // Splitres scaling factor
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
-      float xscale = (float)g_settings.m_ResInfo[res].iScreenWidth  / (float)g_settings.m_ResInfo[res].iWidth;
-      float yscale = (float)g_settings.m_ResInfo[res].iScreenHeight / (float)g_settings.m_ResInfo[res].iHeight;
+      float xscale = (float)CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth  / (float)CDisplaySettings::Get().GetResolutionInfo(res).iWidth;
+      float yscale = (float)CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight / (float)CDisplaySettings::Get().GetResolutionInfo(res).iHeight;
 
       CStdString strSizing;
       strSizing.Format(g_localizeStrings.Get(245),
@@ -980,13 +981,13 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strStatus;
       if (g_Windowing.IsFullScreen())
         strStatus.Format("%s %ix%i@%.2fHz - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
-          g_settings.m_ResInfo[iResolution].iScreenHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
+          g_localizeStrings.Get(13287), CDisplaySettings::Get().GetResolutionInfo(iResolution).iScreenWidth,
+          CDisplaySettings::Get().GetResolutionInfo(iResolution).iScreenHeight, CDisplaySettings::Get().GetResolutionInfo(iResolution).fRefreshRate,
           g_localizeStrings.Get(244));
       else
         strStatus.Format("%s %ix%i - %s",
-          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iScreenWidth,
-          g_settings.m_ResInfo[iResolution].iScreenHeight, g_localizeStrings.Get(242));
+          g_localizeStrings.Get(13287), CDisplaySettings::Get().GetResolutionInfo(iResolution).iScreenWidth,
+          CDisplaySettings::Get().GetResolutionInfo(iResolution).iScreenHeight, g_localizeStrings.Get(242));
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
@@ -1112,17 +1113,17 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
 
-      float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
+      float maxWidth = (float) CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
       m_subsLayout->Update(subtitleText, maxWidth * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
 
       int subalign = g_guiSettings.GetInt("subtitles.align");
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);
-      float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
-      float y = (float) g_settings.m_ResInfo[res].iSubtitles;
+      float x = maxWidth * 0.5f + CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
+      float y = (float) CDisplaySettings::Get().GetResolutionInfo(res).iSubtitles;
 
       if (subalign == SUBTITLE_ALIGN_MANUAL)
-        y = (float) g_settings.m_ResInfo[res].iSubtitles - textHeight;
+        y = (float) CDisplaySettings::Get().GetResolutionInfo(res).iSubtitles - textHeight;
       else
       {
         SPlayerVideoStreamInfo info;
@@ -1135,12 +1136,12 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
         // use the manual distance to the screenbottom as an offset to the automatic location
         if ((subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE) || (subalign == SUBTITLE_ALIGN_TOP_OUTSIDE))
-          y -= textHeight + g_graphicsContext.GetHeight() - g_settings.m_ResInfo[res].iSubtitles;
+          y -= textHeight + g_graphicsContext.GetHeight() - CDisplaySettings::Get().GetResolutionInfo(res).iSubtitles;
         else
-          y += g_graphicsContext.GetHeight() - g_settings.m_ResInfo[res].iSubtitles;
+          y += g_graphicsContext.GetHeight() - CDisplaySettings::Get().GetResolutionInfo(res).iSubtitles;
 
-        y = std::max(y, (float) g_settings.m_ResInfo[res].Overscan.top);
-        y = std::min(y, g_settings.m_ResInfo[res].Overscan.bottom - textHeight);
+        y = std::max(y, (float) CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top);
+        y = std::min(y, CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom - textHeight);
       }
 
       m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, maxWidth);

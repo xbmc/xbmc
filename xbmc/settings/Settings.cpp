@@ -103,17 +103,6 @@ void CSettings::UnregisterSubSettings(ISubSettings *subSettings)
 
 void CSettings::Initialize()
 {
-  RESOLUTION_INFO res;
-  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
-
-  m_ResInfo.insert(it, RES_CUSTOM, res);
-
-  for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
-  {
-    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
-  }
-
   m_videoStacking = false;
 
   m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
@@ -270,170 +259,6 @@ bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   return false;
 }
 
-bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& strSettingsFile)
-{
-  m_Calibrations.clear();
-
-  const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
-  if (!pElement)
-  {
-    CLog::Log(LOGERROR, "%s Doesn't contain <resolutions>", strSettingsFile.c_str());
-    return false;
-  }
-  const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
-  while (pResolution)
-  {
-    // get the data for this calibration
-    RESOLUTION_INFO cal;
-
-    XMLUtils::GetString(pResolution, "description", cal.strMode);
-    XMLUtils::GetInt(pResolution, "subtitles", cal.iSubtitles);
-    XMLUtils::GetFloat(pResolution, "pixelratio", cal.fPixelRatio);
-#ifdef HAS_XRANDR
-    XMLUtils::GetFloat(pResolution, "refreshrate", cal.fRefreshRate);
-    XMLUtils::GetString(pResolution, "output", cal.strOutput);
-    XMLUtils::GetString(pResolution, "xrandrid", cal.strId);
-#endif
-
-    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
-    if (pOverscan)
-    {
-      XMLUtils::GetInt(pOverscan, "left", cal.Overscan.left);
-      XMLUtils::GetInt(pOverscan, "top", cal.Overscan.top);
-      XMLUtils::GetInt(pOverscan, "right", cal.Overscan.right);
-      XMLUtils::GetInt(pOverscan, "bottom", cal.Overscan.bottom);
-    }
-
-    // mark calibration as not updated
-    // we must not delete those, resolution just might not be available
-    cal.iWidth = cal.iHeight = 0;
-
-    // store calibration, avoid adding duplicates
-    bool found = false;
-    for (std::vector<RESOLUTION_INFO>::iterator  it = m_Calibrations.begin(); it != m_Calibrations.end(); ++it)
-    {
-      if (it->strMode.Equals(cal.strMode))
-      {
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      m_Calibrations.push_back(cal);
-
-    // iterate around
-    pResolution = pResolution->NextSiblingElement("resolution");
-  }
-  ApplyCalibrations();
-  return true;
-}
-
-void CSettings::ApplyCalibrations()
-{
-  // apply all calibrations to the resolutions
-  for (size_t i = 0; i < m_Calibrations.size(); ++i)
-  {
-    // find resolutions
-    for (size_t res = 0; res < m_ResInfo.size(); ++res)
-    {
-      if (res == RES_WINDOW)
-        continue;
-      if (m_Calibrations[i].strMode.Equals(m_ResInfo[res].strMode))
-      {
-        // overscan
-        m_ResInfo[res].Overscan.left = m_Calibrations[i].Overscan.left;
-        if (m_ResInfo[res].Overscan.left < -m_ResInfo[res].iWidth/4)
-          m_ResInfo[res].Overscan.left = -m_ResInfo[res].iWidth/4;
-        if (m_ResInfo[res].Overscan.left > m_ResInfo[res].iWidth/4)
-          m_ResInfo[res].Overscan.left = m_ResInfo[res].iWidth/4;
-
-        m_ResInfo[res].Overscan.top = m_Calibrations[i].Overscan.top;
-        if (m_ResInfo[res].Overscan.top < -m_ResInfo[res].iHeight/4)
-          m_ResInfo[res].Overscan.top = -m_ResInfo[res].iHeight/4;
-        if (m_ResInfo[res].Overscan.top > m_ResInfo[res].iHeight/4)
-          m_ResInfo[res].Overscan.top = m_ResInfo[res].iHeight/4;
-
-        m_ResInfo[res].Overscan.right = m_Calibrations[i].Overscan.right;
-        if (m_ResInfo[res].Overscan.right < m_ResInfo[res].iWidth / 2)
-          m_ResInfo[res].Overscan.right = m_ResInfo[res].iWidth / 2;
-        if (m_ResInfo[res].Overscan.right > m_ResInfo[res].iWidth * 3/2)
-          m_ResInfo[res].Overscan.right = m_ResInfo[res].iWidth *3/2;
-
-        m_ResInfo[res].Overscan.bottom = m_Calibrations[i].Overscan.bottom;
-        if (m_ResInfo[res].Overscan.bottom < m_ResInfo[res].iHeight / 2)
-          m_ResInfo[res].Overscan.bottom = m_ResInfo[res].iHeight / 2;
-        if (m_ResInfo[res].Overscan.bottom > m_ResInfo[res].iHeight * 3/2)
-          m_ResInfo[res].Overscan.bottom = m_ResInfo[res].iHeight * 3/2;
-
-        m_ResInfo[res].iSubtitles = m_Calibrations[i].iSubtitles;
-        if (m_ResInfo[res].iSubtitles < m_ResInfo[res].iHeight / 2)
-          m_ResInfo[res].iSubtitles = m_ResInfo[res].iHeight / 2;
-        if (m_ResInfo[res].iSubtitles > m_ResInfo[res].iHeight* 5/4)
-          m_ResInfo[res].iSubtitles = m_ResInfo[res].iHeight* 5/4;
-
-        m_ResInfo[res].fPixelRatio = m_Calibrations[i].fPixelRatio;
-        if (m_ResInfo[res].fPixelRatio < 0.5f)
-          m_ResInfo[res].fPixelRatio = 0.5f;
-        if (m_ResInfo[res].fPixelRatio > 2.0f)
-          m_ResInfo[res].fPixelRatio = 2.0f;
-        break;
-      }
-    }
-  }
-}
-
-void CSettings::UpdateCalibrations()
-{
-  for (size_t res = RES_DESKTOP; res < m_ResInfo.size(); ++res)
-  {
-    // find calibration
-    bool found = false;
-    for (std::vector<RESOLUTION_INFO>::iterator  it = m_Calibrations.begin(); it != m_Calibrations.end(); ++it)
-    {
-      if (it->strMode.Equals(m_ResInfo[res].strMode))
-      {
-        // TODO: erase calibrations with default values
-        (*it) = m_ResInfo[res];
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      m_Calibrations.push_back(m_ResInfo[res]);
-  }
-}
-
-bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
-{
-  TiXmlElement xmlRootElement("resolutions");
-  TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
-
-  // save calibrations
-  for (size_t i = 0 ; i < m_Calibrations.size() ; i++)
-  {
-    // Write the resolution tag
-    TiXmlElement resElement("resolution");
-    TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-    // Now write each of the pieces of information we need...
-    XMLUtils::SetString(pNode, "description", m_Calibrations[i].strMode);
-    XMLUtils::SetInt(pNode, "subtitles", m_Calibrations[i].iSubtitles);
-    XMLUtils::SetFloat(pNode, "pixelratio", m_Calibrations[i].fPixelRatio);
-#ifdef HAS_XRANDR
-    XMLUtils::SetFloat(pNode, "refreshrate", m_Calibrations[i].fRefreshRate);
-    XMLUtils::SetString(pNode, "output", m_Calibrations[i].strOutput);
-    XMLUtils::SetString(pNode, "xrandrid", m_Calibrations[i].strId);
-#endif
-    // create the overscan child
-    TiXmlElement overscanElement("overscan");
-    TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    XMLUtils::SetInt(pOverscanNode, "left", m_Calibrations[i].Overscan.left);
-    XMLUtils::SetInt(pOverscanNode, "top", m_Calibrations[i].Overscan.top);
-    XMLUtils::SetInt(pOverscanNode, "right", m_Calibrations[i].Overscan.right);
-    XMLUtils::SetInt(pOverscanNode, "bottom", m_Calibrations[i].Overscan.bottom);
-  }
-  return true;
-}
-
 bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 {
   // load the xml file
@@ -504,7 +329,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "fvolumelevel", m_fVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
   }
 
-  LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
   
   // load any ISubSettings implementations
@@ -574,8 +398,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!pNode) return false;
   XMLUtils::SetBoolean(pNode, "mute", m_bMute);
   XMLUtils::SetFloat(pNode, "fvolumelevel", m_fVolumeLevel);
-
-  SaveCalibration(pRoot);
 
   if (localSettings) // local settings to save
     localSettings->SaveXML(pRoot);
@@ -787,9 +609,6 @@ void CSettings::Clear()
   m_userAgent.clear();
 
   m_defaultMusicLibSource.clear();
-
-  m_ResInfo.clear();
-  m_Calibrations.clear();
 
   OnSettingsCleared();
 

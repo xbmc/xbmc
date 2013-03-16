@@ -32,6 +32,7 @@
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
+#include "settings/DisplaySettings.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
@@ -409,7 +410,7 @@ void CGUISettings::Initialize()
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, 32, SPIN_CONTROL_TEXT);
 #endif
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
-  // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
+  // contains an index to the resolution info array in CDisplaySettings. the only meaningful fields are iScreen, iWidth, iHeight.
 #if defined(TARGET_DARWIN)
   #if !defined(TARGET_DARWIN_IOS_ATV2)
     AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
@@ -1604,9 +1605,9 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
-    for (unsigned int i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
+    for (unsigned int i = RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); ++i)
     {
-      const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
+      const RESOLUTION_INFO &info = CDisplaySettings::Get().GetResolutionInfo(i);
       if (info.iScreen != screen)
         continue;
       float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
@@ -1631,9 +1632,9 @@ void CGUISettings::SetResolution(RESOLUTION res)
     mode = "DESKTOP";
   else if (res == RES_WINDOW)
     mode = "WINDOW";
-  else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
+  else if (res >= RES_CUSTOM && res < (RESOLUTION)CDisplaySettings::Get().ResolutionInfoSize())
   {
-    const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
+    const RESOLUTION_INFO &info = CDisplaySettings::Get().GetResolutionInfo(res);
     mode.Format("%1i%05i%05i%09.5f%s", info.iScreen,
       info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
       (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");

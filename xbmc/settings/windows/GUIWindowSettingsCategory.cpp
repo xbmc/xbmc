@@ -88,6 +88,7 @@
 #include <map>
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/MouseStat.h"
 #if defined(TARGET_WINDOWS)
@@ -2325,7 +2326,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   if (res == RES_WINDOW)
     mode = DM_WINDOWED;
   else
-    mode = g_settings.m_ResInfo[res].iScreen;
+    mode = CDisplaySettings::Get().GetResolutionInfo(res).iScreen;
 
   // we expect "videoscreen.screen" but it might be hidden on some platforms,
   // so check that we actually have a visable control.
@@ -2342,8 +2343,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
 
     for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
     {
-      strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
-      pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
+      strScreen.Format(g_localizeStrings.Get(241), CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen + 1);
+      pControl->AddLabel(strScreen, CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen);
     }
     pControl->SetValue(mode);
     g_guiSettings.SetInt("videoscreen.screen", mode);
@@ -2378,8 +2379,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
         (resolutions[idx].interlaced == D3DPRESENTFLAG_INTERLACED) ? "i" : "p");
       pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
 
-      RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
-      RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
+      RESOLUTION_INFO res1 = CDisplaySettings::Get().GetResolutionInfo(res);
+      RESOLUTION_INFO res2 = CDisplaySettings::Get().GetResolutionInfo(resolutions[idx].ResInfo_Index);
       if (   res1.iScreen == res2.iScreen
           && res1.iScreenWidth  == res2.iScreenWidth
           && res1.iScreenHeight == res2.iScreenHeight
@@ -2399,7 +2400,7 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
     else
     {
       for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
-        if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == mode)
+        if (CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
         {
           autoresolution = RES_DESKTOP + idx;
           break;
@@ -2423,10 +2424,10 @@ void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOL
 
   vector<REFRESHRATE> refreshrates;
   if (res > RES_WINDOW)
-    refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen,
-      g_settings.m_ResInfo[res].iScreenWidth,
-      g_settings.m_ResInfo[res].iScreenHeight,
-      g_settings.m_ResInfo[res].dwFlags);
+    refreshrates = g_Windowing.RefreshRates(CDisplaySettings::Get().GetResolutionInfo(res).iScreen,
+      CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth,
+      CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight,
+      CDisplaySettings::Get().GetResolutionInfo(res).dwFlags);
 
   // The control setting doesn't exist when not in standalone mode, don't manipulate it
   BaseSettingControlPtr control = GetSetting(strSetting);
@@ -2461,7 +2462,7 @@ void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOL
     if (res == RES_WINDOW)
       newresolution = RES_WINDOW;
     else
-      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(g_settings.m_ResInfo[res].iScreen, refreshrates).ResInfo_Index;
+      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(CDisplaySettings::Get().GetResolutionInfo(res).iScreen, refreshrates).ResInfo_Index;
 
     if (pControl)
       pControl->SetValue(newresolution);

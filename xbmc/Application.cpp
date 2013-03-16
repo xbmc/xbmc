@@ -95,6 +95,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
@@ -596,6 +597,12 @@ bool CApplication::Create()
   Preflight();
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
+  for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
+  {
+    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+    g_graphicsContext.ResetOverscan((RESOLUTION)i, CDisplaySettings::Get().GetResolutionInfo(i).Overscan);
+  }
+
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -717,6 +724,7 @@ bool CApplication::Create()
   g_settings.RegisterSettingsHandler(&CUPnPSettings::Get());
 #endif
   
+  g_settings.RegisterSubSettings(&CDisplaySettings::Get());
   g_settings.RegisterSubSettings(&CMediaSettings::Get());
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
   g_settings.RegisterSubSettings(&CViewStateSettings::Get());
@@ -918,9 +926,9 @@ bool CApplication::CreateGUI()
 
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
-            g_settings.m_ResInfo[iResolution].iWidth,
-            g_settings.m_ResInfo[iResolution].iHeight,
-            g_settings.m_ResInfo[iResolution].strMode.c_str());
+            CDisplaySettings::Get().GetResolutionInfo(iResolution).iWidth,
+            CDisplaySettings::Get().GetResolutionInfo(iResolution).iHeight,
+            CDisplaySettings::Get().GetResolutionInfo(iResolution).strMode.c_str());
   g_windowManager.Initialize();
 
   return true;
@@ -932,14 +940,14 @@ bool CApplication::InitWindow()
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW), OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
   }
 #else
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution), OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
@@ -3512,6 +3520,7 @@ bool CApplication::Cleanup()
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
   
+    g_settings.UnregisterSubSettings(&CDisplaySettings::Get());
     g_settings.UnregisterSubSettings(&CMediaSettings::Get());
     g_settings.UnregisterSubSettings(&CSkinSettings::Get());
     g_settings.UnregisterSubSettings(&CViewStateSettings::Get());

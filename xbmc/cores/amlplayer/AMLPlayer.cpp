@@ -2238,7 +2238,7 @@ void CAMLPlayer::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // so we have to setup video axis for 720p instead of 1080p... Boooo.
   display = g_graphicsContext.GetViewWindow();
   //RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  //display.SetRect(0, 0, g_settings.m_ResInfo[res].iScreenWidth, g_settings.m_ResInfo[res].iScreenHeight);
+  //display.SetRect(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight);
   dst_rect = m_dst_rect;
   if (gui != display)
   {

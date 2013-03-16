@@ -218,9 +218,6 @@ public:
 
   int GetCurrentProfileId() const;
 
-  std::vector<RESOLUTION_INFO> m_ResInfo;
-  std::vector<RESOLUTION_INFO> m_Calibrations;
-
   // utility functions for user data folders
 
   //uses HasSlashAtEnd to determine if a directory or file was meant
@@ -259,12 +256,7 @@ public:
   static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
 
-  void ApplyCalibrations();
-  void UpdateCalibrations();
 protected:
-  bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
-  bool SaveCalibration(TiXmlNode* pRootNode) const;
-
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 

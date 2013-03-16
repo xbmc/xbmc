@@ -24,6 +24,7 @@
 #include <sys/resource.h>
 #include <signal.h>
 #include "utils/log.h"
+#include "settings/DisplaySettings.h"
 #include "threads/Event.h"
 #include "Application.h"
 #include "WindowingFactory.h"
@@ -239,7 +240,7 @@ static CEvent screenChangeEvent;
   //change back to internal screen
   if([[UIScreen screens] count] == 1 && _screenIdx != 0)
   {
-    RESOLUTION_INFO res = g_settings.m_ResInfo[RES_DESKTOP];//internal screen default res
+    RESOLUTION_INFO res = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP);//internal screen default res
     g_Windowing.SetFullScreen(true, res, false);
   }
 }
