@@ -71,13 +71,8 @@ void CGUIFontTTFDX::Begin()
     {
       pD3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
       pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
-#if(1)
       pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16,0) );
       pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-#else
-      pD3DDevice->SetTextureStageState( unit, D3DTSS_CONSTANT , D3DCOLOR_RGBA(16,16,16,0) );
-      pD3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_CONSTANT );
-#endif
       unit++;
     }
 
