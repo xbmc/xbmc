@@ -106,8 +106,9 @@ public class Helper
     else // it's a method of some sort ... or it better be
     {
       Node memberdef = docspec.depthFirst().find { 
-        return ((it.name() == 'memberdef' && it.@kind == 'function' && it.@id.startsWith(doxygenId)) &&
-                (it.name != null && it.name.text().trim() == methodOrClass.@sym_name))
+        return (it instanceof String) ? false :
+          ((it.name() == 'memberdef' && it.@kind == 'function' && it.@id.startsWith(doxygenId)) &&
+           (it.name != null && it.name.text().trim() == methodOrClass.@sym_name))
       }
 
       doc = memberdef != null ? memberdef.detaileddescription[0] : null
