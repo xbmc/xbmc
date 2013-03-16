@@ -23,6 +23,7 @@
 #include "LanguageHook.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
+#include "filesystem/UPnPDirectory.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
@@ -84,7 +85,22 @@ namespace XBMCAddon
       CFileItemList items;
       CStdString strSource;
       strSource = path;
-      XFILE::CDirectory::GetDirectory(strSource, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
+
+	  // See if this is an upnp address
+	  if(strSource.Left(7).Equals("upnp://"))
+	  {
+		  // Create the directory factory for this address
+		  XFILE::IDirectory* ptrDir = XFILE::CDirectoryFactory::Create(strSource);
+		  if(ptrDir != NULL)
+		  {
+			  ptrDir->GetDirectory(strSource, items);
+		  }
+	  }
+	  // Else, use the old method
+	  else
+	  {
+		  XFILE::CDirectory::GetDirectory(strSource, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
+	  }
 
       Tuple<std::vector<String>, std::vector<String> > ret;
       // initialize the Tuple to two values
