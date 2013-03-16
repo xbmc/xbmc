@@ -22,7 +22,7 @@
 
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 #include <boost/shared_ptr.hpp>
@@ -36,6 +36,7 @@ class CGUIDialog;
 class CGUIWindow;
 class CGUIMessage;
 class CVideoInfoTag;
+class CAction;
 
 namespace MUSIC_INFO
 {

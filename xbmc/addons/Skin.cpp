@@ -22,7 +22,7 @@
 #include "AddonManager.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "utils/log.h"

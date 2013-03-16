@@ -9,6 +9,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "interfaces/AnnouncementManager.h"

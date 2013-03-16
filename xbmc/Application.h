@@ -24,14 +24,15 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
-#include "guilib/Key.h"
 #include "threads/Condition.h"
 #include "utils/GlobalsHandling.h"
 
 #include <map>
 
+class CAction;
 class CFileItem;
 class CFileItemList;
+class CKey;
 namespace ADDON
 {
   class CSkinInfo;

@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"

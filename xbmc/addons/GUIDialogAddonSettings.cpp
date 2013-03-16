@@ -34,6 +34,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIImage.h"
+#include "guilib/Key.h"
 #include "filesystem/Directory.h"
 #include "video/VideoInfoScanner.h"
 #include "addons/Scraper.h"

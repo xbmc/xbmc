@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_keytable.h"
 #include "filesystem/File.h"

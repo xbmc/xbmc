@@ -34,6 +34,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"

@@ -20,6 +20,7 @@
 
 #include "GUIWindowHome.h"
 #include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "utils/JobManager.h"
 #include "utils/RecentlyAddedJob.h"
 #include "interfaces/AnnouncementManager.h"

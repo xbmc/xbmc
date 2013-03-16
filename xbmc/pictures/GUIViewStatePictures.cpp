@@ -27,7 +27,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 
 using namespace XFILE;
 using namespace ADDON;

@@ -11,7 +11,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseDirectory.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"

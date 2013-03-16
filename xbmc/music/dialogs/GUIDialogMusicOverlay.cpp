@@ -20,6 +20,7 @@
 
 #include "GUIDialogMusicOverlay.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "input/MouseStat.h"
 
 #define CONTROL_LOGO_PIC    1
