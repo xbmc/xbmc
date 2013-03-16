@@ -215,16 +215,6 @@ enum SubtitleAlign
   SUBTITLE_ALIGN_TOP_OUTSIDE
 };
 
-// replay gain settings struct for quick access by the player multiple
-// times per second (saves doing settings lookup)
-struct ReplayGainSettings
-{
-  int iPreAmp;
-  int iNoGainPreAmp;
-  int iType;
-  bool bAvoidClipping;
-};
-
 // base class for all settings types
 class CSetting
 {
@@ -495,8 +485,6 @@ public:
   void LoadXML(TiXmlElement *pRootElement, bool hideSettings = false);
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);
-
-  ReplayGainSettings m_replayGain;
 
   void Clear();
 

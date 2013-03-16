@@ -42,6 +42,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/paplayer/AudioDecoder.h"
 #include "filesystem/CurlFile.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
 #if defined(TARGET_DARWIN_OSX)
@@ -275,8 +276,6 @@ CGUISettings::CGUISettings(void)
 
 void CGUISettings::Initialize()
 {
-  ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
-
   // Pictures settings
   AddGroup(SETTINGS_PICTURES, 1);
   CSettingsCategory* pic = AddCategory(SETTINGS_PICTURES, "pictures", 14081);
@@ -1439,10 +1438,11 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
 
   // Move replaygain settings into our struct
-  m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");
-  m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
-  m_replayGain.iType = GetInt("musicplayer.replaygaintype");
-  m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
+  ReplayGainSettings &replayGainSettings = CAudioDecoder::GetReplayGainSettings();
+  replayGainSettings.iPreAmp = GetInt("musicplayer.replaygainpreamp");
+  replayGainSettings.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
+  replayGainSettings.iType = GetInt("musicplayer.replaygaintype");
+  replayGainSettings.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
   bool use_timezone = false;
 
