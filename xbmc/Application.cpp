@@ -3504,13 +3504,13 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
       {
         CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
         if(pPlayList->size())
-          return PlayFile(*(*pPlayList)[0], false);
+          return PlayFile(*(*pPlayList)[0], false) == PLAYBACK_OK;
       }
     }
   }
 
   //nothing special just play
-  return PlayFile(item, false);
+  return PlayFile(item, false) == PLAYBACK_OK;
 }
 
 // PlayStack()
@@ -3519,10 +3519,11 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 // of each video, so we open + close each one in turn.
 // A faster calculation of video time would improve this
 // substantially.
-bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
+// return value: same with PlayFile()
+PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 {
   if (!item.IsStack())
-    return false;
+    return PLAYBACK_FAIL;
 
   CVideoDatabase dbs;
 
@@ -3606,7 +3607,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
         if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
         {
           m_currentStack->Clear();
-          return false;
+          return PLAYBACK_FAIL;
         }
         totalTime += duration / 1000;
         (*m_currentStack)[i]->m_lEndOffset = totalTime;
@@ -3658,10 +3659,10 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
     return PlayFile(*(*m_currentStack)[0], true);
   }
-  return false;
+  return PLAYBACK_FAIL;
 }
 
-bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
+PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
   if (!bRestart)
   {
@@ -3693,24 +3694,24 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if (CGUIDialogPlayEject::ShowAndGetInput(item))
         // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
         // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
+        return MEDIA_DETECT::CAutorun::PlayDiscAskResume() ? PLAYBACK_OK : PLAYBACK_FAIL;
     }
     else
 #endif
       CGUIDialogOK::ShowAndGetInput(435, 0, 436, 0);
 
-    return true;
+    return PLAYBACK_OK;
   }
 
   if (item.IsPlayList())
-    return false;
+    return PLAYBACK_FAIL;
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
-    return false;
+    return PLAYBACK_FAIL;
   }
 
 #ifdef HAS_UPNP
@@ -3719,7 +3720,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CFileItem item_new(item);
     if (XFILE::CUPnPDirectory::GetResource(item.GetPath(), item_new))
       return PlayFile(item_new, false);
-    return false;
+    return PLAYBACK_FAIL;
   }
 #endif
 
@@ -3737,6 +3738,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if(g_tuxboxService.IsRunning())
       g_tuxboxService.Stop();
 
+    PlayBackRet ret = PLAYBACK_FAIL;
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
     {
@@ -3747,14 +3749,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
       // keep the tuxbox:// url as playing url
       // and give the new url to the player
-      if(PlayFile(item_new, true))
+      ret = PlayFile(item_new, true);
+      if(ret == PLAYBACK_OK)
       {
         if(!g_tuxboxService.IsRunning())
           g_tuxboxService.Start();
-        return true;
       }
     }
-    return false;
+    return ret;
   }
 
   CPlayerOptions options;
@@ -3928,7 +3930,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer.reset(CPlayerCoreFactory::Get().CreatePlayer(eNewCore, *this));
   }
 
-  bool bResult;
+  PlayBackRet iResult;
   if (m_pPlayer)
   {
     /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
@@ -3947,16 +3949,19 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // e.g. another PlayFile call switch player.
     // Here we use a holdPlace to keep the player not be deleted during OpenFile call
     boost::shared_ptr<IPlayer> holdPlace(m_pPlayer);
-    // if holdPlace is the unique reference, the player need be deleted, return false.
-    bResult = m_pPlayer->OpenFile(item, options) && !holdPlace.unique();
+
+    iResult = m_pPlayer->OpenFile(item, options) ? PLAYBACK_OK : PLAYBACK_FAIL;
+    // if holdPlace is the unique reference, the player was canceled.
+    if (holdPlace.unique())
+      iResult = PLAYBACK_CANCELED;
   }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath().c_str());
-    bResult = false;
+    iResult = PLAYBACK_FAIL;
   }
 
-  if(bResult)
+  if(iResult == PLAYBACK_OK)
   {
     if (m_iPlaySpeed != 1)
     {
@@ -4009,7 +4014,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   CSingleLock lock(m_playStateMutex);
   m_bPlaybackStarting = false;
 
-  if (bResult)
+  if (iResult == PLAYBACK_OK)
   {
     // play state: none, starting; playing; stopped; ended.
     // last 3 states are set by playback callback, they are all ignored during starting,
@@ -4039,7 +4044,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         break;
     }
   }
-  else
+  else if (iResult == PLAYBACK_FAIL)
   {
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
@@ -4050,7 +4055,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_ePlayState = PLAY_STATE_NONE;
   }
 
-  return bResult;
+  return iResult;
 }
 
 void CApplication::OnPlayBackEnded()
@@ -5143,7 +5148,7 @@ void CApplication::Restart(bool bSamePosition)
   m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
 
   // reopen the file
-  if ( PlayFile(*m_itemCurrentFile, true) && m_pPlayer )
+  if ( PlayFile(*m_itemCurrentFile, true) == PLAYBACK_OK && m_pPlayer )
     m_pPlayer->SetPlayerState(state);
 }
 

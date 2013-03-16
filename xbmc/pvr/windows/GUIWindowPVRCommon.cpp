@@ -524,27 +524,25 @@ bool CGUIWindowPVRCommon::ActionPlayChannel(CFileItem *item)
 
 bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
 {
-  bool bReturn = false;
-
   CEpgInfoTag *epgTag = item->GetEPGInfoTag();
   if (!epgTag)
-    return bReturn;
+    return false;
 
   CPVRChannelPtr channel = epgTag->ChannelTag();
   if (!channel || channel->ChannelNumber() > 0 ||
       !g_PVRManager.CheckParentalLock(*channel))
-    return bReturn;
+    return false;
 
-  bReturn = g_application.PlayFile(CFileItem(*channel));
+  PlayBackRet ret = g_application.PlayFile(CFileItem(*channel));
 
-  if (!bReturn)
+  if (ret == PLAYBACK_FAIL)
   {
     CStdString msg;
     msg.Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
     CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
   }
 
-  return bReturn;
+  return ret == PLAYBACK_OK;
 }
 
 bool CGUIWindowPVRCommon::ActionDeleteChannel(CFileItem *item)

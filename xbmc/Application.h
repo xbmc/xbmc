@@ -109,6 +109,13 @@ protected:
   int       m_iPlayList;
 };
 
+typedef enum
+{
+  PLAYBACK_CANCELED = -1,
+  PLAYBACK_FAIL = 0,
+  PLAYBACK_OK = 1,
+} PlayBackRet;
+
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
@@ -167,7 +174,7 @@ public:
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
-  bool PlayFile(const CFileItem& item, bool bRestart = false);
+  PlayBackRet PlayFile(const CFileItem& item, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
   void StopPlaying();
@@ -442,7 +449,7 @@ protected:
 
   void VolumeChanged() const;
 
-  bool PlayStack(const CFileItem& item, bool bRestart);
+  PlayBackRet PlayStack(const CFileItem& item, bool bRestart);
   bool ProcessMouse();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
