@@ -46,7 +46,7 @@
 #include "settings/ISettingsHandler.h"
 #include "settings/ISubSettings.h"
 #include "settings/VideoSettings.h"
-#include "Profile.h"
+#include "profiles/Profile.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
 #include "threads/CriticalSection.h"

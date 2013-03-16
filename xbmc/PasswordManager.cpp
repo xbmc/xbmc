@@ -19,7 +19,7 @@
  */
 
 #include "PasswordManager.h"
-#include "settings/dialogs/GUIDialogLockSettings.h"
+#include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "URL.h"
 #include "settings/Settings.h"
 #include "utils/XMLUtils.h"

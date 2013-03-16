@@ -1,7 +1,6 @@
-SRCS=GUIDialogContentSettings.cpp \
-     GUIDialogSettings.cpp \
+SRCS=GUIWindowSettingsProfile.cpp \
 
-LIB=settings_dialogs.a
+LIB=profiles_windows.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

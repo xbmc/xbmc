@@ -31,7 +31,7 @@
 #include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "GUIDialogMediaSource.h"
-#include "settings/dialogs/GUIDialogLockSettings.h"
+#include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "storage/MediaManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"

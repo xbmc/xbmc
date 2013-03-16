@@ -20,10 +20,10 @@
 
 #include "GUIWindowSettingsProfile.h"
 #include "windows/GUIWindowFileManager.h"
-#include "settings/Profile.h"
+#include "profiles/Profile.h"
 #include "Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "settings/dialogs/GUIDialogProfileSettings.h"
+#include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "network/Network.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"

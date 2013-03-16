@@ -3,7 +3,6 @@ SRCS=AdvancedSettings.cpp \
      GUISettings.cpp \
      MediaSettings.cpp \
      MediaSourceSettings.cpp \
-     Profile.cpp \
      Settings.cpp \
      SkinSettings.cpp \
      VideoSettings.cpp \
