@@ -1241,7 +1241,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
@@ -1273,10 +1273,10 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */
     SetCommonOptions(m_state);
     SetRequestHeaders(m_state);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_RANGE, "0-0");
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1); 
     result = g_curlInterface.easy_perform(m_state->m_easyHandle);
   }
 
