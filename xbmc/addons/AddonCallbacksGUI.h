@@ -190,6 +190,7 @@ class CGUIAddonRenderingControl : public IRenderingCallback
 friend class CAddonCallbacksGUI;
 public:
   CGUIAddonRenderingControl(CGUIRenderingControl *pControl);
+  virtual ~CGUIAddonRenderingControl() {}
   virtual bool Create(int x, int y, int w, int h, void *device);
   virtual void Render();
   virtual void Stop();
