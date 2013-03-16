@@ -1508,14 +1508,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
-        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenWidth,
-        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenHeight,
-        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).fRefreshRate,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().fRefreshRate,
         g_localizeStrings.Get(244), GetFPS());
     else
       strLabel.Format("%ix%i - %s (%02.2f fps)",
-        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenWidth,
-        CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iScreenHeight,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
         g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;

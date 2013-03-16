@@ -48,6 +48,7 @@
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
 #include "PartyModeManager.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
@@ -466,7 +467,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
-      g_guiSettings.SetResolution(res);
+      CDisplaySettings::Get().SetCurrentResolution(res, true);
       g_graphicsContext.SetVideoResolution(res);
       g_application.ReloadSkin();
     }

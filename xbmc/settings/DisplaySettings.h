@@ -36,12 +36,37 @@ public:
   virtual bool Save(TiXmlNode *settings) const;
   virtual void Clear();
 
+  /*!
+   \brief Returns the currently active resolution
+
+   This resolution might differ from the display resolution which is based on
+   the user's settings.
+
+   \sa SetCurrentResolution
+   \sa GetResolutionInfo
+   \sa GetDisplayResolution
+   */
+  RESOLUTION GetCurrentResolution() const { return m_currentResolution; }
+  void SetCurrentResolution(RESOLUTION resolution, bool save = false);
+  /*!
+   \brief Returns the best-matching resolution of the videoscreen.screenmode setting value
+
+   This resolution might differ from the current resolution which is based on
+   the properties of the operating system and the attached displays.
+
+   \sa GetCurrentResolution
+   */
+  RESOLUTION GetDisplayResolution() const;
+
   const RESOLUTION_INFO& GetResolutionInfo(size_t index) const;
   const RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution) const;
   RESOLUTION_INFO& GetResolutionInfo(size_t index);
   RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution);
   size_t ResolutionInfoSize() const { return m_resolutions.size(); }
   void AddResolutionInfo(const RESOLUTION_INFO &resolution);
+
+  const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
+  RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
 
   void ApplyCalibrations();
   void UpdateCalibrations();
@@ -52,7 +77,12 @@ protected:
   CDisplaySettings const& operator=(CDisplaySettings const&);
   virtual ~CDisplaySettings();
 
+  RESOLUTION GetResolutionFromString(const std::string &strResolution) const;
+
 private:
+  // holds the real gui resolution
+  RESOLUTION m_currentResolution;
+
   typedef std::vector<RESOLUTION_INFO> ResolutionInfos;
   ResolutionInfos m_resolutions;
   ResolutionInfos m_calibrations;

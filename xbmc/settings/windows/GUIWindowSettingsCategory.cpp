@@ -273,9 +273,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         // Cancel delayed setting - it's only used for res changing anyway
         m_delayedSetting.reset();
-        if (IsActive() && g_guiSettings.GetResolution() != g_graphicsContext.GetVideoResolution())
+        if (IsActive() && CDisplaySettings::Get().GetDisplayResolution() != g_graphicsContext.GetVideoResolution())
         {
-          g_guiSettings.SetResolution(g_graphicsContext.GetVideoResolution());
+          CDisplaySettings::Get().SetCurrentResolution(g_graphicsContext.GetVideoResolution(), true);
           CreateSettings();
         }
       }
@@ -408,9 +408,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
         FillInSubtitleHeights(pSetting, pControl);
       else if (strSetting.Equals("videoscreen.screen"))
-        FillInScreens(strSetting, g_guiSettings.GetResolution());
+        FillInScreens(strSetting, CDisplaySettings::Get().GetDisplayResolution());
       else if (strSetting.Equals("videoscreen.resolution"))
-        FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+        FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), CDisplaySettings::Get().GetDisplayResolution(), false);
       else if (strSetting.Equals("epg.defaultguideview"))
         FillInEpgGuideView(pSetting);
       else if (strSetting.Equals("pvrplayback.startlast"))
@@ -524,7 +524,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInRefreshRates(strSetting, g_guiSettings.GetResolution(), false);
+      FillInRefreshRates(strSetting, CDisplaySettings::Get().GetDisplayResolution(), false);
       continue;
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
@@ -1546,7 +1546,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
   { // reset display
-    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+    g_graphicsContext.SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution());
   }
   else if (strSetting.Equals("screensaver.preview"))
   {
@@ -2481,12 +2481,12 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
   RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
   bool cancelled = false;
 
-  g_guiSettings.SetResolution(nextRes);
+  CDisplaySettings::Get().SetCurrentResolution(nextRes, true);
   g_graphicsContext.SetVideoResolution(nextRes);
 
   if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
   {
-    g_guiSettings.SetResolution(lastRes);
+    CDisplaySettings::Get().SetCurrentResolution(lastRes, true);
     g_graphicsContext.SetVideoResolution(lastRes);
 
     DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);

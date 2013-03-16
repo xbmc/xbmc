@@ -733,8 +733,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     width = height * 16/9;
     if(!width || !height)
     {
-      width = CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iWidth;
-      height = CDisplaySettings::Get().GetResolutionInfo(g_guiSettings.m_LookAndFeelResolution).iHeight;
+      width = CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth;
+      height = CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight;
     }
   }
 

@@ -283,8 +283,8 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
     bool allowDesktopRes = g_guiSettings.GetInt("videoplayer.adjustrefreshrate") == ADJUST_REFRESHRATE_ALWAYS;
     if(m_bFullScreenVideo || (!allowDesktopRes && g_application.IsPlayingVideo()))
       SetVideoResolution(g_renderManager.GetResolution());
-    else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
-      SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+    else if(CDisplaySettings::Get().GetCurrentResolution() > RES_DESKTOP)
+      SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution());
     else
       SetVideoResolution(RES_DESKTOP);
   }
@@ -828,8 +828,8 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
   else
   {
-    if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
-      newRes = g_guiSettings.m_LookAndFeelResolution;
+    if (CDisplaySettings::Get().GetCurrentResolution() > RES_DESKTOP)
+      newRes = CDisplaySettings::Get().GetCurrentResolution();
     else
       newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
     uiRes = newRes;
@@ -846,7 +846,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
 
   SetVideoResolution(newRes);
-  g_guiSettings.SetResolution(uiRes);
+  CDisplaySettings::Get().SetCurrentResolution(uiRes, true);
 
   return m_bFullScreenRoot;
 }

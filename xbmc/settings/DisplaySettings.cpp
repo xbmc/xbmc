@@ -18,17 +18,28 @@
  *
  */
 
-#include "system.h"
+#include <float.h>
+#include <stdlib.h>
+
 #include "DisplaySettings.h"
+#include "guilib/gui3d.h"
+#include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
 using namespace std;
 
 static RESOLUTION_INFO EmptyResolution;
 static RESOLUTION_INFO EmptyModifiableResolution;
+
+float square_error(float x, float y)
+{
+  float yonx = (x > 0) ? y / x : 0;
+  float xony = (y > 0) ? x / y : 0;
+  return std::max(yonx, xony);
+}
 
 CDisplaySettings::CDisplaySettings()
 {
@@ -160,6 +171,41 @@ void CDisplaySettings::Clear()
   m_resolutions.clear();
 }
 
+void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* = false */)
+{
+  if (save)
+  {
+    string mode;
+    if (resolution == RES_DESKTOP)
+      mode = "DESKTOP";
+    else if (resolution == RES_WINDOW)
+      mode = "WINDOW";
+    else if (resolution >= RES_CUSTOM && resolution < (RESOLUTION)m_resolutions.size())
+    {
+      const RESOLUTION_INFO &info = m_resolutions[resolution];
+      mode = StringUtils::Format("%1i%05i%05i%09.5f%s", info.iScreen,
+                                 info.iScreenWidth, info.iScreenHeight, info.fRefreshRate,
+                                 (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "CDisplaySettings: setting invalid resolution %i", resolution);
+      mode = "DESKTOP";
+    }
+
+    g_guiSettings.SetString("videoscreen.screenmode", mode.c_str());
+  }
+
+  m_currentResolution = resolution;
+
+  g_guiSettings.SetChanged();
+}
+
+RESOLUTION CDisplaySettings::GetDisplayResolution() const
+{
+  return GetResolutionFromString(g_guiSettings.GetString("videoscreen.screenmode"));
+}
+
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
 {
   CSingleLock lock(m_critical);
@@ -282,4 +328,45 @@ void CDisplaySettings::UpdateCalibrations()
     if (!found)
       m_calibrations.push_back(m_resolutions[res]);
   }
+}
+
+RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResolution) const
+{
+  if (strResolution == "DESKTOP")
+    return RES_DESKTOP;
+  else if (strResolution == "WINDOW")
+    return RES_WINDOW;
+  else if (strResolution.size() == 21)
+  {
+    // format: SWWWWWHHHHHRRR.RRRRRP, where S = screen, W = width, H = height, R = refresh, P = interlace
+    int screen = strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
+    int width = strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
+    int height = strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
+    float refresh = (float)strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
+    // look for 'i' and treat everything else as progressive,
+    // and use 100/200 to get a nice square_error.
+    int interlaced = (StringUtils::Right(strResolution, 1) == "i") ? 100 : 200;
+
+    // find the closest match to these in our res vector.  If we have the screen, we score the res
+    RESOLUTION bestRes = RES_DESKTOP;
+    float bestScore = FLT_MAX;
+    for (ResolutionInfos::const_iterator resolution = m_resolutions.begin(); resolution != m_resolutions.end(); resolution++)
+    {
+      const RESOLUTION_INFO &info = *resolution;
+      if (info.iScreen != screen)
+        continue;
+      float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
+                    square_error((float)info.iScreenHeight, (float)height) +
+                    square_error(info.fRefreshRate, refresh) +
+                    square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100 : 200), (float)interlaced));
+      if (score < bestScore)
+      {
+        bestScore = score;
+        bestRes = (RESOLUTION)(resolution - m_resolutions.begin());
+      }
+    }
+    return bestRes;
+  }
+
+  return RES_DESKTOP;
 }
