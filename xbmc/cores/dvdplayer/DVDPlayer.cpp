@@ -421,6 +421,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
+  m_HasAudio = false;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
@@ -521,6 +522,7 @@ bool CDVDPlayer::CloseFile()
   m_EdlAutoSkipMarkers.Clear();
 
   m_HasVideo = false;
+  m_HasAudio = false;
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 #if defined(HAS_VIDEO_PLAYBACK)
@@ -2385,7 +2387,7 @@ bool CDVDPlayer::HasVideo() const
 
 bool CDVDPlayer::HasAudio() const
 {
-  return m_SelectionStreams.Count(STREAM_AUDIO) > 0 ? true : false;
+  return m_HasAudio;
 }
 
 bool CDVDPlayer::IsPassthrough() const
@@ -2831,6 +2833,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
   m_CurrentAudio.hint = hint;
   m_CurrentAudio.stream = (void*)pStream;
   m_CurrentAudio.started = false;
+  m_HasAudio = true;
 
   /* we are potentially going to be waiting on this */
   m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
