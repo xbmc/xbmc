@@ -123,7 +123,7 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   m_end += len;
 
   // drop history that was overwritten
-  if(m_end - m_beg > m_size)
+  if(m_end - m_beg > (int64_t)m_size)
     m_beg = m_end - m_size;
 
   m_written.Set();

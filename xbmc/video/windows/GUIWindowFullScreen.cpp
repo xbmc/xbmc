@@ -35,6 +35,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -56,6 +57,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/IPlayer.h"
 
 #include <stdio.h>
 #include <algorithm>

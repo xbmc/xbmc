@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 

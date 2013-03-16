@@ -26,7 +26,7 @@
  */
 
 #include "GUIWindow.h"
-#include "Key.h"
+#include "WindowIDs.h"
 
 /*!
  \ingroup winmsg

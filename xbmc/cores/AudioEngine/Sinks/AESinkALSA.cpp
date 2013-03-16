@@ -66,10 +66,10 @@ static unsigned int ALSASampleRateList[] =
 };
 
 CAESinkALSA::CAESinkALSA() :
-  m_pcm(NULL),
   m_bufferSize(0),
   m_formatSampleRateMul(0.0),
   m_passthrough(false),
+  m_pcm(NULL),
   m_timeout(0)
 {
   /* ensure that ALSA has been initialized */

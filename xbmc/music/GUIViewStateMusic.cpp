@@ -25,7 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"

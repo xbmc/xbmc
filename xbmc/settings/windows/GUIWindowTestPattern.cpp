@@ -24,6 +24,7 @@
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
     : CGUIWindow(WINDOW_TEST_PATTERN, "")

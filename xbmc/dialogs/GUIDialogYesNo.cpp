@@ -20,6 +20,7 @@
 
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 
 #define CONTROL_NO_BUTTON 10
 #define CONTROL_YES_BUTTON 11

@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "guilib/TextureManager.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUISpinControlEx.h"

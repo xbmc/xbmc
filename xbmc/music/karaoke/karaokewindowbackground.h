@@ -23,7 +23,7 @@
 
 // C++ Interface: karaokewindowbackground
 
-#include "cores/IPlayer.h"
+#include "cores/IPlayerCallback.h"
 
 class CGUIWindow;
 class CGUIImage;

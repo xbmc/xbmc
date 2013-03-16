@@ -24,6 +24,7 @@
 #include "Favourites.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/Key.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"

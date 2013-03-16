@@ -22,6 +22,7 @@
 
 #include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
+#include "IPlayerCallback.h"
 #include "utils/StdString.h"
 #include "guilib/Geometry.h"
 
@@ -34,21 +35,6 @@ namespace PVR
 {
   class CPVRChannel;
 }
-
-class IPlayerCallback
-{
-public:
-  virtual ~IPlayerCallback() {}
-  virtual void OnPlayBackEnded() = 0;
-  virtual void OnPlayBackStarted() = 0;
-  virtual void OnPlayBackPaused() {};
-  virtual void OnPlayBackResumed() {};
-  virtual void OnPlayBackStopped() = 0;
-  virtual void OnQueueNextItem() = 0;
-  virtual void OnPlayBackSeek(int iTime, int seekOffset) {};
-  virtual void OnPlayBackSeekChapter(int iChapter) {};
-  virtual void OnPlayBackSpeedChanged(int iSpeed) {};
-};
 
 class CPlayerOptions
 {

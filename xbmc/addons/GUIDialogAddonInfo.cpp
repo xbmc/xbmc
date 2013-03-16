@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"

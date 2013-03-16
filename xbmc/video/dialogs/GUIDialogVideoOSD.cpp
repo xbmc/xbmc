@@ -23,7 +23,9 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "input/MouseStat.h"
+#include "cores/IPlayer.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"

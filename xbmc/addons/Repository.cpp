@@ -263,7 +263,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
   CAddonDatabase database;
   database.Open();
   CStdString checksum;
-  int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
+  database.GetRepoChecksum(repo->ID(),checksum);
   CStdString reposum = repo->Checksum();
   VECADDONS addons;
   if (!checksum.Equals(reposum) || checksum.empty())

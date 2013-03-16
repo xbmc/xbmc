@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "Key.h"
 #include "TextureCache.h"
+#include "WindowIDs.h"
 
 using namespace std;
 using namespace XFILE;

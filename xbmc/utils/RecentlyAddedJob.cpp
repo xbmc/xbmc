@@ -25,7 +25,7 @@
 #include "RecentlyAddedJob.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"

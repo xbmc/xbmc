@@ -22,7 +22,7 @@
  */
 
 #include "XBPyThread.h"
-#include "cores/IPlayer.h"
+#include "cores/IPlayerCallback.h"
 #include "threads/CriticalSection.h"
 #include "interfaces/IAnnouncer.h"
 #include "addons/IAddon.h"
@@ -50,7 +50,7 @@ namespace XBMCAddon
 template <class T> struct LockableType : public T, public CCriticalSection 
 { bool hadSomethingRemoved; };
 
-typedef LockableType<std::vector<PVOID> > PlayerCallbackList;
+typedef LockableType<std::vector<void*> > PlayerCallbackList;
 typedef LockableType<std::vector<XBMCAddon::xbmc::Monitor*> > MonitorCallbackList;
 typedef LockableType<std::vector<PyElem> > PyList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;

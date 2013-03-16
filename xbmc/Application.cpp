@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"
+#include "cores/IPlayer.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

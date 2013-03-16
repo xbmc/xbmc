@@ -44,6 +44,7 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
 

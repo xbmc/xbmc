@@ -23,6 +23,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"

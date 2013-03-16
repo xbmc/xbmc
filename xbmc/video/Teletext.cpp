@@ -32,6 +32,7 @@
 #include "utils/TimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
+#include "cores/IPlayer.h"
 
 #ifdef HAS_SDL
 #include <SDL/SDL_stdinc.h>

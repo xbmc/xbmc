@@ -22,6 +22,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
+#include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "PictureInfoTag.h"
 

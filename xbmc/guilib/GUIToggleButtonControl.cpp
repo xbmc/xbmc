@@ -23,6 +23,7 @@
 #include "GUIDialog.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
+#include "Key.h"
 
 using namespace std;
 

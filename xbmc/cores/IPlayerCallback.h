@@ -18,26 +18,19 @@
  *
  */
 
-#include "GUIDialogFullScreenInfo.h"
-#include "guilib/Key.h"
+#pragma once
 
-CGUIDialogFullScreenInfo::CGUIDialogFullScreenInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_FULLSCREEN_INFO, "DialogFullScreenInfo.xml")
+class IPlayerCallback
 {
-  m_loadType = KEEP_IN_MEMORY;
-}
-
-CGUIDialogFullScreenInfo::~CGUIDialogFullScreenInfo(void)
-{
-}
-
-bool CGUIDialogFullScreenInfo::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_SHOW_INFO)
-  {
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
-}
-
+public:
+  virtual ~IPlayerCallback() {}
+  virtual void OnPlayBackEnded() = 0;
+  virtual void OnPlayBackStarted() = 0;
+  virtual void OnPlayBackPaused() {};
+  virtual void OnPlayBackResumed() {};
+  virtual void OnPlayBackStopped() = 0;
+  virtual void OnQueueNextItem() = 0;
+  virtual void OnPlayBackSeek(int iTime, int seekOffset) {};
+  virtual void OnPlayBackSeekChapter(int iChapter) {};
+  virtual void OnPlayBackSpeedChanged(int iSpeed) {};
+};

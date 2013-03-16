@@ -22,12 +22,10 @@
 
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
-#include "guilib/Key.h"
+#include "guilib/WindowIDs.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 #include <boost/shared_ptr.hpp>
-
-#include "PlatformDefs.h"
 
 #include <queue>
 #include "utils/GlobalsHandling.h"
@@ -38,6 +36,7 @@ class CGUIDialog;
 class CGUIWindow;
 class CGUIMessage;
 class CVideoInfoTag;
+class CAction;
 
 namespace MUSIC_INFO
 {
@@ -115,13 +114,13 @@ namespace MUSIC_INFO
 
 typedef struct
 {
-  DWORD dwMessage;
-  DWORD dwParam1;
-  DWORD dwParam2;
+  unsigned int dwMessage;
+  unsigned int dwParam1;
+  unsigned int dwParam2;
   CStdString strParam;
   std::vector<CStdString> params;
   boost::shared_ptr<CEvent> waitEvent;
-  LPVOID lpVoid;
+  void* lpVoid;
 }
 ThreadMessage;
 
@@ -220,7 +219,7 @@ public:
   int SetResponse(CStdString response);
   void ExecBuiltIn(const CStdString &command, bool wait = false);
 
-  void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
+  void NetworkMessage(unsigned int dwMessage, unsigned int dwParam = 0);
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
