@@ -37,6 +37,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "cdrip/CDDARipper.h"
+#include "cores/IPlayer.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3

@@ -44,7 +44,7 @@ namespace MEDIA_DETECT
   class CAutorun;
 }
 
-#include "cores/IPlayer.h"
+#include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
@@ -68,6 +68,7 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class CWebServer;
+class IPlayer;
 #ifdef HAS_WEB_SERVER
 class CWebServer;
 class CHTTPImageHandler;

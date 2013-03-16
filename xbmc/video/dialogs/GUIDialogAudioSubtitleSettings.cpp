@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 using namespace XFILE;

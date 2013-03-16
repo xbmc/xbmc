@@ -56,6 +56,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/IPlayer.h"
 
 #include <stdio.h>
 #include <algorithm>

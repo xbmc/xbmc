@@ -40,6 +40,7 @@
 #include "guilib/GUIDialog.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
+#include "cores/IPlayer.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"

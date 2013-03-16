@@ -37,6 +37,7 @@
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
+#include "cores/IPlayer.h"
 
 #ifdef TARGET_WINDOWS
 #define close closesocket

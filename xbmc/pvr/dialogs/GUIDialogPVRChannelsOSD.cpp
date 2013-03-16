@@ -30,6 +30,7 @@
 #include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
+#include "cores/IPlayer.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"

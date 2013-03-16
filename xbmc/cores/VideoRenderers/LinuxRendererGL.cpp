@@ -45,6 +45,7 @@
 #include "utils/GLUtils.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
+#include "cores/IPlayer.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"

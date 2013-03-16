@@ -41,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "Util.h"
+#include "cores/IPlayer.h"
 
 using namespace std;
 

@@ -30,6 +30,7 @@
 #include "AddonUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
+#include "cores/IPlayer.h"
 
 namespace XBMCAddon
 {

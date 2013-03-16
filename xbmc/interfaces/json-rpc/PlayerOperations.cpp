@@ -41,6 +41,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "cores/IPlayer.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
