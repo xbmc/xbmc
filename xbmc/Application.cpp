@@ -398,6 +398,7 @@ CApplication::CApplication(void)
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
+  m_iPlayerOPSeq = 0;
   m_bPlaybackStarting = false;
   m_ePlayState = PLAY_STATE_NONE;
   m_skinReloading = false;
@@ -3375,6 +3376,7 @@ void CApplication::Stop(int exitCode)
     if (m_pPlayer)
     {
       CLog::Log(LOGNOTICE, "stop player");
+      ++m_iPlayerOPSeq;
       m_pPlayer->CloseFile();
       m_pPlayer.reset();
     }
@@ -3906,6 +3908,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif            
             )) )
     {
+      ++m_iPlayerOPSeq;
       m_pPlayer->CloseFile();
       m_pPlayer.reset();
     }
@@ -3916,6 +3919,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // but if we do not stop it, we can not distingush callbacks from previous
       // item and current item, it will confused us then we can not make correct delay
       // callback after the starting state.
+      ++m_iPlayerOPSeq;
       m_pPlayer->CloseFile();
     }
   }
@@ -3949,10 +3953,12 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // e.g. another PlayFile call switch player.
     // Here we use a holdPlace to keep the player not be deleted during OpenFile call
     boost::shared_ptr<IPlayer> holdPlace(m_pPlayer);
+    // op seq for detect cancel (CloseFile be called or OpenFile be called again) during OpenFile.
+    unsigned int startingSeq = ++m_iPlayerOPSeq;
 
     iResult = m_pPlayer->OpenFile(item, options) ? PLAYBACK_OK : PLAYBACK_FAIL;
-    // if holdPlace is the unique reference, the player was canceled.
-    if (holdPlace.unique())
+    // check whether the OpenFile was canceled by either CloseFile or another OpenFile.
+    if (m_iPlayerOPSeq != startingSeq)
       iResult = PLAYBACK_CANCELED;
   }
   else
@@ -4358,7 +4364,10 @@ void CApplication::StopPlaying()
       g_PVRManager.SaveCurrentChannelSettings();
 
     if (m_pPlayer)
+    {
+      ++m_iPlayerOPSeq;
       m_pPlayer->CloseFile();
+    }
 
     // turn off visualisation window when stopping
     if ((iWin == WINDOW_VISUALISATION
@@ -4827,6 +4836,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
         if (m_pPlayer)
         {
+          ++m_iPlayerOPSeq;
           m_pPlayer->CloseFile();
           m_pPlayer.reset();
         }

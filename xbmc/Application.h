@@ -278,6 +278,7 @@ public:
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
+  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
   bool m_bPlaybackStarting;
   typedef enum
   {
