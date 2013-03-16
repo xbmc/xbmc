@@ -68,13 +68,8 @@ void CGUITextureD3D::Begin(color_t color)
                         , GET_A(color));
     p3DDevice->SetTextureStageState( unit, D3DTSS_COLOROP  , D3DTOP_ADD );
     p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG1, D3DTA_CURRENT) ;
-#if(1)
     p3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, D3DCOLOR_RGBA(16,16,16, 0) );
     p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-#else
-    p3DDevice->SetTextureStageState( unit, D3DTSS_CONSTANT , D3DCOLOR_RGBA(16,16,16, 0) );
-    p3DDevice->SetTextureStageState( unit, D3DTSS_COLORARG2, D3DTA_CONSTANT );
-#endif
     unit++;
   }
   else
