@@ -339,7 +339,7 @@
 			<control type="label" id="11">
 				<description>row 2 label</description>
 				<posx>50</posx>
-				<posy>40</posy>
+				<posy>55</posy>
 				<width>1180</width>
 				<height>30</height>
 				<align>left</align>
@@ -350,7 +350,7 @@
 			<control type="label" id="12">
 				<description>row 3 label</description>
 				<posx>50</posx>
-				<posy>85</posy>
+				<posy>100</posy>
 				<width>1180</width>
 				<height>30</height>
 				<align>left</align>
