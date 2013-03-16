@@ -468,7 +468,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_SETLANGUAGE:
-      g_guiSettings.SetLanguage(pMsg->strParam);
+      g_application.SetLanguage(pMsg->strParam);
       break;
     case TMSG_MEDIA_STOP:
       {

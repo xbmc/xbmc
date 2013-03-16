@@ -496,8 +496,6 @@ public:
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);
 
-  bool SetLanguage(const CStdString &strLanguage);
-
   ReplayGainSettings m_replayGain;
 
   void Clear();

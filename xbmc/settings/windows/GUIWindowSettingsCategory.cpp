@@ -1485,7 +1485,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strLanguage = pControl->GetCurrentLabel();
     if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
-      g_guiSettings.SetLanguage(strLanguage);
+      g_application.SetLanguage(strLanguage);
 
     // user set language, no longer use the TV's language
     vector<CPeripheral *> cecDevices;
