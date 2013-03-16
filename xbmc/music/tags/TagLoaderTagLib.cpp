@@ -284,6 +284,9 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
   }
+  // artist may be specified in the ContentDescription block rather than using the 'Author' attribute.
+  if (tag.GetArtist().empty())
+    tag.SetArtist(asf->artist().toCString(true));
   tag.SetLoaded(true);
   return true;
 }
