@@ -395,7 +395,6 @@ namespace XBMCAddon
       {
         SPlayerSubtitleStreamInfo info;
         g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
-        int i = g_application.m_pPlayer->GetSubtitle();
         CStdString strName = info.name;
 
         if (strName == "Unknown(Invalid)")
