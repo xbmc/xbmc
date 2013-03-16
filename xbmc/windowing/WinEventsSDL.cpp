@@ -27,7 +27,7 @@
 #include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_SDL_JOYSTICK
-#include "input/SDLJoystick.h"
+#include "input/JoystickManager.h"
 #endif
 #include "input/MouseStat.h"
 #include "WindowingFactory.h"
@@ -225,17 +225,6 @@ bool CWinEventsSDL::MessagePump()
         if (!g_application.m_bStop) 
           CApplicationMessenger::Get().Quit();
         break;
-
-#ifdef HAS_SDL_JOYSTICK
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
-      case SDL_JOYAXISMOTION:
-      case SDL_JOYBALLMOTION:
-      case SDL_JOYHATMOTION:
-        g_Joystick.Update(event);
-        ret = true;
-        break;
-#endif
 
       case SDL_ACTIVEEVENT:
         //If the window was inconified or restored

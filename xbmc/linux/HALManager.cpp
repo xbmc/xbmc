@@ -33,7 +33,7 @@
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>
 #include <SDL/SDL_version.h>
-#include "input/SDLJoystick.h"
+#include "input/JoystickManager.h"
 #endif
 
 bool CHALManager::NewMessage;
@@ -512,8 +512,7 @@ void CHALManager::AddDevice(const char *udi)
         if(m_Joysticks.size() < 2 || m_bMultipleJoysticksSupport)
         {
           // Restart SDL joystick subsystem
-          if (!g_Joystick.Reinitialize())
-            break;
+          CJoystickManager::Get().Reinitialize();
 
           if (m_Notifications)
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13024), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
@@ -567,8 +566,7 @@ bool CHALManager::RemoveDevice(const char *udi)
       if(m_Joysticks.size() < 3 || m_bMultipleJoysticksSupport)
       {
         // Restart SDL joystick subsystem
-        if (!g_Joystick.Reinitialize())
-          return false;
+        CJoystickManager::Get().Reinitialize();
 
         if (m_Notifications)
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);

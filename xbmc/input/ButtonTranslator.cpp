@@ -34,10 +34,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "SDLJoystick.h"
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "JoystickManager.h"
 #endif
 
 using namespace std;
