@@ -221,14 +221,14 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   if(fmt->mChannelsPerFrame > dims[1])
   {
     CLog::Log(LOGERROR, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't fit mixer size %u > %u"
-              , fmt->mChannelsPerFrame, dims[0]);
+              , fmt->mChannelsPerFrame, dims[1]);
     return false;
   }
 
   if(fmt->mChannelsPerFrame < dims[1])
   {
     CLog::Log(LOGWARNING, "CCoreAudioMixMap::SetMixingMatrix - ouput format doesn't specify all outputs %u < %u"
-              , fmt->mChannelsPerFrame, dims[0]);
+              , fmt->mChannelsPerFrame, dims[1]);
   }
 
   // Configure the mixing matrix
