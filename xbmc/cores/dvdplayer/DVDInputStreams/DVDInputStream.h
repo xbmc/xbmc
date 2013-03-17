@@ -122,6 +122,14 @@ public:
     virtual double GetTimeStampCorrection() = 0;
   };
 
+  class ISeekable
+  {
+    public:
+    virtual ~ISeekable() {};
+    virtual bool CanSeek()  = 0;
+    virtual bool CanPause() = 0;
+  };
+
   enum ENextStream
   {
     NEXTSTREAM_NONE,
