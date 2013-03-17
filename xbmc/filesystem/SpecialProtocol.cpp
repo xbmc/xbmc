@@ -21,6 +21,7 @@
 #include "SpecialProtocol.h"
 #include "URL.h"
 #include "Util.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -129,11 +130,11 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   if (RootDir.Equals("subtitles"))
     URIUtils::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), FileName, translatedPath);
   else if (RootDir.Equals("userdata"))
-    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), FileName, translatedPath);
+    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName, translatedPath);
   else if (RootDir.Equals("database"))
-    URIUtils::AddFileToFolder(g_settings.GetDatabaseFolder(), FileName, translatedPath);
+    URIUtils::AddFileToFolder(CProfilesManager::Get().GetDatabaseFolder(), FileName, translatedPath);
   else if (RootDir.Equals("thumbnails"))
-    URIUtils::AddFileToFolder(g_settings.GetThumbnailsFolder(), FileName, translatedPath);
+    URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), FileName, translatedPath);
   else if (RootDir.Equals("recordings") || RootDir.Equals("cdrips"))
     URIUtils::AddFileToFolder(g_guiSettings.GetString("audiocds.recordingpath", false), FileName, translatedPath);
   else if (RootDir.Equals("screenshots"))

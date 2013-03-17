@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "GUIInfoManager.h"
+#include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
@@ -458,7 +459,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_SET_THUMB)
   {
-    if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    if (CProfilesManager::Get().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return bReturn;
     else if (!g_passwordManager.IsMasterLockUnlocked(true))
       return bReturn;

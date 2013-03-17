@@ -31,6 +31,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
@@ -71,7 +72,7 @@ void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool 
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 #ifdef HAS_CDDA_RIPPER
   if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP && 
-      pInfo->IsAudio(1) && !g_settings.GetCurrentProfile().musicLocked())
+      pInfo->IsAudio(1) && !CProfilesManager::Get().GetCurrentProfile().musicLocked())
   {
     CCDDARipper::GetInstance().RipCD();
   }
@@ -144,9 +145,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   bool bAllowMusic = true;
   if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
-    bAllowVideo = !g_settings.GetCurrentProfile().videoLocked();
-//    bAllowPictures = !g_settings.GetCurrentProfile().picturesLocked();
-    bAllowMusic = !g_settings.GetCurrentProfile().musicLocked();
+    bAllowVideo = !CProfilesManager::Get().GetCurrentProfile().videoLocked();
+//    bAllowPictures = !CProfilesManager::Get().GetCurrentProfile().picturesLocked();
+    bAllowMusic = !CProfilesManager::Get().GetCurrentProfile().musicLocked();
   }
 
   // is this a root folder we have to check the content to determine a disc type

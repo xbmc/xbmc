@@ -90,6 +90,7 @@
 #include "filesystem/RarManager.h"
 #endif
 #include "playlists/PlayList.h"
+#include "profiles/ProfilesManager.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/DPMSSupport.h"
@@ -644,7 +645,7 @@ bool CApplication::Create()
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  g_settings.LoadProfiles(PROFILES_FILE);
+  CProfilesManager::Get().Load();
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(TARGET_DARWIN_OSX)
@@ -717,6 +718,7 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSettingsHandler(this);
+  g_settings.RegisterSettingsHandler(&CProfilesManager::Get());
   g_settings.RegisterSettingsHandler(&g_advancedSettings);
   g_settings.RegisterSettingsHandler(&CMediaSourceSettings::Get());
   g_settings.RegisterSettingsHandler(&CPlayerCoreFactory::Get());
@@ -739,12 +741,12 @@ bool CApplication::Create()
   }
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", CProfilesManager::Get().GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder: %s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "screenshots folder: %s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
-  CDirectory::Create(g_settings.GetUserDataFolder());
-  CDirectory::Create(g_settings.GetProfileUserDataFolder());
-  g_settings.CreateProfileFolders();
+  CDirectory::Create(CProfilesManager::Get().GetUserDataFolder());
+  CDirectory::Create(CProfilesManager::Get().GetProfileUserDataFolder());
+  CProfilesManager::Get().CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
 
@@ -1386,14 +1388,14 @@ bool CApplication::Initialize()
       SAFE_DELETE(m_splash);
 
     if (g_guiSettings.GetBool("masterlock.startuplock") &&
-        g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !g_settings.GetMasterProfile().getLockCode().IsEmpty())
+        CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+       !CProfilesManager::Get().GetMasterProfile().getLockCode().IsEmpty())
     {
        g_passwordManager.CheckStartUpLock();
     }
 
     // check if we should use the login screen
-    if (g_settings.UsingLoginScreen())
+    if (CProfilesManager::Get().UsingLoginScreen())
       g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     else
     {
@@ -1427,7 +1429,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (!g_settings.UsingLoginScreen())
+  if (!CProfilesManager::Get().UsingLoginScreen())
   {
     UpdateLibraries();
 #ifdef HAS_PYTHON
@@ -3533,6 +3535,7 @@ bool CApplication::Cleanup()
 #ifdef HAS_UPNP
     g_settings.UnregisterSettingsHandler(&CUPnPSettings::Get());
 #endif
+    g_settings.UnregisterSettingsHandler(&CProfilesManager::Get());
     g_settings.UnregisterSettingsHandler(this);
 
 #ifdef _LINUX
@@ -3584,7 +3587,7 @@ void CApplication::Stop(int exitCode)
     g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 
     // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(g_settings.GetSettingsFile()))
+    if (CFile::Exists(CProfilesManager::Get().GetSettingsFile()))
     {
       CLog::Log(LOGNOTICE, "Saving settings");
       g_settings.Save();
@@ -4420,7 +4423,7 @@ bool CApplication::IsFullScreen()
 
 void CApplication::SaveFileState(bool bForeground /* = false */)
 {
-  if (m_progressTrackingItem->IsPVRChannel() || !g_settings.GetCurrentProfile().canWriteDatabases())
+  if (m_progressTrackingItem->IsPVRChannel() || !CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
     return;
 
   if (bForeground)
@@ -4625,9 +4628,9 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
   if (m_bScreenSave && m_screenSaver)
   {
     if (m_iScreenSaveLock == 0)
-      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
-          g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          (CProfilesManager::Get().UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
+          CProfilesManager::Get().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" && m_screenSaver->ID() != "screensaver.xbmc.builtin.black" && !m_screenSaver->ID().empty() && m_screenSaver->ID() != "visualization")
       {
         m_iScreenSaveLock = 2;

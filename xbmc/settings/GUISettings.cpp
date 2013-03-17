@@ -33,6 +33,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "settings/DisplaySettings.h"
+#include "settings/VideoSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"

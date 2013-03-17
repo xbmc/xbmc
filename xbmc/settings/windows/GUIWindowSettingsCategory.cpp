@@ -33,6 +33,7 @@
 #include "guilib/GUIImage.h"
 #include "utils/Weather.h"
 #include "music/MusicDatabase.h"
+#include "profiles/ProfilesManager.h"
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
 #include "view/ViewState.h"
@@ -334,7 +335,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_labelID == 12360 && !g_settings.IsMasterUser())
+    if (m_vecSections[i]->m_labelID == 12360 && !CProfilesManager::Get().IsMasterProfile())
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
@@ -703,17 +704,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("filelists.allowfiledeletion"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_settings.GetCurrentProfile().filesLocked() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(!CProfilesManager::Get().GetCurrentProfile().filesLocked() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(CProfilesManager::Get().GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
+      if (pControl) pControl->SetEnabled(CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
     else if (strSetting.Equals("pvrmanager.channelscan"))
     {
@@ -1144,7 +1145,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
-      CStdString path(g_settings.GetDatabaseFolder());
+      CStdString path(CProfilesManager::Get().GetDatabaseFolder());
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -1194,7 +1195,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("karaoke.importcsv"))
   {
-    CStdString path(g_settings.GetDatabaseFolder());
+    CStdString path(CProfilesManager::Get().GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))

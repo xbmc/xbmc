@@ -31,6 +31,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "addons/Skin.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -352,8 +353,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.GetCurrentProfile().settingsLocked() &&
-        g_settings.GetMasterProfile().getLockMode() != ::LOCK_MODE_EVERYONE)
+    if (CProfilesManager::Get().GetCurrentProfile().settingsLocked() &&
+        CProfilesManager::Get().GetMasterProfile().getLockMode() != ::LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

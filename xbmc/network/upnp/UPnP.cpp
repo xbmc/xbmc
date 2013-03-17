@@ -33,6 +33,7 @@
 #include "utils/log.h"
 #include "Platinum.h"
 #include "URL.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
@@ -424,7 +425,7 @@ CUPnP::StartServer()
 
     // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
     CStdString filename;
-    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
     CUPnPSettings::Get().Load(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
@@ -504,7 +505,7 @@ void CUPnP::StartRenderer()
     if (!m_RendererHolder->m_Device.IsNull()) return;
 
     CStdString filename;
-    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
     CUPnPSettings::Get().Load(filename);
 
     m_RendererHolder->m_Device = CreateRenderer(CUPnPSettings::Get().GetRendererPort());

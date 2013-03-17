@@ -29,6 +29,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
+#include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -346,7 +347,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+         (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
       }
@@ -369,7 +370,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
              !item->GetPath().Equals("add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
              !item->GetPath().Left(9).Equals("addons://")              &&
-            (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+            (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
     }

@@ -23,6 +23,7 @@
 #include "ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"
 #include "profiles/Profile.h"
+#include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "profiles/windows/GUIWindowSettingsProfile.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -160,14 +161,14 @@ void CGUIWindowLoginScreen::FrameMove()
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;
-  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1,g_settings.GetNumProfiles());
+  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  m_iSelectedItem = (int)g_settings.GetLastUsedProfileIndex();
+  m_iSelectedItem = (int)CProfilesManager::Get().GetLastUsedProfileIndex();
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
@@ -195,9 +196,9 @@ void CGUIWindowLoginScreen::OnWindowUnload()
 void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
-  for (unsigned int i=0;i<g_settings.GetNumProfiles(); ++i)
+  for (unsigned int i=0;i<CProfilesManager::Get().GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = g_settings.GetProfile(i);
+    const CProfile *profile = CProfilesManager::Get().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     CStdString strLabel;
     if (profile->getDate().IsEmpty())
@@ -233,7 +234,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 3)
   {
-    if (g_passwordManager.CheckLock(g_settings.GetMasterProfile().getLockMode(),g_settings.GetMasterProfile().getLockCode(),20075))
+    if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
     else // be inconvenient
       CApplicationMessenger::Get().Shutdown();
@@ -250,12 +251,12 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   {
     int iDelete = m_viewControl.GetSelectedItem();
     m_viewControl.Clear();
-    g_settings.DeleteProfile(iDelete);
+    CProfilesManager::Get().DeleteProfile(iDelete);
     Update();
     m_viewControl.SetSelectedItem(0);
   }
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < (int)g_settings.GetNumProfiles())
+  if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
   return (choice > 0);
@@ -279,10 +280,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   g_application.StopPVRManager();
 
-  if (profile != 0 || !g_settings.IsMasterUser())
+  if (profile != 0 || !CProfilesManager::Get().IsMasterProfile())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_settings.LoadProfile(profile);
+    CProfilesManager::Get().LoadProfile(profile);
   }
   else
   {
@@ -292,10 +293,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
   g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
 
-  g_settings.UpdateCurrentProfileDate();
-  g_settings.SaveProfiles(PROFILES_FILE);
+  CProfilesManager::Get().UpdateCurrentProfileDate();
+  CProfilesManager::Get().Save();
 
-  if (g_settings.GetLastUsedProfileIndex() != profile)
+  if (CProfilesManager::Get().GetLastUsedProfileIndex() != profile)
   {
     g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);

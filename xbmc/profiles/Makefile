@@ -1,4 +1,5 @@
 SRCS=Profile.cpp \
+     ProfilesManager.cpp \
 
 LIB=profiles.a
 

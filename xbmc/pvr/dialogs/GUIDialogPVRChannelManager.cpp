@@ -34,6 +34,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClients.h"
@@ -300,7 +301,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   if (!pItem)
     return false;
-  if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+  if (CProfilesManager::Get().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
     return false;
   else if (!g_passwordManager.IsMasterLockUnlocked(true))
     return false;

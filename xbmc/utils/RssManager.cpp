@@ -20,6 +20,7 @@
 
 #include "RssManager.h"
 #include "filesystem/File.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -75,7 +76,7 @@ void CRssManager::Stop()
 bool CRssManager::Load()
 {
   CSingleLock lock(m_critical);
-  string rssXML = g_settings.GetUserDataItem("RssFeeds.xml");
+  string rssXML = CProfilesManager::Get().GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
 

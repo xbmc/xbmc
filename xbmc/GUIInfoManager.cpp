@@ -39,6 +39,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "playlists/PlayList.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/TuxBoxUtil.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
@@ -1672,10 +1673,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = g_settings.GetCurrentProfile().getName();
+    strLabel = CProfilesManager::Get().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel.Format("%i", g_settings.GetNumProfiles());
+    strLabel.Format("%i", CProfilesManager::Get().GetNumberOfProfiles());
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
@@ -2097,11 +2098,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
   else if (condition == SYSTEM_HASLOCKS)
-    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
     bReturn = g_Windowing.IsFullScreen();
   else if (condition == SYSTEM_ISSTANDALONE)
@@ -2115,7 +2116,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
     bReturn = g_advancedSettings.m_showExitButton;
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = g_settings.UsingLoginScreen();
+    bReturn = CProfilesManager::Get().UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
@@ -3060,7 +3061,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    CStdString thumb = g_settings.GetCurrentProfile().getThumb();
+    CStdString thumb = CProfilesManager::Get().GetCurrentProfile().getThumb();
     if (thumb.IsEmpty())
       thumb = "unknown-user.png";
     return thumb;

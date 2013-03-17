@@ -43,6 +43,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
@@ -2408,12 +2409,12 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   {
     CStdString strFile;
     strFile.Format("%x.cddb", pCdInfo->GetCddbDiscId());
-    CFile::Delete(URIUtils::AddFileToFolder(g_settings.GetCDDBFolder(), strFile));
+    CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
   }
 
   // Prepare cddb
   Xcddb cddb;
-  cddb.setCacheDir(g_settings.GetCDDBFolder());
+  cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
 
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
@@ -2500,7 +2501,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 {
 #ifdef HAS_DVD_DRIVE
   CFileItemList items;
-  if (!CDirectory::GetDirectory(g_settings.GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
+  if (!CDirectory::GetDirectory(CProfilesManager::Get().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
     CGUIDialogOK::ShowAndGetInput(313, 426, 0, 0);
     return ;
@@ -2522,7 +2523,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       strFile.Delete(strFile.size() - 5, 5);
       ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
       Xcddb cddb;
-      cddb.setCacheDir(g_settings.GetCDDBFolder());
+      cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
 
       if (!cddb.queryCache(lDiscId))
         continue;
@@ -2560,7 +2561,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       {
         CStdString strFile;
         strFile.Format("%x.cddb", it->first);
-        CFile::Delete(URIUtils::AddFileToFolder(g_settings.GetCDDBFolder(), strFile));
+        CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
         break;
       }
     }

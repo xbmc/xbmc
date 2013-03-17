@@ -19,6 +19,7 @@
  */
 
 #include "PasswordManager.h"
+#include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "URL.h"
 #include "settings/Settings.h"
@@ -117,7 +118,7 @@ void CPasswordManager::Clear()
 void CPasswordManager::Load()
 {
   Clear();
-  CStdString passwordsFile = g_settings.GetUserDataItem("passwords.xml");
+  CStdString passwordsFile = CProfilesManager::Get().GetUserDataItem("passwords.xml");
   if (XFILE::CFile::Exists(passwordsFile))
   {
     CXBMCTinyXML doc;
@@ -166,7 +167,7 @@ void CPasswordManager::Save() const
     XMLUtils::SetPath(path, "to", i->second);
   }
 
-  doc.SaveFile(g_settings.GetUserDataItem("passwords.xml"));
+  doc.SaveFile(CProfilesManager::Get().GetUserDataItem("passwords.xml"));
 }
 
 CStdString CPasswordManager::GetLookupPath(const CURL &url) const

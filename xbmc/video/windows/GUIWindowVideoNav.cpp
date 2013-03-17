@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -871,7 +872,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (g_application.IsVideoScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
-        (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+        (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       CVideoDatabase database;
       database.Open();
@@ -939,7 +940,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
       // can we update the database?
-      if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {

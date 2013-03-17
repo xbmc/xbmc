@@ -21,6 +21,7 @@
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
 #include "filesystem/File.h"
+#include "profiles/ProfilesManager.h"
 #include "threads/SingleLock.h"
 #include "utils/Crc32.h"
 #include "settings/Settings.h"
@@ -65,7 +66,7 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
     return true;
   if (URIUtils::IsInPath(url, "special://skin/") ||
       URIUtils::IsInPath(url, "androidapp://")   ||
-      URIUtils::IsInPath(url, g_settings.GetThumbnailsFolder()))
+      URIUtils::IsInPath(url, CProfilesManager::Get().GetThumbnailsFolder()))
     return true;
   return false;
 }
@@ -270,7 +271,7 @@ CStdString CTextureCache::GetCacheFile(const CStdString &url)
 
 CStdString CTextureCache::GetCachedPath(const CStdString &file)
 {
-  return URIUtils::AddFileToFolder(g_settings.GetThumbnailsFolder(), file);
+  return URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), file);
 }
 
 void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
