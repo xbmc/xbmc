@@ -102,7 +102,6 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
     return 0;
   }
 
-  unsigned int consumed = 0;
   if (m_skipBytes)
   {
     unsigned int canSkip = std::min(size, m_skipBytes);
@@ -125,6 +124,7 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
   }
   else
   {
+    unsigned int consumed = 0;
     unsigned int offset = 0;
     unsigned int room = sizeof(m_buffer) - m_bufferSize;
     while(1)

@@ -45,7 +45,8 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_encoded           (false  ),
   m_initVolume        (1.0f   ),
   m_NumLatencyFrames  (0      ),
-  m_OutputBufferIndex (0      )
+  m_OutputBufferIndex (0      ),
+  m_ae                (NULL   )
 {
   m_AudioDevice   = new CCoreAudioDevice();
   m_OutputStream  = new CCoreAudioStream();
