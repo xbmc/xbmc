@@ -235,7 +235,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //
 
 @interface XBMCController ()
-
+- (void)rescheduleNetworkAutoSuspend;
 @end
 
 @interface UIApplication (extended)
