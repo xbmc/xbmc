@@ -239,6 +239,7 @@ CAEChannelInfo::operator std::string()
 
 const char* CAEChannelInfo::GetChName(const enum AEChannel ch)
 {
+  // Logical disjunction always evaluates to true: ch >= 0 || ch < 29.
   ASSERT(ch >= 0 || ch < AE_CH_MAX);
 
   static const char* channels[AE_CH_MAX] =
