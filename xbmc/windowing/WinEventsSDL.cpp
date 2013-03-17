@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
