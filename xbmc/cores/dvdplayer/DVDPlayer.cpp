@@ -3833,6 +3833,9 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.time_src   = ETIMESOURCE_CLOCK;
   }
 
+  state.canpause     = true;
+  state.canseek      = true;
+
   if(m_pInputStream)
   {
     // override from input stream if needed
@@ -3861,16 +3864,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       }
     }
 
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    if (CDVDInputStream::ISeekable* ptr = dynamic_cast<CDVDInputStream::ISeekable*>(m_pInputStream))
     {
-      CDVDInputStreamPVRManager* pvrinputstream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-      state.canpause = pvrinputstream->CanPause();
-      state.canseek  = pvrinputstream->CanSeek();
-    }
-    else
-    {
-      state.canseek  = state.time_total > 0 ? true : false;
-      state.canpause = true;
+      state.canpause = ptr->CanPause();
+      state.canseek  = ptr->CanSeek();
     }
   }
 
@@ -3880,10 +3877,13 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.time_total  = m_Edl.RemoveCutTime(llrint(state.time_total));
   }
 
+  if(state.time_total <= 0)
+    state.canseek  = false;
+
   state.player_state = "";
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if(CDVDInputStreamNavigator* ptr = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
   {
-    if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(state.player_state))
+    if(!ptr->GetNavigatorState(state.player_state))
       state.player_state = "";
   }
 
