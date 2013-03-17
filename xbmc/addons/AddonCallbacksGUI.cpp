@@ -207,13 +207,13 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     //FIXME make this static method of current skin?
     CStdString str("none");
     AddonProps props(str, ADDON_SKIN, str, str);
-    CSkinInfo skinInfo(props);
     CStdString basePath;
     URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
     URIUtils::AddFileToFolder(basePath, "skins", basePath);
     URIUtils::AddFileToFolder(basePath, defaultSkin, basePath);
     props.path = basePath;
 
+    CSkinInfo skinInfo(props);
     skinInfo.Start();
     strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, basePath);
 
