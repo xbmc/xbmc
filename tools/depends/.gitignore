@@ -14,10 +14,11 @@
 /target/*/arm-linux-androideabi-*/*
 /target/*/x86_64-linux-gnu/*
 /target/*/arm-linux-gnueabi/*
-/native/*/x86_64-darwin10.8.0-native/*
+/native/*/x86_64-darwin*.*.*-native/
 /target/*/arm-apple-darwin/*
 /target/*/x86_64-apple-darwin/*
 /target/*/i386-apple-darwin/*
+/target/*/macosx*.*_x86_64-target/
 Toolchain.cmake
 config.site
 config.site.native
