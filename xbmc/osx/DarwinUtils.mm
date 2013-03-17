@@ -147,6 +147,20 @@ bool DarwinHasRetina(void)
   return (platform >= iPhone4);
 }
 
+const char *GetDarwinOSReleaseString(void)
+{
+  static std::string osreleaseStr;
+  if (osreleaseStr.empty())
+  {
+    size_t size;
+    sysctlbyname("kern.osrelease", NULL, &size, NULL, 0);
+    char *osrelease = new char[size];
+    sysctlbyname("kern.osrelease", osrelease, &size, NULL, 0);
+    osreleaseStr = osrelease;
+    delete [] osrelease;
+  }
+  return osreleaseStr.c_str();
+}
 
 const char *GetDarwinVersionString(void)
 {
