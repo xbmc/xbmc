@@ -104,7 +104,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     delete m_mixMap;
     m_mixMap = CCoreAudioMixMap::CreateMixMap(m_audioUnit, format, layoutTag);
 
-    if (m_mixMap || m_mixMap->IsValid())
+    if (m_mixMap && m_mixMap->IsValid())
     {
       // maximum input channel ber input bus
       //fmt.mChannelsPerFrame = MAXIMUM_MIXER_CHANNELS;
