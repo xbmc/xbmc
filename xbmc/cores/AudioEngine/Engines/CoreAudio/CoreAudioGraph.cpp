@@ -152,6 +152,10 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
       if (!m_mixerUnit->SetInputBusFormat(MAX_CONNECTION_LIMIT, &fmt))
         return false;
 
+      // Update format structure to reflect the desired format from the mixer
+      // The output format of the mixer is identical to the input format, except for the channel count
+      fmt.mChannelsPerFrame = m_mixMap->GetOutputChannels();
+
       if (!m_mixerUnit->SetFormat(&fmt, kAudioUnitScope_Output, kOutputBus))
         return false;
 
@@ -192,10 +196,6 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
           "Error initialize graph. Error = %s", GetError(ret).c_str());
         return false;
       }
-
-      // Update format structure to reflect the desired format from the mixer
-      // The output format of the mixer is identical to the input format, except for the channel count
-      fmt.mChannelsPerFrame = m_mixMap->GetOutputChannels();
 
       UInt32 inputNumber = m_inputUnit->GetBus();
       int channelOffset = GetMixerChannelOffset(inputNumber);
