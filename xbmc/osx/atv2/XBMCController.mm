@@ -57,6 +57,7 @@
 #include "osx/DarwinUtils.h"
 #include "threads/Event.h"
 #include "Application.h"
+#include "guilib/Key.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
