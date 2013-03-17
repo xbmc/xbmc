@@ -47,6 +47,7 @@
 #include "RenderCapture.h"
 #include "RenderFormats.h"
 #include "xbmc/Application.h"
+#include "cores/IPlayer.h"
 
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"

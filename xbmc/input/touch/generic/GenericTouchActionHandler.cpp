@@ -21,6 +21,7 @@
 #include "GenericTouchActionHandler.h"
 #include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
 #include "windowing/WinEvents.h"
 
 CGenericTouchActionHandler &CGenericTouchActionHandler::Get()
