@@ -307,8 +307,6 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       !GetPlayingChannel(currentChannel) ||
       // different backend
       currentChannel->ClientID() != channel.ClientID() ||
-      // different type
-      currentChannel->IsRadio() != channel.IsRadio() ||
       // stream URL should always be opened as a new file
       !channel.StreamURL().IsEmpty() || !currentChannel->StreamURL().IsEmpty())
   {
