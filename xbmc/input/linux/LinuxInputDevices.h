@@ -41,6 +41,8 @@ public:
   CLinuxInputDevice(const std::string fileName, int index);
   ~CLinuxInputDevice();
   XBMC_Event ReadEvent();
+  char* GetDeviceName();
+  bool IsUnplugged();
  
 private:
   void SetupKeyboardAutoRepeat(int fd);
@@ -76,12 +78,14 @@ private:
   int m_deviceMaxKeyCode;
   int m_deviceMaxAxis;
   bool m_bSkipNonKeyEvents;
+  bool m_bUnplugged;
 };
 
 class CLinuxInputDevices
 {
 public:
   void InitAvailable();
+  void CheckHotplugged();
   XBMC_Event ReadEvent();
   bool IsRemoteLowBattery();
   bool IsRemoteNotPaired();
@@ -89,6 +93,8 @@ private:
   CCriticalSection m_devicesListLock;
   bool CheckDevice(const char *device);
   std::vector<CLinuxInputDevice*> m_devices;
+  bool m_bReInitialize;
+  time_t m_lastHotplugCheck;
 };
 
 #endif /* LINUXINPUTDEVICES_H_ */

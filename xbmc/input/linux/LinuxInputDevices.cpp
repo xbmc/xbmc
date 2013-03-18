@@ -338,6 +338,7 @@ CLinuxInputDevice::CLinuxInputDevice(const std::string fileName, int index)
   m_deviceMinKeyCode = 0;
   m_deviceMaxKeyCode = 0;
   m_deviceMaxAxis = 0;
+  m_bUnplugged = false;
 
   Open();
 }
@@ -744,7 +745,15 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
     readlen = read(m_fd, &levt, sizeof(levt));
 
     if (readlen <= 0)
+    {
+      if (errno == ENODEV)
+      {
+        CLog::Log(LOGINFO,"input device was unplugged %s",m_deviceName);
+        m_bUnplugged = true;
+      }
+
       break;
+    }
 
     //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
 
@@ -963,6 +972,16 @@ void CLinuxInputDevice::GetInfo(int fd)
   //printf("pref: %d\n", m_devicePreferredId);
 }
 
+char* CLinuxInputDevice::GetDeviceName()
+{
+  return m_deviceName;
+}
+
+bool CLinuxInputDevice::IsUnplugged()
+{
+  return m_bUnplugged;
+}
+
 bool CLinuxInputDevices::CheckDevice(const char *device)
 {
   int fd;
@@ -1011,6 +1030,41 @@ void CLinuxInputDevices::InitAvailable()
 
     snprintf(buf, 32, "/dev/input/event%d", i);
     if (CheckDevice(buf))
+    {
+      CLog::Log(LOGINFO, "Found input device %s", buf);
+      m_devices.push_back(new CLinuxInputDevice(buf, deviceId));
+      ++deviceId;
+    }
+  }
+}
+
+/*
+ * Check for hot plugged devices.
+ */
+void CLinuxInputDevices::CheckHotplugged()
+{
+  CSingleLock lock(m_devicesListLock);
+
+  int deviceId = m_devices.size();
+
+  /* No devices specified. Try to guess some. */
+  for (int i = 0; i < MAX_LINUX_INPUT_DEVICES; i++)
+  {
+    char buf[32];
+    bool ispresent = false;
+
+    snprintf(buf, 32, "/dev/input/event%d", i);
+
+    for (size_t j = 0; j < m_devices.size(); j++)
+    {
+      if (strcmp(m_devices[j]->GetDeviceName(),buf) == 0)
+      {
+        ispresent = true;
+        break;
+      }
+    }
+
+    if (!ispresent && CheckDevice(buf))
     {
       CLog::Log(LOGINFO, "Found input device %s", buf);
       m_devices.push_back(new CLinuxInputDevice(buf, deviceId));
@@ -1075,6 +1129,9 @@ bool CLinuxInputDevice::Open()
   {
     if (m_vt_fd < 0)
       m_vt_fd = open("/dev/tty0", O_RDWR | O_NOCTTY);
+ 
+    if (m_vt_fd < 0)
+      m_vt_fd = open("/dev/tty1", O_RDWR | O_NOCTTY);
 
     if (m_vt_fd < 0)
       CLog::Log(LOGWARNING, "no keymap support (requires /dev/tty0 - CONFIG_VT)");
@@ -1194,6 +1251,23 @@ void CLinuxInputDevice::Close()
 
 XBMC_Event CLinuxInputDevices::ReadEvent()
 {
+  if (m_bReInitialize)
+  {
+    InitAvailable();
+    m_bReInitialize = false;
+  }
+  else
+  {
+    time_t now;
+    time(&now);
+
+    if ((now - m_lastHotplugCheck) >= 10)
+    {
+      CheckHotplugged();
+      m_lastHotplugCheck = now;
+    }
+  }
+
   CSingleLock lock(m_devicesListLock);
 
   XBMC_Event event;
@@ -1204,6 +1278,12 @@ XBMC_Event CLinuxInputDevices::ReadEvent()
     event = m_devices[i]->ReadEvent();
     if (event.type != XBMC_NOEVENT)
     {
+      break;
+    }
+
+    if (m_devices[i]->IsUnplugged())
+    {
+      m_bReInitialize = true;
       break;
     }
   }
