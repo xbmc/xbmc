@@ -634,6 +634,10 @@ CStdString CSysInfo::GetUnameVersion()
   result += name.release;
   result += " ";
   result += name.machine;
+#elif defined(TARGET_DARWIN_IOS)
+  result = GetDarwinOSReleaseString();
+  result += ", ";
+  result += GetDarwinVersionString();
 #else
   FILE* pipe = popen("uname -rm", "r");
   if (pipe)

@@ -126,7 +126,7 @@ namespace XbmcCommons
      * it's own indexing.
      */
     inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer), 
-      mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(mlimit) { }
+      mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(buf.mlimit) { }
 
     inline ~Buffer() { }
 
