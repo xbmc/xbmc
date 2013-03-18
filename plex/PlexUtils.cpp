@@ -15,6 +15,8 @@
 
 #include "SystemInfo.h"
 
+#include "utils/StringUtils.h"
+
 #ifdef TARGET_DARWIN_OSX
 #include <CoreServices/CoreServices.h>
 #endif
@@ -26,6 +28,27 @@
 using namespace std;
 using namespace boost;
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsLocalNetworkIP(const CStdString &host)
+{
+  bool isLocal = false;
+  if (starts_with(host, "10.") || starts_with(host, "192.168.") || starts_with(host, "127.0.0.1"))
+  {
+    isLocal = true;
+  }
+  else if (starts_with(host, "172."))
+  {
+    vector<string> elems = StringUtils::Split(host, ".");
+    if (elems.size() == 4)
+    {
+      int secondOct = lexical_cast<int>(elems[1]);
+      if (secondOct >= 16 && secondOct <= 31)
+        isLocal = true;
+    }
+  }
+  return isLocal;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string PlexUtils::CacheImageUrl(const string &url)

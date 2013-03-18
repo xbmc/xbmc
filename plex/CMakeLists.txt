@@ -16,6 +16,7 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
+add_subdirectory(Client)
 add_subdirectory(FileSystem)
 add_subdirectory(GUI)
 add_subdirectory(Network)

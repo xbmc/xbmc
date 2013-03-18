@@ -18,6 +18,7 @@ namespace PlexUtils
 
   std::string GetMachinePlatform();
   std::string GetMachinePlatformVersion();
+  bool IsLocalNetworkIP(const CStdString &host);
 }
 
 #ifdef _WIN32
