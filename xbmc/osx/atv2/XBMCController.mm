@@ -147,6 +147,8 @@ typedef enum {
   kBREventRemoteActionPlay      = 5,
   kBREventRemoteActionLeft      = 6,
   kBREventRemoteActionRight     = 7,
+  kBREventRemoteActionRewind2   = 8,
+  kBREventRemoteActionFastFwd2  = 9,
 
   kBREventRemoteActionALPlay    = 10,
 
@@ -575,13 +577,21 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
     
     // Fast Forward
     case kBREventRemoteActionFastFwd:
+    case kBREventRemoteActionFastFwd2:
+      *isRepeatable = true;
+      if([f_event value] == 1)
+        *isPressed = true;
       *result = ATV_BUTTON_FASTFWD;
-      return ;
+      return;
     
     // Rewind
     case kBREventRemoteActionRewind:
+    case kBREventRemoteActionRewind2:
+      *isRepeatable = true;
+      if([f_event value] == 1)
+        *isPressed = true;
       *result = ATV_BUTTON_REWIND;
-      return ;
+      return;
 
     // Skip Forward
     case kBREventRemoteActionSkipFwd:
