@@ -65,8 +65,8 @@ class CRetakeLock
 {
 public:
   CRetakeLock(CSharedSection &section, bool immidiate = true, CCriticalSection &owned = g_graphicsContext)
-    : m_owned(owned ),
-      m_lock (NULL  )
+    : m_lock (NULL  ),
+      m_owned(owned )
   {
     m_count = m_owned.exit();
     m_lock  = new T(section);

@@ -96,6 +96,7 @@ COMXAudio::COMXAudio() :
   m_Pause           (false  ),
   m_CanPause        (false  ),
   m_CurrentVolume   (0      ),
+  m_drc             (0      ),
   m_Passthrough     (false  ),
   m_HWDecode        (false  ),
   m_BytesPerSec     (0      ),
@@ -111,10 +112,9 @@ COMXAudio::COMXAudio() :
   m_eEncoding       (OMX_AUDIO_CodingPCM),
   m_extradata       (NULL   ),
   m_extrasize       (0      ),
+  m_vizBufferSamples(0      ),
   m_last_pts        (DVD_NOPTS_VALUE),
-  m_omx_render      (NULL   ),
-  m_drc             (0      ),
-  m_vizBufferSamples(0      )
+  m_omx_render      (NULL   )
 {
   m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
   m_vizRemapBuffer  = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);

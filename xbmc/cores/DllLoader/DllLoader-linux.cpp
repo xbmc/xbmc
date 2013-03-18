@@ -32,12 +32,12 @@ CoffLoader::CoffLoader() :
   SymTable          (NULL ),
   StringTable       (NULL ),
   SectionData       (NULL ),
+  EntryAddress      (0    ),
   NumberOfSymbols   (0    ),
   SizeOfStringTable (0    ),
   NumOfDirectories  (0    ),
   NumOfSections     (0    ),
-  FileHeaderOffset  (0    ),
-  EntryAddress      (0    ),
+  FileHeaderOffset  (0    )
 {
 }
 
