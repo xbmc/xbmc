@@ -70,7 +70,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 
 1. XCode 3.2.6 against iOS SDK 4.3 on 10.6.x (Snow Leopard)
 2. XCode 4.3.x against iOS SDK 4.3 and 5.1 on 10.7.x (Lion)
-3. XCode 4.5.1 against iOS SDK 4.3, 5.1 and 6.0 on 10.7.x (Lion) and 10.8.x (ML)
+3. XCode 4.6 against iOS SDK 4.3, 5.1 and 6.1 on 10.7.x (Lion) and 10.8.x (ML)
 3.a Building against iOS SDK 6.0 will only allow to run on targets with iOS 5.1 and below.
     There is no support for devices running iOS 6.0 for now!
 
@@ -78,11 +78,27 @@ constellations of Xcode and osx versions (to be updated once we know more):
 3.1 Install Cross libs and runtime environment
 -----------------------------------------------------------------------------
 
+ The following commands will build using the latest iOS SDK found on your 
+ system.
+
  $ cd $HOME/XBMC
-  $ cd tools/darwin/depends
+ $ cd tools/depends
  $ ./bootstrap
- $ ./configure --with-darwin=ios
+ $ ./configure --host=arm-apple-darwin
  $ make
+
+ NOTE: You can speedup compilation on multicore systems by doing 
+ "make -j<number of cores>" instead of "make". For a dualcore this would read:
+ "make -j2"
+
+ ADVANCED developers only! If you want to specify an iOS SDK version (if
+ multiple versions are installed) - then append it to the configure line
+ above (example below would use iOS SDK 6.0):
+
+ $ ./configure --host=arm-apple-darwin --with-sdk=6.0
+
+ Ensure that you also adapt the xcode project to use this SDK version or
+ if building via cmdline the SDKROOT parameter of the xcodebuild command.
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -91,7 +107,7 @@ Both Xcode and Terminal compilation require that build environment be setup
 from the step 3.1.
 
  $ cd $HOME/XBMC
- $ make -C tools/darwin/depends/xbmc
+ $ make -C tools/depends/target/xbmc
  $ make clean
  $ make xcode_depends
  $ make -C lib/addons/script.module.pil
@@ -104,6 +120,10 @@ located in $HOME/XBMC.
 
 There are two relevant build targets : Release and Debug. Compile always for device
 end not simulator.
+
+If you have selected a specific iOS SDK Version in step 3.1 then you might need 
+to adapt the active target to use the same iOS SDK version. Else build will fail 
+(you will see alot of errors with at least non-found boost/shared_ptr.hpp).
 
 -----------------------------------------------------------------------------
 4.2 Using Terminal (command-line)
@@ -120,7 +140,8 @@ or
   ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.1 \
   SDKROOT=iphoneos4.2
  
- Make sure to set SDKROOT to the iOS SDK you want to use.
+ Make sure to set SDKROOT to the iOS SDK you want to use. This should be the same
+ you used on point 3.1!
 
 -----------------------------------------------------------------------------
 5. Packaging
