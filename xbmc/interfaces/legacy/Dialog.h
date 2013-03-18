@@ -28,6 +28,7 @@
 #include "AddonString.h"
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "Alternative.h"
 
 namespace XBMCAddon
@@ -283,6 +284,69 @@ namespace XBMCAddon
        *   - if (pDialog.iscanceled()): return
        */
       bool iscanceled();
+    };
+
+    /**
+     * DialogProgressBG class
+     */
+    class DialogProgressBG : public AddonClass
+    {
+      CGUIDialogExtendedProgressBar* dlg;
+      CGUIDialogProgressBarHandle* handle;
+
+    protected:
+      virtual void deallocating();
+
+    public:
+
+      DialogProgressBG() : AddonClass("DialogProgressBG"), dlg(NULL), handle(NULL) {}
+      virtual ~DialogProgressBG();
+
+
+      /**
+       * create(heading[, message]) -- Create and show a background progress dialog.\n
+       *\n
+       * heading     : string or unicode - dialog heading\n
+       * message     : [opt] string or unicode - message text\n
+       *\n
+       * *Note, 'heading' is used for the dialog's id. Use a unique heading.\n
+       *        Use update() to update heading, message and progressbar.\n
+       *\n
+       * example:\n
+       * - pDialog = xbmcgui.DialogProgressBG()\n
+       * - pDialog.create('Movie Trailers', 'Downloading Monsters Inc. ...')\n
+       */
+      void create(const String& heading, const String& message = emptyString) throw (WindowException);
+
+      /**
+       * update([percent, heading, message]) -- Updates the background progress dialog.\n
+       *\n
+       * percent     : [opt] integer - percent complete. (0:100)\n
+       * heading     : [opt] string or unicode - dialog heading\n
+       * message     : [opt] string or unicode - message text\n
+       *\n
+       * *Note, To clear heading or message, you must pass a blank character.\n
+       *\n
+       * example:\n
+       * - pDialog.update(25, message='Downloading Finding Nemo ...')\n
+       */
+      void update(int percent = 0, const String& heading = emptyString, const String& message = emptyString) throw (WindowException);
+
+      /**
+       * close() -- Close the background progress dialog\n
+       *\n
+       * example:\n
+       * - pDialog.close()\n
+       */
+      void close();
+
+      /**
+       * isFinished() -- Returns True if the background dialog is active.\n
+       *\n
+       * example:\n
+       * - if (pDialog.isFinished()): return\n
+       */
+      bool isFinished();
     };
 
   }
