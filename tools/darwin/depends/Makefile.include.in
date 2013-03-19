@@ -1,7 +1,0 @@
-SDK=@use_sdk@
-ARCH=@use_arch@
-DARWIN=@use_darwin@
-PREFIX=@use_prefix@
-STAGING=@use_staging@
-
-include @abs_top_srcdir@/Makefile.buildtools
