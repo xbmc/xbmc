@@ -236,135 +236,110 @@ namespace XBMCAddon
     {
       TRACE;
 
+      DelayedCallGuard dg;
       if (dlg)
-      {
-        DelayedCallGuard dg;
         dlg->Close();
-      }
+      else if (dlgBG)
+        dlgBG->Close();
     }
 
-    void DialogProgress::create(const String& heading, const String& line1, 
-                                const String& line2,
-                                const String& line3) throw (WindowException)
+    void DialogProgress::create(const String& heading, const String& message, 
+                                const String& line2, const String& line3) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      dlg = pDialog;
-
-      pDialog->SetHeading(heading);
-
-      if (!line1.empty())
-        pDialog->SetLine(0, line1);
-      if (!line2.empty())
-        pDialog->SetLine(1, line2);
-      if (!line3.empty())
-        pDialog->SetLine(2, line3);
-
-      pDialog->StartModal();
-    }
-
-    void DialogProgress::update(int percent, const String& line1, 
-                                const String& line2,
-                                const String& line3) throw (WindowException)
-    {
-      DelayedCallGuard dcguard(languageHook);
-      CGUIDialogProgress* pDialog= dlg;
-
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      if (percent >= 0 && percent <= 100)
+      if (!bkgd)
       {
-        pDialog->SetPercentage(percent);
-        pDialog->ShowProgressBar(true);
+        CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+        // if this is not possible, is this check necessary?
+        if (pDialog == NULL)
+          throw WindowException("Error: Window is NULL, this is not possible :-)");
+
+        dlg = pDialog;
+
+        pDialog->SetHeading(heading);
+        if (!message.empty())
+          pDialog->SetLine(0, message);
+        if (!line2.empty())
+          pDialog->SetLine(1, line2);
+        if (!line3.empty())
+          pDialog->SetLine(2, line3);
+
+        pDialog->StartModal();
       }
       else
       {
-        pDialog->ShowProgressBar(false);
-      }
+        CGUIDialogExtendedProgressBar* pDialog = 
+          (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+        // if this is not possible, is this check necessary?
+        if (pDialog == NULL)
+          throw WindowException("Error: Window is NULL, this is not possible :-)");
+        CGUIDialogProgressBarHandle* pHandle = pDialog->GetHandle(heading);
 
-      if (!line1.empty())
-        pDialog->SetLine(0, line1);
-      if (!line2.empty())
-        pDialog->SetLine(1, line2);
-      if (!line3.empty())
-        pDialog->SetLine(2, line3);
+        dlgBG = pDialog;
+        handle = pHandle;
+
+        pHandle->SetTitle(heading);
+        if (!message.empty())
+          pHandle->SetText(message);
+      }
+    }
+
+    void DialogProgress::update(int percent, const String& heading, const String& message, 
+                                const String& line2, const String& line3) throw (WindowException)
+    {
+      DelayedCallGuard dcguard(languageHook);
+      if (dlg)
+      {
+        CGUIDialogProgress* pDialog= dlg;
+        // if this is not possible, is this check necessary?
+        if (pDialog == NULL)
+          throw WindowException("Error: Window is NULL, this is not possible :-)");
+
+        if (percent >= 0 && percent <= 100)
+          pDialog->SetPercentage(percent);
+        if (!heading.empty())
+          pDialog->SetHeading(heading);
+        // if standard progress dialog changes to a text control,
+        // concat message/line2/line3 and depreciate line2/line3
+        if (!message.empty())
+          pDialog->SetLine(0, message);
+        if (!line2.empty())
+          pDialog->SetLine(1, line2);
+        if (!line3.empty())
+          pDialog->SetLine(2, line3);
+      }
+      else if (dlgBG)
+      {
+        CGUIDialogExtendedProgressBar* pDialog = dlgBG;
+        CGUIDialogProgressBarHandle* pHandle = handle;
+        // if this is not possible, is this check necessary?
+        if (pDialog == NULL)
+          throw WindowException("Error: Window is NULL, this is not possible :-)");
+
+        if (percent >= 0 && percent <= 100)
+          pHandle->SetPercentage((float)percent);
+        if (!heading.empty())
+          pHandle->SetTitle(heading);
+        if (!message.empty())
+          pHandle->SetText(message);
+      }
     }
 
     void DialogProgress::close()
     {
       DelayedCallGuard dcguard(languageHook);
-      dlg->Close();
+      if (dlg)
+        dlg->Close();
+      else if (handle)
+        handle->MarkFinished();
     }
 
+    // only applys to standard progress dialog
     bool DialogProgress::iscanceled()
     {
-      return dlg->IsCanceled();
-    }
-
-    DialogProgressBG::~DialogProgressBG() { TRACE; deallocating(); }
-
-    void DialogProgressBG::deallocating()
-    {
-      TRACE;
-
       if (dlg)
-      {
-        DelayedCallGuard dg;
-        dlg->Close();
-      }
+        return dlg->IsCanceled();
+      return false;
     }
-
-    void DialogProgressBG::create(const String& heading, const String& message) throw (WindowException)
-    {
-      DelayedCallGuard dcguard(languageHook);
-      CGUIDialogExtendedProgressBar* pDialog = 
-          (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      CGUIDialogProgressBarHandle* pHandle = pDialog->GetHandle(heading);
-
-      dlg = pDialog;
-      handle = pHandle;
-
-      pHandle->SetTitle(heading);
-      if (!message.empty())
-        pHandle->SetText(message);
-    }
-
-    void DialogProgressBG::update(int percent, const String& heading, const String& message) throw (WindowException)
-    {
-      DelayedCallGuard dcguard(languageHook);
-      CGUIDialogExtendedProgressBar* pDialog = dlg;
-      CGUIDialogProgressBarHandle* pHandle = handle;
-
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      if (percent >= 0 && percent <= 100)
-        pHandle->SetPercentage((float)percent);
-      if (!heading.empty())
-        pHandle->SetTitle(heading);
-      if (!message.empty())
-        pHandle->SetText(message);
-    }
-
-    void DialogProgressBG::close()
-    {
-      DelayedCallGuard dcguard(languageHook);
-      handle->MarkFinished();
-    }
-
-    bool DialogProgressBG::isFinished()
-    {
-      return handle->IsFinished();
-    }
-
   }
 }

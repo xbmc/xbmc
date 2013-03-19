@@ -219,121 +219,65 @@ namespace XBMCAddon
     };
 
     /**
-     * DialogProgress class (Duh!)
+     * DialogProgress([background]) -- Progress Dialog Class.\n
+     *\n
+     * background     : [opt] bool - True uses a modeless background dialog (default=False)\n
+     *\n
+     * example:\n
+     * - pDialog = xbmcgui.DialogProgress(background=True)\n
      */
     class DialogProgress : public AddonClass
     {
+      bool bkgd;
       CGUIDialogProgress* dlg;
-
-    protected:
-      virtual void deallocating();
-
-    public:
-
-      DialogProgress() : AddonClass("DialogProgress"), dlg(NULL) {}
-      virtual ~DialogProgress();
-
-
-      /**
-       * create(heading[, line1, line2, line3]) -- Create and show a progress dialog.
-       * 
-       * heading        : string or unicode - dialog heading.
-       * line1          : [opt] string or unicode - line #1 text.
-       * line2          : [opt] string or unicode - line #2 text.
-       * line3          : [opt] string or unicode - line #3 text.
-       * 
-       * *Note, Use update() to update lines and progressbar.
-       * 
-       * example:
-       *   - pDialog = xbmcgui.DialogProgress()
-       *   - pDialog.create('XBMC', 'Initializing script...')
-       */
-      void create(const String& heading, const String& line1 = emptyString, 
-                  const String& line2 = emptyString,
-                  const String& line3 = emptyString) throw (WindowException);
-
-      /**
-       * update(percent[, line1, line2, line3]) -- Update's the progress dialog.
-       * 
-       * percent        : integer - percent complete. (0:100)
-       * line1          : [opt] string or unicode - line #1 text.
-       * line2          : [opt] string or unicode - line #2 text.
-       * line3          : [opt] string or unicode - line #3 text.
-       * 
-       * *Note, If percent == 0, the progressbar will be hidden.
-       * 
-       * example:
-       *   - pDialog.update(25, 'Importing modules...')
-       */
-      void update(int percent, const String& line1 = emptyString, 
-                  const String& line2 = emptyString,
-                  const String& line3 = emptyString) throw (WindowException);
-
-      /**
-       * close() -- Close the progress dialog.
-       * 
-       * example:
-       *   - pDialog.close()
-       */
-      void close();
-
-      /**
-       * iscanceled() -- Returns True if the user pressed cancel.
-       * 
-       * example:
-       *   - if (pDialog.iscanceled()): return
-       */
-      bool iscanceled();
-    };
-
-    /**
-     * DialogProgressBG class
-     */
-    class DialogProgressBG : public AddonClass
-    {
-      CGUIDialogExtendedProgressBar* dlg;
+      CGUIDialogExtendedProgressBar* dlgBG;
       CGUIDialogProgressBarHandle* handle;
 
     protected:
       virtual void deallocating();
 
     public:
-
-      DialogProgressBG() : AddonClass("DialogProgressBG"), dlg(NULL), handle(NULL) {}
-      virtual ~DialogProgressBG();
-
+      DialogProgress(bool background=false) : AddonClass("DialogProgress"), dlg(NULL), dlgBG(NULL), handle(NULL), bkgd(background){}
+      virtual ~DialogProgress();
 
       /**
-       * create(heading[, message]) -- Create and show a background progress dialog.\n
+       * create(heading[, message, line2, line3]) -- Create and show a progress dialog.\n
        *\n
-       * heading     : string or unicode - dialog heading\n
-       * message     : [opt] string or unicode - message text\n
+       * heading      : string or unicode - dialog heading\n
+       * message      : [opt] string or unicode - line #1 text\n
+       * line2        : [opt] string or unicode - line #2 text (not used for background dialog)\n
+       * line3        : [opt] string or unicode - line #3 text (not used for background dialog)\n
        *\n
-       * *Note, 'heading' is used for the dialog's id. Use a unique heading.\n
-       *        Use update() to update heading, message and progressbar.\n
+       * *Note, Use update() to update heading, message(s) and progressbar.\n
+       *        line2 and line3 not used for background dialog.\n
        *\n
        * example:\n
-       * - pDialog = xbmcgui.DialogProgressBG()\n
-       * - pDialog.create('Movie Trailers', 'Downloading Monsters Inc. ...')\n
+       * - pDialog = xbmcgui.DialogProgress(background=True)\n
+       * - pDialog.create('Movie Trailers', 'Downloading Ice Age ...')\n
        */
-      void create(const String& heading, const String& message = emptyString) throw (WindowException);
+      void create(const String& heading, const String& message = emptyString,
+                  const String& line2 = emptyString, const String& line3 = emptyString) throw (WindowException);
 
       /**
-       * update([percent, heading, message]) -- Updates the background progress dialog.\n
+       * update(percent[, heading, message, line2, line3]) -- Update's the progress dialog.\n
        *\n
-       * percent     : [opt] integer - percent complete. (0:100)\n
-       * heading     : [opt] string or unicode - dialog heading\n
-       * message     : [opt] string or unicode - message text\n
+       * heading      : string or unicode - dialog heading\n
+       * message      : [opt] string or unicode - line #1 text\n
+       * line2        : [opt] string or unicode - line #2 text\n
+       * line3        : [opt] string or unicode - line #3 text\n
        *\n
-       * *Note, To clear heading or message, you must pass a blank character.\n
+       * *Note, line2 and line3 not used for background dialog.\n
+       *        To clear a line you must pass a blank space.
        *\n
        * example:\n
-       * - pDialog.update(25, message='Downloading Finding Nemo ...')\n
+       * - pDialog.update(25, message='Downloading Monsters Inc. ...')\n
        */
-      void update(int percent = 0, const String& heading = emptyString, const String& message = emptyString) throw (WindowException);
+      void update(int percent, const String& heading = emptyString,
+                  const String& message = emptyString, const String& line2 = emptyString,
+                  const String& line3 = emptyString) throw (WindowException);
 
       /**
-       * close() -- Close the background progress dialog\n
+       * close() -- Close the progress dialog.\n
        *\n
        * example:\n
        * - pDialog.close()\n
@@ -341,12 +285,15 @@ namespace XBMCAddon
       void close();
 
       /**
-       * isFinished() -- Returns True if the background dialog is active.\n
+       * iscanceled() -- Returns True if the user pressed cancel.\n
+       *\n
+       * *Note, Does not apply to background dialog.\n
        *\n
        * example:\n
-       * - if (pDialog.isFinished()): return\n
+       * - if (pDialog.iscanceled()): break\n
        */
-      bool isFinished();
+      bool iscanceled();
+
     };
 
   }
