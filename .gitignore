@@ -155,10 +155,6 @@ config.log
 # /lib/
 /lib/Makefile
 
-# /lib/addons/
-/lib/addons/script.module.pil/
-!/lib/addons/script.module.pil/Makefile
-
 # /lib/asap/
 /lib/asap/Makefile
 /lib/asap/players.h

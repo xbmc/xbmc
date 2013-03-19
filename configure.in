@@ -2377,7 +2377,6 @@ OUTPUT_FILES="Makefile \
     lib/libhdhomerun/Makefile \
     lib/libsquish/Makefile \
     lib/cximage-6.0/Makefile \
-    lib/addons/script.module.pil/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
     xbmc/DllPaths_generated_android.h \
