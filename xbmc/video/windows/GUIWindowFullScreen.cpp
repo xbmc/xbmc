@@ -225,6 +225,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
+      g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
@@ -271,13 +272,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
           g_settings.m_currentVideoSettings.m_SubtitleOn = false;
           g_application.m_pPlayer->SetSubtitleVisible(false);
         }
-        g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
       }
       else
       {
         g_settings.m_currentVideoSettings.m_SubtitleOn = true;
         g_application.m_pPlayer->SetSubtitleVisible(true);
       }
+      g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
 
       CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
