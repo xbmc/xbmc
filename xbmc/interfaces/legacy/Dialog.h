@@ -261,7 +261,8 @@ namespace XBMCAddon
       /**
        * update(percent[, heading, message, line2, line3]) -- Update's the progress dialog.\n
        *\n
-       * heading      : string or unicode - dialog heading\n
+       * percent      : integer - percent complete (0-100)\n
+       * heading      : [opt] string or unicode - dialog heading\n
        * message      : [opt] string or unicode - line #1 text\n
        * line2        : [opt] string or unicode - line #2 text\n
        * line3        : [opt] string or unicode - line #3 text\n
