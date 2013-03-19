@@ -141,7 +141,7 @@ on with the Android toolchain and creating an Android Application Package
 5.1. Building dependencies
 --------------------------------------------------------------------
 
-   # cd $HOME/xbmc-android/tools/android/depends
+   # cd $HOME/xbmc-android/tools/depends
    # ./bootstrap
    # ./configure --help
 
@@ -164,7 +164,8 @@ on with the Android toolchain and creating an Android Application Package
 --------------------------------------------------------------------
 
    # cd $HOME/xbmc-android
-   # make -C tools/android/depends/xbmc
+   # make -C tools/android/xbmc
+   # make
 
    After the first build (assuming bootstrap and configure are successful),
    subsequent builds can be run with a simple 'make' and 'make apk'.
