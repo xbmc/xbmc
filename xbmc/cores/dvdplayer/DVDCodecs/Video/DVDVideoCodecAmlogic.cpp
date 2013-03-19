@@ -46,7 +46,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_queue_depth(0),
   m_framerate(0.0),
   m_video_rate(0),
-  m_mpeg2_aspect(NULL)
+  m_mpeg2_sequence(NULL)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -67,9 +67,17 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case CODEC_ID_MPEG1VIDEO:
     case CODEC_ID_MPEG2VIDEO:
     case CODEC_ID_MPEG2VIDEO_XVMC:
-      m_mpeg2_aspect_pts = 0;
-      m_mpeg2_aspect = new mpeg2_aspect;
-      m_mpeg2_aspect->ratio = hints.aspect;
+      m_mpeg2_sequence_pts = 0;
+      m_mpeg2_sequence = new mpeg2_sequence;
+      m_mpeg2_sequence->width  = hints.width;
+      m_mpeg2_sequence->height = hints.height;
+      m_mpeg2_sequence->ratio  = hints.aspect;
+      if (hints.rfpsrate > 0 && hints.rfpsscale != 0)
+        m_mpeg2_sequence->rate = (float)hints.rfpsrate / hints.rfpsscale;
+      else if (hints.fpsrate > 0 && hints.fpsscale != 0)
+        m_mpeg2_sequence->rate = (float)hints.fpsrate / hints.fpsscale;
+      else
+        m_mpeg2_sequence->rate = 1.0;
       m_pFormatName = "am-mpeg2";
       break;
     case CODEC_ID_H264:
@@ -171,8 +179,8 @@ void CDVDVideoCodecAmlogic::Dispose(void)
     m_Codec->CloseDecoder(), m_Codec = NULL;
   if (m_videobuffer.iFlags)
     m_videobuffer.iFlags = 0;
-  if (m_mpeg2_aspect)
-    delete m_mpeg2_aspect, m_mpeg2_aspect = NULL;
+  if (m_mpeg2_sequence)
+    delete m_mpeg2_sequence, m_mpeg2_sequence = NULL;
 
   while (m_queue_depth)
     FrameQueuePop();
@@ -208,7 +216,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
     FrameQueuePop();
 
   m_Codec->Reset();
-  m_mpeg2_aspect_pts = 0;
+  m_mpeg2_sequence_pts = 0;
 }
 
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -218,8 +226,8 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   *pDvdVideoPicture = m_videobuffer;
 
   // check for mpeg2 aspect ratio changes
-  if (m_mpeg2_aspect && pDvdVideoPicture->pts >= m_mpeg2_aspect_pts)
-    m_aspect_ratio = m_mpeg2_aspect->ratio;
+  if (m_mpeg2_sequence && pDvdVideoPicture->pts >= m_mpeg2_sequence_pts)
+    m_aspect_ratio = m_mpeg2_sequence->ratio;
 
   pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
@@ -326,20 +334,28 @@ void CDVDVideoCodecAmlogic::FrameQueuePush(double dts, double pts)
 
 void CDVDVideoCodecAmlogic::FrameRateTracking(BYTE *pData, int iSize, double dts, double pts)
 {
-  FrameQueuePush(dts, pts);
-
-  if (m_mpeg2_aspect)
+  // mpeg2 handling
+  if (m_mpeg2_sequence)
   {
-    // if mpeg2, probe demux data for aspect_ratio_information
-    // in the sequence_header_code.
-    if (CBitstreamConverter::mpeg2_aspect_ratio_information(pData, iSize, m_mpeg2_aspect))
+    // probe demux for sequence_header_code NAL and
+    // decode aspect ratio and frame rate.
+    if (CBitstreamConverter::mpeg2_sequence_header(pData, iSize, m_mpeg2_sequence))
     {
-      m_mpeg2_aspect_pts = pts;
-      if (m_mpeg2_aspect_pts == DVD_NOPTS_VALUE)
-        m_mpeg2_aspect_pts = dts;
-      CLog::Log(LOGDEBUG, "%s: detected new aspect ratio(%f)", __MODULE_NAME__, m_mpeg2_aspect->ratio);
+      m_mpeg2_sequence_pts = pts;
+      if (m_mpeg2_sequence_pts == DVD_NOPTS_VALUE)
+        m_mpeg2_sequence_pts = dts;
+
+      m_framerate = m_mpeg2_sequence->rate;
+      m_video_rate = (int)(0.5 + (96000.0 / m_framerate));
+
+      CLog::Log(LOGDEBUG, "%s: detected mpeg2 aspect ratio(%f), framerate(%f), video_rate(%d)",
+        __MODULE_NAME__, m_mpeg2_sequence->ratio, m_framerate, m_video_rate);
     }
+    return;
   }
+
+  // everything else
+  FrameQueuePush(dts, pts);
 
   // we might have out-of-order pts,
   // so make sure we wait for at least 8 values in sorted queue.

@@ -25,7 +25,7 @@
 
 class CAMLCodec;
 struct frame_queue;
-struct mpeg2_aspect;
+struct mpeg2_sequence;
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
@@ -62,6 +62,6 @@ protected:
   double          m_framerate;
   int             m_video_rate;
   float           m_aspect_ratio;
-  mpeg2_aspect   *m_mpeg2_aspect;
-  double          m_mpeg2_aspect_pts;
+  mpeg2_sequence *m_mpeg2_sequence;
+  double          m_mpeg2_sequence_pts;
 };
