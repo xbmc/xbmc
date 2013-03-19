@@ -8,12 +8,6 @@ VERSION=1.1.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-ifeq ($(HAS_ZLIB),1)
-  ZLIBROOT=$(TOOLCHAIN)/sysroot
-else
-  ZLIBROOT=$(PREFIX)
-endif
-
 CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" LDFLAGS="$(LDFLAGS)"
 
 LIBDYLIB=$(PLATFORM)/dist/PIL-$(VERSION)-py2.6-$(OS)-$(CPU).egg
@@ -30,8 +24,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch
 	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-access.patch
 	cd $(PLATFORM); patch -p0 < ../Imaging-1.1.7-zip-include.patch
+	cd $(PLATFORM); patch -p0 < ../Imaging-1.1.7-remove-zlib-check.patch
 	cd $(PLATFORM); sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"
-	sed -ie "s|ZLIB_ROOT = None|ZLIB_ROOT = libinclude(\"$(ZLIBROOT)\")|" $(PLATFORM)/setup.py
 
 $(LIBDYLIB): $(PLATFORM)
 	mkdir -p $(PLATFORM)/output

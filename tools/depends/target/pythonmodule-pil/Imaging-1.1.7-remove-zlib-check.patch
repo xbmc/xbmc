@@ -1,0 +1,15 @@
+--- setup.py	2013-03-19 18:26:03.725978243 -0400
++++ setup.py	2013-03-19 18:24:50.435978289 -0400
+@@ -211,11 +211,7 @@
+             zlib = jpeg = tiff = freetype = tcl = tk = lcms = None
+         feature = feature()
+ 
+-        if find_include_file(self, "zlib.h"):
+-            if find_library_file(self, "z"):
+-                feature.zlib = "z"
+-            elif sys.platform == "win32" and find_library_file(self, "zlib"):
+-                feature.zlib = "zlib" # alternative name
++        feature.zlib = "z"
+ 
+         if find_include_file(self, "jpeglib.h"):
+             if find_library_file(self, "jpeg"):
