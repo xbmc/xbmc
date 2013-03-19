@@ -14,7 +14,8 @@ DEPENDS = \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python26 afpfs-ng libshairport \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
-	libamplayer libssh taglib xbmc-pvr-addons libusb libnfs libmp3lame
+	libamplayer libssh taglib xbmc-pvr-addons libusb libnfs libmp3lame \
+        pythonmodule-pil
 
 ifeq ($(ENABLE_GPLV3),1)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -82,7 +83,7 @@ libzip: $(ZLIB)
 libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng
+pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
