@@ -4,7 +4,7 @@
 
 using namespace XFILE;
 
-CPlexConnection::CPlexConnection(ConnectionType type, const CStdString& host, int port, const CStdString& token) :
+CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, const CStdString& token) :
   m_type(type), m_state(CONNECTION_STATE_UNKNOWN), m_token(token)
 {
   m_url.SetHostName(host);
@@ -44,4 +44,46 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   }
 
   return m_state;
+}
+
+void
+CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
+{
+  m_url = otherConnection->m_url;
+  m_token = otherConnection->m_token;
+  m_type |= otherConnection->m_type;
+  m_refreshed = true;
+}
+
+CStdString
+CPlexConnection::ConnectionStateName(CPlexConnection::ConnectionState state)
+{
+  switch (state) {
+    case CONNECTION_STATE_REACHABLE:
+      return "reachable";
+      break;
+    case CONNECTION_STATE_UNAUTHORIZED:
+      return "unauthorized";
+      break;
+    case CONNECTION_STATE_UNKNOWN:
+      return "unknown";
+      break;
+    default:
+      return "unreachable";
+      break;
+  }
+}
+
+CStdString
+CPlexConnection::ConnectionTypeName(CPlexConnection::ConnectionType type)
+{
+  CStdString typeName;
+  if (type & CONNECTION_DISCOVERED)
+    typeName = "(discovered)";
+  if (type & CONNECTION_MANUAL)
+    typeName += "(manual)";
+  if (type & CONNECTION_MYPLEX)
+    typeName += "(myplex)";
+
+  return typeName;
 }

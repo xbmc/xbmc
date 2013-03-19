@@ -46,6 +46,7 @@
 #define GUI_MSG_LIST_REMOVE_ITEM GUI_MSG_USER + 70
 
 #define GUI_MSG_PLEX_SECTION_LOADED + 71
+#define GUI_MSG_PLEX_SERVER_NOTIFICATION + 72
 
 typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
 
