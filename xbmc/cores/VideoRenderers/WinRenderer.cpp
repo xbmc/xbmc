@@ -124,13 +124,13 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
-  /* PLEX */
+  /* PLEX
   if (m_iFlags & CONF_FLAGS_RGB)
   {
     m_renderMethod = RENDER_RGB;
   }
   else
-  /* END PLEX */
+   END PLEX */
   // Set rendering to dxva before trying it, in order to open the correct processor immediately, when deinterlacing method is auto.
 
   // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
