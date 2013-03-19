@@ -645,12 +645,10 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
     if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveHorizontally)
     {
       // on zoomlevel 1 just detect swipe left and right
-      if (point.x < m_firstGesturePoint.x)
+      if (event.m_id == ACTION_GESTURE_SWIPE_LEFT)
         OnAction(CAction(ACTION_NEXT_PICTURE));
       else
         OnAction(CAction(ACTION_PREV_PICTURE));
-      
-      m_firstGesturePoint.x = 0;
     }
   }
   else if (event.m_id == ACTION_GESTURE_END)
