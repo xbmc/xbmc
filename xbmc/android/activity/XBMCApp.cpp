@@ -941,7 +941,7 @@ int CXBMCApp::GetMaxSystemVolume(JNIEnv *env)
   jmethodID mgetStreamMaxVolume = env->GetMethodID(cAudioManager, "getStreamMaxVolume", "(I)I");
   jfieldID fstreamMusic = env->GetStaticFieldID(cAudioManager, "STREAM_MUSIC", "I");
   jint stream_music = env->GetStaticIntField(cAudioManager, fstreamMusic);
-  int maxVolume = (int)env->CallObjectMethod(oAudioManager, mgetStreamMaxVolume, stream_music); // AudioManager.STREAM_MUSIC
+  int maxVolume = (int)env->CallIntMethod(oAudioManager, mgetStreamMaxVolume, stream_music); // AudioManager.STREAM_MUSIC
 
   env->DeleteLocalRef(oAudioManager);
   env->DeleteLocalRef(cAudioManager);
