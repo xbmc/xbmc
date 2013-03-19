@@ -1670,6 +1670,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
   m_opened = true;
+  // vcodec is open, update speed if it was
+  // changed before dvdplayer called OpenDecoder.
+  SetSpeed(m_speed);
 
   return true;
 }
@@ -1682,6 +1685,8 @@ void CAMLCodec::CloseDecoder()
   g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
 
+  // never leave vcodec paused and closed.
+  SetSpeed(DVD_PLAYSPEED_NORMAL);
   m_dll->codec_close(&am_private->vcodec);
   m_opened = false;
 
@@ -1721,15 +1726,15 @@ void CAMLCodec::Reset()
   am_private->am_pkt.codec = &am_private->vcodec;
   pre_header_feeding(am_private, &am_private->am_pkt);
 
+  // restore the saved system blackout_policy value
+  aml_set_sysfs_int("/sys/class/video/blackout_policy", blackout_policy);
+
   // reset some interal vars
-  m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
-
-  // restore the saved system blackout_policy value
-  aml_set_sysfs_int("/sys/class/video/blackout_policy", blackout_policy);
+  SetSpeed(m_speed);
 }
 
 int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
@@ -1834,29 +1839,29 @@ void CAMLCodec::SetSpeed(int speed)
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::SetSpeed, speed(%d)", speed);
 
+  // update internal vars regardless
+  // of if we are open or not.
+  m_speed = speed;
+
   if (!m_opened)
     return;
 
-  if (m_speed != speed)
+  switch(speed)
   {
-    switch(speed)
-    {
-      case DVD_PLAYSPEED_PAUSE:
-        m_dll->codec_pause(&am_private->vcodec);
-        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
-        break;
-      case DVD_PLAYSPEED_NORMAL:
-        m_dll->codec_resume(&am_private->vcodec);
-        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
-        break;
-      default:
-        Reset();
-        m_dll->codec_resume(&am_private->vcodec);
-        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
-        //m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
-        break;
-    }
-    m_speed = speed;
+    case DVD_PLAYSPEED_PAUSE:
+      m_dll->codec_pause(&am_private->vcodec);
+      m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+      break;
+    case DVD_PLAYSPEED_NORMAL:
+      m_dll->codec_resume(&am_private->vcodec);
+      m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+      break;
+    default:
+      Reset();
+      m_dll->codec_resume(&am_private->vcodec);
+      m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
+      //m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
+      break;
   }
 }
 
