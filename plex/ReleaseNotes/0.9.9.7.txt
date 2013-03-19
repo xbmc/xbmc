@@ -1,0 +1,12 @@
+[b]Upstream fixes[/b]
+
+[list]
+[*]CoreAudio mixer fixes (No more crash on start)
+[*]Channel mapping error (lead to mono playback)
+[/list]
+
+[b]PLEX/HT Fixes[/b]
+[list]
+[*]Refocus MCE when qutting Plex/HT
+[*]Fix CEC devices
+[/list]
