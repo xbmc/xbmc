@@ -24,8 +24,9 @@
 #include "JoystickManager.h"
 #include "Application.h"
 #include "ButtonTranslator.h"
-#include "utils/log.h"
+#include "guilib/Key.h"
 #include "MouseStat.h"
+#include "utils/log.h"
 
 // Include joystick APIs
 #if defined(TARGET_WINDOWS)
