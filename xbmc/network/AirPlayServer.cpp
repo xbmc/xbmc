@@ -840,7 +840,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer && g_application.m_pPlayer->GetTotalTime())
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime() / 1000, position);
+        responseBody.Format("duration: %.6f\r\nposition: %.6f\r\n", (float)g_application.m_pPlayer->GetTotalTime() / 1000, position);
       }
       else 
       {
