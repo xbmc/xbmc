@@ -52,6 +52,7 @@
 
 #include "utils/LangCodeExpander.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/Key.h"
 
 #include "storage/MediaManager.h"
 #include "GUIUserMessages.h"

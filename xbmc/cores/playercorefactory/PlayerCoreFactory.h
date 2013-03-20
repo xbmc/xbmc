@@ -20,6 +20,8 @@
  *
  */
 
+#include "system.h"
+
 #include "cores/IPlayerCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
