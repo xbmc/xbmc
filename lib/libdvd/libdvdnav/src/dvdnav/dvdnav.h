@@ -63,12 +63,6 @@ typedef int32_t dvdnav_status_t;
 #define DVDNAV_STATUS_ERR 0
 #define DVDNAV_STATUS_OK  1
 
-#define DVDNAV_FORMAT_AC3 0
-#define DVDNAV_FORMAT_MPEGAUDIO 3
-#define DVDNAV_FORMAT_LPCM 4
-#define DVDNAV_FORMAT_DTS 5
-#define DVDNAV_FORMAT_SDDS 6
-
 /*********************************************************************
  * initialisation & housekeeping functions                           *
  *********************************************************************/
