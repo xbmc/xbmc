@@ -960,16 +960,20 @@ void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const 
   case DVD_AUDIO_FORMAT_AC3:
     info.name += " AC3";
     break;
-  case DVD_AUDIO_FORMAT_MPEG1:
-  case DVD_AUDIO_FORMAT_MPEG1_DRC:
-    info.name += " MP1";
+  case DVD_AUDIO_FORMAT_UNKNOWN_1:
+    info.name += " UNKNOWN #1";
     break;
-  case DVD_AUDIO_FORMAT_MPEG2:
-  case DVD_AUDIO_FORMAT_MPEG2_DRC:
-    info.name += " MP2";
+  case DVD_AUDIO_FORMAT_MPEG:
+    info.name += " MPEG AUDIO";
+    break;
+  case DVD_AUDIO_FORMAT_MPEG2_EXT:
+    info.name += " MP2 Ext.";
     break;
   case DVD_AUDIO_FORMAT_LPCM:
     info.name += " LPCM";
+    break;
+  case DVD_AUDIO_FORMAT_UNKNOWN_5:
+    info.name += " UNKNOWN #5";
     break;
   case DVD_AUDIO_FORMAT_DTS:
     info.name += " DTS";
