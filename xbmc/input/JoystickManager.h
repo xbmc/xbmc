@@ -29,7 +29,7 @@ class CAction;
 class CJoystickManager
 {
 private:
-  CJoystickManager() : m_bEnabled(true), m_bWakeupChecked(false), m_actionTracker() { }
+  CJoystickManager() : m_bEnabled(false), m_bWakeupChecked(false), m_actionTracker() { }
   ~CJoystickManager() { DeInitialize(); }
 
 public:
