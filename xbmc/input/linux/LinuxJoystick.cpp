@@ -312,7 +312,7 @@ void CLinuxJoystick::Update()
       break;
     case JS_EVENT_AXIS:
       if (joyEvent.number < m_state.axisCount)
-        m_state.axes[joyEvent.number] = NormalizeAxis(joyEvent.value, 32767);
+        m_state.NormalizeAxis(joyEvent.number, joyEvent.value, 32767);
       break;
     default:
       break;

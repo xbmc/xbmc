@@ -384,5 +384,5 @@ void CJoystickDX::Update()
   // Gamepad axes
   long amounts[] = {js.lX, js.lY, js.lZ, js.lRx, js.lRy, js.lRz};
   for (unsigned int a = 0; a < std::min(m_state.axisCount, 6U); a++)
-    m_state.axes[a] = NormalizeAxis(amounts[a], MAX_AXISAMOUNT);
+    m_state.NormalizeAxis(a, amounts[a], MAX_AXISAMOUNT);
 }

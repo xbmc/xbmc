@@ -21,6 +21,7 @@
 #pragma once
 
 #include "IJoystick.h"
+#include "Joystick.h"
 #include "utils/StdString.h"
 
 class CAction;
@@ -64,8 +65,9 @@ private:
   struct ActionTracker
   {
     ActionTracker() { Reset(); }
-    void Reset() { actionID = targetTime = 0; name.clear(); }
+    void Reset();
     void Track(const CAction &action);
+
     int        actionID;
     CStdString name;
     uint32_t   targetTime;

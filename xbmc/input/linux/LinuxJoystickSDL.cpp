@@ -119,7 +119,7 @@ void CLinuxJoystickSDL::Update()
 
   // Gamepad axes
   for (unsigned int a = 0; a < m_state.axisCount; a++)
-    m_state.axes[a] = NormalizeAxis((long)SDL_JoystickGetAxis(m_pJoystick, a), MAX_AXISAMOUNT);
+    m_state.NormalizeAxis(a, (long)SDL_JoystickGetAxis(m_pJoystick, a), MAX_AXISAMOUNT);
 }
 
 #endif // HAS_SDL_JOYSTICK

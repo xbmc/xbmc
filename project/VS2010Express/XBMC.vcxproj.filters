@@ -2970,6 +2970,9 @@
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\Joystick.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\JoystickManager.cpp">
       <Filter>input</Filter>
     </ClCompile>
@@ -5811,6 +5814,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\IJoystick.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\Joystick.h">
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\JoystickManager.h">

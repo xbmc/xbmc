@@ -161,8 +161,8 @@ void CJoystickManager::ProcessHatPresses(SJoystick &oldState, const SJoystick &n
 {
   for (unsigned int i = 0; i < newState.hatCount; i++)
   {
-    SHat &oldHat = oldState.hats[i];
-    const SHat &newHat = newState.hats[i];
+    SJoystick::Hat &oldHat = oldState.hats[i];
+    const SJoystick::Hat &newHat = newState.hats[i];
     if (oldHat == newHat)
       continue;
 
@@ -280,6 +280,13 @@ void CJoystickManager::ProcessAxisMotion(SJoystick &oldState, const SJoystick &n
       m_actionTracker.Reset();
     }
   }
+}
+
+void CJoystickManager::ActionTracker::Reset()
+{
+  actionID = 0;
+  targetTime = 0;
+  name.clear();
 }
 
 void CJoystickManager::ActionTracker::Track(const CAction &action)

@@ -698,6 +698,7 @@
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
     <ClCompile Include="..\..\xbmc\input\ButtonTranslator.cpp" />
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\input\Joystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\JoystickManager.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutConfiguration.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardStat.cpp" />
@@ -1046,6 +1047,7 @@
     <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
     <ClInclude Include="..\..\xbmc\input\IJoystick.h" />
+    <ClInclude Include="..\..\xbmc\input\Joystick.h" />
     <ClInclude Include="..\..\xbmc\input\JoystickManager.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystickDX.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystickXInput.h" />

@@ -100,10 +100,10 @@ void CJoystickXInput::Update()
   m_state.buttons[8] = controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB ? 1 : 0;
   m_state.buttons[9] = controllerState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB ? 1 : 0;
 
-  m_state.axes[0] = NormalizeAxis(controllerState.Gamepad.sThumbLX, 32768);
-  m_state.axes[1] = -NormalizeAxis(controllerState.Gamepad.sThumbLY, 32768);
-  m_state.axes[2] = NormalizeAxis((long)controllerState.Gamepad.bLeftTrigger -
+  m_state.NormalizeAxis(0, controllerState.Gamepad.sThumbLX, 32768);
+  m_state.NormalizeAxis(1, -controllerState.Gamepad.sThumbLY, 32768);
+  m_state.NormalizeAxis(2, (long)controllerState.Gamepad.bLeftTrigger -
     (long)controllerState.Gamepad.bRightTrigger, 255); // Combine into a single axis, like DirectInput
-  m_state.axes[3] = -NormalizeAxis(-controllerState.Gamepad.sThumbRX, 32768);
-  m_state.axes[4] = -NormalizeAxis(controllerState.Gamepad.sThumbRY, 32768);
+  m_state.NormalizeAxis(3, controllerState.Gamepad.sThumbRX, 32768);
+  m_state.NormalizeAxis(4, -controllerState.Gamepad.sThumbRY, 32768);
 }
