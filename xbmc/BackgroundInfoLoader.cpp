@@ -113,12 +113,12 @@ void CBackgroundInfoLoader::Run()
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
-  StopThread();
+  CSingleLock lock(m_lock);
+
+  StopAsync(true);
 
   if (items.Size() == 0)
     return;
-
-  CSingleLock lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);
