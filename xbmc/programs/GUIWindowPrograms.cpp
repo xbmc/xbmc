@@ -55,7 +55,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (m_thumbLoader.IsLoading())
-        m_thumbLoader.StopThread();
+        m_thumbLoader.StopAsync(true);
     }
     break;
 
@@ -150,7 +150,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;

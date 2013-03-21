@@ -72,9 +72,9 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
+      m_thumbLoader.StopAsync(true);
     if (m_playlistThumbLoader.IsLoading())
-      m_playlistThumbLoader.StopThread();
+      m_playlistThumbLoader.StopAsync(true);
     CGUIWindowMusicBase::OnMessage(message);
     return true;
 
@@ -219,7 +219,7 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
 bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
@@ -243,7 +243,7 @@ void CGUIWindowMusicPlaylistEditor::ClearPlaylist()
 void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
 {
   if (m_playlistThumbLoader.IsLoading())
-    m_playlistThumbLoader.StopThread();
+    m_playlistThumbLoader.StopAsync(true);
 
   // deselect all items
   for (int i = 0; i < m_playlist->Size(); i++)
