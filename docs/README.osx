@@ -216,11 +216,11 @@ distribution.
 
   1. build XBMC.app from XCode so that the application bundle is correctly updated.
 
-  2. make -C tools/darwin/packaging/xbmc-osx
+  2. $ cd tools/darwin/packaging/xbmc-osx
 
-  3. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
-  present in the users XBMC build directory:
+  3. $ ./mkdmg-xbmc-osx.sh release
 
-Remember to unmount/eject XBMC.dmg before attempting to recreate it,
-otherwise dmgmaker.pl will fail.
+  4. Use release or debug - you have to be sure that you build the corresponding
+     version before.
 
+  6. Find the corresponding dmg in the packaging dir.
