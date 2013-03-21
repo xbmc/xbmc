@@ -125,8 +125,11 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
-  if (m_pProgressCallback && !pItem->m_bIsFolder)
-    m_pProgressCallback->SetProgressAdvance();
+  {
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
+    if (m_pProgressCallback && !pItem->m_bIsFolder)
+      m_pProgressCallback->SetProgressAdvance();
+  }
 
   if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
@@ -134,7 +137,9 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())
   {
     // first check the cached item
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
     CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
+    lock.Leave();
     if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
     { // Query map if we previously cached the file on HD
       *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
@@ -146,6 +151,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       CStdString strPath;
       URIUtils::GetDirectory(pItem->GetPath(), strPath);
       URIUtils::AddSlashAtEnd(strPath);
+      SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
       if (strPath!=m_strPrevPath)
       {
         // The item is from another directory as the last one,
@@ -161,13 +167,16 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }
-      else if (pItem->IsMusicDb())
+      lock.Leave();
+      if (pItem->IsMusicDb())
       { // a music db item that doesn't have tag loaded - grab details from the database
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
         CSong song;
+        SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
         if (m_musicDatabase.GetSong(param.GetSongId(), song))
         {
+          lock.Leave();
           pItem->GetMusicInfoTag()->SetSong(song);
           if (!song.strThumb.empty())
             pItem->SetArt("thumb", song.strThumb);
@@ -177,10 +186,13 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser
+        CHECK_THREAD_STOP_AND_RETURN(false);
         auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
+        CHECK_THREAD_STOP_AND_RETURN(false);
         if (NULL != pLoader.get())
           // get tag
           pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());
+        SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
         m_tagReads++;
       }
 
@@ -188,6 +200,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     }
   }
 
+  SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
   // Get thumb for item
   m_thumbLoader->LoadItem(pItem);
 

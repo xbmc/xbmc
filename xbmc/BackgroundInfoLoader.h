@@ -27,6 +27,9 @@
 #include <vector>
 #include "boost/shared_ptr.hpp"
 
+#define SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(l, x) \
+  CSingleLock lock(l); if (CThread::IsCurrentThreadStopping()) return x
+
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 

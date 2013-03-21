@@ -74,12 +74,14 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
     thumb = GetCachedImage(item, "thumb");
     if (thumb.IsEmpty())
     {
+      CHECK_THREAD_STOP_AND_RETURN(false);
       thumb = GetLocalThumb(item);
       if (!thumb.IsEmpty())
         SetCachedImage(item, "thumb", thumb);
     }
   }
 
+  CHECK_THREAD_STOP_AND_RETURN(false);
   if (!thumb.IsEmpty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
