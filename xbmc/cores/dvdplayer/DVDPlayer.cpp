@@ -28,6 +28,7 @@
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/DVDInputStreamTV.h"
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
+#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -3949,6 +3950,15 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       CDVDInputStreamPVRManager* pvrinputstream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
       state.canpause = pvrinputstream->CanPause();
       state.canseek  = pvrinputstream->CanSeek();
+    }
+    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+    {
+      CDVDInputStreamFFmpeg *ffmpegstream = static_cast<CDVDInputStreamFFmpeg*>(m_pInputStream);
+      state.canpause = ffmpegstream->CanPause();
+      state.canseek = ffmpegstream->CanSeek();
+      //setting seek to true shouldn't kill the time_total logic
+      if (state.canseek == true && state.time_total <= 0)
+        state.canseek = false;
     }
     else
     {
