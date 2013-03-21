@@ -36,6 +36,7 @@ CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
   m_pVecItems = NULL;
   m_nRequestedThreads = nThreads;
   m_bStartCalled = false;
+  m_bFinishCalled = false;
   m_nActiveThreads = 0;
 }
 
@@ -64,7 +65,7 @@ void CBackgroundInfoLoader::Run()
         }
       }
 
-      while (!m_bStop)
+      while (!m_bStop && !CThread::IsCurrentThreadStopping())
       {
         CSingleLock lock(m_lock);
         CFileItemPtr pItem;
@@ -85,7 +86,7 @@ void CBackgroundInfoLoader::Run()
         lock.Leave();
         try
         {
-          if (LoadItem(pItem.get()) && m_pObserver)
+          if (LoadItem(pItem.get()) && !CThread::IsCurrentThreadStopping() && m_pObserver)
             m_pObserver->OnItemLoaded(pItem.get());
         }
         catch (...)
@@ -96,10 +97,12 @@ void CBackgroundInfoLoader::Run()
     }
 
     CSingleLock lock(m_lock);
-    if (m_nActiveThreads == 1)
+    if (!m_bFinishCalled && m_nActiveThreads == 1)
+    {
       OnLoaderFinish();
+      m_bFinishCalled = true;
+    }
     m_nActiveThreads--;
-
   }
   catch (...)
   {
@@ -123,6 +126,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   m_pVecItems = &items;
   m_bStop = false;
   m_bStartCalled = false;
+  m_bFinishCalled = false;
 
   int nThreads = m_nRequestedThreads;
   if (nThreads == -1)
@@ -131,7 +135,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads)
     nThreads = g_advancedSettings.m_bgInfoLoaderMaxThreads;
 
-  m_nActiveThreads = nThreads;
+  m_nActiveThreads += nThreads;
   for (int i=0; i < nThreads; i++)
   {
     CThread *pThread = new CThread(this, "BackgroundLoader");
@@ -141,12 +145,46 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 #endif
     m_workers.push_back(pThread);
   }
-
+  CLog::Log(LOGDEBUG, "%s - new workers: %d, old workers: %d/%d", __FUNCTION__, nThreads, m_nActiveThreads-nThreads, (int)m_workers.size() - nThreads);
 }
 
-void CBackgroundInfoLoader::StopAsync()
+void CBackgroundInfoLoader::StopAsync(bool invokeOnLoaderFinish /* = false */)
 {
   m_bStop = true;
+
+  if (!invokeOnLoaderFinish)
+    return;
+
+  CSingleLock lock(m_lock);
+  if (!m_bFinishCalled && m_nActiveThreads > 0)
+  {
+    // save current work in inherit loaders.
+    OnLoaderFinish();
+    m_bFinishCalled = true;
+  }
+  m_vecItems.clear();
+
+  // delete old workers if already stopped, leave running workers to
+  // finish their work, this will fasten the ui nav switch.
+  int nWorkerDeleted = 0;
+  for (int i=0; i<(int)m_workers.size();)
+  {
+    if (!m_workers[i]->IsRunning())
+    {
+      delete m_workers[i];
+      m_workers.erase(m_workers.begin() + i);
+      ++nWorkerDeleted;
+    }
+    else
+    {
+      // notify worker to stop without wait.
+      m_workers[i]->StopThread(false);
+      ++i;
+    }
+  }
+  if (!m_workers.empty() || nWorkerDeleted > 0)
+    CLog::Log(LOGDEBUG, "%s - inactive old workers: %d/%d, deleted workers: %d", __FUNCTION__, m_nActiveThreads, (int)m_workers.size(), nWorkerDeleted);
+  m_pVecItems = NULL;
 }
 
 
@@ -154,14 +192,29 @@ void CBackgroundInfoLoader::StopThread()
 {
   StopAsync();
 
+  CSingleLock lock(m_lock);
+  std::vector<CThread *> tempHolder;
   for (int i=0; i<(int)m_workers.size(); i++)
   {
-    m_workers[i]->StopThread();
-    delete m_workers[i];
+    if (m_workers[i]->IsRunning())
+      tempHolder.push_back(m_workers[i]);
+    else
+      delete m_workers[i];
   }
-
   m_workers.clear();
   m_vecItems.clear();
+  lock.Leave();
+
+  // we have set stop flag, wait workers finish their work.
+  while (m_nActiveThreads > 0)
+    Sleep(100);
+  for (int i=0; i<(int)tempHolder.size(); i++)
+  {
+    tempHolder[i]->StopThread();
+    delete tempHolder[i];
+  }
+
+  lock.Enter();
   m_pVecItems = NULL;
   m_nActiveThreads = 0;
 }
