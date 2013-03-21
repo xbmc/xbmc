@@ -157,9 +157,9 @@ distribution.
    or
    $ cd tools/darwin/packaging/xbmc-ios
 
-  3. $ ./mk-xbmc-atv2.sh release
+  3. $ ./mkdeb-xbmc-atv2.sh release
      or
-     $ ./mk-xbmc-ios.sh release
+     $ ./mkdeb-xbmc-ios.sh release
      
   4. Use release or debug - you have to be sure that you build the corresponding 
      version before.
