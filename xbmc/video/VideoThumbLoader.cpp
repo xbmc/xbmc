@@ -204,6 +204,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     return false;
 
   m_database->Open();
+  CDBCloseGuard dbCloseGuard(m_database);
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
@@ -226,7 +227,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
          pItem->GetVideoInfoTag()->m_type != "episode"    &&
          pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
-      m_database->Close();
       return true; // nothing else to be done
     }
   }
@@ -294,8 +294,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
-
-        m_database->Close();
         return true;
       }
     }
@@ -314,8 +312,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       AddJob(extract);
     }
   }
-
-  m_database->Close();
   return true;
 }
 
@@ -338,6 +334,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   {
     map<string, string> artwork;
     m_database->Open();
+    CDBCloseGuard dbCloser(m_database);
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
     else if (tag.m_type == "artist")
@@ -373,7 +370,6 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         item.SetArtFallback("tvshow.thumb", "tvshow.poster");
       }
     }
-    m_database->Close();
   }
   return !item.GetArt().empty();
 }
