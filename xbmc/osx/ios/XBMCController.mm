@@ -584,48 +584,30 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     
     if (sender.state == UIGestureRecognizerStateRecognized)
     {
-      bool swipeAllowed = false;
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= screenScale;
       point.y *= screenScale;
-      swipeAllowed = false;
 
-      if ([sender numberOfTouches] == 2)
+      TouchMoveDirection direction = TouchMoveDirectionNone;
+      switch ([sender direction])
       {
-        swipeAllowed = true;
+        case UISwipeGestureRecognizerDirectionRight:
+          direction = TouchMoveDirectionRight;
+          break;
+        case UISwipeGestureRecognizerDirectionLeft:
+          direction = TouchMoveDirectionLeft;
+          break;
+        case UISwipeGestureRecognizerDirectionUp:
+          direction = TouchMoveDirectionUp;
+          break;
+        case UISwipeGestureRecognizerDirectionDown:
+          direction = TouchMoveDirectionDown;
+          break;
       }
-      else
-      {
-        int gestures = CGenericTouchActionHandler::Get().QuerySupportedGestures(point.x, point.y);
-        if (gestures & EVENT_RESULT_SWIPE)
-        {
-          swipeAllowed = true;
-        }
-      }
-
-      if (swipeAllowed)
-      {
-        TouchMoveDirection direction = TouchMoveDirectionNone;
-        switch ([sender direction])
-        {
-          case UISwipeGestureRecognizerDirectionRight:
-            direction = TouchMoveDirectionRight;
-            break;
-          case UISwipeGestureRecognizerDirectionLeft:
-            direction = TouchMoveDirectionLeft;
-            break;
-          case UISwipeGestureRecognizerDirectionUp:
-            direction = TouchMoveDirectionUp;
-            break;
-          case UISwipeGestureRecognizerDirectionDown:
-            direction = TouchMoveDirectionDown;
-            break;
-        }
-        CGenericTouchActionHandler::Get().OnSwipe(direction,
-                                                  0.0, 0.0,
-                                                  point.x, point.y, 0, 0,
-                                                  [sender numberOfTouches]);
-      }
+      CGenericTouchActionHandler::Get().OnSwipe(direction,
+                                                0.0, 0.0,
+                                                point.x, point.y, 0, 0,
+                                                [sender numberOfTouches]);
     }
   }
 }
