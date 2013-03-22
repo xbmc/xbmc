@@ -68,13 +68,13 @@ TEST_F(TestJobManager, CancelJob)
 TEST_F(TestJobManager, Pause)
 {
   CJob* job = new CSysInfoJob();
-  CJobManager::GetInstance().AddJob(job, NULL);
+  CJobManager::GetInstance().AddJob(job, NULL, CJob::PRIORITY_NORMAL);
 
-  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(""));
-  CJobManager::GetInstance().Pause("");
-  EXPECT_TRUE(CJobManager::GetInstance().IsPaused(""));
-  CJobManager::GetInstance().UnPause("");
-  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(""));
+  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
+  CJobManager::GetInstance().Pause(CJob::PRIORITY_NORMAL);
+  EXPECT_TRUE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
+  CJobManager::GetInstance().UnPause(CJob::PRIORITY_NORMAL);
+  EXPECT_FALSE(CJobManager::GetInstance().IsPaused(CJob::PRIORITY_NORMAL));
 
   CJobManager::GetInstance().CancelJobs();
 }
