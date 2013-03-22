@@ -1062,6 +1062,22 @@ void COMXPlayer::Process()
 
   while (!m_bAbortRequest)
   {
+    #ifdef _DEBUG
+    char response[80];
+    static unsigned count;
+    if ((count++ & 15) == 0)
+    {
+      vc_gencmd(response, sizeof response, "render_bar 4 video_fifo %d %d %d %d",
+            m_player_video.GetDecoderBufferSize()-m_player_video.GetDecoderFreeSpace(),
+            0 , 0, m_player_video.GetDecoderBufferSize());
+      vc_gencmd(response, sizeof response, "render_bar 5 audio_fifo %d %d %d %d",
+            (int)(100.0*m_player_audio.GetDelay()), 0, 0, 100*AUDIO_BUFFER_SECONDS);
+      vc_gencmd(response, sizeof response, "render_bar 6 video_queue %d %d %d %d",
+            m_player_video.GetLevel(), 0, 0, 100);
+      vc_gencmd(response, sizeof response, "render_bar 7 audio_queue %d %d %d %d",
+            m_player_audio.GetLevel(), 0, 0, 100);
+    }
+    #endif
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
 
