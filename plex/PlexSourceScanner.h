@@ -20,64 +20,9 @@
 #include "Settings.h"
 #include "threads/Thread.h"
 #include "URL.h"
-#include "PlexServer.h"
+#include "Client/PlexServer.h"
 #include <string>
 #include <set>
-
-class HostSources
-{
- public:
-
-  HostSources(PlexServerPtr server)
-  {
-    uuid = server->uuid;
-    hostLabel = server->name;
-    host = server->address;
-    servers.insert(server);
-  }
-    
-  void reset()
-  {
-    videoSources.clear();
-    musicSources.clear();
-    pictureSources.clear();
-    applicationSources.clear();
-    
-    librarySections.Clear();
-  }
-  
-  PlexServerPtr bestServer()
-  {
-    PlexServerPtr highScore;
-    BOOST_FOREACH(PlexServerPtr server, servers)
-    {
-      if(!highScore || highScore->score() < server->score())
-        highScore = server;
-    }
-    
-    // If we have a local one, prefer it.
-    return highScore;
-  }
-
-  
-  std::string        uuid;
-  std::string        host;
-  std::string        hostLabel;
-  std::set<PlexServerPtr> servers;
-  bool          localConnection;
-  VECSOURCES    videoSources;
-  VECSOURCES    musicSources;
-  VECSOURCES    pictureSources;
-  VECSOURCES    applicationSources;
-  CFileItemList librarySections;
-
-  // This lock is used in CPlexSourceScanner::Process to protect the vectors defined above from concurrent use.
-  boost::recursive_mutex lock;
-  boost::timer m_lastScan;
-};
-
-typedef boost::shared_ptr<HostSources> HostSourcesPtr;
-typedef std::pair<std::string, HostSourcesPtr> StringSourcesPair;
 
 ////////////////////////////////////////////
 class CPlexSourceScanner : public CThread
@@ -86,8 +31,8 @@ public:
   
   virtual void Process();
   
-  static void ScanHost(PlexServerPtr server);
-  static void RemoveHost(PlexServerPtr server, bool force=false);
+  static void ScanHost(CPlexServerPtr server);
+  static void RemoveHost(CPlexServerPtr server, bool force=false);
   
   static void MergeSourcesForWindow(int windowId);
   
@@ -112,10 +57,6 @@ protected:
   virtual ~CPlexSourceScanner() {}
   
 private:
-  
-  HostSourcesPtr m_sources;
-  
-  static std::map<std::string, HostSourcesPtr> g_hostSourcesMap;
-  static boost::recursive_mutex g_lock;
+  CCriticalSection m_lock;
   static int g_activeScannerCount;
 };

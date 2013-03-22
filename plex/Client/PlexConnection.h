@@ -30,13 +30,13 @@ public:
   };
 
   CPlexConnection() {}
-  CPlexConnection(int type, const CStdString& host, int port, const CStdString& token);
+  CPlexConnection(int type, const CStdString& host, int port, const CStdString& token="");
 
   static CStdString ConnectionTypeName(ConnectionType type);
   static CStdString ConnectionStateName(ConnectionState state);
 
   ConnectionState TestReachability(CPlexServerPtr server);
-  CURL BuildURL(const CStdString& path);
+  CURL BuildURL(const CStdString& path) const;
 
   bool IsLocal() const
   {

@@ -21,13 +21,9 @@
 #include "PlexLibrarySectionManager.h"
 #include "URIUtils.h"
 #include "TextureCache.h"
-#include "PlexServerManager.h"
+#include "Client/PlexServerManager.h"
 
-map<std::string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
-boost::recursive_mutex CPlexSourceScanner::g_lock;
-int CPlexSourceScanner::g_activeScannerCount = 0;
-
-using namespace XFILE; 
+using namespace XFILE;
 
 /////////////////////////////////////////////////////////////////////////////////////
 void CPlexSourceScanner::Process()

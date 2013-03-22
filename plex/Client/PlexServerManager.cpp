@@ -6,6 +6,7 @@
 #include "GUIMessage.h"
 #include "GUIWindowManager.h"
 #include "plex/PlexTypes.h"
+#include "Client/PlexConnection.h"
 
 using namespace std;
 
@@ -17,6 +18,15 @@ CPlexServerReachabilityJob::DoWork()
     return m_server->UpdateReachability();
   }
   return false;
+}
+
+CPlexServerManager::CPlexServerManager()
+{
+  _myPlexServer = CPlexServerPtr(new CPlexServer("myplex", "myPlex", true));
+  _myPlexServer->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));
+
+  _localServer = CPlexServerPtr(new CPlexServer("local", PlexUtils::GetHostName(), true));
+  _localServer->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400)));
 }
 
 CPlexServerPtr
@@ -40,6 +50,12 @@ CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
 CPlexServerPtr
 CPlexServerManager::FindByUUID(const CStdString &uuid)
 {
+  if (uuid.Equals("myplex"))
+    return _myPlexServer;
+
+  if (uuid.Equals("local"))
+    return _localServer;
+
   CSingleLock lk(m_serverMapLock);
   if (m_serverMap.find(uuid) != m_serverMap.end())
   {

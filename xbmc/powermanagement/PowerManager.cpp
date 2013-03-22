@@ -32,7 +32,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GraphicContext.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "plex/MyPlexManager.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"

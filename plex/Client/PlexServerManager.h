@@ -13,6 +13,7 @@ typedef std::vector<CPlexServerPtr> PlexServerList;
 typedef std::map<CStdString, CPlexServerPtr> PlexServerMap;
 typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
 
+
 class CPlexServerReachabilityJob : public CJob
 {
 public:
@@ -29,7 +30,7 @@ public:
 class CPlexServerManager : public CJobQueue
 {
 public:
-  CPlexServerManager() {}
+  CPlexServerManager();
 
   CPlexServerPtr GetBestServer() const
   {
@@ -55,6 +56,9 @@ public:
   virtual void OnJobComplete(unsigned int jobId, bool succeed, CJob* job);
 
 private:
+  CPlexServerPtr _myPlexServer;
+  CPlexServerPtr _localServer;
+
   void NotifyAboutServer(CPlexServerPtr server, bool added = true);
 
   CCriticalSection m_bestServerLock;

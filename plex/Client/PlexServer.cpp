@@ -211,6 +211,44 @@ CPlexServer::GetActiveConnection() const
   return m_activeConnection;
 }
 
+CURL
+CPlexServer::GetActiveConnectionURL() const
+{
+  CSingleLock lk(m_connLock);
+  return m_activeConnection->GetAddress();
+}
+
+CURL
+CPlexServer::BuildURL(const CStdString &path) const
+{
+  CSingleLock lk(m_connLock);
+  CURL url = m_activeConnection->BuildURL(path);
+  if (!url.HasOption("X-Plex-Token"))
+  {
+    /* See if we can find a token in our other connections */
+    CStdString token;
+    BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
+    {
+      if (!conn->GetAccessToken().empty())
+      {
+        token = conn->GetAccessToken();
+        break;
+      }
+    }
+
+    if (!token.empty())
+      url.SetOption("X-Plex-Token", token);
+  }
+  return url;
+}
+
+void
+CPlexServer::AddConnection(CPlexConnectionPtr connection)
+{
+  CSingleLock lk(m_connLock);
+  m_connections.push_back(connection);
+}
+
 CStdString
 CPlexServer::toString() const
 {

@@ -87,7 +87,7 @@
 #include "GUI/GUIWindowPlexSearch.h"
 #include "GUI/GUIWindowNowPlaying.h"
 #include "playlists/PlayList.h"
-#include "PlexServerManager.h"
+#include "plex/Client/PlexServerManager.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 
 using namespace PLAYLIST;
@@ -1958,9 +1958,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_SELECTED_PLEX_MEDIA_SERVER:
   {
     CStdString ret;
-    PlexServerPtr server = PlexServerManager::Get().bestServer();
+    CPlexServerPtr server = g_plexServerManager.GetBestServer();
     if (server)
-      ret = server->name;
+      ret = server->GetName();
 
     return ret;
   }

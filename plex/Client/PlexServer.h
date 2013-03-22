@@ -7,9 +7,10 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/timer.hpp>
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "Job.h"
 #include "JobManager.h"
+#include "URL.h"
 
 class CPlexServer;
 class CPlexConnection;
@@ -61,6 +62,7 @@ public:
 
   CPlexServerPtr GetShared() { return shared_from_this(); }
   CPlexConnectionPtr GetActiveConnection() const;
+  CURL GetActiveConnectionURL() const;
 
   bool operator== (const CPlexServer& otherServer) { return m_uuid.Equals(otherServer.m_uuid); }
 
@@ -69,6 +71,9 @@ public:
 
   void GetConnections(std::vector<CPlexConnectionPtr> &conns);
   int GetNumConnections() const;
+
+  CURL BuildURL(const CStdString& path) const;
+  void AddConnection(CPlexConnectionPtr connection);
 
 private:
   bool m_owned;

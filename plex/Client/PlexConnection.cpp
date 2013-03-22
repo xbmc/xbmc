@@ -16,10 +16,14 @@ CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, con
 }
 
 CURL
-CPlexConnection::BuildURL(const CStdString &path)
+CPlexConnection::BuildURL(const CStdString &path) const
 {
   CURL ret(m_url);
   ret.SetFileName(path);
+
+  if (!m_token.empty())
+    ret.SetOption(GetAccessTokenParameter(), GetAccessToken());
+
   return ret;
 }
 

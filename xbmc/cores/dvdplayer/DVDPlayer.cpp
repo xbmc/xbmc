@@ -95,7 +95,7 @@
 
 /* PLEX */
 #include "FileSystem/PlexDirectory.h"
-#include "PlexServerManager.h"
+#include "Client/PlexServerManager.h"
 
 #include "hmac_sha2.h"
 
@@ -105,6 +105,8 @@
 
 #include "PlexMediaServerQueue.h"
 #include "ApplicationMessenger.h"
+
+#include "Network/NetworkInterface.h"
 /* END PLEX */
 
 using namespace std;
@@ -4632,13 +4634,13 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
   if (item.IsPlexWebkit())
   {
     // Get the hostname of the best server
-    PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
-    CStdString serverHost = bestServer->address;
+    CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
+    CStdString serverHost = bestServer->GetActiveConnection()->GetAddress().GetHostName();
 
     // If we ended up with a webkit URL which is local, restart the player. This
     // will be the case if we're resolving an indirect.
     //
-    if (NetworkInterface::IsLocalAddress(serverHost) == true)
+    if (bestServer->GetActiveConnection()->IsLocal())
     {
       CApplicationMessenger::Get().RestartWithNewPlayer(0, item.GetPath());
       return false;
