@@ -44,7 +44,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Gerenciar arquivos"
+msgstr "Gerenciador de arquivos"
 
 msgctxt "#8"
 msgid "Weather"
@@ -392,7 +392,7 @@ msgstr "Confirme mover arquivos"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Confirma excluir arquivos?"
+msgstr "Confirma exclusão dos arquivos?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -424,7 +424,7 @@ msgstr "Apresentação"
 
 msgctxt "#130"
 msgid "System info"
-msgstr "Informação do Sistema"
+msgstr "Informações do Sistema"
 
 msgctxt "#131"
 msgid "Display"
@@ -456,7 +456,7 @@ msgstr "Buscar"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Informação do Sistema"
+msgstr "Informações do Sistema"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -748,7 +748,7 @@ msgstr "Compartilhamento remoto"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Rede não está conectada"
+msgstr "Rede não conectada"
 
 msgctxt "#222"
 msgid "Cancel"
@@ -3812,7 +3812,7 @@ msgstr "Digite um código-mestre válido!"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Configurações &  arquivos"
+msgstr "Configurações & arquivos"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
