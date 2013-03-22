@@ -28,6 +28,7 @@
 #include <linux/input.h>
 #include <linux/joystick.h>
 #include <sstream>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>

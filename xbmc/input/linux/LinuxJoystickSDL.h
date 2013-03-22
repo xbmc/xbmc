@@ -21,7 +21,6 @@
 #pragma once
 
 #include "input/IJoystick.h"
-#include "input/Joystick.h"
 
 #include <string>
 

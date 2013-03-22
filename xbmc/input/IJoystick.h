@@ -20,10 +20,10 @@
 
 #pragma once
 
+#include "Joystick.h"
+
 #include <vector>
 #include <boost/shared_ptr.hpp>
-
-struct SJoystick;
 
 /**
  * Interface IJoystick

@@ -20,7 +20,6 @@
  */
 
 #include "input/IJoystick.h"
-#include "input/Joystick.h"
 
 union SDL_Event;
 

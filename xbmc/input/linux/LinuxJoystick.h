@@ -22,8 +22,8 @@
 #pragma once
 
 #include "input/IJoystick.h"
-#include "input/Joystick.h"
 
+#include <stdint.h>
 #include <string>
 
 class CLinuxJoystick : public IJoystick
