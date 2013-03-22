@@ -251,10 +251,18 @@ bool CDirectory::Create(const CStdString& strPath)
   return false;
 }
 
-bool CDirectory::Exists(const CStdString& strPath)
+bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
 {
   try
   {
+    if (bUseCache)
+    {
+      bool bPathInCache;
+      if (g_directoryCache.FileExists(strPath, bPathInCache))
+        return true;
+      if (bPathInCache)
+        return false;
+    }
     CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())

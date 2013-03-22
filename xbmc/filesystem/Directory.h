@@ -55,7 +55,7 @@ public:
                            , bool allowThreads=false);
 
   static bool Create(const CStdString& strPath);
-  static bool Exists(const CStdString& strPath);
+  static bool Exists(const CStdString& strPath, bool bUseCache = true);
   static bool Remove(const CStdString& strPath);
 
   /*! \brief Filter files that act like directories from the list, replacing them with their directory counterparts
