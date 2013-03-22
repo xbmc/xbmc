@@ -791,6 +791,38 @@ bool OMXClock::OMXMediaTime(double pts, bool fixPreroll /* = true*/, bool lock /
   return true;
 }
 
+// gets count of late frames, indicating underrun has occurred
+int OMXClock::OMXLateCount(int port /* true */ , bool lock /* = true */)
+{
+  if(m_omx_clock.GetComponent() == NULL)
+    return 0;
+
+  if(lock)
+    Lock();
+
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+  OMX_PARAM_U32TYPE late;
+  OMX_INIT_STRUCTURE(late);
+  late.nPortIndex = m_omx_clock.GetInputPort()+port;
+
+  omx_err = m_omx_clock.GetConfig(OMX_IndexConfigBrcmClockMissCount, &late);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "OMXClock::OMXLateCount error getting OMX_IndexConfigBrcmClockMissCount(%d)\n", port);
+    if(lock)
+      UnLock();
+    return 0;
+  }
+
+  //CLog::Log(LOGINFO, "OMXClock::OMXLateCount(%d)=%d", port, late.nU32);
+
+  if(lock)
+    UnLock();
+
+  return late.nU32;
+}
+
 bool OMXClock::OMXPause(bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)
