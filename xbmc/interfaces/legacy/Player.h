@@ -92,10 +92,11 @@ namespace XBMCAddon
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
 
       /**
-       * playPlaylist([playlist, windowed]) -- Play this item.
+       * playPlaylist([playlist, windowed, startpos]) -- Play this item.
        * 
        * playlist       : [opt] playlist.
        * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)
+       * playoffset     : [opt] int - Playlist starting position (0 based). If not given, current position is used
        * 
        * *Note, If playlist is not given then the Player will try to play the current item
        *        in the current playlist.
@@ -105,7 +106,8 @@ namespace XBMCAddon
        * 
        * example:
        */
-      void playPlaylist(const PlayList* playlist = NULL, bool windowed = false);
+      void playPlaylist(const PlayList* playlist = NULL,
+                        bool windowed = false, int startoffset=-1);
 
       /**
        * play() -- try to play the current item in the current playlist.
