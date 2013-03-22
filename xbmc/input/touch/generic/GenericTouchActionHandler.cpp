@@ -190,5 +190,13 @@ void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float
 void CGenericTouchActionHandler::focusControl(float x, float y)
 {
   // Send a mouse motion event for getting the current guiitem selected
-  touch(XBMC_MOUSEMOTION, 0, (uint16_t)x, (uint16_t)y);
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.x = x;
+  newEvent.motion.y = y;
+
+  CWinEvents::MessagePush(&newEvent);
 }
