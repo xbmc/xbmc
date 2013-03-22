@@ -34,6 +34,7 @@ set(LINK_PKG
   Xrandr
   LibDl
   LibRt
+  FLAC
 )
 
 foreach(l ${LINK_PKG})
