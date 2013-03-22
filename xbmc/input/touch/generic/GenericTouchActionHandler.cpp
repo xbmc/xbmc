@@ -113,7 +113,6 @@ void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers 
   if (pointers <= 0 || pointers > 10)
     return;
 
-  focusControl(x, y);
   sendEvent(ACTION_TOUCH_LONGPRESS, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
 }
 
