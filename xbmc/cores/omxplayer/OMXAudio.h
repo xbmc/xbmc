@@ -94,6 +94,7 @@ public:
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize);
 
   bool BadState() { return !m_Initialized; };
+  unsigned int GetAudioRenderingLatency();
 
 private:
   IAudioCallback* m_pCallback;
@@ -148,7 +149,6 @@ protected:
   CAEChannelInfo    GetChannelLayout(AEAudioFormat format);
 
   void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
-  unsigned int GetAudioRenderingLatency();
   CCriticalSection m_critSection;
 };
 #endif
