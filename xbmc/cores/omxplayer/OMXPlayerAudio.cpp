@@ -510,7 +510,7 @@ void OMXPlayerAudio::Process()
       // hard unlock audio out buffering
       clock_gettime(CLOCK_REALTIME, &m_endtime);
       //int iLevel = min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime()));
-      if(/*iLevel < 10 &&*/ m_stalled && (m_endtime.tv_sec - m_starttime.tv_sec) > 1)
+      if(/*iLevel < 10 &&*/ m_stalled && m_av_clock->OMXAudioBuffer() && (m_endtime.tv_sec - m_starttime.tv_sec) > 1)
       {
         m_stalled = false;
         if(m_av_clock->HasVideo() && m_av_clock->OMXAudioBuffer())
