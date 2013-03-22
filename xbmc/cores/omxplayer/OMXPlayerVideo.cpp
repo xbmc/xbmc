@@ -351,7 +351,7 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
     return;
 
-  double pts_media = m_av_clock->OMXMediaTime(false, false);
+  double pts_media = m_av_clock->OMXMediaTime(false);
   ProcessOverlays(iGroupId, pts_media);
 
   g_renderManager.FlipPage(CThread::m_bStop, m_iSleepEndTime / DVD_TIME_BASE, -1, FS_NONE);
@@ -501,7 +501,7 @@ void OMXPlayerVideo::Process()
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true, true));
+        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true));
         //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
       else
         state.timestamp = m_av_clock->GetAbsoluteClock();

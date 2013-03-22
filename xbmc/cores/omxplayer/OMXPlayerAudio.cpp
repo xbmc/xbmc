@@ -579,7 +579,7 @@ void OMXPlayerAudio::Process()
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true, true));
+        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true));
         //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
       else
         state.timestamp = m_av_clock->GetAbsoluteClock();
