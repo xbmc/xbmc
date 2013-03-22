@@ -373,7 +373,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
         if(m_flush)
           break;
 
-        if(m_omxAudio.GetSpace() < (unsigned int)pkt->iSize)
+        if(m_omxAudio.GetSpace() < (unsigned int)decoded_size)
         {
           Sleep(10);
           continue;
