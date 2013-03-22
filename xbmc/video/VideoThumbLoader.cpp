@@ -200,10 +200,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   m_database->Open();
 
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() && pItem->IsVideo())
+  if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
-    if (m_database->GetStreamDetails(*pItem))
-      pItem->SetInvalid();
+    if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
+    || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
+    {
+      if (m_database->GetStreamDetails(*pItem))
+        pItem->SetInvalid();
+    }
   }
 
   // video db items normally have info in the database
@@ -244,10 +248,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     SetArt(*pItem, artwork);
   }
 
-  // thumbnails are special-cased due to auto-generation
+  // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
   {
-    // An auto-generated thumb may have been cached on a different device - check we have it here 
+    // An auto-generated thumb may have been cached on a different device - check we have it here
     CStdString url = pItem->GetArt("thumb");
     if (url.compare(0, 14, "image://video@") == 0 && !CTextureCache::Get().HasCachedImage(url))
       pItem->SetArt("thumb", "");
@@ -282,21 +286,20 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         return true;
       }
     }
-  }
 
-  // flag extraction
-  if (!pItem->m_bIsFolder &&
-       pItem->HasVideoInfoTag() &&
-       g_guiSettings.GetBool("myvideos.extractflags") &&
-       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
-         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
-  {
-    CFileItem item(*pItem);
-    CStdString path(item.GetPath());
-    if (URIUtils::IsInRAR(item.GetPath()))
-      SetupRarOptions(item,path);
-    CThumbExtractor* extract = new CThumbExtractor(item,path,false);
-    AddJob(extract);
+    // flag extraction
+    if (pItem->HasVideoInfoTag() &&
+        g_guiSettings.GetBool("myvideos.extractflags") &&
+        (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
+          pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
+    {
+      CFileItem item(*pItem);
+      CStdString path(item.GetPath());
+      if (URIUtils::IsInRAR(item.GetPath()))
+        SetupRarOptions(item,path);
+      CThumbExtractor* extract = new CThumbExtractor(item,path,false);
+      AddJob(extract);
+    }
   }
 
   m_database->Close();
