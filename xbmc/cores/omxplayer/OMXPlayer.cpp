@@ -711,7 +711,7 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenVideoStream(it->id, it->source, reset))
-      valid = true;;
+      valid = true;
   }
   if(!valid)
     CloseVideoStream(true);
@@ -2268,7 +2268,7 @@ void COMXPlayer::HandleMessages()
         }
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
-        // audioplayer, stops outputing audio to audiorendere, but still tries to
+        // audioplayer, stops outputing audio to audiorender, but still tries to
         // sleep an correct amount for each packet
         // videoplayer just plays faster after the clock speed has been increased
         // 1. disable audio
