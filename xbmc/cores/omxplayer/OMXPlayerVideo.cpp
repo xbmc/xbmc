@@ -350,7 +350,7 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
     return;
 
-  double pts_media = m_av_clock->OMXMediaTime(false, false);
+  double pts_media = m_av_clock->OMXMediaTime(false);
   ProcessOverlays(iGroupId, pts_media);
 
   g_renderManager.FlipPage(CThread::m_bStop, m_iSleepEndTime / DVD_TIME_BASE, -1, FS_NONE);

@@ -3729,7 +3729,7 @@ bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  double pts = m_av_clock.OMXMediaTime(false, false);
+  double pts = m_av_clock.OMXMediaTime(false);
 
   m_player_subtitle.GetCurrentSubtitle(strSubtitle, pts - m_player_video.GetSubtitleDelay());
 
@@ -3890,7 +3890,7 @@ void COMXPlayer::UpdatePlayState(double timeout)
 
     // TODO : workaround until omx clock handling is rewritten
     if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
-      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true, true));
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true));
     else
       state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
     state.time_total = m_pDemuxer->GetStreamLength();
