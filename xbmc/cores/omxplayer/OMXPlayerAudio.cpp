@@ -213,7 +213,7 @@ void OMXPlayerAudio::HandleSyncError(double duration)
     m_skipdupcount = 0;
     m_error = 0;
     m_syncclock = false;
-    m_errortime = m_av_clock->CurrentHostCounter();
+    m_errortime = CurrentHostCounter();
 
     return;
   }
@@ -225,12 +225,12 @@ void OMXPlayerAudio::HandleSyncError(double duration)
     m_integral = 0;
     m_skipdupcount = 0;
     m_error = 0;
-    m_errortime = m_av_clock->CurrentHostCounter();
+    m_errortime = CurrentHostCounter();
     return;
   }
 
   //check if measured error for 1 second
-  now = m_av_clock->CurrentHostCounter();
+  now = CurrentHostCounter();
   if ((now - m_errortime) >= m_freq)
   {
     m_errortime = now;
