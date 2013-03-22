@@ -33,7 +33,7 @@
 CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi)
   : IGenericTouchGestureDetector(handler, dpi),
     m_directions(TouchMoveDirectionLeft | TouchMoveDirectionRight | TouchMoveDirectionUp | TouchMoveDirectionDown),
-    m_swipeDetected(false)
+    m_swipeDetected(false), m_numtouches(0)
 { }
 
 bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
@@ -43,12 +43,16 @@ bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &
 
   // only handle one-finger swipes
   if (index > 0)
+  {
+    m_numtouches = index + 1;
     return false;
+  }
 
   // reset all values
   m_done = false;
   m_swipeDetected = false;
   m_directions = TouchMoveDirectionLeft | TouchMoveDirectionRight | TouchMoveDirectionUp | TouchMoveDirectionDown;
+  m_numtouches = 1;
 
   return true;
 }
@@ -78,7 +82,7 @@ bool CGenericTouchSwipeDetector::OnTouchUp(unsigned int index, const Pointer &po
   pointer.velocity(velocityX, velocityY, false);
 
   // call the OnSwipe() callback
-  OnSwipe((TouchMoveDirection)m_directions, pointer.down.x, pointer.down.y, pointer.current.x, pointer.current.y, velocityX, velocityY, 1);
+  OnSwipe((TouchMoveDirection)m_directions, pointer.down.x, pointer.down.y, pointer.current.x, pointer.current.y, velocityX, velocityY, m_numtouches);
   return true;
 }
 
