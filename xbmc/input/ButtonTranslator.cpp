@@ -870,7 +870,7 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
   return (action > 0);
 }
 
-bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action)
+bool CButtonTranslator::TranslateTouchAction(int touchAction, int touchPointers, int &window, int &action)
 {
   action = 0;
   if (touchPointers <= 0)
@@ -881,7 +881,10 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
 
   action = GetTouchActionCode(window, touchAction);
   if (action <= 0)
+  {
+    window = WINDOW_INVALID;
     action = GetTouchActionCode(-1, touchAction);
+  }
 
   return action > 0;
 }
