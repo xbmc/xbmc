@@ -433,8 +433,6 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_EdlAutoSkipMarkers.Clear();
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-
-  m_messenger.Init();
 }
 
 COMXPlayer::~COMXPlayer()
@@ -558,6 +556,8 @@ void COMXPlayer::OnStartup()
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();
   m_CurrentTeletext.Clear();
+
+  m_messenger.Init();
 
   CUtil::ClearTempFonts();
 }
