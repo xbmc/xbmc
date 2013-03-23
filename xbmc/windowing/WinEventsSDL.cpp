@@ -43,8 +43,6 @@
 #include "utils/log.h"
 #endif
 
-PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
-
 #if defined(_LINUX) && !defined(__APPLE__)
 // The following chunk of code is Linux specific. For keys that have
 // with keysym.sym set to zero it checks the scan code, and sets the sym

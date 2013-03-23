@@ -30,8 +30,6 @@
 
 static CCriticalSection g_inputCond;
 
-PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
-
 static std::list<XBMC_Event> events;
 
 void CWinEventsIOS::DeInit()
