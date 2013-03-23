@@ -31,6 +31,8 @@
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
 #if defined(TARGET_DARWIN)
@@ -137,24 +139,57 @@ void CPowerManager::SetDefaults()
 
 bool CPowerManager::Powerdown()
 {
-  return CanPowerdown() ? m_instance->Powerdown() : false;
+  if (CanPowerdown() && m_instance->Powerdown())
+  {
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+      dialog->Show();
+
+    return true;
+  }
+
+  return false;
 }
 
 bool CPowerManager::Suspend()
 {
-  return CanSuspend() ? m_instance->Suspend() : false;
+  if (CanSuspend() && m_instance->Suspend())
+  {
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+      dialog->Show();
+
+    return true;
+  }
+
+  return false;
 }
 
 bool CPowerManager::Hibernate()
 {
-  return CanHibernate() ? m_instance->Hibernate() : false;
+  if (CanHibernate() && m_instance->Hibernate())
+  {
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+      dialog->Show();
+
+    return true;
+  }
+
+  return false;
 }
 bool CPowerManager::Reboot()
 {
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
+  {
     CAnnouncementManager::Announce(System, "xbmc", "OnRestart");
+
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+      dialog->Show();
+  }
 
   return success;
 }
@@ -208,6 +243,10 @@ void CPowerManager::OnWake()
 
   // reset out timers
   g_application.ResetShutdownTimers();
+
+  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (dialog)
+    dialog->Close();
 
 #if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   if (g_Windowing.IsFullScreen())
