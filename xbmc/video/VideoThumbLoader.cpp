@@ -439,7 +439,6 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
         db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", loader->m_item.GetArt("thumb"));
         db.Close();
       }
-
     }
 
     if (m_pStreamDetailsObs)
