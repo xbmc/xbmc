@@ -80,7 +80,7 @@ protected:
   void OnLostDevice();
   bool SetWindow(int width, int height, bool fullscreen, const CStdString &output);
 
-  Window       m_glWindow;
+  Window       m_glWindow, m_mainWindow;
   GLXContext   m_glContext;
   Display*     m_dpy;
   Cursor       m_invisibleCursor;
