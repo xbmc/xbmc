@@ -315,9 +315,14 @@ CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
 
   if(m_bReopened)
   {
-    m_bReopened = false;
-    m_eof       = false;
-    return NEXTSTREAM_RETRY;
+    if (IsEOF())
+      return NEXTSTREAM_NONE;
+    else
+    {
+      m_bReopened = false;
+      m_eof       = false;
+      return NEXTSTREAM_RETRY;
+    }
   }
 
   if (m_pOtherStream)
