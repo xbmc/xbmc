@@ -93,9 +93,6 @@ bool CGenericTouchActionHandler::OnTouchGestureEnd(float x, float y, float offse
 {
   sendEvent(ACTION_GESTURE_END, velocityX, velocityY, x, y);
 
-  // unfocus the focused GUI item
-  g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-
   return true;
 }
 

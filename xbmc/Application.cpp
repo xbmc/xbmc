@@ -543,6 +543,12 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         return false;
 
       CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), windowId, false);
+      // Post an unfocus message for touch device after the action.
+      if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
+      {
+        CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+        CApplicationMessenger::Get().SendGUIMessage(msg);
+      }
       break;
     }
   }
