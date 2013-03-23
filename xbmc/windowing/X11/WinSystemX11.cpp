@@ -55,6 +55,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_glContext = NULL;
   m_dpy = NULL;
   m_glWindow = 0;
+  m_mainWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
   m_minimized = false;
   m_bIgnoreNextFocusMessage = false;
@@ -132,7 +133,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
 bool CWinSystemX11::DestroyWindow()
 {
-  if (!m_glWindow)
+  if (!m_mainWindow)
     return true;
 
   if (m_glContext)
@@ -143,19 +144,21 @@ bool CWinSystemX11::DestroyWindow()
 
   if (m_invisibleCursor)
   {
-    XUndefineCursor(m_dpy, m_glWindow);
+    XUndefineCursor(m_dpy, m_mainWindow);
     XFreeCursor(m_dpy, m_invisibleCursor);
     m_invisibleCursor = 0;
   }
 
   CWinEventsX11Imp::Quit();
 
-  XUnmapWindow(m_dpy, m_glWindow);
+  XUnmapWindow(m_dpy, m_mainWindow);
   XSync(m_dpy,TRUE);
   XUngrabKeyboard(m_dpy, CurrentTime);
   XUngrabPointer(m_dpy, CurrentTime);
   XDestroyWindow(m_dpy, m_glWindow);
+  XDestroyWindow(m_dpy, m_mainWindow);
   m_glWindow = 0;
+  m_mainWindow = 0;
 
   if (m_icon)
     XFreePixmap(m_dpy, m_icon);
@@ -225,7 +228,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       OnLostDevice();
       m_bIsInternalXrr = true;
       g_xrandr.SetMode(out, mode);
-      if (m_glWindow)
+      if (m_mainWindow)
         return true;
     }
   }
@@ -503,9 +506,9 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
 void CWinSystemX11::ShowOSMouse(bool show)
 {
   if (show)
-    XUndefineCursor(m_dpy,m_glWindow);
+    XUndefineCursor(m_dpy,m_mainWindow);
   else if (m_invisibleCursor)
-    XDefineCursor(m_dpy,m_glWindow, m_invisibleCursor);
+    XDefineCursor(m_dpy,m_mainWindow, m_invisibleCursor);
 }
 
 void CWinSystemX11::ResetOSScreensaver()
@@ -588,10 +591,10 @@ void CWinSystemX11::NotifyMouseCoverage(bool covered)
     int result = -1;
     while (result != GrabSuccess && result != AlreadyGrabbed)
     {
-      result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+      result = XGrabPointer(m_dpy, m_mainWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
       XbmcThreads::ThreadSleep(100);
     }
-    XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+    XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
   }
   else
   {
@@ -609,7 +612,7 @@ bool CWinSystemX11::Minimize()
     g_graphicsContext.ToggleFullScreenRoot();
   }
 
-  XIconifyWindow(m_dpy, m_glWindow, m_nScreen);
+  XIconifyWindow(m_dpy, m_mainWindow, m_nScreen);
 
   m_minimized = true;
   return true;
@@ -620,13 +623,13 @@ bool CWinSystemX11::Restore()
 }
 bool CWinSystemX11::Hide()
 {
-  XUnmapWindow(m_dpy, m_glWindow);
+  XUnmapWindow(m_dpy, m_mainWindow);
   XSync(m_dpy, False);
   return true;
 }
 bool CWinSystemX11::Show(bool raise)
 {
-  XMapWindow(m_dpy, m_glWindow);
+  XMapWindow(m_dpy, m_mainWindow);
   XSync(m_dpy, False);
   m_minimized = false;
   return true;
@@ -776,7 +779,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
   bool mouseActive = false;
   float mouseX, mouseY;
 
-  if (m_glWindow && ((m_bFullScreen != fullscreen) || !m_currentOutput.Equals(output) || m_windowDirty))
+  if (m_mainWindow && ((m_bFullScreen != fullscreen) || !m_currentOutput.Equals(output) || m_windowDirty))
   {
     mouseActive = g_Mouse.IsActive();
     if (mouseActive)
@@ -785,7 +788,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
       int root_x_return, root_y_return;
       int win_x_return, win_y_return;
       unsigned int mask_return;
-      bool isInWin = XQueryPointer(m_dpy, m_glWindow, &root_return, &child_return,
+      bool isInWin = XQueryPointer(m_dpy, m_mainWindow, &root_return, &child_return,
                                    &root_x_return, &root_y_return,
                                    &win_x_return, &win_y_return,
                                    &mask_return);
@@ -804,7 +807,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
   }
 
   // create main window
-  if (!m_glWindow)
+  if (!m_mainWindow)
   {
     EnableSystemScreenSaver(false);
 
@@ -845,22 +848,31 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     swa.border_pixel = fullscreen ? 0 : 5;
     swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
     swa.colormap = cmap;
-    swa.background_pixel = def_vis ? BlackPixel(m_dpy, vi->screen) : 0;
     swa.event_mask = FocusChangeMask | KeyPressMask | KeyReleaseMask |
                      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
                      PropertyChangeMask | StructureNotifyMask | KeymapStateMask |
                      EnterWindowMask | LeaveWindowMask | ExposureMask;
     unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask;
 
-    m_glWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, vi->screen),
+    m_mainWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, vi->screen),
                     x0, y0, width, height, 0, vi->depth,
+                    InputOutput, vi->visual,
+                    mask, &swa);
+
+    swa.override_redirect = False;
+    swa.border_pixel = 0;
+    swa.event_mask = 0;
+    mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWColormap;
+
+    m_glWindow = XCreateWindow(m_dpy, m_mainWindow,
+                    0, 0, width, height, 0, vi->depth,
                     InputOutput, vi->visual,
                     mask, &swa);
 
     if (fullscreen && hasWM)
     {
       Atom fs = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", True);
-      XChangeProperty(m_dpy, m_glWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
+      XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
     }
 
     // define invisible cursor
@@ -869,14 +881,14 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     static char noData[] = { 0,0,0,0,0,0,0,0 };
     black.red = black.green = black.blue = 0;
 
-    bitmapNoData = XCreateBitmapFromData(m_dpy, m_glWindow, noData, 8, 8);
+    bitmapNoData = XCreateBitmapFromData(m_dpy, m_mainWindow, noData, 8, 8);
     m_invisibleCursor = XCreatePixmapCursor(m_dpy, bitmapNoData, bitmapNoData,
                                             &black, &black, 0, 0);
     XFreePixmap(m_dpy, bitmapNoData);
-    XDefineCursor(m_dpy,m_glWindow, m_invisibleCursor);
+    XDefineCursor(m_dpy,m_mainWindow, m_invisibleCursor);
 
     //init X11 events
-    CWinEventsX11Imp::Init(m_dpy, m_glWindow);
+    CWinEventsX11Imp::Init(m_dpy, m_mainWindow);
 
     changeWindow = true;
     changeSize = true;
@@ -889,13 +901,17 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
 
   if (changeSize || changeWindow)
   {
+    XResizeWindow(m_dpy, m_mainWindow, width, height);
+  }
+
+  if ((width != m_nWidth) || (height != m_nHeight) || changeWindow)
+  {
     XResizeWindow(m_dpy, m_glWindow, width, height);
   }
 
   if (changeWindow)
   {
     m_icon = None;
-    if (!fullscreen)
     {
       CreateIconPixmap();
       XWMHints *wm_hints;
@@ -912,21 +928,22 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
       wm_hints->flags = StateHint | IconPixmapHint;
 
       XSync(m_dpy,False);
-      XSetWMProperties(m_dpy, m_glWindow, &windowName, &iconName,
+      XSetWMProperties(m_dpy, m_mainWindow, &windowName, &iconName,
                             NULL, 0, NULL, wm_hints,
                             NULL);
       XFree(wm_hints);
 
       // register interest in the delete window message
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
-      XSetWMProtocols(m_dpy, m_glWindow, &wmDeleteMessage, 1);
+      XSetWMProtocols(m_dpy, m_mainWindow, &wmDeleteMessage, 1);
     }
     XMapRaised(m_dpy, m_glWindow);
+    XMapRaised(m_dpy, m_mainWindow);
     XSync(m_dpy,TRUE);
 
     if (changeWindow && mouseActive)
     {
-      XWarpPointer(m_dpy, None, m_glWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
+      XWarpPointer(m_dpy, None, m_mainWindow, 0, 0, 0, 0, mouseX*width, mouseY*height);
     }
 
     if (fullscreen)
@@ -934,10 +951,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
       int result = -1;
       while (result != GrabSuccess && result != AlreadyGrabbed)
       {
-        result = XGrabPointer(m_dpy, m_glWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+        result = XGrabPointer(m_dpy, m_mainWindow, True, ButtonPressMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
         XbmcThreads::ThreadSleep(100);
       }
-      XGrabKeyboard(m_dpy, m_glWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+      XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
     }
 
     CDirtyRegionList dr;
