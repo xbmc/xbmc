@@ -981,6 +981,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
           buttons.Add(CONTEXT_BUTTON_LINK_MOVIE,20384);
         }
+        if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_type == "movie") // movie entry
+        {
+          buttons.Add(CONTEXT_BUTTON_SET_MOVIESET,20465); // set or change movie set the movie belongs to
+        }
 
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_ART, 13511);
@@ -1321,6 +1325,17 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // we need to clear any cached version of this tag's listing
       items.SetPath(item->GetPath());
       items.RemoveDiscCache(GetID());
+      return true;
+    }
+  case CONTEXT_BUTTON_SET_MOVIESET:
+    {
+      CFileItemPtr selectedSet;
+      if (!GetSetForMovie(item, selectedSet))
+        return true;
+
+      if (SetMovieSet(item, selectedSet))
+        Refresh();
+
       return true;
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
@@ -1759,6 +1774,100 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
 
   items.Copy(dialog->GetSelectedItems());
   return items.Size() > 0;
+}
+
+bool CGUIWindowVideoNav::GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &selectedSet)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return false;
+
+  CFileItemList listItems;
+  CStdString baseDir = "videodb://1/7/";
+  if (!CDirectory::GetDirectory(baseDir, listItems) || listItems.Size() <= 0)
+    return false;
+  listItems.Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderAscending);
+
+  int currentSetId = 0;
+  CStdString currentSetLabel;
+
+  if (movieItem->GetVideoInfoTag()->m_iSetId > currentSetId)
+  {
+    currentSetId = movieItem->GetVideoInfoTag()->m_iSetId;
+    currentSetLabel = videodb.GetSetById(currentSetId);
+  }
+
+  if (currentSetId > 0)
+  {
+    // add clear item
+    CStdString strClear; strClear.Format(g_localizeStrings.Get(20467), currentSetLabel);
+    CFileItemPtr clearItem(new CFileItem(strClear));
+    clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
+    listItems.AddFront(clearItem, 0);
+    // add keep current set item
+    CStdString strKeep; strKeep.Format(g_localizeStrings.Get(20469), currentSetLabel);
+    CFileItemPtr keepItem(new CFileItem(strKeep));
+    keepItem->GetVideoInfoTag()->m_iDbId = currentSetId;
+    listItems.AddFront(keepItem, 1);
+  }
+
+  CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog == NULL)
+    return false;
+
+  CStdString strHeading; 
+  strHeading.Format(g_localizeStrings.Get(20466));
+  dialog->Reset();
+  dialog->SetHeading(strHeading);
+  dialog->SetItems(&listItems);
+  if (currentSetId >= 0)
+  {
+    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++) 
+    {
+      if (listItems.Get(listIndex)->GetVideoInfoTag()->m_iDbId == currentSetId)
+      {
+        dialog->SetSelected(listIndex);
+        break;
+      }
+    }
+  }
+  dialog->EnableButton(true, 20468); // new set via button
+  dialog->DoModal();
+
+  if (dialog->IsButtonPressed())
+  { // creating new set
+    CStdString newSetTitle;
+    if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, g_localizeStrings.Get(20468), false))
+      return false;
+    int idSet = videodb.AddSet(newSetTitle);
+    map<string, string> movieArt, setArt;
+    if (!videodb.GetArtForItem(idSet, "set", setArt))
+    {
+      videodb.GetArtForItem(movieItem->GetVideoInfoTag()->m_iDbId, "movie", movieArt);
+      videodb.SetArtForItem(idSet, "set", movieArt);
+    }
+    CFileItemPtr newSet(new CFileItem(newSetTitle));
+    newSet->GetVideoInfoTag()->m_iDbId = idSet;
+    selectedSet = newSet;
+    return true;
+  }
+  else if (dialog->IsConfirmed())
+  {
+    selectedSet = dialog->GetSelectedItem();
+    return (selectedSet != NULL);
+  }
+  else
+    return false;
+}
+
+bool CGUIWindowVideoNav::SetMovieSet (CFileItemPtr &movieItem, CFileItemPtr &selectedSet)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return false;
+
+  videodb.SetMovieSet(movieItem->GetVideoInfoTag()->m_iDbId, selectedSet->GetVideoInfoTag()->m_iDbId);
+  return true;
 }
 
 CStdString CGUIWindowVideoNav::GetLocalizedType(const std::string &strType)

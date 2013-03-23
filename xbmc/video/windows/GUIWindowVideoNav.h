@@ -81,5 +81,8 @@ protected:
   bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static CStdString GetLocalizedType(const std::string &strType);
 
+  bool GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
+  bool SetMovieSet(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
+
   VECSOURCES m_shares;
 };
