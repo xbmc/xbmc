@@ -64,7 +64,7 @@ uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
 
-PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
+PHANDLE_EVENT_FUNC CWinEventsWin32::m_pEventFunc = NULL;
 int CWinEventsWin32::m_lastGesturePosX = 0;
 int CWinEventsWin32::m_lastGesturePosY = 0;
 

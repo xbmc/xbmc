@@ -30,8 +30,6 @@
 #include "utils/log.h"
 #include "powermanagement/PowerManager.h"
 
-PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
-
 bool CWinEventsLinux::m_initialized = false;
 CLinuxInputDevices CWinEventsLinux::m_devices;
 
