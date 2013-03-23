@@ -30,6 +30,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../01-static-mpi_mpi-internal.patch 
 	cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
+	cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
