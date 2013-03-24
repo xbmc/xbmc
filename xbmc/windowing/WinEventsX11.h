@@ -47,8 +47,7 @@ public:
 
 protected:
   static XBMCKey LookupXbmcKeySym(KeySym keysym);
-  static bool ProcessKey(XBMC_Event &event, int repeatDelay);
-  static bool ProcessKeyRepeat();
+  static bool ProcessKey(XBMC_Event &event);
   static bool ProcessShortcuts(XBMC_Event& event);
   static CWinEventsX11Imp *WinEvents;
   Display *m_display;
@@ -58,8 +57,6 @@ protected:
   size_t m_keybuf_len;
   XIM m_xim;
   XIC m_xic;
-  XBMC_Event m_lastKey;
-  XbmcThreads::EndTime m_repeatKeyTimeout;
   std::map<uint32_t,uint32_t> m_symLookupTable;
   int m_keymodState;
   bool m_structureChanged;
