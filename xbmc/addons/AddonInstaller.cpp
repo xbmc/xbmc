@@ -343,13 +343,11 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     }
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
-    if (dep)
+    if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
     {
-      if (std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end() &&
-       !CheckDependencies(dep, preDeps))
+      if (!CheckDependencies(dep, preDeps))
         return false;
-      else
-        preDeps.push_back(dep->ID());
+      preDeps.push_back(dep->ID());
     }
   }
   return true;
