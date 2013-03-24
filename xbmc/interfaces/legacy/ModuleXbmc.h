@@ -58,7 +58,7 @@ namespace XBMCAddon
     void log(const char* msg, int level = lLOGNOTICE);
 
     /**
-     * Shutdown() -- Shutdown the xbox.
+     * Shutdown() -- Shutdown the htpc.
      *
      * example:
      *  - xbmc.shutdown()
@@ -66,7 +66,7 @@ namespace XBMCAddon
     void shutdown();
 
     /**
-     * restart() -- Restart the xbox.
+     * restart() -- Restart the htpc.
      * example:
      *  - xbmc.restart()
      */
@@ -287,9 +287,9 @@ namespace XBMCAddon
      * 
      * path           : string or unicode - Path to format
      * 
-     * *Note, Only useful if you are coding for both Linux and Windows/Xbox.
+     * *Note, Only useful if you are coding for both Linux and Windows.
      *        e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'
-     *        on Linux. Would return 'special://masterprofile/script_data' on the Xbox.
+     *        on Linux.
      * 
      * example:
      *   - fpath = xbmc.translatePath('special://masterprofile/script_data')
@@ -312,7 +312,7 @@ namespace XBMCAddon
      * 
      * path           : string or unicode - Path to format
      * 
-     * *Note, Only useful if you are coding for both Linux and Windows/Xbox for fixing slash problems.
+     * *Note, Only useful if you are coding for both Linux and Windows for fixing slash problems.
      *        e.g. Corrects 'Z://something' -> 'Z:\\something'
      * 
      * example:
