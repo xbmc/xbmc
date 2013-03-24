@@ -43,7 +43,7 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/gettext-tools
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/gettext-tools install
+	$(MAKE) -j1 -C $(PLATFORM)/gettext-tools install
 	touch $@
 
 clean:
