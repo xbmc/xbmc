@@ -43,7 +43,7 @@ namespace XbmcThreads
     now_time = (uint64_t)timeGetTime();
 #else
     struct timespec ts = {};
-    clock_gettime(CLOCK_MONOTONIC, &ts);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
     now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 #endif
     if (!start_time_set)
