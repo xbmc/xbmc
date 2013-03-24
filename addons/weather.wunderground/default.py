@@ -515,8 +515,8 @@ def properties(data,loc):
         rss = ''
         alerts = ''
         for count, item in enumerate(data['alerts']):
-            set_property('Alerts.%i.Description'     % (count+1), item['description'])
-            set_property('Alerts.%i.Message'         % (count+1), item['message'])
+            set_property('Alerts.%i.Description'     % (count+1), item['description'].encode('latin-1'))
+            set_property('Alerts.%i.Message'         % (count+1), item['message'].encode('latin-1'))
             set_property('Alerts.%i.StartDate'       % (count+1), item['date'])
             set_property('Alerts.%i.EndDate'         % (count+1), item['expires'])
             set_property('Alerts.%i.Significance'    % (count+1), SEVERITY[item['significance']])
