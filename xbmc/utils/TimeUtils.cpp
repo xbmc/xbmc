@@ -43,7 +43,11 @@ int64_t CurrentHostCounter(void)
   return( (int64_t)PerformanceCount.QuadPart );
 #else
   struct timespec now;
+#ifdef CLOCK_MONOTONIC_RAW
+  clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+#else
   clock_gettime(CLOCK_MONOTONIC, &now);
+#endif // CLOCK_MONOTONIC_RAW
   return( ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec );
 #endif
 }
