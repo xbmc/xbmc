@@ -1,0 +1,10 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=osx32
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE/tools/darwin/packaging/xbmc-osx/;./mkdmg-xbmc-osx.sh $Configuration
+
+#rename for upload
+#e.x. xbmc-20130314-8c2fb31-Frodo-i386.dmg 
+UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-i386.dmg"
+mv *.dmg $UPLOAD_FILENAME

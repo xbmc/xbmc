@@ -1,0 +1,112 @@
+BUILDTHREADS=${BUILDTHREADS:-1}
+SDK_VERSION=${SDK_VERSION:-"Default"}
+Configuration=${Configuration:-"Default"}
+XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
+PATH_CHANGE_REV_FILENAME=".last_success_revision"
+
+#set platform defaults
+#$XBMC_PLATFORM_DIR matches the platform subdirs!
+case $XBMC_PLATFORM_DIR in
+  atv2)
+    DEFAULT_SDK_VERSION=4.2
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+    ;;
+
+  ios)
+    DEFAULT_SDK_VERSION=4.2
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+    ;;
+
+  osx32)
+    DEFAULT_SDK_VERSION=10.8
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+    ;;
+
+  osx64)
+    DEFAULT_SDK_VERSION=10.8
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+    ;;
+  android)
+    DEFAULT_SDK_VERSION=10
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+esac
+
+if [ $SDK_VERSION == "Default" ]
+then
+  SDK_VERSION=$DEFAULT_SDK_VERSION
+fi
+
+if [ $XBMC_DEPENDS_ROOT == "Default" ]
+then
+  XBMC_DEPENDS_ROOT=$DEFAULT_XBMC_DEPENDS_ROOT
+fi
+
+if [ $Configuration == "Default" ]
+then
+  Configuration=$DEFAULT_CONFIGURATION
+fi
+
+#clamp release builds to 1 thread only
+if [ $Configuration == "Release" ]
+then
+  BUILDTHREADS=1
+fi
+
+#helper functions
+
+#hash a dir based on the git revision, SDK_PATH, NDK_PATH, SDK_VERSION, TOOLCHAIN and XBMC_DEPENDS_ROOT
+function getBuildHash ()
+{
+  local checkPath
+  checkPath="$1"
+  local hashStr
+  hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath)"
+  hashStr="$hashStr $SDK_PATH $NDK_PATH $SDK_VERSION $TOOLCHAIN $XBMC_DEPENDS_ROOT"
+  echo $hashStr
+}
+
+function pathChanged ()
+{
+  local ret
+  local checkPath
+  ret="0"
+  #no optims in release builds!
+  if [ $Configuration == "Release" ]
+  then
+    echo "1"
+    return
+  fi
+
+  checkPath="$1"
+  if [ -e $checkPath/$PATH_CHANGE_REV_FILENAME ]
+  then
+    if [ "$(cat $checkPath/$PATH_CHANGE_REV_FILENAME)" != "$(getBuildHash $WORKSPACE/tools/depends)" ]
+    then
+      ret="1"
+    fi
+  else
+    ret="1"
+  fi
+  
+  echo $ret
+}
+
+function tagSuccessFulBuild ()
+{
+  local checkPath
+  checkPath="$1"
+  echo "$(getBuildHash $checkPath)" > $checkPath/$PATH_CHANGE_REV_FILENAME
+}
+
+function getBuildRevDateStr ()
+{
+  git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}' 2>/dev/null
+  if [ "$?" != "0" ]; then
+    echo "Unknown"
+  fi
+}

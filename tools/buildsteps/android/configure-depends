@@ -1,0 +1,15 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=android
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;./configure \
+    --with-tarballs=/opt/xbmc-tarballs \
+    --host=arm-linux-androideabi \
+    --with-sdk-path=$SDK_PATH \
+    --with-ndk=$NDK_PATH \
+    --with-sdk=android-$SDK_VERSION \
+    --with-toolchain=$TOOLCHAIN \
+    --prefix=$XBMC_DEPENDS_ROOT
+fi

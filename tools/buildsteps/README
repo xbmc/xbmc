@@ -1,0 +1,15 @@
+This folder holds all the platform dependend build scripts which are called from the jenkins buildserver.
+
+The following ENV variables are available on all scripts:
+
+$WORKSPACE - the folder where jenkins checked out the source - XBMC_HOME so to say
+$Configuration - its either Debug, Release or Default and should be taken into account if possible (Defaults select platform default from <platformdir>/startbuild)
+$SDK_VERSION - the requested SDK_VERSION to be used for building. If "Default" is passed it uses the platform default from <platformdir>/startbuild
+$BUILDTHREADS - number of threads which can be used when building (e.x. use it for make -j$BUILDTHREADS)
+$XBMC_DEPENDS_ROOT - root for installing the xbmc build depends and toolchain helpers. If "Default" is passed it uses the platform default from <platformdir>/startbuild
+
+Additional ENV variables might be specified by the buildnodes. For android buildslaves these are:
+
+TOOLCHAIN - the used toolchain dir
+NDK_PATH  - the path to the android native ndk
+SDK_PATH  - the path to the android sdk

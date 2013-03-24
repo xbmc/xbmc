@@ -1,0 +1,13 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=atv2
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+#ensure that dpkg tools are used from our toolchain
+export PATH=$XBMC_DEPENDS_ROOT/buildtools-native/bin/:$PATH
+
+cd $WORKSPACE/tools/darwin/packaging/xbmc-atv2/;./mkdeb-xbmc-atv2.sh $Configuration
+
+#rename for upload
+#e.x. xbmc-20130314-8c2fb31-Frodo-atv2.deb
+UPLOAD_FILENAME="xbmc-$(getBuildRevDateStr)-atv2.deb"
+mv *.deb $UPLOAD_FILENAME
