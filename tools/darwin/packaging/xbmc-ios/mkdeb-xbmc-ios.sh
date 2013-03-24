@@ -37,9 +37,9 @@ if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
 elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
-if [ -f "/Users/Shared/xbmc-depends/toolchain/bin/dpkg-deb" ]; then
+if [ -f "/Users/Shared/xbmc-depends/buildtools-native/bin/dpkg-deb" ]; then
   # make sure we pickup our tar, gnutar will fail when dpkg -i
-  bin_path=$(cd /Users/Shared/xbmc-depends/toolchain/bin; pwd)
+  bin_path=$(cd /Users/Shared/xbmc-depends/buildtools-native/bin; pwd)
   export PATH=${bin_path}:${PATH}
 fi
 
