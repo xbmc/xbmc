@@ -13,7 +13,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
 
 
 ifeq ($(OS),ios)
-  NATIVE += dpkg-native
+  NATIVE += dpkg-native tar-native
 endif
 
 .PHONY: $(NATIVE) native
