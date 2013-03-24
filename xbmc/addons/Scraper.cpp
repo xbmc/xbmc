@@ -501,6 +501,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   sTitle.ToLower();
 
   vector<CStdString> vcsIn(1);
+  g_charsetConverter.utf8ToUtf8NFC(sTitle);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   CURL::Encode(vcsIn[0]);
   if (!sYear.IsEmpty())
