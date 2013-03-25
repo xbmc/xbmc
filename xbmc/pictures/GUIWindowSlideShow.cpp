@@ -772,6 +772,19 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     Zoom(m_iZoomFactor + 1);
     break;
 
+  case ACTION_GESTURE_SWIPE_UP:
+  case ACTION_GESTURE_SWIPE_DOWN:
+    if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveVertically)
+    {
+      bool swipeOnLeft = action.GetAmount() < g_graphicsContext.GetWidth() / 2;
+      bool swipeUp = action.GetID() == ACTION_GESTURE_SWIPE_UP;
+      if (swipeUp == swipeOnLeft)
+        Rotate(90.0f);
+      else
+        Rotate(-90.0f);
+    }
+    break;
+
   case ACTION_ROTATE_PICTURE_CW:
     Rotate(90.0f);
     break;
