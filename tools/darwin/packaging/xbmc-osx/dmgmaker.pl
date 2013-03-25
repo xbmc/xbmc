@@ -32,10 +32,8 @@ sub make_dmg {
     $ext = "mpkg" if !$ext;
 
     # thanks to http://dev.simon-cozens.org/songbee/browser/release-manager-tools/build-dmg.sh
-    `rm -fr dist`;
-    `mkdir dist`;
-    `hdiutil create -fs HFS+ -volname "$volname" -format UDRW -srcfolder "$mpkg" "dist/$volname.dmg"`;
-    $dev_handle = `hdiutil attach -readwrite -noverify -noautoopen "dist/$volname.dmg" | grep Apple_HFS`;
+    `hdiutil create -fs HFS+ -volname "$volname" -format UDRW -srcfolder "$mpkg" "$volname.dmg"`;
+    $dev_handle = `hdiutil attach -readwrite -noverify -noautoopen "$volname.dmg" | grep Apple_HFS`;
     chomp $dev_handle;
     $dev_handle = $1 if $dev_handle =~ /^\/dev\/(disk.)/;
     die("Could not obtain device handle\n") if !$dev_handle;
@@ -63,10 +61,10 @@ sub make_dmg {
     }
     `xcrun SetFile -a C "/Volumes/$volname/"`;
     `hdiutil detach $dev_handle`;
-    `hdiutil convert "dist/$volname.dmg" -format UDZO -imagekey zlib-level=9 -o "dist/$volname.udzo.dmg"`;
-    `rm -f "dist/$volname.dmg"`;
-    `mv "dist/$volname.udzo.dmg" "dist/$volname.dmg"`;
-    `hdiutil internet-enable -yes "dist/$volname.dmg"`;
+    `hdiutil convert "$volname.dmg" -format UDZO -imagekey zlib-level=9 -o "$volname.udzo.dmg"`;
+    `rm -f "$volname.dmg"`;
+    `mv "$volname.udzo.dmg" "$volname.dmg"`;
+    `hdiutil internet-enable -yes "$volname.dmg"`;
 }
 
 if (! defined $ARGV[0]) {
@@ -80,4 +78,4 @@ if ( $ARGV[0] eq "-c" ) {
     exit;
 }
 
-make_dmg($ARGV[0], "XBMC", "XBMC");
+make_dmg($ARGV[0], $ARGV[1], "XBMC");
