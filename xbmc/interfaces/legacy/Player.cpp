@@ -129,7 +129,7 @@ namespace XBMCAddon
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
         if (startpos > -1)
           g_playlistPlayer.SetCurrentSong(startpos);
-        CApplicationMessenger::Get().PlayListPlayerPlay();
+        CApplicationMessenger::Get().PlayListPlayerPlay(startpos);
       }
       else
         playCurrent(windowed);
