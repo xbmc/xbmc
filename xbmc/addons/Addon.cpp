@@ -512,6 +512,7 @@ void CAddon::SaveSettings(void)
   CXBMCTinyXML doc;
   SettingsToXML(doc);
   doc.SaveFile(m_userSettingsPath);
+  m_userSettingsLoaded = true;
   
   CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
   g_pythonParser.OnSettingsChanged(ID());
