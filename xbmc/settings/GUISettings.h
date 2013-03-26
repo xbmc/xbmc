@@ -436,13 +436,7 @@ public:
     m_vecCategories.clear();
   };
 
-  CSettingsCategory* AddCategory(const char *strCategory, int labelID)
-  {
-    CSettingsCategory *pCategory = new CSettingsCategory(strCategory, labelID);
-    if (pCategory)
-      m_vecCategories.push_back(pCategory);
-    return pCategory;
-  }
+  CSettingsCategory* AddCategory(const char *strCategory, int labelID);
   void GetCategories(vecSettingsCategory &vecCategories);
   int GetLabelID() { return m_labelID; };
   int GetGroupID() { return m_groupID; };

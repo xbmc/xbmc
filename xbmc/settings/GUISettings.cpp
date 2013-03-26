@@ -226,6 +226,24 @@ CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, con
 {
 }
 
+CSettingsCategory* CSettingsGroup::AddCategory(const char *strCategory, int labelID)
+{
+  // Remove the category if it already exists
+  for (vecSettingsCategory::iterator it = m_vecCategories.begin(); it != m_vecCategories.end(); it++)
+  {
+    if ((*it)->m_strCategory.Equals(strCategory))
+    {
+      delete (*it);
+      m_vecCategories.erase(it);
+      break;
+    }
+  }
+  CSettingsCategory *pCategory = new CSettingsCategory(strCategory, labelID);
+  if (pCategory)
+    m_vecCategories.push_back(pCategory);
+  return pCategory;
+}
+
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 {
   vecCategories.clear();
