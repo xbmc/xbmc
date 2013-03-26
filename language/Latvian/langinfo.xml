@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language locale="lv">
+  <charsets>
+    <gui unicodefont="true">utf-8</gui>
+    <subtitle>utf-8</subtitle>
+  </charsets>
+  <dvd>
+    <menu>lv</menu>
+    <audio>ru</audio>
+    <subtitle>ru</subtitle>
+  </dvd>
+  <regions>
+    <region name="Latvia" locale="LV">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY 'G.'</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>mps</speedunit>
+    </region>
+  </regions>
+</language>
