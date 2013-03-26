@@ -33,7 +33,11 @@
 using namespace jni;
 
 jhobject CJNIContext::m_context(0);
-CJNIContext::CJNIContext(const ANativeActivity *nativeActivity) : CJNIBroadcastReceiver(this)
+CJNIContext::CJNIContext() : CJNIBroadcastReceiver(this)
+{
+}
+
+void CJNIContext::SetActivity(const ANativeActivity *nativeActivity)
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);

@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+
 #include <sstream>
 
 #include <unistd.h>
@@ -26,6 +28,7 @@
 #include <string.h>
 
 #include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include <android/configuration.h>
 #include <jni.h>
 
@@ -65,6 +68,15 @@
 #include "android/jni/Bitmap.h"
 #include "android/jni/CharSequence.h"
 
+#ifdef HAVE_LIBSTAGEFRIGHT
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+
+#define ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID "mSurfaceTexture"
+#endif
+
 #define GIGABYTES       1073741824
 
 using namespace std;
@@ -80,18 +92,23 @@ ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 
-CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
-  : CJNIContext(nativeActivity), m_wakeLock(NULL)
+CXBMCApp::CXBMCApp()
+  : CJNIContext(), m_wakeLock(NULL)
+  , m_VideoNativeWindow(NULL)
 {
-  m_activity = nativeActivity;
   m_firstrun = true;
   m_exiting=false;
-  if (m_activity == NULL)
+}
+
+void CXBMCApp::SetActivity(ANativeActivity *nativeActivity)
+{
+  if (nativeActivity == NULL)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
     exit(1);
     return;
   }
+  CJNIContext::SetActivity(nativeActivity);
 }
 
 CXBMCApp::~CXBMCApp()
@@ -536,3 +553,92 @@ void CXBMCApp::SetupEnv()
   else
     setenv("HOME", getenv("XBMC_TEMP"), 0);
 }
+
+#ifdef HAVE_LIBSTAGEFRIGHT
+bool CXBMCApp::InitStagefrightSurface()
+{
+   if (m_VideoNativeWindow != NULL)
+    return true;
+    
+  JNIEnv* env = xbmc_jnienv();
+
+  m_VideoTextureId = -1;
+
+  glGenTextures(1, &m_VideoTextureId);
+  glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_VideoTextureId);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
+  
+  jclass cSurfaceTexture = env->FindClass("android/graphics/SurfaceTexture");
+  jmethodID midSurfaceTextureCtor = env->GetMethodID(cSurfaceTexture, "<init>", "(I)V");
+  midSurfaceTextureRelease = env->GetMethodID(cSurfaceTexture, "release", "()V");
+  m_midUpdateTexImage = env->GetMethodID(cSurfaceTexture, "updateTexImage", "()V");
+  m_midGetTransformMatrix  = env->GetMethodID(cSurfaceTexture, "getTransformMatrix", "([F)V");
+  jobject oSurfTexture = env->NewObject(cSurfaceTexture, midSurfaceTextureCtor, m_VideoTextureId);
+
+  //jfieldID fidSurfaceTexture = env->GetFieldID(cSurfaceTexture, ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID, "I");
+  //m_SurfaceTexture = (android::SurfaceTexture*)env->GetIntField(oSurfTexture, fidSurfaceTexture);
+
+  env->DeleteLocalRef(cSurfaceTexture);
+  m_SurfTexture = env->NewGlobalRef(oSurfTexture);
+  env->DeleteLocalRef(oSurfTexture);
+
+  jclass cSurface = env->FindClass("android/view/Surface");
+  jmethodID midSurfaceCtor = env->GetMethodID(cSurface, "<init>", "(Landroid/graphics/SurfaceTexture;)V");
+  midSurfaceRelease = env->GetMethodID(cSurface, "release", "()V");
+  jobject oSurface = env->NewObject(cSurface, midSurfaceCtor, m_SurfTexture);
+  env->DeleteLocalRef(cSurface);
+  m_Surface = env->NewGlobalRef(oSurface);
+  env->DeleteLocalRef(oSurface);
+
+  m_VideoNativeWindow = ANativeWindow_fromSurface(env, m_Surface);
+
+  return true;
+}
+
+void CXBMCApp::UninitStagefrightSurface()
+{
+  if (m_VideoNativeWindow == NULL)
+    return;
+
+  JNIEnv* env = xbmc_jnienv();
+
+  ANativeWindow_release(m_VideoNativeWindow);
+  m_VideoNativeWindow = NULL;
+
+  env->CallVoidMethod(m_Surface, midSurfaceRelease);
+  env->DeleteGlobalRef(m_Surface);
+
+  env->CallVoidMethod(m_SurfTexture, midSurfaceTextureRelease);
+  env->DeleteGlobalRef(m_SurfTexture);
+
+  glDeleteTextures(1, &m_VideoTextureId);
+}
+
+void CXBMCApp::UpdateStagefrightTexture()
+{
+//  m_SurfaceTexture->updateTexImage();
+
+  JNIEnv* env = xbmc_jnienv();
+
+  env->CallVoidMethod(m_SurfTexture, m_midUpdateTexImage);
+}
+
+void CXBMCApp::GetStagefrightTransformMatrix(float* transformMatrix)
+{
+//  m_SurfaceTexture->getTransformMatrix(transformMatrix);
+
+  JNIEnv* env = xbmc_jnienv();
+
+  jfloatArray arr = (jfloatArray)env->NewFloatArray(16);
+  env->SetFloatArrayRegion(arr, 0, 16, transformMatrix);
+
+  env->CallVoidMethod(m_SurfTexture, m_midGetTransformMatrix, arr);
+  env->GetFloatArrayRegion(arr, 0, 16, transformMatrix);
+  env->DeleteLocalRef(arr);
+}
+
+#endif

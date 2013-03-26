@@ -35,6 +35,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libshairplay
+  DEPENDS += android-sources-ics
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))

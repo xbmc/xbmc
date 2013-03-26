@@ -407,6 +407,12 @@ AC_ARG_ENABLE([ffmpeg_libvorbis],
   [use_ffmpeg_libvorbis=$enableval],
   [use_ffmpeg_libvorbis=no])
 
+AC_ARG_ENABLE([libstagefright],
+  [AS_HELP_STRING([--enable-libstagefright],
+  [enable libstagefright-based HW accelerated decoding 'Android only' (default is no)])],
+  [use_libstagefright=$enableval],
+  [use_libstagefright=no])
+
 AC_ARG_ENABLE([dvdcss],
   [AS_HELP_STRING([--enable-dvdcss],
   [enable DVDCSS support (default is yes)])],
@@ -672,6 +678,7 @@ case $host in
      use_optical_drive=no
      use_sdl=no
      use_x11=no
+     use_libstagefright=yes
      build_shared_lib=yes
      ;;
   *)
@@ -1884,6 +1891,14 @@ else
   fi
 fi
 
+# libStageFright
+if test "$target_platform" = "target_android" ; then
+  if test "$use_libstagefright" = "yes"; then
+    USE_LIBSTAGEFRIGHT=1; AC_DEFINE([HAVE_LIBSTAGEFRIGHT],[1],["Define to 1 if libstagefright is enabled"])
+    LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui"
+  fi
+fi
+
 # yajl version check (yajl_version.h was added in yajl 2.0)
 AC_CHECK_HEADERS([yajl/yajl_version.h], [], [
 AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
@@ -2054,6 +2069,12 @@ if test "$use_openmax" != "no"; then
   final_message="$final_message\n  OpenMax:\tYes"
 else
   final_message="$final_message\n  OpenMax:\tNo"
+fi
+
+if test "$use_libstagefright" != "no"; then
+  final_message="$final_message\n  libstagefright:\tYes"
+else
+  final_message="$final_message\n  libstagefright:\tNo"
 fi
 
 if test "$use_joystick" = "yes"; then
@@ -2513,6 +2534,7 @@ AC_SUBST(USE_LIBAFPCLIENT)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
+AC_SUBST(USE_LIBSTAGEFRIGHT)
 AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_ALSA)

@@ -1,7 +1,5 @@
-#ifndef _RENDER_FORMATS_H_
-#define _RENDER_FORMATS_H_
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,22 +17,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <ui/FramebufferNativeWindow.h>
+#include <ui/GraphicBuffer.h>
+#include <ui/PixelFormat.h>
+#include <EGL/egl.h>
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_OMXEGL,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_EGLIMG,
-};
+using namespace android;
 
-#endif
+ANativeWindowBuffer* GraphicBuffer::getNativeBuffer() const
+{
+  return NULL;
+}
+
+namespace android {
+ssize_t bytesPerPixel(PixelFormat format)
+{
+  return 0;
+}
+}

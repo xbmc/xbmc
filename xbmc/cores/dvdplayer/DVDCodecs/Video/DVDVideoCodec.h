@@ -38,6 +38,8 @@ class CVDPAU;
 class COpenMax;
 class COpenMaxVideo;
 struct OpenMaxVideoBuffer;
+class CStageFrightVideo;
+typedef void* EGLImageKHR;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -68,6 +70,11 @@ struct DVDVideoPicture
 
     struct {
       struct __CVBuffer *cvBufferRef;
+    };
+    
+    struct {
+      CStageFrightVideo* stf;
+      EGLImageKHR eglimg;
     };
   };
 
