@@ -53,15 +53,15 @@ namespace SOCKETS
   class CAddress
   {
   public:
-    sockaddr_in saddr;
+    sockaddr_in6 saddr;
     socklen_t   size;
 
   public:
     CAddress()
     {
       memset(&saddr, 0, sizeof(saddr));
-      saddr.sin_family = AF_INET;
-      saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      saddr.sin6_family = AF_INET6;
+      saddr.sin6_addr = in6addr_any;
       size = sizeof(saddr);
     }
 
@@ -73,20 +73,31 @@ namespace SOCKETS
     void SetAddress(const char *address)
     {
       memset(&saddr, 0, sizeof(saddr));
-      saddr.sin_family = AF_INET;
-      saddr.sin_addr.s_addr = inet_addr(address);
+      saddr.sin6_family = AF_INET6;
+      inet_pton(AF_INET6, address, &(saddr.sin6_addr));
       size = sizeof(saddr);
     }
 
     // returns statically alloced buffer, do not free
-    char *Address()
+    const char *Address()
     {
-      return inet_ntoa(saddr.sin_addr);
+      char str_addr[INET6_ADDRSTRLEN];
+      return inet_ntop(AF_INET6, &(saddr.sin6_addr), str_addr, INET6_ADDRSTRLEN );
     }
 
+    // returns the least signifigant 64 bits (network byte order) of the address.
+    // in IPv6 this usually represents the host address.
     unsigned long ULong()
     {
-      return (unsigned long)saddr.sin_addr.s_addr;
+      unsigned long address = 0;
+
+      for (int i = 0 ; i<8 ; i++)
+      {
+        address += saddr.sin6_addr.s6_addr[i];
+        if (i < 7)
+          address = address << 8;
+      }
+      return address;
     }
   };
 
