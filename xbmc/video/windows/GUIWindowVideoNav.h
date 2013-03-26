@@ -82,6 +82,7 @@ protected:
   static CStdString GetLocalizedType(const std::string &strType);
 
   bool GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
+  bool GetMoviesForSet(CFileItemPtr &setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
   bool SetMovieSet(CFileItemPtr &movieItem, CFileItemPtr &selectedSet);
 
   VECSOURCES m_shares;
