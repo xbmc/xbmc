@@ -3511,6 +3511,19 @@ bool CApplication::Cleanup()
     g_settings.Clear();
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
+  
+    g_settings.UnregisterSubSettings(&CMediaSettings::Get());
+    g_settings.UnregisterSubSettings(&CSkinSettings::Get());
+    g_settings.UnregisterSubSettings(&CViewStateSettings::Get());
+
+    g_settings.UnregisterSettingsHandler(&g_advancedSettings);
+    g_settings.UnregisterSettingsHandler(&CMediaSourceSettings::Get());
+    g_settings.UnregisterSettingsHandler(&CPlayerCoreFactory::Get());
+    g_settings.UnregisterSettingsHandler(&CRssManager::Get());
+#ifdef HAS_UPNP
+    g_settings.UnregisterSettingsHandler(&CUPnPSettings::Get());
+#endif
+    g_settings.UnregisterSettingsHandler(this);
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
