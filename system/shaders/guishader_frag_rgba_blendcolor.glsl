@@ -26,9 +26,15 @@ varying vec4      m_cord0;
 varying vec4      m_cord1;
 varying lowp vec4 m_colour;
 uniform int       m_method;
+uniform float     m_brightness;
+uniform float     m_contrast;
+uniform vec4      m_averageluminance;
 
 // SM_TEXTURE
 void main ()
 {
-  gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).rgba * m_colour);
+  vec4 texColour = vec4(texture2D(m_samp0, m_cord0.xy) * m_colour);
+  gl_FragColor.rgba = mix(m_averageluminance, texColour, m_contrast).rgba;
+  gl_FragColor.rgba += m_brightness;
+
 }

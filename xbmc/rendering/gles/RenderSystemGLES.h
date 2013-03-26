@@ -85,6 +85,9 @@ public:
   GLint GUIShaderGetCol();
   GLint GUIShaderGetCoord0();
   GLint GUIShaderGetCoord1();
+  GLint GUIShaderGetBrightness();
+  GLint GUIShaderGetContrast();
+  GLint GUIShaderGetAvgLuminance();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;

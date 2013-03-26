@@ -627,4 +627,28 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
   return -1;
 }
 
+GLint CRenderSystemGLES::GUIShaderGetBrightness()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetBrightnessLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetContrast()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetContrastLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetAvgLuminance()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetAvgLuminanceLoc();
+
+  return -1;
+}
+
 #endif

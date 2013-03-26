@@ -25,9 +25,14 @@ uniform   sampler2D m_samp1;
 varying   vec4      m_cord0;
 varying   vec4      m_cord1;
 varying   lowp vec4 m_colour;
+uniform float     m_brightness;
+uniform float     m_contrast;
+uniform vec4      m_averageluminance;
 
 // SM_MULTI shader
 void main ()
 {
-  gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).rgba * m_colour;
+  vec4 texColour = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)) * m_colour;
+  gl_FragColor.rgba = mix(m_averageluminance, texColour, m_contrast).rgba;
+  gl_FragColor.rgba += m_brightness;
 }

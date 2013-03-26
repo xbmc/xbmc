@@ -50,6 +50,9 @@ void CGUIShader::OnCompiledAndLinked()
   // Variables passed directly to the Fragment shader
   m_hTex0   = glGetUniformLocation(ProgramHandle(), "m_samp0");
   m_hTex1   = glGetUniformLocation(ProgramHandle(), "m_samp1");
+  m_hBrightness   = glGetUniformLocation(ProgramHandle(), "m_brightness");
+  m_hContrast     = glGetUniformLocation(ProgramHandle(), "m_contrast");
+  m_hAverageLum   = glGetUniformLocation(ProgramHandle(), "m_averageluminance");
   // Variables passed directly to the Vertex shader
   m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");

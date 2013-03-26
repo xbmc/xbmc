@@ -1360,6 +1360,7 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat avglum[4] = {0.5, 0.5, 0.5, 1.0};
   GLfloat ver[4][4];
   GLfloat tex[4][2];
   float col[4][3];
@@ -1372,6 +1373,9 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   GLint   posLoc = g_Windowing.GUIShaderGetPos();
   GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
   GLint   colLoc = g_Windowing.GUIShaderGetCol();
+  GLint   brightLoc = g_Windowing.GUIShaderGetBrightness();
+  GLint   contlLoc = g_Windowing.GUIShaderGetContrast();
+  GLint   avglumLoc = g_Windowing.GUIShaderGetAvgLuminance();
 
   glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
@@ -1396,6 +1400,10 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   tex[1][0] = tex[2][0] = 1;
   tex[2][1] = tex[3][1] = 0;
 
+  glUniform1f(brightLoc, g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  glUniform1f(contlLoc, g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  glUniform4fv(avglumLoc, 1, avglum);
+  
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
@@ -2096,12 +2104,6 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
     return itr != m_renderFeatures.end();
   }
 
-  if(feature == RENDERFEATURE_BRIGHTNESS)
-    return false;
-
-  if(feature == RENDERFEATURE_CONTRAST)
-    return false;
-
   if(feature == RENDERFEATURE_GAMMA)
     return false;
 
@@ -2114,7 +2116,9 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   if (feature == RENDERFEATURE_NONLINSTRETCH)
     return false;
 
-  if (feature == RENDERFEATURE_STRETCH         ||
+  if (feature == RENDERFEATURE_BRIGHTNESS      ||
+      feature == RENDERFEATURE_CONTRAST        ||
+      feature == RENDERFEATURE_STRETCH         ||
       feature == RENDERFEATURE_CROP            ||
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||

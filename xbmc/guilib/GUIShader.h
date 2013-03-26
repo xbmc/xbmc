@@ -39,6 +39,9 @@ public:
   GLint GetColLoc()   { return m_hCol;   }
   GLint GetCord0Loc() { return m_hCord0; }
   GLint GetCord1Loc() { return m_hCord1; }
+  GLint GetBrightnessLoc() { return m_hBrightness; }
+  GLint GetContrastLoc()   { return m_hContrast; }
+  GLint GetAvgLuminanceLoc()   { return m_hAverageLum; }
   
 protected:
   GLint m_hTex0;
@@ -49,6 +52,9 @@ protected:
   GLint m_hCol;
   GLint m_hCord0;
   GLint m_hCord1;
+  GLint m_hBrightness;
+  GLint m_hContrast;
+  GLint m_hAverageLum;
 
   GLfloat *m_proj;
   GLfloat *m_model;
