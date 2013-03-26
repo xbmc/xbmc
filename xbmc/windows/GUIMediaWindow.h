@@ -103,7 +103,7 @@ protected:
    \return true if the given path can contain a "filter" parameter otherwise false
    */
   virtual bool CanContainFilter(const CStdString &strDirectory) const { return false; }
-  virtual bool Filter();
+  virtual bool Filter(bool advanced = true);
 
   /* \brief Called on response to a GUI_MSG_FILTER_ITEMS message
    Filters the current list with the given filter using FilterItems()
