@@ -35,6 +35,7 @@
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
+#include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
@@ -162,6 +163,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(TARGET_POSIX)
   hwSupport += "OpenMax:no ";
 #endif
+#if defined(HAS_LIBSTAGEFRIGHT)
+  hwSupport += "libstagefright:yes ";
+#elif defined(_LINUX)
+  hwSupport += "libstagefright:no ";
+#endif
 #if defined(HAVE_LIBVDPAU) && defined(TARGET_POSIX)
   hwSupport += "VDPAU:yes ";
 #elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
@@ -254,6 +260,28 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
     {
       if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
+    }
+  }
+#endif
+
+#if defined(HAS_LIBSTAGEFRIGHT)
+  if (CSettings::Get().GetBool("videoplayer.usestagefright") && !hint.software )
+  {
+    switch(hint.codec)
+    {
+      case CODEC_ID_H264:
+      case CODEC_ID_MPEG4:
+      case CODEC_ID_MPEG2VIDEO:
+      case CODEC_ID_VC1:
+      case CODEC_ID_WMV3:
+      case CODEC_ID_VP3:
+      case CODEC_ID_VP6:
+      case CODEC_ID_VP6F:
+      case CODEC_ID_VP8:
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecStageFright(), hint, options)) ) return pCodec;
+        break;
+      default:
+        break;
     }
   }
 #endif
