@@ -105,8 +105,20 @@ function tagSuccessFulBuild ()
 
 function getBuildRevDateStr ()
 {
-  git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}' 2>/dev/null
-  if [ "$?" != "0" ]; then
+  local revStr
+  #fetch date-rev
+  revStr=`git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}' 2>/dev/null`
+  if [ "$?" == "0" ]
+  then
+    #fetch the first branch containing head
+    revStr=$revStr"-"`git branch -r --contains HEAD | head -n1 | awk '{gsub(".*/","");print $1}'`
+    if [ "$?" == "0" ]
+    then
+      echo $revStr
+    else
+      echo "Unknown"
+    fi
+  else
     echo "Unknown"
   fi
 }
