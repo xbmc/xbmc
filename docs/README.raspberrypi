@@ -31,5 +31,5 @@ git clone https://github.com/huceke/buildroot-rbp.git
 
 cd /opt/xbmc-raspberrypi/buildroot-rbp
 
-Follow the instroctions in README.rbp how to build the system and xbmc.
+Follow the instructions in README.rbp how to build the system and xbmc.
 
