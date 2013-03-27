@@ -101,8 +101,9 @@ bool CThumbExtractor::DoWork()
       m_item.SetArt("thumb", m_target);
     }
   }
-  else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
+  else if (!m_item.HasVideoInfoTag() || !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
+    // No tag or no details set, so extract them
     CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_item.GetPath().c_str());
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
@@ -270,13 +271,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
+
         // Item has cached autogen image but no art entry. Save it to db.
         CVideoInfoTag* info = pItem->GetVideoInfoTag();
         if (info->m_iDbId > 0 && !info->m_type.empty())
           m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
-        g_guiSettings.GetBool("myvideos.extractflags"))
+               g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
         CStdString path(item.GetPath());
@@ -292,10 +294,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
 
     // flag extraction
-    if (pItem->HasVideoInfoTag() &&
-        g_guiSettings.GetBool("myvideos.extractflags") &&
-        (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
-          pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
+    if (g_guiSettings.GetBool("myvideos.extractflags") &&
+       (!pItem->HasVideoInfoTag()                     ||
+        !pItem->GetVideoInfoTag()->HasStreamDetails() ||
+         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
     {
       CFileItem item(*pItem);
       CStdString path(item.GetPath());
