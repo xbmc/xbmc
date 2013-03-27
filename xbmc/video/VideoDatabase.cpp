@@ -3100,9 +3100,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
 
 bool CVideoDatabase::GetStreamDetails(CFileItem& item)
 {
-  if (!item.HasVideoInfoTag())
-    return false;
-
   CVideoInfoTag *tag = item.GetVideoInfoTag();
   if (tag->m_iFileId < 0)
     tag->m_iFileId = GetFileId(item);

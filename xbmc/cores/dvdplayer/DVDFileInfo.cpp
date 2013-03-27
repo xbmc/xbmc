@@ -295,8 +295,9 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   CStdString strFileNameAndPath;
   if (pItem->HasVideoInfoTag())
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
-  else
-    return false;
+
+  if (strFileNameAndPath.empty())
+    strFileNameAndPath = pItem->GetPath();
 
   CStdString playablePath = strFileNameAndPath;
   if (URIUtils::IsStack(playablePath))
