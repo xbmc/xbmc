@@ -15,10 +15,12 @@
 /target/*/x86_64-linux-gnu/*
 /target/*/arm-linux-gnueabi/*
 /native/*/x86_64-darwin*.*.*-native/
-/target/*/arm-apple-darwin/*
-/target/*/x86_64-apple-darwin/*
-/target/*/i386-apple-darwin/*
+/target/*/iphoneos*.*_arm*-target/*
+/target/*/macosx*.*_x86_64-target/*
+/target/*/macosx*.*_i386-target/*
+/target/*/iphoneos*.*_arm*-target/
 /target/*/macosx*.*_x86_64-target/
+/target/*/macosx*.*_i386-target/
 Toolchain.cmake
 config.site
 config.site.native
