@@ -1,0 +1,190 @@
+{
+    "jsonrpc": "2.0",
+    "releases": {
+        "stable": [
+            {
+                "major": "12",
+                "minor": "1",
+                "tag": "stable",
+                "revision": "20130317-0d373cc",
+                "extrainfo": "final"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "stable",
+                "revision": "20130127-fb595f2",
+                "extrainfo": "final"
+            },
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "stable",
+                "revision": "20120321-14feb09",
+                "extrainfo": "final"
+            },
+            {
+                "major": "10",
+                "minor": "1",
+                "tag": "stable",
+                "revision": "",
+                "extrainfo": "final"
+            },
+            {
+                "major": "10",
+                "minor": "0",
+                "tag": "stable",
+                "revision": "",
+                "extrainfo": "final"
+            }
+        ],
+        "releasecandidate": [
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "revision": "20130127-fb595f2",
+                "extrainfo": "RC3"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "revision": "20121219-74b907c",
+                "extrainfo": "RC2"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "revision": "20121210-baaa51c",
+                "extrainfo": "RC1"
+            },
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "revision": "20120229-f38655f",
+                "extrainfo": "RC2"
+            },
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "revision": "20120226-30312f1",
+                "extrainfo": "RC1"
+            }
+        ],
+        "beta": [
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20121210-baaa51c",
+                "extrainfo": "beta3"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20121201-192701b",
+                "extrainfo": "beta2"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20121116-f7dc858",
+                "extrainfo": "beta1-repack"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20121114-25bb46a",
+                "extrainfo": "beta1"
+            },
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20120207-1fef727",
+                "extrainfo": "beta3"
+            }            ,
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20120120-f76c547",
+                "extrainfo": "beta2"
+            },
+            {
+                "major": "11",
+                "minor": "0",
+                "tag": "beta",
+                "revision": "20111222-22ad8e4",
+                "extrainfo": "beta1"
+            }
+        ],
+        "alpha": [
+        ],
+        "prealpha": [
+            {
+                "major": "13",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20130227-8d2e0fe",
+                "extrainfo": "alpha1"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20121102-e292b11",
+                "extrainfo": "alpha7"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20121001-f4d8117",
+                "extrainfo": "alpha6"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20120831-12840c2",
+                "extrainfo": "alpha5"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20120801-e4443f2",
+                "extrainfo": "alpha4"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20120701-37fc72c",
+                "extrainfo": "alpha3"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20120531-1495cbe",
+                "extrainfo": "alpha2"
+            },
+            {
+                "major": "12",
+                "minor": "0",
+                "tag": "prealpha",
+                "revision": "20120430-4505d08",
+                "extrainfo": "alpha1"
+            }
+        ]
+    }
+}
