@@ -2317,10 +2317,11 @@ void CApplication::Render()
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
   }
-  m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
+
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
   CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
