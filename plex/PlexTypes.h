@@ -47,6 +47,10 @@
 
 #define GUI_MSG_PLEX_SECTION_LOADED + 71
 #define GUI_MSG_PLEX_SERVER_NOTIFICATION + 72
+#define GUI_MSG_PLEX_SERVER_DATA_LOADED + 73
+
+#define PLEX_DATA_LOADER 99990
+#define PLEX_SERVER_MANAGER 99991
 
 typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
 

@@ -11,7 +11,7 @@
 
 #include <dialogs/GUIDialogBoxBase.h>
 #include "PlexTypes.h"
-#include "MyPlexManager.h"
+#include "Client/MyPlexManager.h"
 
 class CGUIDialogMyPlexPin : public CGUIDialogBoxBase
 {
@@ -23,7 +23,7 @@ class CGUIDialogMyPlexPin : public CGUIDialogBoxBase
     int GetDefaultLabelID(int controlId) const;
 
     static void ShowAndGetInput();
-    MyPlexPinLogin m_pinLogin;
+    //MyPlexPinLogin m_pinLogin;
 
 
   private:

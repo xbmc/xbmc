@@ -7,7 +7,7 @@ using namespace std;
 void
 CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
 {
-  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(service->getResourceIdentifier(), service->getParam("name"), true));
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(service->getResourceIdentifier(), service->getParam("Name"), true));
   CPlexConnection* conn = new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, service->address().to_string(), service->port());
   server->AddConnection(CPlexConnectionPtr(conn));
   server->UpdateReachability();

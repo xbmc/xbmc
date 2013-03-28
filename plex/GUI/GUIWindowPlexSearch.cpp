@@ -34,7 +34,7 @@
 #include "GUIUserMessages.h"
 #include "PlexContentWorker.h"
 #include "PlexDirectory.h"
-#include "PlexServerManager.h"
+#include "Client/PlexServerManager.h"
 #include "Settings.h"
 #include "Util.h"
 #include "PlexUtils.h"
@@ -217,6 +217,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         m_resetOnNextResults = false;
       }
 
+      /*
       // If we have any additional providers, run them in parallel.
       vector<CFileItemPtr>& providers = results->GetProviders();
       BOOST_FOREACH(CFileItemPtr& provider, providers)
@@ -228,6 +229,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         // Create a new worker.
         m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(provider->GetPath(), search), 0);
       }
+       */
 
       // Put the items in the right category.
       for (int i=0; i<results->Size(); i++)
@@ -452,29 +454,25 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
   }
   else
   {
-    if (PlexServerManager::Get().bestServer())
+    if (g_plexServerManager.GetBestServer())
     {
-      CStdString url = PlexUtils::AppendPathToURL(PlexServerManager::Get().bestServer()->url(), "search");
-      // Issue the root of the new search.
-      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(url, search), 0);
+      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(g_plexServerManager.GetBestServer(), search), 0);
     }
     else
     {
       // Issue the request to the cloud.
+      /* FIXME: a Node Server in CPlexServerManager?
       m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl("http://node.plexapp.com:32400/system/search", search), 0);
+       */
     }
     
     // If we have shared servers, search them too.
     if (g_guiSettings.GetBool("myplex.searchsharedlibraries"))
     {
-      vector<PlexServerPtr> sharedServers;
-      PlexServerManager::Get().getSharedServers(sharedServers);
+      PlexServerList sharedServers = g_plexServerManager.GetAllServers(CPlexServerManager::SERVER_SHARED);
       
-      BOOST_FOREACH(PlexServerPtr server, sharedServers)
-      {
-        string url = PlexUtils::AppendPathToURL(server->url(), "search");
-        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(url, search), 0);
-      }
+      BOOST_FOREACH(CPlexServerPtr server, sharedServers)
+        m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(server, search), 0);
     }
     
     // Note that when we receive results, we need to clear out the old ones.
@@ -570,27 +568,11 @@ void CGUIWindowPlexSearch::SaveStateBeforePlay(CGUIBaseContainer* container)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-string CGUIWindowPlexSearch::BuildSearchUrl(const string& theUrl, const string& theQuery)
+string CGUIWindowPlexSearch::BuildSearchUrl(const CPlexServerPtr& server, const string& theQuery)
 {
-  // Escape the query.
-  CStdString query = theQuery;
-  CURL::Encode(query);
-
-  // Get the results.
-  CPlexDirectory dir;
-  CStdString path = CStdString(theUrl);
-
-  // Strip tailing slash.
-  if (path[path.size()-1] == '/')
-    path = path.substr(0, path.size()-1);
-
-  // Add the query parameter.
-  if (path.find("?") == string::npos)
-    path = path + "?query=" + query;
-  else
-    path = path + "&query=" + query;
-
-  return path;
+  CURL url = server->BuildURL("/search");
+  url.SetOption("query", theQuery);
+  return url.Get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

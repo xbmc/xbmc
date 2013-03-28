@@ -30,6 +30,13 @@ public:
 class CPlexServerManager : public CJobQueue
 {
 public:
+  enum CPlexServerOwnedModifier
+  {
+    SERVER_OWNED,
+    SERVER_SHARED,
+    SERVER_ALL
+  };
+
   CPlexServerManager();
 
   CPlexServerPtr GetBestServer() const
@@ -44,7 +51,7 @@ public:
   CPlexServerPtr FindByUUID(const CStdString &uuid);
   CPlexServerPtr FindByHostAndPort(const CStdString &host, int port);
 
-  PlexServerList GetAllServers() const;
+  PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL) const;
 
   void UpdateFromConnectionType(PlexServerList servers, int connectionType);
   void UpdateFromDiscovery(CPlexServerPtr server);

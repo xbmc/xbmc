@@ -261,10 +261,8 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {
-    if (strProtocol == "http" || strProtocol == "https" || strProtocol == "plex")
-    {
-      return new CPlexDirectory();
-    }
+    if (strProtocol == "plex") return new CPlexDirectory();
+    if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
   }
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;

@@ -125,12 +125,12 @@
 #endif
 
 /* PLEX */
-#include "MyPlexManager.h"
-#include "ManualServerScanner.h"
+#include "Client/MyPlexManager.h"
 #include "PlexUtils.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
 #include "PlexApplication.h"
 #include "BackgroundMusicPlayer.h"
+#include "Client/PlexServerManager.h"
 /* END PLEX */
 
 using namespace std;
@@ -2172,8 +2172,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     }
     else
     {
+      /*
       // We're signing out.
       MyPlexManager::Get().signOut();
+       */
 
       // Change the button to "sign in".
       pControl->SetLabel(g_localizeStrings.Get(44002));
@@ -2187,15 +2189,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
 
     if (g_guiSettings.GetString("myplex.token").empty())
     {
+      /*
       if (MyPlexManager::Get().signIn())
       {
         pControl->SetLabel(g_localizeStrings.Get(44003));
         pSettingString->SetLabel(44003);
 
-        /* Remove password from guisettings.xml */
         g_guiSettings.SetString("myplex.password", "");
       }
-      else
+      else*/
       {
         g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44012));
       }
@@ -2203,7 +2205,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     else
     {
       // We're signing out.
-      MyPlexManager::Get().signOut();
+      /*MyPlexManager::Get().signOut();*/
 
       // Change the button to "sign in".
       pControl->SetLabel(g_localizeStrings.Get(44004));
@@ -2222,21 +2224,25 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       string address = g_guiSettings.GetString("plexmediaserver.address");
       if (PlexUtils::IsValidIP(address))
-        ManualServerScanner::Get().addServer(address, true);
-      else
-        ManualServerScanner::Get().removeAllServersButLocal();
+      {
+        PlexServerList list;
+        CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", address, 32400));
+        list.push_back(server);
+        g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+      }
     }
     else
     {
-      ManualServerScanner::Get().removeAllServersButLocal();
+      PlexServerList list;
+      g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
     }
   }
   else if (strSetting.Equals("services.plexplayer"))
   {
     if (g_guiSettings.GetBool(strSetting))
-      g_plexApplication.GetServiceListener()->startAdvertisement();
+      g_plexApplication.GetServiceListener()->StartAdvertisement();
     else
-      g_plexApplication.GetServiceListener()->stopAdvertisement();
+      g_plexApplication.GetServiceListener()->StopAdvertisement();
   }
   /* END PLEX */
 

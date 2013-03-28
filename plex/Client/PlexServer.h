@@ -73,6 +73,7 @@ public:
   int GetNumConnections() const;
 
   CURL BuildURL(const CStdString& path) const;
+  CURL BuildPlexURL(const CStdString& path) const;
   void AddConnection(CPlexConnectionPtr connection);
 
 private:

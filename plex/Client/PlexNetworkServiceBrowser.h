@@ -7,8 +7,7 @@
 
 #include "plex/PlexUtils.h"
 #include "Network/NetworkServiceBrowser.h"
-#include "PlexSourceScanner.h"
-#include "PlexNetworkServiceAdvertiser.h"
+#include "Network/PlexNetworkServiceAdvertiser.h"
 #include "Client/PlexServerManager.h"
 #include "settings/GUISettings.h"
 #include "threads/Thread.h"

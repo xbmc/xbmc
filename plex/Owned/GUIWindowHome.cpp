@@ -43,9 +43,8 @@
 #include "AlarmClock.h"
 #include "Key.h"
 
-#include "MyPlexManager.h"
+#include "Client/MyPlexManager.h"
 #include "PlexDirectory.h"
-#include "PlexSourceScanner.h"
 #include "PlexLibrarySectionManager.h"
 #include "threads/SingleLock.h"
 #include "PlexUtils.h"
@@ -70,6 +69,9 @@
 #include "BackgroundMusicPlayer.h"
 
 #include "interfaces/Builtins.h"
+
+#include "Client/PlexServerManager.h"
+#include "Client/PlexServerDataLoader.h"
 
 using namespace std;
 using namespace XFILE;
@@ -127,29 +129,12 @@ int CPlexSectionFanout::LoadSection(const CStdString& url, int contentType)
 CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 {
   CStdString bestServerUrl;
-  PlexServerPtr server = PlexServerManager::Get().bestServer();
+  CPlexServerPtr server = g_plexServerManager.GetBestServer();
   if (server)
-  {
-    if (!extraUrl.empty())
-      bestServerUrl = PlexUtils::AppendPathToURL(server->url(), extraUrl);
-    else
-      bestServerUrl = server->url();
+    return server->BuildURL(extraUrl).Get();
 
-    if (!server->token.empty())
-    {
-      CURL urlWithToken(bestServerUrl);
-      urlWithToken.SetOption("X-Plex-Token", server->token);
-      return urlWithToken.Get();
-    }
-
-    return bestServerUrl;
-  }
-
-  bestServerUrl = "http://127.0.0.1:32400/";
-  if (!extraUrl.empty())
-    bestServerUrl = PlexUtils::AppendPathToURL(bestServerUrl, extraUrl);
-
-  return bestServerUrl;
+  CPlexServerPtr local = g_plexServerManager.FindByUUID("local");
+  return local->BuildURL(extraUrl).Get();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -182,13 +167,13 @@ void CPlexSectionFanout::Refresh()
   }
   else if (m_sectionType == PLEX_METADATA_MIXED)
   {
-    if (!g_advancedSettings.m_bHideFanouts)
+/*    if (!g_advancedSettings.m_bHideFanouts)
     {
       if (m_url.Find("queue") != -1)
         LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
       else if (m_url.Find("recommendations") != -1)
         LoadSection(MyPlexManager::Get().getPlaylistUrl("/recommendations/unwatched"), CONTENT_LIST_QUEUE);
-    }
+    }*/
   }
   else
   {
@@ -486,8 +471,6 @@ bool CGUIWindowHome::CheckTimer(const CStdString& strExisting, const CStdString&
     return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-typedef pair<string, HostSourcesPtr> string_sources_pair;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
@@ -517,11 +500,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     }
 
     case GUI_MSG_WINDOW_RESET:
-    case GUI_MSG_UPDATE_MAIN_MENU:
+    case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     {
       UpdateSections();
 
-      if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
+      if (message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshAllSections(false);
     }
       break;
@@ -612,6 +595,45 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return ret;
 }
 
+void CGUIWindowHome::UpdateSections()
+{
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");
+
+  CGUIBaseContainer* control = (CGUIBaseContainer*)GetControl(MAIN_MENU);
+  if (!control)
+  {
+    CLog::Log(LOGWARNING, "CGUIWindowHome::UpdateSections can't find MAIN_MENU control");
+    return;
+  }
+
+//  vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
+  CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
+  vector<CGUIListItemPtr> newList;
+
+  for (int i = 0; i < sections->Size(); i ++)
+  {
+    CFileItemPtr sectionItem = sections->Get(i);
+    CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
+    item->SetLabel(sectionItem->GetLabel());
+    item->SetProperty("plex", 1);
+
+    CStdString path("XBMC.ActivateWindow");
+    if (sectionItem->GetProperty("type").asString() == "artist")
+      path += "(MyMusicFiles, " + sectionItem->GetPath() + ",return)";
+    else if (sectionItem->GetProperty("type").asString() == "photo")
+      path += "(MyPictureFiles," + sectionItem->GetPath() + ",return)";
+    else
+      path += "(MyVideoFiles," + sectionItem->GetPath() + ",return)";
+
+    item->SetPath(path);
+    newList.push_back(item);
+
+    control->SetStaticContent(newList);
+  }
+
+}
+
+#if 0
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::UpdateSections()
 {
@@ -677,6 +699,7 @@ void CGUIWindowHome::UpdateSections()
     }
 
     // Add the queue if needed.
+    /*
     CFileItemList queue;
     if (MyPlexManager::Get().getPlaylist(queue, "queue", true) && queue.Size() > 0)
     {
@@ -697,7 +720,7 @@ void CGUIWindowHome::UpdateSections()
       rec->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("recommendations"));
       rec->SetPath(rec->GetProperty("key").asString());
       newSections.push_back(rec);
-    }
+    }*/
 
     // Add the shared content menu if needed.
     if (PlexLibrarySectionManager::Get().getNumSharedSections() > 0)
@@ -795,6 +818,7 @@ void CGUIWindowHome::UpdateSections()
     RestoreSection();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::HideAllLists()
@@ -999,6 +1023,7 @@ void CAuxFanLoadThread::Process()
     if (g_windowManager.GetActiveWindow() == 10016)
       continue;
 
+    /*
     if (g_guiSettings.GetString("myplex.token").empty() == true)
     {
       CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(44200), g_localizeStrings.Get(44201), g_localizeStrings.Get(44202), "");
@@ -1018,6 +1043,7 @@ void CAuxFanLoadThread::Process()
         m_numSeconds = 30 * 60;
       }
     }
+     */
   }
 }
 

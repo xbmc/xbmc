@@ -7,6 +7,7 @@
 #include "GUIWindowManager.h"
 #include "plex/PlexTypes.h"
 #include "Client/PlexConnection.h"
+#include "PlexServerDataLoader.h"
 
 using namespace std;
 
@@ -65,15 +66,30 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
 }
 
 PlexServerList
-CPlexServerManager::GetAllServers() const
+CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier) const
 {
   PlexServerList ret;
 
   CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
-    ret.push_back(p.second);
+  {
+    if (modifier == SERVER_OWNED && p.second->GetOwned())
+      ret.push_back(p.second);
+    else if (modifier == SERVER_SHARED && !p.second->GetOwned())
+      ret.push_back(p.second);
+    else if (modifier == SERVER_ALL)
+      ret.push_back(p.second);
+  }
 
   return ret;
+}
+
+void
+CPlexServerManager::MarkServersAsRefreshing()
+{
+  CSingleLock lk(m_serverMapLock);
+  BOOST_FOREACH(PlexServerPair p, m_serverMap)
+    p.second->MarkAsRefreshing();
 }
 
 void
@@ -185,4 +201,7 @@ CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
   CGUIMessage msg(GUI_MSG_PLEX_SERVER_NOTIFICATION, 0, 0, added ? 1 : 0);
   msg.SetStringParam(server->GetUUID());
   g_windowManager.SendThreadMessage(msg);
+
+  if (added)
+    g_plexServerDataLoader.LoadDataFromServer(server);
 }

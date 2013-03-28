@@ -12,7 +12,8 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIButtonControl.h"
 #include "LocalizeStrings.h"
-#include "MyPlexManager.h"
+#include "Client/MyPlexManager.h"
+#include "GUIWindowManager.h"
 
 void
 CGUIDialogMyPlexPin::ShowAndGetInput()
@@ -26,7 +27,7 @@ CGUIDialogMyPlexPin::ShowAndGetInput()
   CStdString line;
   line.Format("%s %s", g_localizeStrings.Get(44103), g_localizeStrings.Get(44102));
   dialog->SetLine(2, line);
-  dialog->m_pinLogin.Create();
+  //dialog->m_pinLogin.Create();
 
   dialog->DoModal();
   return ;
@@ -56,7 +57,7 @@ CGUIDialogMyPlexPin::OnMessage(CGUIMessage &message)
     if (message.GetSenderId() == ID_BUTTON_OK)
     {
       if (!m_done)
-        m_pinLogin.StopThread(false);
+        //m_pinLogin.StopThread(false);
 
       Close();
       return true;
@@ -65,7 +66,7 @@ CGUIDialogMyPlexPin::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_MYPLEX_GOT_PIN)
   {
     CStdString line;
-    line.Format("%s %s", g_localizeStrings.Get(44103), m_pinLogin.m_pin);
+//    line.Format("%s %s", g_localizeStrings.Get(44103), m_pinLogin.m_pin);
     SetLine(2, line);
     return true;
   }

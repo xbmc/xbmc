@@ -7,14 +7,13 @@
  *
  */
 
-#include "PlexNetworkServices.h"
+#include "Client/PlexNetworkServiceBrowser.h"
 #include "PlexApplication.h"
 #include "BackgroundMusicPlayer.h"
 #include "GUIUserMessages.h"
-#include "ManualServerScanner.h"
 #include "MediaSource.h"
 #include "plex/Helper/PlexHTHelper.h"
-#include "MyPlexManager.h"
+#include "Client/MyPlexManager.h"
 #include "AdvancedSettings.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,20 +24,22 @@ PlexApplication::Start()
   m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
 
   if (g_advancedSettings.m_bEnableGDM)
-    m_serviceListener = PlexServiceListener::Create();
-
-  // Make sure we always scan for localhost.
-  ManualServerScanner::Get().addServer("127.0.0.1");
+    m_serviceListener = CPlexServiceListenerPtr(new CPlexServiceListener);
   
   // Add the manual server if it exists and is enabled.
   if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
   {
     string address = g_guiSettings.GetString("plexmediaserver.address");
     if (PlexUtils::IsValidIP(address))
-      ManualServerScanner::Get().addServer(address);
+    {
+      PlexServerList list;
+      CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", address, 32400));
+      list.push_back(server);
+      g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+    }
   }
 
-  MyPlexManager::Get().scanAsync();
+  //MyPlexManager::Get().scanAsync();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,8 +91,8 @@ class CRemoteRestartThread : public CThread
 void PlexApplication::OnWakeUp()
 {
   /* Scan servers */
-  m_serviceListener->scanNow();
-  MyPlexManager::Get().scanAsync();
+  m_serviceListener->ScanNow();
+  //MyPlexManager::Get().scanAsync();
 
 #ifdef TARGET_DARWIN_OSX
   CRemoteRestartThread* hack = new CRemoteRestartThread;

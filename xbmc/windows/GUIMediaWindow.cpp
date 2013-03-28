@@ -77,7 +77,6 @@
 #include "filesystem/DirectoryCache.h"
 #include "GUI/GUIDialogRating.h"
 #include "dialogs/GUIDialogCache.h"
-#include "PlexSourceScanner.h"
 #include "guilib/GUIKeyboardFactory.h"
 /* END PLEX */
 
@@ -2316,6 +2315,7 @@ CStdString CGUIMediaWindow::RemoveParameterFromPath(const CStdString &strDirecto
 /* PLEX */
 void CGUIMediaWindow::RefreshShares(bool update)
 {
+  /*
   if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
   {
     CPlexSourceScanner::MergeSourcesForWindow(GetID());
@@ -2328,6 +2328,7 @@ void CGUIMediaWindow::RefreshShares(bool update)
       m_viewControl.SetSelectedItem(iItem);
     }
   }
+   */
 }
 
 void CGUIMediaWindow::Render()

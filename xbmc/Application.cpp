@@ -339,8 +339,8 @@
 #include "plex/PlexApplication.h"
 #include "plex/Players/PlexMediaServerPlayer.h"
 #include "plex/PlexMediaServerQueue.h"
-#include "plex/MyPlexManager.h"
-#include "plex/PlexServerManager.h"
+//#include "plex/Client/MyPlexManager.h"
+#include "plex/Client/PlexServerManager.h"
 #include "plex/Helper/PlexHTHelper.h"
 #include "plex/GUI/GUIDialogRating.h"
 #include "plex/GUI/GUIWindowSharedContent.h"
@@ -4251,7 +4251,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   /* PLEX */
-  PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+  CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
   /* END PLEX */
 
   CPlayerOptions options;
@@ -4266,7 +4266,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   PLAYERCOREID eNewCore = EPC_NONE;
   /* PLEX */
-  if (bestServer && bestServer->local == false && item.IsPlexWebkit())
+  if (bestServer && bestServer->GetActiveConnection()->IsLocal() == false && item.IsPlexWebkit())
   {
     eNewCore = EPC_DVDPLAYER;
   }

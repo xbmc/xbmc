@@ -34,7 +34,7 @@
 #include "GUIDialogOK.h"
 #include "Picture.h"
 #include "PlexLibrarySectionManager.h"
-#include "PlexServerManager.h"
+#include "Client/PlexServerManager.h"
 #include "BackgroundInfoLoader.h"
 #include "PlexTypes.h"
 #include "URIUtils.h"
@@ -42,6 +42,7 @@
 #include "TextureCache.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "NetworkInterface.h"
 
 #include "GUIInfoManager.h"
 
@@ -87,6 +88,8 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool repla
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+// This function handles urls in the format:
+// plex://<UUID of server>/path
 bool CPlexDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
 {
   CStdString strPath = path;
@@ -103,22 +106,19 @@ bool CPlexDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     return true;
   }
   
-  // Additionally, if we're going to 127.0.0.1, this is actually an alias for "selected server".
-  // which historically was always 127.0.0.1 but now of course could be anywhere.
-  //
-  CURL url(strPath);
-  if (m_bReplaceLocalhost == true && url.GetHostName() == "127.0.0.1")
+  /* Resolve the correct URL */
+  CURL newUrl(path);
+  CStdString uuid = newUrl.GetHostName();
+  CPlexServerPtr server = g_plexServerManager.FindByUUID(uuid);
+  if (!server)
   {
-    PlexServerPtr server = PlexServerManager::Get().bestServer();
-    if (server)
-    {
-      url.SetHostName(server->address);
-      url.SetPort(server->port);
-      
-      dprintf("Plex Server Manager: Using selected best server %s to make URL %s", server->name.c_str(), strPath.c_str());
-    }
+    /* Ouch, this should not happen! */
+    CLog::Log(LOGWARNING, "CPlexDirectory::GetDirectory tried to lookup server %s but it was not found!", uuid.c_str());
+    return false;
   }
   
+  CURL url = server->BuildURL(newUrl.GetFileName());
+
   // Add accessibility flag if we are in the library
   if (path.find("library/metadata") != string::npos)
   {

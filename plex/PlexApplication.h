@@ -10,7 +10,7 @@
 #pragma once
 
 #include <boost/shared_ptr.hpp>
-#include "Network/PlexNetworkServices.h"
+#include "Client/PlexNetworkServiceBrowser.h"
 
 #include "guilib/IMsgTargetCallback.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
@@ -21,8 +21,8 @@
 #include "Helper/PlexHTHelper.h"
 #endif
 
-class PlexServiceListener;
-typedef boost::shared_ptr<PlexServiceListener> PlexServiceListenerPtr;
+class CPlexServiceListener;
+typedef boost::shared_ptr<CPlexServiceListener> CPlexServiceListenerPtr;
 
 ///
 /// The hub of all Plex goodness.
@@ -46,11 +46,11 @@ public:
     m_autoUpdater->ForceCheckInBackground();
   }
 
-  PlexServiceListenerPtr GetServiceListener() const { return m_serviceListener; }
+  CPlexServiceListenerPtr GetServiceListener() const { return m_serviceListener; }
       
 private:
   /// Members
-  PlexServiceListenerPtr m_serviceListener;
+  CPlexServiceListenerPtr m_serviceListener;
   CPlexAutoUpdate* m_autoUpdater;
 };
 

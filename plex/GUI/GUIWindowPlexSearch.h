@@ -29,6 +29,7 @@
 #include "PlexContentWorker.h"
 #include "Stopwatch.h"
 #include "ThumbLoader.h"
+#include "Client/PlexServer.h"
 
 class PlexContentWorkerManager;
 
@@ -62,7 +63,7 @@ class CGUIWindowPlexSearch : public CGUIWindow,
   
  private:
   
-  std::string BuildSearchUrl(const std::string& theUrl, const std::string& theQuery);
+  std::string BuildSearchUrl(const CPlexServerPtr& server, const std::string& theQuery);
   virtual void SaveStateBeforePlay(CGUIBaseContainer* container);
   
   CVideoThumbLoader  m_videoThumbLoader;

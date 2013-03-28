@@ -219,10 +219,29 @@ CPlexServer::GetActiveConnectionURL() const
 }
 
 CURL
+CPlexServer::BuildPlexURL(const CStdString& path) const
+{
+  CURL url;
+  url.SetProtocol("plex");
+  url.SetHostName(m_uuid);
+  url.SetFileName(path);
+  return url.Get();
+}
+
+CURL
 CPlexServer::BuildURL(const CStdString &path) const
 {
   CSingleLock lk(m_connLock);
-  CURL url = m_activeConnection->BuildURL(path);
+  CPlexConnectionPtr connection = m_activeConnection;
+
+  if (!connection && m_connections.size() > 0)
+    /* no active connection, just take the first one at random */
+    connection = m_connections[0];
+  else if (!connection && m_connections.size() == 0)
+    /* no connections are no gooooood */
+    return CURL();
+
+  CURL url = connection->BuildURL(path);
   if (!url.HasOption("X-Plex-Token"))
   {
     /* See if we can find a token in our other connections */
