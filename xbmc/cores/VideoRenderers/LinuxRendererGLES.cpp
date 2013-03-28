@@ -65,6 +65,7 @@
 #if defined(HAVE_LIBSTAGEFRIGHT)
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include "windowing/egl/EGLWrapper.h"
 #include "android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/StageFrightVideo.h"
 
@@ -72,17 +73,6 @@
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
 static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
 static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
-#define GETEXTENSION(type, ext) \
-do \
-{ \
-    ext = (type) eglGetProcAddress(#ext); \
-    if (!ext) \
-    { \
-        CLog::Log(LOGERROR, "CLinuxRendererGLES::%s - ERROR getting proc addr of " #ext "\n", __func__); \
-    } \
-} while (0);
-
-
 #endif
 
 using namespace Shaders;
@@ -151,17 +141,11 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   
 #ifdef HAVE_LIBSTAGEFRIGHT
   if (!eglCreateImageKHR)
-  {
-    GETEXTENSION(PFNEGLCREATEIMAGEKHRPROC,  eglCreateImageKHR);
-  }
+    eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglCreateImageKHR");
   if (!eglDestroyImageKHR)
-  {
-    GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
-  }
+    eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglDestroyImageKHR");
   if (!glEGLImageTargetTexture2DOES)
-  {
-    GETEXTENSION(PFNGLEGLIMAGETARGETTEXTURE2DOESPROC, glEGLImageTargetTexture2DOES);
-  }
+    glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
 #endif
 }
 

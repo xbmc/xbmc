@@ -63,6 +63,8 @@ public:
   bool IsExtSupported(const char* extension);
   bool GetConfigAttrib(EGLDisplay display, EGLConfig config, EGLint attribute, EGLint *value);
 
+  static void* GetProcAddress(const char* function);
+  
 private:
     CEGLNativeType          *m_nativeTypes;
     EGLint                  m_result;

@@ -40,6 +40,7 @@
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include "windowing/egl/EGLWrapper.h"
 
 #include <binder/ProcessState.h>
 #include <media/stagefright/MetaData.h>
@@ -68,15 +69,6 @@
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
 static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
 static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
-#define GETEXTENSION(type, ext) \
-do \
-{ \
-    ext = (type) eglGetProcAddress(#ext); \
-    if (!ext) \
-    { \
-        CLog::Log(LOGERROR, "CLinuxRendererGLES::%s - ERROR getting proc addr of " #ext "\n", __func__); \
-    } \
-} while (0);
 
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
@@ -886,11 +878,11 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     native_window_api_connect(p->natwin.get(), NATIVE_WINDOW_API_MEDIA);
 
     if (!eglCreateImageKHR)
-      GETEXTENSION(PFNEGLCREATEIMAGEKHRPROC,  eglCreateImageKHR);
+      eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglCreateImageKHR");
     if (!eglDestroyImageKHR)
-      GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
+      eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglDestroyImageKHR");
     if (!glEGLImageTargetTexture2DOES)
-      GETEXTENSION(PFNGLEGLIMAGETARGETTEXTURE2DOESPROC, glEGLImageTargetTexture2DOES);
+      glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
   }
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
