@@ -3,6 +3,8 @@ xbmc/assets/*
 xbmc/lib/*
 xbmc/libs/*
 xbmc/obj/*
+xbmc/res/drawable/splash.png
+xbmc/src/R.java
 xbmc/src/org/xbmc/xbmc/*.class
 xbmc/classes.dex
 tmp/*
