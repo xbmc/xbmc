@@ -31,9 +31,9 @@ ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
 echo Creating $PACKAGE package version $VERSION revision $REVISION
 ${SUDO} rm -rf $DIRNAME/$ARCHIVE
 
-if [ -e "/Volumes/XBMC" ]
+if [ -e "/Volumes/$ARCHIVE" ]
 then 
-  umount /Volumes/XBMC
+  umount /Volumes/$ARCHIVE
 fi
 
 $DIRNAME/dmgmaker.pl $XBMC $ARCHIVE
