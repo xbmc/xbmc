@@ -52,4 +52,8 @@ private:
    * \brief Whether a swipe gesture has been detected or not
    */
   bool m_swipeDetected;
+  /*!
+   * \brief Number of touches
+   */
+  unsigned int m_numtouches;
 };
