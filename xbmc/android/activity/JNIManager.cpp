@@ -25,14 +25,12 @@
 
 CAndroidJNIManager::CAndroidJNIManager()
 {
-  m_broadcastReceiver = NULL;
   m_oActivity = NULL;
 }
 
 
 CAndroidJNIManager::~CAndroidJNIManager()
 {
-  delete m_broadcastReceiver;
 }
 
 bool CAndroidJNIManager::RegisterClass(JNIEnv* env, CAndroidJNIBase *native)
@@ -77,8 +75,7 @@ bool CAndroidJNIManager::Load(JavaVM* vm, int jniVersion)
         return false;
     }
 
-    m_broadcastReceiver = new CBroadcastReceiver();
-    RegisterClass(env, m_broadcastReceiver);
+    RegisterClass(env, &CBroadcastReceiver::GetInstance());
 
     return true;
   }
