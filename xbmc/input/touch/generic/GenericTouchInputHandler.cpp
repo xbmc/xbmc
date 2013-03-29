@@ -212,9 +212,17 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
-      triggerDetectors(event, pointer);
+      bool moving = false;
+      for (unsigned int index = 0; index < TOUCH_MAX_POINTERS; index++)
+      {
+        if (m_pointers[index].valid() && m_pointers[index].moving)
+        {
+          moving = true;
+          break;
+        }
+      }
 
-      if (m_pointers[pointer].moving)
+      if (moving)
       {
         m_holdTimer->Stop();
 
@@ -222,6 +230,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
         if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart)
           result = OnTouchGestureStart(m_pointers[pointer].down.x, m_pointers[pointer].down.y);
       }
+
+      triggerDetectors(event, pointer);
 
       if (m_gestureState == TouchGestureSingleTouch)
       {
@@ -260,7 +270,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       }
       else if (m_gestureState == TouchGestureMultiTouch)
       {
-        if (m_pointers[pointer].moving)
+        if (moving)
           result = OnMultiTouchMove(x, y,offsetX, offsetY, velocityX, velocityY, pointer);
       }
       else
