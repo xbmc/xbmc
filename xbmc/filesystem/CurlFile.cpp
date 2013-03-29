@@ -251,14 +251,14 @@ bool CCurlFile::CReadState::Seek(int64_t pos)
 void CCurlFile::CReadState::SetResume(void)
 {
   /*
-   * Use RANGE method for resuming. We used to use RESUME_FROM_LARGE for this but some http servers
-   * require us to always send the range request header. If we don't the server may provide different
-   * content causing seeking to fail. Note that internally Curl will automatically handle this for FTP
-   * so we don't need to worry about that here.
+   * Explicitly set RANGE header when filepos=0 as some http servers require us to always send the range
+   * request header. If we don't the server may provide different content causing seeking to fail.
+   * This only affects HTTP-like items, for FTP it's a null operation.
    */
-  char str[21];
-  sprintf(str, "%"PRId64"-", m_filePos);
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, str);
+  if (m_filePos == 0)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-");
+
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
 }
 
 long CCurlFile::CReadState::Connect(unsigned int size)
