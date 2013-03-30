@@ -1,0 +1,5 @@
+v0.1.2
+- Add notification for Ubuntu users checking through apt command
+
+v0.1.1
+- Initial version

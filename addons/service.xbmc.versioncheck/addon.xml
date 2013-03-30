@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.xbmc.versioncheck"
+       name="XBMC Version Check"
+      version="0.1.2"
+      provider-name="Team XBMC">
+    <requires>
+        <import addon="xbmc.addon" version="12.0.0"/>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.simplejson" version="2.0.10"/>
+    </requires>
+    <extension point="xbmc.service" library="service.py" start="login"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">XBMC Version Check checks if you are running latest released version.</summary>
+        <description lang="en">XBMC Version Check only supports a number of platforms/distros as releases may deffer between them. For more information visit the xbmc.org website.</description>
+        <disclaimer lang="en">Feel free to use this script. For information visit xbmc.org</disclaimer>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+        <platform>osx osx32 osx64 ios windx wingl linux</platform>
+        <website>http://xbmc.org</website>
+        <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
+        <forum>http://forum.xbmc.org/showthread.php?tid=160228</forum>
+        <email></email>    
+    </extension>
+</addon>
