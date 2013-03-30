@@ -262,7 +262,7 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/AlbumArtistSortOrder")     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
     else if (it->first == "WM/Script")                   {} // Known unsupported, supress warnings
-    else if (it->first == "WM/Year")                     tag.SetYear(it->second.front().toUInt());
+    else if (it->first == "WM/Year")                     tag.SetYear(atoi(it->second.front().toString().toCString(true)));
     else if (it->first == "MusicBrainz/Artist Id")       tag.SetMusicBrainzArtistID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Id")        tag.SetMusicBrainzAlbumID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Artist Id") tag.SetMusicBrainzAlbumArtistID(it->second.front().toString().to8Bit(true));
@@ -284,6 +284,9 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
   }
+  // artist may be specified in the ContentDescription block rather than using the 'Author' attribute.
+  if (tag.GetArtist().empty())
+    tag.SetArtist(asf->artist().toCString(true));
   tag.SetLoaded(true);
   return true;
 }
