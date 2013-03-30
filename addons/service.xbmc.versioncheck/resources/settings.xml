@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings>
+    <category label="32020">
+        <setting label="32021" type="bool" id="versioncheck_enable" default="true"/>
+    </category>
+</settings>
