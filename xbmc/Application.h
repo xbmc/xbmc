@@ -376,6 +376,12 @@ protected:
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
 #endif
+
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  // Allow access to ExecuteInputAction()
+  friend class CJoystickManager;
+#endif
+
   // screensaver
   bool m_bScreenSave;
   ADDON::AddonPtr m_screenSaver;

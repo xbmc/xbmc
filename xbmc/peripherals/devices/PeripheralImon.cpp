@@ -26,7 +26,7 @@
 #if defined (TARGET_WINDOWS)
 #include "system.h" // For HAS_SDL_JOYSTICK
 #if defined (HAS_SDL_JOYSTICK)
-#include "input/windows/WINJoystick.h"
+#include "input/JoystickManager.h"
 #endif // HAS_SDL_JOYSTICK
 #endif // TARGET_WINDOWS
 
@@ -110,7 +110,7 @@ void CPeripheralImon::ActionOnImonConflict(bool deviceInserted /*= true*/)
     bool enableJoystickNow = !deviceInserted && g_guiSettings.GetBool("input.enablejoystick");
     CLog::Log(LOGNOTICE, "Problematic iMON hardware %s. Joystick usage: %s", (deviceInserted ? "detected" : "was removed"),
         (enableJoystickNow) ? "enabled." : "disabled." );
-    g_Joystick.SetEnabled(enableJoystickNow);
+    CJoystickManager::Get().SetEnabled(enableJoystickNow);
 #endif
   }
 }

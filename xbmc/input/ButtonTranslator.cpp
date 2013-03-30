@@ -35,10 +35,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
-#if defined(TARGET_WINDOWS)
-#include "input/windows/WINJoystick.h"
-#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-#include "SDLJoystick.h"
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "JoystickManager.h"
 #endif
 
 using namespace std;
@@ -252,6 +250,28 @@ static const ActionMapping actions[] =
         // Do nothing action
         { "noop"             , ACTION_NOOP}
 };
+
+/* static */
+bool CButtonTranslator::IsAnalog(int actionID)
+{
+  switch (actionID)
+  {
+  case ACTION_ANALOG_SEEK_FORWARD:
+  case ACTION_ANALOG_SEEK_BACK:
+  case ACTION_ANALOG_FORWARD:
+  case ACTION_ANALOG_REWIND:
+  case ACTION_ANALOG_MOVE:
+  case ACTION_CURSOR_LEFT:
+  case ACTION_CURSOR_RIGHT:
+  case ACTION_VOLUME_UP:
+  case ACTION_VOLUME_DOWN:
+  case ACTION_ZOOM_IN:
+  case ACTION_ZOOM_OUT:
+    return true;
+  default:
+    return false;
+  }
+}
 
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
