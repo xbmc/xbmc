@@ -23,7 +23,6 @@
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
-#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "addons/Skin.h"

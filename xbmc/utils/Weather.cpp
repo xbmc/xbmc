@@ -42,6 +42,7 @@
 #include "log.h"
 #include "addons/AddonManager.h"
 #include "interfaces/python/XBPython.h"
+#include "CharsetConverter.h"
 
 using namespace std;
 using namespace ADDON;

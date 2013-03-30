@@ -21,10 +21,8 @@
  */
 
 #include "DVDOverlay.h"
-#ifdef _LINUX
-#include "utils/CharsetConverter.h"
-#endif
 #include <string.h>
+#include <stdlib.h>
 
 class CDVDOverlayText : public CDVDOverlay
 {

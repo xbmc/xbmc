@@ -19,7 +19,6 @@
  */
 
 #include "GUITextBox.h"
-#include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"

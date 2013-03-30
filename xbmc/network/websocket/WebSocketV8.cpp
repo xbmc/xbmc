@@ -25,7 +25,6 @@
 #include "WebSocketV8.h"
 #include "WebSocket.h"
 #include "utils/Base64.h"
-#include "utils/CharsetConverter.h"
 #include "utils/EndianSwap.h"
 #include "utils/HttpParser.h"
 #include "utils/HttpResponse.h"

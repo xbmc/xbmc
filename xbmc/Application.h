@@ -55,7 +55,6 @@ namespace MEDIA_DETECT
 #include "win32/WIN32Util.h"
 #endif
 #include "utils/Stopwatch.h"
-#include "utils/CharsetConverter.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif

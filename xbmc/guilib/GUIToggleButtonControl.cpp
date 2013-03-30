@@ -21,7 +21,6 @@
 #include "GUIToggleButtonControl.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
-#include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "Key.h"
 

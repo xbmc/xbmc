@@ -19,7 +19,6 @@
  */
 
 #include "MusicInfoScraper.h"
-#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "filesystem/CurlFile.h"
 

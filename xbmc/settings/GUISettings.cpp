@@ -31,6 +31,7 @@
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"

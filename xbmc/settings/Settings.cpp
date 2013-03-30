@@ -27,6 +27,7 @@
 #include "URL.h"
 #include "guilib/GUIFontManager.h"
 #include "input/ButtonTranslator.h"
+#include "utils/CharsetConverter.h"
 #include "utils/XMLUtils.h"
 #include "PasswordManager.h"
 #include "utils/RegExp.h"

@@ -95,6 +95,7 @@
 #endif
 #include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
+#include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/SystemInfo.h"

@@ -28,7 +28,6 @@
 #include "input/XBMC_keyboard.h"
 #include "input/XBMC_vkeys.h"
 #include "threads/SingleLock.h"
-#include "utils/CharsetConverter.h"
 
 using namespace JSONRPC;
 

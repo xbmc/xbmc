@@ -19,7 +19,6 @@
  */
 
 #include "GUILabel.h"
-#include "utils/CharsetConverter.h"
 #include <limits>
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)

@@ -26,7 +26,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/CharsetConverter.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
 

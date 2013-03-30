@@ -27,7 +27,6 @@
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 

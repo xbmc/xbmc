@@ -19,7 +19,6 @@
  */
 
 #include "GUIFadeLabelControl.h"
-#include "utils/CharsetConverter.h"
 
 using namespace std;
 

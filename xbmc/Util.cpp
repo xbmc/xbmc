@@ -63,6 +63,7 @@
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
 #ifdef _WIN32
+#include "utils/CharsetConverter.h"
 #include <shlobj.h>
 #include "WIN32Util.h"
 #endif

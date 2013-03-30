@@ -19,7 +19,6 @@
  */
 
 #include "GUIInfoTypes.h"
-#include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "addons/AddonManager.h"
 #include "utils/log.h"

@@ -20,7 +20,6 @@
 
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
-#include "utils/CharsetConverter.h"
 #include "utils/TimeUtils.h"
 #include "Key.h"
 

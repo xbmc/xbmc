@@ -19,7 +19,6 @@
  */
 
 #include "GUICheckMarkControl.h"
-#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
 #include "Key.h"
 

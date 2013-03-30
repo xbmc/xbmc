@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
 #if defined(_WIN32)
+  #include "utils/CharsetConverter.h"
   #include "Windows.h"
   #ifdef HAS_IRSERVERSUITE
     #include "input/windows/IRServerSuite.h"

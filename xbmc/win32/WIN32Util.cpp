@@ -35,6 +35,7 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "DllPaths_win32.h"

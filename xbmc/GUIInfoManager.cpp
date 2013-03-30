@@ -45,6 +45,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/MathUtils.h"

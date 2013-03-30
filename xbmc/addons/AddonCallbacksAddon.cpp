@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 #include "network/Network.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 

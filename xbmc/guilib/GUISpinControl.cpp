@@ -19,7 +19,6 @@
  */
 
 #include "GUISpinControl.h"
-#include "utils/CharsetConverter.h"
 #include "Key.h"
 
 using namespace std;
