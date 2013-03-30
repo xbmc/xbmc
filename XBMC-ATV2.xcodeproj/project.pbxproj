@@ -1116,7 +1116,7 @@
 		7CEE2E6B13D6B7A8000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
 		7CEE2E6C13D6B7A8000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
 		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
-		8316267613B670FF004AED87 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
+		8316267613B670FF004AED87 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.ios; path = docs/README.ios; sourceTree = SOURCE_ROOT; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
 		C807119D135DB842002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807119E135DB842002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
@@ -3269,8 +3269,6 @@
 		089C166AFE841209C02AAC07 /* XBMC-frapp */ = {
 			isa = PBXGroup;
 			children = (
-				DFC539391526659D00D5FD5C /* AppIcon.png */,
-				8316267513B670D7004AED87 /* Documentation */,
 				F56C704E131EC150000AD0F6 /* Source */,
 				F589AE6D12890B6700D8079E /* Internal Libs */,
 				F5899DC91287212700D8079E /* System Libs and Frameworks */,
@@ -3287,12 +3285,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8316267513B670D7004AED87 /* Documentation */ = {
+		8316267513B670D7004AED87 /* docs */ = {
 			isa = PBXGroup;
 			children = (
 				8316267613B670FF004AED87 /* README.ios */,
 			);
-			name = Documentation;
+			name = docs;
 			sourceTree = "<group>";
 		};
 		C8B92A7415735D0300284190 /* epg */ = {
@@ -3785,7 +3783,9 @@
 		F56C704E131EC150000AD0F6 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				8316267513B670D7004AED87 /* docs */,
 				F56C704F131EC150000AD0F6 /* lib */,
+				F5E3CD4D170794640059B179 /* media */,
 				F56C71D7131EC151000AD0F6 /* xbmc */,
 			);
 			name = Source;
@@ -6515,6 +6515,14 @@
 				F5E1131914357B6500175026 /* GUIDialogPeripheralSettings.h */,
 			);
 			path = dialogs;
+			sourceTree = "<group>";
+		};
+		F5E3CD4D170794640059B179 /* media */ = {
+			isa = PBXGroup;
+			children = (
+				DFC539391526659D00D5FD5C /* AppIcon.png */,
+			);
+			name = media;
 			sourceTree = "<group>";
 		};
 		F5E6209C13E9081400D5F2CD /* info */ = {

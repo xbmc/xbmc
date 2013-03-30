@@ -1135,7 +1135,7 @@
 		8253940416B25C2C00A85509 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8253940616B25C2C00A85509 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
-		83D619BB13C0D25300418A0F /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
+		83D619BB13C0D25300418A0F /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.ios; path = docs/README.ios; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80711AB135DB85F002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C80711AC135DB85F002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
@@ -3295,7 +3295,6 @@
 		089C166AFE841209C02AAC07 /* XBMC-frapp */ = {
 			isa = PBXGroup;
 			children = (
-				83D619BA13C0D23400418A0F /* Documentation */,
 				F56C8034131F42E5000AD0F6 /* Source */,
 				F589AE6D12890B6700D8079E /* Internal Libs */,
 				F5899DC91287212700D8079E /* System Libs and Frameworks */,
@@ -3334,12 +3333,12 @@
 			path = generic;
 			sourceTree = "<group>";
 		};
-		83D619BA13C0D23400418A0F /* Documentation */ = {
+		83D619BA13C0D23400418A0F /* docs */ = {
 			isa = PBXGroup;
 			children = (
 				83D619BB13C0D25300418A0F /* README.ios */,
 			);
-			name = Documentation;
+			name = docs;
 			sourceTree = "<group>";
 		};
 		C8B929C21573557B00284190 /* epg */ = {
@@ -3832,6 +3831,7 @@
 		F56C8034131F42E5000AD0F6 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				83D619BA13C0D23400418A0F /* docs */,
 				F56C8035131F42E5000AD0F6 /* lib */,
 				F56C81B9131F42E6000AD0F6 /* xbmc */,
 			);

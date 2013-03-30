@@ -3315,7 +3315,6 @@
 		08FB7794FE84155DC02AAC07 /* XBMC */ = {
 			isa = PBXGroup;
 			children = (
-				C6859E96029091FE04C91782 /* Documentation */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				08FB779DFE84155DC02AAC07 /* System Libs and Frameworks */,
@@ -3327,6 +3326,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C6859E96029091FE04C91782 /* docs */,
 				E38E185C0D25F9FA00618676 /* lib */,
 				E38E14610D25F9F900618676 /* xbmc */,
 			);
@@ -4302,12 +4302,12 @@
 			name = MediaConnect;
 			sourceTree = "<group>";
 		};
-		C6859E96029091FE04C91782 /* Documentation */ = {
+		C6859E96029091FE04C91782 /* docs */ = {
 			isa = PBXGroup;
 			children = (
 				18576525156ED3710088C35A /* README.osx */,
 			);
-			name = Documentation;
+			name = docs;
 			sourceTree = "<group>";
 		};
 		C8482871156CFCD8005A996F /* pvr */ = {
