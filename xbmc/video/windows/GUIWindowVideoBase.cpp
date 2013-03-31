@@ -2086,7 +2086,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
     for (int i = 0; i < (int)m_vecItems->Size(); i++)
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
-      if (pItem->GetPath() == pSelItem->GetPath())
+      CURL url(pItem->GetPath());
+      if (pSelItem->IsVideoDb())
+        url.SetOptions("");
+      if (url.Get() == pSelItem->GetPath())
       {
         m_viewControl.SetSelectedItem(i);
         break;
