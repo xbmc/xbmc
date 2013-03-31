@@ -8,13 +8,13 @@ PATH_CHANGE_REV_FILENAME=".last_success_revision"
 #$XBMC_PLATFORM_DIR matches the platform subdirs!
 case $XBMC_PLATFORM_DIR in
   atv2)
-    DEFAULT_SDK_VERSION=4.2
+    DEFAULT_SDK_VERSION=4.3
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;
 
   ios)
-    DEFAULT_SDK_VERSION=4.2
+    DEFAULT_SDK_VERSION=4.3
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;
