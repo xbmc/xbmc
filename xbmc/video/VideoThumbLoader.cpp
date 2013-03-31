@@ -215,7 +215,11 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     FillLibraryArt(*pItem);
 
-    if (!pItem->IsVideo() && !pItem->m_bIsFolder)
+    if (!pItem->GetVideoInfoTag()->m_type.empty()         &&
+         pItem->GetVideoInfoTag()->m_type != "movie"      &&
+         pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
+         pItem->GetVideoInfoTag()->m_type != "episode"    &&
+         pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
       m_database->Close();
       return true; // nothing else to be done
