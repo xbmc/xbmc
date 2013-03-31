@@ -11,7 +11,7 @@
     <extension point="xbmc.service" library="service.py" start="login"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="en">XBMC Version Check checks if you are running latest released version.</summary>
-        <description lang="en">XBMC Version Check only supports a number of platforms/distros as releases may deffer between them. For more information visit the xbmc.org website.</description>
+        <description lang="en">XBMC Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the xbmc.org website.</description>
         <disclaimer lang="en">Feel free to use this script. For information visit xbmc.org</disclaimer>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
         <platform>osx osx32 osx64 ios windx wingl linux</platform>
