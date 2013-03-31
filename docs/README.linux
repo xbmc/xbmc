@@ -44,7 +44,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libavcodec-dev, libavfilter-dev, libavformat-dev, libavutil-dev,
   libbluetooth-dev, libbluray-dev, libboost-dev, libboost-thread-dev,
   libiso9660-dev, libbz2-dev, libcdio-dev, libcec-dev, libcrystalhd-dev, 
-  libcurl4-gnutls-dev | libcurl-dev, libcwiid1-dev, libdbus-1-dev,
+  libcurl4-gnutls-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev,
   libenca-dev, libflac-dev, libfontconfig-dev, libfreetype6-dev,
   libfribidi-dev, libgl1-mesa-dev | libgl-dev, libglew-dev,
   libglu1-mesa-dev | libglu-dev, libhal-dev, libhal-storage-dev,
@@ -57,7 +57,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libswscale-dev, libtinyxml-dev, libtool, libudev-dev, libusb-dev, libva-dev,
   libvdpau-dev, libvorbis-dev, libxinerama-dev, libxmu-dev, libxrandr-dev,
   libxt-dev, libyajl-dev, lsb-release, nasm [!amd64], python-dev,
-  python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev, swig, taglib(>= 1.8),
+  python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev, swig, libtag1-dev (>= 1.8),
   default-jre, libtiff-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
