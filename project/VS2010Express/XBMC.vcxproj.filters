@@ -295,6 +295,12 @@
     <Filter Include="profiles\windows">
       <UniqueIdentifier>{b5a6d872-7e56-4976-81c5-47baad252337}</UniqueIdentifier>
     </Filter>
+    <Filter Include="input\touch">
+      <UniqueIdentifier>{4e236b17-3720-4ed8-89af-90cb86bf9b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\touch\generic">
+      <UniqueIdentifier>{d062c356-66f2-49e7-9510-b216701d2298}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2999,6 +3005,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\profiles\ProfilesManager.cpp">
       <Filter>profiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\touch\generic\GenericTouchActionHandler.cpp">
+      <Filter>input\touch\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\touch\generic\GenericTouchSwipeDetector.cpp">
+      <Filter>input\touch\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\touch\ITouchInputHandling.cpp">
+      <Filter>input\touch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Vector.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5857,6 +5875,30 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\profiles\ProfilesManager.h">
       <Filter>profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\ITouchActionHandler.h">
+      <Filter>input\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchActionHandler.h">
+      <Filter>input\touch\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\TouchTypes.h">
+      <Filter>input\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\generic\GenericTouchSwipeDetector.h">
+      <Filter>input\touch\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\generic\IGenericTouchGestureDetector.h">
+      <Filter>input\touch\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\ITouchInputHandler.h">
+      <Filter>input\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\touch\ITouchInputHandling.h">
+      <Filter>input\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Vector.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

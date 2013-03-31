@@ -23,7 +23,11 @@
 
 #pragma once
 
-#include "WinEvents.h"
+#include "windowing/WinEvents.h"
+#include "input/MouseStat.h"
+#include "input/touch/TouchTypes.h"
+
+class CGenericTouchSwipeDetector;
 
 class CWinEventsWin32 : public CWinEventsBase
 {
@@ -31,15 +35,17 @@ public:
   static void MessagePush(XBMC_Event *newEvent);
   static bool MessagePump();
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-  static PHANDLE_EVENT_FUNC m_pEventFunc;
+
 private:
   static void RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify);
   static void WindowFromScreenCoords(HWND hWnd, POINT *point);
   static void OnGestureNotify(HWND hWnd, LPARAM lParam);
   static void OnGesture(HWND hWnd, LPARAM lParam);
 
-  static int m_lastGesturePosX;
-  static int m_lastGesturePosY;
+  static PHANDLE_EVENT_FUNC m_pEventFunc;
+  static int m_originalZoomDistance;
+  static Pointer m_touchPointer;
+  static CGenericTouchSwipeDetector *m_touchSwipeDetector;
 };
 
 #endif // WINDOW_EVENTS_WIN32_H
