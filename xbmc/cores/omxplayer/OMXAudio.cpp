@@ -908,6 +908,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
       omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
       if (omx_err == OMX_ErrorNone)
       {
+        //CLog::Log(LOGINFO, "AudiD: dts:%.0f pts:%.0f size:%d\n", dts, pts, len);
         break;
       }
       else
