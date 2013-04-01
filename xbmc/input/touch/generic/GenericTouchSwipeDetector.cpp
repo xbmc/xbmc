@@ -40,7 +40,7 @@
 CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi)
   : IGenericTouchGestureDetector(handler, dpi),
     m_directions(TouchMoveDirectionLeft | TouchMoveDirectionRight | TouchMoveDirectionUp | TouchMoveDirectionDown),
-    m_swipeDetected(false)
+    m_swipeDetected(false), m_size(0)
 { }
 
 bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
@@ -48,9 +48,9 @@ bool CGenericTouchSwipeDetector::OnTouchDown(unsigned int index, const Pointer &
   if (index < 0 || index >= TOUCH_MAX_POINTERS)
     return false;
 
-  // only handle one-finger swipes
-  if (index > 0)
-    return false;
+  m_size += 1;
+  if (m_size > 1)
+    return true;
 
   // reset all values
   m_done = false;
@@ -65,8 +65,8 @@ bool CGenericTouchSwipeDetector::OnTouchUp(unsigned int index, const Pointer &po
   if (index < 0 || index >= TOUCH_MAX_POINTERS)
     return false;
 
-  // only handle one-finger swipes
-  if (index > 0 || m_done)
+  m_size -= 1;
+  if (m_done)
     return false;
 
   m_done = true;
@@ -85,7 +85,7 @@ bool CGenericTouchSwipeDetector::OnTouchUp(unsigned int index, const Pointer &po
   pointer.velocity(velocityX, velocityY, false);
 
   // call the OnSwipe() callback
-  OnSwipe((TouchMoveDirection)m_directions, pointer.down.x, pointer.down.y, pointer.current.x, pointer.current.y, velocityX, velocityY, 1);
+  OnSwipe((TouchMoveDirection)m_directions, pointer.down.x, pointer.down.y, pointer.current.x, pointer.current.y, velocityX, velocityY, m_size + 1);
   return true;
 }
 
@@ -94,8 +94,8 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
   if (index < 0 || index >= TOUCH_MAX_POINTERS)
     return false;
 
-  // only handle one-finger swipes of moved pointers
-  if (index > 0 || m_done || !pointer.moving)
+  // only handle swipes of moved pointers
+  if (index >= m_size || m_done || !pointer.moving)
     return false;
 
   float deltaXmovement = pointer.current.x - pointer.last.x;
@@ -163,4 +163,15 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
   }
   
   return true;
+}
+
+bool CGenericTouchSwipeDetector::OnTouchUpdate(unsigned int index, const Pointer &pointer)
+{
+  if (index < 0 || index >= TOUCH_MAX_POINTERS)
+    return false;
+
+  if (m_done)
+    return true;
+
+  return OnTouchMove(index, pointer);
 }

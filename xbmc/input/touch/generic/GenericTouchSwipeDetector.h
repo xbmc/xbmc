@@ -37,6 +37,7 @@ public:
   virtual bool OnTouchDown(unsigned int index, const Pointer &pointer);
   virtual bool OnTouchUp(unsigned int index, const Pointer &pointer);
   virtual bool OnTouchMove(unsigned int index, const Pointer &pointer);
+  virtual bool OnTouchUpdate(unsigned int index, const Pointer &pointer);
 
 private:
   /*!
@@ -52,4 +53,8 @@ private:
    * \brief Whether a swipe gesture has been detected or not
    */
   bool m_swipeDetected;
+  /*!
+   * \brief Number of active pointeres
+   */
+  unsigned int m_size;
 };
