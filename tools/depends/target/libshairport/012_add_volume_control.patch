@@ -1,0 +1,28 @@
+--- src/ao.h	2013-03-14 19:07:04.000000000 +0100
++++ src/ao.h	2013-03-14 20:45:15.000000000 +0100
+@@ -141,6 +141,7 @@
+ 
+ #endif  /* __AO_H__ */
+ 
++#define SHAIRPORT_AUDIOOUTPUT_VERSION 2
+ extern struct AudioOutput g_ao;
+ struct AudioOutput                                                                                                                                                                                              
+   {                                                                                                                                                                                                              
+@@ -155,4 +156,5 @@
+       char* (*ao_get_option)(ao_option *, const char* );
+       void (*ao_set_metadata)(const char *buffer, unsigned int size);                                                                                                                                                         
+       void (*ao_set_metadata_coverart)(const char *buffer, unsigned int size);
++      void (*ao_set_volume)(float volume);
+   }; 
+diff -uPr orig/src/hairtunes.c macosx10.6_i386-target/src/hairtunes.c
+--- src/hairtunes.c	2013-03-14 19:07:04.000000000 +0100
++++ src/hairtunes.c	2013-03-14 20:46:33.000000000 +0100
+@@ -265,6 +265,8 @@
+   assert(f<=0);
+   if (debug)
+       xprintf("VOL: %lf\n", f);
++  if (g_ao.ao_set_volume)
++    g_ao.ao_set_volume(f);
+   volume = pow(10.0,0.05*f);
+   fix_volume = 65536.0 * volume;
+ }

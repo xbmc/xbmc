@@ -288,6 +288,17 @@ void CAirTunesServer::AudioOutputFunctions::ao_initialize(void)
 {
 }
 
+void  CAirTunesServer::AudioOutputFunctions::ao_set_volume(float volume)
+{
+  //volume from -30 - 0 - -144 means mute
+  float volPercent = volume < -30.0f ? 0 : 1 - volume/-30;
+#ifdef HAS_AIRPLAY
+  CAirPlayServer::backupVolume();
+#endif
+  g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
+}
+
+
 int CAirTunesServer::AudioOutputFunctions::ao_play(ao_device *device, char *output_samples, uint32_t num_bytes)
 {
   if (!device)
@@ -675,6 +686,11 @@ bool CAirTunesServer::Initialize(const CStdString &password)
 #ifdef HAVE_STRUCT_AUDIOOUTPUT_AO_SET_METADATA
     ao.ao_set_metadata = AudioOutputFunctions::ao_set_metadata;    
     ao.ao_set_metadata_coverart = AudioOutputFunctions::ao_set_metadata_coverart;        
+#endif
+#if defined(SHAIRPORT_AUDIOOUTPUT_VERSION)
+#if   SHAIRPORT_AUDIOOUTPUT_VERSION >= 2
+    ao.ao_set_volume = AudioOutputFunctions::ao_set_volume;
+#endif
 #endif
     struct printfPtr funcPtr;
     funcPtr.extprintf = shairport_log;
