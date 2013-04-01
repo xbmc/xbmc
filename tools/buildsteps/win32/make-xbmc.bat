@@ -121,7 +121,7 @@ goto EXE_COMPILE
   ECHO Done!
   ECHO ------------------------------------------------------------
   set buildmode=clean
-  GOTO MAKE_BUILD_EXE
+  GOTO END
   
 :COMPILE_NO_CLEAN_EXE
   ECHO Wait while preparing the build.
