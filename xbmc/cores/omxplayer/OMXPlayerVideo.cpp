@@ -377,7 +377,7 @@ void OMXPlayerVideo::Process()
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
     {
-      CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
+      CLog::Log(LOGERROR, "OMXPlayerVideo: Got MSGQ_IS_ERROR(%d) Aborting", (int)ret);
       break;
     }
     else if (ret == MSGQ_TIMEOUT)
@@ -454,8 +454,8 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT %.2f", m_fForcedAspectRatio);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -483,10 +483,15 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      if (m_speed != static_cast<CDVDMsgInt*>(pMsg)->m_value)
+      {
+        m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
     {
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_STARTED %d", m_started);
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
     }
@@ -506,6 +511,10 @@ void OMXPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
+      #ifdef _DEBUG
+      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts, 
+          (int)pPacket->iSize, m_started, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, m_av_clock->OMXLateCount(1));
+      #endif
       if (m_messageQueue.GetDataSize() == 0
       ||  m_speed < 0)
       {
