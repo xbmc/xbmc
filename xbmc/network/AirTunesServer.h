@@ -41,13 +41,16 @@
 #include "utils/HttpParser.h"
 #include "utils/StdString.h"
 #include "filesystem/PipeFile.h"
+#include "interfaces/IAnnouncer.h"
 
 class DllLibShairport;
 
 
-class CAirTunesServer : public CThread
+class CAirTunesServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {
 public:
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+
   static bool StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password="");
   static void StopServer(bool bWait);
   static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
