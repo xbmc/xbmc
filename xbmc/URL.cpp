@@ -195,7 +195,7 @@ void CURL::Parse(const CStdString& strURL1)
     sep = "?;#|";
   else if(strProtocol2.Equals("ftp")
        || strProtocol2.Equals("ftps"))
-    sep = "?;";
+    sep = "?;|";
 
   if(sep)
   {
