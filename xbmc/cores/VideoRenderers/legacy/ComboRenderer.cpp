@@ -132,10 +132,10 @@ void CComboRenderer::ManageDisplay()
   }
 
   // source rect
-  rs.left = g_settings.m_currentVideoSettings.m_CropLeft;
-  rs.top = g_settings.m_currentVideoSettings.m_CropTop;
-  rs.right = m_iSourceWidth - g_settings.m_currentVideoSettings.m_CropRight;
-  rs.bottom = m_iSourceHeight - g_settings.m_currentVideoSettings.m_CropBottom;
+  rs.left = CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
+  rs.top = CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
+  rs.right = m_iSourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
+  rs.bottom = m_iSourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
   CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * fPixelRatio, g_settings.m_fZoomAmount);
 

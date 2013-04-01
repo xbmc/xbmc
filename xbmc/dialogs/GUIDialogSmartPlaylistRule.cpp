@@ -29,6 +29,7 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/LabelFormatter.h"
 
@@ -273,10 +274,10 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     VECSOURCES sources;
     if (m_type == "songs" || m_type == "mixed")
-      sources = *g_settings.GetSourcesFromType("music");
+      sources = *CMediaSourceSettings::Get().GetSources("music");
     if (m_type != "songs")
     {
-      VECSOURCES sources2 = *g_settings.GetSourcesFromType("video");
+      VECSOURCES sources2 = *CMediaSourceSettings::Get().GetSources("video");
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     g_mediaManager.GetLocalDrives(sources);

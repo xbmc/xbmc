@@ -44,6 +44,8 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
@@ -120,7 +122,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
       if (message.GetNumStringParams() && message.GetStringParam(0).Equals("Files") &&
-          g_settings.GetSourcesFromType("video")->empty())
+          CMediaSourceSettings::Get().GetSources("video")->empty())
       {
         message.SetStringParam("");
       }
@@ -161,7 +163,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
-        g_settings.CycleWatchMode(m_vecItems->GetContent());
+        CMediaSettings::Get().CycleWatchedMode(m_vecItems->GetContent());
         g_settings.Save();
         OnFilterItems(GetProperty("filter").asString());
         return true;
@@ -178,10 +180,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWALL)
       {
-        if (g_settings.GetWatchMode(m_vecItems->GetContent()) == VIDEO_SHOW_ALL)
-          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_UNWATCHED);
+        if (CMediaSettings::Get().GetWatchedMode(m_vecItems->GetContent()) == WatchedModeAll)
+          CMediaSettings::Get().SetWatchedMode(m_vecItems->GetContent(), WatchedModeUnwatched);
         else
-          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
+          CMediaSettings::Get().SetWatchedMode(m_vecItems->GetContent(), WatchedModeAll);
         g_settings.Save();
         OnFilterItems(GetProperty("filter").asString());
         return true;
@@ -371,7 +373,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
-      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
+      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("video"), &label)) 
         items.SetLabel(label);
       if (!items.IsSourcesPath())
         LoadVideoInfo(items);
@@ -533,10 +535,10 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
-  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+  int watchMode = CMediaSettings::Get().GetWatchedMode(m_vecItems->GetContent());
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + watchMode));
 
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != VIDEO_SHOW_ALL);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != WatchedModeAll);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -1215,7 +1217,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!local)
         items.Add(noneitem);
 
-      VECSOURCES sources=g_settings.m_videoSources;
+      VECSOURCES sources=*CMediaSourceSettings::Get().GetSources("video");
       g_mediaManager.GetLocalDrives(sources);
       CStdString result;
       CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, *item);
@@ -1414,7 +1416,7 @@ void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
   }
 
   CStdString result;
-  VECSOURCES sources(g_settings.m_videoSources);
+  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("video"));
   g_mediaManager.GetLocalDrives(sources);
   CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, item);
   bool flip=false;
@@ -1654,7 +1656,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
      (items.IsSmartPlayList() || (items.HasProperty("library.filter") && items.GetProperty("library.filter").asBoolean())))
     node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
 
-  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+  int watchMode = CMediaSettings::Get().GetWatchedMode(m_vecItems->GetContent());
 
   for (int i = 0; i < items.Size(); i++)
   {
@@ -1662,11 +1664,11 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
 
     if(item->HasVideoInfoTag() && (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS))
     {
-      if (watchMode == VIDEO_SHOW_UNWATCHED)
+      if (watchMode == WatchedModeUnwatched)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("unwatchedepisodes").asInteger();
-      if (watchMode == VIDEO_SHOW_WATCHED)
+      if (watchMode == WatchedModeWatched)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("watchedepisodes").asInteger();
-      if (watchMode == VIDEO_SHOW_ALL)
+      if (watchMode == WatchedModeAll)
         item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
       item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
       listchanged = true;
@@ -1674,8 +1676,8 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
 
     if (filterWatched)
     {
-      if((watchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
-      || (watchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
+      if((watchMode==WatchedModeWatched   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (watchMode==WatchedModeUnwatched && item->GetVideoInfoTag()->m_playCount > 0))
       {
         items.Remove(i);
         i--;

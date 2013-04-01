@@ -43,14 +43,17 @@
 #endif
 #endif // MID
 
+#include "settings/ISettingsHandler.h"
+#include "settings/ISubSettings.h"
 #include "settings/VideoSettings.h"
 #include "Profile.h"
-#include "view/ViewState.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 #include <map>
+#include <set>
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -60,51 +63,26 @@
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
 #define VOLUME_CONTROL_STEPS 90    // 90 steps
-#define VOLUME_DRC_MINIMUM 0    // 0dB
-#define VOLUME_DRC_MAXIMUM 6000 // 60dB
-
-#define VIEW_MODE_NORMAL        0
-#define VIEW_MODE_ZOOM          1
-#define VIEW_MODE_STRETCH_4x3   2
-#define VIEW_MODE_WIDE_ZOOM    3
-#define VIEW_MODE_STRETCH_16x9  4
-#define VIEW_MODE_ORIGINAL      5
-#define VIEW_MODE_CUSTOM        6
-
-#define VIDEO_SHOW_ALL 0
-#define VIDEO_SHOW_UNWATCHED 1
-#define VIDEO_SHOW_WATCHED 2
 
 /* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
    makes sense to leave all the profile settings in a user writeable location
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
-class CSkinString
-{
-public:
-  CStdString name;
-  CStdString value;
-};
-
-class CSkinBool
-{
-public:
-  CSkinBool() : value(false) {};
-  CStdString name;
-  bool value;
-};
-
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
-class CMediaSource;
 
-class CSettings
+class CSettings : private ISettingsHandler, ISubSettings
 {
 public:
   CSettings(void);
   virtual ~CSettings(void);
+
+  void RegisterSettingsHandler(ISettingsHandler *settingsHandler);
+  void UnregisterSettingsHandler(ISettingsHandler *settingsHandler);
+  void RegisterSubSettings(ISubSettings *subSettings);
+  void UnregisterSubSettings(ISubSettings *subSettings);
 
   void Initialize();
 
@@ -118,45 +96,6 @@ public:
   bool DeleteProfile(unsigned int index);
   void CreateProfileFolders();
 
-  VECSOURCES *GetSourcesFromType(const CStdString &type);
-  CStdString GetDefaultSourceFromType(const CStdString &type);
-
-  bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
-  bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
-  bool AddShare(const CStdString &type, const CMediaSource &share);
-
-  int TranslateSkinString(const CStdString &setting);
-  const CStdString &GetSkinString(int setting) const;
-  void SetSkinString(int setting, const CStdString &label);
-
-  int TranslateSkinBool(const CStdString &setting);
-  bool GetSkinBool(int setting) const;
-  void SetSkinBool(int setting, bool set);
-
-  /*! \brief Retreive the watched mode for the given content type
-   \param content Current content type
-   \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
-   \sa SetWatchMode, IncrementWatchMode
-   */
-  int GetWatchMode(const CStdString& content) const;
-
-  /*! \brief Set the watched mode for the given content type
-   \param content Current content type
-   \param value Watched mode to set
-   \sa GetWatchMode, IncrementWatchMode
-   */
-  void SetWatchMode(const CStdString& content, int value);
-
-  /*! \brief Cycle the watched mode for the given content type
-   \param content Current content type
-   \sa GetWatchMode, SetWatchMode
-   */
-  void CycleWatchMode(const CStdString& content);
-
-  void ResetSkinSetting(const CStdString &setting);
-  void ResetSkinSettings();
-
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
   CStdString m_videoExtensions;
@@ -166,30 +105,9 @@ public:
 
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
-
-  CViewState m_viewStateMusicNavArtists;
-  CViewState m_viewStateMusicNavAlbums;
-  CViewState m_viewStateMusicNavSongs;
-  CViewState m_viewStateVideoNavActors;
-  CViewState m_viewStateVideoNavYears;
-  CViewState m_viewStateVideoNavGenres;
-  CViewState m_viewStateVideoNavTitles;
-  CViewState m_viewStateVideoNavEpisodes;
-  CViewState m_viewStateVideoNavSeasons;
-  CViewState m_viewStateVideoNavTvShows;
-  CViewState m_viewStateVideoNavMusicVideos;
-
-  CViewState m_viewStatePrograms;
-  CViewState m_viewStatePictures;
-  CViewState m_viewStateMusicFiles;
-  CViewState m_viewStateVideoFiles;
-
   bool m_bMyMusicPlaylistRepeat;
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
-
-  CVideoSettings m_defaultVideoSettings;
-  CVideoSettings m_currentVideoSettings;
 
   float m_fZoomAmount;      // current zoom amount
   float m_fPixelRatio;      // current pixel ratio
@@ -216,19 +134,6 @@ public:
 
   CStdString m_userAgent;
 
-  std::map<int, CSkinString> m_skinStrings;
-  std::map<int, CSkinBool> m_skinBools;
-
-  VECSOURCES m_programSources;
-  VECSOURCES m_pictureSources;
-  VECSOURCES m_fileSources;
-  VECSOURCES m_musicSources;
-  VECSOURCES m_videoSources;
-
-  CStdString m_defaultProgramSource;
-  CStdString m_defaultMusicSource;
-  CStdString m_defaultPictureSource;
-  CStdString m_defaultFileSource;
   CStdString m_defaultMusicLibSource;
 
   int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
@@ -328,7 +233,6 @@ public:
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetLibraryFolder() const;
-  CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
 
@@ -349,41 +253,42 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  void LoadSources();
-  bool SaveSources();
-
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
   static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
-  bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
 
   void ApplyCalibrations();
   void UpdateCalibrations();
 protected:
-  void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
-  bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
-
-  // functions for writing xml files
-  void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
-
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
 
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 
-  // skin activated settings
-  void LoadSkinSettings(const TiXmlElement* pElement);
-  void SaveSkinSettings(TiXmlNode *pElement) const;
-
   void LoadUserFolderLayout();
 
 private:
+  // implementation of ISettingsHandler
+  virtual bool OnSettingsLoading();
+  virtual void OnSettingsLoaded();
+  virtual bool OnSettingsSaving() const;
+  virtual void OnSettingsSaved() const;
+  virtual void OnSettingsCleared();
+
+  // implementation of ISubSettings
+  virtual bool Load(const TiXmlNode *settings);
+  virtual bool Save(TiXmlNode *settings) const;
+
+  CCriticalSection m_critical;
+  typedef std::set<ISettingsHandler*> SettingsHandlers;
+  SettingsHandlers m_settingsHandlers;
+  typedef std::set<ISubSettings*> SubSettings;
+  SubSettings m_subSettings;
+
   std::vector<CProfile> m_vecProfiles;
-  std::map<CStdString, int> m_watchMode;
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;

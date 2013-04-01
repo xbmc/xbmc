@@ -111,7 +111,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   */
 
   m_hints       = hints;
-  m_Deinterlace = ( g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
+  m_Deinterlace = ( CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_flush       = false;
@@ -713,10 +713,10 @@ int OMXPlayerVideo::GetFreeSpace()
 void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
   // check if destination rect or video view mode has changed
-  if ((m_dst_rect != DestRect) || (m_view_mode != g_settings.m_currentVideoSettings.m_ViewMode))
+  if ((m_dst_rect != DestRect) || (m_view_mode != CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode))
   {
     m_dst_rect  = DestRect;
-    m_view_mode = g_settings.m_currentVideoSettings.m_ViewMode;
+    m_view_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode;
   }
   else
   {

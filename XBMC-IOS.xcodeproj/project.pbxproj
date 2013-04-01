@@ -143,6 +143,10 @@
 		DF64FE5916C07AF700D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE5316C07AF700D028FB /* ViewDatabase.cpp */; };
 		DF830C9515BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830C9315BB20FC00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		DF830C9E15BB215500602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */; };
+		DF898FC21709B8E600B35C21 /* MediaSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF898FBC1709B8E600B35C21 /* MediaSettings.cpp */; };
+		DF898FC31709B8E600B35C21 /* MediaSourceSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF898FBE1709B8E600B35C21 /* MediaSourceSettings.cpp */; };
+		DF898FC41709B8E600B35C21 /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF898FC01709B8E600B35C21 /* SkinSettings.cpp */; };
+		DF898FC71709B90400B35C21 /* ViewStateSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF898FC51709B90400B35C21 /* ViewStateSettings.cpp */; };
 		DF91D88A161B7581004E6637 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91D888161B7581004E6637 /* AddonsOperations.cpp */; };
 		DF93D7CF1444B105007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7971444B105007C6459 /* AFPFile.cpp */; };
 		DF93D7D21444B105007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D79D1444B105007C6459 /* CDDAFile.cpp */; };
@@ -1366,6 +1370,16 @@
 		DF830C9415BB20FC00602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
 		DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIKeyboardFactory.cpp; sourceTree = "<group>"; };
 		DF830C9D15BB215500602BE6 /* GUIKeyboardFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboardFactory.h; sourceTree = "<group>"; };
+		DF898FBA1709B8E600B35C21 /* ISettingsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingsHandler.h; sourceTree = "<group>"; };
+		DF898FBB1709B8E600B35C21 /* ISubSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISubSettings.h; sourceTree = "<group>"; };
+		DF898FBC1709B8E600B35C21 /* MediaSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaSettings.cpp; sourceTree = "<group>"; };
+		DF898FBD1709B8E600B35C21 /* MediaSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSettings.h; sourceTree = "<group>"; };
+		DF898FBE1709B8E600B35C21 /* MediaSourceSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaSourceSettings.cpp; sourceTree = "<group>"; };
+		DF898FBF1709B8E600B35C21 /* MediaSourceSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSourceSettings.h; sourceTree = "<group>"; };
+		DF898FC01709B8E600B35C21 /* SkinSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinSettings.cpp; sourceTree = "<group>"; };
+		DF898FC11709B8E600B35C21 /* SkinSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinSettings.h; sourceTree = "<group>"; };
+		DF898FC51709B90400B35C21 /* ViewStateSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewStateSettings.cpp; sourceTree = "<group>"; };
+		DF898FC61709B90400B35C21 /* ViewStateSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewStateSettings.h; sourceTree = "<group>"; };
 		DF91D888161B7581004E6637 /* AddonsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonsOperations.cpp; sourceTree = "<group>"; };
 		DF91D889161B7581004E6637 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
 		DF93D7971444B105007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
@@ -3637,6 +3651,8 @@
 				DF64FE5316C07AF700D028FB /* ViewDatabase.cpp */,
 				DF64FE5416C07AF700D028FB /* ViewDatabase.h */,
 				DF64FE5516C07AF700D028FB /* ViewState.h */,
+				DF898FC51709B90400B35C21 /* ViewStateSettings.cpp */,
+				DF898FC61709B90400B35C21 /* ViewStateSettings.h */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -6064,10 +6080,18 @@
 				F56C86BF131F42EB000AD0F6 /* AdvancedSettings.h */,
 				F56C86BC131F42EB000AD0F6 /* GUISettings.cpp */,
 				F56C86BD131F42EB000AD0F6 /* GUISettings.h */,
+				DF898FBA1709B8E600B35C21 /* ISettingsHandler.h */,
+				DF898FBB1709B8E600B35C21 /* ISubSettings.h */,
+				DF898FBC1709B8E600B35C21 /* MediaSettings.cpp */,
+				DF898FBD1709B8E600B35C21 /* MediaSettings.h */,
+				DF898FBE1709B8E600B35C21 /* MediaSourceSettings.cpp */,
+				DF898FBF1709B8E600B35C21 /* MediaSourceSettings.h */,
 				F56C86C8131F42EB000AD0F6 /* Profile.cpp */,
 				F56C86C9131F42EB000AD0F6 /* Profile.h */,
 				F56C86CA131F42EB000AD0F6 /* Settings.cpp */,
 				F56C86CB131F42EB000AD0F6 /* Settings.h */,
+				DF898FC01709B8E600B35C21 /* SkinSettings.cpp */,
+				DF898FC11709B8E600B35C21 /* SkinSettings.h */,
 				F56C86CE131F42EB000AD0F6 /* VideoSettings.cpp */,
 				F56C86CF131F42EB000AD0F6 /* VideoSettings.h */,
 			);
@@ -7740,6 +7764,10 @@
 				1D04C23B16E67BA20001BA1E /* GenericTouchActionHandler.cpp in Sources */,
 				1D04C24116E67BA20001BA1E /* ITouchInputHandling.cpp in Sources */,
 				DFAF6A6D16EBAF4800D6AE12 /* RssManager.cpp in Sources */,
+				DF898FC21709B8E600B35C21 /* MediaSettings.cpp in Sources */,
+				DF898FC31709B8E600B35C21 /* MediaSourceSettings.cpp in Sources */,
+				DF898FC41709B8E600B35C21 /* SkinSettings.cpp in Sources */,
+				DF898FC71709B90400B35C21 /* ViewStateSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

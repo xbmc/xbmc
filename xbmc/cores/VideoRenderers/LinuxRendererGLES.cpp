@@ -35,6 +35,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/FrameBufferObject.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
@@ -174,7 +175,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -545,9 +546,9 @@ unsigned int CLinuxRendererGLES::PreInit()
 
 void CLinuxRendererGLES::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
+  if (m_scalingMethodGui == CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod)
     return;
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -859,8 +860,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_TOP)
@@ -981,8 +982,8 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_TOP)

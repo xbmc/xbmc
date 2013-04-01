@@ -25,6 +25,7 @@
 #include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -65,7 +66,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
-        message.SetStringParam(g_settings.m_defaultProgramSource);
+        message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("programs"));
 
       return CGUIMediaWindow::OnMessage(message);
     }

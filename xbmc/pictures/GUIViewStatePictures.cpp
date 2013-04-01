@@ -24,10 +24,12 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "view/ViewStateSettings.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -51,17 +53,18 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
     AddSortMethod(SORT_METHOD_DATE_TAKEN, 577, LABEL_MASKS("%L", "%t", "%L", "%J"));  // Filename, DateTaken | Foldername, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
-
-    SetSortMethod(g_settings.m_viewStatePictures.m_sortMethod);
-    SetViewAsControl(g_settings.m_viewStatePictures.m_viewMode);
-    SetSortOrder(g_settings.m_viewStatePictures.m_sortOrder);
+    
+    CViewState *viewState = CViewStateSettings::Get().Get("pictures");
+    SetSortMethod(viewState->m_sortMethod);
+    SetViewAsControl(viewState->m_viewMode);
+    SetSortOrder(viewState->m_sortOrder);
   }
   LoadViewState(items.GetPath(), WINDOW_PICTURES);
 }
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, &g_settings.m_viewStatePictures);
+  SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, CViewStateSettings::Get().Get("pictures"));
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
@@ -79,8 +82,9 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
+  VECSOURCES *pictureSources = CMediaSourceSettings::Get().GetSources("pictures");
   AddAddonsSource("image", g_localizeStrings.Get(1039), "DefaultAddonPicture.png");
-  AddOrReplace(g_settings.m_pictureSources, CGUIViewState::GetSources());
-  return g_settings.m_pictureSources;
+  AddOrReplace(*pictureSources, CGUIViewState::GetSources());
+  return *pictureSources;
 }
 

@@ -32,6 +32,7 @@
 #include "storage/MediaManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -81,7 +82,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
-        message.SetStringParam(g_settings.m_defaultMusicSource);
+        message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("music"));
 
       return CGUIWindowMusicBase::OnMessage(message);
     }
@@ -200,7 +201,7 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   items.FilterCueItems();
 
   CStdString label;
-  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("music"), &label)) 
+  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("music"), &label)) 
     items.SetLabel(label);
 
   return true;

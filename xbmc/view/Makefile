@@ -1,6 +1,7 @@
 SRCS=GUIViewControl.cpp \
      GUIViewState.cpp \
      ViewDatabase.cpp \
+     ViewStateSettings.cpp \
 
 LIB=view.a
 

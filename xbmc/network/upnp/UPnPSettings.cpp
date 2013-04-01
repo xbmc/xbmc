@@ -20,6 +20,7 @@
 
 #include "UPnPSettings.h"
 #include "filesystem/File.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -51,8 +52,15 @@ CUPnPSettings& CUPnPSettings::Get()
   return sUPnPSettings;
 }
 
+void CUPnPSettings::OnSettingsCleared()
+{
+  Clear();
+}
+
 bool CUPnPSettings::Load(const std::string &file)
 {
+  CSingleLock lock(m_critical);
+
   Clear();
 
   if (!CFile::Exists(file))
@@ -84,6 +92,8 @@ bool CUPnPSettings::Load(const std::string &file)
 
 bool CUPnPSettings::Save(const std::string &file) const
 {
+  CSingleLock lock(m_critical);
+
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_UPNP);
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
@@ -102,6 +112,8 @@ bool CUPnPSettings::Save(const std::string &file) const
 
 void CUPnPSettings::Clear()
 {
+  CSingleLock lock(m_critical);
+
   m_serverUUID.clear();
   m_serverPort = 0;
   m_maxReturnedItems = 0;
