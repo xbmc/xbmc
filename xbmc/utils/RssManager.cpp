@@ -45,6 +45,16 @@ CRssManager& CRssManager::Get()
   return sRssManager;
 }
 
+void CRssManager::OnSettingsLoaded()
+{
+  Load();
+}
+
+void CRssManager::OnSettingsCleared()
+{
+  Clear();
+}
+
 void CRssManager::Start()
  {
    m_bActive = true;

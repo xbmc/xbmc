@@ -23,9 +23,11 @@
 #include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "view/ViewStateSettings.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -36,17 +38,18 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
   else
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
-
-  SetSortMethod(g_settings.m_viewStatePrograms.m_sortMethod);
-  SetViewAsControl(g_settings.m_viewStatePrograms.m_viewMode);
-  SetSortOrder(g_settings.m_viewStatePrograms.m_sortOrder);
+  
+  CViewState *viewState = CViewStateSettings::Get().Get("programs");
+  SetSortMethod(viewState->m_sortMethod);
+  SetViewAsControl(viewState->m_viewMode);
+  SetSortOrder(viewState->m_sortOrder);
 
   LoadViewState(items.GetPath(), WINDOW_PROGRAMS);
 }
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, &g_settings.m_viewStatePrograms);
+  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::Get().Get("programs"));
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
@@ -65,7 +68,9 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 #if defined(TARGET_ANDROID)
   AddAndroidSource("apps", g_localizeStrings.Get(20244), "DefaultProgram.png");
 #endif
-  AddOrReplace(g_settings.m_programSources,CGUIViewState::GetSources());
-  return g_settings.m_programSources;
+
+  VECSOURCES *programSources = CMediaSourceSettings::Get().GetSources("programs");
+  AddOrReplace(*programSources, CGUIViewState::GetSources());
+  return *programSources;
 }
 

@@ -55,6 +55,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -782,9 +783,9 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     GetDirectory(pItem->GetPath(), items);
     FormatAndSort(items);
 
-    int watchedMode = g_settings.GetWatchMode(items.GetContent());
-    bool unwatchedOnly = watchedMode == VIDEO_SHOW_UNWATCHED;
-    bool watchedOnly = watchedMode == VIDEO_SHOW_WATCHED;
+    int watchedMode = CMediaSettings::Get().GetWatchedMode(items.GetContent());
+    bool unwatchedOnly = watchedMode == WatchedModeUnwatched;
+    bool watchedOnly = watchedMode == WatchedModeWatched;
     for (int i = 0; i < items.Size(); ++i)
     {
       if (items[i]->m_bIsFolder)

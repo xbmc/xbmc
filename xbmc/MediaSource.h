@@ -113,6 +113,7 @@ typedef std::vector<CMediaSource> VECSOURCES;
 \sa CMediaSource, VECSOURCES
 */
 typedef std::vector<CMediaSource>::iterator IVECSOURCES;
+typedef std::vector<CMediaSource>::const_iterator CIVECSOURCES;
 
 void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras);
 void AddOrReplace(VECSOURCES& sources, const CMediaSource& source);

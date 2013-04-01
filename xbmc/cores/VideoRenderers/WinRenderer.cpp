@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
@@ -234,7 +235,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   ChooseBestResolution(fps);
   m_destWidth = g_settings.m_ResInfo[m_resolution].iWidth;
   m_destHeight = g_settings.m_ResInfo[m_resolution].iHeight;
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -582,12 +583,12 @@ void CWinRenderer::UpdatePSVideoFilter()
 
 void CWinRenderer::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
+  if (m_scalingMethodGui == CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod && m_bFilterInitialized)
     return;
 
   m_bFilterInitialized = true;
 
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))
@@ -762,9 +763,9 @@ void CWinRenderer::ScaleFixedPipeline()
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
 
-  bool cbcontrol          = (g_settings.m_currentVideoSettings.m_Contrast != 50.0f || g_settings.m_currentVideoSettings.m_Brightness != 50.0f);
-  unsigned int contrast   = (unsigned int)(g_settings.m_currentVideoSettings.m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
-  unsigned int brightness = (unsigned int)(g_settings.m_currentVideoSettings.m_Brightness * .01f * 255.0f);
+  bool cbcontrol          = (CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast != 50.0f || CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness != 50.0f);
+  unsigned int contrast   = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
+  unsigned int brightness = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * .01f * 255.0f);
 
   D3DCOLOR diffuse  = D3DCOLOR_ARGB(255, contrast, contrast, contrast);
   D3DCOLOR specular = D3DCOLOR_ARGB(255, brightness, brightness, brightness);
@@ -861,8 +862,8 @@ void CWinRenderer::Stage1()
   if (!m_bUseHQScaler)
   {
       m_colorShader->Render(m_sourceRect, m_destRect,
-                            g_settings.m_currentVideoSettings.m_Contrast,
-                            g_settings.m_currentVideoSettings.m_Brightness,
+                            CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
+                            CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
                             m_iFlags,
                             (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
@@ -879,8 +880,8 @@ void CWinRenderer::Stage1()
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
 
     m_colorShader->Render(srcRect, rtRect,
-                          g_settings.m_currentVideoSettings.m_Contrast,
-                          g_settings.m_currentVideoSettings.m_Brightness,
+                          CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
+                          CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
                           m_iFlags,
                           (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 

@@ -21,10 +21,15 @@
 
 #include <string>
 
-class CUPnPSettings
+#include "settings/ISettingsHandler.h"
+#include "threads/CriticalSection.h"
+
+class CUPnPSettings : public ISettingsHandler
 {
 public:
   static CUPnPSettings& Get();
+  
+  virtual void OnSettingsCleared();
 
   bool Load(const std::string &file);
   bool Save(const std::string &file) const;
@@ -54,4 +59,6 @@ private:
   int m_maxReturnedItems;
   std::string m_rendererUUID;
   int m_rendererPort;
+
+  CCriticalSection m_critical;
 };

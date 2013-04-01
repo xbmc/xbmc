@@ -27,6 +27,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 
 using namespace std;
 
@@ -152,7 +153,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
     m_SecondsPerByte = 0.0;
 
   m_iBufferSize = 0;
-  SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
+  SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
 
   if (m_pAudioCallback)
     RegisterAudioCallback(m_pAudioCallback);

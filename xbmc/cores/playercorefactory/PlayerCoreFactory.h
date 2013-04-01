@@ -23,6 +23,7 @@
 #include "system.h"
 
 #include "cores/IPlayerCallback.h"
+#include "settings/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 
@@ -67,10 +68,12 @@ const PLAYERCOREID PCID_AMLPLAYER = EPC_AMLPLAYER;
 const PLAYERCOREID PCID_OMXPLAYER = EPC_OMXPLAYER;
 #endif
 
-class CPlayerCoreFactory
+class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
   static CPlayerCoreFactory& Get();
+
+  virtual void OnSettingsLoaded();
 
   PLAYERCOREID GetPlayerCore(const CStdString& strCoreName) const;
   CPlayerCoreConfig* GetPlayerConfig(const CStdString& strCoreName) const;
@@ -89,8 +92,6 @@ public:
   PLAYERCOREID SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
   PLAYERCOREID SelectPlayerDialog(float posX, float posY) const;
 
-  bool LoadConfiguration(const std::string &file, bool clear);
-
   void OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core);
   void OnPlayerRemoved(const CStdString& id);
 
@@ -101,6 +102,8 @@ protected:
   virtual ~CPlayerCoreFactory();
 
 private:
+  bool LoadConfiguration(const std::string &file, bool clear);
+
   std::vector<CPlayerCoreConfig *> m_vecCoreConfigs;
   std::vector<CPlayerSelectionRule *> m_vecCoreSelectionRules;
   CCriticalSection m_section;

@@ -139,8 +139,8 @@ std::vector<OMXSelectionStream> COMXSelectionStreams::Get(StreamType type)
 
 static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelectionStream& rh)
 {
-  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_AudioStream
-                 , rh.type_index == g_settings.m_currentVideoSettings.m_AudioStream);
+  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream
+                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream);
 
   if(!g_guiSettings.GetString("locale.audiolanguage").Equals("original"))
   {
@@ -162,14 +162,14 @@ static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelect
 
 static bool PredicateSubtitlePriority(const OMXSelectionStream& lh, const OMXSelectionStream& rh)
 {
-  if(!g_settings.m_currentVideoSettings.m_SubtitleOn)
+  if(!CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
   {
     PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
                    , rh.flags & CDemuxStream::FLAG_FORCED);
   }
 
-  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream
-                 , rh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream);
+  PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
+                 , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
 
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
@@ -623,11 +623,11 @@ retry:
       }
     } // end loop over all subtitle files    
 
-    g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
-  SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
-  SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+  SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+  SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
   m_av_clock.Reset();
   //m_av_clock.OMXReset();
   m_dvd.Clear();
@@ -722,7 +722,7 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     CloseAudioStream(true);
 
   // enable subtitles
-  m_player_video.EnableSubtitle(g_settings.m_currentVideoSettings.m_SubtitleOn);
+  m_player_video.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
   streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
@@ -938,9 +938,9 @@ void COMXPlayer::Process()
     if(m_PlayerOptions.state.size() > 0)
       ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
     else
-      ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_settings.m_currentVideoSettings.m_SubtitleOn);
+      ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
-    g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
   if(!OpenDemuxStream())
@@ -2717,7 +2717,7 @@ bool COMXPlayer::GetSubtitleVisible()
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     if(pStream->IsInMenu())
-      return g_settings.m_currentVideoSettings.m_SubtitleOn;
+      return CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
     else
       return pStream->IsSubtitleStreamEnabled();
   }
@@ -2727,7 +2727,7 @@ bool COMXPlayer::GetSubtitleVisible()
 
 void COMXPlayer::SetSubtitleVisible(bool bVisible)
 {
-  g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
+  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
 }
 
