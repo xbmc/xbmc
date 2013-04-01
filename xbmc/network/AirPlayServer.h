@@ -48,6 +48,8 @@ public:
   static void StopServer(bool bWait);
   static bool SetCredentials(bool usePassword, const CStdString& password);
   static bool IsPlaying(){ return m_isPlaying > 0;}
+  static void backupVolume();
+  static void restoreVolume();
   static int m_isPlaying;
 
 protected:
@@ -107,6 +109,7 @@ private:
   bool m_nonlocal;
   bool m_usePassword;
   CStdString m_password;
+  int m_origVolume;
 
   static CAirPlayServer *ServerInstance;
 };
