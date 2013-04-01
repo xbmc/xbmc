@@ -108,8 +108,8 @@ public:
   int GetAudioStreamCount();
   bool SetActiveAudioStream(int iId);
 
-  bool GetNavigatorState(std::string &xmlstate);
-  bool SetNavigatorState(std::string &xmlstate);
+  bool GetState(std::string &xmlstate);
+  bool SetState(const std::string &xmlstate);
 
   int GetChapter()      { return m_iPart; }      // the current part in the current title
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
