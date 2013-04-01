@@ -348,6 +348,9 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
   switch (hint.codec)
   {
     case CODEC_ID_TEXT:
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,53,100)
+    case AV_CODEC_ID_SUBRIP:
+#endif
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
       if( pCodec ) return pCodec;
       break;
