@@ -20,6 +20,7 @@
 
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "video/VideoDatabase.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -35,7 +36,7 @@ bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items) const
   if (!videodatabase.Open())
     return false;
   
-  bool bSuccess=videodatabase.GetRecentlyAddedMoviesNav(BuildPath(), items);
+  bool bSuccess=videodatabase.GetRecentlyAddedMoviesNav(g_advancedSettings.m_recentlyAddedMoviePath, items);
 
   videodatabase.Close();
 

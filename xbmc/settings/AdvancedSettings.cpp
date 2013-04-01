@@ -278,10 +278,10 @@ void CAdvancedSettings::Initialize()
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
-  m_recentlyAddedJobMusicPath = "musicdb://songs/";
-  m_recentlyAddedJobMoviePath = "videodb://recentlyaddedmovies/";
-  m_recentlyAddedJobEpisodePath = "videodb://recentlyaddedepisodes/";
-  m_recentlyAddedJobMusicVideoPath = "videodb://recentlyaddedmusicvideos/";
+  m_recentlyAddedMusicPath = "musicdb://songs/";
+  m_recentlyAddedMoviePath = "videodb://recentlyaddedmovies/";
+  m_recentlyAddedEpisodePath = "videodb://recentlyaddedepisodes/";
+  m_recentlyAddedMusicVideoPath = "videodb://recentlyaddedmusicvideos/";
 
   m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
@@ -754,21 +754,21 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
+
+    TiXmlElement *pSubElement = pElement->FirstChildElement("recentlyaddedpath");
+    if (pSubElement)
+    {
+      XMLUtils::GetString(pSubElement, "musicpath", m_recentlyAddedMusicPath);
+      XMLUtils::GetString(pSubElement, "moviepath", m_recentlyAddedMoviePath);
+      XMLUtils::GetString(pSubElement, "episodepath", m_recentlyAddedEpisodePath);
+      XMLUtils::GetString(pSubElement, "musicvideopath", m_recentlyAddedMusicVideoPath);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
-  }
-
-  pElement = pRootElement->FirstChildElement("recentlyaddedjob");
-  if (pElement)
-  {
-    XMLUtils::GetString(pElement, "musicpath", m_recentlyAddedJobMusicPath);
-    XMLUtils::GetString(pElement, "moviepath", m_recentlyAddedJobMoviePath);
-    XMLUtils::GetString(pElement, "episodepath", m_recentlyAddedJobEpisodePath);
-    XMLUtils::GetString(pElement, "musicvideopath", m_recentlyAddedJobMusicVideoPath);
   }
 
   // Backward-compatibility of ExternalPlayer config
