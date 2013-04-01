@@ -49,6 +49,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!reader.Open(url))
     return false;
 
+  bool serverNotUseUTF8 = url.GetProtocolOption("utf8").Equals("0");
 
   char buffer[MAX_PATH + 1024];
   while( reader.ReadString(buffer, sizeof(buffer)) )
@@ -73,9 +74,20 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if( name.Equals("..") || name.Equals(".") )
         continue;
 
-      /* this should be conditional if we ever add    */
-      /* support for the utf8 extension in ftp client */
+      // server returned filename could in utf8 or non-utf8 encoding
+      // we need utf8, so convert it to utf8 anyway
       g_charsetConverter.unknownToUTF8(name);
+
+      // convert got empty result, ignore it
+      if (name.IsEmpty())
+        continue;
+
+      if (serverNotUseUTF8 || name != parse.getName())
+        // non-utf8 name path, tag it with protocol option.
+        // then we can talk to server with the same encoding in CurlFile according to this tag.
+        url.SetProtocolOption("utf8", "0");
+      else
+        url.RemoveProtocolOption("utf8");
 
       CFileItemPtr pItem(new CFileItem(name));
 
