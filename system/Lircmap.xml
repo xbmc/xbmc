@@ -416,7 +416,11 @@
 		<down>KEY_DOWN</down>
 		<select>KEY_OK</select>
 		<select>KEY_ENTER</select>
+		<enter>KEY_ENTER</enter>
+		<clear>KEY_DELETE</clear>
 		<start>KEY_SELECT</start>
+		<start>KEY_PROG1</start>
+		<start>KEY_HOME</start>
 		<back>KEY_ESC</back>
 		<back>KEY_EXIT</back>
 		<back>KEY_BACK</back>
@@ -434,8 +438,11 @@
 		<channelplus>KEY_CHANNELUP</channelplus>
 		<channelminus>KEY_CHANNELDOWN</channelminus>
 		<skipplus>KEY_NEXTSONG</skipplus>
+		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
+		<skipminus>KEY_PREVIOUS</skipminus>
 		<title>KEY_TITLE</title>
+		<title>KEY_EPG</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<mute>KEY_MUTE</mute>
@@ -446,6 +453,7 @@
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TV</mytv>
 		<liveradio>KEY_RADIO</liveradio>
+		<mytv>KEY_TUNER</mytv>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
 		<three>KEY_3</three>
@@ -466,15 +474,18 @@
 		<eight>KEY_NUMERIC_8</eight>
 		<nine>KEY_NUMERIC_9</nine>
 		<zero>KEY_NUMERIC_0</zero>
+		<star>KEY_NUMERIC_STAR</star>
+		<hash>KEY_NUMERIC_POUND</hash>
 		<red>KEY_RED</red>
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
+		<menu>KEY_DVD</menu>
 		<menu>KEY_MENU</menu>
 		<info>KEY_INFO</info>
 		<info>KEY_PROPS</info>
-		<start>KEY_HOME</start>
 		<display>KEY_ANGLE</display>
+		<display>KEY_ZOOM</display>
 		<recordedtv>KEY_PVR</recordedtv>
 		<teletext>KEY_TEXT</teletext>
 		<clear>KEY_DELETE</clear>
