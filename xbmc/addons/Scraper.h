@@ -116,6 +116,7 @@ public:
   bool Supports(const CONTENT_TYPE &content) const;
 
   bool IsInUse() const;
+  bool IsNoop();
 
   // scraper media functions
   CScraperUrl NfoUrl(const CStdString &sNfoContent);
