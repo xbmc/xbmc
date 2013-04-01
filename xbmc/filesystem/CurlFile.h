@@ -191,6 +191,3 @@ namespace XFILE
       long            m_httpresponse;
   };
 }
-
-
-
