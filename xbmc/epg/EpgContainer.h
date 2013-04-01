@@ -95,6 +95,12 @@ namespace EPG
     virtual void Reset(void) { Clear(true); }
 
     /*!
+     * @brief Check whether the EpgContainer has fully started.
+     * @return True if started, false otherwise.
+     */
+    bool IsStarted(void) const;
+
+    /*!
      * @brief Delete an EPG table from this container.
      * @param epg The table to delete.
      * @param bDeleteFromDatabase Delete this table from the database too if true.
@@ -271,6 +277,7 @@ namespace EPG
     //@{
     bool         m_bIsUpdating;            /*!< true while an update is running */
     bool         m_bIsInitialising;        /*!< true while the epg manager hasn't loaded all tables */
+    bool         m_bStarted;               /*!< true if EpgContainer has fully started */
     bool         m_bLoaded;                /*!< true after epg data is initially loaded from the database */
     bool         m_bPreventUpdates;        /*!< true to prevent EPG updates */
     bool         m_bHasPendingUpdates;     /*!< true if there are manual updates pending */

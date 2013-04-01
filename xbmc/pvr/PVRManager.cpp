@@ -74,6 +74,7 @@ CPVRManager::CPVRManager(void) :
     m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
+    m_bEpgsCreated(false),
     m_progressHandle(NULL),
     m_managerState(ManagerStateStopped),
     m_bOpenPVRWindow(false)
@@ -284,6 +285,7 @@ void CPVRManager::Cleanup(void)
   m_bIsSwitchingChannels  = false;
   m_outdatedAddons.clear();
   m_bOpenPVRWindow = false;
+  m_bEpgsCreated = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
@@ -914,6 +916,11 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   return CPVRChannelGroupPtr();
 }
 
+bool CPVREpgsCreateJob::DoWork(void)
+{
+  return g_PVRManager.CreateChannelEpgs();
+}
+
 bool CPVRRecordingsUpdateJob::DoWork(void)
 {
   g_PVRRecordings->Update();
@@ -1349,6 +1356,12 @@ bool CPVRManager::IsStarted(void) const
   return GetState() == ManagerStateStarted;
 }
 
+bool CPVRManager::EpgsCreated(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bEpgsCreated;
+}
+
 bool CPVRManager::IsPlayingTV(void) const
 {
   return IsStarted() && m_addons && m_addons->IsPlayingTV();
@@ -1395,6 +1408,18 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   }
 
   return bReturn;
+}
+
+void CPVRManager::TriggerEpgsCreate(void)
+{
+  CSingleLock lock(m_critSectionTriggers);
+  if (IsJobPending("pvr-create-epgs"))
+    return;
+
+  m_pendingUpdates.push_back(new CPVREpgsCreateJob());
+
+  lock.Leave();
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)
@@ -1539,4 +1564,14 @@ bool CPVRChannelSwitchJob::DoWork(void)
   }
 
   return true;
+}
+
+bool CPVRManager::CreateChannelEpgs(void)
+{
+  if (EpgsCreated())
+    return true;
+
+  CSingleLock lock(m_critSection);
+  m_bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+  return m_bEpgsCreated;
 }
