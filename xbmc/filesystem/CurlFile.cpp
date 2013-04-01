@@ -770,6 +770,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetContentEncoding(value);
         else if (name.Equals("noshout") && value.Equals("true"))
           m_skipshout = true;
+        else if (name.Equals("seekable") && value.Equals("0"))
+          m_seekable = false;
         else
           SetRequestHeader(name, value);
       }
@@ -892,6 +894,7 @@ bool CCurlFile::Open(const CURL& url)
   if( m_state->m_easyHandle == NULL )
     g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
 
+  m_seekable = true;
   // setup common curl options
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -932,11 +935,10 @@ bool CCurlFile::Open(const CURL& url)
   if(m_state->m_httpheader.GetValue("Transfer-Encoding").Equals("chunked"))
     m_state->m_fileSize = 0;
 
-  m_seekable = false;
-  if(m_state->m_fileSize > 0)
+  if(m_state->m_fileSize <= 0)
+    m_seekable = false;
+  if (m_seekable)
   {
-    m_seekable = true;
-
     if(url2.GetProtocol().Equals("http")
     || url2.GetProtocol().Equals("https"))
     {
