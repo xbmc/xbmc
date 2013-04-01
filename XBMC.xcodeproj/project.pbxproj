@@ -404,6 +404,10 @@
 		DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
 		DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		DF830D1215BB262700602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0F15BB262700602BE6 /* GUIKeyboardFactory.cpp */; };
+		DF89901C1709BB2D00B35C21 /* MediaSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990161709BB2D00B35C21 /* MediaSettings.cpp */; };
+		DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990181709BB2D00B35C21 /* MediaSourceSettings.cpp */; };
+		DF89901E1709BB2D00B35C21 /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */; };
+		DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */; };
 		DF93D65D1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */; };
 		DF93D6991444A8B1007C6459 /* AFPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6631444A8B0007C6459 /* AFPFile.cpp */; };
 		DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */; };
@@ -1930,6 +1934,16 @@
 		DF830D0E15BB262700602BE6 /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
 		DF830D0F15BB262700602BE6 /* GUIKeyboardFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIKeyboardFactory.cpp; sourceTree = "<group>"; };
 		DF830D1015BB262700602BE6 /* GUIKeyboardFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboardFactory.h; sourceTree = "<group>"; };
+		DF8990141709BB2D00B35C21 /* ISettingsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingsHandler.h; sourceTree = "<group>"; };
+		DF8990151709BB2D00B35C21 /* ISubSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISubSettings.h; sourceTree = "<group>"; };
+		DF8990161709BB2D00B35C21 /* MediaSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaSettings.cpp; sourceTree = "<group>"; };
+		DF8990171709BB2D00B35C21 /* MediaSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSettings.h; sourceTree = "<group>"; };
+		DF8990181709BB2D00B35C21 /* MediaSourceSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaSourceSettings.cpp; sourceTree = "<group>"; };
+		DF8990191709BB2D00B35C21 /* MediaSourceSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSourceSettings.h; sourceTree = "<group>"; };
+		DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinSettings.cpp; sourceTree = "<group>"; };
+		DF89901B1709BB2D00B35C21 /* SkinSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinSettings.h; sourceTree = "<group>"; };
+		DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewStateSettings.cpp; sourceTree = "<group>"; };
+		DF8990201709BB5400B35C21 /* ViewStateSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewStateSettings.h; sourceTree = "<group>"; };
 		DF93D65B1444A7A3007C6459 /* SlingboxDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlingboxDirectory.h; sourceTree = "<group>"; };
 		DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlingboxDirectory.cpp; sourceTree = "<group>"; };
 		DF93D6631444A8B0007C6459 /* AFPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPFile.cpp; sourceTree = "<group>"; };
@@ -4594,6 +4608,8 @@
 				DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */,
 				DF64FE3B16C07AAA00D028FB /* ViewDatabase.h */,
 				DF64FE3C16C07AAA00D028FB /* ViewState.h */,
+				DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */,
+				DF8990201709BB5400B35C21 /* ViewStateSettings.h */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -6087,10 +6103,18 @@
 				18B7C3A712942132009E7A26 /* AdvancedSettings.h */,
 				18B7C8C212942451009E7A26 /* GUISettings.cpp */,
 				18B7C8C312942451009E7A26 /* GUISettings.h */,
+				DF8990141709BB2D00B35C21 /* ISettingsHandler.h */,
+				DF8990151709BB2D00B35C21 /* ISubSettings.h */,
+				DF8990161709BB2D00B35C21 /* MediaSettings.cpp */,
+				DF8990171709BB2D00B35C21 /* MediaSettings.h */,
+				DF8990181709BB2D00B35C21 /* MediaSourceSettings.cpp */,
+				DF8990191709BB2D00B35C21 /* MediaSourceSettings.h */,
 				E38E1DF10D25F9FD00618676 /* Profile.cpp */,
 				E38E1DF20D25F9FD00618676 /* Profile.h */,
 				18B7C38E129420E5009E7A26 /* Settings.cpp */,
 				18B7C38F129420E5009E7A26 /* Settings.h */,
+				DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */,
+				DF89901B1709BB2D00B35C21 /* SkinSettings.h */,
 				E38E1E010D25F9FD00618676 /* VideoSettings.cpp */,
 				E38E1E020D25F9FD00618676 /* VideoSettings.h */,
 			);
@@ -7740,6 +7764,10 @@
 				F56352C816E5436900D21BAD /* AppParamParser.cpp in Sources */,
 				F56353BF16E9BB3500D21BAD /* BitstreamConverter.cpp in Sources */,
 				DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */,
+				DF89901C1709BB2D00B35C21 /* MediaSettings.cpp in Sources */,
+				DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */,
+				DF89901E1709BB2D00B35C21 /* SkinSettings.cpp in Sources */,
+				DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
