@@ -107,9 +107,9 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     m_directions &= ~TouchMoveDirectionRight;
 
   if (deltaYmovement > 0.0f)
-    m_directions &= ~TouchMoveDirectionDown;
-  else if (deltaYmovement < 0.0f)
     m_directions &= ~TouchMoveDirectionUp;
+  else if (deltaYmovement < 0.0f)
+    m_directions &= ~TouchMoveDirectionDown;
 
   if (m_directions == TouchMoveDirectionNone)
   {
