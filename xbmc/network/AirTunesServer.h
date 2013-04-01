@@ -86,6 +86,7 @@ private:
       static void  audio_destroy(void *cls, void *session);
 #else
       static void ao_initialize(void);
+      static void ao_set_volume(float volume);
       static int ao_play(ao_device *device, char *output_samples, uint32_t num_bytes);
       static int ao_default_driver_id(void);
       static ao_device* ao_open_live( int driver_id, ao_sample_format *format,
