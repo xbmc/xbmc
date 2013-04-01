@@ -93,7 +93,7 @@ specifies where the resulting toolchain should be installed (your choice).
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain>/android-9 --platform=android-9
+     --install-dir=<android-toolchain>/android-14 --platform=android-14
 
 ATTENTION FOR X86 BUILDS - THIS DOES NOT APPLY TO 99% OF BUILDS:
 If you want to build for the x86 platform there is a flaw in the mentioned
