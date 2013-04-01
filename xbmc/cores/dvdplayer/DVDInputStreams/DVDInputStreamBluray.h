@@ -82,6 +82,9 @@ public:
   virtual bool OnMouseClick(const CPoint &point) { return false; }
   virtual double GetTimeStampCorrection()        { return 0.0; }
   virtual void SkipStill();
+  virtual bool GetState(std::string &xmlstate)         { return false; }
+  virtual bool SetState(const std::string &xmlstate)   { return false; }
+
 
   void UserInput(bd_vk_key_e vk);
 
