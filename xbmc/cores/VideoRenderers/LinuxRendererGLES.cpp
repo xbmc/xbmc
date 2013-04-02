@@ -1384,8 +1384,8 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   tex[1][0] = tex[2][0] = 1;
   tex[2][1] = tex[3][1] = 0;
 
-  glUniform1f(brightLoc, g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  glUniform1f(contlLoc, g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  glUniform1f(brightLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  glUniform1f(contlLoc, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
   glUniform4fv(avglumLoc, 1, avglum);
   
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
