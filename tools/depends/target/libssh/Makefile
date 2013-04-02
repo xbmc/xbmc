@@ -23,7 +23,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../md5.patch
 	sed -ie "s|-fstack-protector|-fnostack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
 	sed -ie "s|add_subdirectory(examples)||" "$(PLATFORM)/CMakeLists.txt"
-	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 VERBOSE=1 .. 
+	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DTHREADS_PTHREAD_ARG=0 VERBOSE=1 .. 
 
 $(LIBDYLIB): $(PLATFORM)
 	make -j 1 -C $(PLATFORM)/build
