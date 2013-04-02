@@ -176,8 +176,8 @@
 <string id="31689">con vistas de imagenes</string>
 <string id="31690">Ocultar miniaturas sin icono</string>
 <string id="31691">Usar transparencia baja para series de TV flujo de la cubierta</string>
-<string id="31692">Ocultar información en flujo del muro</string>
-<string id="31693">Ocultar miniaturas en menú de opciones</string>
+<string id="31692">Ocultar información en flujo del muro</string> 
+<string id="31693">Ocultar miniaturas en menú de opciones</string> 
 <string id="31694">Mostrar OSD de música sobre la izquierda</string>
 <string id="31695">Mostrar AM/PM en reloj</string>
 <string id="31697">Ocultar descripción de las fotos en la Presentación</string>
@@ -248,7 +248,7 @@
 <string id="31961">Apagar</string>
 <string id="31962">Menu de Apagado</string>
 <string id="31963">pantallas</string>
-<string id="31964">Apagar Pantalla</string>
+<string id="31964">Apagar Pantalla</string>	
 <string id="31970">Canales</string>
 <string id="31971">Vídeos</string>
 <string id="31972">Música</string>

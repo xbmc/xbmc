@@ -3,7 +3,7 @@
 <!--  strings 31000 thru 31999 reserved for skins  -->
 
  <strings>
-  <string id="31000">Bladeren</string>
+  <string id="31000">Bladeren</string>		
   <string id="31001">Video's</string>
   <string id="31002">Muziek</string>
   <string id="31003">Foto's</string>
@@ -17,23 +17,23 @@
   <string id="31013">Bekijk</string>
   <string id="31014">Gebruik</string>
   <string id="31015">Raadpleeg</string>
-  <string id="31016">Configureer</string>
-  <string id="31017">Power</string>
-  <string id="31018">Menu</string>
-  <string id="31019">Speel</string>
+  <string id="31016">Configureer</string> 
+  <string id="31017">Power</string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Speel</string> 
   <string id="31020">Opties</string>
-  <string id="31021">Seizoenen</string>
+  <string id="31021">Seizoenen</string> 
   <string id="31022">Verberg</string>
-  <string id="31023">Sorteer op</string>
+  <string id="31023">Sorteer op</string> 
   <string id="31024">Sorteerrichting</string>
   <string id="31025">Achterwaarts</string>
   <string id="31026">Voorwaarts</string>
-  <string id="31027">Gestart</string>
+  <string id="31027">Gestart</string> 
   <string id="31028">Geëindigd</string>
-  <string id="31029">Schrijver</string>
-  <string id="31030">Nummer</string>
-  <string id="31031">Actief</string>
-  <string id="31032">Instrumenten</string>
+  <string id="31029">Schrijver</string> 
+  <string id="31030">Nummer</string> 
+  <string id="31031">Actief</string> 
+  <string id="31032">Instrumenten</string> 
   <string id="31033">Laatst ververst</string>
   <string id="31034">Build</string>
   <string id="31035">Vrij geheugen</string>
@@ -47,7 +47,7 @@
   <string id="31043">Raadpleeg</string>
   <string id="31044">Op</string>
   <string id="31045">Recent toegevoegd</string>
-  <string id="31046">Pad naar songteksten script</string>
+  <string id="31046">Pad naar songteksten script</string> 
 
 <!--  Programs  -->
   <string id="31051">Games</string>
@@ -73,19 +73,19 @@
 
 <!--  Video  -->
   <string id="31111">Films</string>
-  <string id="31112">TV series</string>
-  <string id="31113">Clips</string>
-  <string id="31114">Aflevering:</string>
-  <string id="31115">N/B</string>
+  <string id="31112">TV series</string> 
+  <string id="31113">Clips</string> 
+  <string id="31114">Aflevering:</string> 
+  <string id="31115">N/B</string> 
   <string id="31116">Filmtitel</string>
-  <string id="31117">Thumb</string>
-  <string id="31118">Fanart</string>
-  <string id="31119">Toelichting</string>
+  <string id="31117">Thumb</string> 
+  <string id="31118">Fanart</string> 
+  <string id="31119">Toelichting</string> 
   <string id="31120">Waardering</string>
   <string id="31121">Film details</string>
   <string id="31122">Gelanceerd</string>
   <string id="31123">MPAA</string>
-  <string id="31124">Afl.</string>
+  <string id="31124">Afl.</string> 
   <string id="31125">Theatertijden</string>
   <string id="31126">TV serie details</string>
   <string id="31127">Aflevering details</string>
@@ -101,19 +101,19 @@
   <string id="31227">Eigen voorkeur</string>
   <string id="31228">Songteksten</string>
 
-<!--  Settings  -->
+<!--  Settings  --> 
   <string id="31601">Uiterlijk</string>
   <string id="31602">Netwerk</string>
-  <string id="31603">Skin</string>
-  <string id="31604">Algemeen</string>
-  <string id="31605">Hoofdscherm</string>
-  <string id="31606">Wijzig instellingen van</string>
-  <string id="31607">Huidige</string>
-  <string id="31608">Bron</string>
-  <string id="31609">Doel</string>
-  <string id="31620">Menu</string>
-  <string id="31621">Deactiveer</string>
-  <string id="31622">Activeer</string>
+  <string id="31603">Skin</string> 
+  <string id="31604">Algemeen</string> 
+  <string id="31605">Hoofdscherm</string> 
+  <string id="31606">Wijzig instellingen van</string> 
+  <string id="31607">Huidige</string> 
+  <string id="31608">Bron</string> 
+  <string id="31609">Doel</string> 
+  <string id="31620">Menu</string> 
+  <string id="31621">Deactiveer</string> 
+  <string id="31622">Activeer</string> 
   <string id="31623">Achtergrond</string>
   <string id="31624">Selecteer</string>
   <string id="31625">Gebruik standaard</string>
@@ -168,13 +168,13 @@
   <string id="31701">Setup</string>
   <string id="31702">Showcase</string>
   <string id="31703">Seizoenen</string>
-  <string id="31704">Foto</string>
-  <string id="31705">Bol</string>
-  <string id="31706">Aflevering thumbs</string>
-  <string id="31707">Media preview</string>
-  <string id="31708">Media lijst</string>
+  <string id="31704">Foto</string> 
+  <string id="31705">Bol</string> 
+  <string id="31706">Aflevering thumbs</string> 
+  <string id="31707">Media preview</string> 
+  <string id="31708">Media lijst</string> 
   <string id="31709">Hol</string>
-  <string id="31710">Weergave</string>
+  <string id="31710">Weergave</string> 
   <string id="31711">Info lijst</string>
   <string id="31712">Afbeelding weergave</string>
   <string id="31713">Instellingen</string>

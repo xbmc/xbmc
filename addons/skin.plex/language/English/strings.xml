@@ -17,23 +17,23 @@
   <string id="31013">View your</string>
   <string id="31014">Use your</string>
   <string id="31015">Check</string>
-  <string id="31016">Change your</string>
-  <string id="31017"></string>
-  <string id="31018">Menu</string>
-  <string id="31019">Play the</string>
+  <string id="31016">Change your</string> 
+  <string id="31017"></string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Play the</string> 
   <string id="31020">Options</string>
-  <string id="31021">Seasons</string>
+  <string id="31021">Seasons</string> 
   <string id="31022">Hide</string>
   <string id="31023">Sort By</string>
   <string id="31024">Sort Direction</string>
-  <string id="31025">Backward</string>
-  <string id="31026">Forward</string>
-  <string id="31027">Began</string>
+  <string id="31025">Backward</string> 
+  <string id="31026">Forward</string> 
+  <string id="31027">Began</string> 
   <string id="31028">Finished</string>
-  <string id="31029">Writer</string>
-  <string id="31030">Track No.</string>
-  <string id="31031">Active</string>
-  <string id="31032">Instrmts</string>
+  <string id="31029">Writer</string> 
+  <string id="31030">Track No.</string> 
+  <string id="31031">Active</string> 
+  <string id="31032">Instrmts</string> 
   <string id="31033">Last Refreshed</string>
   <string id="31034">Build</string>
   <string id="31035">Free RAM</string>
@@ -75,10 +75,10 @@
 
 <!--  Video  -->
   <string id="31111">Movies</string>
-  <string id="31112">TV Shows</string>
+  <string id="31112">TV Shows</string> 
   <string id="31113">Clips</string>
-  <string id="31114">Episode:</string>
-  <string id="31115">N/A</string>
+  <string id="31114">Episode:</string> 
+  <string id="31115">N/A</string> 
   <string id="31116">Movie Title</string>
   <string id="31117">Thumb</string>
   <string id="31118">Fanart</string>
@@ -117,19 +117,19 @@
   <string id="31227">Your Preset</string>
   <string id="31228">Lyrics</string>
 
-<!--  Settings  -->
-  <string id="31601">Appearance</string>
+<!--  Settings  --> 
+  <string id="31601">Appearance</string> 
   <string id="31602">Network</string>
-  <string id="31603">Skin</string>
+  <string id="31603">Skin</string> 
   <string id="31604">General</string>
-  <string id="31605">Home</string>
+  <string id="31605">Home</string> 
   <string id="31606">Change Preferences For</string>
-  <string id="31607">Current</string>
-  <string id="31608">Source</string>
-  <string id="31609">Dest</string>
-  <string id="31620">Menu</string>
-  <string id="31621">Disable</string>
-  <string id="31622">Enable</string>
+  <string id="31607">Current</string> 
+  <string id="31608">Source</string> 
+  <string id="31609">Dest</string> 
+  <string id="31620">Menu</string> 
+  <string id="31621">Disable</string> 
+  <string id="31622">Enable</string> 
   <string id="31623">Background</string>
   <string id="31624">Select</string>
   <string id="31625">Use Default</string>
@@ -185,13 +185,13 @@
   <string id="31701">Setup</string>
   <string id="31702">Showcase</string>
   <string id="31703">Seasons</string>
-  <string id="31704">Photo</string>
-  <string id="31705">Convex</string>
-  <string id="31706">Episode Thumbs</string>
-  <string id="31707">Media Preview</string>
-  <string id="31708">Media List</string>
+  <string id="31704">Photo</string> 
+  <string id="31705">Convex</string> 
+  <string id="31706">Episode Thumbs</string> 
+  <string id="31707">Media Preview</string> 
+  <string id="31708">Media List</string> 
   <string id="31709">Concave</string>
-  <string id="31710">Display</string>
+  <string id="31710">Display</string> 
   <string id="31711">Info List</string>
   <string id="31712">Image Stream</string>
   <string id="31713">Setup Options</string>
@@ -227,14 +227,14 @@
   <string id="31858">[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application.</string>
   <string id="31859">[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality.</string>
   <string id="31860">Please visit http://www.plexapp.com/credits.php for links and more information.</string>
-
+  
 <!--  Profiles  -->
   <string id="31900">Login As</string>
   <string id="31901">Modify Your</string>
   <string id="31902">Profile</string>
   <string id="31903">Profile name</string>
   <string id="31904">Profile picture</string>
-
+  
 <!-- Plex additions -->
   <string id="31950">Go to your</string>
   <string id="31951">Visit</string>
@@ -243,24 +243,24 @@
   <string id="31954">Help</string>
   <string id="31955">Preferences</string>
   <string id="31956">Show</string>
-
+  
   <string id="31960">Sleep</string>
   <string id="31961">Shut Down</string>
   <string id="31962">Power Menu</string>
   <string id="31963">displays</string>
 	<string id="31964">Sleep Display</string>
-
+	
 	<string id="31970">Channels</string>
 	<string id="31971">Video Channels</string>
 	<string id="31972">Music Channels</string>
 	<string id="31973">Picture Channels</string>
-
+	
 	<string id="31981">Show Thumbnails in List View</string>
 	<string id="31982">Show Plot in Video OSD</string>
 	<string id="31983">Show Picture Descriptions in Slideshow</string>
 	<string id="31984">Show Now Playing Information in Visualisations</string>
 	<string id="31985">Show Separate Menu Items for Plug-in Sections</string>
-
+	  
 	<string id="31999">End Time</string>
-
+	
 </strings>

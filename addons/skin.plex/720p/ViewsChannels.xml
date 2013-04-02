@@ -145,7 +145,7 @@
 				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
-		</control>
+		</control>		
 	</include>
 	<!-- views -->
 	<!-- channel directory -->

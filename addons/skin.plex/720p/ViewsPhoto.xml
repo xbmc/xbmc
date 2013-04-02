@@ -37,7 +37,7 @@
 			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
-	</include>
+	</include>	
 	<include name="PhotoLabel">
 			<posy>138</posy>
 			<posx>76</posx>
@@ -67,7 +67,7 @@
 			<width>555</width>
 			<height>263</height>
 			<include>Black</include>
-			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>			
 		</control>
 		<control type="image">
 			<posx>555</posx>
@@ -111,7 +111,7 @@
 		<control type="group">
 			<posx>105</posx>
 			<posy>220</posy>
-			<control type="group">
+			<control type="group">			
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -217,9 +217,9 @@
 					<posy>57</posy>
 					<width>700</width>
 					<height>645</height>
-					<itemlayout width="136" height="160">
+					<itemlayout width="136" height="160">						
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>PhotoThumb</include>						
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -227,7 +227,7 @@
 					</itemlayout>
 					<focusedlayout width="136" height="160">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>
+						<include>PhotoThumb</include>						
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>

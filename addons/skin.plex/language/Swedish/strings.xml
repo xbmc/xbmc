@@ -46,15 +46,15 @@
   <string id="31041">Redigerare</string>
   <string id="31042">Bild</string>
   <string id="31043">Kontrollera</string>
-
+  
   <string id="31044">av</string>
-
+  
   <string id="31045">Nyligen tillagda</string>
-
+  
   <string id="31046">sökväg till sångtextskript</string>
   <string id="31047">Ej tillgänglig</string>
   <string id="31050">Objekt</string>
-
+  
 
 <!--  Programs  -->
   <string id="31051">Spel</string>
@@ -110,8 +110,8 @@
   <string id="31139">Osett</string>
   <string id="31140">Sändes första gången</string>
   <string id="31141">Säsong</string>
-
-
+  
+  
 <!--  Music  -->
   <string id="31220">Spelas nu</string>
   <string id="31221">Föregående spår</string>
@@ -123,7 +123,7 @@
   <string id="31227">Din förinställning</string>
   <string id="31228">Sångtexter</string>
 
-<!--  Settings  -->
+<!--  Settings  --> 
   <string id="31601">Utseende</string>
   <string id="31602">Nätverk</string>
   <string id="31603">Skal</string>
@@ -186,7 +186,7 @@
   <string id="31694">Visa Spelas Nu till vänster</string>
   <string id="31695">Visa AM/PM i klocka</string>
   <string id="31697">Dölj Bildbeskrivning i bildspel</string>
-
+        
 <!--  Options Menu  -->
   <string id="31701">Ställ in</string>
   <string id="31702">Utställning</string>
@@ -208,7 +208,7 @@
   <string id="31720">Rutnät</string>
   <string id="31721">Avsnittslista</string>
   <string id="31722">Pluginström</string>
-
+ 
 <!--  Credits  -->
   <string id="31800">Plexutvecklarna tackar</string>
   <string id="31801">Välkommen till</string>
@@ -222,7 +222,7 @@
   <string id="31809">Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums</string>
   <string id="31810">Klicka "OK" för att använda skalet</string>
   <string id="31811">Note: This is the only time you will see this message once you hit "OK"</string>
-
+  
   <string id="31851">Plex överbrygger gapet mellan din Mac och din hemmabio genom ett visuellt tilldragande användargränssnitt som ger direkt åtkomst till dina media-filer. Plex kan spela upp ett brett spektrum av video, ljud och foto-format, men även strömmande ljud och bild från internet. Plex riktiga kraft ligger i biblioteksfunktionerna: Organisera dina media-filer, hämta metadata automatiskt från internet och visa upp ditt bibliotek via ett av de snygga skalen (skins) som erbjuds.</string>
   <string id="31852">Plexutvecklarna vill tacka fäljande projekt, utan dessa skulle vi inte kunna finnas:</string>
   <string id="31853">XBMC: Det viktigaste projektet, som gett oss en bra grund att bygga Plex på.</string>
@@ -240,42 +240,42 @@
   <string id="31902">Profil</string>
   <string id="31903">Profilnamn</string>
   <string id="31904">Profilbild</string>
-
+  
   <!-- Plex additions -->
-
+  
   <string id="31950">Gå till dina</string>
-
+  
   <string id="31951">Gå till</string>
-
+  
   <string id="31952">Plex Channels</string>
-
+  
   <string id="31953">Få</string>
-
+  
   <string id="31954">Hjälp</string>
-
+  
   <string id="31955">Inställningar</string>
-
+  
   <string id="31956">Visa</string>
-
-
-
+  
+  
+  
   <string id="31960">Somna in</string>
   <string id="31961">Stäng av</string>
   <string id="31962">Avstängningsmeny</string>
   <string id="31963">visar</string>
   <string id="31964">Släck skärm</string>
-
+  
   <string id="31970">Plugins</string>
   <string id="31971">Video-plugins</string>
   <string id="31972">Musik-plugins</string>
   <string id="31973">Bild-plugins</string>
-
+  
   <string id="31981">Visa förhandsvisning i listvyerna</string>
   <string id="31982">Visa Handling i OSD</string>
   <string id="31983">Visa Bildbeskrivningar under bildspel</string>
   <string id="31984">Visa "Nu Spelas"-information under bildeffekter</string>
   <string id="31985">Visa separata menyobjekt för plugin-sektioner</string>
-
+	  
 	<string id="31999">Slutar</string>
 
 </strings>

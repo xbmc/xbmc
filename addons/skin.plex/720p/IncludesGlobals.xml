@@ -6,6 +6,9 @@
 	<include name="BaseRounded">
 		<texture border="5">base-rounded.png</texture>
 	</include>
+	<include name="BaseRoundedRight">
+		<texture border="5">base-rounded-half-horiz.png</texture>
+	</include>
 	<include name="BaseArrowInsert">
 		<texture border="5">base-arrow-insert.png</texture>
 	</include>
@@ -13,8 +16,16 @@
 		<include>Base</include>
 		<colordiffuse>FF000000</colordiffuse>
 	</include>
+	<include name="Orange">
+		<include>Base</include>
+		<colordiffuse>orange</colordiffuse>
+	</include>
 	<include name="BlackRounded">
 		<include>BaseRounded</include>
+		<colordiffuse>FF000000</colordiffuse>
+	</include>
+	<include name="BlackRoundedRight">
+		<include>BaseRoundedRight</include>
 		<colordiffuse>FF000000</colordiffuse>
 	</include>
 	<include name="BlackArrowInsertRight">
@@ -98,7 +109,7 @@
 		<value condition="Container.Content(artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
 		<value condition="Container.Content(songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
 		<value condition="Container.Content(genres)">$INFO[Container.NumItems] $LOCALIZE[135]</value>
-		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
+		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>		
 		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
 	</variable>
 	<variable name="TopBarSelectedItemStrings">

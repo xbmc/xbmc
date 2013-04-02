@@ -144,7 +144,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
-			</control>
+			</control>	
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
 				<posx>-253</posx>

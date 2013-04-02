@@ -209,7 +209,7 @@
 								<info>ListItem.MPAA</info>
 								<include>MediaInfoWideValue</include>
 							</control>
-
+							
 							<control type="group">
 								<description>Runtime</description>
 								<posy>VideoInfoDetailsGap</posy>
@@ -220,7 +220,7 @@
 								</control>
 								<control type="label">
 									<description>Value</description>
-									<info>ListItem.Duration</info>
+									<info>ListItem.DurationStr</info>
 									<include>MediaInfoWideValue</include>
 								</control>
 							</control>

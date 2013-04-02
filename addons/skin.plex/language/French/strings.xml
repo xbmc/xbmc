@@ -17,23 +17,23 @@
   <string id="31013">Voir vos</string>
   <string id="31014">Utiliser vos</string>
   <string id="31015">Consulter</string>
-  <string id="31016">Configurer les</string>
-  <string id="31017">Power</string>
-  <string id="31018">Menu</string>
-  <string id="31019">Jouer le</string>
-  <string id="31020">Options</string>
-  <string id="31021">Saisons</string>
+  <string id="31016">Configurer les</string> 
+  <string id="31017">Power</string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Jouer le</string> 
+  <string id="31020">Options</string> 
+  <string id="31021">Saisons</string> 
   <string id="31022">Cacher</string>
-  <string id="31023">Lister par</string>
-  <string id="31024">Direction du tri</string>
-  <string id="31025">Reculer</string>
-  <string id="31026">Avancer</string>
-  <string id="31027">Débuté</string>
+  <string id="31023">Lister par</string> 
+  <string id="31024">Direction du tri</string> 
+  <string id="31025">Reculer</string> 
+  <string id="31026">Avancer</string> 
+  <string id="31027">Débuté</string> 
   <string id="31028">Terminé</string>
-  <string id="31029">Scénariste</string>
-  <string id="31030">Piste No.</string>
-  <string id="31031">Active</string>
-  <string id="31032">Instrmts</string>
+  <string id="31029">Scénariste</string> 
+  <string id="31030">Piste No.</string> 
+  <string id="31031">Active</string> 
+  <string id="31032">Instrmts</string> 
   <string id="31033">Mise-à-jour le</string>
   <string id="31034">Version</string>
   <string id="31035">RAM libre</string>
@@ -51,12 +51,12 @@
   <string id="31047">Indisponible</string>
   <string id="31050">Élément</string>
 
-<!--  Programs  -->
-  <string id="31051">Jeux</string>
-  <string id="31052">Émulateurs</string>
+<!--  Programs  --> 
+  <string id="31051">Jeux</string> 
+  <string id="31052">Émulateurs</string> 
   <string id="31053">Applis</string>
 
-<!--  System  -->
+<!--  System  --> 
   <string id="31060">Paramètres</string>
   <string id="31061">Scripts</string>
   <string id="31062">Fichiers</string>
@@ -66,7 +66,7 @@
   <string id="31066">Rafraîchir</string>
   <string id="31067">Informations sur votre</string>
 
-<!--  Power  -->
+<!--  Power  --> 
   <string id="31071">Éteindre</string>
   <string id="31072">Redémarrer</string>
   <string id="31073">Relancer Plex</string>
@@ -106,7 +106,7 @@
   <string id="31140">Première diffusion</string>
   <string id="31141">Saison</string>
 
-<!--  Music  -->
+<!--  Music  --> 
   <string id="31220">Lecture en cours</string>
   <string id="31221">Piste précédente</string>
   <string id="31222">Piste suivante</string>
@@ -117,7 +117,7 @@
   <string id="31227">Vos sélections</string>
   <string id="31228">Paroles</string>
 
-<!--  Settings  -->
+<!--  Settings  --> 
   <string id="31601">Apparence</string>
   <string id="31602">Réseau</string>
   <string id="31603">Skin</string>
@@ -180,7 +180,7 @@
   <string id="31694">Afficher le cadre Lecture en cours sur la gauche</string>
   <string id="31695">Afficher AM/PM sur l'horloge</string>
   <string id="31697">Cacher la description des photos pendant le diaporama</string>
-
+  
 <!--  Options Menu  -->
   <string id="31701">Réglages</string>
   <string id="31702">Showcase</string>
@@ -248,19 +248,19 @@
   <string id="31960">Mettre en veille</string>
   <string id="31961">Éteindre</string>
   <string id="31962">le menu Mise en route</string>
-  <string id="31963">affiche</string>
+  <string id="31963">affiche</string> 
   <string id="31964">Mettre l'écran en veille</string>
 
   <string id="31970">Plug-ins</string>
   <string id="31971">Plug-ins Vidéo</string>
   <string id="31972">Plug-ins Musique</string>
   <string id="31973">Plug-ins Images</string>
-
+	
   <string id="31981">Afficher les vignettes dans la vue Liste</string>
   <string id="31982">Afficher le résumé dans l'OSD Video</string>
   <string id="31983">Afficher la description des photos pendant le diaporama</string>
   <string id="31984">Afficher le cadre Lecture en cours dans les Visualisations</string>
   <string id="31985">Entrées séparées du menu pour les sections Plug-ins</string>
-
+  
   <string id="31999">Heure de fin</string>
  </strings>

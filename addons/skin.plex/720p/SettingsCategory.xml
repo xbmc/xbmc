@@ -9,7 +9,7 @@
 		<!-- categories menu (top) -->
 		<include>SettingsCategoryMenu</include>
 		<!-- settings menu (left) -->
-		<include>SettingsMenu</include>
+		<include>SettingsMenu</include>		
 		<!-- setting options (right) -->
 		<include>SettingOptions</include>
 		<!-- Widgets -->

@@ -2,7 +2,7 @@
 <window type="dialog" id="142">
 	<defaultcontrol always="true">603</defaultcontrol>
 	<controls>
-		<!-- ViewsOSD.xml -->
+		<!-- ViewsOSD.xml -->	
 		<include>VideoPresentation</include>
 	</controls>
 </window>

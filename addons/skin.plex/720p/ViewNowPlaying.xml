@@ -51,7 +51,7 @@
 			<posy>75</posy>
 			<width>800</width>
 			<font>Condensed-24</font>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Album]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -66,7 +66,7 @@
 		<control type="label">
 			<posy>275</posy>
 			<width>500</width>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Time]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -75,7 +75,7 @@
 			<posy>350</posy>
 			<posx>740</posx>
 			<width>500</width>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Duration]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -94,7 +94,7 @@
 			<posy>53</posy>
 			<width>800</width>
 			<font>Condensed-22</font>
-			<textcolor>FF888888</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
@@ -103,7 +103,7 @@
 			<posy>100</posy>
 			<width>800</width>
 			<font>CondensedBold-22</font>
-			<textcolor>FF888888</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
@@ -123,7 +123,7 @@
 			<posy>75</posy>
 			<width>800</width>
 			<font>Condensed-24</font>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Album]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
@@ -141,7 +141,7 @@
 			<posy>275</posy>
 			<posx>-795</posx>
 			<width>500</width>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Time]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -149,7 +149,7 @@
 		<control type="label">
 			<posy>350</posy>
 			<width>500</width>
-			<textcolor>Light</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Duration]</label>
 			<align>right</align>
@@ -168,7 +168,7 @@
 			<posy>53</posy>
 			<width>800</width>
 			<font>Condensed-22</font>
-			<textcolor>FF888888</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -176,7 +176,7 @@
 			<posy>100</posy>
 			<width>800</width>
 			<font>CondensedBold-22</font>
-			<textcolor>FF888888</textcolor>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -217,7 +217,7 @@
 	<include name="NowPlaying">
 		<control type="largeimage">
 			<include>FullScreenScaled</include>
-			<texture>$INFO[MusicPlayer.Fanart]</texture>
+			<texture>$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
 			<include>BackgroundFade</include>
 			<animation effect="fade" end="70" time="0" condition="true">conditional</animation>
 		</control>
@@ -253,7 +253,7 @@
 				<visible>MusicPlayer.HasNext</visible>
 				<include>CurrentCover</include>
 				<control type="group">
-					<posy>5</posy>
+					<posy>25</posy>
 					<posx>430</posx>
 					<include>CurrentInfo</include>
 				</control>
@@ -285,7 +285,7 @@
 				<include>Slide</include>
 				<include>CurrentCover</include>
 				<control type="group">
-					<posy>5</posy>
+					<posy>25</posy>
 					<posx>430</posx>
 					<include>CurrentInfo</include>
 				</control>
@@ -317,7 +317,7 @@
 					<include>CurrentCover</include>
 				</control>
 				<control type="group">
-					<posy>5</posy>
+					<posy>25</posy>
 					<posx>800</posx>
 					<include>CurrentInfoFlipped</include>
 				</control>
@@ -352,7 +352,7 @@
 					<include>CurrentCover</include>
 				</control>
 				<control type="group">
-					<posy>5</posy>
+					<posy>25</posy>
 					<posx>800</posx>
 					<include>CurrentInfoFlipped</include>
 				</control>

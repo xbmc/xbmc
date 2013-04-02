@@ -8,7 +8,7 @@
 				<width>391</width>
 				<height>720</height>
 				<include>Black</include>
-				<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+				<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
 				<visible>true</visible>
 			</control>
 			<control type="image">
@@ -20,7 +20,7 @@
 				<colordiffuse>orange</colordiffuse>
 				<aspectratio>keep</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				<visible>true</visible>
+				<visible>!Control.Isvisible(999)</visible>
 			</control>
 			<control type="image">
 				<posx>372</posx>
@@ -63,7 +63,7 @@
 					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
 					<animation effect="fade" end="100" time="0" condition="true">Conditional</animation>
 				</control>
-			</control>
+			</control>				
 	</include>
 	<include name="HomeMenu">
 		<!-- Main Menu -->
@@ -215,6 +215,6 @@
 					</item>-->
 				</content>
 			</control>
-		</control>
+		</control>		
 	</include>
 </includes>

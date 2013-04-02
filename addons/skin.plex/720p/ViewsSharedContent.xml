@@ -209,7 +209,7 @@
 				<animation effect="fade" start="0" end="0" time="0">Hidden</animation>
 				<control type="grouplist">
 					<orientation>horizontal</orientation>
-					<itemgap>16</itemgap>
+					<itemgap>16</itemgap>					
 					<control type="image">
 						<width max="200">auto</width>
 						<height>350</height>

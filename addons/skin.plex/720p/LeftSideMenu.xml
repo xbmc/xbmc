@@ -137,7 +137,7 @@
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
 		<textureradiofocus>arrow-big-up-orange.png</textureradiofocus>
-		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>
+		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>		
 		<textureradioon>arrow-big-up-orange.png</textureradioon>
 		<align>right</align>
 		<aligny>center</aligny>
@@ -160,7 +160,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
-			</control>
+			</control>			
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
@@ -219,7 +219,7 @@
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>
+			</control>			
 		</control>
 	</include>
 </includes>

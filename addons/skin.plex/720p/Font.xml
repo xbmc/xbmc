@@ -103,7 +103,7 @@
 			<name>Condensed-12</name>
 			<filename>DejaVuSansCondensed.ttf</filename>
 			<size>12</size>
-		</font>
+		</font>	
 		<font>
 			<name>Condensed-13</name>
 			<filename>DejaVuSansCondensed.ttf</filename>
@@ -119,7 +119,7 @@
 			<filename>DejaVuSansCondensed.ttf</filename>
 			<size>16</size>
 		</font>
-		<!-- this variant exists solely for line spacing -->
+		<!-- this variant exists solely for line spacing -->	
 		<font>
 			<name>HomePlot</name>
 			<filename>DejaVuSansCondensed.ttf</filename>

@@ -14,7 +14,7 @@
 		<!-- ChannelsDirectory ID 74 -->
 		<include>ChannelsDirectory</include>
 		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
-		<include>TopBar</include>
+		<include>TopBar</include>		
 		<include>debugInfos</include>
 	</controls>
 </window>

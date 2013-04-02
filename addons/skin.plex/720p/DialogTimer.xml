@@ -111,7 +111,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<description>Time cell background</description>
+				<description>Time cell background</description>				
 					<posx>-5</posx>
 					<posy>-10</posy>
 				<animation type="Visible">
@@ -213,7 +213,7 @@
 					<effect type="fade" time="200"/>
 				</animation>
 				<control type="group">
-					<description>Time cell background</description>
+					<description>Time cell background</description>				
 						<posx>-5</posx>
 						<posy>-10</posy>
 					<control type="image" id="11">

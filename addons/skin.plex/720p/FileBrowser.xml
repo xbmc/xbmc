@@ -75,15 +75,15 @@
 						<include>VideoInfoButton</include>
 					</control>
 					<!--
-				<control type="button" id="415">
-					<description>Create Folder</description>
-					<posx>314</posx>
-					<onleft>414</onleft>
-					<onright>413</onright>
-					<label>$LOCALIZE[119]</label>
-					<align>right</align>
-					<include>FileBrowserButton</include>
-				</control>
+  				<control type="button" id="415">
+  					<description>Create Folder</description>
+  					<posx>314</posx>
+  					<onleft>414</onleft>
+  					<onright>413</onright>
+  					<label>$LOCALIZE[119]</label>
+  					<align>right</align>
+  					<include>FileBrowserButton</include>
+  				</control>
 -->
 				</control>
 				<!-- browse list -->

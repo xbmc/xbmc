@@ -9,6 +9,6 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<include>KeyboardFull</include>
+		<include>KeyboardFull</include>		
 	</controls>
 </window>

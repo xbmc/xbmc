@@ -17,7 +17,7 @@
 	<include file="HomeMenu.xml"/>
 	<include file="IncludesGlobals.xml"/>
 	<include file="ViewsOSD.xml"/>
-	<include file="ViewsSearch.xml"/>
+	<include file="ViewsSearch.xml"/>	
 	<include file="ViewsDialogs.xml"/>
 	<include file="Debug.xml"/>
 </includes>

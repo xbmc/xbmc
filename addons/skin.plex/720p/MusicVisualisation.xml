@@ -11,7 +11,7 @@
 			<height>720</height>
 		</control>
 		<!-- codec & viz infos -->
-
+		
 		<control type="group" id="0">
 			<visible>Player.ShowCodec + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
 			<animation effect="fade" time="500">VisibleChange</animation>
@@ -62,6 +62,6 @@
 				<align>left</align>
 			</control>
 		</control>
-
+		
 	</controls>
 </window>

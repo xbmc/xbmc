@@ -95,7 +95,7 @@
 					<posy>100</posy>
 					<include>ArrowBlackLeft</include>
 				</control>
-			</control>
+			</control>	
 			<!-- sub-list -->
 			<control type="group" id="1400">
 				<posy>24</posy>
@@ -130,7 +130,7 @@
 					<height>353</height>
 					<showonepage>true</showonepage>
 				</control>
-			</control>
+			</control>			
 		</control>
 	</include>
 	<!-- DialogProgress.xml -->
@@ -306,7 +306,7 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>0</posy>
-		<control type="group">
+		<control type="group">			
 			<posy>-30</posy>
 			<control type="image" id="999">
 				<description>Background</description>
@@ -611,7 +611,7 @@
 			<viewtype label="535">list</viewtype>
 			<scrolltime>200</scrolltime>
 			<itemlayout width="40">
-		</itemlayout>
+      		</itemlayout>
 			<focusedlayout width="53">
 				<control type="label">
 					<posx>33</posx>
