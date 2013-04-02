@@ -97,7 +97,7 @@ public:
                                bool &fullrange);
 #endif
 
-  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
+  bool TranslateTouchAction(int touchAction, int touchPointers, int &window, int &action);
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
