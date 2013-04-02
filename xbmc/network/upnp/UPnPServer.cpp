@@ -308,6 +308,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                     if (params.GetMovieId() >= 0 )
                         db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
+                    if (params.GetMVideoId() >= 0 )
+                        db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
                     else if (params.GetEpisodeId() >= 0 )
                         db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
                     else if (params.GetTvShowId() >= 0 )
