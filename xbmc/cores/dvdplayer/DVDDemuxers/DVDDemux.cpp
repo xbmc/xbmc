@@ -20,7 +20,6 @@
 
 #include "DVDDemux.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "utils/LangCodeExpander.h"
 
 void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
 {
@@ -44,15 +43,17 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
       strcpy(sInfo, "DTS ");
   }
   else if (codec == CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
+  else if (codec == CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
   else strcpy(sInfo, "");
 
   if (iChannels == 1) strcat(sInfo, "Mono");
   else if (iChannels == 2) strcat(sInfo, "Stereo");
   else if (iChannels == 6) strcat(sInfo, "5.1");
+  else if (iChannels == 8) strcat(sInfo, "7.1");
   else if (iChannels != 0)
   {
     char temp[32];
-    sprintf(temp, " %d %s", iChannels, "Channels");
+    sprintf(temp, " %d%s", iChannels, "-chs");
     strcat(sInfo, temp);
   }
   strInfo = sInfo;
@@ -168,14 +169,7 @@ CDemuxStreamTeletext* CDVDDemux::GetStreamFromTeletextId(int iTeletextIndex)
 
 void CDemuxStream::GetStreamName( std::string& strInfo )
 {
-  if( language[0] == 0 )
-    strInfo = "";
-  else
-  {
-    CStdString name;
-    g_LangCodeExpander.Lookup( name, language );
-    strInfo = name;
-  }
+  strInfo = "";
 }
 
 AVDiscard CDemuxStream::GetDiscard()

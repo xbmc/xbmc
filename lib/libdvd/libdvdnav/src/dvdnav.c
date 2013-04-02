@@ -925,27 +925,10 @@ uint16_t dvdnav_audio_stream_format(dvdnav_t *this, uint8_t stream) {
   attr = vm_get_audio_attr(this->vm, stream);
   pthread_mutex_unlock(&this->vm_lock);
 
-  switch(attr.audio_format) {
-  case 0:
-    format = DVDNAV_FORMAT_AC3;
-    break;
-  case 2: /* MPEG-1 or MPEG-2 without extension bitstream. */
-  case 3: /* MPEG-2 with extension bitstream. */
-    format = DVDNAV_FORMAT_MPEGAUDIO;
-    break;
-  case 4:
-    format = DVDNAV_FORMAT_LPCM;
-    break;
-  case 6:
-    format = DVDNAV_FORMAT_DTS;
-    break;
-  case 7:
-    format = DVDNAV_FORMAT_SDDS;
-    break;
-  default:
+  if (attr.audio_format >=0 && attr.audio_format <= 7)
+    format = attr.audio_format;
+  else
     format = 0xffff;
-    break;
-  }
 
   return format;
 }
