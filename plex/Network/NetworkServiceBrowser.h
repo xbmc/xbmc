@@ -28,18 +28,21 @@
 class NetworkServiceBrowser;
 typedef boost::shared_ptr<NetworkServiceBrowser> NetworkServiceBrowserPtr;
 typedef pair<boost::asio::ip::address, NetworkServicePtr> address_service_pair;
+
+#define SCAN_TIMEOUT_MS 2000
  
 /////////////////////////////////////////////////////////////////////////////
 class NetworkServiceBrowser : public NetworkServiceBase
 {
  public:
-  
+
   /// Constructor.
   NetworkServiceBrowser(boost::asio::io_service& ioService, unsigned short port, int refreshTime=NS_BROWSE_REFRESH_INTERVAL)
    : NetworkServiceBase(ioService)
    , m_port(port)
    , m_timer(ioService, boost::posix_time::milliseconds(10))
    , m_deletionTimer(ioService, boost::posix_time::milliseconds(1500))
+   , m_scanTimer(ioService, boost::posix_time::milliseconds(SCAN_TIMEOUT_MS))
    , m_refreshTime(refreshTime)
   {
     // Add a timer which we'll use to send out search requests.
@@ -74,7 +77,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
     dprintf("NetworkServiceBrowser: SERVICE reachability: %s (will always be false)", service->address().to_string().c_str());
     return false;
   }
-  
+
   /// Copy out the current service list.
   map<boost::asio::ip::address, NetworkServicePtr> copyServices()
   {
@@ -90,7 +93,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
 
   // Force a scan event now.
   void scanNow() { dprintf("Forced network scan running!"); m_timer.expires_from_now(boost::posix_time::milliseconds(1)); }
-  
+
  private:
 
   /// Handle network change.
@@ -156,11 +159,18 @@ class NetworkServiceBrowser : public NetworkServiceBase
       // Set a timer after which we'll declare services dead.
       m_deletionTimer.expires_at(m_timer.expires_at() + boost::posix_time::milliseconds(NS_REMOVAL_INTERVAL));
       m_deletionTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleDeletionTimeout, this));
+
+      /* Scan timeout, before we send handleScanComplete */
+      m_scanTimer.expires_from_now(boost::posix_time::milliseconds(SCAN_TIMEOUT_MS));
+      m_scanTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleScanTimeout, this, boost::asio::placeholders::error));
+
+      dprintf("NetworkServiceBrowser: SCAN started");
     }
     catch (std::exception& e)
     {
       wprintf("NetworkServiceBrowser: Error sending out discover packet: %s", e.what());
     }
+
   }
   
   /// Find a network service by resource identifier.
@@ -268,6 +278,10 @@ class NetworkServiceBrowser : public NetworkServiceBase
           handleServiceDeparture(service);
         else if (notifyUpdate)
           handleServiceUpdate(service);
+
+        // reset our scanTimer
+        m_scanTimer.expires_from_now(boost::posix_time::milliseconds(SCAN_TIMEOUT_MS));
+        m_scanTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleScanTimeout, this, boost::asio::placeholders::error));
       }
     }
     else
@@ -278,7 +292,15 @@ class NetworkServiceBrowser : public NetworkServiceBase
     
     // If the socket is open, keep receiving (On XP we need to abandon a socket for 10022 - An invalid argument was supplied - as well).
     if (socket->is_open() && error.value() != 10022)
-      socket->async_receive_from(boost::asio::buffer(m_data, NS_MAX_PACKET_SIZE), m_endpoint, boost::bind(&NetworkServiceBrowser::handleRead, this, socket, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, interfaceIndex));
+    {
+      socket->async_receive_from(boost::asio::buffer(m_data, NS_MAX_PACKET_SIZE),
+                                 m_endpoint,
+                                 boost::bind(&NetworkServiceBrowser::handleRead,
+                                             this, socket,
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred,
+                                             interfaceIndex));
+    }
     else
       iprintf("Network Service: Abandoning browse socket, it was closed.");
   }
@@ -343,6 +365,18 @@ class NetworkServiceBrowser : public NetworkServiceBase
     m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this));
   }
   
+  void handleScanTimeout(const boost::system::error_code& e)
+  {
+    /* timer was reset, just ignore that */
+    if (e == boost::asio::error::operation_aborted)
+    {
+      dprintf("NetworkServiceBrowser: SCAN timeout resetted...");
+      return;
+    }
+
+    handleScanComplete();
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   void parse(const string& data, map<string, string>& msg, string& verb)
   {
@@ -380,6 +414,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
   boost::mutex                     m_mutex;
   boost::asio::deadline_timer      m_timer;
   boost::asio::deadline_timer      m_deletionTimer;
+  boost::asio::deadline_timer      m_scanTimer;
   int                              m_refreshTime;
   boost::asio::ip::udp::endpoint   m_endpoint;
   char                             m_data[NS_MAX_PACKET_SIZE];

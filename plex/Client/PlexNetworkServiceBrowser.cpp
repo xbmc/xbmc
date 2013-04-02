@@ -35,6 +35,17 @@ CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
 }
 
 void
+CPlexNetworkServiceBrowser::handleScanCompleted()
+{
+  CSingleLock lk(m_serversSection);
+  PlexServerList list;
+  BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
+  list.push_back(p.second);
+
+  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+}
+
+void
 CPlexServiceListener::Process()
 {
   dprintf("CPlexServiceListener: Initializing.");
