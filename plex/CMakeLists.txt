@@ -113,7 +113,7 @@ if(COMPRESS_TEXTURES)
     add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
   endif(ENABLE_NEW_SKIN)
 
-  set(EXCLUDE_TEXTURES skin.(mediastream|plex)/Media/*)
+  set(EXCLUDE_TEXTURES "skin.(mediastream|plex)/Media/*")
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
