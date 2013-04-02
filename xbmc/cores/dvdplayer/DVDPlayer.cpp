@@ -319,10 +319,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.source   = source;
       s.type     = STREAM_AUDIO;
       s.id       = i;
-      s.name     = nav->GetAudioStreamLanguage(i);
       s.flags    = CDemuxStream::FLAG_NONE;
       s.filename = filename;
-      s.channels = 0;
+
+      DVDNavStreamInfo info;
+      nav->GetAudioStreamInfo(i, info);
+      s.name     = info.name;
+      s.language = info.language;
+      s.channels = info.channels;
       Update(s);
     }
 
@@ -333,10 +337,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.source   = source;
       s.type     = STREAM_SUBTITLE;
       s.id       = i;
-      s.name     = nav->GetSubtitleStreamLanguage(i);
       s.flags    = CDemuxStream::FLAG_NONE;
       s.filename = filename;
       s.channels = 0;
+
+      DVDNavStreamInfo info;
+      nav->GetSubtitleStreamInfo(i, info);
+      s.name     = info.name;
+      s.language = info.language;
       Update(s);
     }
   }
@@ -362,6 +370,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.type     = stream->type;
       s.id       = stream->iId;
       s.language = stream->language;
+
+      if (s.language.length() == 2)
+      {
+        CStdString lang;
+        g_LangCodeExpander.ConvertToThreeCharCode(lang, stream->language);
+        s.language = lang;
+      }
+
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
@@ -2692,17 +2708,11 @@ void CDVDPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &inf
   SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
     info.name += "(Invalid)";
 
-  CStdString strStreamLang;
-  if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
-    info.language = g_localizeStrings.Get(13205); // Unknown
-  else
-    info.language = strStreamLang;
+  info.language = s.language;
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -3836,8 +3846,6 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   if(s.name.length() > 0)
     info.name = s.name;
-  else
-    info.name += "Unknown";
 
   if(s.type == STREAM_NONE)
     info.name += " (Invalid)";

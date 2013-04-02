@@ -29,7 +29,6 @@
 #include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "AddonUtils.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
 
@@ -397,11 +396,11 @@ namespace XBMCAddon
       {
         SPlayerSubtitleStreamInfo info;
         g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
-        CStdString strName = info.name;
 
-        if (strName == "Unknown(Invalid)")
-          strName = "";
-        return strName;
+        if (info.language.length() > 0)
+          return info.language;
+        else
+          return info.name;
       }
 
       return NULL;
@@ -429,10 +428,10 @@ namespace XBMCAddon
           SPlayerSubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, info);
 
-          CStdString FullLang;
-          if (!g_LangCodeExpander.Lookup(FullLang, info.name))
-            FullLang = info.name;
-          (*ret)[iStream] = FullLang;
+          if (info.language.length() > 0)
+            (*ret)[iStream] = info.language;
+          else
+            (*ret)[iStream] = info.name;
         }
         return ret;
       }
@@ -464,11 +463,10 @@ namespace XBMCAddon
           SPlayerAudioStreamInfo info;
           g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
 
-          CStdString FullLang;
-          g_LangCodeExpander.Lookup(FullLang, info.language);
-          if (FullLang.IsEmpty())
-            FullLang = info.name;
-          (*ret)[iStream] = FullLang;
+          if (info.language.length() > 0)
+            (*ret)[iStream] = info.language;
+          else
+            (*ret)[iStream] = info.name;
         }
         return ret;
       }
