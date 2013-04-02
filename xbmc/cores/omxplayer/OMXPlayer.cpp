@@ -40,6 +40,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
 #include "windowing/WindowingFactory.h"
 
@@ -936,7 +937,7 @@ void COMXPlayer::Process()
     m_PlayerOptions.starttime = 0;
 
     if(m_PlayerOptions.state.size() > 0)
-      ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
+      ((CDVDInputStreamNavigator*)m_pInputStream)->SetState(m_PlayerOptions.state);
     else
       ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
@@ -2183,7 +2184,7 @@ void COMXPlayer::HandleMessages()
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
           std::string s = pMsgPlayerSetState->GetState();
-          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(s);
+          ((CDVDInputStreamNavigator*)m_pInputStream)->SetState(s);
           m_dvd.state = DVDSTATE_NORMAL;
           m_dvd.iDVDStillStartTime = 0;
           m_dvd.iDVDStillTime = 0;
@@ -3943,7 +3944,7 @@ void COMXPlayer::UpdatePlayState(double timeout)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
-    if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(state.player_state))
+    if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetState(state.player_state))
       state.player_state = "";
   }
   else
