@@ -262,8 +262,6 @@ void CGUIBaseContainer::Render()
     g_graphicsContext.RestoreClipRegion();
   }
 
-  UpdatePageControl(offset);
-
   CGUIControl::Render();
 }
 
