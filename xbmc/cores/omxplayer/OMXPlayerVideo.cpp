@@ -382,21 +382,6 @@ void OMXPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      // if we only wanted priority messages, this isn't a stall
-      if( iPriority )
-        continue;
-
-      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !m_stalled )
-      {
-        if(m_started)
-          CLog::Log(LOGINFO, "COMXPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
-        m_stalled = true;
-        pts += frametime*4;
-      }
-
-      pts += frametime;
-
       continue;
     }
 
