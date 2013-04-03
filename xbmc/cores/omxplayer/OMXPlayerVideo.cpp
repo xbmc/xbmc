@@ -42,6 +42,7 @@
 #include "DVDOverlayRenderer.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 
