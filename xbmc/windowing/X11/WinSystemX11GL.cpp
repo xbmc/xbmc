@@ -40,6 +40,18 @@ CWinSystemX11GL::~CWinSystemX11GL()
 {
 }
 
+bool CWinSystemX11GL::DestroyWindowSystem()
+{
+  if (m_glContext)
+  {
+    glFinish();
+    glXMakeCurrent(m_dpy, None, NULL);
+    glXDestroyContext(m_dpy, m_glContext);
+    m_glContext = None;
+  }
+  return CWinSystemX11::DestroyWindowSystem();
+}
+
 bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 {
   CheckDisplayEvents();
@@ -197,13 +209,61 @@ bool CWinSystemX11GL::IsExtSupported(const char* extension)
   return m_glxext.find(name) != std::string::npos;
 }
 
+bool CWinSystemX11GL::DestroyWindow()
+{
+  if(m_glContext)
+  {
+    glFinish();
+    glXMakeCurrent(m_dpy, None, NULL);
+    glXDestroyContext(m_dpy, m_glContext);
+    m_glContext = None;
+  }
+  return CWinSystemX11::DestroyWindow();
+}
+
 bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
+  GLint att[] =
+  {
+    GLX_RGBA,
+    GLX_RED_SIZE, 8,
+    GLX_GREEN_SIZE, 8,
+    GLX_BLUE_SIZE, 8,
+    GLX_ALPHA_SIZE, 8,
+    GLX_DEPTH_SIZE, 24,
+    GLX_DOUBLEBUFFER,
+    None
+  };
+
+  DestroyWindow();
+
+  m_visual = glXChooseVisual(m_dpy, res.iInternal, att);
+  if(m_visual == NULL)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11GL::CreateNewWindow - failed to create visual");
+    return false;
+  }
+
   if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
 
+  m_glContext = glXCreateContext(m_dpy, m_visual, NULL, True);
+  if (m_glContext == NULL)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11GL::CreateNewWindow - failed to create context");
+    return false;
+  }
+
+  if(glXMakeCurrent(m_dpy, m_wmWindow, m_glContext) == False)
+  {
+    CLog::Log(LOGERROR, "CWinSystemX11GL::CreateNewWindow - failed to make context current");
+    return false;
+  }
+
+  m_glWindow  = m_wmWindow;
+
   m_glxext  = " ";
-  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, DefaultScreen(m_dpy));
+  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, m_visual->screen);
   m_glxext += " ";
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());
@@ -239,6 +299,8 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
   else
     m_glXSwapIntervalMESA = NULL;
 
+
+  OnResetDevice();
 
   return true;
 }

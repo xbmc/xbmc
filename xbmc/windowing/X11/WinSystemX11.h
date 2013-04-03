@@ -46,12 +46,22 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
-  virtual int  GetNumScreens() { return 1; }
+  virtual int  GetNumScreens();
+  virtual int  GetCurrentScreen();
   virtual void ShowOSMouse(bool show);
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
 
-  virtual void NotifyAppActiveChange(bool bActivated);
+  virtual void OnMove(int x, int y)
+  {
+    if(!m_bFullScreen)
+    {
+      m_nLeft = x;
+      m_nTop  = y;
+    }
+  }
+
+  virtual void NotifyAppFocusChange(bool bGaining);
 
   virtual bool Minimize();
   virtual bool Restore() ;
@@ -63,27 +73,52 @@ public:
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
+  XVisualInfo* GetVisual() { return m_visual; }
+  void NotifyXRREvent();
+
+  bool IsWindowManagerControlled() { return m_wm_controlled; }
 
 protected:
-  bool RefreshGlxContext();
+  void ProbeWindowManager();
+  void RefreshWindowState();
   void CheckDisplayEvents();
   void OnLostDevice();
+  void OnResetDevice();
 
-  SDL_Surface* m_SDLSurface;
+  XVisualInfo* m_visual;
   GLXContext   m_glContext;
   GLXWindow    m_glWindow;
   Window       m_wmWindow;
   Display*     m_dpy;
+
+  Cursor       m_invisibleCursor;
+  Pixmap       m_icon;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
-  int          m_RREventBase;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;
+  CStdString                   m_outputName;
+  int                          m_outputIndex;
+
+  bool         m_wm;
+  CStdString   m_wm_name;
+  bool         m_wm_fullscreen;
+  bool         m_wm_controlled;
+
+  Atom m_NET_SUPPORTING_WM_CHECK;
+  Atom m_NET_WM_STATE;
+  Atom m_NET_WM_STATE_FULLSCREEN;
+  Atom m_NET_WM_STATE_MAXIMIZED_VERT;
+  Atom m_NET_WM_STATE_MAXIMIZED_HORZ;
+  Atom m_NET_SUPPORTED;
+  Atom m_NET_WM_NAME;
+  Atom m_WM_DELETE_WINDOW;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   static int XErrorHandler(Display* dpy, XErrorEvent* error);
+  bool SetResolution(RESOLUTION_INFO& res, bool fullScreen);
 
   CStopWatch m_screensaverReset;
 };

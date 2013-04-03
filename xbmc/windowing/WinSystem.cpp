@@ -33,7 +33,6 @@ CWinSystemBase::CWinSystemBase()
   m_nLeft = 0;
   m_bWindowCreated = false;
   m_bFullScreen = false;
-  m_nScreen = 0;
   m_bBlankOtherDisplay = false;
   m_fRefreshRate = 0.0f;
 }

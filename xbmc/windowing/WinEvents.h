@@ -56,6 +56,10 @@ class CWinEventsBase
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL
 
+#elif defined(TARGET_LINUX) && defined(HAS_X11_WIN_EVENTS)
+#include "WinEventsX11.h"
+#define CWinEvents CWinEventsX11
+
 #elif defined(TARGET_LINUX) && defined(HAS_LINUX_EVENTS)
 #include "WinEventsLinux.h"
 #define CWinEvents CWinEventsLinux

@@ -175,6 +175,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
 {
   m_width = width;
   m_height = height;
+  m_bVsyncInit = false;
 
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 

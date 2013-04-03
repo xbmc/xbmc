@@ -76,9 +76,11 @@ public:
       name="";
       isConnected=false;
       w=h=x=y=wmm=hmm=0;
+      screen=0;
     }
   CStdString name;
   bool isConnected;
+  int screen;
   int w;
   int h;
   int x;
@@ -86,31 +88,24 @@ public:
   int wmm;
   int hmm;
   std::vector<XMode> modes;
+  bool isRotated;
 };
 
 class CXRandR
 {
 public:
-  CXRandR(bool query=false);
-  bool Query(bool force=false);
+  CXRandR();
+  bool Query(int screens, bool force);
   std::vector<XOutput> GetModes(void);
-  XOutput GetCurrentOutput();
-  XMode   GetCurrentMode(CStdString outputName);
+  XMode   GetCurrentMode(int screen, CStdString outputName);
+  XOutput GetOutput(int screen, CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
-  void SaveState();
-  void RestoreState();
-  //bool Has1080i();
-  //bool Has1080p();
-  //bool Has720p();
-  //bool Has480p();
 
 private:
+  bool Query(int screen);
   bool m_bInit;
-  std::vector<XOutput> m_current;
   std::vector<XOutput> m_outputs;
-  CStdString m_currentOutput;
-  CStdString m_currentMode;
 };
 
 extern CXRandR g_xrandr;

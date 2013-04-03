@@ -94,6 +94,9 @@ public:
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
+  int          GetLeft() { return m_nLeft; }
+  int          GetTop()  { return m_nTop; }
+
   virtual int GetNumScreens() { return 0; }
   virtual int GetCurrentScreen() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }
@@ -114,7 +117,6 @@ protected:
   int               m_nLeft;
   bool              m_bWindowCreated;
   bool              m_bFullScreen;
-  int               m_nScreen;
   bool              m_bBlankOtherDisplay;
   float             m_fRefreshRate;
 };

@@ -43,6 +43,7 @@ CWinSystemWin32::CWinSystemWin32()
   PtrGetGestureInfo = NULL;
   m_ValidWindowedPosition = false;
   m_IsAlteringWindow = false;
+  m_nScreen = 0;
 }
 
 CWinSystemWin32::~CWinSystemWin32()
