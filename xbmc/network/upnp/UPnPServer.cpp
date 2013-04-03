@@ -909,6 +909,19 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 }
 
 /*----------------------------------------------------------------------
+|   CUPnPServer::OnUpdateObject
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
+                            const char*                      object_id,
+                            NPT_Map<NPT_String,NPT_String>&  current_vals,
+                            NPT_Map<NPT_String,NPT_String>&  new_vals,
+                            const PLT_HttpRequestContext&    context)
+{
+  return NPT_ERROR_NOT_IMPLEMENTED;
+}
+
+/*----------------------------------------------------------------------
 |   CUPnPServer::ServeFile
 +---------------------------------------------------------------------*/
 NPT_Result

@@ -62,6 +62,12 @@ public:
                                          const char*                   sort_criteria,
                                          const PLT_HttpRequestContext& context);
 
+    virtual NPT_Result OnUpdateObject(PLT_ActionReference&             action,
+                                      const char*                      object_id,
+                                      NPT_Map<NPT_String,NPT_String>&  current_vals,
+                                      NPT_Map<NPT_String,NPT_String>&  new_vals,
+                                      const PLT_HttpRequestContext&    context);
+
     // PLT_FileMediaServer methods
     virtual NPT_Result ServeFile(const NPT_HttpRequest&              request,
                                  const NPT_HttpRequestContext& context,
