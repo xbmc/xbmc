@@ -42,6 +42,7 @@
 #include "DVDOverlayRenderer.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 
@@ -489,6 +490,18 @@ void OMXPlayerVideo::Process()
     {
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
+    {
+      COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
+
+      if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
+        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true, true));
+        //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
+      else
+        state.timestamp = m_av_clock->GetAbsoluteClock();
+      state.player    = DVDPLAYER_VIDEO;
+      m_messageParent.Put(pMsg->Acquire());
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {

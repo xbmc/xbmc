@@ -74,6 +74,7 @@ public:
   int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
   double           dur;    // last frame expected duration
+  double           dts_state; // when did we last send a playback state update
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   int              changes; // remembered counter from stream to track codec changes
@@ -96,6 +97,7 @@ public:
     id     = -1;
     source = STREAM_SOURCE_NONE;
     dts    = DVD_NOPTS_VALUE;
+    dts_state = DVD_NOPTS_VALUE;
     dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
@@ -366,15 +368,27 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
+  enum ETimeSource
+  {
+    ETIMESOURCE_CLOCK,
+    ETIMESOURCE_INPUT,
+    ETIMESOURCE_MENU,
+  };
+
+  friend class OMXPlayerVideo;
+  friend class OMXPlayerAudio;
+
   struct SPlayerState
   {
     SPlayerState() { Clear(); }
     void Clear()
     {
+      player        = 0;
       timestamp     = 0;
       time          = 0;
       time_total    = 0;
       time_offset   = 0;
+      time_src      = ETIMESOURCE_CLOCK;
       dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
@@ -392,11 +406,14 @@ protected:
       cache_offset  = 0.0;
     }
 
+    int    player;            // source of this data
+
     double timestamp;         // last time of update
     double time_offset;       // difference between time and pts
 
     double time;              // current playback time
     double time_total;        // total playback time
+    ETimeSource time_src;     // current time source
     double dts;               // last known dts
 
     std::string player_state;  // full player state
@@ -418,7 +435,7 @@ protected:
     double  cache_level;   // current estimated required cache level
     double  cache_delay;   // time until cache is expected to reach estimated level
     double  cache_offset;  // percentage of file ahead of current position
-  } m_State;
+  } m_State, m_StateInput;
   CCriticalSection m_StateSection;
 
   CEdl m_Edl;
@@ -481,4 +498,7 @@ private:
   bool                    m_change_volume;
   CDVDOverlayContainer    m_overlayContainer;
   ECacheState             m_caching;
+
+  bool m_HasVideo;
+  bool m_HasAudio;
 };
