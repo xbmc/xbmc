@@ -96,7 +96,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
     Observable()
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
-  m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
   m_seekOffset = 0;
@@ -110,7 +109,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_frameCounter = 0;
   m_lastFPSTime = 0;
   m_updateTime = 1;
-  m_MusicBitrate = 0;
   m_playerShowTime = false;
   m_playerShowCodec = false;
   m_playerShowInfo = false;
@@ -3325,9 +3323,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
 
-  SPlayerAudioStreamInfo info;
-  g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
-
+  UpdateAVInfo();
   switch (item)
   {
   case MUSICPLAYER_PLAYLISTLEN:
@@ -3344,24 +3340,18 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_BITRATE:
     {
-      float fTimeSpan = (float)(CTimeUtils::GetFrameTime() - m_lastMusicBitrateTime);
-      if (fTimeSpan >= 500.0f)
-      {
-        m_MusicBitrate = info.bitrate;
-        m_lastMusicBitrateTime = CTimeUtils::GetFrameTime();
-      }
       CStdString strBitrate = "";
-      if (m_MusicBitrate > 0)
-        strBitrate.Format("%i", MathUtils::round_int((double)m_MusicBitrate / 1000.0));
+      if (m_audioInfo.bitrate > 0)
+        strBitrate.Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
       return strBitrate;
     }
     break;
   case MUSICPLAYER_CHANNELS:
     {
       CStdString strChannels = "";
-      if (info.channels > 0)
+      if (m_audioInfo.channels > 0)
       {
-        strChannels.Format("%i", info.channels);
+        strChannels.Format("%i", m_audioInfo.channels);
       }
       return strChannels;
     }
@@ -3389,7 +3379,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CODEC:
     {
       CStdString strCodec;
-      strCodec.Format("%s", info.audioCodecName);
+      strCodec.Format("%s", m_audioInfo.audioCodecName);
       return strCodec;
     }
     break;

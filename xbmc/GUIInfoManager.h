@@ -865,8 +865,6 @@ protected:
   // Current playing stuff
   CFileItem* m_currentFile;
   CStdString m_currentMovieThumb;
-  unsigned int m_lastMusicBitrateTime;
-  unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
 
   // fan stuff
