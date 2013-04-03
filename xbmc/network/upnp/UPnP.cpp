@@ -181,7 +181,6 @@ public:
             CStdString id = item_id;
             CURL::Encode(id);
             path += id.c_str();
-            path += "/";
         }
 
         CLog::Log(LOGDEBUG, "UPNP: notfified container update %s", (const char*)path);
