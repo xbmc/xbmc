@@ -353,7 +353,7 @@
 #include "plex/GUI/GUIPlexMusicWindow.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
-   
+#include "plex/GUI/GUIWindowPlexPreplayVideo.h"
 #include "settings/GUISettings.h"
 /* END PLEX */
 
@@ -1487,6 +1487,7 @@ bool CApplication::Initialize()
 #ifdef PLEX_NEW_SKIN
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
+    g_windowManager.Add(new CGUIWindowPlexPreplayVideo);
 #endif
     g_windowManager.Add(new CGUIDialogMyPlexPin);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);

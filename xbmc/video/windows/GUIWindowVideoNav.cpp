@@ -1619,7 +1619,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     Refresh(true);
     return true;
   }
-
+  
   return CGUIWindowVideoBase::OnClick(iItem);
 }
 

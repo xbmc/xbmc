@@ -247,6 +247,8 @@ static const ActionMapping windows[] =
         {"sharedcontent"            , WINDOW_SHARED_CONTENT},
         {"nowplaying"               , WINDOW_NOW_PLAYING},
         {"plexsearch"               , WINDOW_PLEX_SEARCH},
+        {"plexpreplayvideo"         , WINDOW_PLEX_PREPLAY_VIDEO},
+        {"plexpreplaymusic"         , WINDOW_PLEX_PREPLAY_MUSIC},
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},

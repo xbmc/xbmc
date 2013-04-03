@@ -7,6 +7,9 @@
 #define WINDOW_PLUGIN_SETTINGS            10052
 #define WINDOW_SHARED_CONTENT             10053
 
+#define WINDOW_PLEX_PREPLAY_VIDEO         10090
+#define WINDOW_PLEX_PREPLAY_MUSIC         10091
+
 // Dialogs.
 #define WINDOW_DIALOG_RATING              10200
 #define WINDOW_DIALOG_TIMER               10201

@@ -78,6 +78,7 @@
 #include "BackgroundMusicPlayer.h"
 #include "PlexMediaServerQueue.h"
 #include "PlexContentPlayerMixin.h"
+#include "interfaces/Builtins.h"
 /* END PLEX */
 
 using namespace std;
@@ -949,6 +950,16 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
     return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
+  
+  /* PLEX */
+  string type = item->GetProperty("type").asString();
+  if (item->IsPlexMediaServer() &&
+      (type == "movie" || type == "episode"))
+  {
+    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetPath() + ", return)");
+    return true;
+  }
+  /* END PLEX */
 
   CStdString path = item->GetPath();
   if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&
