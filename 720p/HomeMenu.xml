@@ -209,9 +209,9 @@
 						<visible>[!Skin.HasSetting(HidePictures)]</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>
-					<!--<item id="114">
-						<label>Perplexe</label>
-						<onclick>XBMC.ActivateWindow(busydialog)</onclick>
+					<!--><item id="114">
+						<label>Preplay</label>
+						<onclick>Plex.ActivateWindow(10090)</onclick>
 					</item>-->
 				</content>
 			</control>

@@ -1,0 +1,8 @@
+<window id="10090">
+	<defaultcontrol always="true">101</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<!-- Movie Preplay -->
+		<include>PreplayMovie</include>
+	</controls>
+</window>
