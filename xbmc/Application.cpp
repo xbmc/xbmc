@@ -2374,8 +2374,6 @@ void CApplication::Render()
     g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
@@ -5179,6 +5177,8 @@ void CApplication::ProcessSlow()
 
   if (!IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();
+
+  g_TextureManager.FreeUnusedTextures();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
