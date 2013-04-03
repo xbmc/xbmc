@@ -145,6 +145,26 @@
                 </argument>
             </argumentList>
         </action>
+		<action>
+                        <name>UpdateObject</name>
+                        <argumentList>
+                                <argument>
+                                        <name>ObjectID</name>
+                                        <direction>in</direction>
+                                        <relatedStateVariable>A_ARG_TYPE_ObjectID</relatedStateVariable>
+                                </argument>
+                                <argument>
+                                        <name>CurrentTagValue</name>
+                                        <direction>in</direction>
+                                        <relatedStateVariable>A_ARG_TYPE_TagValueList</relatedStateVariable>
+                                </argument>
+                                <argument>
+                                        <name>NewTagValue</name>
+                                        <direction>in</direction>
+                                        <relatedStateVariable>A_ARG_TYPE_TagValueList</relatedStateVariable>
+                                </argument>
+                        </argumentList>
+                </action>
 	</actionList>
 	<serviceStateTable>
 		<stateVariable sendEvents="no">
@@ -202,6 +222,10 @@
 		<stateVariable sendEvents="no">
 			<name>A_ARG_TYPE_Filter</name> 
 			<dataType>string</dataType> 
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_TagValueList</name>
+			<dataType>string</dataType>
 		</stateVariable>
 	</serviceStateTable>
 </scpd>
