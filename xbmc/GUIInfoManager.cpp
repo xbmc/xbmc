@@ -115,6 +115,7 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_playerShowCodec = false;
   m_playerShowInfo = false;
   m_fps = 0.0f;
+  m_AVInfoValid = false;
   ResetLibraryBools();
 }
 
@@ -1435,9 +1436,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
     {
-      SPlayerVideoStreamInfo info;
-      g_application.m_pPlayer->GetVideoStreamInfo(info);
-      strLabel = info.videoCodecName;
+      UpdateAVInfo();
+      strLabel = m_videoInfo.videoCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
@@ -1447,25 +1447,22 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
     {
-      SPlayerAudioStreamInfo info;
-      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
-      strLabel = info.audioCodecName;
+      UpdateAVInfo();
+      strLabel = m_audioInfo.audioCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
     if (g_application.IsPlaying() && g_application.m_pPlayer)
     {
-      SPlayerVideoStreamInfo info;
-      g_application.m_pPlayer->GetVideoStreamInfo(info);
-      strLabel = CStreamDetails::VideoAspectToAspectDescription(info.videoAspectRatio);
+      UpdateAVInfo();
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
     {
-      SPlayerAudioStreamInfo info;
-      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
-      strLabel.Format("%i", info.channels);
+      UpdateAVInfo();
+      strLabel.Format("%i", m_audioInfo.channels);
     }
     break;
   case PLAYLIST_LENGTH:
@@ -3998,6 +3995,19 @@ void CGUIInfoManager::UpdateFPS()
     m_fps = m_frameCounter / fTimeSpan;
     m_lastFPSTime = curTime;
     m_frameCounter = 0;
+  }
+}
+
+void CGUIInfoManager::UpdateAVInfo()
+{
+  if(g_application.IsPlaying() && g_application.m_pPlayer)
+  {
+    if (!m_AVInfoValid)
+    {
+      g_application.m_pPlayer->GetVideoStreamInfo(m_videoInfo);
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), m_audioInfo);
+      m_AVInfoValid = true;
+    }
   }
 }
 
