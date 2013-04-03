@@ -50,13 +50,32 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   return m_state;
 }
 
-void
+bool
 CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 {
-  m_url = otherConnection->m_url;
-  m_token = otherConnection->m_token;
-  m_type |= otherConnection->m_type;
+  bool changed = false;
+
+  if (m_url.Get() != otherConnection->m_url.Get())
+  {
+    m_url = otherConnection->m_url;
+    changed = true;
+  }
+
+  if (m_token != otherConnection->m_token)
+  {
+    m_token = otherConnection->m_token;
+    changed = true;
+  }
+
+  if (m_type != otherConnection->m_type)
+  {
+    m_type |= otherConnection->m_type;
+    changed = true;
+  }
+
   m_refreshed = true;
+
+  return changed;
 }
 
 CStdString

@@ -12,6 +12,8 @@
 #include "settings/GUISettings.h"
 #include "threads/Thread.h"
 
+#include <boost/asio/deadline_timer.hpp>
+
 ///
 /// Plex specific service browser.
 ///
@@ -19,7 +21,7 @@ class CPlexNetworkServiceBrowser : public NetworkServiceBrowser
 {
 public:
   CPlexNetworkServiceBrowser(boost::asio::io_service& ioService, unsigned short port, int refreshTime=NS_BROWSE_REFRESH_INTERVAL)
-  : NetworkServiceBrowser(ioService, port, refreshTime)
+  : NetworkServiceBrowser(ioService, port, refreshTime), m_addTimer(ioService, boost::posix_time::milliseconds(5000))
   {
   }
 
@@ -30,8 +32,11 @@ public:
   virtual void handleServiceDeparture(NetworkServicePtr& service);
 
 private:
+  void SetAddTimer();
+  void HandleAddTimeout(const boost::system::error_code& e);
   CCriticalSection m_serversSection;
   PlexServerMap m_discoveredServers;
+  boost::asio::deadline_timer m_addTimer;
 };
 
 ///

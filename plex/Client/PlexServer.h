@@ -49,7 +49,7 @@ public:
   void MarkAsRefreshing();
   bool MarkUpdateFinished(int connType);
 
-  void Merge(CPlexServerPtr otherServer);
+  bool Merge(CPlexServerPtr otherServer);
 
   bool UpdateReachability();
 

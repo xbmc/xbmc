@@ -125,10 +125,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     url.SetOption("checkFiles", "1");
   }
   
-  strPath = url.Get();
-  
   // Get the directory.
-  bool ret = CPlexDirectory::ReallyGetDirectory(strPath, items);
+  bool ret = CPlexDirectory::ReallyGetDirectory(url.Get(), items);
   
   // See if it's an intermediate filter directory.
   if (false && items.GetContent() == "secondary")
@@ -504,15 +502,13 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
     mediaUrl.RemoveOption("X-Plex-Token");
   }
 
-  // If the image is on the same host as our transcoder, rewrite the URL to be local.
-  if (mediaUrl.GetHostName() == url.GetHostName())
+  /* Change the transcoder URL to be localhost */
+  if (mediaUrl.GetProtocol() == "plex")
   {
     mediaUrl.SetHostName("127.0.0.1");
+    mediaUrl.SetProtocol("http");
     mediaUrl.SetPort(32400);
   }
-
-  if (mediaUrl.GetProtocol() == "https")
-    mediaUrl.SetProtocol("http");
 
   encodedUrl = mediaUrl.Get();
   CURL::Encode(encodedUrl);
@@ -535,24 +531,6 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   {
     width = "0";
     height = "0";
-  }
-  
-  if (url.GetProtocol() == "plex")
-  {
-    url.SetProtocol("http");
-    url.SetPort(32400);
-  }
-  
-  if (url.GetHostName() == "my.plexapp.com")
-  {
-    PlexServerPtr server = PlexServerManager::Get().bestServer();
-    if (server)
-    {
-      url.SetHostName(server->address);
-      url.SetPort(server->port);
-      /* FIXME */
-      url.SetProtocol("http");
-    }
   }
   
   url.SetOptions("");
@@ -2017,22 +1995,6 @@ string CPlexDirectory::ProcessMediaElement(const string& parentPath, const char*
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-string CheckAuthToken(map<CStdString, CStdString>& options, string finalURL, const string& parameterName)
-{
-  if (options.find(parameterName) != options.end())
-  {
-    if (finalURL.find("?") == string::npos)
-      finalURL += "?";
-    else
-      finalURL += "&";
-    
-    finalURL += parameterName + "=" + string(options[parameterName]);
-  }
-  
-  return finalURL;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool isDirectory)
 {
   string parentPath(parent);
@@ -2045,22 +2007,7 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
 
   CURL theURL(parentPath);
 
-  // Files use plain HTTP.
-  if (isDirectory == false)
-  {
-    if (theURL.GetProtocol() == "plex")
-    {
-      theURL.SetProtocol("http");
-      theURL.SetPort(32400);
-    }
-  }
-
-  if (url.find("://") != string::npos)
-  {
-    // It's got its own protocol, so leave it alone.
-    return url;
-  }
-  else if (url.find("/") == 0)
+  if (url.find("/") == 0)
   {
     // Absolute off parent.
     theURL.SetFileName(url.substr(1));
@@ -2075,15 +2022,7 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
     theURL.SetFileName(path + url);
   }
   
-  string finalURL = theURL.Get();
-
-  // If we have an auth token, make sure it gets propagated.
-  map<CStdString, CStdString> options;
-  theFullURL.GetOptions(options);
-  finalURL = CheckAuthToken(options, finalURL, "X-Plex-Token");
-  
-  //CLog::Log(LOGNOTICE, "Processed [%s] + [%s] => [%s]\n", parent.c_str(), url.c_str(), finalURL.c_str());
-  return finalURL;
+  return theURL.Get();
 }
 
 bool CPlexDirectory::IsHomeVideoSection(const CStdString &url)

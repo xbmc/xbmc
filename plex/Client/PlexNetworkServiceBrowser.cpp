@@ -17,6 +17,9 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
   CSingleLock lk(m_serversSection);
   m_discoveredServers[server->GetUUID()] = server;
   dprintf("CPlexNetworkServiceBrowser::handleServiceArrival %s arrived", service->address().to_string().c_str());
+
+  /* Update or reset our timer */
+  SetAddTimer();
 }
 
 void
@@ -32,15 +35,27 @@ CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
     list.push_back(p.second);
 
   g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+
+  SetAddTimer();
 }
 
 void
-CPlexNetworkServiceBrowser::handleScanCompleted()
+CPlexNetworkServiceBrowser::SetAddTimer()
 {
+  m_addTimer.expires_from_now(boost::posix_time::milliseconds(5000));
+  m_addTimer.async_wait(boost::bind(&CPlexNetworkServiceBrowser::HandleAddTimeout, this, boost::asio::placeholders::error));
+}
+
+void
+CPlexNetworkServiceBrowser::HandleAddTimeout(const boost::system::error_code &e)
+{
+  if (e == boost::asio::error::operation_aborted)
+    return;
+
   CSingleLock lk(m_serversSection);
   PlexServerList list;
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
-  list.push_back(p.second);
+    list.push_back(p.second);
 
   g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
 }

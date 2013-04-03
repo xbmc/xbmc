@@ -27,6 +27,14 @@ public:
   CPlexServerPtr m_server;
   CFileItemListPtr m_sectionList;
   CFileItemListPtr m_channelList;
+
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
+    if (oJob->m_server == m_server)
+      return true;
+    return false;
+  }
 };
 
 class CPlexServerDataLoader : public CJobQueue

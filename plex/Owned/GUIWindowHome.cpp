@@ -499,6 +499,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
     }
 
+    case GUI_MSG_PLEX_BEST_SERVER_UPDATED:
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     {
@@ -616,6 +617,9 @@ void CGUIWindowHome::UpdateSections()
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(sectionItem->GetLabel());
     item->SetProperty("plex", 1);
+    item->SetProperty("sectionPath", sectionItem->GetPath());
+
+    AddSection(sectionItem->GetPath(), (int)sectionItem->GetProperty("typeNumber").asInteger());
 
     CStdString path("XBMC.ActivateWindow");
     if (sectionItem->GetProperty("type").asString() == "artist")
@@ -626,6 +630,7 @@ void CGUIWindowHome::UpdateSections()
       path += "(MyVideoFiles," + sectionItem->GetPath() + ",return)";
 
     item->SetPath(path);
+    item->SetClickActions(CGUIAction("", path));
     newList.push_back(item);
 
     control->SetStaticContent(newList);

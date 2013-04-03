@@ -42,7 +42,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
    , m_port(port)
    , m_timer(ioService, boost::posix_time::milliseconds(10))
    , m_deletionTimer(ioService, boost::posix_time::milliseconds(1500))
-   , m_scanTimer(ioService, boost::posix_time::milliseconds(SCAN_TIMEOUT_MS))
    , m_refreshTime(refreshTime)
   {
     // Add a timer which we'll use to send out search requests.
@@ -159,12 +158,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
       // Set a timer after which we'll declare services dead.
       m_deletionTimer.expires_at(m_timer.expires_at() + boost::posix_time::milliseconds(NS_REMOVAL_INTERVAL));
       m_deletionTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleDeletionTimeout, this));
-
-      /* Scan timeout, before we send handleScanComplete */
-      m_scanTimer.expires_from_now(boost::posix_time::milliseconds(SCAN_TIMEOUT_MS));
-      m_scanTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleScanTimeout, this, boost::asio::placeholders::error));
-
-      dprintf("NetworkServiceBrowser: SCAN started");
     }
     catch (std::exception& e)
     {
@@ -278,10 +271,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
           handleServiceDeparture(service);
         else if (notifyUpdate)
           handleServiceUpdate(service);
-
-        // reset our scanTimer
-        m_scanTimer.expires_from_now(boost::posix_time::milliseconds(SCAN_TIMEOUT_MS));
-        m_scanTimer.async_wait(boost::bind(&NetworkServiceBrowser::handleScanTimeout, this, boost::asio::placeholders::error));
       }
     }
     else
@@ -365,18 +354,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
     m_timer.async_wait(boost::bind(&NetworkServiceBrowser::handleTimeout, this));
   }
   
-  void handleScanTimeout(const boost::system::error_code& e)
-  {
-    /* timer was reset, just ignore that */
-    if (e == boost::asio::error::operation_aborted)
-    {
-      dprintf("NetworkServiceBrowser: SCAN timeout resetted...");
-      return;
-    }
-
-    handleScanComplete();
-  }
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   void parse(const string& data, map<string, string>& msg, string& verb)
   {
@@ -414,7 +391,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
   boost::mutex                     m_mutex;
   boost::asio::deadline_timer      m_timer;
   boost::asio::deadline_timer      m_deletionTimer;
-  boost::asio::deadline_timer      m_scanTimer;
   int                              m_refreshTime;
   boost::asio::ip::udp::endpoint   m_endpoint;
   char                             m_data[NS_MAX_PACKET_SIZE];

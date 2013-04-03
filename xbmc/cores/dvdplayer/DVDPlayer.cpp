@@ -4487,13 +4487,6 @@ CStdString CDVDPlayer::TranscodeURL(CStdString& stopURL, const CStdString& url, 
   CURL transcodeURL(m_filename);
   transcodeURL.SetFileName("video/:/transcode/segmented/start.m3u8");
 
-  // If we came in with plex:// protocol, fix it.
-  if (transcodeURL.GetProtocol() == "plex")
-  {
-    transcodeURL.SetProtocol("http");
-    transcodeURL.SetPort(32400);
-  }
-
   // Override the hostname if provided
   if (transcodeHost != "")
     transcodeURL.SetHostName(transcodeHost);

@@ -69,7 +69,7 @@ public:
     return fmt;
   }
 
-  void Merge(CPlexConnectionPtr otherConnection);
+  bool Merge(CPlexConnectionPtr otherConnection);
 
   /* Setters, getters - Is this java? */
   void SetRefreshed(bool r) { m_refreshed = r; }

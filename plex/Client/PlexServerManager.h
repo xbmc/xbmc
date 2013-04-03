@@ -25,6 +25,14 @@ public:
   bool DoWork();
   bool m_force;
   CPlexServerPtr m_server;
+
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexServerReachabilityJob *oJob = (CPlexServerReachabilityJob*)job;
+    if (oJob->m_server == m_server && oJob->m_force == m_force)
+      return true;
+    return false;
+  }
 };
 
 class CPlexServerManager : public CJobQueue

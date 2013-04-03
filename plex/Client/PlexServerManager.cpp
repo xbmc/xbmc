@@ -18,7 +18,7 @@ CPlexServerReachabilityJob::DoWork()
   {
     return m_server->UpdateReachability();
   }
-  return false;
+  return m_server->GetActiveConnection();
 }
 
 CPlexServerManager::CPlexServerManager()
@@ -108,6 +108,7 @@ CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 {
   MergeServer(server);
   NotifyAboutServer(server);
+  SetBestServer(server, false);
 }
 
 void
@@ -165,6 +166,10 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
   if (!m_bestServer || force || m_bestServer == server)
   {
     m_bestServer = server;
+
+    CGUIMessage msg(GUI_MSG_PLEX_BEST_SERVER_UPDATED, 0, 0);
+    msg.SetStringParam(server->GetUUID());
+    g_windowManager.SendThreadMessage(msg);
   }
 }
 
@@ -193,6 +198,8 @@ CPlexServerManager::OnJobComplete(unsigned int jobId, bool succeed, CJob *job)
       ClearBestServer();
     }
   }
+
+  CJobQueue::OnJobComplete(jobId, succeed, job);
 }
 
 void

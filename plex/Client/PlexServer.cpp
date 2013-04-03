@@ -170,13 +170,33 @@ CPlexServer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_testEvent.Set();
 }
 
-void
+bool
 CPlexServer::Merge(CPlexServerPtr otherServer)
 {
-  m_name = otherServer->m_name;
-  m_version = otherServer->m_version;
-  m_owned = otherServer->m_owned;
-  m_owner = otherServer->m_owner;
+  bool changed = false;
+
+  if (m_name != otherServer->m_name)
+  {
+    m_name = otherServer->m_name;
+    changed = true;
+  }
+
+  if (m_version != otherServer->m_version)
+  {
+    m_version = otherServer->m_version;
+    changed = true;
+  }
+
+  if (m_owned != otherServer->m_owned)
+  {
+    m_owned = otherServer->m_owned;
+    changed = true;
+  }
+
+  if (m_owner != otherServer->m_owner) {
+    m_owner = otherServer->m_owner;
+    changed = true;
+  }
 
   CSingleLock lk(m_connLock);
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
@@ -184,10 +204,18 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
     vector<CPlexConnectionPtr>::iterator it;
     it = find(m_connections.begin(), m_connections.end(), conn);
     if (it != m_connections.end())
-      (*it)->Merge(conn);
+    {
+      if ((*it)->Merge(conn))
+        changed = true;
+    }
     else
+    {
       m_connections.push_back(*it);
+      changed = true;
+    }
   }
+
+  return changed;
 }
 
 void

@@ -35,6 +35,8 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
     msg.SetStringParam(j->m_server->GetUUID());
     g_windowManager.SendThreadMessage(msg);
   }
+
+  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 CFileItemListPtr
