@@ -62,6 +62,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>System.CurrentControl : [COLOR=orangeLight]$INFO[System.CurrentControl][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label/>
 				</control>
 				<control type="label">
@@ -94,15 +98,15 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>System.CurrentControl : [COLOR=orangeLight]$INFO[System.CurrentControl][/COLOR]</label>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
 					<label>System.Screenresolution : [COLOR=orangeLight]$INFO[System.Screenresolution][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>System.FreeMemory : [COLOR=orangeLight]$INFO[System.FreeMemory][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>System.CpuFrequency : [COLOR=orangeLight]$INFO[System.CpuFrequency][/COLOR]</label>
 				</control>
 			</control>
 			<!-- right list -->

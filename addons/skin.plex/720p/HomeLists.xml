@@ -43,25 +43,19 @@
 		<align>right</align>
 	</include>
 	<include name="ListArrow">
-		<!-- top list -->
+		<!-- top & bottom lists -->
 		<control type="image">
+			<!--><posy>330</posy>-->
 			<posy>330</posy>
 			<posx>391</posx>
 			<texture background="true">arrow-big.png</texture>
 			<colordiffuse>orange</colordiffuse>
-			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
+			<animation effect="fade" start="0" end="100" time="600" condition="true">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>Control.HasFocus(11001) | Control.HasFocus(11003)</visible>
-		</control>
-		<!-- bottom list -->
-		<control type="image">
-			<posy>550</posy>
-			<posx>391</posx>
-			<texture background="true">arrow-big.png</texture>
-			<colordiffuse>orange</colordiffuse>
-			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
-			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>Control.HasFocus(11000) | Control.HasFocus(11004)</visible>
+			<visible>[Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11004) + Control.IsVisible(11003)]</visible>
+			<animation effect="slide" start="0,0" end="0,220" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11000) | Control.HasFocus(11003)">Conditional</animation>
+			<animation effect="slide" start="0,220" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11001) | Control.HasFocus(11004)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,110" time="200" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)">Conditional</animation>
 		</control>
 		<!-- alone -->
 		<control type="image">
@@ -71,9 +65,8 @@
 			<colordiffuse>orange</colordiffuse>
 			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>Control.HasFocus(11000) | Control.HasFocus(11001) | Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)</visible>
-		</control>
-		
+			<visible>[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)</visible>
+		</control>		
 	</include>
 	<include name="ListItemTitle1">
 		<posx>95</posx>
@@ -245,7 +238,7 @@
 						<width>355</width>
 						<height>324</height>
 						<include>BlackRounded</include>
-						<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+						<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 						<visible>true</visible>
 					</control>
 					<!-- orange separator -->
