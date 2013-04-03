@@ -349,6 +349,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "season",           VIDEOPLAYER_SEASON },
                                   { "rating",           VIDEOPLAYER_RATING },
                                   { "ratingandvotes",   VIDEOPLAYER_RATING_AND_VOTES },
+                                  { "votes",            VIDEOPLAYER_VOTES },
                                   { "tvshowtitle",      VIDEOPLAYER_TVSHOW },
                                   { "premiered",        VIDEOPLAYER_PREMIERED },
                                   { "studio",           VIDEOPLAYER_STUDIO },
@@ -445,6 +446,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "size",             LISTITEM_SIZE },
                                   { "rating",           LISTITEM_RATING },
                                   { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
+                                  { "votes",            LISTITEM_VOTES },
                                   { "programcount",     LISTITEM_PROGRAM_COUNT },
                                   { "duration",         LISTITEM_DURATION },
                                   { "isselected",       LISTITEM_ISSELECTED },
@@ -3600,6 +3602,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         return strRatingAndVotes;
       }
       break;
+    case VIDEOPLAYER_VOTES:
+      return m_currentFile->GetVideoInfoTag()->m_strVotes;
     case VIDEOPLAYER_YEAR:
       {
         CStdString strYear;
@@ -4294,6 +4298,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         return strRatingAndVotes;
       }
     }
+    break;
+  case LISTITEM_VOTES:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strVotes;
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
