@@ -92,7 +92,7 @@
       <numpadseven>Number7</numpadseven>
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
-      <backslash>ToggleFullScreen</backslash>
+      <backslash standalone="false">ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
       <power>ActivateWindow(shutdownmenu)</power>

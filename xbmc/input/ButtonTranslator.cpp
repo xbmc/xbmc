@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "Application.h"
 #include "interfaces/Builtins.h"
 #include "ButtonTranslator.h"
 #include "utils/URIUtils.h"
@@ -1052,6 +1053,21 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   }
 }
 
+bool CButtonTranslator::SkipTranslation(TiXmlElement *pButton)
+{
+  if (g_application.IsStandAlone())
+  {
+    // in case we're running in standalone mode,
+    // check whether the button should be translated.
+    bool bStandAlone = true;
+    pButton->QueryBoolAttribute("standalone", &bStandAlone);
+    if (!bStandAlone)
+      return true;
+  }
+
+  return false;
+}
+
 bool CButtonTranslator::HasDeviceType(TiXmlNode *pWindow, CStdString type)
 {
   return pWindow->FirstChild(type) != NULL;
@@ -1084,22 +1100,25 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 
       while (pButton)
       {
-        uint32_t buttonCode=0;
-        if (type == "gamepad")
-            buttonCode = TranslateGamepadString(pButton->Value());
-        else if (type == "remote")
-            buttonCode = TranslateRemoteString(pButton->Value());
-        else if (type == "universalremote")
-            buttonCode = TranslateUniversalRemoteString(pButton->Value());
-        else if (type == "keyboard")
-            buttonCode = TranslateKeyboardButton(pButton);
-        else if (type == "mouse")
-            buttonCode = TranslateMouseCommand(pButton->Value());
-        else if (type == "appcommand")
-            buttonCode = TranslateAppCommand(pButton->Value());
+        if (!SkipTranslation(pButton))
+        {
+          uint32_t buttonCode=0;
+          if (type == "gamepad")
+              buttonCode = TranslateGamepadString(pButton->Value());
+          else if (type == "remote")
+              buttonCode = TranslateRemoteString(pButton->Value());
+          else if (type == "universalremote")
+              buttonCode = TranslateUniversalRemoteString(pButton->Value());
+          else if (type == "keyboard")
+              buttonCode = TranslateKeyboardButton(pButton);
+          else if (type == "mouse")
+              buttonCode = TranslateMouseCommand(pButton->Value());
+          else if (type == "appcommand")
+              buttonCode = TranslateAppCommand(pButton->Value());
 
-        if (buttonCode && pButton->FirstChild())
-          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+          if (buttonCode && pButton->FirstChild())
+            MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+        }
         pButton = pButton->NextSiblingElement();
       }
 

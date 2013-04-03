@@ -129,6 +129,8 @@ private:
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
 
+  bool SkipTranslation(TiXmlElement *pButton);
+
   bool LoadKeymap(const CStdString &keymapPath);
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   bool LoadLircMap(const CStdString &lircmapPath);
