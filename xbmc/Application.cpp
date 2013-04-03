@@ -3175,6 +3175,16 @@ bool CApplication::ProcessMouse()
   CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
   CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
+  // Deactivate mouse if non-mouse action
+  if (!mouseaction.IsMouse())
+    g_Mouse.SetActive(false);
+
+  // Consume ACTION_NOOP.
+  // Some views or dialogs gets closed after any ACTION and
+  // a sensitive mouse might cause problems.
+  if (mouseaction.GetID() == ACTION_NOOP)
+    return false;
+
   // If we couldn't find an action return false to indicate we have not
   // handled this mouse action
   if (!mouseaction.GetID())
