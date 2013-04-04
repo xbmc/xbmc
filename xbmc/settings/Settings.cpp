@@ -395,14 +395,6 @@ void CSettings::Clear()
     (*it)->Clear();
 }
 
-static CStdString ToWatchContent(const CStdString &content)
-{
-  if (content == "seasons" || content == "episodes")
-   return "tvshows";
-  else
-    return content;
-}
-
 bool CSettings::OnSettingsLoading()
 {
   CSingleLock lock(m_critical);
