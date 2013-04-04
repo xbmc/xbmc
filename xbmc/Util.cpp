@@ -1120,6 +1120,16 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
         // trim off start and end quotes
         if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
           parameter = parameter.Mid(1,parameter.GetLength() - 2);
+        else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+        {
+          // check name="value" style param.
+          int quotaPos = parameter.Find('"');
+          if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+          {
+            parameter.Delete(parameter.GetLength() - 1);
+            parameter.Delete(quotaPos);
+          }
+        }
         parameters.push_back(parameter);
         parameter.Empty();
         whiteSpacePos = 0;
@@ -1150,6 +1160,16 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   // trim off start and end quotes
   if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
     parameter = parameter.Mid(1,parameter.GetLength() - 2);
+  else if (parameter.GetLength() > 3 && parameter[parameter.GetLength() - 1] == '"')
+  {
+    // check name="value" style param.
+    int quotaPos = parameter.Find('"');
+    if (quotaPos > 1 && quotaPos < parameter.GetLength() - 1 && parameter[quotaPos - 1] == '=')
+    {
+      parameter.Delete(parameter.GetLength() - 1);
+      parameter.Delete(quotaPos);
+    }
+  }
   if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
 }
