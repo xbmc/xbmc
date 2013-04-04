@@ -306,8 +306,6 @@ void CXBMCApp::XBMC_Pause(bool pause)
   // Only send the PAUSE action if we are pausing XBMC and something is currently playing
   if (pause && g_application.IsPlaying() && !g_application.IsPaused())
     CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
-
-  g_application.m_AppActive = g_application.m_AppFocused = !pause;
 }
 
 void CXBMCApp::XBMC_Stop()
