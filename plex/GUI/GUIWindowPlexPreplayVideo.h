@@ -9,4 +9,5 @@ public:
   virtual ~CGUIWindowPlexPreplayVideo();
   
   virtual bool OnMessage(CGUIMessage& message);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 };

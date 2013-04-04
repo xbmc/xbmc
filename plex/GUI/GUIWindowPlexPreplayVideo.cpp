@@ -31,3 +31,12 @@ CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
   
   return ret;
 }
+
+CFileItemPtr
+CGUIWindowPlexPreplayVideo::GetCurrentListItem(int offset)
+{
+  if (offset == 0 && m_vecItems->Size() > 0)
+    return m_vecItems->Get(0);
+  
+  return CFileItemPtr();
+}
