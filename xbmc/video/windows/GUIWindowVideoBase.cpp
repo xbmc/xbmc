@@ -64,6 +64,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "interfaces/AnnouncementManager.h"
+#include "network/upnp/UPnP.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
@@ -1688,11 +1689,16 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
            (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
         continue;
 
-      // Clear resume bookmark
-      if (bMark)
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+#ifdef HAS_UPNP
+      if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pItem, bMark))
+#endif
+      {
+        // Clear resume bookmark
+        if (bMark)
+          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
 
-      database.SetPlayCount(*pItem, bMark ? 1 : 0);
+        database.SetPlayCount(*pItem, bMark ? 1 : 0);
+      }
     }
     
     database.Close(); 
