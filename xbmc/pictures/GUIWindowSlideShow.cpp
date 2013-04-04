@@ -306,11 +306,8 @@ void CGUIWindowSlideShow::ShowNext()
   if (m_slides->Size() == 1)
     return;
 
-  m_iNextSlide = m_iCurrentSlide + 1;
-  if (m_iNextSlide >= m_slides->Size())
-    m_iNextSlide = 0;
-
   m_iDirection   = 1;
+  m_iNextSlide   = GetNextSlide();
   m_iZoomFactor  = 1;
   m_fZoom        = 1.0f;
   m_fRotate      = 0.0f;
@@ -322,11 +319,8 @@ void CGUIWindowSlideShow::ShowPrevious()
   if (m_slides->Size() == 1)
     return;
 
-  m_iNextSlide = m_iCurrentSlide - 1;
-  if (m_iNextSlide < 0)
-    m_iNextSlide = m_slides->Size() - 1;
-
   m_iDirection   = -1;
+  m_iNextSlide   = GetNextSlide();
   m_iZoomFactor  = 1;
   m_fZoom        = 1.0f;
   m_fRotate      = 0.0f;
@@ -399,10 +393,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (!HasProcessed())
     regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 
-  if (m_iNextSlide < 0 || m_iNextSlide >= m_slides->Size())
-    m_iNextSlide = 0;
   if (m_iCurrentSlide < 0 || m_iCurrentSlide >= m_slides->Size())
     m_iCurrentSlide = 0;
+  if (m_iNextSlide < 0 || m_iNextSlide >= m_slides->Size())
+    m_iNextSlide = GetNextSlide();
 
   // Create our background loader if necessary
   if (!m_pBackgroundLoader)
@@ -1061,7 +1055,7 @@ void CGUIWindowSlideShow::Shuffle()
 {
   m_slides->Randomize();
   m_iCurrentSlide = 0;
-  m_iNextSlide = 1;
+  m_iNextSlide = GetNextSlide();
   m_bShuffled = true;
 
   AnnouncePropertyChanged("shuffled", true);
