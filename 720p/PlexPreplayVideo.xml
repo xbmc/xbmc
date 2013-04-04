@@ -1,6 +1,7 @@
 <window id="10090">
 	<defaultcontrol always="true">999</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<backgroundcolor>0</backgroundcolor>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
