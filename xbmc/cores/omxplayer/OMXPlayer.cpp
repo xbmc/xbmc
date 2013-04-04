@@ -604,8 +604,8 @@ bool COMXPlayer::OpenInputStream()
     return false;
   }
 
-  if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-                       || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+                       || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
     CLog::Log(LOGINFO, "COMXPlayer::OpenInputStream - DVD/BD not supported - Will try...");
   }

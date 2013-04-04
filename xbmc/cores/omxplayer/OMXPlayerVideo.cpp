@@ -657,8 +657,7 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder fps: %f %s\n", m_fFrameRate, command);
     m_DllBcmHost.vc_gencmd(response, sizeof response, command);
 
-    if(m_av_clock)
-      m_av_clock->SetRefreshRate(m_fFrameRate);
+    m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
   m_av_clock->OMXStateExecute(false);
