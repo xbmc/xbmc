@@ -821,6 +821,7 @@ class PlexMediaNode
          /* FIXME: attr here might be wrong? */
          mediaItem->SetArt("mediaTag::" + attr, url);
          
+#if !defined(TARGET_RPI) && !defined(TARGET_IOS)
          /* Cache this in the bg */
          if(resource != "studio")
          {
@@ -828,6 +829,7 @@ class PlexMediaNode
              CTextureCache::Get().BackgroundCacheImage(url);
          }
        }
+#endif
 
        string value = val;
 
