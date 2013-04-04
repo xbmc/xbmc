@@ -115,6 +115,9 @@ typedef struct tagGESTURENOTIFYSTRUCT {
     DWORD dwInstanceID;             // internally used
 } GESTURENOTIFYSTRUCT, *PGESTURENOTIFYSTRUCT;
 
+#define GID_ROTATE_ANGLE_TO_ARGUMENT(_arg_)     ((USHORT)((((_arg_) + 2.0 * 3.14159265) / (4.0 * 3.14159265)) * 65535.0))
+#define GID_ROTATE_ANGLE_FROM_ARGUMENT(_arg_)   ((((double)(_arg_) / 65535.0) * 4.0 * 3.14159265) - 2.0 * 3.14159265)
+
 DECLARE_HANDLE(HGESTUREINFO);
 
 #endif

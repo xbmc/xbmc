@@ -161,6 +161,12 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     else if (deltaYabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
+
+  if (m_directions == TouchMoveDirectionNone)
+  {
+    m_done = true;
+    return false;
+  }
   
   return true;
 }
