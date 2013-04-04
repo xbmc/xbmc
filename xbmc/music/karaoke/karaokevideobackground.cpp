@@ -21,9 +21,9 @@
 
 #include "karaokevideobackground.h"
 
+#include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/GUITexture.h"
-#include "settings/Settings.h"
 #include "Application.h"
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"
@@ -31,6 +31,7 @@
 #include "DllSwScale.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "video/FFmpegVideoDecoder.h"
 #include "system.h"
 
@@ -63,10 +64,10 @@ bool KaraokeVideoBackground::openVideoFile( const CStdString& filename )
   
   // Find out the necessary aspect ratio for height (assuming fit by width) and width (assuming fit by height)
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  m_displayLeft = g_settings.m_ResInfo[res].Overscan.left;
-  m_displayRight = g_settings.m_ResInfo[res].Overscan.right;
-  m_displayTop = g_settings.m_ResInfo[res].Overscan.top;
-  m_displayBottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  m_displayLeft = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
+  m_displayRight = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right;
+  m_displayTop = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top;
+  m_displayBottom = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom;
   
   int screen_width = m_displayRight - m_displayLeft;
   int screen_height = m_displayBottom - m_displayTop;

@@ -19,7 +19,6 @@
  */
 #include "system.h" //HAS_ZEROCONF define
 #include "Zeroconf.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 
 #ifdef _LINUX

@@ -740,8 +740,8 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // to separate video plane that is at display size.
   CRect gui, display, dst_rect;
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  gui.SetRect(0, 0, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
-  display.SetRect(0, 0, g_settings.m_ResInfo[res].iScreenWidth, g_settings.m_ResInfo[res].iScreenHeight);
+  gui.SetRect(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iWidth, CDisplaySettings::Get().GetResolutionInfo(res).iHeight);
+  display.SetRect(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight);
   
   dst_rect = m_dst_rect;
   if (gui != display)
@@ -768,8 +768,8 @@ void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect,
 void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height)
 {
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
-  uint32_t video_width   = g_settings.m_ResInfo[res].iScreenWidth;
-  uint32_t video_height  = g_settings.m_ResInfo[res].iScreenHeight;
+  uint32_t video_width   = CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth;
+  uint32_t video_height  = CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight;
 
   unsigned flags = 0;
   ERenderFormat format = RENDER_FMT_BYPASS;

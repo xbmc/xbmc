@@ -20,7 +20,6 @@
 
 #include "Addon.h"
 #include "AddonManager.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

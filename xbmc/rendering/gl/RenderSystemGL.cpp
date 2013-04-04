@@ -26,6 +26,7 @@
 #include "RenderSystemGL.h"
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
@@ -469,7 +470,7 @@ bool CRenderSystemGL::TestRender()
 {
   static float theta = 0.0;
 
-  //RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(CDisplaySettings::Get().GetCurrentResolution()];
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   glPushMatrix();

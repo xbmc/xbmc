@@ -33,6 +33,7 @@
 #include "guilib/GUIImage.h"
 #include "utils/Weather.h"
 #include "music/MusicDatabase.h"
+#include "profiles/ProfilesManager.h"
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
 #include "view/ViewState.h"
@@ -60,6 +61,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIFontManager.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/paplayer/AudioDecoder.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
@@ -88,6 +90,7 @@
 #include <map>
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/MouseStat.h"
 #if defined(TARGET_WINDOWS)
@@ -272,9 +275,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         // Cancel delayed setting - it's only used for res changing anyway
         m_delayedSetting.reset();
-        if (IsActive() && g_guiSettings.GetResolution() != g_graphicsContext.GetVideoResolution())
+        if (IsActive() && CDisplaySettings::Get().GetDisplayResolution() != g_graphicsContext.GetVideoResolution())
         {
-          g_guiSettings.SetResolution(g_graphicsContext.GetVideoResolution());
+          CDisplaySettings::Get().SetCurrentResolution(g_graphicsContext.GetVideoResolution(), true);
           CreateSettings();
         }
       }
@@ -332,7 +335,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_labelID == 12360 && !g_settings.IsMasterUser())
+    if (m_vecSections[i]->m_labelID == 12360 && !CProfilesManager::Get().IsMasterProfile())
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
@@ -407,9 +410,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
         FillInSubtitleHeights(pSetting, pControl);
       else if (strSetting.Equals("videoscreen.screen"))
-        FillInScreens(strSetting, g_guiSettings.GetResolution());
+        FillInScreens(strSetting, CDisplaySettings::Get().GetDisplayResolution());
       else if (strSetting.Equals("videoscreen.resolution"))
-        FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+        FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), CDisplaySettings::Get().GetDisplayResolution(), false);
       else if (strSetting.Equals("epg.defaultguideview"))
         FillInEpgGuideView(pSetting);
       else if (strSetting.Equals("pvrplayback.startlast"))
@@ -523,7 +526,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInRefreshRates(strSetting, g_guiSettings.GetResolution(), false);
+      FillInRefreshRates(strSetting, CDisplaySettings::Get().GetDisplayResolution(), false);
       continue;
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
@@ -701,17 +704,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("filelists.allowfiledeletion"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_settings.GetCurrentProfile().filesLocked() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(!CProfilesManager::Get().GetCurrentProfile().filesLocked() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(CProfilesManager::Get().GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
+      if (pControl) pControl->SetEnabled(CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
     else if (strSetting.Equals("pvrmanager.channelscan"))
     {
@@ -1142,7 +1145,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
-      CStdString path(g_settings.GetDatabaseFolder());
+      CStdString path(CProfilesManager::Get().GetDatabaseFolder());
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -1192,7 +1195,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("karaoke.importcsv"))
   {
-    CStdString path(g_settings.GetDatabaseFolder());
+    CStdString path(CProfilesManager::Get().GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
@@ -1205,10 +1208,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
-    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
-    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
-    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
-    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
+    ReplayGainSettings &replayGainSettings = CAudioDecoder::GetReplayGainSettings();
+    replayGainSettings.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
+    replayGainSettings.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
+    replayGainSettings.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
+    replayGainSettings.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
 #ifdef HAS_WEB_SERVER
   else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport"))
@@ -1484,7 +1488,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strLanguage = pControl->GetCurrentLabel();
     if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
-      g_guiSettings.SetLanguage(strLanguage);
+      g_application.SetLanguage(strLanguage);
 
     // user set language, no longer use the TV's language
     vector<CPeripheral *> cecDevices;
@@ -1545,7 +1549,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
   { // reset display
-    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+    g_graphicsContext.SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution());
   }
   else if (strSetting.Equals("screensaver.preview"))
   {
@@ -1587,10 +1591,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
-    g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
-    g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
-    g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
-    g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
+    ReplayGainSettings &replayGainSettings = CAudioDecoder::GetReplayGainSettings();
+    replayGainSettings.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
+    replayGainSettings.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
+    replayGainSettings.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
+    replayGainSettings.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
   else if (strSetting.Equals("locale.country"))
   {
@@ -2325,7 +2330,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   if (res == RES_WINDOW)
     mode = DM_WINDOWED;
   else
-    mode = g_settings.m_ResInfo[res].iScreen;
+    mode = CDisplaySettings::Get().GetResolutionInfo(res).iScreen;
 
   // we expect "videoscreen.screen" but it might be hidden on some platforms,
   // so check that we actually have a visable control.
@@ -2342,8 +2347,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
 
     for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
     {
-      strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
-      pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
+      strScreen.Format(g_localizeStrings.Get(241), CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen + 1);
+      pControl->AddLabel(strScreen, CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen);
     }
     pControl->SetValue(mode);
     g_guiSettings.SetInt("videoscreen.screen", mode);
@@ -2378,8 +2383,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
         (resolutions[idx].interlaced == D3DPRESENTFLAG_INTERLACED) ? "i" : "p");
       pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
 
-      RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
-      RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
+      RESOLUTION_INFO res1 = CDisplaySettings::Get().GetResolutionInfo(res);
+      RESOLUTION_INFO res2 = CDisplaySettings::Get().GetResolutionInfo(resolutions[idx].ResInfo_Index);
       if (   res1.iScreen == res2.iScreen
           && res1.iScreenWidth  == res2.iScreenWidth
           && res1.iScreenHeight == res2.iScreenHeight
@@ -2399,7 +2404,7 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
     else
     {
       for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
-        if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == mode)
+        if (CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
         {
           autoresolution = RES_DESKTOP + idx;
           break;
@@ -2423,10 +2428,10 @@ void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOL
 
   vector<REFRESHRATE> refreshrates;
   if (res > RES_WINDOW)
-    refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen,
-      g_settings.m_ResInfo[res].iScreenWidth,
-      g_settings.m_ResInfo[res].iScreenHeight,
-      g_settings.m_ResInfo[res].dwFlags);
+    refreshrates = g_Windowing.RefreshRates(CDisplaySettings::Get().GetResolutionInfo(res).iScreen,
+      CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth,
+      CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight,
+      CDisplaySettings::Get().GetResolutionInfo(res).dwFlags);
 
   // The control setting doesn't exist when not in standalone mode, don't manipulate it
   BaseSettingControlPtr control = GetSetting(strSetting);
@@ -2461,7 +2466,7 @@ void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOL
     if (res == RES_WINDOW)
       newresolution = RES_WINDOW;
     else
-      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(g_settings.m_ResInfo[res].iScreen, refreshrates).ResInfo_Index;
+      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(CDisplaySettings::Get().GetResolutionInfo(res).iScreen, refreshrates).ResInfo_Index;
 
     if (pControl)
       pControl->SetValue(newresolution);
@@ -2480,12 +2485,12 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
   RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
   bool cancelled = false;
 
-  g_guiSettings.SetResolution(nextRes);
+  CDisplaySettings::Get().SetCurrentResolution(nextRes, true);
   g_graphicsContext.SetVideoResolution(nextRes);
 
   if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
   {
-    g_guiSettings.SetResolution(lastRes);
+    CDisplaySettings::Get().SetCurrentResolution(lastRes, true);
     g_graphicsContext.SetVideoResolution(lastRes);
 
     DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);

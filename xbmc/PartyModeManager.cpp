@@ -25,12 +25,12 @@
 #include "music/windows/GUIWindowMusicPlaylist.h"
 #include "video/VideoDatabase.h"
 #include "playlists/SmartPlayList.h"
+#include "profiles/ProfilesManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
-#include "settings/Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "Application.h"
@@ -65,9 +65,9 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (!strXspPath.IsEmpty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
-    partyModePath = g_settings.GetUserDataItem("PartyMode-Video.xsp");
+    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
   else
-    partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
+    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
 
   playlistLoaded=playlist.Load(partyModePath);
 

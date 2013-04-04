@@ -9,7 +9,6 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 

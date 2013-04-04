@@ -286,6 +286,15 @@
     <Filter Include="settings\windows">
       <UniqueIdentifier>{1a1eb956-43d1-4709-9467-ce471d54941d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="profiles">
+      <UniqueIdentifier>{e0e6a2e7-683d-442f-bbd1-bc4e0ecd140a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="profiles\dialogs">
+      <UniqueIdentifier>{e658a9f4-98f8-4403-aa85-a5ed7ec67868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="profiles\windows">
+      <UniqueIdentifier>{b5a6d872-7e56-4976-81c5-47baad252337}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1439,9 +1448,6 @@
       <Filter>settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\GUISettings.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\Profile.cpp">
       <Filter>settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp">
@@ -2943,12 +2949,6 @@
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp">
       <Filter>settings\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogLockSettings.cpp">
-      <Filter>settings\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogProfileSettings.cpp">
-      <Filter>settings\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp">
       <Filter>settings\dialogs</Filter>
     </ClCompile>
@@ -2959,9 +2959,6 @@
       <Filter>settings\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettingsCategory.cpp">
-      <Filter>settings\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettingsProfile.cpp">
       <Filter>settings\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettingsScreenCalibration.cpp">
@@ -2984,6 +2981,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\MediaSettings.cpp">
       <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\DisplaySettings.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\profiles\dialogs\GUIDialogLockSettings.cpp">
+      <Filter>profiles\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\profiles\dialogs\GUIDialogProfileSettings.cpp">
+      <Filter>profiles\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.cpp">
+      <Filter>profiles\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\profiles\Profile.cpp">
+      <Filter>profiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\profiles\ProfilesManager.cpp">
+      <Filter>profiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4349,9 +4364,6 @@
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\GUISettings.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\Profile.h">
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\Settings.h">
@@ -5786,12 +5798,6 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h">
       <Filter>settings\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogLockSettings.h">
-      <Filter>settings\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogProfileSettings.h">
-      <Filter>settings\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h">
       <Filter>settings\dialogs</Filter>
     </ClInclude>
@@ -5802,9 +5808,6 @@
       <Filter>settings\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsCategory.h">
-      <Filter>settings\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsProfile.h">
       <Filter>settings\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsScreenCalibration.h">
@@ -5836,6 +5839,24 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\MediaSettings.h">
       <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\DisplaySettings.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogLockSettings.h">
+      <Filter>profiles\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogProfileSettings.h">
+      <Filter>profiles\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.h">
+      <Filter>profiles\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\profiles\Profile.h">
+      <Filter>profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\profiles\ProfilesManager.h">
+      <Filter>profiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

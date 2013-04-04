@@ -29,7 +29,7 @@
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
-#include "settings/Settings.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"
@@ -274,7 +274,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
         bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
-        bookmark.thumbNailImage = URIUtils::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+        bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
           bookmark.thumbNailImage.Empty();

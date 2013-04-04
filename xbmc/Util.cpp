@@ -57,6 +57,7 @@
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
+#include "profiles/ProfilesManager.h"
 #include "utils/RegExp.h"
 #include "settings/GUISettings.h"
 #include "guilib/TextureManager.h"
@@ -645,7 +646,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
 void CUtil::RemoveTempFiles()
 {
-  CStdString searchPath = g_settings.GetDatabaseFolder();
+  CStdString searchPath = CProfilesManager::Get().GetDatabaseFolder();
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", DIR_FLAG_NO_FILE_DIRS))
     return;

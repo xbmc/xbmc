@@ -28,7 +28,6 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 
 using namespace XFILE;

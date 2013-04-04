@@ -22,7 +22,7 @@
 #include "SlingboxFile.h"
 #include "filesystem/File.h"
 #include "lib/SlingboxLib/SlingboxLib.h"
-#include "settings/Settings.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "URL.h"
@@ -493,7 +493,7 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
     m_sSlingboxSettings.uiCodeNumber[i] = 0;
 
   // Check if a SlingboxSettings.xml file exists
-  CStdString slingboxXMLFile = g_settings.GetUserDataItem("SlingboxSettings.xml");
+  CStdString slingboxXMLFile = CProfilesManager::Get().GetUserDataItem("SlingboxSettings.xml");
   if (!CFile::Exists(slingboxXMLFile))
   {
     CLog::Log(LOGNOTICE, "No SlingboxSettings.xml file (%s) found - using default settings",

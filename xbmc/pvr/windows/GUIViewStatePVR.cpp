@@ -23,7 +23,6 @@
 #include "GUIWindowPVRCommon.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 
 using namespace PVR;
 

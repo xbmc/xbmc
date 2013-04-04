@@ -28,7 +28,6 @@
 #include "guilib/WindowIDs.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"

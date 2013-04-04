@@ -19,7 +19,6 @@
  */
 
 #include "AutoSwitch.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"

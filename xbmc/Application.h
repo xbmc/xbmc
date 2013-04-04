@@ -368,6 +368,8 @@ public:
 
   CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);
+
+  bool SetLanguage(const CStdString &strLanguage);
 protected:
   virtual bool OnSettingsSaving() const;
 

@@ -22,6 +22,7 @@
 
 #include "WinRenderer.h"
 #include "Util.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
@@ -233,8 +234,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  m_destWidth = g_settings.m_ResInfo[m_resolution].iWidth;
-  m_destHeight = g_settings.m_ResInfo[m_resolution].iHeight;
+  m_destWidth = CDisplaySettings::Get().GetResolutionInfo(m_resolution).iWidth;
+  m_destHeight = CDisplaySettings::Get().GetResolutionInfo(m_resolution).iHeight;
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -365,7 +366,7 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 

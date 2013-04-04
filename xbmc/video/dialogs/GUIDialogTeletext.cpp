@@ -24,7 +24,6 @@
 #include "Application.h"
 #include "guilib/GUITexture.h"
 #include "guilib/Texture.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "cores/IPlayer.h"

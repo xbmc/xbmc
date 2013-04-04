@@ -39,10 +39,12 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "playlists/PlayList.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/TuxBoxUtil.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
@@ -1509,14 +1511,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().fRefreshRate,
         g_localizeStrings.Get(244), GetFPS());
     else
       strLabel.Format("%ix%i - %s (%02.2f fps)",
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenWidth,
-        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iScreenHeight,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
         g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
@@ -1633,13 +1635,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case SYSTEM_SCREEN_MODE:
-    strLabel = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].strMode;
+    strLabel = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenWidth);
+    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreenHeight);
+    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
@@ -1673,10 +1675,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = g_settings.GetCurrentProfile().getName();
+    strLabel = CProfilesManager::Get().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel.Format("%i", g_settings.GetNumProfiles());
+    strLabel.Format("%i", CProfilesManager::Get().GetNumberOfProfiles());
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
@@ -2098,11 +2100,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
   else if (condition == SYSTEM_HASLOCKS)
-    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
     bReturn = g_Windowing.IsFullScreen();
   else if (condition == SYSTEM_ISSTANDALONE)
@@ -2116,7 +2118,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
     bReturn = g_advancedSettings.m_showExitButton;
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = g_settings.UsingLoginScreen();
+    bReturn = CProfilesManager::Get().UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
@@ -3062,7 +3064,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    CStdString thumb = g_settings.GetCurrentProfile().getThumb();
+    CStdString thumb = CProfilesManager::Get().GetCurrentProfile().getThumb();
     if (thumb.IsEmpty())
       thumb = "unknown-user.png";
     return thumb;

@@ -19,8 +19,8 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "GUIPassword.h"
+#include "utils/StdString.h"
 
 #include <vector>
 

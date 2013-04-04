@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include <math.h>
 
+ReplayGainSettings CAudioDecoder::m_replayGainSettings;
+
 CAudioDecoder::CAudioDecoder()
 {
   m_codec = NULL;
@@ -235,42 +237,42 @@ int CAudioDecoder::ReadSamples(int numsamples)
 float CAudioDecoder::GetReplayGain()
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
-  if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_NONE)
+  if (m_replayGainSettings.iType == REPLAY_GAIN_NONE)
     return 1.0f;
 
   // Compute amount of gain
-  float replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
+  float replaydB = (float)m_replayGainSettings.iNoGainPreAmp;
   float peak = 0.0f;
-  if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_ALBUM)
+  if (m_replayGainSettings.iType == REPLAY_GAIN_ALBUM)
   {
     if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
+      replaydB = (float)m_replayGainSettings.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
       peak = m_codec->m_tag.GetReplayGainAlbumPeak();
     }
     else if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
+      replaydB = (float)m_replayGainSettings.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
       peak = m_codec->m_tag.GetReplayGainTrackPeak();
     }
   }
-  else if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_TRACK)
+  else if (m_replayGainSettings.iType == REPLAY_GAIN_TRACK)
   {
     if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_TRACK_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
+      replaydB = (float)m_replayGainSettings.iPreAmp + (float)m_codec->m_tag.GetReplayGainTrackGain() * 0.01f;
       peak = m_codec->m_tag.GetReplayGainTrackPeak();
     }
     else if (m_codec->m_tag.HasReplayGainInfo() & REPLAY_GAIN_HAS_ALBUM_INFO)
     {
-      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
+      replaydB = (float)m_replayGainSettings.iPreAmp + (float)m_codec->m_tag.GetReplayGainAlbumGain() * 0.01f;
       peak = m_codec->m_tag.GetReplayGainAlbumPeak();
     }
   }
   // convert to a gain type
   float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
   // check peaks
-  if (g_guiSettings.m_replayGain.bAvoidClipping)
+  if (m_replayGainSettings.bAvoidClipping)
   {
     if (fabs(peak * replaygain) > 1.0f)
       replaygain = 1.0f / fabs(peak);

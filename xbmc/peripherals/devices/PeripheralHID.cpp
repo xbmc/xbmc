@@ -20,7 +20,6 @@
 
 #include "PeripheralHID.h"
 #include "utils/log.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
 
