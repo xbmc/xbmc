@@ -50,7 +50,6 @@
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
-#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/Key.h"

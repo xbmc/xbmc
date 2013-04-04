@@ -30,7 +30,6 @@
 #include "pvr/windows/GUIWindowPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "pvr/addons/PVRClients.h"

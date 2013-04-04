@@ -25,7 +25,6 @@
 #include "ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"

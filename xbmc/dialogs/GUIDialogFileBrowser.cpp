@@ -40,7 +40,6 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "guilib/Key.h"

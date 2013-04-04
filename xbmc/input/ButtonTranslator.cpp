@@ -23,7 +23,6 @@
 #include "ButtonTranslator.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/URIUtils.h"
-#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/WindowIDs.h"
 #include "input/XBMC_keysym.h"

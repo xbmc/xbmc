@@ -30,7 +30,6 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"

@@ -22,7 +22,6 @@
 
 #include "GUIWindowTestPattern.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/WindowIDs.h"

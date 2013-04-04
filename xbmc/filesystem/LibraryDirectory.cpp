@@ -30,7 +30,6 @@
 #include "guilib/TextureManager.h"
 #include "FileItem.h"
 #include "File.h"
-#include "settings/Settings.h"
 #include "URL.h"
 #include "GUIInfoManager.h"
 #include "utils/log.h"

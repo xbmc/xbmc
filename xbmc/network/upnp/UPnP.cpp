@@ -36,7 +36,6 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
-#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"

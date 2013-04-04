@@ -42,7 +42,6 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/Key.h"

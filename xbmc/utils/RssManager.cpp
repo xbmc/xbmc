@@ -21,7 +21,6 @@
 #include "RssManager.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"

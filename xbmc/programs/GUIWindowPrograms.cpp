@@ -26,7 +26,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"

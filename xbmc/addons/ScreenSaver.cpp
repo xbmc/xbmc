@@ -19,7 +19,6 @@
  */
 #include "ScreenSaver.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 
 #ifdef HAS_PYTHON

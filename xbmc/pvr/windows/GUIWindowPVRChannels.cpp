@@ -38,7 +38,6 @@
 #include "pvr/timers/PVRTimers.h"
 #include "epg/EpgContainer.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"

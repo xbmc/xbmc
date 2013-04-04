@@ -31,7 +31,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
-#include "settings/Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "Application.h"

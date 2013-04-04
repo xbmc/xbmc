@@ -27,7 +27,6 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "utils/Variant.h"

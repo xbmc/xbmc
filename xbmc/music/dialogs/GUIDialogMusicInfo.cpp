@@ -31,7 +31,6 @@
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
 #include "utils/AsyncFileCopy.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"

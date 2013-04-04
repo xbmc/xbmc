@@ -21,9 +21,9 @@
 
 #include "karaokevideobackground.h"
 
+#include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "guilib/GUITexture.h"
-#include "settings/Settings.h"
 #include "Application.h"
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"

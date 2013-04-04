@@ -20,7 +20,6 @@
 
 #include "ViewDatabase.h"
 #include "utils/URIUtils.h"
-#include "settings/Settings.h"
 #include "view/ViewState.h"
 #include "utils/log.h"
 #ifdef _LINUX

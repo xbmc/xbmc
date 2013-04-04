@@ -39,7 +39,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClients.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 
 #define BUTTON_OK                 4

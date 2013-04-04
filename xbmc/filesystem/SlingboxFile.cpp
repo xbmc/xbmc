@@ -23,7 +23,6 @@
 #include "filesystem/File.h"
 #include "lib/SlingboxLib/SlingboxLib.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "URL.h"

@@ -23,7 +23,6 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

@@ -24,7 +24,6 @@
 #include "profiles/ProfilesManager.h"
 #include "threads/SingleLock.h"
 #include "utils/Crc32.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"

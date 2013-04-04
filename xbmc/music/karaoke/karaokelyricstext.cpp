@@ -24,7 +24,6 @@
 
 #include "utils/CharsetConverter.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIFont.h"

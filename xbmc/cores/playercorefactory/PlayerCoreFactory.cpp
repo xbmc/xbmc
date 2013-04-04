@@ -31,7 +31,6 @@
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/AutoPtrHandle.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "PlayerCoreConfig.h"

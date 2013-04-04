@@ -23,7 +23,6 @@
 #include "network/cddb.h"
 #include "MusicInfoTag.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 

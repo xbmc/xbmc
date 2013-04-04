@@ -19,7 +19,6 @@
  */
 
 #include "Database.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Crc32.h"
 #include "filesystem/SpecialProtocol.h"

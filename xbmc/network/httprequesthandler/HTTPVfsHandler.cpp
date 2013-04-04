@@ -24,7 +24,6 @@
 #include "filesystem/File.h"
 #include "network/WebServer.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 #include "utils/URIUtils.h"
 
 using namespace std;

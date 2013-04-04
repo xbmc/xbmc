@@ -22,7 +22,6 @@
 #include "FileItem.h"
 #include "view/ViewState.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"

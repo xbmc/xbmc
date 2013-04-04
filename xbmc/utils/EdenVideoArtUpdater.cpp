@@ -32,7 +32,6 @@
 #include "pictures/Picture.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/Texture.h"
 #include "guilib/GUIWindowManager.h"
