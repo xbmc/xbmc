@@ -1,10 +1,12 @@
 #pragma once
 
-#include "guilib/GUIWindow.h"
+#include "windows/GUIMediaWindow.h"
 
-class CGUIWindowPlexPreplayVideo : public CGUIWindow
+class CGUIWindowPlexPreplayVideo : public CGUIMediaWindow
 {
 public:
   CGUIWindowPlexPreplayVideo(void);
   virtual ~CGUIWindowPlexPreplayVideo();
+  
+  virtual bool OnMessage(CGUIMessage& message);
 };

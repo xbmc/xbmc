@@ -956,7 +956,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   if (item->IsPlexMediaServer() &&
       (type == "movie" || type == "episode"))
   {
-    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetPath() + ", return)");
+    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return)");
     return true;
   }
   /* END PLEX */
