@@ -2004,6 +2004,7 @@ const CGUIViewState *CGUIMediaWindow::GetViewState() const
 
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
+  CFileItemPtr item = m_vecItems->Get(0);
   /* PLEX */
   if (m_vecItems->GetContent().IsEmpty())
   {

@@ -69,6 +69,8 @@
 
 #include "BackgroundMusicPlayer.h"
 
+#include "interfaces/Builtins.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -228,7 +230,9 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
     
     /* Pre-cache stuff */
     if (load->GetContentType() != CONTENT_LIST_FANART)
+    {
       m_videoThumb.Load(*m_fileLists[load->GetContentType()].get());
+    }
   }
 
   m_age.restart();
@@ -581,11 +585,26 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       m_lastSelectedItem = GetCurrentItemName();
 
       int iAction = message.GetParam1();
-      if (iAction == ACTION_SELECT_ITEM)
+      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_PLAYER_PLAY)
       {
         int iControl = message.GetSenderId();
-        PlayFileFromContainer(GetControl(iControl));
-        return true;
+        
+        CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(iControl);
+        if (container)
+        {
+          CGUIListItemPtr item = container->GetListItem(0);
+          if (iAction == ACTION_SELECT_ITEM &&
+              item &&
+              (item->GetProperty("type").asString() == "movie" ||
+               item->GetProperty("type").asString() == "episode"))
+          {
+            CBuiltins::Execute("XBMC.ActivateWindow(PlexPreplayVideo," + item->GetProperty("key").asString() + ",return)");
+            return true;
+          }
+          
+          PlayFileFromContainer(container);
+          return true;
+        }
       }
     }
       break;
