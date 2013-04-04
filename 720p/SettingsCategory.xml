@@ -14,5 +14,6 @@
 		<include>SettingOptions</include>
 		<!-- Widgets -->
 		<include>Clock</include>
+		<include>Grid</include>
 	</controls>
 </window>

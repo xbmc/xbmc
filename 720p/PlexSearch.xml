@@ -5,5 +5,6 @@
 		<include>BGGrainy</include>
 		<include>SlideshowDimmed</include>
 		<include>SearchMain</include>
+		<include>Grid</include>
 	</controls>
 </window>
