@@ -120,7 +120,7 @@
 		<radiowidth>20</radiowidth>
 	</include>
 	<include name="leftSubMenuRadioButton">
-		<width>200</width>
+		<width>185</width>
 		<height>26</height>
 		<align>left</align>
 		<aligny>center</aligny>
@@ -131,7 +131,7 @@
 		<focusedcolor>orangeLight</focusedcolor>
 		<texturefocus border="5">black-bottom-grey.png</texturefocus>
 		<texturenofocus border="5">-</texturenofocus>
-		<radioposx>205</radioposx>
+		<radioposx>191</radioposx>
 		<radioheight>26</radioheight>
 	</include>
 	<include name="leftMenuSortingButton">
