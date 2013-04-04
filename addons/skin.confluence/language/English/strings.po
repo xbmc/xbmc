@@ -306,11 +306,7 @@ msgctxt "#31140"
 msgid "Music OSD"
 msgstr ""
 
-msgctxt "#31141"
-msgid "Video OSD"
-msgstr ""
-
-#empty strings from id 31142 to 31199
+#empty strings from id 31141 to 31199
 #Script labels
 
 msgctxt "#31200"

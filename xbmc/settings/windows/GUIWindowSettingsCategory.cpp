@@ -1022,6 +1022,15 @@ void CGUIWindowSettingsCategory::OnClick(BaseSettingControlPtr pSettingControl)
       g_weatherManager.Refresh();
     }
   }
+  else if (strSetting.Equals("subtitle.addonsettings"))
+  {
+    CStdString name = g_guiSettings.GetString("subtitle.addon");
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(name, addon, ADDON_SCRIPT_SUBTITLES))
+    {
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
+  }
   else if (strSetting.Equals("lookandfeel.rssedit"))
   {
     AddonPtr addon;

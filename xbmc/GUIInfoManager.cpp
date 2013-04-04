@@ -373,6 +373,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "playcount",        VIDEOPLAYER_PLAYCOUNT },
                                   { "hassubtitles",     VIDEOPLAYER_HASSUBTITLES },
                                   { "subtitlesenabled", VIDEOPLAYER_SUBTITLESENABLED },
+                                  { "subtitlesaddon",   VIDEOPLAYER_SUBTITLESADDON },
                                   { "endtime",          VIDEOPLAYER_ENDTIME },
                                   { "nexttitle",        VIDEOPLAYER_NEXT_TITLE },
                                   { "nextgenre",        VIDEOPLAYER_NEXT_GENRE },
@@ -1464,6 +1465,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
       strLabel.Format("%i", info.channels);
     }
+    break;
+  case VIDEOPLAYER_SUBTITLESADDON:
+    strLabel = g_guiSettings.GetString("subtitle.addon");
     break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:

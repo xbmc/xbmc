@@ -1141,7 +1141,9 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+msgctxt "#295"
+msgid "Subtitle Download Addon"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"

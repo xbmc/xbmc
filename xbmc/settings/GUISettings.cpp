@@ -830,6 +830,9 @@ void CGUISettings::Initialize()
   subtitleAlignments.insert(make_pair(21465, SUBTITLE_ALIGN_TOP_OUTSIDE));
   AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, subtitleAlignments, SPIN_CONTROL_TEXT);
 
+  AddDefaultAddon(sub, "subtitle.addon", 295, "", ADDON_SCRIPT_SUBTITLES);
+  AddString(sub, "subtitle.addonsettings", 21417, "", BUTTON_CONTROL_STANDARD, true);
+  
   CSettingsCategory* dvd = AddCategory(SETTINGS_VIDEOS, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
