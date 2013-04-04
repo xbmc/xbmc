@@ -175,13 +175,13 @@
 				<!-- filters list title -->
 				<control type="label" id="19009">
 					<description>Title</description>
-					<posy>110</posy>
+					<posy>90</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
 				</control>
 				<!-- filters list -->
 				<control type="grouplist" id="19000">
-					<posy>175</posy>
+					<posy>150</posy>
 					<posx>15</posx>
 					<ondown>19010</ondown>
 					<onright>777</onright>

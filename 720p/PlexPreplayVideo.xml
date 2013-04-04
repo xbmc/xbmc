@@ -2,7 +2,15 @@
 	<defaultcontrol always="true">101</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<!-- Movie Preplay -->
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- Movie Preplay (ViewsPreplay.xml) -->
 		<include>PreplayMovie</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenu</include>
+		<include>TopBar</include>
+		<include>debugInfos</include>
 	</controls>
 </window>

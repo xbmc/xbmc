@@ -84,6 +84,24 @@
 		<textcolor>FF999999</textcolor>
 	</include>
 	<!-- -->
+	<!-- info formatting -->
+	<include name="LeftInfoFormatGrey">
+		<width min="29" max="200">auto</width>
+		<height>15</height>
+		<font>Condensed-18</font>
+		<include>Grey1</include>
+	</include>
+	<include name="LeftInfoFormatWhite">
+		<width min="29" max="600">auto</width>
+		<height>15</height>
+		<font>Condensed-18</font>
+		<include>White2</include>
+	</include>
+	<include name="PlotFormat">
+		<font>Condensed-18</font>
+		<include>White2</include>
+		<shadowcolor>ff333333</shadowcolor>
+	</include>
 	<!-- bg's -->
 	<include name="PlotBG">
 		<control type="group">
@@ -1135,8 +1153,8 @@
 				<posx>117</posx>
 				<width>360</width>
 				<height>540</height>
-				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>-->
-				<texture background="true" diffuse="preplay-poster-big-mask.png">preplay-poster-dummy.png</texture>
+				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
+				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">preplay-poster-dummy.png</texture>-->
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 			</control>
@@ -1150,8 +1168,7 @@
 				<control type="label">
 					<width>570</width>
 					<height>40</height>
-					<!--><label>$INFO[ListItem.Title]</label>-->
-					<label>Watchmen</label>
+					<label>$INFO[ListItem.Title]</label>
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>ff333333</shadowcolor>
@@ -1161,8 +1178,7 @@
 				<control type="label">
 					<width>600</width>
 					<height>15</height>
-					<!--><label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Action, Mystery[/UPPERCASE]</label>
+					<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
 					<font>Condensed-18</font>
 					<textcolor>FF999999</textcolor>
 					<visible>true</visible>
@@ -1171,8 +1187,7 @@
 				<control type="label">
 					<width>600</width>
 					<height>15</height>
-					<!--><label>$INFO[ListItem.DurationStr]</label>-->
-					<label>162 min</label>
+					<label>$INFO[ListItem.DurationStr]</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>
 					<visible>true</visible>
@@ -1188,8 +1203,7 @@
 					<width>200</width>
 					<height>40</height>
 					<align>right</align>
-					<!--><label>$INFO[ListItem.Year]</label>-->
-					<label> 2009</label>
+					<label>$INFO[ListItem.Year]</label>
 					<font>CondensedBold-36</font>
 					<include>White1</include>
 					<visible>true</visible>
@@ -1200,11 +1214,9 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>17</height>
-					<!--><label>$INFO[ListItem.MPAA]</label>-->
-					<texture>PG-13.png</texture>
+					<label>$INFO[ListItem.MPAA]</label>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
 				</control>
 				<!-- Star Rating -->
@@ -1214,9 +1226,7 @@
 					<width>100</width>
 					<height>20</height>
 					<!--><label>$INFO[ListItem.StarRating]</texture>-->
-					<texture>rating10-big.png</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
 				</control>
 			</control>
@@ -1227,22 +1237,14 @@
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
 				<control type="label">
-					<width min="29" max="200">auto</width>
-					<height>15</height>
-					<!--><label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Director[/UPPERCASE]</label>
-					<font>Condensed-18</font>
-					<include>Grey1</include>
-					<visible>true</visible>
+					<label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>
+					<include>LeftInfoFormatGrey</include>
 				</control>
 				<control type="label">
 					<width min="29" max="600">auto</width>
 					<height>15</height>
-					<!--><label>$INFO[ListItem.Director]</label>-->
-					<label>Zack Snyder</label>
-					<font>Condensed-18</font>
-					<include>White2</include>
-					<visible>true</visible>
+					<label>$INFO[ListItem.Director]</label>
+					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
 			<!-- Cast -->
@@ -1252,22 +1254,12 @@
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
 				<control type="label">
-					<width min="29" max="200">auto</width>
-					<height>15</height>
-					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Cast[/UPPERCASE]</label>
-					<font>Condensed-18</font>
-					<include>Grey1</include>
-					<visible>true</visible>
+					<label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>
+					<include>LeftInfoFormatGrey</include>
 				</control>
 				<control type="label">
-					<width min="29" max="630">auto</width>
-					<height>15</height>
-					<!--><label>$INFO[ListItem.Cast]</label>-->
-					<label>Malin Ackerman, Billy Crudup, Matthew Goode, Patrick Wilson</label>
-					<font>Condensed-18</font>
-					<include>White2</include>
-					<visible>true</visible>
+					<label>$INFO[ListItem.Cast]</label>
+					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
 			<!-- Audio -->
@@ -1277,24 +1269,16 @@
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
 				<control type="label">
-					<width min="29" max="200">auto</width>
-					<height>15</height>
 					<!-- NOTE: NEED STRING FOR THIS -->
 					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 					<label>[UPPERCASE]Audio[/UPPERCASE]</label>
-					<font>Condensed-18</font>
-					<include>Grey1</include>
-					<visible>true</visible>
+					<include>LeftInfoFormatGrey</include>
 				</control>
 				<control type="label">
-					<width min="29" max="600">auto</width>
-					<height>15</height>
 					<!-- NOTE: NEED STRING FOR THIS -->
 					<!--><label>$INFO[ListItem.Director]</label>-->
 					<label>English (2 more)</label>
-					<font>Condensed-18</font>
-					<include>White2</include>
-					<visible>true</visible>
+					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
 			<!-- Subtitles -->
@@ -1304,24 +1288,16 @@
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
 				<control type="label">
-					<width min="29" max="200">auto</width>
-					<height>15</height>
 					<!-- NOTE: NEED STRING FOR THIS -->
 					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 					<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
-					<font>Condensed-18</font>
-					<include>Grey1</include>
-					<visible>true</visible>
+					<include>LeftInfoFormatGrey</include>
 				</control>
 				<control type="label">
-					<width min="29" max="600">auto</width>
-					<height>15</height>
 					<!-- NOTE: NEED STRING FOR THIS -->
 					<!--><label>$INFO[ListItem.Director]</label>-->
 					<label>French (1 more)</label>
-					<font>Condensed-18</font>
-					<include>White2</include>
-					<visible>true</visible>
+					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
 			<!-- plot -->
@@ -1330,12 +1306,9 @@
 				<posx>560</posx>
 				<width>685</width>
 				<height>195</height>
-				<!--><label>$INFO[ListItem.Plot]</label>-->
-				<label>The &#x201C;Minutemen&#x201D;, a collection of costumed crime fighters, form in 1938 in response to a rise in costumed gangs and criminals, and the &#x201C;Watchmen&#x201D; similarly form decades later. Their existence in America has dramatically affected world events: the super powers of Dr. Manhattan help the United States win the Vietnam War, resulting in President Richard Nixon being repeatedly reelected into the 1980s. The existence of Dr. Manhattan gives the U.S. a strategic advantage over the Soviet Union, which by the 1980s threatens to escalate the Cold War into nuclear war. During that time, growing anti-vigilante sentiment in the country leads to masked crime fighters being outlawed. While many of the heroes retire, Doctor Manhattan and the Comedian operate as government-sanctioned agents, and Rorschach continues to operate outside the law.</label>
+				<label>$INFO[ListItem.Plot]</label>
 				<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
-				<font>Condensed-18</font>
-				<include>White2</include>
-				<shadowcolor>ff333333</shadowcolor>
+				<include>PlotFormat</include>
 			</control>
 			<!-- MediaFlags -->
 			<control type="group">
