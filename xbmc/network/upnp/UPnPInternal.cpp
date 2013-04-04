@@ -347,7 +347,7 @@ BuildObject(CFileItem&                    item,
         rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
     }
 
-    if (!item.m_bIsFolder) {
+    if (!item.m_bIsFolder && !item.IsPlayList() && !item.IsSmartPlayList()) {
         object = new PLT_MediaItem();
         object->m_ObjectID = item.GetPath();
 
@@ -517,7 +517,7 @@ BuildObject(CFileItem&                    item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
-        } else if (item.IsPlayList()) {
+        } else if (item.IsPlayList() || item.IsSmartPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
         }
 
