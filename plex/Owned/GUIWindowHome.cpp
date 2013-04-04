@@ -192,10 +192,24 @@ void CPlexSectionFanout::Refresh()
   {
     if (!g_advancedSettings.m_bHideFanouts)
     {
-      m_outstandingJobs.push_back(LoadSection(PlexUtils::AppendPathToURL(m_url, "recentlyAdded?unwatched=1"), CONTENT_LIST_RECENTLY_ADDED));
+      /* On slow/limited systems we don't want to have the full list */
+#if defined(TARGET_RPI) || defined(TARGET_DARWIN_IOS)
+      trueUrl.SetOption("X-Plex-Container-Start", "0");
+      trueUrl.SetOption("X-Plex-Container-Size", "20");
+#endif
+      
+      CURL recentlyAdded(trueUrl);
+      recentlyAdded.SetOption("unwatched", "1");
+      recentlyAdded.SetFileName(PlexUtils::AppendPathToURL(recentlyAdded.GetFileName(), "recentlyAdded"));
+      
+      m_outstandingJobs.push_back(LoadSection(recentlyAdded.Get(), CONTENT_LIST_RECENTLY_ADDED));
 
       if (m_sectionType == PLEX_METADATA_MOVIE || m_sectionType == PLEX_METADATA_SHOW)
-        m_outstandingJobs.push_back(LoadSection(PlexUtils::AppendPathToURL(m_url, "onDeck"), CONTENT_LIST_ON_DECK));
+      {
+        CURL onDeck(trueUrl);
+        onDeck.SetFileName(PlexUtils::AppendPathToURL(onDeck.GetFileName(), "onDeck"));
+        m_outstandingJobs.push_back(LoadSection(onDeck.Get(), CONTENT_LIST_ON_DECK));
+      }
     }
 
     /* We don't want to wait on the fanart, so don't add it to the outstandingjobs map */
