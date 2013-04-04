@@ -504,6 +504,8 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
     mediaUrl.SetPort(32400);
   }
 
+  if (mediaUrl.GetProtocol() == "https")
+    mediaUrl.SetProtocol("http");
 
   encodedUrl = mediaUrl.Get();
   CURL::Encode(encodedUrl);
@@ -532,6 +534,18 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   {
     url.SetProtocol("http");
     url.SetPort(32400);
+  }
+  
+  if (url.GetHostName() == "my.plexapp.com")
+  {
+    PlexServerPtr server = PlexServerManager::Get().bestServer();
+    if (server)
+    {
+      url.SetHostName(server->address);
+      url.SetPort(server->port);
+      /* FIXME */
+      url.SetProtocol("http");
+    }
   }
   
   url.SetOptions("");
