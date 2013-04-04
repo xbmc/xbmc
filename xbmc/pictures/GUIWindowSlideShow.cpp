@@ -673,7 +673,13 @@ int CGUIWindowSlideShow::GetNextSlide()
 
 EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id == ACTION_GESTURE_NOTIFY)
+  if (event.m_id == ACTION_MOUSE_DOUBLE_CLICK)
+  {
+    float z = m_Image[m_iCurrentPic].GetZoomFull();
+    ZoomRelative(z, false);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
     int result = EVENT_RESULT_ROTATE | EVENT_RESULT_ZOOM;
     if (m_iZoomFactor == 1 || !m_Image[m_iCurrentPic].m_bCanMoveHorizontally)

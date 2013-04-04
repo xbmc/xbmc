@@ -701,6 +701,29 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CSettings::Get().GetInt("slideshow.staytime"));
 }
 
+float CSlideShowPic::GetZoomFull()
+{
+  if (m_fZoomAmount != 1.0)
+    return 1.0;
+
+  RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+  float fScreenWidth = (float)CDisplaySettings::Get().GetResolutionInfo(iRes).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(iRes).Overscan.left;
+  float fScreenHeight = (float)CDisplaySettings::Get().GetResolutionInfo(iRes).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(iRes).Overscan.top;
+
+  float fScreenRatio = fScreenWidth / fScreenHeight;
+  float fPicRatio = m_fWidth / m_fHeight;
+
+  CLog::Log(LOGDEBUG,"Zoomfull: Screen size: %fx%f; pic size: %fx%f", fScreenWidth, fScreenHeight, m_fWidth, m_fHeight);
+
+  float z;
+  if (fScreenRatio > fPicRatio)
+    z = fScreenRatio / fPicRatio;
+  else
+    z = fPicRatio / fScreenRatio;
+    
+  return z;
+}
+
 void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
 {
   if (m_bDrawNextImage) return;

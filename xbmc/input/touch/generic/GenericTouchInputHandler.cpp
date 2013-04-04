@@ -90,7 +90,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
         CVector current(x, y);
         CVector distance = down - current;
 
-        if (distance.length() > 5.0)
+        if (distance.length() > size)
         {
           setGestureState(TouchGestureSingleTouch);
 
