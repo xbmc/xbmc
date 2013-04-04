@@ -6,8 +6,9 @@
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
-		<!-- Movie Preplay (ViewsPreplay.xml) -->
+		<!-- Preplay screens (ViewsPreplay.xml) -->
 		<include>PreplayMovie</include>
+		<include>PreplayEpisode</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<include>TopBar</include>
