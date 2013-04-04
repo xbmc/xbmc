@@ -76,7 +76,8 @@ public:
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
                     SORT_METHOD method = SORT_METHOD_LABEL,
-                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
+                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="",
+                    const CStdString &beginSlidePath="", bool startSlideShow = true);
   void AddFromPath(const CStdString &strPath, bool bRecursive,
                    SORT_METHOD method=SORT_METHOD_LABEL, 
                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
