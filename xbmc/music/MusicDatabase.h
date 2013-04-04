@@ -122,7 +122,7 @@ public:
   bool GetSongById(int idSong, CSong& song);
   bool GetSongByKaraokeNumber( int number, CSong& song );
   bool SetKaraokeSongDelay( int idSong, int delay );
-  bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
+  bool GetSongsByPath(const CStdString& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
   bool GetAlbumFromSong(int idSong, CAlbum &album);
@@ -148,7 +148,7 @@ public:
    \param item CFileItem to increment the playcount for
    */
   void IncrementPlayCount(const CFileItem &item);
-  bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact=true);
+  bool RemoveSongsFromPath(const CStdString &path, MAPSONGS& songs, bool exact=true);
   bool CleanupOrphanedItems();
   bool GetPaths(std::set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);

@@ -460,7 +460,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory)
 {
-  CSongMap songsMap;
+  MAPSONGS songsMap;
 
   // get all information for all files in current directory from database, and remove them
   if (m_musicDatabase.RemoveSongsFromPath(strDirectory, songsMap))
@@ -489,9 +489,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       m_currentItem++;
 //      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->GetPath().c_str());
-
-      // grab info from the song
-      CSong *dbSong = songsMap.Find(pItem->GetPath());
 
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
@@ -528,15 +525,18 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         song.iStartOffset = pItem->m_lStartOffset;
         song.iEndOffset = pItem->m_lEndOffset;
         song.strThumb = pItem->GetUserMusicThumb(true);
-        if (dbSong)
+        
+        // grab info from the song
+        MAPSONGS::iterator it = songsMap.find(pItem->GetPath());
+        if (it != songsMap.end())
         { // keep the db-only fields intact on rescan...
-          song.iTimesPlayed = dbSong->iTimesPlayed;
-          song.lastPlayed = dbSong->lastPlayed;
-          song.iKaraokeNumber = dbSong->iKaraokeNumber;
+          song.iTimesPlayed = it->second.iTimesPlayed;
+          song.lastPlayed = it->second.lastPlayed;
+          song.iKaraokeNumber = it->second.iKaraokeNumber;
 
-          if (song.rating == '0') song.rating = dbSong->rating;
+          if (song.rating == '0') song.rating = it->second.rating;
           if (song.strThumb.empty())
-            song.strThumb = dbSong->strThumb;
+            song.strThumb = it->second.strThumb;
         }
         songsToAdd.push_back(song);
 //        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->GetPath().c_str());

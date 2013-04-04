@@ -113,21 +113,7 @@ public:
  \ingroup music
  \brief A map of CSong objects, used for CMusicDatabase
  */
-class CSongMap
-{
-public:
-  CSongMap();
-
-  std::map<CStdString, CSong>::const_iterator Begin();
-  std::map<CStdString, CSong>::const_iterator End();
-  CSong *Find(const CStdString &file);
-  void Add(const CStdString &file, const CSong &song);
-  void Clear();
-  int Size();
-
-private:
-  std::map<CStdString, CSong> m_map;
-};
+typedef std::map<std::string, CSong> MAPSONGS;
 
 /*!
  \ingroup music
