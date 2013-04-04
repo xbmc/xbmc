@@ -253,6 +253,10 @@
 			<include>Border</include>
 		</control>
 	</include>
+	<!-- audio/subtitles buttons -->
+	<include name="AudioSubtitlesButton">
+		<description>button</description>
+	</include>
 	<!-- PRE-PLAY -->
 	<!-- Pre-play TV Show -->
 	<include name="PreplayShow">
@@ -907,42 +911,60 @@
 					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
-			<!-- Audio -->
-			<control type="grouplist">
-				<posy>306</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Audio[/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
+			<!-- Audio & Subtitles buttons -->
+			<control type="group" id="999">
+				<defaultcontrol always="true">19101</defaultcontrol>
+				<!-- Audio -->
+				<control type="grouplist">
+					<posy>306</posy>
+					<posx>560</posx>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>					
+					<control type="button" id="19101">
+						<textoffsetx>0</textoffsetx>
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
+						<include>LeftInfoFormatGrey</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<ondown>19102</ondown>
+					</control>
+					<control type="label">
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>$LOCALIZE[31134]</label>-->
+						<label>English (2 more)</label>
+						<include>LeftInfoFormatWhite</include>
+					</control>
 				</control>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>$LOCALIZE[31134]</label>-->
-					<label>English (2 more)</label>
-					<include>LeftInfoFormatWhite</include>
-				</control>
-			</control>
-			<!-- Subtitles -->
-			<control type="grouplist">
-				<posy>334</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
-				</control>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>$INFO[ListItem.Director]</label>-->
-					<label>French (1 more)</label>
-					<include>LeftInfoFormatWhite</include>
+				<!-- Subtitles -->
+				<control type="grouplist">
+					<posy>334</posy>
+					<posx>560</posx>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="button" id="19102">
+						<textoffsetx>0</textoffsetx>
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
+						<include>LeftInfoFormatGrey</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>19101</onup>
+						<ondown>-</ondown>
+					</control>
+					<control type="label">
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>$INFO[ListItem.Director]</label>-->
+						<label>French (1 more)</label>
+						<include>LeftInfoFormatWhite</include>
+					</control>
 				</control>
 			</control>
 			<!-- plot -->
@@ -1195,42 +1217,60 @@
 					<include>LeftInfoFormatWhite</include>
 				</control>
 			</control>
-			<!-- Audio -->
-			<control type="grouplist">
-				<posy>306</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Audio[/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
+			<!-- Audio & Subtitles buttons -->
+			<control type="group" id="999">
+				<defaultcontrol always="true">19101</defaultcontrol>
+				<!-- Audio -->
+				<control type="grouplist">
+					<posy>306</posy>
+					<posx>560</posx>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>					
+					<control type="button" id="19101">
+						<textoffsetx>0</textoffsetx>
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
+						<include>LeftInfoFormatGrey</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<ondown>19102</ondown>
+					</control>
+					<control type="label">
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>$LOCALIZE[31134]</label>-->
+						<label>English (2 more)</label>
+						<include>LeftInfoFormatWhite</include>
+					</control>
 				</control>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>$INFO[ListItem.Director]</label>-->
-					<label>English (2 more)</label>
-					<include>LeftInfoFormatWhite</include>
-				</control>
-			</control>
-			<!-- Subtitles -->
-			<control type="grouplist">
-				<posy>334</posy>
-				<posx>560</posx>
-				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
-					<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
-					<include>LeftInfoFormatGrey</include>
-				</control>
-				<control type="label">
-					<!-- NOTE: NEED STRING FOR THIS -->
-					<!--><label>$INFO[ListItem.Director]</label>-->
-					<label>French (1 more)</label>
-					<include>LeftInfoFormatWhite</include>
+				<!-- Subtitles -->
+				<control type="grouplist">
+					<posy>334</posy>
+					<posx>560</posx>
+					<orientation>horizontal</orientation>
+					<itemgap>10</itemgap>
+					<control type="button" id="19102">
+						<textoffsetx>0</textoffsetx>
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
+						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
+						<include>LeftInfoFormatGrey</include>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>19101</onup>
+						<ondown>-</ondown>
+					</control>
+					<control type="label">
+						<!-- NOTE: NEED STRING FOR THIS -->
+						<!--><label>$INFO[ListItem.Director]</label>-->
+						<label>French (1 more)</label>
+						<include>LeftInfoFormatWhite</include>
+					</control>
 				</control>
 			</control>
 			<!-- plot -->

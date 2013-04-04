@@ -1,5 +1,5 @@
 <window id="10090">
-	<defaultcontrol always="true">101</defaultcontrol>
+	<defaultcontrol always="true">999</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
@@ -13,5 +13,6 @@
 		<include>LeftSideMenu</include>
 		<include>TopBar</include>
 		<include>debugInfos</include>
+		<include>Grid</include>
 	</controls>
 </window>

@@ -98,6 +98,14 @@
 		<height>720</height>
 		<aspectratio>stretch</aspectratio>
 	</include>
+	<include name="Grid">
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<animation effect="fade" start="0" end="20" time="200" condition="true">Conditional</animation>
+			<texture background="true">grid.png</texture>
+			<visible>Skin.HasSetting(showgrid)</visible>
+		</control>
+	</include>
 	<!-- screen top bar -->
 	<!-- variables for item count in top bar -->
 	<variable name="TopBarItemCountStrings">
