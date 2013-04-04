@@ -19,15 +19,15 @@ CGUIWindowPlexPreplayVideo::~CGUIWindowPlexPreplayVideo()
 bool
 CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
 {
-#if 0
+  bool ret = CGUIMediaWindow::OnMessage(message);
+
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
-    CStdString infoUrl = message.GetStringParam();
-    CFileItemList list;
-    
-    CDirectory::GetDirectory(infoUrl, list);
+    if (m_vecItems->GetContent() == "movies")
+      m_vecItems->SetContent("movie");
+    if (m_vecItems->GetContent() == "episodes")
+      m_vecItems->SetContent("episode");
   }
   
-#endif
-  return CGUIMediaWindow::OnMessage(message);
+  return ret;
 }
