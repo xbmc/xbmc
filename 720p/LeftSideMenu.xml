@@ -120,7 +120,7 @@
 		<radiowidth>20</radiowidth>
 	</include>
 	<include name="leftSubMenuRadioButton">
-		<width>258</width>
+		<width>200</width>
 		<height>26</height>
 		<align>left</align>
 		<aligny>center</aligny>
@@ -131,7 +131,7 @@
 		<focusedcolor>orangeLight</focusedcolor>
 		<texturefocus border="5">black-bottom-grey.png</texturefocus>
 		<texturenofocus border="5">-</texturenofocus>
-		<radioposx>265</radioposx>
+		<radioposx>205</radioposx>
 		<radioheight>26</radioheight>
 	</include>
 	<include name="leftMenuSortingButton">
@@ -159,11 +159,11 @@
 				<height>32</height>
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
-				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
+				<visible>![Container.Content(Seasons) | Container.Content(episodes)] + !Window.IsActive(10202)</visible>
 			</control>			
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
+				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
 				<posx>-253</posx>
 				<posy>30</posy>
 				<width>253</width>
