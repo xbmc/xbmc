@@ -428,7 +428,7 @@ bool CRenderSystemGLES::TestRender()
 {
   static float theta = 0.0;
 
-  //RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetCurrentResolutionInfo();
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   g_matrices.PushMatrix();

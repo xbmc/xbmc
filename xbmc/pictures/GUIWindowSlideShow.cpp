@@ -33,6 +33,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
@@ -250,10 +251,10 @@ void CGUIWindowSlideShow::Reset()
 
 void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
 { 
-  if (m_Resolution != g_guiSettings.m_LookAndFeelResolution)
+  if (m_Resolution != CDisplaySettings::Get().GetCurrentResolution())
   {
     //FIXME: Use GUI resolution for now
-    //g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+    //g_graphicsContext.SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution(), TRUE);
   }
 
   //   Reset();
@@ -462,8 +463,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_bLoadNextPic = false;
     // load using the background loader
     int maxWidth, maxHeight;
-    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom,
-                   (float)g_settings.m_ResInfo[m_Resolution].iHeight * m_fZoom,
+    GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
+                   (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
                     maxWidth, maxHeight);
     if (!m_slides->Get(m_iCurrentSlide)->IsVideo()) 
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath(), maxWidth, maxHeight);
@@ -483,8 +484,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     { // reload the image if we need to
       CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_iZoomFactor);
       // first, our maximal size for this zoom level
-      int maxWidth = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom);
-      int maxHeight = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom);
+      int maxWidth = (int)((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom);
+      int maxHeight = (int)((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom);
 
       // the actual maximal size of the image to optimize the sizing based on the known sizing (aspect ratio)
       int width, height;
@@ -505,8 +506,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides->Get(m_iNextSlide)->GetPath().c_str());
       int maxWidth, maxHeight;
-      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * m_fZoom,
-                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * m_fZoom,
+      GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
+                     (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
                      maxWidth, maxHeight);
       if (!m_slides->Get(m_iNextSlide)->IsVideo())
         m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->GetPath(), maxWidth, maxHeight);
@@ -841,7 +842,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       m_Resolution = (RESOLUTION) g_guiSettings.GetInt("pictures.displayresolution");
 
       //FIXME: Use GUI resolution for now
-      if (0 /*m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
+      if (0 /*m_Resolution != CDisplaySettings::Get().GetCurrentResolution() && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
         g_graphicsContext.SetVideoResolution(m_Resolution);
       else
         m_Resolution = g_graphicsContext.GetVideoResolution();

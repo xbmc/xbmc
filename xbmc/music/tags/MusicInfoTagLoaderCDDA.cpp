@@ -22,7 +22,7 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "network/cddb.h"
 #include "MusicInfoTag.h"
-#include "settings/Settings.h"
+#include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 
@@ -62,7 +62,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
 
     // Prepare cddb
     Xcddb cddb;
-    cddb.setCacheDir(g_settings.GetCDDBFolder());
+    cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
 
     int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 

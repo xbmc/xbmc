@@ -19,7 +19,6 @@
  */
 
 #include "DirectoryCache.h"
-#include "settings/Settings.h"
 #include "FileItem.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

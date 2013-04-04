@@ -21,7 +21,6 @@
 
 #include "PlayList.h"
 #include "PlayListPlayer.h"
-#include "settings/Settings.h"
 #include "Application.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/URIUtils.h"

@@ -31,7 +31,6 @@
 #include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "guilib/LocalizeStrings.h"

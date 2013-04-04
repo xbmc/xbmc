@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
 #include "VideoShaders/YUV2RGBShader.h"
@@ -779,7 +780,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 

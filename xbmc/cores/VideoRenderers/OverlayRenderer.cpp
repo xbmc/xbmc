@@ -28,6 +28,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
@@ -198,7 +199,7 @@ void CRenderer::Render(COverlay* o)
   RESOLUTION_INFO res;
   g_renderManager.GetVideoRect(rs, rd);
   rv  = g_graphicsContext.GetViewWindow();
-  res = g_settings.m_ResInfo[g_renderManager.GetResolution()];
+  res = CDisplaySettings::Get().GetResolutionInfo(g_renderManager.GetResolution());
 
   SRenderState state;
   state.x       = o->m_x;

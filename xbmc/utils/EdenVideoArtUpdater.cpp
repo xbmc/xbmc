@@ -30,8 +30,8 @@
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
 #include "pictures/Picture.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/Texture.h"
 #include "guilib/GUIWindowManager.h"
@@ -330,7 +330,7 @@ bool CEdenVideoArtUpdater::CacheTexture(std::string &originalUrl, const std::str
 
 CStdString CEdenVideoArtUpdater::GetCachedActorThumb(const CFileItem &item)
 {
-  return GetThumb("actor" + item.GetLabel(), g_settings.GetVideoThumbFolder(), true);
+  return GetThumb("actor" + item.GetLabel(), CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdString &path)
@@ -342,7 +342,7 @@ CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdStri
     label = g_localizeStrings.Get(20381);
   else
     label.Format(g_localizeStrings.Get(20358), season);
-  return GetThumb("season" + path + label, g_settings.GetVideoThumbFolder(), true);
+  return GetThumb("season" + path + label, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
@@ -350,31 +350,31 @@ CStdString CEdenVideoArtUpdater::GetCachedEpisodeThumb(const CFileItem &item)
   // get the locally cached thumb
   CStdString strCRC;
   strCRC.Format("%sepisode%i", item.GetVideoInfoTag()->m_strFileNameAndPath.c_str(), item.GetVideoInfoTag()->m_iEpisode);
-  return GetThumb(strCRC, g_settings.GetVideoThumbFolder(), true);
+  return GetThumb(strCRC, CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
 {
   if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
-    return GetThumb(item.GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
+    return GetThumb(item.GetVideoInfoTag()->m_strPath, CProfilesManager::Get().GetVideoThumbFolder(), true);
   else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
   {
     CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (URIUtils::IsStack(path))
       path = CStackDirectory::GetFirstStackedFile(path);
-    return GetThumb(path, g_settings.GetVideoThumbFolder(), true);
+    return GetThumb(path, CProfilesManager::Get().GetVideoThumbFolder(), true);
   }
-  return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
+  return GetThumb(item.GetPath(), CProfilesManager::Get().GetVideoThumbFolder(), true);
 }
 
 CStdString CEdenVideoArtUpdater::GetCachedFanart(const CFileItem &item)
 {
   if (!item.GetVideoInfoTag()->m_artist.empty())
-    return GetThumb(StringUtils::Join(item.GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator), URIUtils::AddFileToFolder(g_settings.GetThumbnailsFolder(), "Music/Fanart/"), false);
+    return GetThumb(StringUtils::Join(item.GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator), URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), "Music/Fanart/"), false);
   CStdString path = item.GetVideoInfoTag()->GetPath();
   if (path.empty())
     return "";
-  return GetThumb(path, URIUtils::AddFileToFolder(g_settings.GetVideoThumbFolder(), "Fanart/"), false);
+  return GetThumb(path, URIUtils::AddFileToFolder(CProfilesManager::Get().GetVideoThumbFolder(), "Fanart/"), false);
 }
 
 CStdString CEdenVideoArtUpdater::GetThumb(const CStdString &path, const CStdString &path2, bool split)

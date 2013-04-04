@@ -1,6 +1,4 @@
 SRCS=GUIDialogContentSettings.cpp \
-     GUIDialogLockSettings.cpp \
-     GUIDialogProfileSettings.cpp \
      GUIDialogSettings.cpp \
 
 LIB=settings_dialogs.a

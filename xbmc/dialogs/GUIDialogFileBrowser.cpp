@@ -38,8 +38,8 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "guilib/Key.h"
@@ -427,8 +427,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   OnSort();
 
   if (m_Directory->GetPath().IsEmpty() && m_addNetworkShareEnabled &&
-     (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
-      g_settings.IsMasterUser() || g_passwordManager.bMasterUser))
+     (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+      CProfilesManager::Get().IsMasterProfile() || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->SetPath("net://");

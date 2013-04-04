@@ -37,7 +37,6 @@
 #endif
 #include "Autorun.h"
 #include "GUIUserMessages.h"
-#include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/XBMCTinyXML.h"
 #include "threads/SingleLock.h"

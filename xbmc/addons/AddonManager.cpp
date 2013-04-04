@@ -25,7 +25,6 @@
 #include "threads/SingleLock.h"
 #include "FileItem.h"
 #include "LangInfo.h"
-#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"

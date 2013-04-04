@@ -20,10 +20,11 @@
 
 #include "GUIWindowSettingsProfile.h"
 #include "windows/GUIWindowFileManager.h"
-#include "settings/Profile.h"
+#include "profiles/Profile.h"
+#include "profiles/ProfilesManager.h"
 #include "Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "settings/dialogs/GUIDialogProfileSettings.h"
+#include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "network/Network.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
@@ -32,7 +33,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
-#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -64,7 +64,7 @@ int CGUIWindowSettingsProfile::GetSelectedItem()
 
 void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 {
-  if (iItem == (int)g_settings.GetNumProfiles())
+  if (iItem == (int)CProfilesManager::Get().GetNumberOfProfiles())
     return;
 
   // popup the context menu
@@ -81,14 +81,14 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, g_windowManager.GetActiveWindow(), iCtrlID);
     g_windowManager.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_settings.LoadMasterForLogin();
+    CProfilesManager::Get().LoadMasterProfileForLogin();
     CGUIWindowLoginScreen::LoadProfile(iItem);
     return;
   }
 
   if (choice == 2)
   {
-    if (g_settings.DeleteProfile(iItem))
+    if (CProfilesManager::Get().DeleteProfile(iItem))
       iItem--;
   }
 
@@ -128,13 +128,13 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
           {
             //contextmenu
-            if (iItem <= (int)g_settings.GetNumProfiles() - 1)
+            if (iItem <= (int)CProfilesManager::Get().GetNumberOfProfiles() - 1)
             {
               OnPopupMenu(iItem);
             }
             return true;
           }
-          else if (iItem < (int)g_settings.GetNumProfiles())
+          else if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
           {
             if (CGUIDialogProfileSettings::ShowForProfile(iItem))
             {
@@ -147,10 +147,10 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
 
             return false;
           }
-          else if (iItem > (int)g_settings.GetNumProfiles() - 1)
+          else if (iItem > (int)CProfilesManager::Get().GetNumberOfProfiles() - 1)
           {
-            CDirectory::Create(URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles"));
-            if (CGUIDialogProfileSettings::ShowForProfile(g_settings.GetNumProfiles()))
+            CDirectory::Create(URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(),"profiles"));
+            if (CGUIDialogProfileSettings::ShowForProfile(CProfilesManager::Get().GetNumberOfProfiles()))
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
@@ -164,8 +164,8 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_LOGINSCREEN)
       {
-        g_settings.ToggleLoginScreen();
-        g_settings.SaveProfiles(PROFILES_FILE);
+        CProfilesManager::Get().ToggleLoginScreen();
+        CProfilesManager::Get().Save();
         return true;
       }
     }
@@ -179,9 +179,9 @@ void CGUIWindowSettingsProfile::LoadList()
 {
   ClearListItems();
 
-  for (unsigned int i = 0; i < g_settings.GetNumProfiles(); i++)
+  for (unsigned int i = 0; i < CProfilesManager::Get().GetNumberOfProfiles(); i++)
   {
-    const CProfile *profile = g_settings.GetProfile(i);
+    const CProfile *profile = CProfilesManager::Get().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetLabel2(profile->getDate());
     item->SetArt("thumb", profile->getThumb());
@@ -195,7 +195,7 @@ void CGUIWindowSettingsProfile::LoadList()
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);
   OnMessage(msg);
 
-  if (g_settings.UsingLoginScreen())
+  if (CProfilesManager::Get().UsingLoginScreen())
   {
     CONTROL_SELECT(CONTROL_LOGINSCREEN);
   }

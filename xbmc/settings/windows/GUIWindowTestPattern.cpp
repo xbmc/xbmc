@@ -21,7 +21,7 @@
  */
 
 #include "GUIWindowTestPattern.h"
-#include "settings/Settings.h"
+#include "settings/DisplaySettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/WindowIDs.h"
@@ -84,10 +84,10 @@ void CGUIWindowTestPattern::Render()
 {
   BeginRender();
 
-  int top = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.top;
-  int bottom = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.bottom;
-  int left = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.left;
-  int right = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.right;
+  int top = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.top;
+  int bottom = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.bottom;
+  int left = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.left;
+  int right = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.right;
 
   switch (m_pattern)
   {

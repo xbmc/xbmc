@@ -20,44 +20,34 @@
  *
  */
 
-#include "MediaSource.h"
-#include "settings/Profile.h"
+#include "GUIPassword.h"
+#include "profiles/Profile.h"
 #include "settings/dialogs/GUIDialogSettings.h"
 
-class CGUIDialogProfileSettings : public CGUIDialogSettings
+class CGUIDialogLockSettings : public CGUIDialogSettings
 {
 public:
-  CGUIDialogProfileSettings(void);
-  virtual ~CGUIDialogProfileSettings(void);
-  virtual bool OnMessage(CGUIMessage &message);
-
-  static bool ShowForProfile(unsigned int iProfile, bool firstLogin = false);
+  CGUIDialogLockSettings(void);
+  virtual ~CGUIDialogLockSettings(void);
+  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
+  static bool ShowAndGetLock(CProfile::CLock &locks, int iButtonLabel = 20091, bool bConditional = false, bool bDetails = true);
+  static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
 protected:
   virtual void OnCancel();
-  virtual void OnWindowLoaded();
   virtual void SetupPage();
   virtual void CreateSettings();
-  void OnSettingChanged(unsigned int setting);
   virtual void OnSettingChanged(SettingInfo &setting);
-
-  /*! \brief Prompt for a change in profile path
-   \param dir Current directory for the profile, new profile directory will be returned here
-   \param isDefault whether this is the default profile or not
-   \return true if the profile path has been changed, false otherwise.
-   */
-  bool OnProfilePath(CStdString &dir, bool isDefault);
-
-  bool m_bNeedSave;
-  CStdString m_strName;
-  CStdString m_strThumb;
-  CStdString m_strDirectory;
-  int m_iSourcesMode;
-  int m_iDbMode;
-  bool m_bIsDefault;
-  bool m_bIsNewUser;
-  bool m_bShowDetails;
+  void EnableDetails(bool bEnable);
 
   CProfile::CLock m_locks;
-  CStdString m_strDefaultImage;
+  CStdString m_strUser;
+  CStdString m_strURL;
+  bool m_bChanged;
+  bool m_bDetails;
+  bool m_bConditionalDetails;
+  bool m_bGetUser;
+  int m_iButtonLabel;
+  bool *m_saveUserDetails;
 };
+
 

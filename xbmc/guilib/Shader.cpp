@@ -23,7 +23,6 @@
 #if defined(HAS_GL) || HAS_GLES == 2
 
 #include "Shader.h"
-#include "settings/Settings.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"

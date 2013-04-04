@@ -1,7 +1,6 @@
 SRCS=GUISettingControls.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
-     GUIWindowSettingsProfile.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
      GUIWindowTestPattern.cpp \
 

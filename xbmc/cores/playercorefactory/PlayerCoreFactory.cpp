@@ -29,8 +29,8 @@
 #include "settings/GUISettings.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/AutoPtrHandle.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "PlayerCoreConfig.h"
@@ -61,7 +61,7 @@ CPlayerCoreFactory& CPlayerCoreFactory::Get()
 void CPlayerCoreFactory::OnSettingsLoaded()
 {
   LoadConfiguration("special://xbmc/system/" PLAYERCOREFACTORY_XML, true);
-  LoadConfiguration(g_settings.GetUserDataItem(PLAYERCOREFACTORY_XML), false);
+  LoadConfiguration(CProfilesManager::Get().GetUserDataItem(PLAYERCOREFACTORY_XML), false);
 }
 
 /* generic function to make a vector unique, removes later duplicates */

@@ -28,7 +28,6 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/Album.h"
 #include "music/Artist.h"
-#include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"

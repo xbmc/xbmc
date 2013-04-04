@@ -485,7 +485,7 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
 
 bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height)
 {
-  RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+  RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
   const bool transposed = m_orientation & 4;
   const int gui_width  = transposed ? res_info.iHeight:res_info.iWidth;
   const int gui_height = transposed ? res_info.iWidth:res_info.iHeight;
@@ -733,8 +733,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     width = height * 16/9;
     if(!width || !height)
     {
-      width = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-      height = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+      width = CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth;
+      height = CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight;
     }
   }
 

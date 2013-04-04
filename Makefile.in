@@ -67,6 +67,9 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/pictures/pictures.a \
                    xbmc/playlists/playlists.a \
                    xbmc/powermanagement/powermanagement.a \
+                   xbmc/profiles/profiles.a \
+                   xbmc/profiles/dialogs/profiles_dialogs.a \
+                   xbmc/profiles/windows/profiles_windows.a \
                    xbmc/programs/programs.a \
                    xbmc/pvr/addons/pvraddons.a \
                    xbmc/pvr/channels/pvrchannels.a \

@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include <SDL/SDL_syswm.h>
 #include "filesystem/SpecialProtocol.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "guilib/Texture.h"
 #include "windowing/X11/XRandR.h"
@@ -256,16 +257,16 @@ void CWinSystemX11GLES::UpdateResolutions()
   {
     XOutput out  = g_xrandr.GetCurrentOutput();
     XMode   mode = g_xrandr.GetCurrentMode(out.name);
-    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
-    g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
-    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
+    UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
+    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
+    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = out.name;
   }
 #else
   {
     int x11screen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, x11screen);
     int h = DisplayHeight(m_dpy, x11screen);
-    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
+    UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
   }
 #endif
 
@@ -313,7 +314,7 @@ void CWinSystemX11GLES::UpdateResolutions()
         res.dwFlags = 0;
 
       g_graphicsContext.ResetOverscan(res);
-      g_settings.m_ResInfo.push_back(res);
+      CDisplaySettings::Get().AddResolutionInfo(res);
     }
   }
 #endif

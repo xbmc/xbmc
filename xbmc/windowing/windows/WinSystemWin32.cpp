@@ -22,6 +22,7 @@
 #include "WinEventsWin32.h"
 #include "settings/Settings.h"
 #include "resource.h"
+#include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -213,7 +214,7 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
 
 bool CWinSystemWin32::CenterWindow()
 {
-  RESOLUTION_INFO DesktopRes = g_settings.m_ResInfo[RES_DESKTOP];
+  RESOLUTION_INFO DesktopRes = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP);
 
   m_nLeft = (DesktopRes.iWidth / 2) - (m_nWidth / 2);
   m_nTop = (DesktopRes.iHeight / 2) - (m_nHeight / 2);
@@ -300,13 +301,13 @@ void CWinSystemWin32::RestoreDesktopResolution(int screen)
   int resIdx = RES_DESKTOP;
   for (int idx = RES_DESKTOP; idx < RES_DESKTOP + GetNumScreens(); idx++)
   {
-    if (g_settings.m_ResInfo[idx].iScreen == screen)
+    if (CDisplaySettings::Get().GetResolutionInfo(idx).iScreen == screen)
     {
       resIdx = idx;
       break;
     }
   }
-  ChangeResolution(g_settings.m_ResInfo[resIdx]);
+  ChangeResolution(CDisplaySettings::Get().GetResolutionInfo(resIdx));
 }
 
 const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
@@ -476,8 +477,8 @@ void CWinSystemWin32::UpdateResolutions()
     refreshRate = (float)m_MonitorsInfo[m_nPrimary].RefreshRate;
   dwFlags = m_MonitorsInfo[m_nPrimary].Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
 
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, refreshRate, dwFlags);
-  CLog::Log(LOGNOTICE, "Primary mode: %s", g_settings.m_ResInfo[RES_DESKTOP].strMode.c_str());
+  UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, refreshRate, dwFlags);
+  CLog::Log(LOGNOTICE, "Primary mode: %s", CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strMode.c_str());
 
   // Desktop resolution of the other screens
   if(m_MonitorsInfo.size() >= 2)
@@ -499,7 +500,7 @@ void CWinSystemWin32::UpdateResolutions()
 
         RESOLUTION_INFO res;
         UpdateDesktopResolution(res, xbmcmonitor++, w, h, refreshRate, dwFlags);
-        g_settings.m_ResInfo.push_back(res);
+        CDisplaySettings::Get().AddResolutionInfo(res);
         CLog::Log(LOGNOTICE, "Secondary mode: %s", res.strMode.c_str());
       }
     }
@@ -535,17 +536,19 @@ void CWinSystemWin32::UpdateResolutions()
 
 void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 {
-  for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); i++)
-    if (g_settings.m_ResInfo[i].iScreen      == res.iScreen &&
-        g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
-        g_settings.m_ResInfo[i].iHeight      == res.iHeight &&
-        g_settings.m_ResInfo[i].iScreenWidth == res.iScreenWidth &&
-        g_settings.m_ResInfo[i].iScreenHeight== res.iScreenHeight &&
-        g_settings.m_ResInfo[i].fRefreshRate == res.fRefreshRate &&
-        g_settings.m_ResInfo[i].dwFlags      == res.dwFlags)
+  for (unsigned int i = 0; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
+  {
+    if (CDisplaySettings::Get().GetResolutionInfo(i).iScreen      == res.iScreen &&
+        CDisplaySettings::Get().GetResolutionInfo(i).iWidth       == res.iWidth &&
+        CDisplaySettings::Get().GetResolutionInfo(i).iHeight      == res.iHeight &&
+        CDisplaySettings::Get().GetResolutionInfo(i).iScreenWidth == res.iScreenWidth &&
+        CDisplaySettings::Get().GetResolutionInfo(i).iScreenHeight== res.iScreenHeight &&
+        CDisplaySettings::Get().GetResolutionInfo(i).fRefreshRate == res.fRefreshRate &&
+        CDisplaySettings::Get().GetResolutionInfo(i).dwFlags      == res.dwFlags)
       return; // already have this resolution
+  }
 
-  g_settings.m_ResInfo.push_back(res);
+  CDisplaySettings::Get().AddResolutionInfo(res);
 }
 
 bool CWinSystemWin32::UpdateResolutionsInternal()

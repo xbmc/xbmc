@@ -22,7 +22,6 @@
 #include "TextureCache.h"
 #include "guilib/Texture.h"
 #include "guilib/DDSImage.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"

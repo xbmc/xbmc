@@ -19,7 +19,6 @@
  */
 #include "system.h" //HAS_ZEROCONF define
 #include "ZeroconfBrowser.h"
-#include "settings/Settings.h"
 #include <stdexcept>
 #include "utils/log.h"
 

@@ -22,7 +22,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "settings/Settings.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -53,10 +53,10 @@ CMediaSourceSettings& CMediaSourceSettings::Get()
 std::string CMediaSourceSettings::GetSourcesFile()
 {
   std::string file;
-  if (g_settings.GetCurrentProfile().hasSources())
-    file = g_settings.GetProfileUserDataFolder();
+  if (CProfilesManager::Get().GetCurrentProfile().hasSources())
+    file = CProfilesManager::Get().GetProfileUserDataFolder();
   else
-    file = g_settings.GetUserDataFolder();
+    file = CProfilesManager::Get().GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(file, SOURCES_FILE);
 }

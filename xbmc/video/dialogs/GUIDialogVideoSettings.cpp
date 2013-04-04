@@ -29,6 +29,7 @@
 #endif
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "addons/Skin.h"
@@ -222,14 +223,14 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
-    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    if (CProfilesManager::Get().GetCurrentProfile().settingsLocked() && CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    if (CProfilesManager::Get().GetCurrentProfile().settingsLocked() && CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
