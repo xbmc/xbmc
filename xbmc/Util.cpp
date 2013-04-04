@@ -1094,14 +1094,14 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
     lastEscaped = escaped;
     if (inQuotes)
     { // if we're in a quote, we accept everything until the closing quote
-      if (ch == '\"' && !escaped)
+      if (ch == '"' && !escaped)
       { // finished a quote - no need to add the end quote to our string
         inQuotes = false;
       }
     }
     else
     { // not in a quote, so check if we should be starting one
-      if (ch == '\"' && !escaped)
+      if (ch == '"' && !escaped)
       { // start of quote - no need to add the quote to our string
         inQuotes = true;
       }
@@ -1118,7 +1118,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
         // trim off start and end quotes
-        if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+        if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
           parameter = parameter.Mid(1,parameter.GetLength() - 2);
         parameters.push_back(parameter);
         parameter.Empty();
@@ -1126,7 +1126,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
         continue;
       }
     }
-    if ((ch == '\"' || ch == '\\') && escaped)
+    if ((ch == '"' || ch == '\\') && escaped)
     { // escaped quote or backslash
       parameter[parameter.size()-1] = ch;
       continue;
@@ -1148,7 +1148,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
   // trim off start and end quotes
-  if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+  if (parameter.GetLength() > 1 && parameter[0] == '"' && parameter[parameter.GetLength() - 1] == '"')
     parameter = parameter.Mid(1,parameter.GetLength() - 2);
   if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
