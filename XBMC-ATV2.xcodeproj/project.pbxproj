@@ -109,6 +109,12 @@
 		DF23461215FA671900A934F6 /* UPnPRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23460B15FA671900A934F6 /* UPnPRenderer.cpp */; };
 		DF23461315FA671900A934F6 /* UPnPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23460D15FA671900A934F6 /* UPnPServer.cpp */; };
 		DF24EAC71621E58D00034265 /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24EAC51621E58D00034265 /* DVDDemuxBXA.cpp */; };
+		DF28EDE6170E1ACF005FA9D2 /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EDD8170E1ACF005FA9D2 /* GUIDialogLockSettings.cpp */; };
+		DF28EDE7170E1ACF005FA9D2 /* GUIDialogProfileSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EDDA170E1ACF005FA9D2 /* GUIDialogProfileSettings.cpp */; };
+		DF28EDEA170E1ACF005FA9D2 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EDDE170E1ACF005FA9D2 /* Profile.cpp */; };
+		DF28EDEB170E1ACF005FA9D2 /* ProfilesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EDE0170E1ACF005FA9D2 /* ProfilesManager.cpp */; };
+		DF28EDEC170E1ACF005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EDE3170E1ACF005FA9D2 /* GUIWindowSettingsProfile.cpp */; };
+		DF28EE16170E1E8D005FA9D2 /* DisplaySettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EE14170E1E8D005FA9D2 /* DisplaySettings.cpp */; };
 		DF33C2A415509C1B0046CDCB /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */; };
 		DF33C2AE15509C5A0046CDCB /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2AB15509C5A0046CDCB /* ilog.cpp */; };
 		DF34890913FD96390026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34890713FD96390026A711 /* GUIAction.cpp */; };
@@ -259,13 +265,10 @@
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
 		F563530316E5442F00D21BAD /* UPnPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563530116E5442F00D21BAD /* UPnPSettings.cpp */; };
 		F563530F16E5446300D21BAD /* GUIDialogContentSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563530716E5446300D21BAD /* GUIDialogContentSettings.cpp */; };
-		F563531016E5446300D21BAD /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563530916E5446300D21BAD /* GUIDialogLockSettings.cpp */; };
-		F563531116E5446300D21BAD /* GUIDialogProfileSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563530B16E5446300D21BAD /* GUIDialogProfileSettings.cpp */; };
 		F563531216E5446300D21BAD /* GUIDialogSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563530D16E5446300D21BAD /* GUIDialogSettings.cpp */; };
 		F563531F16E5446C00D21BAD /* GUISettingControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531316E5446C00D21BAD /* GUISettingControls.cpp */; };
 		F563532016E5446C00D21BAD /* GUIWindowSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531516E5446C00D21BAD /* GUIWindowSettings.cpp */; };
 		F563532116E5446C00D21BAD /* GUIWindowSettingsCategory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531716E5446C00D21BAD /* GUIWindowSettingsCategory.cpp */; };
-		F563532216E5446C00D21BAD /* GUIWindowSettingsProfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531916E5446C00D21BAD /* GUIWindowSettingsProfile.cpp */; };
 		F563532316E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531B16E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.cpp */; };
 		F563532416E5446C00D21BAD /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563531D16E5446C00D21BAD /* GUIWindowTestPattern.cpp */; };
 		F563532716E5447C00D21BAD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F563532516E5447C00D21BAD /* AppParamParser.cpp */; };
@@ -778,7 +781,6 @@
 		F56C7AF3131EC155000AD0F6 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76C3131EC153000AD0F6 /* RenderSystem.cpp */; };
 		F56C7AF9131EC155000AD0F6 /* GUISettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76D1131EC153000AD0F6 /* GUISettings.cpp */; };
 		F56C7AFA131EC155000AD0F6 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76D3131EC153000AD0F6 /* AdvancedSettings.cpp */; };
-		F56C7AFF131EC155000AD0F6 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76DD131EC153000AD0F6 /* Profile.cpp */; };
 		F56C7B00131EC155000AD0F6 /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76DF131EC153000AD0F6 /* Settings.cpp */; };
 		F56C7B02131EC155000AD0F6 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76E3131EC153000AD0F6 /* VideoSettings.cpp */; };
 		F56C7B03131EC155000AD0F6 /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C76E7131EC153000AD0F6 /* DarwinStorageProvider.cpp */; };
@@ -1311,6 +1313,18 @@
 		DF23460E15FA671900A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
 		DF24EAC51621E58D00034265 /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
 		DF24EAC61621E58D00034265 /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
+		DF28EDD8170E1ACF005FA9D2 /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
+		DF28EDD9170E1ACF005FA9D2 /* GUIDialogLockSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogLockSettings.h; sourceTree = "<group>"; };
+		DF28EDDA170E1ACF005FA9D2 /* GUIDialogProfileSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogProfileSettings.cpp; sourceTree = "<group>"; };
+		DF28EDDB170E1ACF005FA9D2 /* GUIDialogProfileSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogProfileSettings.h; sourceTree = "<group>"; };
+		DF28EDDE170E1ACF005FA9D2 /* Profile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Profile.cpp; sourceTree = "<group>"; };
+		DF28EDDF170E1ACF005FA9D2 /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
+		DF28EDE0170E1ACF005FA9D2 /* ProfilesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilesManager.cpp; sourceTree = "<group>"; };
+		DF28EDE1170E1ACF005FA9D2 /* ProfilesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilesManager.h; sourceTree = "<group>"; };
+		DF28EDE3170E1ACF005FA9D2 /* GUIWindowSettingsProfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSettingsProfile.cpp; sourceTree = "<group>"; };
+		DF28EDE4170E1ACF005FA9D2 /* GUIWindowSettingsProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSettingsProfile.h; sourceTree = "<group>"; };
+		DF28EE14170E1E8D005FA9D2 /* DisplaySettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DisplaySettings.cpp; sourceTree = "<group>"; };
+		DF28EE15170E1E8D005FA9D2 /* DisplaySettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplaySettings.h; sourceTree = "<group>"; };
 		DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
 		DF33C2A315509C1B0046CDCB /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
 		DF33C2AB15509C5A0046CDCB /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ilog.cpp; sourceTree = "<group>"; };
@@ -1567,10 +1581,6 @@
 		F563530216E5442F00D21BAD /* UPnPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPSettings.h; sourceTree = "<group>"; };
 		F563530716E5446300D21BAD /* GUIDialogContentSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogContentSettings.cpp; path = dialogs/GUIDialogContentSettings.cpp; sourceTree = "<group>"; };
 		F563530816E5446300D21BAD /* GUIDialogContentSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogContentSettings.h; path = dialogs/GUIDialogContentSettings.h; sourceTree = "<group>"; };
-		F563530916E5446300D21BAD /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogLockSettings.cpp; path = dialogs/GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
-		F563530A16E5446300D21BAD /* GUIDialogLockSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogLockSettings.h; path = dialogs/GUIDialogLockSettings.h; sourceTree = "<group>"; };
-		F563530B16E5446300D21BAD /* GUIDialogProfileSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogProfileSettings.cpp; path = dialogs/GUIDialogProfileSettings.cpp; sourceTree = "<group>"; };
-		F563530C16E5446300D21BAD /* GUIDialogProfileSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogProfileSettings.h; path = dialogs/GUIDialogProfileSettings.h; sourceTree = "<group>"; };
 		F563530D16E5446300D21BAD /* GUIDialogSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogSettings.cpp; path = dialogs/GUIDialogSettings.cpp; sourceTree = "<group>"; };
 		F563530E16E5446300D21BAD /* GUIDialogSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogSettings.h; path = dialogs/GUIDialogSettings.h; sourceTree = "<group>"; };
 		F563531316E5446C00D21BAD /* GUISettingControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUISettingControls.cpp; path = windows/GUISettingControls.cpp; sourceTree = "<group>"; };
@@ -1579,8 +1589,6 @@
 		F563531616E5446C00D21BAD /* GUIWindowSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowSettings.h; path = windows/GUIWindowSettings.h; sourceTree = "<group>"; };
 		F563531716E5446C00D21BAD /* GUIWindowSettingsCategory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowSettingsCategory.cpp; path = windows/GUIWindowSettingsCategory.cpp; sourceTree = "<group>"; };
 		F563531816E5446C00D21BAD /* GUIWindowSettingsCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowSettingsCategory.h; path = windows/GUIWindowSettingsCategory.h; sourceTree = "<group>"; };
-		F563531916E5446C00D21BAD /* GUIWindowSettingsProfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowSettingsProfile.cpp; path = windows/GUIWindowSettingsProfile.cpp; sourceTree = "<group>"; };
-		F563531A16E5446C00D21BAD /* GUIWindowSettingsProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowSettingsProfile.h; path = windows/GUIWindowSettingsProfile.h; sourceTree = "<group>"; };
 		F563531B16E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowSettingsScreenCalibration.cpp; path = windows/GUIWindowSettingsScreenCalibration.cpp; sourceTree = "<group>"; };
 		F563531C16E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowSettingsScreenCalibration.h; path = windows/GUIWindowSettingsScreenCalibration.h; sourceTree = "<group>"; };
 		F563531D16E5446C00D21BAD /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowTestPattern.cpp; path = windows/GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
@@ -2721,8 +2729,6 @@
 		F56C76D2131EC153000AD0F6 /* GUISettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISettings.h; sourceTree = "<group>"; };
 		F56C76D3131EC153000AD0F6 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
 		F56C76D4131EC153000AD0F6 /* AdvancedSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettings.h; sourceTree = "<group>"; };
-		F56C76DD131EC153000AD0F6 /* Profile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Profile.cpp; sourceTree = "<group>"; };
-		F56C76DE131EC153000AD0F6 /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
 		F56C76DF131EC153000AD0F6 /* Settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Settings.cpp; sourceTree = "<group>"; };
 		F56C76E0131EC153000AD0F6 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		F56C76E3131EC153000AD0F6 /* VideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoSettings.cpp; sourceTree = "<group>"; };
@@ -3566,6 +3572,39 @@
 			path = upnp;
 			sourceTree = "<group>";
 		};
+		DF28EDD6170E1ACF005FA9D2 /* profiles */ = {
+			isa = PBXGroup;
+			children = (
+				DF28EDD7170E1ACF005FA9D2 /* dialogs */,
+				DF28EDE2170E1ACF005FA9D2 /* windows */,
+				DF28EDDE170E1ACF005FA9D2 /* Profile.cpp */,
+				DF28EDDF170E1ACF005FA9D2 /* Profile.h */,
+				DF28EDE0170E1ACF005FA9D2 /* ProfilesManager.cpp */,
+				DF28EDE1170E1ACF005FA9D2 /* ProfilesManager.h */,
+			);
+			path = profiles;
+			sourceTree = "<group>";
+		};
+		DF28EDD7170E1ACF005FA9D2 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				DF28EDD8170E1ACF005FA9D2 /* GUIDialogLockSettings.cpp */,
+				DF28EDD9170E1ACF005FA9D2 /* GUIDialogLockSettings.h */,
+				DF28EDDA170E1ACF005FA9D2 /* GUIDialogProfileSettings.cpp */,
+				DF28EDDB170E1ACF005FA9D2 /* GUIDialogProfileSettings.h */,
+			);
+			path = dialogs;
+			sourceTree = "<group>";
+		};
+		DF28EDE2170E1ACF005FA9D2 /* windows */ = {
+			isa = PBXGroup;
+			children = (
+				DF28EDE3170E1ACF005FA9D2 /* GUIWindowSettingsProfile.cpp */,
+				DF28EDE4170E1ACF005FA9D2 /* GUIWindowSettingsProfile.h */,
+			);
+			path = windows;
+			sourceTree = "<group>";
+		};
 		DF33C2AA15509C5A0046CDCB /* commons */ = {
 			isa = PBXGroup;
 			children = (
@@ -3767,10 +3806,6 @@
 			children = (
 				F563530716E5446300D21BAD /* GUIDialogContentSettings.cpp */,
 				F563530816E5446300D21BAD /* GUIDialogContentSettings.h */,
-				F563530916E5446300D21BAD /* GUIDialogLockSettings.cpp */,
-				F563530A16E5446300D21BAD /* GUIDialogLockSettings.h */,
-				F563530B16E5446300D21BAD /* GUIDialogProfileSettings.cpp */,
-				F563530C16E5446300D21BAD /* GUIDialogProfileSettings.h */,
 				F563530D16E5446300D21BAD /* GUIDialogSettings.cpp */,
 				F563530E16E5446300D21BAD /* GUIDialogSettings.h */,
 			);
@@ -3786,8 +3821,6 @@
 				F563531616E5446C00D21BAD /* GUIWindowSettings.h */,
 				F563531716E5446C00D21BAD /* GUIWindowSettingsCategory.cpp */,
 				F563531816E5446C00D21BAD /* GUIWindowSettingsCategory.h */,
-				F563531916E5446C00D21BAD /* GUIWindowSettingsProfile.cpp */,
-				F563531A16E5446C00D21BAD /* GUIWindowSettingsProfile.h */,
 				F563531B16E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.cpp */,
 				F563531C16E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.h */,
 				F563531D16E5446C00D21BAD /* GUIWindowTestPattern.cpp */,
@@ -4050,6 +4083,7 @@
 				F56C7683131EC153000AD0F6 /* pictures */,
 				F56C7698131EC153000AD0F6 /* playlists */,
 				F56C76AB131EC153000AD0F6 /* powermanagement */,
+				DF28EDD6170E1ACF005FA9D2 /* profiles */,
 				F56C76B4131EC153000AD0F6 /* programs */,
 				C8B92A8A15735D2700284190 /* pvr */,
 				F56C76BD131EC153000AD0F6 /* rendering */,
@@ -5667,6 +5701,8 @@
 				F563530616E5444500D21BAD /* windows */,
 				F56C76D3131EC153000AD0F6 /* AdvancedSettings.cpp */,
 				F56C76D4131EC153000AD0F6 /* AdvancedSettings.h */,
+				DF28EE14170E1E8D005FA9D2 /* DisplaySettings.cpp */,
+				DF28EE15170E1E8D005FA9D2 /* DisplaySettings.h */,
 				F56C76D1131EC153000AD0F6 /* GUISettings.cpp */,
 				F56C76D2131EC153000AD0F6 /* GUISettings.h */,
 				DF898FFC1709B95B00B35C21 /* ISettingsHandler.h */,
@@ -5675,8 +5711,6 @@
 				DF898FFF1709B95B00B35C21 /* MediaSettings.h */,
 				DF8990001709B95B00B35C21 /* MediaSourceSettings.cpp */,
 				DF8990011709B95B00B35C21 /* MediaSourceSettings.h */,
-				F56C76DD131EC153000AD0F6 /* Profile.cpp */,
-				F56C76DE131EC153000AD0F6 /* Profile.h */,
 				F56C76DF131EC153000AD0F6 /* Settings.cpp */,
 				F56C76E0131EC153000AD0F6 /* Settings.h */,
 				DF8990021709B95B00B35C21 /* SkinSettings.cpp */,
@@ -7200,7 +7234,6 @@
 				F56C7AF3131EC155000AD0F6 /* RenderSystem.cpp in Sources */,
 				F56C7AF9131EC155000AD0F6 /* GUISettings.cpp in Sources */,
 				F56C7AFA131EC155000AD0F6 /* AdvancedSettings.cpp in Sources */,
-				F56C7AFF131EC155000AD0F6 /* Profile.cpp in Sources */,
 				F56C7B00131EC155000AD0F6 /* Settings.cpp in Sources */,
 				F56C7B02131EC155000AD0F6 /* VideoSettings.cpp in Sources */,
 				F56C7B03131EC155000AD0F6 /* DarwinStorageProvider.cpp in Sources */,
@@ -7682,13 +7715,10 @@
 				DFD5812C16C829020008EEA0 /* DAVFile.cpp in Sources */,
 				F563530316E5442F00D21BAD /* UPnPSettings.cpp in Sources */,
 				F563530F16E5446300D21BAD /* GUIDialogContentSettings.cpp in Sources */,
-				F563531016E5446300D21BAD /* GUIDialogLockSettings.cpp in Sources */,
-				F563531116E5446300D21BAD /* GUIDialogProfileSettings.cpp in Sources */,
 				F563531216E5446300D21BAD /* GUIDialogSettings.cpp in Sources */,
 				F563531F16E5446C00D21BAD /* GUISettingControls.cpp in Sources */,
 				F563532016E5446C00D21BAD /* GUIWindowSettings.cpp in Sources */,
 				F563532116E5446C00D21BAD /* GUIWindowSettingsCategory.cpp in Sources */,
-				F563532216E5446C00D21BAD /* GUIWindowSettingsProfile.cpp in Sources */,
 				F563532316E5446C00D21BAD /* GUIWindowSettingsScreenCalibration.cpp in Sources */,
 				F563532416E5446C00D21BAD /* GUIWindowTestPattern.cpp in Sources */,
 				F563532716E5447C00D21BAD /* AppParamParser.cpp in Sources */,
@@ -7697,6 +7727,12 @@
 				DF8990051709B95B00B35C21 /* MediaSourceSettings.cpp in Sources */,
 				DF8990061709B95B00B35C21 /* SkinSettings.cpp in Sources */,
 				DF8990091709B97800B35C21 /* ViewStateSettings.cpp in Sources */,
+				DF28EDE6170E1ACF005FA9D2 /* GUIDialogLockSettings.cpp in Sources */,
+				DF28EDE7170E1ACF005FA9D2 /* GUIDialogProfileSettings.cpp in Sources */,
+				DF28EDEA170E1ACF005FA9D2 /* Profile.cpp in Sources */,
+				DF28EDEB170E1ACF005FA9D2 /* ProfilesManager.cpp in Sources */,
+				DF28EDEC170E1ACF005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */,
+				DF28EE16170E1E8D005FA9D2 /* DisplaySettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
