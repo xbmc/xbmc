@@ -2,6 +2,7 @@
   <global>
     <touch>
       <tap>LeftClick</tap>
+      <doubletap>DoubleClick</doubletap>
       <longpress>RightClick</longpress>
       <tap pointers="2">RightClick</tap>
       <pan>PanGesture</pan>

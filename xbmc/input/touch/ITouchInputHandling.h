@@ -77,6 +77,7 @@ protected:
 
   // convenience events
   virtual void OnTap(float x, float y, int32_t pointers = 1);
+  virtual void OnDoubleTap(float x, float y, int32_t pointers = 1);
   virtual void OnLongPress(float x, float y, int32_t pointers = 1);
   virtual void OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers = 1);
   virtual void OnZoomPinch(float centerX, float centerY, float zoomFactor);

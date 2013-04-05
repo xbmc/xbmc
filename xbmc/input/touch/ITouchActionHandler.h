@@ -191,6 +191,16 @@ public:
    */
   virtual void OnTap(float x, float y, int32_t pointers = 1) { }
   /*!
+   * \brief A double-tap with a one or more touches has been performed
+   *
+   * \param x           The x coordinate (with sub-pixel) of the touch
+   * \param y           The y coordinate (with sub-pixel) of the touch
+   * \param pointers    The number of pointers involved (default 1)
+   *
+   * \return True if the event was handled otherwise false
+   */
+  virtual void OnDoubleTap(float x, float y, int32_t pointers = 1) { }
+  /*!
    * \brief One or more touches have been held down for a certain amount of time
    *
    * \param x           The x coordinate (with sub-pixel) of the touch

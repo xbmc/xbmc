@@ -130,6 +130,12 @@ void ITouchInputHandling::OnTap(float x, float y, int32_t pointers /* = 1 */)
     m_handler->OnTap(x, y, pointers);
 }
 
+void ITouchInputHandling::OnDoubleTap(float x, float y, int32_t pointers /* = 1 */)
+{
+  if (m_handler)
+    m_handler->OnDoubleTap(x, y, pointers);
+}
+
 void ITouchInputHandling::OnLongPress(float x, float y, int32_t pointers /* = 1 */)
 {
   if (m_handler)

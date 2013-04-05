@@ -27,17 +27,20 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#define TOUCH_DOUBLE_TAP_TIMEOUT  500
 #define TOUCH_HOLD_TIMEOUT  1000
 CGenericTouchInputHandler::CGenericTouchInputHandler()
      : m_gestureState(TouchGestureUnknown),
        m_gestureStateOld(TouchGestureUnknown)
 {
   m_holdTimer = new CTimer(this);
+  m_doubleTimer = new CTimer(this);
 }
 
 CGenericTouchInputHandler::~CGenericTouchInputHandler()
 {
   delete m_holdTimer;
+  delete m_doubleTimer;
 
   for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
     delete (*detector);
@@ -79,6 +82,25 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
 
     case TouchInputDown:
     {
+      // Second Down of a double-tap
+      if (m_gestureState == TouchGestureSingleDoubleTouchDetect)
+      {
+        // Check if the second touch is within tolerance
+        CVector down = m_pointers[pointer].down;
+        CVector current(x, y);
+        CVector distance = down - current;
+
+        if (distance.length() > 5.0)
+        {
+          setGestureState(TouchGestureSingleTouch);
+
+          OnSingleTouchEnd(m_pointers[0].down.x, m_pointers[0].down.y);
+          OnTap(m_pointers[0].down.x, m_pointers[0].down.y, 1);
+        }
+        else
+          break;
+      }
+        
       m_pointers[pointer].down.x = x;
       m_pointers[pointer].down.y = y;
       m_pointers[pointer].down.time = time;
@@ -138,14 +160,24 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       triggerDetectors(event, pointer);
 
       m_holdTimer->Stop(false);
+      m_doubleTimer->Stop(false);
 
       // Just a single tap with a pointer
-      if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold)
+      if (m_gestureState == TouchGestureSingleTouch)
+      {
+        setGestureState(TouchGestureSingleDoubleTouchDetect);
+        m_doubleTimer->Start(TOUCH_DOUBLE_TAP_TIMEOUT);
+        result = true;
+      }
+      else if (m_gestureState == TouchGestureSingleDoubleTouchDetect)
       {
         result = OnSingleTouchEnd(x, y);
-
-        if (m_gestureState == TouchGestureSingleTouch)
-          OnTap(x, y, 1);
+        OnDoubleTap(x, y, 1);
+        setGestureState(TouchGestureUnknown);
+      }
+      else if (m_gestureState == TouchGestureSingleTouchHold)
+      {
+        result = OnSingleTouchEnd(x, y);
       }
       // A pan gesture started with a single pointer (ignoring any other pointers)
       else if (m_gestureState == TouchGesturePan)
@@ -197,8 +229,11 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
                         2);
         }
 
-        setGestureState(TouchGestureUnknown);
-        m_pointers[pointer].reset();
+        if (m_gestureState != TouchGestureSingleDoubleTouchDetect)
+        {
+          setGestureState(TouchGestureUnknown);
+          m_pointers[pointer].reset();
+        }
       }
 
       return result;
@@ -227,18 +262,19 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
         m_holdTimer->Stop();
 
         // the touch is moving so we start a gesture
-        if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart)
+        if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleDoubleTouchDetect || m_gestureState == TouchGestureMultiTouchStart)
           result = OnTouchGestureStart(m_pointers[pointer].down.x, m_pointers[pointer].down.y);
       }
 
       triggerDetectors(event, pointer);
 
-      if (m_gestureState == TouchGestureSingleTouch)
+      if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleDoubleTouchDetect)
       {
         // Check if the touch has moved far enough to count as movement
         if (!m_pointers[pointer].moving)
           break;
 
+        m_doubleTimer->Stop(false);
         m_pointers[pointer].last.copy(m_pointers[pointer].down);
         setGestureState(TouchGesturePan);
       }
@@ -327,6 +363,7 @@ void CGenericTouchInputHandler::saveLastTouch()
 
 void CGenericTouchInputHandler::OnTimeout()
 {
+  CLog::Log(LOGDEBUG, "CGenericTouchInputHandler::OnTimeout");
   CSingleLock lock(m_critical);
 
   switch (m_gestureState)
@@ -348,6 +385,13 @@ void CGenericTouchInputHandler::OnTimeout()
                           fabs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
                           2);
       }
+      break;
+      
+    case TouchGestureSingleDoubleTouchDetect:
+      setGestureState(TouchGestureSingleTouch);
+
+      OnSingleTouchEnd(m_pointers[0].down.x, m_pointers[0].down.y);
+      OnTap(m_pointers[0].down.x, m_pointers[0].down.y, 1);
       break;
 
     default:

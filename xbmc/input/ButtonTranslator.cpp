@@ -244,6 +244,7 @@ static const ActionMapping actions[] =
 
         // Touch
         {"tap"               , ACTION_TOUCH_TAP},
+        {"doubletap"         , ACTION_TOUCH_DOUBLE_TAP},
         {"longpress"         , ACTION_TOUCH_LONGPRESS},
         {"pangesture"        , ACTION_GESTURE_PAN},
         {"zoomgesture"       , ACTION_GESTURE_ZOOM},
@@ -389,6 +390,7 @@ static const ActionMapping mousecommands[] =
 static const ActionMapping touchcommands[] =
 {
   { "tap",                ACTION_TOUCH_TAP },
+  { "doubletap",          ACTION_TOUCH_DOUBLE_TAP },
   { "longpress",          ACTION_TOUCH_LONGPRESS },
   { "pan",                ACTION_GESTURE_PAN },
   { "zoom",               ACTION_GESTURE_ZOOM },

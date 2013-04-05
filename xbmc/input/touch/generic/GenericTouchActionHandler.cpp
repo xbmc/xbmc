@@ -104,6 +104,15 @@ void CGenericTouchActionHandler::OnTap(float x, float y, int32_t pointers /* = 1
   sendEvent(ACTION_TOUCH_TAP, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
 }
 
+void CGenericTouchActionHandler::OnDoubleTap(float x, float y, int32_t pointers /* = 1 */)
+{
+  if (pointers <= 0 || pointers > 10)
+    return;
+
+  focusControl(x, y);
+  sendEvent(ACTION_TOUCH_DOUBLE_TAP, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
+}
+
 void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers /* = 1 */)
 {
   if (pointers <= 0 || pointers > 10)

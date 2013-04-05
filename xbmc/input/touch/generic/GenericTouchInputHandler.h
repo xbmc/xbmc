@@ -65,6 +65,8 @@ private:
     TouchGestureUnknown = 0,
     // only primary pointer active but stationary so far
     TouchGestureSingleTouch,
+    // detecting potential double tap
+    TouchGestureSingleDoubleTouchDetect,
     // primary pointer active but stationary for a certain time
     TouchGestureSingleTouchHold,
     // primary pointer moving
@@ -88,6 +90,7 @@ private:
 
   CCriticalSection m_critical;
   CTimer *m_holdTimer;
+  CTimer *m_doubleTimer;
   Pointer m_pointers[TOUCH_MAX_POINTERS];
   std::set<IGenericTouchGestureDetector*> m_detectors;
 
