@@ -97,11 +97,6 @@ public:
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
 
-  float m_fZoomAmount;      // current zoom amount
-  float m_fPixelRatio;      // current pixel ratio
-  float m_fVerticalShift;   // current vertical shift
-  bool  m_bNonLinStretch;   // current non-linear stretch
-
   bool m_bMyVideoPlaylistRepeat;
   bool m_bMyVideoPlaylistShuffle;
   bool m_bMyVideoNavFlatten;

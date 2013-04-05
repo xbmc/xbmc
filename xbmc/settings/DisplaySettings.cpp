@@ -44,6 +44,11 @@ float square_error(float x, float y)
 CDisplaySettings::CDisplaySettings()
 {
   m_resolutions.insert(m_resolutions.begin(), RES_CUSTOM, RESOLUTION_INFO());
+
+  m_zoomAmount = 1.0f;
+  m_pixelRatio = 1.0f;
+  m_verticalShift = 0.0f;
+  m_nonLinearStretched = false;
 }
 
 CDisplaySettings::~CDisplaySettings()
@@ -169,6 +174,11 @@ void CDisplaySettings::Clear()
   CSingleLock lock(m_critical);
   m_calibrations.clear();
   m_resolutions.clear();
+
+  m_zoomAmount = 1.0f;
+  m_pixelRatio = 1.0f;
+  m_verticalShift = 0.0f;
+  m_nonLinearStretched = false;
 }
 
 void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* = false */)

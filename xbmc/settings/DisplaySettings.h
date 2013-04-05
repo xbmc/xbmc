@@ -71,6 +71,15 @@ public:
   void ApplyCalibrations();
   void UpdateCalibrations();
 
+  float GetZoomAmount() const { return m_zoomAmount; }
+  void SetZoomAmount(float zoomAmount) { m_zoomAmount = zoomAmount; }
+  float GetPixelRatio() const { return m_pixelRatio; }
+  void SetPixelRatio(float pixelRatio) { m_pixelRatio = pixelRatio; }
+  float GetVerticalShift() const { return m_verticalShift; }
+  void SetVerticalShift(float verticalShift) { m_verticalShift = verticalShift; }
+  bool IsNonLinearStretched() const { return m_nonLinearStretched; }
+  void SetNonLinearStretched(bool nonLinearStretch) { m_nonLinearStretched = nonLinearStretch; }
+
 protected:
   CDisplaySettings();
   CDisplaySettings(const CDisplaySettings&);
@@ -86,5 +95,10 @@ private:
   typedef std::vector<RESOLUTION_INFO> ResolutionInfos;
   ResolutionInfos m_resolutions;
   ResolutionInfos m_calibrations;
+
+  float m_zoomAmount;         // current zoom amount
+  float m_pixelRatio;         // current pixel ratio
+  float m_verticalShift;      // current vertical shift
+  bool  m_nonLinearStretched;   // current non-linear stretch
   CCriticalSection m_critical;
 };

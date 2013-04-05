@@ -659,8 +659,8 @@ void CGUIWindowFullScreen::FrameMove()
       strSizing.Format(g_localizeStrings.Get(245),
                        (int)info.SrcRect.Width(), (int)info.SrcRect.Height(),
                        (int)(info.DestRect.Width() * xscale), (int)(info.DestRect.Height() * yscale),
-                       g_settings.m_fZoomAmount, info.videoAspectRatio*g_settings.m_fPixelRatio, 
-                       g_settings.m_fPixelRatio, g_settings.m_fVerticalShift);
+                       CDisplaySettings::Get().GetZoomAmount(), info.videoAspectRatio*CDisplaySettings::Get().GetPixelRatio(), 
+                       CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetVerticalShift());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
