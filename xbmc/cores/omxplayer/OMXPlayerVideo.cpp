@@ -357,7 +357,7 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
     return;
 
-  double pts_media = m_av_clock->OMXMediaTime(false, false);
+  double pts_media = m_av_clock->OMXMediaTime(false);
   ProcessOverlays(iGroupId, pts_media);
 
   g_renderManager.FlipPage(CThread::m_bStop, m_iSleepEndTime / DVD_TIME_BASE, -1, FS_NONE);
@@ -384,26 +384,11 @@ void OMXPlayerVideo::Process()
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
     {
-      CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
+      CLog::Log(LOGERROR, "OMXPlayerVideo: Got MSGQ_IS_ERROR(%d) Aborting", (int)ret);
       break;
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      // if we only wanted priority messages, this isn't a stall
-      if( iPriority )
-        continue;
-
-      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !m_stalled )
-      {
-        if(m_started)
-          CLog::Log(LOGINFO, "COMXPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
-        m_stalled = true;
-        pts += frametime*4;
-      }
-
-      pts += frametime;
-
       continue;
     }
 
@@ -461,8 +446,8 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT %.2f", m_fForcedAspectRatio);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -490,10 +475,15 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      if (m_speed != static_cast<CDVDMsgInt*>(pMsg)->m_value)
+      {
+        m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
     {
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_STARTED %d", m_started);
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
     }
@@ -502,7 +492,7 @@ void OMXPlayerVideo::Process()
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true, true));
+        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true));
         //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
       else
         state.timestamp = m_av_clock->GetAbsoluteClock();
@@ -525,6 +515,10 @@ void OMXPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
+      #ifdef _DEBUG
+      CLog::Log(LOGINFO, "Video: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d\n", pPacket->dts, pPacket->pts, 
+          (int)pPacket->iSize, m_started, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, m_av_clock->OMXLateCount(1));
+      #endif
       if (m_messageQueue.GetDataSize() == 0
       ||  m_speed < 0)
       {
