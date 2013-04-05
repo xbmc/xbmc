@@ -42,6 +42,7 @@ extern "C"
   int         DarwinBatteryLevel(void);
   void        DarwinSetScheduling(int message);
   bool        DarwinCFStringRefToString(CFStringRef source, std::string& destination);
+  bool        DarwinCFStringRefToUTF8String(CFStringRef source, std::string& destination);
 #ifdef __cplusplus
 }
 #endif
