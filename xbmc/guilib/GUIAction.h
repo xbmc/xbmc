@@ -53,9 +53,6 @@ public:
    * Set navigation route
    */
   void SetNavigation(int id);
-
-  // GetFirstAction is only needed in deprecated http api
-  CStdString GetFirstAction() const { return m_actions.size() > 0 ? m_actions[0].action : ""; };
 private:
   struct cond_action_pair
   {
