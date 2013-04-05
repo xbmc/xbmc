@@ -19,6 +19,19 @@ CGUIDialogPlexAudioSubtitlePicker::CGUIDialogPlexAudioSubtitlePicker()
 void
 CGUIDialogPlexAudioSubtitlePicker::SetFileItem(CFileItemPtr& fileItem, bool audio)
 {
+  if (!audio)
+  {
+    // Subtitles must always have a None entry as well.
+    CFileItem* noneItem = new CFileItem;
+    
+    noneItem->SetLabel(g_localizeStrings.Get(231));
+    noneItem->SetProperty("streamId", "-1");
+    noneItem->SetProperty("streamType", boost::lexical_cast<string>(PLEX_STREAM_SUBTITLE));
+    
+    Add(noneItem);
+    
+    SetSelected(0);
+  }
   PlexMediaPartPtr part = fileItem->m_mediaParts[0];
   int index = 0;
   for (int y = 0; y < part->mediaStreams.size(); y ++)
