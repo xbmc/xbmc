@@ -792,7 +792,7 @@
 				<posx>285</posx>
 				<width>184</width>
 				<height>275</height>
-				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.TVShowPoster]</texture>
+				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.GrandparentThumb]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 			</control>
