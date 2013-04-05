@@ -34,9 +34,12 @@ struct PlexUrlComp : std::binary_function<std::string, std::string, bool>
 {
   bool operator() (const std::string& a, const std::string& b) const
   {
-    if(a.find("X-Plex") != std::string::npos)
+    if(a.find("X-Plex") != std::string::npos &&
+       b.find("X-Plex") == std::string::npos)
       return false;
-    if(b.find("X-Plex") != std::string::npos)
+
+    else if(b.find("X-Plex") != std::string::npos &&
+            a.find("X-Plex") == std::string::npos)
       return true;
     
 #ifndef TARGET_WINDOWS

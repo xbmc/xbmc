@@ -200,17 +200,16 @@ void CPlexSectionFanout::Refresh()
       trueUrl.SetOption("X-Plex-Container-Size", "20");
 #endif
       
-      CURL recentlyAdded(trueUrl);
-      recentlyAdded.SetOption("unwatched", "1");
-      recentlyAdded.SetFileName(PlexUtils::AppendPathToURL(recentlyAdded.GetFileName(), "recentlyAdded"));
+      trueUrl.SetOption("unwatched", "1");
+      trueUrl.SetFileName(PlexUtils::AppendPathToURL(trueUrl.GetFileName(), "recentlyAdded"));
       
-      m_outstandingJobs.push_back(LoadSection(recentlyAdded.Get(), CONTENT_LIST_RECENTLY_ADDED));
+      m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));
 
       if (m_sectionType == PLEX_METADATA_MOVIE || m_sectionType == PLEX_METADATA_SHOW)
       {
-        CURL onDeck(trueUrl);
-        onDeck.SetFileName(PlexUtils::AppendPathToURL(onDeck.GetFileName(), "onDeck"));
-        m_outstandingJobs.push_back(LoadSection(onDeck.Get(), CONTENT_LIST_ON_DECK));
+        trueUrl = CURL(m_url);
+        trueUrl.SetFileName(PlexUtils::AppendPathToURL(trueUrl.GetFileName(), "onDeck"));
+        m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_ON_DECK));
       }
     }
 
