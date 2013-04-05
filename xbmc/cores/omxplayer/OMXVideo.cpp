@@ -76,16 +76,22 @@
 
 #define MAX_TEXT_LENGTH 1024
 
-COMXVideo::COMXVideo()
+COMXVideo::COMXVideo() : m_video_codec_name("")
 {
   m_is_open           = false;
   m_Pause             = false;
   m_extradata         = NULL;
   m_extrasize         = 0;
   m_video_convert     = false;
-  m_video_codec_name  = "";
   m_deinterlace       = false;
   m_hdmi_clock_sync   = false;
+  m_drop_state        = false;
+  m_decoded_width     = 0;
+  m_decoded_height    = 0;
+  m_omx_clock         = NULL;
+  m_av_clock          = NULL;
+  m_res_callback      = NULL;
+  m_res_ctx           = NULL;
 }
 
 COMXVideo::~COMXVideo()
@@ -310,9 +316,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
   if(m_deinterlace)
     CLog::Log(LOGDEBUG, "COMXVideo::Open : enable deinterlace\n");
 
-  std::string componentName = "";
-
-  componentName = decoder_name;
+  std::string componentName = decoder_name;
   if(!m_omx_decoder.Initialize((const std::string)componentName, OMX_IndexParamVideoInit))
     return false;
 
@@ -995,11 +999,11 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   // doesn't like negative coordinates on dest_rect. So adjust by increasing src_rect
   if (dx1 < 0.0f) {
     sx1 -= dx1 * sw;
-    dx1 -= dx1;
+    dx1 = 0;
   }
   if (dy1 < 0.0f) {
     sy1 -= dy1 * sh;
-    dy1 -= dy1;
+    dy1 = 0;
   }
 
   OMX_INIT_STRUCTURE(configDisplay);

@@ -47,7 +47,7 @@ protected:
   // bitstream to bytestream (Annex B) conversion support.
   bool bitstream_convert_init(void *in_extradata, int in_extrasize);
   bool bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
-  void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
+  static void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
     const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
 
   typedef struct omx_bitstream_ctx {
@@ -55,6 +55,15 @@ protected:
       uint8_t  first_idr;
       uint8_t *sps_pps_data;
       uint32_t size;
+
+      omx_bitstream_ctx()
+      {
+        length_size = 0;
+        first_idr = 0;
+        sps_pps_data = NULL;
+        size = 0;
+      }
+
   } omx_bitstream_ctx;
 
   uint32_t          m_sps_pps_size;

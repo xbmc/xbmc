@@ -294,7 +294,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set any special options
-  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); it++)
+  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
     if (it->m_name == "surfaces")
       m_uSurfacesCount = std::atoi(it->m_value.c_str());
@@ -839,7 +839,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
   {
 
     result = m_dllAvFilter.av_buffersink_get_buffer_ref(m_pFilterOut, &m_pBufferRef, 0);
-    if(!m_pBufferRef)
+    if(!m_pBufferRef || result < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - cur_buf");
       return VC_ERROR;

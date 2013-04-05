@@ -36,6 +36,8 @@ CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
   m_iSourceBitrate = 0;
   
   m_iInputBufferSize = 0;
+  memset(&m_decodedData, 0, MAD_DECODED_SIZE);
+  memset(&m_inputBuffer, 0, MAD_INPUT_SIZE);
 }
 
 CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()
@@ -86,7 +88,6 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 {
   BYTE* pBuffer = m_inputBuffer;
   //int iBufferSize = iSize;
-  bool bFullOutputBuffer = false;
 
   m_iDecodedDataSize = 0;
 
@@ -100,6 +101,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
   if (m_bInitialized)
   {
+    bool bFullOutputBuffer = false;
     m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
 
     while (true)

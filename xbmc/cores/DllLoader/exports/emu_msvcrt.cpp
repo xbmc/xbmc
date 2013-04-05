@@ -104,12 +104,6 @@ bool bVecDirsInited = false;
 extern void update_cache_dialog(const char* tmp);
 #endif
 
-struct _env
-{
-  const char* name;
-  char* value;
-};
-
 #define EMU_MAX_ENVIRONMENT_ITEMS 100
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;

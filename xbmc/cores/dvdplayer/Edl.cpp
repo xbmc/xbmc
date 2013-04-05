@@ -737,7 +737,7 @@ bool CEdl::AddCut(Cut& cut)
   else
   {
     vector<Cut>::iterator pCurrentCut;
-    for (pCurrentCut = m_vecCuts.begin(); pCurrentCut != m_vecCuts.end(); pCurrentCut++)
+    for (pCurrentCut = m_vecCuts.begin(); pCurrentCut != m_vecCuts.end(); ++pCurrentCut)
     {
       if (cut.start < pCurrentCut->start)
       {

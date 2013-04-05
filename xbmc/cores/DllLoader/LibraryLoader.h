@@ -50,6 +50,8 @@ public:
   int GetRef();
 
 private:
+  LibraryLoader(const LibraryLoader&);
+  LibraryLoader& operator=(const LibraryLoader&);
   char* m_sFileName;
   char* m_sPath;
   int   m_iRefCount;

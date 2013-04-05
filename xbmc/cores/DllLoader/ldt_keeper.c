@@ -100,7 +100,6 @@ struct modify_ldt_ldt_s {
   unsigned int  read_exec_only:1;
   unsigned int  limit_in_pages:1;
   unsigned int  seg_not_present:1;
-  unsigned int  useable:1;
 };
 
 #define MODIFY_LDT_CONTENTS_DATA        0

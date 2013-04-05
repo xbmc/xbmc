@@ -208,6 +208,11 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_bitstream = NULL;
   m_dllSwScale = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+  m_dll = NULL;
+  m_DropPictures = false;
+  m_decode_async = false;
+  m_sort_time_offset = 0.0;
+  m_use_cvBufferRef = false;
 }
 
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()

@@ -176,21 +176,21 @@ CStdStringA localWideToUtf(LPCWSTR wstr)
 }
 
 CAESinkWASAPI::CAESinkWASAPI() :
-  m_pAudioClient(NULL),
-  m_pRenderClient(NULL),
   m_needDataEvent(0),
   m_pDevice(NULL),
-  m_initialized(false),
-  m_running(false),
+  m_pAudioClient(NULL),
+  m_pRenderClient(NULL),
   m_encodedFormat(AE_FMT_INVALID),
   m_encodedChannels(0),
   m_encodedSampleRate(0),
-  m_uiBufferLen(0),
-  m_avgTimeWaiting(50),
-  m_isDirty(false),
   sinkReqFormat(AE_FMT_INVALID),
   sinkRetFormat(AE_FMT_INVALID),
+  m_running(false),
+  m_initialized(false),
   m_isSuspended(false),
+  m_isDirty(false),
+  m_uiBufferLen(0),
+  m_avgTimeWaiting(50),
   m_sinkLatency(0.0)
 {
   m_channelLayout.Reset();

@@ -113,19 +113,19 @@ static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LP
 }
 
 CAESinkDirectSound::CAESinkDirectSound() :
-  m_initialized   (false),
-  m_isDirtyDS     (false),
   m_pBuffer       (NULL ),
   m_pDSound       (NULL ),
+  m_AvgBytesPerSec(0    ),
+  m_dwChunkSize   (0    ),
+  m_dwFrameSize   (0    ),
+  m_dwBufferLen   (0    ),
   m_BufferOffset  (0    ),
   m_CacheLen      (0    ),
-  m_dwChunkSize   (0    ),
-  m_dwBufferLen   (0    ),
-  m_BufferTimeouts(0    ),
-  m_AvgBytesPerSec(0    ),
-  m_dwFrameSize   (0    ),
   m_LastCacheCheck(0    ),
-  m_running       (false)
+  m_BufferTimeouts(0    ),
+  m_running       (false),
+  m_initialized   (false),
+  m_isDirtyDS     (false)
 {
   m_channelLayout.Reset();
 }

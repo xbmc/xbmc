@@ -693,7 +693,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
     /* if no overlap we are done */
     if(rem.size() == 1 && !(rem[0] != old))
     {
-      it++;
+      ++it;
       continue;
     }
 

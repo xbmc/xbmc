@@ -32,7 +32,11 @@
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
-  m_NeedRecalc = true;
+  m_NeedRecalc  = true;
+  m_blacklevel  = 0.0f;
+  m_contrast    = 0.0f;
+  m_flags       = 0;
+  m_format      = RENDER_FMT_NONE;
 }
 
 void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)
@@ -159,7 +163,7 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
   LPDIRECT3DSURFACE9 oldRT = 0;
   // The render target will be overriden: save the caller's original RT
-  if (vecRT != NULL && vecRT->size() > 0)
+  if (vecRT != NULL && !vecRT->empty())
     pD3DDevice->GetRenderTarget(0, &oldRT);
 
   pD3DDevice->SetFVF(m_FVF);

@@ -44,7 +44,7 @@ public:
   {
     T* p = NULL;
     CSingleLock lock(m_Lock);
-    if (m_Queue.size())
+    if (!m_Queue.empty())
     {
       p = m_Queue.front();
       m_Queue.pop_front();

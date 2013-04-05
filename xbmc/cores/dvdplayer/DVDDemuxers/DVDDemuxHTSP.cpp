@@ -102,7 +102,7 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
   m_Input       = (CDVDInputStreamHTSP*)input;
   m_StatusCount = 0;
 
-  while(m_Streams.size() == 0 && m_StatusCount == 0)
+  while(m_Streams.empty() && m_StatusCount == 0)
   {
     DemuxPacket* pkg = Read();
     if(!pkg)

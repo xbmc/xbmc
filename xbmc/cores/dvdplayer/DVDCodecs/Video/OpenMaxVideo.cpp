@@ -86,6 +86,15 @@ COpenMaxVideo::COpenMaxVideo()
 
   m_omx_decoder_state_change = (sem_t*)malloc(sizeof(sem_t));
   sem_init(m_omx_decoder_state_change, 0, 0);
+  memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+  m_drop_state = false;
+  m_decoded_width = 0;
+  m_decoded_height = 0;
+  m_omx_input_eos = false;
+  m_omx_input_port = 0;
+  m_omx_output_eos = false;
+  m_omx_output_port = 0;
+  m_videoplayback_done = false;
 }
 
 COpenMaxVideo::~COpenMaxVideo()
@@ -861,7 +870,7 @@ OMX_ERRORTYPE COpenMaxVideo::DecoderEventHandler(
           if (ctx->m_omx_output_port == (int)nData2)
           {
             // Got OMX_CommandPortDisable event, alloc new buffers for the output port.
-            omx_err = ctx->AllocOMXOutputBuffers();
+            ctx->AllocOMXOutputBuffers();
             omx_err = OMX_SendCommand(ctx->m_omx_decoder, OMX_CommandPortEnable, ctx->m_omx_output_port, NULL);
           }
         break;
@@ -917,7 +926,7 @@ OMX_ERRORTYPE COpenMaxVideo::DecoderEventHandler(
         // OMX_CommandPortDisable to component as it expects output buffers
         // to be freed before it will issue a OMX_CommandPortDisable event.
         ctx->m_portChanging = true;
-        omx_err = OMX_SendCommand(ctx->m_omx_decoder, OMX_CommandPortDisable, ctx->m_omx_output_port, NULL);
+        OMX_SendCommand(ctx->m_omx_decoder, OMX_CommandPortDisable, ctx->m_omx_output_port, NULL);
         omx_err = ctx->FreeOMXOutputBuffers(false);
       }
     break;
@@ -1025,9 +1034,9 @@ OMX_ERRORTYPE COpenMaxVideo::StopDecoder(void)
 
   // we can free our allocated port buffers in OMX_StateIdle state.
   // free OpenMax input buffers.
-  omx_err = FreeOMXInputBuffers(true);
+  FreeOMXInputBuffers(true);
   // free OpenMax output buffers.
-  omx_err = FreeOMXOutputBuffers(true);
+  FreeOMXOutputBuffers(true);
 
   // transition decoder component from idle to loaded
   omx_err = SetStateForComponent(OMX_StateLoaded);

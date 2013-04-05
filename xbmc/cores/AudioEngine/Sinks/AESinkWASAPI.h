@@ -49,9 +49,9 @@ public:
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
     void         AEChannelsFromSpeakerMask(DWORD speakers);
-    DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-    void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
-    void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+    static DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
+    static void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
+    static void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
 
     static const char  *WASAPIErrToStr(HRESULT err);
 

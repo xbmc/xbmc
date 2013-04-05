@@ -98,7 +98,7 @@ public:
 protected:
   CPlayerCoreFactory();
   CPlayerCoreFactory(const CPlayerCoreFactory&);
-  CPlayerCoreFactory const& operator=(CPlayerCoreFactory const&);
+  CPlayerCoreFactory& operator=(CPlayerCoreFactory const&);
   virtual ~CPlayerCoreFactory();
 
 private:
