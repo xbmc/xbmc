@@ -84,27 +84,29 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         strLink = strLink.Mid(1);
 
       CStdString strNameTemp = strName.Trim();
+
+      CStdStringW wName, wLink, wConverted;
+      g_charsetConverter.unknownToUTF8(strNameTemp);
+      g_charsetConverter.utf8ToW(strNameTemp, wName, false);
+      HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
+      g_charsetConverter.wToUTF8(wConverted, strNameTemp);
+      URIUtils::RemoveSlashAtEnd(strNameTemp);
+
       CStdString strLinkTemp = strLink;
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
-      URIUtils::RemoveSlashAtEnd(strNameTemp);
       CURL::Decode(strLinkTemp);
+      g_charsetConverter.unknownToUTF8(strLinkTemp);
+      g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
+      HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
+      g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
+
+      if (strNameTemp.Right(3).Equals("..>") && 
+          strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
+        strName = strNameTemp = strLinkTemp;
 
       if (strNameTemp == strLinkTemp && strLinkTemp != "..")
       {
-        CStdStringW wName, wLink, wConverted;
-
-        g_charsetConverter.unknownToUTF8(strName);
-        g_charsetConverter.utf8ToW(strName, wName, false);
-        HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
-        g_charsetConverter.wToUTF8(wConverted, strName);
-        URIUtils::RemoveSlashAtEnd(strName);
-
-        g_charsetConverter.unknownToUTF8(strLink);
-        g_charsetConverter.utf8ToW(strLink, wLink, false);
-        HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
-        g_charsetConverter.wToUTF8(wConverted, strLink);
-
-        CFileItemPtr pItem(new CFileItem(strName));
+        CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
         url.SetFileName(strBasePath + strLink);
         pItem->SetPath(url.Get());
