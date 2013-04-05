@@ -77,7 +77,7 @@ private:
   static void AppendParams(std::string &device, const std::string &params);
   static bool TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_config_t *lconf);
   static bool TryDeviceWithParams(const std::string &name, const std::string &params, snd_pcm_t **pcmp, snd_config_t *lconf);
-  static bool OpenPCMDevice(const std::string &name, const std::string &params, int channels, snd_pcm_t **pcmp, snd_config_t *lconf, bool preferDmixStereo = false);
+  static bool OpenPCMDevice(const std::string &name, const std::string &params, int channels, snd_pcm_t **pcmp, snd_config_t *lconf);
 
   static AEDeviceType AEDeviceTypeFromName(const std::string &name);
   static std::string GetParamFromName(const std::string &name, const std::string &param);
