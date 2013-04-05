@@ -58,6 +58,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -1359,14 +1360,14 @@ bool CGUIWindowMusicBase::CanContainFilter(const CStdString &strDirectory) const
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (g_settings.m_musicNeedsUpdate == 27 && !g_application.IsMusicScanning() &&
+  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 27 && !g_application.IsMusicScanning() &&
       g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC))
   {
     // rescan of music library required
     if (CGUIDialogYesNo::ShowAndGetInput(799, 800, 801, -1))
     {
       g_application.StartMusicScan("", CMusicInfoScanner::SCAN_RESCAN);
-      g_settings.m_musicNeedsUpdate = 0; // once is enough (user may interrupt, but that's up to them)
+      CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
       g_settings.Save();
     }
   }

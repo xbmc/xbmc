@@ -70,6 +70,26 @@ public:
    */
   void CycleWatchedMode(const std::string &content);
 
+  bool DoesMusicPlaylistRepeat() const { return m_musicPlaylistRepeat; }
+  void SetMusicPlaylistRepeat(bool repeats) { m_musicPlaylistRepeat = repeats; }
+  bool IsMusicPlaylistShuffled() const { return m_musicPlaylistShuffle; }
+  void SetMusicPlaylistShuffled(bool shuffled) { m_musicPlaylistShuffle = shuffled; }
+
+  bool DoesVideoPlaylistRepeat() const { return m_videoPlaylistRepeat; }
+  void SetVideoPlaylistRepeat(bool repeats) { m_videoPlaylistRepeat = repeats; }
+  bool IsVideoPlaylistShuffled() const { return m_videoPlaylistShuffle; }
+  void SetVideoPlaylistShuffled(bool shuffled) { m_videoPlaylistShuffle = shuffled; }
+
+  bool DoesVideoStartWindowed() const { return m_videoStartWindowed; }
+  void SetVideoStartWindowed(bool windowed) { m_videoStartWindowed = windowed; }
+  int GetAdditionalSubtitleDirectoryChecked() const { return m_additionalSubtitleDirectoryChecked; }
+  void SetAdditionalSubtitleDirectoryChecked(int checked) { m_additionalSubtitleDirectoryChecked = checked; }
+
+  int GetMusicNeedsUpdate() const { return m_musicNeedsUpdate; }
+  void SetMusicNeedsUpdate(int version) { m_musicNeedsUpdate = version; }
+  int GetVideoNeedsUpdate() const { return m_videoNeedsUpdate; }
+  void SetVideoNeedsUpdate(int version) { m_videoNeedsUpdate = version; }
+
 protected:
   CMediaSettings();
   CMediaSettings(const CMediaSettings&);
@@ -84,6 +104,17 @@ private:
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;
+
+  bool m_musicPlaylistRepeat;
+  bool m_musicPlaylistShuffle;
+  bool m_videoPlaylistRepeat;
+  bool m_videoPlaylistShuffle;
+
+  bool m_videoStartWindowed;
+  int m_additionalSubtitleDirectoryChecked;
+
+  int m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+  int m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
 
   CCriticalSection m_critical;
 };

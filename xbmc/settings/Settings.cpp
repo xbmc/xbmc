@@ -78,14 +78,7 @@ void CSettings::Initialize()
 
   m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
-
-  m_bMyMusicPlaylistRepeat = false;
-  m_bMyMusicPlaylistShuffle = false;
-
-  m_bMyVideoPlaylistRepeat = false;
-  m_bMyVideoPlaylistShuffle = false;
   m_bMyVideoNavFlatten = false;
-  m_bStartVideoWindowed = false;
   m_bAddonAutoUpdate = true;
   m_bAddonNotifications = true;
   m_bAddonForeignFilter = false;
@@ -93,14 +86,10 @@ void CSettings::Initialize()
   m_fVolumeLevel = 1.0f;
   m_bMute = false;
 
-  iAdditionalSubtitleDirectoryChecked = 0;
   m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
   m_iVideoStartWindow = WINDOW_VIDEO_FILES;
 
   m_iSystemTimeTotalUp = 0;
-
-  m_musicNeedsUpdate = 0;
-  m_videoNeedsUpdate = 0;
 }
 
 CSettings::~CSettings(void)
@@ -221,16 +210,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
   if (pElement)
   {
-    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
-    if (pChild)
-    {
-      XMLUtils::GetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
-      XMLUtils::GetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
-    }
     GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
-    GetInteger(pElement, "needsupdate", m_musicNeedsUpdate, 0, 0, INT_MAX);
     GetPath(pElement, "defaultlibview", m_defaultMusicLibSource);
   }
 
@@ -241,14 +223,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     XMLUtils::GetBoolean(pElement, "stackvideos", m_videoStacking);
     XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
-    GetInteger(pElement, "needsupdate", m_videoNeedsUpdate, 0, 0, INT_MAX);
-
-    TiXmlElement *pChild = pElement->FirstChildElement("playlist");
-    if (pChild)
-    { // playlist
-      XMLUtils::GetBoolean(pChild, "repeat", m_bMyVideoPlaylistRepeat);
-      XMLUtils::GetBoolean(pChild, "shuffle", m_bMyVideoPlaylistShuffle);
-    }
   }
 
   // general settings
@@ -290,15 +264,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement musicNode("mymusic");
   TiXmlNode *pNode = pRoot->InsertEndChild(musicNode);
   if (!pNode) return false;
-  {
-    TiXmlElement childNode("playlist");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    XMLUtils::SetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
-    XMLUtils::SetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
-  }
 
-  XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);
   XMLUtils::SetInt(pNode, "startwindow", m_iMyMusicStartWindow);
   XMLUtils::SetBoolean(pNode, "songinfoinvis", m_bMyMusicSongInfoInVis);
   XMLUtils::SetBoolean(pNode, "songthumbinvis", m_bMyMusicSongThumbInVis);
@@ -312,16 +278,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "startwindow", m_iVideoStartWindow);
 
   XMLUtils::SetBoolean(pNode, "stackvideos", m_videoStacking);
-  XMLUtils::SetInt(pNode, "needsupdate", m_videoNeedsUpdate);
   XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
-
-  { // playlist window
-    TiXmlElement childNode("playlist");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    XMLUtils::SetBoolean(pChild, "repeat", m_bMyVideoPlaylistRepeat);
-    XMLUtils::SetBoolean(pChild, "shuffle", m_bMyVideoPlaylistShuffle);
-  }
 
   // general settings
   TiXmlElement generalNode("general");

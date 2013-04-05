@@ -86,14 +86,9 @@ public:
 
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
-  bool m_bMyMusicPlaylistRepeat;
-  bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
 
-  bool m_bMyVideoPlaylistRepeat;
-  bool m_bMyVideoPlaylistShuffle;
   bool m_bMyVideoNavFlatten;
-  bool m_bStartVideoWindowed;
   bool m_bAddonAutoUpdate;
   bool m_bAddonNotifications;
   bool m_bAddonForeignFilter;
@@ -102,16 +97,11 @@ public:
 
   bool m_videoStacking;
 
-  int iAdditionalSubtitleDirectoryChecked;
-
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
   CStdString m_defaultMusicLibSource;
-
-  int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
-  int        m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 

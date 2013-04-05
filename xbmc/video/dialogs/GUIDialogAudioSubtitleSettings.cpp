@@ -327,7 +327,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(*CMediaSourceSettings::Get().GetSources("video"));
-    if (g_settings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
+    if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
       CMediaSource share;
       std::vector<CStdString> paths;
