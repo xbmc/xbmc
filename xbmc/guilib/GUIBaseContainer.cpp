@@ -140,7 +140,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     current++;
   }
 
-  UpdatePageControl(offset);
+  // when we are scrolling up, offset will become lower (integer division, see offset calc)
+  // to have same behaviour when scrolling down, we need to set page control to offset+1
+  UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0));
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -261,8 +263,6 @@ void CGUIBaseContainer::Render()
 
     g_graphicsContext.RestoreClipRegion();
   }
-
-  UpdatePageControl(offset);
 
   CGUIControl::Render();
 }
