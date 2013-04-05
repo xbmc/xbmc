@@ -68,19 +68,19 @@
 			<control type="group">
 				<control type="image">
 					<description>Title bg</description>
-					<posy>-6</posy>
-					<posx>5</posx>
-					<width>236</width>
-					<height>63</height>
-					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<posy>-12</posy>
+					<posx>0</posx>
+					<width>246</width>
+					<height>70</height>
+					<texture border="10">base.png</texture>
 					<colordiffuse>FF111111</colordiffuse>
 					<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
 					<description>Title bottom line</description>
 					<posy>55</posy>
-					<posx>5</posx>
-					<width>236</width>
+					<posx>0</posx>
+					<width>246</width>
 					<height>2</height>
 					<texture border="1">base.png</texture>
 					<colordiffuse>orange</colordiffuse>
