@@ -3922,6 +3922,58 @@ msgstr ""
 
 #empty strings from id 10102 to 10209
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr ""
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr ""
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr ""
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr ""
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr ""
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr ""
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr ""
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr ""
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr ""
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr ""
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr ""
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr ""
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr ""
+
 msgctxt "#10210"
 msgid "Looking for subtitles..."
 msgstr ""
