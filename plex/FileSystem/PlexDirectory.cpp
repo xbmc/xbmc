@@ -644,9 +644,17 @@ class PlexMediaNode
      try
      {
        // Thumb.
-       string strThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("thumb"), MAX_THUMBNAIL_AGE, localServer);
-       if (strThumb.size() > 0)
-         pItem->SetArt(PLEX_ART_THUMB, strThumb);
+       if (el.Attribute("thumb"))
+       {
+         string strThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("thumb"), MAX_THUMBNAIL_AGE, localServer);
+         if (strThumb.size() > 0)
+           pItem->SetArt(PLEX_ART_THUMB, strThumb);
+         
+         // Also make a uncompressed version
+         CStdString bigPoster = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"), false);
+         if (!bigPoster.empty())
+           pItem->SetArt(PLEX_ART_BIG_POSTER, bigPoster);
+       }
 
        // Multiple thumbs?
        int i=0;

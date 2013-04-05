@@ -102,6 +102,7 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define PLEX_ART_FANART "fanart"
 #define PLEX_ART_BANNER "banner"
 #define PLEX_ART_POSTER "poster"
+#define PLEX_ART_BIG_POSTER "bigPoster"
 
 #define PLEX_ART_TVSHOW_BANNER "tvshow.banner"
 #define PLEX_ART_TVSHOW_POSTER "tvshow.poster"
