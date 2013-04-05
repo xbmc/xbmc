@@ -789,7 +789,7 @@
 			<!-- poster -->
 			<control type="largeimage">
 				<posy>77</posy>
-				<posx>285</posx>
+				<posx>293</posx>
 				<width>184</width>
 				<height>275</height>
 				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.GrandparentThumb]</texture>
