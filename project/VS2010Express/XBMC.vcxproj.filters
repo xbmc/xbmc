@@ -3018,6 +3018,9 @@
     <ClCompile Include="..\..\xbmc\utils\Vector.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\PlayerController.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5899,6 +5902,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Vector.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\PlayerController.h">
+      <Filter>video</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

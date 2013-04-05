@@ -22,12 +22,10 @@
 
 #include "guilib/GUIWindow.h"
 #include "threads/CriticalSection.h"
-#include "dialogs/GUIDialogSlider.h"
 
 class CGUITextLayout; // forward
 
-class CGUIWindowFullScreen :
-      public CGUIWindow, public ISliderCallback
+class CGUIWindowFullScreen : public CGUIWindow
 {
 public:
   CGUIWindowFullScreen(void);
@@ -41,7 +39,6 @@ public:
   void ChangetheTimeCode(int remote);
   void ChangetheTVGroup(bool next);
 
-  virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
@@ -64,17 +61,6 @@ private:
    */
   double GetTimeCodeStamp();
 
-  /*! \brief pop up a slider dialog for a particular action
-   \param action id of the action the slider responds to
-   \param label id of the label to display
-   \param value value to set on the slider
-   \param min minimum value the slider may take
-   \param delta change value to advance the slider by with each click
-   \param max maximal value the slider may take
-   \param modal true if we should wait for the slider to finish. Defaults to false
-   */
-  void ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal = false);
-
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
   CGUIInfoBool m_showCodec;
@@ -87,8 +73,6 @@ private:
   int m_timeCodeStamp[6];
   int m_timeCodePosition;
   
-  int m_sliderAction; ///< \brief set to the action id for a slider being displayed \sa ShowSlider
-
   CCriticalSection m_fontLock;
   CGUITextLayout* m_subsLayout;
 };
