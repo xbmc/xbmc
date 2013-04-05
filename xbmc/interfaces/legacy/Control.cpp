@@ -1225,6 +1225,16 @@ namespace XBMCAddon
       g_windowManager.SendThreadMessage(msg, iParentId);
     }
 
+    void ControlList::removeItem(int index) throw(UnimplementedException,WindowException)
+    {
+      if (index < 0 || index >= (int)vecItems.size())
+        throw WindowException("Index out of range");
+
+      vecItems.erase(vecItems.begin() + index);
+
+      sendLabelBind(vecItems.size());
+    }
+
     void ControlList::reset() throw(UnimplementedException)
     {
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
