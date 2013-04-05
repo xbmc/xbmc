@@ -1869,9 +1869,17 @@ bool CCrystalHD::bitstream_convert_init(void *in_extradata, int in_extrasize)
       free(out);
       return false;
     }
-    out = (uint8_t*)realloc(out, total_size);
-    if (!out)
+    uint8_t* new_out = (uint8_t*)realloc(out, total_size);
+    if (new_out)
+    {
+      out = new_out;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "bitstream_convert_init failed - %s : could not realloc the buffer out",  __FUNCTION__);
+      free(out);
       return false;
+    }
 
     memcpy(out + total_size - unit_size - 4, nalu_header, 4);
     memcpy(out + total_size - unit_size, extradata + 2, unit_size);

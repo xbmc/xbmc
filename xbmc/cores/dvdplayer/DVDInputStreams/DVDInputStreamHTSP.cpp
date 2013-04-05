@@ -181,14 +181,14 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
 
 bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &it)
 {
-  for(SChannels::iterator it2 = m_channels.begin(); it2 != m_channels.end(); it2++)
+  for(SChannels::iterator it2 = m_channels.begin(); it2 != m_channels.end(); ++it2)
   {
     if(m_tag == 0 || it2->second.MemberOf(m_tag))
       channels.push_back(it2->second);
   }
   sort(channels.begin(), channels.end());
 
-  for(it = channels.begin(); it != channels.end(); it++)
+  for(it = channels.begin(); it != channels.end(); ++it)
     if(it->id == m_channel)
       return true;
   return false;

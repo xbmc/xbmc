@@ -36,7 +36,8 @@ class CConvolutionKernel
     uint8_t* GetUint8Pixels()    { return m_uint8pixels; }
 
   private:
-
+    CConvolutionKernel(const CConvolutionKernel&);
+    CConvolutionKernel& operator=(const CConvolutionKernel&);
     void Lanczos2();
     void Lanczos3Fast();
     void Lanczos3();
@@ -44,9 +45,9 @@ class CConvolutionKernel
     void Spline36();
     void Bicubic(double B, double C);
 
-    double LanczosWeight(double x, double radius);
-    double Spline36Weight(double x);
-    double BicubicWeight(double x, double B, double C);
+    static double LanczosWeight(double x, double radius);
+    static double Spline36Weight(double x);
+    static double BicubicWeight(double x, double B, double C);
 
     void ToIntFract();
     void ToUint8();

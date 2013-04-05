@@ -34,6 +34,8 @@ CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_hPixelShader = 0;
   m_iYUY2RenderBuffer = 0;
   m_iYUY2Buffers = 2;
+  m_iScreenWidth = 0;
+  m_iScreenHeight = 0;
 }
 
 void CComboRenderer::DeleteYUY2Texture(int index)

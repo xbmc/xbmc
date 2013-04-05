@@ -276,8 +276,6 @@ int MP3Codec::Read(int size, bool init)
   // Decode data if we have some to decode
   if ( m_InputBufferPos || m_CallAgainWithSameBuffer || (m_eof && m_Decoding) )
   {
-    int result;
-
     m_Decoding = true;
 
     if ( size )
@@ -306,7 +304,7 @@ int MP3Codec::Read(int size, bool init)
       }
 
       // Now decode data into the vacant frame buffer.
-      result = Decode(&outputsize);
+      int result = Decode(&outputsize);
       if ( result != DECODING_ERROR)
       {
         if (init)
@@ -771,7 +769,7 @@ int MP3Codec::ReadDuration()
   //find lame/xing info
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
-  double tpf = 0.0, bpf = 0.0;
+  double tpf = 0.0;
   for (int i = 0; i < iScanSize; i++)
   {
     unsigned long mpegheader = (unsigned long)(
@@ -886,23 +884,6 @@ int MP3Codec::ReadDuration()
       int freqindex = (mpegheader & 0x0C00) >> 10;
       bitrate = bitrate_table[bittable][layer][bitindex];
 
-      /* Calculate bytes per frame, calculation depends on layer */
-      switch (layer)
-      {
-        case 1:
-          bpf = bitrate;
-          bpf *= 48000;
-          bpf /= freqtab[version][freqindex] << (version - 1);
-          break;
-        case 2:
-        case 3:
-          bpf = bitrate;
-          bpf *= 144000;
-          bpf /= freqtab[version][freqindex] << (version - 1);
-          break;
-        default:
-          bpf = 1;
-      }
       double tpfbs[] = { 0, 384.0f, 1152.0f, 1152.0f };
       frequency = freqtab[version][freqindex];
       tpf = tpfbs[layer] / (double) frequency;

@@ -148,6 +148,31 @@ CVDPAU::CVDPAU()
   dl_vdp_device_create_x11 = NULL;
   dl_vdp_get_proc_address = NULL;
   dl_vdp_preemption_callback_register = NULL;
+  past[0] = NULL;
+  past[1] = NULL;
+  current = NULL;
+  future = NULL;
+  tmpNoiseReduction = 0.0f;
+  tmpSharpness = 0.0f;
+  vdp_get_proc_address = NULL;
+  vdp_device_destroy = NULL;
+  vdp_video_surface_create = NULL;
+  vdp_video_surface_destroy = NULL;
+  vdp_video_surface_put_bits_y_cb_cr = NULL;
+  vdp_video_surface_get_bits_y_cb_cr = NULL;
+  vdp_output_surface_put_bits_y_cb_cr = NULL;
+  vdp_output_surface_put_bits_native = NULL;
+  vdp_output_surface_create = NULL;
+  vdp_output_surface_destroy = NULL;
+  vdp_output_surface_get_bits_native = NULL;
+  vdp_output_surface_render_output_surface = NULL;
+  vdp_output_surface_put_bits_indexed = NULL;
+  vdp_video_mixer_create = NULL;
+  vdp_video_mixer_set_feature_enables = NULL;
+  vdp_video_mixer_query_parameter_support = NULL;
+  vdp_video_mixer_query_feature_support = NULL;
+  vdp_video_mixer_destroy = NULL;
+  vdp_video_mixer_render = NULL;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
@@ -502,8 +527,7 @@ void CVDPAU::CheckFeatures()
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
 
-    VdpStatus vdp_st = VDP_STATUS_ERROR;
-    vdp_st = vdp_video_mixer_create(vdp_device,
+    VdpStatus vdp_st = vdp_video_mixer_create(vdp_device,
                                     m_feature_count,
                                     m_features,
                                     ARSIZE(parameters),
@@ -1517,7 +1541,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     }
   }
 
-  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+  vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   VdpRect sourceRect = {0,0,vid_width, vid_height};
 

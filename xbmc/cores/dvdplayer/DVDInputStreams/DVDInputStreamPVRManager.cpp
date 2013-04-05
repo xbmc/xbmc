@@ -387,7 +387,7 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SupportsChannelSwitch(void) const
+bool CDVDInputStreamPVRManager::SupportsChannelSwitch(void)
 {
   PVR_CLIENT client;
   return g_PVRClients->GetPlayingClient(client) &&

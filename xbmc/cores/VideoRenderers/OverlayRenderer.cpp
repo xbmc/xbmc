@@ -130,7 +130,7 @@ void CRenderer::Release(SElementV& list)
   SElementV l = list;
   list.clear();
 
-  for(SElementV::iterator it = l.begin(); it != l.end(); it++)
+  for(SElementV::iterator it = l.begin(); it != l.end(); ++it)
   {
     if(it->overlay)
       it->overlay->Release();
@@ -144,7 +144,7 @@ void CRenderer::Release(COverlayV& list)
   COverlayV l = list;
   list.clear();
 
-  for(COverlayV::iterator it = l.begin(); it != l.end(); it++)
+  for(COverlayV::iterator it = l.begin(); it != l.end(); ++it)
     (*it)->Release();
 }
 
@@ -175,7 +175,7 @@ void CRenderer::Render()
   Release(m_cleanup);
 
   SElementV& list = m_buffers[m_render];
-  for(SElementV::iterator it = list.begin(); it != list.end(); it++)
+  for(SElementV::iterator it = list.begin(); it != list.end(); ++it)
   {
     COverlay* o = NULL;
 

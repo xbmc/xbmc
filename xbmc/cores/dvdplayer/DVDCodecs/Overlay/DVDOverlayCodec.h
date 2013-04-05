@@ -39,10 +39,7 @@ class CDVDOverlayCodec
 {
 public:
 
-  CDVDOverlayCodec(const char* name)
-  {
-    m_codecName = name;
-  }
+  CDVDOverlayCodec(const char* name) : m_codecName(name) {}
 
   virtual ~CDVDOverlayCodec() {}
 

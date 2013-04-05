@@ -161,7 +161,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
 
-  for(std::list<CSurfacePtr>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
+  for(std::list<CSurfacePtr>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); ++it)
   {    
     if((*it)->m_id == surface)
     {
@@ -184,7 +184,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   if(surface)
   {
     /* reget call */
-    for(; it != m_surfaces_free.end(); it++)
+    for(; it != m_surfaces_free.end(); ++it)
     {
       if((*it)->m_id == surface)
       {
@@ -204,7 +204,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     // To avoid stutter, we scan the free surface pool (provided by decoder) for surfaces
     // that are 100% not in use by renderer. The pointers to these surfaces have a use_count of 1.
-    for (; it != m_surfaces_free.end() && it->use_count() > 1; it++) {}
+    for (; it != m_surfaces_free.end() && it->use_count() > 1; ++it) {}
 
     // If we have zero free surface from decoder OR all free surfaces are in use by renderer, we allocate a new surface
     if (it == m_surfaces_free.end())
@@ -217,7 +217,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
         return -1;
       }
       // Set itarator position to the newly allocated surface (end-1)
-      it = m_surfaces_free.end(); it--;
+      it = m_surfaces_free.end(); --it;
     }
     /* getbuffer call */
     wrapper = it->get();
@@ -452,7 +452,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   m_holder.surface.reset();
 
   std::list<CSurfacePtr>::iterator it;
-  for(it = m_surfaces_used.begin(); it != m_surfaces_used.end() && !m_holder.surface; it++)
+  for(it = m_surfaces_used.begin(); it != m_surfaces_used.end() && !m_holder.surface; ++it)
   {    
     if((*it)->m_id == surface)
     {
@@ -461,7 +461,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
     }
   }
 
-  for(it = m_surfaces_free.begin(); it != m_surfaces_free.end() && !m_holder.surface; it++)
+  for(it = m_surfaces_free.begin(); it != m_surfaces_free.end() && !m_holder.surface; ++it)
   {    
     if((*it)->m_id == surface)
     {

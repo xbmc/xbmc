@@ -32,11 +32,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-typedef struct _UNICODE_STRING {
-  USHORT  Length;
-  USHORT  MaximumLength;
-  PWSTR  Buffer;
-} UNICODE_STRING, *PUNICODE_STRING;
 #include "commons/Exception.h"
 
 #define DLL_PROCESS_DETACH   0

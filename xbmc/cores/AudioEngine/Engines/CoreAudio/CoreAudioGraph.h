@@ -46,7 +46,7 @@ public:
   bool             Close();
   bool             Start();
   bool             Stop();
-  AudioChannelLayoutTag GetChannelLayoutTag(int layout);
+  static AudioChannelLayoutTag GetChannelLayoutTag(int layout);
   bool             SetInputSource(ICoreAudioSource *pSource);
   bool             SetCurrentVolume(Float32 vol);
   CAUOutputDevice* DestroyUnit(CAUOutputDevice *outputUnit);

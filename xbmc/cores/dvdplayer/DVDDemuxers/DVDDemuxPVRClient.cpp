@@ -34,6 +34,7 @@ CDemuxStreamPVRInternal::CDemuxStreamPVRInternal(CDVDDemuxPVRClient *parent)
  : m_parent(parent)
  , m_parser(NULL)
  , m_context(NULL)
+ , m_parser_split(false)
 {
 }
 

@@ -31,6 +31,8 @@ CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 
 bool CDVDSubtitleTagSami::Init()
 {
+  delete m_tags;
+  delete m_tagOptions;
   m_tags = new CRegExp(true);
   if (!m_tags->RegComp("(<[^>]*>|\\{[^\\}]*\\})"))
     return false;

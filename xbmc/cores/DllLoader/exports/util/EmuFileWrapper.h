@@ -76,7 +76,6 @@ public:
 private:
   EmuFileObject m_files[MAX_EMULATED_FILES];
   CCriticalSection m_criticalSection;
-  bool m_initialized;
 };
 
 extern CEmuFileWrapper g_emuFileWrapper;

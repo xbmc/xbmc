@@ -63,7 +63,7 @@ double CPTSInputQueue::Get(int64_t bytes, bool consume)
   CSingleLock lock(m_sync);
 
   IT it = m_list.begin();
-  for(; it != m_list.end(); it++)
+  for(; it != m_list.end(); ++it)
   {
     if(bytes <= it->first)
     {
@@ -368,7 +368,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (ret == MSGQ_TIMEOUT)
       return DECODE_FLAG_TIMEOUT;
 
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
+    if (MSGQ_IS_ERROR(ret))
       return DECODE_FLAG_ABORT;
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -780,12 +780,12 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_RESAMPLE)
   {
-    double proportional = 0.0, proportionaldiv;
+    double proportional = 0.0;
 
     //on big errors use more proportional
     if (fabs(m_error / DVD_TIME_BASE) > 0.0)
     {
-      proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
+      double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
       if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
       else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
 

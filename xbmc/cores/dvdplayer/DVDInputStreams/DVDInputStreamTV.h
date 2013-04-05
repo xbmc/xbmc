@@ -54,7 +54,7 @@ public:
   int             GetTotalTime();
   int             GetTime();
 
-  bool            SeekTime(int iTimeInMsec);
+  static bool            SeekTime(int iTimeInMsec);
 
   bool            CanRecord();
   bool            IsRecording();

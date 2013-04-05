@@ -88,7 +88,7 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
     m_files.push_back(segment);
   }
 
-  if(m_files.size() == 0)
+  if(m_files.empty())
     return false;
 
   m_file = m_files[0].file;
@@ -147,7 +147,7 @@ int64_t CDVDInputStreamStack::Seek(int64_t offset, int whence)
     return -1;
 
   len = 0;
-  for(TSegVec::iterator it = m_files.begin(); it != m_files.end(); it++)
+  for(TSegVec::iterator it = m_files.begin(); it != m_files.end(); ++it)
   {
     if(len + it->length > pos)
     {

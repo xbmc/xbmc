@@ -69,6 +69,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDMessageQueue& parent)
 : CThread("COMXPlayerVideo")
 , m_messageQueue("video")
+, m_codecname("")
 , m_messageParent(parent)
 {
   m_av_clock              = av_clock;
@@ -80,7 +81,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_hdmi_clock_sync       = false;
   m_speed                 = DVD_PLAYSPEED_NORMAL;
   m_stalled               = false;
-  m_codecname             = "";
   m_iSubtitleDelay        = 0;
   m_FlipTimeStamp         = 0.0;
   m_bRenderSubs           = false;
@@ -97,6 +97,12 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_messageQueue.SetMaxTimeSize(8.0);
 
   m_dst_rect.SetRect(0, 0, 0, 0);
+  m_iSleepEndTime = 0.0;
+  m_Deinterlace = false;
+  m_audio_count = 0;
+  m_started = false;
+  m_flush = false;
+  m_view_mode = 0;
 }
 
 OMXPlayerVideo::~OMXPlayerVideo()
@@ -651,8 +657,7 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder fps: %f %s\n", m_fFrameRate, command);
     m_DllBcmHost.vc_gencmd(response, sizeof response, command);
 
-    if(m_av_clock)
-      m_av_clock->SetRefreshRate(m_fFrameRate);
+    m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
   m_av_clock->OMXStateExecute(false);

@@ -68,7 +68,7 @@ private:
   static unsigned int IsID3v2Header(unsigned char* pBuf, size_t bufLen);
   virtual int         ReadDuration();
   bool                ReadLAMETagInfo(unsigned char *p);
-  int                 IsMp3FrameHeader(unsigned long head);
+  static int                 IsMp3FrameHeader(unsigned long head);
   int64_t             GetByteOffset(float fTime);
   int64_t             GetTimeOffset(int64_t iBytes);
   void                SetOffsets(int iSeekOffsets, const float *offsets);

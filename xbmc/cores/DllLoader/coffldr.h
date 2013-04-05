@@ -78,10 +78,10 @@ protected:
   int FileHeaderOffset;
 
   // Members for printing the structures
-  void PrintFileHeader(COFF_FileHeader_t *FileHeader);
-  void PrintWindowsHeader(WindowsHeader_t *WinHdr);
-  void PrintOptionHeader(OptionHeader_t *OptHdr);
-  void PrintSection(SectionHeader_t *ScnHdr, char *data);
+  static void PrintFileHeader(COFF_FileHeader_t *FileHeader);
+  static void PrintWindowsHeader(WindowsHeader_t *WinHdr);
+  static void PrintOptionHeader(OptionHeader_t *OptHdr);
+  static void PrintSection(SectionHeader_t *ScnHdr, char *data);
   void PrintStringTable(void);
   void PrintSymbolTable(void);
 

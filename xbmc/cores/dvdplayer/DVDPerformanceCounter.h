@@ -42,7 +42,7 @@ public:
   ~CDVDPerformanceCounter();
 
   bool Initialize();
-  void DeInitialize();
+  static void DeInitialize();
 
   void EnableAudioQueue(CDVDMessageQueue* pQueue)     { CSingleLock lock(m_critSection); m_pAudioQueue = pQueue; }
   void DisableAudioQueue()                            { CSingleLock lock(m_critSection); m_pAudioQueue = NULL;  }

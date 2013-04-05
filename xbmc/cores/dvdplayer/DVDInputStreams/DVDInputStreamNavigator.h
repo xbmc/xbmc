@@ -56,7 +56,11 @@ struct DVDNavStreamInfo
 class DVDNavResult
 {
 public:
-  DVDNavResult(){};
+  DVDNavResult() :
+      pData (NULL ),
+      type  (0    )
+  {
+  };
   DVDNavResult(void* p, int t) { pData = p; type = t; };
   void* pData;
   int type;

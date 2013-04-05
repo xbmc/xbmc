@@ -96,6 +96,7 @@ COMXAudio::COMXAudio() :
   m_Pause           (false  ),
   m_CanPause        (false  ),
   m_CurrentVolume   (0      ),
+  m_drc             (0      ),
   m_Passthrough     (false  ),
   m_HWDecode        (false  ),
   m_BytesPerSec     (0      ),
@@ -111,6 +112,7 @@ COMXAudio::COMXAudio() :
   m_eEncoding       (OMX_AUDIO_CodingPCM),
   m_extradata       (NULL   ),
   m_extrasize       (0      ),
+  m_vizBufferSamples(0      ),
   m_last_pts        (DVD_NOPTS_VALUE),
   m_omx_render      (NULL   )
 {
@@ -315,10 +317,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_pcm_input.nChannels             = m_format.m_channelLayout.Count();
   m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
 
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  std::string componentName = "";
-
-  componentName = "OMX.broadcom.audio_render";
+  std::string componentName = "OMX.broadcom.audio_render";
 
   if(!m_omx_render)
     m_omx_render = new COMXCoreComponent();
@@ -335,7 +334,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   OMX_INIT_STRUCTURE(audioDest);
   strncpy((char *)audioDest.sName, device.c_str(), strlen(device.c_str()));
 
-  omx_err = m_omx_render->SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
+  OMX_ERRORTYPE omx_err = m_omx_render->SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
   if (omx_err != OMX_ErrorNone)
     return false;
 
@@ -707,7 +706,6 @@ bool COMXAudio::SetCurrentVolume(float fVolume)
   {
     double r = fVolume;
     const float* coeff = downmixing_coefficients_8;
-    int input_channels = 0;
 
     // normally we normalalise the levels, can be skipped (boosted) at risk of distortion
     if(!g_guiSettings.GetBool("audiooutput.normalizelevels"))

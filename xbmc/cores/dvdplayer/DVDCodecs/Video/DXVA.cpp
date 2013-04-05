@@ -313,7 +313,7 @@ CSurfaceContext::CSurfaceContext()
 
 CSurfaceContext::~CSurfaceContext()
 {
-  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); it++)
+  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); ++it)
     SAFE_RELEASE(*it);
 }
 
@@ -1490,7 +1490,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
       it = m_sample.erase(it);
     }
     else
-      it++;
+      ++it;
   }
 
   if(m_sample.empty())
@@ -1520,7 +1520,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   for (int i = 0; i < count; i++)
     samp[i].SampleFormat.SampleFormat = DXVA2_SampleUnknown;
 
-  for(it = m_sample.begin(); it != m_sample.end() && valid < count; it++)
+  for(it = m_sample.begin(); it != m_sample.end() && valid < count; ++it)
   {
     if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
     {

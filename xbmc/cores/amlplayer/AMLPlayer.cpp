@@ -316,7 +316,7 @@ CAMLSubTitleThread::~CAMLSubTitleThread()
 void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms)
 {
   CSingleLock lock(m_subtitle_csection);
-  if (m_subtitle_strings.size())
+  if (!m_subtitle_strings.empty())
   {
     AMLSubtitle *amlsubtitle;
     // remove any expired subtitles
@@ -327,7 +327,7 @@ void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms
       if (elapsed_ms > amlsubtitle->endtime)
         it = m_subtitle_strings.erase(it);
       else
-        it++;
+        ++it;
     }
 
     // find the current subtitle
@@ -340,7 +340,7 @@ void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms
         subtitle = amlsubtitle->string;
         break;
       }
-      it++;
+      ++it;
     }
   }
 }
@@ -364,7 +364,6 @@ void CAMLSubTitleThread::Process(void)
       int sub_size = m_dll->codec_get_sub_size_fd(m_subtitle_codec);
       if (sub_size > 0)
       {
-        int sub_type = 0, sub_pts = 0;
         // calloc sub_size + 1 so we auto terminate the string
         char *sub_buffer = (char*)calloc(sub_size + 1, 1);
         m_dll->codec_read_sub_data_fd(m_subtitle_codec, sub_buffer, sub_size);
@@ -381,10 +380,9 @@ void CAMLSubTitleThread::Process(void)
             CSingleLock lock(m_subtitle_csection);
 
             AMLSubtitle *subtitle = new AMLSubtitle;
-
-            sub_type  = (sub_buffer[5] << 16)  | (sub_buffer[6] << 8)   | sub_buffer[7];
+            int sub_type  = (sub_buffer[5] << 16)  | (sub_buffer[6] << 8)   | sub_buffer[7];
             // sub_pts are in ffmpeg timebase, not ms timebase, convert it.
-            sub_pts = (sub_buffer[12] << 24) | (sub_buffer[13] << 16) | (sub_buffer[14] << 8) | sub_buffer[15];
+            int sub_pts = (sub_buffer[12] << 24) | (sub_buffer[13] << 16) | (sub_buffer[14] << 8) | sub_buffer[15];
 
             /* TODO: handle other subtitle codec types
             // subtitle codecs
@@ -502,20 +500,46 @@ void CAMLSubTitleThread::Process(void)
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAMLPlayer::CAMLPlayer(IPlayerCallback &callback)
   : IPlayer(callback),
-  CThread("CAMLPlayer"),
-  m_ready(true)
+  CThread                 ("CAMLPlayer" ),
+  m_cpu                   (0            ),
+  m_speed                 (0            ),
+  m_paused                (false        ),
+  m_bAbortRequest         (false        ),
+  m_ready                 (true         ),
+  m_audio_index           (0            ),
+  m_audio_count           (0            ),
+  m_audio_delay           (0            ),
+  m_audio_passthrough_ac3 (false        ),
+  m_audio_passthrough_dts (false        ),
+  m_audio_mute            (false        ),
+  m_audio_volume          (0.0f         ),
+  m_video_index           (0            ),
+  m_video_count           (0            ),
+  m_video_width           (0            ),
+  m_video_height          (0            ),
+  m_video_fps_numerator   (0            ),
+  m_video_fps_denominator (0            ),
+  m_subtitle_index        (0            ),
+  m_subtitle_count        (0            ),
+  m_subtitle_show         (false        ),
+  m_subtitle_delay        (0            ),
+  m_subtitle_thread       (NULL         ),
+  m_chapter_index         (0            ),
+  m_chapter_count         (0            ),
+  m_show_mainvideo        (0            ),
+  m_view_mode             (0            ),
+  m_zoom                  (0            ),
+  m_contrast              (0            ),
+  m_brightness            (0            )
 {
   m_dll = new DllLibAmplayer;
   m_dll->Load();
   m_pid = -1;
-  m_speed = 0;
-  m_paused = false;
 #if defined(_DEBUG)
   m_log_level = 5;
 #else
   m_log_level = 3;
 #endif
-  m_bAbortRequest = false;
 
   // for external subtitles
   m_dvdOverlayContainer = new CDVDOverlayContainer;
@@ -814,7 +838,7 @@ void CAMLPlayer::SetVolume(float volume)
 void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
+  if (m_audio_streams.empty() || m_audio_index > (int)(m_audio_streams.size() - 1))
     return;
 
   strAudioInfo.Format("Audio stream (%s) [Kb/s:%.2f]",
@@ -825,7 +849,7 @@ void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
 void CAMLPlayer::GetVideoInfo(CStdString &strVideoInfo)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
+  if (m_video_streams.empty() || m_video_index > (int)(m_video_streams.size() - 1))
     return;
 
   strVideoInfo.Format("Video stream (%s) [fr:%.3f Mb/s:%.2f]",
@@ -1085,7 +1109,7 @@ __int64 CAMLPlayer::GetTotalTime()
 void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (index < 0 || m_audio_streams.size() == 0 || index > (int)(m_audio_streams.size() - 1))
+  if (index < 0 || m_audio_streams.empty() || index > (int)(m_audio_streams.size() - 1))
     return;
 
   info.bitrate = m_audio_streams[index]->bit_rate;
@@ -1126,7 +1150,7 @@ void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 void CAMLPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_video_streams.size() == 0 || m_video_index > (int)(m_video_streams.size() - 1))
+  if (m_video_streams.empty() || m_video_index > (int)(m_video_streams.size() - 1))
     return;
 
   info.bitrate = m_video_streams[m_video_index]->bit_rate;
@@ -1150,7 +1174,7 @@ int CAMLPlayer::GetBitsPerSample()
 int CAMLPlayer::GetSampleRate()
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
+  if (m_audio_streams.empty() || m_audio_index > (int)(m_audio_streams.size() - 1))
     return 0;
   
   return m_audio_streams[m_audio_index]->sample_rate;
@@ -2103,11 +2127,11 @@ void CAMLPlayer::FindSubtitleFiles()
 int CAMLPlayer::AddSubtitleFile(const std::string &filename, const std::string &subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
-  std::string vobsubfile = subfilename;
 
   if(ext == ".idx")
   {
     /* TODO: we do not handle idx/sub binary subs yet.
+    std::string vobsubfile = subfilename;
     if (vobsubfile.empty())
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
 

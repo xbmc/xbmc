@@ -128,7 +128,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
-  if(formats.size() == 0)
+  if(formats.empty())
     options.m_formats.push_back(RENDER_FMT_YUV420P);
   else
     options.m_formats = formats;
