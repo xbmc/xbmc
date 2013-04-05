@@ -450,6 +450,13 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   if (pVal && *pVal != 0)
     items.SetProperty("offset", atoi(pVal));
 
+  pVal = root->Attribute("thumb");
+  if (pVal && *pVal != 0)
+  {
+    CStdString mediaUrl = ProcessUrl(m_url, pVal, false);
+    items.SetArt("season.thumb", BuildImageURL(m_url, mediaUrl, true));
+  }
+
   if (IsHomeVideoSection(strPath))
     items.SetProperty("HomeVideoSection", true);
 
