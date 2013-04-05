@@ -117,7 +117,7 @@
 		<value condition="Container.Content(artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
 		<value condition="Container.Content(songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
 		<value condition="Container.Content(genres)">$INFO[Container.NumItems] $LOCALIZE[135]</value>
-		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>		
+		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
 		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
 	</variable>
 	<variable name="TopBarSelectedItemStrings">
@@ -159,6 +159,17 @@
 				<label>$VAR[TopBarItemCountStrings]</label>
 				<textcolor>FF999999</textcolor>
 			</control>
+		</control>
+	</include>
+	<!-- global search-->
+	<include name="GlobalSearch">
+		<control type="image">
+			<posy>75</posy>
+			<posx>-217</posx>
+			<width>184</width>
+			<height>32</height>
+			<aspectratio>keep</aspectratio>
+			<texture>left-menu-search-field-bg.png</texture>
 		</control>
 	</include>
 	<!-- plot formatting -->
