@@ -79,12 +79,16 @@ public:
   CFileItemListPtr GetFileItemList() const { return m_list; }
   CStdString GetUrl() const { return m_url; }
   
+  virtual const char *GetType() const { return "sectionloader"; };
+  
+  /*
   virtual bool operator==(const CJob* job) const
   {
     CPlexSectionLoadJob* ljob = (CPlexSectionLoadJob*)job;
     if (ljob->m_url == m_url) return true;
     return false;
   }
+   */
   
   
 private:
