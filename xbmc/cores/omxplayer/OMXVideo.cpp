@@ -839,6 +839,7 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
         omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
         if (omx_err == OMX_ErrorNone)
         {
+          //CLog::Log(LOGINFO, "VideD: dts:%.0f pts:%.0f size:%d)\n", dts, pts, iSize);
           break;
         }
         else

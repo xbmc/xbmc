@@ -57,7 +57,7 @@ protected:
   AEAudioFormat             m_format;
   CAEChannelInfo            m_channelLayout;
   COMXAudioCodecOMX         *m_pAudioCodec;
-  unsigned int              m_speed;
+  int                       m_speed;
   bool                      m_silence;
   double                    m_audioClock;
   double m_error;    //last average error
