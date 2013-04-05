@@ -203,7 +203,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     return /*false*/;
   }
 
-  m_cacheSize = pa_stream_writable_size(m_Stream);
+  const pa_buffer_attr *streamBuffer;
+  streamBuffer = pa_stream_get_buffer_attr(m_Stream);
+  m_cacheSize = streamBuffer->maxlength;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 
@@ -252,6 +254,10 @@ void CPulseAEStream::Destroy()
 
   if (m_Stream)
   {
+    pa_stream_set_state_callback(m_Stream, NULL, NULL);
+    pa_stream_set_write_callback(m_Stream, NULL, NULL);
+    pa_stream_set_latency_update_callback(m_Stream, NULL, NULL);
+    pa_stream_set_underflow_callback(m_Stream, NULL, NULL);
     pa_stream_disconnect(m_Stream);
     pa_stream_unref(m_Stream);
     m_Stream = NULL;
