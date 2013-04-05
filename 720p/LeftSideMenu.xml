@@ -148,7 +148,84 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>!Container.Content(secondary)</visible>
+			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode)</visible>
+			<include>leftMenuInitSlide</include>
+			<include>leftMenuSlide</include>
+			<include>leftMenuBg</include>
+			<control type="image">
+				<posy>75</posy>
+				<posx>-217</posx>
+				<width>184</width>
+				<height>32</height>
+				<aspectratio>keep</aspectratio>
+				<texture>left-menu-search-field-bg.png</texture>
+				<visible>![Container.Content(Seasons) | Container.Content(episodes)] + !Window.IsActive(10202)</visible>
+			</control>			
+			<!-- filters & sorting menu -->
+			<control type="group" id="1300">
+				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
+				<posx>-253</posx>
+				<posy>30</posy>
+				<width>253</width>
+				<height>650</height>
+				<ondown>19000</ondown>
+				<orientation>vertical</orientation>
+				<scrolltime>150</scrolltime>
+				<!-- FILTERS -->
+				<!-- filters list title -->
+				<control type="label" id="19009">
+					<description>Title</description>
+					<posy>90</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+				</control>
+				<!-- filters list -->
+				<control type="grouplist" id="19000">
+					<posy>150</posy>
+					<posx>15</posx>
+					<ondown>19010</ondown>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+				<!-- filters buttons -->
+				<control type="button" id="19001">
+					<textoffsetx>35</textoffsetx>
+					<include>leftMenuFormat</include>
+				</control>
+				<control type="radiobutton" id="19002">
+					<textoffsetx>35</textoffsetx>
+					<include>leftMenuFormat</include>
+					<include>leftMenuFilterRadioButton</include>
+				</control>
+				<!-- SORTING -->
+				<!-- sorting list title -->
+				<control type="label" id="19019">
+					<description>Title</description>
+					<posy>420</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+				</control>
+				<!-- sorting list -->
+				<control type="grouplist" id="19010">
+					<posy>485</posy>
+					<posx>10</posx>
+					<onup>19000</onup>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
+				<!-- sorting buttons -->
+				<control type="radiobutton" id="19011">
+					<textoffsetx>30</textoffsetx>
+					<include>leftMenuFormat</include>
+					<include>leftMenuSortingButton</include>
+				</control>
+			</control>			
+		</control>
+	</include>
+	<!-- Preplay menu -->
+	<include name="LeftSideMenuPreplay">
+		<control type="group">
+			<visible>Container.Content(movie) | Container.Content(episode)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
