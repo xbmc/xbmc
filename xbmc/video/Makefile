@@ -1,6 +1,7 @@
 SRCS=Bookmark.cpp \
      FFmpegVideoDecoder.cpp \
      GUIViewStateVideo.cpp \
+     PlayerController.cpp \
      Teletext.cpp \
      VideoDatabase.cpp \
      VideoDbUrl.cpp \
