@@ -63,26 +63,34 @@ typedef std::pair<int, CFileItemListPtr> contentListPair;
 
 class CPlexSectionLoadJob : public CJob
 {
-  public:
-    CPlexSectionLoadJob(const CStdString& url, int contentType) :
-      CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
-
-    bool DoWork()
-    {
-
-      CPlexDirectory dir(true, false);
-      m_list->Clear();
-      return dir.GetDirectory(m_url, *m_list.get());
-    }
-
-    int GetContentType() const { return m_contentType; }
-    CFileItemListPtr GetFileItemList() const { return m_list; }
-    CStdString GetUrl() const { return m_url; }
-
-  private:
-    CStdString m_url;
-    CFileItemListPtr m_list;
-    int m_contentType;
+public:
+  CPlexSectionLoadJob(const CStdString& url, int contentType) :
+  CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
+  
+  bool DoWork()
+  {
+    
+    CPlexDirectory dir(true, false);
+    m_list->Clear();
+    return dir.GetDirectory(m_url, *m_list.get());
+  }
+  
+  int GetContentType() const { return m_contentType; }
+  CFileItemListPtr GetFileItemList() const { return m_list; }
+  CStdString GetUrl() const { return m_url; }
+  
+  virtual bool operator==(const CJob* job) const
+  {
+    CPlexSectionLoadJob* ljob = (CPlexSectionLoadJob*)job;
+    if (ljob->m_url == m_url) return true;
+    return false;
+  }
+  
+  
+private:
+  CStdString m_url;
+  CFileItemListPtr m_list;
+  int m_contentType;
 };
 
 class CPlexSectionFanout : public IJobCallback
