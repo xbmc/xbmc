@@ -60,40 +60,31 @@
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
 	<!-- DialogFilters.xml -->
-	<include name="DialogFilters_">
+	<include name="DialogFilters">
 		<control type="group">
-			<posx>350</posx>
-			<posy>160</posy>
+			<posx>0</posx>
+			<posy>60</posy>
 			<!-- sub-list backgrounds -->
 			<control type="group">
 				<control type="image">
-					<description>Background</description>
-					<width>322</width>
-					<height>420</height>
-					<include>DialogBG</include>
-				</control>
-				<control type="image">
 					<description>Title bg</description>
-					<width>322</width>
-					<height>50</height>
-					<include>DialogHeaderBG</include>
+					<posy>-12</posy>
+					<posx>0</posx>
+					<width>246</width>
+					<height>70</height>
+					<texture border="10">base.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+					<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
-					<description>Title bg bottom border</description>
-					<width>320</width>
-					<include>DialogHeaderBorder</include>
-				</control>
-				<control type="image">
-					<description>Background border</description>
-					<width>324</width>
-					<height>422</height>
-					<include>DialogBorder</include>
-				</control>
-				<control type="image">
-					<description>Dialog arrow</description>
-					<posx>-14</posx>
-					<posy>100</posy>
-					<include>ArrowBlackLeft</include>
+					<description>Title bottom line</description>
+					<posy>55</posy>
+					<posx>0</posx>
+					<width>246</width>
+					<height>2</height>
+					<texture border="1">base.png</texture>
+					<colordiffuse>orange</colordiffuse>
+					<animation effect="fade" start="0" end="50" time="300" condition="true">Conditional</animation>
 				</control>
 			</control>	
 			<!-- sub-list -->
@@ -102,88 +93,14 @@
 				<!-- sub-list title -->
 				<control type="label" id="19029">
 					<description>Heading</description>
-					<width>330</width>
-					<include>DialogHeading</include>
-				</control>
-				<control type="grouplist" id="19020">
-					<width>330</width>
-					<height>340</height>
-					<posy>40</posy>
-					<posx>7</posx>
-					<onup>19020</onup>
-					<ondown>19020</ondown>
-					<onleft>19000</onleft>
-					<onright>-</onright>
-					<itemgap>5</itemgap>
-					<pagecontrol>61</pagecontrol>
-					<scrolltime>200</scrolltime>
-				</control>
-				<!-- sub-list buttons -->
-				<control type="radiobutton" id="19021">
-					<include>leftSubMenuRadioButton</include>
-				</control>
-				<control type="scrollbar" id="61">
-					<description>Scroll Bar</description>
-					<posx>300</posx>
-					<posy>33</posy>
-					<width>24</width>
-					<height>353</height>
-					<showonepage>true</showonepage>
-				</control>
-			</control>			
-		</control>
-	</include>
-	<!-- DialogFilters.xml NEW -->
-	<include name="DialogFilters">
-		<control type="group">
-			<posx>0</posx>
-			<posy>130</posy>
-			<!-- sub-list backgrounds -->
-			<!--><control type="group">
-				<control type="image">
-					<description>Background</description>
-					<width>322</width>
-					<height>420</height>
-					<include>DialogBG</include>
-				</control>
-				<control type="image">
-					<description>Title bg</description>
-					<width>322</width>
-					<height>50</height>
-					<include>DialogHeaderBG</include>
-				</control>
-				<control type="image">
-					<description>Title bg bottom border</description>
-					<width>320</width>
-					<include>DialogHeaderBorder</include>
-				</control>
-				<control type="image">
-					<description>Background border</description>
-					<width>324</width>
-					<height>422</height>
-					<include>DialogBorder</include>
-				</control>
-				<control type="image">
-					<description>Dialog arrow</description>
-					<posx>-14</posx>
-					<posy>100</posy>
-					<include>ArrowBlackLeft</include>
-				</control>
-			</control>-->	
-			<!-- sub-list -->
-			<control type="group" id="1400">
-				<posy>24</posy>
-				<!-- sub-list title -->
-				<control type="label" id="19029">
-					<description>Heading</description>
-					<width>330</width>
-					<include>DialogHeading</include>
-				</control>
-				<control type="grouplist" id="19020">
 					<width>250</width>
-					<height>340</height>
+					<include>DialogHeading</include>
+				</control>
+				<control type="grouplist" id="19020">
+					<width>230</width>
+					<height>555</height>
 					<posy>40</posy>
-					<posx>7</posx>
+					<posx>6</posx>
 					<onup>19020</onup>
 					<ondown>19020</ondown>
 					<onleft>19000</onleft>
@@ -198,10 +115,10 @@
 				</control>
 				<control type="scrollbar" id="61">
 					<description>Scroll Bar</description>
-					<posx>300</posx>
+					<posx>227</posx>
 					<posy>33</posy>
-					<width>24</width>
-					<height>353</height>
+					<width>20</width>
+					<height>568</height>
 					<showonepage>true</showonepage>
 				</control>
 			</control>			

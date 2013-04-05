@@ -2,6 +2,7 @@
 <window id="0">
 	<defaultcontrol always="true">300</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<include>WindowOpenFade</include>
 	<controls>
 		<include>BGGrainy</include>
 		<include>SlideshowHome</include>

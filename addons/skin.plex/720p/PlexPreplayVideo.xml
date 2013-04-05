@@ -1,6 +1,7 @@
 <window id="10090">
 	<defaultcontrol always="true">999</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<backgroundcolor>0</backgroundcolor>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
@@ -10,7 +11,7 @@
 		<include>PreplayMovie</include>
 		<include>PreplayEpisode</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenu</include>
+		<include>LeftSideMenuPreplay</include>
 		<include>TopBar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
