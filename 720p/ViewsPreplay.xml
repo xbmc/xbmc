@@ -933,10 +933,7 @@
 						<onup>-</onup>
 						<ondown>19102</ondown>
 					</control>
-					<control type="label">
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>$LOCALIZE[31134]</label>-->
-						<label>English (2 more)</label>
+					<control type="label" id="19111">
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -959,10 +956,7 @@
 						<onup>19101</onup>
 						<ondown>-</ondown>
 					</control>
-					<control type="label">
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>$INFO[ListItem.Director]</label>-->
-						<label>French (1 more)</label>
+					<control type="label" id="19112">
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -1239,10 +1233,7 @@
 						<onup>-</onup>
 						<ondown>19102</ondown>
 					</control>
-					<control type="label">
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>$LOCALIZE[31134]</label>-->
-						<label>English (2 more)</label>
+					<control type="label" id="19111">
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
@@ -1265,10 +1256,7 @@
 						<onup>19101</onup>
 						<ondown>-</ondown>
 					</control>
-					<control type="label">
-						<!-- NOTE: NEED STRING FOR THIS -->
-						<!--><label>$INFO[ListItem.Director]</label>-->
-						<label>French (1 more)</label>
+					<control type="label" id="19112">
 						<include>LeftInfoFormatWhite</include>
 					</control>
 				</control>
