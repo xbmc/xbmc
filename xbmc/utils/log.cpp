@@ -139,7 +139,7 @@ bool CLog::Init(const char* path)
   CSingleLock waitLock(critSec);
   if (!m_file)
   {
-    // g_settings.m_logFolder is initialized in the CSettings constructor
+    // g_advancedSettings.m_logFolder is initialized in the CSettings constructor
     // and changed in CApplication::Create()
     CStdString strLogFile, strLogFileOld;
 

@@ -45,7 +45,7 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
 
 CStdString CGUIViewStateWindowVideo::GetExtensions()
 {
-  return g_settings.m_videoExtensions;
+  return g_advancedSettings.m_videoExtensions;
 }
 
 int CGUIViewStateWindowVideo::GetPlaylist()

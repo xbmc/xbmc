@@ -508,7 +508,7 @@ bool CUtil::IsPicture(const CStdString& strFile)
     return false;
 
   extension.ToLower();
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+  if (g_advancedSettings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
   if (extension == ".tbn" || extension == ".dds")

@@ -84,13 +84,6 @@ public:
 
   void Clear();
 
-  CStdString m_pictureExtensions;
-  CStdString m_musicExtensions;
-  CStdString m_videoExtensions;
-  CStdString m_discStubExtensions;
-
-  CStdString m_logFolder;
-
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
   bool m_bMyMusicPlaylistRepeat;
@@ -114,8 +107,6 @@ public:
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-  CStdString m_userAgent;
 
   CStdString m_defaultMusicLibSource;
 

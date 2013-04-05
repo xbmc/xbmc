@@ -13,7 +13,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
@@ -606,10 +606,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // this is the only way to hide unplayable items in the 'files'
             // view as we cannot tell what context (eg music vs video) the
             // request came from
-            string supported = g_settings.m_pictureExtensions + "|"
-                             + g_settings.m_videoExtensions + "|"
-                             + g_settings.m_musicExtensions + "|"
-                             + g_settings.m_discStubExtensions;
+            string supported = g_advancedSettings.m_pictureExtensions + "|"
+                             + g_advancedSettings.m_videoExtensions + "|"
+                             + g_advancedSettings.m_musicExtensions + "|"
+                             + g_advancedSettings.m_discStubExtensions;
             CDirectory::GetDirectory((const char*)parent_id, items, supported);
             DefaultSortItems(items);
         }
