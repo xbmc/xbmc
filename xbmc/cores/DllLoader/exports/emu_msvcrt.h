@@ -39,7 +39,7 @@ typedef fpos_t   fpos64_t; // no 64-bit on android
 #endif
 
 #ifdef WIN32
-#include "win32-dirent.h"
+#include "win32/dirent.h"
 #else
 #include <dirent.h>
 #endif

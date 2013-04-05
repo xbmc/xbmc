@@ -600,9 +600,6 @@
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp">
-      <Filter>cores\DllLoader\exports</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c">
       <Filter>cores\DllLoader\exports\emu_socket</Filter>
     </ClCompile>
@@ -3426,9 +3423,6 @@
       <Filter>cores\DllLoader\exports</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.h">
-      <Filter>cores\DllLoader\exports</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.h">
       <Filter>cores\DllLoader\exports</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h">
