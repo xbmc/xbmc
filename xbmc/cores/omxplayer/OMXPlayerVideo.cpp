@@ -40,6 +40,7 @@
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDOverlayRenderer.h"
+#include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"

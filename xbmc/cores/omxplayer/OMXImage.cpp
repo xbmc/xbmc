@@ -33,6 +33,7 @@
 
 #include <sys/time.h>
 #include <inttypes.h>
+#include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
