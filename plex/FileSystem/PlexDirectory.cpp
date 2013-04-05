@@ -650,10 +650,12 @@ class PlexMediaNode
          if (strThumb.size() > 0)
            pItem->SetArt(PLEX_ART_THUMB, strThumb);
          
+         /*
          // Also make a uncompressed version
          CStdString bigPoster = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"), false);
          if (!bigPoster.empty())
            pItem->SetArt(PLEX_ART_BIG_POSTER, bigPoster);
+           */
        }
 
        // Multiple thumbs?
