@@ -41,53 +41,55 @@ CEGLWrapper::~CEGLWrapper()
   Destroy();
 }
 
+namespace
+{
+  bool
+  CorrectGuess(CEGLNativeType *guess,
+               const std::string &implementation)
+  {
+    assert(guess != NULL);
+
+    if(guess->CheckCompatibility())
+    {
+      if (implementation == guess->GetNativeName() ||
+          implementation == "auto")
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  template <class NativeType>
+  CEGLNativeType * CreateEGLNativeType(const std::string &implementation)
+  {
+    CEGLNativeType *guess = new NativeType;
+    if(CorrectGuess(guess, implementation))
+      return guess;
+
+    delete guess;
+    return NULL;
+  }
+}
+
 bool CEGLWrapper::Initialize(const std::string &implementation)
 {
-  bool ret = false;
   CEGLNativeType *nativeGuess = NULL;
 
-  nativeGuess = new CEGLNativeTypeAndroid;
-  if (nativeGuess->CheckCompatibility())
+  // Try to create each backend in sequence and go with the first one
+  // that we know will work
+  if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)))
   {
-    if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
-    {
-      m_nativeTypes = nativeGuess;
-      ret = true;
-    }
-  }
+    m_nativeTypes = nativeGuess;
 
-  if (!ret)
-  {
-    delete nativeGuess;
-    nativeGuess = new CEGLNativeTypeAmlogic;
-    if (nativeGuess->CheckCompatibility())
-    {
-      if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
-      {
-        m_nativeTypes = nativeGuess;
-        ret = true;
-      }
-    }
-  }
-
-  if (!ret)
-  {
-    delete nativeGuess;
-    nativeGuess = new CEGLNativeTypeRaspberryPI;
-    if (nativeGuess->CheckCompatibility())
-    {
-      if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
-      {
-        m_nativeTypes = nativeGuess;
-        ret = true;
-      }
-    }
-  }
-
-  if (ret && m_nativeTypes)
     m_nativeTypes->Initialize();
+    return true;
+  }
 
-  return ret;
+  return false;
 }
 
 bool CEGLWrapper::Destroy()
