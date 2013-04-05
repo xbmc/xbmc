@@ -8,6 +8,7 @@
 
 #include "FileItem.h"
 #include "guilib/GUILabelControl.h"
+#include "ApplicationMessenger.h"
 
 #define AUDIO_BUTTON_ID 19101
 #define SUBTITLE_BUTTON_ID 19102
@@ -73,6 +74,18 @@ CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
   
   
   return ret;
+}
+
+bool
+CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    CApplicationMessenger::Get().PlayFile(*m_vecItems->Get(0));
+    return true;
+  }
+  
+  return CGUIMediaWindow::OnAction(action);
 }
 
 CFileItemPtr

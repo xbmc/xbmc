@@ -10,6 +10,7 @@ public:
   
   virtual bool OnMessage(CGUIMessage& message);
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  virtual bool OnAction(const CAction &action);
   
   void UpdateAudioSubButtons();
 };
