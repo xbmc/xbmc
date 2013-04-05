@@ -1061,8 +1061,15 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 
         PlexMediaStreamPtr mediaStream(new PlexMediaStream(id, key, streamType, codec, index, subIndex, selected, language));
         
-        if (stream->Attribute("channels"))
-          mediaStream->channels = boost::lexical_cast<int>(stream->Attribute("channels"));
+        try
+        {
+          if (stream->Attribute("channels"))
+            mediaStream->channels = boost::lexical_cast<int>(stream->Attribute("channels"));
+        }
+        catch (boost::bad_lexical_cast &e)
+        {
+          CLog::Log(LOGERROR, "PlexDirectory::ComputeMediaUrl channels contained %s and it was not possible to cast to int", stream->Attribute("channels"));
+        }
         
         mediaPart->mediaStreams.push_back(mediaStream);
       }
