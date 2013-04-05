@@ -65,7 +65,7 @@
 			<colordiffuse>orange</colordiffuse>
 			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
-			<visible>[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)</visible>
+			<visible>[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)]</visible>
 		</control>		
 	</include>
 	<include name="ListItemTitle1">
@@ -742,6 +742,11 @@
 							<include>ListTitle</include>
 							<label>Queue</label>
 							<visible>[Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
+						</control>
+						<!-- arrow -->
+						<control type="group">
+							<posy>243</posy>
+							<include>ListArrow</include>
 						</control>
 					</control>
 				</control>
