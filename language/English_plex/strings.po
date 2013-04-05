@@ -895,3 +895,11 @@ msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
 msgstr "This media is geoblocked and can't be accessed from your current location."
 #### end error strings
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Select Audio Track"
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Select Subtitle"

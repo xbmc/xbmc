@@ -39,6 +39,7 @@
 
 /* PLEX */
 #include <boost/enable_shared_from_this.hpp>
+#include "PlexMediaPart.h"
 class CFileItem;
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 /* END PLEX */
@@ -393,7 +394,6 @@ public:
   int m_iBadPwdCount;
 
   /* PLEX */
-  #include "PlexMediaPart.h"
   std::vector<CFileItemPtr> m_contextItems;
   std::vector<CFileItemPtr> m_mediaItems;
   std::vector<PlexMediaPartPtr> m_mediaParts;

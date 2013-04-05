@@ -15,6 +15,7 @@
 #define WINDOW_DIALOG_TIMER               10201
 #define WINDOW_DIALOG_FILTER_SORT         10202
 #define WINDOW_DIALOG_MYPLEX_PIN          10203
+#define WINDOW_DIALOG_PLEX_AUDIO_SUBTITLE_PICKER 10204
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40

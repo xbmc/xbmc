@@ -1052,6 +1052,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
           codec = stream->Attribute("codec");
 
         PlexMediaStreamPtr mediaStream(new PlexMediaStream(id, key, streamType, codec, index, subIndex, selected, language));
+        
+        if (stream->Attribute("channels"))
+          mediaStream->channels = boost::lexical_cast<int>(stream->Attribute("channels"));
+        
         mediaPart->mediaStreams.push_back(mediaStream);
       }
     }
