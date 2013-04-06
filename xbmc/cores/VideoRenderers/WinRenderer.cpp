@@ -1081,7 +1081,15 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       || method == VS_SCALINGMETHOD_LANCZOS3_FAST
       || method == VS_SCALINGMETHOD_SPLINE36
       || method == VS_SCALINGMETHOD_LANCZOS3)
+      {
+        // if scaling is below level, avoid hq scaling
+        float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
+        float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
+        int minScale = g_guiSettings.GetInt("videoplayer.hqscalers");
+        if (scaleX < minScale && scaleY < minScale)
+          return false;
         return true;
+      }
     }
   }
   else if(m_renderMethod == RENDER_SW)

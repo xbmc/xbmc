@@ -5400,7 +5400,12 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr ""
 
-#empty strings from id 13435 to 13499
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above %"
+msgstr ""
+
+#empty strings from id 13436 to 13499
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#13500"
