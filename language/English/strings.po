@@ -9225,7 +9225,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr ""
 
-#empty string with id 20404
+#: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr ""
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"

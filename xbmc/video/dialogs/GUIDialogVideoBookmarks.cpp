@@ -111,15 +111,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (iAction == ACTION_DELETE_ITEM)
         {
-          if( (unsigned)iItem < m_bookmarks.size() )
-          {
-            CVideoDatabase videoDatabase;
-            videoDatabase.Open();
-            videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[iItem],m_bookmarks[iItem].type);
-            videoDatabase.Close();
-            CUtil::DeleteVideoDatabaseDirectoryCache();
-          }
-          Update();
+          Delete(iItem);
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
@@ -141,9 +133,63 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
     {
       OnRefreshList();
     }
+    break;
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+bool CGUIDialogVideoBookmarks::OnAction(const CAction &action)
+{
+  switch(action.GetID())
+  {
+  case ACTION_CONTEXT_MENU:
+  case ACTION_MOUSE_RIGHT_CLICK:
+    {
+      OnPopupMenu(m_viewControl.GetSelectedItem());
+      return true;
+    }
+  }
+  return CGUIDialog::OnAction(action);
+}
+
+
+void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
+{
+  if (item < 0 || item >= m_vecItems->Size())
+    return;
+  
+    // highlight the item
+  (*m_vecItems)[item]->Select(true);
+  
+  CContextButtons choices;
+  
+  int langID = 20404; //"Remove bookmark"
+  if (m_bookmarks[item].type == CBookmark::EPISODE)
+    langID = 20405;   //"Remove episode bookmark"
+  choices.Add(1, langID); 
+
+  
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  
+    // unhighlight the item
+  (*m_vecItems)[item]->Select(false);
+  
+  if (button == 1)
+    Delete(item);
+}
+
+void CGUIDialogVideoBookmarks::Delete(int item)
+{
+  if ( item>=0 && (unsigned)item < m_bookmarks.size() )
+  {
+    CVideoDatabase videoDatabase;
+    videoDatabase.Open();
+    videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[item],m_bookmarks[item].type);
+    videoDatabase.Close();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
+  Update();
 }
 
 void CGUIDialogVideoBookmarks::OnRefreshList()
@@ -293,7 +339,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
       {
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
-        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, bookmark.timeInSeconds);
+        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
         bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
