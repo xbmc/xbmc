@@ -3048,6 +3048,19 @@ void CVideoDatabase::DeleteSet(int idSet)
   }
 }
 
+void CVideoDatabase::ClearMovieSet(int idMovie)
+{
+  SetMovieSet(idMovie, -1);
+}
+
+void CVideoDatabase::SetMovieSet(int idMovie, int idSet)
+{
+  if (idSet >= 0)
+    ExecuteQuery(PrepareSQL("update movie set idSet = %i where idMovie = %i", idSet, idMovie));
+  else
+    ExecuteQuery(PrepareSQL("update movie set idSet = null where idMovie = %i", idMovie));
+}
+
 void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
 {
   try
