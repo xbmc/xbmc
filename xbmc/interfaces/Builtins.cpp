@@ -122,6 +122,7 @@ const BUILT_IN commands[] = {
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
+  { "ReplaceWindowAndFocus",      true,   "Replaces the current window with the new one and sets focus to the specified id" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
@@ -357,7 +358,7 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
-  else if ((execute.Equals("activatewindowandfocus")) && params.size())
+  else if ((execute.Equals("activatewindowandfocus") || execute.Equals("replacewindowandfocus")) && params.size())
   {
     CStdString strWindow = params[0];
 
@@ -372,7 +373,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CBuiltins::Execute("Quit");
 #endif
       vector<CStdString> dummy;
-      g_windowManager.ActivateWindow(iWindow, dummy, false);
+      g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindowandfocus"));
 
       unsigned int iPtr = 1;
       while (params.size() > iPtr + 1)
@@ -386,7 +387,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
+      CLog::Log(LOGERROR, "Replace/ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
       return false;
     }
   }
