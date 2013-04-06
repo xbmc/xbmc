@@ -223,7 +223,7 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
 
     if(omx_image.ReadFile(texturePath))
     {
-      if(omx_image.Decode(omx_image.GetWidth(), omx_image.GetHeight()))
+      if(omx_image.Decode(maxWidth, maxHeight))
       {
         Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
 
