@@ -34,6 +34,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
+  virtual bool OnAction(const CAction &action);
 
   /*!
    \brief Creates a bookmark of the currently playing video file.
@@ -62,11 +63,10 @@ protected:
   void ClearBookmarks();
   static bool AddEpisodeBookmark();
   static bool AddBookmark(CVideoInfoTag *tag=NULL);
-  
+  void Delete(int item);
   void Clear();
   void OnRefreshList();
-  
-
+  void OnPopupMenu(int item);
   CGUIControl *GetFirstFocusableControl(int id);
 
   CFileItemList* m_vecItems;
