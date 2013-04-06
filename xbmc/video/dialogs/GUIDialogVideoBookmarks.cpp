@@ -339,7 +339,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
       {
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
-        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, bookmark.timeInSeconds);
+        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
         bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
