@@ -190,6 +190,9 @@
 #define ACTION_VOLAMP_UP            93
 #define ACTION_VOLAMP_DOWN          94
 
+#define ACTION_CREATE_EPISODE_BOOKMARK 95 //Creates an episode bookmark on the currently playing video file containing more than one episode
+#define ACTION_CREATE_BOOKMARK         96 //Creates a bookmark of the currently playing video file
+
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
