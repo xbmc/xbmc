@@ -620,6 +620,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
+    // as there's no library://music support, manually add playlists and music
+    // video nodes
+    if (items.GetPath() == "musicdb://") {
+      CFileItemPtr playlists(new CFileItem("special://musicplaylists/", true));
+      playlists->SetLabel(g_localizeStrings.Get(136));
+      items.Add(playlists);
+
+      CVideoDatabase database;
+      database.Open();
+      if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
+          CFileItemPtr mvideos(new CFileItem("videodb://3/", true));
+          mvideos->SetLabel(g_localizeStrings.Get(20389));
+          items.Add(mvideos);
+      }
+    }
+
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed
