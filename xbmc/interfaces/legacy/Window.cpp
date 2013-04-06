@@ -507,6 +507,7 @@ namespace XBMCAddon
 
     void Window::onControl(Control* action) { TRACE; /* do nothing by default */ }
     void Window::onClick(int controlId) { TRACE; /* do nothing by default */ }
+    void Window::onDoubleClick(int controlId) { TRACE; /* do nothing by default */ }
     void Window::onFocus(int controlId) { TRACE; /* do nothing by default */ }
     void Window::onInit() { TRACE; /* do nothing by default */ }
 

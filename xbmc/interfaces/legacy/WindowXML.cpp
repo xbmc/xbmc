@@ -381,6 +381,12 @@ namespace XBMCAddon
                 PulseActionEvent();
                 return true;
               }
+              else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_DOUBLE_CLICK)
+              {
+                invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onDoubleClick,iControl));
+                PulseActionEvent();
+                return true;
+              }
               else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
               {
                 AddonClass::Ref<Action> inf(new Action(CAction(ACTION_CONTEXT_MENU)));
@@ -435,6 +441,12 @@ namespace XBMCAddon
       TRACE;
       // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
       // which if its not media is BAD and 99 out of 100 times undesireable.
+      return false;
+    }
+
+    bool WindowXML::OnDoubleClick(int iItem)
+    {
+      TRACE;
       return false;
     }
 
