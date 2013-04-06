@@ -9463,7 +9463,27 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr ""
 
-#empty strings from id 20465 to 21329
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr ""
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr ""
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr ""
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr ""
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr ""
+
+#empty strings from id 20470 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: xbmc/settings/GUISettings.cpp
