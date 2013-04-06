@@ -215,7 +215,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   try
   {
     bool bPathInCache;
-    CURL url2(strFileName);
+    CURL url2(URIUtils::SubstitutePath(strFileName));
     if (url2.GetProtocol() == "apk")
       url2.SetOptions("");
     if (url2.GetProtocol() == "zip")
@@ -312,13 +312,14 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try
   {
-    CURL url(URIUtils::SubstitutePath(strFileName));
+	CStdString storedFileName = URIUtils::SubstitutePath(strFileName);
+    CURL url(storedFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
     {
       // add this file to our directory cache (if it's stored)
-      g_directoryCache.AddFile(strFileName);
+      g_directoryCache.AddFile(storedFileName);
       return true;
     }
     return false;
@@ -334,7 +335,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 
 bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 {
-  CURL url;
+  CURL url = URIUtils::SubstitutePath(strFileName);;
   
   try
   {
@@ -344,13 +345,12 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
     if (bUseCache)
     {
       bool bPathInCache;
-      if (g_directoryCache.FileExists(strFileName, bPathInCache) )
+      if (g_directoryCache.FileExists(url.Get(), bPathInCache) )
         return true;
       if (bPathInCache)
         return false;
     }
 
-    url = URIUtils::SubstitutePath(strFileName);
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
@@ -718,7 +718,7 @@ bool CFile::Delete(const CStdString& strFileName)
 
     if(pFile->Delete(url))
     {
-      g_directoryCache.ClearFile(strFileName);
+      g_directoryCache.ClearFile(url.Get());
       return true;
     }
   }
@@ -745,8 +745,8 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
 
     if(pFile->Rename(url, urlnew))
     {
-      g_directoryCache.ClearFile(strFileName);
-      g_directoryCache.ClearFile(strNewFileName);
+      g_directoryCache.ClearFile(url.Get());
+      g_directoryCache.AddFile(urlnew.Get());
       return true;
     }
   }
