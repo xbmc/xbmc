@@ -309,8 +309,8 @@ void CLinuxJoystick::Update()
     // JS_EVENT_AXIS      0x02    /* joystick moved */
     // JS_EVENT_INIT      0x80    /* (flag) initial state of device */
 
-    // We don't differentiate between synthetic (i.e. initial) or real events
-    switch (joyEvent.type & ~JS_EVENT_INIT)
+    // Ignore initial events, because they mess up the buttons
+    switch (joyEvent.type)
     {
     case JS_EVENT_BUTTON:
       if (joyEvent.number < m_state.buttons.size())

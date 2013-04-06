@@ -128,6 +128,8 @@ void CJoystickManager::DeInitialize()
 
   for (unsigned int i = 0; i < ARRAY_LENGTH(m_states); i++)
     m_states[i].ResetState();
+
+   m_actionTracker.Reset(); 
 }
 
 void CJoystickManager::Update()
