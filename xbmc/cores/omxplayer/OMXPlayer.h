@@ -490,4 +490,6 @@ private:
   bool                    m_change_volume;
   CDVDOverlayContainer    m_overlayContainer;
   ECacheState             m_caching;
+
+  bool m_HasVideo;
 };
