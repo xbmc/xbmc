@@ -84,24 +84,9 @@ public:
 
   void Clear();
 
-  bool m_bMyMusicSongInfoInVis;
-  bool m_bMyMusicSongThumbInVis;
-  int m_iMyMusicStartWindow;
-
-  bool m_bMyVideoNavFlatten;
-  bool m_bAddonAutoUpdate;
-  bool m_bAddonNotifications;
-  bool m_bAddonForeignFilter;
-
-  int m_iVideoStartWindow;
-
-  bool m_videoStacking;
-
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-  CStdString m_defaultMusicLibSource;
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 

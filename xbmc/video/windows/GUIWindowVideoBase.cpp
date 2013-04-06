@@ -141,9 +141,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_settings.m_iVideoStartWindow != GetID())
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_guiSettings.GetInt("myvideos.startwindow") != GetID())
       {
-        g_settings.m_iVideoStartWindow = GetID();
+        g_guiSettings.SetInt("myvideos.startwindow", GetID());
         g_settings.Save();
       }
 
@@ -156,7 +156,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_STACK)
       {
-        g_settings.m_videoStacking = !g_settings.m_videoStacking;
+        g_guiSettings.ToggleBool("myvideos.stackvideos");
         g_settings.Save();
         UpdateButtons();
         Update( m_vecItems->GetPath() );
@@ -187,7 +187,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
         if (nNewWindow != GetID())
         {
-          g_settings.m_iVideoStartWindow = nNewWindow;
+          g_guiSettings.SetInt("myvideos.startwindow", nNewWindow);
           g_settings.Save();
           g_windowManager.ChangeActiveWindow(nNewWindow);
           CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
@@ -265,13 +265,13 @@ void CGUIWindowVideoBase::UpdateButtons()
   g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item
-  int nWindow = g_settings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
+  int nWindow = g_guiSettings.GetInt("myvideos.startwindow")-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
 
   SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
-  SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_videoStacking);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_guiSettings.GetBool("myvideos.stackvideos"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_STACK, m_stackingAvailable);
   
   CGUIMediaWindow::UpdateButtons();
@@ -1867,7 +1867,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   if (info && info->Content() == CONTENT_TVSHOWS)
     m_stackingAvailable = false;
 
-  if (m_stackingAvailable && !items.IsStack() && g_settings.m_videoStacking)
+  if (m_stackingAvailable && !items.IsStack() && g_guiSettings.GetBool("myvideos.stackvideos"))
     items.Stack();
 
   return bResult;
@@ -2053,7 +2053,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+    if (pSelItem->IsVideoDb() && g_guiSettings.GetBool("myvideos.flatten"))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strParentPath);
@@ -2080,7 +2080,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+    if (pSelItem->IsVideoDb() && g_guiSettings.GetBool("myvideos.flatten"))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strPath);

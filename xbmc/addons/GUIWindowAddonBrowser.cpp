@@ -90,19 +90,19 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_AUTOUPDATE)
       {
-        g_settings.m_bAddonAutoUpdate = !g_settings.m_bAddonAutoUpdate;
+        g_guiSettings.ToggleBool("general.addonautoupdate");
         g_settings.Save();
         return true;
       }
       else if (iControl == CONTROL_SHUTUP)
       {
-        g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
+        g_guiSettings.ToggleBool("general.addonnotifications");
         g_settings.Save();
         return true;
       }
       else if (iControl == CONTROL_FOREIGNFILTER)
       {
-        g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
+        g_guiSettings.ToggleBool("general.addonforeignfilter");
         g_settings.Save();
         Refresh();
         return true;
@@ -251,9 +251,9 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
 
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
-  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
-  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
-  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,g_settings.m_bAddonForeignFilter);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_guiSettings.GetBool("general.addonautoupdate"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_guiSettings.GetBool("general.addonnotifications"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,g_guiSettings.GetBool("general.addonforeignfilter"));
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -298,14 +298,14 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
   else
   {
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
-    if (g_settings.m_bAddonForeignFilter)
+    if (g_guiSettings.GetBool("general.addonforeignfilter"))
     {
       int i=0;
       while (i < items.Size())
       {
-        if (!FilterVar(g_settings.m_bAddonForeignFilter,
+        if (!FilterVar(g_guiSettings.GetBool("general.addonforeignfilter"),
                       items[i]->GetProperty("Addon.Language"), "en") ||
-            !FilterVar(g_settings.m_bAddonForeignFilter,
+            !FilterVar(g_guiSettings.GetBool("general.addonforeignfilter"),
                       items[i]->GetProperty("Addon.Language"),
                       g_langInfo.GetLanguageLocale()))
         {

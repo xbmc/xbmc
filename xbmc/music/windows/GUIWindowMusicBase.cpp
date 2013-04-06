@@ -146,9 +146,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       // save current window, unless the current window is the music playlist window
       if (GetID() != WINDOW_MUSIC_PLAYLIST &&
-          g_settings.m_iMyMusicStartWindow != GetID())
+          g_guiSettings.GetInt("mymusic.startwindow") != GetID())
       {
-        g_settings.m_iMyMusicStartWindow = GetID();
+        g_guiSettings.SetInt("mymusic.startwindow", GetID());
         g_settings.Save();
       }
 
@@ -175,11 +175,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         if (nWindow == GetID())
           return true;
 
-        g_settings.m_iMyMusicStartWindow = nWindow;
+        g_guiSettings.SetInt("mymusic.startwindow", nWindow);
         g_settings.Save();
         g_windowManager.ChangeActiveWindow(nWindow);
 
-        CGUIMessage msg2(GUI_MSG_SETFOCUS, g_settings.m_iMyMusicStartWindow, CONTROL_BTNTYPE);
+        CGUIMessage msg2(GUI_MSG_SETFOCUS, g_guiSettings.GetInt("mymusic.startwindow"), CONTROL_BTNTYPE);
         g_windowManager.SendMessage(msg2);
 
         return true;
@@ -779,7 +779,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item
-  CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_settings.m_iMyMusicStartWindow - WINDOW_MUSIC_FILES);
+  CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_guiSettings.GetInt("mymusic.startwindow") - WINDOW_MUSIC_FILES);
 
   CGUIMediaWindow::UpdateButtons();
 }

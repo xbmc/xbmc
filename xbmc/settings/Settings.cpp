@@ -74,20 +74,8 @@ void CSettings::UnregisterSubSettings(ISubSettings *subSettings)
 
 void CSettings::Initialize()
 {
-  m_videoStacking = false;
-
-  m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
-  m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
-  m_bMyVideoNavFlatten = false;
-  m_bAddonAutoUpdate = true;
-  m_bAddonNotifications = true;
-  m_bAddonForeignFilter = false;
-
   m_fVolumeLevel = 1.0f;
   m_bMute = false;
-
-  m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
-  m_iVideoStartWindow = WINDOW_VIDEO_FILES;
 
   m_iSystemTimeTotalUp = 0;
 }
@@ -206,33 +194,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     return false;
   }
 
-  // mymusic settings
-  TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
-  if (pElement)
-  {
-    GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
-    XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
-    XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
-    GetPath(pElement, "defaultlibview", m_defaultMusicLibSource);
-  }
-
-  // myvideos settings
-  pElement = pRootElement->FirstChildElement("myvideos");
-  if (pElement)
-  {
-    GetInteger(pElement, "startwindow", m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
-    XMLUtils::GetBoolean(pElement, "stackvideos", m_videoStacking);
-    XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
-  }
-
   // general settings
-  pElement = pRootElement->FirstChildElement("general");
+  const TiXmlElement *pElement = pRootElement->FirstChildElement("general");
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
-    XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
-    XMLUtils::GetBoolean(pElement, "addonforeignfilter", m_bAddonForeignFilter);
   }
 
   // audio settings
@@ -260,34 +226,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!OnSettingsSaving())
     return false;
 
-  // mymusic settings
-  TiXmlElement musicNode("mymusic");
-  TiXmlNode *pNode = pRoot->InsertEndChild(musicNode);
-  if (!pNode) return false;
-
-  XMLUtils::SetInt(pNode, "startwindow", m_iMyMusicStartWindow);
-  XMLUtils::SetBoolean(pNode, "songinfoinvis", m_bMyMusicSongInfoInVis);
-  XMLUtils::SetBoolean(pNode, "songthumbinvis", m_bMyMusicSongThumbInVis);
-  XMLUtils::SetPath(pNode, "defaultlibview", m_defaultMusicLibSource);
-
-  // myvideos settings
-  TiXmlElement videosNode("myvideos");
-  pNode = pRoot->InsertEndChild(videosNode);
-  if (!pNode) return false;
-
-  XMLUtils::SetInt(pNode, "startwindow", m_iVideoStartWindow);
-
-  XMLUtils::SetBoolean(pNode, "stackvideos", m_videoStacking);
-  XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
-
   // general settings
   TiXmlElement generalNode("general");
-  pNode = pRoot->InsertEndChild(generalNode);
+  TiXmlNode *pNode = pRoot->InsertEndChild(generalNode);
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
-  XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
-  XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
-  XMLUtils::SetBoolean(pNode, "addonforeignfilter", m_bAddonForeignFilter);
 
   // audio settings
   TiXmlElement volumeNode("audio");
@@ -312,8 +255,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
 void CSettings::Clear()
 {
-  m_defaultMusicLibSource.clear();
-
   OnSettingsCleared();
 
   for (SubSettings::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)

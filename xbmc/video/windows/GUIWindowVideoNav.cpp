@@ -121,7 +121,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
 
-      SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
+      SetProperty("flattened", g_guiSettings.GetBool("myvideos.flatten"));
       if (message.GetNumStringParams() && message.GetStringParam(0).Equals("Files") &&
           CMediaSourceSettings::Get().GetSources("video")->empty())
       {
@@ -171,9 +171,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNFLATTEN)
       {
-        g_settings.m_bMyVideoNavFlatten = !g_settings.m_bMyVideoNavFlatten;
+        g_guiSettings.ToggleBool("myvideos.flatten");
         g_settings.Save();
-        SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
+        SetProperty("flattened", g_guiSettings.GetBool("myvideos.flatten"));
         CUtil::DeleteVideoDatabaseDirectoryCache();
         SetupShares();
         Update("");
@@ -425,7 +425,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     Similarly, we assign the "clean" library labels to the item only if the "Replace filenames with library titles"
     setting is enabled.
     */
-  const bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_settings.m_videoStacking);
+  const bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_guiSettings.GetBool("myvideos.stackvideos"));
   const bool replaceLabels = allowReplaceLabels && g_guiSettings.GetBool("myvideos.replacelabels");
 
   CFileItemList dbItems;
@@ -543,7 +543,7 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_settings.m_bMyVideoNavFlatten);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_guiSettings.GetBool("myvideos.flatten"));
 }
 
 bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemList &items)

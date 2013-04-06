@@ -115,7 +115,7 @@ bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
 
 void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
 {
-  if (IsStarted() && g_settings.m_bAddonAutoUpdate)
+  if (IsStarted() && g_guiSettings.GetBool("general.addonautoupdate"))
   {
     CSingleLock lock(m_critSection);
     m_outdatedAddons.insert(make_pair<string, string>(strAddonId, strReferer));
