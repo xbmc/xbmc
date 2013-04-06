@@ -492,4 +492,5 @@ private:
   ECacheState             m_caching;
 
   bool m_HasVideo;
+  bool m_HasAudio;
 };
