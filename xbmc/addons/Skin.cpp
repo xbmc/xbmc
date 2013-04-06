@@ -91,7 +91,6 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   str = CAddonMgr::Get().GetExtValue(ext->configuration, "@debugging");
   m_debugging = !strcmp(str.c_str(), "true");
 
-  m_onlyAnimateToHome = true;
   LoadStartupWindows(ext);
   m_Version = 2.11;
 }
@@ -221,7 +220,6 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
   m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
-  m_onlyAnimateToHome = true;
   return true;
 }
 
@@ -257,7 +255,7 @@ bool CSkinInfo::TranslateResolution(const CStdString &name, RESOLUTION_INFO &res
 int CSkinInfo::GetFirstWindow() const
 {
   int startWindow = GetStartWindow();
-  if (HasSkinFile("Startup.xml") && (!m_onlyAnimateToHome || startWindow == WINDOW_HOME))
+  if (HasSkinFile("Startup.xml"))
     startWindow = WINDOW_STARTUP_ANIM;
   return startWindow;
 }

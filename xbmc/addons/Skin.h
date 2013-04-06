@@ -137,7 +137,6 @@ protected:
   CStdString m_currentAspect;
 
   std::vector<CStartupWindow> m_startupWindows;
-  bool m_onlyAnimateToHome;
   bool m_debugging;
 };
 
