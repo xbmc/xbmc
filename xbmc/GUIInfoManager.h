@@ -503,8 +503,8 @@ namespace INFO
 #define CONTROL_HAS_FOCUS           30000
 
 #define VERSION_MAJOR 12
-#define VERSION_MINOR 1
-#define VERSION_TAG ""
+#define VERSION_MINOR 2
+#define VERSION_TAG "-PRE"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
