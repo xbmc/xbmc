@@ -164,6 +164,7 @@ protected:
 private:
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen;
+  int m_autoLoginProfile;
   uint32_t m_lastUsedProfile;
   uint32_t m_currentProfile;
   int m_nextProfileId; // for tracking the next available id to give to a new profile to ensure id's are not re-used
