@@ -59,6 +59,120 @@
 	</include>
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
+	<!-- DialogSelect.xml -->
+	<include name="DialogSelect">
+		<control type="group">
+			<!-- bg's -->
+			<control type="group">
+				<posx>340</posx>
+				<posy>170</posy>
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>602</width>
+					<height>442</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<posy>80</posy>
+					<width>600</width>
+					<height>360</height>
+					<texture border="10">base-rounded-half.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- title bg -->
+				<control type="image">
+					<width>600</width>
+					<height>80</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>30</posy>
+					<width>600</width>
+					<height>50</height>
+					<texture>border-bottom-grey.png</texture>
+				</control>
+				<!-- arrow down -->
+				<control type="image">
+					<posx>285</posx>
+					<posy>440</posy>
+					<include>ArrowBlackDown</include>
+					<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
+				</control>
+			</control>
+			<control type="group">
+				<posx>340</posx>
+				<posy>190</posy>
+				<control type="label" id="1">
+					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<!--><label>$LOCALIZE[1023]</label>-->
+					<width>580</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Condensed-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				<control type="group">
+					<posy>90</posy>
+					<posx>20</posx>
+					<control type="list" id="3">
+						<width>560</width>
+						<height>226</height>
+						<onleft>-</onleft>
+						<onright>5</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>560</width>
+								<height>50</height>
+								<texture border="5">border-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</itemlayout>
+						<focusedlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>560</width>
+								<height>50</height>
+								<texture border="5">black-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>560</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<description>Scroll Bar</description>
+						<posy>-5</posy>
+						<posx>563</posx>
+						<width>20</width>
+						<height>300</height>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
 	<!-- DialogFilters.xml -->
 	<include name="DialogFilters">
 		<control type="group">
@@ -86,7 +200,7 @@
 					<colordiffuse>orange</colordiffuse>
 					<animation effect="fade" start="0" end="50" time="300" condition="true">Conditional</animation>
 				</control>
-			</control>	
+			</control>
 			<!-- sub-list -->
 			<control type="group" id="1400">
 				<posy>24</posy>
@@ -121,7 +235,7 @@
 					<height>568</height>
 					<showonepage>true</showonepage>
 				</control>
-			</control>			
+			</control>
 		</control>
 	</include>
 	<!-- DialogProgress.xml -->
@@ -297,50 +411,50 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>0</posy>
-		<control type="group">			
-			<posy>-30</posy>
-			<control type="image" id="999">
-				<description>Background</description>
-				<width>340</width>
-				<height>500</height>
-				<include>DialogBGContextMenu</include>
+			<control type="group">
+				<posy>-30</posy>
+				<control type="image" id="999">
+					<description>Background</description>
+					<width>340</width>
+					<height>500</height>
+					<include>DialogBGContextMenu</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>340</width>
+					<height>60</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<posy>10</posy>
+					<width>340</width>
+					<include>DialogHeaderBorder</include>
+				</control>
 			</control>
-			<control type="image">
-				<description>Title bg</description>
-				<width>340</width>
-				<height>60</height>
-				<include>DialogHeaderBG</include>
+			<control type="group">
+				<control type="label">
+					<posy>-20</posy>
+					<width>340</width>
+					<height>40</height>
+					<include>DialogHeading</include>
+					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<!--><label>$LOCALIZE[31018]</label>-->
+				</control>
+				<control type="grouplist" id="996">
+					<description>grouplist for context buttons</description>
+					<posx>10</posx>
+					<posy>30</posy>
+					<width>320</width>
+					<height max="400">auto</height>
+					<itemgap>0</itemgap>
+				</control>
+				<control type="button" id="1000">
+					<description>Buttons</description>
+					<posx>20</posx>
+					<width>380</width>
+				</control>
 			</control>
-			<control type="image">
-				<description>Title bg bottom border</description>
-				<posy>10</posy>
-				<width>340</width>
-				<include>DialogHeaderBorder</include>
-			</control>
-		</control>
-		<control type="group">
-			<control type="label">
-				<posy>-20</posy>
-				<width>340</width>
-				<height>40</height>
-				<include>DialogHeading</include>
-				<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
-				<!--><label>$LOCALIZE[31018]</label>-->
-			</control>
-			<control type="grouplist" id="996">
-				<description>grouplist for context buttons</description>
-				<posx>10</posx>
-				<posy>30</posy>
-				<width>320</width>
-				<height max="400">auto</height>
-				<itemgap>0</itemgap>
-			</control>
-			<control type="button" id="1000">
-				<description>Buttons</description>
-				<posx>20</posx>
-				<width>380</width>
-			</control>
-		</control>
 		</control>
 	</include>
 	<!-- -->
