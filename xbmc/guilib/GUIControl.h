@@ -86,6 +86,9 @@ public:
 
   bool HasProcessed() const { return m_hasProcessed; };
 
+  /*! \brief Returns whether or not we have rendered */
+  bool HasRendered() const { return m_hasRendered; };
+
   // OnAction() is called by our window when we are the focused control.
   // We should process any control-specific actions in the derived classes,
   // and return true if we have taken care of the action.  Returning false
@@ -344,6 +347,7 @@ protected:
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasProcessed;
+  bool m_hasRendered;
   // enable/disable state
   unsigned int m_enableCondition;
   bool m_enabled;
