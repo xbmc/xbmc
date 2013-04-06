@@ -25,7 +25,6 @@
 #include "utils/log.h"
 
 #ifdef HAS_DBUS
-#include "Application.h"
 
 // logind DBus interface specification:
 // http://www.freedesktop.org/wiki/Software/systemd/logind

@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogPVRGuideOSD.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIDialogPVRGuideInfo.h"
 #include "guilib/GUIWindowManager.h"

@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogPVRGroupManager.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"

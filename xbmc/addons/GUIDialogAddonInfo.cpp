@@ -37,7 +37,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonInstaller.h"
-#include "Application.h"
 #include "pvr/PVRManager.h"
 
 #define CONTROL_BTN_INSTALL          6

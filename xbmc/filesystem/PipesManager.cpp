@@ -20,7 +20,6 @@
 
 #include "PipesManager.h"
 #include "threads/SingleLock.h"
-#include "Application.h"
 
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))

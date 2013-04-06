@@ -85,7 +85,6 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "LangInfo.h"
-#include "ApplicationMessenger.h"
 
 using namespace std;
 using namespace PVR;

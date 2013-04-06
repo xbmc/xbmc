@@ -40,7 +40,6 @@
 #include "threads/SingleLock.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
-#include "Application.h"
 #include "AddonDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"

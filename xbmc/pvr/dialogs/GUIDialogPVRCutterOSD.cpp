@@ -20,7 +20,6 @@
 
 #include "GUIDialogPVRCutterOSD.h"
 #include "utils/log.h"
-#include "Application.h"
 
 using namespace std;
 using namespace PVR;

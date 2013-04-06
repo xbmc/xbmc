@@ -22,7 +22,6 @@
 #include "AppParamParser.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #include "xbmc.h"

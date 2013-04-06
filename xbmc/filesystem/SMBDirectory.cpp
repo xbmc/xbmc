@@ -35,7 +35,6 @@
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"

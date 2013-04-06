@@ -18,7 +18,6 @@
  *
  */
 
-#include "Application.h"
 #include "FileItem.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogKaiToast.h"

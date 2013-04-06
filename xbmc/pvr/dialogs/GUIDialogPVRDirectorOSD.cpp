@@ -27,7 +27,6 @@
 
 #include "GUIDialogPVRDirectorOSD.h"
 #include "utils/log.h"
-#include "Application.h"
 
 using namespace PVR;
 
