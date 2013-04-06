@@ -155,11 +155,9 @@ static void ff_flush_avutil_log_buffers(void)
       ++it;
 }
 
-static XbmcThreads::ThreadLocal<CDVDDemuxFFmpeg> g_demuxer;
-
-static int interrupt_cb(void* unused)
+static int interrupt_cb(void* ctx)
 {
-  CDVDDemuxFFmpeg* demuxer = g_demuxer.get();
+  CDVDDemuxFFmpeg* demuxer = static_cast<CDVDDemuxFFmpeg*>(ctx);
   if(demuxer && demuxer->Aborted())
     return 1;
   return 0;
@@ -176,10 +174,10 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(void *h, uint8_t* buf, int size)
 {
-  if(interrupt_cb(NULL))
-    return -1;
+  if(interrupt_cb(h))
+    return AVERROR_EXIT;
 
-  CDVDInputStream* pInputStream = (CDVDInputStream*)h;
+  CDVDInputStream* pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
   return pInputStream->Read(buf, size);
 }
 /*
@@ -190,10 +188,10 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 */
 static offset_t dvd_file_seek(void *h, offset_t pos, int whence)
 {
-  if(interrupt_cb(NULL))
-    return -1;
+  if(interrupt_cb(h))
+    return AVERROR_EXIT;
 
-  CDVDInputStream* pInputStream = (CDVDInputStream*)h;
+  CDVDInputStream* pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
   else
@@ -236,9 +234,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   std::string strFile;
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
-  g_demuxer.set(this);
   m_program = UINT_MAX;
-  const AVIOInterruptCB int_cb = { interrupt_cb, NULL };
+  const AVIOInterruptCB int_cb = { interrupt_cb, this };
 
   if (!pInput) return false;
 
@@ -269,6 +266,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     else if( content.compare("multipart/x-mixed-replace") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mjpeg");
   }
+
+  // open the demuxer
+  m_pFormatContext  = m_dllAvFormat.avformat_alloc_context();
+  m_pFormatContext->interrupt_callback = int_cb;
 
   // try to abort after 30 seconds
   m_timeout.Set(30000);
@@ -411,8 +412,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
 
 
-    // open the demuxer
-    m_pFormatContext     = m_dllAvFormat.avformat_alloc_context();
     m_pFormatContext->pb = m_ioContext;
 
     if (m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0)
@@ -422,9 +421,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       return false;
     }
   }
-
-  // set the interrupt callback, appeared in libavformat 53.15.0
-  m_pFormatContext->interrupt_callback = int_cb;
   
   // Avoid detecting framerate if advancedsettings.xml says so
   m_pFormatContext->fps_probe_size = (g_advancedSettings.m_videoFpsDetect == 0) ? 0 : -1;
@@ -503,8 +499,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxFFmpeg::Dispose()
 {
-  g_demuxer.set(this);
-
   if (m_pFormatContext)
   {
     if (m_ioContext && m_pFormatContext->pb && m_pFormatContext->pb != m_ioContext)
@@ -551,8 +545,6 @@ void CDVDDemuxFFmpeg::Reset()
 
 void CDVDDemuxFFmpeg::Flush()
 {
-  g_demuxer.set(this);
-
   // naughty usage of an internal ffmpeg function
   if (m_pFormatContext)
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
@@ -567,8 +559,6 @@ void CDVDDemuxFFmpeg::Abort()
 
 void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 {
-  g_demuxer.set(this);
-
   if(!m_pFormatContext)
     return;
 
@@ -629,8 +619,6 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 
 DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
-  g_demuxer.set(this);
-
   AVPacket pkt;
   DemuxPacket* pPacket = NULL;
   // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CDVDPlayer)
@@ -812,8 +800,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 {
-  g_demuxer.set(this);
-
   if(time < 0)
     time = 0;
 
@@ -872,8 +858,6 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
 bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 {
-  g_demuxer.set(this);
-
   CSingleLock lock(m_critSection);
   int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, pos, AVSEEK_FLAG_BYTE);
 
