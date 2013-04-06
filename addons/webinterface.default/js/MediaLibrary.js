@@ -38,6 +38,7 @@ MediaLibrary.prototype = {
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
+    $(document).bind('keydown', jQuery.proxy(this.handleKeyPress, this));
   },
   resetPage: function() {
     $('#musicLibrary').removeClass('selected');
@@ -118,6 +119,51 @@ MediaLibrary.prototype = {
     }
 
     $('#spinner').hide();
+  },
+  handleKeyPress: function(event) {
+    if (!$('#remoteControl').hasClass('selected')) {
+      return;
+    }
+
+    var keys = {
+      8: 'back',        // Back space
+      13: 'ok',         // Enter
+      27: 'home',       // Escape
+      32: 'playpause',  // Space bar
+      37: 'left',       // Left
+      38: 'up',         // Up
+      39: 'right',      // Right
+      40: 'down',       // Down
+      107: 'volumeup',  // +
+      109: 'volumedown' // -
+    };
+
+    var which = event.which;
+    var key = keys[which];
+
+    event.data = {
+      key: key
+    };
+
+    if (!key) {
+      event.data.key = 'text';
+
+      // Letters
+      if (which >= 65 && which <= 90) {
+        var offset = event.shiftKey ? 0 : 32;
+        event.data.text = String.fromCharCode(which + offset);
+      }
+
+      // Digits
+      if (which >= 96 && which <= 105) {
+        event.data.text = (which-96)+"";
+      }
+    }
+
+    if (event.data.key) {
+      this.pressRemoteKey(event);
+      return false;
+    }
   },
   pressRemoteKey: function(event) {
     var player = -1,
@@ -214,6 +260,13 @@ MediaLibrary.prototype = {
                 'volume': volume
               }
             });
+          }
+        });
+      case 'text':
+        return xbmc.rpc.request({
+          'method': 'Input.SendText',
+          'params': {
+            'text': event.data.text
           }
         });
     }
