@@ -416,6 +416,7 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_caching           = CACHESTATE_DONE;
   m_playSpeed         = DVD_PLAYSPEED_NORMAL;
   m_HasVideo = false;
+  m_HasAudio = false;
 
   m_State.Clear();
   m_dvd.Clear();
@@ -531,6 +532,7 @@ bool COMXPlayer::CloseFile()
   m_EdlAutoSkipMarkers.Clear();
 
   m_HasVideo = false;
+  m_HasAudio = false;
 
   g_renderManager.UnInit();
   return true;
@@ -2446,7 +2448,7 @@ bool COMXPlayer::HasVideo() const
 
 bool COMXPlayer::HasAudio() const
 {
-  return m_SelectionStreams.Count(STREAM_AUDIO) > 0 ? true : false;
+  return m_HasAudio;
 }
 
 bool COMXPlayer::IsPassthrough() const
@@ -2891,6 +2893,7 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source, bool reset)
   m_CurrentAudio.hint = hint;
   m_CurrentAudio.stream = (void*)pStream;
   m_CurrentAudio.started = false;
+  m_HasAudio = true;
 
   /* we are potentially going to be waiting on this */
   m_player_audio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
