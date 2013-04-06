@@ -152,7 +152,8 @@ public:
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats();
 
-  void Present();
+  bool Prepare();
+  void Present(bool wait);
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };

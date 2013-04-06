@@ -101,6 +101,7 @@ namespace OVERLAY {
     void Flush();
     void SetNumBuffers(int numBuffers) { m_iNumBuffers = numBuffers; }
     void ReleaseBuffer(int idx);
+    bool HasOverlay();
 
   protected:
 

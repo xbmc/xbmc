@@ -176,6 +176,20 @@ void CRenderer::ReleaseBuffer(int idx)
   Release(m_buffers[idx]);
 }
 
+bool CRenderer::HasOverlay()
+{
+  bool hasOverlay = false;
+
+  CSingleLock lock(m_section);
+
+  SElementV& list = m_buffers[m_render];
+  for(SElementV::iterator it = list.begin(); it != list.end(); ++it)
+  {
+    hasOverlay = true;
+  }
+  return hasOverlay;
+}
+
 void CRenderer::Render()
 {
   CSingleLock lock(m_section);

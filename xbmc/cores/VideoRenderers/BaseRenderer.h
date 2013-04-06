@@ -104,6 +104,7 @@ public:
   virtual unsigned int GetMaxBufferSize() { return 0; }
   virtual void SetBufferSize(int numBuffers) { }
   virtual void ReleaseBuffer(int idx) { }
+  virtual bool HasFrame() { return true; }
 
   virtual bool Supports(ERENDERFEATURE feature) { return false; }
 
