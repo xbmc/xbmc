@@ -492,7 +492,7 @@ void CGUIWindow::OnInitWindow()
     g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // set our rendered state
-  m_hasRendered = false;
+  m_hasProcessed = false;
   m_closing = false;
   m_active = true;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
@@ -818,7 +818,7 @@ bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
   // special cases first
   if (animType == ANIM_TYPE_WINDOW_CLOSE)
   {
-    if (!m_bAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
+    if (!m_bAllocated || !HasProcessed()) // can't process an animation if we aren't allocated or haven't processed
       return false;
     // make sure we update our visibility prior to queuing the window close anim
     for (unsigned int i = 0; i < m_children.size(); i++)

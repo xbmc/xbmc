@@ -88,7 +88,7 @@ void CGUIDialogProgress::StartModal()
     // we must be running from fullscreen video or similar where the
     // calling thread handles rendering (ie not main app thread) but
     // is waiting on this routine before rendering begins
-    if (!m_hasRendered)
+    if (!HasProcessed())
       break;
   }
 }
