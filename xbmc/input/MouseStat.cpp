@@ -157,12 +157,12 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   else
     m_Action = ACTION_NOOP;
 
-  // Activate the mouse pointer
-  if (MovedPastThreshold() || m_mouseState.dz)
-    SetActive();
-  else if (bNothingDown)
+  // Normalize the cursor
+  if (!MovedPastThreshold() && !m_mouseState.dz && bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
-  else
+
+  // Activate the mouse pointer
+  else if (m_Action != ACTION_NOOP)
     SetActive();
 }
 
