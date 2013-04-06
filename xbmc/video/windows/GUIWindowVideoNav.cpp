@@ -1080,7 +1080,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 }
 
 // predicate used by sorting and set_difference
-bool compFileItemsByDbId(CFileItemPtr& lhs, CFileItemPtr& rhs) 
+bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs) 
 {
   return lhs->HasVideoInfoTag() && rhs->HasVideoInfoTag() && lhs->GetVideoInfoTag()->m_iDbId < rhs->GetVideoInfoTag()->m_iDbId;
 }
