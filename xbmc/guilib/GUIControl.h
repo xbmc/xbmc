@@ -84,7 +84,7 @@ public:
   virtual void DoRender();
   virtual void Render();
 
-  bool HasRendered() const { return m_hasRendered; };
+  bool HasProcessed() const { return m_hasProcessed; };
 
   // OnAction() is called by our window when we are the focused control.
   // We should process any control-specific actions in the derived classes,
@@ -343,7 +343,7 @@ protected:
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
-  bool m_hasRendered;
+  bool m_hasProcessed;
   // enable/disable state
   unsigned int m_enableCondition;
   bool m_enabled;
