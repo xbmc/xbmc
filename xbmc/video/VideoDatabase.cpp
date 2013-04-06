@@ -2040,7 +2040,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     SetArtForItem(idMovie, "movie", artwork);
 
     // query DB for any movies matching imdbid and year
-    CStdString strSQL = PrepareSQL("files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber, VIDEODB_ID_YEAR, details.m_iYear, idMovie);
+    CStdString strSQL = PrepareSQL("files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
     m_pDS->query(strSQL.c_str());
 	
     if (!m_pDS->eof())
