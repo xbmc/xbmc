@@ -532,6 +532,19 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_TOUCH:
     {
       int windowId = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+      if (newEvent.touch.action == ACTION_TOUCH_TAP)
+      {
+        // Send a mouse motion event for getting the current guiitem selected
+        XBMC_Event mouseEvent;
+        memset(&mouseEvent, 0, sizeof(mouseEvent));
+
+        mouseEvent.type = XBMC_MOUSEMOTION;
+        mouseEvent.motion.type = XBMC_MOUSEMOTION;
+        mouseEvent.motion.x = newEvent.touch.x;
+        mouseEvent.motion.y = newEvent.touch.y;
+        OnEvent(mouseEvent);
+      }
       int actionId = 0;
       if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
       {
