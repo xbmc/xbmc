@@ -1103,8 +1103,8 @@
 				<posx>117</posx>
 				<width>360</width>
 				<height>540</height>
-				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>-->
-				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(bigPoster)]</texture>
+				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
+				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(bigPoster)]</texture>-->
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 			</control>
@@ -1126,7 +1126,7 @@
 				</control>
 				<!-- Genre -->
 				<control type="label">
-					<width>600</width>
+					<width>530</width>
 					<height>15</height>
 					<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
 					<font>Condensed-18</font>
@@ -1221,18 +1221,11 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>					
-					<control type="button" id="19101">
-						<textoffsetx>0</textoffsetx>
+					<control type="label">
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Audio[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>-</onup>
-						<ondown>19102</ondown>
 					</control>
 					<control type="label" id="19111">
 						<include>LeftInfoFormatWhite</include>
@@ -1244,18 +1237,12 @@
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<control type="button" id="19102">
+					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
 						<label>[UPPERCASE]Subtitles[/UPPERCASE]</label>
 						<include>LeftInfoFormatGrey</include>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<onleft>-</onleft>
-						<onright>-</onright>
-						<onup>19101</onup>
-						<ondown>-</ondown>
 					</control>
 					<control type="label" id="19112">
 						<include>LeftInfoFormatWhite</include>

@@ -145,6 +145,19 @@
 		<radioheight>14</radioheight>
 		<radiowidth>16</radiowidth>
 	</include>
+	<!-- preplay buttons -->
+	<include name="leftMenuPreplayIcon">
+		<width>74</width>
+		<height>30</height>
+		<colordiffuse>FF999999</colordiffuse>
+	</include>
+	<include name="leftMenuPreplayButton">
+		<width>74</width>
+		<height>30</height>
+		<onleft>-</onleft>
+		<onright>-</onright>
+		<colordiffuse>orange</colordiffuse>
+	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
@@ -224,7 +237,142 @@
 			<include>leftMenuBg</include>
 			<!-- global search-->
 			<include>GlobalSearch</include>			
-			<!-- filters & sorting menu -->
+			<!-- sidebar buttons -->
+			<control type="grouplist" id="998">
+				<posy>80</posy>
+				<posx>0</posx>
+				<width>74</width>
+				<aligny>top</aligny>
+				<orientation>vertical</orientation>
+				<itemgap>20</itemgap>
+				<!-- Menu -->
+				<control type="image">
+					<texture>b-pp-options.png</texture>
+					<visible>!Control.HasFocus(101)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="101">
+					<texturefocus>b-pp-options.png</texturefocus>
+					<texturenofocus>b-pp-options.png</texturenofocus>					
+					<onup>100</onup>
+					<ondown>102</ondown>
+					<visible>Control.HasFocus(101)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Play -->
+				<control type="image">
+					<texture>b-pp-play.png</texture>
+					<visible>!Control.HasFocus(102)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="102">
+					<texturefocus>b-pp-play.png</texturefocus>
+					<texturenofocus>b-pp-play.png</texturenofocus>					
+					<onup>101</onup>
+					<ondown>19101</ondown>
+					<visible>Control.HasFocus(102)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Audio -->
+				<control type="image">
+					<texture>b-pp-audio.png</texture>
+					<visible>!Control.HasFocus(19101)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="19101">
+					<texturefocus>b-pp-audio.png</texturefocus>
+					<texturenofocus>b-pp-audio.png</texturenofocus>					
+					<onup>102</onup>
+					<ondown>19102</ondown>
+					<visible>Control.HasFocus(19101)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Subtitles -->
+				<control type="image">
+					<texture>b-pp-subtitles.png</texture>
+					<visible>!Control.HasFocus(19102)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="19102">
+					<texturefocus>b-pp-subtitles.png</texturefocus>
+					<texturenofocus>b-pp-subtitles.png</texturenofocus>					
+					<onup>19101</onup>
+					<ondown>103</ondown>
+					<visible>Control.HasFocus(19102)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>				
+				<!-- Rate -->
+				<control type="image">
+					<texture>b-pp-rate.png</texture>
+					<visible>!Control.HasFocus(103)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="103">
+					<texturefocus>b-pp-rate.png</texturefocus>
+					<texturenofocus>b-pp-rate.png</texturenofocus>					
+					<onup>19102</onup>
+					<ondown>104</ondown>
+					<visible>Control.HasFocus(103)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Recommend -->
+				<control type="image">
+					<texture>b-pp-recommend.png</texture>
+					<visible>!Control.HasFocus(104)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="104">
+					<texturefocus>b-pp-recommend.png</texturefocus>
+					<texturenofocus>b-pp-recommed.png</texturenofocus>					
+					<onup>103</onup>
+					<ondown>105</ondown>
+					<visible>Control.HasFocus(104)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Share -->
+				<control type="image">
+					<texture>b-pp-share.png</texture>
+					<visible>!Control.HasFocus(9096)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="105">
+					<texturefocus>b-pp-share.png</texturefocus>
+					<texturenofocus>b-pp-share.png</texturenofocus>					
+					<onup>104</onup>
+					<ondown>106</ondown>
+					<visible>Control.HasFocus(105)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Watched -->
+				<control type="image">
+					<texture>b-pp-watched.png</texture>
+					<visible>!Control.HasFocus(106)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="106">
+					<texturefocus>b-pp-watched.png</texturefocus>
+					<texturenofocus>b-pp-watched.png</texturenofocus>					
+					<onup>105</onup>
+					<ondown>107</ondown>
+					<visible>Control.HasFocus(106)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+				<!-- Unwatched -->
+				<control type="image">
+					<texture>b-pp-unwatched.png</texture>
+					<visible>!Control.HasFocus(107)</visible>
+					<include>leftMenuPreplayIcon</include>
+				</control>
+				<control type="button" id="107">
+					<texturefocus>b-pp-unwatched.png</texturefocus>
+					<texturenofocus>b-pp-unwatched.png</texturenofocus>					
+					<onup>106</onup>
+					<ondown>101</ondown>
+					<visible>Control.HasFocus(107)</visible>
+					<include>leftMenuPreplayButton</include>
+				</control>
+			</control>
+			<!-- menu inside -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
 				<posx>-253</posx>
