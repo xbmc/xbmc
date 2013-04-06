@@ -133,14 +133,14 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       return false;
 
     // check our cache for this path
-    if (g_directoryCache.GetDirectory(strPath, items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
+    if (g_directoryCache.GetDirectory(realPath, items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
       items.SetPath(strPath);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
-        g_directoryCache.ClearDirectory(strPath);
+        g_directoryCache.ClearDirectory(realPath);
 
       pDirectory->SetFlags(hints.flags);
 
@@ -198,7 +198,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
 
       // cache the directory, if necessary
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
-        g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
+        g_directoryCache.SetDirectory(realPath, items, pDirectory->GetCacheType(strPath));
     }
 
     // now filter for allowed files
