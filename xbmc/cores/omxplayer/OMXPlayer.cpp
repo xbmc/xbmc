@@ -888,6 +888,9 @@ bool COMXPlayer::IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream
   if(m_PlayerOptions.video_only && current.type != STREAM_VIDEO)
     return false;
 
+  if(stream->disabled)
+    return false;
+
   if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
                        || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
   {
@@ -915,9 +918,6 @@ bool COMXPlayer::IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream
   {
     if(stream->source == current.source
     && stream->iId    == current.id)
-      return false;
-
-    if(stream->disabled)
       return false;
 
     if(stream->type != current.type)
