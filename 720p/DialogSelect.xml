@@ -5,6 +5,7 @@
 	<include>DialogFadeInOut</include>
 	<controls>
 		<!-- ViewsDialog.xml -->
-		<include>DialogSelect</include>
+		<include condition="!Window.IsVisible(10090)">DialogSelectDefault</include>
+		<include condition="Window.IsVisible(10090)">DialogSelectAudioSubtitleStreamPicker</include>
 	</controls>
 </window>

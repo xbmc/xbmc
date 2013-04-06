@@ -45,6 +45,11 @@
 		<font>Condensed-24</font>
 		<textcolor>white</textcolor>
 	</include>
+	<!-- variables to modify the position/appearance of the audio/subs selection window -->
+	<include name="AudioSubtitleStreamPickerWindowPosition">
+		<posy>-60</posy>
+		<posx>-210</posx>
+	</include>
 	<!-- animations open/close -->
 	<include name="DialogFadeInOut">
 		<animation effect="fade" time="300">WindowOpen</animation>
@@ -60,8 +65,9 @@
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
 	<!-- DialogSelect.xml -->
-	<include name="DialogSelect">
+	<include name="DialogSelectDefault">
 		<control type="group">
+			<include condition="Window.IsVisible(10090)">AudioSubtitleStreamPickerWindowPosition</include>
 			<!-- bg's -->
 			<control type="group">
 				<posx>340</posx>
@@ -99,10 +105,10 @@
 				</control>
 				<!-- arrow down -->
 				<control type="image">
-					<posx>285</posx>
-					<posy>440</posy>
-					<include>ArrowBlackDown</include>
-					<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
+					<description>Dialog arrow</description>
+					<posx>-14</posx>
+					<posy>100</posy>
+					<include>ArrowBlackLeft</include>
 				</control>
 			</control>
 			<control type="group">
@@ -168,6 +174,121 @@
 						<posx>563</posx>
 						<width>20</width>
 						<height>300</height>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="DialogSelectAudioSubtitleStreamPicker">
+		<control type="group">
+			<posx>130</posx>
+			<posy>110</posy>
+			<!-- bg's -->
+			<control type="group">
+				<control type="image">
+					<posx>-1</posx>
+					<posy>-1</posy>
+					<width>502</width>
+					<height>342</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<posy>80</posy>
+					<width>500</width>
+					<height>260</height>
+					<texture border="10">base-rounded-half.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- title bg -->
+				<control type="image">
+					<width>500</width>
+					<height>80</height>
+					<texture border="10" flipy="true">base-rounded-half.png</texture>
+					<colordiffuse>FF111111</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>30</posy>
+					<width>500</width>
+					<height>50</height>
+					<texture>border-bottom-grey.png</texture>
+				</control>
+				<!-- arrow left -->
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>-14</posx>
+					<posy>100</posy>
+					<include>ArrowBlackLeft</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>20</posy>
+				<control type="label" id="1">
+					<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+					<width>480</width>
+					<height>40</height>
+					<align>center</align>
+					<font>Condensed-24</font>
+					<textcolor>Focused</textcolor>
+				</control>
+				
+				
+				
+				<control type="group">
+					<posy>90</posy>
+					<posx>20</posx>
+					<control type="list" id="3">
+						<width>460</width>
+						<height>226</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>460</width>
+								<height>50</height>
+								<texture border="5">border-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>460</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Unfocused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</itemlayout>
+						<focusedlayout height="50">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>460</width>
+								<height>50</height>
+								<texture border="5">black-bottom-grey.png</texture>
+							</control>
+							<control type="label">
+								<width>460</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<textcolor>Focused</textcolor>
+								<textoffsetx>20</textoffsetx>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<description>Scroll Bar</description>
+						<posx>461</posx>
+						<posy>-10</posy>
+						<width>20</width>
+						<height>230</height>
+						<showonepage>true</showonepage>
 					</control>
 				</control>
 			</control>
