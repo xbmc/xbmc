@@ -93,9 +93,6 @@ bool CGenericTouchActionHandler::OnTouchGestureEnd(float x, float y, float offse
 {
   sendEvent(ACTION_GESTURE_END, velocityX, velocityY, x, y);
 
-  // unfocus the focused GUI item
-  g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-
   return true;
 }
 
@@ -104,7 +101,6 @@ void CGenericTouchActionHandler::OnTap(float x, float y, int32_t pointers /* = 1
   if (pointers <= 0 || pointers > 10)
     return;
 
-  focusControl(x, y);
   sendEvent(ACTION_TOUCH_TAP, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
 }
 
@@ -113,7 +109,6 @@ void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers 
   if (pointers <= 0 || pointers > 10)
     return;
 
-  focusControl(x, y);
   sendEvent(ACTION_TOUCH_LONGPRESS, (uint16_t)x, (uint16_t)y, 0.0f, 0.0f, pointers);
 }
 
@@ -190,5 +185,13 @@ void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float
 void CGenericTouchActionHandler::focusControl(float x, float y)
 {
   // Send a mouse motion event for getting the current guiitem selected
-  touch(XBMC_MOUSEMOTION, 0, (uint16_t)x, (uint16_t)y);
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.x = x;
+  newEvent.motion.y = y;
+
+  CWinEvents::MessagePush(&newEvent);
 }
