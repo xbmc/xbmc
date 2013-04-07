@@ -306,7 +306,7 @@
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
 				<onleft>205</onleft>
 				<onright>251</onright>
-				<onup>403</onup>
+				<onup>404</onup>
 				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="251">
@@ -460,6 +460,8 @@
 			<visible>Control.HasFocus(410) | Control.HasFocus(250) | ControlGroup(400).HasFocus</visible>
 		</control>
 		<control type="grouplist" id="400">
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
 			<posx>400r</posx>
 			<posy>350r</posy>
 			<width>256</width>
@@ -529,7 +531,7 @@
 				<pulseonselect>false</pulseonselect>
 				<label>22006</label>
 				<onclick>SubtitleDelay</onclick>
-				<visible>VideoPlayer.HasSubtitles</visible>
+				<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</visible>
 			</control>
 			<control type="button" id="403">
 				<height>40</height>
@@ -542,7 +544,7 @@
 				<pulseonselect>false</pulseonselect>
 				<label>209</label>
 				<onclick>NextSubtitle</onclick>
-				<visible>VideoPlayer.HasSubtitles</visible>
+				<visible>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</visible>
 			</control>
 			<control type="radiobutton" id="404">
 				<height>40</height>
