@@ -397,11 +397,11 @@ public:
   int64_t framecount;
   map<int64_t, Frame*> in_queue;
   map<int64_t, Frame*> out_queue;
-  pthread_mutex_t in_mutex;
-  pthread_cond_t in_condition;
-  pthread_mutex_t out_mutex;
-  pthread_cond_t out_condition;
-  pthread_mutex_t free_mutex;
+  CCriticalSection in_mutex;
+  CCriticalSection out_mutex;
+  CCriticalSection free_mutex;
+  XbmcThreads::ConditionVariable in_condition;
+  XbmcThreads::ConditionVariable out_condition;
 
   int quirks;
   Frame *cur_frame;
@@ -625,10 +625,10 @@ public:
                                     // (EGLClientBuffer)graphicBuffer->getNativeBuffer(),
                                     // eglImgAttrs);
 
-          pthread_mutex_lock(&p->free_mutex);
+          p->free_mutex.lock();
           std::list<std::pair<EGLImageKHR, int> >::iterator it = p->free_queue.begin();
           int cur_slot = it->second;
-          pthread_mutex_unlock(&p->free_mutex);
+          p->free_mutex.unlock();
           p->fbo.BindToTexture(GL_TEXTURE_2D, p->slots[cur_slot].texid);
           p->fbo.BeginRender();
 
@@ -682,11 +682,11 @@ public:
       CLog::Log(LOGDEBUG, "%s: >>> pushed OUT frame; w:%d, h:%d, dw:%d, dh:%d, kf:%d, ur:%d, tm:%d\n", CLASSNAME, frame->width, frame->height, dw, dh, keyframe, unreadable, XbmcThreads::SystemClockMillis() - time);
     #endif
 
-      pthread_mutex_lock(&p->out_mutex);
+      p->out_mutex.lock();
       p->cur_frame = frame;
       while (p->cur_frame)
-        pthread_cond_wait(&p->out_condition, &p->out_mutex);
-      pthread_mutex_unlock(&p->out_mutex);
+        p->out_condition.wait(p->out_mutex);
+      p->out_mutex.unlock();
     }
     while (!decode_done && !m_bStop);
     
@@ -744,13 +744,13 @@ public:
 #endif
     }
 
-    pthread_mutex_lock(&p->in_mutex);
+    p->in_mutex.lock();
     while (p->in_queue.empty() && p->decode_thread)
-      pthread_cond_wait(&p->in_condition, &p->in_mutex);
+      p->in_condition.wait(p->in_mutex);
 
     if (p->in_queue.empty())
     {
-      pthread_mutex_unlock(&p->in_mutex);
+      p->in_mutex.unlock();
       return VC_ERROR;
     }
     
@@ -760,7 +760,7 @@ public:
     *buffer = frame->medbuf;
 
     p->in_queue.erase(it);
-    pthread_mutex_unlock(&p->in_mutex);
+    p->in_mutex.unlock();
 
 #if defined(DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, ">>> exiting reading source(%d); pts:%llu\n", p->in_queue.size(),frame->pts);
@@ -953,12 +953,6 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     p->inbuf[i]->setObserver(p);
   }
   
-  pthread_mutex_init(&p->in_mutex, NULL);
-  pthread_cond_init(&p->in_condition, NULL);
-  pthread_mutex_init(&p->out_mutex, NULL);
-  pthread_cond_init(&p->out_condition, NULL);
-  pthread_mutex_init(&p->free_mutex, NULL);
-
   p->decode_thread = new CStageFrightDecodeThread(p);
   p->decode_thread->Create(true /*autodelete*/);
 
@@ -1016,11 +1010,11 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
     frame->medbuf->meta_data()->clear();
     frame->medbuf->meta_data()->setInt64(kKeyTime, frame->pts);
     
-    pthread_mutex_lock(&p->in_mutex);
+    p->in_mutex.lock();
     p->framecount++;
     p->in_queue.insert(std::pair<int64_t, Frame*>(p->framecount, frame));
-    pthread_cond_signal(&p->in_condition);
-    pthread_mutex_unlock(&p->in_mutex);
+    p->in_condition.notify();
+    p->in_mutex.unlock();
   }
 
   int ret = 0;
@@ -1067,12 +1061,12 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   status_t status;
 
-  pthread_mutex_lock(&p->out_mutex);
+  p->out_mutex.lock();
   if (!p->cur_frame)
   {
     CLog::Log(LOGERROR, "%s::%s - Error getting frame\n", CLASSNAME, __func__);
-    pthread_cond_signal(&p->out_condition);
-    pthread_mutex_unlock(&p->out_mutex);
+    p->out_condition.notify();
+    p->out_mutex.unlock();
     return false;
   }
 
@@ -1098,8 +1092,8 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     }
     free(frame);
     p->cur_frame = NULL;
-    pthread_cond_signal(&p->out_condition);
-    pthread_mutex_unlock(&p->out_mutex);
+    p->out_condition.notify();
+    p->out_mutex.unlock();
     return false;
   }
 
@@ -1156,8 +1150,8 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   p->prev_frame = p->cur_frame;
   p->cur_frame = NULL;
-  pthread_cond_signal(&p->out_condition);
-  pthread_mutex_unlock(&p->out_mutex);
+  p->out_condition.notify();
+  p->out_mutex.unlock();
 
   return true;
 }
@@ -1173,7 +1167,7 @@ void CStageFrightVideo::Close()
   if (p->decode_thread && p->decode_thread->IsRunning())
     p->decode_thread->StopThread(false);
   p->decode_thread = NULL;
-  pthread_cond_signal(&p->in_condition);
+  p->in_condition.notify();
 
   // Give decoder_thread time to process EOS, if stuck on reading
   usleep(50000);
@@ -1181,7 +1175,7 @@ void CStageFrightVideo::Close()
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "Cleaning OUT\n");
 #endif
-  pthread_mutex_lock(&p->out_mutex);
+  p->out_mutex.lock();
   if (p->cur_frame)
   {
     if (p->cur_frame->medbuf)
@@ -1189,8 +1183,8 @@ void CStageFrightVideo::Close()
     free(p->cur_frame);
     p->cur_frame = NULL;
   }
-  pthread_cond_signal(&p->out_condition);
-  pthread_mutex_unlock(&p->out_mutex);
+  p->out_condition.notify();
+  p->out_mutex.unlock();
 
   if (p->prev_frame)
   {
@@ -1228,12 +1222,6 @@ void CStageFrightVideo::Close()
   if ((p->quirks & QuirkSWRender) == 0)
     g_xbmcapp.UninitStagefrightSurface();
 
-  pthread_mutex_destroy(&p->in_mutex);
-  pthread_cond_destroy(&p->in_condition);
-  pthread_mutex_destroy(&p->out_mutex);
-  pthread_cond_destroy(&p->out_condition);
-  pthread_mutex_destroy(&p->free_mutex);
-  
   for (int i=0; i<INBUFCOUNT; ++i)
   {
     p->inbuf[i]->setObserver(NULL);
@@ -1249,7 +1237,7 @@ void CStageFrightVideo::Reset(void)
   CLog::Log(LOGDEBUG, "%s::Reset\n", CLASSNAME);
 #endif
   Frame* frame;
-  pthread_mutex_lock(&p->in_mutex);
+  p->in_mutex.lock();
   std::map<int64_t,Frame*>::iterator it;
   while (!p->in_queue.empty())
   {
@@ -1263,7 +1251,7 @@ void CStageFrightVideo::Reset(void)
   p->resetting = true;
   p->framecount = 0;
 
-  pthread_mutex_unlock(&p->in_mutex);
+  p->in_mutex.unlock();
 }
 
 void CStageFrightVideo::SetDropState(bool bDrop)
@@ -1289,7 +1277,7 @@ void CStageFrightVideo::LockBuffer(EGLImageKHR eglimg)
  #if defined(DEBUG_VERBOSE)
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
-  pthread_mutex_lock(&p->free_mutex);
+  p->free_mutex.lock();
   std::list<std::pair<EGLImageKHR, int> >::iterator it = p->free_queue.begin();
   for(;it != p->free_queue.end(); ++it)
   {
@@ -1298,7 +1286,7 @@ void CStageFrightVideo::LockBuffer(EGLImageKHR eglimg)
   }
   if (it == p->free_queue.end())
   {
-    pthread_mutex_unlock(&p->free_mutex);
+    p->free_mutex.unlock();
     return;
   }
 #if defined(DEBUG_VERBOSE)
@@ -1307,7 +1295,7 @@ void CStageFrightVideo::LockBuffer(EGLImageKHR eglimg)
 
   p->busy_queue.push_back(std::pair<EGLImageKHR, int>(*it));
   p->free_queue.erase(it);
-  pthread_mutex_unlock(&p->free_mutex);
+  p->free_mutex.unlock();
 }
 
 void CStageFrightVideo::ReleaseBuffer(EGLImageKHR eglimg)
@@ -1315,7 +1303,7 @@ void CStageFrightVideo::ReleaseBuffer(EGLImageKHR eglimg)
  #if defined(DEBUG_VERBOSE)
   unsigned int time = XbmcThreads::SystemClockMillis();
 #endif
-  pthread_mutex_lock(&p->free_mutex);
+  p->free_mutex.lock();
   std::list<std::pair<EGLImageKHR, int> >::iterator it = p->busy_queue.begin();
   for(;it != p->busy_queue.end(); ++it)
   {
@@ -1324,7 +1312,7 @@ void CStageFrightVideo::ReleaseBuffer(EGLImageKHR eglimg)
   }
   if (it == p->busy_queue.end())
   {
-    pthread_mutex_unlock(&p->free_mutex);
+    p->free_mutex.unlock();
     return;
   }
 #if defined(DEBUG_VERBOSE)
@@ -1333,5 +1321,5 @@ void CStageFrightVideo::ReleaseBuffer(EGLImageKHR eglimg)
 
   p->free_queue.push_back(std::pair<EGLImageKHR, int>(*it));
   p->busy_queue.erase(it);
-  pthread_mutex_unlock(&p->free_mutex);
+  p->free_mutex.unlock();
 }
