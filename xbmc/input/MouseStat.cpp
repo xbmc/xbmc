@@ -157,13 +157,14 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   else
     m_Action = ACTION_NOOP;
 
-  // Activate the mouse pointer
-  if (MovedPastThreshold() || m_mouseState.dz)
+  // activate the mouse pointer if we have an action or the mouse has moved far enough
+  if ((MovedPastThreshold() && m_Action == ACTION_MOUSE_MOVE) ||
+      (m_Action != ACTION_NOOP && m_Action != ACTION_MOUSE_MOVE))
     SetActive();
-  else if (bNothingDown)
+
+  // reset the mouse state if nothing is held down
+  if (bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
-  else
-    SetActive();
 }
 
 void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
