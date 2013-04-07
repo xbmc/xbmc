@@ -19,9 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
-
-        preserve8
+#include "libavutil/arm/asm.S"
 
 #define ff_fft_calc_neon X(ff_fft_calc_neon)
 

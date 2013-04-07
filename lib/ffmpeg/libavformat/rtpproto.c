@@ -31,7 +31,6 @@
 #include "rtpdec.h"
 #include "url.h"
 
-#include <unistd.h>
 #include <stdarg.h>
 #include "internal.h"
 #include "network.h"
@@ -40,10 +39,6 @@
 #if HAVE_POLL_H
 #include <sys/poll.h>
 #endif
-#include <sys/time.h>
-
-#define RTP_TX_BUF_SIZE  (64 * 1024)
-#define RTP_RX_BUF_SIZE  (128 * 1024)
 
 typedef struct RTPContext {
     URLContext *rtp_hd, *rtcp_hd;
@@ -267,7 +262,7 @@ static int rtp_write(URLContext *h, const uint8_t *buf, int size)
     int ret;
     URLContext *hd;
 
-    if (buf[1] >= RTCP_SR && buf[1] <= RTCP_APP) {
+    if (RTP_PT_IS_RTCP(buf[1])) {
         /* RTCP payload type */
         hd = s->rtcp_hd;
     } else {
@@ -318,18 +313,27 @@ static int rtp_get_file_handle(URLContext *h)
     return s->rtp_fd;
 }
 
-int ff_rtp_get_rtcp_file_handle(URLContext *h) {
+static int rtp_get_multi_file_handle(URLContext *h, int **handles,
+                                     int *numhandles)
+{
     RTPContext *s = h->priv_data;
-    return s->rtcp_fd;
+    int *hs       = *handles = av_malloc(sizeof(**handles) * 2);
+    if (!hs)
+        return AVERROR(ENOMEM);
+    hs[0] = s->rtp_fd;
+    hs[1] = s->rtcp_fd;
+    *numhandles = 2;
+    return 0;
 }
 
 URLProtocol ff_rtp_protocol = {
-    .name                = "rtp",
-    .url_open            = rtp_open,
-    .url_read            = rtp_read,
-    .url_write           = rtp_write,
-    .url_close           = rtp_close,
-    .url_get_file_handle = rtp_get_file_handle,
-    .priv_data_size      = sizeof(RTPContext),
-    .flags               = URL_PROTOCOL_FLAG_NETWORK,
+    .name                      = "rtp",
+    .url_open                  = rtp_open,
+    .url_read                  = rtp_read,
+    .url_write                 = rtp_write,
+    .url_close                 = rtp_close,
+    .url_get_file_handle       = rtp_get_file_handle,
+    .url_get_multi_file_handle = rtp_get_multi_file_handle,
+    .priv_data_size            = sizeof(RTPContext),
+    .flags                     = URL_PROTOCOL_FLAG_NETWORK,
 };

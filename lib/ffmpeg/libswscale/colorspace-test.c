@@ -20,12 +20,12 @@
 
 #include <stdio.h>
 #include <string.h>              /* for memset() */
-#include <unistd.h>
 #include <stdlib.h>
 #include <inttypes.h>
 
 #include "swscale.h"
 #include "rgb2rgb.h"
+#include "libavutil/mem.h"
 
 #define SIZE    1000
 #define srcByte 0x55
@@ -54,6 +54,7 @@ int main(int argc, char **argv)
             const char *name;
             void (*func)(const uint8_t *src, uint8_t *dst, int src_size);
         } func_info[] = {
+            FUNC(2, 2, rgb12to15),
             FUNC(2, 2, rgb15to16),
             FUNC(2, 3, rgb15to24),
             FUNC(2, 4, rgb15to32),
@@ -66,6 +67,7 @@ int main(int argc, char **argv)
             FUNC(4, 2, rgb32to16),
             FUNC(4, 3, rgb32to24),
             FUNC(2, 2, rgb16to15),
+            FUNC(2, 2, rgb12tobgr12),
             FUNC(2, 2, rgb15tobgr15),
             FUNC(2, 2, rgb15tobgr16),
             FUNC(2, 3, rgb15tobgr24),
@@ -82,6 +84,12 @@ int main(int argc, char **argv)
             FUNC(4, 2, rgb32tobgr16),
             FUNC(4, 3, rgb32tobgr24),
             FUNC(4, 4, shuffle_bytes_2103), /* rgb32tobgr32 */
+            FUNC(6, 6, rgb48tobgr48_nobswap),
+            FUNC(6, 6, rgb48tobgr48_bswap),
+            FUNC(8, 6, rgb64to48_nobswap),
+            FUNC(8, 6, rgb64to48_bswap),
+            FUNC(8, 6, rgb64tobgr48_nobswap),
+            FUNC(8, 6, rgb64tobgr48_bswap),
             FUNC(0, 0, NULL)
         };
         int width;

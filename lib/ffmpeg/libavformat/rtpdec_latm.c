@@ -1,4 +1,4 @@
-/**
+/*
  * RTP Depacketization of MP4A-LATM, RFC 3016
  * Copyright (c) 2010 Martin Storsjo
  *
@@ -51,7 +51,8 @@ static void latm_free_context(PayloadContext *data)
 
 static int latm_parse_packet(AVFormatContext *ctx, PayloadContext *data,
                              AVStream *st, AVPacket *pkt, uint32_t *timestamp,
-                             const uint8_t *buf, int len, int flags)
+                             const uint8_t *buf, int len, uint16_t seq,
+                             int flags)
 {
     int ret, cur_len;
 
@@ -168,6 +169,9 @@ static int latm_parse_sdp_line(AVFormatContext *s, int st_index,
 {
     const char *p;
 
+    if (st_index < 0)
+        return 0;
+
     if (av_strstart(line, "fmtp:", &p))
         return ff_parse_fmtp(s->streams[st_index], data, p, parse_fmtp);
 
@@ -177,7 +181,7 @@ static int latm_parse_sdp_line(AVFormatContext *s, int st_index,
 RTPDynamicProtocolHandler ff_mp4a_latm_dynamic_handler = {
     .enc_name           = "MP4A-LATM",
     .codec_type         = AVMEDIA_TYPE_AUDIO,
-    .codec_id           = CODEC_ID_AAC,
+    .codec_id           = AV_CODEC_ID_AAC,
     .parse_sdp_a_line   = latm_parse_sdp_line,
     .alloc              = latm_new_context,
     .free               = latm_free_context,

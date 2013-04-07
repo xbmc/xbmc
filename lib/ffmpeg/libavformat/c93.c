@@ -57,8 +57,7 @@ static int probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-static int read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int read_header(AVFormatContext *s)
 {
     AVStream *video;
     AVIOContext *pb = s->pb;
@@ -85,7 +84,7 @@ static int read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
 
     video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    video->codec->codec_id = CODEC_ID_C93;
+    video->codec->codec_id = AV_CODEC_ID_C93;
     video->codec->width = 320;
     video->codec->height = 192;
     /* 4:3 320x200 with 8 empty lines */
@@ -124,7 +123,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
                 c93->audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             }
             avio_skip(pb, 26); /* VOC header */
-            ret = voc_get_packet(s, pkt, c93->audio, datasize - 26);
+            ret = ff_voc_get_packet(s, pkt, c93->audio, datasize - 26);
             if (ret > 0) {
                 pkt->stream_index = 1;
                 pkt->flags |= AV_PKT_FLAG_KEY;
@@ -134,7 +133,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
     }
     if (c93->current_frame >= br->frames) {
         if (c93->current_block >= 511 || !br[1].length)
-            return AVERROR(EIO);
+            return AVERROR_EOF;
         br++;
         c93->current_block++;
         c93->current_frame = 0;

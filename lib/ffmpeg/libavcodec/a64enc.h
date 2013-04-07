@@ -41,7 +41,7 @@ typedef struct A64Context {
     AVLFG randctx;
     int mc_lifetime;
     int mc_use_5col;
-    int mc_frame_counter;
+    unsigned mc_frame_counter;
     int *mc_meta_charset;
     int *mc_charmap;
     int *mc_best_cb;
@@ -50,6 +50,9 @@ typedef struct A64Context {
     uint8_t *mc_colram;
     uint8_t *mc_palette;
     int mc_pal_size;
+
+    /* pts of the next packet that will be output */
+    int64_t next_pts;
 } A64Context;
 
 #endif /* AVCODEC_A64ENC_H */

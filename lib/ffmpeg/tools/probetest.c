@@ -49,12 +49,29 @@ static void probe(AVProbeData *pd, int type, int p, int size)
     }
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
     unsigned int p, i, type, size, retry;
     AVProbeData pd;
     AVLFG state;
     PutBitContext pb;
+    int retry_count= 4097;
+    int max_size = 65537;
+
+    if(argc >= 2)
+        retry_count = atoi(argv[1]);
+    if(argc >= 3)
+        max_size = atoi(argv[2]);
+
+    if (max_size > 1000000000U/8) {
+        fprintf(stderr, "max_size out of bounds\n");
+        return 1;
+    }
+
+    if (retry_count > 1000000000U) {
+        fprintf(stderr, "retry_count out of bounds\n");
+        return 1;
+    }
 
     avcodec_register_all();
     av_register_all();
@@ -62,14 +79,16 @@ int main(void)
     av_lfg_init(&state, 0xdeadbeef);
 
     pd.buf = NULL;
-    for (size = 1; size < 65537; size *= 2) {
+    for (size = 1; size < max_size; size *= 2) {
         pd.buf_size = size;
         pd.buf      = av_realloc(pd.buf, size + AVPROBE_PADDING_SIZE);
         pd.filename = "";
 
+        memset(pd.buf, 0, size + AVPROBE_PADDING_SIZE);
+
         fprintf(stderr, "testing size=%d\n", size);
 
-        for (retry = 0; retry < 4097; retry += FFMAX(size, 32)) {
+        for (retry = 0; retry < retry_count; retry += FFMAX(size, 32)) {
             for (type = 0; type < 4; type++) {
                 for (p = 0; p < 4096; p++) {
                     unsigned hist = 0;

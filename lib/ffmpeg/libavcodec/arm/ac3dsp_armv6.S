@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
+#include "libavutil/arm/asm.S"
 
 function ff_ac3_bit_alloc_calc_bap_armv6, export=1
         ldr             r12, [sp]
@@ -32,7 +32,7 @@ function ff_ac3_bit_alloc_calc_bap_armv6, export=1
         ldrb            r4,  [r4, r2]
         add             r1,  r1,  r2,  lsl #1           @ psd + start
         add             r0,  r0,  r4,  lsl #1           @ mask + band
-        add             r4,  lr,  r4
+        add             r4,  r4,  lr
         add             r7,  r7,  r2                    @ bap + start
 1:
         ldrsh           r9,  [r0], #2                   @ mask[band]

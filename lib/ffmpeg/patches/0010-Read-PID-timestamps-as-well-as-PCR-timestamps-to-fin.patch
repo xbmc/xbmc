@@ -1,18 +1,16 @@
-From 17c6bca0f47b1a0c3deac3ad948cdd674c135321 Mon Sep 17 00:00:00 2001
-From: Cory Fields <theuni-nospam-@xbmc.org>
-Date: Fri, 9 Jul 2010 16:43:31 -0400
-Subject: [PATCH 10/24] Read PID timestamps as well as PCR timestamps to find
- location in mpegts stream
+From 3c31f5987079c3796f3f7313d97ee3c58fb0d4db Mon Sep 17 00:00:00 2001
+Date: Mon, 18 Feb 2013 11:52:01 +0000
+Subject: [PATCH] Read-PID-timestamps-as-well-as-PCR-timestamps-to-fin
 
 ---
  libavformat/mpegts.c |   48 ++++++++++++++++++++++++++++++++++++++++++++++--
  1 file changed, 46 insertions(+), 2 deletions(-)
 
 diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
-index 8bdafc5..ba2f163 100644
+index 3befaf8..21df7b3 100644
 --- a/libavformat/mpegts.c
 +++ b/libavformat/mpegts.c
-@@ -1928,6 +1928,44 @@ static int parse_pcr(int64_t *ppcr_high, int *ppcr_low,
+@@ -1985,6 +1985,44 @@ static int parse_pcr(int64_t *ppcr_high, int *ppcr_low,
      return 0;
  }
  
@@ -54,10 +52,10 @@ index 8bdafc5..ba2f163 100644
 +}
 +
 +
- static int mpegts_read_header(AVFormatContext *s,
-                               AVFormatParameters *ap)
+ static int mpegts_read_header(AVFormatContext *s)
  {
-@@ -2118,6 +2156,7 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
+     MpegTSContext *ts = s->priv_data;
+@@ -2176,6 +2214,7 @@ static av_unused int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
      int64_t pos, timestamp;
      uint8_t buf[TS_PACKET_SIZE];
      int pcr_l, pcr_pid = ((PESContext*)s->streams[stream_index]->priv_data)->pcr_pid;
@@ -65,7 +63,7 @@ index 8bdafc5..ba2f163 100644
      pos = ((*ppos  + ts->raw_packet_size - 1 - ts->pos47) / ts->raw_packet_size) * ts->raw_packet_size + ts->pos47;
      while(pos < pos_limit) {
          if (avio_seek(s->pb, pos, SEEK_SET) < 0)
-@@ -2135,6 +2174,11 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
+@@ -2193,6 +2232,11 @@ static av_unused int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
              *ppos = pos;
              return timestamp;
          }
@@ -77,24 +75,24 @@ index 8bdafc5..ba2f163 100644
          pos += ts->raw_packet_size;
      }
  
-@@ -2322,7 +2366,7 @@ AVInputFormat ff_mpegts_demuxer = {
+@@ -2294,7 +2338,7 @@ AVInputFormat ff_mpegts_demuxer = {
      .read_header    = mpegts_read_header,
      .read_packet    = mpegts_read_packet,
      .read_close     = mpegts_read_close,
 -    .read_timestamp = mpegts_get_dts,
 +    .read_timestamp = mpegts_get_pcr,
-     .flags = AVFMT_SHOW_IDS|AVFMT_TS_DISCONT,
- #ifdef USE_SYNCPOINT_SEARCH
-     .read_seek2 = read_seek2,
-@@ -2336,7 +2380,7 @@ AVInputFormat ff_mpegtsraw_demuxer = {
+     .flags          = AVFMT_SHOW_IDS | AVFMT_TS_DISCONT,
+ };
+ 
+@@ -2305,7 +2349,7 @@ AVInputFormat ff_mpegtsraw_demuxer = {
      .read_header    = mpegts_read_header,
      .read_packet    = mpegts_raw_read_packet,
      .read_close     = mpegts_read_close,
 -    .read_timestamp = mpegts_get_dts,
 +    .read_timestamp = mpegts_get_pcr,
-     .flags = AVFMT_SHOW_IDS|AVFMT_TS_DISCONT,
- #ifdef USE_SYNCPOINT_SEARCH
-     .read_seek2 = read_seek2,
+     .flags          = AVFMT_SHOW_IDS | AVFMT_TS_DISCONT,
+     .priv_class     = &mpegtsraw_class,
+ };
 -- 
-1.7.9.4
+1.7.10.4
 

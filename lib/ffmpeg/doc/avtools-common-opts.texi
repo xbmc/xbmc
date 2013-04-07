@@ -1,10 +1,11 @@
 All the numerical options, if not specified otherwise, accept in input
 a string representing a number, which may contain one of the
-International System number postfixes, for example 'K', 'M', 'G'.
-If 'i' is appended after the postfix, powers of 2 are used instead of
-powers of 10. The 'B' postfix multiplies the value for 8, and can be
-appended after another postfix or used alone. This allows using for
-example 'KB', 'MiB', 'G' and 'B' as postfix.
+SI unit prefixes, for example 'K', 'M', 'G'.
+If 'i' is appended after the prefix, binary prefixes are used,
+which are based on powers of 1024 instead of powers of 1000.
+The 'B' postfix multiplies the value by 8, and can be
+appended after a unit prefix or used alone. This allows using for
+example 'KB', 'MiB', 'G' and 'B' as number postfix.
 
 Options which do not take arguments are boolean options, and set the
 corresponding value to true. They can be set to false by prefixing
@@ -18,10 +19,10 @@ are used to precisely specify which stream(s) does a given option belong to.
 
 A stream specifier is a string generally appended to the option name and
 separated from it by a colon. E.g. @code{-codec:a:1 ac3} option contains
-@code{a:1} stream specifer, which matches the second audio stream. Therefore it
+@code{a:1} stream specifier, which matches the second audio stream. Therefore it
 would select the ac3 codec for the second audio stream.
 
-A stream specifier can match several stream, the option is then applied to all
+A stream specifier can match several streams, the option is then applied to all
 of them. E.g. the stream specifier in @code{-b:a 128k} matches all audio
 streams.
 
@@ -41,7 +42,10 @@ streams of this type.
 @item p:@var{program_id}[:@var{stream_index}]
 If @var{stream_index} is given, then matches stream number @var{stream_index} in
 program with id @var{program_id}. Otherwise matches all streams in this program.
+@item #@var{stream_id}
+Matches the stream by format-specific ID.
 @end table
+
 @section Generic options
 
 These options are shared amongst the av* tools.
@@ -51,8 +55,29 @@ These options are shared amongst the av* tools.
 @item -L
 Show license.
 
-@item -h, -?, -help, --help
-Show help.
+@item -h, -?, -help, --help [@var{arg}]
+Show help. An optional parameter may be specified to print help about a specific
+item.
+
+Possible values of @var{arg} are:
+@table @option
+@item decoder=@var{decoder_name}
+Print detailed information about the decoder named @var{decoder_name}. Use the
+@option{-decoders} option to get a list of all decoders.
+
+@item encoder=@var{encoder_name}
+Print detailed information about the encoder named @var{encoder_name}. Use the
+@option{-encoders} option to get a list of all encoders.
+
+@item demuxer=@var{demuxer_name}
+Print detailed information about the demuxer named @var{demuxer_name}. Use the
+@option{-formats} option to get a list of all demuxers and muxers.
+
+@item muxer=@var{muxer_name}
+Print detailed information about the muxer named @var{muxer_name}. Use the
+@option{-formats} option to get a list of all muxers and demuxers.
+
+@end table
 
 @item -version
 Show version.
@@ -69,23 +94,16 @@ Encoding available
 @end table
 
 @item -codecs
-Show available codecs.
+Show all codecs known to libavcodec.
 
-The fields preceding the codec names have the following meanings:
-@table @samp
-@item D
-Decoding available
-@item E
-Encoding available
-@item V/A/S
-Video/audio/subtitle codec
-@item S
-Codec supports slices
-@item D
-Codec supports direct rendering
-@item T
-Codec can handle input truncated at random locations instead of only at frame boundaries
-@end table
+Note that the term 'codec' is used throughout this documentation as a shortcut
+for what is more correctly called a media bitstream format.
+
+@item -decoders
+Show available decoders.
+
+@item -encoders
+Show all available encoders.
 
 @item -bsfs
 Show available bitstream filters.
@@ -101,6 +119,9 @@ Show available pixel formats.
 
 @item -sample_fmts
 Show available sample formats.
+
+@item -layouts
+Show channel names and standard channel layouts.
 
 @item -loglevel @var{loglevel} | -v @var{loglevel}
 Set the logging level used by the library.
@@ -131,8 +152,30 @@ directory.
 This file can be useful for bug reports.
 It also implies @code{-loglevel verbose}.
 
-Note: setting the environment variable @code{FFREPORT} to any value has the
-same effect.
+Setting the environment variable @code{FFREPORT} to any value has the
+same effect. If the value is a ':'-separated key=value sequence, these
+options will affect the report; options values must be escaped if they
+contain special characters or the options delimiter ':' (see the
+``Quoting and escaping'' section in the ffmpeg-utils manual). The
+following option is recognized:
+@table @option
+@item file
+set the file name to use for the report; @code{%p} is expanded to the name
+of the program, @code{%t} is expanded to a timestamp, @code{%%} is expanded
+to a plain @code{%}
+@end table
+
+Errors in parsing the environment variable are not fatal, and will not
+appear in the report.
+
+@item -cpuflags flags (@emph{global})
+Allows setting and clearing cpu flags. This option is intended
+for testing. Do not use it unless you know what you're doing.
+@example
+ffmpeg -cpuflags -sse+mmx ...
+ffmpeg -cpuflags mmx ...
+ffmpeg -cpuflags 0 ...
+@end example
 
 @end table
 

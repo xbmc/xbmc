@@ -18,11 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "config.h"
+#if HAVE_UNISTD_H
 #include <unistd.h>             /* getopt */
+#endif
+#include <stdio.h>
+#include <string.h>
 
+#include "libavutil/channel_layout.h"
+#include "libavutil/mem.h"
 #include "libavutil/pixdesc.h"
-#include "libavutil/audioconvert.h"
 #include "libavfilter/avfiltergraph.h"
+
+#if !HAVE_GETOPT
+#include "compat/getopt.c"
+#endif
 
 static void usage(void)
 {
@@ -52,7 +62,7 @@ static void print_digraph(FILE *outfile, AVFilterGraph *graph)
         char filter_ctx_label[128];
         const AVFilterContext *filter_ctx = graph->filters[i];
 
-        snprintf(filter_ctx_label, sizeof(filter_ctx_label), "%s (%s)",
+        snprintf(filter_ctx_label, sizeof(filter_ctx_label), "%s\\n(%s)",
                  filter_ctx->name,
                  filter_ctx->filter->name);
 
@@ -63,29 +73,32 @@ static void print_digraph(FILE *outfile, AVFilterGraph *graph)
                 const AVFilterContext *dst_filter_ctx = link->dst;
 
                 snprintf(dst_filter_ctx_label, sizeof(dst_filter_ctx_label),
-                         "%s (%s)",
+                         "%s\\n(%s)",
                          dst_filter_ctx->name,
                          dst_filter_ctx->filter->name);
 
-                fprintf(outfile, "\"%s\" -> \"%s\"",
-                        filter_ctx_label, dst_filter_ctx_label);
+                fprintf(outfile, "\"%s\" -> \"%s\" [ label= \"inpad:%s -> outpad:%s\\n",
+                        filter_ctx_label, dst_filter_ctx_label,
+                        link->srcpad->name, link->dstpad->name);
+
                 if (link->type == AVMEDIA_TYPE_VIDEO) {
+                    const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(link->format);
                     fprintf(outfile,
-                            " [ label= \"fmt:%s w:%d h:%d tb:%d/%d\" ]",
-                            av_pix_fmt_descriptors[link->format].name,
-                            link->w, link->h, link->time_base.num,
-                            link->time_base.den);
+                            "fmt:%s w:%d h:%d tb:%d/%d",
+                            desc->name,
+                            link->w, link->h,
+                            link->time_base.num, link->time_base.den);
                 } else if (link->type == AVMEDIA_TYPE_AUDIO) {
                     char buf[255];
                     av_get_channel_layout_string(buf, sizeof(buf), -1,
                                                  link->channel_layout);
                     fprintf(outfile,
-                            " [ label= \"fmt:%s sr:%"PRId64" cl:%s tb:%d/%d\" ]",
+                            "fmt:%s sr:%d cl:%s tb:%d/%d",
                             av_get_sample_fmt_name(link->format),
                             link->sample_rate, buf,
                             link->time_base.num, link->time_base.den);
                 }
-                fprintf(outfile, ";\n");
+                fprintf(outfile, "\" ];\n");
             }
         }
     }

@@ -18,7 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "avcodec.h"
+#include "libavutil/mem.h"
 
 
 static int noise(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const char *args,
@@ -27,6 +31,9 @@ static int noise(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const ch
     unsigned int *state= bsfc->priv_data;
     int amount= args ? atoi(args) : (*state % 10001+1);
     int i;
+
+    if(amount <= 0)
+        return AVERROR(EINVAL);
 
     *poutbuf= av_malloc(buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
 

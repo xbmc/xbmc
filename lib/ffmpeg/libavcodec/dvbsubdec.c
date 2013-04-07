@@ -150,7 +150,7 @@ static void png_save2(const char *filename, uint32_t *bitmap, int w, int h)
 }
 #endif
 
-#define RGBA(r,g,b,a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
+#define RGBA(r,g,b,a) (((unsigned)(a) << 24) | ((r) << 16) | ((g) << 8) | (b))
 
 typedef struct DVBSubCLUT {
     int id;
@@ -1031,7 +1031,7 @@ static void dvbsub_parse_region_segment(AVCodecContext *avctx,
 
     const uint8_t *buf_end = buf + buf_size;
     int region_id, object_id;
-    int version;
+    int av_unused version;
     DVBSubRegion *region;
     DVBSubObject *object;
     DVBSubObjectDisplay *display;
@@ -1343,6 +1343,10 @@ static void dvbsub_parse_display_definition_segment(AVCodecContext *avctx,
     display_def->y       = 0;
     display_def->width   = bytestream_get_be16(&buf) + 1;
     display_def->height  = bytestream_get_be16(&buf) + 1;
+    if (!avctx->width || !avctx->height) {
+        avctx->width  = display_def->width;
+        avctx->height = display_def->height;
+    }
 
     if (buf_size < 13)
         return;
@@ -1451,8 +1455,8 @@ static int dvbsub_decode(AVCodecContext *avctx,
     int segment_type;
     int page_id;
     int segment_length;
-    int got_segment = 0;
     int i;
+    int got_segment = 0;
 
     av_dlog(avctx, "DVB sub packet:\n");
 
@@ -1521,7 +1525,6 @@ static int dvbsub_decode(AVCodecContext *avctx,
 
         p += segment_length;
     }
-
     // Some streams do not send a display segment but if we have all the other
     // segments then we need no further data.
     if (got_segment == 15 && sub)
@@ -1534,10 +1537,10 @@ static int dvbsub_decode(AVCodecContext *avctx,
 AVCodec ff_dvbsub_decoder = {
     .name           = "dvbsub",
     .type           = AVMEDIA_TYPE_SUBTITLE,
-    .id             = CODEC_ID_DVB_SUBTITLE,
+    .id             = AV_CODEC_ID_DVB_SUBTITLE,
     .priv_data_size = sizeof(DVBSubContext),
     .init           = dvbsub_init_decoder,
     .close          = dvbsub_close_decoder,
     .decode         = dvbsub_decode,
-    .long_name = NULL_IF_CONFIG_SMALL("DVB subtitles"),
+    .long_name      = NULL_IF_CONFIG_SMALL("DVB subtitles"),
 };

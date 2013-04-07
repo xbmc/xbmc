@@ -73,7 +73,7 @@ typedef struct PGSSubContext {
 
 static av_cold int init_decoder(AVCodecContext *avctx)
 {
-    avctx->pix_fmt     = PIX_FMT_PAL8;
+    avctx->pix_fmt     = AV_PIX_FMT_PAL8;
 
     return 0;
 }
@@ -220,6 +220,11 @@ static int parse_picture_segment(AVCodecContext *avctx,
     if (avctx->width < width || avctx->height < height) {
         av_log(avctx, AV_LOG_ERROR, "Bitmap dimensions larger than video.\n");
         return -1;
+    }
+
+    if (buf_size > rle_bitmap_len) {
+        av_log(avctx, AV_LOG_ERROR, "too much RLE data\n");
+        return AVERROR_INVALIDDATA;
     }
 
     ctx->pictures[picture_id].w = width;
@@ -495,7 +500,7 @@ static int decode(AVCodecContext *avctx, void *data, int *data_size,
         case WINDOW_SEGMENT:
             /*
              * Window Segment Structure (No new information provided):
-             *     2 bytes: Unkown,
+             *     2 bytes: Unknown,
              *     2 bytes: X position of subtitle,
              *     2 bytes: Y position of subtitle,
              *     2 bytes: Width of subtitle,
@@ -534,7 +539,7 @@ static const AVClass pgsdec_class = {
 AVCodec ff_pgssub_decoder = {
     .name           = "pgssub",
     .type           = AVMEDIA_TYPE_SUBTITLE,
-    .id             = CODEC_ID_HDMV_PGS_SUBTITLE,
+    .id             = AV_CODEC_ID_HDMV_PGS_SUBTITLE,
     .priv_data_size = sizeof(PGSSubContext),
     .init           = init_decoder,
     .close          = close_decoder,

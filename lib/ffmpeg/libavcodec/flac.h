@@ -37,10 +37,10 @@
 #define FLAC_MIN_FRAME_SIZE    11
 
 enum {
-    FLAC_CHMODE_INDEPENDENT =  0,
-    FLAC_CHMODE_LEFT_SIDE   =  8,
-    FLAC_CHMODE_RIGHT_SIDE  =  9,
-    FLAC_CHMODE_MID_SIDE    = 10,
+    FLAC_CHMODE_INDEPENDENT = 0,
+    FLAC_CHMODE_LEFT_SIDE   = 1,
+    FLAC_CHMODE_RIGHT_SIDE  = 2,
+    FLAC_CHMODE_MID_SIDE    = 3,
 };
 
 enum {
@@ -137,4 +137,7 @@ int ff_flac_get_max_frame_size(int blocksize, int ch, int bps);
  */
 int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
                                 FLACFrameInfo *fi, int log_level_offset);
+
+void ff_flac_set_channel_layout(AVCodecContext *avctx);
+
 #endif /* AVCODEC_FLAC_H */

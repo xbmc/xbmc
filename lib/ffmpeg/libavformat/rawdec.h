@@ -26,12 +26,6 @@
 #include "libavutil/log.h"
 #include "libavutil/opt.h"
 
-typedef struct RawAudioDemuxerContext {
-    AVClass *class;
-    int sample_rate;
-    int channels;
-} RawAudioDemuxerContext;
-
 typedef struct FFRawVideoDemuxerContext {
     const AVClass *class;     /**< Class for private options. */
     char *video_size;         /**< String describing video size, set by a private option. */
@@ -41,13 +35,11 @@ typedef struct FFRawVideoDemuxerContext {
 
 extern const AVOption ff_rawvideo_options[];
 
-int ff_raw_read_header(AVFormatContext *s, AVFormatParameters *ap);
-
 int ff_raw_read_partial_packet(AVFormatContext *s, AVPacket *pkt);
 
-int ff_raw_audio_read_header(AVFormatContext *s, AVFormatParameters *ap);
+int ff_raw_audio_read_header(AVFormatContext *s);
 
-int ff_raw_video_read_header(AVFormatContext *s, AVFormatParameters *ap);
+int ff_raw_video_read_header(AVFormatContext *s);
 
 #define FF_RAWVIDEO_DEMUXER_CLASS(name)\
 static const AVClass name ## _demuxer_class = {\
@@ -67,7 +59,7 @@ AVInputFormat ff_ ## shortname ## _demuxer = {\
     .read_packet    = ff_raw_read_partial_packet,\
     .extensions     = ext,\
     .flags          = AVFMT_GENERIC_INDEX,\
-    .value          = id,\
+    .raw_codec_id   = id,\
     .priv_data_size = sizeof(FFRawVideoDemuxerContext),\
     .priv_class     = &shortname ## _demuxer_class,\
 };

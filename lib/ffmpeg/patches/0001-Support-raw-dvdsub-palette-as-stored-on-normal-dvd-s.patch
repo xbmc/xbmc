@@ -1,20 +1,16 @@
-From 5d361593f1149c2c0874d76a27c5cc68a219088c Mon Sep 17 00:00:00 2001
-From: Joakim Plate <elupus@ecce.se>
-Date: Sun, 11 Sep 2011 19:04:51 +0200
-Subject: [PATCH 01/24] Support raw dvdsub palette as stored on normal dvd's
+From a77624551376c138dcda4d0bce167abe379a0a6b Mon Sep 17 00:00:00 2001
+Date: Mon, 18 Feb 2013 11:08:55 +0000
+Subject: [PATCH] Support-raw-dvdsub-palette-as-stored-on-normal-dvd-s
 
-This is how the palette is stored on dvd's. Currently
-only xbmc passes the palette information to libavcodec
-this way.
 ---
- libavcodec/dvdsubdec.c |   23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ libavcodec/dvdsubdec.c |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/libavcodec/dvdsubdec.c b/libavcodec/dvdsubdec.c
-index f4b5439..d0d13ee 100644
+index cc9e11b..52ec0a8 100644
 --- a/libavcodec/dvdsubdec.c
 +++ b/libavcodec/dvdsubdec.c
-@@ -50,6 +50,24 @@ static void yuv_a_to_rgba(const uint8_t *ycbcr, const uint8_t *alpha, uint32_t *
+@@ -54,6 +54,24 @@ static void yuv_a_to_rgba(const uint8_t *ycbcr, const uint8_t *alpha, uint32_t *
      }
  }
  
@@ -39,10 +35,11 @@ index f4b5439..d0d13ee 100644
  static int decode_run_2bit(GetBitContext *gb, int *color)
  {
      unsigned int v, t;
-@@ -547,6 +565,11 @@ static int dvdsub_init(AVCodecContext *avctx)
-         data += strspn(data, "\n\r");
-     }
+@@ -574,6 +592,12 @@ static int dvdsub_init(AVCodecContext *avctx)
  
+     if (ctx->palette_str)
+         parse_palette(ctx, ctx->palette_str);
++
 +    if (!ctx->has_palette && avctx->extradata_size == 64) {
 +        ayvu_to_argb((uint8_t*)avctx->extradata, ctx->palette, 16);
 +        ctx->has_palette = 1;
@@ -52,5 +49,5 @@ index f4b5439..d0d13ee 100644
          int i;
          av_log(avctx, AV_LOG_DEBUG, "palette:");
 -- 
-1.7.9.4
+1.7.10.4
 

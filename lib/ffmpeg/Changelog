@@ -1,44 +1,205 @@
 Entries are sorted chronologically from oldest to youngest within each release,
 releases are sorted from youngest to oldest.
 
-version next:
+version 1.2:
 
-version 0.10.1
-- Several security fixes, many bugfixes affecting many formats and
-  codecs, the list below is not complete.
+- VDPAU hardware acceleration through normal hwaccel
+- SRTP support
+- Error diffusion dither in Swscale
+- Chained Ogg support
+- Theora Midstream reconfiguration support
+- EVRC decoder
+- audio fade filter
+- filtering audio with unknown channel layout
+- allpass, bass, bandpass, bandreject, biquad, equalizer, highpass, lowpass
+  and treble audio filter
+- improved showspectrum filter, with multichannel support and sox-like colors
+- histogram filter
+- tee muxer
+- il filter ported from libmpcodecs
+- support ID3v2 tags in ASF files
+- encrypted TTA stream decoding support
+- RF64 support in WAV muxer
+- noise filter ported from libmpcodecs
+- Subtitles character encoding conversion
+- blend filter
+- stereo3d filter ported from libmpcodecs
 
+
+version 1.1:
+
+- stream disposition information printing in ffprobe
+- filter for loudness analysis following EBU R128
+- Opus encoder using libopus
+- ffprobe -select_streams option
+- Pinnacle TARGA CineWave YUV16 decoder
+- TAK demuxer, decoder and parser
+- DTS-HD demuxer
+- remove -same_quant, it hasn't worked for years
+- FFM2 support
+- X-Face image encoder and decoder
+- 24-bit FLAC encoding
+- multi-channel ALAC encoding up to 7.1
+- metadata (INFO tag) support in WAV muxer
+- subtitles raw text decoder
+- support for building DLLs using MSVC
+- LVF demuxer
+- ffescape tool
+- metadata (info chunk) support in CAF muxer
+- field filter ported from libmpcodecs
+- AVR demuxer
+- geq filter ported from libmpcodecs
+- remove ffserver daemon mode
+- AST muxer/demuxer
+- new expansion syntax for drawtext
+- BRender PIX image decoder
+- ffprobe -show_entries option
+- ffprobe -sections option
+- ADPCM IMA Dialogic decoder
+- BRSTM demuxer
+- animated GIF decoder and demuxer
+- PVF demuxer
+- subtitles filter
+- IRCAM muxer/demuxer
+- Paris Audio File demuxer
+- Virtual concatenation demuxer
+- VobSub demuxer
+- JSON captions for TED talks decoding support
+- SOX Resampler support in libswresample
+- aselect filter
+- SGI RLE 8-bit decoder
+- Silicon Graphics Motion Video Compressor 1 & 2 decoder
+- Silicon Graphics Movie demuxer
+- apad filter
+- Resolution & pixel format change support with multithreading for H.264
+- documentation split into per-component manuals
+- pp (postproc) filter ported from MPlayer
+- NIST Sphere demuxer
+- MPL2, VPlayer, MPlayer, AQTitle, PJS and SubViewer v1 subtitles demuxers and decoders
+- Sony Wave64 muxer
+- adobe and limelight publisher authentication in RTMP
+- data: URI scheme
+- support building on the Plan 9 operating system
+- kerndeint filter ported from MPlayer
+- histeq filter ported from VirtualDub
+- Megalux Frame demuxer
+- 012v decoder
+- Improved AVC Intra decoding support
+
+
+version 1.0:
+
+- INI and flat output in ffprobe
+- Scene detection in libavfilter
+- Indeo Audio decoder
+- channelsplit audio filter
+- setnsamples audio filter
+- atempo filter
+- ffprobe -show_data option
+- RTMPT protocol support
+- iLBC encoding/decoding via libilbc
+- Microsoft Screen 1 decoder
+- join audio filter
+- audio channel mapping filter
+- Microsoft ATC Screen decoder
+- RTSP listen mode
+- TechSmith Screen Codec 2 decoder
+- AAC encoding via libfdk-aac
+- Microsoft Expression Encoder Screen decoder
+- RTMPS protocol support
+- RTMPTS protocol support
+- RTMPE protocol support
+- RTMPTE protocol support
+- showwaves and showspectrum filter
+- LucasArts SMUSH playback support
+- SAMI, RealText and SubViewer demuxers and decoders
+- Heart Of Darkness PAF playback support
+- iec61883 device
+- asettb filter
+- new option: -progress
+- 3GPP Timed Text encoder/decoder
+- GeoTIFF decoder support
+- ffmpeg -(no)stdin option
+- Opus decoder using libopus
+- caca output device using libcaca
+- alphaextract and alphamerge filters
+- concat filter
+- flite filter
+- Canopus Lossless Codec decoder
+- bitmap subtitles in filters (experimental and temporary)
+- MP2 encoding via TwoLAME
+- bmp parser
+- smptebars source
+- asetpts filter
+- hue filter
+- ICO muxer
+- SubRip encoder and decoder without embedded timing
+- edge detection filter
+- framestep filter
+- ffmpeg -shortest option is now per-output file
+  -pass and -passlogfile are now per-output stream
+- volume measurement filter
+- Ut Video encoder
+- Microsoft Screen 2 decoder
+- smartblur filter ported from MPlayer
+- CPiA decoder
+- decimate filter ported from MPlayer
+- RTP depacketization of JPEG
+- Smooth Streaming live segmenter muxer
+- F4V muxer
+- sendcmd and asendcmd filters
+- WebVTT demuxer and decoder (simple tags supported)
+- RTP packetization of JPEG
+- faststart option in the MOV/MP4 muxer
+- support for building with MSVC
+
+
+version 0.11:
+
+- Fixes: CVE-2012-2772, CVE-2012-2774, CVE-2012-2775, CVE-2012-2776, CVE-2012-2777,
+         CVE-2012-2779, CVE-2012-2782, CVE-2012-2783, CVE-2012-2784, CVE-2012-2785,
+         CVE-2012-2786, CVE-2012-2787, CVE-2012-2788, CVE-2012-2789, CVE-2012-2790,
+         CVE-2012-2791, CVE-2012-2792, CVE-2012-2793, CVE-2012-2794, CVE-2012-2795,
+         CVE-2012-2796, CVE-2012-2797, CVE-2012-2798, CVE-2012-2799, CVE-2012-2800,
+         CVE-2012-2801, CVE-2012-2802, CVE-2012-2803, CVE-2012-2804,
+- v408 Quicktime and Microsoft AYUV Uncompressed 4:4:4:4 encoder and decoder
+- setfield filter
+- CDXL demuxer and decoder
+- Apple ProRes encoder
+- ffprobe -count_packets and -count_frames options
+- Sun Rasterfile Encoder
+- ID3v2 attached pictures reading and writing
+- WMA Lossless decoder
+- bluray protocol
+- blackdetect filter
+- libutvideo encoder wrapper (--enable-libutvideo)
 - swapuv filter
-
-- Several bugs and crashes have been fixed in the following codecs: AAC,
-  AC-3, ADPCM, AMR (both NB and WB), ATRAC3, CAVC, Cook, camstudio, DCA,
-  DPCM, DSI CIN, DV, EA TGQ, FLAC, fraps, G.722 (both encoder and
-  decoder), H.264, huvffyuv, BB JV decoder, Indeo 3, KGV1, LCL, the
-  libx264 wrapper, MJPEG, mp3on4, Musepack, MPEG1/2, PNG, QDM2, Qt RLE,
-  ROQ, RV10, RV30/RV34/RV40, shorten, smacker, subrip, SVQ3, TIFF,
-  Truemotion2, TTA, VC1, VMware Screen codec, Vorbis, VP5, VP6, WMA,
-  Westwood SNDx, XXAN.
-
-- This release additionally updates the following codecs to the
-  bytestream2 API, and therefore benefit from additional overflow
-  checks: XXAN, ALG MM, TQG, SMC, Qt SMC, ROQ, PNG
-
-- Several bugs and crashes have been fixed in the following formats:
-  AIFF, ASF, DV, Matroska, NSV, MOV, MPEG-TS, Smacker, Sony OpenMG, RM,
-  SWF.
-
-- Libswscale has an potential overflow for large image size fixed.
-
-- The following APIs have been added:
-
-  avcodec_is_open()
-  avformat_get_riff_video_tags()
-  avformat_get_riff_audio_tags()
-
-  Please see the file doc/APIchanges and the Doxygen documentation for
-  further information.
+- bbox filter
+- XBM encoder and decoder
+- RealAudio Lossless decoder
+- ZeroCodec decoder
+- tile video filter
+- Metal Gear Solid: The Twin Snakes demuxer
+- OpenEXR image decoder
+- removelogo filter
+- drop support for ffmpeg without libavfilter
+- drawtext video filter: fontconfig support
+- ffmpeg -benchmark_all option
+- super2xsai filter ported from libmpcodecs
+- add libavresample audio conversion library for compatibility
+- MicroDVD decoder
+- Avid Meridien (AVUI) encoder and decoder
+- accept + prefix to -pix_fmt option to disable automatic conversions.
+- complete audio filtering in libavfilter and ffmpeg
+- add fps filter
+- vorbis parser
+- png parser
+- audio mix filter
+- ffv1: support (draft) version 1.3
 
 
 version 0.10:
+
 - Fixes: CVE-2011-3929, CVE-2011-3934, CVE-2011-3935, CVE-2011-3936,
          CVE-2011-3937, CVE-2011-3940, CVE-2011-3941, CVE-2011-3944,
          CVE-2011-3945, CVE-2011-3946, CVE-2011-3947, CVE-2011-3949,
@@ -779,7 +940,7 @@ version 0.4.5:
 - MPEG-4 vol header fixes (Jonathan Marsden <snmjbm at pacbell.net>)
 - ARM optimizations (Lionel Ulmer <lionel.ulmer at free.fr>).
 - Windows porting of file converter
-- added MJPEG raw format (input/ouput)
+- added MJPEG raw format (input/output)
 - added JPEG image format support (input/output)
 
 

@@ -1,9 +1,10 @@
-/**
+/*
  * VP8 compatible video decoder
  *
  * Copyright (C) 2010 David Conrad
  * Copyright (C) 2010 Ronald S. Bultje
  * Copyright (C) 2010 Jason Garrett-Glaser
+ * Copyright (C) 2012 Daniel Kang
  *
  * This file is part of FFmpeg.
  *
@@ -29,6 +30,13 @@
 #include "vp56data.h"
 #include "vp8dsp.h"
 #include "h264pred.h"
+#if HAVE_PTHREADS
+#include <pthread.h>
+#elif HAVE_W32THREADS
+#include "w32pthreads.h"
+#elif HAVE_OS2THREADS
+#include "os2threads.h"
+#endif
 
 #define VP8_MAX_QUANT 127
 
@@ -66,28 +74,64 @@ enum inter_splitmvmode {
     VP8_SPLITMVMODE_NONE,        ///< (only used in prediction) no split MVs
 };
 
-typedef struct {
+typedef struct VP8FilterStrength {
     uint8_t filter_level;
     uint8_t inner_limit;
     uint8_t inner_filter;
 } VP8FilterStrength;
 
-typedef struct {
+typedef struct VP8Macroblock {
     uint8_t skip;
     // todo: make it possible to check for at least (i4x4 or split_mv)
     // in one op. are others needed?
     uint8_t mode;
     uint8_t ref_frame;
     uint8_t partitioning;
+    uint8_t chroma_pred_mode;
+    uint8_t segment;
+    uint8_t intra4x4_pred_mode_mb[16];
+    uint8_t intra4x4_pred_mode_top[4];
     VP56mv mv;
     VP56mv bmv[16];
 } VP8Macroblock;
 
-typedef struct {
+typedef struct VP8ThreadData {
+    DECLARE_ALIGNED(16, int16_t, block)[6][4][16];
+    DECLARE_ALIGNED(16, int16_t, block_dc)[16];
+    /**
+     * This is the index plus one of the last non-zero coeff
+     * for each of the blocks in the current macroblock.
+     * So, 0 -> no coeffs
+     *     1 -> dc-only (special transform)
+     *     2+-> full transform
+     */
+    DECLARE_ALIGNED(16, uint8_t, non_zero_count_cache)[6][4];
+    /**
+     * For coeff decode, we need to know whether the above block had non-zero
+     * coefficients. This means for each macroblock, we need data for 4 luma
+     * blocks, 2 u blocks, 2 v blocks, and the luma dc block, for a total of 9
+     * per macroblock. We keep the last row in top_nnz.
+     */
+    DECLARE_ALIGNED(8, uint8_t, left_nnz)[9];
+    int thread_nr;
+#if HAVE_THREADS
+    pthread_mutex_t lock;
+    pthread_cond_t  cond;
+#endif
+    int thread_mb_pos; // (mb_y << 16) | (mb_x & 0xFFFF)
+    int wait_mb_pos; // What the current thread is waiting on.
+    uint8_t *edge_emu_buffer;
+    VP8FilterStrength *filter_strength;
+} VP8ThreadData;
+
+#define MAX_THREADS 8
+typedef struct VP8Context {
+    VP8ThreadData *thread_data;
     AVCodecContext *avctx;
     AVFrame *framep[4];
     AVFrame *next_framep[4];
-    uint8_t *edge_emu_buffer;
+    AVFrame *curframe;
+    AVFrame *prev_frame;
 
     uint16_t mb_width;   /* number of horizontal MB */
     uint16_t mb_height;  /* number of vertical MB */
@@ -97,8 +141,6 @@ typedef struct {
     uint8_t keyframe;
     uint8_t deblock_filter;
     uint8_t mbskip_enabled;
-    uint8_t segment;             ///< segment of the current macroblock
-    uint8_t chroma_pred_mode;    ///< 8x8c pred mode of the current macroblock
     uint8_t profile;
     VP56mv mv_min;
     VP56mv mv_max;
@@ -126,7 +168,6 @@ typedef struct {
     } filter;
 
     VP8Macroblock *macroblocks;
-    VP8FilterStrength *filter_strength;
 
     uint8_t *intra4x4_pred_mode_top;
     uint8_t intra4x4_pred_mode_left[4];
@@ -167,33 +208,10 @@ typedef struct {
         int8_t ref[4];
     } lf_delta;
 
-    /**
-     * Cache of the top row needed for intra prediction
-     * 16 for luma, 8 for each chroma plane
-     */
     uint8_t (*top_border)[16+8+8];
-
-    /**
-     * For coeff decode, we need to know whether the above block had non-zero
-     * coefficients. This means for each macroblock, we need data for 4 luma
-     * blocks, 2 u blocks, 2 v blocks, and the luma dc block, for a total of 9
-     * per macroblock. We keep the last row in top_nnz.
-     */
     uint8_t (*top_nnz)[9];
-    DECLARE_ALIGNED(8, uint8_t, left_nnz)[9];
 
-    /**
-     * This is the index plus one of the last non-zero coeff
-     * for each of the blocks in the current macroblock.
-     * So, 0 -> no coeffs
-     *     1 -> dc-only (special transform)
-     *     2+-> full transform
-     */
-    DECLARE_ALIGNED(16, uint8_t, non_zero_count_cache)[6][4];
     VP56RangeCoder c;   ///< header context, includes mb modes and motion vectors
-    DECLARE_ALIGNED(16, DCTELEM, block)[6][4][16];
-    DECLARE_ALIGNED(16, DCTELEM, block_dc)[16];
-    uint8_t intra4x4_pred_mode_mb[16];
 
     /**
      * These are all of the updatable probabilities for binary decisions.
@@ -231,7 +249,7 @@ typedef struct {
      */
     int num_coeff_partitions;
     VP56RangeCoder coeff_partition[8];
-    DSPContext dsp;
+    VideoDSPContext vdsp;
     VP8DSPContext vp8dsp;
     H264PredContext hpc;
     vp8_mc_func put_pixels_tab[3][3][3];
@@ -246,6 +264,13 @@ typedef struct {
     uint8_t *segmentation_maps[5];
     int num_maps_to_be_freed;
     int maps_are_invalid;
+    int num_jobs;
+    /**
+     * This describes the macroblock memory layout.
+     * 0 -> Only width+height*2+1 macroblocks allocated (frame/single thread).
+     * 1 -> Macroblocks for entire frame alloced (sliced thread).
+     */
+    int mb_layout;
 } VP8Context;
 
 #endif /* AVCODEC_VP8_H */

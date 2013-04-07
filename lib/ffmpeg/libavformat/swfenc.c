@@ -21,6 +21,7 @@
  */
 
 #include "libavcodec/put_bits.h"
+#include "libavutil/avassert.h"
 #include "avformat.h"
 #include "swf.h"
 
@@ -56,7 +57,7 @@ static void put_swf_end_tag(AVFormatContext *s)
         avio_wl16(pb, (tag << 6) | 0x3f);
         avio_wl32(pb, tag_len - 4);
     } else {
-        assert(tag_len < 0x3f);
+        av_assert0(tag_len < 0x3f);
         avio_wl16(pb, (tag << 6) | tag_len);
     }
     avio_seek(pb, pos, SEEK_SET);
@@ -186,7 +187,11 @@ static int swf_write_header(AVFormatContext *s)
     for(i=0;i<s->nb_streams;i++) {
         AVCodecContext *enc = s->streams[i]->codec;
         if (enc->codec_type == AVMEDIA_TYPE_AUDIO) {
-            if (enc->codec_id == CODEC_ID_MP3) {
+            if (swf->audio_enc) {
+                av_log(s, AV_LOG_ERROR, "SWF muxer only supports 1 audio stream\n");
+                return AVERROR_INVALIDDATA;
+            }
+            if (enc->codec_id == AV_CODEC_ID_MP3) {
                 if (!enc->frame_size) {
                     av_log(s, AV_LOG_ERROR, "audio frame size not set\n");
                     return -1;
@@ -200,9 +205,13 @@ static int swf_write_header(AVFormatContext *s)
                 return -1;
             }
         } else {
-            if (enc->codec_id == CODEC_ID_VP6F ||
-                enc->codec_id == CODEC_ID_FLV1 ||
-                enc->codec_id == CODEC_ID_MJPEG) {
+            if (swf->video_enc) {
+                av_log(s, AV_LOG_ERROR, "SWF muxer only supports 1 video stream\n");
+                return AVERROR_INVALIDDATA;
+            }
+            if (enc->codec_id == AV_CODEC_ID_VP6F ||
+                enc->codec_id == AV_CODEC_ID_FLV1 ||
+                enc->codec_id == AV_CODEC_ID_MJPEG) {
                 swf->video_enc = enc;
             } else {
                 av_log(s, AV_LOG_ERROR, "SWF muxer only supports VP6, FLV1 and MJPEG\n");
@@ -233,9 +242,9 @@ static int swf_write_header(AVFormatContext *s)
 
     if (!strcmp("avm2", s->oformat->name))
         version = 9;
-    else if (swf->video_enc && swf->video_enc->codec_id == CODEC_ID_VP6F)
+    else if (swf->video_enc && swf->video_enc->codec_id == AV_CODEC_ID_VP6F)
         version = 8; /* version 8 and above support VP6 codec */
-    else if (swf->video_enc && swf->video_enc->codec_id == CODEC_ID_FLV1)
+    else if (swf->video_enc && swf->video_enc->codec_id == AV_CODEC_ID_FLV1)
         version = 6; /* version 6 and above support FLV1 codec */
     else
         version = 4; /* version 4 for mpeg audio support */
@@ -257,7 +266,7 @@ static int swf_write_header(AVFormatContext *s)
     }
 
     /* define a shape with the jpeg inside */
-    if (swf->video_enc && swf->video_enc->codec_id == CODEC_ID_MJPEG) {
+    if (swf->video_enc && swf->video_enc->codec_id == AV_CODEC_ID_MJPEG) {
         put_swf_tag(s, TAG_DEFINESHAPE);
 
         avio_wl16(pb, SHAPE_ID); /* ID of shape */
@@ -300,7 +309,7 @@ static int swf_write_header(AVFormatContext *s)
         put_swf_end_tag(s);
     }
 
-    if (swf->audio_enc && swf->audio_enc->codec_id == CODEC_ID_MP3) {
+    if (swf->audio_enc && swf->audio_enc->codec_id == AV_CODEC_ID_MP3) {
         int v = 0;
 
         /* start sound */
@@ -340,8 +349,8 @@ static int swf_write_video(AVFormatContext *s,
     if (swf->swf_frame_number == 16000)
         av_log(enc, AV_LOG_INFO, "warning: Flash Player limit of 16000 frames reached\n");
 
-    if (enc->codec_id == CODEC_ID_VP6F ||
-        enc->codec_id == CODEC_ID_FLV1) {
+    if (enc->codec_id == AV_CODEC_ID_VP6F ||
+        enc->codec_id == AV_CODEC_ID_FLV1) {
         if (swf->video_frame_number == 0) {
             /* create a new video object */
             put_swf_tag(s, TAG_VIDEOSTREAM);
@@ -351,7 +360,7 @@ static int swf_write_video(AVFormatContext *s,
             avio_wl16(pb, enc->width);
             avio_wl16(pb, enc->height);
             avio_w8(pb, 0);
-            avio_w8(pb,ff_codec_get_tag(swf_codec_tags,enc->codec_id));
+            avio_w8(pb,ff_codec_get_tag(ff_swf_codec_tags, enc->codec_id));
             put_swf_end_tag(s);
 
             /* place the video object for the first time */
@@ -379,7 +388,7 @@ static int swf_write_video(AVFormatContext *s,
         avio_wl16(pb, swf->video_frame_number++);
         avio_write(pb, buf, size);
         put_swf_end_tag(s);
-    } else if (enc->codec_id == CODEC_ID_MJPEG) {
+    } else if (enc->codec_id == AV_CODEC_ID_MJPEG) {
         if (swf->swf_frame_number > 0) {
             /* remove the shape */
             put_swf_tag(s, TAG_REMOVEOBJECT);
@@ -482,14 +491,14 @@ static int swf_write_trailer(AVFormatContext *s)
         enc = s->streams[i]->codec;
         if (enc->codec_type == AVMEDIA_TYPE_VIDEO)
             video_enc = enc;
-        else
+        else {
             av_fifo_free(swf->audio_fifo);
+            swf->audio_fifo = NULL;
+        }
     }
 
     put_swf_tag(s, TAG_END);
     put_swf_end_tag(s);
-
-    avio_flush(s->pb);
 
     /* patch file size and number of frames if not streamed */
     if (s->pb->seekable && video_enc) {
@@ -498,8 +507,10 @@ static int swf_write_trailer(AVFormatContext *s)
         avio_wl32(pb, file_size);
         avio_seek(pb, swf->duration_pos, SEEK_SET);
         avio_wl16(pb, swf->video_frame_number);
+        if (swf->vframes_pos) {
         avio_seek(pb, swf->vframes_pos, SEEK_SET);
         avio_wl16(pb, swf->video_frame_number);
+        }
         avio_seek(pb, file_size, SEEK_SET);
     }
     return 0;
@@ -508,27 +519,29 @@ static int swf_write_trailer(AVFormatContext *s)
 #if CONFIG_SWF_MUXER
 AVOutputFormat ff_swf_muxer = {
     .name              = "swf",
-    .long_name         = NULL_IF_CONFIG_SMALL("Flash format"),
+    .long_name         = NULL_IF_CONFIG_SMALL("SWF (ShockWave Flash)"),
     .mime_type         = "application/x-shockwave-flash",
     .extensions        = "swf",
     .priv_data_size    = sizeof(SWFContext),
-    .audio_codec       = CODEC_ID_MP3,
-    .video_codec       = CODEC_ID_FLV1,
+    .audio_codec       = AV_CODEC_ID_MP3,
+    .video_codec       = AV_CODEC_ID_FLV1,
     .write_header      = swf_write_header,
     .write_packet      = swf_write_packet,
     .write_trailer     = swf_write_trailer,
+    .flags             = AVFMT_TS_NONSTRICT,
 };
 #endif
 #if CONFIG_AVM2_MUXER
 AVOutputFormat ff_avm2_muxer = {
     .name              = "avm2",
-    .long_name         = NULL_IF_CONFIG_SMALL("Flash 9 (AVM2) format"),
+    .long_name         = NULL_IF_CONFIG_SMALL("SWF (ShockWave Flash) (AVM2)"),
     .mime_type         = "application/x-shockwave-flash",
     .priv_data_size    = sizeof(SWFContext),
-    .audio_codec       = CODEC_ID_MP3,
-    .video_codec       = CODEC_ID_FLV1,
+    .audio_codec       = AV_CODEC_ID_MP3,
+    .video_codec       = AV_CODEC_ID_FLV1,
     .write_header      = swf_write_header,
     .write_packet      = swf_write_packet,
     .write_trailer     = swf_write_trailer,
+    .flags             = AVFMT_TS_NONSTRICT,
 };
 #endif

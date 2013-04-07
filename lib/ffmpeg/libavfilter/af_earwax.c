@@ -29,8 +29,10 @@
  * front of the listener. Adapted from the libsox earwax effect.
  */
 
-#include "libavutil/audioconvert.h"
+#include "libavutil/channel_layout.h"
 #include "avfilter.h"
+#include "audio.h"
+#include "formats.h"
 
 #define NUMTAPS 64
 
@@ -75,27 +77,17 @@ typedef struct {
 
 static int query_formats(AVFilterContext *ctx)
 {
+    static const int sample_rates[] = { 44100, -1 };
+
     AVFilterFormats *formats = NULL;
-    avfilter_add_format(&formats, AV_SAMPLE_FMT_S16);
-    avfilter_set_common_sample_formats(ctx, formats);
-    formats = NULL;
-    avfilter_add_format(&formats, AV_CH_LAYOUT_STEREO);
-    avfilter_set_common_channel_layouts(ctx, formats);
-    formats = NULL;
-    avfilter_add_format(&formats, AVFILTER_PACKED);
-    avfilter_set_common_packing_formats(ctx, formats);
+    AVFilterChannelLayouts *layout = NULL;
 
-    return 0;
-}
+    ff_add_format(&formats, AV_SAMPLE_FMT_S16);
+    ff_set_common_formats(ctx, formats);
+    ff_add_channel_layout(&layout, AV_CH_LAYOUT_STEREO);
+    ff_set_common_channel_layouts(ctx, layout);
+    ff_set_common_samplerates(ctx, ff_make_format_list(sample_rates));
 
-static int config_input(AVFilterLink *inlink)
-{
-    if (inlink->sample_rate != 44100) {
-        av_log(inlink->dst, AV_LOG_ERROR,
-               "The earwax filter only works for 44.1kHz audio. Insert "
-               "a resample filter before this\n");
-        return AVERROR(EINVAL);
-    }
     return 0;
 }
 
@@ -117,13 +109,17 @@ static inline int16_t *scalarproduct(const int16_t *in, const int16_t *endin, in
     return out;
 }
 
-static void filter_samples(AVFilterLink *inlink, AVFilterBufferRef *insamples)
+static int filter_frame(AVFilterLink *inlink, AVFilterBufferRef *insamples)
 {
     AVFilterLink *outlink = inlink->dst->outputs[0];
     int16_t *taps, *endin, *in, *out;
     AVFilterBufferRef *outsamples =
-        avfilter_get_audio_buffer(inlink, AV_PERM_WRITE,
+        ff_get_audio_buffer(inlink, AV_PERM_WRITE,
                                   insamples->audio->nb_samples);
+    int ret;
+
+    if (!outsamples)
+        return AVERROR(ENOMEM);
     avfilter_copy_buffer_ref_props(outsamples, insamples);
 
     taps  = ((EarwaxContext *)inlink->dst->priv)->taps;
@@ -136,28 +132,39 @@ static void filter_samples(AVFilterLink *inlink, AVFilterBufferRef *insamples)
 
     // process current input
     endin = in + insamples->audio->nb_samples * 2 - NUMTAPS;
-    out   = scalarproduct(in, endin, out);
+    scalarproduct(in, endin, out);
 
     // save part of input for next round
     memcpy(taps, endin, NUMTAPS * sizeof(*taps));
 
-    avfilter_filter_samples(outlink, outsamples);
+    ret = ff_filter_frame(outlink, outsamples);
     avfilter_unref_buffer(insamples);
+    return ret;
 }
+
+static const AVFilterPad earwax_inputs[] = {
+    {
+        .name         = "default",
+        .type         = AVMEDIA_TYPE_AUDIO,
+        .filter_frame = filter_frame,
+        .min_perms    = AV_PERM_READ,
+    },
+    { NULL }
+};
+
+static const AVFilterPad earwax_outputs[] = {
+    {
+        .name = "default",
+        .type = AVMEDIA_TYPE_AUDIO,
+    },
+    { NULL }
+};
 
 AVFilter avfilter_af_earwax = {
     .name           = "earwax",
     .description    = NULL_IF_CONFIG_SMALL("Widen the stereo image."),
     .query_formats  = query_formats,
     .priv_size      = sizeof(EarwaxContext),
-    .inputs  = (const AVFilterPad[])  {{  .name     = "default",
-                                    .type           = AVMEDIA_TYPE_AUDIO,
-                                    .filter_samples = filter_samples,
-                                    .config_props   = config_input,
-                                    .min_perms      = AV_PERM_READ, },
-                                 {  .name = NULL}},
-
-    .outputs = (const AVFilterPad[])  {{  .name     = "default",
-                                    .type           = AVMEDIA_TYPE_AUDIO, },
-                                 {  .name = NULL}},
+    .inputs         = earwax_inputs,
+    .outputs        = earwax_outputs,
 };

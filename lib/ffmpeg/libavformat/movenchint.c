@@ -24,6 +24,7 @@
 #include "internal.h"
 #include "rtpenc_chain.h"
 #include "avio_internal.h"
+#include "rtp.h"
 
 int ff_mov_init_hinting(AVFormatContext *s, int index, int src_index)
 {
@@ -42,9 +43,9 @@ int ff_mov_init_hinting(AVFormatContext *s, int index, int src_index)
     track->enc->codec_type = AVMEDIA_TYPE_DATA;
     track->enc->codec_tag  = track->tag;
 
-    track->rtp_ctx = ff_rtp_chain_mux_open(s, src_st, NULL,
-                                           RTP_MAX_PACKET_SIZE);
-    if (!track->rtp_ctx)
+    ret = ff_rtp_chain_mux_open(&track->rtp_ctx, s, src_st, NULL,
+                                RTP_MAX_PACKET_SIZE, src_index);
+    if (ret < 0)
         goto fail;
 
     /* Copy the RTP AVStream timebase back to the hint AVStream */
@@ -332,7 +333,7 @@ static int write_hint_packets(AVIOContext *out, const uint8_t *data,
         size -= 4;
         if (packet_len > size || packet_len <= 12)
             break;
-        if (data[1] >= 200 && data[1] <= 204) {
+        if (RTP_PT_IS_RTCP(data[1])) {
             /* RTCP packet, just skip */
             data += packet_len;
             size -= packet_len;
@@ -459,4 +460,3 @@ void ff_mov_close_hinting(MOVTrack *track) {
     }
     avformat_free_context(rtp_ctx);
 }
-

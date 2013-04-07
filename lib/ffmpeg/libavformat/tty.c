@@ -72,8 +72,7 @@ static int efi_read(AVFormatContext *avctx, uint64_t start_pos)
     return 0;
 }
 
-static int read_header(AVFormatContext *avctx,
-                       AVFormatParameters *ap)
+static int read_header(AVFormatContext *avctx)
 {
     TtyDemuxContext *s = avctx->priv_data;
     int width = 0, height = 0, ret = 0;
@@ -86,7 +85,7 @@ static int read_header(AVFormatContext *avctx,
     }
     st->codec->codec_tag   = 0;
     st->codec->codec_type  = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id    = CODEC_ID_ANSI;
+    st->codec->codec_id    = AV_CODEC_ID_ANSI;
 
     if (s->video_size && (ret = av_parse_video_size(&width, &height, s->video_size)) < 0) {
         av_log (avctx, AV_LOG_ERROR, "Couldn't parse video size.\n");
@@ -129,13 +128,15 @@ static int read_packet(AVFormatContext *avctx, AVPacket *pkt)
     if (s->fsize) {
         // ignore metadata buffer
         uint64_t p = avio_tell(avctx->pb);
+        if (p == s->fsize)
+            return AVERROR_EOF;
         if (p + s->chars_per_frame > s->fsize)
             n = s->fsize - p;
     }
 
     pkt->size = av_get_packet(avctx->pb, pkt, n);
-    if (pkt->size <= 0)
-        return AVERROR(EIO);
+    if (pkt->size < 0)
+        return pkt->size;
     pkt->flags |= AV_PKT_FLAG_KEY;
     return 0;
 }
@@ -143,7 +144,7 @@ static int read_packet(AVFormatContext *avctx, AVPacket *pkt)
 #define OFFSET(x) offsetof(TtyDemuxContext, x)
 #define DEC AV_OPT_FLAG_DECODING_PARAM
 static const AVOption options[] = {
-    { "chars_per_frame", "", offsetof(TtyDemuxContext, chars_per_frame), AV_OPT_TYPE_INT, {.dbl = 6000}, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM},
+    { "chars_per_frame", "", offsetof(TtyDemuxContext, chars_per_frame), AV_OPT_TYPE_INT, {.i64 = 6000}, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM},
     { "video_size", "A string describing frame size, such as 640x480 or hd720.", OFFSET(video_size), AV_OPT_TYPE_STRING, {.str = NULL}, 0, 0, DEC },
     { "framerate", "", OFFSET(framerate), AV_OPT_TYPE_STRING, {.str = "25"}, 0, 0, DEC },
     { NULL },

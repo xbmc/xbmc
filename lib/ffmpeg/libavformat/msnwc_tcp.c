@@ -70,7 +70,7 @@ static int msnwc_tcp_probe(AVProbeData *p)
     return -1;
 }
 
-static int msnwc_tcp_read_header(AVFormatContext *ctx, AVFormatParameters *ap)
+static int msnwc_tcp_read_header(AVFormatContext *ctx)
 {
     AVIOContext *pb = ctx->pb;
     AVCodecContext *codec;
@@ -82,7 +82,7 @@ static int msnwc_tcp_read_header(AVFormatContext *ctx, AVFormatParameters *ap)
 
     codec = st->codec;
     codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    codec->codec_id = CODEC_ID_MIMIC;
+    codec->codec_id = AV_CODEC_ID_MIMIC;
     codec->codec_tag = MKTAG('M', 'L', '2', '0');
 
     avpriv_set_pts_info(st, 32, 1, 1000);
@@ -92,7 +92,7 @@ static int msnwc_tcp_read_header(AVFormatContext *ctx, AVFormatParameters *ap)
     while(avio_r8(pb) != HEADER_SIZE && !url_feof(pb));
 
     if(url_feof(pb)) {
-        av_log(ctx, AV_LOG_ERROR, "Could not find valid start.");
+        av_log(ctx, AV_LOG_ERROR, "Could not find valid start.\n");
         return -1;
     }
 

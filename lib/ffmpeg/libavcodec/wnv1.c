@@ -26,10 +26,11 @@
 
 #include "avcodec.h"
 #include "get_bits.h"
-#include "libavutil/common.h"
+#include "internal.h"
+#include "mathops.h"
 
 
-typedef struct WNV1Context{
+typedef struct WNV1Context {
     AVCodecContext *avctx;
     AVFrame pic;
 
@@ -37,10 +38,10 @@ typedef struct WNV1Context{
     GetBitContext gb;
 } WNV1Context;
 
-static const uint16_t code_tab[16][2]={
-{0x1FD,9}, {0xFD,8}, {0x7D,7}, {0x3D,6}, {0x1D,5}, {0x0D,4}, {0x005,3},
-{0x000,1},
-{0x004,3}, {0x0C,4}, {0x1C,5}, {0x3C,6}, {0x7C,7}, {0xFC,8}, {0x1FC,9}, {0xFF,8}
+static const uint16_t code_tab[16][2] = {
+    { 0x1FD, 9 }, { 0xFD, 8 }, { 0x7D, 7 }, { 0x3D, 6 }, { 0x1D, 5 }, { 0x0D, 4 }, { 0x005, 3 },
+    { 0x000, 1 },
+    { 0x004, 3 }, { 0x0C, 4 }, { 0x1C, 5 }, { 0x3C, 6 }, { 0x7C, 7 }, { 0xFC, 8 }, { 0x1FC, 9 }, { 0xFF, 8 }
 };
 
 #define CODE_VLC_BITS 9
@@ -51,45 +52,50 @@ static inline int wnv1_get_code(WNV1Context *w, int base_value)
 {
     int v = get_vlc2(&w->gb, code_vlc.table, CODE_VLC_BITS, 1);
 
-    if(v==15)
-        return av_reverse[ get_bits(&w->gb, 8 - w->shift) ];
+    if (v == 15)
+        return ff_reverse[get_bits(&w->gb, 8 - w->shift)];
     else
-        return base_value + ((v - 7)<<w->shift);
+        return base_value + ((v - 7) << w->shift);
 }
 
 static int decode_frame(AVCodecContext *avctx,
-                        void *data, int *data_size,
+                        void *data, int *got_frame,
                         AVPacket *avpkt)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     WNV1Context * const l = avctx->priv_data;
-    AVFrame * const p= (AVFrame*)&l->pic;
+    const uint8_t *buf    = avpkt->data;
+    int buf_size          = avpkt->size;
+    AVFrame * const p     = &l->pic;
     unsigned char *Y,*U,*V;
-    int i, j;
+    int i, j, ret;
     int prev_y = 0, prev_u = 0, prev_v = 0;
     uint8_t *rbuf;
 
-    rbuf = av_malloc(buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if(!rbuf){
-        av_log(avctx, AV_LOG_ERROR, "Cannot allocate temporary buffer\n");
-        return -1;
+    if(buf_size<=8) {
+        av_log(avctx, AV_LOG_ERROR, "buf_size %d is too small\n", buf_size);
+        return AVERROR_INVALIDDATA;
     }
 
-    if(p->data[0])
+    rbuf = av_malloc(buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!rbuf) {
+        av_log(avctx, AV_LOG_ERROR, "Cannot allocate temporary buffer\n");
+        return AVERROR(ENOMEM);
+    }
+
+    if (p->data[0])
         avctx->release_buffer(avctx, p);
 
     p->reference = 0;
-    if(avctx->get_buffer(avctx, p) < 0){
+    if ((ret = ff_get_buffer(avctx, p)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         av_free(rbuf);
-        return -1;
+        return ret;
     }
     p->key_frame = 1;
 
-    for(i=8; i<buf_size; i++)
-        rbuf[i]= av_reverse[ buf[i] ];
-    init_get_bits(&l->gb, rbuf+8, (buf_size-8)*8);
+    for (i = 8; i < buf_size; i++)
+        rbuf[i] = ff_reverse[buf[i]];
+    init_get_bits(&l->gb, rbuf + 8, (buf_size - 8) * 8);
 
     if (buf[2] >> 4 == 6)
         l->shift = 2;
@@ -123,22 +129,23 @@ static int decode_frame(AVCodecContext *avctx,
     }
 
 
-    *data_size = sizeof(AVFrame);
+    *got_frame      = 1;
     *(AVFrame*)data = l->pic;
     av_free(rbuf);
 
     return buf_size;
 }
 
-static av_cold int decode_init(AVCodecContext *avctx){
+static av_cold int decode_init(AVCodecContext *avctx)
+{
     WNV1Context * const l = avctx->priv_data;
     static VLC_TYPE code_table[1 << CODE_VLC_BITS][2];
 
-    l->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_YUV422P;
+    l->avctx       = avctx;
+    avctx->pix_fmt = AV_PIX_FMT_YUV422P;
     avcodec_get_frame_defaults(&l->pic);
 
-    code_vlc.table = code_table;
+    code_vlc.table           = code_table;
     code_vlc.table_allocated = 1 << CODE_VLC_BITS;
     init_vlc(&code_vlc, CODE_VLC_BITS, 16,
              &code_tab[0][1], 4, 2,
@@ -147,7 +154,8 @@ static av_cold int decode_init(AVCodecContext *avctx){
     return 0;
 }
 
-static av_cold int decode_end(AVCodecContext *avctx){
+static av_cold int decode_end(AVCodecContext *avctx)
+{
     WNV1Context * const l = avctx->priv_data;
     AVFrame *pic = &l->pic;
 
@@ -160,11 +168,11 @@ static av_cold int decode_end(AVCodecContext *avctx){
 AVCodec ff_wnv1_decoder = {
     .name           = "wnv1",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_WNV1,
+    .id             = AV_CODEC_ID_WNV1,
     .priv_data_size = sizeof(WNV1Context),
     .init           = decode_init,
     .close          = decode_end,
     .decode         = decode_frame,
     .capabilities   = CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Winnov WNV1"),
+    .long_name      = NULL_IF_CONFIG_SMALL("Winnov WNV1"),
 };

@@ -22,9 +22,9 @@
 #ifndef AVCODEC_WMA_H
 #define AVCODEC_WMA_H
 
+#include "libavutil/float_dsp.h"
 #include "get_bits.h"
 #include "put_bits.h"
-#include "dsputil.h"
 #include "fft.h"
 #include "fmtconvert.h"
 
@@ -65,14 +65,9 @@ typedef struct CoefVLCTable {
 
 typedef struct WMACodecContext {
     AVCodecContext* avctx;
-    AVFrame frame;
     GetBitContext gb;
     PutBitContext pb;
-    int sample_rate;
-    int nb_channels;
-    int bit_rate;
     int version;                            ///< 1 = 0x160 (WMAV1), 2 = 0x161 (WMAV2)
-    int block_align;
     int use_bit_reservoir;
     int use_variable_block_len;
     int use_exp_vlc;                        ///< exponent coding: 0 = lsp, 1 = vlc + delta
@@ -135,8 +130,8 @@ typedef struct WMACodecContext {
     float lsp_pow_e_table[256];
     float lsp_pow_m_table1[(1 << LSP_POW_BITS)];
     float lsp_pow_m_table2[(1 << LSP_POW_BITS)];
-    DSPContext dsp;
     FmtConvertContext fmt_conv;
+    AVFloatDSPContext fdsp;
 
 #ifdef TRACE
     int frame_count;
@@ -150,8 +145,6 @@ extern const float ff_wma_lsp_codebook[NB_LSP_COEFS][16];
 extern const uint32_t ff_aac_scalefactor_code[121];
 extern const uint8_t  ff_aac_scalefactor_bits[121];
 
-int av_cold ff_wma_get_frame_len_bits(int sample_rate, int version,
-                                      unsigned int decode_flags);
 int ff_wma_init(AVCodecContext * avctx, int flags2);
 int ff_wma_total_gain_to_bits(int total_gain);
 int ff_wma_end(AVCodecContext *avctx);

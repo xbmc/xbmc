@@ -42,8 +42,7 @@ static int vc1t_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX/2;
 }
 
-static int vc1t_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int vc1t_read_header(AVFormatContext *s)
 {
     AVIOContext *pb = s->pb;
     AVStream *st;
@@ -60,7 +59,7 @@ static int vc1t_read_header(AVFormatContext *s,
         return -1;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_WMV3;
+    st->codec->codec_id = AV_CODEC_ID_WMV3;
 
     st->codec->extradata = av_malloc(VC1_EXTRADATA_SIZE);
     st->codec->extradata_size = VC1_EXTRADATA_SIZE;
@@ -112,9 +111,9 @@ static int vc1t_read_packet(AVFormatContext *s,
 
 AVInputFormat ff_vc1t_demuxer = {
     .name           = "vc1test",
-    .long_name      = NULL_IF_CONFIG_SMALL("VC-1 test bitstream format"),
+    .long_name      = NULL_IF_CONFIG_SMALL("VC-1 test bitstream"),
     .read_probe     = vc1t_probe,
     .read_header    = vc1t_read_header,
     .read_packet    = vc1t_read_packet,
-    .flags = AVFMT_GENERIC_INDEX,
+    .flags          = AVFMT_GENERIC_INDEX,
 };

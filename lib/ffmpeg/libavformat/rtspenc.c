@@ -21,7 +21,6 @@
 
 #include "avformat.h"
 
-#include <sys/time.h>
 #if HAVE_POLL_H
 #include <poll.h>
 #endif
@@ -32,6 +31,7 @@
 #include "avio_internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/avstring.h"
+#include "libavutil/time.h"
 #include "url.h"
 
 #define SDP_MAX_SIZE 16384
@@ -159,7 +159,7 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
         size -= 4;
         if (packet_len > size || packet_len < 2)
             break;
-        if (ptr[1] >= RTCP_SR && ptr[1] <= RTCP_APP)
+        if (RTP_PT_IS_RTCP(ptr[1]))
             id = rtsp_st->interleaved_max; /* RTCP */
         else
             id = rtsp_st->interleaved_min; /* RTP */
@@ -235,14 +235,13 @@ static int rtsp_write_close(AVFormatContext *s)
 
 AVOutputFormat ff_rtsp_muxer = {
     .name              = "rtsp",
-    .long_name         = NULL_IF_CONFIG_SMALL("RTSP output format"),
+    .long_name         = NULL_IF_CONFIG_SMALL("RTSP output"),
     .priv_data_size    = sizeof(RTSPState),
-    .audio_codec       = CODEC_ID_AAC,
-    .video_codec       = CODEC_ID_MPEG4,
+    .audio_codec       = AV_CODEC_ID_AAC,
+    .video_codec       = AV_CODEC_ID_MPEG4,
     .write_header      = rtsp_write_header,
     .write_packet      = rtsp_write_packet,
     .write_trailer     = rtsp_write_close,
-    .flags = AVFMT_NOFILE | AVFMT_GLOBALHEADER,
-    .priv_class = &rtsp_muxer_class,
+    .flags             = AVFMT_NOFILE | AVFMT_GLOBALHEADER,
+    .priv_class        = &rtsp_muxer_class,
 };
-
