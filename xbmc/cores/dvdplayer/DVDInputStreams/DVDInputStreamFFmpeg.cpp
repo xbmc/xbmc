@@ -24,6 +24,8 @@ using namespace XFILE;
 
 CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
+  , m_can_pause(false)
+  , m_can_seek(false)
 {
 
 }
