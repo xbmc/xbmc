@@ -642,24 +642,37 @@ int CBuiltins::Execute(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
+    std::string beginSlidePath;
     // leave RecursiveSlideShow command as-is
     unsigned int flags = 0;
     if (execute.Equals("RecursiveSlideShow"))
       flags |= 1;
 
-    // SlideShow(dir[,recursive][,[not]random])
+    // SlideShow(dir[,recursive][,[not]random][,pause][,beginslide="/path/to/start/slide.jpg"])
+    // the beginslide value need be escaped (for '"' or '\' in it, by backslash)
+    // and then quoted, or not. See CUtil::SplitParams()
     else
     {
-      if ((params.size() > 1 && params[1] == "recursive") || (params.size() > 2 && params[2] == "recursive"))
-        flags |= 1;
-      if ((params.size() > 1 && params[1] == "random") || (params.size() > 2 && params[2] == "random"))
-        flags |= 2;
-      if ((params.size() > 1 && params[1] == "notrandom") || (params.size() > 2 && params[2] == "notrandom"))
-        flags |= 4;
+      for (unsigned int i = 1 ; i < params.size() ; i++)
+      {
+        if (params[i].Equals("recursive"))
+          flags |= 1;
+        else if (params[i].Equals("random")) // set fullscreen or windowed
+          flags |= 2;
+        else if (params[i].Equals("notrandom"))
+          flags |= 4;
+        else if (params[i].Equals("pause"))
+          flags |= 8;
+        else if (params[i].Left(11).Equals("beginslide="))
+          beginSlidePath = params[i].Mid(11);
+      }
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    msg.SetStringParam(params[0]);
+    vector<CStdString> strParams;
+    strParams.push_back(params[0]);
+    strParams.push_back(beginSlidePath);
+    msg.SetStringParams(strParams);
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
