@@ -30,6 +30,10 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
+
 using namespace PVR;
 
 CGUIDialogVideoOSD::CGUIDialogVideoOSD(void)
@@ -121,6 +125,11 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
+
     }
     break;
   }

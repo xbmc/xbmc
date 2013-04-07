@@ -59,6 +59,8 @@ void* thread_run(void* obj)
 
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
+jmethodID CXBMCApp::m_midShowActionBar;
+jmethodID CXBMCApp::m_midHideActionBar;
 
 CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   : m_wakeLock(NULL)
@@ -66,12 +68,24 @@ CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   m_activity = nativeActivity;
   m_firstrun = true;
   m_exiting=false;
+
+  AddMethod(jniNativeMethod("OnSystemUiNavigationShown", "()V", (void*)jni_MainOnSystemUiNavigationShown));
+
   if (m_activity == NULL)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
     exit(1);
     return;
   }
+
+  JNIEnv* env = xbmc_jnienv();
+  jobject oActivity = m_activity->clazz;
+  jclass cActivity = env->GetObjectClass(oActivity);
+
+  m_midShowActionBar = env->GetMethodID(cActivity, "showActionBar", "()V");
+  m_midHideActionBar = env->GetMethodID(cActivity, "hideActionBar", "()V");
+
+  env->DeleteLocalRef(cActivity);
 }
 
 CXBMCApp::~CXBMCApp()
@@ -340,6 +354,20 @@ int CXBMCApp::android_printf(const char *format, ...)
   int result = __android_log_vprint(ANDROID_LOG_VERBOSE, "XBMC", format, args);
   va_end(args);
   return result;
+}
+
+void CXBMCApp::ShowActionBar()
+{
+  JNIEnv* env = xbmc_jnienv();
+  jobject oActivity = m_activity->clazz;
+  env->CallObjectMethod(oActivity, m_midShowActionBar);
+}
+
+void CXBMCApp::HideActionBar()
+{
+  JNIEnv* env = xbmc_jnienv();
+  jobject oActivity = m_activity->clazz;
+  env->CallObjectMethod(oActivity, m_midHideActionBar);
 }
 
 int CXBMCApp::GetDPI()
@@ -975,3 +1003,12 @@ void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
   env->DeleteLocalRef(cAudioManager);
 }
 
+void CXBMCApp::OnSystemUiNavigationShown(JNIEnv *env, jobject thiz)
+{
+  CApplicationMessenger::Get().SendAction(CAction(ACTION_SHOW_OSD), WINDOW_INVALID, false);
+}
+
+void jni_MainOnSystemUiNavigationShown(JNIEnv *env, jobject thiz)
+{
+  g_xbmcapp.OnSystemUiNavigationShown(env, thiz);
+}
