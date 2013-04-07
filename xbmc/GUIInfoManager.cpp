@@ -329,6 +329,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "hasnext",          MUSICPLAYER_HASNEXT },
                                   { "playcount",        MUSICPLAYER_PLAYCOUNT },
                                   { "lastplayed",       MUSICPLAYER_LASTPLAYED },
+                                  { "filenameandpath",  MUSICPLAYER_FILEPATH },
                                   { "channelname",      MUSICPLAYER_CHANNEL_NAME },
                                   { "channelnumber",    MUSICPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP }
@@ -1387,6 +1388,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case MUSICPLAYER_CHANNEL_GROUP:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
+  case MUSICPLAYER_FILEPATH:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -3428,7 +3430,10 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     break;
   case MUSICPLAYER_LYRICS:
     if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
-  break;
+    break;
+  case MUSICPLAYER_FILEPATH:
+    if (tag.GetURL().size()) { return tag.GetURL(); }
+    break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
