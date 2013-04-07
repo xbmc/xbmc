@@ -5870,6 +5870,98 @@ bool CVideoDatabase::GetSortedVideos(MediaType mediaType, const CStdString& strB
   return success;
 }
 
+bool CVideoDatabase::GetItems(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
+{
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(strBaseDir))
+    return false;
+
+  return GetItems(strBaseDir, videoUrl.GetType(), videoUrl.GetItemType(), items, filter, sortDescription);
+}
+
+bool CVideoDatabase::GetItems(const CStdString &strBaseDir, const CStdString &mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
+{
+  VIDEODB_CONTENT_TYPE contentType;
+  if (mediaType.Equals("movies"))
+    contentType = VIDEODB_CONTENT_MOVIES;
+  else if (mediaType.Equals("tvshows"))
+  {
+    if (itemType.Equals("episodes"))
+      contentType = VIDEODB_CONTENT_EPISODES;
+    else
+      contentType = VIDEODB_CONTENT_TVSHOWS;
+  }
+  else if (mediaType.Equals("musicvideos"))
+    contentType = VIDEODB_CONTENT_MUSICVIDEOS;
+  else
+    return false;
+
+  return GetItems(strBaseDir, contentType, itemType, items, filter, sortDescription);
+}
+
+bool CVideoDatabase::GetItems(const CStdString &strBaseDir, VIDEODB_CONTENT_TYPE mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
+{
+  if (itemType.Equals("movies") && (mediaType == VIDEODB_CONTENT_MOVIES || mediaType == VIDEODB_CONTENT_MOVIE_SETS))
+    return GetMoviesByWhere(strBaseDir, filter, items, sortDescription);
+  else if (itemType.Equals("tvshows") && mediaType == VIDEODB_CONTENT_TVSHOWS)
+    return GetTvShowsByWhere(strBaseDir, filter, items, sortDescription);
+  else if (itemType.Equals("musicvideos") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+    return GetMusicVideosByWhere(strBaseDir, filter, items, true, sortDescription);
+  else if (itemType.Equals("episodes") && mediaType == VIDEODB_CONTENT_EPISODES)
+    return GetEpisodesByWhere(strBaseDir, filter, items, true, sortDescription);
+  else if (itemType.Equals("seasons") && mediaType == VIDEODB_CONTENT_TVSHOWS)
+    return GetSeasonsNav(strBaseDir, items);
+  else if (itemType.Equals("genres"))
+    return GetGenresNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("years"))
+    return GetYearsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("actors"))
+    return GetActorsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("directors"))
+    return GetDirectorsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("writers"))
+    return GetWritersNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("studios"))
+    return GetStudiosNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("sets"))
+    return GetSetsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("countries"))
+    return GetCountriesNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("tags"))
+    return GetTagsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("artists") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+    return GetActorsNav(strBaseDir, items, mediaType, filter);
+  else if (itemType.Equals("albums") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+    return GetMusicVideoAlbumsNav(strBaseDir, items, -1, filter);
+
+  return false;
+}
+
+CStdString CVideoDatabase::GetItemById(const CStdString &itemType, int id)
+{
+  if (itemType.Equals("genres"))
+    return GetGenreById(id);
+  else if (itemType.Equals("years"))
+  {
+    CStdString tmp; tmp.Format("%d", id);
+    return tmp;
+  }
+  else if (itemType.Equals("actors") || itemType.Equals("directors") || itemType.Equals("artists"))
+    return GetPersonById(id);
+  else if (itemType.Equals("studios"))
+    return GetStudioById(id);
+  else if (itemType.Equals("sets"))
+    return GetSetById(id);
+  else if (itemType.Equals("countries"))
+    return GetCountryById(id);
+  else if (itemType.Equals("tags"))
+    return GetTagById(id);
+  else if (itemType.Equals("albums"))
+    return GetMusicVideoAlbumById(id);
+
+  return "";
+}
+
 bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items,
                                   int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */,
                                   int idStudio /* = -1 */, int idCountry /* = -1 */, int idSet /* = -1 */, int idTag /* = -1 */,

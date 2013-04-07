@@ -651,6 +651,12 @@ public:
   // retrieve sorted and limited items
   bool GetSortedVideos(MediaType mediaType, const CStdString& strBaseDir, const SortDescription &sortDescription, CFileItemList& items, const Filter &filter = Filter());
 
+  // retrieve a list of items
+  bool GetItems(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
+  bool GetItems(const CStdString &strBaseDir, const CStdString &mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
+  bool GetItems(const CStdString &strBaseDir, VIDEODB_CONTENT_TYPE mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());
+  CStdString GetItemById(const CStdString &itemType, int id);
+
   // partymode
   int GetMusicVideoCount(const CStdString& strWhere);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);

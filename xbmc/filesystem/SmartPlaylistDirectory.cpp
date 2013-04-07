@@ -83,24 +83,20 @@ namespace XFILE
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
 
         CStdString baseDir = strBaseDir;
-        VIDEODB_CONTENT_TYPE type;
         if (strBaseDir.empty())
         {
           switch (mediaType)
           {
             case MediaTypeTvShow:
               baseDir = "videodb://tvshows/";
-              type = VIDEODB_CONTENT_TVSHOWS;
               break;
 
             case MediaTypeEpisode:
               baseDir = "videodb://tvshows/";
-              type = VIDEODB_CONTENT_EPISODES;
               break;
 
             case MediaTypeMovie:
               baseDir = "videodb://movies/";
-              type = VIDEODB_CONTENT_MOVIES;
               break;
 
             default:
@@ -132,29 +128,7 @@ namespace XFILE
           videoUrl.RemoveOption(option);
         
         CDatabase::Filter dbfilter;
-        if (group.empty())
-          success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
-        else
-        {
-          dbfilter.where = playlist.GetWhereClause(db, playlists);
-
-          if (group.Equals("genres"))
-            success = db.GetGenresNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("years"))
-            success = db.GetYearsNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("actors"))
-            success = db.GetActorsNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("directors"))
-            success = db.GetDirectorsNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("studios"))
-            success = db.GetStudiosNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("sets"))
-            success = db.GetSetsNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("countries"))
-            success = db.GetCountriesNav(videoUrl.ToString(), items, type, dbfilter);
-          else if (group.Equals("tags"))
-            success = db.GetTagsNav(videoUrl.ToString(), items, type, dbfilter);
-        }
+        success = db.GetItems(videoUrl.ToString(), items, dbfilter, sorting);
         db.Close();
 
         // if we retrieve a list of episodes and we didn't receive
@@ -296,25 +270,7 @@ namespace XFILE
         
         CFileItemList items2;
         CDatabase::Filter dbfilter;
-        if (group.empty())
-          success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2, dbfilter);
-        else
-        {
-          dbfilter.where = playlist.GetWhereClause(db, playlists);
-
-          if (group.Equals("genres"))
-            success2 = db.GetGenresNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
-          else if (group.Equals("years"))
-            success2 = db.GetYearsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
-          else if (group.Equals("artists"))
-            success2 = db.GetActorsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
-          else if (group.Equals("albums"))
-            success2 = db.GetMusicVideoAlbumsNav(videoUrl.ToString(), items2, -1, dbfilter);
-          else if (group.Equals("directors"))
-            success2 = db.GetDirectorsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
-          else if (group.Equals("studios"))
-            success2 = db.GetStudiosNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
-        }
+        success2 = db.GetItems(videoUrl.ToString(), items2, dbfilter, sorting);
 
         db.Close();
         if (items.Size() <= 0)
