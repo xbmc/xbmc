@@ -538,6 +538,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_TOUCH:
     {
       int windowId = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+      if (newEvent.touch.action == ACTION_TOUCH_TAP)
+      { // Send a mouse motion event with no dx,dy for getting the current guiitem selected
+        g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
+      }
       int actionId = 0;
       if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
       {
@@ -549,6 +554,12 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         return false;
 
       CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), windowId, false);
+      // Post an unfocus message for touch device after the action.
+      if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
+      {
+        CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+        CApplicationMessenger::Get().SendGUIMessage(msg);
+      }
       break;
     }
   }
