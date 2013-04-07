@@ -237,13 +237,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
       return NULL;
 
-#if LIBAVCODEC_VERSION_INT >= (52<<10)
     if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
       return NULL;
     AVSubtitleRect& rect = *m_Subtitle.rects[m_SubtitleIndex];
-#else
-    AVSubtitleRect& rect = m_Subtitle.rects[m_SubtitleIndex];
-#endif
 
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
