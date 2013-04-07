@@ -71,6 +71,7 @@ namespace XFILE
       sorting.sortAttributes = SortAttributeIgnoreArticle;
 
     std::string option = !filter ? "xsp" : "filter";
+    const CStdString& group = playlist.GetGroup();
 
     if (playlist.GetType().Equals("movies") ||
         playlist.GetType().Equals("tvshows") ||
@@ -82,24 +83,35 @@ namespace XFILE
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
 
         CStdString baseDir = strBaseDir;
+        VIDEODB_CONTENT_TYPE type;
         if (strBaseDir.empty())
         {
           switch (mediaType)
           {
-          case MediaTypeTvShow:
-          case MediaTypeEpisode:
-            baseDir = "videodb://tvshows/";
-            break;
+            case MediaTypeTvShow:
+              baseDir = "videodb://tvshows/";
+              type = VIDEODB_CONTENT_TVSHOWS;
+              break;
 
-          case MediaTypeMovie:
-            baseDir = "videodb://movies/";
-            break;
+            case MediaTypeEpisode:
+              baseDir = "videodb://tvshows/";
+              type = VIDEODB_CONTENT_EPISODES;
+              break;
 
-          default:
-            return false;
+            case MediaTypeMovie:
+              baseDir = "videodb://movies/";
+              type = VIDEODB_CONTENT_MOVIES;
+              break;
+
+            default:
+              return false;
           }
 
-          baseDir += "titles/";
+          if (group.empty())
+            baseDir += "titles";
+          else
+            baseDir += group;
+          URIUtils::AddSlashAtEnd(baseDir);
         }
 
         CVideoDbUrl videoUrl;
@@ -120,7 +132,29 @@ namespace XFILE
           videoUrl.RemoveOption(option);
         
         CDatabase::Filter dbfilter;
-        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
+        if (group.empty())
+          success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
+        else
+        {
+          dbfilter.where = playlist.GetWhereClause(db, playlists);
+
+          if (group.Equals("genres"))
+            success = db.GetGenresNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("years"))
+            success = db.GetYearsNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("actors"))
+            success = db.GetActorsNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("directors"))
+            success = db.GetDirectorsNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("studios"))
+            success = db.GetStudiosNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("sets"))
+            success = db.GetSetsNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("countries"))
+            success = db.GetCountriesNav(videoUrl.ToString(), items, type, dbfilter);
+          else if (group.Equals("tags"))
+            success = db.GetTagsNav(videoUrl.ToString(), items, type, dbfilter);
+        }
         db.Close();
 
         // if we retrieve a list of episodes and we didn't receive
@@ -231,8 +265,20 @@ namespace XFILE
         if (playlist.GetType().Equals("mixed"))
           mvidPlaylist.SetType("musicvideos");
 
+        CStdString baseDir = strBaseDir;
+        if (baseDir.empty())
+        {
+          baseDir = "videodb://musicvideos/";
+
+          if (group.empty())
+            baseDir += "titles";
+          else
+            baseDir += group;
+          URIUtils::AddSlashAtEnd(baseDir);
+        }
+
         CVideoDbUrl videoUrl;
-        if (!videoUrl.FromString(!strBaseDir.empty() ? strBaseDir : "videodb://musicvideos/titles/"))
+        if (!videoUrl.FromString(baseDir))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
@@ -249,8 +295,30 @@ namespace XFILE
           videoUrl.RemoveOption(option);
         
         CFileItemList items2;
-        success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2);
+        CDatabase::Filter dbfilter;
+        if (group.empty())
+          success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2, dbfilter);
+        else
+        {
+          dbfilter.where = playlist.GetWhereClause(db, playlists);
+
+          if (group.Equals("genres"))
+            success2 = db.GetGenresNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
+          else if (group.Equals("years"))
+            success2 = db.GetYearsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
+          else if (group.Equals("artists"))
+            success2 = db.GetActorsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
+          else if (group.Equals("albums"))
+            success2 = db.GetMusicVideoAlbumsNav(videoUrl.ToString(), items2, -1, dbfilter);
+          else if (group.Equals("directors"))
+            success2 = db.GetDirectorsNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
+          else if (group.Equals("studios"))
+            success2 = db.GetStudiosNav(videoUrl.ToString(), items2, VIDEODB_CONTENT_MUSICVIDEOS, dbfilter);
+        }
+
         db.Close();
+        if (items.Size() <= 0)
+          items.SetPath(videoUrl.ToString());
 
         items.Append(items2);
         if (items2.Size())
@@ -264,8 +332,16 @@ namespace XFILE
       }
     }
     items.SetLabel(playlist.GetName());
+    if (!playlist.GetGroup().empty())
+      items.SetContent(playlist.GetGroup());
+    else
+      items.SetContent(playlist.GetType());
     items.SetProperty(PROPERTY_SORT_ORDER, (int)playlist.GetOrder());
     items.SetProperty(PROPERTY_SORT_ASCENDING, playlist.GetOrderDirection() == SortOrderAscending);
+
+    // sort grouped list by label
+    if (items.Size() > 1 && !group.empty())
+      items.Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderAscending);
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)
