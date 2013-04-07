@@ -1040,7 +1040,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
@@ -1049,7 +1048,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           break;
         }
         else
-#endif
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           m_streams[iId] = st;
