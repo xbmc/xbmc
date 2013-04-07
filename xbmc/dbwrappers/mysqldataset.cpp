@@ -116,8 +116,16 @@ int MysqlDatabase::connect(bool create_new) {
   {
     disconnect();
 
-    if (conn == NULL)
+    if (conn == NULL) {
       conn = mysql_init(conn);
+      mysql_ssl_set(
+        conn, 
+        key.empty() ? NULL : key.c_str(), 
+        cert.empty() ? NULL : cert.c_str(), 
+        ca.empty() ? NULL : ca.c_str(), 
+        capath.empty() ? NULL : capath.c_str(), 
+        ciphers.empty() ? NULL : ciphers.c_str());
+    }
 
     // establish connection with just user credentials
     if (mysql_real_connect(conn, host.c_str(),login.c_str(),passwd.c_str(), NULL, atoi(port.c_str()),NULL,0) != NULL)

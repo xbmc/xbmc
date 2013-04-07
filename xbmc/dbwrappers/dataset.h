@@ -71,7 +71,8 @@ protected:
   std::string error, // Error description
     host, port, db, login, passwd, //Login info
     sequence_table, //Sequence table for nextid
-    default_charset; //Default character set
+    default_charset, //Default character set
+    key, cert, ca, capath, ciphers; //SSL - Encryption info
 
 public:
 /* constructor */
@@ -107,6 +108,14 @@ public:
   const char *getSequenceTable(void) { return sequence_table.c_str(); }
 /* Get the default character set */
   const char *getDefaultCharset(void) { return default_charset.c_str(); }
+/* Sets SSL configuration */
+  virtual void setSSLConfig(const char *newKey, const char *newCert, const char *newCA, const char *newCApath, const char *newCiphers) {
+    key = newKey;
+    cert = newCert;
+    ca = newCA;
+    capath = newCApath;
+    ciphers = newCiphers;
+  }
 
 /* virtual methods that must be overloaded in derived classes */
 
@@ -117,7 +126,9 @@ public:
 	
   virtual int connect(bool create) { return DB_COMMAND_OK; }
   virtual int connectFull( const char *newDb, const char *newHost=NULL,
-                      const char *newLogin=NULL, const char *newPasswd=NULL,const char *newPort=NULL);
+                      const char *newLogin=NULL, const char *newPasswd=NULL,const char *newPort=NULL,
+                      const char *newKey=NULL, const char *newCert=NULL, const char *newCA=NULL, 
+                      const char *newCApath=NULL, const char *newCiphers=NULL);
   virtual void disconnect(void) { active = false; }
   virtual int reset(void) { return DB_COMMAND_OK; }
   virtual int create(void) { return DB_COMMAND_OK; }

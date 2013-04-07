@@ -465,6 +465,9 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   // database name is always required
   m_pDB->setDatabase(dbName.c_str());
 
+  // set SSL configuration regardless if any are empty (all empty means no SSL).
+  m_pDB->setSSLConfig(dbSettings.key.c_str(), dbSettings.cert.c_str(), dbSettings.ca.c_str(), dbSettings.capath.c_str(), dbSettings.ciphers.c_str());
+
   // create the datasets
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
