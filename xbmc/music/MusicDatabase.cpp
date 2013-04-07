@@ -4462,6 +4462,48 @@ bool CMusicDatabase::ScraperInUse(const CStdString &scraperID) const
   return false;
 }
 
+bool CMusicDatabase::GetItems(const CStdString &strBaseDir, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
+{
+  CMusicDbUrl musicUrl;
+  if (!musicUrl.FromString(strBaseDir))
+    return false;
+
+  return GetItems(strBaseDir, musicUrl.GetType(), items, filter, sortDescription);
+}
+
+bool CMusicDatabase::GetItems(const CStdString &strBaseDir, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
+{
+  if (itemType.Equals("genres"))
+    return GetGenresNav(strBaseDir, items, filter);
+  else if (itemType.Equals("years"))
+    return GetYearsNav(strBaseDir, items, filter);
+  else if (itemType.Equals("artists"))
+    return GetArtistsNav(strBaseDir, items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, filter, sortDescription);
+  else if (itemType.Equals("albums"))
+    return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
+  else if (itemType.Equals("songs"))
+    return GetSongsByWhere(strBaseDir, filter, items, sortDescription);
+
+  return false;
+}
+
+CStdString CMusicDatabase::GetItemById(const CStdString &itemType, int id)
+{
+  if (itemType.Equals("genres"))
+    return GetGenreById(id);
+  else if (itemType.Equals("years"))
+  {
+    CStdString tmp; tmp.Format("%d", id);
+    return tmp;
+  }
+  else if (itemType.Equals("artists"))
+    return GetArtistById(id);
+  else if (itemType.Equals("albums"))
+    return GetAlbumById(id);
+
+  return "";
+}
+
 void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bool images, bool overwrite)
 {
   try
