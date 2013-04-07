@@ -446,6 +446,9 @@ CApplication::CApplication(void)
   m_lastFrameTime = 0;
   m_lastRenderTime = 0;
   m_bTestMode = false;
+
+  m_muted = false;
+  m_volumeLevel = 1.0f;
 }
 
 CApplication::~CApplication(void)
@@ -614,7 +617,6 @@ bool CApplication::Create()
 #endif
 
   Preflight();
-  g_settings.Initialize(); //Initialize default AdvancedSettings
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
@@ -744,6 +746,7 @@ bool CApplication::Create()
   g_settings.RegisterSettingsHandler(&CUPnPSettings::Get());
 #endif
   
+  g_settings.RegisterSubSettings(this);
   g_settings.RegisterSubSettings(&CDisplaySettings::Get());
   g_settings.RegisterSubSettings(&CMediaSettings::Get());
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
@@ -798,8 +801,8 @@ bool CApplication::Create()
   }
 
   // restore AE's previous volume state
-  SetHardwareVolume(g_settings.m_fVolumeLevel);
-  CAEFactory::SetMute     (g_settings.m_bMute);
+  SetHardwareVolume(m_volumeLevel);
+  CAEFactory::SetMute     (m_muted);
   CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
   // initialize the addon database (must be before the addon manager is init'd)
@@ -1968,6 +1971,38 @@ bool CApplication::OnSettingsSaving() const
   return !m_bStop;
 }
 
+bool CApplication::Load(const TiXmlNode *settings)
+{
+  if (settings == NULL)
+    return false;
+
+  const TiXmlElement *audioElement = settings->FirstChildElement("audio");
+  if (audioElement != NULL)
+  {
+    XMLUtils::GetBoolean(audioElement, "mute", m_muted);
+    if (!XMLUtils::GetFloat(audioElement, "fvolumelevel", m_volumeLevel, VOLUME_MINIMUM, VOLUME_MAXIMUM))
+      m_volumeLevel = VOLUME_MAXIMUM;
+  }
+
+  return true;
+}
+
+bool CApplication::Save(TiXmlNode *settings) const
+{
+  if (settings == NULL)
+    return false;
+
+  TiXmlElement volumeNode("audio");
+  TiXmlNode *audioNode = settings->InsertEndChild(volumeNode);
+  if (audioNode == NULL)
+    return false;
+
+  XMLUtils::SetBoolean(audioNode, "mute", m_muted);
+  XMLUtils::SetFloat(audioNode, "fvolumelevel", m_volumeLevel);
+
+  return true;
+}
+
 bool CApplication::LoadSkin(const CStdString& skinID)
 {
   if (m_skinReloading)
@@ -2974,9 +3009,9 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      if (g_settings.m_bMute)
+      if (m_muted)
         UnMute();
-      float volume = g_settings.m_fVolumeLevel;
+      float volume = m_volumeLevel;
 // Android has steps based on the max available volume level
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
@@ -3562,6 +3597,7 @@ bool CApplication::Cleanup()
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
   
+    g_settings.UnregisterSubSettings(this);
     g_settings.UnregisterSubSettings(&CDisplaySettings::Get());
     g_settings.UnregisterSubSettings(&CMediaSettings::Get());
     g_settings.UnregisterSubSettings(&CSkinSettings::Get());
@@ -4223,8 +4259,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if player has volume control, set it.
     if (m_pPlayer && m_pPlayer->ControlsVolume())
     {
-       m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
-       m_pPlayer->SetMute(g_settings.m_bMute);
+       m_pPlayer->SetVolume(m_volumeLevel);
+       m_pPlayer->SetMute(m_muted);
     }
 
     if( IsPlayingAudio() )
@@ -5379,10 +5415,19 @@ bool CApplication::IsMuted() const
 
 void CApplication::ToggleMute(void)
 {
-  if (g_settings.m_bMute)
+  if (m_muted)
     UnMute();
   else
     Mute();
+}
+
+void CApplication::SetMute(bool mute)
+{
+  if (m_muted != mute)
+  {
+    ToggleMute();
+    m_muted = mute;
+  }
 }
 
 void CApplication::Mute()
@@ -5391,7 +5436,7 @@ void CApplication::Mute()
     return;
 
   CAEFactory::SetMute(true);
-  g_settings.m_bMute = true;
+  m_muted = true;
   VolumeChanged();
 }
 
@@ -5401,7 +5446,7 @@ void CApplication::UnMute()
     return;
 
   CAEFactory::SetMute(false);
-  g_settings.m_bMute = false;
+  m_muted = false;
   VolumeChanged();
 }
 
@@ -5419,7 +5464,7 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
 void CApplication::SetHardwareVolume(float hardwareVolume)
 {
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  g_settings.m_fVolumeLevel = hardwareVolume;
+  m_volumeLevel = hardwareVolume;
 
   float value = 0.0f;
   if (hardwareVolume > VOLUME_MINIMUM)
@@ -5433,24 +5478,29 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   CAEFactory::SetVolume(value);
 }
 
-int CApplication::GetVolume() const
+float CApplication::GetVolume(bool percentage /* = true */) const
 {
-  // converts the hardware volume to a percentage
-  return (int)(g_settings.m_fVolumeLevel * 100.0f);
+  if (percentage)
+  {
+    // converts the hardware volume to a percentage
+    return m_volumeLevel * 100.0f;
+  }
+  
+  return m_volumeLevel;
 }
 
 void CApplication::VolumeChanged() const
 {
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = GetVolume();
-  data["muted"] = g_settings.m_bMute;
+  data["muted"] = m_muted;
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
   if (m_pPlayer && m_pPlayer->ControlsVolume())
   {
-     m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
-     m_pPlayer->SetMute(g_settings.m_bMute);
+     m_pPlayer->SetVolume(m_volumeLevel);
+     m_pPlayer->SetMute(m_muted);
   }
 }
 
@@ -5500,7 +5550,7 @@ void CApplication::SetPlaySpeed(int iSpeed)
     { // mute volume
       m_pPlayer->SetVolume(VOLUME_MINIMUM);
     }
-    m_pPlayer->SetMute(g_settings.m_bMute);
+    m_pPlayer->SetMute(m_muted);
   }
 }
 

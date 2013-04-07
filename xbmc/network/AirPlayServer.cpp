@@ -685,7 +685,7 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr,
 void CAirPlayServer::backupVolume()
 {
   if (ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = g_application.GetVolume();
+    ServerInstance->m_origVolume = (int)g_application.GetVolume();
 }
 
 void CAirPlayServer::restoreVolume()
@@ -782,9 +782,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        int oldVolume = g_application.GetVolume();
+        float oldVolume = g_application.GetVolume();
         volume *= 100;
-        if(oldVolume != (int)volume)
+        if(oldVolume != volume)
         {
           backupVolume();
           g_application.SetVolume(volume);          

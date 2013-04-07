@@ -18,16 +18,13 @@
  *
  */
 
-#include <limits.h>
-
 #include "Settings.h"
 #include "filesystem/File.h"
-#include "guilib/WindowIDs.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/XMLUtils.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 using namespace XFILE;
@@ -72,12 +69,6 @@ void CSettings::UnregisterSubSettings(ISubSettings *subSettings)
   m_subSettings.erase(subSettings);
 }
 
-void CSettings::Initialize()
-{
-  m_fVolumeLevel = 1.0f;
-  m_bMute = false;
-}
-
 CSettings::~CSettings(void)
 {
   // first clear all registered settings handler and subsettings
@@ -120,65 +111,10 @@ bool CSettings::Load()
   return true;
 }
 
-bool CSettings::GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue)
-{
-  CStdString strDefault = strValue;
-  if (XMLUtils::GetPath(pRootElement, tagName, strValue))
-  { // tag exists
-    // check for "-" for backward compatibility
-    if (!strValue.Equals("-"))
-      return true;
-  }
-  // tag doesn't exist - set default
-  strValue = strDefault;
-  return false;
-}
-
-bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
-{
-  if (XMLUtils::GetString(pRootElement, tagName, strValue))
-  { // tag exists
-    // check for "-" for backward compatibility
-    if (!strValue.Equals("-"))
-      return true;
-  }
-  // tag doesn't exist - set default
-  strValue = strDefaultValue;
-  return false;
-}
-
-bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
-{
-  CStdString strValue;
-  bool ret = GetString(pRootElement, tagName, strValue, strDefaultValue);
-  if (szValue)
-    strcpy(szValue, strValue.c_str());
-  return ret;
-}
-
-bool CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
-{
-  if (XMLUtils::GetInt(pRootElement, tagName, iValue, iMin, iMax))
-    return true;
-  // default
-  iValue = iDefault;
-  return false;
-}
-
-bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
-{
-  if (XMLUtils::GetFloat(pRootElement, tagName, fValue, fMin, fMax))
-    return true;
-  // default
-  fValue = fDefault;
-  return false;
-}
-
 bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 {
   // load the xml file
   CXBMCTinyXML xmlDoc;
-
   if (!xmlDoc.LoadFile(strSettingsFile))
   {
     CLog::Log(LOGERROR, "%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -190,14 +126,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   {
     CLog::Log(LOGERROR, "%s\nDoesn't contain <settings>", strSettingsFile.c_str());
     return false;
-  }
-
-  // audio settings
-  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "mute", m_bMute);
-    GetFloat(pElement, "fvolumelevel", m_fVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
   }
 
   g_guiSettings.LoadXML(pRootElement);
@@ -216,13 +144,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   if (!OnSettingsSaving())
     return false;
-
-  // audio settings
-  TiXmlElement volumeNode("audio");
-  TiXmlNode *pNode = pRoot->InsertEndChild(volumeNode);
-  if (!pNode) return false;
-  XMLUtils::SetBoolean(pNode, "mute", m_bMute);
-  XMLUtils::SetFloat(pNode, "fvolumelevel", m_fVolumeLevel);
 
   if (localSettings) // local settings to save
     localSettings->SaveXML(pRoot);

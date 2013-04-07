@@ -34,7 +34,6 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
@@ -1501,8 +1500,8 @@ CStdString CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
-    g_settings.m_bMute = false;
-    g_settings.m_fVolumeLevel = VOLUME_MAXIMUM;
+    g_application.SetMute(false);
+    g_application.SetVolume(VOLUME_MAXIMUM, false);
   }
   else
   {

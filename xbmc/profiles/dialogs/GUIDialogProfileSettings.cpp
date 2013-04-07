@@ -345,7 +345,6 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
           CStdString path = URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_strDirectory);
           path = URIUtils::AddFileToFolder(path, "guisettings.xml");
           CSettings settings;
-          settings.Initialize();
           settings.SaveSettings(path, &localSettings);
         }
       }

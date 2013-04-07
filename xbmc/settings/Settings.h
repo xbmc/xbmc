@@ -29,11 +29,6 @@
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 
-#define VOLUME_MINIMUM 0.0f        // -60dB
-#define VOLUME_MAXIMUM 1.0f        // 0dB
-#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-#define VOLUME_CONTROL_STEPS 90    // 90 steps
-
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
@@ -49,28 +44,14 @@ public:
   void RegisterSubSettings(ISubSettings *subSettings);
   void UnregisterSubSettings(ISubSettings *subSettings);
 
-  void Initialize();
-
   bool Load();
   void Save() const;
-  bool Reset();
-
-  void Clear();
-
-  float m_fVolumeLevel;        // float 0.0 - 1.0 range
-  bool m_bMute;
-
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
-
-  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
-  static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
-  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
+  bool Reset();
+  void Clear();
 
 protected:
   bool LoadSettings(const CStdString& strSettingsFile);
-//  bool SaveSettings(const CStdString& strSettingsFile) const;
 
 private:
   // implementation of ISettingsHandler

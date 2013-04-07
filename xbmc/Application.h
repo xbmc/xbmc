@@ -50,6 +50,7 @@ class CPlayerController;
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "settings/ISettingsHandler.h"
+#include "settings/ISubSettings.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -96,6 +97,11 @@ namespace MUSIC_INFO
   class CMusicInfoScanner;
 }
 
+#define VOLUME_MINIMUM 0.0f        // -60dB
+#define VOLUME_MAXIMUM 1.0f        // 0dB
+#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
+#define VOLUME_CONTROL_STEPS 90    // 90 steps
+
 class CBackgroundPlayer : public CThread
 {
 public:
@@ -108,7 +114,7 @@ protected:
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
-                     public ISettingsHandler
+                     public ISettingsHandler, public ISubSettings
 {
 public:
 
@@ -212,10 +218,11 @@ public:
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();
-  int GetVolume() const;
+  float GetVolume(bool percentage = true) const;
   void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
   void ToggleMute(void);
+  void SetMute(bool mute);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
@@ -374,6 +381,9 @@ public:
 protected:
   virtual bool OnSettingsSaving() const;
 
+  virtual bool Load(const TiXmlNode *settings);
+  virtual bool Save(TiXmlNode *settings) const;
+
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
@@ -440,6 +450,9 @@ protected:
 
   VIDEO::CVideoInfoScanner *m_videoInfoScanner;
   MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+
+  bool m_muted;
+  float m_volumeLevel;
 
   void Mute();
   void UnMute();

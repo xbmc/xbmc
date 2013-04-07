@@ -40,7 +40,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "windowing/WindowingFactory.h"
 
