@@ -418,8 +418,8 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_HasVideo = false;
   m_HasAudio = false;
 
-  m_State.Clear();
   m_dvd.Clear();
+  m_State.Clear();
   m_EdlAutoSkipMarkers.Clear();
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
@@ -476,7 +476,6 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     g_renderManager.PreInit();
 
     Create();
-
     if(!m_ready.WaitMSec(100))
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -599,7 +598,6 @@ bool COMXPlayer::OpenInputStream()
                        || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
   {
     CLog::Log(LOGINFO, "COMXPlayer::OpenInputStream - DVD/BD not supported - Will try...");
-    // return false;
   }
 
   // find any available external subtitles for non dvd files
@@ -633,7 +631,7 @@ bool COMXPlayer::OpenInputStream()
           AddSubtitleFile(filenames[i]);
         }
       }
-    } // end loop over all subtitle files    
+    } // end loop over all subtitle files
 
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
@@ -641,7 +639,6 @@ bool COMXPlayer::OpenInputStream()
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_av_clock.Reset();
-  //m_av_clock.OMXReset();
   m_dvd.Clear();
   m_iChannelEntryTimeOut = 0;
 
@@ -937,7 +934,7 @@ void COMXPlayer::Process()
   bool bOmxWaitVideo = false;
   bool bOmxWaitAudio = false;
 
-  if(!OpenInputStream())
+  if (!OpenInputStream())
   {
     m_bAbortRequest = true;
     return;
@@ -945,7 +942,7 @@ void COMXPlayer::Process()
 
   if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    CLog::Log(LOGNOTICE, "OMXPlayer: playing a dvd with menu's");
+    CLog::Log(LOGNOTICE, "OMXPlayer: playing a file with menu's");
     m_PlayerOptions.starttime = 0;
 
     if(m_PlayerOptions.state.size() > 0)
@@ -1331,7 +1328,7 @@ void COMXPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void COMXPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  if (m_CurrentAudio.stream != (void*)pStream
+  if (m_CurrentAudio.stream  != (void*)pStream
   ||  m_CurrentAudio.changes != pStream->changes)
   {
     /* check so that dmuxer hints or extra data hasn't changed */
@@ -1596,6 +1593,7 @@ void COMXPlayer::HandlePlaySpeed()
 
   if(m_caching != caching)
     SetCaching(caching);
+
 
   if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
   {
@@ -2153,7 +2151,6 @@ void COMXPlayer::HandleMessages()
             {
               m_dvd.iSelectedAudioStream = -1;
               CloseAudioStream(false);
-              // TODO : check //CloseVideoStream(false);
               m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
             }
           }
@@ -2356,6 +2353,7 @@ void COMXPlayer::HandleMessages()
 
     pMsg->Release();
   }
+
 }
 
 void COMXPlayer::SetCaching(ECacheState state)
@@ -2695,6 +2693,7 @@ float COMXPlayer::GetSubTitleDelay()
   return -m_player_video.GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
+// priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
 int COMXPlayer::GetSubtitleCount()
 {
   OMXStreamLock lock(this);
@@ -2954,7 +2953,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
-    if(!m_player_video.OpenStream(hint))
+    if (!m_player_video.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts */
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
@@ -3529,6 +3528,7 @@ bool COMXPlayer::OnAction(const CAction &action)
       }
       break;
     }
+
     if (pMenus->IsInMenu())
     {
       switch (action.GetID())

@@ -38,6 +38,7 @@
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 using namespace std;
 
@@ -125,6 +126,7 @@ public:
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
+  float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
   void SetFlags(unsigned flags)                     { m_flags = flags; };
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
