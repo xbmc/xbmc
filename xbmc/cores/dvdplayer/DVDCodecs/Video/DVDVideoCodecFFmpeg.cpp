@@ -807,18 +807,25 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
-#else
+#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
+    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3.43.100))
+    // API changed in:
+    // ffmpeg: commit 7e350379f87e7f74420b4813170fe808e2313911 (28 Nov 2012)
+    //         not released (post 1.2)
+    // libav: commit 7e350379f87e7f74420b4813170fe808e2313911 (28 Nov 2012)
+    //        release v9 (5 January 2013)
+    result = m_dllAvFilter.av_buffersrc_add_frame(m_pFilterIn, frame);
+#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
+    // API changed in:
+    // ffmpeg: commit 7bac2a78c2241df4bcc1665703bb71afd9a3e692 (28 Apr 2012)
+    //         release 0.11 (25 May 2012)
     result = m_dllAvFilter.av_buffersrc_add_frame(m_pFilterIn, frame, 0);
+#else
+    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
 #endif
     if (result < 0)
     {
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsrc_buffer_add_frame");
-#else
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersrc_add_frame");
-#endif
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersrc_add_frame/av_vsrc_buffer_add_frame");
       return VC_ERROR;
     }
   }
