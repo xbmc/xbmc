@@ -26,12 +26,15 @@
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 
 bool CHTTPSpecialHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return (request.url.find("/special/") == 0 || request.url.find("/log") == 0);
+  return (g_guiSettings.GetBool("services.webserverallowspecialurl") &&
+		  (request.url.find("/special/") == 0 || request.url.find("/log") == 0)
+  );
 }
 
 int CHTTPSpecialHandler::HandleHTTPRequest(const HTTPRequest &request)

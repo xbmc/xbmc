@@ -3264,7 +3264,12 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1179
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1052"
+msgid "Allow access to special:// URLs"
+msgstr ""
+
+#empty strings from id 1053 to 1179
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#1180"
