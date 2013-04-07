@@ -76,8 +76,6 @@ void CSettings::Initialize()
 {
   m_fVolumeLevel = 1.0f;
   m_bMute = false;
-
-  m_iSystemTimeTotalUp = 0;
 }
 
 CSettings::~CSettings(void)
@@ -194,15 +192,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     return false;
   }
 
-  // general settings
-  const TiXmlElement *pElement = pRootElement->FirstChildElement("general");
-  if (pElement)
-  {
-    GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-  }
-
   // audio settings
-  pElement = pRootElement->FirstChildElement("audio");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "mute", m_bMute);
@@ -226,15 +217,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!OnSettingsSaving())
     return false;
 
-  // general settings
-  TiXmlElement generalNode("general");
-  TiXmlNode *pNode = pRoot->InsertEndChild(generalNode);
-  if (!pNode) return false;
-  XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
-
   // audio settings
   TiXmlElement volumeNode("audio");
-  pNode = pRoot->InsertEndChild(volumeNode);
+  TiXmlNode *pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
   XMLUtils::SetBoolean(pNode, "mute", m_bMute);
   XMLUtils::SetFloat(pNode, "fvolumelevel", m_fVolumeLevel);

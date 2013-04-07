@@ -747,6 +747,7 @@ bool CApplication::Create()
   g_settings.RegisterSubSettings(&CDisplaySettings::Get());
   g_settings.RegisterSubSettings(&CMediaSettings::Get());
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
+  g_settings.RegisterSubSettings(&g_sysinfo);
   g_settings.RegisterSubSettings(&CViewStateSettings::Get());
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
@@ -3564,6 +3565,7 @@ bool CApplication::Cleanup()
     g_settings.UnregisterSubSettings(&CDisplaySettings::Get());
     g_settings.UnregisterSubSettings(&CMediaSettings::Get());
     g_settings.UnregisterSubSettings(&CSkinSettings::Get());
+    g_settings.UnregisterSubSettings(&g_sysinfo);
     g_settings.UnregisterSubSettings(&CViewStateSettings::Get());
 
     g_settings.UnregisterSettingsHandler(&g_advancedSettings);
@@ -3622,7 +3624,7 @@ void CApplication::Stop(int exitCode)
       g_Windowing.EnableSystemScreenSaver(true);
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
+    g_sysinfo.SetTotalUptime(g_sysinfo.GetTotalUptime() + (int)(CTimeUtils::GetFrameTime() / 60000));
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(CProfilesManager::Get().GetSettingsFile()))

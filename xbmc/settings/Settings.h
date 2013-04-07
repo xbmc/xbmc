@@ -59,7 +59,6 @@ public:
 
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
-  int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
