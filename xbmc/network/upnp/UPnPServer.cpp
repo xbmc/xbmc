@@ -38,8 +38,8 @@ const char* audio_containers[] = { "musicdb://1/", "musicdb://2/", "musicdb://3/
                                    "musicdb://4/", "musicdb://6/", "musicdb://9/",
                                    "musicdb://10/" };
 
-const char* video_containers[] = { "videodb://1/2/", "videodb://2/2/", "videodb://4/",
-                                   "videodb://5/"  };
+const char* video_containers[] = { "videodb://movies/titles/", "videodb://tvshows/titles/",
+                                   "videodb://recentlyaddedmovies/", "videodb://recentlyaddedepisodes/"  };
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::CUPnPServer
@@ -413,20 +413,20 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
                 if (!db.Open()) return;
                 int show_id = db.GetTvShowForEpisode(item_id);
                 int season_id = db.GetSeasonForEpisode(item_id);
-                UpdateContainer(StringUtils::Format("videodb://2/2/%d/", show_id));
-                UpdateContainer(StringUtils::Format("videodb://2/2/%d/%d/?tvshowid=%d", show_id, season_id, show_id));
-                UpdateContainer("videodb://5/");
+                UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/", show_id));
+                UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/%d/?tvshowid=%d", show_id, season_id, show_id));
+                UpdateContainer("videodb://recentlyaddedepisodes/");
             }
             else if(item_type == "tvshow") {
-                UpdateContainer("videodb://2/2/");
-                UpdateContainer("videodb://5/");
+                UpdateContainer("videodb://tvshows/titles/");
+                UpdateContainer("videodb://recentlyaddedepisodes/");
             }
             else if(item_type == "movie") {
-                UpdateContainer("videodb://1/2/");
-                UpdateContainer("videodb://4/");
+                UpdateContainer("videodb://movies/titles/");
+                UpdateContainer("videodb://recentlyaddedmovies/");
             }
             else if(item_type == "musicvideo") {
-                UpdateContainer("videodb://4/");
+                UpdateContainer("videodb://recentlyaddedmusicvideos/");
             }
         }
         else if (flag == AudioLibrary && item_type == "song") {
@@ -887,7 +887,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         return NPT_SUCCESS;
       }
 
-      if (!database.GetMoviesNav("videodb://1/2/", items)) {
+      if (!database.GetMoviesNav("videodb://movies/titles/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -895,7 +895,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       items.Clear();
 
       // TODO - set proper base url for this
-      if (!database.GetEpisodesByWhere("videodb://2/0/", "", items, false)) {
+      if (!database.GetEpisodesByWhere("videodb://tvshows/0/", "", items, false)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }

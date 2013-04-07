@@ -627,7 +627,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
       sqlWhereVideo[sqlWhereVideo.size() - 1] = ')'; // replace the last comma with closing bracket
       CVideoDatabase database;
       database.Open();
-      database.GetMusicVideosByWhere("videodb://3/2/", sqlWhereVideo, items);
+      database.GetMusicVideosByWhere("videodb://musicvideos/titles/", sqlWhereVideo, items);
     }
 
     m_history = chosenSongIDs;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="1" type="folder">
   <label>135</label>
-  <path>videodb://1/1</path>
+  <path>videodb://movies/genres/</path>
   <icon>DefaultGenre.png</icon>
 </node>

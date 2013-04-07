@@ -58,7 +58,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://4/", items, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items, NUM_ITEMS))
   {  
     for (; i < items.Size(); ++i)
     {
@@ -101,7 +101,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList  TVShowItems; 
  
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://5/", TVShowItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", TVShowItems, NUM_ITEMS))
   {
     for (; i < TVShowItems.Size(); ++i)
     {    
@@ -160,7 +160,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList MusicVideoItems;
 
-  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://6/", MusicVideoItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", MusicVideoItems, NUM_ITEMS))
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {

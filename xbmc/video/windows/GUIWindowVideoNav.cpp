@@ -202,59 +202,59 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
 {
-  if (strPath.Equals("videodb://1/1/"))
+  if (strPath.Equals("videodb://movies/genres/") || strPath.Equals("videodb://1/1/"))
     return "MovieGenres";
-  else if (strPath.Equals("videodb://1/2/"))
+  else if (strPath.Equals("videodb://movies/titles/") || strPath.Equals("videodb://1/2/"))
     return "MovieTitles";
-  else if (strPath.Equals("videodb://1/3/"))
+  else if (strPath.Equals("videodb://movies/years/") || strPath.Equals("videodb://1/3/"))
     return "MovieYears";
-  else if (strPath.Equals("videodb://1/4/"))
+  else if (strPath.Equals("videodb://movies/actors/") || strPath.Equals("videodb://1/4/"))
     return "MovieActors";
-  else if (strPath.Equals("videodb://1/5/"))
+  else if (strPath.Equals("videodb://movies/directors/") || strPath.Equals("videodb://1/5/"))
     return "MovieDirectors";
-  else if (strPath.Equals("videodb://1/6/"))
+  else if (strPath.Equals("videodb://movies/studios/") || strPath.Equals("videodb://1/6/"))
     return "MovieStudios";
-  else if (strPath.Equals("videodb://1/7/"))
+  else if (strPath.Equals("videodb://movies/sets/") || strPath.Equals("videodb://1/7/"))
     return "MovieSets";
-  else if (strPath.Equals("videodb://1/8/"))
+  else if (strPath.Equals("videodb://movies/countries/") || strPath.Equals("videodb://1/8/"))
     return "MovieCountries";
-  else if (strPath.Equals("videodb://1/9/"))
+  else if (strPath.Equals("videodb://movies/tags/") || strPath.Equals("videodb://1/9/"))
     return "MovieTags";
-  else if (strPath.Equals("videodb://1/"))
+  else if (strPath.Equals("videodb://movies/") || strPath.Equals("videodb://1/"))
     return "Movies";
-  else if (strPath.Equals("videodb://2/1/"))
+  else if (strPath.Equals("videodb://tvshows/genres/") || strPath.Equals("videodb://2/1/"))
     return "TvShowGenres";
-  else if (strPath.Equals("videodb://2/2/"))
+  else if (strPath.Equals("videodb://tvshows/titles/") || strPath.Equals("videodb://2/2/"))
     return "TvShowTitles";
-  else if (strPath.Equals("videodb://2/3/"))
+  else if (strPath.Equals("videodb://tvshows/years/") || strPath.Equals("videodb://2/3/"))
     return "TvShowYears";
-  else if (strPath.Equals("videodb://2/4/"))
+  else if (strPath.Equals("videodb://tvshows/actors/") || strPath.Equals("videodb://2/4/"))
     return "TvShowActors";
-  else if (strPath.Equals("videodb://2/5/"))
+  else if (strPath.Equals("videodb://tvshows/studios/") || strPath.Equals("videodb://2/9/"))
     return "TvShowStudios";
-  else if (strPath.Equals("videodb://2/9/"))
+  else if (strPath.Equals("videodb://tvshows/tags/") || strPath.Equals("videodb://2/"))
     return "TvShowTags";
-  else if (strPath.Equals("videodb://2/"))
+  else if (strPath.Equals("videodb://tvshows/") || strPath.Equals("videodb://2/"))
     return "TvShows";
-  else if (strPath.Equals("videodb://3/1/"))
+  else if (strPath.Equals("videodb://musicvideos/genres/") || strPath.Equals("videodb://3/1/"))
     return "MusicVideoGenres";
-  else if (strPath.Equals("videodb://3/2/"))
+  else if (strPath.Equals("videodb://musicvideos/titles/") || strPath.Equals("videodb://3/2/"))
     return "MusicVideoTitles";
-  else if (strPath.Equals("videodb://3/3/"))
+  else if (strPath.Equals("videodb://musicvideos/years/") || strPath.Equals("videodb://3/3/"))
     return "MusicVideoYears";
-  else if (strPath.Equals("videodb://3/4/"))
+  else if (strPath.Equals("videodb://musicvideos/artist/") || strPath.Equals("videodb://3/4/"))
     return "MusicVideoArtists";
-  else if (strPath.Equals("videodb://3/5/"))
+  else if (strPath.Equals("videodb://musicvideos/albums/") || strPath.Equals("videodb://3/5/"))
     return "MusicVideoDirectors";
-  else if (strPath.Equals("videodb://3/9/"))
+  else if (strPath.Equals("videodb://musicvideos/tags/") || strPath.Equals("videodb://3/9/"))
     return "MusicVideoTags";
-  else if (strPath.Equals("videodb://3/"))
+  else if (strPath.Equals("videodb://musicvideos/") || strPath.Equals("videodb://3/"))
     return "MusicVideos";
-  else if (strPath.Equals("videodb://4/"))
+  else if (strPath.Equals("videodb://recentlyaddedmovies/") || strPath.Equals("videodb://4/"))
     return "RecentlyAddedMovies";
-  else if (strPath.Equals("videodb://5/"))
+  else if (strPath.Equals("videodb://recentlyaddedepisodes/") || strPath.Equals("videodb://5/"))
     return "RecentlyAddedEpisodes";
-  else if (strPath.Equals("videodb://6/"))
+  else if (strPath.Equals("videodb://recentlyaddedmusicvideos/") || strPath.Equals("videodb://6/"))
     return "RecentlyAddedMusicVideos";
   else if (strPath.Equals("special://videoplaylists/"))
     return "Playlists";
@@ -676,8 +676,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
         !pItem->GetPath().Left(9).Equals("newtag://"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
-  else if (pItem->GetPath().Left(14).Equals("videodb://1/7/") &&
-           pItem->GetPath().size() > 14 && pItem->m_bIsFolder)
+  else if (StringUtils::StartsWith(pItem->GetPath(), "videodb://movies/sets/") &&
+           pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
@@ -699,8 +699,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       m_database.DeleteSet(params.GetSetId());
     }
   }
-  else if (m_vecItems->GetContent() == "tags" &&
-           pItem->GetPath().size() > 14 && pItem->m_bIsFolder)
+  else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
@@ -989,7 +988,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_ART, 13511);
 
-        if (item->GetPath().Left(14).Equals("videodb://1/7/") && item->GetPath().size() > 14 && item->m_bIsFolder) // sets
+        if (StringUtils::StartsWith(item->GetPath(), "videodb://movies/sets/") && item->GetPath().size() > 22 && item->m_bIsFolder) // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
           buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_ART, 13511);
@@ -997,7 +996,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
         }
 
-        if (m_vecItems->GetContent() == "tags" && item->GetPath().size() > 14 && item->m_bIsFolder) // tags
+        if (m_vecItems->GetContent() == "tags" && item->m_bIsFolder) // tags
         {
           CVideoDbUrl videoUrl;
           if (videoUrl.FromString(item->GetPath()))
@@ -1014,7 +1013,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
         {
-          if (m_vecItems->GetPath().Left(11).Equals("videodb://3")) // mvids
+          if (StringUtils::StartsWith(m_vecItems->GetPath(), "videodb://musicvideos")) // mvids
             buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
           else
             buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
@@ -1520,7 +1519,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
   }
   else
   {
-    m_database.GetTvShowsNav("videodb://2/2",list);
+    m_database.GetTvShowsNav("videodb://tvshows/titles",list);
 
     // remove already linked shows
     vector<int> ids;
@@ -1629,63 +1628,63 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
 CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
 {
   if (dir.Equals("MovieGenres"))
-    return "videodb://1/1/";
+    return "videodb://movies/genres/";
   else if (dir.Equals("MovieTitles"))
-    return "videodb://1/2/";
+    return "videodb://movies/titles/";
   else if (dir.Equals("MovieYears"))
-    return "videodb://1/3/";
+    return "videodb://movies/years/";
   else if (dir.Equals("MovieActors"))
-    return "videodb://1/4/";
+    return "videodb://movies/actors/";
   else if (dir.Equals("MovieDirectors"))
-    return "videodb://1/5/";
+    return "videodb://movies/directors/";
   else if (dir.Equals("MovieStudios"))
-    return "videodb://1/6/";
+    return "videodb://movies/studios/";
   else if (dir.Equals("MovieSets"))
-    return "videodb://1/7/";
+    return "videodb://movies/sets/";
   else if (dir.Equals("MovieCountries"))
-    return "videodb://1/8/";
+    return "videodb://movies/countries/";
   else if (dir.Equals("MovieTags"))
-    return "videodb://1/9/";
+    return "videodb://movies/tags/";
   else if (dir.Equals("Movies"))
-    return "videodb://1/";
+    return "videodb://movies/";
   else if (dir.Equals("TvShowGenres"))
-    return "videodb://2/1/";
+    return "videodb://tvshows/genres/";
   else if (dir.Equals("TvShowTitles"))
-    return "videodb://2/2/";
+    return "videodb://tvshows/titles/";
   else if (dir.Equals("TvShowYears"))
-    return "videodb://2/3/";
+    return "videodb://tvshows/years/";
   else if (dir.Equals("TvShowActors"))
-    return "videodb://2/4/";
+    return "videodb://tvshows/actors/";
   else if (dir.Equals("TvShowStudios"))
-    return "videodb://2/5/";
+    return "videodb://tvshows/studios/";
   else if (dir.Equals("TvShowTags"))
-    return "videodb://2/9/";
+    return "videodb://tvshows/tags/";
   else if (dir.Equals("TvShows"))
-    return "videodb://2/";
+    return "videodb://tvshows/";
   else if (dir.Equals("MusicVideoGenres"))
-    return "videodb://3/1/";
+    return "videodb://musicvideos/genres/";
   else if (dir.Equals("MusicVideoTitles"))
-    return "videodb://3/2/";
+    return "videodb://musicvideos/titles/";
   else if (dir.Equals("MusicVideoYears"))
-    return "videodb://3/3/";
+    return "videodb://musicvideos/years/";
   else if (dir.Equals("MusicVideoArtists"))
-    return "videodb://3/4/";
+    return "videodb://musicvideos/artist/";
   else if (dir.Equals("MusicVideoAlbums"))
-    return "videodb://3/5/";
+    return "videodb://musicvideos/albums/";
   else if (dir.Equals("MusicVideoDirectors"))
-    return "videodb://3/6/";
+    return "videodb://musicvideos/directors/";
   else if (dir.Equals("MusicVideoStudios"))
-    return "videodb://3/7/";
+    return "videodb://musicvideos/studios/";
   else if (dir.Equals("MusicVideoTags"))
-    return "videodb://3/9/";
+    return "videodb://musicvideos/tags/";
   else if (dir.Equals("MusicVideos"))
-    return "videodb://3/";
+    return "videodb://musicvideos/";
   else if (dir.Equals("RecentlyAddedMovies"))
-    return "videodb://4/";
+    return "videodb://recentlyaddedmovies/";
   else if (dir.Equals("RecentlyAddedEpisodes"))
-    return "videodb://5/";
+    return "videodb://recentlyaddedepisodes/";
   else if (dir.Equals("RecentlyAddedMusicVideos"))
-    return "videodb://6/";
+    return "videodb://recentlyaddedmusicvideos/";
   else if (dir.Equals("Files"))
     return "sources://video/";
   return CGUIWindowVideoBase::GetStartFolder(dir);
@@ -1769,23 +1768,23 @@ bool CGUIWindowVideoNav::GetItemsForTag(const CStdString &strHeading, const std:
   if (type.compare("movie") == 0)
   {
     mediaType = MediaTypeMovie;
-    baseDir += "1";
+    baseDir += "movies";
     idColumn = "idMovie";
   }
   else if (type.compare("tvshow") == 0)
   {
     mediaType = MediaTypeTvShow;
-    baseDir += "2";
+    baseDir += "tvshows";
     idColumn = "idShow";
   }
   else if (type.compare("musicvideo") == 0)
   {
     mediaType = MediaTypeMusicVideo;
-    baseDir += "3";
+    baseDir += "musicvideos";
     idColumn = "idMVideo";
   }
 
-  baseDir += "/2/";
+  baseDir += "/titles/";
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(baseDir))
     return false;
@@ -1828,13 +1827,13 @@ bool CGUIWindowVideoNav::GetMoviesForSet(CFileItemPtr &setItem, CFileItemList &o
 
   CStdString strHeading; strHeading.Format(g_localizeStrings.Get(20457));
   CStdString baseDir;
-  baseDir.Format("videodb://1/7/%d", setItem->GetVideoInfoTag()->m_iDbId);
+  baseDir.Format("videodb://movies/sets/%d", setItem->GetVideoInfoTag()->m_iDbId);
 
   if (!CDirectory::GetDirectory(baseDir, originalMovies) || originalMovies.Size() <= 0) // keep a copy of the original members of the set
     return false;
 
   CFileItemList listItems;
-  if (!videodb.GetSortedVideos(MediaTypeMovie, "videodb://1", SortDescription(), listItems) || listItems.Size() <= 0)
+  if (!videodb.GetSortedVideos(MediaTypeMovie, "videodb://movies", SortDescription(), listItems) || listItems.Size() <= 0)
     return false;
 
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1879,7 +1878,7 @@ bool CGUIWindowVideoNav::GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &s
     return false;
 
   CFileItemList listItems;
-  CStdString baseDir = "videodb://1/7/";
+  CStdString baseDir = "videodb://movies/sets/";
   if (!CDirectory::GetDirectory(baseDir, listItems) || listItems.Size() <= 0)
     return false;
   listItems.Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderAscending);
