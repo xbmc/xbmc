@@ -19,42 +19,15 @@
  *
  */
 
-#include <vector>
-#include <map>
 #include <set>
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 #define PRE_SKIN_VERSION_11_COMPATIBILITY 1
 
-//FIXME - after eden - make that one nicer somehow...
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-#include "system.h" //for HAS_SKIN_TOUCHED
-#endif
-
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-#define DEFAULT_SKIN          "skin.touched"
-#else
-#define DEFAULT_SKIN          "skin.confluence"
-#endif
-#define DEFAULT_WEB_INTERFACE "webinterface.default"
-#ifdef MID
-#define DEFAULT_VSYNC       VSYNC_DISABLED
-#else  // MID
-#if defined(TARGET_DARWIN) || defined(_WIN32) || defined(TARGET_RASPBERRY_PI)
-#define DEFAULT_VSYNC       VSYNC_ALWAYS
-#else
-#define DEFAULT_VSYNC       VSYNC_DRIVER
-#endif
-#endif // MID
-
 #include "settings/ISettingsHandler.h"
 #include "settings/ISubSettings.h"
-#include "guilib/GraphicContext.h"
 #include "threads/CriticalSection.h"
-
-#define CACHE_AUDIO 0
-#define CACHE_VIDEO 1
-#define CACHE_VOB   2
+#include "utils/StdString.h"
 
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB

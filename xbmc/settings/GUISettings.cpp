@@ -89,6 +89,18 @@ using namespace PVR;
 #endif
 #endif
 
+#define DEFAULT_WEB_INTERFACE "webinterface.default"
+
+#ifdef MID
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#else  // MID
+#if defined(TARGET_DARWIN) || defined(_WIN32) || defined(TARGET_RASPBERRY_PI)
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
+#define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
+#endif // MID
+
 struct sortsettings
 {
   bool operator()(const CSetting* pSetting1, const CSetting* pSetting2)

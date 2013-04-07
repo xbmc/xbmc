@@ -23,6 +23,7 @@
 #include <dlfcn.h>
 #include "windowing/WindowingFactory.h"
 #include "VDPAU.h"
+#include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
