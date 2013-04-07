@@ -864,10 +864,12 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       CStdString strFolder = message.GetStringParam();
       unsigned int iParams = message.GetParam1();
+      std::string beginSlidePath = message.GetStringParam(1);
       //decode params
       bool bRecursive = false;
       bool bRandom = false;
       bool bNotRandom = false;
+      bool bPause = false;
       if (iParams > 0)
       {
         if ((iParams & 1) == 1)
@@ -876,8 +878,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
           bRandom = true;
         if ((iParams & 4) == 4)
           bNotRandom = true;
+        if ((iParams & 8) == 8)
+          bPause = true;
       }
-      RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom);
+      RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom, SORT_METHOD_LABEL, SortOrderAscending, "", beginSlidePath, !bPause);
     }
     break;
 
@@ -1091,13 +1095,17 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
 void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
                                        bool bRecursive /* = false */, bool bRandom /* = false */, 
                                        bool bNotRandom /* = false */, SORT_METHOD method /* = SORT_METHOD_LABEL */, 
-                                       SortOrder order /* = SortOrderAscending */, const CStdString &strExtensions)
+                                       SortOrder order /* = SortOrderAscending */, const CStdString &strExtensions /* = "" */,
+                                       const CStdString &beginSlidePath /* = "" */, bool startSlideShow /* = true */)
 {
   // stop any video
   if (g_application.IsPlayingVideo())
     g_application.StopPlaying();
 
   AddFromPath(strPath, bRecursive, method, order, strExtensions);
+
+  if (!NumSlides())
+    return;
 
   // mutually exclusive options
   // if both are set, clear both and use the gui setting
@@ -1108,9 +1116,20 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
   if ((!bNotRandom && g_guiSettings.GetBool("slideshow.shuffle")) || bRandom)
     Shuffle();
 
-  StartSlideShow();
-  if (NumSlides())
-    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  if (!beginSlidePath.IsEmpty())
+    Select(beginSlidePath);
+
+  if (startSlideShow)
+    StartSlideShow();
+  else 
+  {
+    CVariant param;
+    param["player"]["speed"] = 0;
+    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", GetCurrentSlide(), param);
+  }
+
+  g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths, SORT_METHOD method, SortOrder order)
