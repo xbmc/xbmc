@@ -26,6 +26,7 @@ CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
   , m_can_pause(false)
   , m_can_seek(false)
+  , m_aborted(false)
 {
 
 }
@@ -37,7 +38,10 @@ CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
 
 bool CDVDInputStreamFFmpeg::IsEOF()
 {
-  return false;
+  if(m_aborted)
+    return true;
+  else
+    return false;
 }
 
 bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content)
@@ -47,6 +51,7 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
 
   m_can_pause = true;
   m_can_seek  = true;
+  m_aborted   = false;
 
   if(strnicmp(strFile, "udp://", 6) == 0
   || strnicmp(strFile, "rtp://", 6) == 0)

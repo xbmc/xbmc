@@ -35,6 +35,7 @@
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
+#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "commons/Exception.h"
@@ -223,6 +224,10 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
 bool CDVDDemuxFFmpeg::Aborted()
 {
   if(m_timeout.IsTimePast())
+    return true;
+
+  CDVDInputStreamFFmpeg * input = dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
+  if(input && input->Aborted())
     return true;
 
   return false;
