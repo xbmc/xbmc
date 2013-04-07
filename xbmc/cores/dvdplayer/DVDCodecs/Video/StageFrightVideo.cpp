@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include "system_gl.h"
 
 #include "StageFrightVideo.h"
+#include "StageFrightVideoPrivate.h"
 
 #include "android/activity/XBMCApp.h"
 #include "guilib/GraphicContext.h"
@@ -36,46 +37,18 @@
 #include "settings/AdvancedSettings.h"
 
 #include "xbmc/guilib/FrameBufferObject.h"
-#include "windowing/WindowingFactory.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "windowing/egl/EGLWrapper.h"
 
-#include <binder/ProcessState.h>
-#include <media/stagefright/MetaData.h>
-#include <media/stagefright/MediaBufferGroup.h>
-#include <media/stagefright/MediaDefs.h>
-#include <media/stagefright/OMXClient.h>
-#include <media/stagefright/OMXCodec.h>
-#include <media/stagefright/foundation/ABuffer.h>
-#include <utils/List.h>
-#include <utils/RefBase.h>
-#include <ui/GraphicBuffer.h>
-#include <ui/PixelFormat.h>
-#include <gui/SurfaceTexture.h>
-
 #include <new>
-#include <map>
-#include <queue>
-#include <list>
 
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
 #define CLASSNAME "CStageFrightVideo"
-#define INBUFCOUNT 16
-#define NUMFBOTEX 4
-
-// EGL extension functions
-static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
 
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
-
-GLint glerror;
-#define CheckEglError(x) while((glerror = eglGetError()) != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",x, glerror);
-#define CheckGlError(x)  while((glerror = glGetError()) != GL_NO_ERROR) CLog::Log(LOGERROR, "GL error in %s: %x",x, glerror);
 
 const char *MEDIA_MIMETYPE_VIDEO_WMV  = "video/x-ms-wmv";
 
@@ -91,338 +64,84 @@ static double pts_itod(int64_t pts)
   return (double)pts;
 }
 
-struct Frame
-{
-  status_t status;
-  int32_t width, height;
-  int64_t pts;
-  ERenderFormat format;
-  EGLImageKHR eglimg;
-  MediaBuffer* medbuf;
-};
+/***********************************************************/
 
-enum StageFrightQuirks
-{
-  QuirkNone = 0,
-  QuirkSWRender = 0x01,
-};
-
-class CStageFrightDecodeThread;
-
-class CStageFrightVideoPrivate : public MediaBufferObserver
+class CStageFrightMediaSource : public MediaSource
 {
 public:
-  CStageFrightVideoPrivate()
-    : decode_thread(NULL), source(NULL), natwin(NULL)
-    , eglDisplay(EGL_NO_DISPLAY), eglSurface(EGL_NO_SURFACE), eglContext(EGL_NO_CONTEXT)
-    , eglInitialized(false)
-    , framecount(0)
-    , quirks(QuirkNone), cur_frame(NULL), prev_frame(NULL)
-    , width(-1), height(-1)
-    , texwidth(-1), texheight(-1)
-    , client(NULL), decoder(NULL), decoder_component(NULL)
-    , drop_state(false), resetting(false)
-  {}
-
-  virtual void signalBufferReturned(MediaBuffer *buffer)
+  CStageFrightMediaSource(CStageFrightVideoPrivate *priv, sp<MetaData> meta)
   {
+    p = priv;
+    source_meta = meta;
   }
 
-  MediaBuffer* getBuffer(size_t size)
+  virtual sp<MetaData> getFormat()
   {
-    int i=0;
-    for (; i<INBUFCOUNT; ++i)
-      if (inbuf[i]->refcount() == 0 && inbuf[i]->size() >= size)
-        break;
-    if (i == INBUFCOUNT)
-    {
-      i = 0;
-      for (; i<INBUFCOUNT; ++i)
-        if (inbuf[i]->refcount() == 0)
-          break;
-      if (i == INBUFCOUNT)
-        return NULL;
-      inbuf[i]->setObserver(NULL);
-      inbuf[i]->release();
-      inbuf[i] = new MediaBuffer(size);
-      inbuf[i]->setObserver(this);
-    }
-
-    inbuf[i]->add_ref();
-    inbuf[i]->set_range(0, size);
-    return inbuf[i];
+    return source_meta;
   }
 
-  bool inputBufferAvailable()
+  virtual status_t start(MetaData *params)
   {
-    for (int i=0; i<INBUFCOUNT; ++i)
-      if (inbuf[i]->refcount() == 0)
-        return true;
-        
-    return false;
+    return OK;
   }
 
-  void loadOESShader(GLenum shaderType, const char* pSource, GLuint* outShader)
+  virtual status_t stop()
   {
-  #if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, ">>loadOESShader\n");
-  #endif
-
-    GLuint shader = glCreateShader(shaderType);
-    CheckGlError("loadOESShader");
-    if (shader) {
-      glShaderSource(shader, 1, &pSource, NULL);
-      glCompileShader(shader);
-      GLint compiled = 0;
-      glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-      if (!compiled) {
-        GLint infoLen = 0;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen) {
-          char* buf = (char*) malloc(infoLen);
-          if (buf) {
-            glGetShaderInfoLog(shader, infoLen, NULL, buf);
-            printf("Shader compile log:\n%s\n", buf);
-            free(buf);
-          }
-        } else {
-          char* buf = (char*) malloc(0x1000);
-          if (buf) {
-            glGetShaderInfoLog(shader, 0x1000, NULL, buf);
-            printf("Shader compile log:\n%s\n", buf);
-            free(buf);
-          }
-        }
-        glDeleteShader(shader);
-        shader = 0;
-      }
-    }
-    *outShader = shader;
+    return OK;
   }
 
-  void createOESProgram(const char* pVertexSource, const char* pFragmentSource, GLuint* outPgm)
+  virtual status_t read(MediaBuffer **buffer,
+                        const MediaSource::ReadOptions *options)
   {
-  #if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, ">>createOESProgram\n");
-  #endif
-    GLuint vertexShader, fragmentShader;
-    {
-      loadOESShader(GL_VERTEX_SHADER, pVertexSource, &vertexShader);
-    }
-    {
-      loadOESShader(GL_FRAGMENT_SHADER, pFragmentSource, &fragmentShader);
-    }
-
-    GLuint program = glCreateProgram();
-    if (program) {
-      glAttachShader(program, vertexShader);
-      glAttachShader(program, fragmentShader);
-      glLinkProgram(program);
-      GLint linkStatus = GL_FALSE;
-      glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-      if (linkStatus != GL_TRUE) {
-        GLint bufLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-        if (bufLength) {
-          char* buf = (char*) malloc(bufLength);
-          if (buf) {
-            glGetProgramInfoLog(program, bufLength, NULL, buf);
-            printf("Program link log:\n%s\n", buf);
-            free(buf);
-          }
-        }
-        glDeleteProgram(program);
-        program = 0;
-      }
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    *outPgm = program;
-  }
-
-  void OES_shader_setUp()
-  {
-
-    const char vsrc[] =
-    "attribute vec4 vPosition;\n"
-    "varying vec2 texCoords;\n"
-    "uniform mat4 texMatrix;\n"
-    "void main() {\n"
-    "  vec2 vTexCoords = 0.5 * (vPosition.xy + vec2(1.0, 1.0));\n"
-    "  texCoords = (texMatrix * vec4(vTexCoords, 0.0, 1.0)).xy;\n"
-    "  gl_Position = vPosition;\n"
-    "}\n";
-
-    const char fsrc[] =
-    "#extension GL_OES_EGL_image_external : require\n"
-    "precision mediump float;\n"
-    "uniform samplerExternalOES texSampler;\n"
-    "varying vec2 texCoords;\n"
-    "void main() {\n"
-    "  gl_FragColor = texture2D(texSampler, texCoords);\n"
-    "}\n";
-
-    {
-    #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, ">>OES_shader_setUp\n");
-    #endif
-      CheckGlError("OES_shader_setUp");
-      createOESProgram(vsrc, fsrc, &mPgm);
-    }
-
-    mPositionHandle = glGetAttribLocation(mPgm, "vPosition");
-    mTexSamplerHandle = glGetUniformLocation(mPgm, "texSampler");
-    mTexMatrixHandle = glGetUniformLocation(mPgm, "texMatrix");
-  }
-  
-  int NP2( unsigned x ) {
-    --x;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    return ++x;
-  }
-
-  void InitializeEGL(int w, int h)
-  {
-    texwidth = w;
-    texheight = h;
-    if (!g_Windowing.IsExtSupported("GL_TEXTURE_NPOT"))
-    {
-      texwidth  = NP2(texwidth);
-      texheight = NP2(texheight);
-    }
-
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    eglBindAPI(EGL_OPENGL_ES_API);
-    EGLint contextAttributes[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
-      EGL_NONE
-    };
-    eglContext = eglCreateContext(eglDisplay, g_Windowing.GetEGLConfig(), EGL_NO_CONTEXT, contextAttributes);
-    EGLint pbufferAttribs[] = {
-      EGL_WIDTH, texwidth,
-      EGL_HEIGHT, texheight,
-      EGL_NONE
-    };
-    eglSurface = eglCreatePbufferSurface(eglDisplay, g_Windowing.GetEGLConfig(), pbufferAttribs);
-    eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
-    CheckGlError("stf init");
-
-    static const EGLint imageAttributes[] = {
-      EGL_IMAGE_PRESERVED_KHR, EGL_FALSE,
-      EGL_GL_TEXTURE_LEVEL_KHR, 0,
-      EGL_NONE
-    };
-
-    for (int i=0; i<NUMFBOTEX; ++i)
-    {
-      glGenTextures(1, &(slots[i].texid));
-      glBindTexture(GL_TEXTURE_2D,  slots[i].texid);
-
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texwidth, texheight, 0,
-             GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      // This is necessary for non-power-of-two textures
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-      slots[i].eglimg = eglCreateImageKHR(eglDisplay, eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(slots[i].texid),imageAttributes);
-      free_queue.push_back(std::pair<EGLImageKHR, int>(slots[i].eglimg, i));
-
-    }
-    glBindTexture(GL_TEXTURE_2D,  0);
-
-    fbo.Initialize();
-    OES_shader_setUp();
-
-    eglInitialized = true;
-#if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s: >>> Initialized EGL: w:%d; h:%d\n", CLASSNAME, texwidth, texheight);
-#endif
-  }
-  
-  void UninitializeEGL()
-  {
-    fbo.Cleanup();
-    for (int i=0; i<NUMFBOTEX; ++i)
-    {
-      glDeleteTextures(1, &(slots[i].texid));
-      eglDestroyImageKHR(eglDisplay, slots[i].eglimg);
-    }
-
-    if (eglContext != EGL_NO_CONTEXT)
-      eglDestroyContext(eglDisplay, eglContext);
-    eglContext = EGL_NO_CONTEXT;
-
-    if (eglSurface != EGL_NO_SURFACE)
-      eglDestroySurface(eglDisplay, eglSurface);
-    eglSurface = EGL_NO_SURFACE;
+    Frame *frame;
+    status_t ret;
+    *buffer = NULL;
+    int64_t time_us = -1;
+    MediaSource::ReadOptions::SeekMode mode;
     
-    eglInitialized = false;
-  }
-  
-  CStageFrightDecodeThread* decode_thread;
-
-  sp<MediaSource> source;
-  sp<ANativeWindow> natwin;
-  
-  MediaBuffer* inbuf[INBUFCOUNT];
-
-  GLuint mPgm;
-  GLint mPositionHandle;
-  GLint mTexSamplerHandle;
-  GLint mTexMatrixHandle;
-
-  CFrameBufferObject fbo;
-  EGLDisplay eglDisplay;
-  EGLSurface eglSurface;
-  EGLContext eglContext;
-  bool eglInitialized;
-
-  struct tex_slot
-  {
-    GLuint texid;
-    EGLImageKHR eglimg;
-  };
-  tex_slot slots[NUMFBOTEX];
-  std::list< std::pair<EGLImageKHR, int> > free_queue;
-  std::list< std::pair<EGLImageKHR, int> > busy_queue;
-
-  sp<MetaData> meta;
-  int64_t framecount;
-  map<int64_t, Frame*> in_queue;
-  map<int64_t, Frame*> out_queue;
-  CCriticalSection in_mutex;
-  CCriticalSection out_mutex;
-  CCriticalSection free_mutex;
-  XbmcThreads::ConditionVariable in_condition;
-  XbmcThreads::ConditionVariable out_condition;
-
-  int quirks;
-  Frame *cur_frame;
-  Frame *prev_frame;
-  bool source_done;
-  int x, y;
-  int width, height;
-  int texwidth, texheight;
-
-  OMXClient *client;
-  sp<MediaSource> decoder;
-  const char *decoder_component;
-  int videoColorFormat;
-  int videoStride;
-  int videoSliceHeight;
-
-  bool drop_state;
-  bool resetting;
+    if (options && options->getSeekTo(&time_us, &mode))
+    {
 #if defined(DEBUG_VERBOSE)
-  unsigned int cycle_time;
+      CLog::Log(LOGDEBUG, "%s: reading source(%d): seek:%llu\n", CLASSNAME,p->in_queue.size(), time_us);
 #endif
+    }
+    else
+    {
+#if defined(DEBUG_VERBOSE)
+      CLog::Log(LOGDEBUG, "%s: reading source(%d)\n", CLASSNAME,p->in_queue.size());
+#endif
+    }
+
+    p->in_mutex.lock();
+    while (p->in_queue.empty() && p->decode_thread)
+      p->in_condition.wait(p->in_mutex);
+
+    if (p->in_queue.empty())
+    {
+      p->in_mutex.unlock();
+      return VC_ERROR;
+    }
+    
+    std::map<int64_t,Frame*>::iterator it = p->in_queue.begin();
+    frame = it->second;
+    ret = frame->status;
+    *buffer = frame->medbuf;
+
+    p->in_queue.erase(it);
+    p->in_mutex.unlock();
+
+#if defined(DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, ">>> exiting reading source(%d); pts:%llu\n", p->in_queue.size(),frame->pts);
+#endif
+
+    free(frame);
+
+    return ret;
+  }
+
+private:
+  sp<MetaData> source_meta;
+  CStageFrightVideoPrivate *p;
 };
 
 /********************************************/
@@ -698,86 +417,6 @@ public:
 
 /***********************************************************/
 
-class CustomSource : public MediaSource
-{
-public:
-  CustomSource(CStageFrightVideoPrivate *priv, sp<MetaData> meta)
-  {
-    p = priv;
-    source_meta = meta;
-  }
-
-  virtual sp<MetaData> getFormat()
-  {
-    return source_meta;
-  }
-
-  virtual status_t start(MetaData *params)
-  {
-    return OK;
-  }
-
-  virtual status_t stop()
-  {
-    return OK;
-  }
-
-  virtual status_t read(MediaBuffer **buffer,
-                        const MediaSource::ReadOptions *options)
-  {
-    Frame *frame;
-    status_t ret;
-    *buffer = NULL;
-    int64_t time_us = -1;
-    MediaSource::ReadOptions::SeekMode mode;
-    
-    if (options && options->getSeekTo(&time_us, &mode))
-    {
-#if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s: reading source(%d): seek:%llu\n", CLASSNAME,p->in_queue.size(), time_us);
-#endif
-    }
-    else
-    {
-#if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s: reading source(%d)\n", CLASSNAME,p->in_queue.size());
-#endif
-    }
-
-    p->in_mutex.lock();
-    while (p->in_queue.empty() && p->decode_thread)
-      p->in_condition.wait(p->in_mutex);
-
-    if (p->in_queue.empty())
-    {
-      p->in_mutex.unlock();
-      return VC_ERROR;
-    }
-    
-    std::map<int64_t,Frame*>::iterator it = p->in_queue.begin();
-    frame = it->second;
-    ret = frame->status;
-    *buffer = frame->medbuf;
-
-    p->in_queue.erase(it);
-    p->in_mutex.unlock();
-
-#if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, ">>> exiting reading source(%d); pts:%llu\n", p->in_queue.size(),frame->pts);
-#endif
-
-    free(frame);
-
-    return ret;
-  }
-
-private:
-  sp<MetaData> source_meta;
-  CStageFrightVideoPrivate *p;
-};
-
-/***********************************************************/
-
 bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 {
 #if defined(DEBUG_VERBOSE)
@@ -854,7 +493,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 
   android::ProcessState::self()->startThreadPool();
 
-  p->source    = new CustomSource(p, p->meta);
+  p->source    = new CStageFrightMediaSource(p, p->meta);
   p->client    = new OMXClient;
 
   if (p->source == NULL || p->client == NULL)
@@ -876,13 +515,6 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     g_xbmcapp.InitStagefrightSurface();
     p->natwin = g_xbmcapp.GetAndroidVideoWindow();
     native_window_api_connect(p->natwin.get(), NATIVE_WINDOW_API_MEDIA);
-
-    if (!eglCreateImageKHR)
-      eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglCreateImageKHR");
-    if (!eglDestroyImageKHR)
-      eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglDestroyImageKHR");
-    if (!glEGLImageTargetTexture2DOES)
-      glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
   }
 
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
