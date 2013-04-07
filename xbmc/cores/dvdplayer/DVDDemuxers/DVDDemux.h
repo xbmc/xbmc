@@ -35,7 +35,7 @@ class CDVDInputStream;
   #include "config.h"
 #endif
 #ifndef _LINUX
-enum CodecID;
+// enum CodecID; // auto defined when neccesary
 #include <libavcodec/avcodec.h>
 #else
 extern "C" {
