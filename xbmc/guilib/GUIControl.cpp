@@ -162,6 +162,7 @@ void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 {
   // update our render region
   m_renderRegion = g_graphicsContext.generateAABB(CalcRenderRegion());
+  m_hasProcessed = true;
 }
 
 // the main render routine.
