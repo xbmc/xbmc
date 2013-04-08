@@ -19,6 +19,7 @@
  */
 
 #include "QueryParams.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -48,7 +49,12 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   switch (NodeType)
   {
   case NODE_TYPE_OVERVIEW:
-    m_idContent = idDb;
+    if (strNodeName.Equals("tvshows"))
+      m_idContent = VIDEODB_CONTENT_TVSHOWS;
+    else if (strNodeName.Equals("musicvideos"))
+      m_idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    else
+      m_idContent = VIDEODB_CONTENT_MOVIES;
     break;
   case NODE_TYPE_GENRE:
     m_idGenre = idDb;

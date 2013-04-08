@@ -600,7 +600,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS))
   {
     share.strName = g_localizeStrings.Get(20389);
-    share.strPath = "videodb://3/";
+    share.strPath = "videodb://musicvideos/";
     share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicVideos.png");
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);

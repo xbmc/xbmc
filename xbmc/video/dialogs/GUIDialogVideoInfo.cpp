@@ -570,7 +570,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty())
   {
     CStdString strPath;
-    strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
+    strPath.Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
     g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
     return;

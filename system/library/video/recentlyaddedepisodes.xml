@@ -2,5 +2,5 @@
 <node order="11" type="folder" visible="Library.HasContent(TVShows)">
   <label>20387</label>
   <icon>DefaultRecentlyAddedEpisodes.png</icon>
-  <path>videodb://5</path>
+  <path>videodb://recentlyaddedepisodes/</path>
 </node>

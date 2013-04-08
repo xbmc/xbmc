@@ -23,26 +23,18 @@
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
-#include "DirectoryNodeGenre.h"
-#include "DirectoryNodeCountry.h"
-#include "DirectoryNodeSets.h"
+#include "DirectoryNodeGrouped.h"
 #include "DirectoryNodeTitleMovies.h"
 #include "DirectoryNodeTitleTvShows.h"
-#include "DirectoryNodeYear.h"
-#include "DirectoryNodeActor.h"
-#include "DirectoryNodeDirector.h"
 #include "DirectoryNodeMoviesOverview.h"
 #include "DirectoryNodeTvShowsOverview.h"
 #include "DirectoryNodeSeasons.h"
 #include "DirectoryNodeEpisodes.h"
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
-#include "DirectoryNodeStudio.h"
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
-#include "DirectoryNodeMusicVideoAlbum.h"
-#include "DirectoryNodeTags.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
@@ -121,19 +113,15 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
   case NODE_TYPE_OVERVIEW:
     return new CDirectoryNodeOverview(strName, pParent);
   case NODE_TYPE_GENRE:
-    return new CDirectoryNodeGenre(strName, pParent);
   case NODE_TYPE_COUNTRY:
-    return new CDirectoryNodeCountry(strName, pParent);
   case NODE_TYPE_SETS:
-    return new CDirectoryNodeSets(strName, pParent);
   case NODE_TYPE_TAGS:
-    return new CDirectoryNodeTags(strName, pParent);
   case NODE_TYPE_YEAR:
-    return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_ACTOR:
-    return new CDirectoryNodeActor(strName, pParent);
   case NODE_TYPE_DIRECTOR:
-    return new CDirectoryNodeDirector(strName, pParent);
+  case NODE_TYPE_STUDIO:
+  case NODE_TYPE_MUSICVIDEOS_ALBUM:
+    return new CDirectoryNodeGrouped(Type, strName, pParent);
   case NODE_TYPE_TITLE_MOVIES:
     return new CDirectoryNodeTitleMovies(strName, pParent);
   case NODE_TYPE_TITLE_TVSHOWS:
@@ -150,16 +138,12 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedMovies(strName,pParent);
   case NODE_TYPE_RECENTLY_ADDED_EPISODES:
     return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
-  case NODE_TYPE_STUDIO:
-    return new CDirectoryNodeStudio(strName,pParent);
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW:
     return new CDirectoryNodeMusicVideosOverview(strName,pParent);
   case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
     return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     return new CDirectoryNodeTitleMusicVideos(strName,pParent);
-  case NODE_TYPE_MUSICVIDEOS_ALBUM:
-    return new CDirectoryNodeMusicVideoAlbum(strName,pParent);
   default:
     break;
   }

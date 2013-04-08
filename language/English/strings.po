@@ -9283,7 +9283,10 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr ""
 
-#empty string with id 20418
+#: xbmc/playlists/SmartPlayList.cpp
+msgctxt "#20418"
+msgid "Writers"
+msgstr ""
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#20419"
@@ -9943,7 +9946,13 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr ""
 
-#empty strings from id 21458 to 21459
+msgctxt "#21458"
+msgid "Group by"
+msgstr ""
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr ""
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#21460"
