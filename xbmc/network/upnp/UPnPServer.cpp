@@ -894,8 +894,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       itemsall.Append(items);
       items.Clear();
 
-      // TODO - set proper base url for this
-      if (!database.GetEpisodesByWhere("videodb://tvshows/0/", "", items, false)) {
+      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", "", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
