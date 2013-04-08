@@ -175,8 +175,10 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
   CSingleLock lock (m_cs);
   bInCache = false;
 
+  CStdString strPath(strFile);
+  URIUtils::RemoveSlashAtEnd(strPath);
   CStdString storedPath;
-  URIUtils::GetDirectory(strFile, storedPath);
+  URIUtils::GetDirectory(strPath, storedPath);
   URIUtils::RemoveSlashAtEnd(storedPath);
 
   ciCache i = m_cache.find(storedPath);
