@@ -18,6 +18,11 @@
  *
  */
 
+//FIXME - after eden - make that one nicer somehow...
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#include "system.h" //for HAS_SKIN_TOUCHED
+#endif
+
 #include "network/Network.h"
 #include "GUISettings.h"
 #include <limits.h>
