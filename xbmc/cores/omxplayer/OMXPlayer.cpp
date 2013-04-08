@@ -3268,6 +3268,9 @@ void COMXPlayer::FlushBuffers(bool queued, double pts, bool accurate)
       m_av_clock.Discontinuity(pts);
     UpdatePlayState(0);
   }
+  // let clock know the new time so progress bar updates immediately
+  if(startpts != DVD_NOPTS_VALUE)
+    m_av_clock.OMXMediaTime(startpts);
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
