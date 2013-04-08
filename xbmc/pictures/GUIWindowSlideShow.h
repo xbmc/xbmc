@@ -101,6 +101,7 @@ private:
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
                 SORT_METHOD method = SORT_METHOD_LABEL,
                 SortOrder order = SortOrderAscending);
+  bool PlayVideo();
   void RenderPause();
   void RenderErrorMessage();
   void Rotate(float fAngle, bool immediate = false);
@@ -108,6 +109,7 @@ private:
   void ZoomRelative(float fZoom, bool immediate = false);
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
+  CStdString GetPicturePath(CFileItem *item);
   int  GetNextSlide();
 
   void AnnouncePlayerPlay(const CFileItemPtr& item);
