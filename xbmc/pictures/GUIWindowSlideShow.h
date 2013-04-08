@@ -104,6 +104,7 @@ private:
                 SORT_METHOD method = SORT_METHOD_LABEL,
                 SortOrder order = SortOrderAscending);
   bool PlayVideo();
+  CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
   void Rotate(float fAngle, bool immediate = false);

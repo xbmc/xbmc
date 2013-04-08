@@ -1069,6 +1069,14 @@ bool CGUIWindowSlideShow::PlayVideo()
   return false;
 }
 
+CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNumber) const
+{
+  if (m_bSlideShow && !m_bPause && !m_slides->Get(iSlideNumber)->IsVideo())
+    return CSettings::Get().GetBool("slideshow.displayeffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE;
+  else
+    return CSlideShowPic::EFFECT_NO_TIMEOUT;
+}
+
 void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize)
 {
   if (pTexture)
@@ -1094,10 +1102,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
     }
     else
     {
-      if (m_bSlideShow)
-        m_Image[iPic].SetTexture(iSlideNumber, pTexture, CSettings::Get().GetBool("slideshow.displayeffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
-      else
-        m_Image[iPic].SetTexture(iSlideNumber, pTexture, CSlideShowPic::EFFECT_NO_TIMEOUT);
+      m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
       m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
 
       m_Image[iPic].m_bIsComic = false;
