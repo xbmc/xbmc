@@ -639,6 +639,8 @@ void CGUIWindowManager::FrameMove()
   vector<CGUIWindow *> dialogs = m_activeDialogs;
   for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
     (*it)->FrameMove();
+
+  g_infoManager.m_AVInfoValid = false;
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
