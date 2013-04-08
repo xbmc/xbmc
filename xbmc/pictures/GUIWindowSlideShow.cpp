@@ -492,7 +492,12 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // if we're reloading current image
   if (m_bReloadImage)
   {
-    if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic && !m_slides->Get(m_iCurrentSlide)->IsVideo())
+    if (m_bWaitForNextPic || m_slides->Get(m_iCurrentSlide)->IsVideo())
+    {
+      // not reload current if we already wait the next or curent one is video thumb.
+      m_bReloadImage = false;
+    }
+    else if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
     { // reload the image if we need to
       CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_iZoomFactor);
       // first, our maximal size for this zoom level
