@@ -615,10 +615,15 @@ int CGUIWindowSlideShow::GetNextSlide()
 {
   if (m_slides->Size() <= 1)
     return m_iCurrentSlide;
-  if (m_bSlideShow || m_iDirection >= 0)
-    return (m_iCurrentSlide + 1) % m_slides->Size();
-
-  return (m_iCurrentSlide - 1 + m_slides->Size()) % m_slides->Size();
+  int step = (m_bSlideShow && !m_bPause) || m_iDirection >= 0 ? 1 : -1;
+  int nextSlide = (m_iCurrentSlide + step + m_slides->Size()) % m_slides->Size();
+  while (nextSlide != m_iCurrentSlide)
+  {
+    if (!m_slides->Get(nextSlide)->HasProperty("unplayable"))
+      return nextSlide;
+    nextSlide = (nextSlide + step + m_slides->Size()) % m_slides->Size();
+  }
+  return m_iCurrentSlide;
 }
 
 EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
