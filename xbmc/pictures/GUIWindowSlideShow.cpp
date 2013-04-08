@@ -121,7 +121,7 @@ void CBackgroundPicLoader::Process()
               bFullSize = true;
           }
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, m_strFileName, texture, bFullSize);
         m_isLoading = false;
       }
     }
@@ -1067,18 +1067,18 @@ bool CGUIWindowSlideShow::PlayVideo()
   return false;
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize)
 {
   if (pTexture)
   {
     // set the pic's texture + size etc.
     CSingleLock lock(m_slideSection);
-    if (iSlideNumber >= m_slides->Size())
+    if (iSlideNumber >= m_slides->Size() || GetPicturePath(m_slides->Get(iSlideNumber).get()) != strFileName)
     { // throw this away - we must have cleared the slideshow while we were still loading
       delete pTexture;
       return;
     }
-    CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides->Get(iSlideNumber)->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "Finished background loading slot %d, %d: %s", iPic, iSlideNumber, m_slides->Get(iSlideNumber)->GetPath().c_str());
     if (m_bReloadImage)
     {
       if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
@@ -1110,6 +1110,9 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pT
         }
       }
     }
+  }
+  else if (iSlideNumber >= m_slides->Size() || GetPicturePath(m_slides->Get(iSlideNumber).get()) != strFileName)
+  { // Failed to load image. and not match values calling LoadPic, then something is changed, ignore.
   }
   else
   { // Failed to load image.  What should be done??

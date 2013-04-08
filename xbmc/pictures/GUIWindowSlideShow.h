@@ -89,7 +89,7 @@ public:
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
   virtual void OnDeinitWindow(int nextWindowID);
-  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize);
+  void OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
