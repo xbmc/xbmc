@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="system">
+    <category id="videoscreen">
+      <group id="1">
+        <setting id="videoscreen.screen">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.resolution">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

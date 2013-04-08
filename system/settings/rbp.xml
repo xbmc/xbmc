@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings><section id="system">
+    <category id="videoscreen">
+      <group id="1">
+        <setting id="videoscreen.screen">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+    <category id="audiooutput">
+      <group id="1">
+        <setting id="audiooutput.mode">
+          <default>2</default> <!-- AUDIO_HDMI -->
+        </setting>
+        <setting id="audiooutput.passthroughaac">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.multichannellpcm">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.truehdpassthrough">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.dtshdpassthrough">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="2">
+        <visible>false</visible>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.guisoundmode">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
