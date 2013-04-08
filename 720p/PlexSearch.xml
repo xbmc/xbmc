@@ -6,6 +6,7 @@
 	<controls>
 		<include>BGGrainy</include>
 		<include>SlideshowDimmed</include>
+		<!-- ViewsSearch.xml -->
 		<include>SearchMain</include>
 		<include>Grid</include>
 	</controls>
