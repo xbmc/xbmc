@@ -4236,7 +4236,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
     m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
 
-    g_settings.m_videoNeedsUpdate = 63;
+    CMediaSettings::Get().SetVideoNeedsUpdate(63);
     g_settings.Save();
   }
   if (iVersion < 64)

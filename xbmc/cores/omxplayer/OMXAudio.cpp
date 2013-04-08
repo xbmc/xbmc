@@ -25,6 +25,7 @@
 #endif
 
 #include "OMXAudio.h"
+#include "Application.h"
 #include "utils/log.h"
 
 #define CLASSNAME "COMXAudio"
@@ -33,7 +34,6 @@
 
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 

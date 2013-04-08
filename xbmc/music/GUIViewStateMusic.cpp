@@ -24,7 +24,6 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "Util.h"
@@ -58,7 +57,7 @@ CStdString CGUIViewStateWindowMusic::GetLockType()
 
 CStdString CGUIViewStateWindowMusic::GetExtensions()
 {
-  return g_settings.m_musicExtensions;
+  return g_advancedSettings.m_musicExtensions;
 }
 
 VECSOURCES& CGUIViewStateWindowMusic::GetSources()

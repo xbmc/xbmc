@@ -20,8 +20,8 @@
 
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
-#include "settings/Settings.h"
 #include "resource.h"
+#include "guilib/gui3d.h"
 #include "settings/DisplaySettings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"

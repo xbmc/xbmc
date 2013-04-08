@@ -35,6 +35,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -138,7 +139,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         if (!g_partyModeManager.IsEnabled())
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, !(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC)));
-          g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
+          CMediaSettings::Get().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC));
           g_settings.Save();
           UpdateButtons();
           Refresh();
@@ -188,7 +189,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
           g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        g_settings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL;
+        CMediaSettings::Get().SetMusicPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
 
         UpdateButtons();

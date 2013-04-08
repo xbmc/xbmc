@@ -23,6 +23,7 @@
 
 #include "WinSystemEGL.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"

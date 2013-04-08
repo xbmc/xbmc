@@ -23,7 +23,6 @@
 #include "ListItem.h"
 #include "PlayList.h"
 #include "PlayListPlayer.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -74,7 +73,7 @@ namespace XBMCAddon
       if (!item.empty())
       {
         // set fullscreen or windowed
-        g_settings.m_bStartVideoWindowed = windowed;
+        CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
         // force a playercore before playing
         g_application.m_eForcedNextPlayer = playerCore;
@@ -102,7 +101,7 @@ namespace XBMCAddon
       TRACE;
       DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
-      g_settings.m_bStartVideoWindowed = windowed;
+      CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
@@ -120,7 +119,7 @@ namespace XBMCAddon
       if (playlist != NULL)
       {
         // set fullscreen or windowed
-        g_settings.m_bStartVideoWindowed = windowed;
+        CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
         // force a playercore before playing
         g_application.m_eForcedNextPlayer = playerCore;

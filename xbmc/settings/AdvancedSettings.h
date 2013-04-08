@@ -365,6 +365,16 @@ class CAdvancedSettings : public ISettingsHandler
     bool m_initialized;
 
     void SetDebugMode(bool debug);
+
+    // runtime settings which cannot be set from advancedsettings.xml
+    CStdString m_pictureExtensions;
+    CStdString m_musicExtensions;
+    CStdString m_videoExtensions;
+    CStdString m_discStubExtensions;
+
+    CStdString m_logFolder;
+
+    CStdString m_userAgent;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

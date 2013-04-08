@@ -1446,10 +1446,10 @@ void CAMLPlayer::Process()
       GetStatus();
 
       // restore mute setting.
-      SetMute(g_settings.m_bMute);
+      SetMute(g_application.IsMuted());
 
       // restore system volume setting.
-      SetVolume(g_settings.m_fVolumeLevel);
+      SetVolume(g_application.GetVolume(false));
 
       // the default staturation is to high, drop it
       SetVideoSaturation(110);
