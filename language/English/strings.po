@@ -10131,7 +10131,19 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr ""
 
-#empty strings from id 21844 to 21859
+#empty strings from id 21844 to 21856
+
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr ""
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr ""
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr ""
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -10206,7 +10218,7 @@ msgid "Date created"
 msgstr ""
 
 msgctxt "#21878"
-msgid "Copyright flag"
+msgid "Urgency"
 msgstr ""
 
 msgctxt "#21879"

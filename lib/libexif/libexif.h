@@ -67,7 +67,7 @@ typedef struct {
   char Country[MAX_IPTC_STRING];
   char TransmissionReference[MAX_IPTC_STRING];
   char Date[MAX_IPTC_STRING];
-  char Copyright[MAX_IPTC_STRING];
+  char Urgency[MAX_IPTC_STRING];
   char ReferenceService[MAX_IPTC_STRING];
   char CountryCode[MAX_IPTC_STRING];
   char TimeCreated[MAX_IPTC_STRING];
