@@ -278,7 +278,7 @@
 			<control type="group" id="200">
 				<posx>270</posx>
 				<posy>5</posy>
-				<defaultcontrol always="true">702</defaultcontrol>
+				<defaultcontrol always="true">19101</defaultcontrol>
 				<visible allowhiddenfocus="true">ControlGroup(200).HasFocus</visible>
 				<!-- language track -->
 				<control type="image">
@@ -287,45 +287,31 @@
 					<width>30</width>
 					<height>23</height>
 					<texture>b-audio.png</texture>
-					<visible>!Control.HasFocus(701)</visible>
+					<visible>!Control.HasFocus(19101)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
-				<control type="button" id="701">
+				<control type="button"  id="19101">
 					<posy>15</posy>
 					<posx>0</posx>
 					<width>30</width>
 					<height>23</height>
 					<texturefocus>b-audio.png</texturefocus>
 					<texturenofocus>b-audio.png</texturenofocus>
-					<onleft>703</onleft>
+					<onleft>19102</onleft>
 					<onright>702</onright>
 					<onup>300</onup>
-					<ondown>701</ondown>
+					<ondown>19101</ondown>
 					<onclick>Skin.ToggleSetting(showfrenchaudio)</onclick>
-					<visible allowhiddenfocus="true">Control.HasFocus(701)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(19101)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
-				<!-- TO DELETE, JUST AN EXAMPLE -->
-				<control type="label">
+				<control type="label" id="19111">
 					<posy>24</posy>
 					<posx>50</posx>
 					<width>200</width>
 					<align>left</align>
 					<font>Condensed-18</font>
-					<label>$VAR[AudioLanguage]</label>
 					<textcolor>FF666666</textcolor>
-					<visible>!Control.HasFocus(701)</visible>
-				</control>
-				<control type="label">
-					<posy>24</posy>
-					<posx>50</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<!--><label>$INFO[Player.Time]</label>-->
-					<label>$VAR[AudioLanguage]</label>
-					<textcolor>white</textcolor>
-					<visible>Control.HasFocus(701)</visible>
 				</control>
 				<!-- play/pause -->
 				<control type="image">
@@ -354,8 +340,8 @@
 					<texturefocus>b-pause2.png</texturefocus>
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 					<alttexturefocus>b-play2.png</alttexturefocus>
-					<onleft>701</onleft>
-					<onright>703</onright>
+					<onleft>19101</onleft>
+					<onright>19102</onright>
 					<onup>300</onup>
 					<ondown>702</ondown>
 					<onclick>PlayerControl(Play)</onclick>
@@ -369,10 +355,10 @@
 					<width>33</width>
 					<height>24</height>
 					<texture>b-subtitles.png</texture>
-					<visible>!Control.HasFocus(703)</visible>
+					<visible>!Control.HasFocus(19102)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
-				<control type="button" id="703">
+				<control type="button" id="19102">
 					<posy>15</posy>
 					<posx>530</posx>
 					<width>33</width>
@@ -380,35 +366,20 @@
 					<texturefocus>b-subtitles.png</texturefocus>
 					<texturenofocus>b-subtitles.png</texturenofocus>
 					<onleft>702</onleft>
-					<onright>701</onright>
+					<onright>19101</onright>
 					<onup>300</onup>
-					<ondown>703</ondown>
+					<ondown>19102</ondown>
 					<onclick>Skin.ToggleSetting(showfrenchsub)</onclick>
-					<visible allowhiddenfocus="true">Control.HasFocus(703)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(19102)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
-				<!-- TO DELETE, JUST AN EXAMPLE -->
-				<control type="label">
+				<control type="label" id="19112">
 					<posy>24</posy>
 					<posx>580</posx>
 					<width>200</width>
 					<align>left</align>
 					<font>Condensed-18</font>
-					<!--><label>$INFO[Player.Time]</label>-->
-					<label>$VAR[SubtitleLanguage]</label>
 					<textcolor>FF666666</textcolor>
-					<visible>!Control.HasFocus(703)</visible>
-				</control>
-				<control type="label">
-					<posy>24</posy>
-					<posx>580</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<!--><label>$INFO[Player.Time]</label>-->
-					<label>$VAR[SubtitleLanguage]</label>
-					<textcolor>white</textcolor>
-					<visible>Control.HasFocus(703)</visible>
 				</control>
 			</control>
 			<!-- buttons second stage -->
