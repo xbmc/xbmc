@@ -623,6 +623,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
+    // as there's no library://music support, manually add playlists and music
+    // video nodes
+    if (items.GetPath() == "musicdb://") {
+      CFileItemPtr playlists(new CFileItem("special://musicplaylists/", true));
+      playlists->SetLabel(g_localizeStrings.Get(136));
+      items.Add(playlists);
+
+      CVideoDatabase database;
+      database.Open();
+      if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
+          CFileItemPtr mvideos(new CFileItem("videodb://3/", true));
+          mvideos->SetLabel(g_localizeStrings.Get(20389));
+          items.Add(mvideos);
+      }
+    }
+
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed
@@ -661,10 +677,15 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     // we will reuse this ThumbLoader for all items
     NPT_Reference<CThumbLoader> thumb_loader;
 
-    if (URIUtils::IsVideoDb(items.GetPath()) || items.GetPath().Left(15) == "library://video") {
+    if (URIUtils::IsVideoDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "library://video") ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/video/") {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
-    else if (URIUtils::IsMusicDb(items.GetPath())) {
+    else if (URIUtils::IsMusicDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/music/") {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
     if (!thumb_loader.IsNull()) {
