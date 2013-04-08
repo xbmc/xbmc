@@ -1081,7 +1081,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
     CLog::Log(LOGDEBUG, "Finished background loading slot %d, %d: %s", iPic, iSlideNumber, m_slides->Get(iSlideNumber)->GetPath().c_str());
     if (m_bReloadImage)
     {
-      if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
+      if (!m_Image[m_iCurrentPic].IsLoaded() || m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
       { // wrong image (ie we finished loading the next image, not the current image)
         delete pTexture;
         return;
