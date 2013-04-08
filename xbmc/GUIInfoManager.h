@@ -33,6 +33,7 @@
 #include "XBDateTime.h"
 #include "utils/Observer.h"
 #include "interfaces/info/SkinVariable.h"
+#include "cores/IPlayer.h"
 
 #include <list>
 #include <map>
@@ -790,6 +791,7 @@ public:
   CTemperature GetGPUTemperature();
 
   void UpdateFPS();
+  void UpdateAVInfo();
   inline float GetFPS() const { return m_fps; };
 
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
@@ -827,6 +829,9 @@ public:
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<int, bool>& map);
+
+  bool m_AVInfoValid;
+
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -895,8 +900,6 @@ protected:
   // Current playing stuff
   CFileItem* m_currentFile;
   CStdString m_currentMovieThumb;
-  unsigned int m_lastMusicBitrateTime;
-  unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
 
   // fan stuff
@@ -931,6 +934,9 @@ protected:
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
   int m_libraryHasMovieSets;
+
+  SPlayerVideoStreamInfo m_videoInfo;
+  SPlayerAudioStreamInfo m_audioInfo;
 
   CCriticalSection m_critInfo;
 };
