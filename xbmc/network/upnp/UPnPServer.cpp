@@ -674,10 +674,15 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     // we will reuse this ThumbLoader for all items
     NPT_Reference<CThumbLoader> thumb_loader;
 
-    if (URIUtils::IsVideoDb(items.GetPath()) || items.GetPath().Left(15) == "library://video") {
+    if (URIUtils::IsVideoDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "library://video") ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/video/")) {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
-    else if (URIUtils::IsMusicDb(items.GetPath())) {
+    else if (URIUtils::IsMusicDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/music/")) {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
     if (!thumb_loader.IsNull()) {
