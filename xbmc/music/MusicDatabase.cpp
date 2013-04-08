@@ -44,6 +44,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
+#include "settings/MediaSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
@@ -3679,7 +3680,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("DROP TABLE thumb");
 
-    g_settings.m_musicNeedsUpdate = 27;
+    CMediaSettings::Get().SetMusicNeedsUpdate(27);
     g_settings.Save();
   }
 

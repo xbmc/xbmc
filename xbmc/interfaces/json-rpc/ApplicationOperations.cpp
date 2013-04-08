@@ -54,7 +54,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITran
   bool up = false;
   if (parameterObject["volume"].isInteger())
   {
-    int oldVolume = g_application.GetVolume();
+    int oldVolume = (int)g_application.GetVolume();
     int volume = (int)parameterObject["volume"].asInteger();
   
     g_application.SetVolume((float)volume, true);

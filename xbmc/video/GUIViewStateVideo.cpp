@@ -29,7 +29,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
@@ -45,7 +44,7 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
 
 CStdString CGUIViewStateWindowVideo::GetExtensions()
 {
-  return g_settings.m_videoExtensions;
+  return g_advancedSettings.m_videoExtensions;
 }
 
 int CGUIViewStateWindowVideo::GetPlaylist()
@@ -437,7 +436,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   //  Setup shares we want to have
   m_sources.clear();
   CFileItemList items;
-  if (g_settings.m_bMyVideoNavFlatten)
+  if (g_guiSettings.GetBool("myvideos.flatten"))
     CDirectory::GetDirectory("library://video_flat/", items, "");
   else
     CDirectory::GetDirectory("library://video/", items, "");

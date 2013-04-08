@@ -29,6 +29,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -1097,8 +1098,8 @@ void CPVRClients::LoadCurrentChannelSettings(void)
       CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = loadedChannelSettings.m_ViewMode;
 
       g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = g_settings.m_fZoomAmount;
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = g_settings.m_fPixelRatio;
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = CDisplaySettings::Get().GetZoomAmount();
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = CDisplaySettings::Get().GetPixelRatio();
     }
 
     /* only change the subtitle stream, if it's different */

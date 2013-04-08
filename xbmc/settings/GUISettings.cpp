@@ -89,6 +89,18 @@ using namespace PVR;
 #endif
 #endif
 
+#define DEFAULT_WEB_INTERFACE "webinterface.default"
+
+#ifdef MID
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#else  // MID
+#if defined(TARGET_DARWIN) || defined(_WIN32) || defined(TARGET_RASPBERRY_PI)
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
+#define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
+#endif // MID
+
 struct sortsettings
 {
   bool operator()(const CSetting* pSetting1, const CSetting* pSetting2)
@@ -807,6 +819,11 @@ void CGUISettings::Initialize()
   AddBool(vid, "myvideos.replacelabels", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
+  AddSeparator(NULL, "myvideos.sep1");
+  AddInt(NULL, "myvideos.startwindow", 0, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, 1, WINDOW_VIDEO_NAV, SPIN_CONTROL_INT);
+  AddBool(NULL, "myvideos.stackvideos", 0, false);
+  AddBool(NULL, "myvideos.flatten", 0, false);
+
   CSettingsCategory* sub = AddCategory(SETTINGS_VIDEOS, "subtitles", 287);
   AddString(sub, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
@@ -956,6 +973,14 @@ void CGUISettings::Initialize()
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
   AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  AddInt(NULL, "mymusic.startwindow", 0, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, 1, WINDOW_MUSIC_NAV, SPIN_CONTROL_INT);
+  AddBool(NULL, "mymusic.songthumbinvis", 0, false);
+  AddString(NULL, "mymusic.defaultlibview", 0, "", BUTTON_CONTROL_STANDARD);
+
+  AddBool(NULL, "general.addonautoupdate", 0, true);
+  AddBool(NULL, "general.addonnotifications", 0, true);
+  AddBool(NULL, "general.addonforeignfilter", 0, false);
 
   // tv settings (access over TV menu from home window)
   AddGroup(SETTINGS_PVR, 19180);

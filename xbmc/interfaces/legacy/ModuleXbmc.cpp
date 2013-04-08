@@ -36,6 +36,7 @@
 #include "XTimeUtils.h"
 #endif
 #include "guilib/LocalizeStrings.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIAudioManager.h"
@@ -45,7 +46,6 @@
 #include "utils/Crc32.h"
 #include "FileItem.h"
 #include "LangInfo.h"
-#include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "URL.h"
@@ -409,11 +409,11 @@ namespace XBMCAddon
       TRACE;
       String result;
       if (strcmpi(mediaType, "video") == 0)
-        result = g_settings.m_videoExtensions;
+        result = g_advancedSettings.m_videoExtensions;
       else if (strcmpi(mediaType, "music") == 0)
-        result = g_settings.m_musicExtensions;
+        result = g_advancedSettings.m_musicExtensions;
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_settings.m_pictureExtensions;
+        result = g_advancedSettings.m_pictureExtensions;
 
       // TODO:
       //    else

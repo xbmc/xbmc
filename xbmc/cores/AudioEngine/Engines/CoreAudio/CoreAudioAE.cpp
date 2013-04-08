@@ -24,9 +24,9 @@
 
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
+#include "Application.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/EndianSwap.h"

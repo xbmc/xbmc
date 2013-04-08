@@ -32,6 +32,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include <vector>
 #undef BOOL
