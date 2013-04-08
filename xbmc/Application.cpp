@@ -3412,7 +3412,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    return false;
 }
 
-bool CApplication::ExecuteInputAction(CAction action)
+bool CApplication::ExecuteInputAction(const CAction &action)
 {
   bool bResult = false;
 
