@@ -21,9 +21,6 @@
 
 #include <set>
 
-#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
-#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
-
 #include "settings/ISettingsHandler.h"
 #include "settings/ISubSettings.h"
 #include "threads/CriticalSection.h"
