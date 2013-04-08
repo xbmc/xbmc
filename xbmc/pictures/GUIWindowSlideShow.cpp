@@ -412,6 +412,14 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
 
   bool bSlideShow = m_bSlideShow && !m_bPause && !m_bPlayingVideo;
+  if (bSlideShow && m_slides->Get(m_iCurrentSlide)->HasProperty("unplayable"))
+  {
+    m_iNextSlide    = GetNextSlide();
+    if (m_iCurrentSlide == m_iNextSlide)
+      return;
+    m_iCurrentSlide = m_iNextSlide;
+    m_iNextSlide    = GetNextSlide();
+  }
 
   if (m_bErrorMessage)
   { // we have an error when loading either the current or next picture
