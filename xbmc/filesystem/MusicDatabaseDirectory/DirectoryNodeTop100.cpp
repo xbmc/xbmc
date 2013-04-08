@@ -26,8 +26,8 @@ using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 Node Top100Children[] = {
-                          { NODE_TYPE_SONG_TOP100,  1, 10504 },
-                          { NODE_TYPE_ALBUM_TOP100, 2, 10505 },
+                          { NODE_TYPE_SONG_TOP100,  "songs",   10504 },
+                          { NODE_TYPE_ALBUM_TOP100, "albums",  10505 },
                         };
 
 CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)
@@ -39,7 +39,7 @@ CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectory
 NODE_TYPE CDirectoryNodeTop100::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
-    if (GetID() == Top100Children[i].id)
+    if (GetName().Equals(Top100Children[i].id.c_str()))
       return Top100Children[i].node;
 
   return NODE_TYPE_NONE;
@@ -48,7 +48,7 @@ NODE_TYPE CDirectoryNodeTop100::GetChildType() const
 CStdString CDirectoryNodeTop100::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
-    if (GetID() == Top100Children[i].id)
+    if (GetName().Equals(Top100Children[i].id.c_str()))
       return g_localizeStrings.Get(Top100Children[i].label);
   return "";
 }
@@ -59,7 +59,7 @@ bool CDirectoryNodeTop100::GetContent(CFileItemList& items) const
   {
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(Top100Children[i].label)));
     CStdString strDir;
-    strDir.Format("%ld/", Top100Children[i].id);
+    strDir.Format("%s/", Top100Children[i].id);
     pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     items.Add(pItem);

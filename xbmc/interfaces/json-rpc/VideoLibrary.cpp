@@ -40,7 +40,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://1/2/");
+  videoUrl.FromString("videodb://movies/titles/");
   int genreID = -1, year = -1, setID = 0;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -106,7 +106,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSets(const CStdString &method, ITransportL
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES))
+  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES))
     return InternalError;
 
   HandleFileItemList("setid", false, "sets", items, parameterObject, result);
@@ -130,7 +130,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITran
 
   // Get movies from the set
   CFileItemList items;
-  if (!videodatabase.GetMoviesNav("videodb://1/2/", items, -1, -1, -1, -1, -1, -1, id))
+  if (!videodatabase.GetMoviesNav("videodb://movies/titles/", items, -1, -1, -1, -1, -1, -1, id))
     return InternalError;
 
   return GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"], videodatabase, true);
@@ -148,7 +148,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://2/2/");
+  videoUrl.FromString("videodb://tvshows/titles/");
   int genreID = -1, year = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -223,7 +223,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
 
   CStdString strPath;
-  strPath.Format("videodb://2/2/%i/", tvshowID);
+  strPath.Format("videodb://tvshows/titles/%i/", tvshowID);
   CFileItemList items;
   if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
@@ -247,7 +247,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
   int season   = (int)parameterObject["season"].asInteger();
   
   CStdString strPath;
-  strPath.Format("videodb://2/2/%i/%i/", tvshowID, season);
+  strPath.Format("videodb://tvshows/titles/%i/%i/", tvshowID, season);
 
   CVideoDbUrl videoUrl;
   videoUrl.FromString(strPath);
@@ -306,7 +306,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITrans
   if (tvshowid <= 0)
     tvshowid = videodatabase.GetTvShowForEpisode(id);
 
-  CStdString basePath; basePath.Format("videodb://2/2/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
+  CStdString basePath; basePath.Format("videodb://tvshows/titles/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
   HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["properties"], result, false);
@@ -325,7 +325,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://3/2/");
+  videoUrl.FromString("videodb://musicvideos/titles/");
   int genreID = -1, year = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artist"))
@@ -381,7 +381,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, I
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMoviesNav("videodb://4/", items))
+  if (!videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items))
     return InternalError;
 
   return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase, true);
@@ -394,7 +394,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method,
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedEpisodesNav("videodb://5/", items))
+  if (!videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", items))
     return InternalError;
 
   return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, true);
@@ -407,7 +407,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &meth
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMusicVideosNav("videodb://6/", items))
+  if (!videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", items))
     return InternalError;
 
   return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase, true);
@@ -424,19 +424,19 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLaye
   if (media.Equals("movie"))
   {
     idContent = VIDEODB_CONTENT_MOVIES;
-    strPath += "1";
+    strPath += "movies";
   }
   else if (media.Equals("tvshow"))
   {
     idContent = VIDEODB_CONTENT_TVSHOWS;
-    strPath += "2";
+    strPath += "tvshows";
   }
   else if (media.Equals("musicvideo"))
   {
     idContent = VIDEODB_CONTENT_MUSICVIDEOS;
-    strPath += "3";
+    strPath += "musicvideos";
   }
-  strPath += "/1/";
+  strPath += "/genres/";
  
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

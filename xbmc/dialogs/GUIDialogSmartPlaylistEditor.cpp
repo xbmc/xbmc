@@ -43,6 +43,8 @@ using namespace std;
 #define CONTROL_LIMIT           17
 #define CONTROL_ORDER_FIELD     18
 #define CONTROL_ORDER_DIRECTION 19
+#define CONTROL_GROUP_BY        23
+#define CONTROL_GROUP_MIXED     24
 
 #define CONTROL_OK              20
 #define CONTROL_CANCEL          21
@@ -118,6 +120,10 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnOrderDirection();
       else if (iControl == CONTROL_TYPE)
         OnType();
+      else if (iControl == CONTROL_GROUP_BY)
+        OnGroupBy();
+      else if (iControl == CONTROL_GROUP_MIXED)
+        OnGroupMixed();
       else
         return CGUIDialog::OnMessage(message);
       return true;
@@ -241,6 +247,24 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
   UpdateButtons();
 }
 
+void CGUIDialogSmartPlaylistEditor::OnGroupBy()
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_GROUP_BY);
+  OnMessage(msg);
+  m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup((Field)msg.GetParam1()));
+
+  if (m_playlist.IsGroupMixed() && !CSmartPlaylistRule::CanGroupMix((Field)msg.GetParam1()))
+    m_playlist.SetGroupMixed(false);
+
+  UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnGroupMixed()
+{
+  m_playlist.SetGroupMixed(!m_playlist.IsGroupMixed());
+  UpdateButtons();
+}
+
 void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 {
   CONTROL_ENABLE(CONTROL_OK); // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
@@ -304,6 +328,43 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
     OnMessage(msg);
   }
+
+  // setup groups
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_BY);
+    OnMessage(msg);
+  }
+  vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup());
+  for (unsigned int i = 0; i < groups.size(); i++)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_BY, groups[i]);
+    msg.SetLabel(CSmartPlaylistRule::GetLocalizedGroup(groups[i]));
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_BY, currentGroup);
+    OnMessage(msg);
+  }
+
+  if (m_playlist.IsGroupMixed())
+    CONTROL_SELECT(CONTROL_GROUP_MIXED);
+  else
+    CONTROL_DESELECT(CONTROL_GROUP_MIXED);
+
+  // disable the group controls if there's no group
+  // or only one group which can't be mixed
+  if (groups.size() == 0 ||
+     (groups.size() == 1 && !CSmartPlaylistRule::CanGroupMix(groups[0])))
+  {
+    CONTROL_DISABLE(CONTROL_GROUP_BY);
+    CONTROL_DISABLE(CONTROL_GROUP_MIXED);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_GROUP_BY);
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GROUP_MIXED, CSmartPlaylistRule::CanGroupMix(currentGroup));
+  }
 }
 
 void CGUIDialogSmartPlaylistEditor::UpdateRuleControlButtons()
@@ -353,7 +414,6 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
 void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 {
   m_cancelled = false;
-  UpdateButtons();
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
@@ -401,6 +461,7 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_TYPE, type);
   m_playlist.SetType(ConvertType(type));
+  UpdateButtons();
 
   CGUIDialog::OnInitWindow();
 }

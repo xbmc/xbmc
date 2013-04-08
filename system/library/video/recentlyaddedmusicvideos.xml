@@ -2,5 +2,5 @@
 <node order="12" type="folder" visible="Library.HasContent(MusicVideos)">
   <label>20390</label>
   <icon>DefaultRecentlyAddedMusicVideos.png</icon>
-  <path>videodb://6</path>
+  <path>videodb://recentlyaddedmusicvideos/</path>
 </node>

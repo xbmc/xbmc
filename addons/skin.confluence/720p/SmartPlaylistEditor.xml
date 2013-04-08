@@ -4,7 +4,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>240</posx>
-		<posy>45</posy>
+		<posy>22</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -16,7 +16,7 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>800</width>
-				<height>630</height>
+				<height>675</height>
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
@@ -270,7 +270,7 @@
 				<onright>19</onright>
 				<onleft>19</onleft>
 				<onup>17</onup>
-				<ondown>9001</ondown>
+				<ondown>23</ondown>
 			</control>
 
 			<control type="togglebutton" id="19">
@@ -290,20 +290,53 @@
 				<onright>18</onright>
 				<onleft>18</onleft>
 				<onup>17</onup>
+				<ondown>24</ondown>
+			</control>
+
+			<control type="spincontrolex" id="23">
+				<posx>30</posx>
+				<posy>530</posy>
+				<width>550</width>
+				<height>40</height>
+				<label>21458</label>
+				<font>font13</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<onright>24</onright>
+				<onleft>24</onleft>
+				<onup>18</onup>
 				<ondown>9001</ondown>
 			</control>
+
+			<control type="radiobutton" id="24">
+				<posx>590</posx>
+				<posy>530</posy>
+				<width>180</width>
+				<height>40</height>
+				<font>font12_title</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<label>21459</label>
+				<onright>23</onright>
+				<onleft>23</onleft>
+				<onup>19</onup>
+				<ondown>9001</ondown>
+			</control>
+      
 			<control type="group" id="9001">
 				<control type="button" id="20">
 					<description>Ok Button</description>
 					<posx>195</posx>
-					<posy>560</posy>
+					<posy>605</posy>
 					<width>200</width>
 					<height>40</height>
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>186</label>
 					<font>font12_title</font>
-					<onup>18</onup>
+					<onup>23</onup>
 					<onleft>21</onleft>
 					<onright>21</onright>
 					<ondown>22</ondown>
@@ -311,14 +344,14 @@
 				<control type="button" id="21">
 					<description>Cancel Button</description>
 					<posx>405</posx>
-					<posy>560</posy>
+					<posy>605</posy>
 					<width>200</width>
 					<height>40</height>
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>222</label>
 					<font>font12_title</font>
-					<onup>18</onup>
+					<onup>23</onup>
 					<onleft>20</onleft>
 					<onright>20</onright>
 					<ondown>22</ondown>

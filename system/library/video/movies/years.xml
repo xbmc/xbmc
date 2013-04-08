@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="3" type="folder">
+<node order="3" type="filter">
   <label>562</label>
-  <path>videodb://1/3</path>
   <icon>DefaultYear.png</icon>
+  <content>movies</content>
+  <group>years</group>
 </node>
 

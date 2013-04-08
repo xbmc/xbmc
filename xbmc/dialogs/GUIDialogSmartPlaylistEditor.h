@@ -51,6 +51,8 @@ protected:
   void OnType();
   void OnOrder();
   void OnOrderDirection();
+  void OnGroupBy();
+  void OnGroupMixed();
   void OnOK();
   void OnCancel();
   void UpdateButtons();

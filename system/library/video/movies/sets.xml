@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="7" type="folder" visible="Library.HasContent(MovieSets)">
+<node order="7" type="filter" visible="Library.HasContent(MovieSets)">
   <label>20434</label>
-  <path>videodb://1/7</path>
   <icon>DefaultSets.png</icon>
+  <content>movies</content>
+  <group>sets</group>
 </node>
