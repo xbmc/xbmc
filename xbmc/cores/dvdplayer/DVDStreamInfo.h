@@ -97,9 +97,13 @@ public:
   bool operator==(const CDVDStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDVDStreamInfo& right)      { return !Equal(right, true);}
 
-  //'CDVDStreamInfo::operator=' should return 'CDVDStreamInfo &'.
-  // Is this intended? It looks more like a copy,cf. extradata, what happens if info = info?
-  void operator=(const CDVDStreamInfo& right)       { Assign(right, true); }
+  CDVDStreamInfo& operator=(const CDVDStreamInfo& right)
+  {
+    if (this != &right)
+      Assign(right, true);
+
+    return *this; 
+  }
 
   bool operator==(const CDemuxStream& right)      { return Equal( CDVDStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDVDStreamInfo(right, true), true);}
