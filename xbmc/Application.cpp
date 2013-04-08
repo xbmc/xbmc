@@ -797,7 +797,7 @@ bool CApplication::Create()
   }
 
   // restore AE's previous volume state
-  SetHardwareVolume(g_settings.m_fVolumeLevel);
+  CAEFactory::SetScaledVolume(g_settings.m_fVolumeLevel);
   CAEFactory::SetMute     (g_settings.m_bMute);
   CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
@@ -2975,7 +2975,7 @@ bool CApplication::OnAction(const CAction &action)
     {
       if (g_settings.m_bMute)
         UnMute();
-      float volume = g_settings.m_fVolumeLevel;
+      float volume = CAEFactory::GetScaledVolume();
 // Android has steps based on the max available volume level
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
@@ -5410,31 +5410,14 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
   if(isPercentage)
     hardwareVolume /= 100.0f;
 
-  SetHardwareVolume(hardwareVolume);
+  CAEFactory::SetScaledVolume(hardwareVolume);
   VolumeChanged();
-}
-
-void CApplication::SetHardwareVolume(float hardwareVolume)
-{
-  hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  g_settings.m_fVolumeLevel = hardwareVolume;
-
-  float value = 0.0f;
-  if (hardwareVolume > VOLUME_MINIMUM)
-  {
-    float dB = CAEUtil::PercentToGain(hardwareVolume);
-    value = CAEUtil::GainToScale(dB);
-  }
-  if (value >= 0.99f)
-    value = 1.0f;
-
-  CAEFactory::SetVolume(value);
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume to a percentage
-  return (int)(g_settings.m_fVolumeLevel * 100.0f);
+  return (int)(CAEFactory::GetScaledVolume() * 100.0f);
 }
 
 void CApplication::VolumeChanged() const

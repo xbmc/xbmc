@@ -946,7 +946,14 @@ bool CSoftAE::IsSuspended()
 
 float CSoftAE::GetVolume()
 {
-  return m_volume;
+  if (!m_sinkHandlesVolume)
+    return m_volume;
+
+  CSharedLock sinkLock(m_sinkLock);
+  if (m_sink)
+    return m_volume = m_sink->GetVolume();
+  else
+    return m_volume;
 }
 
 void CSoftAE::SetVolume(float volume)

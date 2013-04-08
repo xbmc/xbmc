@@ -53,6 +53,14 @@ public:
   static bool IsMuted();
   static float GetVolume();
   static void SetVolume(const float volume);
+  /*! \brief Gets the current linear scaled volume
+   \return the current volume linear scaled from 0.0f to 1.0f
+   */
+  static float GetScaledVolume();
+  /*! \brief Sets the current linear scaled volume
+   \param linear scaled volume from 0.0f to 1.0f
+   */
+  static void SetScaledVolume(const float volume);
   static void Shutdown();
   static IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
     unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
