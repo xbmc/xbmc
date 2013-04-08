@@ -87,6 +87,12 @@ public:
                                          NPT_UInt32                    /*requested_count*/,
                                          const char*                   /*sort_criteria*/, 
                                          const PLT_HttpRequestContext& /*context*/) = 0;
+    virtual NPT_Result OnUpdateObject(PLT_ActionReference&             /*action*/,
+                                      const char*                      /*object_id*/,
+                                      NPT_Map<NPT_String,NPT_String>&  /*current_vals*/,
+                                      NPT_Map<NPT_String,NPT_String>&  /*new_vals*/,
+                                      const PLT_HttpRequestContext&    /*context*/) = 0;
+
     virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&              /*request*/,
                                           const NPT_HttpRequestContext& /*context*/,
                                           NPT_HttpResponse&             /*response*/) = 0;
@@ -111,6 +117,7 @@ public:
     // class methods
     static NPT_Result ParseBrowseFlag(const char* str, BrowseFlags& flag);
     static NPT_Result ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list);
+    static NPT_Result ParseTagList(const NPT_String& updates, NPT_Map<NPT_String,NPT_String>& tags);
 
     // constructor
     PLT_MediaServer(const char*  friendly_name,
@@ -154,6 +161,8 @@ protected:
     virtual NPT_Result OnBrowse(PLT_ActionReference&          action, 
                                 const PLT_HttpRequestContext& context);
     virtual NPT_Result OnSearch(PLT_ActionReference&          action, 
+                                const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnUpdate(PLT_ActionReference&          action,
                                 const PLT_HttpRequestContext& context);
 
     // overridable methods
