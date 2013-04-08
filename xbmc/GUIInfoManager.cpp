@@ -649,6 +649,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
+                                  { "isvideo",          SLIDESHOW_ISVIDEO },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
 
 const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
@@ -2303,6 +2304,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     bReturn = (slideShow && slideShow->InSlideShow());
+  }
+  else if (condition == SLIDESHOW_ISVIDEO)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
   }
   else if (g_application.IsPlaying())
   {
