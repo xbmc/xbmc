@@ -19,8 +19,11 @@
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "Util.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+#include "guilib/GUIWindowManager.h"
+#include "xbmc/GUIUserMessages.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -906,6 +909,142 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
   }
 
   return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::OnUpdateObject
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
+                            const char*                      object_id,
+                            NPT_Map<NPT_String,NPT_String>&  current_vals,
+                            NPT_Map<NPT_String,NPT_String>&  new_vals,
+                            const PLT_HttpRequestContext&    context)
+{
+    CStdString path = CURL::Decode(object_id);
+    CFileItem updated;
+    updated.SetPath(path);
+    CLog::Log(LOGINFO, "UPnP: OnUpdateObject: %s from %s", path.c_str(),
+                       (const char*) context.GetRemoteAddress().GetIpAddress().ToString());
+
+    NPT_String playCount, position;
+    int err;
+    const char* msg = NULL;
+    bool updatelisting(false);
+
+    // we pause eventing as multiple announces may happen in this operation
+    PLT_Service* service = NULL;
+    NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), error);
+    NPT_CHECK_LABEL(service->PauseEventing(), error);
+
+    if (updated.IsVideoDb()) {
+        CVideoDatabase db;
+        NPT_CHECK_LABEL(!db.Open(), error);
+
+        // must first determine type of file from object id
+        VIDEODATABASEDIRECTORY::CQueryParams params;
+        VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(path.c_str(), params);
+
+        int id = -1;
+        VIDEODB_CONTENT_TYPE content_type;
+        if ((id = params.GetMovieId()) >= 0 )
+            content_type = VIDEODB_CONTENT_MOVIES;
+        else if ((id = params.GetEpisodeId()) >= 0 )
+            content_type = VIDEODB_CONTENT_EPISODES;
+        else if ((id = params.GetMVideoId()) >= 0 )
+            content_type = VIDEODB_CONTENT_MUSICVIDEOS;
+        else {
+            err = 701;
+            msg = "No such object";
+            goto failure;
+        }
+
+        CStdString file_path;
+        db.GetFilePathById(id, file_path, content_type);
+        CVideoInfoTag tag;
+        db.LoadVideoInfo(file_path, tag);
+        updated.SetFromVideoInfoTag(tag);
+        CLog::Log(LOGINFO, "UPNP: Translated to %s", file_path.c_str());
+
+        position = new_vals["lastPlaybackPosition"];
+        playCount = new_vals["playCount"];
+
+        if (!position.IsEmpty()
+              && position.Compare(current_vals["lastPlaybackPosition"]) != 0) {
+            NPT_UInt32 resume;
+            NPT_CHECK_LABEL(position.ToInteger32(resume), args);
+
+            if (resume <= 0)
+                db.ClearBookMarksOfFile(file_path, CBookmark::RESUME);
+            else {
+                CBookmark bookmark;
+                bookmark.timeInSeconds = resume;
+                bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
+
+                db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
+            }
+            if (playCount.IsEmpty()) {
+              CVariant data;
+              data["id"] = updated.GetVideoInfoTag()->m_iDbId;
+              data["type"] = updated.GetVideoInfoTag()->m_type;
+              ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+            }
+            updatelisting = true;
+        }
+
+        if (!playCount.IsEmpty()
+              && playCount.Compare(current_vals["playCount"]) != 0) {
+
+            NPT_UInt32 count;
+            NPT_CHECK_LABEL(playCount.ToInteger32(count), args);
+            db.SetPlayCount(updated, count);
+            updatelisting = true;
+        }
+
+        // we must load the changed settings before propagating to local UI
+        if (updatelisting) {
+            db.LoadVideoInfo(file_path, tag);
+            updated.SetFromVideoInfoTag(tag);
+        }
+
+    } else if (updated.IsMusicDb()) {
+      //TODO implement this
+
+    } else {
+        err = 701;
+        msg = "No such object";
+        goto failure;
+    }
+
+    if (updatelisting) {
+        updated.SetPath(path);
+        if (updated.IsVideoDb())
+             CUtil::DeleteVideoDatabaseDirectoryCache();
+        else if (updated.IsMusicDb())
+             CUtil::DeleteMusicDatabaseDirectoryCache();
+
+        CFileItemPtr msgItem(new CFileItem(updated));
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem);
+        g_windowManager.SendThreadMessage(message);
+    }
+
+    NPT_CHECK_LABEL(service->PauseEventing(false), error);
+    return NPT_SUCCESS;
+
+args:
+    err = 402;
+    msg = "Invalid args";
+    goto failure;
+
+error:
+    err = 501;
+    msg = "Internal error";
+
+failure:
+    CLog::Log(LOGERROR, "UPNP: OnUpdateObject failed with err %d:%s", err, msg);
+    action->SetError(err, msg);
+    service->PauseEventing(false);
+    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
