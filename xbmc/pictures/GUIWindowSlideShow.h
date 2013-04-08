@@ -43,6 +43,8 @@ public:
   void Create(CGUIWindowSlideShow *pCallback);
   void LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight);
   bool IsLoading() { return m_isLoading;};
+  int SlideNumber() const { return m_iSlideNumber; }
+  int Pic() const { return m_iPic; }
 
 private:
   void Process();
