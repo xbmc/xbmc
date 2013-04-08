@@ -47,6 +47,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
 
+#include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 
 #ifdef TARGET_WINDOWS
@@ -75,6 +76,7 @@
 using namespace PVR;
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace PERIPHERALS;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("DelayedMessage")
 {
@@ -828,6 +830,21 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       CGUIWindowLoginScreen::LoadProfile(pMsg->dwParam1);
       break;
     }
+    case TMSG_CECTOGGLESTATE:
+    {
+      *((bool*)pMsg->lpVoid) = g_peripherals.ToggleDeviceState(STATE_SWITCH_TOGGLE);
+      break;
+    }
+    case TMSG_CECACTIVATESOURCE:
+    {
+      *((bool*)pMsg->lpVoid) = g_peripherals.ToggleDeviceState(STATE_ACTIVATE_SOURCE);
+      break;
+    }
+    case TMSG_CECSTANDBY:
+    {
+      *((bool*)pMsg->lpVoid) = g_peripherals.ToggleDeviceState(STATE_STANDBY);
+      break;
+    }
     case TMSG_START_ANDROID_ACTIVITY:
     {
 #if defined(TARGET_ANDROID)
@@ -1350,4 +1367,37 @@ void CApplicationMessenger::StartAndroidActivity(const vector<CStdString> &param
   ThreadMessage tMsg = {TMSG_START_ANDROID_ACTIVITY};
   tMsg.params = params;
   SendMessage(tMsg, false);
+}
+
+bool CApplicationMessenger::CECToggleState()
+{
+  bool result;
+
+  ThreadMessage tMsg = {TMSG_CECTOGGLESTATE};
+  tMsg.lpVoid = (void*)&result;
+  SendMessage(tMsg, false);
+
+  return result;
+}
+
+bool CApplicationMessenger::CECActivateSource()
+{
+  bool result;
+
+  ThreadMessage tMsg = {TMSG_CECACTIVATESOURCE};
+  tMsg.lpVoid = (void*)&result;
+  SendMessage(tMsg, false);
+
+  return result;
+}
+
+bool CApplicationMessenger::CECStandby()
+{
+  bool result;
+
+  ThreadMessage tMsg = {TMSG_CECSTANDBY};
+  tMsg.lpVoid = (void*)&result;
+  SendMessage(tMsg, false);
+
+  return result;
 }
