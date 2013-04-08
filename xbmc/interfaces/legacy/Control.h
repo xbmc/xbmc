@@ -123,6 +123,7 @@ namespace XBMCAddon
       virtual void setColorDiffuse(const char* hexString) DECL_UNIMP("Control");
       virtual void selectItem(long item) DECL_UNIMP("Control");
       virtual void scroll(long id) DECL_UNIMP("Control");
+      virtual long maxScroll() DECL_UNIMP("Control");
       virtual bool isSelected() DECL_UNIMP("Control");
       virtual Control* getSpinControl() DECL_UNIMP("Control");
       virtual long getSpace() DECL_UNIMP("Control");
@@ -948,7 +949,7 @@ namespace XBMCAddon
 
       // scroll() Method
       /**
-       * scroll(position) -- Scrolls to the given position.
+       * scroll(position) -- Scrolls to the given position (row).
        * 
        * id           : integer - position to scroll to.
        * 
@@ -956,6 +957,15 @@ namespace XBMCAddon
        *   - self.textbox.scroll(10)
        */
       virtual void scroll(long id) throw(UnimplementedException);
+
+      // maxScroll() method
+      /**
+       * maxScroll() -- Returns the max offset which can be scroll to.
+       * 
+       * example:
+       *   - self.textbox.scroll(self.textbox.maxScroll()) # scroll to end
+       */
+      virtual long maxScroll() throw (UnimplementedException);
 
 #ifndef SWIG
       std::string strFont;

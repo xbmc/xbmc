@@ -62,6 +62,7 @@ public:
   CStdString GetLabel(int info) const;
 
   void Scroll(unsigned int offset);
+  unsigned int MaxScroll() const;
 
 protected:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);

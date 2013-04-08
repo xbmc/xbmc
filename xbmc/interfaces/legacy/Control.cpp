@@ -155,6 +155,11 @@ namespace XBMCAddon
       static_cast<CGUITextBox*>(pGUIControl)->Scroll((int)position);
     }
 
+    long ControlTextBox::size() throw (UnimplementedException)
+    {
+      return static_cast<CGUITextBox*>(pGUIControl)->GetRows();
+    }
+
     CGUIControl* ControlTextBox::Create() throw (WindowException)
     {
       // create textbox
