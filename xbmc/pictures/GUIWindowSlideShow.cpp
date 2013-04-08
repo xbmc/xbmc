@@ -555,7 +555,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
 
   // Check if we should be transistioning immediately
-  if (m_bLoadNextPic)
+  if (m_bLoadNextPic && m_Image[m_iCurrentPic].IsLoaded())
   {
     CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_slides->Get(m_iNextSlide)->GetPath().c_str());
     if (m_Image[m_iCurrentPic].StartTransistion())
@@ -586,15 +586,37 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
 
   // check if we should swap images now
-  if (m_Image[m_iCurrentPic].IsFinished())
+  if (m_Image[m_iCurrentPic].IsFinished() || (m_bLoadNextPic && !m_Image[m_iCurrentPic].IsLoaded()))
   {
-    CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_slides->Get(m_iNextSlide)->GetPath().c_str());
-    m_Image[m_iCurrentPic].Close();
-    if (m_Image[1 - m_iCurrentPic].IsLoaded())
-      m_iCurrentPic = 1 - m_iCurrentPic;
+    m_bLoadNextPic = false;
+    if (m_Image[m_iCurrentPic].IsFinished())
+      CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_slides->Get(m_iNextSlide)->GetPath().c_str());
+    else
+      // what if it's bg loading?
+      CLog::Log(LOGDEBUG, "Image %s is not loaded, switching to %s", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_slides->Get(m_iNextSlide)->GetPath().c_str());
 
-    m_iCurrentSlide = m_iNextSlide;
-    m_iNextSlide    = GetNextSlide();
+    if (m_Image[m_iCurrentPic].IsFinished() && m_iCurrentSlide == m_iNextSlide && m_Image[m_iCurrentPic].SlideNumber() == m_iNextSlide)
+      m_Image[m_iCurrentPic].Reset(GetDisplayEffect(m_iCurrentSlide));
+    else
+    {
+      if (m_Image[m_iCurrentPic].IsLoaded())
+        m_Image[m_iCurrentPic].Reset(GetDisplayEffect(m_iCurrentSlide));
+      else
+        m_Image[m_iCurrentPic].Close();
+
+      if ((m_Image[1 - m_iCurrentPic].IsLoaded() && m_Image[1 - m_iCurrentPic].SlideNumber() == m_iNextSlide) ||
+          (m_pBackgroundLoader->IsLoading() && m_pBackgroundLoader->SlideNumber() == m_iNextSlide && m_pBackgroundLoader->Pic() == 1 - m_iCurrentPic))
+      {
+        m_iCurrentPic = 1 - m_iCurrentPic;
+      }
+      else
+      {
+        m_Image[1 - m_iCurrentPic].Close();
+        m_iCurrentPic = 1 - m_iCurrentPic;
+      }
+      m_iCurrentSlide = m_iNextSlide;
+      m_iNextSlide    = GetNextSlide();
+    }
     AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
 
     m_iZoomFactor = 1;
