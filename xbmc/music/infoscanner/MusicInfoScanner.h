@@ -28,6 +28,18 @@ class CGUIDialogProgressBarHandle;
 
 namespace MUSIC_INFO
 {
+/*! \brief return values from the information lookup functions
+ */
+enum INFO_RET 
+{ 
+  INFO_CANCELLED,
+  INFO_ERROR,
+  INFO_NOT_NEEDED,
+  INFO_HAVE_ALREADY,
+  INFO_NOT_FOUND,
+  INFO_ADDED 
+};
+
 class CMusicInfoScanner : CThread, public IRunnable
 {
 public:
@@ -97,6 +109,15 @@ public:
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
+
+  /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
+    Given a list of FileItems, scan in the tags for those FileItems
+   and populate a new FileItemList with the files that were successfully scanned.
+   Any files which couldn't be scanned (no/bad tags) are discarded in the process.
+   \param items [in] list of FileItems to scan
+   \param scannedItems [in] list to populate with the scannedItems
+   */
+  INFO_RET ScanTags(const CFileItemList& items, CFileItemList& scannedItems);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
 
