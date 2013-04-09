@@ -576,8 +576,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // render the current image
   if (m_Image[m_iCurrentPic].IsLoaded())
   {
-    m_Image[m_iCurrentPic].SetInSlideshow(m_bSlideShow);
-    m_Image[m_iCurrentPic].Pause(m_bPause);
+    m_Image[m_iCurrentPic].SetInSlideshow(bSlideShow);
+    m_Image[m_iCurrentPic].Pause(!bSlideShow);
     m_Image[m_iCurrentPic].Process(currentTime, regions);
   }
 
@@ -597,9 +597,16 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   {
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
+      // first time render the next image, make sure using current display effect.
+      if (!m_Image[1 - m_iCurrentPic].IsStarted())
+      {
+        CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iNextSlide);
+        if (m_Image[1 - m_iCurrentPic].IsDisplayEffectNeedChange(effect))
+          m_Image[1 - m_iCurrentPic].Reset(effect);
+      }
       // set the appropriate transistion time
       m_Image[1 - m_iCurrentPic].SetTransistionTime(0, m_Image[m_iCurrentPic].GetTransistionTime(1));
-      m_Image[1 - m_iCurrentPic].Pause(m_bPause);
+      m_Image[1 - m_iCurrentPic].Pause(!m_bSlideShow || m_bPause || m_slides->Get(m_iNextSlide)->IsVideo());
       m_Image[1 - m_iCurrentPic].Process(currentTime, regions);
     }
     else // next pic isn't loaded.  We should hang around if it is in progress
@@ -831,6 +838,12 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     {
       m_bSlideShow = true;
       m_bPause = false;
+      if (m_Image[m_iCurrentPic].IsLoaded())
+      {
+        CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iCurrentSlide);
+        if (m_Image[m_iCurrentPic].IsDisplayEffectNeedChange(effect))
+          m_Image[m_iCurrentPic].Reset(effect);
+      }
       AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
     }
     else if (action.GetID() == ACTION_PAUSE)
