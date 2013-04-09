@@ -338,14 +338,17 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     if (item->GetPath() == strPicture)
     {
       m_iDirection = 1;
-      if (IsActive())
-        m_iNextSlide = i;
-      else
+      if (!m_Image[m_iCurrentPic].IsLoaded() && (!m_pBackgroundLoader || !m_pBackgroundLoader->IsLoading()))
       {
+        // will trigger loading current slide when next Process call.
         m_iCurrentSlide = i;
         m_iNextSlide = GetNextSlide();
       }
-      m_bLoadNextPic = true;
+      else
+      {
+        m_iNextSlide = i;
+        m_bLoadNextPic = true;
+      }
       return ;
     }
   }
