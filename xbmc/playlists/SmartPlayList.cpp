@@ -1446,8 +1446,8 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encodi
   if (groupElement != NULL && groupElement->FirstChild() != NULL)
   {
     m_group = groupElement->FirstChild()->ValueStr();
-    if (groupElement->QueryBoolAttribute("mixed", &m_groupMixed) != TIXML_SUCCESS)
-      m_groupMixed = false;
+    const char* mixed = groupElement->Attribute("mixed");
+    m_groupMixed = mixed != NULL && StringUtils::EqualsNoCase(mixed, "true");
   }
 
   // now any limits
