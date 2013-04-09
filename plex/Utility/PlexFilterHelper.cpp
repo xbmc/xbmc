@@ -21,6 +21,7 @@
 #include "GUI/GUIDialogFilterSort.h"
 #include "GUIWindowManager.h"
 
+using namespace XFILE;
 
 typedef pair<CStdString, CPlexFilterPtr> name_filter_pair;
 
@@ -59,8 +60,6 @@ bool CPlexFilterHelper::ApplyFilter(int ctrlId)
   {
     if (pr.second->GetControlID() == ctrlId)
     {
-      dprintf("Clicked filter %s", pr.second->GetFilterName().c_str());
-
       if (pr.second->IsBooleanType())
       {
         /* Clear this filter first */
@@ -96,11 +95,11 @@ bool CPlexFilterHelper::FetchFilterSortList(const CStdString& url, const CStdStr
   filterUrl = PlexUtils::AppendPathToURL(url, filterSort);
   filterUrl = PlexUtils::AppendPathToURL(filterUrl, typeStr);
 
-  CPlexDirectory fdir(true, false);
+  CPlexDirectory fdir;
   return fdir.GetDirectory(filterUrl, list);
 }
 
-void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, int type)
+void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, EPlexDirectoryType type)
 {
   CGUIControlGroupList *filterGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(FILTER_LIST);
   CGUIControlGroupList *sortGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(SORT_LIST);
@@ -144,7 +143,7 @@ void CPlexFilterHelper::BuildFilters(const CStdString& baseUrl, int type)
 
     newFilters[filterName] = filter;
     filterGroup->AddControl(filter->NewFilterControl(filter->IsBooleanType() ? radioButton : originalButton, FILTER_BUTTONS_START + i));
-    dprintf("FILTER: adding %s to filterGroup", filter->GetFilterName().c_str());
+    CLog::Log(LOGDEBUG, "CPlexFilterHelper::BuildFilters adding %s to filterGroup", filter->GetFilterName().c_str());
   }
 
   m_filters = newFilters;
@@ -205,7 +204,7 @@ void CPlexFilterHelper::ClearFilters()
 CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& secondary)
 {
   CFileItemList tmpItems;
-  CPlexDirectory dir(true, true);
+  CPlexDirectory dir;
   CStdString strDirectory(url_);
 
   secondary = false;

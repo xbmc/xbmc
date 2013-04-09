@@ -37,7 +37,7 @@ class CPlexFilterHelper
     CStdString GetRealDirectoryUrl(const CStdString& strDirectory, bool& secondary);
     void ClearFilters();
     bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
-    void BuildFilters(const CStdString& baseUrl, int type=1);
+    void BuildFilters(const CStdString& baseUrl, EPlexDirectoryType = PLEX_DIR_TYPE_UNKNOWN);
 
     bool ApplyFilter(int ctrlId);
     bool ApplySort(int ctrlId);
@@ -58,7 +58,7 @@ class CPlexFilterHelper
     CStdString m_appliedSort;
     bool m_sortDirectionAsc;
     CPlexFilterPtr m_openFilter;
-    int m_filterType;
+    EPlexDirectoryType m_filterType;
 
     CStdString m_sectionUrl;
     CStdString m_mapToSection;

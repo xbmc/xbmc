@@ -2,6 +2,8 @@
 #include "log.h"
 #include "PlexMediaServerQueue.h"
 #include "HTTP.h"
+#include "utils/log.h"
+#include "filesystem/CurlFile.h"
 
 PlexMediaServerQueue PlexMediaServerQueue::g_plexMediaServerQueue;
 
@@ -33,12 +35,12 @@ void PlexMediaServerQueue::Process()
       if (pair.second.find("X-Plex-Token") != string::npos && 
           pair.second.find(g_guiSettings.GetString("myplex.token")) == string::npos)
       {
-        dprintf("We're not going to send a status message, because it's a shared server.");
+        CLog::Log(LOGINFO, "CPlexMediaServerQueue::Process We're not going to send a status message, because it's a shared server.");
       }
       else
       {
         // Hit the Plex Media Server.
-        CCurlFile  http;
+        XFILE::CCurlFile  http;
         CStdString resp;
         
         if (pair.first == "PUT")

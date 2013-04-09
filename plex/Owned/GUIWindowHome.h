@@ -50,6 +50,19 @@
 
 class CGUIWindowHome;
 
+enum SectionTypes
+{
+  SECTION_TYPE_MOVIE,
+  SECTION_TYPE_SHOW,
+  SECTION_TYPE_ALBUM,
+  SECTION_TYPE_PHOTOS,
+  SECTION_TYPE_QUEUE,
+  SECTION_TYPE_GLOBAL_FANART,
+  SECTION_TYPE_CHANNEL_VIDEO,
+  SECTION_TYPE_CHANNEL_MUSIC,
+  SECTION_TYPE_CHANNEL_PHOTO
+};
+
 class CAuxFanLoadThread : public CThread
 {
   public:
@@ -63,44 +76,32 @@ typedef std::pair<int, CFileItemListPtr> contentListPair;
 
 class CPlexSectionLoadJob : public CJob
 {
-public:
-  CPlexSectionLoadJob(const CStdString& url, int contentType) :
-  CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
-  
-  bool DoWork()
-  {
-    
-    CPlexDirectory dir(true, false);
-    m_list->Clear();
-    return dir.GetDirectory(m_url, *m_list.get());
-  }
-  
-  int GetContentType() const { return m_contentType; }
-  CFileItemListPtr GetFileItemList() const { return m_list; }
-  CStdString GetUrl() const { return m_url; }
-  
-  virtual const char *GetType() const { return "sectionloader"; };
-  
-  /*
-  virtual bool operator==(const CJob* job) const
-  {
-    CPlexSectionLoadJob* ljob = (CPlexSectionLoadJob*)job;
-    if (ljob->m_url == m_url) return true;
-    return false;
-  }
-   */
-  
-  
-private:
-  CStdString m_url;
-  CFileItemListPtr m_list;
-  int m_contentType;
+  public:
+    CPlexSectionLoadJob(const CStdString& url, int contentType) :
+      CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
+
+    bool DoWork()
+    {
+
+      XFILE::CPlexDirectory dir;
+      m_list->Clear();
+      return dir.GetDirectory(m_url, *m_list.get());
+    }
+
+    int GetContentType() const { return m_contentType; }
+    CFileItemListPtr GetFileItemList() const { return m_list; }
+    CStdString GetUrl() const { return m_url; }
+
+  private:
+    CStdString m_url;
+    CFileItemListPtr m_list;
+    int m_contentType;
 };
 
 class CPlexSectionFanout : public IJobCallback
 {
   public:
-    CPlexSectionFanout(const CStdString& url, int sectionType);
+    CPlexSectionFanout(const CStdString& url, SectionTypes sectionType);
 
     std::vector<contentListPair> GetContentLists();
     CFileItemListPtr GetContentList(int type);
@@ -119,7 +120,7 @@ class CPlexSectionFanout : public IJobCallback
     CStdString m_url;
     boost::timer m_age;
     CCriticalSection m_critical;
-    int m_sectionType;
+    SectionTypes m_sectionType;
     std::vector<int> m_outstandingJobs;
   
     /* Thumb loaders, we pre-cache posters to make the fanouts quick and nice */
@@ -141,11 +142,12 @@ private:
   virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
+  static SectionTypes GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType);
   void HideAllLists();
   void RestoreSection();
-  void RefreshSection(const CStdString& url, int type);
+  void RefreshSection(const CStdString& url, SectionTypes type);
   void RefreshAllSections(bool force = true);
-  void AddSection(const CStdString& url, int sectionType);
+  void AddSection(const CStdString& url, SectionTypes sectionType);
   void RemoveSection(const CStdString& url);
   bool ShowSection(const CStdString& url);
   bool ShowCurrentSection();

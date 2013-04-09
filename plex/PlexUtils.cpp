@@ -164,7 +164,7 @@ string PlexUtils::GetHostName()
 bool PlexUtils::IsPlexMediaServer(const CStdString& strFile)
 {
   CURL url(strFile);
-  if (url.GetProtocol() == "plex")
+  if (url.GetProtocol() == "plexserver" || url.GetProtocol() == "plex")
     return true;
 
   // A stack can also come from the Plex Media Servers.

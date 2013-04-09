@@ -87,7 +87,7 @@ class PlexAsyncUrlResolver
     if (m_bStop == false)
     {
       CFileItemList list;
-      CPlexDirectory dir(true, false);
+      XFILE::CPlexDirectory dir;
 
       if (dir.GetDirectory(url, list))
       {
@@ -119,7 +119,7 @@ class PlexAsyncUrlResolver
       // FIXME, we should look at postHeaders as well.
       //
       CLog::Log(LOGNOTICE, "Found a POST URL, going to fetch %s", m_item.GetProperty("postURL").c_str());
-      CCurlFile curl;
+      XFILE::CCurlFile curl;
       curl.ClearCookies();
       if (curl.Get(m_item.GetProperty("postURL").asString(), body))
       {
@@ -142,7 +142,7 @@ class PlexAsyncUrlResolver
     if (m_bStop == false)
     {
       CFileItemList  fileItems;
-      CPlexDirectory plexDir(true, false);
+      XFILE::CPlexDirectory plexDir;
 
       plexDir.SetBody(body);
       if (plexDir.GetDirectory(url, fileItems))

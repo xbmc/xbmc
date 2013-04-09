@@ -56,6 +56,7 @@
 #include "PlexUtils.h"
 #include "pictures/Picture.h"
 #include "plex/Network/NetworkInterface.h"
+#include "filesystem/CurlFile.h"
 /* END PLEX */
 
 using namespace std;
@@ -1054,6 +1055,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   finalURL.SetOptions("");
 
   bool local = NetworkInterface::IsLocalAddress(finalURL.GetHostName());
-  return CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
+  //return XFILE::CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
+  return "";
 }
 /* END PLEX */

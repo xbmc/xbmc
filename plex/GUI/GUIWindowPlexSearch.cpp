@@ -47,6 +47,8 @@
 
 #define SEARCH_DELAY         750
 
+using namespace XFILE;
+
 ///////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
@@ -57,14 +59,14 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   , m_selectedItem(-1)
 {
   // Initialize results lists.
-  m_categoryResults[PLEX_METADATA_MOVIE] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_METADATA_SHOW] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_METADATA_EPISODE] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_METADATA_ARTIST] = Group(kMUSIC_LOADER);
-  m_categoryResults[PLEX_METADATA_ALBUM] = Group(kMUSIC_LOADER);
-  m_categoryResults[PLEX_METADATA_TRACK] = Group(kMUSIC_LOADER);
-  m_categoryResults[PLEX_METADATA_PERSON] = Group(kVIDEO_LOADER);
-  m_categoryResults[PLEX_METADATA_CLIP] = Group(kVIDEO_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_MOVIE] = Group(kVIDEO_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_SHOW] = Group(kVIDEO_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_EPISODE] = Group(kVIDEO_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_ARTIST] = Group(kMUSIC_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_ALBUM] = Group(kMUSIC_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_TRACK] = Group(kMUSIC_LOADER);
+// ? person?  m_categoryResults[CPlexDirectory::TYPE_PERSON] = Group(kVIDEO_LOADER);
+  m_categoryResults[PLEX_DIR_TYPE_CLIP] = Group(kVIDEO_LOADER);
   
   // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
   m_workerManager = new PlexContentWorkerManager();
@@ -236,7 +238,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       {
         // Get the item and the type.
         CFileItemPtr item = results->Get(i);
-        int type = item->GetProperty("typeNumber").asInteger();
+        EPlexDirectoryType type = item->GetPlexDirectoryType();
 
         // Add it to the correct "bucket".
         if (m_categoryResults.find(type) != m_categoryResults.end())

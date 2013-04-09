@@ -78,6 +78,7 @@
 #include "GUI/GUIDialogRating.h"
 #include "dialogs/GUIDialogCache.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "filesystem/CurlFile.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -93,6 +94,10 @@
 
 using namespace std;
 using namespace ADDON;
+
+/* PLEX */
+using namespace XFILE;
+/* END PLEX */
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -1324,7 +1329,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       CFileItemList fileItems;
       vector<CStdString> items;
-      CPlexDirectory plexDir(false);
+      CPlexDirectory plexDir;
 
       plexDir.GetDirectory(directory.GetPath(), fileItems);
       CGUIDialogPlexPluginSettings::ShowAndGetInput(pItem->GetPath(), plexDir.GetData());

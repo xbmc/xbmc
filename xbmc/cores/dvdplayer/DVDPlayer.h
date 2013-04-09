@@ -314,9 +314,9 @@ public:
   virtual int GetAudioStreamPlexID();
   virtual int GetPlexMediaPartID()
   {
-    PlexMediaPartPtr part = GetMediaPart();
+    CFileItemPtr part = GetMediaPart();
     if (part)
-      return part->id;
+      return part->GetProperty("id").asInteger();
 
     return -1;
   }
@@ -558,9 +558,9 @@ protected:
   bool         m_hidingSub;
   int          m_vobsubToDisplay;
 
-  PlexMediaPartPtr GetMediaPart()
+  CFileItemPtr GetMediaPart()
   {
-    PlexMediaPartPtr part;
+    CFileItemPtr part;
 
     if (m_itemWithDetails)
     {

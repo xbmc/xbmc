@@ -7,6 +7,10 @@
 
 #include <boost/foreach.hpp>
 
+#include "utils/log.h"
+
+using namespace XFILE;
+
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL)
 {
 }
@@ -60,7 +64,7 @@ CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uuid)
 CFileItemListPtr
 CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 {
-  CPlexDirectory dir(true, false);
+  CPlexDirectory dir;
   CURL url = m_server->BuildPlexURL(path);
   CFileItemList* list = new CFileItemList;
 

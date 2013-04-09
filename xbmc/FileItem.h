@@ -39,9 +39,14 @@
 
 /* PLEX */
 #include <boost/enable_shared_from_this.hpp>
-#include "PlexMediaPart.h"
+
 class CFileItem;
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
+class CFileItemList;
+typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
+
+#include "plex/PlexTypes.h"
 /* END PLEX */
 
 namespace MUSIC_INFO
@@ -395,8 +400,11 @@ public:
 
   /* PLEX */
   std::vector<CFileItemPtr> m_contextItems;
+
+  /* Video->Media->mediaParts->mediaPartStreams */
   std::vector<CFileItemPtr> m_mediaItems;
-  std::vector<PlexMediaPartPtr> m_mediaParts;
+  std::vector<CFileItemPtr> m_mediaParts;
+  std::vector<CFileItemPtr> m_mediaPartStreams;
 
   bool IsPlexMediaServer() const;
   bool IsRemoteSharedPlexMediaServerLibrary() const;
@@ -449,6 +457,9 @@ public:
   void MarkAsWatched();
   void MarkAsUnWatched();
 
+  EPlexDirectoryType GetPlexDirectoryType() const { return m_plexDirectoryType; }
+  void SetPlexDirectoryType(EPlexDirectoryType dirType) { m_plexDirectoryType = dirType; }
+
   /* END PLEX */
 
 private:
@@ -468,6 +479,7 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+  EPlexDirectoryType m_plexDirectoryType;
 
   /* PLEX */
 protected:

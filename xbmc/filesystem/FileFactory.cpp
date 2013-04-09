@@ -228,8 +228,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 
   if( g_application.getNetwork().IsAvailable() )
   {
-    if (strProtocol == "http" ||  strProtocol == "https")
-      return new CCurlFile();
+    if (strProtocol == "plexserver") return new CPlexFile();
+    else if (strProtocol == "http" ||  strProtocol == "https") return new CCurlFile();
     else if (strProtocol == "shout") return new CShoutcastFile();
     else if (strProtocol == "pipe") return new CPipeFile();
 #ifdef HAS_UPNP

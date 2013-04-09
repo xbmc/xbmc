@@ -44,7 +44,7 @@ class PlexContentPlayerMixin
         CFileItem* file = (CFileItem* )item.get();
     
         // Now see what to do with it.
-        string type = file->GetProperty("type").asString();
+        std::string type = file->GetProperty("type").asString();
         if (type == "show" || type == "person")
         {
           ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
@@ -61,7 +61,7 @@ class PlexContentPlayerMixin
           if (file->HasProperty("parentPath"))
           {
             // Get album.
-            CPlexDirectory plexDir;
+            XFILE::CPlexDirectory plexDir;
             plexDir.GetDirectory(file->GetProperty("parentPath").asString(), fileItems);
             
             for (int i=0; i < fileItems.Size(); ++i)
@@ -112,11 +112,11 @@ class PlexContentPlayerMixin
         }
         else if (type == "channel")
         {
-          if (file->GetPath().find("/video/") != string::npos)
+          if (file->GetPath().find("/video/") != std::string::npos)
             ActivateWindow(WINDOW_VIDEO_FILES, file->GetPath());
-          else if (file->GetPath().find("/music/") != string::npos)
+          else if (file->GetPath().find("/music/") != std::string::npos)
             ActivateWindow(WINDOW_MUSIC_FILES, file->GetPath());
-          else if (file->GetPath().find("/applications/") != string::npos)
+          else if (file->GetPath().find("/applications/") != std::string::npos)
             ActivateWindow(WINDOW_PROGRAMS, file->GetPath());
           else
             ActivateWindow(WINDOW_PICTURES, file->GetPath());
@@ -175,6 +175,7 @@ class PlexContentPlayerMixin
   
   static bool ProcessMediaChoice(CFileItem* file)
   {
+#if 0
     // If there is more than one media item, allow picking which one.
      if (file->m_mediaItems.size() > 1)
      {
@@ -188,7 +189,7 @@ class PlexContentPlayerMixin
        {
          CFileItemList   fileItems;
          CContextButtons choices;
-         CPlexDirectory  mediaChoices;
+         XFILE::CPlexDirectory  mediaChoices;
          
          for (size_t i=0; i < file->m_mediaItems.size(); i++)
          {
@@ -231,8 +232,8 @@ class PlexContentPlayerMixin
          if (isLibraryItem == false)
          {
            // Try to pick something that's equal or less than the preferred resolution.
-           map<int, int> qualityMap;
-           vector<int> qualities;
+           std::map<int, int> qualityMap;
+           std::vector<int> qualities;
            int sd = MEDIA_QUALITY_SD;
            
            for (size_t i=0; i < file->m_mediaItems.size(); i++)
@@ -271,6 +272,7 @@ class PlexContentPlayerMixin
        }
      }
      
+#endif
      return true;
   }
   

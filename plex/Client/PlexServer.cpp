@@ -250,7 +250,7 @@ CURL
 CPlexServer::BuildPlexURL(const CStdString& path) const
 {
   CURL url;
-  url.SetProtocol("plex");
+  url.SetProtocol("plexserver");
   url.SetHostName(m_uuid);
   url.SetFileName(path);
   return url.Get();

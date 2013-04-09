@@ -1567,7 +1567,7 @@ JSONRPC_STATUS CPlayerOperations::PlexPlayMedia(const CStdString &method, ITrans
     return InvalidParams;
 
   CFileItemList fileItems;
-  CPlexDirectory plexDir;
+  XFILE::CPlexDirectory plexDir;
   plexDir.GetDirectory(path, fileItems);
   int itemIndex = -1;
 

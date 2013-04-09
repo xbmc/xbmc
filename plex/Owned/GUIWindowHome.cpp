@@ -94,7 +94,7 @@ using namespace boost;
 
 
 //////////////////////////////////////////////////////////////////////////////
-CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, int sectionType)
+CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
   : m_url(url), m_sectionType(sectionType)
 {
   Refresh();
@@ -140,7 +140,7 @@ CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 //////////////////////////////////////////////////////////////////////////////
 void CPlexSectionFanout::Refresh()
 {
-  CPlexDirectory dir(true, false);
+  CPlexDirectory dir;
 
   CSingleLock lk(m_critical);
   m_fileLists.clear();
@@ -165,9 +165,9 @@ void CPlexSectionFanout::Refresh()
     if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
       LoadSection(GetBestServerUrl("library/arts"), CONTENT_LIST_FANART);
   }
-  else if (m_sectionType == PLEX_METADATA_MIXED)
+  else if (m_sectionType == SECTION_TYPE_QUEUE)
   {
-/*    if (!g_advancedSettings.m_bHideFanouts)
+    /*if (!g_advancedSettings.m_bHideFanouts)
     {
       if (m_url.Find("queue") != -1)
         LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
@@ -190,7 +190,7 @@ void CPlexSectionFanout::Refresh()
       
       m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));
 
-      if (m_sectionType == PLEX_METADATA_MOVIE || m_sectionType == PLEX_METADATA_SHOW)
+      if (m_sectionType == SECTION_TYPE_MOVIE || m_sectionType == SECTION_TYPE_SHOW)
       {
         trueUrl = CURL(m_url);
         trueUrl.SetFileName(PlexUtils::AppendPathToURL(trueUrl.GetFileName(), "onDeck"));
@@ -261,13 +261,13 @@ void CPlexSectionFanout::Show()
 bool CPlexSectionFanout::NeedsRefresh()
 {
   int refreshTime = 5;
-  if (m_sectionType == PLEX_METADATA_ALBUM ||
-      m_sectionType == PLEX_METADATA_MIXED ||
-      (m_sectionType >= PLEX_METADATA_CHANNEL_VIDEO &&
-       m_sectionType <= PLEX_METADATA_CHANNEL_APPLICATION))
+  if (m_sectionType == SECTION_TYPE_ALBUM ||
+      m_sectionType == SECTION_TYPE_QUEUE ||
+      (m_sectionType >= SECTION_TYPE_CHANNEL_VIDEO &&
+       m_sectionType <= SECTION_TYPE_CHANNEL_PHOTO))
     refreshTime = 20;
 
-  if (m_sectionType == PLEX_METADATA_GLOBAL_IMAGES)
+  if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
     refreshTime = 100;
 
   CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:NeedsRefresh %s, age %f, refresh %s", m_url.c_str(), m_age.elapsed(), m_age.elapsed() > refreshTime ? "yes" : "no");
@@ -282,7 +282,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_gl
     m_auxLoadingThread = new CAuxFanLoadThread();
     m_auxLoadingThread->Create();
   }
-  AddSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
+  AddSection("global://art", SECTION_TYPE_GLOBAL_FANART);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -394,11 +394,11 @@ bool CGUIWindowHome::OnPopupMenu()
       bool updateFanOut = false;
       CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(item);
       CContextButtons buttons;
-      int type = (int)fileItem->GetProperty("typeNumber").asInteger();
+      EPlexDirectoryType type = (EPlexDirectoryType)fileItem->GetPlexDirectoryType();
 
-      if (type == PLEX_METADATA_EPISODE)
+      if (type == PLEX_DIR_TYPE_EPISODE)
         buttons.Add(CONTEXT_BUTTON_INFO, 20352);
-      else if (type == PLEX_METADATA_MOVIE)
+      else if (type == PLEX_DIR_TYPE_MOVIE)
         buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
       if (((fileItem->IsRemoteSharedPlexMediaServerLibrary() == false) &&
@@ -443,7 +443,8 @@ bool CGUIWindowHome::OnPopupMenu()
       if (updateFanOut)
       {
         CFileItemPtr item = GetCurrentListItem();
-        RefreshSection(item->GetProperty("sectionPath").asString(), item->GetProperty("typeNumber").asInteger());
+        RefreshSection(item->GetProperty("sectionPath").asString(),
+                       CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
       }
 
     }
@@ -492,7 +493,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         HideAllLists();
 
       if (m_lastSelectedItem == "Search")
-        RefreshSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
+        RefreshSection("global://art", SECTION_TYPE_GLOBAL_FANART);
 
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
         g_backgroundMusicPlayer.PlayElevatorMusic();
@@ -619,7 +620,8 @@ void CGUIWindowHome::UpdateSections()
     item->SetProperty("plex", 1);
     item->SetProperty("sectionPath", sectionItem->GetPath());
 
-    AddSection(sectionItem->GetPath(), (int)sectionItem->GetProperty("typeNumber").asInteger());
+    AddSection(sectionItem->GetPath(),
+               CGUIWindowHome::GetSectionTypeFromDirectoryType(sectionItem->GetPlexDirectoryType()));
 
     CStdString path("XBMC.ActivateWindow");
     if (sectionItem->GetProperty("type").asString() == "artist")
@@ -839,7 +841,7 @@ void CGUIWindowHome::HideAllLists()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::AddSection(const CStdString &url, int type)
+void CGUIWindowHome::AddSection(const CStdString &url, SectionTypes type)
 {
   if (m_sections.find(url) == m_sections.end())
   {
@@ -915,7 +917,7 @@ CFileItemListPtr CGUIWindowHome::GetContentListFromSection(const CStdString &url
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::RefreshSection(const CStdString &url, int type)
+void CGUIWindowHome::RefreshSection(const CStdString &url, SectionTypes type)
 {
   if (m_sections.find(url) != m_sections.end())
   {
@@ -1014,6 +1016,26 @@ void CGUIWindowHome::RestoreSection()
       }
       idx++;
     }
+  }
+}
+
+SectionTypes
+CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
+{
+  if (dirType == PLEX_DIR_TYPE_MOVIE)
+    return SECTION_TYPE_MOVIE;
+  else if (dirType == PLEX_DIR_TYPE_SHOW)
+    return SECTION_TYPE_SHOW;
+  else if (dirType == PLEX_DIR_TYPE_ALBUM)
+    return SECTION_TYPE_ALBUM;
+  else if (dirType == PLEX_DIR_TYPE_PHOTO)
+    return SECTION_TYPE_PHOTOS;
+  else if (dirType == PLEX_DIR_TYPE_ARTIST)
+    return SECTION_TYPE_ALBUM;
+  else
+  {
+    CLog::Log(LOGINFO, "CGUIWindowHome::GetSectionTypeFromDirectoryType not handling DirectoryType %d", (int)dirType);
+    return SECTION_TYPE_MOVIE;
   }
 }
 

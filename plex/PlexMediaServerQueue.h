@@ -15,6 +15,8 @@
 #include "URL.h"
 #include "Util.h"
 
+#include "PlexUtils.h"
+
 using namespace std;
 
 class PlexMediaServerQueue : public CThread
@@ -37,7 +39,7 @@ class PlexMediaServerQueue : public CThread
     if (identifier.size() > 0 && viewGroup.size() > 0 && rootURL.find(".plexapp.com") == string::npos)
     {
       string url = "/:/viewChange";
-      url = CPlexDirectory::ProcessUrl(rootURL, url, false);
+      url = PlexUtils::AppendPathToURL(rootURL, url);
       url = appendArgs(url, "identifier=" + identifier);
       url += "&viewGroup=" + viewGroup + 
              "&viewMode=" + boost::lexical_cast<string>(viewMode) + 
@@ -186,7 +188,7 @@ class PlexMediaServerQueue : public CThread
   string buildUrl(const CFileItemPtr& item, const string& url)
   {
     // Build the URL.
-    return CPlexDirectory::ProcessUrl(item->GetProperty("containerKey").asString(), url, false);
+    return PlexUtils::AppendPathToURL(item->GetProperty("containerKey").asString(), url);
   }
   
  private:

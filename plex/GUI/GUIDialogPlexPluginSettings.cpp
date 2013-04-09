@@ -39,6 +39,9 @@
 #define CONTROL_HEADING_LABEL           20
 #define CONTROL_START_CONTROL           100
 
+using namespace std;
+using namespace XFILE;
+
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexPluginSettings::Set(const CStdString& key, const CStdString& value)
 {

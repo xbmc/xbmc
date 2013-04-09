@@ -93,7 +93,7 @@ class PlexContentWorker
     if (m_cancelled == false)
     {
       // Get the results.
-      CPlexDirectory dir(true, false);
+      XFILE::CPlexDirectory dir;
       dir.GetDirectory(m_url, *m_results.get());
     }
 

@@ -4072,9 +4072,9 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 #else
         /* PLEX */
         int duration = 0;
-        if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->duration > 0)
+        if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->GetProperty("duration").asInteger() > 0)
         {
-          duration = item.m_mediaParts[i]->duration;
+          duration = item.m_mediaParts[i]->GetProperty("duration").asInteger();
         }
         /* END PLEX */
 #endif

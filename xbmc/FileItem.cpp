@@ -408,7 +408,6 @@ CFileItem::~CFileItem(void)
 
   /* PLEX */
   m_contextItems.clear();
-  m_mediaItems.clear();
   m_mediaParts.clear();
   /* END PLEX */
 }
@@ -552,7 +551,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
   m_mapProperties.clear();
   m_mapProperties = item.m_mapProperties;
-  m_mediaItems = item.m_mediaItems;
   m_mediaParts = item.m_mediaParts;
   /* END PLEX */
 
