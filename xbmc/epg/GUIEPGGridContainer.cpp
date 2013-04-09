@@ -1528,25 +1528,25 @@ void CGUIEPGGridContainer::ValidateOffset()
   if (!m_programmeLayout)
     return;
 
-  if (m_channelOffset > m_channels - m_channelsPerPage)
+  if (m_channelOffset > m_channels - m_channelsPerPage || m_channelScrollOffset > (m_channels - m_channelsPerPage) * m_channelHeight)
   {
     m_channelOffset = m_channels - m_channelsPerPage;
     m_channelScrollOffset = m_channelOffset * m_channelHeight;
   }
 
-  if (m_channelOffset < 0)
+  if (m_channelOffset < 0 || m_channelScrollOffset < 0)
   {
     m_channelOffset = 0;
     m_channelScrollOffset = 0;
   }
 
-  if (m_blockOffset > m_blocks - m_blocksPerPage)
+  if (m_blockOffset > m_blocks - m_blocksPerPage || m_programmeScrollOffset > (m_blocks - m_blocksPerPage) * m_blockSize)
   {
     m_blockOffset = m_blocks - m_blocksPerPage;
     m_programmeScrollOffset = m_blockOffset * m_blockSize;
   }
 
-  if (m_blockOffset < 0)
+  if (m_blockOffset < 0 || m_programmeScrollOffset < 0)
   {
     m_blockOffset = 0;
     m_programmeScrollOffset = 0;
