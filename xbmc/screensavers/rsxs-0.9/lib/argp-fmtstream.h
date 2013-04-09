@@ -241,7 +241,7 @@ extern int __argp_fmtstream_ensure (argp_fmtstream_t __fs, size_t __amount);
       Apple gcc 4.0.1 -std=gnu99             ok       error     warning
     */
 #  if defined __GNUC_STDC_INLINE__
-#   define ARGP_FS_EI inline
+#   define ARGP_FS_EI static inline
 #  elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
 #   define ARGP_FS_EI extern inline __attribute__ ((__gnu_inline__))
 #  else
@@ -250,7 +250,7 @@ extern int __argp_fmtstream_ensure (argp_fmtstream_t __fs, size_t __amount);
 # else
    /* With other compilers, assume the ISO C99 meaning of 'inline', if
       the compiler supports 'inline' at all.  */
-#  define ARGP_FS_EI inline
+#  define ARGP_FS_EI static inline
 # endif
 #endif
 
