@@ -667,3 +667,7 @@ msgstr ""
 msgctxt "#31959"
 msgid "SYSTEM"
 msgstr ""
+
+msgctxt "#31960"
+msgid "Auto login"
+msgstr ""
