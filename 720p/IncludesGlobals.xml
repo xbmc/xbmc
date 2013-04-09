@@ -106,6 +106,87 @@
 			<visible>Skin.HasSetting(showgrid)</visible>
 		</control>
 	</include>
+	<!-- MediaFlags -->
+	<include name="MediaFlags">
+		<control type="group">
+			<control type="grouplist">
+				<posy>675</posy>
+				<posx>74</posx>
+				<width>447</width>
+				<align>center</align>
+				<orientation>horizontal</orientation>
+				<itemgap>25</itemgap>
+				<!-- Default -->
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>true</visible>
+				</control>
+				<!-- Optional -->
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>Skin.HasSetting(ShowAllMediaFlags)</visible>
+				</control>
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>Skin.HasSetting(ShowAllMediaFlags)</visible>
+				</control>
+				<control type="image">
+					<width min="29" max="100">auto</width>
+					<height>18</height>
+					<texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<colordiffuse>FF999999</colordiffuse>
+					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+					<visible>Skin.HasSetting(ShowAllMediaFlags)</visible>
+				</control>
+			</control>
+			<!-- Studio -->
+			<control type="image">
+				<posy>658</posy>
+				<posx>140r</posx>
+				<width>100</width>
+				<height>50</height>
+				<texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>
+				<aspectratio align="right" aligny="center">keep</aspectratio>
+				<colordiffuse>FF999999</colordiffuse>
+				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
+			</control>
+		</control>
+	</include>
 	<!-- screen top bar -->
 	<!-- variables for item count in top bar -->
 	<variable name="TopBarItemCountStrings">
