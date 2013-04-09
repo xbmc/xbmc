@@ -98,6 +98,7 @@ public:
   bool IsPaused() const { return m_bPause; }
   bool IsShuffled() const { return m_bShuffled; }
   int GetDirection() const { return m_iDirection; }
+  void SetDirection(int direction); // -1: rewind, 1: forward
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,

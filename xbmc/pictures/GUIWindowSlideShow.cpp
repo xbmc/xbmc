@@ -388,6 +388,16 @@ void CGUIWindowSlideShow::StartSlideShow()
     AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
 }
 
+void CGUIWindowSlideShow::SetDirection(int direction)
+{
+  direction = direction >= 0 ? 1 : -1;
+  if (m_iDirection != direction)
+  {
+    m_iDirection = direction;
+    m_iNextSlide = GetNextSlide();
+  }
+}
+
 void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
   // reset the screensaver if we're in a slideshow
@@ -830,7 +840,10 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       if (!m_bPlayingVideo)
       {
         if (m_bSlideShow)
+        {
+          SetDirection(1);
           m_bPause = false;
+        }
         PlayVideo();
       }
     }
@@ -838,6 +851,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     {
       m_bSlideShow = true;
       m_bPause = false;
+      SetDirection(1);
       if (m_Image[m_iCurrentPic].IsLoaded())
       {
         CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iCurrentSlide);
