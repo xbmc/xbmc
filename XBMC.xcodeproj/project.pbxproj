@@ -169,7 +169,6 @@
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
 		36A9444115821E7C00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443F15821E7C00727135 /* SortUtils.cpp */; };
-		36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */; };
 		36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466115CF1FA600727135 /* DbUrl.cpp */; };
 		36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466515CF1FD200727135 /* MusicDbUrl.cpp */; };
 		36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
@@ -281,11 +280,9 @@
 		7CC30DB116291A5C003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30DC016291C2C003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */; };
 		7CC30E8A16296078003E7579 /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */; };
-		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
-		7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
 		7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA891001EBA70040B25F /* PltConstants.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
@@ -641,13 +638,11 @@
 		E38E203C0D25F9FD00618676 /* DirectoryNodeAlbumTop100.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E171B0D25F9FA00618676 /* DirectoryNodeAlbumTop100.cpp */; };
 		E38E203D0D25F9FD00618676 /* DirectoryNodeAlbumTop100Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E171D0D25F9FA00618676 /* DirectoryNodeAlbumTop100Song.cpp */; };
 		E38E203E0D25F9FD00618676 /* DirectoryNodeArtist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E171F0D25F9FA00618676 /* DirectoryNodeArtist.cpp */; };
-		E38E203F0D25F9FD00618676 /* DirectoryNodeGenre.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17210D25F9FA00618676 /* DirectoryNodeGenre.cpp */; };
 		E38E20400D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17230D25F9FA00618676 /* DirectoryNodeOverview.cpp */; };
 		E38E20410D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17250D25F9FA00618676 /* DirectoryNodeRoot.cpp */; };
 		E38E20420D25F9FD00618676 /* DirectoryNodeSong.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17270D25F9FA00618676 /* DirectoryNodeSong.cpp */; };
 		E38E20430D25F9FD00618676 /* DirectoryNodeSongTop100.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17290D25F9FA00618676 /* DirectoryNodeSongTop100.cpp */; };
 		E38E20440D25F9FD00618676 /* DirectoryNodeTop100.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E172B0D25F9FA00618676 /* DirectoryNodeTop100.cpp */; };
-		E38E20450D25F9FD00618676 /* DirectoryNodeYear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E172D0D25F9FA00618676 /* DirectoryNodeYear.cpp */; };
 		E38E20460D25F9FD00618676 /* DirectoryNodeYearAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E172F0D25F9FA00618676 /* DirectoryNodeYearAlbum.cpp */; };
 		E38E20470D25F9FD00618676 /* DirectoryNodeYearSong.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17310D25F9FA00618676 /* DirectoryNodeYearSong.cpp */; };
 		E38E20490D25F9FD00618676 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17350D25F9FA00618676 /* QueryParams.cpp */; };
@@ -666,10 +661,7 @@
 		E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
 		E38E205C0D25F9FD00618676 /* UPnPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		E38E205E0D25F9FD00618676 /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17600D25F9FA00618676 /* DirectoryNode.cpp */; };
-		E38E205F0D25F9FD00618676 /* DirectoryNodeActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */; };
-		E38E20600D25F9FD00618676 /* DirectoryNodeDirector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17640D25F9FA00618676 /* DirectoryNodeDirector.cpp */; };
 		E38E20610D25F9FD00618676 /* DirectoryNodeEpisodes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17660D25F9FA00618676 /* DirectoryNodeEpisodes.cpp */; };
-		E38E20620D25F9FD00618676 /* DirectoryNodeGenre.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17680D25F9FA00618676 /* DirectoryNodeGenre.cpp */; };
 		E38E20630D25F9FD00618676 /* DirectoryNodeMoviesOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E176A0D25F9FA00618676 /* DirectoryNodeMoviesOverview.cpp */; };
 		E38E20640D25F9FD00618676 /* DirectoryNodeMusicVideosOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E176C0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.cpp */; };
 		E38E20650D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E176E0D25F9FA00618676 /* DirectoryNodeOverview.cpp */; };
@@ -678,12 +670,10 @@
 		E38E20680D25F9FD00618676 /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17740D25F9FA00618676 /* DirectoryNodeRecentlyAddedMusicVideos.cpp */; };
 		E38E20690D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17760D25F9FA00618676 /* DirectoryNodeRoot.cpp */; };
 		E38E206A0D25F9FD00618676 /* DirectoryNodeSeasons.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17780D25F9FA00618676 /* DirectoryNodeSeasons.cpp */; };
-		E38E206B0D25F9FD00618676 /* DirectoryNodeStudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E177A0D25F9FA00618676 /* DirectoryNodeStudio.cpp */; };
 		E38E206C0D25F9FD00618676 /* DirectoryNodeTitleMovies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E177C0D25F9FA00618676 /* DirectoryNodeTitleMovies.cpp */; };
 		E38E206D0D25F9FD00618676 /* DirectoryNodeTitleMusicVideos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E177E0D25F9FA00618676 /* DirectoryNodeTitleMusicVideos.cpp */; };
 		E38E206E0D25F9FD00618676 /* DirectoryNodeTitleTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17800D25F9FA00618676 /* DirectoryNodeTitleTvShows.cpp */; };
 		E38E206F0D25F9FD00618676 /* DirectoryNodeTvShowsOverview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17820D25F9FA00618676 /* DirectoryNodeTvShowsOverview.cpp */; };
-		E38E20700D25F9FD00618676 /* DirectoryNodeYear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17840D25F9FA00618676 /* DirectoryNodeYear.cpp */; };
 		E38E20720D25F9FD00618676 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17880D25F9FA00618676 /* QueryParams.cpp */; };
 		E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */; };
 		E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */; };
@@ -924,11 +914,12 @@
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
 		F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
-		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
 		F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52A733C1560BC34005B1A0B /* CoreFoundation.framework */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
 		F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
+		F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */; };
+		F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */; };
 		F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D33155B3B270016D00B /* CoreVideo.framework */; };
 		F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364D54155B3C7B0016D00B /* libm.dylib */; };
 		F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5364E04155B3CAF0016D00B /* IOSurface.framework */; };
@@ -1379,8 +1370,6 @@
 		36A9443E15821E5400727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
 		36A9443F15821E7C00727135 /* SortUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortUtils.cpp; sourceTree = "<group>"; };
 		36A9444015821E7C00727135 /* SortUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortUtils.h; sourceTree = "<group>"; };
-		36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTags.cpp; sourceTree = "<group>"; };
-		36A9464B15AA25FD00727135 /* DirectoryNodeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTags.h; sourceTree = "<group>"; };
 		36A9466115CF1FA600727135 /* DbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DbUrl.cpp; sourceTree = "<group>"; };
 		36A9466215CF1FA600727135 /* DbUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbUrl.h; sourceTree = "<group>"; };
 		36A9466515CF1FD200727135 /* MusicDbUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDbUrl.cpp; sourceTree = "<group>"; };
@@ -1637,16 +1626,12 @@
 		7CC30DBF16291C2C003E7579 /* VideoThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoThumbLoader.h; sourceTree = "<group>"; };
 		7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EdenVideoArtUpdater.cpp; sourceTree = "<group>"; };
 		7CC30E8916296078003E7579 /* EdenVideoArtUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EdenVideoArtUpdater.h; sourceTree = "<group>"; };
-		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
-		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
 		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
 		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CCFD98A151494E100211D82 /* PCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMCodec.cpp; sourceTree = "<group>"; };
 		7CCFD98B151494E100211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
-		7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeCountry.cpp; sourceTree = "<group>"; };
-		7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeCountry.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -2411,8 +2396,6 @@
 		E38E171E0D25F9FA00618676 /* DirectoryNodeAlbumTop100Song.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeAlbumTop100Song.h; sourceTree = "<group>"; };
 		E38E171F0D25F9FA00618676 /* DirectoryNodeArtist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeArtist.cpp; sourceTree = "<group>"; };
 		E38E17200D25F9FA00618676 /* DirectoryNodeArtist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeArtist.h; sourceTree = "<group>"; };
-		E38E17210D25F9FA00618676 /* DirectoryNodeGenre.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGenre.cpp; sourceTree = "<group>"; };
-		E38E17220D25F9FA00618676 /* DirectoryNodeGenre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGenre.h; sourceTree = "<group>"; };
 		E38E17230D25F9FA00618676 /* DirectoryNodeOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeOverview.cpp; sourceTree = "<group>"; };
 		E38E17240D25F9FA00618676 /* DirectoryNodeOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeOverview.h; sourceTree = "<group>"; };
 		E38E17250D25F9FA00618676 /* DirectoryNodeRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeRoot.cpp; sourceTree = "<group>"; };
@@ -2423,8 +2406,6 @@
 		E38E172A0D25F9FA00618676 /* DirectoryNodeSongTop100.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSongTop100.h; sourceTree = "<group>"; };
 		E38E172B0D25F9FA00618676 /* DirectoryNodeTop100.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTop100.cpp; sourceTree = "<group>"; };
 		E38E172C0D25F9FA00618676 /* DirectoryNodeTop100.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTop100.h; sourceTree = "<group>"; };
-		E38E172D0D25F9FA00618676 /* DirectoryNodeYear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYear.cpp; sourceTree = "<group>"; };
-		E38E172E0D25F9FA00618676 /* DirectoryNodeYear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeYear.h; sourceTree = "<group>"; };
 		E38E172F0D25F9FA00618676 /* DirectoryNodeYearAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYearAlbum.cpp; sourceTree = "<group>"; };
 		E38E17300D25F9FA00618676 /* DirectoryNodeYearAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeYearAlbum.h; sourceTree = "<group>"; };
 		E38E17310D25F9FA00618676 /* DirectoryNodeYearSong.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYearSong.cpp; sourceTree = "<group>"; };
@@ -2462,14 +2443,8 @@
 		E38E175C0D25F9FA00618676 /* UPnPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPDirectory.h; sourceTree = "<group>"; };
 		E38E17600D25F9FA00618676 /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
 		E38E17610D25F9FA00618676 /* DirectoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNode.h; sourceTree = "<group>"; };
-		E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeActor.cpp; sourceTree = "<group>"; };
-		E38E17630D25F9FA00618676 /* DirectoryNodeActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeActor.h; sourceTree = "<group>"; };
-		E38E17640D25F9FA00618676 /* DirectoryNodeDirector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeDirector.cpp; sourceTree = "<group>"; };
-		E38E17650D25F9FA00618676 /* DirectoryNodeDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeDirector.h; sourceTree = "<group>"; };
 		E38E17660D25F9FA00618676 /* DirectoryNodeEpisodes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeEpisodes.cpp; sourceTree = "<group>"; };
 		E38E17670D25F9FA00618676 /* DirectoryNodeEpisodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeEpisodes.h; sourceTree = "<group>"; };
-		E38E17680D25F9FA00618676 /* DirectoryNodeGenre.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGenre.cpp; sourceTree = "<group>"; };
-		E38E17690D25F9FA00618676 /* DirectoryNodeGenre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGenre.h; sourceTree = "<group>"; };
 		E38E176A0D25F9FA00618676 /* DirectoryNodeMoviesOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeMoviesOverview.cpp; sourceTree = "<group>"; };
 		E38E176B0D25F9FA00618676 /* DirectoryNodeMoviesOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeMoviesOverview.h; sourceTree = "<group>"; };
 		E38E176C0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeMusicVideosOverview.cpp; sourceTree = "<group>"; };
@@ -2486,8 +2461,6 @@
 		E38E17770D25F9FA00618676 /* DirectoryNodeRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeRoot.h; sourceTree = "<group>"; };
 		E38E17780D25F9FA00618676 /* DirectoryNodeSeasons.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSeasons.cpp; sourceTree = "<group>"; };
 		E38E17790D25F9FA00618676 /* DirectoryNodeSeasons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSeasons.h; sourceTree = "<group>"; };
-		E38E177A0D25F9FA00618676 /* DirectoryNodeStudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeStudio.cpp; sourceTree = "<group>"; };
-		E38E177B0D25F9FA00618676 /* DirectoryNodeStudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeStudio.h; sourceTree = "<group>"; };
 		E38E177C0D25F9FA00618676 /* DirectoryNodeTitleMovies.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTitleMovies.cpp; sourceTree = "<group>"; };
 		E38E177D0D25F9FA00618676 /* DirectoryNodeTitleMovies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTitleMovies.h; sourceTree = "<group>"; };
 		E38E177E0D25F9FA00618676 /* DirectoryNodeTitleMusicVideos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTitleMusicVideos.cpp; sourceTree = "<group>"; };
@@ -2496,8 +2469,6 @@
 		E38E17810D25F9FA00618676 /* DirectoryNodeTitleTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTitleTvShows.h; sourceTree = "<group>"; };
 		E38E17820D25F9FA00618676 /* DirectoryNodeTvShowsOverview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeTvShowsOverview.cpp; sourceTree = "<group>"; };
 		E38E17830D25F9FA00618676 /* DirectoryNodeTvShowsOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeTvShowsOverview.h; sourceTree = "<group>"; };
-		E38E17840D25F9FA00618676 /* DirectoryNodeYear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeYear.cpp; sourceTree = "<group>"; };
-		E38E17850D25F9FA00618676 /* DirectoryNodeYear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeYear.h; sourceTree = "<group>"; };
 		E38E17880D25F9FA00618676 /* QueryParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QueryParams.cpp; sourceTree = "<group>"; };
 		E38E17890D25F9FA00618676 /* QueryParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryParams.h; sourceTree = "<group>"; };
 		E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabaseDirectory.cpp; sourceTree = "<group>"; };
@@ -3040,8 +3011,6 @@
 		F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDInputStreamHTSP.h; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h; sourceTree = SOURCE_ROOT; };
 		F51CF2CE0F6055A4004F4602 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		F51CF2CF0F6055A4004F4602 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
-		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skin.cpp; sourceTree = "<group>"; };
@@ -3049,6 +3018,10 @@
 		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonStatusHandler.cpp; sourceTree = "<group>"; };
+		F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
+		F52CC5EF1713AAA200113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
+		F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeGrouped.cpp; sourceTree = "<group>"; };
+		F52CC6A91713BD2B00113454 /* DirectoryNodeGrouped.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeGrouped.h; sourceTree = "<group>"; };
 		F5364D33155B3B270016D00B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		F5364D54155B3C7B0016D00B /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = /usr/lib/libm.dylib; sourceTree = "<absolute>"; };
 		F5364E04155B3CAF0016D00B /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = /System/Library/Frameworks/IOSurface.framework; sourceTree = "<absolute>"; };
@@ -5586,8 +5559,8 @@
 				E38E171E0D25F9FA00618676 /* DirectoryNodeAlbumTop100Song.h */,
 				E38E171F0D25F9FA00618676 /* DirectoryNodeArtist.cpp */,
 				E38E17200D25F9FA00618676 /* DirectoryNodeArtist.h */,
-				E38E17210D25F9FA00618676 /* DirectoryNodeGenre.cpp */,
-				E38E17220D25F9FA00618676 /* DirectoryNodeGenre.h */,
+				F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */,
+				F52CC5EF1713AAA200113454 /* DirectoryNodeGrouped.h */,
 				E38E17230D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
 				E38E17240D25F9FA00618676 /* DirectoryNodeOverview.h */,
 				E38E17250D25F9FA00618676 /* DirectoryNodeRoot.cpp */,
@@ -5600,8 +5573,6 @@
 				E38E172A0D25F9FA00618676 /* DirectoryNodeSongTop100.h */,
 				E38E172B0D25F9FA00618676 /* DirectoryNodeTop100.cpp */,
 				E38E172C0D25F9FA00618676 /* DirectoryNodeTop100.h */,
-				E38E172D0D25F9FA00618676 /* DirectoryNodeYear.cpp */,
-				E38E172E0D25F9FA00618676 /* DirectoryNodeYear.h */,
 				E38E172F0D25F9FA00618676 /* DirectoryNodeYearAlbum.cpp */,
 				E38E17300D25F9FA00618676 /* DirectoryNodeYearAlbum.h */,
 				E38E17310D25F9FA00618676 /* DirectoryNodeYearSong.cpp */,
@@ -5617,20 +5588,12 @@
 			children = (
 				E38E17600D25F9FA00618676 /* DirectoryNode.cpp */,
 				E38E17610D25F9FA00618676 /* DirectoryNode.h */,
-				E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */,
-				E38E17630D25F9FA00618676 /* DirectoryNodeActor.h */,
-				7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */,
-				7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */,
-				E38E17640D25F9FA00618676 /* DirectoryNodeDirector.cpp */,
-				E38E17650D25F9FA00618676 /* DirectoryNodeDirector.h */,
 				E38E17660D25F9FA00618676 /* DirectoryNodeEpisodes.cpp */,
 				E38E17670D25F9FA00618676 /* DirectoryNodeEpisodes.h */,
-				E38E17680D25F9FA00618676 /* DirectoryNodeGenre.cpp */,
-				E38E17690D25F9FA00618676 /* DirectoryNodeGenre.h */,
+				F52CC6A81713BD2B00113454 /* DirectoryNodeGrouped.cpp */,
+				F52CC6A91713BD2B00113454 /* DirectoryNodeGrouped.h */,
 				E38E176A0D25F9FA00618676 /* DirectoryNodeMoviesOverview.cpp */,
 				E38E176B0D25F9FA00618676 /* DirectoryNodeMoviesOverview.h */,
-				F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */,
-				F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */,
 				E38E176C0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.cpp */,
 				E38E176D0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.h */,
 				E38E176E0D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
@@ -5645,12 +5608,6 @@
 				E38E17770D25F9FA00618676 /* DirectoryNodeRoot.h */,
 				E38E17780D25F9FA00618676 /* DirectoryNodeSeasons.cpp */,
 				E38E17790D25F9FA00618676 /* DirectoryNodeSeasons.h */,
-				7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */,
-				7CCF7E711067643800992676 /* DirectoryNodeSets.h */,
-				E38E177A0D25F9FA00618676 /* DirectoryNodeStudio.cpp */,
-				E38E177B0D25F9FA00618676 /* DirectoryNodeStudio.h */,
-				36A9464A15AA25FD00727135 /* DirectoryNodeTags.cpp */,
-				36A9464B15AA25FD00727135 /* DirectoryNodeTags.h */,
 				E38E177C0D25F9FA00618676 /* DirectoryNodeTitleMovies.cpp */,
 				E38E177D0D25F9FA00618676 /* DirectoryNodeTitleMovies.h */,
 				E38E177E0D25F9FA00618676 /* DirectoryNodeTitleMusicVideos.cpp */,
@@ -5659,8 +5616,6 @@
 				E38E17810D25F9FA00618676 /* DirectoryNodeTitleTvShows.h */,
 				E38E17820D25F9FA00618676 /* DirectoryNodeTvShowsOverview.cpp */,
 				E38E17830D25F9FA00618676 /* DirectoryNodeTvShowsOverview.h */,
-				E38E17840D25F9FA00618676 /* DirectoryNodeYear.cpp */,
-				E38E17850D25F9FA00618676 /* DirectoryNodeYear.h */,
 				E38E17880D25F9FA00618676 /* QueryParams.cpp */,
 				E38E17890D25F9FA00618676 /* QueryParams.h */,
 			);
@@ -6924,13 +6879,11 @@
 				E38E203C0D25F9FD00618676 /* DirectoryNodeAlbumTop100.cpp in Sources */,
 				E38E203D0D25F9FD00618676 /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
 				E38E203E0D25F9FD00618676 /* DirectoryNodeArtist.cpp in Sources */,
-				E38E203F0D25F9FD00618676 /* DirectoryNodeGenre.cpp in Sources */,
 				E38E20400D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */,
 				E38E20410D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */,
 				E38E20420D25F9FD00618676 /* DirectoryNodeSong.cpp in Sources */,
 				E38E20430D25F9FD00618676 /* DirectoryNodeSongTop100.cpp in Sources */,
 				E38E20440D25F9FD00618676 /* DirectoryNodeTop100.cpp in Sources */,
-				E38E20450D25F9FD00618676 /* DirectoryNodeYear.cpp in Sources */,
 				E38E20460D25F9FD00618676 /* DirectoryNodeYearAlbum.cpp in Sources */,
 				E38E20470D25F9FD00618676 /* DirectoryNodeYearSong.cpp in Sources */,
 				E38E20490D25F9FD00618676 /* QueryParams.cpp in Sources */,
@@ -6949,10 +6902,7 @@
 				E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */,
 				E38E205C0D25F9FD00618676 /* UPnPDirectory.cpp in Sources */,
 				E38E205E0D25F9FD00618676 /* DirectoryNode.cpp in Sources */,
-				E38E205F0D25F9FD00618676 /* DirectoryNodeActor.cpp in Sources */,
-				E38E20600D25F9FD00618676 /* DirectoryNodeDirector.cpp in Sources */,
 				E38E20610D25F9FD00618676 /* DirectoryNodeEpisodes.cpp in Sources */,
-				E38E20620D25F9FD00618676 /* DirectoryNodeGenre.cpp in Sources */,
 				E38E20630D25F9FD00618676 /* DirectoryNodeMoviesOverview.cpp in Sources */,
 				E38E20640D25F9FD00618676 /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				E38E20650D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */,
@@ -6961,12 +6911,10 @@
 				E38E20680D25F9FD00618676 /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
 				E38E20690D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */,
 				E38E206A0D25F9FD00618676 /* DirectoryNodeSeasons.cpp in Sources */,
-				E38E206B0D25F9FD00618676 /* DirectoryNodeStudio.cpp in Sources */,
 				E38E206C0D25F9FD00618676 /* DirectoryNodeTitleMovies.cpp in Sources */,
 				E38E206D0D25F9FD00618676 /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
 				E38E206E0D25F9FD00618676 /* DirectoryNodeTitleTvShows.cpp in Sources */,
 				E38E206F0D25F9FD00618676 /* DirectoryNodeTvShowsOverview.cpp in Sources */,
-				E38E20700D25F9FD00618676 /* DirectoryNodeYear.cpp in Sources */,
 				E38E20720D25F9FD00618676 /* QueryParams.cpp in Sources */,
 				E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */,
 				E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */,
@@ -7212,7 +7160,6 @@
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
 				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
 				E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */,
-				F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */,
 				F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */,
 				F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */,
 				F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */,
@@ -7278,7 +7225,6 @@
 				7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
 				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
-				7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */,
 				7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */,
 				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
 				F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */,
@@ -7369,7 +7315,6 @@
 				C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */,
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
 				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
-				7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
 				F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */,
 				F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
@@ -7700,7 +7645,6 @@
 				36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */,
 				36A9444115821E7C00727135 /* SortUtils.cpp in Sources */,
 				1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */,
-				36A9464C15AA25FD00727135 /* DirectoryNodeTags.cpp in Sources */,
 				7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */,
 				7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */,
 				DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */,
@@ -7810,6 +7754,8 @@
 				DF28EDA8170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */,
 				DF28EE03170E1E51005FA9D2 /* DisplaySettings.cpp in Sources */,
 				7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */,
+				F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */,
+				F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
