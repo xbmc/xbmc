@@ -265,22 +265,25 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
 
   g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
 
-  // wait for any outstanding picture loads
-  if (m_pBackgroundLoader)
+  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
-    // sleep until the loader finishes loading the current pic
-    CLog::Log(LOGDEBUG,"Waiting for BackgroundLoader thread to close");
-    while (m_pBackgroundLoader->IsLoading())
-      Sleep(10);
-    // stop the thread
-    CLog::Log(LOGDEBUG,"Stopping BackgroundLoader thread");
-    m_pBackgroundLoader->StopThread();
-    delete m_pBackgroundLoader;
-    m_pBackgroundLoader = NULL;
+    // wait for any outstanding picture loads
+    if (m_pBackgroundLoader)
+    {
+      // sleep until the loader finishes loading the current pic
+      CLog::Log(LOGDEBUG,"Waiting for BackgroundLoader thread to close");
+      while (m_pBackgroundLoader->IsLoading())
+        Sleep(10);
+      // stop the thread
+      CLog::Log(LOGDEBUG,"Stopping BackgroundLoader thread");
+      m_pBackgroundLoader->StopThread();
+      delete m_pBackgroundLoader;
+      m_pBackgroundLoader = NULL;
+    }
+    // and close the images.
+    m_Image[0].Close();
+    m_Image[1].Close();
   }
-  // and close the images.
-  m_Image[0].Close();
-  m_Image[1].Close();
   g_infoManager.ResetCurrentSlide();
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
