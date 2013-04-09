@@ -5022,6 +5022,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+      if (m_bPlaybackStarting)
+        return true;
 #ifdef HAS_KARAOKE
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
