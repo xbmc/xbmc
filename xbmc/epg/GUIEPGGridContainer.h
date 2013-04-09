@@ -98,7 +98,7 @@ namespace EPG
 
   protected:
     bool OnClick(int actionID);
-    bool SelectItemFromPoint(const CPoint &point);
+    bool SelectItemFromPoint(const CPoint &point, bool justGrid = true);
 
     void UpdateItems();
 

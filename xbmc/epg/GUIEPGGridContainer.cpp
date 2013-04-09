@@ -1204,10 +1204,10 @@ CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
   return NULL;
 }
 
-bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
+bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGrid /* = false */)
 {
   /* point has already had origin set to m_posX, m_posY */
-  if (!m_focusedProgrammeLayout || !m_programmeLayout)
+  if (!m_focusedProgrammeLayout || !m_programmeLayout || (justGrid && point.x < 0))
     return false;
 
   int channel = (int)(point.y / m_channelHeight);
@@ -1255,7 +1255,7 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
 bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight));
+  SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight), false);
   return CGUIControl::OnMouseOver(point);
 }
 
