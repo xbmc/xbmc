@@ -418,6 +418,8 @@ namespace INFO
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
 
+#define SYSTEM_PROFILEAUTOLOGIN     1004
+
 #define PVR_CONDITIONS_START        1100
 #define PVR_IS_RECORDING            (PVR_CONDITIONS_START)
 #define PVR_HAS_TIMER               (PVR_CONDITIONS_START + 1)

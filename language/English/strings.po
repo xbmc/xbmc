@@ -11887,3 +11887,8 @@ msgstr ""
 msgctxt "#37013"
 msgid "(Directors Comments)"
 msgstr ""
+
+#: xbmc/GUIInfoManager.cpp
+msgctxt "#37014"
+msgid "Most recent"
+msgstr ""
