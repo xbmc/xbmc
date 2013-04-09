@@ -1466,9 +1466,9 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
   CStdString strTouchCommand = szButton;
   strTouchCommand.ToLower();
 
-  std::string strTmp;
-  if (pButton->QueryStringAttribute("direction", &strTmp) == TIXML_SUCCESS)
-    strTouchCommand += strTmp;
+  const char *attrVal = pButton->Attribute("direction");
+  if (attrVal != NULL)
+    strTouchCommand += attrVal;
 
   uint32_t actionId = ACTION_NONE;
   for (unsigned int i = 0; i < sizeof(touchcommands)/sizeof(touchcommands[0]); i++)
@@ -1486,10 +1486,10 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
     return ACTION_NONE;
   }
 
-  strTmp.clear();
-  if (pButton->QueryStringAttribute("pointers", &strTmp) == TIXML_SUCCESS)
+  attrVal = pButton->Attribute("pointers");
+  if (attrVal != NULL)
   {
-    int pointers = (int)strtol(strTmp.c_str(), NULL, 0);
+    int pointers = (int)strtol(attrVal, NULL, 0);
     if (pointers >= 1)
       actionId += pointers - 1;
   }
