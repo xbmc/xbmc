@@ -13,6 +13,13 @@
 			<posy>13</posy>
 			<width>185</width>
 			<height>273</height>
+			<texture background="true">default-poster-middle.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>185</width>
+			<height>273</height>
 			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
