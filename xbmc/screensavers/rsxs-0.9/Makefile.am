@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 SUBDIRS = lib libltdl src config
-EXTRA_DIST = scripts THANKS
+EXTRA_DIST = scripts THANKS m4/gnulib-cache.m4
 DISTCHECK_CONFIGURE_FLAGS = --without-xscreensaver
 ACLOCAL_AMFLAGS = -I m4
 

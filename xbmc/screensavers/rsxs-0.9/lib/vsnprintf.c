@@ -1,10 +1,10 @@
 /* Formatted output to strings.
-   Copyright (C) 2004 Free Software Foundation, Inc.
+   Copyright (C) 2004, 2006-2011 Free Software Foundation, Inc.
    Written by Simon Josefsson and Yoann Vandoorselaere <yoann@prelude-ids.org>.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
+   the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -21,10 +21,11 @@
 #endif
 
 /* Specification.  */
-#include "vsnprintf.h"
-
-#include <stdarg.h>
 #include <stdio.h>
+
+#include <errno.h>
+#include <limits.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -34,25 +35,37 @@
    additional length SIZE limit how much is written into STR.  Returns
    string length of formatted string (which may be larger than SIZE).
    STR may be NULL, in which case nothing will be written.  On error,
-   return a negative value. */
+   return a negative value.  */
 int
 vsnprintf (char *str, size_t size, const char *format, va_list args)
 {
   char *output;
   size_t len;
+  size_t lenbuf = size;
 
-  len = size;
-  output = vasnprintf (str, &len, format, args);
+  output = vasnprintf (str, &lenbuf, format, args);
+  len = lenbuf;
 
   if (!output)
     return -1;
 
-  if (str != NULL)
-    if (len > size - 1) /* equivalent to: (size > 0 && len >= size) */
-      str[size - 1] = '\0';
-
   if (output != str)
-    free (output);
+    {
+      if (size)
+        {
+          size_t pruned_len = (len < size ? len : size - 1);
+          memcpy (str, output, pruned_len);
+          str[pruned_len] = '\0';
+        }
+
+      free (output);
+    }
+
+  if (len > INT_MAX)
+    {
+      errno = EOVERFLOW;
+      return -1;
+    }
 
   return len;
 }

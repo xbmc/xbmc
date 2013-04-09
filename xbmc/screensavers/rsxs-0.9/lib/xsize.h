@@ -1,10 +1,10 @@
 /* xsize.h -- Checked size_t computations.
 
-   Copyright (C) 2003 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2008-2011 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
+   the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -94,7 +94,7 @@ xmax (size_t size1, size_t size2)
 /* Multiplication of a count with an element size, with overflow check.
    The count must be >= 0 and the element size must be > 0.
    This is a macro, not an inline function, so that it works correctly even
-   when N is of a wider tupe and N > SIZE_MAX.  */
+   when N is of a wider type and N > SIZE_MAX.  */
 #define xtimes(N, ELSIZE) \
   ((N) <= SIZE_MAX / (ELSIZE) ? (size_t) (N) * (ELSIZE) : SIZE_MAX)
 

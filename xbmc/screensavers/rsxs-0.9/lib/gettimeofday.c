@@ -1,12 +1,10 @@
-/* Work around the bug in some systems whereby gettimeofday clobbers the
-   static buffer that localtime uses for it's return value.  The gettimeofday
-   function from Mac OS X 10.0.4, i.e. Darwin 1.3.7 has this problem.
-   The tzset replacement is necessary for at least Solaris 2.5, 2.5.1, and 2.6.
-   Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+/* Provide gettimeofday for systems that don't have it or for which it's broken.
+
+   Copyright (C) 2001-2003, 2005-2007, 2009-2011 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
+   the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -20,33 +18,33 @@
 
 /* written by Jim Meyering */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
+#include <config.h>
+
+/* Specification.  */
+#include <sys/time.h>
+
+#include <time.h>
+
+#if HAVE_SYS_TIMEB_H
+# include <sys/timeb.h>
 #endif
 
-/* Disable the definitions of these functions (from config.h)
-   so we can use the library versions here.  */
-#undef gettimeofday
-#undef gmtime
-#undef localtime
-#undef tzset
+#if GETTIMEOFDAY_CLOBBERS_LOCALTIME || TZSET_CLOBBERS_LOCALTIME
 
-#include <sys/types.h>
+/* Work around the bug in some systems whereby gettimeofday clobbers
+   the static buffer that localtime uses for its return value.  The
+   gettimeofday function from Mac OS X 10.0.4 (i.e., Darwin 1.3.7) has
+   this problem.  The tzset replacement is necessary for at least
+   Solaris 2.5, 2.5.1, and 2.6.  */
 
-#if TIME_WITH_SYS_TIME
-# include <sys/time.h>
-# include <time.h>
-#else
-# if HAVE_SYS_TIME_H
-#  include <sys/time.h>
-# else
-#  include <time.h>
-# endif
-#endif
+static struct tm tm_zero_buffer;
+static struct tm *localtime_buffer_addr = &tm_zero_buffer;
 
-#include <stdlib.h>
+# undef localtime
+extern struct tm *localtime (time_t const *);
 
-static struct tm *localtime_buffer_addr;
+# undef gmtime
+extern struct tm *gmtime (time_t const *);
 
 /* This is a wrapper for localtime.  It is used only on systems for which
    gettimeofday clobbers the static buffer used for localtime's result.
@@ -55,11 +53,11 @@ static struct tm *localtime_buffer_addr;
    localtime uses for its result.  */
 
 struct tm *
-rpl_localtime (const time_t *timep)
+rpl_localtime (time_t const *timep)
 {
   struct tm *tm = localtime (timep);
 
-  if (! localtime_buffer_addr)
+  if (localtime_buffer_addr == &tm_zero_buffer)
     localtime_buffer_addr = tm;
 
   return tm;
@@ -67,57 +65,80 @@ rpl_localtime (const time_t *timep)
 
 /* Same as above, since gmtime and localtime use the same buffer.  */
 struct tm *
-rpl_gmtime (const time_t *timep)
+rpl_gmtime (time_t const *timep)
 {
   struct tm *tm = gmtime (timep);
 
-  if (! localtime_buffer_addr)
+  if (localtime_buffer_addr == &tm_zero_buffer)
     localtime_buffer_addr = tm;
 
   return tm;
 }
 
-/* This is a wrapper for gettimeofday.  It is used only on systems for which
-   gettimeofday clobbers the static buffer used for localtime's result.
+#endif /* GETTIMEOFDAY_CLOBBERS_LOCALTIME || TZSET_CLOBBERS_LOCALTIME */
 
-   Save and restore the contents of the buffer used for localtime's result
-   around the call to gettimeofday.  */
+#if TZSET_CLOBBERS_LOCALTIME
 
-int
-rpl_gettimeofday (struct timeval *tv, struct timezone *tz)
-{
-  struct tm save;
-  int result;
+# undef tzset
+extern void tzset (void);
 
-  if (! localtime_buffer_addr)
-    {
-      time_t t = 0;
-      localtime_buffer_addr = localtime (&t);
-    }
-
-  save = *localtime_buffer_addr;
-  result = gettimeofday (tv, tz);
-  *localtime_buffer_addr = save;
-
-  return result;
-}
-
-/* This is a wrapper for tzset. It is used only on systems for which
-   tzset may clobber the static buffer used for localtime's result.
-   Save and restore the contents of the buffer used for localtime's
-   result around the call to tzset.  */
+/* This is a wrapper for tzset, for systems on which tzset may clobber
+   the static buffer used for localtime's result.  */
 void
 rpl_tzset (void)
 {
-  struct tm save;
-
-  if (! localtime_buffer_addr)
-    {
-      time_t t = 0;
-      localtime_buffer_addr = localtime (&t);
-    }
-
-  save = *localtime_buffer_addr;
+  /* Save and restore the contents of the buffer used for localtime's
+     result around the call to tzset.  */
+  struct tm save = *localtime_buffer_addr;
   tzset ();
   *localtime_buffer_addr = save;
+}
+#endif
+
+/* This is a wrapper for gettimeofday.  It is used only on systems
+   that lack this function, or whose implementation of this function
+   causes problems.  */
+
+int
+gettimeofday (struct timeval *restrict tv, void *restrict tz)
+{
+#undef gettimeofday
+#if HAVE_GETTIMEOFDAY
+# if GETTIMEOFDAY_CLOBBERS_LOCALTIME
+  /* Save and restore the contents of the buffer used for localtime's
+     result around the call to gettimeofday.  */
+  struct tm save = *localtime_buffer_addr;
+# endif
+
+  int result = gettimeofday (tv, (struct timezone *) tz);
+
+# if GETTIMEOFDAY_CLOBBERS_LOCALTIME
+  *localtime_buffer_addr = save;
+# endif
+
+  return result;
+
+#else
+
+# if HAVE__FTIME
+
+  struct _timeb timebuf;
+  _ftime (&timebuf);
+  tv->tv_sec = timebuf.time;
+  tv->tv_usec = timebuf.millitm * 1000;
+
+# else
+
+#  if !defined OK_TO_USE_1S_CLOCK
+#   error "Only 1-second nominal clock resolution found.  Is that intended?" \
+          "If so, compile with the -DOK_TO_USE_1S_CLOCK option."
+#  endif
+  tv->tv_sec = time (NULL);
+  tv->tv_usec = 0;
+
+# endif
+
+  return 0;
+
+#endif
 }
