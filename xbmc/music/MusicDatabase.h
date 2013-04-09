@@ -117,6 +117,12 @@ public:
   bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
   bool HasAlbumInfo(int idAlbum);
   bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
+
+  /*! \brief Check if an artist entity has additional metadata (scraped)
+   \param idArtist the id of the Artist to check
+   \return true or false - whether the artist has metadata
+   */
+  bool HasArtistInfo(int idArtist);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset = 0);
   int GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(int idSong, CSong& song);

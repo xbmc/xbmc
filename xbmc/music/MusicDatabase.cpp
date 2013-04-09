@@ -1310,16 +1310,7 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
     if (idArtist == -1)
       return false; // not in the database
 
-    CStdString strSQL=PrepareSQL("SELECT artist.idArtist AS idArtist, strArtist, "
-                                 "  strBorn, strFormed, strGenres,"
-                                 "  strMoods, strStyles, strInstruments, "
-                                 "  strBiography, strDied, strDisbanded, "
-                                 "  strYearsActive, strImage, strFanart "
-                                 "  FROM artist "
-                                 "  JOIN artistinfo "
-                                 "    ON artist.idArtist = artistinfo.idArtist "
-                                 "  WHERE artistinfo.idArtist = %i"
-                                 , idArtist);
+    CStdString strSQL=PrepareSQL("SELECT * FROM artistview WHERE idArtist = %i", idArtist);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
@@ -1348,6 +1339,11 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
   }
 
   return false;
+}
+
+bool CMusicDatabase::HasArtistInfo(int idArtist)
+{
+  return strtol(GetSingleValue("artistinfo", "count(idArtist)", PrepareSQL("idArtist = %ld", idArtist)), NULL, 10) > 0;
 }
 
 bool CMusicDatabase::DeleteArtistInfo(int idArtist)

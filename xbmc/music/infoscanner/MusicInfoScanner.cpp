@@ -1153,7 +1153,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   bCanceled = false;
   CArtist artist;
   m_musicDatabase.Open();
-  if (m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist)) // already got the info
+  if (m_musicDatabase.HasArtistInfo(params.GetArtistId()) && m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist)) // already got the info
     return true;
 
   // find artist info
