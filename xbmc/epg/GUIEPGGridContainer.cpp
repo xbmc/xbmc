@@ -26,6 +26,7 @@
 #include "guilib/DirtyRegion.h"
 #include <tinyxml.h>
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
@@ -1247,6 +1248,40 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
   case ACTION_MOUSE_WHEEL_DOWN:
     OnMouseWheel(1, point);
     return EVENT_RESULT_HANDLED;
+  case ACTION_GESTURE_BEGIN:
+    {
+      // we want exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+      SendWindowMessage(msg);
+      return EVENT_RESULT_HANDLED;
+    }
+  case ACTION_GESTURE_END:
+    {
+      // we're done with exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+      SendWindowMessage(msg);
+      ScrollToChannelOffset(MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
+      ScrollToBlockOffset(MathUtils::round_int(m_programmeScrollOffset / m_blockSize));
+      return EVENT_RESULT_HANDLED;
+    }
+  case ACTION_GESTURE_PAN:
+    {
+      if (m_orientation == VERTICAL)
+      {
+        m_programmeScrollOffset -= event.m_offsetX;
+        m_channelScrollOffset -= event.m_offsetY;
+      }
+      else
+      {
+        m_channelScrollOffset -= event.m_offsetX;
+        m_programmeScrollOffset -= event.m_offsetY;
+      }
+
+      m_channelOffset = MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation));
+      m_blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+      ValidateOffset();
+      return EVENT_RESULT_HANDLED;
+    }
   default:
     return EVENT_RESULT_UNHANDLED;
   }
