@@ -1219,6 +1219,10 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   if (block > m_blocksPerPage) block = m_blocksPerPage - 1;
   if (block < 0) block = 0;
 
+  // bail if block isn't occupied
+  if (!m_gridIndex[channel + m_channelOffset][block + m_blockOffset].item)
+    return false;
+
   SetChannel(channel);
   SetBlock(block);
   return true;
