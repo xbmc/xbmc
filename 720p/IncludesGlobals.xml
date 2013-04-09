@@ -198,7 +198,14 @@
 		<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
 		<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
 	</include>
-	<include name="WindowOpenFade">
-		<animation effect="fade" start="0" end="100" time="300" condition="!Window.Previous(10090)">WindowOpen</animation>
+	<include name="WindowFade">
+		<control type="group">
+			<control type="image">
+				<include>Black</include>
+				<include>FullScreenStretched</include>
+			</control>
+			<animation effect="fade" start="100" end="0" time="800" condition="true">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="100" condition="true">WindowClose</animation>
+		</control>
 	</include>
 </includes>

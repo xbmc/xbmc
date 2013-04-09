@@ -15,5 +15,6 @@
 		<include>TopBar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>
