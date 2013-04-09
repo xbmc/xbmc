@@ -104,7 +104,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     delete m_mixMap;
     m_mixMap = CCoreAudioMixMap::CreateMixMap(m_audioUnit, format, layoutTag);
 
-    if (m_mixMap || m_mixMap->IsValid())
+    if (m_mixMap && m_mixMap->IsValid())
     {
       // maximum input channel ber input bus
       //fmt.mChannelsPerFrame = MAXIMUM_MIXER_CHANNELS;
@@ -152,7 +152,12 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
       if (!m_mixerUnit->SetInputBusFormat(MAX_CONNECTION_LIMIT, &fmt))
         return false;
 
-      if (!m_mixerUnit->SetFormat(&fmt, kAudioUnitScope_Output, kOutputBus))
+      // Update format structure to reflect the desired format from the mixer
+      // The output format of the mixer is identical to the input format, except for the channel count
+      AudioStreamBasicDescription mixOutput(fmt);
+      mixOutput.mChannelsPerFrame = m_mixMap->GetOutputChannels();
+
+      if (!m_mixerUnit->SetFormat(&mixOutput, kAudioUnitScope_Output, kOutputBus))
         return false;
 
       ret =  AUGraphConnectNodeInput(m_audioGraph, m_mixerUnit->GetNode(), 0, m_audioUnit->GetNode(), 0);
@@ -193,17 +198,13 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
         return false;
       }
 
-      // Update format structure to reflect the desired format from the mixer
-      // The output format of the mixer is identical to the input format, except for the channel count
-      fmt.mChannelsPerFrame = m_mixMap->GetOutputChannels();
-
       UInt32 inputNumber = m_inputUnit->GetBus();
       int channelOffset = GetMixerChannelOffset(inputNumber);
-      if (!CCoreAudioMixMap::SetMixingMatrix(m_mixerUnit, m_mixMap, &inputFormat, &fmt, channelOffset))
+      if (!CCoreAudioMixMap::SetMixingMatrix(m_mixerUnit, m_mixMap, &fmt, &mixOutput, channelOffset))
         return false;
 
       // Regenerate audio format and copy format for the Output AU
-      outputFormat = fmt;
+      outputFormat = mixOutput;
     }
     else
     {
