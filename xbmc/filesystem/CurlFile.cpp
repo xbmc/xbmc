@@ -250,6 +250,7 @@ CCurlFile::CReadState::CReadState()
   m_headerdone = false;
   m_readBuffer = 0;
   m_isPaused = false;
+  m_bRangeAllowed = true;
 }
 
 CCurlFile::CReadState::~CReadState()
@@ -307,8 +308,10 @@ void CCurlFile::CReadState::SetResume(void)
    * request header. If we don't the server may provide different content causing seeking to fail.
    * This only affects HTTP-like items, for FTP it's a null operation.
    */
-  if (m_filePos == 0)
+  if (m_bRangeAllowed && m_filePos == 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-");
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
 }
@@ -899,6 +902,7 @@ bool CCurlFile::Open(const CURL& url)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
 
+  m_state->m_bRangeAllowed = m_seekable; // Only set explicit ranges when stream is seekable
   m_httpresponse = m_state->Connect(m_bufferSize);
   if( m_httpresponse < 0 || m_httpresponse >= 400)
     return false;
@@ -946,6 +950,13 @@ bool CCurlFile::Open(const CURL& url)
       if(m_state->m_httpheader.GetValue("Accept-Ranges").Equals("none"))
         m_seekable = false;
     }
+  }
+
+  // Update seekability
+  if (!m_seekable || !m_state->m_bRangeAllowed)
+  {
+    m_state->m_bRangeAllowed = false;
+    m_seekable = false;
   }
 
   char* efurl;
@@ -1168,9 +1179,11 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     m_state->m_fileSize = oldstate->m_fileSize;
 
   long response = m_state->Connect(m_bufferSize);
-  if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
+  if (!m_state->m_bRangeAllowed || (response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos)))
   {
     m_seekable = false;
+    m_state->m_bRangeAllowed = false;
+
     if(oldstate)
     {
       delete m_state;
@@ -1410,9 +1423,28 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_COULDNT_CONNECT    ||
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
+            {
               CURLresult = msg->data.result;
+            }
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
+                       msg->data.result == CURLE_HTTP_RETURNED_ERROR) &&
+                       m_bFirstLoop)
+            {
+              // If server returns a range or http error, retry with range disabled
+              if (m_bRangeAllowed)
+              {
+                CURLresult = msg->data.result;
+                m_bRangeAllowed = false;
+              }
+              else
+              {
+                return false;
+              }
+            }
             else
+            {
               return false;
+            }
           }
         }
 
