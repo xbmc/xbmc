@@ -119,8 +119,21 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   RM(AE_CH_TFC , AE_CH_TFL, AE_CH_TFR);
   RM(AE_CH_TFR , AE_CH_FR);
   RM(AE_CH_TFL , AE_CH_FL);
-  RM(AE_CH_SR  , AE_CH_BR, AE_CH_FR);
-  RM(AE_CH_SL  , AE_CH_BL, AE_CH_FL);
+
+  // Some 5.1 Setups announce a BR and BL instead of SR and SL - put out SR and SL on those instead
+  if (!m_mixInfo[AE_CH_BL].in_src && !m_mixInfo[AE_CH_BR].in_src && // make sure not to not mix 7.1 channels
+      (m_mixInfo[AE_CH_SL].in_src && !m_mixInfo[AE_CH_SL].in_dst && m_mixInfo[AE_CH_BL].in_dst) &&
+      (m_mixInfo[AE_CH_SR].in_src && !m_mixInfo[AE_CH_SR].in_dst && m_mixInfo[AE_CH_BR].in_dst))
+  {
+    RM(AE_CH_SR  , AE_CH_BR);
+    RM(AE_CH_SL  , AE_CH_BL);
+  }
+  else
+  {
+    RM(AE_CH_SR  , AE_CH_BR, AE_CH_FR);
+    RM(AE_CH_SL  , AE_CH_BL, AE_CH_FL);
+  }
+
   RM(AE_CH_BC  , AE_CH_BL, AE_CH_BR);
   RM(AE_CH_FROC, AE_CH_FR, AE_CH_FC);
   RM(AE_CH_FLOC, AE_CH_FL, AE_CH_FC);
