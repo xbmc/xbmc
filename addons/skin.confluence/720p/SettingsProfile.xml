@@ -68,8 +68,8 @@
 				<posx>10</posx>
 				<posy>90</posy>
 				<width>250</width>
-				<height>80</height>
-				<textoffsety>13</textoffsety>
+				<height>72</height>
+				<textoffsety>8</textoffsety>
 				<label>20096</label>
 				<font>font24_title</font>
 				<align>right</align>
@@ -78,13 +78,13 @@
 				<texturefocus border="5">MenuItemFO.png</texturefocus>
 				<onleft>2</onleft>
 				<onright>2</onright>
-				<onup>4</onup>
-				<ondown>4</ondown>
+				<onup>5</onup>
+				<ondown>5</ondown>
 				<enable>!Window.IsVisible(ProfileSettings)</enable>
 			</control>
 			<control type="label">
 				<posx>250</posx>
-				<posy>135</posy>
+				<posy>130</posy>
 				<width>240</width>
 				<height>25</height>
 				<font>font13</font>
@@ -96,7 +96,7 @@
 			</control>
 			<control type="label">
 				<posx>250</posx>
-				<posy>135</posy>
+				<posy>130</posy>
 				<width>240</width>
 				<height>25</height>
 				<font>font13</font>
@@ -106,9 +106,64 @@
 				<label>1223</label>
 				<visible>!System.HasLoginScreen</visible>
 			</control>
+			<control type="button" id="5"> 
+				<description>Choose auto login user</description> 
+				<posx>10</posx> 
+				<posy>161</posy> 
+				<width>250</width> 
+				<height>72</height> 
+				<textoffsety>8</textoffsety> 
+				<label>31960</label> 
+				<font>font24_title</font> 
+				<align>right</align> 
+				<aligny>top</aligny> 
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus> 
+				<texturefocus border="5">MenuItemFO.png</texturefocus> 
+				<onleft>2</onleft> 
+				<onright>2</onright> 
+				<onup>4</onup> 
+				<ondown>4</ondown> 
+				<visible>!System.HasLoginScreen</visible> 
+				<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable> 
+			</control> 
+			<control type="button"> 
+				<description>Choose auto login user (grayed out)</description> 
+				<posx>10</posx> 
+				<posy>161</posy> 
+				<width>250</width> 
+				<height>72</height> 
+				<textoffsety>8</textoffsety> 
+				<label>31960</label> 
+				<font>font24_title</font> 
+				<textcolor>grey2</textcolor> 
+				<align>right</align> 
+				<aligny>top</aligny> 
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus> 
+				<texturefocus border="5">MenuItemFO.png</texturefocus> 
+				<onleft>2</onleft> 
+				<onright>2</onright> 
+				<onup>4</onup> 
+				<ondown>4</ondown> 
+				<visible>System.HasLoginScreen</visible> 
+				<enable>false</enable> 
+			</control> 
+			<control type="label"> 
+				<posx>247</posx> 
+				<posy>201</posy> 
+				<width>200</width> 
+				<height>25</height> 
+				<font>font13caps</font> 
+				<textcolor>grey2</textcolor> 
+				<align>right</align> 
+ 				<aligny>center</aligny> 
+				<label>$INFO[System.ProfileAutoLogin]</label> 
+				<scroll>Control.HasFocus(5)</scroll> 
+				<scrollspeed>30</scrollspeed> 
+				<visible>!System.HasLoginScreen</visible> 
+			</control> 
 			<control type="group">
 				<posx>20</posx>
-				<posy>210</posy>
+				<posy>260</posy>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -121,7 +176,7 @@
 				</control>
 				<control type="label">
 					<posx>0</posx>
-					<posy>220</posy>
+					<posy>210</posy>
 					<width>240</width>
 					<height>20</height>
 					<font>font12_title</font>
@@ -132,7 +187,7 @@
 				</control>
 				<control type="label">
 					<posx>0</posx>
-					<posy>245</posy>
+					<posy>235</posy>
 					<width>240</width>
 					<height>20</height>
 					<font>font13</font>
@@ -143,7 +198,7 @@
 				</control>
 				<control type="label">
 					<posx>0</posx>
-					<posy>280</posy>
+					<posy>265</posy>
 					<width>240</width>
 					<height>30</height>
 					<font>font12_title</font>
@@ -154,7 +209,7 @@
 				</control>
 				<control type="label">
 					<posx>0</posx>
-					<posy>305</posy>
+					<posy>290</posy>
 					<width>240</width>
 					<height>30</height>
 					<font>font13</font>
