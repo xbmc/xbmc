@@ -12,12 +12,12 @@
 			<aspectratio>stretch</aspectratio>
 			<texture>BlackTransparent.png</texture>
 			<colordiffuse>99cccccc</colordiffuse>
-			<include>DialogQuickFade</include>
+			<include>DialogFadeInOut</include>
 		</control>
 		<control type="group">
 			<posx>448</posx>
 			<posy>250</posy>
-			<include>DialogQuickFade</include>
+			<include>DialogFadeInOut</include>
 			<control type="image">
 				<texture>DialogContextTop.png</texture>
 				<posx>0</posx>
