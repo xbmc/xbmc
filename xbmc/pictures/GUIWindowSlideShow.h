@@ -145,7 +145,7 @@ private:
   int m_iCurrentPic;
   // background loader
   CBackgroundPicLoader* m_pBackgroundLoader;
-  bool m_bWaitForNextPic;
+  int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
   bool m_bReloadImage;
   DllImageLib m_ImageLib;

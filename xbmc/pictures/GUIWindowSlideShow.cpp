@@ -244,6 +244,7 @@ void CGUIWindowSlideShow::Reset()
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
   m_iDirection = 1;
+  m_iLastFailedNextSlide = -1;
   CSingleLock lock(m_slideSection);
   m_slides->Clear();
   AnnouncePlaylistClear();
@@ -424,36 +425,55 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_bErrorMessage)
   { // we have an error when loading either the current or next picture
     // check to see if we have a picture loaded
-    CLog::Log(LOGDEBUG, "We have an error loading a picture!");
-    if (m_Image[m_iCurrentPic].IsLoaded())
-    { // Yes.  Let's let it transistion out, wait for it to be released, then try loading again.
-      CLog::Log(LOGERROR, "Error loading the next image %s", m_slides->Get(m_iNextSlide)->GetPath().c_str());
-      if (!bSlideShow)
-      { // tell the pic to start transistioning out now
-        m_Image[m_iCurrentPic].StartTransistion();
-        m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSISTION_TIME); // only 20 frames for the transistion
+    CLog::Log(LOGDEBUG, "We have an error loading picture %d!", m_pBackgroundLoader->SlideNumber());
+    if (m_iCurrentSlide == m_pBackgroundLoader->SlideNumber())
+    {
+      if (m_Image[m_iCurrentPic].IsLoaded())
+      {
+        // current image was already loaded, so we can ignore this error.
+        m_bReloadImage = false;
+        m_bErrorMessage = false;
       }
-      m_bWaitForNextPic = true;
+      else
+      {
+        CLog::Log(LOGERROR, "Error loading the current image %d: %s", m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
+        if (!m_slides->Get(m_iCurrentPic)->IsVideo())
+        {
+          // try next if we are in slideshow
+          CLog::Log(LOGINFO, "set image %s unplayable", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
+          m_slides->Get(m_iCurrentSlide)->SetProperty("unplayable", true);
+        }
+        if (m_bLoadNextPic || (bSlideShow && !m_bPause && !m_slides->Get(m_iCurrentPic)->IsVideo()))
+        {
+          // change to next item, wait loading.
+          m_iCurrentSlide = m_iNextSlide;
+          m_iNextSlide    = GetNextSlide();
+          m_bErrorMessage = false;
+        }
+        // else just drop through - there's nothing we can do (error message will be displayed)
+      }
+    }
+    else if (m_iNextSlide == m_pBackgroundLoader->SlideNumber())
+    {
+      CLog::Log(LOGERROR, "Error loading the next image %d: %s", m_iNextSlide, m_slides->Get(m_iNextSlide)->GetPath().c_str());
+      // load next image failed, then skip to load next of next if next is not video.
+      if (!m_slides->Get(m_iNextSlide)->IsVideo())
+      {
+        CLog::Log(LOGINFO, "set image %s unplayable", m_slides->Get(m_iNextSlide)->GetPath().c_str());
+        m_slides->Get(m_iNextSlide)->SetProperty("unplayable", true);
+        // change to next item, wait loading.
+        m_iNextSlide = GetNextSlide();
+      }
+      else
+      { // prevent reload the next pic and repeat fail.
+        m_iLastFailedNextSlide = m_iNextSlide;
+      }
       m_bErrorMessage = false;
     }
     else
-    { // No.  Not much we can do here.  If we're in a slideshow, we mayaswell move on to the next picture
-      // change to next image
-      if (bSlideShow)
-      {
-        CLog::Log(LOGERROR, "Error loading the current image %s", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
-        m_iCurrentSlide = m_iNextSlide;
-        m_iNextSlide    = GetNextSlide();
-        ShowNext();
-        m_bErrorMessage = false;
-      }
-      else if (m_bLoadNextPic)
-      {
-        m_iCurrentSlide = m_iNextSlide;
-        m_iNextSlide    = GetNextSlide();
-        m_bErrorMessage = false;
-      }
-      // else just drop through - there's nothing we can do (error message will be displayed)
+    { // Non-current and non-next slide, just ignore error.
+      CLog::Log(LOGERROR, "Error loading the non-current non-next image %d/%d: %s", m_iNextSlide, m_pBackgroundLoader->SlideNumber(), m_slides->Get(m_iNextSlide)->GetPath().c_str());
+      m_bErrorMessage = false;
     }
   }
 
@@ -480,7 +500,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
                      (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, picturePath, maxWidth, maxHeight);
-      m_bWaitForNextPic = false;
+      m_iLastFailedNextSlide = -1;
       m_bLoadNextPic = false;
     }
   }
@@ -492,7 +512,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // if we're reloading current image
   if (m_bReloadImage)
   {
-    if (m_bWaitForNextPic || m_slides->Get(m_iCurrentSlide)->IsVideo())
+    if (m_bLoadNextPic || m_slides->Get(m_iCurrentSlide)->IsVideo())
     {
       // not reload current if we already wait the next or curent one is video thumb.
       m_bReloadImage = false;
@@ -519,8 +539,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
   else
   {
-    if (m_iNextSlide != m_iCurrentSlide && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
+    if (m_iNextSlide != m_iCurrentSlide && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && m_iLastFailedNextSlide != m_iNextSlide)
     { // load the next image
+      m_iLastFailedNextSlide = -1;
       CFileItemPtr item = m_slides->Get(m_iNextSlide);
       CStdString picturePath = GetPicturePath(item.get());
       if (!picturePath.IsEmpty())
