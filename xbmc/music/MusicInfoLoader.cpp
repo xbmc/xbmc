@@ -154,13 +154,12 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
         m_databaseHits++;
       }
 
-      CSong *song=NULL;
-
-      if ((song=m_songsMap.Find(pItem->GetPath()))!=NULL)
+      MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath());
+      if (it != m_songsMap.end())
       {  // Have we loaded this item from database before
-        pItem->GetMusicInfoTag()->SetSong(*song);
-        if (!song->strThumb.empty())
-          pItem->SetArt("thumb", song->strThumb);
+        pItem->GetMusicInfoTag()->SetSong(it->second);
+        if (!it->second.strThumb.empty())
+          pItem->SetArt("thumb", it->second.strThumb);
       }
       else if (pItem->IsMusicDb())
       { // a music db item that doesn't have tag loaded - grab details from the database
@@ -198,7 +197,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 void CMusicInfoLoader::OnLoaderFinish()
 {
   // cleanup last loaded songs from database
-  m_songsMap.Clear();
+  m_songsMap.clear();
 
   // cleanup cache loaded from HD
   m_mapFileItems->Clear();

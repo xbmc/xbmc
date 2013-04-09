@@ -483,7 +483,7 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
   bool bCanceled;
   if (CGUIDialogYesNo::ShowAndGetInput(522,20340,20341,20022,bCanceled))
   {
-    CSongMap songs;
+    MAPSONGS songs;
     CMusicDatabase database;
     database.Open();
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(),songs,false);

@@ -117,12 +117,18 @@ public:
   bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
   bool HasAlbumInfo(int idAlbum);
   bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
+
+  /*! \brief Check if an artist entity has additional metadata (scraped)
+   \param idArtist the id of the Artist to check
+   \return true or false - whether the artist has metadata
+   */
+  bool HasArtistInfo(int idArtist);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset = 0);
   int GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(int idSong, CSong& song);
   bool GetSongByKaraokeNumber( int number, CSong& song );
   bool SetKaraokeSongDelay( int idSong, int delay );
-  bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
+  bool GetSongsByPath(const CStdString& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
   bool GetAlbumFromSong(int idSong, CAlbum &album);
@@ -148,7 +154,7 @@ public:
    \param item CFileItem to increment the playcount for
    */
   void IncrementPlayCount(const CFileItem &item);
-  bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact=true);
+  bool RemoveSongsFromPath(const CStdString &path, MAPSONGS& songs, bool exact=true);
   bool CleanupOrphanedItems();
   bool GetPaths(std::set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
