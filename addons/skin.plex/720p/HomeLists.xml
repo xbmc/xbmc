@@ -55,7 +55,7 @@
 			<visible>[Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11004) + Control.IsVisible(11003)]</visible>
 			<animation effect="slide" start="0,0" end="0,220" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11000) | Control.HasFocus(11003)">Conditional</animation>
 			<animation effect="slide" start="0,220" end="0,0" time="200" reversible="false" tween="quadratic" easing="out" condition="Control.HasFocus(11001) | Control.HasFocus(11004)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="0,110" time="200" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,110" time="200" reversible="false" tween="quadratic" easing="out" condition="[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)]">Conditional</animation>
 		</control>
 		<!-- alone -->
 		<control type="image">
