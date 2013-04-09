@@ -107,6 +107,10 @@ public:
 
   bool operator==(const CDemuxStream& right)      { return Equal( CDVDStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDVDStreamInfo(right, true), true);}
-  void operator=(const CDemuxStream& right)      { Assign(right, true); }
 
+  CDVDStreamInfo& operator=(const CDemuxStream& right)
+  { 
+    Assign(right, true);
+    return *this;
+  }
 };
