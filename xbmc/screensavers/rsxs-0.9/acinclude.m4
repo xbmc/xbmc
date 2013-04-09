@@ -516,12 +516,12 @@ AC_DEFUN([MAC_PKG_PNG], [
 					AC_CACHE_CHECK(
 						[whether libpng supports setjmp],
 						mac_cv_libpng_supports_setjmp, [
-							AC_COMPILE_IFELSE([
+							AC_COMPILE_IFELSE([AC_LANG_SOURCE([
 @%:@include <png.h>
 @%:@if !defined PNG_SETJMP_SUPPORTED
 @%:@error PNG_SETJMP_SUPPORTED not defined
 @%:@endif
-							], [mac_cv_libpng_supports_setjmp=yes], [mac_cv_libpng_supports_setjmp=no]
+							])], [mac_cv_libpng_supports_setjmp=yes], [mac_cv_libpng_supports_setjmp=no]
 							)
 						]
 					)
