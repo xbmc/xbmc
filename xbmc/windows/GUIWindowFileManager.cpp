@@ -987,7 +987,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   CContextButtons choices;
   if (item >= 0)
   {
-    choices.Add(1, 188); // SelectAll
+    //The ".." item is not selectable. Take that into account when figuring out if all items are selected
+    int notSelectable = CSettings::Get().GetBool("filelists.showparentdiritems") ? 1 : 0;
+    if (NumSelected(list) <  m_vecItems[list]->Size() - notSelectable)
+      choices.Add(1, 188); // SelectAll
     if (!pItem->IsParentFolder())
       choices.Add(2,  XFILE::CFavouritesDirectory::IsFavourite(pItem.get(), GetID()) ? 14077 : 14076); // Add/Remove Favourite
     if (vecCores.size() > 1)
