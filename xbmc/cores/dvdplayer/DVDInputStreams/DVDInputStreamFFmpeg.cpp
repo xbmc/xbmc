@@ -24,6 +24,7 @@ using namespace XFILE;
 
 CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
+  , m_aborted(false)
 {
 
 }
@@ -35,7 +36,10 @@ CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
 
 bool CDVDInputStreamFFmpeg::IsEOF()
 {
-  return false;
+  if(m_aborted)
+    return true;
+  else
+    return false;
 }
 
 bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content)
@@ -43,6 +47,7 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
   if (!CDVDInputStream::Open(strFile, content))
     return false;
 
+  m_aborted   = false;
   return true;
 }
 
