@@ -525,6 +525,9 @@ bool COMXPlayer::CloseFile()
   if(m_pSubtitleDemuxer)
     m_pSubtitleDemuxer->Abort();
 
+  if(m_pInputStream)
+    m_pInputStream->Abort();
+
   CLog::Log(LOGDEBUG, "COMXPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up
