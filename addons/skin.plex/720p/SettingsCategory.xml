@@ -3,7 +3,6 @@
 	<defaultcontrol>3</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<backgroundcolor>0</backgroundcolor>
-	<include>WindowOpenFade</include>
 	<controls>
 		<!-- bg's -->
 		<include>SlideshowDimmed</include>
@@ -17,5 +16,6 @@
 		<!-- Widgets -->
 		<include>Clock</include>
 		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>

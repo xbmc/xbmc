@@ -14,6 +14,13 @@
 				<posy>9</posy>
 				<width>390</width>
 				<height>390</height>
+				<texture>default-square-big.png</texture>
+			</control>
+			<control type="image">
+				<posx>9</posx>
+				<posy>9</posy>
+				<width>390</width>
+				<height>390</height>
 				<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
 				<aspectratio scalediffuse="false">scale</aspectratio>
 			</control>
@@ -27,6 +34,13 @@
 				<width>256</width>
 				<height>256</height>
 				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<posx>9</posx>
+				<posy>9</posy>
+				<width>230</width>
+				<height>230</height>
+				<texture>default-square-small.png</texture>
 			</control>
 			<control type="image">
 				<posx>9</posx>

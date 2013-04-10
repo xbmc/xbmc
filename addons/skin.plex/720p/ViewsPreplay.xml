@@ -151,6 +151,13 @@
 			<posy>13</posy>
 			<width>198</width>
 			<height>105</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>198</width>
+			<height>105</height>
 			<texture background="true" diffuse="mask-clip-small.png">$INFO[ListItem.Thumb]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -242,6 +249,13 @@
 			<posy>13</posy>
 			<width>182</width>
 			<height>273</height>
+			<texture background="true">default-poster-middle.png</texture>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>182</width>
+			<height>273</height>
 			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -251,6 +265,26 @@
 			<width>188</width>
 			<height>279</height>
 			<include>Border</include>
+		</control>
+	</include>
+	<!-- poster movie -->
+	<include name="MoviePosterBig">
+		<control type="largeimage">
+			<posy>77</posy>
+			<posx>117</posx>
+			<width>360</width>
+			<height>540</height>
+			<texture background="true">default-poster-big.png</texture>
+		</control>
+		<control type="largeimage">
+			<posy>77</posy>
+			<posx>117</posx>
+			<width>360</width>
+			<height>540</height>
+			<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
+			<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(bigPoster)]</texture>-->
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 		</control>
 	</include>
 	<!-- audio/subtitles buttons -->
@@ -957,85 +991,7 @@
 				<include>PlotFormat</include>
 			</control>
 			<!-- MediaFlags -->
-			<control type="group">
-				<!-- Tech Flags -->
-				<control type="grouplist">
-					<posy>675</posy>
-					<posx>60</posx>
-					<width>447</width>
-					<align>center</align>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<!-- Default -->
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<!-- Optional -->
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-				</control>
-				<!-- Studio -->
-				<control type="image">
-					<posy>658</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>50</height>
-					<texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-			</control>
+			<include>MediaFlags</include>
 			<!-- Dummy Play Button -->
 			<control type="button" id="99">
 				<description>Dummy Play Button</description>
@@ -1088,16 +1044,7 @@
 				</control>
 			</control>
 			<!-- poster -->
-			<control type="largeimage">
-				<posy>77</posy>
-				<posx>117</posx>
-				<width>360</width>
-				<height>540</height>
-				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
-				<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(bigPoster)]</texture>-->
-				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			</control>
+			<include>MoviePosterBig</include>
 			<!-- Infos Left -->
 			<control type="grouplist">
 				<orientation>vertical</orientation>
@@ -1250,85 +1197,7 @@
 				<include>PlotFormat</include>
 			</control>
 			<!-- MediaFlags -->
-			<control type="group">
-				<!-- Tech Flags -->
-				<control type="grouplist">
-					<posy>675</posy>
-					<posx>60</posx>
-					<width>447</width>
-					<align>center</align>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<!-- Default -->
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>true</visible>
-					</control>
-					<!-- Optional -->
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-					<control type="image">
-						<width min="29" max="100">auto</width>
-						<height>18</height>
-						<texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>false</visible>
-					</control>
-				</control>
-				<!-- Studio -->
-				<control type="image">
-					<posy>658</posy>
-					<posx>140r</posx>
-					<width>100</width>
-					<height>50</height>
-					<texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>
-					<aspectratio align="right" aligny="center">keep</aspectratio>
-					<colordiffuse>FF999999</colordiffuse>
-					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-					<visible>true</visible>
-				</control>
-			</control>
+			<include>MediaFlags</include>
 			<!-- Dummy Play Button -->
 			<control type="button" id="99">
 				<description>Dummy Play Button</description>

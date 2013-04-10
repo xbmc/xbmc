@@ -442,6 +442,13 @@
 			<include>PosListItem</include>
 			<width>117</width>
 			<height>176</height>
+			<texture background="true">default-poster-small.png</texture>
+			<visible>!ListItem.Type(episode)</visible>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>117</width>
+			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
 			<visible>!ListItem.Type(episode)</visible>
@@ -460,6 +467,14 @@
 			<width>145</width>
 			<height>205</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>123</width>
+			<height>182</height>
+			<texture background="true">default-poster-small.png</texture>
+			<include>Border</include>
+			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
@@ -571,6 +586,12 @@
 			<include>PosListItem</include>
 			<width>125</width>
 			<height>125</height>
+			<texture background="true">default-square-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>125</width>
+			<height>125</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
 		</control>
@@ -582,6 +603,13 @@
 			<width>149</width>
 			<height>149</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>131</width>
+			<height>131</height>
+			<texture background="true">default-square-small.png</texture>
+			<include>Border</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
@@ -637,6 +665,12 @@
 			<width>221</width>
 			<height>142</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>195</width>
+			<height>116</height>
+			<texture background="true">default-thumb-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>

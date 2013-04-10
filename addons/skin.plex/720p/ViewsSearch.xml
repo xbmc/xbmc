@@ -66,6 +66,12 @@
 			<include>PosListItem</include>
 			<width>116</width>
 			<height>176</height>
+			<texture background="true">default-poster-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>116</width>
+			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
 			<visible>!ListItem.Type(episode)</visible>
@@ -84,6 +90,12 @@
 			<width>148</width>
 			<height>210</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>122</width>
+			<height>182</height>
+			<texture background="true">default-poster-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
@@ -195,6 +207,12 @@
 			<include>PosListItem</include>
 			<width>116</width>
 			<height>116</height>
+			<texture background="true">default-square-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>116</width>
+			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
 		</control>
@@ -206,6 +224,12 @@
 			<width>140</width>
 			<height>140</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>122</width>
+			<height>122</height>
+			<texture background="true">default-square-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
@@ -266,6 +290,12 @@
 			<include>PosListItem</include>
 			<width>116</width>
 			<height>146</height>
+			<texture background="true">default-poster-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>116</width>
+			<height>146</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
 		</control>
@@ -307,6 +337,12 @@
 			<include>PosListItem</include>
 			<width>195</width>
 			<height>106</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>195</width>
+			<height>106</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Thumb]</texture>
 		</control>
@@ -316,6 +352,12 @@
 			<width>227</width>
 			<height>138</height>
 			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>201</width>
+			<height>112</height>
+			<texture background="true">default-thumb-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>

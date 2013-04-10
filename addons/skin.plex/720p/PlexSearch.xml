@@ -2,12 +2,12 @@
 <window id="51">
 	<defaultcontrol always="true">65</defaultcontrol>
 	<backgroundcolor>0</backgroundcolor>
-	<include>WindowOpenFade</include>
 	<controls>
 		<include>BGGrainy</include>
 		<include>SlideshowDimmed</include>
 		<!-- ViewsSearch.xml -->
 		<include>SearchMain</include>
 		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>

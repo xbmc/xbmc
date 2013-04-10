@@ -18,12 +18,12 @@
 			<aspectratio>stretch</aspectratio>
 			<texture>BlackTransparent.png</texture>
 			<colordiffuse>99cccccc</colordiffuse>
-			<include>DialogQuickFade</include>
+			<include>DialogFadeInOut</include>
 		</control>
 		<control type="group">
 			<posx>448</posx>
 			<posy>240</posy>
-			<include>DialogQuickFade</include>
+			<include>DialogFadeInOut</include>
 			<!-- "off" dialog -->
 			<control type="group">
 				<description>"Off" background</description>

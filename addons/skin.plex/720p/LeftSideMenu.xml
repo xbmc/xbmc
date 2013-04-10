@@ -390,6 +390,8 @@
 						<include>leftMenuFormat</include>
 						<include>leftMenuFilterRadioButton</include>
 						<label>Show all media flags</label>
+						<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
+						<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
 					</control>
 					<control type="button" id="152">
 						<textoffsetx>35</textoffsetx>

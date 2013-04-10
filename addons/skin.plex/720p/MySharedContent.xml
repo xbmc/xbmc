@@ -3,7 +3,6 @@
 	<defaultcontrol>777</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<backgroundcolor>0</backgroundcolor>
-	<include>WindowOpenFade</include>
 	<controls>
 		<!-- views (ViewsSharedContent.xml) -->
 		<include>SharedContent</include>
@@ -11,5 +10,6 @@
 		<include>TopBar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>

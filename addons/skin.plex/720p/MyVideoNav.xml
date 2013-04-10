@@ -5,7 +5,6 @@
 	<allowoverlay>yes</allowoverlay>
 	<onunload>SetFocus(777)</onunload>
 	<backgroundcolor>0</backgroundcolor>
-	<include>WindowOpenFade</include>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
@@ -32,5 +31,6 @@
 		<!--><include>CommonSortLetters</include>-->
 		<include>debugInfos</include>
 		<include>Grid</include>
+		<include>WindowFade</include>
 	</controls>
 </window>
