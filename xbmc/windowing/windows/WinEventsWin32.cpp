@@ -432,11 +432,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_SHOWWINDOW:
       {
-        bool active = g_application.m_AppActive;
-        g_application.m_AppActive = wParam != 0;
-        if (g_application.m_AppActive != active)
-          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
-        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
+        bool active = g_application.GetRenderGUI();
+        g_application.SetRenderGUI(wParam != 0);
+        if (g_application.GetRenderGUI() != active)
+          g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.GetRenderGUI() ? "shown" : "hidden");
       }
       break;
     case WM_ACTIVATE:
@@ -444,10 +444,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if( WA_INACTIVE != wParam )
           g_Joystick.Reinitialize();
 
-        bool active = g_application.m_AppActive;
+        bool active = g_application.GetRenderGUI();
         if (HIWORD(wParam))
         {
-          g_application.m_AppActive = false;
+          g_application.SetRenderGUI(false);
         }
         else
         {
@@ -456,16 +456,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           if (LOWORD(wParam) != WA_INACTIVE)
           {
             if (GetWindowPlacement(hWnd, &lpwndpl))
-              g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+              g_application.SetRenderGUI(lpwndpl.showCmd != SW_HIDE);
           }
           else
           {
-            g_application.m_AppActive = g_Windowing.WindowedMode();
+            g_application.SetRenderGUI(g_Windowing.WindowedMode());
           }
         }
-        if (g_application.m_AppActive != active)
-          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
-        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
+        if (g_application.GetRenderGUI() != active)
+          g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
       }
       break;
     case WM_SETFOCUS:

@@ -376,6 +376,7 @@ public:
 
   CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);
+  bool GetRenderGUI() const { return m_renderGUI; };
 
   bool SetLanguage(const CStdString &strLanguage);
 protected:
