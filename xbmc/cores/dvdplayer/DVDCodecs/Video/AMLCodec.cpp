@@ -1514,9 +1514,16 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     // stupid PVR hacks because it does not fill in all of hints.
     if (hints.codec == CODEC_ID_MPEG2VIDEO)
     {
-      am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 30000;
+      if (hints.width <= 720 && hints.height <= 480)
+        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 30000;
+      else
+        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1000 / 25000;
+
+
       if (hints.width == 1280)
-        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 60000;;
+        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 60000;
+      else if (hints.width == 1920)
+        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 30000;
     }
   }
   // check for 1920x1080, interlaced, 25 fps
@@ -1668,6 +1675,17 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
+
+/*
+  // if display is set to 1080xxx, then disable deinterlacer for HD content
+  // else bandwidth usage is too heavy and it will slow down video decoder.
+  char display_mode[256] = {0};
+  aml_get_sysfs_str("/sys/class/display/mode", display_mode, 255);
+  if (strstr(display_mode,"1080"))
+    aml_set_sysfs_int("/sys/module/di/parameters/bypass_all", 1);
+  else
+    aml_set_sysfs_int("/sys/module/di/parameters/bypass_all", 0);
+*/
 
   m_opened = true;
   // vcodec is open, update speed if it was
@@ -1939,7 +1957,7 @@ void CAMLCodec::Process()
 
         double error = app_pts - (double)pts_video/PTS_FREQ;
         double abs_error = fabs(error);
-        if (abs_error > 0.040)
+        if (abs_error > 0.150)
         {
           //CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", error);
           if (abs_error > 0.125)
