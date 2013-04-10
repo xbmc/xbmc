@@ -62,7 +62,7 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRManager::CPVRManager(void) :
-    CThread("PVR manager"),
+    CThread("PVRManager"),
     m_channelGroups(NULL),
     m_recordings(NULL),
     m_timers(NULL),

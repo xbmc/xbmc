@@ -68,7 +68,7 @@ public:
 OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDOverlayContainer* pOverlayContainer,
                                CDVDMessageQueue& parent)
-: CThread("COMXPlayerVideo")
+: CThread("OMXPlayerVideo")
 , m_messageQueue("video")
 , m_codecname("")
 , m_messageParent(parent)

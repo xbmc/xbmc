@@ -48,7 +48,7 @@ using namespace XFILE;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CRssReader::CRssReader() : CThread("CRssReader")
+CRssReader::CRssReader() : CThread("RSSReader")
 {
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;

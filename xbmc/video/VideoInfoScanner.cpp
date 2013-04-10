@@ -57,7 +57,7 @@ using namespace ADDON;
 namespace VIDEO
 {
 
-  CVideoInfoScanner::CVideoInfoScanner() : CThread("CVideoInfoScanner")
+  CVideoInfoScanner::CVideoInfoScanner() : CThread("VideoInfoScanner")
   {
     m_bRunning = false;
     m_handle = NULL;

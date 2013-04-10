@@ -30,7 +30,7 @@ class CTestBitstreamStatsThread : public CThread
 {
 public:
   CTestBitstreamStatsThread() :
-    CThread("CTestBitstreamStatsThread"){}
+    CThread("TestBitstreamStats"){}
   
 };
 

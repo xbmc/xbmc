@@ -42,7 +42,7 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 
 CShoutcastFile::CShoutcastFile() :
-  IFile(), CThread("Shoutcast file")
+  IFile(), CThread("ShoutcastFile")
 {
   m_discarded = 0;
   m_currint = 0;

@@ -72,7 +72,7 @@ class thread
 //  inline thread(const thread& other) { }
 public:
   inline explicit thread(IRunnable& runnable) : 
-    f(&runnable), cthread(new CThread(f, "dumb thread"))
+    f(&runnable), cthread(new CThread(f, "DumbThread"))
   {
     cthread->Create();
   }

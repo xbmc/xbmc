@@ -70,7 +70,7 @@ static jint GetStaticIntField(JNIEnv *jenv, std::string class_name, std::string 
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
-  : CThread("audiotrack")
+  : CThread("AudioTrack")
 {
   m_sinkbuffer = NULL;
   m_alignedS16LE = NULL;

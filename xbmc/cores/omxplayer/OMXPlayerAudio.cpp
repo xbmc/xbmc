@@ -63,7 +63,7 @@ public:
 };
 
 OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
-: CThread("COMXPlayerAudio")
+: CThread("OMXPlayerAudio")
 , m_messageQueue("audio")
 , m_messageParent(parent)
 {
