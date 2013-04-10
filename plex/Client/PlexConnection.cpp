@@ -2,6 +2,8 @@
 
 #include "filesystem/CurlFile.h"
 
+#include <boost/algorithm/string.hpp>
+
 using namespace XFILE;
 
 CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, const CStdString& token) :
@@ -19,7 +21,12 @@ CURL
 CPlexConnection::BuildURL(const CStdString &path) const
 {
   CURL ret(m_url);
-  ret.SetFileName(path);
+  CStdString p(path);
+
+  if (boost::starts_with(path, "/"))
+    p = path.substr(1, std::string::npos);
+
+  ret.SetFileName(p);
 
   if (!m_token.empty())
     ret.SetOption(GetAccessTokenParameter(), GetAccessToken());

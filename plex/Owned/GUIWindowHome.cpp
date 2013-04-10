@@ -608,9 +608,16 @@ void CGUIWindowHome::UpdateSections()
     return;
   }
 
-//  vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
+  vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
   vector<CGUIListItemPtr> newList;
+
+  for (int i = 0; i < oldList.size(); i ++)
+  {
+    CGUIListItemPtr item = oldList[i];
+    if (!item->HasProperty("plex"))
+      newList.push_back(item);
+  }
 
   for (int i = 0; i < sections->Size(); i ++)
   {

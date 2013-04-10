@@ -146,11 +146,11 @@ void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &k
   if (!mediaTagVersion.empty())
     mediaTagUrl.SetOption("t", mediaTagVersion);
 
-  //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaFlag::Process MEDIATAG: mediaTag::%s = %s", key.c_str(), mediaTagUrl.Get().c_str());
+  //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaFlag::Process MEDIATAG: mediaTag::%s = %s | mediaTag-%s = %s", key.c_str(), mediaTagUrl.Get().c_str(), key.c_str(), value.c_str());
   CPlexAttributeParserMediaUrl::Process(url, "mediaTag::" + key, mediaTagUrl.Get(), item);
 
   /* also store the raw value */
-  item.SetProperty(value, key);
+  item.SetProperty("mediaTag-" + key, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

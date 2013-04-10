@@ -251,6 +251,55 @@ string PlexUtils::GetMachinePlatformVersion()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetStreamChannelName(CFileItemPtr item)
+{
+  int64_t channels = item->GetProperty("channels").asInteger();
+
+  if (channels == 1)
+    return "Mono";
+  else if (channels == 2)
+    return "Stereo";
+
+  return boost::lexical_cast<std::string>(channels - 1) + ".1";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetStreamCodecName(CFileItemPtr item)
+{
+  std::string codec = item->GetProperty("codec").asString();
+  if (codec == "dca")
+    return "DTS";
+
+  return boost::to_upper_copy(codec);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+CFileItemPtr PlexUtils::GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType)
+{
+  BOOST_FOREACH(CFileItemPtr stream, mediaPart->m_mediaPartStreams)
+  {
+    int64_t _streamType = stream->GetProperty("streamType").asInteger();
+    bool selected = stream->GetProperty("selected").asBoolean();
+    if (_streamType == streamType && selected)
+      return stream;
+  }
+
+  return CFileItemPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PlexUtils::SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id)
+{
+  BOOST_FOREACH(CFileItemPtr stream, mediaPart->m_mediaPartStreams)
+  {
+    if (stream->GetProperty("streamType").asInteger() == streamType && stream->GetProperty("id").asInteger() == id)
+      stream->SetProperty("selected", true);
+    else
+      stream->SetProperty("selected", false);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
 
 int usleep(useconds_t useconds)

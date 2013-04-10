@@ -96,6 +96,10 @@
 #include "URL.h"
 #include "utils/log.h"
 
+/* PLEX */
+#include "plex/FileSystem/PlexFile.h"
+/* END PLEX */
+
 using namespace XFILE;
 
 CFileFactory::CFileFactory()

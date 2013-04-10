@@ -15,8 +15,11 @@
 #include "PlexAttributeParser.h"
 #include "PlexDirectoryTypeParser.h"
 
+#include "video/VideoInfoTag.h"
+
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap.hpp>
+#include <boost/foreach.hpp>
 #include <map>
 
 using namespace XFILE;
@@ -53,6 +56,12 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_PLAYLIST, "playlist")
                                     (PLEX_DIR_TYPE_CHANNEL, "channel")
                                     (PLEX_DIR_TYPE_SECONDARY, "secondary")
+                                    (PLEX_DIR_TYPE_GENRE, "genre")
+                                    (PLEX_DIR_TYPE_ROLE, "role")
+                                    (PLEX_DIR_TYPE_WRITER, "writer")
+                                    (PLEX_DIR_TYPE_PRODUCER, "producer")
+                                    (PLEX_DIR_TYPE_COUNTRY, "country")
+                                    (PLEX_DIR_TYPE_DIRECTOR, "director")
                                     ;
 
 
@@ -90,6 +99,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<std::pair<CStdString
                                      ("allowSync", _BOOL)
                                      ("secondary", _BOOL)
                                      ("search", _BOOL)
+                                     ("selected", _BOOL)
 
                                      ("key", _KEY)
                                      ("theme", _KEY)
@@ -119,10 +129,6 @@ static AttributeMap g_attributeMap = boost::assign::list_of<std::pair<CStdString
                                      ("title", _LABEL);
 
 static CPlexAttributeParserBase* g_defaultAttr = new CPlexAttributeParserBase;
-
-CPlexDirectory::CPlexDirectory()
-{
-}
 
 void
 CPlexDirectory::CopyAttributes(TiXmlElement* el, CFileItem& item, const CURL &url)
@@ -207,6 +213,49 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
   }
 }
 
+void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
+{
+  /* Wait for the agumentation to return for 5 seconds */
+  CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation waiting for augmentation to download...");
+  if (m_augmentationEvent.WaitMSec(5 * 1000))
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation got it...");
+    if (m_augmentedItem && m_augmentedItem->Size() > 0)
+    {
+      CFileItemPtr augItem = m_augmentedItem->Get(0);
+      if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON &&
+          augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
+      {
+        /* Augmentation of seasons works like this:
+         * We load metadata/XX/children as our main url
+         * then we load metadata/XX as augmentation, then we
+         * augment our main CFileItem with information from the
+         * first subitem from the augmentation URL.
+         */
+
+        std::pair<CStdString, CVariant> p;
+        BOOST_FOREACH(p, augItem->m_mapProperties)
+        {
+          /* we only insert the properties if they are not available */
+          if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
+          {
+            fileItems.m_mapProperties[p.first] = p.second;
+          }
+
+          fileItems.AppendArt(augItem->GetArt());
+
+          CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
+          CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
+          infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+        }
+      }
+
+    }
+  }
+  else
+    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
+}
+
 bool
 CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer)
 {
@@ -219,7 +268,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   /* common attributes */
   mediaContainer.SetPath(m_url.Get());
   mediaContainer.SetProperty("plex", true);
-  mediaContainer.SetProperty("plexserver", m_url.GetFileName());
+  mediaContainer.SetProperty("plexserver", m_url.GetHostName());
 
   CPlexDirectory::CopyAttributes(root, mediaContainer, m_url);
   ReadChildren(root, mediaContainer);
@@ -244,21 +293,42 @@ CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems
 {
   m_url = CURL(strPath);
 
-  CXBMCTinyXML doc;
-
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", strPath.c_str());
+
+  if (boost::ends_with(m_url.GetFileName(), "/children/"))
+  {
+    m_augmentedURL = m_url;
+    CStdString newFile = m_url.GetFileName();
+    boost::replace_last(newFile, "/children", "");
+    m_augmentedURL.SetFileName(newFile);
+  }
+
+  bool isAugmented = !m_augmentedURL.Get().empty();
+
+  if (isAugmented)
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory requesting augmentation from URL %s", m_augmentedURL.Get().c_str());
+    AddJob(new CPlexDirectoryFetchJob(m_augmentedURL));
+  }
+
+  CXBMCTinyXML doc;
 
   if (!doc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", strPath.c_str());
+    CancelJobs();
     return false;
   }
 
   if (!ReadMediaContainer(doc.RootElement(), fileItems))
   {
     CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", strPath.c_str());
+    CancelJobs();
     return false;
   }
+
+  if (isAugmented)
+    DoAugmentation(fileItems);
 
   return true;
 }
@@ -323,4 +393,27 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
   }
 
   return content;
+}
+
+void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CLog::Log(LOGDEBUG, "CPlexDirectory::OnJobComplete Augmentationjob complete...");
+
+  if (success)
+  {
+    CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
+    m_augmentedItem = fjob->m_items;
+  }
+
+  m_augmentationEvent.Set();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::CPlexDirectoryFetchJob::DoWork()
+{
+  CPlexDirectory dir;
+
+  m_items = CFileItemListPtr(new CFileItemList);
+  return dir.GetDirectory(m_url.Get(), *m_items);
 }

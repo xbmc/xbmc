@@ -409,6 +409,8 @@ CFileItem::~CFileItem(void)
   /* PLEX */
   m_contextItems.clear();
   m_mediaParts.clear();
+  m_mediaItems.clear();
+  m_mediaPartStreams.clear();
   /* END PLEX */
 }
 
@@ -552,6 +554,8 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mapProperties.clear();
   m_mapProperties = item.m_mapProperties;
   m_mediaParts = item.m_mediaParts;
+  m_mediaItems = item.m_mediaItems;
+  m_plexDirectoryType = item.m_plexDirectoryType;
   /* END PLEX */
 
   return *this;
@@ -616,6 +620,10 @@ void CFileItem::Reset()
   m_iBitrate = 0;
   m_includeStandardContextItems = true;
   m_bIsPopupMenuItem = false;
+  m_mediaItems.clear();
+  m_mediaParts.clear();
+  m_mediaPartStreams.clear();
+  m_plexDirectoryType = PLEX_DIR_TYPE_UNKNOWN;
   /* END PLEX */
 
   SetInvalid();

@@ -19,14 +19,36 @@
 #include <map>
 
 #include "PlexTypes.h"
+#include "JobManager.h"
 
 namespace XFILE
 {
-  class CPlexDirectory : public IDirectory
+  class CPlexDirectory : public IDirectory, public CJobQueue
   {
     public:
 
-      CPlexDirectory();
+      class CPlexDirectoryFetchJob : public CJob
+      {
+        public:
+          CPlexDirectoryFetchJob(const CURL &url) : CJob(), m_url(url) {}
+
+          virtual bool operator==(const CJob* job) const
+          {
+            const CPlexDirectoryFetchJob *fjob = static_cast<const CPlexDirectoryFetchJob*>(job);
+            if (fjob && fjob->m_url.Get() == m_url.Get())
+              return true;
+            return false;
+          }
+
+          virtual const char* GetType() const { return "plexdirectoryfetch"; }
+
+          virtual bool DoWork();
+
+          CFileItemListPtr m_items;
+          CURL m_url;
+      };
+
+      CPlexDirectory(CURL augmentedUrl = CURL(), bool usePaging = false) : m_augmentedURL(augmentedUrl), m_usePaging(usePaging) {}
 
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
       virtual void CancelDirectory();
@@ -44,11 +66,21 @@ namespace XFILE
       static void CopyAttributes(TiXmlElement* element, CFileItem& fileItem, const CURL &url);
       static CFileItemPtr NewPlexElement(TiXmlElement *element, CFileItem &parentItem, const CURL &url = CURL());
 
+      virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
     private:
       bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);
       void ReadChildren(TiXmlElement* element, CFileItemList& container);
 
+      void DoAugmentation(CFileItemList& fileItems);
+
       CURL m_url;
+      CURL m_augmentedURL;
+      CFileItemListPtr m_augmentedItem;
+
+      CEvent m_augmentationEvent;
+
+      bool m_usePaging;
 
       CStdString m_body;
       CStdString m_data;

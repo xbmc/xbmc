@@ -26,6 +26,9 @@ using namespace XFILE;
  *        <Stream/>
  *      </Part>
  *   </Media>
+ *   <Genre />
+ *   <Role />
+ *   <Producer />
  * </Video>
  *
  * This parser parses <Video> tags. It starts by setting up the Video container
@@ -33,6 +36,8 @@ using namespace XFILE;
  * <Media> elements and parses them.
  * Each Media node contains <Part> which is handled by ParseMediaParts()
  * and each Part contains <Stream> that is handled by ParseMediaStreams()
+ *
+ * Tag elements like Role, Genre and Producer is handled by ParseTag()
  *
  * Each element is represented by a CFileItemPtr
  */
@@ -69,9 +74,20 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     videoTag.m_strShowTitle = videoTag.m_strTitle;
   }
 
+  item.SetFromVideoInfoTag(videoTag);
+
   ParseMediaNodes(item, itemElement);
 
-  item.SetFromVideoInfoTag(videoTag);
+  /* Now we have the Media nodes, we need to "borrow" some properties from it */
+  if (item.m_mediaItems.size() > 0)
+  {
+    CFileItemPtr firstMedia = item.m_mediaItems[0];
+    item.m_mapProperties.insert(firstMedia->m_mapProperties.begin(), firstMedia->m_mapProperties.end());
+
+    /* also forward art, this is the mediaTags */
+    item.AppendArt(firstMedia->GetArt());
+  }
+
   item.m_bIsFolder = true;
 
   //DebugPrintVideoItem(item);
@@ -85,13 +101,25 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
   {
     CFileItemPtr mediaItem = CPlexDirectory::NewPlexElement(media, item, item.GetPath());
 
-    /* these items are not folders */
-    mediaItem->m_bIsFolder = false;
+    if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_GENRE ||
+        mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_WRITER ||
+        mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_DIRECTOR ||
+        mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_PRODUCER ||
+        mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_ROLE ||
+        mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_COUNTRY)
+    {
+      ParseTag(item, *mediaItem);
+    }
+    else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MEDIA)
+    {
+      /* these items are not folders */
+      mediaItem->m_bIsFolder = false;
 
-    /* Parse children */
-    ParseMediaParts(*mediaItem, media);
+      /* Parse children */
+      ParseMediaParts(*mediaItem, media);
 
-    item.m_mediaItems.push_back(mediaItem);
+      item.m_mediaItems.push_back(mediaItem);
+    }
   }
 }
 
@@ -112,7 +140,53 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
   for (TiXmlElement* stream = element->FirstChildElement(); stream; stream = stream->NextSiblingElement())
   {
     CFileItemPtr mediaStream = CPlexDirectory::NewPlexElement(stream, mediaPart, mediaPart.GetPath());
+
+    /* Set a sensible Label so we can use this in dialogs */
+    CStdString streamName = !mediaStream->HasProperty("language") ? mediaStream->GetProperty("language").asString() : "Unknown";
+    if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
+      streamName += " (" + PlexUtils::GetStreamCodecName(mediaStream) + " " + boost::to_upper_copy(PlexUtils::GetStreamChannelName(mediaStream)) + ")";
+    else if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_VIDEO)
+      streamName += " (" + PlexUtils::GetStreamCodecName(mediaStream) + ")";
+
+    mediaStream->SetLabel(streamName);
+
     mediaPart.m_mediaPartStreams.push_back(mediaStream);
+  }
+}
+
+void CPlexDirectoryTypeParserVideo::ParseTag(CFileItem &item, CFileItem &tagItem)
+{
+  CVideoInfoTag* tag = item.GetVideoInfoTag();
+  CStdString tagVal = tagItem.GetProperty("tag").asString();
+  switch(tagItem.GetPlexDirectoryType())
+  {
+    case PLEX_DIR_TYPE_GENRE:
+      tag->m_genre.push_back(tagVal);
+      break;
+    case PLEX_DIR_TYPE_WRITER:
+      tag->m_writingCredits.push_back(tagVal);
+      break;
+    case PLEX_DIR_TYPE_DIRECTOR:
+      tag->m_director.push_back(tagVal);
+      break;
+    case PLEX_DIR_TYPE_COUNTRY:
+      tag->m_country.push_back(tagVal);
+      break;
+    case PLEX_DIR_TYPE_PRODUCER:
+      /* not in VideoInfoTag? */
+      break;
+    case PLEX_DIR_TYPE_ROLE:
+    {
+      SActorInfo actor;
+      actor.strName = tagVal;
+      actor.strRole = tagItem.GetProperty("role").asString();
+      actor.thumb = tagItem.GetArt("thumb");
+      tag->m_cast.push_back(actor);
+    }
+      break;
+    default:
+      CLog::Log(LOGINFO, "CPlexDirectoryTypeParserVideo::ParseTag I have no idea how to handle %d", tagItem.GetPlexDirectoryType());
+      break;
   }
 }
 

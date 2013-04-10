@@ -30,15 +30,15 @@ void
 CGUIWindowPlexPreplayVideo::UpdateAudioSubButtons()
 {
   CFileItemPtr fileItem = m_vecItems->Get(0);
-  if (fileItem)
+  if (fileItem && fileItem->m_mediaItems.size() > 0)
   {
     CGUILabelControl *audioLabel = (CGUILabelControl*)GetControl(AUDIO_LABEL_ID);
     if (audioLabel)
-      audioLabel->SetLabel(CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(fileItem));
+      audioLabel->SetLabel(CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(fileItem->m_mediaItems[0]));
     
     CGUILabelControl *subtitleLabel = (CGUILabelControl*)GetControl(SUBTITLE_LABEL_ID);
     if (subtitleLabel)
-      subtitleLabel->SetLabel(CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(fileItem, false));
+      subtitleLabel->SetLabel(CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(fileItem->m_mediaItems[0], false));
   }  
 }
 
@@ -51,9 +51,9 @@ CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
     if (message.GetSenderId() == AUDIO_BUTTON_ID || message.GetSenderId() == SUBTITLE_BUTTON_ID)
     {
       CFileItemPtr fileItem = m_vecItems->Get(0);
-      if (fileItem)
+      if (fileItem && fileItem->m_mediaItems.size() > 0)
       {
-        CGUIDialogPlexAudioSubtitlePicker::ShowAndGetInput(fileItem, message.GetSenderId() == AUDIO_BUTTON_ID);
+        CGUIDialogPlexAudioSubtitlePicker::ShowAndGetInput(fileItem->m_mediaItems[0], message.GetSenderId() == AUDIO_BUTTON_ID);
         UpdateAudioSubButtons();
         return true;
       }

@@ -32,27 +32,19 @@ CGUIDialogPlexAudioSubtitlePicker::SetFileItem(CFileItemPtr& fileItem, bool audi
     
     SetSelected(0);
   }
-  PlexMediaPartPtr part = fileItem->m_mediaParts[0];
+
+  CFileItemPtr part = fileItem->m_mediaParts[0];
   int index = 0;
-  for (int y = 0; y < part->mediaStreams.size(); y ++)
+  for (int y = 0; y < part->m_mediaPartStreams.size(); y ++)
   {
-    PlexMediaStreamPtr stream = part->mediaStreams[y];
-    if (stream && ((audio && stream->streamType == PLEX_STREAM_AUDIO) ||
-                   (!audio && stream->streamType == PLEX_STREAM_SUBTITLE)))
+    CFileItemPtr stream = part->m_mediaPartStreams[y];
+    int streamType = stream->GetProperty("streamType").asInteger();
+    if (stream && ((audio && streamType == PLEX_STREAM_AUDIO) ||
+                   (!audio && streamType == PLEX_STREAM_SUBTITLE)))
     {
-      CStdString streamName = !stream->language.empty() ? stream->language : "UNKNOWN";
-        
-      if (audio)
-        streamName += " (" + stream->codecName() + " " + boost::to_upper_copy(stream->channelName()) + ")";
-        
-        
-      CFileItem* streamItem = new CFileItem;
-      streamItem->SetLabel(streamName);
-      streamItem->SetProperty("streamId", stream->id);
-      streamItem->SetProperty("streamType", stream->streamType);
-      Add(streamItem);
+      Add(stream.get());
       
-      if (stream->selected)
+      if (stream->GetProperty("selected").asBoolean())
         SetSelected(index);
       
       index++;
@@ -66,16 +58,20 @@ CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(CFileItemPtr& fileItem,
   CStdString lang;
   int numStreams = 0;
   
-  PlexMediaPartPtr part = fileItem->m_mediaParts[0];
-  for (int y = 0; y < part->mediaStreams.size(); y ++)
+  if (fileItem->m_mediaParts.size() < 1)
+    return "None";
+
+  CFileItemPtr part = fileItem->m_mediaParts[0];
+  for (int y = 0; y < part->m_mediaPartStreams.size(); y ++)
   {
-    PlexMediaStreamPtr stream = part->mediaStreams[y];
-    if ((audio && stream->streamType == PLEX_STREAM_AUDIO) ||
-        (!audio && stream->streamType == PLEX_STREAM_SUBTITLE))
+    CFileItemPtr stream = part->m_mediaPartStreams[y];
+    int64_t streamType = stream->GetProperty("streamType").asInteger();
+    if ((audio && streamType == PLEX_STREAM_AUDIO) ||
+        (!audio && streamType == PLEX_STREAM_SUBTITLE))
     {
-      if (stream->selected)
+      if (stream->GetProperty("selected").asBoolean())
       {
-        lang = stream->language;
+        lang = stream->GetProperty("language").asString();
         boost::to_upper(lang);
       }
       
@@ -86,12 +82,12 @@ CGUIDialogPlexAudioSubtitlePicker::GetPresentationString(CFileItemPtr& fileItem,
   if (!lang.empty())
   {
     if (numStreams > 1)
-      lang += " (" + boost::lexical_cast<std::string>(numStreams - 1) + " MORE)";
+      lang += " (" + boost::lexical_cast<std::string>(numStreams - 1) + " more)";
   }
   else if (numStreams > 0)
-    lang = "UNKNOWN";
+    lang = "Unknown";
   else
-    lang = "NONE";
+    lang = "None";
   
   return lang;
 }
@@ -102,23 +98,32 @@ CGUIDialogPlexAudioSubtitlePicker::UpdateStreamSelection(CFileItemPtr &fileItem)
   CFileItemPtr selectedStream = GetSelectedItem();
   int streamType = selectedStream->GetProperty("streamType").asInteger();
   int streamId = selectedStream->GetProperty("streamId").asInteger();
-  
+
+  int subtitleId, audioId;
+
+  CFileItemPtr subtitleStream = PlexUtils::GetSelectedStreamOfType(fileItem->m_mediaParts[0], PLEX_STREAM_SUBTITLE);
+  if (subtitleStream)
+    subtitleId = subtitleStream->GetProperty("id").asInteger();
+
+  CFileItemPtr audioStream = PlexUtils::GetSelectedStreamOfType(fileItem->m_mediaParts[0], PLEX_STREAM_AUDIO);
+  if (audioStream)
+    audioId = audioStream->GetProperty("id").asInteger();
+
   if (streamType == PLEX_STREAM_AUDIO)
-  {
-    for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
-    {
-      PlexMediaServerQueue::Get().onStreamSelected(fileItem, fileItem->m_mediaParts[i]->id, fileItem->m_mediaParts[i]->selectedStreamOfType(PLEX_STREAM_SUBTITLE), streamId);
-      fileItem->m_mediaParts[i]->setSelectedStream(PLEX_STREAM_AUDIO, streamId);
-    }
-  }
+    audioId = streamId;
   else if (streamType == PLEX_STREAM_SUBTITLE)
+    subtitleId = streamId;
+  
+  for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
   {
-    for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
-    {
-      PlexMediaServerQueue::Get().onStreamSelected(fileItem, fileItem->m_mediaParts[i]->id, streamId, fileItem->m_mediaParts[i]->selectedStreamOfType(PLEX_STREAM_AUDIO));
-      fileItem->m_mediaParts[i]->setSelectedStream(PLEX_STREAM_SUBTITLE, streamId);
-    }
+    PlexMediaServerQueue::Get().onStreamSelected(fileItem,
+                                                 fileItem->m_mediaParts[i]->GetProperty("id").asInteger(),
+                                                 subtitleId,
+                                                 audioId);
+
+    PlexUtils::SetSelectedStream(fileItem->m_mediaParts[i], streamType, streamId);
   }
+
 }
 
 bool
