@@ -691,7 +691,7 @@ int CGUIWindowSlideShow::GetNextSlide()
 {
   if (m_slides->Size() <= 1)
     return m_iCurrentSlide;
-  int step = (m_bSlideShow && !m_bPause) || m_iDirection >= 0 ? 1 : -1;
+  int step = m_iDirection >= 0 ? 1 : -1;
   int nextSlide = (m_iCurrentSlide + step + m_slides->Size()) % m_slides->Size();
   while (nextSlide != m_iCurrentSlide)
   {
