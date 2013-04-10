@@ -207,7 +207,6 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_pFormatContext = NULL;
   m_pInput = NULL;
   m_ioContext = NULL;
-  for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_bMatroska = false;
   m_bAVI = false;
@@ -527,16 +526,18 @@ void CDVDDemuxFFmpeg::Dispose()
   m_pFormatContext = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
-  for (int i = 0; i < MAX_STREAMS; i++)
+  std::map<int, CDemuxStream*>::iterator it;
+  for(it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if (m_streams[i])
+    if (it->second)
     {
-      if (m_streams[i]->ExtraData)
-        delete[] (BYTE*)(m_streams[i]->ExtraData);
-      delete m_streams[i];
+      if (it->second->ExtraData)
+        delete[] (BYTE*)(it->second->ExtraData);
+      delete it->second;
     }
-    m_streams[i] = NULL;
   }
+  m_streams.clear();
+
   m_pInput = NULL;
 
   m_dllAvFormat.Unload();
@@ -642,7 +643,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     // keep track if ffmpeg doesn't always set these
     pkt.size = 0;
     pkt.data = NULL;
-    pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
     m_timeout.Set(20000);
@@ -658,7 +658,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       Flush();
     }
-    else if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
+    else if (pkt.size < 0 || !GetStream(pkt.stream_index))
     {
       // XXX, in some cases ffmpeg returns a negative packet size
       if(m_pFormatContext->pb && !m_pFormatContext->pb->eof_reached)
@@ -774,29 +774,30 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   if (!pPacket) return NULL;
 
   // check streams, can we make this a bit more simple?
-  if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId < MAX_STREAMS)
+  if (pPacket && pPacket->iStreamId >= 0)
   {
-    if (!m_streams[pPacket->iStreamId] ||
-        m_streams[pPacket->iStreamId]->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
-        m_streams[pPacket->iStreamId]->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec->codec_id)
+    CDemuxStream *stream = GetStream(pPacket->iStreamId);
+    if (!stream ||
+        stream->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
+        stream->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec->codec_id)
     {
       // content has changed, or stream did not yet exist
       AddStream(pPacket->iStreamId);
     }
     // we already check for a valid m_streams[pPacket->iStreamId] above
-    else if (m_streams[pPacket->iStreamId]->type == STREAM_AUDIO)
+    else if (stream->type == STREAM_AUDIO)
     {
-      if (((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codec->channels ||
-          ((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codec->sample_rate)
+      if (((CDemuxStreamAudio*)stream)->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codec->channels ||
+          ((CDemuxStreamAudio*)stream)->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codec->sample_rate)
       {
         // content has changed
         AddStream(pPacket->iStreamId);
       }
     }
-    else if (m_streams[pPacket->iStreamId]->type == STREAM_VIDEO)
+    else if (stream->type == STREAM_VIDEO)
     {
-      if (((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iWidth != m_pFormatContext->streams[pPacket->iStreamId]->codec->width ||
-          ((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codec->height)
+      if (((CDemuxStreamVideo*)stream)->iWidth != m_pFormatContext->streams[pPacket->iStreamId]->codec->width ||
+          ((CDemuxStreamVideo*)stream)->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codec->height)
       {
         // content has changed
         AddStream(pPacket->iStreamId);
@@ -903,15 +904,16 @@ int CDVDDemuxFFmpeg::GetStreamLength()
 
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
 {
-  if (iStreamId < 0 || iStreamId >= MAX_STREAMS) return NULL;
-  return m_streams[iStreamId];
+  std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
+  if (it == m_streams.end())
+    return NULL;
+  else
+    return it->second;
 }
 
 int CDVDDemuxFFmpeg::GetNrOfStreams()
 {
-  int i = 0;
-  while (i < MAX_STREAMS && m_streams[i]) i++;
-  return i;
+  return m_streams.size();
 }
 
 static double SelectAspect(AVStream* st, bool* forced)
@@ -932,16 +934,10 @@ static double SelectAspect(AVStream* st, bool* forced)
 
 void CDVDDemuxFFmpeg::AddStream(int iId)
 {
-  if(iId >= MAX_STREAMS)
-  {
-    CLog::Log(LOGWARNING, "%s - streams id %d exeeds maximum supported", __FUNCTION__, iId);
-    return;
-  }
-
   AVStream* pStream = m_pFormatContext->streams[iId];
   if (pStream)
   {
-    CDemuxStream* old = m_streams[iId];
+    CDemuxStream* old = GetStream(iId);
 
     switch (pStream->codec->codec_type)
     {
@@ -1098,25 +1094,26 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     // generic stuff
     if (pStream->duration != (int64_t)AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
-    m_streams[iId]->codec = pStream->codec->codec_id;
-    m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
-    m_streams[iId]->profile = pStream->codec->profile;
-    m_streams[iId]->level   = pStream->codec->level;
+    CDemuxStream* stream = GetStream(iId);
+    stream->codec = pStream->codec->codec_id;
+    stream->codec_fourcc = pStream->codec->codec_tag;
+    stream->profile = pStream->codec->profile;
+    stream->level   = pStream->codec->level;
 
-    m_streams[iId]->iId = iId;
-    m_streams[iId]->source = STREAM_SOURCE_DEMUX;
-    m_streams[iId]->pPrivate = pStream;
-    m_streams[iId]->flags = (CDemuxStream::EFlags)pStream->disposition;
+    stream->iId = iId;
+    stream->source = STREAM_SOURCE_DEMUX;
+    stream->pPrivate = pStream;
+    stream->flags = (CDemuxStream::EFlags)pStream->disposition;
 
     AVDictionaryEntry *langTag = m_dllAvUtil.av_dict_get(pStream->metadata, "language", NULL, 0);
     if (langTag)
-      strncpy(m_streams[iId]->language, langTag->value, 3);
+      strncpy(stream->language, langTag->value, 3);
 
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
-      m_streams[iId]->ExtraSize = pStream->codec->extradata_size;
-      m_streams[iId]->ExtraData = new BYTE[pStream->codec->extradata_size];
-      memcpy(m_streams[iId]->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
+      stream->ExtraSize = pStream->codec->extradata_size;
+      stream->ExtraData = new BYTE[pStream->codec->extradata_size];
+      memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
     }
 
 #ifdef HAVE_LIBBLURAY
@@ -1128,30 +1125,30 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       // this stuff is really only valid for dvd's.
       // this is so that the physicalid matches the
       // id's reported from libdvdnav
-      switch(m_streams[iId]->codec)
+      switch(stream->codec)
       {
         case CODEC_ID_AC3:
-          m_streams[iId]->iPhysicalId = pStream->id - 128;
+          stream->iPhysicalId = pStream->id - 128;
           break;
         case CODEC_ID_DTS:
-          m_streams[iId]->iPhysicalId = pStream->id - 136;
+          stream->iPhysicalId = pStream->id - 136;
           break;
         case CODEC_ID_MP2:
-          m_streams[iId]->iPhysicalId = pStream->id - 448;
+          stream->iPhysicalId = pStream->id - 448;
           break;
         case CODEC_ID_PCM_S16BE:
-          m_streams[iId]->iPhysicalId = pStream->id - 160;
+          stream->iPhysicalId = pStream->id - 160;
           break;
         case CODEC_ID_DVD_SUBTITLE:
-          m_streams[iId]->iPhysicalId = pStream->id - 0x20;
+          stream->iPhysicalId = pStream->id - 0x20;
           break;
         default:
-          m_streams[iId]->iPhysicalId = pStream->id & 0x1f;
+          stream->iPhysicalId = pStream->id & 0x1f;
           break;
       }
     }
     else
-      m_streams[iId]->iPhysicalId = pStream->id;
+      stream->iPhysicalId = pStream->id;
   }
 }
 
