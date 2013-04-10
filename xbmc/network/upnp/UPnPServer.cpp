@@ -38,7 +38,7 @@ const char* audio_containers[] = { "musicdb://genres/", "musicdb://artists/", "m
                                    "musicdb://songs/", "musicdb://recentlyaddedalbums/", "musicdb://years/",
                                    "musicdb://singles/" };
 
-const char* video_containers[] = { "videodb://movies/titles/", "videodb://tvshows/titles/",
+const char* video_containers[] = { "library://video/movies/titles.xml/", "library://video/tvshows/titles.xml/",
                                    "videodb://recentlyaddedmovies/", "videodb://recentlyaddedepisodes/"  };
 
 /*----------------------------------------------------------------------
@@ -418,14 +418,15 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
                 UpdateContainer("videodb://recentlyaddedepisodes/");
             }
             else if(item_type == "tvshow") {
-                UpdateContainer("videodb://tvshows/titles/");
+                UpdateContainer("library://video/tvshows/titles.xml/");
                 UpdateContainer("videodb://recentlyaddedepisodes/");
             }
             else if(item_type == "movie") {
-                UpdateContainer("videodb://movies/titles/");
+                UpdateContainer("library://video/movies/titles.xml/");
                 UpdateContainer("videodb://recentlyaddedmovies/");
             }
             else if(item_type == "musicvideo") {
+                UpdateContainer("library://video/musicvideos/titles.xml/");
                 UpdateContainer("videodb://recentlyaddedmusicvideos/");
             }
         }
