@@ -85,12 +85,12 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    if test "x$use_cpu" = "xarmeabi-v7a"; then
-      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
-    fi
     use_sdk="${use_sdk:-android-14}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
+    if test "x$use_cpu" = "xarmeabi-v7a"; then
+      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
+    fi
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
