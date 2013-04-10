@@ -2898,7 +2898,7 @@ bool CApplication::OnAction(const CAction &action)
 
         if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
           iPlaySpeed = 1;
-        if (iPlaySpeed > 32 || iPlaySpeed < -32)
+        if (iPlaySpeed > g_advancedSettings.m_maxPlayerForwardRate || iPlaySpeed < -g_advancedSettings.m_maxPlayerForwardRate)
           iPlaySpeed = 1;
 
         SetPlaySpeed(iPlaySpeed);
