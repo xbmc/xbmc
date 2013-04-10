@@ -156,6 +156,13 @@ public:
     */
   void SetAutoLoginProfileId(const int profileId) { m_autoLoginProfile = profileId; }
 
+  /*! \brief Retrieve the name of a particular profile by index
+    \param profileId profile index for which to retrieve the name
+    \param name will hold the name of the profile when a valid profile index has been provided
+    \return false if profileId is an invalid index, true if the name parameter is set
+    */
+  bool GetProfileName(const size_t profileId, std::string& name) const;
+
   std::string GetUserDataFolder() const;
   std::string GetProfileUserDataFolder() const;
   std::string GetDatabaseFolder() const;
