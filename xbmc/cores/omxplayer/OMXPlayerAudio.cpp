@@ -77,7 +77,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_nChannels     = 0;
   m_DecoderOpen   = false;
   m_freq          = CurrentHostFrequency();
-  m_send_eos      = false;
   m_bad_state     = false;
   m_hints_current.Clear();
 
@@ -153,7 +152,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_passthrough = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
-  m_send_eos        = false;
 }
 
 bool OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -577,7 +575,7 @@ void OMXPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_EOF");
-      WaitCompletion();
+      SubmitEOS();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
     {
@@ -794,11 +792,36 @@ double OMXPlayerAudio::GetCacheTime()
   return m_omxAudio.GetCacheTime();
 }
 
+void OMXPlayerAudio::SubmitEOS()
+{
+  if(!m_bad_state)
+    m_omxAudio.SubmitEOS();
+}
+
+bool OMXPlayerAudio::IsEOS()
+{
+  return m_bad_state || m_omxAudio.IsEOS();
+}
+
 void OMXPlayerAudio::WaitCompletion()
 {
-  if(!m_send_eos && !m_bad_state)
-    m_omxAudio.WaitCompletion();
-  m_send_eos = true;
+  unsigned int nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
+  while(nTimeOut)
+  {
+    if(IsEOS())
+    {
+      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
+      break;
+    }
+
+    if(nTimeOut == 0)
+    {
+      CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
+      break;
+    }
+    Sleep(50);
+    nTimeOut -= 50;
+  }
 }
 
 void OMXPlayerAudio::RegisterAudioCallback(IAudioCallback *pCallback)
