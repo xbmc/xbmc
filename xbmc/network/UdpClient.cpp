@@ -34,7 +34,7 @@
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
-CUdpClient::CUdpClient(void) : CThread("CUdpClient")
+CUdpClient::CUdpClient(void) : CThread("UDPClient")
 {}
 
 CUdpClient::~CUdpClient(void)

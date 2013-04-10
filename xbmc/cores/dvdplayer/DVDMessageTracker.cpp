@@ -29,7 +29,7 @@
 
 CDVDMessageTracker g_dvdMessageTracker;
 
-CDVDMessageTracker::CDVDMessageTracker() : CThread()
+CDVDMessageTracker::CDVDMessageTracker() : CThread("DVDMsgTracker")
 {
   m_bInitialized = false;
   InitializeCriticalSection(&m_critSection);

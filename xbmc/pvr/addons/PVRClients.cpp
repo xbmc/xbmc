@@ -48,7 +48,7 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRClients::CPVRClients(void) :
-    CThread("PVR add-on updater"),
+    CThread("PVRClient"),
     m_bChannelScanRunning(false),
     m_bIsSwitchingChannels(false),
     m_bIsValidChannelSettings(false),

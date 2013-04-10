@@ -43,7 +43,7 @@ using namespace PVR;
 typedef std::map<int, CEpg*>::iterator EPGITR;
 
 CEpgContainer::CEpgContainer(void) :
-    CThread("EPG updater")
+    CThread("EPGUpdater")
 {
   m_progressHandle = NULL;
   m_bStop = true;

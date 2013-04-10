@@ -123,7 +123,7 @@ public:
 CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
                                 , CDVDOverlayContainer* pOverlayContainer
                                 , CDVDMessageQueue& parent)
-: CThread("CDVDPlayerVideo")
+: CThread("DVDPlayerVideo")
 , m_messageQueue("video")
 , m_messageParent(parent)
 {

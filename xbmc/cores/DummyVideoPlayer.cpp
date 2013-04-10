@@ -32,7 +32,7 @@
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread("CDummyVideoPlayer")
+      CThread("DummyVideoPlayer")
 {
   m_paused = false;
   m_clock = 0;

@@ -50,7 +50,7 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
                       bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV,
                       bRadio ? CONTROL_BTNCHANNELS_RADIO : CONTROL_BTNCHANNELS_TV,
                       bRadio ? CONTROL_LIST_CHANNELS_RADIO: CONTROL_LIST_CHANNELS_TV),
-  CThread("PVR Channel Window")
+  CThread("PVRChannelWin")
 {
   m_bRadio              = bRadio;
   m_bShowHiddenChannels = false;

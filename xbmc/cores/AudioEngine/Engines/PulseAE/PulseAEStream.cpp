@@ -614,7 +614,7 @@ void CPulseAEStream::RegisterSlave(IAEStream *stream)
   m_slave = stream;
 }
 
-CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : CThread("AE Stream"), m_stream(stream)
+CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : CThread("AEStream"), m_stream(stream)
 {
   m_from = 0;
   m_target = 0;

@@ -513,7 +513,7 @@ bool CSoftAE::Initialize()
   CSingleLock lock(m_threadLock);
   InternalOpenSink();
   m_running = true;
-  m_thread  = new CThread(this, "CSoftAE");
+  m_thread  = new CThread(this, "SoftAE");
   m_thread->Create();
   m_thread->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
   return true;

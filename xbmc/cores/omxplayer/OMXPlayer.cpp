@@ -405,7 +405,7 @@ void COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 // ****************************************************************
 COMXPlayer::COMXPlayer(IPlayerCallback &callback) 
     : IPlayer(callback),
-      CThread("COMXPlayer"),
+      CThread("OMXPlayer"),
       m_CurrentAudio(STREAM_AUDIO, DVDPLAYER_AUDIO),
       m_CurrentVideo(STREAM_VIDEO, DVDPLAYER_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE, DVDPLAYER_SUBTITLE),

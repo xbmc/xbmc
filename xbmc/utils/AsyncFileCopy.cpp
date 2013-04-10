@@ -26,7 +26,7 @@
 #include "utils/TimeUtils.h"
 #include "URL.h"
 
-CAsyncFileCopy::CAsyncFileCopy() : CThread("CAsyncFileCopy")
+CAsyncFileCopy::CAsyncFileCopy() : CThread("AsyncFileCopy")
 {
   m_cancelled = false;
   m_succeeded = false;
