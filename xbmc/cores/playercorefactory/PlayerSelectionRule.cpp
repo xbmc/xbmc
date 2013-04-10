@@ -108,15 +108,15 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
 
   if (m_bStreamDetails && !item.HasVideoInfoTag()) return;
-  if ((m_tAudio > 0) != item.IsAudio()) return;
-  if ((m_tVideo > 0) != item.IsVideo()) return;
-  if ((m_tInternetStream > 0) != item.IsInternetStream()) return;
-  if ((m_tRemote > 0) != item.IsRemote()) return;
+  if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
+  if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
+  if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream()) return;
+  if (m_tRemote >= 0 && (m_tRemote > 0) != item.IsRemote()) return;
 
-  if ((m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD())) return;
-  if ((m_tDVD > 0) != item.IsDVD()) return;
-  if ((m_tDVDFile > 0) != item.IsDVDFile()) return;
-  if ((m_tDVDImage > 0) != item.IsDVDImage()) return;
+  if (m_tBD >= 0 && (m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD())) return;
+  if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD()) return;
+  if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
+  if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;
 
   CRegExp regExp;
 
