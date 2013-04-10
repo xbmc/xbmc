@@ -2394,7 +2394,7 @@ void COMXPlayer::HandleMessages()
         CSingleLock lock(m_StateSection);
         /* prioritize data from video player, but only accept data        *
          * after it has been started to avoid race conditions after seeks */
-        if(m_CurrentVideo.started)
+        if(m_CurrentVideo.started && !m_player_video.SubmittedEOS())
         {
           if(state.player == DVDPLAYER_VIDEO)
             m_State = state;
