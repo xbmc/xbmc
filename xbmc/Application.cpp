@@ -2358,13 +2358,6 @@ void CApplication::Render()
   if (m_bStop || m_bInBackground)
     return;
 
-  if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
-  {
-    Sleep(1);
-    ResetScreenSaver();
-    return;
-  }
-
   MEASURE_FUNCTION;
 
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
@@ -3081,8 +3074,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
         }
       }
       g_graphicsContext.Unlock();
-      CWinEvents::MessagePump();
     }
+    CWinEvents::MessagePump();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
     // Read the input from a remote
@@ -3672,7 +3665,6 @@ void CApplication::Stop(int exitCode)
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
     m_bStop = true;
-    m_AppActive = false;
     m_AppFocused = false;
     m_ExitCode = exitCode;
     CLog::Log(LOGNOTICE, "stop all");
