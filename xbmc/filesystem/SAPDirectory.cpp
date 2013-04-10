@@ -275,7 +275,7 @@ namespace SDP
 using namespace SDP;
 
 
-CSAPSessions::CSAPSessions() : CThread("CSAPSessions")
+CSAPSessions::CSAPSessions() : CThread("SAPSessions")
 {
   m_socket = INVALID_SOCKET;
 }

@@ -58,7 +58,7 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 
-CMusicInfoScanner::CMusicInfoScanner() : CThread("CMusicInfoScanner")
+CMusicInfoScanner::CMusicInfoScanner() : CThread("MusicInfoScanner")
 {
   m_bRunning = false;
   m_showDialog = false;
@@ -104,7 +104,7 @@ void CMusicInfoScanner::Process()
 
       // Create the thread to count all files to be scanned
       SetPriority( GetMinPriority() );
-      CThread fileCountReader(this, "CMusicInfoScanner");
+      CThread fileCountReader(this, "MusicFileCounter");
       if (m_handle)
         fileCountReader.Create();
 

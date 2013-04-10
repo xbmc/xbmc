@@ -30,7 +30,7 @@ using namespace PERIPHERALS;
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 1000
 
 CPeripheralBus::CPeripheralBus(CPeripherals *manager, PeripheralBusType type) :
-    CThread("XBMC Peripherals"),
+    CThread("PeripheralBus"),
     m_iRescanTime(PERIPHERAL_DEFAULT_RESCAN_INTERVAL),
     m_bInitialised(false),
     m_bIsStarted(false),

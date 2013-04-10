@@ -31,7 +31,7 @@ using namespace XFILE;
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 
-CDownloadQueue::CDownloadQueue(void) : CThread("CDownloadQueue")
+CDownloadQueue::CDownloadQueue(void) : CThread("DownloadQueue")
 {
   m_bStop = false;
   m_wQueueId = m_wNextQueueId++;

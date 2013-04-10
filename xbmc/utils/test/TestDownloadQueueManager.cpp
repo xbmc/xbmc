@@ -29,7 +29,7 @@ class CTestDownloadQueueManagerThread : public CThread
 {
 public:
   CTestDownloadQueueManagerThread() :
-    CThread("CTestDownloadQueueManagerThread"){}
+    CThread("TestDownloadQueueManager"){}
 };
 
 /* Need to set some settings for network connectivity when an

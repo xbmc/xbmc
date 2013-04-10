@@ -45,7 +45,7 @@ using namespace std;
 using namespace VIDEO;
 using namespace XFILE;
 
-CEdenVideoArtUpdater::CEdenVideoArtUpdater() : CThread("EdenVideoArtUpdater")
+CEdenVideoArtUpdater::CEdenVideoArtUpdater() : CThread("VideoArtUpdater")
 {
   m_textureDB.Open();
 }

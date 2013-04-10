@@ -106,7 +106,7 @@ using namespace std;
 
 #endif
 
-CVideoReferenceClock::CVideoReferenceClock() : CThread("CVideoReferenceClock")
+CVideoReferenceClock::CVideoReferenceClock() : CThread("VideoReferenceClock")
 {
   m_SystemFrequency = CurrentHostFrequency();
   m_ClockSpeed = 1.0;

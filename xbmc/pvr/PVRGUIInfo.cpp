@@ -39,7 +39,7 @@ using namespace EPG;
 using namespace std;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVR GUI info updater"),
+    CThread("PVRGUIInfo"),
     m_playingEpgTag(NULL)
 {
   ResetProperties();

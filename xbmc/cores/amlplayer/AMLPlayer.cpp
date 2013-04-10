@@ -302,7 +302,7 @@ static const char* AudioCodecName(int aformat)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAMLSubTitleThread::CAMLSubTitleThread(DllLibAmplayer *dll) :
-  CThread("CAMLSubTitleThread"),
+  CThread("AMLSubTitle"),
   m_dll(dll),
   m_subtitle_codec(-1)
 {
@@ -500,7 +500,7 @@ void CAMLSubTitleThread::Process(void)
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAMLPlayer::CAMLPlayer(IPlayerCallback &callback)
   : IPlayer(callback),
-  CThread                 ("CAMLPlayer" ),
+  CThread                 ("AMLPlayer" ),
   m_cpu                   (0            ),
   m_speed                 (0            ),
   m_paused                (false        ),
@@ -1262,7 +1262,7 @@ void CAMLPlayer::OnStartup()
   //m_CurrentAudio.Clear();
   //m_CurrentSubtitle.Clear();
 
-  //CThread::SetName("CAMLPlayer");
+  //CThread::SetName("AMLPlayer");
 }
 
 void CAMLPlayer::OnExit()

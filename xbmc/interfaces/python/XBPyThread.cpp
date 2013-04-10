@@ -71,7 +71,7 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
+XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPython")
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter   = pExecuter;

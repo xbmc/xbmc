@@ -82,7 +82,7 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
 
 CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult) :
   CPeripheralHID(scanResult),
-  CThread("CEC Adapter"),
+  CThread("CECAdapter"),
   m_dll(NULL),
   m_cecAdapter(NULL)
 {
@@ -1402,7 +1402,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
 }
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, libcec_configuration *configuration) :
-    CThread("CEC Adapter Update Thread"),
+    CThread("CECAdapterUpdate"),
     m_adapter(adapter),
     m_configuration(*configuration),
     m_bNextConfigurationScheduled(false),
