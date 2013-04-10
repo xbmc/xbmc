@@ -164,7 +164,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       if (bIgnoreDeactivate)
         CLog::Log(LOGDEBUG, "%s - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     }
-    if (m_configuration.bPowerOffScreensaver == 1 && !bIgnoreDeactivate &&
+    if (m_configuration.bPowerOnScreensaver == 1 && !bIgnoreDeactivate &&
         m_configuration.bActivateSource == 1)
     {
       ActivateSource();
@@ -1239,6 +1239,9 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   m_configuration.bPowerOffScreensaver = config.bPowerOffScreensaver;
   bChanged |= SetSetting("cec_standby_screensaver", m_configuration.bPowerOffScreensaver == 1);
 
+  m_configuration.bPowerOnScreensaver = config.bPowerOnScreensaver;
+  bChanged |= SetSetting("cec_wake_screensaver", m_configuration.bPowerOnScreensaver == 1);
+
   m_configuration.bPowerOffOnStandby = config.bPowerOffOnStandby;
 
   m_configuration.bSendInactiveSource = config.bSendInactiveSource;
@@ -1331,6 +1334,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bUseTVMenuLanguage   = GetSettingBool("use_tv_menu_language") ? 1 : 0;
   m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
   m_configuration.bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
+  m_configuration.bPowerOnScreensaver  = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
   m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
