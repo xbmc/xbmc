@@ -60,7 +60,10 @@
 # define DLOG(fmt, args...)
 #endif
 
+#if defined(TARGET_RASPBERRY_PI)
 static void SetResolutionString(RESOLUTION_INFO &res);
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect);
+#endif
 
 CEGLNativeTypeRaspberryPI::CEGLNativeTypeRaspberryPI()
 {
@@ -411,6 +414,25 @@ static void SetResolutionString(RESOLUTION_INFO &res)
     res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
     res.dwFlags & D3DPRESENTFLAG_MODE3DTB   ? " 3DTB" : "",
     res.dwFlags & D3DPRESENTFLAG_MODE3DSBS  ? " 3DSBS" : "");
+}
+
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect)
+{
+  SDTV_ASPECT_T aspect;
+  const float delta = 1e-3;
+  if(fabs(get_display_aspect_ratio(SDTV_ASPECT_16_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_16_9;
+  }
+  else if(fabs(get_display_aspect_ratio(SDTV_ASPECT_14_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_14_9;
+  }
+  else
+  {
+    aspect = SDTV_ASPECT_4_3;
+  }
+  return aspect;
 }
 #endif
 
