@@ -232,6 +232,12 @@ void CPowerManager::ProcessEvents()
   nesting--;
 }
 
+bool CPowerManager::ProcessAction(const CAction& action)
+{
+  return m_instance->ProcessAction(action);
+}
+
+
 void CPowerManager::OnSleep()
 {
   CAnnouncementManager::Announce(System, "xbmc", "OnSleep");

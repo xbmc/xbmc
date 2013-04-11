@@ -2226,6 +2226,13 @@ bool CApplication::OnKey(const CKey& key)
   // special handling if the screensaver is active
   CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
+  // give the PowerManager a chance to process a keypress, and
+  // suppress further processing. we need this for virtual sleep.
+  if (g_powerManager.ProcessAction(action))
+  {
+    return true;
+  }
+
   // a key has been pressed.
   // reset Idle Timer
   m_idleTimer.StartZero();
