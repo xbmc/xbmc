@@ -155,7 +155,7 @@ case $host in
     cross_compiling="yes"
 
     platform_cflags="-std=gnu99 -no_compact_linkedit -no-cpp-precomp"
-    platform_ldflags="-no_compact_linkedit"
+    platform_ldflags="-Wl,-search_paths_first -no_compact_linkedit"
     platform_cxxflags="-no_compact_linkedit -no-cpp-precomp"
 
     case $use_xcode in
