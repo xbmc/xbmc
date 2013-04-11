@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
+#include "math.h"
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__
@@ -58,6 +59,7 @@
 #if defined(TARGET_RASPBERRY_PI)
 static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
 static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect);
 #endif
 
 
@@ -644,5 +646,24 @@ static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
     default:               display_aspect = 4.0/3.0;  break;
   }
   return display_aspect;
+}
+
+static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect)
+{
+  SDTV_ASPECT_T aspect;
+  const float delta = 1e-3;
+  if(fabs(get_display_aspect_ratio(SDTV_ASPECT_16_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_16_9;
+  }
+  else if(fabs(get_display_aspect_ratio(SDTV_ASPECT_14_9) - display_aspect) < delta)
+  {
+    aspect = SDTV_ASPECT_14_9;
+  }
+  else
+  {
+    aspect = SDTV_ASPECT_4_3;
+  }
+  return aspect;
 }
 #endif
