@@ -178,7 +178,6 @@ namespace EPG
 
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
-    void GetRulerCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
     int   m_rulerUnit; //! number of blocks that makes up one element of the ruler

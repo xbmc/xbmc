@@ -252,7 +252,7 @@ void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionLi
 
   // render ruler items
   int cacheBeforeRuler, cacheAfterRuler;
-  GetRulerCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
+  GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
 
   // Free memory not used on screen
   if ((int)m_rulerItems.size() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
@@ -2049,24 +2049,5 @@ void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int &cacheBefore, int &cache
   {
     cacheBefore = m_cacheProgrammeItems / 2;
     cacheAfter = m_cacheProgrammeItems / 2;
-  }
-}
-
-void CGUIEPGGridContainer::GetRulerCacheOffsets(int &cacheBefore, int &cacheAfter)
-{
-  if (m_programmeScrollSpeed > 0)
-  {
-    cacheBefore = 0;
-    cacheAfter = m_cacheRulerItems;
-  }
-  else if (m_programmeScrollSpeed < 0)
-  {
-    cacheBefore = m_cacheRulerItems;
-    cacheAfter = 0;
-  }
-  else
-  {
-    cacheBefore = m_cacheRulerItems / 2;
-    cacheAfter = m_cacheRulerItems / 2;
   }
 }
