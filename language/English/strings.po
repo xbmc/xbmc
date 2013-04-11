@@ -11333,7 +11333,12 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr ""
 
-#empty strings from id 33084 to 33099
+#: addons/skin.confluence/720p/SettingsProfile.xml
+msgctxt "#33084"
+msgid "Auto login"
+msgstr ""
+
+#empty strings from id 33085 to 33099
 
 #: xbmc/network/network.cpp
 msgctxt "#33100"
