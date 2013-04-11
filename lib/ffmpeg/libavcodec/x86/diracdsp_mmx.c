@@ -27,11 +27,11 @@ void ff_put_signed_rect_clamped_mmx(uint8_t *dst, int dst_stride, const int16_t 
 void ff_put_signed_rect_clamped_sse2(uint8_t *dst, int dst_stride, const int16_t *src, int src_stride, int width, int height);
 
 #define HPEL_FILTER(MMSIZE, EXT)                                                             \
-    void ff_dirac_hpel_filter_v_ ## EXT(uint8_t *, uint8_t *, int, int);                     \
-    void ff_dirac_hpel_filter_h_ ## EXT(uint8_t *, uint8_t *, int);                          \
+    void ff_dirac_hpel_filter_v_ ## EXT(uint8_t *, const uint8_t *, int, int);               \
+    void ff_dirac_hpel_filter_h_ ## EXT(uint8_t *, const uint8_t *, int);                    \
                                                                                              \
     static void dirac_hpel_filter_ ## EXT(uint8_t *dsth, uint8_t *dstv, uint8_t *dstc,       \
-                                          uint8_t *src, int stride, int width, int height)   \
+                                          const uint8_t *src, int stride, int width, int height)   \
     {                                                                                        \
         while( height-- )                                                                    \
         {                                                                                    \
@@ -60,6 +60,9 @@ void ff_diracdsp_init_mmx(DiracDSPContext* c)
 {
     int mm_flags = av_get_cpu_flags();
 
+    if (!(mm_flags & AV_CPU_FLAG_MMX))
+        return;
+
 #if HAVE_YASM
     c->add_dirac_obmc[0] = ff_add_dirac_obmc8_mmx;
 #if !ARCH_X86_64
@@ -71,12 +74,16 @@ void ff_diracdsp_init_mmx(DiracDSPContext* c)
 #endif
 #endif
 
+#if HAVE_MMX_INLINE
     PIXFUNC(put, 0, mmx);
     PIXFUNC(avg, 0, mmx);
+#endif
 
+#if HAVE_MMXEXT_INLINE
     if (mm_flags & AV_CPU_FLAG_MMX2) {
-        PIXFUNC(avg, 0, mmx2);
+        PIXFUNC(avg, 0, mmxext);
     }
+#endif
 
     if (mm_flags & AV_CPU_FLAG_SSE2) {
 #if HAVE_YASM
@@ -87,9 +94,11 @@ void ff_diracdsp_init_mmx(DiracDSPContext* c)
         c->add_dirac_obmc[1] = ff_add_dirac_obmc16_sse2;
         c->add_dirac_obmc[2] = ff_add_dirac_obmc32_sse2;
 #endif
+#if HAVE_SSE2_INLINE
         c->put_dirac_pixels_tab[1][0] = ff_put_dirac_pixels16_sse2;
         c->avg_dirac_pixels_tab[1][0] = ff_avg_dirac_pixels16_sse2;
         c->put_dirac_pixels_tab[2][0] = ff_put_dirac_pixels32_sse2;
         c->avg_dirac_pixels_tab[2][0] = ff_avg_dirac_pixels32_sse2;
+#endif
     }
 }

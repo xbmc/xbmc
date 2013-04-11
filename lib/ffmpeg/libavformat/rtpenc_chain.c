@@ -23,29 +23,35 @@
 #include "avio_internal.h"
 #include "rtpenc_chain.h"
 #include "avio_internal.h"
+#include "rtp.h"
 #include "libavutil/opt.h"
 
-AVFormatContext *ff_rtp_chain_mux_open(AVFormatContext *s, AVStream *st,
-                                       URLContext *handle, int packet_size)
+int ff_rtp_chain_mux_open(AVFormatContext **out, AVFormatContext *s,
+                          AVStream *st, URLContext *handle, int packet_size,
+                          int idx)
 {
-    AVFormatContext *rtpctx;
+    AVFormatContext *rtpctx = NULL;
     int ret;
     AVOutputFormat *rtp_format = av_guess_format("rtp", NULL, NULL);
     uint8_t *rtpflags;
     AVDictionary *opts = NULL;
 
-    if (!rtp_format)
-        return NULL;
+    if (!rtp_format) {
+        ret = AVERROR(ENOSYS);
+        goto fail;
+    }
 
     /* Allocate an AVFormatContext for each output stream */
     rtpctx = avformat_alloc_context();
-    if (!rtpctx)
-        return NULL;
+    if (!rtpctx) {
+        ret = AVERROR(ENOMEM);
+        goto fail;
+    }
 
     rtpctx->oformat = rtp_format;
     if (!avformat_new_stream(rtpctx, NULL)) {
-        av_free(rtpctx);
-        return NULL;
+        ret = AVERROR(ENOMEM);
+        goto fail;
     }
     /* Pass the interrupt callback on */
     rtpctx->interrupt_callback = s->interrupt_callback;
@@ -54,6 +60,14 @@ AVFormatContext *ff_rtp_chain_mux_open(AVFormatContext *s, AVStream *st,
     /* Copy other stream parameters. */
     rtpctx->streams[0]->sample_aspect_ratio = st->sample_aspect_ratio;
     rtpctx->flags |= s->flags & AVFMT_FLAG_MP4A_LATM;
+
+    /* Get the payload type from the codec */
+    if (st->id < RTP_PT_PRIVATE)
+        rtpctx->streams[0]->id =
+            ff_rtp_get_payload_type(s, st->codec, idx);
+    else
+        rtpctx->streams[0]->id = st->id;
+
 
     if (av_opt_get(s, "rtpflags", AV_OPT_SEARCH_CHILDREN, &rtpflags) >= 0)
         av_dict_set(&opts, "rtpflags", rtpflags, AV_DICT_DONT_STRDUP_VAL);
@@ -79,9 +93,15 @@ AVFormatContext *ff_rtp_chain_mux_open(AVFormatContext *s, AVStream *st,
             av_free(ptr);
         }
         avformat_free_context(rtpctx);
-        return NULL;
+        return ret;
     }
 
-    return rtpctx;
-}
+    *out = rtpctx;
+    return 0;
 
+fail:
+    av_free(rtpctx);
+    if (handle)
+        ffurl_close(handle);
+    return ret;
+}

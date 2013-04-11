@@ -160,8 +160,9 @@ av_cold int ff_fft_init(FFTContext *s, int nbits, int inverse)
 #if CONFIG_FFT_FLOAT
     if (ARCH_ARM)     ff_fft_init_arm(s);
     if (HAVE_ALTIVEC) ff_fft_init_altivec(s);
-    if (HAVE_MMX)     ff_fft_init_mmx(s);
+    if (ARCH_X86)     ff_fft_init_x86(s);
     if (CONFIG_MDCT)  s->mdct_calcw = s->mdct_calc;
+    if (HAVE_MIPSFPU) ff_fft_init_mips(s);
 #else
     if (CONFIG_MDCT)  s->mdct_calcw = ff_mdct_calcw_c;
     if (ARCH_ARM)     ff_fft_fixed_init_arm(s);
@@ -350,4 +351,3 @@ static void ff_fft_calc_c(FFTContext *s, FFTComplex *z)
 {
     fft_dispatch[s->nbits-2](z);
 }
-

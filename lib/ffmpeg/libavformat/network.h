@@ -22,19 +22,36 @@
 #define AVFORMAT_NETWORK_H
 
 #include <errno.h>
+#include <stdint.h>
 
 #include "config.h"
 #include "libavutil/error.h"
 #include "os_support.h"
+#include "avio.h"
+
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #if HAVE_WINSOCK2_H
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+#ifndef EPROTONOSUPPORT
 #define EPROTONOSUPPORT WSAEPROTONOSUPPORT
+#endif
+#ifndef ETIMEDOUT
 #define ETIMEDOUT       WSAETIMEDOUT
+#endif
+#ifndef ECONNREFUSED
 #define ECONNREFUSED    WSAECONNREFUSED
+#endif
+#ifndef EINPROGRESS
 #define EINPROGRESS     WSAEINPROGRESS
+#endif
+
+#define getsockopt(a, b, c, d, e) getsockopt(a, b, c, (char*) d, e)
+#define setsockopt(a, b, c, d, e) setsockopt(a, b, c, (const char*) d, e)
 
 int ff_neterrno(void);
 #else
@@ -64,6 +81,18 @@ void ff_tls_init(void);
 void ff_tls_deinit(void);
 
 int ff_network_wait_fd(int fd, int write);
+
+/**
+ * This works similarly to ff_network_wait_fd, but waits up to 'timeout' microseconds
+ * Uses ff_network_wait_fd in a loop
+ *
+ * @fd Socket descriptor
+ * @write Set 1 to wait for socket able to be read, 0 to be written
+ * @timeout Timeout interval, in microseconds. Actual precision is 100000 mcs, due to ff_network_wait_fd usage
+ * @param int_cb Interrupt callback, is checked after each ff_network_wait_fd call
+ * @return 0 if data can be read/written, AVERROR(ETIMEDOUT) if timeout expired, or negative error code
+ */
+int ff_network_wait_fd_timeout(int fd, int write, int64_t timeout, AVIOInterruptCB *int_cb);
 
 int ff_inet_aton (const char * str, struct in_addr * add);
 
@@ -95,16 +124,32 @@ struct addrinfo {
 #endif
 
 /* getaddrinfo constants */
+#ifndef EAI_AGAIN
+#define EAI_AGAIN 2
+#endif
+#ifndef EAI_BADFLAGS
+#define EAI_BADFLAGS 3
+#endif
 #ifndef EAI_FAIL
 #define EAI_FAIL 4
 #endif
-
 #ifndef EAI_FAMILY
 #define EAI_FAMILY 5
 #endif
-
+#ifndef EAI_MEMORY
+#define EAI_MEMORY 6
+#endif
+#ifndef EAI_NODATA
+#define EAI_NODATA 7
+#endif
 #ifndef EAI_NONAME
 #define EAI_NONAME 8
+#endif
+#ifndef EAI_SERVICE
+#define EAI_SERVICE 9
+#endif
+#ifndef EAI_SOCKTYPE
+#define EAI_SOCKTYPE 10
 #endif
 
 #ifndef AI_PASSIVE
@@ -146,11 +191,22 @@ void ff_freeaddrinfo(struct addrinfo *res);
 int ff_getnameinfo(const struct sockaddr *sa, int salen,
                    char *host, int hostlen,
                    char *serv, int servlen, int flags);
-const char *ff_gai_strerror(int ecode);
 #define getaddrinfo ff_getaddrinfo
 #define freeaddrinfo ff_freeaddrinfo
 #define getnameinfo ff_getnameinfo
+#endif
+#if !HAVE_GETADDRINFO || HAVE_WINSOCK2_H
+const char *ff_gai_strerror(int ecode);
+#undef gai_strerror
 #define gai_strerror ff_gai_strerror
+#endif
+
+#ifndef INADDR_LOOPBACK
+#define INADDR_LOOPBACK 0x7f000001
+#endif
+
+#ifndef INET_ADDRSTRLEN
+#define INET_ADDRSTRLEN 16
 #endif
 
 #ifndef INET6_ADDRSTRLEN

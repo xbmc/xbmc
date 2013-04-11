@@ -26,6 +26,8 @@
  * Options definition for AVFormatContext.
  */
 
+#include "options_table.h"
+
 static const char* format_to_name(void* ptr)
 {
     AVFormatContext* fc = (AVFormatContext*) ptr;
@@ -41,10 +43,8 @@ static void *format_child_next(void *obj, void *prev)
         ((s->iformat && s->iformat->priv_class) ||
           s->oformat && s->oformat->priv_class))
         return s->priv_data;
-#if !FF_API_OLD_AVIO
     if (s->pb && s->pb->av_class && prev != s->pb)
         return s->pb;
-#endif
     return NULL;
 }
 
@@ -54,11 +54,7 @@ static const AVClass *format_child_class_next(const AVClass *prev)
     AVOutputFormat *ofmt = NULL;
 
     if (!prev)
-#if !FF_API_OLD_AVIO
         return &ffio_url_class;
-#else
-    prev = (void *)&ifmt; // Dummy pointer;
-#endif
 
     while ((ifmt = av_iformat_next(ifmt)))
         if (ifmt->priv_class == prev)
@@ -80,60 +76,12 @@ static const AVClass *format_child_class_next(const AVClass *prev)
     return NULL;
 }
 
-#define OFFSET(x) offsetof(AVFormatContext,x)
-#define DEFAULT 0 //should be NAN but it does not work as it is not a constant in glibc as required by ANSI/ISO C
-//these names are too long to be readable
-#define E AV_OPT_FLAG_ENCODING_PARAM
-#define D AV_OPT_FLAG_DECODING_PARAM
-
-static const AVOption options[]={
-{"probesize", "set probing size", OFFSET(probesize), AV_OPT_TYPE_INT, {.dbl = 5000000 }, 32, INT_MAX, D},
-#if FF_API_MUXRATE
-{"muxrate", "set mux rate", OFFSET(mux_rate), AV_OPT_TYPE_INT, {.dbl = DEFAULT }, 0, INT_MAX, E},
-#endif
-{"packetsize", "set packet size", OFFSET(packet_size), AV_OPT_TYPE_INT, {.dbl = DEFAULT }, 0, INT_MAX, E},
-{"fflags", NULL, OFFSET(flags), AV_OPT_TYPE_FLAGS, {.dbl = DEFAULT }, INT_MIN, INT_MAX, D|E, "fflags"},
-{"ignidx", "ignore index", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_IGNIDX }, INT_MIN, INT_MAX, D, "fflags"},
-{"genpts", "generate pts", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_GENPTS }, INT_MIN, INT_MAX, D, "fflags"},
-{"nofillin", "do not fill in missing values that can be exactly calculated", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_NOFILLIN }, INT_MIN, INT_MAX, D, "fflags"},
-{"noparse", "disable AVParsers, this needs nofillin too", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_NOPARSE }, INT_MIN, INT_MAX, D, "fflags"},
-{"igndts", "ignore dts", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_IGNDTS }, INT_MIN, INT_MAX, D, "fflags"},
-#if FF_API_FLAG_RTP_HINT
-{"rtphint", "add rtp hinting (deprecated, use the -movflags rtphint option instead)", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_RTP_HINT }, INT_MIN, INT_MAX, E, "fflags"},
-#endif
-{"discardcorrupt", "discard corrupted frames", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_DISCARD_CORRUPT }, INT_MIN, INT_MAX, D, "fflags"},
-{"sortdts", "try to interleave outputted packets by dts", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_SORT_DTS }, INT_MIN, INT_MAX, D, "fflags"},
-{"keepside", "dont merge side data", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_KEEP_SIDE_DATA }, INT_MIN, INT_MAX, D, "fflags"},
-{"latm", "enable RTP MP4A-LATM payload", 0, AV_OPT_TYPE_CONST, {.dbl = AVFMT_FLAG_MP4A_LATM }, INT_MIN, INT_MAX, E, "fflags"},
-{"analyzeduration", "how many microseconds are analyzed to estimate duration", OFFSET(max_analyze_duration), AV_OPT_TYPE_INT, {.dbl = 5*AV_TIME_BASE }, 0, INT_MAX, D},
-{"cryptokey", "decryption key", OFFSET(key), AV_OPT_TYPE_BINARY, {.dbl = 0}, 0, 0, D},
-{"indexmem", "max memory used for timestamp index (per stream)", OFFSET(max_index_size), AV_OPT_TYPE_INT, {.dbl = 1<<20 }, 0, INT_MAX, D},
-{"rtbufsize", "max memory used for buffering real-time frames", OFFSET(max_picture_buffer), AV_OPT_TYPE_INT, {.dbl = 3041280 }, 0, INT_MAX, D}, /* defaults to 1s of 15fps 352x288 YUYV422 video */
-{"fdebug", "print specific debug info", OFFSET(debug), AV_OPT_TYPE_FLAGS, {.dbl = DEFAULT }, 0, INT_MAX, E|D, "fdebug"},
-{"ts", NULL, 0, AV_OPT_TYPE_CONST, {.dbl = FF_FDEBUG_TS }, INT_MIN, INT_MAX, E|D, "fdebug"},
-{"max_delay", "maximum muxing or demuxing delay in microseconds", OFFSET(max_delay), AV_OPT_TYPE_INT, {.dbl = DEFAULT }, 0, INT_MAX, E|D},
-{"fpsprobesize", "number of frames used to probe fps", OFFSET(fps_probe_size), AV_OPT_TYPE_INT, {.dbl = -1}, -1, INT_MAX-1, D},
-{"audio_preload", "microseconds by which audio packets should be interleaved earlier", OFFSET(audio_preload), AV_OPT_TYPE_INT, {.dbl = 0}, 0, INT_MAX-1, E},
-{"chunk_duration", "microseconds for each chunk", OFFSET(max_chunk_duration), AV_OPT_TYPE_INT, {.dbl = 0}, 0, INT_MAX-1, E},
-{"chunk_size", "size in bytes for each chunk", OFFSET(max_chunk_size), AV_OPT_TYPE_INT, {.dbl = 0}, 0, INT_MAX-1, E},
-/* this is a crutch for avconv, since it cannot deal with identically named options in different contexts.
- * to be removed when avconv is fixed */
-{"f_err_detect", "set error detection flags (deprecated; use err_detect, save via avconv)", OFFSET(error_recognition), AV_OPT_TYPE_FLAGS, {.dbl = AV_EF_CRCCHECK }, INT_MIN, INT_MAX, D, "err_detect"},
-{"err_detect", "set error detection flags", OFFSET(error_recognition), AV_OPT_TYPE_FLAGS, {.dbl = AV_EF_CRCCHECK }, INT_MIN, INT_MAX, D, "err_detect"},
-{"crccheck", "verify embedded CRCs", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_CRCCHECK }, INT_MIN, INT_MAX, D, "err_detect"},
-{"bitstream", "detect bitstream specification deviations", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_BITSTREAM }, INT_MIN, INT_MAX, D, "err_detect"},
-{"buffer", "detect improper bitstream length", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_BUFFER }, INT_MIN, INT_MAX, D, "err_detect"},
-{"explode", "abort decoding on minor error detection", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_EXPLODE }, INT_MIN, INT_MAX, D, "err_detect"},
-{"careful",    "consider things that violate the spec and have not been seen in the wild as errors", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_CAREFUL }, INT_MIN, INT_MAX, D, "err_detect"},
-{"compliant",  "consider all spec non compliancies as errors", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_COMPLIANT }, INT_MIN, INT_MAX, D, "err_detect"},
-{"aggressive", "consider things that a sane encoder shouldnt do as an error", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_AGGRESSIVE }, INT_MIN, INT_MAX, D, "err_detect"},
-{"correct_ts_overflow", "correct single timestamp overflows", OFFSET(correct_ts_overflow), AV_OPT_TYPE_INT, {.dbl = 1}, 0, 1, D},
-{NULL},
-};
-
-#undef E
-#undef D
-#undef DEFAULT
+static AVClassCategory get_category(void *ptr)
+{
+    AVFormatContext* s = ptr;
+    if(s->iformat) return AV_CLASS_CATEGORY_DEMUXER;
+    else           return AV_CLASS_CATEGORY_MUXER;
+}
 
 static const AVClass av_format_context_class = {
     .class_name     = "AVFormatContext",
@@ -142,6 +90,8 @@ static const AVClass av_format_context_class = {
     .version        = LIBAVUTIL_VERSION_INT,
     .child_next     = format_child_next,
     .child_class_next = format_child_class_next,
+    .category       = AV_CLASS_CATEGORY_MUXER,
+    .get_category   = get_category,
 };
 
 static void avformat_get_context_defaults(AVFormatContext *s)
@@ -160,6 +110,11 @@ AVFormatContext *avformat_alloc_context(void)
     if (!ic) return ic;
     avformat_get_context_defaults(ic);
     return ic;
+}
+
+enum AVDurationEstimationMethod av_fmt_ctx_get_duration_estimation_method(const AVFormatContext* ctx)
+{
+    return ctx->duration_estimation_method;
 }
 
 const AVClass *avformat_get_class(void)

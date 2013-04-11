@@ -36,20 +36,20 @@ typedef struct {
     SDL_Overlay *overlay;
     char *window_title;
     char *icon_title;
-    char *window_size;
-    int window_width, window_height;
-    int overlay_width, overlay_height;
+    int window_width,  window_height;  /**< size of the window */
+    int overlay_width, overlay_height; /**< size of the video in the window */
+    int overlay_x, overlay_y;
     int overlay_fmt;
     int sdl_was_already_inited;
 } SDLContext;
 
 static const struct sdl_overlay_pix_fmt_entry {
-    enum PixelFormat pix_fmt; int overlay_fmt;
+    enum AVPixelFormat pix_fmt; int overlay_fmt;
 } sdl_overlay_pix_fmt_map[] = {
-    { PIX_FMT_YUV420P, SDL_IYUV_OVERLAY },
-    { PIX_FMT_YUYV422, SDL_YUY2_OVERLAY },
-    { PIX_FMT_UYVY422, SDL_UYVY_OVERLAY },
-    { PIX_FMT_NONE,    0                },
+    { AV_PIX_FMT_YUV420P, SDL_IYUV_OVERLAY },
+    { AV_PIX_FMT_YUYV422, SDL_YUY2_OVERLAY },
+    { AV_PIX_FMT_UYVY422, SDL_UYVY_OVERLAY },
+    { AV_PIX_FMT_NONE,    0                },
 };
 
 static int sdl_write_trailer(AVFormatContext *s)
@@ -58,7 +58,6 @@ static int sdl_write_trailer(AVFormatContext *s)
 
     av_freep(&sdl->window_title);
     av_freep(&sdl->icon_title);
-    av_freep(&sdl->window_size);
 
     if (sdl->overlay) {
         SDL_FreeYUVOverlay(sdl->overlay);
@@ -75,7 +74,7 @@ static int sdl_write_header(AVFormatContext *s)
     SDLContext *sdl = s->priv_data;
     AVStream *st = s->streams[0];
     AVCodecContext *encctx = st->codec;
-    float sar, dar; /* sample and display aspect ratios */
+    AVRational sar, dar; /* sample and display aspect ratios */
     int i, ret;
 
     if (!sdl->window_title)
@@ -85,7 +84,7 @@ static int sdl_write_header(AVFormatContext *s)
 
     if (SDL_WasInit(SDL_INIT_VIDEO)) {
         av_log(s, AV_LOG_ERROR,
-               "SDL video subsystem was already inited, aborting.\n");
+               "SDL video subsystem was already inited, aborting\n");
         sdl->sdl_was_already_inited = 1;
         ret = AVERROR(EINVAL);
         goto fail;
@@ -99,13 +98,13 @@ static int sdl_write_header(AVFormatContext *s)
 
     if (   s->nb_streams > 1
         || encctx->codec_type != AVMEDIA_TYPE_VIDEO
-        || encctx->codec_id   != CODEC_ID_RAWVIDEO) {
+        || encctx->codec_id   != AV_CODEC_ID_RAWVIDEO) {
         av_log(s, AV_LOG_ERROR, "Only supports one rawvideo stream\n");
         ret = AVERROR(EINVAL);
         goto fail;
     }
 
-    for (i = 0; sdl_overlay_pix_fmt_map[i].pix_fmt != PIX_FMT_NONE; i++) {
+    for (i = 0; sdl_overlay_pix_fmt_map[i].pix_fmt != AV_PIX_FMT_NONE; i++) {
         if (sdl_overlay_pix_fmt_map[i].pix_fmt == encctx->pix_fmt) {
             sdl->overlay_fmt = sdl_overlay_pix_fmt_map[i].overlay_fmt;
             break;
@@ -114,37 +113,41 @@ static int sdl_write_header(AVFormatContext *s)
 
     if (!sdl->overlay_fmt) {
         av_log(s, AV_LOG_ERROR,
-               "Unsupported pixel format '%s', choose one of yuv420p, yuyv422, or uyvy422.\n",
+               "Unsupported pixel format '%s', choose one of yuv420p, yuyv422, or uyvy422\n",
                av_get_pix_fmt_name(encctx->pix_fmt));
         ret = AVERROR(EINVAL);
         goto fail;
     }
 
-    if (sdl->window_size) {
-        if (av_parse_video_size(&sdl->window_width, &sdl->window_height,
-                                sdl->window_size) < 0) {
-            av_log(s, AV_LOG_ERROR, "Invalid window size '%s'\n", sdl->window_size);
-            ret = AVERROR(EINVAL);
-            goto fail;
-        }
-    }
-
     /* compute overlay width and height from the codec context information */
-    sar = st->sample_aspect_ratio.num ? av_q2d(st->sample_aspect_ratio) : 1;
-    dar = sar * (float)encctx->width / (float)encctx->height;
+    sar = st->sample_aspect_ratio.num ? st->sample_aspect_ratio : (AVRational){ 1, 1 };
+    dar = av_mul_q(sar, (AVRational){ encctx->width, encctx->height });
 
     /* we suppose the screen has a 1/1 sample aspect ratio */
-    sdl->overlay_height = encctx->height;
-    sdl->overlay_width = ((int)rint(sdl->overlay_height * dar));
-    if (sdl->overlay_width > encctx->width) {
-        sdl->overlay_width = encctx->width;
-        sdl->overlay_height = ((int)rint(sdl->overlay_width / dar));
-    }
-
-    if (!sdl->window_width || !sdl->window_height) {
+    if (sdl->window_width && sdl->window_height) {
+        /* fit in the window */
+        if (av_cmp_q(dar, (AVRational){ sdl->window_width, sdl->window_height }) > 0) {
+            /* fit in width */
+            sdl->overlay_width  = sdl->window_width;
+            sdl->overlay_height = av_rescale(sdl->overlay_width, dar.den, dar.num);
+        } else {
+            /* fit in height */
+            sdl->overlay_height = sdl->window_height;
+            sdl->overlay_width  = av_rescale(sdl->overlay_height, dar.num, dar.den);
+        }
+    } else {
+        if (sar.num > sar.den) {
+            sdl->overlay_width  = encctx->width;
+            sdl->overlay_height = av_rescale(sdl->overlay_width, dar.den, dar.num);
+        } else {
+            sdl->overlay_height = encctx->height;
+            sdl->overlay_width  = av_rescale(sdl->overlay_height, dar.num, dar.den);
+        }
         sdl->window_width  = sdl->overlay_width;
         sdl->window_height = sdl->overlay_height;
     }
+    sdl->overlay_x = (sdl->window_width  - sdl->overlay_width ) / 2;
+    sdl->overlay_y = (sdl->window_height - sdl->overlay_height) / 2;
 
     SDL_WM_SetCaption(sdl->window_title, sdl->icon_title);
     sdl->surface = SDL_SetVideoMode(sdl->window_width, sdl->window_height,
@@ -155,19 +158,19 @@ static int sdl_write_header(AVFormatContext *s)
         goto fail;
     }
 
-    sdl->overlay = SDL_CreateYUVOverlay(sdl->overlay_width, sdl->overlay_height,
+    sdl->overlay = SDL_CreateYUVOverlay(encctx->width, encctx->height,
                                         sdl->overlay_fmt, sdl->surface);
-    if (!sdl->overlay || sdl->overlay->pitches[0] < sdl->overlay_width) {
+    if (!sdl->overlay || sdl->overlay->pitches[0] < encctx->width) {
         av_log(s, AV_LOG_ERROR,
-               "SDL does not support an overlay with size of %dx%d pixels.\n",
-               sdl->overlay_width, sdl->overlay_height);
+               "SDL does not support an overlay with size of %dx%d pixels\n",
+               encctx->width, encctx->height);
         ret = AVERROR(EINVAL);
         goto fail;
     }
 
-    av_log(s, AV_LOG_INFO, "w:%d h:%d fmt:%s sar:%f -> w:%d h:%d\n",
-           encctx->width, encctx->height, av_get_pix_fmt_name(encctx->pix_fmt), sar,
-           sdl->window_width, sdl->window_height);
+    av_log(s, AV_LOG_VERBOSE, "w:%d h:%d fmt:%s sar:%d/%d -> w:%d h:%d\n",
+           encctx->width, encctx->height, av_get_pix_fmt_name(encctx->pix_fmt), sar.num, sar.den,
+           sdl->overlay_width, sdl->overlay_height);
     return 0;
 
 fail:
@@ -179,7 +182,7 @@ static int sdl_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
     SDLContext *sdl = s->priv_data;
     AVCodecContext *encctx = s->streams[0]->codec;
-    SDL_Rect rect = { 0, 0, sdl->window_width, sdl->window_height };
+    SDL_Rect rect = { sdl->overlay_x, sdl->overlay_y, sdl->overlay_width, sdl->overlay_height };
     AVPicture pict;
     int i;
 
@@ -195,7 +198,7 @@ static int sdl_write_packet(AVFormatContext *s, AVPacket *pkt)
     SDL_DisplayYUVOverlay(sdl->overlay, &rect);
     SDL_UnlockYUVOverlay(sdl->overlay);
 
-    SDL_UpdateRect(sdl->surface, 0, 0, sdl->overlay_width, sdl->overlay_height);
+    SDL_UpdateRect(sdl->surface, rect.x, rect.y, rect.w, rect.h);
 
     return 0;
 }
@@ -203,9 +206,9 @@ static int sdl_write_packet(AVFormatContext *s, AVPacket *pkt)
 #define OFFSET(x) offsetof(SDLContext,x)
 
 static const AVOption options[] = {
-    { "window_title", "SDL window title",           OFFSET(window_title),  AV_OPT_TYPE_STRING, {.str = NULL }, 0,  0, AV_OPT_FLAG_ENCODING_PARAM },
-    { "icon_title",   "SDL iconified window title", OFFSET(icon_title)  ,  AV_OPT_TYPE_STRING, {.str = NULL }, 0,  0, AV_OPT_FLAG_ENCODING_PARAM },
-    { "window_size",  "SDL window forced size",     OFFSET(window_size) ,  AV_OPT_TYPE_STRING, {.str = NULL }, 0,  0, AV_OPT_FLAG_ENCODING_PARAM },
+    { "window_title", "set SDL window title",           OFFSET(window_title), AV_OPT_TYPE_STRING, {.str = NULL }, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
+    { "icon_title",   "set SDL iconified window title", OFFSET(icon_title)  , AV_OPT_TYPE_STRING, {.str = NULL }, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
+    { "window_size",  "set SDL window forced size",     OFFSET(window_width), AV_OPT_TYPE_IMAGE_SIZE,{.str=NULL}, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
     { NULL },
 };
 
@@ -220,11 +223,11 @@ AVOutputFormat ff_sdl_muxer = {
     .name           = "sdl",
     .long_name      = NULL_IF_CONFIG_SMALL("SDL output device"),
     .priv_data_size = sizeof(SDLContext),
-    .audio_codec    = CODEC_ID_NONE,
-    .video_codec    = CODEC_ID_RAWVIDEO,
+    .audio_codec    = AV_CODEC_ID_NONE,
+    .video_codec    = AV_CODEC_ID_RAWVIDEO,
     .write_header   = sdl_write_header,
     .write_packet   = sdl_write_packet,
     .write_trailer  = sdl_write_trailer,
-    .flags          = AVFMT_NOFILE,
+    .flags          = AVFMT_NOFILE | AVFMT_VARIABLE_FPS | AVFMT_NOTIMESTAMPS,
     .priv_class     = &sdl_class,
 };

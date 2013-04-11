@@ -18,9 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/dsputil.h"
-#include "util_altivec.h"
-#include "types_altivec.h"
+#include <string.h>
+
+#include "config.h"
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavcodec/vp3dsp.h"
+
+#if HAVE_ALTIVEC
+
+#include "libavutil/ppc/types_altivec.h"
+#include "libavutil/ppc/util_altivec.h"
 #include "dsputil_altivec.h"
 
 static const vec_s16 constants =
@@ -107,25 +115,7 @@ static inline vec_s16 M16(vec_s16 a, vec_s16 C)
 #define ADD8(a) vec_add(a, eight)
 #define SHIFT4(a) vec_sra(a, four)
 
-void ff_vp3_idct_altivec(DCTELEM block[64])
-{
-    IDCT_START
-
-    IDCT_1D(NOP, NOP)
-    TRANSPOSE8(b0, b1, b2, b3, b4, b5, b6, b7);
-    IDCT_1D(ADD8, SHIFT4)
-
-    vec_st(b0, 0x00, block);
-    vec_st(b1, 0x10, block);
-    vec_st(b2, 0x20, block);
-    vec_st(b3, 0x30, block);
-    vec_st(b4, 0x40, block);
-    vec_st(b5, 0x50, block);
-    vec_st(b6, 0x60, block);
-    vec_st(b7, 0x70, block);
-}
-
-void ff_vp3_idct_put_altivec(uint8_t *dst, int stride, DCTELEM block[64])
+static void vp3_idct_put_altivec(uint8_t *dst, int stride, int16_t block[64])
 {
     vec_u8 t;
     IDCT_START
@@ -151,9 +141,10 @@ void ff_vp3_idct_put_altivec(uint8_t *dst, int stride, DCTELEM block[64])
     PUT(b5)     dst += stride;
     PUT(b6)     dst += stride;
     PUT(b7)
+    memset(block, 0, sizeof(*block) * 64);
 }
 
-void ff_vp3_idct_add_altivec(uint8_t *dst, int stride, DCTELEM block[64])
+static void vp3_idct_add_altivec(uint8_t *dst, int stride, int16_t block[64])
 {
     LOAD_ZERO;
     vec_u8 t, vdst;
@@ -182,4 +173,18 @@ void ff_vp3_idct_add_altivec(uint8_t *dst, int stride, DCTELEM block[64])
     ADD(b5)     dst += stride;
     ADD(b6)     dst += stride;
     ADD(b7)
+    memset(block, 0, sizeof(*block) * 64);
+}
+
+#endif /* HAVE_ALTIVEC */
+
+av_cold void ff_vp3dsp_init_ppc(VP3DSPContext *c, int flags)
+{
+#if HAVE_ALTIVEC
+    if (av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC) {
+        c->idct_put  = vp3_idct_put_altivec;
+        c->idct_add  = vp3_idct_add_altivec;
+        c->idct_perm = FF_TRANSPOSE_IDCT_PERM;
+    }
+#endif
 }

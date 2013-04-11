@@ -76,8 +76,7 @@ static int find_record(const AnmDemuxContext *anm, int record)
     return AVERROR_INVALIDDATA;
 }
 
-static int read_header(AVFormatContext *s,
-                       AVFormatParameters *ap)
+static int read_header(AVFormatContext *s)
 {
     AnmDemuxContext *anm = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -87,7 +86,7 @@ static int read_header(AVFormatContext *s,
     avio_skip(pb, 4); /* magic number */
     if (avio_rl16(pb) != MAX_PAGES) {
         av_log_ask_for_sample(s, "max_pages != " AV_STRINGIFY(MAX_PAGES) "\n");
-        return AVERROR_INVALIDDATA;
+        return AVERROR_PATCHWELCOME;
     }
 
     anm->nb_pages   = avio_rl16(pb);
@@ -102,7 +101,7 @@ static int read_header(AVFormatContext *s,
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_ANM;
+    st->codec->codec_id   = AV_CODEC_ID_ANM;
     st->codec->codec_tag  = 0; /* no fourcc */
     st->codec->width      = avio_rl16(pb);
     st->codec->height     = avio_rl16(pb);
@@ -164,7 +163,7 @@ static int read_header(AVFormatContext *s,
 
 invalid:
     av_log_ask_for_sample(s, NULL);
-    return AVERROR_INVALIDDATA;
+    return AVERROR_PATCHWELCOME;
 }
 
 static int read_packet(AVFormatContext *s,

@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include "lpc.h"
+#include "audio_frame_queue.h"
 
 #define NBLOCKS         4       ///< number of subblocks within a block
 #define BLOCKSIZE       40      ///< subblock size in 16-bit words
@@ -32,10 +33,11 @@
 #define FRAMESIZE       20      ///< size of encoded frame
 #define LPC_ORDER       10      ///< order of LPC filter
 
-typedef struct {
+typedef struct RA144Context {
     AVCodecContext *avctx;
-    AVFrame frame;
     LPCContext lpc_ctx;
+    AudioFrameQueue afq;
+    int last_frame;
 
     unsigned int     old_energy;        ///< previous frame energy
 

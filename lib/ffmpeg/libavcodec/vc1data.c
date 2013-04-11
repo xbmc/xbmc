@@ -84,7 +84,7 @@ const uint8_t ff_vc1_mbmode_intfrp[2][15][4] = {
     }
 };
 
-const int ff_vc1_fps_nr[5] = { 24, 25, 30, 50, 60 },
+const int ff_vc1_fps_nr[7] = { 24, 25, 30, 50, 60, 48, 72 },
           ff_vc1_fps_dr[2] = { 1000, 1001 };
 const uint8_t ff_vc1_pquant_table[3][32] = {
     /* Implicit quantizer */
@@ -645,7 +645,7 @@ const uint8_t ff_vc1_2ref_mvdata_bits[8][126] = {
   }
 };
 
-const uint8_t wmv3_dc_scale_table[32] = {
+const uint8_t ff_wmv3_dc_scale_table[32] = {
      0,  2,  4,  8,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13,
     14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21
 };
@@ -1019,21 +1019,21 @@ const uint8_t ff_vc1_mv_diff_bits[4][73] = {
 /* DC differentials low+hi-mo, p217 are the same as in msmpeg4data .h */
 
 /* Table 232 */
-const int8_t ff_vc1_simple_progressive_4x4_zz [16] = {
+const uint8_t ff_vc1_simple_progressive_4x4_zz [16] = {
      0,     8,    16,     1,
      9,    24,    17,     2,
     10,    18,    25,     3,
     11,    26,    19,    27
 };
 
-const int8_t ff_vc1_adv_progressive_8x4_zz [32] = { /* Table 233 */
+const uint8_t ff_vc1_adv_progressive_8x4_zz [32] = { /* Table 233 */
      0,     8,     1,    16,     2,     9,    10,     3,
     24,    17,     4,    11,    18,    12,     5,    19,
     25,    13,    20,    26,    27,     6,    21,    28,
     14,    22,    29,     7,    30,    15,    23,    31
 };
 
-const int8_t ff_vc1_adv_progressive_4x8_zz [32] = { /* Table 234 */
+const uint8_t ff_vc1_adv_progressive_4x8_zz [32] = { /* Table 234 */
      0,     1,     8,     2,
      9,    16,    17,    24,
     10,    32,    25,    18,
@@ -1044,7 +1044,7 @@ const int8_t ff_vc1_adv_progressive_4x8_zz [32] = { /* Table 234 */
     35,    43,    51,    59
 };
 
-const int8_t ff_vc1_adv_interlaced_8x8_zz [64] = { /* Table 235 */
+const uint8_t ff_vc1_adv_interlaced_8x8_zz [64] = { /* Table 235 */
      0,     8,     1,    16,    24,     9,     2,    32,
     40,    48,    56,    17,    10,     3,    25,    18,
     11,     4,    33,    41,    49,    57,    26,    34,
@@ -1055,14 +1055,14 @@ const int8_t ff_vc1_adv_interlaced_8x8_zz [64] = { /* Table 235 */
     61,    62,    54,    46,    39,    47,    55,    63
 };
 
-const int8_t ff_vc1_adv_interlaced_8x4_zz [32] = { /* Table 236 */
+const uint8_t ff_vc1_adv_interlaced_8x4_zz [32] = { /* Table 236 */
      0,     8,    16,    24,     1,     9,     2,    17,
     25,    10,     3,    18,    26,     4,    11,    19,
     12,     5,    13,    20,    27,     6,    21,    28,
     14,    22,    29,     7,    30,    15,    23,    31
 };
 
-const int8_t ff_vc1_adv_interlaced_4x8_zz [32] = { /* Table 237 */
+const uint8_t ff_vc1_adv_interlaced_4x8_zz [32] = { /* Table 237 */
      0,     1,     2,     8,
     16,     9,    24,    17,
     10,     3,    32,    40,
@@ -1073,7 +1073,7 @@ const int8_t ff_vc1_adv_interlaced_4x8_zz [32] = { /* Table 237 */
     35,    43,    51,    59
 };
 
-const int8_t ff_vc1_adv_interlaced_4x4_zz [16] = { /* Table 238 */
+const uint8_t ff_vc1_adv_interlaced_4x4_zz [16] = { /* Table 238 */
      0,     8,    16,    24,
      1,     9,    17,     2,
     25,    10,    18,     3,
@@ -1094,7 +1094,7 @@ const int32_t ff_vc1_dqscale[63] = {
 };
 
 /* P Interlaced field picture MV predictor scaling values (Table 114) */
-const uint16_t vc1_field_mvpred_scales[2][7][4] = {
+const uint16_t ff_vc1_field_mvpred_scales[2][7][4] = {
 // Refdist:
 //      0       1       2       3 or greater
   { // current field is first
@@ -1118,7 +1118,7 @@ const uint16_t vc1_field_mvpred_scales[2][7][4] = {
 };
 
 /* B Interlaced field picture backward MV predictor scaling values for first field (Table 115) */
-const uint16_t vc1_b_field_mvpred_scales[7][4] = {
+const uint16_t ff_vc1_b_field_mvpred_scales[7][4] = {
     // BRFD:
     //  0       1       2       3 or greater
     { 171,    205,    219,    228 },   // SCALESAME
@@ -1128,4 +1128,8 @@ const uint16_t vc1_b_field_mvpred_scales[7][4] = {
     {  11,     13,     14,     14 },   // SCALEZONE1_Y
     {  26,     17,     12,     10 },   // ZONE1OFFSET_X
     {   7,      4,      3,      3 }    // ZONE1OFFSET_Y
+};
+
+const int ff_vc1_ac_sizes[AC_MODES] = {
+    186, 169, 133, 149, 103, 103, 163, 175
 };

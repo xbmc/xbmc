@@ -18,7 +18,7 @@
 ;* 51, Inc., Foundation Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "x86inc.asm"
+%include "libavutil/x86/x86util.asm"
 
 SECTION_RODATA
 pw_3: times 8 dw 3
@@ -130,16 +130,18 @@ cglobal dirac_hpel_filter_h_%1, 3,3,8, dst, src, width
 
 %macro PUT_RECT 1
 ; void put_rect_clamped(uint8_t *dst, int dst_stride, int16_t *src, int src_stride, int width, int height)
-cglobal put_signed_rect_clamped_%1, 5,7,3, dst, dst_stride, src, src_stride, w, dst2, src2
+cglobal put_signed_rect_clamped_%1, 5,9,3, dst, dst_stride, src, src_stride, w, dst2, src2
     mova    m0, [pb_128]
     add     wd, (mmsize-1)
     and     wd, ~(mmsize-1)
 
-%ifdef ARCH_X86_64
-    mov   r10d, r5m
-    mov   r11d, wd
-    %define wspill r11d
-    %define hd r10d
+%if ARCH_X86_64
+    movsxd   dst_strideq, dst_strided
+    movsxd   src_strideq, src_strided
+    mov   r7d, r5m
+    mov   r8d, wd
+    %define wspill r8d
+    %define hd r7d
 %else
     mov    r4m, wd
     %define wspill r4m
@@ -171,14 +173,16 @@ cglobal put_signed_rect_clamped_%1, 5,7,3, dst, dst_stride, src, src_stride, w, 
 
 %macro ADD_RECT 1
 ; void add_rect_clamped(uint8_t *dst, uint16_t *src, int stride, int16_t *idwt, int idwt_stride, int width, int height)
-cglobal add_rect_clamped_%1, 7,7,3, dst, src, stride, idwt, idwt_stride, w, h
+cglobal add_rect_clamped_%1, 7,9,3, dst, src, stride, idwt, idwt_stride, w, h
     mova    m0, [pw_32]
     add     wd, (mmsize-1)
     and     wd, ~(mmsize-1)
 
-%ifdef ARCH_X86_64
-    mov   r11d, wd
-    %define wspill r11d
+%if ARCH_X86_64
+    movsxd   strideq, strided
+    movsxd   idwt_strideq, idwt_strided
+    mov   r8d, wd
+    %define wspill r8d
 %else
     mov    r5m, wd
     %define wspill r5m
@@ -241,7 +245,7 @@ cglobal add_dirac_obmc%1_%2, 6,6,5, dst, src, stride, obmc, yblen
 %endm
 
 INIT_MMX
-%ifndef ARCH_X86_64
+%if ARCH_X86_64 == 0
 PUT_RECT mmx
 ADD_RECT mmx
 

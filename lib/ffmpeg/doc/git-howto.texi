@@ -65,6 +65,14 @@ git clone git@@source.ffmpeg.org:ffmpeg <target>
 This will put the FFmpeg sources into the directory @var{<target>} and let
 you push back your changes to the remote repository.
 
+Make sure that you do not have Windows line endings in your checkouts,
+otherwise you may experience spurious compilation failures. One way to
+achieve this is to run
+
+@example
+git config --global core.autocrlf false
+@end example
+
 
 @section Updating the source tree to the latest revision
 
@@ -250,6 +258,32 @@ git commit
 @end example
 
 
+@chapter Git configuration
+
+In order to simplify a few workflows, it is advisable to configure both
+your personal Git installation and your local FFmpeg repository.
+
+@section Personal Git installation
+
+Add the following to your @file{~/.gitconfig} to help @command{git send-email}
+and @command{git format-patch} detect renames:
+
+@example
+[diff]
+        renames = copy
+@end example
+
+@section Repository configuration
+
+In order to have @command{git send-email} automatically send patches
+to the ffmpeg-devel mailing list, add the following stanza
+to @file{/path/to/ffmpeg/repository/.git/config}:
+
+@example
+[sendemail]
+        to = ffmpeg-devel@@ffmpeg.org
+@end example
+
 @chapter FFmpeg specific
 
 @section Reverting broken commits
@@ -337,6 +371,43 @@ git checkout -b svn_23456 $SHA1
 @end example
 
 where @var{$SHA1} is the commit hash from the @command{git log} output.
+
+
+@chapter pre-push checklist
+
+Once you have a set of commits that you feel are ready for pushing,
+work through the following checklist to doublecheck everything is in
+proper order. This list tries to be exhaustive. In case you are just
+pushing a typo in a comment, some of the steps may be unnecessary.
+Apply your common sense, but if in doubt, err on the side of caution.
+
+First, make sure that the commits and branches you are going to push
+match what you want pushed and that nothing is missing, extraneous or
+wrong. You can see what will be pushed by running the git push command
+with --dry-run first. And then inspecting the commits listed with
+@command{git log -p 1234567..987654}. The @command{git status} command
+may help in finding local changes that have been forgotten to be added.
+
+Next let the code pass through a full run of our testsuite.
+
+@itemize
+@item @command{make distclean}
+@item @command{/path/to/ffmpeg/configure}
+@item @command{make check}
+@item if fate fails due to missing samples run @command{make fate-rsync} and retry
+@end itemize
+
+Make sure all your changes have been checked before pushing them, the
+testsuite only checks against regressions and that only to some extend. It does
+obviously not check newly added features/code to be working unless you have
+added a test for that (which is recommended).
+
+Also note that every single commit should pass the test suite, not just
+the result of a series of patches.
+
+Once everything passed, push the changes to your public ffmpeg clone and post a
+merge request to ffmpeg-devel. You can also push them directly but this is not
+recommended.
 
 @chapter Server Issues
 

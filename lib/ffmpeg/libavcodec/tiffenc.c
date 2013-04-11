@@ -25,15 +25,18 @@
  * @author Bartlomiej Wolowiec
  */
 
+#include "libavutil/imgutils.h"
 #include "libavutil/log.h"
 #include "libavutil/opt.h"
+#include "libavutil/pixdesc.h"
 
 #include "avcodec.h"
+#include "config.h"
 #if CONFIG_ZLIB
 #include <zlib.h>
 #endif
-#include "libavutil/opt.h"
 #include "bytestream.h"
+#include "internal.h"
 #include "tiff.h"
 #include "rle.h"
 #include "lzw.h"
@@ -42,8 +45,8 @@
 #define TIFF_MAX_ENTRY 32
 
 /** sizes of various TIFF field types (string size = 1)*/
-static const uint8_t type_sizes2[6] = {
-    0, 1, 1, 2, 4, 8
+static const uint8_t type_sizes2[14] = {
+    0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8, 4
 };
 
 typedef struct TiffEncoderContext {
@@ -58,6 +61,12 @@ typedef struct TiffEncoderContext {
     int bpp_tab_size;                   ///< bpp_tab size
     int photometric_interpretation;     ///< photometric interpretation
     int strips;                         ///< number of strips
+    uint32_t *strip_sizes;
+    unsigned int strip_sizes_size;
+    uint32_t *strip_offsets;
+    unsigned int strip_offsets_size;
+    uint8_t *yuv_line;
+    unsigned int yuv_line_size;
     int rps;                            ///< row per strip
     uint8_t entries[TIFF_MAX_ENTRY*12]; ///< entires in header
     int num_entries;                    ///< number of entires
@@ -71,12 +80,13 @@ typedef struct TiffEncoderContext {
 
 
 /**
- * Check free space in buffer
+ * Check free space in buffer.
+ *
  * @param s Tiff context
  * @param need Needed bytes
  * @return 0 - ok, 1 - no free space
  */
-inline static int check_size(TiffEncoderContext * s, uint64_t need)
+static inline int check_size(TiffEncoderContext * s, uint64_t need)
 {
     if (s->buf_size < *s->buf - s->buf_start + need) {
         *s->buf = s->buf_start + s->buf_size + 1;
@@ -87,13 +97,13 @@ inline static int check_size(TiffEncoderContext * s, uint64_t need)
 }
 
 /**
- * Put n values to buffer
+ * Put n values to buffer.
  *
- * @param p Pointer to pointer to output buffer
- * @param n Number of values
- * @param val Pointer to values
- * @param type Type of values
- * @param flip =0 - normal copy, >0 - flip
+ * @param p pointer to pointer to output buffer
+ * @param n number of values
+ * @param val pointer to values
+ * @param type type of values
+ * @param flip = 0 - normal copy, >0 - flip
  */
 static void tnput(uint8_t ** p, int n, const uint8_t * val, enum TiffTypes type,
                   int flip)
@@ -108,11 +118,12 @@ static void tnput(uint8_t ** p, int n, const uint8_t * val, enum TiffTypes type,
 
 /**
  * Add entry to directory in tiff header.
+ *
  * @param s Tiff context
- * @param tag Tag that identifies the entry
- * @param type Entry type
- * @param count The number of values
- * @param ptr_val Pointer to values
+ * @param tag tag that identifies the entry
+ * @param type entry type
+ * @param count the number of values
+ * @param ptr_val pointer to values
  */
 static void add_entry(TiffEncoderContext * s,
                       enum TiffTags tag, enum TiffTypes type, int count,
@@ -120,17 +131,17 @@ static void add_entry(TiffEncoderContext * s,
 {
     uint8_t *entries_ptr = s->entries + 12 * s->num_entries;
 
-    assert(s->num_entries < TIFF_MAX_ENTRY);
+    av_assert0(s->num_entries < TIFF_MAX_ENTRY);
 
     bytestream_put_le16(&entries_ptr, tag);
     bytestream_put_le16(&entries_ptr, type);
     bytestream_put_le32(&entries_ptr, count);
 
-    if (type_sizes[type] * count <= 4) {
+    if (type_sizes[type] * (int64_t)count <= 4) {
         tnput(&entries_ptr, count, ptr_val, type, 0);
     } else {
         bytestream_put_le32(&entries_ptr, *s->buf - s->buf_start);
-        check_size(s, count * type_sizes2[type]);
+        check_size(s, count * (int64_t)type_sizes2[type]);
         tnput(s->buf, count, ptr_val, type, 0);
     }
 
@@ -145,14 +156,14 @@ static void add_entry1(TiffEncoderContext * s,
 }
 
 /**
- * Encode one strip in tiff file
+ * Encode one strip in tiff file.
  *
  * @param s Tiff context
- * @param src Input buffer
- * @param dst Output buffer
- * @param n Size of input buffer
- * @param compr Compression method
- * @return Number of output bytes. If an output error is encountered, -1 returned
+ * @param src input buffer
+ * @param dst output buffer
+ * @param n size of input buffer
+ * @param compr compression method
+ * @return number of output bytes. If an output error is encountered, -1 is returned
  */
 static int encode_strip(TiffEncoderContext * s, const int8_t * src,
                         uint8_t * dst, int n, int compr)
@@ -192,119 +203,99 @@ static void pack_yuv(TiffEncoderContext * s, uint8_t * dst, int lnum)
     int w = (s->width - 1) / s->subsampling[0] + 1;
     uint8_t *pu = &p->data[1][lnum / s->subsampling[1] * p->linesize[1]];
     uint8_t *pv = &p->data[2][lnum / s->subsampling[1] * p->linesize[2]];
-    for (i = 0; i < w; i++){
-        for (j = 0; j < s->subsampling[1]; j++)
-            for (k = 0; k < s->subsampling[0]; k++)
-                *dst++ = p->data[0][(lnum + j) * p->linesize[0] +
-                                    i * s->subsampling[0] + k];
-        *dst++ = *pu++;
-        *dst++ = *pv++;
+    if(s->width % s->subsampling[0] || s->height % s->subsampling[1]){
+        for (i = 0; i < w; i++){
+            for (j = 0; j < s->subsampling[1]; j++)
+                for (k = 0; k < s->subsampling[0]; k++)
+                    *dst++ = p->data[0][FFMIN(lnum + j, s->height-1) * p->linesize[0] +
+                                        FFMIN(i * s->subsampling[0] + k, s->width-1)];
+            *dst++ = *pu++;
+            *dst++ = *pv++;
+        }
+    }else{
+        for (i = 0; i < w; i++){
+            for (j = 0; j < s->subsampling[1]; j++)
+                for (k = 0; k < s->subsampling[0]; k++)
+                    *dst++ = p->data[0][(lnum + j) * p->linesize[0] +
+                                        i * s->subsampling[0] + k];
+            *dst++ = *pu++;
+            *dst++ = *pv++;
+        }
     }
 }
 
-static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
-                        int buf_size, void *data)
+static av_cold int encode_init(AVCodecContext *avctx)
 {
     TiffEncoderContext *s = avctx->priv_data;
-    AVFrame *pict = data;
-    AVFrame *const p = (AVFrame *) & s->picture;
+
+    avctx->coded_frame= &s->picture;
+    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
+    avctx->coded_frame->key_frame = 1;
+    s->avctx = avctx;
+
+    return 0;
+}
+
+static int encode_frame(AVCodecContext * avctx, AVPacket *pkt,
+                        const AVFrame *pict, int *got_packet)
+{
+    const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(avctx->pix_fmt);
+    TiffEncoderContext *s = avctx->priv_data;
+    AVFrame *const p = &s->picture;
     int i;
-    int n;
-    uint8_t *ptr = buf;
+    uint8_t *ptr;
     uint8_t *offset;
     uint32_t strips;
-    uint32_t *strip_sizes = NULL;
-    uint32_t *strip_offsets = NULL;
     int bytes_per_row;
     uint32_t res[2] = { s->dpi, 1 };        // image resolution (72/1)
-    uint16_t bpp_tab[] = { 8, 8, 8, 8 };
+    uint16_t bpp_tab[4];
     int ret = -1;
-    int is_yuv = 0;
-    uint8_t *yuv_line = NULL;
+    int is_yuv = 0, alpha = 0;
     int shift_h, shift_v;
 
-    s->avctx = avctx;
-    s->buf_start = buf;
-    s->buf = &ptr;
-    s->buf_size = buf_size;
-
     *p = *pict;
-    p->pict_type = AV_PICTURE_TYPE_I;
-    p->key_frame = 1;
-    avctx->coded_frame= &s->picture;
-
-#if FF_API_TIFFENC_COMPLEVEL
-    if (avctx->compression_level != FF_COMPRESSION_DEFAULT)
-        av_log(avctx, AV_LOG_WARNING, "Using compression_level to set compression "
-               "algorithm is deprecated. Please use the compression_algo private "
-               "option instead.\n");
-    if (avctx->compression_level == 0) {
-        s->compr = TIFF_RAW;
-    } else if(avctx->compression_level == 2) {
-        s->compr = TIFF_LZW;
-#if CONFIG_ZLIB
-    } else if ((avctx->compression_level >= 3)) {
-        s->compr = TIFF_DEFLATE;
-#endif
-    }
-#endif
 
     s->width = avctx->width;
     s->height = avctx->height;
     s->subsampling[0] = 1;
     s->subsampling[1] = 1;
 
+    avctx->bits_per_coded_sample =
+    s->bpp = av_get_bits_per_pixel(desc);
+    s->bpp_tab_size = desc->nb_components;
+
     switch (avctx->pix_fmt) {
-    case PIX_FMT_RGBA64LE:
-        s->bpp = 64;
-        s->photometric_interpretation = 2;
-        bpp_tab[0] = 16;
-        bpp_tab[1] = 16;
-        bpp_tab[2] = 16;
-        bpp_tab[3] = 16;
-        break;
-    case PIX_FMT_RGB48LE:
-        s->bpp = 48;
-        s->photometric_interpretation = 2;
-        bpp_tab[0] = 16;
-        bpp_tab[1] = 16;
-        bpp_tab[2] = 16;
-        bpp_tab[3] = 16;
-        break;
-    case PIX_FMT_RGBA:
-        s->bpp = 32;
+    case AV_PIX_FMT_RGBA64LE:
+    case AV_PIX_FMT_RGBA:
+        alpha = 1;
+    case AV_PIX_FMT_RGB48LE:
+    case AV_PIX_FMT_RGB24:
         s->photometric_interpretation = 2;
         break;
-    case PIX_FMT_RGB24:
-        s->bpp = 24;
-        s->photometric_interpretation = 2;
-        break;
-    case PIX_FMT_GRAY8:
-        s->bpp = 8;
+    case AV_PIX_FMT_GRAY8:
+        avctx->bits_per_coded_sample = 0x28;
+    case AV_PIX_FMT_GRAY8A:
+        alpha = avctx->pix_fmt == AV_PIX_FMT_GRAY8A;
+    case AV_PIX_FMT_GRAY16LE:
+    case AV_PIX_FMT_MONOBLACK:
         s->photometric_interpretation = 1;
         break;
-    case PIX_FMT_PAL8:
-        s->bpp = 8;
+    case AV_PIX_FMT_PAL8:
         s->photometric_interpretation = 3;
         break;
-    case PIX_FMT_MONOBLACK:
-    case PIX_FMT_MONOWHITE:
-        s->bpp = 1;
-        s->photometric_interpretation = avctx->pix_fmt == PIX_FMT_MONOBLACK;
-        bpp_tab[0] = 1;
+    case AV_PIX_FMT_MONOWHITE:
+        s->photometric_interpretation = 0;
         break;
-    case PIX_FMT_YUV420P:
-    case PIX_FMT_YUV422P:
-    case PIX_FMT_YUV444P:
-    case PIX_FMT_YUV410P:
-    case PIX_FMT_YUV411P:
+    case AV_PIX_FMT_YUV420P:
+    case AV_PIX_FMT_YUV422P:
+    case AV_PIX_FMT_YUV440P:
+    case AV_PIX_FMT_YUV444P:
+    case AV_PIX_FMT_YUV410P:
+    case AV_PIX_FMT_YUV411P:
         s->photometric_interpretation = 6;
-        avcodec_get_chroma_sub_sample(avctx->pix_fmt,
-                &shift_h, &shift_v);
-        s->bpp = 8 + (16 >> (shift_h + shift_v));
+        avcodec_get_chroma_sub_sample(avctx->pix_fmt, &shift_h, &shift_v);
         s->subsampling[0] = 1 << shift_h;
         s->subsampling[1] = 1 << shift_v;
-        s->bpp_tab_size = 3;
         is_yuv = 1;
         break;
     default:
@@ -312,8 +303,9 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
                "This colors format is not supported\n");
         return -1;
     }
-    if (!is_yuv)
-        s->bpp_tab_size = (s->bpp >= 48) ? ((s->bpp + 7) >> 4):((s->bpp + 7) >> 3);
+
+    for (i = 0; i < s->bpp_tab_size; i++)
+        bpp_tab[i] = desc->comp[i].depth_minus1 + 1;
 
     if (s->compr == TIFF_DEFLATE || s->compr == TIFF_ADOBE_DEFLATE || s->compr == TIFF_LZW)
         //best choose for DEFLATE
@@ -323,6 +315,14 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
     s->rps = ((s->rps - 1) / s->subsampling[1] + 1) * s->subsampling[1]; // round rps up
 
     strips = (s->height - 1) / s->rps + 1;
+
+    if ((ret = ff_alloc_packet2(avctx, pkt, avctx->width * avctx->height * s->bpp * 2 +
+                                  avctx->height * 4 + FF_MIN_BUFFER_SIZE)) < 0)
+        return ret;
+    ptr          = pkt->data;
+    s->buf_start = pkt->data;
+    s->buf       = &ptr;
+    s->buf_size  = pkt->size;
 
     if (check_size(s, 8))
         goto fail;
@@ -334,15 +334,21 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
     offset = ptr;
     bytestream_put_le32(&ptr, 0);
 
-    strip_sizes = av_mallocz(sizeof(*strip_sizes) * strips);
-    strip_offsets = av_mallocz(sizeof(*strip_offsets) * strips);
+    av_fast_padded_mallocz(&s->strip_sizes, &s->strip_sizes_size, sizeof(s->strip_sizes[0]) * strips);
+    av_fast_padded_mallocz(&s->strip_offsets, &s->strip_offsets_size, sizeof(s->strip_offsets[0]) * strips);
+
+    if (!s->strip_sizes || !s->strip_offsets) {
+        ret = AVERROR(ENOMEM);
+        goto fail;
+    }
 
     bytes_per_row = (((s->width - 1)/s->subsampling[0] + 1) * s->bpp
                     * s->subsampling[0] * s->subsampling[1] + 7) >> 3;
     if (is_yuv){
-        yuv_line = av_malloc(bytes_per_row);
-        if (yuv_line == NULL){
+        av_fast_padded_malloc(&s->yuv_line, &s->yuv_line_size, bytes_per_row);
+        if (s->yuv_line == NULL){
             av_log(s->avctx, AV_LOG_ERROR, "Not enough memory\n");
+            ret = AVERROR(ENOMEM);
             goto fail;
         }
     }
@@ -355,12 +361,16 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
 
         zlen = bytes_per_row * s->rps;
         zbuf = av_malloc(zlen);
-        strip_offsets[0] = ptr - buf;
+        if (!zbuf) {
+            ret = AVERROR(ENOMEM);
+            goto fail;
+        }
+        s->strip_offsets[0] = ptr - pkt->data;
         zn = 0;
         for (j = 0; j < s->rps; j++) {
             if (is_yuv){
-                pack_yuv(s, yuv_line, j);
-                memcpy(zbuf + zn, yuv_line, bytes_per_row);
+                pack_yuv(s, s->yuv_line, j);
+                memcpy(zbuf + zn, s->yuv_line, bytes_per_row);
                 j += s->subsampling[1] - 1;
             }
             else
@@ -368,45 +378,49 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
                        p->data[0] + j * p->linesize[0], bytes_per_row);
             zn += bytes_per_row;
         }
-        n = encode_strip(s, zbuf, ptr, zn, s->compr);
+        ret = encode_strip(s, zbuf, ptr, zn, s->compr);
         av_free(zbuf);
-        if (n<0) {
+        if (ret < 0) {
             av_log(s->avctx, AV_LOG_ERROR, "Encode strip failed\n");
             goto fail;
         }
-        ptr += n;
-        strip_sizes[0] = ptr - buf - strip_offsets[0];
+        ptr += ret;
+        s->strip_sizes[0] = ptr - pkt->data - s->strip_offsets[0];
     } else
 #endif
     {
-        if(s->compr == TIFF_LZW)
+        if (s->compr == TIFF_LZW) {
             s->lzws = av_malloc(ff_lzw_encode_state_size);
+            if (!s->lzws) {
+                ret = AVERROR(ENOMEM);
+                goto fail;
+            }
+        }
         for (i = 0; i < s->height; i++) {
-            if (strip_sizes[i / s->rps] == 0) {
+            if (s->strip_sizes[i / s->rps] == 0) {
                 if(s->compr == TIFF_LZW){
                     ff_lzw_encode_init(s->lzws, ptr, s->buf_size - (*s->buf - s->buf_start),
                                        12, FF_LZW_TIFF, put_bits);
                 }
-                strip_offsets[i / s->rps] = ptr - buf;
+                s->strip_offsets[i / s->rps] = ptr - pkt->data;
             }
             if (is_yuv){
-                 pack_yuv(s, yuv_line, i);
-                 n = encode_strip(s, yuv_line, ptr, bytes_per_row, s->compr);
+                 pack_yuv(s, s->yuv_line, i);
+                 ret = encode_strip(s, s->yuv_line, ptr, bytes_per_row, s->compr);
                  i += s->subsampling[1] - 1;
             }
             else
-                n = encode_strip(s, p->data[0] + i * p->linesize[0],
+                ret = encode_strip(s, p->data[0] + i * p->linesize[0],
                         ptr, bytes_per_row, s->compr);
-            if (n < 0) {
+            if (ret < 0) {
                 av_log(s->avctx, AV_LOG_ERROR, "Encode strip failed\n");
                 goto fail;
             }
-            strip_sizes[i / s->rps] += n;
-            ptr += n;
+            s->strip_sizes[i / s->rps] += ret;
+            ptr += ret;
             if(s->compr == TIFF_LZW && (i==s->height-1 || i%s->rps == s->rps-1)){
-                int ret;
                 ret = ff_lzw_encode_flush(s->lzws, flush_put_bits);
-                strip_sizes[(i / s->rps )] += ret ;
+                s->strip_sizes[(i / s->rps )] += ret ;
                 ptr += ret;
             }
         }
@@ -425,13 +439,13 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
 
     add_entry1(s,TIFF_COMPR,             TIFF_SHORT,            s->compr);
     add_entry1(s,TIFF_INVERT,            TIFF_SHORT,            s->photometric_interpretation);
-    add_entry(s, TIFF_STRIP_OFFS,        TIFF_LONG,     strips, strip_offsets);
+    add_entry(s, TIFF_STRIP_OFFS,        TIFF_LONG,     strips, s->strip_offsets);
 
     if (s->bpp_tab_size)
     add_entry1(s,TIFF_SAMPLES_PER_PIXEL, TIFF_SHORT,            s->bpp_tab_size);
 
     add_entry1(s,TIFF_ROWSPERSTRIP,      TIFF_LONG,             s->rps);
-    add_entry(s, TIFF_STRIP_SIZE,        TIFF_LONG,     strips, strip_sizes);
+    add_entry(s, TIFF_STRIP_SIZE,        TIFF_LONG,     strips, s->strip_sizes);
     add_entry(s, TIFF_XRES,              TIFF_RATIONAL, 1,      res);
     add_entry(s, TIFF_YRES,              TIFF_RATIONAL, 1,      res);
     add_entry1(s,TIFF_RES_UNIT,          TIFF_SHORT,            2);
@@ -440,7 +454,7 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
     add_entry(s, TIFF_SOFTWARE_NAME,     TIFF_STRING,
               strlen(LIBAVCODEC_IDENT) + 1, LIBAVCODEC_IDENT);
 
-    if (avctx->pix_fmt == PIX_FMT_PAL8) {
+    if (avctx->pix_fmt == AV_PIX_FMT_PAL8) {
         uint16_t pal[256 * 3];
         for (i = 0; i < 256; i++) {
             uint32_t rgb = *(uint32_t *) (p->data[1] + i * 4);
@@ -450,39 +464,55 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
         }
         add_entry(s, TIFF_PAL, TIFF_SHORT, 256 * 3, pal);
     }
+    if (alpha)
+        add_entry1(s,TIFF_EXTRASAMPLES,      TIFF_SHORT,            2);
     if (is_yuv){
         /** according to CCIR Recommendation 601.1 */
         uint32_t refbw[12] = {15, 1, 235, 1, 128, 1, 240, 1, 128, 1, 240, 1};
         add_entry(s, TIFF_YCBCR_SUBSAMPLING, TIFF_SHORT,    2, s->subsampling);
+        if (avctx->chroma_sample_location == AVCHROMA_LOC_TOPLEFT)
+            add_entry1(s, TIFF_YCBCR_POSITIONING, TIFF_SHORT, 2);
         add_entry(s, TIFF_REFERENCE_BW,      TIFF_RATIONAL, 6, refbw);
     }
-    bytestream_put_le32(&offset, ptr - buf);    // write offset to dir
+    bytestream_put_le32(&offset, ptr - pkt->data);    // write offset to dir
 
-    if (check_size(s, 6 + s->num_entries * 12))
+    if (check_size(s, 6 + s->num_entries * 12)) {
+        ret = AVERROR(EINVAL);
         goto fail;
+    }
     bytestream_put_le16(&ptr, s->num_entries);  // write tag count
     bytestream_put_buffer(&ptr, s->entries, s->num_entries * 12);
     bytestream_put_le32(&ptr, 0);
 
-    ret = ptr - buf;
+    pkt->size   = ptr - pkt->data;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
 
 fail:
-    av_free(strip_sizes);
-    av_free(strip_offsets);
-    av_free(yuv_line);
-    return ret;
+    return ret < 0 ? ret : 0;
+}
+
+static av_cold int encode_close(AVCodecContext *avctx)
+{
+    TiffEncoderContext *s = avctx->priv_data;
+
+    av_freep(&s->strip_sizes);
+    av_freep(&s->strip_offsets);
+    av_freep(&s->yuv_line);
+
+    return 0;
 }
 
 #define OFFSET(x) offsetof(TiffEncoderContext, x)
 #define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
 static const AVOption options[] = {
-    {"dpi", "set the image resolution (in dpi)", OFFSET(dpi), AV_OPT_TYPE_INT, {.dbl = 72}, 1, 0x10000, AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_ENCODING_PARAM},
-    { "compression_algo", NULL, OFFSET(compr), AV_OPT_TYPE_INT, {TIFF_PACKBITS}, TIFF_RAW, TIFF_DEFLATE, VE, "compression_algo" },
-    { "packbits", NULL, 0, AV_OPT_TYPE_CONST, {TIFF_PACKBITS}, 0, 0, VE, "compression_algo" },
-    { "raw",      NULL, 0, AV_OPT_TYPE_CONST, {TIFF_RAW},      0, 0, VE, "compression_algo" },
-    { "lzw",      NULL, 0, AV_OPT_TYPE_CONST, {TIFF_LZW},      0, 0, VE, "compression_algo" },
+    {"dpi", "set the image resolution (in dpi)", OFFSET(dpi), AV_OPT_TYPE_INT, {.i64 = 72}, 1, 0x10000, AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_ENCODING_PARAM},
+    { "compression_algo", NULL, OFFSET(compr), AV_OPT_TYPE_INT, {.i64 = TIFF_PACKBITS}, TIFF_RAW, TIFF_DEFLATE, VE, "compression_algo" },
+    { "packbits", NULL, 0, AV_OPT_TYPE_CONST, {.i64 = TIFF_PACKBITS}, 0, 0, VE, "compression_algo" },
+    { "raw",      NULL, 0, AV_OPT_TYPE_CONST, {.i64 = TIFF_RAW},      0, 0, VE, "compression_algo" },
+    { "lzw",      NULL, 0, AV_OPT_TYPE_CONST, {.i64 = TIFF_LZW},      0, 0, VE, "compression_algo" },
 #if CONFIG_ZLIB
-    { "deflate",  NULL, 0, AV_OPT_TYPE_CONST, {TIFF_DEFLATE},  0, 0, VE, "compression_algo" },
+    { "deflate",  NULL, 0, AV_OPT_TYPE_CONST, {.i64 = TIFF_DEFLATE},  0, 0, VE, "compression_algo" },
 #endif
     { NULL },
 };
@@ -497,16 +527,20 @@ static const AVClass tiffenc_class = {
 AVCodec ff_tiff_encoder = {
     .name           = "tiff",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_TIFF,
+    .id             = AV_CODEC_ID_TIFF,
     .priv_data_size = sizeof(TiffEncoderContext),
-    .encode         = encode_frame,
-    .pix_fmts =
-        (const enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_PAL8, PIX_FMT_GRAY8,
-                              PIX_FMT_MONOBLACK, PIX_FMT_MONOWHITE,
-                              PIX_FMT_YUV420P, PIX_FMT_YUV422P,
-                              PIX_FMT_YUV444P, PIX_FMT_YUV410P,
-                              PIX_FMT_YUV411P, PIX_FMT_RGB48LE,
-                              PIX_FMT_RGBA, PIX_FMT_RGBA64LE, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("TIFF image"),
+    .init           = encode_init,
+    .encode2        = encode_frame,
+    .close          = encode_close,
+    .pix_fmts       = (const enum AVPixelFormat[]) {
+        AV_PIX_FMT_RGB24, AV_PIX_FMT_PAL8, AV_PIX_FMT_GRAY8,
+        AV_PIX_FMT_GRAY8A, AV_PIX_FMT_GRAY16LE,
+        AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_MONOWHITE,
+        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV444P,
+        AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P, AV_PIX_FMT_RGB48LE,
+        AV_PIX_FMT_RGBA, AV_PIX_FMT_RGBA64LE,
+        AV_PIX_FMT_NONE
+    },
+    .long_name      = NULL_IF_CONFIG_SMALL("TIFF image"),
     .priv_class     = &tiffenc_class,
 };

@@ -30,17 +30,16 @@
 
 #include <stdint.h>
 
-#include "libavutil/audioconvert.h"
 #include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
+#include "libavutil/channel_layout.h"
 #include "libavutil/crc.h"
+#include "libavutil/internal.h"
 #include "libavutil/opt.h"
 #include "avcodec.h"
 #include "put_bits.h"
-#include "dsputil.h"
 #include "ac3dsp.h"
 #include "ac3.h"
-#include "audioconvert.h"
 #include "fft.h"
 #include "ac3enc.h"
 #include "eac3enc.h"
@@ -273,7 +272,7 @@ void ff_ac3_apply_rematrixing(AC3EncodeContext *s)
     int nb_coefs;
     int blk, bnd, i;
     int start, end;
-    uint8_t *flags;
+    uint8_t *flags = NULL;
 
     if (!s->rematrixing_enabled)
         return;
@@ -660,7 +659,7 @@ static void count_frame_bits_fixed(AC3EncodeContext *s)
      *   bit allocation parameters do not change between blocks
      *   no delta bit allocation
      *   no skipped data
-     *   no auxilliary data
+     *   no auxiliary data
      *   no E-AC-3 metadata
      */
 
@@ -1383,8 +1382,7 @@ static void ac3_output_frame_header(AC3EncodeContext *s)
  */
 static void output_audio_block(AC3EncodeContext *s, int blk)
 {
-    int ch, i, baie, bnd, got_cpl;
-    int av_uninit(ch0);
+    int ch, i, baie, bnd, got_cpl, ch0;
     AC3Block *block = &s->blocks[blk];
 
     /* block switching */
@@ -2051,7 +2049,9 @@ av_cold int ff_ac3_encode_close(AVCodecContext *avctx)
 
     s->mdct_end(s);
 
+#if FF_API_OLD_ENCODE_AUDIO
     av_freep(&avctx->coded_frame);
+#endif
     return 0;
 }
 
@@ -2070,7 +2070,7 @@ static av_cold int set_channel_info(AC3EncodeContext *s, int channels,
         return AVERROR(EINVAL);
     ch_layout = *channel_layout;
     if (!ch_layout)
-        ch_layout = avcodec_guess_channel_layout(channels, CODEC_ID_AC3, NULL);
+        ch_layout = av_get_default_channel_layout(channels);
 
     s->lfe_on       = !!(ch_layout & AV_CH_LOW_FREQUENCY);
     s->channels     = channels;
@@ -2139,6 +2139,17 @@ static av_cold int validate_options(AC3EncodeContext *s)
     s->bit_alloc.sr_code  = i % 3;
     s->bitstream_id       = s->eac3 ? 16 : 8 + s->bit_alloc.sr_shift;
 
+    /* select a default bit rate if not set by the user */
+    if (!avctx->bit_rate) {
+        switch (s->fbw_channels) {
+        case 1: avctx->bit_rate =  96000; break;
+        case 2: avctx->bit_rate = 192000; break;
+        case 3: avctx->bit_rate = 320000; break;
+        case 4: avctx->bit_rate = 384000; break;
+        case 5: avctx->bit_rate = 448000; break;
+        }
+    }
+
     /* validate bit rate */
     if (s->eac3) {
         int max_br, min_br, wpf, min_br_dist, min_br_code;
@@ -2187,15 +2198,20 @@ static av_cold int validate_options(AC3EncodeContext *s)
             wpf--;
         s->frame_size_min = 2 * wpf;
     } else {
+        int best_br = 0, best_code = 0, best_diff = INT_MAX;
         for (i = 0; i < 19; i++) {
-            if ((ff_ac3_bitrate_tab[i] >> s->bit_alloc.sr_shift)*1000 == avctx->bit_rate)
+            int br   = (ff_ac3_bitrate_tab[i] >> s->bit_alloc.sr_shift) * 1000;
+            int diff = abs(br - avctx->bit_rate);
+            if (diff < best_diff) {
+                best_br   = br;
+                best_code = i;
+                best_diff = diff;
+            }
+            if (!best_diff)
                 break;
         }
-        if (i == 19) {
-            av_log(avctx, AV_LOG_ERROR, "invalid bit rate\n");
-            return AVERROR(EINVAL);
-        }
-        s->frame_size_code = i << 1;
+        avctx->bit_rate    = best_br;
+        s->frame_size_code = best_code << 1;
         s->frame_size_min  = 2 * ff_ac3_frame_size_tab[s->frame_size_code][s->bit_alloc.sr_code];
         s->num_blks_code   = 0x3;
         s->num_blocks      = 6;
@@ -2233,8 +2249,7 @@ static av_cold int validate_options(AC3EncodeContext *s)
  */
 static av_cold void set_bandwidth(AC3EncodeContext *s)
 {
-    int blk, ch;
-    int av_uninit(cpl_start);
+    int blk, ch, cpl_start;
 
     if (s->cutoff) {
         /* calculate bandwidth based on user-specified cutoff frequency */
@@ -2411,7 +2426,7 @@ av_cold int ff_ac3_encode_init(AVCodecContext *avctx)
 
     s->avctx = avctx;
 
-    s->eac3 = avctx->codec_id == CODEC_ID_EAC3;
+    s->eac3 = avctx->codec_id == AV_CODEC_ID_EAC3;
 
     ff_ac3_common_init();
 
@@ -2420,6 +2435,7 @@ av_cold int ff_ac3_encode_init(AVCodecContext *avctx)
         return ret;
 
     avctx->frame_size = AC3_BLOCK_SIZE * s->num_blocks;
+    avctx->delay      = AC3_BLOCK_SIZE;
 
     s->bitstream_mode = avctx->audio_service_type;
     if (s->bitstream_mode == AV_AUDIO_SERVICE_TYPE_KARAOKE)
@@ -2465,9 +2481,16 @@ av_cold int ff_ac3_encode_init(AVCodecContext *avctx)
     if (ret)
         goto init_fail;
 
+#if FF_API_OLD_ENCODE_AUDIO
     avctx->coded_frame= avcodec_alloc_frame();
+    if (!avctx->coded_frame) {
+        ret = AVERROR(ENOMEM);
+        goto init_fail;
+    }
+#endif
 
-    dsputil_init(&s->dsp, avctx);
+    ff_dsputil_init(&s->dsp, avctx);
+    avpriv_float_dsp_init(&s->fdsp, avctx->flags & CODEC_FLAG_BITEXACT);
     ff_ac3dsp_init(&s->ac3dsp, avctx->flags & CODEC_FLAG_BITEXACT);
 
     dprint_options(s);

@@ -19,20 +19,34 @@ supported protocols.
 
 A description of the currently available protocols follows.
 
-@section applehttp
+@section bluray
 
-Read Apple HTTP Live Streaming compliant segmented stream as
-a uniform one. The M3U8 playlists describing the segments can be
-remote HTTP resources or local files, accessed using the standard
-file protocol.
-HTTP is default, specific protocol can be declared by specifying
-"+@var{proto}" after the applehttp URI scheme name, where @var{proto}
-is either "file" or "http".
+Read BluRay playlist.
 
+The accepted options are:
+@table @option
+
+@item angle
+BluRay angle
+
+@item chapter
+Start chapter (1...N)
+
+@item playlist
+Playlist to read (BDMV/PLAYLIST/?????.mpls)
+
+@end table
+
+Examples:
+
+Read longest playlist from BluRay mounted to /mnt/bluray:
 @example
-applehttp://host/path/to/remote/resource.m3u8
-applehttp+http://host/path/to/remote/resource.m3u8
-applehttp+file://path/to/local/resource.m3u8
+bluray:/mnt/bluray
+@end example
+
+Read angle 2 of playlist 4 from BluRay mounted to /mnt/bluray, start from chapter 2:
+@example
+-playlist 4 -angle 2 -chapter 2 bluray:/mnt/bluray
 @end example
 
 @section concat
@@ -61,6 +75,15 @@ ffplay concat:split1.mpeg\|split2.mpeg\|split3.mpeg
 Note that you may need to escape the character "|" which is special for
 many shells.
 
+@section data
+
+Data in-line in the URI. See @url{http://en.wikipedia.org/wiki/Data_URI_scheme}.
+
+For example, to convert a GIF file given inline with @command{ffmpeg}:
+@example
+ffmpeg -i "data:image/gif;base64,R0lGODdhCAAIAMIEAAAAAAAA//8AAP//AP///////////////ywAAAAACAAIAAADF0gEDLojDgdGiJdJqUX02iB4E8Q9jUMkADs=" smiley.png
+@end example
+
 @section file
 
 File access protocol.
@@ -81,9 +104,86 @@ specified with the name "FILE.mpeg" is interpreted as the URL
 
 Gopher protocol.
 
+@section hls
+
+Read Apple HTTP Live Streaming compliant segmented stream as
+a uniform one. The M3U8 playlists describing the segments can be
+remote HTTP resources or local files, accessed using the standard
+file protocol.
+The nested protocol is declared by specifying
+"+@var{proto}" after the hls URI scheme name, where @var{proto}
+is either "file" or "http".
+
+@example
+hls+http://host/path/to/remote/resource.m3u8
+hls+file://path/to/local/resource.m3u8
+@end example
+
+Using this protocol is discouraged - the hls demuxer should work
+just as well (if not, please report the issues) and is more complete.
+To use the hls demuxer instead, simply use the direct URLs to the
+m3u8 files.
+
 @section http
 
 HTTP (Hyper Text Transfer Protocol).
+
+This protocol accepts the following options.
+
+@table @option
+@item seekable
+Control seekability of connection. If set to 1 the resource is
+supposed to be seekable, if set to 0 it is assumed not to be seekable,
+if set to -1 it will try to autodetect if it is seekable. Default
+value is -1.
+
+@item chunked_post
+If set to 1 use chunked transfer-encoding for posts, default is 1.
+
+@item headers
+Set custom HTTP headers, can override built in default headers. The
+value must be a string encoding the headers.
+
+@item content_type
+Force a content type.
+
+@item user-agent
+Override User-Agent header. If not specified the protocol will use a
+string describing the libavformat build.
+
+@item multiple_requests
+Use persistent connections if set to 1. By default it is 0.
+
+@item post_data
+Set custom HTTP post data.
+
+@item timeout
+Set timeout of socket I/O operations used by the underlying low level
+operation. By default it is set to -1, which means that the timeout is
+not specified.
+
+@item mime_type
+Set MIME type.
+
+@item cookies
+Set the cookies to be sent in future requests. The format of each cookie is the
+same as the value of a Set-Cookie HTTP response field. Multiple cookies can be
+delimited by a newline character.
+@end table
+
+@subsection HTTP Cookies
+
+Some HTTP requests will be denied unless cookie values are passed in with the
+request. The @option{cookies} option allows these cookies to be specified. At
+the very least, each cookie must specify a value along with a path and domain.
+HTTP requests that match both the domain and path will automatically include the
+cookie value in the HTTP Cookie header field. Multiple cookies can be delimited
+by a newline.
+
+The required syntax to play a stream specifying a cookie is:
+@example
+ffplay -cookies "nlqptid=nltid=tsn; path=/; domain=somedomain.com;" http://somedomain.com/somestream.m3u8
+@end example
 
 @section mmst
 
@@ -160,7 +260,7 @@ content across a TCP/IP network.
 
 The required syntax is:
 @example
-rtmp://@var{server}[:@var{port}][/@var{app}][/@var{playpath}]
+rtmp://@var{server}[:@var{port}][/@var{app}][/@var{instance}][/@var{playpath}]
 @end example
 
 The accepted parameters are:
@@ -175,11 +275,88 @@ The number of the TCP port to use (by default is 1935).
 @item app
 It is the name of the application to access. It usually corresponds to
 the path where the application is installed on the RTMP server
-(e.g. @file{/ondemand/}, @file{/flash/live/}, etc.).
+(e.g. @file{/ondemand/}, @file{/flash/live/}, etc.). You can override
+the value parsed from the URI through the @code{rtmp_app} option, too.
 
 @item playpath
 It is the path or name of the resource to play with reference to the
-application specified in @var{app}, may be prefixed by "mp4:".
+application specified in @var{app}, may be prefixed by "mp4:". You
+can override the value parsed from the URI through the @code{rtmp_playpath}
+option, too.
+
+@item listen
+Act as a server, listening for an incoming connection.
+
+@item timeout
+Maximum time to wait for the incoming connection. Implies listen.
+@end table
+
+Additionally, the following parameters can be set via command line options
+(or in code via @code{AVOption}s):
+@table @option
+
+@item rtmp_app
+Name of application to connect on the RTMP server. This option
+overrides the parameter specified in the URI.
+
+@item rtmp_buffer
+Set the client buffer time in milliseconds. The default is 3000.
+
+@item rtmp_conn
+Extra arbitrary AMF connection parameters, parsed from a string,
+e.g. like @code{B:1 S:authMe O:1 NN:code:1.23 NS:flag:ok O:0}.
+Each value is prefixed by a single character denoting the type,
+B for Boolean, N for number, S for string, O for object, or Z for null,
+followed by a colon. For Booleans the data must be either 0 or 1 for
+FALSE or TRUE, respectively.  Likewise for Objects the data must be 0 or
+1 to end or begin an object, respectively. Data items in subobjects may
+be named, by prefixing the type with 'N' and specifying the name before
+the value (i.e. @code{NB:myFlag:1}). This option may be used multiple
+times to construct arbitrary AMF sequences.
+
+@item rtmp_flashver
+Version of the Flash plugin used to run the SWF player. The default
+is LNX 9,0,124,2.
+
+@item rtmp_flush_interval
+Number of packets flushed in the same request (RTMPT only). The default
+is 10.
+
+@item rtmp_live
+Specify that the media is a live stream. No resuming or seeking in
+live streams is possible. The default value is @code{any}, which means the
+subscriber first tries to play the live stream specified in the
+playpath. If a live stream of that name is not found, it plays the
+recorded stream. The other possible values are @code{live} and
+@code{recorded}.
+
+@item rtmp_pageurl
+URL of the web page in which the media was embedded. By default no
+value will be sent.
+
+@item rtmp_playpath
+Stream identifier to play or to publish. This option overrides the
+parameter specified in the URI.
+
+@item rtmp_subscribe
+Name of live stream to subscribe to. By default no value will be sent.
+It is only sent if the option is specified or if rtmp_live
+is set to live.
+
+@item rtmp_swfhash
+SHA256 hash of the decompressed SWF file (32 bytes).
+
+@item rtmp_swfsize
+Size of the decompressed SWF file, required for SWFVerification.
+
+@item rtmp_swfurl
+URL of the SWF player for the media. By default no value will be sent.
+
+@item rtmp_swfverify
+URL to player swf file, compute hash/size automatically.
+
+@item rtmp_tcurl
+URL of the target stream. Defaults to proto://host[:port]/app.
 
 @end table
 
@@ -188,6 +365,46 @@ For example to read with @command{ffplay} a multimedia resource named
 @example
 ffplay rtmp://myserver/vod/sample
 @end example
+
+@section rtmpe
+
+Encrypted Real-Time Messaging Protocol.
+
+The Encrypted Real-Time Messaging Protocol (RTMPE) is used for
+streaming multimedia content within standard cryptographic primitives,
+consisting of Diffie-Hellman key exchange and HMACSHA256, generating
+a pair of RC4 keys.
+
+@section rtmps
+
+Real-Time Messaging Protocol over a secure SSL connection.
+
+The Real-Time Messaging Protocol (RTMPS) is used for streaming
+multimedia content across an encrypted connection.
+
+@section rtmpt
+
+Real-Time Messaging Protocol tunneled through HTTP.
+
+The Real-Time Messaging Protocol tunneled through HTTP (RTMPT) is used
+for streaming multimedia content within HTTP requests to traverse
+firewalls.
+
+@section rtmpte
+
+Encrypted Real-Time Messaging Protocol tunneled through HTTP.
+
+The Encrypted Real-Time Messaging Protocol tunneled through HTTP (RTMPTE)
+is used for streaming multimedia content within HTTP requests to traverse
+firewalls.
+
+@section rtmpts
+
+Real-Time Messaging Protocol tunneled through HTTPS.
+
+The Real-Time Messaging Protocol tunneled through HTTPS (RTMPTS) is used
+for streaming multimedia content within HTTPS requests to traverse
+firewalls.
 
 @section rtmp, rtmpe, rtmps, rtmpt, rtmpte
 
@@ -281,12 +498,14 @@ Flags for @code{rtsp_flags}:
 @table @option
 @item filter_src
 Accept packets only from negotiated peer address and port.
+@item listen
+Act as a server, listening for an incoming connection.
 @end table
 
 When receiving data over UDP, the demuxer tries to reorder received packets
-(since they may arrive out of order, or packets may get lost totally). In
-order for this to be enabled, a maximum delay must be specified in the
-@code{max_delay} field of AVFormatContext.
+(since they may arrive out of order, or packets may get lost totally). This
+can be disabled by setting the maximum demuxing delay to zero (via
+the @code{max_delay} field of AVFormatContext).
 
 When watching multi-bitrate Real-RTSP streams with @command{ffplay}, the
 streams to display can be chosen with @code{-vst} @var{n} and
@@ -311,6 +530,12 @@ To send a stream in realtime to a RTSP server, for others to watch:
 
 @example
 ffmpeg -re -i @var{input} -f rtsp -muxdelay 0.1 rtsp://server/live.sdp
+@end example
+
+To receive a stream in realtime:
+
+@example
+ffmpeg -rtsp_flags listen -i rtsp://ownaddress/live.sdp @var{output}
 @end example
 
 @section sap
@@ -419,12 +644,59 @@ tcp://@var{hostname}:@var{port}[?@var{options}]
 @item listen
 Listen for an incoming connection
 
+@item timeout=@var{microseconds}
+In read mode: if no data arrived in more than this time interval, raise error.
+In write mode: if socket cannot be written in more than this time interval, raise error.
+This also sets timeout on TCP connection establishing.
+
 @example
 ffmpeg -i @var{input} -f @var{format} tcp://@var{hostname}:@var{port}?listen
 ffplay tcp://@var{hostname}:@var{port}
 @end example
 
 @end table
+
+@section tls
+
+Transport Layer Security/Secure Sockets Layer
+
+The required syntax for a TLS/SSL url is:
+@example
+tls://@var{hostname}:@var{port}[?@var{options}]
+@end example
+
+@table @option
+
+@item listen
+Act as a server, listening for an incoming connection.
+
+@item cafile=@var{filename}
+Certificate authority file. The file must be in OpenSSL PEM format.
+
+@item cert=@var{filename}
+Certificate file. The file must be in OpenSSL PEM format.
+
+@item key=@var{filename}
+Private key file.
+
+@item verify=@var{0|1}
+Verify the peer's certificate.
+
+@end table
+
+Example command lines:
+
+To create a TLS/SSL server that serves an input stream.
+
+@example
+ffmpeg -i @var{input} -f @var{format} tls://@var{hostname}:@var{port}?listen&cert=@var{server.crt}&key=@var{server.key}
+@end example
+
+To play back a stream from the TLS/SSL server using @command{ffplay}:
+
+@example
+ffplay tls://@var{hostname}:@var{port}
+@end example
 
 @section udp
 
@@ -435,16 +707,23 @@ The required syntax for a UDP url is:
 udp://@var{hostname}:@var{port}[?@var{options}]
 @end example
 
-@var{options} contains a list of &-seperated options of the form @var{key}=@var{val}.
-Follow the list of supported options.
+@var{options} contains a list of &-separated options of the form @var{key}=@var{val}.
+
+In case threading is enabled on the system, a circular buffer is used
+to store the incoming data, which allows to reduce loss of data due to
+UDP socket buffer overruns. The @var{fifo_size} and
+@var{overrun_nonfatal} options are related to this buffer.
+
+The list of supported options follows.
 
 @table @option
 
 @item buffer_size=@var{size}
-set the UDP buffer size in bytes
+Set the UDP socket buffer size in bytes. This is used both for the
+receiving and the sending buffer size.
 
 @item localport=@var{port}
-override the local UDP port to bind with
+Override the local UDP port to bind with.
 
 @item localaddr=@var{addr}
 Choose the local IP address. This is useful e.g. if sending multicast
@@ -452,13 +731,13 @@ and the host has multiple interfaces, where the user can choose
 which interface to send on by specifying the IP address of that interface.
 
 @item pkt_size=@var{size}
-set the size in bytes of UDP packets
+Set the size in bytes of UDP packets.
 
 @item reuse=@var{1|0}
-explicitly allow or disallow reusing UDP sockets
+Explicitly allow or disallow reusing UDP sockets.
 
 @item ttl=@var{ttl}
-set the time to live value (for multicast only)
+Set the time to live value (for multicast only).
 
 @item connect=@var{1|0}
 Initialize the UDP socket with @code{connect()}. In this case, the
@@ -470,9 +749,28 @@ and makes writes return with AVERROR(ECONNREFUSED) if "destination
 unreachable" is received.
 For receiving, this gives the benefit of only receiving packets from
 the specified peer address/port.
+
+@item sources=@var{address}[,@var{address}]
+Only receive packets sent to the multicast group from one of the
+specified sender IP addresses.
+
+@item block=@var{address}[,@var{address}]
+Ignore packets sent to the multicast group from the specified
+sender IP addresses.
+
+@item fifo_size=@var{units}
+Set the UDP receiving circular buffer size, expressed as a number of
+packets with size of 188 bytes. If not specified defaults to 7*4096.
+
+@item overrun_nonfatal=@var{1|0}
+Survive in case of UDP receiving circular buffer overrun. Default
+value is 0.
+
+@item timeout=@var{microseconds}
+In read mode: if no data arrived in more than this time interval, raise error.
 @end table
 
-Some usage examples of the udp protocol with @command{ffmpeg} follow.
+Some usage examples of the UDP protocol with @command{ffmpeg} follow.
 
 To stream over UDP to a remote endpoint:
 @example

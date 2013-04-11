@@ -20,10 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/channel_layout.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "pcm.h"
-#include "libavutil/intreadwrite.h"
-#include "libavutil/audioconvert.h"
 
 #define AT1_SU_SIZE     212
 
@@ -54,8 +54,7 @@ static int aea_read_probe(AVProbeData *p)
     return 0;
 }
 
-static int aea_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int aea_read_header(AVFormatContext *s)
 {
     AVStream *st = avformat_new_stream(s, NULL);
     if (!st)
@@ -68,7 +67,7 @@ static int aea_read_header(AVFormatContext *s,
 
 
     st->codec->codec_type     = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id       = CODEC_ID_ATRAC1;
+    st->codec->codec_id       = AV_CODEC_ID_ATRAC1;
     st->codec->sample_rate    = 44100;
     st->codec->bit_rate       = 292000;
 
@@ -100,8 +99,7 @@ AVInputFormat ff_aea_demuxer = {
     .read_probe     = aea_read_probe,
     .read_header    = aea_read_header,
     .read_packet    = aea_read_packet,
-    .read_seek      = pcm_read_seek,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "aea",
+    .read_seek      = ff_pcm_read_seek,
+    .flags          = AVFMT_GENERIC_INDEX,
+    .extensions     = "aea",
 };
-

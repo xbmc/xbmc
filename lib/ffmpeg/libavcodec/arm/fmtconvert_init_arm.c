@@ -20,6 +20,8 @@
 
 #include <stdint.h>
 
+#include "libavutil/attributes.h"
+#include "libavutil/arm/cpu.h"
 #include "libavcodec/avcodec.h"
 #include "libavcodec/fmtconvert.h"
 
@@ -31,13 +33,15 @@ void ff_float_to_int16_interleave_neon(int16_t *, const float **, long, int);
 
 void ff_float_to_int16_vfp(int16_t *dst, const float *src, long len);
 
-void ff_fmt_convert_init_arm(FmtConvertContext *c, AVCodecContext *avctx)
+av_cold void ff_fmt_convert_init_arm(FmtConvertContext *c, AVCodecContext *avctx)
 {
-    if (HAVE_ARMVFP && HAVE_ARMV6) {
+    int cpu_flags = av_get_cpu_flags();
+
+    if (have_vfp(cpu_flags) && have_armv6(cpu_flags)) {
         c->float_to_int16 = ff_float_to_int16_vfp;
     }
 
-    if (HAVE_NEON) {
+    if (have_neon(cpu_flags)) {
         c->int32_to_float_fmul_scalar = ff_int32_to_float_fmul_scalar_neon;
 
         if (!(avctx->flags & CODEC_FLAG_BITEXACT)) {

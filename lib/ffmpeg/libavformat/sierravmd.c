@@ -27,6 +27,7 @@
  *   http://www.pcisys.net/~melanson/codecs/
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "internal.h"
@@ -79,8 +80,7 @@ static int vmd_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX / 2;
 }
 
-static int vmd_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int vmd_read_header(AVFormatContext *s)
 {
     VmdDemuxContext *vmd = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -112,7 +112,7 @@ static int vmd_read_header(AVFormatContext *s,
     avpriv_set_pts_info(vst, 33, 1, 10);
     vmd->video_stream_index = vst->index;
     vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    vst->codec->codec_id = vmd->is_indeo3 ? CODEC_ID_INDEO3 : CODEC_ID_VMDVIDEO;
+    vst->codec->codec_id = vmd->is_indeo3 ? AV_CODEC_ID_INDEO3 : AV_CODEC_ID_VMDVIDEO;
     vst->codec->codec_tag = 0;  /* no fourcc */
     vst->codec->width = AV_RL16(&vmd->vmd_header[12]);
     vst->codec->height = AV_RL16(&vmd->vmd_header[14]);
@@ -132,9 +132,15 @@ static int vmd_read_header(AVFormatContext *s,
             return AVERROR(ENOMEM);
         vmd->audio_stream_index = st->index;
         st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-        st->codec->codec_id = CODEC_ID_VMDAUDIO;
+        st->codec->codec_id = AV_CODEC_ID_VMDAUDIO;
         st->codec->codec_tag = 0;  /* no fourcc */
-        st->codec->channels = (vmd->vmd_header[811] & 0x80) ? 2 : 1;
+        if (vmd->vmd_header[811] & 0x80) {
+            st->codec->channels       = 2;
+            st->codec->channel_layout = AV_CH_LAYOUT_STEREO;
+        } else {
+            st->codec->channels       = 1;
+            st->codec->channel_layout = AV_CH_LAYOUT_MONO;
+        }
         st->codec->sample_rate = vmd->sample_rate;
         st->codec->block_align = AV_RL16(&vmd->vmd_header[806]);
         if (st->codec->block_align & 0x8000) {
@@ -149,7 +155,7 @@ static int vmd_read_header(AVFormatContext *s,
         /* calculate pts */
         num = st->codec->block_align;
         den = st->codec->sample_rate * st->codec->channels;
-        av_reduce(&den, &num, den, num, (1UL<<31)-1);
+        av_reduce(&num, &den, num, den, (1UL<<31)-1);
         avpriv_set_pts_info(vst, 33, num, den);
         avpriv_set_pts_info(st, 33, num, den);
     }
@@ -241,7 +247,7 @@ static int vmd_read_packet(AVFormatContext *s,
     vmd_frame *frame;
 
     if (vmd->current_frame >= vmd->frame_count)
-        return AVERROR(EIO);
+        return AVERROR_EOF;
 
     frame = &vmd->frame_table[vmd->current_frame];
     /* position the stream (will probably be there already) */
@@ -286,7 +292,7 @@ static int vmd_read_close(AVFormatContext *s)
 
 AVInputFormat ff_vmd_demuxer = {
     .name           = "vmd",
-    .long_name      = NULL_IF_CONFIG_SMALL("Sierra VMD format"),
+    .long_name      = NULL_IF_CONFIG_SMALL("Sierra VMD"),
     .priv_data_size = sizeof(VmdDemuxContext),
     .read_probe     = vmd_probe,
     .read_header    = vmd_read_header,

@@ -38,7 +38,6 @@
 typedef struct MaxisXADemuxContext {
     uint32_t out_size;
     uint32_t sent_bytes;
-    uint32_t audio_frame_counter;
 } MaxisXADemuxContext;
 
 static int xa_probe(AVProbeData *p)
@@ -63,8 +62,7 @@ static int xa_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX/2;
 }
 
-static int xa_read_header(AVFormatContext *s,
-               AVFormatParameters *ap)
+static int xa_read_header(AVFormatContext *s)
 {
     MaxisXADemuxContext *xa = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -76,18 +74,21 @@ static int xa_read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
 
     st->codec->codec_type   = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id     = CODEC_ID_ADPCM_EA_MAXIS_XA;
+    st->codec->codec_id     = AV_CODEC_ID_ADPCM_EA_MAXIS_XA;
     avio_skip(pb, 4);       /* Skip the XA ID */
     xa->out_size            =  avio_rl32(pb);
     avio_skip(pb, 2);       /* Skip the tag */
     st->codec->channels     = avio_rl16(pb);
     st->codec->sample_rate  = avio_rl32(pb);
-    /* Value in file is average byte rate*/
-    st->codec->bit_rate     = avio_rl32(pb) * 8;
-    st->codec->block_align  = avio_rl16(pb);
-    st->codec->bits_per_coded_sample = avio_rl16(pb);
+    avio_skip(pb, 4);       /* Skip average byte rate */
+    avio_skip(pb, 2);       /* Skip block align */
+    avio_skip(pb, 2);       /* Skip bits-per-sample */
+
+    st->codec->bit_rate = av_clip(15LL * st->codec->channels * 8 *
+                                  st->codec->sample_rate / 28, 0, INT_MAX);
 
     avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
+    st->start_time = 0;
 
     return 0;
 }
@@ -101,8 +102,8 @@ static int xa_read_packet(AVFormatContext *s,
     unsigned int packet_size;
     int ret;
 
-    if(xa->sent_bytes > xa->out_size)
-        return AVERROR(EIO);
+    if (xa->sent_bytes >= xa->out_size)
+        return AVERROR_EOF;
     /* 1 byte header and 14 bytes worth of samples * number channels per block */
     packet_size = 15*st->codec->channels;
 
@@ -112,16 +113,14 @@ static int xa_read_packet(AVFormatContext *s,
 
     pkt->stream_index = st->index;
     xa->sent_bytes += packet_size;
-    pkt->pts = xa->audio_frame_counter;
-    /* 14 bytes Samples per channel with 2 samples per byte */
-    xa->audio_frame_counter += 28 * st->codec->channels;
+    pkt->duration = 28;
 
     return ret;
 }
 
 AVInputFormat ff_xa_demuxer = {
     .name           = "xa",
-    .long_name      = NULL_IF_CONFIG_SMALL("Maxis XA File Format"),
+    .long_name      = NULL_IF_CONFIG_SMALL("Maxis XA"),
     .priv_data_size = sizeof(MaxisXADemuxContext),
     .read_probe     = xa_probe,
     .read_header    = xa_read_header,

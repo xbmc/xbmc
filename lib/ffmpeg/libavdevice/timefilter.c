@@ -22,14 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
+#include "libavutil/common.h"
+#include "libavutil/mem.h"
 #include "config.h"
 #include "timefilter.h"
-#include "libavutil/mem.h"
 
 struct TimeFilter {
-    /// Delay Locked Loop data. These variables refer to mathematical
-    /// concepts described in: http://www.kokkinizita.net/papers/usingdll.pdf
+    // Delay Locked Loop data. These variables refer to mathematical
+    // concepts described in: http://www.kokkinizita.net/papers/usingdll.pdf
     double cycle_time;
     double feedback2_factor;
     double feedback3_factor;
@@ -37,12 +37,21 @@ struct TimeFilter {
     int count;
 };
 
-TimeFilter * ff_timefilter_new(double clock_period, double feedback2_factor, double feedback3_factor)
+/* 1 - exp(-x) using a 3-order power series */
+static double qexpneg(double x)
 {
-    TimeFilter *self        = av_mallocz(sizeof(TimeFilter));
-    self->clock_period      = clock_period;
-    self->feedback2_factor  = feedback2_factor;
-    self->feedback3_factor  = feedback3_factor;
+    return 1 - 1 / (1 + x * (1 + x / 2 * (1 + x / 3)));
+}
+
+TimeFilter *ff_timefilter_new(double time_base,
+                              double period,
+                              double bandwidth)
+{
+    TimeFilter *self       = av_mallocz(sizeof(TimeFilter));
+    double o               = 2 * M_PI * bandwidth * period * time_base;
+    self->clock_period     = time_base;
+    self->feedback2_factor = qexpneg(M_SQRT2 * o);
+    self->feedback3_factor = qexpneg(o * o) / period;
     return self;
 }
 
@@ -53,91 +62,91 @@ void ff_timefilter_destroy(TimeFilter *self)
 
 void ff_timefilter_reset(TimeFilter *self)
 {
-    self->count      = 0;
+    self->count = 0;
 }
 
 double ff_timefilter_update(TimeFilter *self, double system_time, double period)
 {
     self->count++;
-    if (self->count==1) {
-        /// init loop
-        self->cycle_time    = system_time;
+    if (self->count == 1) {
+        self->cycle_time = system_time;
     } else {
         double loop_error;
-        self->cycle_time   += self->clock_period * period;
-        /// calculate loop error
-        loop_error          = system_time - self->cycle_time;
+        self->cycle_time += self->clock_period * period;
+        loop_error = system_time - self->cycle_time;
 
-        /// update loop
         self->cycle_time   += FFMAX(self->feedback2_factor, 1.0 / self->count) * loop_error;
-        self->clock_period += self->feedback3_factor * loop_error / period;
+        self->clock_period += self->feedback3_factor * loop_error;
     }
     return self->cycle_time;
+}
+
+double ff_timefilter_eval(TimeFilter *self, double delta)
+{
+    return self->cycle_time + self->clock_period * delta;
 }
 
 #ifdef TEST
 #include "libavutil/lfg.h"
 #define LFG_MAX ((1LL << 32) - 1)
 
-#undef printf
-
 int main(void)
 {
     AVLFG prng;
-    double n0,n1;
+    double n0, n1;
 #define SAMPLES 1000
     double ideal[SAMPLES];
     double samples[SAMPLES];
-#if 1
-    for(n0= 0; n0<40; n0=2*n0+1){
-        for(n1= 0; n1<10; n1=2*n1+1){
-#else
-    {{
-        n0=7;
-        n1=1;
-#endif
-            double best_error= 1000000000;
-            double bestpar0=1;
-            double bestpar1=0.001;
+    double samplet[SAMPLES];
+    for (n0 = 0; n0 < 40; n0 = 2 * n0 + 1) {
+        for (n1 = 0; n1 < 10; n1 = 2 * n1 + 1) {
+            double best_error = 1000000000;
+            double bestpar0   = 1;
+            double bestpar1   = 1;
             int better, i;
 
             av_lfg_init(&prng, 123);
-            for(i=0; i<SAMPLES; i++){
-                ideal[i]  = 10 + i + n1*i/(1000);
-                samples[i] = ideal[i] + n0 * (av_lfg_get(&prng) - LFG_MAX / 2)
-                                           / (LFG_MAX * 10LL);
+            for (i = 0; i < SAMPLES; i++) {
+                samplet[i] = 10 + i + (av_lfg_get(&prng) < LFG_MAX/2 ? 0 : 0.999);
+                ideal[i]   = samplet[i] + n1 * i / (1000);
+                samples[i] = ideal[i] + n0 * (av_lfg_get(&prng) - LFG_MAX / 2) / (LFG_MAX * 10LL);
+                if(i && samples[i]<samples[i-1])
+                    samples[i]=samples[i-1]+0.001;
             }
 
-            do{
+            do {
                 double par0, par1;
-                better=0;
-                for(par0= bestpar0*0.8; par0<=bestpar0*1.21; par0+=bestpar0*0.05){
-                    for(par1= bestpar1*0.8; par1<=bestpar1*1.21; par1+=bestpar1*0.05){
-                        double error=0;
-                        TimeFilter *tf= ff_timefilter_new(1, par0, par1);
-                        for(i=0; i<SAMPLES; i++){
+                better = 0;
+                for (par0 = bestpar0 * 0.8; par0 <= bestpar0 * 1.21; par0 += bestpar0 * 0.05) {
+                    for (par1 = bestpar1 * 0.8; par1 <= bestpar1 * 1.21; par1 += bestpar1 * 0.05) {
+                        double error   = 0;
+                        TimeFilter *tf = ff_timefilter_new(1, par0, par1);
+                        for (i = 0; i < SAMPLES; i++) {
                             double filtered;
-                            filtered=  ff_timefilter_update(tf, samples[i], 1);
-                            error += (filtered - ideal[i]) * (filtered - ideal[i]);
+                            filtered = ff_timefilter_update(tf, samples[i], i ? (samplet[i] - samplet[i-1]) : 1);
+                            if(filtered < 0 || filtered > 1000000000)
+                                printf("filter is unstable\n");
+                            error   += (filtered - ideal[i]) * (filtered - ideal[i]);
                         }
                         ff_timefilter_destroy(tf);
-                        if(error < best_error){
-                            best_error= error;
-                            bestpar0= par0;
-                            bestpar1= par1;
-                            better=1;
+                        if (error < best_error) {
+                            best_error = error;
+                            bestpar0   = par0;
+                            bestpar1   = par1;
+                            better     = 1;
                         }
                     }
                 }
-            }while(better);
+            } while (better);
 #if 0
-            double lastfil=9;
-            TimeFilter *tf= ff_timefilter_new(1, bestpar0, bestpar1);
-            for(i=0; i<SAMPLES; i++){
+            double lastfil = 9;
+            TimeFilter *tf = ff_timefilter_new(1, bestpar0, bestpar1);
+            for (i = 0; i < SAMPLES; i++) {
                 double filtered;
-                filtered=  ff_timefilter_update(tf, samples[i], 1);
-                printf("%f %f %f %f\n", i - samples[i] + 10, filtered - samples[i], samples[FFMAX(i, 1)] - samples[FFMAX(i-1, 0)], filtered - lastfil);
-                lastfil= filtered;
+                filtered = ff_timefilter_update(tf, samples[i], 1);
+                printf("%f %f %f %f\n", i - samples[i] + 10, filtered - samples[i],
+                       samples[FFMAX(i, 1)] - samples[FFMAX(i - 1, 0)], filtered - lastfil);
+                lastfil = filtered;
             }
             ff_timefilter_destroy(tf);
 #else

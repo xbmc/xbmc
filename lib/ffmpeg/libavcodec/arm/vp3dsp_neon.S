@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
+#include "libavutil/arm/asm.S"
 
 const   vp3_idct_constants, align=4
 .short 64277, 60547, 54491, 46341, 36410, 25080, 12785
@@ -108,14 +108,20 @@ endfunc
 
 function vp3_idct_start_neon
     vpush           {d8-d15}
+    vmov.i16        q4,  #0
+    vmov.i16        q5,  #0
     movrel          r3,  vp3_idct_constants
     vld1.64         {d0-d1},   [r3,:128]
-    vld1.64         {d16-d19}, [r2,:128]!
-    vld1.64         {d20-d23}, [r2,:128]!
-    vld1.64         {d24-d27}, [r2,:128]!
+    vld1.64         {d16-d19}, [r2,:128]
+    vst1.64         {q4-q5},   [r2,:128]!
+    vld1.64         {d20-d23}, [r2,:128]
+    vst1.64         {q4-q5},   [r2,:128]!
+    vld1.64         {d24-d27}, [r2,:128]
+    vst1.64         {q4-q5},   [r2,:128]!
     vadd.s16        q1,  q8,  q12
     vsub.s16        q8,  q8,  q12
-    vld1.64         {d28-d31}, [r2,:128]!
+    vld1.64         {d28-d31}, [r2,:128]
+    vst1.64         {q4-q5},   [r2,:128]!
 
 vp3_idct_core_neon:
     vmull.s16       q2,  d18, xC1S7     // (ip[1] * C1) << 16
@@ -260,32 +266,6 @@ endfunc
 VP3_IDCT_END row
 VP3_IDCT_END col
 
-function ff_vp3_idct_neon, export=1
-    mov             ip,  lr
-    mov             r2,  r0
-    bl              vp3_idct_start_neon
-    bl              vp3_idct_end_row_neon
-    mov             r3,  #8
-    bl              vp3_idct_core_neon
-    bl              vp3_idct_end_col_neon
-    mov             lr,  ip
-    vpop            {d8-d15}
-
-    vshr.s16        q8,  q8,  #4
-    vshr.s16        q9,  q9,  #4
-    vshr.s16        q10, q10, #4
-    vshr.s16        q11, q11, #4
-    vshr.s16        q12, q12, #4
-    vst1.64         {d16-d19}, [r0,:128]!
-    vshr.s16        q13, q13, #4
-    vshr.s16        q14, q14, #4
-    vst1.64         {d20-d23}, [r0,:128]!
-    vshr.s16        q15, q15, #4
-    vst1.64         {d24-d27}, [r0,:128]!
-    vst1.64         {d28-d31}, [r0,:128]!
-    bx              lr
-endfunc
-
 function ff_vp3_idct_put_neon, export=1
     mov             ip,  lr
     bl              vp3_idct_start_neon
@@ -371,10 +351,12 @@ function ff_vp3_idct_add_neon, export=1
 endfunc
 
 function ff_vp3_idct_dc_add_neon, export=1
-    ldrsh           r2,  [r2]
+    ldrsh           r12, [r2]
     mov             r3,  r0
-    add             r2,  r2,  #15
-    vdup.16         q15, r2
+    add             r12, r12,  #15
+    vdup.16         q15, r12
+    mov             r12, 0
+    strh            r12, [r2]
     vshr.s16        q15, q15, #5
 
     vld1.8          {d0}, [r0,:64], r1

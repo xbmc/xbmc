@@ -31,7 +31,7 @@
 #endif
 
 #define SINETABLE(size) \
-    SINETABLE_CONST DECLARE_ALIGNED(16, float, ff_sine_##size)[size]
+    SINETABLE_CONST DECLARE_ALIGNED(32, float, ff_sine_##size)[size]
 
 /**
  * Generate a sine window.
@@ -53,7 +53,8 @@ extern SINETABLE( 512);
 extern SINETABLE(1024);
 extern SINETABLE(2048);
 extern SINETABLE(4096);
+extern SINETABLE(8192);
 
-extern SINETABLE_CONST float * const ff_sine_windows[13];
+extern SINETABLE_CONST float * const ff_sine_windows[14];
 
 #endif /* AVCODEC_SINEWIN_H */

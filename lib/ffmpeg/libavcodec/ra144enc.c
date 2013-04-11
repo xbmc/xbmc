@@ -28,9 +28,23 @@
 #include <float.h>
 
 #include "avcodec.h"
+#include "audio_frame_queue.h"
+#include "internal.h"
 #include "put_bits.h"
 #include "celp_filters.h"
 #include "ra144.h"
+
+
+static av_cold int ra144_encode_close(AVCodecContext *avctx)
+{
+    RA144Context *ractx = avctx->priv_data;
+    ff_lpc_end(&ractx->lpc_ctx);
+    ff_af_queue_close(&ractx->afq);
+#if FF_API_OLD_ENCODE_AUDIO
+    av_freep(&avctx->coded_frame);
+#endif
+    return 0;
+}
 
 
 static av_cold int ra144_encode_init(AVCodecContext * avctx)
@@ -38,16 +52,13 @@ static av_cold int ra144_encode_init(AVCodecContext * avctx)
     RA144Context *ractx;
     int ret;
 
-    if (avctx->sample_fmt != AV_SAMPLE_FMT_S16) {
-        av_log(avctx, AV_LOG_ERROR, "invalid sample format\n");
-        return -1;
-    }
     if (avctx->channels != 1) {
         av_log(avctx, AV_LOG_ERROR, "invalid number of channels: %d\n",
                avctx->channels);
         return -1;
     }
     avctx->frame_size = NBLOCKS * BLOCKSIZE;
+    avctx->delay      = avctx->frame_size;
     avctx->bit_rate = 8000;
     ractx = avctx->priv_data;
     ractx->lpc_coef[0] = ractx->lpc_tables[0];
@@ -55,15 +66,23 @@ static av_cold int ra144_encode_init(AVCodecContext * avctx)
     ractx->avctx = avctx;
     ret = ff_lpc_init(&ractx->lpc_ctx, avctx->frame_size, LPC_ORDER,
                       FF_LPC_TYPE_LEVINSON);
-    return ret;
-}
+    if (ret < 0)
+        goto error;
 
+    ff_af_queue_init(avctx, &ractx->afq);
 
-static av_cold int ra144_encode_close(AVCodecContext *avctx)
-{
-    RA144Context *ractx = avctx->priv_data;
-    ff_lpc_end(&ractx->lpc_ctx);
+#if FF_API_OLD_ENCODE_AUDIO
+    avctx->coded_frame = avcodec_alloc_frame();
+    if (!avctx->coded_frame) {
+        ret = AVERROR(ENOMEM);
+        goto error;
+    }
+#endif
+
     return 0;
+error:
+    ra144_encode_close(avctx);
+    return ret;
 }
 
 
@@ -189,8 +208,8 @@ static void create_adapt_vect(float *vect, const int16_t *cb, int lag)
 static int adaptive_cb_search(const int16_t *adapt_cb, float *work,
                               const float *coefs, float *data)
 {
-    int i, best_vect;
-    float score, gain, best_score, best_gain;
+    int i, av_uninit(best_vect);
+    float score, gain, best_score, av_uninit(best_gain);
     float exc[BLOCKSIZE];
 
     gain = best_score = 0;
@@ -323,12 +342,13 @@ static void ra144_encode_subblock(RA144Context *ractx,
                                   const int16_t *lpc_coefs, unsigned int rms,
                                   PutBitContext *pb)
 {
-    float data[BLOCKSIZE], work[LPC_ORDER + BLOCKSIZE];
+    float data[BLOCKSIZE] = { 0 }, work[LPC_ORDER + BLOCKSIZE];
     float coefs[LPC_ORDER];
     float zero[BLOCKSIZE], cba[BLOCKSIZE], cb1[BLOCKSIZE], cb2[BLOCKSIZE];
     int16_t cba_vect[BLOCKSIZE];
     int cba_idx, cb1_idx, cb2_idx, gain;
-    int i, n, m[3];
+    int i, n;
+    unsigned m[3];
     float g[3];
     float error, best_error;
 
@@ -341,7 +361,6 @@ static void ra144_encode_subblock(RA144Context *ractx,
      * Calculate the zero-input response of the LPC filter and subtract it from
      * input data.
      */
-    memset(data, 0, sizeof(data));
     ff_celp_lp_synthesis_filterf(work + LPC_ORDER, coefs, data, BLOCKSIZE,
                                  LPC_ORDER);
     for (i = 0; i < BLOCKSIZE; i++) {
@@ -419,12 +438,12 @@ static void ra144_encode_subblock(RA144Context *ractx,
 }
 
 
-static int ra144_encode_frame(AVCodecContext *avctx, uint8_t *frame,
-                              int buf_size, void *data)
+static int ra144_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
+                              const AVFrame *frame, int *got_packet_ptr)
 {
     static const uint8_t sizes[LPC_ORDER] = {64, 32, 32, 16, 16, 8, 8, 8, 8, 4};
     static const uint8_t bit_sizes[LPC_ORDER] = {6, 5, 5, 4, 4, 3, 3, 3, 3, 2};
-    RA144Context *ractx;
+    RA144Context *ractx = avctx->priv_data;
     PutBitContext pb;
     int32_t lpc_data[NBLOCKS * BLOCKSIZE];
     int32_t lpc_coefs[LPC_ORDER][MAX_LPC_ORDER];
@@ -432,14 +451,15 @@ static int ra144_encode_frame(AVCodecContext *avctx, uint8_t *frame,
     int16_t block_coefs[NBLOCKS][LPC_ORDER];
     int lpc_refl[LPC_ORDER];    /**< reflection coefficients of the frame */
     unsigned int refl_rms[NBLOCKS]; /**< RMS of the reflection coefficients */
+    const int16_t *samples = frame ? (const int16_t *)frame->data[0] : NULL;
     int energy = 0;
-    int i, idx;
+    int i, idx, ret;
 
-    if (buf_size < FRAMESIZE) {
-        av_log(avctx, AV_LOG_ERROR, "output buffer too small\n");
+    if (ractx->last_frame)
         return 0;
-    }
-    ractx = avctx->priv_data;
+
+    if ((ret = ff_alloc_packet2(avctx, avpkt, FRAMESIZE)) < 0)
+        return ret;
 
     /**
      * Since the LPC coefficients are calculated on a frame centered over the
@@ -452,11 +472,15 @@ static int ra144_encode_frame(AVCodecContext *avctx, uint8_t *frame,
         lpc_data[i] = ractx->curr_block[BLOCKSIZE + BLOCKSIZE / 2 + i];
         energy += (lpc_data[i] * lpc_data[i]) >> 4;
     }
-    for (i = 2 * BLOCKSIZE + BLOCKSIZE / 2; i < NBLOCKS * BLOCKSIZE; i++) {
-        lpc_data[i] = *((int16_t *)data + i - 2 * BLOCKSIZE - BLOCKSIZE / 2) >>
-                      2;
-        energy += (lpc_data[i] * lpc_data[i]) >> 4;
+    if (frame) {
+        int j;
+        for (j = 0; j < frame->nb_samples && i < NBLOCKS * BLOCKSIZE; i++, j++) {
+            lpc_data[i] = samples[j] >> 2;
+            energy += (lpc_data[i] * lpc_data[i]) >> 4;
+        }
     }
+    if (i < NBLOCKS * BLOCKSIZE)
+        memset(&lpc_data[i], 0, (NBLOCKS * BLOCKSIZE - i) * sizeof(*lpc_data));
     energy = ff_energy_tab[quantize(ff_t_sqrt(energy >> 5) >> 10, ff_energy_tab,
                                     32)];
 
@@ -482,7 +506,7 @@ static int ra144_encode_frame(AVCodecContext *avctx, uint8_t *frame,
             memset(lpc_refl, 0, sizeof(lpc_refl));
         }
     }
-    init_put_bits(&pb, frame, buf_size);
+    init_put_bits(&pb, avpkt->data, avpkt->size);
     for (i = 0; i < LPC_ORDER; i++) {
         idx = quantize(lpc_refl[i], ff_lpc_refl_cb[i], sizes[i]);
         put_bits(&pb, bit_sizes[i], idx);
@@ -505,21 +529,41 @@ static int ra144_encode_frame(AVCodecContext *avctx, uint8_t *frame,
     ractx->old_energy = energy;
     ractx->lpc_refl_rms[1] = ractx->lpc_refl_rms[0];
     FFSWAP(unsigned int *, ractx->lpc_coef[0], ractx->lpc_coef[1]);
-    for (i = 0; i < NBLOCKS * BLOCKSIZE; i++)
-        ractx->curr_block[i] = *((int16_t *)data + i) >> 2;
-    return FRAMESIZE;
+
+    /* copy input samples to current block for processing in next call */
+    i = 0;
+    if (frame) {
+        for (; i < frame->nb_samples; i++)
+            ractx->curr_block[i] = samples[i] >> 2;
+
+        if ((ret = ff_af_queue_add(&ractx->afq, frame)) < 0)
+            return ret;
+    } else
+        ractx->last_frame = 1;
+    memset(&ractx->curr_block[i], 0,
+           (NBLOCKS * BLOCKSIZE - i) * sizeof(*ractx->curr_block));
+
+    /* Get the next frame pts/duration */
+    ff_af_queue_remove(&ractx->afq, avctx->frame_size, &avpkt->pts,
+                       &avpkt->duration);
+
+    avpkt->size = FRAMESIZE;
+    *got_packet_ptr = 1;
+    return 0;
 }
 
 
 AVCodec ff_ra_144_encoder = {
     .name           = "real_144",
     .type           = AVMEDIA_TYPE_AUDIO,
-    .id             = CODEC_ID_RA_144,
+    .id             = AV_CODEC_ID_RA_144,
     .priv_data_size = sizeof(RA144Context),
     .init           = ra144_encode_init,
-    .encode         = ra144_encode_frame,
+    .encode2        = ra144_encode_frame,
     .close          = ra144_encode_close,
+    .capabilities   = CODEC_CAP_DELAY | CODEC_CAP_SMALL_LAST_FRAME,
     .sample_fmts    = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_S16,
                                                      AV_SAMPLE_FMT_NONE },
-    .long_name      = NULL_IF_CONFIG_SMALL("RealAudio 1.0 (14.4K) encoder"),
+    .supported_samplerates = (const int[]){ 8000, 0 },
+    .long_name      = NULL_IF_CONFIG_SMALL("RealAudio 1.0 (14.4K)"),
 };

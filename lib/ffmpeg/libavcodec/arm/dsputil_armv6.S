@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
-
-        preserve8
+#include "libavutil/arm/asm.S"
 
 .macro  call_2x_pixels  type, subp
 function ff_\type\()_pixels16\subp\()_armv6, export=1

@@ -19,7 +19,6 @@
 ;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "libavutil/x86/x86inc.asm"
 %include "libavutil/x86/x86util.asm"
 
 ; MMX-optimized functions cribbed from the original VP3 source code.
@@ -38,12 +37,10 @@ cextern pb_1
 cextern pb_3
 cextern pb_7
 cextern pb_1F
+cextern pb_80
 cextern pb_81
 
 cextern pw_8
-
-cextern put_signed_pixels_clamped_mmx
-cextern add_pixels_clamped_mmx
 
 SECTION .text
 
@@ -104,9 +101,9 @@ SECTION .text
     mov  [r0+r3  -1], r2w
 %endmacro
 
-INIT_MMX
-cglobal vp3_v_loop_filter_mmx2, 3, 4
-%ifdef ARCH_X86_64
+INIT_MMX mmxext
+cglobal vp3_v_loop_filter, 3, 4
+%if ARCH_X86_64
     movsxd        r1, r1d
 %endif
     mov           r3, r1
@@ -122,8 +119,8 @@ cglobal vp3_v_loop_filter_mmx2, 3, 4
     movq     [r0   ], m3
     RET
 
-cglobal vp3_h_loop_filter_mmx2, 3, 4
-%ifdef ARCH_X86_64
+cglobal vp3_h_loop_filter, 3, 4
+%if ARCH_X86_64
     movsxd        r1, r1d
 %endif
     lea           r3, [r1*3]
@@ -356,38 +353,6 @@ cglobal vp3_h_loop_filter_mmx2, 3, 4
     movq        I(2), m2
 %endmacro
 
-%macro VP3_IDCT_mmx 1
-    ; eax = quantized input
-    ; ebx = dequantizer matrix
-    ; ecx = IDCT constants
-    ;  M(I) = ecx + MaskOffset(0) + I * 8
-    ;  C(I) = ecx + CosineOffset(32) + (I-1) * 8
-    ; edx = output
-    ; r0..r7 = mm0..mm7
-%define OC_8 [pw_8]
-%define C(x) [vp3_idct_data+16*(x-1)]
-
-    ; at this point, function has completed dequantization + dezigzag +
-    ; partial transposition; now do the idct itself
-%define I(x) [%1+16* x     ]
-%define J(x) [%1+16*(x-4)+8]
-    RowIDCT
-    Transpose
-
-%define I(x) [%1+16* x   +64]
-%define J(x) [%1+16*(x-4)+72]
-    RowIDCT
-    Transpose
-
-%define I(x) [%1+16*x]
-%define J(x) [%1+16*x]
-    ColumnIDCT
-
-%define I(x) [%1+16*x+8]
-%define J(x) [%1+16*x+8]
-    ColumnIDCT
-%endmacro
-
 %macro VP3_1D_IDCT_SSE2 0
     movdqa        m2, I(3)      ; xmm2 = i3
     movdqa        m6, C(3)      ; xmm6 = c3
@@ -503,14 +468,15 @@ cglobal vp3_h_loop_filter_mmx2, 3, 4
     movdqa      O(7), m%8
 %endmacro
 
-%macro VP3_IDCT_sse2 1
+%macro VP3_IDCT 1
+%if mmsize == 16
 %define I(x) [%1+16*x]
 %define O(x) [%1+16*x]
 %define C(x) [vp3_idct_data+16*(x-1)]
 %define SHIFT(x)
 %define ADD(x)
         VP3_1D_IDCT_SSE2
-%ifdef ARCH_X86_64
+%if ARCH_X86_64
         TRANSPOSE8x8W 0, 1, 2, 3, 4, 5, 6, 7, 8
 %else
         TRANSPOSE8x8W 0, 1, 2, 3, 4, 5, 6, 7, [%1], [%1+16]
@@ -521,62 +487,144 @@ cglobal vp3_h_loop_filter_mmx2, 3, 4
 %define ADD(x)   paddsw x, [pw_8]
         VP3_1D_IDCT_SSE2
         PUT_BLOCK 0, 1, 2, 3, 4, 5, 6, 7
+%else ; mmsize == 8
+    ; eax = quantized input
+    ; ebx = dequantizer matrix
+    ; ecx = IDCT constants
+    ;  M(I) = ecx + MaskOffset(0) + I * 8
+    ;  C(I) = ecx + CosineOffset(32) + (I-1) * 8
+    ; edx = output
+    ; r0..r7 = mm0..mm7
+%define OC_8 [pw_8]
+%define C(x) [vp3_idct_data+16*(x-1)]
+
+    ; at this point, function has completed dequantization + dezigzag +
+    ; partial transposition; now do the idct itself
+%define I(x) [%1+16* x     ]
+%define J(x) [%1+16*(x-4)+8]
+    RowIDCT
+    Transpose
+
+%define I(x) [%1+16* x   +64]
+%define J(x) [%1+16*(x-4)+72]
+    RowIDCT
+    Transpose
+
+%define I(x) [%1+16*x]
+%define J(x) [%1+16*x]
+    ColumnIDCT
+
+%define I(x) [%1+16*x+8]
+%define J(x) [%1+16*x+8]
+    ColumnIDCT
+%endif ; mmsize == 16/8
 %endmacro
 
-%macro vp3_idct_funcs 3
-cglobal vp3_idct_%1, 1, 1, %2
-    VP3_IDCT_%1   r0
+%macro vp3_idct_funcs 0
+cglobal vp3_idct_put, 3, 4, 9
+    VP3_IDCT      r2
+
+    movsxdifnidn  r1, r1d
+    mova          m4, [pb_80]
+    lea           r3, [r1*3]
+%assign %%i 0
+%rep 16/mmsize
+    mova          m0, [r2+mmsize*0+%%i]
+    mova          m1, [r2+mmsize*2+%%i]
+    mova          m2, [r2+mmsize*4+%%i]
+    mova          m3, [r2+mmsize*6+%%i]
+    packsswb      m0, [r2+mmsize*1+%%i]
+    packsswb      m1, [r2+mmsize*3+%%i]
+    packsswb      m2, [r2+mmsize*5+%%i]
+    packsswb      m3, [r2+mmsize*7+%%i]
+    paddb         m0, m4
+    paddb         m1, m4
+    paddb         m2, m4
+    paddb         m3, m4
+    movq   [r0     ], m0
+%if mmsize == 8
+    movq   [r0+r1  ], m1
+    movq   [r0+r1*2], m2
+    movq   [r0+r3  ], m3
+%else
+    movhps [r0+r1  ], m0
+    movq   [r0+r1*2], m1
+    movhps [r0+r3  ], m1
+%endif
+%if %%i == 0
+    lea           r0, [r0+r1*4]
+%endif
+%if mmsize == 16
+    movq   [r0     ], m2
+    movhps [r0+r1  ], m2
+    movq   [r0+r1*2], m3
+    movhps [r0+r3  ], m3
+%endif
+%assign %%i %%i+64
+%endrep
+
+    pxor          m0, m0
+%assign %%offset 0
+%rep 128/mmsize
+    mova [r2+%%offset], m0
+%assign %%offset %%offset+mmsize
+%endrep
     RET
 
-cglobal vp3_idct_put_%1, 3, %3, %2
-    VP3_IDCT_%1   r2
-%ifdef ARCH_X86_64
-    mov           r3, r2
-    mov           r2, r1
-    mov           r1, r0
-    mov           r0, r3
-%else
-    mov          r0m, r2
-    mov          r1m, r0
-    mov          r2m, r1
-%endif
-%ifdef WIN64
-    call put_signed_pixels_clamped_mmx
-    RET
-%else
-    jmp put_signed_pixels_clamped_mmx
-%endif
+cglobal vp3_idct_add, 3, 4, 9
+    VP3_IDCT      r2
 
-cglobal vp3_idct_add_%1, 3, %3, %2
-    VP3_IDCT_%1   r2
-%ifdef ARCH_X86_64
-    mov           r3, r2
-    mov           r2, r1
-    mov           r1, r0
-    mov           r0, r3
-%else
-    mov          r0m, r2
-    mov          r1m, r0
-    mov          r2m, r1
+    mov           r3, 4
+    pxor          m4, m4
+    movsxdifnidn  r1, r1d
+.loop:
+    movq          m0, [r0]
+    movq          m1, [r0+r1]
+%if mmsize == 8
+    mova          m2, m0
+    mova          m3, m1
 %endif
-%ifdef WIN64
-    call add_pixels_clamped_mmx
+    punpcklbw     m0, m4
+    punpcklbw     m1, m4
+%if mmsize == 8
+    punpckhbw     m2, m4
+    punpckhbw     m3, m4
+%endif
+    paddsw        m0, [r2+ 0]
+    paddsw        m1, [r2+16]
+%if mmsize == 8
+    paddsw        m2, [r2+ 8]
+    paddsw        m3, [r2+24]
+    packuswb      m0, m2
+    packuswb      m1, m3
+%else ; mmsize == 16
+    packuswb      m0, m1
+%endif
+    movq     [r0   ], m0
+%if mmsize == 8
+    movq     [r0+r1], m1
+%else ; mmsize == 16
+    movhps   [r0+r1], m0
+%endif
+    lea           r0, [r0+r1*2]
+%assign %%offset 0
+%rep 32/mmsize
+    mova [r2+%%offset], m4
+%assign %%offset %%offset+mmsize
+%endrep
+    add           r2, 32
+    dec           r3
+    jg .loop
     RET
-%else
-    jmp add_pixels_clamped_mmx
-%endif
 %endmacro
 
-%ifdef ARCH_X86_64
-%define REGS 4
-%else
-%define REGS 3
+%if ARCH_X86_32
+INIT_MMX mmx
+vp3_idct_funcs
 %endif
-INIT_MMX
-vp3_idct_funcs mmx,  0, REGS
-INIT_XMM
-vp3_idct_funcs sse2, 9, REGS
-%undef REGS
+
+INIT_XMM sse2
+vp3_idct_funcs
 
 %macro DC_ADD 0
     movq          m2, [r0     ]
@@ -584,7 +632,7 @@ vp3_idct_funcs sse2, 9, REGS
     paddusb       m2, m0
     movq          m4, [r0+r1*2]
     paddusb       m3, m0
-    movq          m5, [r0+r3  ]
+    movq          m5, [r0+r2  ]
     paddusb       m4, m0
     paddusb       m5, m0
     psubusb       m2, m1
@@ -594,19 +642,20 @@ vp3_idct_funcs sse2, 9, REGS
     movq   [r0+r1  ], m3
     psubusb       m5, m1
     movq   [r0+r1*2], m4
-    movq   [r0+r3  ], m5
+    movq   [r0+r2  ], m5
 %endmacro
 
-INIT_MMX
-cglobal vp3_idct_dc_add_mmx2, 3, 4
-%ifdef ARCH_X86_64
+INIT_MMX mmxext
+cglobal vp3_idct_dc_add, 3, 4
+%if ARCH_X86_64
     movsxd        r1, r1d
 %endif
-    lea           r3, [r1*3]
-    movsx         r2, word [r2]
-    add           r2, 15
-    sar           r2, 5
-    movd          m0, r2d
+    movsx         r3, word [r2]
+    mov    word [r2], 0
+    lea           r2, [r1*3]
+    add           r3, 15
+    sar           r3, 5
+    movd          m0, r3d
     pshufw        m0, m0, 0x0
     pxor          m1, m1
     psubw         m1, m0

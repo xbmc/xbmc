@@ -23,12 +23,6 @@
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
 
-/* I really don't want to include ffmpeg headers here, could */
-/* potentially interfere with libmpeg2's, so let's just define this */
-#ifndef _LINUX
-const int CODEC_ID_MPEG1VIDEO = 1;
-#endif
-
 enum MPEGProfile
 {
   MPEG_422_HL = 0x82,

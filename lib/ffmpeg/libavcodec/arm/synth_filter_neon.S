@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
-
-        preserve8
+#include "libavutil/arm/asm.S"
 
 function ff_synth_filter_float_neon, export=1
         push            {r3-r11,lr}

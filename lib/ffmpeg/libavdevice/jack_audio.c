@@ -27,6 +27,7 @@
 #include "libavutil/log.h"
 #include "libavutil/fifo.h"
 #include "libavutil/opt.h"
+#include "libavutil/time.h"
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavformat/internal.h"
@@ -92,7 +93,13 @@ static int process_callback(jack_nframes_t nframes, void *arg)
 
     /* Copy and interleave audio data from the JACK buffer into the packet */
     for (i = 0; i < self->nports; i++) {
+    #if HAVE_JACK_PORT_GET_LATENCY_RANGE
+        jack_latency_range_t range;
+        jack_port_get_latency_range(self->ports[i], JackCaptureLatency, &range);
+        latency += range.max;
+    #else
         latency += jack_port_get_total_latency(self->client, self->ports[i]);
+    #endif
         buffer = jack_port_get_buffer(self->ports[i], self->buffer_size);
         for (j = 0; j < self->buffer_size; j++)
             pkt_data[j * self->nports + i] = buffer[j];
@@ -145,7 +152,6 @@ static int start_jack(AVFormatContext *context)
     JackData *self = context->priv_data;
     jack_status_t status;
     int i, test;
-    double o, period;
 
     /* Register as a JACK client, using the context filename as client name. */
     self->client = jack_client_open(context->filename, JackNullOption, &status);
@@ -181,9 +187,7 @@ static int start_jack(AVFormatContext *context)
     jack_set_xrun_callback(self->client, xrun_callback, self);
 
     /* Create time filter */
-    period            = (double) self->buffer_size / self->sample_rate;
-    o                 = 2 * M_PI * 1.5 * period; /// bandwidth: 1.5Hz
-    self->timefilter  = ff_timefilter_new (1.0 / self->sample_rate, sqrt(2 * o), o * o);
+    self->timefilter  = ff_timefilter_new (1.0 / self->sample_rate, self->buffer_size, 1.5);
 
     /* Create FIFO buffers */
     self->filled_pkts = av_fifo_alloc(FIFO_PACKETS_NUM * sizeof(AVPacket));
@@ -222,7 +226,7 @@ static void stop_jack(JackData *self)
     ff_timefilter_destroy(self->timefilter);
 }
 
-static int audio_read_header(AVFormatContext *context, AVFormatParameters *params)
+static int audio_read_header(AVFormatContext *context)
 {
     JackData *self = context->priv_data;
     AVStream *stream;
@@ -239,9 +243,9 @@ static int audio_read_header(AVFormatContext *context, AVFormatParameters *param
 
     stream->codec->codec_type   = AVMEDIA_TYPE_AUDIO;
 #if HAVE_BIGENDIAN
-    stream->codec->codec_id     = CODEC_ID_PCM_F32BE;
+    stream->codec->codec_id     = AV_CODEC_ID_PCM_F32BE;
 #else
-    stream->codec->codec_id     = CODEC_ID_PCM_F32LE;
+    stream->codec->codec_id     = AV_CODEC_ID_PCM_F32LE;
 #endif
     stream->codec->sample_rate  = self->sample_rate;
     stream->codec->channels     = self->nports;
@@ -316,7 +320,7 @@ static int audio_read_close(AVFormatContext *context)
 
 #define OFFSET(x) offsetof(JackData, x)
 static const AVOption options[] = {
-    { "channels", "Number of audio channels.", OFFSET(nports), AV_OPT_TYPE_INT, { 2 }, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
+    { "channels", "Number of audio channels.", OFFSET(nports), AV_OPT_TYPE_INT, { .i64 = 2 }, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
     { NULL },
 };
 

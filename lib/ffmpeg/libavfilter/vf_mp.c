@@ -25,6 +25,9 @@
  */
 
 #include "avfilter.h"
+#include "video.h"
+#include "formats.h"
+#include "internal.h"
 #include "libavutil/avassert.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/intreadwrite.h"
@@ -33,7 +36,7 @@
 #include "libmpcodecs/vf.h"
 #include "libmpcodecs/img_format.h"
 #include "libmpcodecs/cpudetect.h"
-#include "libmpcodecs/vd_ffmpeg.h"
+#include "libmpcodecs/av_helpers.h"
 #include "libmpcodecs/vf_scale.h"
 #include "libmpcodecs/libvo/fastmemcpy.h"
 
@@ -44,208 +47,136 @@
 //XXX: identical pix_fmt must be following with each others
 static const struct {
     int fmt;
-    enum PixelFormat pix_fmt;
+    enum AVPixelFormat pix_fmt;
 } conversion_map[] = {
-    {IMGFMT_ARGB, PIX_FMT_ARGB},
-    {IMGFMT_BGRA, PIX_FMT_BGRA},
-    {IMGFMT_BGR24, PIX_FMT_BGR24},
-    {IMGFMT_BGR16BE, PIX_FMT_RGB565BE},
-    {IMGFMT_BGR16LE, PIX_FMT_RGB565LE},
-    {IMGFMT_BGR15BE, PIX_FMT_RGB555BE},
-    {IMGFMT_BGR15LE, PIX_FMT_RGB555LE},
-    {IMGFMT_BGR12BE, PIX_FMT_RGB444BE},
-    {IMGFMT_BGR12LE, PIX_FMT_RGB444LE},
-    {IMGFMT_BGR8,  PIX_FMT_RGB8},
-    {IMGFMT_BGR4,  PIX_FMT_RGB4},
-    {IMGFMT_BGR1,  PIX_FMT_MONOBLACK},
-    {IMGFMT_RGB1,  PIX_FMT_MONOBLACK},
-    {IMGFMT_RG4B,  PIX_FMT_BGR4_BYTE},
-    {IMGFMT_BG4B,  PIX_FMT_RGB4_BYTE},
-    {IMGFMT_RGB48LE, PIX_FMT_RGB48LE},
-    {IMGFMT_RGB48BE, PIX_FMT_RGB48BE},
-    {IMGFMT_ABGR, PIX_FMT_ABGR},
-    {IMGFMT_RGBA, PIX_FMT_RGBA},
-    {IMGFMT_RGB24, PIX_FMT_RGB24},
-    {IMGFMT_RGB16BE, PIX_FMT_BGR565BE},
-    {IMGFMT_RGB16LE, PIX_FMT_BGR565LE},
-    {IMGFMT_RGB15BE, PIX_FMT_BGR555BE},
-    {IMGFMT_RGB15LE, PIX_FMT_BGR555LE},
-    {IMGFMT_RGB12BE, PIX_FMT_BGR444BE},
-    {IMGFMT_RGB12LE, PIX_FMT_BGR444LE},
-    {IMGFMT_RGB8,  PIX_FMT_BGR8},
-    {IMGFMT_RGB4,  PIX_FMT_BGR4},
-    {IMGFMT_BGR8,  PIX_FMT_PAL8},
-    {IMGFMT_YUY2,  PIX_FMT_YUYV422},
-    {IMGFMT_UYVY,  PIX_FMT_UYVY422},
-    {IMGFMT_NV12,  PIX_FMT_NV12},
-    {IMGFMT_NV21,  PIX_FMT_NV21},
-    {IMGFMT_Y800,  PIX_FMT_GRAY8},
-    {IMGFMT_Y8,    PIX_FMT_GRAY8},
-    {IMGFMT_YVU9,  PIX_FMT_YUV410P},
-    {IMGFMT_IF09,  PIX_FMT_YUV410P},
-    {IMGFMT_YV12,  PIX_FMT_YUV420P},
-    {IMGFMT_I420,  PIX_FMT_YUV420P},
-    {IMGFMT_IYUV,  PIX_FMT_YUV420P},
-    {IMGFMT_411P,  PIX_FMT_YUV411P},
-    {IMGFMT_422P,  PIX_FMT_YUV422P},
-    {IMGFMT_444P,  PIX_FMT_YUV444P},
-    {IMGFMT_440P,  PIX_FMT_YUV440P},
+    {IMGFMT_ARGB, AV_PIX_FMT_ARGB},
+    {IMGFMT_BGRA, AV_PIX_FMT_BGRA},
+    {IMGFMT_BGR24, AV_PIX_FMT_BGR24},
+    {IMGFMT_BGR16BE, AV_PIX_FMT_RGB565BE},
+    {IMGFMT_BGR16LE, AV_PIX_FMT_RGB565LE},
+    {IMGFMT_BGR15BE, AV_PIX_FMT_RGB555BE},
+    {IMGFMT_BGR15LE, AV_PIX_FMT_RGB555LE},
+    {IMGFMT_BGR12BE, AV_PIX_FMT_RGB444BE},
+    {IMGFMT_BGR12LE, AV_PIX_FMT_RGB444LE},
+    {IMGFMT_BGR8,  AV_PIX_FMT_RGB8},
+    {IMGFMT_BGR4,  AV_PIX_FMT_RGB4},
+    {IMGFMT_BGR1,  AV_PIX_FMT_MONOBLACK},
+    {IMGFMT_RGB1,  AV_PIX_FMT_MONOBLACK},
+    {IMGFMT_RG4B,  AV_PIX_FMT_BGR4_BYTE},
+    {IMGFMT_BG4B,  AV_PIX_FMT_RGB4_BYTE},
+    {IMGFMT_RGB48LE, AV_PIX_FMT_RGB48LE},
+    {IMGFMT_RGB48BE, AV_PIX_FMT_RGB48BE},
+    {IMGFMT_ABGR, AV_PIX_FMT_ABGR},
+    {IMGFMT_RGBA, AV_PIX_FMT_RGBA},
+    {IMGFMT_RGB24, AV_PIX_FMT_RGB24},
+    {IMGFMT_RGB16BE, AV_PIX_FMT_BGR565BE},
+    {IMGFMT_RGB16LE, AV_PIX_FMT_BGR565LE},
+    {IMGFMT_RGB15BE, AV_PIX_FMT_BGR555BE},
+    {IMGFMT_RGB15LE, AV_PIX_FMT_BGR555LE},
+    {IMGFMT_RGB12BE, AV_PIX_FMT_BGR444BE},
+    {IMGFMT_RGB12LE, AV_PIX_FMT_BGR444LE},
+    {IMGFMT_RGB8,  AV_PIX_FMT_BGR8},
+    {IMGFMT_RGB4,  AV_PIX_FMT_BGR4},
+    {IMGFMT_BGR8,  AV_PIX_FMT_PAL8},
+    {IMGFMT_YUY2,  AV_PIX_FMT_YUYV422},
+    {IMGFMT_UYVY,  AV_PIX_FMT_UYVY422},
+    {IMGFMT_NV12,  AV_PIX_FMT_NV12},
+    {IMGFMT_NV21,  AV_PIX_FMT_NV21},
+    {IMGFMT_Y800,  AV_PIX_FMT_GRAY8},
+    {IMGFMT_Y8,    AV_PIX_FMT_GRAY8},
+    {IMGFMT_YVU9,  AV_PIX_FMT_YUV410P},
+    {IMGFMT_IF09,  AV_PIX_FMT_YUV410P},
+    {IMGFMT_YV12,  AV_PIX_FMT_YUV420P},
+    {IMGFMT_I420,  AV_PIX_FMT_YUV420P},
+    {IMGFMT_IYUV,  AV_PIX_FMT_YUV420P},
+    {IMGFMT_411P,  AV_PIX_FMT_YUV411P},
+    {IMGFMT_422P,  AV_PIX_FMT_YUV422P},
+    {IMGFMT_444P,  AV_PIX_FMT_YUV444P},
+    {IMGFMT_440P,  AV_PIX_FMT_YUV440P},
 
-    {IMGFMT_420A,  PIX_FMT_YUVA420P},
+    {IMGFMT_420A,  AV_PIX_FMT_YUVA420P},
 
-    {IMGFMT_420P16_LE,  PIX_FMT_YUV420P16LE},
-    {IMGFMT_420P16_BE,  PIX_FMT_YUV420P16BE},
-    {IMGFMT_422P16_LE,  PIX_FMT_YUV422P16LE},
-    {IMGFMT_422P16_BE,  PIX_FMT_YUV422P16BE},
-    {IMGFMT_444P16_LE,  PIX_FMT_YUV444P16LE},
-    {IMGFMT_444P16_BE,  PIX_FMT_YUV444P16BE},
+    {IMGFMT_420P16_LE,  AV_PIX_FMT_YUV420P16LE},
+    {IMGFMT_420P16_BE,  AV_PIX_FMT_YUV420P16BE},
+    {IMGFMT_422P16_LE,  AV_PIX_FMT_YUV422P16LE},
+    {IMGFMT_422P16_BE,  AV_PIX_FMT_YUV422P16BE},
+    {IMGFMT_444P16_LE,  AV_PIX_FMT_YUV444P16LE},
+    {IMGFMT_444P16_BE,  AV_PIX_FMT_YUV444P16BE},
 
     // YUVJ are YUV formats that use the full Y range and not just
     // 16 - 235 (see colorspaces.txt).
     // Currently they are all treated the same way.
-    {IMGFMT_YV12,  PIX_FMT_YUVJ420P},
-    {IMGFMT_422P,  PIX_FMT_YUVJ422P},
-    {IMGFMT_444P,  PIX_FMT_YUVJ444P},
-    {IMGFMT_440P,  PIX_FMT_YUVJ440P},
+    {IMGFMT_YV12,  AV_PIX_FMT_YUVJ420P},
+    {IMGFMT_422P,  AV_PIX_FMT_YUVJ422P},
+    {IMGFMT_444P,  AV_PIX_FMT_YUVJ444P},
+    {IMGFMT_440P,  AV_PIX_FMT_YUVJ440P},
 
-    {IMGFMT_XVMC_MOCO_MPEG2, PIX_FMT_XVMC_MPEG2_MC},
-    {IMGFMT_XVMC_IDCT_MPEG2, PIX_FMT_XVMC_MPEG2_IDCT},
-    {IMGFMT_VDPAU_MPEG1,     PIX_FMT_VDPAU_MPEG1},
-    {IMGFMT_VDPAU_MPEG2,     PIX_FMT_VDPAU_MPEG2},
-    {IMGFMT_VDPAU_H264,      PIX_FMT_VDPAU_H264},
-    {IMGFMT_VDPAU_WMV3,      PIX_FMT_VDPAU_WMV3},
-    {IMGFMT_VDPAU_VC1,       PIX_FMT_VDPAU_VC1},
-    {IMGFMT_VDPAU_MPEG4,     PIX_FMT_VDPAU_MPEG4},
-    {0, PIX_FMT_NONE}
+    {IMGFMT_XVMC_MOCO_MPEG2, AV_PIX_FMT_XVMC_MPEG2_MC},
+    {IMGFMT_XVMC_IDCT_MPEG2, AV_PIX_FMT_XVMC_MPEG2_IDCT},
+    {IMGFMT_VDPAU_MPEG1,     AV_PIX_FMT_VDPAU_MPEG1},
+    {IMGFMT_VDPAU_MPEG2,     AV_PIX_FMT_VDPAU_MPEG2},
+    {IMGFMT_VDPAU_H264,      AV_PIX_FMT_VDPAU_H264},
+    {IMGFMT_VDPAU_WMV3,      AV_PIX_FMT_VDPAU_WMV3},
+    {IMGFMT_VDPAU_VC1,       AV_PIX_FMT_VDPAU_VC1},
+    {IMGFMT_VDPAU_MPEG4,     AV_PIX_FMT_VDPAU_MPEG4},
+    {0, AV_PIX_FMT_NONE}
 };
 
-//copied from vf.c
-extern const vf_info_t vf_info_1bpp;
-extern const vf_info_t vf_info_2xsai;
-extern const vf_info_t vf_info_ass;
-extern const vf_info_t vf_info_bmovl;
-extern const vf_info_t vf_info_crop;
-extern const vf_info_t vf_info_decimate;
-extern const vf_info_t vf_info_denoise3d;
-extern const vf_info_t vf_info_detc;
-extern const vf_info_t vf_info_dint;
-extern const vf_info_t vf_info_divtc;
-extern const vf_info_t vf_info_down3dright;
-extern const vf_info_t vf_info_dsize;
-extern const vf_info_t vf_info_dvbscale;
-extern const vf_info_t vf_info_eq2;
-extern const vf_info_t vf_info_eq;
-extern const vf_info_t vf_info_expand;
-extern const vf_info_t vf_info_field;
-extern const vf_info_t vf_info_fil;
-extern const vf_info_t vf_info_filmdint;
-extern const vf_info_t vf_info_fixpts;
-extern const vf_info_t vf_info_flip;
-extern const vf_info_t vf_info_format;
-extern const vf_info_t vf_info_framestep;
-extern const vf_info_t vf_info_fspp;
-extern const vf_info_t vf_info_geq;
-extern const vf_info_t vf_info_halfpack;
-extern const vf_info_t vf_info_harddup;
-extern const vf_info_t vf_info_hqdn3d;
-extern const vf_info_t vf_info_hue;
-extern const vf_info_t vf_info_il;
-extern const vf_info_t vf_info_ilpack;
-extern const vf_info_t vf_info_ivtc;
-extern const vf_info_t vf_info_kerndeint;
-extern const vf_info_t vf_info_lavc;
-extern const vf_info_t vf_info_lavcdeint;
-extern const vf_info_t vf_info_mcdeint;
-extern const vf_info_t vf_info_mirror;
-extern const vf_info_t vf_info_noformat;
-extern const vf_info_t vf_info_noise;
-extern const vf_info_t vf_info_ow;
-extern const vf_info_t vf_info_palette;
-extern const vf_info_t vf_info_perspective;
-extern const vf_info_t vf_info_phase;
-extern const vf_info_t vf_info_pp7;
-extern const vf_info_t vf_info_pp;
-extern const vf_info_t vf_info_pullup;
-extern const vf_info_t vf_info_qp;
-extern const vf_info_t vf_info_rectangle;
-extern const vf_info_t vf_info_remove_logo;
-extern const vf_info_t vf_info_rotate;
-extern const vf_info_t vf_info_sab;
-extern const vf_info_t vf_info_scale;
-extern const vf_info_t vf_info_screenshot;
-extern const vf_info_t vf_info_smartblur;
-extern const vf_info_t vf_info_softpulldown;
-extern const vf_info_t vf_info_softskip;
-extern const vf_info_t vf_info_spp;
-extern const vf_info_t vf_info_stereo3d;
-extern const vf_info_t vf_info_swapuv;
-extern const vf_info_t vf_info_telecine;
-extern const vf_info_t vf_info_test;
-extern const vf_info_t vf_info_tfields;
-extern const vf_info_t vf_info_tile;
-extern const vf_info_t vf_info_tinterlace;
-extern const vf_info_t vf_info_unsharp;
-extern const vf_info_t vf_info_uspp;
-extern const vf_info_t vf_info_vo;
-extern const vf_info_t vf_info_yadif;
-extern const vf_info_t vf_info_yuvcsp;
-extern const vf_info_t vf_info_yvu9;
-extern const vf_info_t vf_info_zrmjpeg;
+extern const vf_info_t ff_vf_info_detc;
+extern const vf_info_t ff_vf_info_dint;
+extern const vf_info_t ff_vf_info_divtc;
+extern const vf_info_t ff_vf_info_down3dright;
+extern const vf_info_t ff_vf_info_eq2;
+extern const vf_info_t ff_vf_info_eq;
+extern const vf_info_t ff_vf_info_fil;
+//extern const vf_info_t ff_vf_info_filmdint;
+extern const vf_info_t ff_vf_info_fspp;
+extern const vf_info_t ff_vf_info_harddup;
+extern const vf_info_t ff_vf_info_ilpack;
+extern const vf_info_t ff_vf_info_ivtc;
+extern const vf_info_t ff_vf_info_mcdeint;
+extern const vf_info_t ff_vf_info_noise;
+extern const vf_info_t ff_vf_info_ow;
+extern const vf_info_t ff_vf_info_perspective;
+extern const vf_info_t ff_vf_info_phase;
+extern const vf_info_t ff_vf_info_pp7;
+extern const vf_info_t ff_vf_info_pullup;
+extern const vf_info_t ff_vf_info_qp;
+extern const vf_info_t ff_vf_info_sab;
+extern const vf_info_t ff_vf_info_softpulldown;
+extern const vf_info_t ff_vf_info_spp;
+extern const vf_info_t ff_vf_info_telecine;
+extern const vf_info_t ff_vf_info_tinterlace;
+extern const vf_info_t ff_vf_info_uspp;
 
 
 static const vf_info_t* const filters[]={
-    &vf_info_2xsai,
-    &vf_info_decimate,
-    &vf_info_denoise3d,
-    &vf_info_detc,
-    &vf_info_dint,
-    &vf_info_divtc,
-    &vf_info_down3dright,
-    &vf_info_dsize,
-    &vf_info_eq2,
-    &vf_info_eq,
-    &vf_info_field,
-    &vf_info_fil,
-//    &vf_info_filmdint, cmmx.h vd.h ‘opt_screen_size_x’
-    &vf_info_fixpts,
-    &vf_info_framestep,
-    &vf_info_fspp,
-    &vf_info_geq,
-    &vf_info_harddup,
-    &vf_info_hqdn3d,
-    &vf_info_hue,
-    &vf_info_il,
-    &vf_info_ilpack,
-    &vf_info_ivtc,
-    &vf_info_kerndeint,
-    &vf_info_mcdeint,
-    &vf_info_mirror,
-    &vf_info_noise,
-    &vf_info_ow,
-    &vf_info_palette,
-    &vf_info_perspective,
-    &vf_info_phase,
-    &vf_info_pp7,
-    &vf_info_pullup,
-    &vf_info_qp,
-    &vf_info_rectangle,
-    &vf_info_remove_logo,
-    &vf_info_rotate,
-    &vf_info_sab,
-    &vf_info_screenshot,
-    &vf_info_smartblur,
-    &vf_info_softpulldown,
-    &vf_info_softskip,
-    &vf_info_spp,
-    &vf_info_stereo3d,
-    &vf_info_swapuv,
-    &vf_info_telecine,
-    &vf_info_tile,
-    &vf_info_tinterlace,
-    &vf_info_unsharp,
-    &vf_info_uspp,
-    &vf_info_yuvcsp,
-    &vf_info_yvu9,
+    &ff_vf_info_detc,
+    &ff_vf_info_dint,
+    &ff_vf_info_divtc,
+    &ff_vf_info_down3dright,
+    &ff_vf_info_eq2,
+    &ff_vf_info_eq,
+    &ff_vf_info_fil,
+//    &ff_vf_info_filmdint, cmmx.h vd.h ‘opt_screen_size_x’
+    &ff_vf_info_fspp,
+    &ff_vf_info_harddup,
+    &ff_vf_info_ilpack,
+    &ff_vf_info_ivtc,
+    &ff_vf_info_mcdeint,
+    &ff_vf_info_noise,
+    &ff_vf_info_ow,
+    &ff_vf_info_perspective,
+    &ff_vf_info_phase,
+    &ff_vf_info_pp7,
+    &ff_vf_info_pullup,
+    &ff_vf_info_qp,
+    &ff_vf_info_sab,
+    &ff_vf_info_softpulldown,
+    &ff_vf_info_spp,
+    &ff_vf_info_telecine,
+    &ff_vf_info_tinterlace,
+    &ff_vf_info_uspp,
 
     NULL
 };
@@ -272,16 +203,22 @@ yadif
 zrmjpeg
 */
 
-CpuCaps gCpuCaps; //FIXME initialize this so optims work
+CpuCaps ff_gCpuCaps; //FIXME initialize this so optims work
 
+enum AVPixelFormat ff_mp2ff_pix_fmt(int mp){
+    int i;
+    for(i=0; conversion_map[i].fmt && mp != conversion_map[i].fmt; i++)
+        ;
+    return mp == conversion_map[i].fmt ? conversion_map[i].pix_fmt : AV_PIX_FMT_NONE;
+}
 
-static void sws_getFlagsAndFilterFromCmdLine(int *flags, SwsFilter **srcFilterParam, SwsFilter **dstFilterParam)
+static void ff_sws_getFlagsAndFilterFromCmdLine(int *flags, SwsFilter **srcFilterParam, SwsFilter **dstFilterParam)
 {
         static int firstTime=1;
         *flags=0;
 
 #if ARCH_X86
-        if(gCpuCaps.hasMMX)
+        if(ff_gCpuCaps.hasMMX)
                 __asm__ volatile("emms\n\t"::: "memory"); //FIXME this should not be required but it IS (even for non-MMX versions)
 #endif
         if(firstTime)
@@ -289,7 +226,7 @@ static void sws_getFlagsAndFilterFromCmdLine(int *flags, SwsFilter **srcFilterPa
                 firstTime=0;
                 *flags= SWS_PRINT_INFO;
         }
-        else if( mp_msg_test(MSGT_VFILTER,MSGL_DBG2) ) *flags= SWS_PRINT_INFO;
+        else if( ff_mp_msg_test(MSGT_VFILTER,MSGL_DBG2) ) *flags= SWS_PRINT_INFO;
 
         switch(SWS_BILINEAR)
         {
@@ -313,19 +250,19 @@ static void sws_getFlagsAndFilterFromCmdLine(int *flags, SwsFilter **srcFilterPa
 
 //exact copy from vf_scale.c
 // will use sws_flags & src_filter (from cmd line)
-struct SwsContext *sws_getContextFromCmdLine(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat)
+struct SwsContext *ff_sws_getContextFromCmdLine(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat)
 {
         int flags, i;
         SwsFilter *dstFilterParam, *srcFilterParam;
-        enum PixelFormat dfmt, sfmt;
+        enum AVPixelFormat dfmt, sfmt;
 
         for(i=0; conversion_map[i].fmt && dstFormat != conversion_map[i].fmt; i++);
         dfmt= conversion_map[i].pix_fmt;
         for(i=0; conversion_map[i].fmt && srcFormat != conversion_map[i].fmt; i++);
         sfmt= conversion_map[i].pix_fmt;
 
-        if (srcFormat == IMGFMT_RGB8 || srcFormat == IMGFMT_BGR8) sfmt = PIX_FMT_PAL8;
-        sws_getFlagsAndFilterFromCmdLine(&flags, &srcFilterParam, &dstFilterParam);
+        if (srcFormat == IMGFMT_RGB8 || srcFormat == IMGFMT_BGR8) sfmt = AV_PIX_FMT_PAL8;
+        ff_sws_getFlagsAndFilterFromCmdLine(&flags, &srcFilterParam, &dstFilterParam);
 
         return sws_getContext(srcW, srcH, sfmt, dstW, dstH, dfmt, flags , srcFilterParam, dstFilterParam, NULL);
 }
@@ -337,7 +274,7 @@ typedef struct {
     int frame_returned;
 } MPContext;
 
-void mp_msg(int mod, int lev, const char *format, ... ){
+void ff_mp_msg(int mod, int lev, const char *format, ... ){
     va_list va;
     va_start(va, format);
     //FIXME convert lev/mod
@@ -345,17 +282,17 @@ void mp_msg(int mod, int lev, const char *format, ... ){
     va_end(va);
 }
 
-int mp_msg_test(int mod, int lev){
+int ff_mp_msg_test(int mod, int lev){
     return 123;
 }
 
-void init_avcodec(void)
+void ff_init_avcodec(void)
 {
     //we maybe should init but its kinda 1. unneeded 2. a bit inpolite from here
 }
 
 //Exact copy of vf.c
-void vf_clone_mpi_attributes(mp_image_t* dst, mp_image_t* src){
+void ff_vf_clone_mpi_attributes(mp_image_t* dst, mp_image_t* src){
     dst->pict_type= src->pict_type;
     dst->fields = src->fields;
     dst->qscale_type= src->qscale_type;
@@ -366,13 +303,13 @@ void vf_clone_mpi_attributes(mp_image_t* dst, mp_image_t* src){
 }
 
 //Exact copy of vf.c
-void vf_next_draw_slice(struct vf_instance *vf,unsigned char** src, int * stride,int w, int h, int x, int y){
+void ff_vf_next_draw_slice(struct vf_instance *vf,unsigned char** src, int * stride,int w, int h, int x, int y){
     if (vf->next->draw_slice) {
         vf->next->draw_slice(vf->next,src,stride,w,h,x,y);
         return;
     }
     if (!vf->dmpi) {
-        mp_msg(MSGT_VFILTER,MSGL_ERR,"draw_slice: dmpi not stored by vf_%s\n", vf->info->name);
+        ff_mp_msg(MSGT_VFILTER,MSGL_ERR,"draw_slice: dmpi not stored by vf_%s\n", vf->info->name);
         return;
     }
     if (!(vf->dmpi->flags & MP_IMGFLAG_PLANAR)) {
@@ -389,7 +326,7 @@ void vf_next_draw_slice(struct vf_instance *vf,unsigned char** src, int * stride
 }
 
 //Exact copy of vf.c
-void vf_mpi_clear(mp_image_t* mpi,int x0,int y0,int w,int h){
+void ff_vf_mpi_clear(mp_image_t* mpi,int x0,int y0,int w,int h){
     int y;
     if(mpi->flags&MP_IMGFLAG_PLANAR){
         y0&=~1;h+=h&1;
@@ -433,16 +370,16 @@ void vf_mpi_clear(mp_image_t* mpi,int x0,int y0,int w,int h){
     }
 }
 
-int vf_next_query_format(struct vf_instance *vf, unsigned int fmt){
+int ff_vf_next_query_format(struct vf_instance *vf, unsigned int fmt){
     return 1;
 }
 
 //used by delogo
-unsigned int vf_match_csp(vf_instance_t** vfp,const unsigned int* list,unsigned int preferred){
+unsigned int ff_vf_match_csp(vf_instance_t** vfp,const unsigned int* list,unsigned int preferred){
     return preferred;
 }
 
-mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype, int mp_imgflag, int w, int h){
+mp_image_t* ff_vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype, int mp_imgflag, int w, int h){
     MPContext *m= (MPContext*)(((uint8_t*)vf) - offsetof(MPContext, next_vf));
   mp_image_t* mpi=NULL;
   int w2;
@@ -450,7 +387,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 
   av_assert0(vf->next == NULL); // all existing filters call this just on next
 
-  //vf_dint needs these as it calls vf_get_image() before configuring the output
+  //vf_dint needs these as it calls ff_vf_get_image() before configuring the output
   if(vf->w==0 && w>0) vf->w=w;
   if(vf->h==0 && h>0) vf->h=h;
 
@@ -470,25 +407,25 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
   // and if not, then fallback to software buffers:
   switch(mp_imgtype & 0xff){
   case MP_IMGTYPE_EXPORT:
-    if(!vf->imgctx.export_images[0]) vf->imgctx.export_images[0]=new_mp_image(w2,h);
+    if(!vf->imgctx.export_images[0]) vf->imgctx.export_images[0]=ff_new_mp_image(w2,h);
     mpi=vf->imgctx.export_images[0];
     break;
   case MP_IMGTYPE_STATIC:
-    if(!vf->imgctx.static_images[0]) vf->imgctx.static_images[0]=new_mp_image(w2,h);
+    if(!vf->imgctx.static_images[0]) vf->imgctx.static_images[0]=ff_new_mp_image(w2,h);
     mpi=vf->imgctx.static_images[0];
     break;
   case MP_IMGTYPE_TEMP:
-    if(!vf->imgctx.temp_images[0]) vf->imgctx.temp_images[0]=new_mp_image(w2,h);
+    if(!vf->imgctx.temp_images[0]) vf->imgctx.temp_images[0]=ff_new_mp_image(w2,h);
     mpi=vf->imgctx.temp_images[0];
     break;
   case MP_IMGTYPE_IPB:
     if(!(mp_imgflag&MP_IMGFLAG_READABLE)){ // B frame:
-      if(!vf->imgctx.temp_images[0]) vf->imgctx.temp_images[0]=new_mp_image(w2,h);
+      if(!vf->imgctx.temp_images[0]) vf->imgctx.temp_images[0]=ff_new_mp_image(w2,h);
       mpi=vf->imgctx.temp_images[0];
       break;
     }
   case MP_IMGTYPE_IP:
-    if(!vf->imgctx.static_images[vf->imgctx.static_idx]) vf->imgctx.static_images[vf->imgctx.static_idx]=new_mp_image(w2,h);
+    if(!vf->imgctx.static_images[vf->imgctx.static_idx]) vf->imgctx.static_images[vf->imgctx.static_idx]=ff_new_mp_image(w2,h);
     mpi=vf->imgctx.static_images[vf->imgctx.static_idx];
     vf->imgctx.static_idx^=1;
     break;
@@ -501,7 +438,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
       number = i;
     }
     if (number < 0 || number >= NUM_NUMBERED_MPI) return NULL;
-    if (!vf->imgctx.numbered_images[number]) vf->imgctx.numbered_images[number] = new_mp_image(w2,h);
+    if (!vf->imgctx.numbered_images[number]) vf->imgctx.numbered_images[number] = ff_new_mp_image(w2,h);
     mpi = vf->imgctx.numbered_images[number];
     mpi->number = number;
     break;
@@ -522,7 +459,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
                 // need to re-allocate buffer memory:
                 av_free(mpi->planes[0]);
                 mpi->flags&=~MP_IMGFLAG_ALLOCATED;
-                mp_msg(MSGT_VFILTER,MSGL_V,"vf.c: have to REALLOCATE buffer memory :(\n");
+                ff_mp_msg(MSGT_VFILTER,MSGL_V,"vf.c: have to REALLOCATE buffer memory :(\n");
             }
 //      } else {
         } {
@@ -530,7 +467,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
             mpi->height=h; mpi->chroma_height=(h + (1<<mpi->chroma_y_shift) - 1)>>mpi->chroma_y_shift;
         }
     }
-    if(!mpi->bpp) mp_image_setfmt(mpi,outfmt);
+    if(!mpi->bpp) ff_mp_image_setfmt(mpi,outfmt);
     if(!(mpi->flags&MP_IMGFLAG_ALLOCATED) && mpi->type>MP_IMGTYPE_EXPORT){
 
         av_assert0(!vf->get_image);
@@ -540,8 +477,8 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
         if(!(mpi->flags&MP_IMGFLAG_DIRECT)){
           // non-direct and not yet allocated image. allocate it!
           if (!mpi->bpp) { // no way we can allocate this
-              mp_msg(MSGT_DECVIDEO, MSGL_FATAL,
-                     "vf_get_image: Tried to allocate a format that can not be allocated!\n");
+              ff_mp_msg(MSGT_DECVIDEO, MSGL_FATAL,
+                     "ff_vf_get_image: Tried to allocate a format that can not be allocated!\n");
               return NULL;
           }
 
@@ -555,7 +492,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 #if 0
                   // we have to change width... check if we CAN co it:
                   int flags=vf->query_format(vf,outfmt); // should not fail
-                  if(!(flags&3)) mp_msg(MSGT_DECVIDEO,MSGL_WARN,"??? vf_get_image{vf->query_format(outfmt)} failed!\n");
+                  if(!(flags&3)) ff_mp_msg(MSGT_DECVIDEO,MSGL_WARN,"??? ff_vf_get_image{vf->query_format(outfmt)} failed!\n");
 //                printf("query -> 0x%X    \n",flags);
                   if(flags&VFCAP_ACCEPT_STRIDE){
 #endif
@@ -565,16 +502,16 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
               }
           }
 
-          mp_image_alloc_planes(mpi);
+          ff_mp_image_alloc_planes(mpi);
 //        printf("clearing img!\n");
-          vf_mpi_clear(mpi,0,0,mpi->width,mpi->height);
+          ff_vf_mpi_clear(mpi,0,0,mpi->width,mpi->height);
         }
     }
     av_assert0(!vf->start_slice);
     if(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)
         if(vf->start_slice) vf->start_slice(vf,mpi);
     if(!(mpi->flags&MP_IMGFLAG_TYPE_DISPLAYED)){
-            mp_msg(MSGT_DECVIDEO,MSGL_V,"*** [%s] %s%s mp_image_t, %dx%dx%dbpp %s %s, %d bytes\n",
+            ff_mp_msg(MSGT_DECVIDEO,MSGL_V,"*** [%s] %s%s mp_image_t, %dx%dx%dbpp %s %s, %d bytes\n",
                   "NULL"/*vf->info->name*/,
                   (mpi->type==MP_IMGTYPE_EXPORT)?"Exporting":
                   ((mpi->flags&MP_IMGFLAG_DIRECT)?"Direct Rendering":"Allocating"),
@@ -583,7 +520,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
                   (mpi->flags&MP_IMGFLAG_YUV)?"YUV":((mpi->flags&MP_IMGFLAG_SWAPPED)?"BGR":"RGB"),
                   (mpi->flags&MP_IMGFLAG_PLANAR)?"planar":"packed",
                   mpi->bpp*mpi->width*mpi->height/8);
-            mp_msg(MSGT_DECVIDEO,MSGL_DBG2,"(imgfmt: %x, planes: %p,%p,%p strides: %d,%d,%d, chroma: %dx%d, shift: h:%d,v:%d)\n",
+            ff_mp_msg(MSGT_DECVIDEO,MSGL_DBG2,"(imgfmt: %x, planes: %p,%p,%p strides: %d,%d,%d, chroma: %dx%d, shift: h:%d,v:%d)\n",
                 mpi->imgfmt, mpi->planes[0], mpi->planes[1], mpi->planes[2],
                 mpi->stride[0], mpi->stride[1], mpi->stride[2],
                 mpi->chroma_width, mpi->chroma_height, mpi->chroma_x_shift, mpi->chroma_y_shift);
@@ -591,8 +528,8 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
     }
 
   mpi->qscale = NULL;
-  }
   mpi->usage_count++;
+  }
 //    printf("\rVF_MPI: %p %p %p %d %d %d    \n",
 //      mpi->planes[0],mpi->planes[1],mpi->planes[2],
 //      mpi->stride[0],mpi->stride[1],mpi->stride[2]);
@@ -600,7 +537,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 }
 
 
-int vf_next_put_image(struct vf_instance *vf,mp_image_t *mpi, double pts){
+int ff_vf_next_put_image(struct vf_instance *vf,mp_image_t *mpi, double pts){
     MPContext *m= (void*)vf;
     AVFilterLink *outlink     = m->avfctx->outputs[0];
     AVFilterBuffer    *pic    = av_mallocz(sizeof(AVFilterBuffer));
@@ -609,13 +546,13 @@ int vf_next_put_image(struct vf_instance *vf,mp_image_t *mpi, double pts){
 
     av_assert0(vf->next);
 
-    av_log(m->avfctx, AV_LOG_DEBUG, "vf_next_put_image\n");
+    av_log(m->avfctx, AV_LOG_DEBUG, "ff_vf_next_put_image\n");
 
     if (!pic || !picref)
         goto fail;
 
     picref->buf = pic;
-    picref->buf->please_use_av_free= (void*)av_free;
+    picref->buf->free= (void*)av_free;
     if (!(picref->video = av_mallocz(sizeof(AVFilterBufferRefVideoProps))))
         goto fail;
 
@@ -642,10 +579,7 @@ int vf_next_put_image(struct vf_instance *vf,mp_image_t *mpi, double pts){
     if(pts != MP_NOPTS_VALUE)
         picref->pts= pts * av_q2d(outlink->time_base);
 
-    avfilter_start_frame(outlink, avfilter_ref_buffer(picref, ~0));
-    avfilter_draw_slice(outlink, 0, picref->video->h, 1);
-    avfilter_end_frame(outlink);
-    avfilter_unref_buffer(picref);
+    ff_filter_frame(outlink, picref);
     m->frame_returned++;
 
     return 1;
@@ -657,7 +591,7 @@ fail:
     return 0;
 }
 
-int vf_next_config(struct vf_instance *vf,
+int ff_vf_next_config(struct vf_instance *vf,
         int width, int height, int d_width, int d_height,
         unsigned int voflags, unsigned int outfmt){
 
@@ -672,7 +606,7 @@ int vf_next_config(struct vf_instance *vf,
         //this is fatal for us ATM
         return 0;
     }
-    mp_msg(MSGT_VFILTER,MSGL_V,"REQ: flags=0x%X  req=0x%X  \n",flags,vf->default_reqs);
+    ff_mp_msg(MSGT_VFILTER,MSGL_V,"REQ: flags=0x%X  req=0x%X  \n",flags,vf->default_reqs);
     miss=vf->default_reqs - (flags&vf->default_reqs);
     if(miss&VFCAP_ACCEPT_STRIDE){
         // vf requires stride support but vf->next doesn't support it!
@@ -682,11 +616,11 @@ int vf_next_config(struct vf_instance *vf,
         vf->next=vf2;
     }
     vf->next->w = width; vf->next->h = height;
-#endif
     return 1;
+#endif
 }
 
-int vf_next_control(struct vf_instance *vf, int request, void* data){
+int ff_vf_next_control(struct vf_instance *vf, int request, void* data){
     MPContext *m= (void*)vf;
     av_log(m->avfctx, AV_LOG_DEBUG, "Received control %d\n", request);
     return 0;
@@ -705,7 +639,7 @@ static int vf_default_query_format(struct vf_instance *vf, unsigned int fmt){
 }
 
 
-static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
+static av_cold int init(AVFilterContext *ctx, const char *args)
 {
     MPContext *m = ctx->priv;
     char name[256];
@@ -717,7 +651,9 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
         av_log(ctx, AV_LOG_ERROR, "Invalid parameter.\n");
         return AVERROR(EINVAL);
     }
-    args+= strlen(name)+1;
+    args += strlen(name);
+    if (args[0] == '=')
+        args++;
 
     for(i=0; ;i++){
         if(!filters[i] || !strcmp(name, filters[i]->name))
@@ -737,10 +673,10 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     m->vf.info= filters[i];
 
     m->vf.next        = &m->next_vf;
-    m->vf.put_image   = vf_next_put_image;
-    m->vf.config      = vf_next_config;
+    m->vf.put_image   = ff_vf_next_put_image;
+    m->vf.config      = ff_vf_next_config;
     m->vf.query_format= vf_default_query_format;
-    m->vf.control     = vf_next_control;
+    m->vf.control     = ff_vf_next_control;
     m->vf.default_caps=VFCAP_ACCEPT_STRIDE;
     m->vf.default_reqs=0;
     if(m->vf.info->opts)
@@ -760,7 +696,7 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
       else
         args = NULL;
 #endif
-    if(m->vf.info->vf_open(&m->vf, args)<=0){
+    if(m->vf.info->vf_open(&m->vf, (char*)args)<=0){
         av_log(ctx, AV_LOG_ERROR, "vf_open() of %s with arg=%s failed\n", name, args);
         return -1;
     }
@@ -768,11 +704,28 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     return 0;
 }
 
+static av_cold void uninit(AVFilterContext *ctx)
+{
+    MPContext *m = ctx->priv;
+    vf_instance_t *vf = &m->vf;
+
+    while(vf){
+        vf_instance_t *next = vf->next;
+        if(vf->uninit)
+            vf->uninit(vf);
+        ff_free_mp_image(vf->imgctx.static_images[0]);
+        ff_free_mp_image(vf->imgctx.static_images[1]);
+        ff_free_mp_image(vf->imgctx.temp_images[0]);
+        ff_free_mp_image(vf->imgctx.export_images[0]);
+        vf = next;
+    }
+}
+
 static int query_formats(AVFilterContext *ctx)
 {
     AVFilterFormats *avfmts=NULL;
     MPContext *m = ctx->priv;
-    enum PixelFormat lastpixfmt = PIX_FMT_NONE;
+    enum AVPixelFormat lastpixfmt = AV_PIX_FMT_NONE;
     int i;
 
     for(i=0; conversion_map[i].fmt; i++){
@@ -780,14 +733,17 @@ static int query_formats(AVFilterContext *ctx)
         if(m->vf.query_format(&m->vf, conversion_map[i].fmt)){
             av_log(ctx, AV_LOG_DEBUG, "supported,adding\n");
             if (conversion_map[i].pix_fmt != lastpixfmt) {
-                avfilter_add_format(&avfmts, conversion_map[i].pix_fmt);
+                ff_add_format(&avfmts, conversion_map[i].pix_fmt);
                 lastpixfmt = conversion_map[i].pix_fmt;
             }
         }
     }
 
+    if (!avfmts)
+        return -1;
+
     //We assume all allowed input formats are also allowed output formats
-    avfilter_set_common_pixel_formats(ctx, avfmts);
+    ff_set_common_formats(ctx, avfmts);
     return 0;
 }
 
@@ -828,7 +784,7 @@ static int request_frame(AVFilterLink *outlink)
     av_log(m->avfctx, AV_LOG_DEBUG, "mp request_frame\n");
 
     for(m->frame_returned=0; !m->frame_returned;){
-        ret=avfilter_request_frame(outlink->src->inputs[0]);
+        ret=ff_request_frame(outlink->src->inputs[0]);
         if(ret<0)
             break;
     }
@@ -837,27 +793,18 @@ static int request_frame(AVFilterLink *outlink)
     return ret;
 }
 
-static void start_frame(AVFilterLink *inlink, AVFilterBufferRef *picref)
-{
-}
-
-static void null_draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
-{
-}
-
-static void end_frame(AVFilterLink *inlink)
+static int filter_frame(AVFilterLink *inlink, AVFilterBufferRef *inpic)
 {
     MPContext *m = inlink->dst->priv;
-    AVFilterBufferRef *inpic  = inlink->cur_buf;
     int i;
     double pts= MP_NOPTS_VALUE;
-    mp_image_t* mpi = new_mp_image(inpic->video->w, inpic->video->h);
+    mp_image_t* mpi = ff_new_mp_image(inpic->video->w, inpic->video->h);
 
     if(inpic->pts != AV_NOPTS_VALUE)
         pts= inpic->pts / av_q2d(inlink->time_base);
 
     for(i=0; conversion_map[i].fmt && conversion_map[i].pix_fmt != inlink->format; i++);
-    mp_image_setfmt(mpi,conversion_map[i].fmt);
+    ff_mp_image_setfmt(mpi,conversion_map[i].fmt);
 
     memcpy(mpi->planes, inpic->data,     FFMIN(sizeof(inpic->data)    , sizeof(mpi->planes)));
     memcpy(mpi->stride, inpic->linesize, FFMIN(sizeof(inpic->linesize), sizeof(mpi->stride)));
@@ -870,30 +817,41 @@ static void end_frame(AVFilterLink *inlink)
         mpi->flags |= MP_IMGFLAG_PRESERVE;
     if(m->vf.put_image(&m->vf, mpi, pts) == 0){
         av_log(m->avfctx, AV_LOG_DEBUG, "put_image() says skip\n");
+    }else{
+        avfilter_unref_buffer(inpic);
     }
-    free_mp_image(mpi);
-
-    avfilter_unref_buffer(inpic);
+    ff_free_mp_image(mpi);
+    return 0;
 }
+
+static const AVFilterPad mp_inputs[] = {
+    {
+        .name         = "default",
+        .type         = AVMEDIA_TYPE_VIDEO,
+        .filter_frame = filter_frame,
+        .config_props = config_inprops,
+        .min_perms    = AV_PERM_READ,
+    },
+    { NULL }
+};
+
+static const AVFilterPad mp_outputs[] = {
+    {
+        .name          = "default",
+        .type          = AVMEDIA_TYPE_VIDEO,
+        .request_frame = request_frame,
+        .config_props  = config_outprops,
+    },
+    { NULL }
+};
 
 AVFilter avfilter_vf_mp = {
     .name      = "mp",
     .description = NULL_IF_CONFIG_SMALL("Apply a libmpcodecs filter to the input video."),
     .init = init,
+    .uninit = uninit,
     .priv_size = sizeof(MPContext),
     .query_formats = query_formats,
-
-    .inputs    = (const AVFilterPad[]) {{ .name      = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .start_frame     = start_frame,
-                                    .draw_slice      = null_draw_slice,
-                                    .end_frame       = end_frame,
-                                    .config_props    = config_inprops,
-                                    .min_perms       = AV_PERM_READ, },
-                                  { .name = NULL}},
-    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .request_frame   = request_frame,
-                                    .config_props    = config_outprops, },
-                                  { .name = NULL}},
+    .inputs        = mp_inputs,
+    .outputs       = mp_outputs,
 };

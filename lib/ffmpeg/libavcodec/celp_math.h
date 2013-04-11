@@ -25,13 +25,24 @@
 
 #include <stdint.h>
 
+typedef struct CELPMContext {
+    /**
+     * Return the dot product.
+     * @param a input data array
+     * @param b input data array
+     * @param length number of elements
+     *
+     * @return dot product = sum of elementwise products
+     */
+    float (*dot_productf)(const float* a, const float* b, int length);
+
+}CELPMContext;
+
 /**
- * fixed-point implementation of cosine in [0; PI) domain.
- * @param arg fixed-point cosine argument, 0 <= arg < 0x4000
- *
- * @return value of (1<<15) * cos(arg * PI / (1<<14)), -0x8000 <= result <= 0x7fff
+ * Initialize CELPMContext.
  */
-int16_t ff_cos(uint16_t arg);
+void ff_celp_math_init(CELPMContext *c);
+void ff_celp_math_init_mips(CELPMContext *c);
 
 /**
  * fixed-point implementation of exp2(x) in [0; 1] domain.
@@ -48,7 +59,7 @@ int ff_exp2(uint16_t power);
  *
  * @return value of (1<<15) * log2(value)
  */
-int ff_log2(uint32_t value);
+int ff_log2_q15(uint32_t value);
 
 /**
  * Shift value left or right depending on sign of offset parameter.

@@ -18,7 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string.h>
+
 #include "avcodec.h"
+#include "libavutil/mem.h"
 
 static AVBitStreamFilter *first_bitstream_filter= NULL;
 
@@ -39,7 +42,7 @@ AVBitStreamFilterContext *av_bitstream_filter_init(const char *name){
         if(!strcmp(name, bsf->name)){
             AVBitStreamFilterContext *bsfc= av_mallocz(sizeof(AVBitStreamFilterContext));
             bsfc->filter= bsf;
-            bsfc->priv_data= av_mallocz(bsf->priv_data_size);
+            bsfc->priv_data = bsf->priv_data_size ? av_mallocz(bsf->priv_data_size) : NULL;
             return bsfc;
         }
         bsf= bsf->next;

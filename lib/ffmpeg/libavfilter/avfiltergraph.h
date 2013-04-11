@@ -23,12 +23,28 @@
 #define AVFILTER_AVFILTERGRAPH_H
 
 #include "avfilter.h"
+#include "libavutil/log.h"
 
 typedef struct AVFilterGraph {
+    const AVClass *av_class;
     unsigned filter_count;
     AVFilterContext **filters;
 
     char *scale_sws_opts; ///< sws options to use for the auto-inserted scale filters
+    char *resample_lavr_opts;   ///< libavresample options to use for the auto-inserted resample filters
+    char *aresample_swr_opts; ///< swr options to use for the auto-inserted aresample filters, Access ONLY through AVOptions
+
+    /**
+     * Private fields
+     *
+     * The following fields are for internal use only.
+     * Their type, offset, number and semantic can change without notice.
+     */
+
+    AVFilterLink **sink_links;
+    int sink_links_count;
+
+    unsigned disable_auto_convert;
 } AVFilterGraph;
 
 /**
@@ -70,6 +86,21 @@ int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt,
                                  AVFilterGraph *graph_ctx);
 
 /**
+ * Enable or disable automatic format conversion inside the graph.
+ *
+ * Note that format conversion can still happen inside explicitly inserted
+ * scale and aconvert filters.
+ *
+ * @param flags  any of the AVFILTER_AUTO_CONVERT_* constants
+ */
+void avfilter_graph_set_auto_convert(AVFilterGraph *graph, unsigned flags);
+
+enum {
+    AVFILTER_AUTO_CONVERT_ALL  =  0, /**< all automatic conversions enabled */
+    AVFILTER_AUTO_CONVERT_NONE = -1, /**< all automatic conversions disabled */
+};
+
+/**
  * Check validity and configure all the links and formats in the graph.
  *
  * @param graphctx the filter graph
@@ -87,11 +118,11 @@ void avfilter_graph_free(AVFilterGraph **graph);
 /**
  * A linked-list of the inputs/outputs of the filter chain.
  *
- * This is mainly useful for avfilter_graph_parse(), since this
- * function may accept a description of a graph with not connected
- * input/output pads. This struct specifies, per each not connected
- * pad contained in the graph, the filter context and the pad index
- * required for establishing a link.
+ * This is mainly useful for avfilter_graph_parse() / avfilter_graph_parse2(),
+ * where it is used to communicate open (unlinked) inputs and outputs from and
+ * to the caller.
+ * This struct specifies, per each not connected pad contained in the graph, the
+ * filter context and the pad index required for establishing a link.
  */
 typedef struct AVFilterInOut {
     /** unique name for this input/output in the list */
@@ -108,13 +139,14 @@ typedef struct AVFilterInOut {
 } AVFilterInOut;
 
 /**
- * Create an AVFilterInOut.
- * Must be free with avfilter_inout_free().
+ * Allocate a single AVFilterInOut entry.
+ * Must be freed with avfilter_inout_free().
+ * @return allocated AVFilterInOut on success, NULL on failure.
  */
 AVFilterInOut *avfilter_inout_alloc(void);
 
 /**
- * Free the AVFilterInOut in *inout, and set its pointer to NULL.
+ * Free the supplied list of AVFilterInOut and set *inout to NULL.
  * If *inout is NULL, do nothing.
  */
 void avfilter_inout_free(AVFilterInOut **inout);
@@ -135,6 +167,41 @@ void avfilter_inout_free(AVFilterInOut **inout);
 int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
                          AVFilterInOut **inputs, AVFilterInOut **outputs,
                          void *log_ctx);
+
+/**
+ * Add a graph described by a string to a graph.
+ *
+ * @param[in]  graph   the filter graph where to link the parsed graph context
+ * @param[in]  filters string to be parsed
+ * @param[out] inputs  a linked list of all free (unlinked) inputs of the
+ *                     parsed graph will be returned here. It is to be freed
+ *                     by the caller using avfilter_inout_free().
+ * @param[out] outputs a linked list of all free (unlinked) outputs of the
+ *                     parsed graph will be returned here. It is to be freed by the
+ *                     caller using avfilter_inout_free().
+ * @return zero on success, a negative AVERROR code on error
+ *
+ * @note the difference between avfilter_graph_parse2() and
+ * avfilter_graph_parse() is that in avfilter_graph_parse(), the caller provides
+ * the lists of inputs and outputs, which therefore must be known before calling
+ * the function. On the other hand, avfilter_graph_parse2() \em returns the
+ * inputs and outputs that are left unlinked after parsing the graph and the
+ * caller then deals with them. Another difference is that in
+ * avfilter_graph_parse(), the inputs parameter describes inputs of the
+ * <em>already existing</em> part of the graph; i.e. from the point of view of
+ * the newly created part, they are outputs. Similarly the outputs parameter
+ * describes outputs of the already existing filters, which are provided as
+ * inputs to the parsed filters.
+ * avfilter_graph_parse2() takes the opposite approach -- it makes no reference
+ * whatsoever to already existing parts of the graph and the inputs parameter
+ * will on return contain inputs of the newly parsed part of the graph.
+ * Analogously the outputs parameter will contain outputs of the newly created
+ * filters.
+ */
+int avfilter_graph_parse2(AVFilterGraph *graph, const char *filters,
+                          AVFilterInOut **inputs,
+                          AVFilterInOut **outputs);
+
 
 /**
  * Send a command to one or more filter instances.
@@ -180,5 +247,25 @@ int avfilter_graph_queue_command(AVFilterGraph *graph, const char *target, const
  *          the string must be freed using av_free
  */
 char *avfilter_graph_dump(AVFilterGraph *graph, const char *options);
+
+/**
+ * Request a frame on the oldest sink link.
+ *
+ * If the request returns AVERROR_EOF, try the next.
+ *
+ * Note that this function is not meant to be the sole scheduling mechanism
+ * of a filtergraph, only a convenience function to help drain a filtergraph
+ * in a balanced way under normal circumstances.
+ *
+ * Also note that AVERROR_EOF does not mean that frames did not arrive on
+ * some of the sinks during the process.
+ * When there are multiple sink links, in case the requested link
+ * returns an EOF, this may cause a filter to flush pending frames
+ * which are sent to another sink link, although unrequested.
+ *
+ * @return  the return value of ff_request_frame(),
+ *          or AVERROR_EOF if all links returned AVERROR_EOF
+ */
+int avfilter_graph_request_oldest(AVFilterGraph *graph);
 
 #endif /* AVFILTER_AVFILTERGRAPH_H */

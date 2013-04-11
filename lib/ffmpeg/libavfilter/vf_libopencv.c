@@ -28,17 +28,21 @@
 #include <opencv/cv.h>
 #include <opencv/cxcore.h>
 #include "libavutil/avstring.h"
+#include "libavutil/common.h"
 #include "libavutil/file.h"
 #include "avfilter.h"
+#include "formats.h"
+#include "internal.h"
+#include "video.h"
 
-static void fill_iplimage_from_picref(IplImage *img, const AVFilterBufferRef *picref, enum PixelFormat pixfmt)
+static void fill_iplimage_from_picref(IplImage *img, const AVFilterBufferRef *picref, enum AVPixelFormat pixfmt)
 {
     IplImage *tmpimg;
     int depth, channels_nb;
 
-    if      (pixfmt == PIX_FMT_GRAY8) { depth = IPL_DEPTH_8U;  channels_nb = 1; }
-    else if (pixfmt == PIX_FMT_BGRA)  { depth = IPL_DEPTH_8U;  channels_nb = 4; }
-    else if (pixfmt == PIX_FMT_BGR24) { depth = IPL_DEPTH_8U;  channels_nb = 3; }
+    if      (pixfmt == AV_PIX_FMT_GRAY8) { depth = IPL_DEPTH_8U;  channels_nb = 1; }
+    else if (pixfmt == AV_PIX_FMT_BGRA)  { depth = IPL_DEPTH_8U;  channels_nb = 4; }
+    else if (pixfmt == AV_PIX_FMT_BGR24) { depth = IPL_DEPTH_8U;  channels_nb = 3; }
     else return;
 
     tmpimg = cvCreateImageHeader((CvSize){picref->video->w, picref->video->h}, depth, channels_nb);
@@ -49,7 +53,7 @@ static void fill_iplimage_from_picref(IplImage *img, const AVFilterBufferRef *pi
     img->widthStep = picref->linesize[0];
 }
 
-static void fill_picref_from_iplimage(AVFilterBufferRef *picref, const IplImage *img, enum PixelFormat pixfmt)
+static void fill_picref_from_iplimage(AVFilterBufferRef *picref, const IplImage *img, enum AVPixelFormat pixfmt)
 {
     picref->linesize[0] = img->widthStep;
     picref->data[0]     = img->imageData;
@@ -57,19 +61,17 @@ static void fill_picref_from_iplimage(AVFilterBufferRef *picref, const IplImage 
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
-        PIX_FMT_BGR24, PIX_FMT_BGRA, PIX_FMT_GRAY8, PIX_FMT_NONE
+    static const enum AVPixelFormat pix_fmts[] = {
+        AV_PIX_FMT_BGR24, AV_PIX_FMT_BGRA, AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE
     };
 
-    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
+    ff_set_common_formats(ctx, ff_make_format_list(pix_fmts));
     return 0;
 }
 
-static void null_draw_slice(AVFilterLink *link, int y, int h, int slice_dir) { }
-
 typedef struct {
     const char *name;
-    int (*init)(AVFilterContext *ctx, const char *args, void *opaque);
+    int (*init)(AVFilterContext *ctx, const char *args);
     void (*uninit)(AVFilterContext *ctx);
     void (*end_frame_filter)(AVFilterContext *ctx, IplImage *inimg, IplImage *outimg);
     void *priv;
@@ -81,7 +83,7 @@ typedef struct {
     double param3, param4;
 } SmoothContext;
 
-static av_cold int smooth_init(AVFilterContext *ctx, const char *args, void *opaque)
+static av_cold int smooth_init(AVFilterContext *ctx, const char *args)
 {
     OCVContext *ocv = ctx->priv;
     SmoothContext *smooth = ocv->priv;
@@ -101,7 +103,7 @@ static av_cold int smooth_init(AVFilterContext *ctx, const char *args, void *opa
     else if (!strcmp(type_str, "gaussian"     )) smooth->type = CV_GAUSSIAN;
     else if (!strcmp(type_str, "bilateral"    )) smooth->type = CV_BILATERAL;
     else {
-        av_log(ctx, AV_LOG_ERROR, "Smoothing type '%s' unknown\n.", type_str);
+        av_log(ctx, AV_LOG_ERROR, "Smoothing type '%s' unknown.\n", type_str);
         return AVERROR(EINVAL);
     }
 
@@ -119,7 +121,7 @@ static av_cold int smooth_init(AVFilterContext *ctx, const char *args, void *opa
         return AVERROR(EINVAL);
     }
 
-    av_log(ctx, AV_LOG_INFO, "type:%s param1:%d param2:%d param3:%f param4:%f\n",
+    av_log(ctx, AV_LOG_VERBOSE, "type:%s param1:%d param2:%d param3:%f param4:%f\n",
            type_str, smooth->param1, smooth->param2, smooth->param3, smooth->param4);
     return 0;
 }
@@ -175,7 +177,7 @@ static int read_shape_from_file(int *cols, int *rows, int **values, const char *
                 p++;
                 break;
             } else
-                (*values)[*cols*i + j] = !!isgraph(*(p++));
+                (*values)[*cols*i + j] = !!av_isgraph(*(p++));
         }
     }
     av_file_unmap(buf, size);
@@ -215,7 +217,7 @@ static int parse_iplconvkernel(IplConvKernel **kernel, char *buf, void *log_ctx)
             return ret;
     } else {
         av_log(log_ctx, AV_LOG_ERROR,
-               "Shape unspecified or type '%s' unknown\n.", shape_str);
+               "Shape unspecified or type '%s' unknown.\n", shape_str);
         return AVERROR(EINVAL);
     }
 
@@ -237,7 +239,7 @@ static int parse_iplconvkernel(IplConvKernel **kernel, char *buf, void *log_ctx)
     if (!*kernel)
         return AVERROR(ENOMEM);
 
-    av_log(log_ctx, AV_LOG_INFO, "Structuring element: w:%d h:%d x:%d y:%d shape:%s\n",
+    av_log(log_ctx, AV_LOG_VERBOSE, "Structuring element: w:%d h:%d x:%d y:%d shape:%s\n",
            rows, cols, anchor_x, anchor_y, shape_str);
     return 0;
 }
@@ -247,7 +249,7 @@ typedef struct {
     IplConvKernel *kernel;
 } DilateContext;
 
-static av_cold int dilate_init(AVFilterContext *ctx, const char *args, void *opaque)
+static av_cold int dilate_init(AVFilterContext *ctx, const char *args)
 {
     OCVContext *ocv = ctx->priv;
     DilateContext *dilate = ocv->priv;
@@ -267,7 +269,7 @@ static av_cold int dilate_init(AVFilterContext *ctx, const char *args, void *opa
     av_free(kernel_str);
 
     sscanf(buf, ":%d", &dilate->nb_iterations);
-    av_log(ctx, AV_LOG_INFO, "iterations_nb:%d\n", dilate->nb_iterations);
+    av_log(ctx, AV_LOG_VERBOSE, "iterations_nb:%d\n", dilate->nb_iterations);
     if (dilate->nb_iterations <= 0) {
         av_log(ctx, AV_LOG_ERROR, "Invalid non-positive value '%d' for nb_iterations\n",
                dilate->nb_iterations);
@@ -301,7 +303,7 @@ static void erode_end_frame_filter(AVFilterContext *ctx, IplImage *inimg, IplIma
 typedef struct {
     const char *name;
     size_t priv_size;
-    int  (*init)(AVFilterContext *ctx, const char *args, void *opaque);
+    int  (*init)(AVFilterContext *ctx, const char *args);
     void (*uninit)(AVFilterContext *ctx);
     void (*end_frame_filter)(AVFilterContext *ctx, IplImage *inimg, IplImage *outimg);
 } OCVFilterEntry;
@@ -312,7 +314,7 @@ static OCVFilterEntry ocv_filter_entries[] = {
     { "smooth", sizeof(SmoothContext), smooth_init, NULL, smooth_end_frame_filter },
 };
 
-static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
+static av_cold int init(AVFilterContext *ctx, const char *args)
 {
     OCVContext *ocv = ctx->priv;
     char name[128], priv_args[1024];
@@ -331,7 +333,7 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
             if (!(ocv->priv = av_mallocz(entry->priv_size)))
                 return AVERROR(ENOMEM);
-            return ocv->init(ctx, priv_args, opaque);
+            return ocv->init(ctx, priv_args);
         }
     }
 
@@ -349,25 +351,48 @@ static av_cold void uninit(AVFilterContext *ctx)
     memset(ocv, 0, sizeof(*ocv));
 }
 
-static void end_frame(AVFilterLink *inlink)
+static int filter_frame(AVFilterLink *inlink, AVFilterBufferRef *in)
 {
     AVFilterContext *ctx = inlink->dst;
     OCVContext *ocv = ctx->priv;
     AVFilterLink *outlink= inlink->dst->outputs[0];
-    AVFilterBufferRef *inpicref  = inlink ->cur_buf;
-    AVFilterBufferRef *outpicref = outlink->out_buf;
+    AVFilterBufferRef *out;
     IplImage inimg, outimg;
 
-    fill_iplimage_from_picref(&inimg , inpicref , inlink->format);
-    fill_iplimage_from_picref(&outimg, outpicref, inlink->format);
-    ocv->end_frame_filter(ctx, &inimg, &outimg);
-    fill_picref_from_iplimage(outpicref, &outimg, inlink->format);
+    out = ff_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
+    if (!out) {
+        avfilter_unref_bufferp(&in);
+        return AVERROR(ENOMEM);
+    }
+    avfilter_copy_buffer_ref_props(out, in);
 
-    avfilter_unref_buffer(inpicref);
-    avfilter_draw_slice(outlink, 0, outlink->h, 1);
-    avfilter_end_frame(outlink);
-    avfilter_unref_buffer(outpicref);
+    fill_iplimage_from_picref(&inimg , in , inlink->format);
+    fill_iplimage_from_picref(&outimg, out, inlink->format);
+    ocv->end_frame_filter(ctx, &inimg, &outimg);
+    fill_picref_from_iplimage(out, &outimg, inlink->format);
+
+    avfilter_unref_bufferp(&in);
+
+    return ff_filter_frame(outlink, out);
 }
+
+static const AVFilterPad avfilter_vf_ocv_inputs[] = {
+    {
+        .name       = "default",
+        .type       = AVMEDIA_TYPE_VIDEO,
+        .filter_frame = filter_frame,
+        .min_perms  = AV_PERM_READ
+    },
+    { NULL }
+};
+
+static const AVFilterPad avfilter_vf_ocv_outputs[] = {
+    {
+        .name = "default",
+        .type = AVMEDIA_TYPE_VIDEO,
+    },
+    { NULL }
+};
 
 AVFilter avfilter_vf_ocv = {
     .name        = "ocv",
@@ -379,14 +404,7 @@ AVFilter avfilter_vf_ocv = {
     .init = init,
     .uninit = uninit,
 
-    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .draw_slice       = null_draw_slice,
-                                    .end_frame        = end_frame,
-                                    .min_perms        = AV_PERM_READ },
-                                  { .name = NULL}},
+    .inputs    = avfilter_vf_ocv_inputs,
 
-    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .outputs   = avfilter_vf_ocv_outputs,
 };

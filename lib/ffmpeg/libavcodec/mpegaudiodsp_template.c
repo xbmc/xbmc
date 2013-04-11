@@ -25,7 +25,6 @@
 #include "mathops.h"
 #include "mpegaudiodsp.h"
 #include "mpegaudio.h"
-#include "mpegaudiodata.h"
 
 #if CONFIG_FLOAT
 #define RENAME(n) n##_float
@@ -192,7 +191,7 @@ void RENAME(ff_mpa_synth_filter)(MPADSPContext *s, MPA_INT *synth_buf_ptr,
     *synth_buf_offset = offset;
 }
 
-void av_cold RENAME(ff_mpa_synth_init)(MPA_INT *window)
+av_cold void RENAME(ff_mpa_synth_init)(MPA_INT *window)
 {
     int i, j;
 
@@ -243,7 +242,7 @@ void RENAME(ff_init_mpadsp_tabs)(void)
                 else if (i <  18) d = 1;
             }
             //merge last stage of imdct into the window coefficients
-            d *= 0.5 / cos(M_PI * (2 * i + 19) / 72);
+            d *= 0.5 * IMDCT_SCALAR / cos(M_PI * (2 * i + 19) / 72);
 
             if (j == 2)
                 RENAME(ff_mdct_win)[j][i/3] = FIXHR((d / (1<<5)));

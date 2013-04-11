@@ -19,12 +19,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/crc.h"
+#include "libavutil/log.h"
+#include "bytestream.h"
+#include "get_bits.h"
 #include "flac.h"
 #include "flacdata.h"
-#include "vorbis.h"
 
 static const int8_t sample_size_table[] = { 0, 8, 12, 0, 16, 20, 24, 0 };
+
+static const uint64_t flac_channel_layouts[8] = {
+    AV_CH_LAYOUT_MONO,
+    AV_CH_LAYOUT_STEREO,
+    AV_CH_LAYOUT_SURROUND,
+    AV_CH_LAYOUT_QUAD,
+    AV_CH_LAYOUT_5POINT0,
+    AV_CH_LAYOUT_5POINT1,
+    AV_CH_LAYOUT_6POINT1,
+    AV_CH_LAYOUT_7POINT1
+};
 
 static int64_t get_utf8(GetBitContext *gb)
 {
@@ -55,12 +69,10 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
     fi->ch_mode = get_bits(gb, 4);
     if (fi->ch_mode < FLAC_MAX_CHANNELS) {
         fi->channels = fi->ch_mode + 1;
-        if (fi->ch_mode <= 5)
-            avctx->channel_layout = ff_vorbis_channel_layouts[fi->ch_mode];
         fi->ch_mode = FLAC_CHMODE_INDEPENDENT;
-    } else if (fi->ch_mode <= FLAC_CHMODE_MID_SIDE) {
+    } else if (fi->ch_mode < FLAC_MAX_CHANNELS + FLAC_CHMODE_MID_SIDE) {
         fi->channels = 2;
-        avctx->channel_layout = AV_CH_LAYOUT_STEREO;
+        fi->ch_mode -= FLAC_MAX_CHANNELS - 1;
     } else {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "invalid channel mode: %d\n", fi->ch_mode);
@@ -152,4 +164,83 @@ int ff_flac_get_max_frame_size(int blocksize, int ch, int bps)
     count += 2; /* frame footer */
 
     return count;
+}
+
+int avpriv_flac_is_extradata_valid(AVCodecContext *avctx,
+                               enum FLACExtradataFormat *format,
+                               uint8_t **streaminfo_start)
+{
+    if (!avctx->extradata || avctx->extradata_size < FLAC_STREAMINFO_SIZE) {
+        av_log(avctx, AV_LOG_ERROR, "extradata NULL or too small.\n");
+        return 0;
+    }
+    if (AV_RL32(avctx->extradata) != MKTAG('f','L','a','C')) {
+        /* extradata contains STREAMINFO only */
+        if (avctx->extradata_size != FLAC_STREAMINFO_SIZE) {
+            av_log(avctx, AV_LOG_WARNING, "extradata contains %d bytes too many.\n",
+                   FLAC_STREAMINFO_SIZE-avctx->extradata_size);
+        }
+        *format = FLAC_EXTRADATA_FORMAT_STREAMINFO;
+        *streaminfo_start = avctx->extradata;
+    } else {
+        if (avctx->extradata_size < 8+FLAC_STREAMINFO_SIZE) {
+            av_log(avctx, AV_LOG_ERROR, "extradata too small.\n");
+            return 0;
+        }
+        *format = FLAC_EXTRADATA_FORMAT_FULL_HEADER;
+        *streaminfo_start = &avctx->extradata[8];
+    }
+    return 1;
+}
+
+void ff_flac_set_channel_layout(AVCodecContext *avctx)
+{
+    if (avctx->channels <= FF_ARRAY_ELEMS(flac_channel_layouts))
+        avctx->channel_layout = flac_channel_layouts[avctx->channels - 1];
+    else
+        avctx->channel_layout = 0;
+}
+
+void avpriv_flac_parse_streaminfo(AVCodecContext *avctx, struct FLACStreaminfo *s,
+                              const uint8_t *buffer)
+{
+    GetBitContext gb;
+    init_get_bits(&gb, buffer, FLAC_STREAMINFO_SIZE*8);
+
+    skip_bits(&gb, 16); /* skip min blocksize */
+    s->max_blocksize = get_bits(&gb, 16);
+    if (s->max_blocksize < FLAC_MIN_BLOCKSIZE) {
+        av_log(avctx, AV_LOG_WARNING, "invalid max blocksize: %d\n",
+               s->max_blocksize);
+        s->max_blocksize = 16;
+    }
+
+    skip_bits(&gb, 24); /* skip min frame size */
+    s->max_framesize = get_bits_long(&gb, 24);
+
+    s->samplerate = get_bits_long(&gb, 20);
+    s->channels = get_bits(&gb, 3) + 1;
+    s->bps = get_bits(&gb, 5) + 1;
+
+    avctx->channels = s->channels;
+    avctx->sample_rate = s->samplerate;
+    avctx->bits_per_raw_sample = s->bps;
+    ff_flac_set_channel_layout(avctx);
+
+    s->samples = get_bits64(&gb, 36);
+
+    skip_bits_long(&gb, 64); /* md5 sum */
+    skip_bits_long(&gb, 64); /* md5 sum */
+}
+
+void avpriv_flac_parse_block_header(const uint8_t *block_header,
+                                int *last, int *type, int *size)
+{
+    int tmp = bytestream_get_byte(&block_header);
+    if (last)
+        *last = tmp & 0x80;
+    if (type)
+        *type = tmp & 0x7F;
+    if (size)
+        *size = bytestream_get_be24(&block_header);
 }

@@ -2,20 +2,20 @@
  * Copyright (C) 2004 Michael Niedermayer <michaelni@gmx.at>
  * Copyright (C) 2006 Robert Edele <yartrebo@earthlink.net>
  *
- * This file is part of Libav.
+ * This file is part of FFmpeg.
  *
- * Libav is free software; you can redistribute it and/or
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
- * Libav is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with Libav; if not, write to the Free Software
+ * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
@@ -101,7 +101,7 @@ static const uint8_t obmc4[16]={
 //error:0.000000
 };
 
-const int8_t quant3bA[256]={
+const int8_t ff_quant3bA[256]={
  0, 0, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,
  1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,
  1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,
@@ -120,13 +120,13 @@ const int8_t quant3bA[256]={
  1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,
 };
 
-const uint8_t * const obmc_tab[4]= {
+const uint8_t * const ff_obmc_tab[4]= {
     obmc32, obmc16, obmc8, obmc4
 };
 
 /* runtime generated tables */
-uint8_t qexp[QROOT];
-int scale_mv_ref[MAX_REF_FRAMES][MAX_REF_FRAMES];
+uint8_t ff_qexp[QROOT];
+int ff_scale_mv_ref[MAX_REF_FRAMES][MAX_REF_FRAMES];
 
 
 #endif /* AVCODEC_SNOW_H */

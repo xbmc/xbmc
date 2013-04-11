@@ -31,10 +31,13 @@
  */
 
 /* FFmpeg includes */
+#include "libavutil/common.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/pixdesc.h"
 #include "libavutil/log.h"
 #include "libavutil/base64.h"
 #include "avcodec.h"
+#include "internal.h"
 
 /* libtheora includes */
 #include <theora/theoraenc.h>
@@ -57,21 +60,26 @@ static int concatenate_packet(unsigned int* offset,
     const char* message = NULL;
     uint8_t* newdata    = NULL;
     int newsize = avc_context->extradata_size + 2 + packet->bytes;
+    int ret;
 
     if (packet->bytes < 0) {
         message = "ogg_packet has negative size";
+        ret = AVERROR_INVALIDDATA;
     } else if (packet->bytes > 0xffff) {
         message = "ogg_packet is larger than 65535 bytes";
+        ret = AVERROR_INVALIDDATA;
     } else if (newsize < avc_context->extradata_size) {
         message = "extradata_size would overflow";
+        ret = AVERROR_INVALIDDATA;
     } else {
         newdata = av_realloc(avc_context->extradata, newsize);
         if (!newdata)
             message = "av_realloc failed";
+        ret = AVERROR(ENOMEM);
     }
     if (message) {
         av_log(avc_context, AV_LOG_ERROR, "concatenate_packet failed: %s\n", message);
-        return -1;
+        return ret;
     }
 
     avc_context->extradata      = newdata;
@@ -93,7 +101,7 @@ static int get_stats(AVCodecContext *avctx, int eos)
     bytes = th_encode_ctl(h->t_state, TH_ENCCTL_2PASS_OUT, &buf, sizeof(buf));
     if (bytes < 0) {
         av_log(avctx, AV_LOG_ERROR, "Error getting first pass stats\n");
-        return -1;
+        return AVERROR_EXTERNAL;
     }
     if (!eos) {
         h->stats = av_fast_realloc(h->stats, &h->stats_size,
@@ -110,7 +118,7 @@ static int get_stats(AVCodecContext *avctx, int eos)
     return 0;
 #else
     av_log(avctx, AV_LOG_ERROR, "libtheora too old to support 2pass\n");
-    return -1;
+    return AVERROR(ENOSUP);
 #endif
 }
 
@@ -124,7 +132,7 @@ static int submit_stats(AVCodecContext *avctx)
     if (!h->stats) {
         if (!avctx->stats_in) {
             av_log(avctx, AV_LOG_ERROR, "No statsfile for second pass\n");
-            return -1;
+            return AVERROR(EINVAL);
         }
         h->stats_size = strlen(avctx->stats_in) * 3/4;
         h->stats      = av_malloc(h->stats_size);
@@ -136,7 +144,7 @@ static int submit_stats(AVCodecContext *avctx)
                               h->stats_size - h->stats_offset);
         if (bytes < 0) {
             av_log(avctx, AV_LOG_ERROR, "Error submitting stats\n");
-            return -1;
+            return AVERROR_EXTERNAL;
         }
         if (!bytes)
             return 0;
@@ -145,7 +153,7 @@ static int submit_stats(AVCodecContext *avctx)
     return 0;
 #else
     av_log(avctx, AV_LOG_ERROR, "libtheora too old to support 2pass\n");
-    return -1;
+    return AVERROR(ENOSUP);
 #endif
 }
 
@@ -157,6 +165,7 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     unsigned int offset;
     TheoraContext *h = avc_context->priv_data;
     uint32_t gop_size = avc_context->gop_size;
+    int ret;
 
     /* Set up the theora_info struct */
     th_info_init(&t_info);
@@ -185,15 +194,15 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     else
         t_info.colorspace = TH_CS_UNSPECIFIED;
 
-    if (avc_context->pix_fmt == PIX_FMT_YUV420P)
+    if (avc_context->pix_fmt == AV_PIX_FMT_YUV420P)
         t_info.pixel_fmt = TH_PF_420;
-    else if (avc_context->pix_fmt == PIX_FMT_YUV422P)
+    else if (avc_context->pix_fmt == AV_PIX_FMT_YUV422P)
         t_info.pixel_fmt = TH_PF_422;
-    else if (avc_context->pix_fmt == PIX_FMT_YUV444P)
+    else if (avc_context->pix_fmt == AV_PIX_FMT_YUV444P)
         t_info.pixel_fmt = TH_PF_444;
     else {
         av_log(avc_context, AV_LOG_ERROR, "Unsupported pix_fmt\n");
-        return -1;
+        return AVERROR(EINVAL);
     }
     avcodec_get_chroma_sub_sample(avc_context->pix_fmt, &h->uv_hshift, &h->uv_vshift);
 
@@ -203,7 +212,7 @@ static av_cold int encode_init(AVCodecContext* avc_context)
                 * 0 <= p <=63
                 * an int value
          */
-        t_info.quality        = av_clip(avc_context->global_quality / (float)FF_QP2LAMBDA, 0, 10) * 6.3;
+        t_info.quality        = av_clipf(avc_context->global_quality / (float)FF_QP2LAMBDA, 0, 10) * 6.3;
         t_info.target_bitrate = 0;
     } else {
         t_info.target_bitrate = avc_context->bit_rate;
@@ -214,7 +223,7 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     h->t_state = th_encode_alloc(&t_info);
     if (!h->t_state) {
         av_log(avc_context, AV_LOG_ERROR, "theora_encode_init failed\n");
-        return -1;
+        return AVERROR_EXTERNAL;
     }
 
     h->keyframe_mask = (1 << t_info.keyframe_granule_shift) - 1;
@@ -224,16 +233,16 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     if (th_encode_ctl(h->t_state, TH_ENCCTL_SET_KEYFRAME_FREQUENCY_FORCE,
                       &gop_size, sizeof(gop_size))) {
         av_log(avc_context, AV_LOG_ERROR, "Error setting GOP size\n");
-        return -1;
+        return AVERROR_EXTERNAL;
     }
 
     // need to enable 2 pass (via TH_ENCCTL_2PASS_) before encoding headers
     if (avc_context->flags & CODEC_FLAG_PASS1) {
-        if (get_stats(avc_context, 0))
-            return -1;
+        if ((ret = get_stats(avc_context, 0)) < 0)
+            return ret;
     } else if (avc_context->flags & CODEC_FLAG_PASS2) {
-        if (submit_stats(avc_context))
-            return -1;
+        if ((ret = submit_stats(avc_context)) < 0)
+            return ret;
     }
 
     /*
@@ -249,8 +258,8 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     th_comment_init(&t_comment);
 
     while (th_encode_flushheader(h->t_state, &t_comment, &o_packet))
-        if (concatenate_packet(&offset, avc_context, &o_packet))
-            return -1;
+        if ((ret = concatenate_packet(&offset, avc_context, &o_packet)) < 0)
+            return ret;
 
     th_comment_clear(&t_comment);
 
@@ -260,21 +269,20 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     return 0;
 }
 
-static int encode_frame(AVCodecContext* avc_context, uint8_t *outbuf,
-                        int buf_size, void *data)
+static int encode_frame(AVCodecContext* avc_context, AVPacket *pkt,
+                        const AVFrame *frame, int *got_packet)
 {
     th_ycbcr_buffer t_yuv_buffer;
     TheoraContext *h = avc_context->priv_data;
-    AVFrame *frame = data;
     ogg_packet o_packet;
-    int result, i;
+    int result, i, ret;
 
     // EOS, finish and get 1st pass stats if applicable
     if (!frame) {
         th_encode_packetout(h->t_state, 1, &o_packet);
         if (avc_context->flags & CODEC_FLAG_PASS1)
-            if (get_stats(avc_context, 1))
-                return -1;
+            if ((ret = get_stats(avc_context, 1)) < 0)
+                return ret;
         return 0;
     }
 
@@ -287,8 +295,8 @@ static int encode_frame(AVCodecContext* avc_context, uint8_t *outbuf,
     }
 
     if (avc_context->flags & CODEC_FLAG_PASS2)
-        if (submit_stats(avc_context))
-            return -1;
+        if ((ret = submit_stats(avc_context)) < 0)
+            return ret;
 
     /* Now call into theora_encode_YUVin */
     result = th_encode_ycbcr_in(h->t_state, t_yuv_buffer);
@@ -306,12 +314,12 @@ static int encode_frame(AVCodecContext* avc_context, uint8_t *outbuf,
             break;
         }
         av_log(avc_context, AV_LOG_ERROR, "theora_encode_YUVin failed (%s) [%d]\n", message, result);
-        return -1;
+        return AVERROR_EXTERNAL;
     }
 
     if (avc_context->flags & CODEC_FLAG_PASS1)
-        if (get_stats(avc_context, 0))
-            return -1;
+        if ((ret = get_stats(avc_context, 0)) < 0)
+            return ret;
 
     /* Pick up returned ogg_packet */
     result = th_encode_packetout(h->t_state, 0, &o_packet);
@@ -324,22 +332,23 @@ static int encode_frame(AVCodecContext* avc_context, uint8_t *outbuf,
         break;
     default:
         av_log(avc_context, AV_LOG_ERROR, "theora_encode_packetout failed [%d]\n", result);
-        return -1;
+        return AVERROR_EXTERNAL;
     }
 
     /* Copy ogg_packet content out to buffer */
-    if (buf_size < o_packet.bytes) {
-        av_log(avc_context, AV_LOG_ERROR, "encoded frame too large\n");
-        return -1;
-    }
-    memcpy(outbuf, o_packet.packet, o_packet.bytes);
+    if ((ret = ff_alloc_packet2(avc_context, pkt, o_packet.bytes)) < 0)
+        return ret;
+    memcpy(pkt->data, o_packet.packet, o_packet.bytes);
 
     // HACK: assumes no encoder delay, this is true until libtheora becomes
-    // multithreaded (which will be disabled unless explictly requested)
-    avc_context->coded_frame->pts = frame->pts;
+    // multithreaded (which will be disabled unless explicitly requested)
+    pkt->pts = pkt->dts = frame->pts;
     avc_context->coded_frame->key_frame = !(o_packet.granulepos & h->keyframe_mask);
+    if (avc_context->coded_frame->key_frame)
+        pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
 
-    return o_packet.bytes;
+    return 0;
 }
 
 static av_cold int encode_close(AVCodecContext* avc_context)
@@ -358,14 +367,16 @@ static av_cold int encode_close(AVCodecContext* avc_context)
 
 /** AVCodec struct exposed to libavcodec */
 AVCodec ff_libtheora_encoder = {
-    .name = "libtheora",
-    .type = AVMEDIA_TYPE_VIDEO,
-    .id = CODEC_ID_THEORA,
+    .name           = "libtheora",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = AV_CODEC_ID_THEORA,
     .priv_data_size = sizeof(TheoraContext),
-    .init = encode_init,
-    .close = encode_close,
-    .encode = encode_frame,
-    .capabilities = CODEC_CAP_DELAY, // needed to get the statsfile summary
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_YUV444P, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("libtheora Theora"),
+    .init           = encode_init,
+    .close          = encode_close,
+    .encode2        = encode_frame,
+    .capabilities   = CODEC_CAP_DELAY, // needed to get the statsfile summary
+    .pix_fmts       = (const enum AVPixelFormat[]){
+        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV444P, AV_PIX_FMT_NONE
+    },
+    .long_name      = NULL_IF_CONFIG_SMALL("libtheora Theora"),
 };
