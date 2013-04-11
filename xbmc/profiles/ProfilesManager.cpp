@@ -321,14 +321,18 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (!dlgYesNo->IsConfirmed())
     return false;
 
-  //delete profile
+  // fall back to master profile if necessary
+  if ((int)index == m_autoLoginProfile)
+    m_autoLoginProfile = 0;
+
+  // delete profile
   string strDirectory = profile->getDirectory();
   m_profiles.erase(m_profiles.begin() + index);
 
   // fall back to master profile if necessary
   if (index == m_currentProfile)
   {
-    Load(0);
+    LoadProfile(0);
     g_settings.Save();
   }
 
@@ -432,6 +436,17 @@ void CProfilesManager::LoadMasterProfileForLogin()
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != 0)
     LoadProfile(0);
+}
+
+bool CProfilesManager::GetProfileName(const size_t profileId, std::string& name) const
+{
+  CSingleLock lock(m_critical);
+  const CProfile *profile = GetProfile(profileId);
+  if (!profile)
+    return false;
+
+  name = profile->getName();
+  return true;
 }
 
 std::string CProfilesManager::GetUserDataFolder() const

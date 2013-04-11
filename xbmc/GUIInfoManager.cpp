@@ -1755,13 +1755,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_PROFILEAUTOLOGIN:
     {
       int profileId = CProfilesManager::Get().GetAutoLoginProfileId();
-      if (profileId == -1)
-        strLabel = g_localizeStrings.Get(37014); // Most recent
-      else
-      {
-        const CProfile *profile = CProfilesManager::Get().GetProfile(profileId);
-        strLabel = profile->getName();
-      }
+      if ((profileId < 0) || (!CProfilesManager::Get().GetProfileName(profileId, strLabel)))
+        strLabel = g_localizeStrings.Get(37014); // Last used profile
     }
     break;
   case SYSTEM_LANGUAGE:
