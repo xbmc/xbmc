@@ -118,6 +118,37 @@ void CEGLNativeTypeRaspberryPI::Destroy()
 
 bool CEGLNativeTypeRaspberryPI::CreateNativeDisplay()
 {
+  if(!m_DllBcmHost)
+    return false;
+
+  // it can happen, that the TV interface was powered off by us, and not
+  // resumed before the next XBMC launch. let's do that now.
+
+  // get current display settings state
+  TV_DISPLAY_STATE_T tv_state;
+  memset(&tv_state, 0, sizeof(TV_DISPLAY_STATE_T));
+  m_DllBcmHost->vc_tv_get_display_state(&tv_state);
+
+  if ((tv_state.state & VC_HDMI_ATTACHED) != 0) // hdmi
+  {
+    if (tv_state.display.hdmi.mode == HDMI_MODE_OFF)
+    {
+      CLog::Log(LOGDEBUG, "HDMI was off, powering on now\n");
+      m_DllBcmHost->vc_tv_hdmi_power_on_preferred();
+    }
+  }
+  else // sdtv
+  {
+    if (tv_state.display.sdtv.mode == SDTV_MODE_OFF)
+    {
+      CLog::Log(LOGDEBUG, "SDTV was off, powering on now\n");
+      // not sure what to use here as default - does it even matter after
+      // SetNativeResolution() has been called?
+      SDTV_OPTIONS_T options = { SDTV_ASPECT_4_3 };
+      m_DllBcmHost->vc_tv_sdtv_power_on(SDTV_MODE_PAL, &options);
+    }
+  }
+
   m_nativeDisplay = EGL_DEFAULT_DISPLAY;
   return true;
 }
@@ -163,6 +194,10 @@ bool CEGLNativeTypeRaspberryPI::DestroyNativeWindow()
   DestroyDispmaxWindow();
   free(m_nativeWindow);
   m_nativeWindow = NULL;
+  
+  if(m_DllBcmHost)
+    m_DllBcmHost->vc_tv_power_off();
+  
   DLOG("CEGLNativeTypeRaspberryPI::DestroyNativeWindow\n");
   return true;
 #else
@@ -217,9 +252,15 @@ int CEGLNativeTypeRaspberryPI::AddUniqueResolution(const RESOLUTION_INFO &res, s
 bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 {
 #if defined(TARGET_RASPBERRY_PI)
-  if(!m_DllBcmHost || !m_nativeWindow)
+  if(!m_DllBcmHost)
     return false;
 
+  // necessary for CRBP::ResumeVideoOutput() to work
+  if(!m_nativeWindow)
+    CreateNativeWindow();
+  if(!m_nativeWindow)
+    return false;
+  
   DestroyDispmaxWindow();
 
   if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))

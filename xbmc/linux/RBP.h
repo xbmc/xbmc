@@ -53,6 +53,9 @@ public:
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue);
 
+  void SuspendVideoOutput();
+  void ResumeVideoOutput();
+
 private:
   DllBcmHost *m_DllBcmHost;
   bool       m_initialized;
