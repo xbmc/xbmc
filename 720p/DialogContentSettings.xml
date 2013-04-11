@@ -16,7 +16,7 @@
 			<control type="group">
 				<posx>50</posx>
 				<posy>228</posy>
-				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 				<control type="image">
 					<description>Poster</description>
 					<visible>Control.HasFocus(4)</visible>
@@ -45,7 +45,7 @@
 					<font>TitleCapsFont</font>
 					<align>center</align>
 					<label>$LOCALIZE[20018]</label>
-					<visible>IsEmpty(ListItem.Thumb) + !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<visible>IsEmpty(ListItem.Art(thumb)) + !Skin.HasSetting(HideNoThumbIcon)</visible>
 				</control>
 				<control type="image">
 					<description>Poster reflection</description>

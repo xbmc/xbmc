@@ -75,7 +75,7 @@
 			<posy>13</posy>
 			<width>198</width>
 			<height>105</height>
-			<texture background="true" diffuse="mask-clip-small.png">$INFO[ListItem.Thumb]</texture>
+			<texture background="true" diffuse="mask-clip-small.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
@@ -173,7 +173,7 @@
 			<posy>13</posy>
 			<width>182</width>
 			<height>273</height>
-			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
@@ -198,7 +198,7 @@
 			<posx>117</posx>
 			<width>360</width>
 			<height>540</height>
-			<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
+			<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(thumb)]</texture>
 			<!--><texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(bigPoster)]</texture>-->
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -237,7 +237,7 @@
 					<posy>13</posy>
 					<width>182</width>
 					<height>273</height>
-					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 			</control>
@@ -742,7 +742,7 @@
 				<posx>117</posx>
 				<width>360</width>
 				<height>190</height>
-				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 			</control>

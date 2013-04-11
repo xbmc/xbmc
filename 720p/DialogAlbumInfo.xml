@@ -12,7 +12,7 @@
 				<description>Thumb image</description>
 				<posx>50</posx>
 				<posy>160</posy>
-				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 				<control type="image">
 					<posx>-8</posx>
 					<posy>-8</posy>
@@ -35,7 +35,7 @@
 					<width>320</width>
 					<height>320</height>
 					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-					<texture diffuse="bigPosterMask.png" background="true">$INFO[ListItem.Thumb]</texture>
+					<texture diffuse="bigPosterMask.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 				</control>
 			</control>
 			<control type="group">

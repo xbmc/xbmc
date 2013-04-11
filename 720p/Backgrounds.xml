@@ -119,12 +119,12 @@
 			<control type="multiimage">
 				<include>BGHomeList</include>
 				<visible>ControlGroup(7003).HasFocus</visible>
-				<info background="true">Container(11003).ListItem.Thumb</info>
+				<info background="true">Container(11003).ListItem.Art(thumb)</info>
 			</control>
 			<control type="multiimage">
 				<include>BGHomeList</include>
 				<visible>ControlGroup(7005).HasFocus</visible>
-				<info background="true">Container(11004).ListItem.Thumb</info>
+				<info background="true">Container(11004).ListItem.Art(thumb)</info>
 			</control>
 			<!-- Fanart grainy overlay -->
 			<control type="image">

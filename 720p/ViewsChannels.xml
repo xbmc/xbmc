@@ -32,7 +32,7 @@
 			<posy>13</posy>
 			<width>165</width>
 			<height>165</height>
-			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
+			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
@@ -150,7 +150,7 @@
 				<width>230</width>
 				<height>230</height>
 				<fadetime>200</fadetime>
-				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 		</control>		
