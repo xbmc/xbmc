@@ -54,7 +54,7 @@ public:
   void Close();
   void Reset(DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
-  bool IsDisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
+  bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
   bool IsStarted() const { return m_iCounter > 0; }
   bool IsFinished() const { return m_bIsFinished;};
   bool DrawNextImage() const { return m_bDrawNextImage;};

@@ -611,7 +611,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       if (!m_Image[1 - m_iCurrentPic].IsStarted())
       {
         CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iNextSlide);
-        if (m_Image[1 - m_iCurrentPic].IsDisplayEffectNeedChange(effect))
+        if (m_Image[1 - m_iCurrentPic].DisplayEffectNeedChange(effect))
           m_Image[1 - m_iCurrentPic].Reset(effect);
       }
       // set the appropriate transistion time
@@ -855,7 +855,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       if (m_Image[m_iCurrentPic].IsLoaded())
       {
         CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iCurrentSlide);
-        if (m_Image[m_iCurrentPic].IsDisplayEffectNeedChange(effect))
+        if (m_Image[m_iCurrentPic].DisplayEffectNeedChange(effect))
           m_Image[m_iCurrentPic].Reset(effect);
       }
       AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));

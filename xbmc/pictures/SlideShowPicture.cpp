@@ -87,7 +87,7 @@ void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEff
     Close();
 }
 
-bool CSlideShowPic::IsDisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
+bool CSlideShowPic::DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
 {
   if (m_displayEffect == newDispEffect)
     return false;
