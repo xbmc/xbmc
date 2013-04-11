@@ -4686,7 +4686,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     }
     break;
   case LISTITEM_GENRE:
-#ifndef __PLEX__
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
@@ -4701,11 +4700,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     if (item->HasEPGInfoTag())
       return StringUtils::Join(item->GetEPGInfoTag()->Genre(), g_advancedSettings.m_videoItemSeparator);
     break;
-#else
-    return item->GetProperty("genre").asString();
-  case LISTITEM_FIRST_GENRE:
-      return item->GetProperty("firstGenre").asString();
-#endif
   case LISTITEM_FILENAME:
   case LISTITEM_FILE_EXTENSION:
     {
@@ -4739,12 +4733,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return item->GetPVRTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
-
-    /* PLEX */
-    else if (item->HasProperty("originallyAvailableAt"))
-      return item->GetProperty("originallyAvailableAt").asString();
-    /* END PLEX */
-
     break;
   case LISTITEM_SIZE:
     if (!item->m_bIsFolder || item->m_dwSize)
@@ -4850,12 +4838,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 
       return item->GetVideoInfoTag()->m_strPlot;
     }
-    /* PLEX */
-    else
-    {
-      return item->GetProperty("description").asString();
-    }
-    /* END PLEX */
     break;
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasPVRChannelInfoTag())
@@ -4872,10 +4854,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return item->GetPVRRecordingInfoTag()->m_strPlotOutline;
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
-    /* PLEX */
-    else
-      return item->GetProperty("description").asString();
-    /* END PLEX */
     break;
   case LISTITEM_EPISODE:
     if (item->HasVideoInfoTag())
