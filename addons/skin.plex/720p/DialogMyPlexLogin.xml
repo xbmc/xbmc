@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+<window id="10080" type="dialog">
+	<defaultcontrol always="true">10085</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<control type="group">
+			<posx>140</posx>
+			<posy>60</posy>
+			<!-- window dressing -->
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>1000</width>
+					<height>600</height>
+					<include>BlackRounded</include>
+					<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>1000</width>
+					<height>70</height>
+					<include>DialogHeaderBGOrange</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<posy>20</posy>
+					<width>1000</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>1002</width>
+					<height>602</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>485</posx>
+					<posy>600</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<!-- controls -->
+			<control type="group">
+				<control type="label" id="1">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1000</width>
+					<include>DialogHeading</include>
+				</control>
+				<!-- description text -->
+				<control type="textbox" id="10081">
+					<posy>110</posy>
+					<posx>270</posx>
+					<width>460</width>
+					<height>195</height>
+					<font>PINdescription</font>
+				</control>
+				<!-- PIN area -->
+				<control type="group">
+					<posy>232</posy>
+					<posx>270</posx>
+					<control type="group">
+						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>0</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>120</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>240</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+						<control type="image">
+							<description>PIN # bg</description>
+							<posx>360</posx>
+							<width>100</width>
+							<height>150</height>
+							<include>Orange</include>
+						</control>
+					</control>
+					<control type="label" id="10082">
+						<posy>0</posy>
+						<posx>15</posx>
+						<width>480</width>
+						<height>150</height>
+						<font>CondensedBold-126</font>
+					</control>
+				</control>
+				<!-- manual login area -->
+				<control type="group">
+					<posy>225</posy>
+					<posx>270</posx>
+					<!-- user field -->
+					<control type="group">
+						<visible>Control.IsVisible(10083)</visible>
+					<control type="label">
+						<description>USER ID label</description>
+						<posy>23</posy>
+						<width>140</width>
+						<height>50</height>
+						<align>left</align>
+						<font>Condensed-22</font>
+						<textcolor>white</textcolor>
+						<label>31068</label>
+					</control>
+					<control type="image">
+						<posx>140</posx>
+						<posy>23</posy>
+						<width>340</width>
+						<height>53</height>
+						<include>BaseRounded</include>
+					</control>
+					</control>
+					<control type="label" id="10083">
+						<posx>140</posx>
+						<posy>23</posy>
+						<width>310</width>
+						<height>50</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>-</onup>
+						<ondown>10084</ondown>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
+						<focusedcolor>FF222222</focusedcolor>
+						<emptylabel>User</emptylabel>
+						<emptycolor>FF555555</emptycolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textoffsetx>16</textoffsetx>
+					</control>
+					<!-- password field -->
+					<control type="group">
+						<visible>Control.IsVisible(10084)</visible>
+					<control type="label">
+						<description>PASSWORD label</description>
+						<posy>100</posy>
+						<width>140</width>
+						<height>50</height>
+						<align>left</align>
+						<font>Condensed-22</font>
+						<textcolor>white</textcolor>
+						<label>31069</label>
+					</control>
+					<control type="image">
+						<posx>140</posx>
+						<posy>100</posy>
+						<width>340</width>
+						<height>53</height>
+						<include>BaseRounded</include>
+					</control>
+					</control>
+					<control type="label" id="10084">
+						<posx>155</posx>
+						<posy>100</posy>
+						<width>310</width>
+						<height>50</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>10083</onup>
+						<ondown>111</ondown>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
+						<focusedcolor>FF222222</focusedcolor>
+						<emptylabel>Password</emptylabel>
+						<emptycolor>FF555555</emptycolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textoffsetx>16</textoffsetx>
+					</control>
+				</control>
+				<!-- results message area -->
+				<!-- success -->
+				<control type="group" id="10088">
+					<posy>210</posy>
+					<posx>372</posx>
+					<control type="image">
+						<description>round</description>
+						<width>256</width>
+						<height>200</height>
+						<texture>round-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<colordiffuse>FF336633</colordiffuse>
+					</control>
+					<control type="image">
+						<description>tick</description>
+						<posy>10</posy>
+						<posx>63</posx>
+						<width>174</width>
+						<height>130</height>
+						<texture>tick-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					</control>
+				</control>
+				<!-- error -->
+				<control type="group" id="10089">
+					<posy>210</posy>
+					<posx>372</posx>
+					<control type="image">
+						<description>round</description>
+						<width>256</width>
+						<height>200</height>
+						<texture>round-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+						<colordiffuse>FF972323</colordiffuse>
+					</control>
+					<control type="image">
+						<description>tick</description>
+						<posy>35</posy>
+						<posx>41</posx>
+						<width>174</width>
+						<height>130</height>
+						<texture>exclamation-big.png</texture>
+						<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+					</control>
+				</control>
+				<!-- buttons area -->
+				<control type="group">
+					<posy>460</posy>
+					<posx>0</posx>
+					<control type="group">
+						<control type="image">
+							<description>buttons bg</description>
+							<posx>0</posx>
+							<width>1000</width>
+							<height>80</height>
+							<include>Orange</include>
+							<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+						</control>
+					</control>
+					<control type="group" id="111">
+						<posy>15</posy>
+						<posx>270</posx>
+						<control type="button" id="10085">
+							<description>CANCEL Button</description>
+							<width>120</width>
+							<onleft>-</onleft>
+							<onright>10086</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+						</control>
+						<control type="button" id="10086">
+							<description>MANUAL/PIN Button</description>
+							<posx>260</posx>
+							<width>200</width>
+							<onleft>10085</onleft>
+							<onright condition="Control.IsVisible(10087)">10087</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+							<animation effect="slide" start="0" end="-60" time="500" condition="Control.IsVisible(10083)">Conditional</animation>
+							<animation effect="slide" start="-60" end="0" time="500" condition="!Control.IsVisible(10083)">Conditional</animation>
+						</control>
+						<control type="button" id="10087">
+							<description>SUBMIT Button</description>
+							<posx>360</posx>
+							<width>120</width>
+							<onleft>10086</onleft>
+							<onright>-</onright>
+							<onup>Control.SetFocus(10084)</onup>
+							<include>DialogPressButton</include>
+							<animation effect="fade" start="0" end="100" time="300" delay="300">Visible</animation>
+							<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>debugInfos</include>
+		<include>Grid</include>
+	</controls>
+</window>

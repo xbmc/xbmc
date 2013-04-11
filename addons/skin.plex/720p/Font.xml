@@ -146,6 +146,13 @@
 			<filename>DejaVuSansCondensed.ttf</filename>
 			<size>20</size>
 		</font>
+		<!-- this variant exists solely for line spacing -->	
+		<font>
+			<name>PINdescription</name>
+			<filename>DejaVuSansCondensed.ttf</filename>
+			<size>20</size>
+			<linespacing>1.2</linespacing>
+		</font>
 		<font>
 			<name>Condensed-22</name>
 			<filename>DejaVuSansCondensed.ttf</filename>
@@ -271,6 +278,11 @@
 			<name>CondensedBold-48</name>
 			<filename>DejaVuSansCondensed-Bold.ttf</filename>
 			<size>48</size>
+		</font>
+		<font>
+			<name>CondensedBold-126</name>
+			<filename>DejaVuSansCondensed-Bold.ttf</filename>
+			<size>126</size>
 		</font>
 	</fontset>
 </fonts>

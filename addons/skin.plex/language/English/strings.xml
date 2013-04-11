@@ -65,6 +65,8 @@
   <string id="31065">Info</string>
   <string id="31066">Refresh</string>
   <string id="31067">About Your</string>
+  <string id="31068">User ID:</string>
+  <string id="31069">Password:</string>
 
 <!--  Power  -->
   <string id="31071">Shutdown</string>
