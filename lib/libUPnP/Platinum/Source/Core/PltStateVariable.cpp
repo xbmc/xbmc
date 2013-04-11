@@ -210,6 +210,7 @@ PLT_StateVariable::ValidateValue(const char* value)
             while (val) {
                 val->Trim(" ");
                 if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
+#if defined(NPT_CONFIG_ENABLE_LOGGING)
                     NPT_LOG_WARNING_2("Invalid value of %s for state variable %s",
                         (const char*)*val,
                         (const char*)m_Name);
@@ -217,6 +218,7 @@ PLT_StateVariable::ValidateValue(const char* value)
                         NPT_String *val = *m_AllowedValues.GetItem(i);
                         NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val);
                     }
+#endif
                     return NPT_ERROR_INVALID_PARAMETERS;
                 }
                 ++val;
