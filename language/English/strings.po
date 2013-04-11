@@ -11892,5 +11892,5 @@ msgstr ""
 
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#37014"
-msgid "Most recent"
+msgid "Last used profile"
 msgstr ""

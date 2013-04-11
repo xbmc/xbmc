@@ -172,7 +172,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_AUTOLOGIN)
       {
-    	int currentId = CProfilesManager::Get().GetAutoLoginProfileId();
+        int currentId = CProfilesManager::Get().GetAutoLoginProfileId();
         int profileId;
         if (GetAutoLoginProfileChoice(profileId) && (currentId != profileId))
         {
@@ -238,11 +238,11 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   if (!dialog) return false;
 
   // add items
-  // "Most recent" option comes first, so up indices by 1
+  // "Last used profile" option comes first, so up indices by 1
   int autoLoginProfileId = CProfilesManager::Get().GetAutoLoginProfileId() + 1;
   CFileItemList items;
   CFileItemPtr item(new CFileItem());
-  item->SetLabel(g_localizeStrings.Get(37014)); // Most recent
+  item->SetLabel(g_localizeStrings.Get(37014)); // Last used profile
   item->SetIconImage("unknown-user.png");
   items.Add(item);
 
