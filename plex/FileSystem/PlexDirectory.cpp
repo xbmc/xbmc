@@ -11,6 +11,7 @@
 #include "File.h"
 #include "XBMCTinyXML.h"
 #include "utils/log.h"
+#include "JobManager.h"
 
 #include "PlexAttributeParser.h"
 #include "PlexDirectoryTypeParser.h"
@@ -23,6 +24,53 @@
 #include <map>
 
 using namespace XFILE;
+
+/* IDirectory Interface */
+bool
+CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems)
+{
+  m_url = CURL(strPath);
+
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", strPath.c_str());
+
+  if (boost::ends_with(m_url.GetFileName(), "/children/"))
+  {
+    CURL augmentUrl = m_url;
+    CStdString newFile = m_url.GetFileName();
+    boost::replace_last(newFile, "/children", "");
+    augmentUrl.SetFileName(newFile);
+    AddAugmentation(augmentUrl);
+  }
+
+  CXBMCTinyXML doc;
+
+  if (!doc.LoadFile(strPath))
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", strPath.c_str());
+    CancelAugmentations();
+    return false;
+  }
+
+  if (!ReadMediaContainer(doc.RootElement(), fileItems))
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", strPath.c_str());
+    CancelAugmentations();
+    return false;
+  }
+
+  if (m_isAugmented)
+    DoAugmentation(fileItems);
+
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory with %d items with content %s", fileItems.Size(), fileItems.GetContent().c_str());
+
+  return true;
+}
+
+void
+CPlexDirectory::CancelDirectory()
+{
+  CancelAugmentations();
+}
 
 typedef boost::bimap<EPlexDirectoryType, CStdString> DirectoryTypeMap;
 static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::relation>
@@ -65,68 +113,74 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     ;
 
 
-
-#define _INT new CPlexAttributeParserInt
-#define _BOOL new CPlexAttributeParserBool
-#define _KEY new CPlexAttributeParserKey
-#define _MEDIAURL new CPlexAttributeParserMediaUrl
-#define _TYPE new CPlexAttributeParserType
-#define _LABEL new CPlexAttributeParserLabel
-#define _MEDIAFLAG new CPlexAttributeParserMediaFlag
+CPlexAttributeParserBase *g_parserInt = new CPlexAttributeParserInt;
+CPlexAttributeParserBase *g_parserBool = new CPlexAttributeParserBool;
+CPlexAttributeParserBase *g_parserKey = new CPlexAttributeParserKey;
+CPlexAttributeParserBase *g_parserMediaUrl = new CPlexAttributeParserMediaUrl;
+CPlexAttributeParserBase *g_parserType = new CPlexAttributeParserType;
+CPlexAttributeParserBase *g_parserLabel = new CPlexAttributeParserLabel;
+CPlexAttributeParserBase *g_parserMediaFlag = new CPlexAttributeParserMediaFlag;
+CPlexAttributeParserBase *g_parserDateTime = new CPlexAttributeParserDateTime;
 
 typedef std::map<CStdString, CPlexAttributeParserBase*> AttributeMap;
-static AttributeMap g_attributeMap = boost::assign::list_of<std::pair<CStdString, CPlexAttributeParserBase*> >
-                                     ("size", _INT)
-                                     ("channels", _INT)
-                                     ("createdAt", _INT)
-                                     ("updatedAt", _INT)
-                                     ("leafCount", _INT)
-                                     ("viewedLeafCount", _INT)
-                                     ("ratingKey", _INT)
-                                     ("bitrate", _INT)
-                                     ("duration", _INT)
-                                     ("librarySectionID", _INT)
-                                     ("streamType", _INT)
-                                     ("index", _INT)
-                                     ("channels", _INT)
-                                     ("bitrate", _INT)
-                                     ("samplingRate", _INT)
-                                     ("dialogNorm", _INT)
+typedef std::pair<CStdString, CPlexAttributeParserBase*> AttributePair;
+static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
+                                     ("size", g_parserInt)
+                                     ("channels", g_parserInt)
+                                     ("createdAt", g_parserInt)
+                                     ("updatedAt", g_parserInt)
+                                     ("leafCount", g_parserInt)
+                                     ("viewedLeafCount", g_parserInt)
+                                     ("ratingKey", g_parserInt)
+                                     ("bitrate", g_parserInt)
+                                     ("duration", g_parserInt)
+                                     ("librarySectionID", g_parserInt)
+                                     ("streamType", g_parserInt)
+                                     ("index", g_parserInt)
+                                     ("channels", g_parserInt)
+                                     ("bitrate", g_parserInt)
+                                     ("samplingRate", g_parserInt)
+                                     ("dialogNorm", g_parserInt)
 
 
-                                     ("filters", _BOOL)
-                                     ("refreshing", _BOOL)
-                                     ("allowSync", _BOOL)
-                                     ("secondary", _BOOL)
-                                     ("search", _BOOL)
-                                     ("selected", _BOOL)
+                                     ("filters", g_parserBool)
+                                     ("refreshing", g_parserBool)
+                                     ("allowSync", g_parserBool)
+                                     ("secondary", g_parserBool)
+                                     ("search", g_parserBool)
+                                     ("selected", g_parserBool)
 
-                                     ("key", _KEY)
-                                     ("theme", _KEY)
+                                     ("key", g_parserKey)
+                                     ("theme", g_parserKey)
+                                     ("parentKey", g_parserKey)
+                                     ("grandparentKey", g_parserKey)
 
-                                     ("thumb", _MEDIAURL)
-                                     ("art", _MEDIAURL)
-                                     ("poster", _MEDIAURL)
-                                     ("banner", _MEDIAURL)
-                                     ("parentThumb", _MEDIAURL)
-                                     ("grandparentThumb", _MEDIAURL)
+                                     ("thumb", g_parserMediaUrl)
+                                     ("art", g_parserMediaUrl)
+                                     ("poster", g_parserMediaUrl)
+                                     ("banner", g_parserMediaUrl)
+                                     ("parentThumb", g_parserMediaUrl)
+                                     ("grandparentThumb", g_parserMediaUrl)
 
                                      /* Media flags */
-                                     ("aspectRatio", _MEDIAFLAG)
-                                     ("audioChannels", _MEDIAFLAG)
-                                     ("audioCodec", _MEDIAFLAG)
-                                     ("videoCodec", _MEDIAFLAG)
-                                     ("videoResolution", _MEDIAFLAG)
-                                     ("videoFrameRate", _MEDIAFLAG)
-                                     ("contentRating", _MEDIAFLAG)
-                                     ("grandparentContentRating", _MEDIAFLAG)
-                                     ("studio", _MEDIAFLAG)
-                                     ("grandparentStudio", _MEDIAFLAG)
+                                     ("aspectRatio", g_parserMediaFlag)
+                                     ("audioChannels", g_parserMediaFlag)
+                                     ("audioCodec", g_parserMediaFlag)
+                                     ("videoCodec", g_parserMediaFlag)
+                                     ("videoResolution", g_parserMediaFlag)
+                                     ("videoFrameRate", g_parserMediaFlag)
+                                     ("contentRating", g_parserMediaFlag)
+                                     ("grandparentContentRating", g_parserMediaFlag)
+                                     ("studio", g_parserMediaFlag)
+                                     ("grandparentStudio", g_parserMediaFlag)
 
-                                     ("type", _TYPE)
-                                     ("content", _TYPE)
+                                     ("type", g_parserType)
+                                     ("content", g_parserType)
 
-                                     ("title", _LABEL);
+                                     ("title", g_parserLabel)
+
+                                     ("originallyAvailableAt", g_parserDateTime)
+                                     ;
 
 static CPlexAttributeParserBase* g_defaultAttr = new CPlexAttributeParserBase;
 
@@ -153,7 +207,6 @@ CPlexDirectory::CopyAttributes(TiXmlElement* el, CFileItem& item, const CURL &ur
     attr = attr->Next();
   }
 }
-
 
 CFileItemPtr
 CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, const CURL &baseUrl)
@@ -213,49 +266,6 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
   }
 }
 
-void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
-{
-  /* Wait for the agumentation to return for 5 seconds */
-  CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation waiting for augmentation to download...");
-  if (m_augmentationEvent.WaitMSec(5 * 1000))
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation got it...");
-    if (m_augmentedItem && m_augmentedItem->Size() > 0)
-    {
-      CFileItemPtr augItem = m_augmentedItem->Get(0);
-      if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON &&
-          augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
-      {
-        /* Augmentation of seasons works like this:
-         * We load metadata/XX/children as our main url
-         * then we load metadata/XX as augmentation, then we
-         * augment our main CFileItem with information from the
-         * first subitem from the augmentation URL.
-         */
-
-        std::pair<CStdString, CVariant> p;
-        BOOST_FOREACH(p, augItem->m_mapProperties)
-        {
-          /* we only insert the properties if they are not available */
-          if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
-          {
-            fileItems.m_mapProperties[p.first] = p.second;
-          }
-
-          fileItems.AppendArt(augItem->GetArt());
-
-          CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
-          CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
-          infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
-        }
-      }
-
-    }
-  }
-  else
-    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
-}
-
 bool
 CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer)
 {
@@ -275,9 +285,17 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
 
   /* We just use the first item Type, it might be wrong and we should maybe have a look... */
   if (mediaContainer.GetPlexDirectoryType() == PLEX_DIR_TYPE_UNKNOWN && mediaContainer.Size() > 0)
-    mediaContainer.SetPlexDirectoryType(mediaContainer.Get(0)->GetPlexDirectoryType());
+  {
+    /* When loading a season the first element can be "All Episodes" and that is just a directory
+     * without a type attribute. So let's skip that. */
+    if (boost::ends_with(mediaContainer.Get(0)->GetProperty("unprocessed_key").asString(), "/allLeaves") &&
+        mediaContainer.Size() > 1)
+      mediaContainer.SetPlexDirectoryType(mediaContainer.Get(1)->GetPlexDirectoryType());
+    else
+      mediaContainer.SetPlexDirectoryType(mediaContainer.Get(0)->GetPlexDirectoryType());
+  }
 
-  /* now we need to set content to something that XBMC expects*/
+  /* now we need to set content to something that XBMC expects */
   CStdString content = CPlexDirectory::GetContentFromType(mediaContainer.GetPlexDirectoryType());
   if (!content.empty())
   {
@@ -288,55 +306,6 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   return true;
 }
 
-bool
-CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems)
-{
-  m_url = CURL(strPath);
-
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", strPath.c_str());
-
-  if (boost::ends_with(m_url.GetFileName(), "/children/"))
-  {
-    m_augmentedURL = m_url;
-    CStdString newFile = m_url.GetFileName();
-    boost::replace_last(newFile, "/children", "");
-    m_augmentedURL.SetFileName(newFile);
-  }
-
-  bool isAugmented = !m_augmentedURL.Get().empty();
-
-  if (isAugmented)
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory requesting augmentation from URL %s", m_augmentedURL.Get().c_str());
-    AddJob(new CPlexDirectoryFetchJob(m_augmentedURL));
-  }
-
-  CXBMCTinyXML doc;
-
-  if (!doc.LoadFile(strPath))
-  {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", strPath.c_str());
-    CancelJobs();
-    return false;
-  }
-
-  if (!ReadMediaContainer(doc.RootElement(), fileItems))
-  {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", strPath.c_str());
-    CancelJobs();
-    return false;
-  }
-
-  if (isAugmented)
-    DoAugmentation(fileItems);
-
-  return true;
-}
-
-void
-CPlexDirectory::CancelDirectory()
-{
-}
 
 EPlexDirectoryType
 CPlexDirectory::GetDirectoryType(const CStdString &typeStr)
@@ -357,6 +326,7 @@ CPlexDirectory::GetDirectoryTypeString(EPlexDirectoryType typeNr)
   return "unknown";
 }
 
+////////////////////////////////////////////////////////////////////////////////
 CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
 {
   CStdString content;
@@ -395,17 +365,82 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
   return content;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
+{
+  /* Wait for the agumentation to return for 5 seconds */
+  CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation waiting for augmentation to download...");
+  if (m_augmentationEvent.WaitMSec(5 * 1000))
+  {
+    CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation got it...");
+    BOOST_FOREACH(CFileItemListPtr augList, m_augmentationItems)
+    {
+      if (augList->Size() > 0)
+      {
+        CFileItemPtr augItem = augList->Get(0);
+        if ((fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
+             fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE) &&
+            augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
+        {
+          /* Augmentation of seasons works like this:
+         * We load metadata/XX/children as our main url
+         * then we load metadata/XX as augmentation, then we
+         * augment our main CFileItem with information from the
+         * first subitem from the augmentation URL.
+         */
+
+          std::pair<CStdString, CVariant> p;
+          BOOST_FOREACH(p, augItem->m_mapProperties)
+          {
+            /* we only insert the properties if they are not available */
+            if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
+            {
+              fileItems.m_mapProperties[p.first] = p.second;
+            }
+          }
+
+          fileItems.AppendArt(augItem->GetArt());
+
+          CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
+          CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
+          infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+        }
+      }
+    }
+  }
+  else
+    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CLog::Log(LOGDEBUG, "CPlexDirectory::OnJobComplete Augmentationjob complete...");
 
+  CSingleLock lk(m_augmentationLock);
+
   if (success)
   {
     CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
-    m_augmentedItem = fjob->m_items;
+    m_augmentationItems.push_back(fjob->m_items);
+
+    /* Fire off some more augmentation events if needed */
+    CFileItemListPtr list = fjob->m_items;
+    if (list->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON &&
+        list->Size() > 0 &&
+        list->Get(0)->HasProperty("parentKey"))
+    {
+      lk.unlock();
+      AddAugmentation(CURL(list->Get(0)->GetProperty("parentKey").asString()));
+      lk.lock();
+    }
   }
 
-  m_augmentationEvent.Set();
+  m_augmentationJobs.erase(std::remove(m_augmentationJobs.begin(), m_augmentationJobs.end(), jobID), m_augmentationJobs.end());
+
+  if (m_augmentationJobs.size() == 0)
+    m_augmentationEvent.Set();
 }
 
 

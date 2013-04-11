@@ -17,13 +17,16 @@
 #include "PlexAttributeParser.h"
 
 #include <map>
+#include <boost/foreach.hpp>
 
 #include "PlexTypes.h"
 #include "JobManager.h"
 
+#include "utils/log.h"
+
 namespace XFILE
 {
-  class CPlexDirectory : public IDirectory, public CJobQueue
+  class CPlexDirectory : public IDirectory, public IJobCallback
   {
     public:
 
@@ -48,7 +51,7 @@ namespace XFILE
           CURL m_url;
       };
 
-      CPlexDirectory(CURL augmentedUrl = CURL(), bool usePaging = false) : m_augmentedURL(augmentedUrl), m_usePaging(usePaging) {}
+      CPlexDirectory() : m_isAugmented(false) {}
 
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
       virtual void CancelDirectory();
@@ -74,16 +77,33 @@ namespace XFILE
 
       void DoAugmentation(CFileItemList& fileItems);
 
-      CURL m_url;
-      CURL m_augmentedURL;
-      CFileItemListPtr m_augmentedItem;
+      void AddAugmentation(const CURL &url)
+      {
+        CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation %s", url.Get().c_str());
+        CSingleLock lk(m_augmentationLock);
+        int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
+        m_augmentationJobs.push_back(id);
+        m_isAugmented = true;
+      }
 
+      void CancelAugmentations()
+      {
+        CSingleLock lk(m_augmentationLock);
+        BOOST_FOREACH(int id, m_augmentationJobs)
+          CJobManager::GetInstance().CancelJob(id);
+      }
+
+      CCriticalSection m_augmentationLock;
+      std::vector<int> m_augmentationJobs;
+      bool m_isAugmented;
+
+      std::vector<CFileItemListPtr> m_augmentationItems;
       CEvent m_augmentationEvent;
-
-      bool m_usePaging;
 
       CStdString m_body;
       CStdString m_data;
+      CURL m_url;
+
   };
 }
 

@@ -111,6 +111,7 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_history.AddPath(newUrl);
     m_startDirectory = newUrl;
 
+
     if (updateFilters)
       BuildFilter(m_filterHelper.GetSectionUrl());
   }

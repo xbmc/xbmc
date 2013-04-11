@@ -25,6 +25,8 @@ class CPlexDirectoryTypeParserVideo : public CPlexDirectoryTypeParserBase
     void ParseTag(CFileItem& item, CFileItem& tagItem);
 
     static void DebugPrintVideoItem(const CFileItem &item);
+
+    void SetTagsAsProperties(CFileItem& item);
 };
 
 #endif // PLEXDIRECTORYTYPEPARSERVIDEO_H

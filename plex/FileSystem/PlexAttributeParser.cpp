@@ -172,3 +172,18 @@ void CPlexAttributeParserLabel::Process(const CURL &url, const CStdString &key, 
   item.SetLabel(value);
   item.SetProperty(key, value);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void CPlexAttributeParserDateTime::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+{
+  CStdString XBMCFormat = value + " 00:00:00";
+  CDateTime time;
+
+  time.SetFromDBDate(XBMCFormat);
+  if (time.IsValid())
+    item.m_dateTime = time;
+  else
+    CLog::Log(LOGDEBUG, "CPlexAttributeParserDateTime::Process failed to parse %s into something sensible.", XBMCFormat.c_str());
+
+  item.SetProperty(key, value);
+}

@@ -12,6 +12,8 @@
 #include "video/VideoInfoTag.h"
 #include "PlexTypes.h"
 #include "utils/log.h"
+#include "Utils/StringUtils.h"
+#include "AdvancedSettings.h"
 
 #include <boost/foreach.hpp>
 
@@ -121,6 +123,8 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
       item.m_mediaItems.push_back(mediaItem);
     }
   }
+
+  SetTagsAsProperties(item);
 }
 
 void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlElement* element)
@@ -152,6 +156,7 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
 
     mediaPart.m_mediaPartStreams.push_back(mediaStream);
   }
+
 }
 
 void CPlexDirectoryTypeParserVideo::ParseTag(CFileItem &item, CFileItem &tagItem)
@@ -206,5 +211,28 @@ void CPlexDirectoryTypeParserVideo::DebugPrintVideoItem(const CFileItem &item)
         CLog::Log(LOGDEBUG, "****** Media Stream: %lld = %s", sItem->GetProperty("streamType").asInteger(), sItem->GetProperty("language").asString().c_str());
       }
     }
+  }
+}
+
+void CPlexDirectoryTypeParserVideo::SetTagsAsProperties(CFileItem &item)
+{
+  CVideoInfoTag* infoTag = item.GetVideoInfoTag();
+
+  if (infoTag->m_genre.size() > 0)
+    item.SetProperty("genre", StringUtils::Join(infoTag->m_genre, g_advancedSettings.m_videoItemSeparator));
+  if (infoTag->m_writingCredits.size() > 0)
+    item.SetProperty("writingCredits", StringUtils::Join(infoTag->m_writingCredits, g_advancedSettings.m_videoItemSeparator));
+  if (infoTag->m_director.size() > 0)
+    item.SetProperty("director", StringUtils::Join(infoTag->m_director, g_advancedSettings.m_videoItemSeparator));
+  if (infoTag->m_country.size() > 0)
+    item.SetProperty("country", StringUtils::Join(infoTag->m_country, g_advancedSettings.m_videoItemSeparator));
+  if (infoTag->m_cast.size() > 0)
+  {
+    std::vector<std::string> cast;
+    BOOST_FOREACH(SActorInfo &actor, infoTag->m_cast)
+    {
+      cast.push_back(actor.strName);
+    }
+    item.SetProperty("cast", StringUtils::Join(cast, g_advancedSettings.m_videoItemSeparator));
   }
 }
