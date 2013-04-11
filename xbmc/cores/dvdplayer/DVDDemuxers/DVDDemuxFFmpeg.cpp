@@ -937,6 +937,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
   AVStream* pStream = m_pFormatContext->streams[iId];
   if (pStream)
   {
+    CDemuxStream* stream = NULL;
     CDemuxStream* old = GetStream(iId);
 
     switch (pStream->codec->codec_type)
@@ -944,7 +945,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     case AVMEDIA_TYPE_AUDIO:
       {
         CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(this, pStream);
-        m_streams[iId] = st;
+        stream = st;
         st->iChannels = pStream->codec->channels;
         st->iSampleRate = pStream->codec->sample_rate;
         st->iBlockAlign = pStream->codec->block_align;
@@ -959,7 +960,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     case AVMEDIA_TYPE_VIDEO:
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
-        m_streams[iId] = st;
+        stream = st;
         if(strcmp(m_pFormatContext->iformat->name, "flv") == 0)
           st->bVFR = true;
         else
@@ -1023,8 +1024,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_DATA:
       {
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_DATA;
+        stream = new CDemuxStream();
+        stream->type = STREAM_DATA;
         break;
       }
     case AVMEDIA_TYPE_SUBTITLE:
@@ -1032,14 +1033,14 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
-          m_streams[iId] = st;
-          m_streams[iId]->type = STREAM_TELETEXT;
+          stream = st;
+          stream->type = STREAM_TELETEXT;
           break;
         }
         else
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
-          m_streams[iId] = st;
+          stream = st;
 	    
           if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
@@ -1070,14 +1071,14 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
             file.Close();
           }
         }
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_NONE;
+        stream = new CDemuxStream();
+        stream->type = STREAM_NONE;
         break;
       }
     default:
       {
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_NONE;
+        stream = new CDemuxStream();
+        stream->type = STREAM_NONE;
         break;
       }
     }
@@ -1089,9 +1090,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       delete old;
 
     // generic stuff
-    if (pStream->duration != (int64_t)AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
+    if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
+      stream->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
-    CDemuxStream* stream = GetStream(iId);
     stream->codec = pStream->codec->codec_id;
     stream->codec_fourcc = pStream->codec->codec_tag;
     stream->profile = pStream->codec->profile;
@@ -1146,6 +1147,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     }
     else
       stream->iPhysicalId = pStream->id;
+
+    m_streams[iId] = stream;
   }
 }
 
