@@ -97,3 +97,17 @@ CPlexServerDataLoader::GetAllSections() const
 
   return CFileItemListPtr(list);
 }
+
+CFileItemListPtr CPlexServerDataLoader::GetAllChannels() const
+{
+  CSingleLock lk(m_dataLock);
+  CFileItemList* list = new CFileItemList;
+
+  BOOST_FOREACH(ServerDataPair pair, m_channelMap)
+  {
+    for (int i = 0; i < pair.second->Size(); i++)
+      list->Add(pair.second->Get(i));
+  }
+
+  return CFileItemListPtr(list);
+}

@@ -50,6 +50,9 @@ public:
   CFileItemListPtr GetChannelsForServer(const CPlexServerPtr &server) { return GetChannelsForUUID(server->GetUUID()); }
 
   CFileItemListPtr GetAllSections() const;
+  CFileItemListPtr GetAllChannels() const;
+
+  bool HasChannels() const { return m_channelMap.size() > 0; }
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 

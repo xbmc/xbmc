@@ -128,7 +128,6 @@ int CPlexSectionFanout::LoadSection(const CStdString& url, int contentType)
 //////////////////////////////////////////////////////////////////////////////
 CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 {
-  CStdString bestServerUrl;
   CPlexServerPtr server = g_plexServerManager.GetBestServer();
   if (server)
     return server->BuildURL(extraUrl).Get();
@@ -149,18 +148,7 @@ void CPlexSectionFanout::Refresh()
 
   CURL trueUrl(m_url);
 
-  if (trueUrl.GetProtocol() == "channel")
-  {
-    if (!g_advancedSettings.m_bHideFanouts)
-    {
-      CStdString filter = "channels/recentlyViewed?filter=" + trueUrl.GetHostName();
-      LoadSection(GetBestServerUrl(filter), CONTENT_LIST_RECENTLY_ACCESSED);
-    }
-
-    /* We always show this as fanart */
-    LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART);
-  }
-  else if (trueUrl.GetProtocol() == "global")
+  if (trueUrl.GetProtocol() == "global")
   {
     if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
       LoadSection(GetBestServerUrl("library/arts"), CONTENT_LIST_FANART);
@@ -175,6 +163,15 @@ void CPlexSectionFanout::Refresh()
         LoadSection(MyPlexManager::Get().getPlaylistUrl("/recommendations/unwatched"), CONTENT_LIST_QUEUE);
     }*/
   }
+  else if (m_sectionType == SECTION_TYPE_CHANNELS)
+  {
+    if (!g_advancedSettings.m_bHideFanouts)
+      LoadSection(GetBestServerUrl("channels/recentlyViewed"), CONTENT_LIST_RECENTLY_ACCESSED);
+
+    /* We always show this as fanart */
+    LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART);
+  }
+
   else
   {
     if (!g_advancedSettings.m_bHideFanouts)
@@ -263,8 +260,7 @@ bool CPlexSectionFanout::NeedsRefresh()
   int refreshTime = 5;
   if (m_sectionType == SECTION_TYPE_ALBUM ||
       m_sectionType == SECTION_TYPE_QUEUE ||
-      (m_sectionType >= SECTION_TYPE_CHANNEL_VIDEO &&
-       m_sectionType <= SECTION_TYPE_CHANNEL_PHOTO))
+      m_sectionType >= SECTION_TYPE_CHANNELS)
     refreshTime = 20;
 
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
@@ -611,12 +607,19 @@ void CGUIWindowHome::UpdateSections()
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
   vector<CGUIListItemPtr> newList;
+  bool haveChannelItem = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
     CGUIListItemPtr item = oldList[i];
     if (!item->HasProperty("plex"))
       newList.push_back(item);
+
+    if (item->HasProperty("plex_channel_item") && g_plexServerDataLoader.HasChannels())
+    {
+      haveChannelItem = true;
+      newList.push_back(item);
+    }
   }
 
   for (int i = 0; i < sections->Size(); i ++)
@@ -642,8 +645,25 @@ void CGUIWindowHome::UpdateSections()
     item->SetClickActions(CGUIAction("", path));
     newList.push_back(item);
 
-    control->SetStaticContent(newList);
   }
+
+  if (!haveChannelItem && g_plexServerDataLoader.HasChannels())
+  {
+    /* We need the channel button as well */
+    CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
+    item->SetLabel(g_localizeStrings.Get(52102));
+    item->SetProperty("plex_channel_item", true);
+    item->SetProperty("plex", true);
+    item->SetProperty("sectionPath", "plexserver://channels");
+
+    item->SetPath("");
+    item->SetClickActions(CGUIAction("", ""));
+    newList.push_back(item);
+
+    AddSection("plexserver://channels", SECTION_TYPE_CHANNELS);
+  }
+
+  control->SetStaticContent(newList);
 
 }
 

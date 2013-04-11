@@ -903,3 +903,7 @@ msgstr "Select Audio Track"
 msgctxt "#52101"
 msgid "Select Subtitle"
 msgstr "Select Subtitle"
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Channels"

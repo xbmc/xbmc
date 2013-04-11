@@ -55,6 +55,8 @@ void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, co
   if (boost::starts_with(value, "/"))
     /* cut of the first / and set it */
     keyUrl.SetFileName(value.substr(1, std::string::npos));
+  else if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
+    keyUrl = value;
   else
     keyUrl.SetFileName(PlexUtils::AppendPathToURL(keyUrl.GetFileName(), value));
 
