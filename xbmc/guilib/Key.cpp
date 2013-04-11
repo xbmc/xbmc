@@ -172,7 +172,7 @@ void CKey::SetFromService(bool fromService)
   m_fromService = fromService;
 }
 
-CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)
+CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */, unsigned int holdTime /*= 0*/)
 {
   m_id = actionID;
   m_amount[0] = amount1;
@@ -183,7 +183,7 @@ CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;
-  m_holdTime = 0;
+  m_holdTime = holdTime;
 }
 
 CAction::CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name)

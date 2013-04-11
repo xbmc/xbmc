@@ -57,6 +57,7 @@
 #include "osx/DarwinUtils.h"
 #include "threads/Event.h"
 #include "Application.h"
+#include "guilib/Key.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -69,24 +70,24 @@
 #import "XBMCEAGLView.h"
 #include "XBMC_keysym.h"
 #include "substrate.h"
+
+//start repeating after 0.5s
+#define REPEATED_KEYPRESS_DELAY_S 0.5
+//pause 0.01s (10ms) between keypresses
+#define REPEATED_KEYPRESS_PAUSE_S 0.01
+
 typedef enum {
 
   ATV_BUTTON_UP                 = 1,
-  ATV_BUTTON_UP_RELEASE         = 1,
   ATV_BUTTON_DOWN               = 2,
-  ATV_BUTTON_DOWN_RELEASE       = 2,
   ATV_BUTTON_LEFT               = 3,
-  ATV_BUTTON_LEFT_RELEASE       = 3,
   ATV_BUTTON_RIGHT              = 4,
-  ATV_BUTTON_RIGHT_RELEASE      = 4,
   ATV_BUTTON_PLAY               = 5,
   ATV_BUTTON_MENU               = 6,
   ATV_BUTTON_PLAY_H             = 7,
   ATV_BUTTON_MENU_H             = 8,
   ATV_BUTTON_LEFT_H             = 9,
-  ATV_BUTTON_LEFT_H_RELEASE     = 9,
   ATV_BUTTON_RIGHT_H            = 10,
-  ATV_BUTTON_RIGHT_H_RELEASE    = 10,
 
   //new aluminium remote buttons
   ATV_ALUMINIUM_PLAY            = 12,
@@ -404,212 +405,210 @@ static BOOL XBMCController$recreateOnReselect(XBMCController* self, SEL _cmd)
   return YES;
 }
 
-static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _cmd, BREvent* f_event, int * result) 
+static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _cmd, BREvent* f_event, bool * isRepeatable, bool * isPressed, int * result) 
 {
   if(f_event == nil)// paranoia
     return;
 
   int remoteAction = [f_event remoteAction];
   CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i", remoteAction);
+  *isRepeatable = false;
+  *isPressed = false;
 
   switch (remoteAction)
   {
     // tap up
     case kBREventRemoteActionUp:
     case 65676:
+      *isRepeatable = true;
       if([f_event value] == 1)
-        *result = ATV_BUTTON_UP;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_UP_RELEASE;
-	  return;
+        *isPressed = true;
+      *result = ATV_BUTTON_UP;
+      return;
 
     // tap down
     case kBREventRemoteActionDown:
     case 65677:
+      *isRepeatable = true;
       if([f_event value] == 1)
-        *result = ATV_BUTTON_DOWN;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_DOWN_RELEASE;
-	  return;
+        *isPressed = true;
+      *result = ATV_BUTTON_DOWN;
+      return;
+    
     // tap left
     case kBREventRemoteActionLeft:
     case 65675:
+      *isRepeatable = true;
       if([f_event value] == 1)
-        *result = ATV_BUTTON_LEFT;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_LEFT_RELEASE;
-	  return;
+        *isPressed = true;
+      *result = ATV_BUTTON_LEFT;
+      return;
+    
     // hold left
     case 786612:
       if([f_event value] == 1)
         *result = ATV_LEARNED_REWIND;
       else
         *result = ATV_INVALID_BUTTON;
-        //return ATV_LEARNED_REWIND_RELEASE;
-	  return;
-
+      return;
+    
     // tap right
     case kBREventRemoteActionRight:
     case 65674:
+      *isRepeatable = true;
       if ([f_event value] == 1)
-        *result = ATV_BUTTON_RIGHT;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_RIGHT_RELEASE;
-	  return;
+        *isPressed = true;
+      *result = ATV_BUTTON_RIGHT;
+      return ;
+    
     // hold right
     case 786611:
       if ([f_event value] == 1)
         *result = ATV_LEARNED_FORWARD;
       else
         *result = ATV_INVALID_BUTTON;
-        //return ATV_LEARNED_FORWARD_RELEASE;
-	  return;
+      return ;
+   
     // tap play
     case kBREventRemoteActionPlay:
     case 65673:
       *result = ATV_BUTTON_PLAY;
-	  return;
+      return ;
+    
     // hold play
     case kBREventRemoteActionPlayHold:
     case kBREventRemoteActionCenterHold:
     case kBREventRemoteActionCenterHold42:
     case 65668:
       *result = ATV_BUTTON_PLAY_H;
-	  return;
+      return ;
+    
     // menu
     case kBREventRemoteActionMenu:
     case 65670:
       *result = ATV_BUTTON_MENU;
-	  return;
+      return ;
+    
     // hold menu
     case kBREventRemoteActionMenuHold:
     case 786496:
       *result = ATV_BUTTON_MENU_H;
-	  return;
+      return ;
+    
     // learned play
     case 786608:
       *result = ATV_LEARNED_PLAY;
-	  return;
+      return ;
+    
     // learned pause
     case 786609:
       *result = ATV_LEARNED_PAUSE;
-	  return;
+      return ;
+    
     // learned stop
     case 786615:
       *result = ATV_LEARNED_STOP;
-	  return;
+      return ;
+    
     // learned next
     case 786613:
       *result = ATV_LEARNED_NEXT;
-	  return;
+      return ;
+    
     // learned previous
     case 786614:
       *result = ATV_LEARNED_PREVIOUS;
-	  return;
+      return ;
+    
     // learned enter, like go into something
     case 786630:
       *result = ATV_LEARNED_ENTER;
-	  return;
+      return ;
+    
     // learned return, like go back
     case 786631:
       *result = ATV_LEARNED_RETURN;
-	  return;
+      return ;
+    
     // tap play on new Al IR remote
     case kBREventRemoteActionALPlay:
     case 786637:
       *result = ATV_ALUMINIUM_PLAY;
-	  return;
+      return ;
 
     case kBREventRemoteActionKeyPress:
     case kBREventRemoteActionKeyPress42:
       *result = ATV_BTKEYPRESS;
-	  return;
+      return ;
+    
     // PageUp
     case kBREventRemoteActionPageUp:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_PAGEUP;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
+      *result = ATV_BUTTON_PAGEUP;
+      return ;
+    
     // PageDown
     case kBREventRemoteActionPageDown:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_PAGEDOWN;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
+      *result = ATV_BUTTON_PAGEDOWN;
+      return ;
+    
     // Pause
     case kBREventRemoteActionPause:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_PAUSE;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
+      *result = ATV_BUTTON_PAUSE;
+      return ;
+    
     // Play2
     case kBREventRemoteActionPlay2:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_PLAY2;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
+      *result = ATV_BUTTON_PLAY2;
+      return ;
+    
     // Stop
     case kBREventRemoteActionStop:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_STOP;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_STOP_RELEASE;
-	  return;
+      *result = ATV_BUTTON_STOP;
+      return ;
+    
     // Fast Forward
     case kBREventRemoteActionFastFwd:
     case kBREventRemoteActionFastFwd2:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_FASTFWD;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_FASTFWD_RELEASE;
-	  return;
+      *isRepeatable = true;
+      if([f_event value] == 1)
+        *isPressed = true;
+      *result = ATV_BUTTON_FASTFWD;
+      return;
+    
     // Rewind
     case kBREventRemoteActionRewind:
     case kBREventRemoteActionRewind2:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_REWIND;
-      else
-        *result = ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_REWIND_RELEASE;
-	  return;
+      *isRepeatable = true;
+      if([f_event value] == 1)
+        *isPressed = true;
+      *result = ATV_BUTTON_REWIND;
+      return;
+
     // Skip Forward
     case kBREventRemoteActionSkipFwd:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_SKIPFWD;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
-    // Skip Back
+      *result = ATV_BUTTON_SKIPFWD;
+      return ;
+
+    // Skip Back      
     case kBREventRemoteActionSkipBack:
-      if ([f_event value] == 1)
-        *result = ATV_BUTTON_SKIPBACK;
-      else
-        *result = ATV_INVALID_BUTTON;
-	  return;
+      *result = ATV_BUTTON_SKIPBACK;
+      return ;
+    
     // Gesture Swipe Left
     case kBREventRemoteActionSwipeLeft:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_SWIPE_LEFT;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return ;
+    
     // Gesture Swipe Right
     case kBREventRemoteActionSwipeRight:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_SWIPE_RIGHT;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return ;
 
     // Gesture Swipe Up
     case kBREventRemoteActionSwipeUp:
@@ -617,14 +616,15 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
         *result = ATV_GESTURE_SWIPE_UP;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return ;
+    
     // Gesture Swipe Down
     case kBREventRemoteActionSwipeDown:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_SWIPE_DOWN;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return;
 
     // Gesture Flick Left
     case kBREventRemoteActionFlickLeft:
@@ -632,35 +632,50 @@ static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _
         *result = ATV_GESTURE_FLICK_LEFT;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return;
+    
     // Gesture Flick Right
     case kBREventRemoteActionFlickRight:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_FLICK_RIGHT;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return;
+    
     // Gesture Flick Up
     case kBREventRemoteActionFlickUp:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_FLICK_UP;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
+      return;
+    
     // Gesture Flick Down
     case kBREventRemoteActionFlickDown:
       if ([f_event value] == 1)
         *result = ATV_GESTURE_FLICK_DOWN;
       else
         *result = ATV_INVALID_BUTTON;
-	  return;
-
+      return;
 
     default:
       ELOG(@"XBMCPureController: Unknown button press remoteAction = %i", remoteAction);
       *result = ATV_INVALID_BUTTON;
   }
 }
+
+static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int eventId, unsigned int holdTime) 
+{
+  
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_USEREVENT;
+  newEvent.jbutton.which = eventId;
+  newEvent.jbutton.holdTime = holdTime;
+  CWinEventsIOS::MessagePush(&newEvent);
+}
+
 
 static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent* event) 
 {
@@ -669,16 +684,21 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
   if ([[self glView] isAnimating])
   {
     BOOL is_handled = NO;
-	int xbmc_ir_key = ATV_INVALID_BUTTON;
-    [self ATVClientEventFromBREvent:event Result:&xbmc_ir_key];
-    
+    bool isRepeatable = false;
+    bool isPressed = false;
+    int xbmc_ir_key = ATV_INVALID_BUTTON;
+    [self ATVClientEventFromBREvent:event 
+                                        Repeatable:&isRepeatable
+                                        ButtonState:&isPressed
+                                        Result:&xbmc_ir_key];
+
     if ( xbmc_ir_key != ATV_INVALID_BUTTON )
     {
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
-
       if (xbmc_ir_key == ATV_BTKEYPRESS && [event value] == 1)
       {
+        XBMC_Event newEvent;
+        memset(&newEvent, 0, sizeof(newEvent));
+
         NSDictionary *dict = [event eventDictionary];
         NSString *key_nsstring = [dict objectForKey:@"kBRKeyEventCharactersKey"];
         
@@ -714,9 +734,23 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
       }
       else
       {
-        newEvent.type = XBMC_USEREVENT;
-        newEvent.user.code = xbmc_ir_key;
-        CWinEventsIOS::MessagePush(&newEvent);
+        if(isRepeatable)
+        {
+          if(isPressed)
+          {
+            [self setUserEvent:xbmc_ir_key withHoldTime:0];
+            [self startKeyPressTimer:xbmc_ir_key];
+          }
+          else
+          {
+            //stop the timer
+            [self stopKeyPressTimer];
+          }
+        }
+        else
+        {
+          [self setUserEvent:xbmc_ir_key withHoldTime:0];
+        }
         is_handled = TRUE;
       }
     }
@@ -730,7 +764,56 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
 
 #pragma mark -
 #pragma mark private helper methods
-//
+static void XBMCController$startKeyPressTimer(XBMCController* self, SEL _cmd, int keyId) 
+{ 
+  NSNumber *number = [NSNumber numberWithInt:keyId];
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"StartDate", 
+                                                                  number, @"keyId", nil];
+  
+  NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:REPEATED_KEYPRESS_DELAY_S];
+  [self stopKeyPressTimer];
+  
+  //schedule repeated timer which starts after REPEATED_KEYPRESS_DELAY_S and fires
+  //every REPEATED_KEYPRESS_PAUSE_S
+  NSTimer *timer       = [[NSTimer alloc] initWithFireDate:fireDate 
+                                      interval:REPEATED_KEYPRESS_PAUSE_S 
+                                      target:self 
+                                      selector:@selector(keyPressTimerCallback:) 
+                                      userInfo:dict 
+                                      repeats:YES];
+ 
+  //schedule the timer to the runloop
+  NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+  [runLoop addTimer:timer forMode:NSDefaultRunLoopMode];
+  [self setKeyTimer:timer];
+} 
+
+static void XBMCController$stopKeyPressTimer(XBMCController* self, SEL _cmd) 
+{
+  if([self keyTimer] != nil)
+  {
+    [[self keyTimer] invalidate];
+    [[self keyTimer] release];
+    [self setKeyTimer:nil];
+  }
+}
+
+static void XBMCController$keyPressTimerCallback(XBMCController* self, SEL _cmd, NSTimer* theTimer)  
+{ 
+  //if queue is empty - skip this timer event
+  //for letting it process
+  if(CWinEventsIOS::GetQueueSize())
+    return;
+
+  NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
+  int keyId = [[[theTimer userInfo] objectForKey:@"keyId"] intValue];
+  //calc the holdTime - timeIntervalSinceNow gives the
+  //passed time since startDate in seconds as negative number
+  //so multiply with -1000 for getting the positive ms
+  NSTimeInterval holdTime = [startDate timeIntervalSinceNow] * -1000.0f;
+  [self setUserEvent:keyId withHoldTime:(unsigned int)holdTime];
+} 
+
 static void XBMCController$observeDefaultCenterStuff(XBMCController* self, SEL _cmd, NSNotification * notification) 
 {
   //NSLog(@"default: %@", [notification name]);
@@ -1098,6 +1181,10 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   // subclass BRController into XBMCController
   Class XBMCControllerCls = objc_allocateClassPair(objc_getClass("BRController"), "XBMCController", 0);
   // add our custom methods which are not part of the baseclass
+  // XBMCController::keyTimer
+  class_addMethod(XBMCControllerCls, @selector(keyTimer), (IMP)&XBMCController$keyTimer, "@@:");
+  // XBMCController::setKeyTimer
+  class_addMethod(XBMCControllerCls, @selector(setKeyTimer:), (IMP)&XBMCController$setKeyTimer, "v@:@");
   // XBMCController::glView
   class_addMethod(XBMCControllerCls, @selector(glView), (IMP)&XBMCController$glView, "@@:");
   // XBMCController::setGlView
@@ -1122,6 +1209,13 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   class_addMethod(XBMCControllerCls, @selector(setFramebuffer), (IMP)&XBMCController$setFramebuffer, "v@:");
   // XBMCController::presentFramebuffer
   class_addMethod(XBMCControllerCls, @selector(presentFramebuffer), (IMP)&XBMCController$presentFramebuffer, "B@:");
+  // XBMCController::setUserEvent
+  class_addMethod(XBMCControllerCls, @selector(setUserEvent:withHoldTime:), (IMP)&XBMCController$setUserEvent, "v@:iI");  
+  // XBMCController::startKeyPressTimer
+  class_addMethod(XBMCControllerCls, @selector(startKeyPressTimer:), (IMP)&XBMCController$startKeyPressTimer, "v@:i");  
+  // XBMCController::stopKeyPressTimer
+  class_addMethod(XBMCControllerCls, @selector(stopKeyPressTimer), (IMP)&XBMCController$stopKeyPressTimer, "v@:");
+  // XBMCController::disableSystemSleep  
   // XBMCController::disableSystemSleep
   class_addMethod(XBMCControllerCls, @selector(disableSystemSleep), (IMP)&XBMCController$disableSystemSleep, "v@:");
   // XBMCController__enableSystemSleep
@@ -1149,14 +1243,44 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   i += 1;
   _typeEncoding[i] = ':';
   i += 1;
+  memcpy(_typeEncoding + i, @encode(XBMCKey), strlen(@encode(XBMCKey)));
+  i += strlen(@encode(XBMCKey));
+  _typeEncoding[i] = '\0';
+ 
+  i = 0;
+  _typeEncoding[i] = 'v';
+  i += 1;
+  _typeEncoding[i] = '@';
+  i += 1;
+  _typeEncoding[i] = ':';
+  i += 1;
   memcpy(_typeEncoding + i, @encode(BREvent*), strlen(@encode(BREvent*)));
   i += strlen(@encode(BREvent*));
+  _typeEncoding[i] = '^';
+  _typeEncoding[i + 1] = 'B';
+  i += 2;
+  _typeEncoding[i] = '^';
+  _typeEncoding[i + 1] = 'B';
+  i += 2;
   _typeEncoding[i] = '^';
   _typeEncoding[i + 1] = 'i';
   i += 2;
   _typeEncoding[i] = '\0';
   // XBMCController::ATVClientEventFromBREvent
-  class_addMethod(XBMCControllerCls, @selector(ATVClientEventFromBREvent:Result:), (IMP)&XBMCController$ATVClientEventFromBREvent, _typeEncoding);
+  class_addMethod(XBMCControllerCls, @selector(ATVClientEventFromBREvent:Repeatable:ButtonState:Result:), (IMP)&XBMCController$ATVClientEventFromBREvent, _typeEncoding);
+
+  i = 0;
+  _typeEncoding[i] = 'v';
+  i += 1;
+  _typeEncoding[i] = '@';
+  i += 1;
+  _typeEncoding[i] = ':';
+  i += 1;
+  memcpy(_typeEncoding + i, @encode(NSTimer*), strlen(@encode(NSTimer*)));
+  i += strlen(@encode(NSTimer*));
+  _typeEncoding[i] = '\0';
+  // XBMCController::keyPressTimerCallback
+  class_addMethod(XBMCControllerCls, @selector(keyPressTimerCallback:), (IMP)&XBMCController$keyPressTimerCallback, _typeEncoding);
  
   i = 0;
   _typeEncoding[i] = 'v';

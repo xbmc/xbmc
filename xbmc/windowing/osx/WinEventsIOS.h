@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2010 Team XBMC
+*      Copyright (C) 2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -33,8 +33,10 @@ public:
   static void DeInit();
   static void MessagePush(XBMC_Event *newEvent);
   static bool MessagePump();
+  static int  GetQueueSize();
 
 protected:
 };
 
 #endif // WINDOW_EVENTS_IOS_H
+

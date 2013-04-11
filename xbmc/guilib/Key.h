@@ -436,7 +436,7 @@ class CKey;
 class CAction
 {
 public:
-  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);

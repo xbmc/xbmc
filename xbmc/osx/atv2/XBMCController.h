@@ -52,7 +52,7 @@
 - (void) activateScreen: (UIScreen *)screen;
 - (id) glView;
 - (void) setGlView:(id)view;
-- (BOOL) ATVClientEventFromBREvent:(id)event Result:(int *)xbmc_ir_key;
+- (BOOL) ATVClientEventFromBREvent:(id)event Repeatable:(bool *)isRepeatable ButtonState:(bool *)isPressed Result:(int *)xbmc_ir_key;
 - (void) setUserEvent:(int) eventId withHoldTime:(unsigned int) holdTime;
 - (void) startKeyPressTimer:(int) keyId;
 - (void) stopKeyPressTimer;
