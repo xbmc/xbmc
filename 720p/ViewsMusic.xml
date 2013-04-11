@@ -5,8 +5,8 @@
 		<control type="image">
 			<posx>13</posx>
 			<posy>173</posy>
-			<width>165</width>
-			<height>35</height>
+			<width>166</width>
+			<height>36</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
@@ -15,8 +15,8 @@
 		<control type="image">
 			<posx>12</posx>
 			<posy>12</posy>
-			<width>167</width>
-			<height>167</height>
+			<width>168</width>
+			<height>168</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -24,24 +24,24 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>191</width>
-			<height>191</height>
+			<width>192</width>
+			<height>192</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<description>Poster image</description>
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>165</width>
-			<height>165</height>
+			<width>166</width>
+			<height>166</height>
 			<texture background="true">default-square-small.png</texture>
 		</control>
 		<control type="image">
 			<description>Poster image</description>
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>165</width>
-			<height>165</height>
+			<width>166</width>
+			<height>166</height>
 			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -65,7 +65,7 @@
 				<posy>385</posy>
 				<posx>15</posx>
 				<width>776</width>
-				<height>263</height>
+				<height>264</height>
 				<include>Black</include>
 			</control>
 			<control type="image">
@@ -142,16 +142,16 @@
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
-							<width>299</width>
-							<height>299</height>
+							<width>300</width>
+							<height>300</height>
 							<include>Shadow</include>
 						</control>
 						<control type="image">
 							<description>Poster image</description>
 							<posx>13</posx>
 							<posy>13</posy>
-							<width>273</width>
-							<height>273</height>
+							<width>274</width>
+							<height>274</height>
 							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>
@@ -279,16 +279,16 @@
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
-							<width>299</width>
-							<height>299</height>
+							<width>300</width>
+							<height>300</height>
 							<include>Shadow</include>
 						</control>
 						<control type="image">
 							<description>Poster image</description>
 							<posx>13</posx>
 							<posy>13</posy>
-							<width>273</width>
-							<height>273</height>
+							<width>274</width>
+							<height>274</height>
 							<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Property(fanart_image)]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>

@@ -244,7 +244,7 @@
 			<texture>plex.png</texture>
 			<aspectratio>keep</aspectratio>
 			<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
-			<visible>IsEmpty(MusicPlayer.Fanart)</visible>
+			<visible>IsEmpty(Player.Art(fanart))</visible>
 		</control>
 		<!-- Fanart grainy overlay -->
 		<control type="image">

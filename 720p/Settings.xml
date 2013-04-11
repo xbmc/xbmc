@@ -28,7 +28,7 @@
 			<description>PHT Icon</description>
 			<posy>104</posy>
 			<posx>0</posx>
-			<height>151</height>
+			<height>152</height>
 			<width>1280</width>
 			<texture>icon-pht.png</texture>
 			<aspectratio scalediffuse="false" align="center">keep</aspectratio>

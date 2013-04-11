@@ -6,7 +6,7 @@
 			<posx>13</posx>
 			<posy>130</posy>
 			<width>122</width>
-			<height>33</height>
+			<height>34</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
@@ -62,7 +62,7 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>555</width>
+			<width>556</width>
 			<height>720</height>
 			<include>Black</include>
 			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
@@ -72,13 +72,13 @@
 		<control type="image">
 			<posy>385</posy>
 			<posx>0</posx>
-			<width>555</width>
+			<width>556</width>
 			<height>263</height>
 			<include>Black</include>
 			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>			
 		</control>
 		<control type="image">
-			<posx>555</posx>
+			<posx>556</posx>
 			<posy>500</posy>
 			<include>ArrowBlack</include>
 			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>

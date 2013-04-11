@@ -32,7 +32,7 @@
 				<posy>385</posy>
 				<posx>15</posx>
 				<width>776</width>
-				<height>263</height>
+				<height>264</height>
 				<include>Black</include>
 			</control>
 			<control type="image">
@@ -60,21 +60,21 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>224</width>
-			<height>131</height>
+			<height>132</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>198</width>
-			<height>105</height>
+			<height>106</height>
 			<texture background="true">default-thumb-small.png</texture>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>198</width>
-			<height>105</height>
+			<height>106</height>
 			<texture background="true" diffuse="mask-clip-small.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -84,7 +84,7 @@
 			<posx>13</posx>
 			<posy>117</posy>
 			<width>198</width>
-			<height>49</height>
+			<height>50</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
@@ -92,7 +92,7 @@
 			<posx>13</posx>
 			<posy>141</posy>
 			<width>198</width>
-			<height>25</height>
+			<height>26</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 		</control>
@@ -148,7 +148,7 @@
 			<posx>12</posx>
 			<posy>13</posy>
 			<width>200</width>
-			<height>105</height>
+			<height>106</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -158,21 +158,21 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>208</width>
-			<height>299</height>
+			<height>300</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>182</width>
-			<height>273</height>
+			<height>274</height>
 			<texture background="true">default-poster-middle.png</texture>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>182</width>
-			<height>273</height>
+			<height>274</height>
 			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -180,7 +180,7 @@
 	<include name="TVPosterSelectedBorder">
 		<control type="image">
 			<width>188</width>
-			<height>279</height>
+			<height>280</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -228,7 +228,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>208</width>
-					<height>299</height>
+					<height>300</height>
 					<include>Shadow</include>
 				</control>
 				<control type="image">
@@ -236,7 +236,7 @@
 					<posx>13</posx>
 					<posy>13</posy>
 					<width>182</width>
-					<height>273</height>
+					<height>274</height>
 					<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
@@ -461,7 +461,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>208</width>
-					<height>299</height>
+					<height>300</height>
 					<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 					<texture background="true" border="40">shadow.png</texture>
 				</control>
@@ -470,7 +470,7 @@
 					<posx>13</posx>
 					<posy>13</posy>
 					<width>182</width>
-					<height>273</height>
+					<height>274</height>
 					<texture background="true" diffuse="library-poster-mask.png">$INFO[Container.SeasonThumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
@@ -710,7 +710,7 @@
 					<posy>384</posy>
 					<posx>74</posx>
 					<width>447</width>
-					<height>263</height>
+					<height>264</height>
 					<texture border="50">preplay-left-small-bg.png</texture>
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -719,8 +719,8 @@
 				<control type="image">
 					<posy>384</posy>
 					<posx>506</posx>
-					<width>833</width>
-					<height>263</height>
+					<width>834</width>
+					<height>264</height>
 					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
@@ -731,7 +731,7 @@
 				<posy>77</posy>
 				<posx>293</posx>
 				<width>184</width>
-				<height>275</height>
+				<height>276</height>
 				<texture background="true" diffuse="preplay-poster-big-mask.png">$INFO[ListItem.GrandparentThumb]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -922,7 +922,7 @@
 				<control type="image">
 					<posy>49</posy>
 					<posx>74</posx>
-					<width>447</width>
+					<width>448</width>
 					<height>672</height>
 					<texture>preplay-left-big-bg.png</texture>
 					<aspectratio>stretch</aspectratio>
@@ -932,8 +932,8 @@
 				<control type="image">
 					<posy>384</posy>
 					<posx>74</posx>
-					<width>447</width>
-					<height>263</height>
+					<width>448</width>
+					<height>264</height>
 					<texture border="50">preplay-left-small-bg.png</texture>
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
@@ -943,7 +943,7 @@
 					<posy>384</posy>
 					<posx>506</posx>
 					<width>833</width>
-					<height>263</height>
+					<height>264</height>
 					<texture border="50" flipx="true">preplay-plot-bg.png</texture>
 					<aspectratio>stretch</aspectratio>
 					<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>

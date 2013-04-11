@@ -30,14 +30,14 @@
 						<posx>7</posx>
 						<posy>-166</posy>
 						<width>208</width>
-						<height>299</height>
+						<height>300</height>
 						<include>Shadow</include>
 					</control>
 					<control type="image">
 						<posx>20</posx>
 						<posy>-153</posy>
 						<width>182</width>
-						<height>273</height>
+						<height>274</height>
 						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Cover]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
@@ -203,7 +203,7 @@
 				<control type="image">
 					<posy>60</posy>
 					<width>1240</width>
-					<height>35</height>
+					<height>36</height>
 					<include>Card</include>
 					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
 				</control>
@@ -285,7 +285,7 @@
 					<posy>15</posy>
 					<posx>0</posx>
 					<width>30</width>
-					<height>23</height>
+					<height>24</height>
 					<texture>b-audio.png</texture>
 					<visible>!Control.HasFocus(19101)</visible>
 					<colordiffuse>FF666666</colordiffuse>
@@ -294,7 +294,7 @@
 					<posy>15</posy>
 					<posx>0</posx>
 					<width>30</width>
-					<height>23</height>
+					<height>24</height>
 					<texturefocus>b-audio.png</texturefocus>
 					<texturenofocus>b-audio.png</texturenofocus>
 					<onleft>19102</onleft>
@@ -352,7 +352,7 @@
 				<control type="image">
 					<posy>15</posy>
 					<posx>530</posx>
-					<width>33</width>
+					<width>34</width>
 					<height>24</height>
 					<texture>b-subtitles.png</texture>
 					<visible>!Control.HasFocus(19102)</visible>
@@ -361,7 +361,7 @@
 				<control type="button" id="19102">
 					<posy>15</posy>
 					<posx>530</posx>
-					<width>33</width>
+					<width>34</width>
 					<height>24</height>
 					<texturefocus>b-subtitles.png</texturefocus>
 					<texturenofocus>b-subtitles.png</texturenofocus>
@@ -430,7 +430,7 @@
 						<posy>0</posy>
 						<posx>-60</posx>
 						<width>30</width>
-						<height>23</height>
+						<height>24</height>
 						<texture>b-audio.png</texture>
 						<visible>!Control.HasFocus(717)</visible>
 						<colordiffuse>FF666666</colordiffuse>
@@ -439,7 +439,7 @@
 						<posy>0</posy>
 						<posx>-60</posx>
 						<width>30</width>
-						<height>23</height>
+						<height>24</height>
 						<texturefocus>b-audio.png</texturefocus>
 						<texturenofocus>b-audio.png</texturenofocus>
 						<onleft>718</onleft>
@@ -504,7 +504,7 @@
 				<control type="image">
 					<posy>13</posy>
 					<posx>265</posx>
-					<width>41</width>
+					<width>42</width>
 					<height>22</height>
 					<texture>b-rewind.png</texture>
 					<visible>!Control.HasFocus(713)</visible>
@@ -513,7 +513,7 @@
 				<control type="button" id="713">
 					<posy>13</posy>
 					<posx>265</posx>
-					<width>41</width>
+					<width>42</width>
 					<height>22</height>
 					<texturefocus>b-rewind.png</texturefocus>
 					<texturenofocus>b-rewind.png</texturenofocus>
@@ -529,7 +529,7 @@
 				<control type="image">
 					<posy>13</posy>
 					<posx>396</posx>
-					<width>41</width>
+					<width>42</width>
 					<height>22</height>
 					<texture>b-forward.png</texture>
 					<visible>!Control.HasFocus(714)</visible>
@@ -538,7 +538,7 @@
 				<control type="button" id="714">
 					<posy>13</posy>
 					<posx>396</posx>
-					<width>41</width>
+					<width>42</width>
 					<height>22</height>
 					<texturefocus>b-forward.png</texturefocus>
 					<texturenofocus>b-forward.png</texturenofocus>
@@ -579,8 +579,8 @@
 				<control type="image">
 					<posy>13</posy>
 					<posx>529</posx>
-					<width>21</width>
-					<height>21</height>
+					<width>22</width>
+					<height>22</height>
 					<texture>b-stop.png</texture>
 					<visible>!Control.HasFocus(716)</visible>
 					<colordiffuse>FF666666</colordiffuse>
@@ -588,8 +588,8 @@
 				<control type="button" id="716">
 					<posy>13</posy>
 					<posx>529</posx>
-					<width>21</width>
-					<height>21</height>
+					<width>22</width>
+					<height>22</height>
 					<texturefocus>b-stop.png</texturefocus>
 					<texturenofocus>b-stop.png</texturenofocus>
 					<onleft>715</onleft>
@@ -607,7 +607,7 @@
 					<control type="group">
 						<control type="image">
 							<posy>0</posy>
-							<width>33</width>
+							<width>34</width>
 							<height>24</height>
 							<texture>b-video.png</texture>
 							<visible>!Control.HasFocus(718)</visible>
@@ -615,7 +615,7 @@
 						</control>
 						<control type="button" id="718">
 							<posy>0</posy>
-							<width>33</width>
+							<width>34</width>
 							<height>24</height>
 							<texturefocus>b-video.png</texturefocus>
 							<texturenofocus>b-video.png</texturenofocus>

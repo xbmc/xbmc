@@ -5,8 +5,8 @@
 		<control type="image">
 			<posx>12</posx>
 			<posy>12</posy>
-			<width>167</width>
-			<height>167</height>
+			<width>168</width>
+			<height>168</height>
 			<include>Border</include>
 		</control>
 	</include>
@@ -14,24 +14,24 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>191</width>
-			<height>191</height>
+			<width>192</width>
+			<height>192</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<description>Poster image</description>
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>165</width>
-			<height>165</height>
+			<width>166</width>
+			<height>166</height>
 			<texture background="true">default-square-small.png</texture>
 		</control>
 		<control type="image">
 			<description>Poster image</description>
 			<posx>13</posx>
 			<posy>13</posy>
-			<width>165</width>
-			<height>165</height>
+			<width>166</width>
+			<height>166</height>
 			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
@@ -52,7 +52,7 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>355</width>
+			<width>356</width>
 			<height>720</height>
 			<include>Black</include>
 			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
@@ -62,7 +62,7 @@
 			<control type="image">
 				<posy>385</posy>
 				<posx>0</posx>
-				<width>355</width>
+				<width>356</width>
 				<height>263</height>
 				<include>Black</include>
 				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
