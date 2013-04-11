@@ -91,6 +91,7 @@ IF %graphics%==dx SET RELEASE=Release (DirectX)
 IF %graphics%==gl SET RELEASE=Release (OpenGL)
 
 set XBMC_EXE="..\VS2010Express\XBMC\%RELEASE%\XBMC.exe"
+set XBMC_PDB="..\VS2010Express\XBMC\%RELEASE%\XBMC.pdb"
 
 IF EXIST %XBMC_EXE% IF "%promptlevel%"=="prompt" (
 	ECHO ------------------------------------------------------------
@@ -251,6 +252,7 @@ call getdeploydependencies.bat
 call extract_git_rev.bat > NUL
 ECHO ------------------------------------------------------------
 SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%graphics%.exe
+SET XBMC_PDBFILE=XBMCSetup-%GIT_REV%-%target%.pdb
 ECHO Generating XBMC package installer: %XBMC_SETUPFILE%...
 
 
@@ -296,6 +298,9 @@ IF NOT EXIST "%XBMC_SETUPFILE%" (
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%. NSIS installed?
 	  goto DIE
 )
+
+:: pdb file needed by Jenkins
+copy %XBMC_PDB% %XBMC_PDBFILE% > nul
 
 ECHO Done!
 ECHO Setup is located at: %CD%\%XBMC_SETUPFILE%
