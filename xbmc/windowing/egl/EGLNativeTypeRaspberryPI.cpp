@@ -55,6 +55,11 @@
 # define DLOG(fmt, args...)
 #endif
 
+#if defined(TARGET_RASPBERRY_PI)
+static float get_display_aspect_ratio(HDMI_ASPECT_T aspect);
+static float get_display_aspect_ratio(SDTV_ASPECT_T aspect);
+#endif
+
 
 CEGLNativeTypeRaspberryPI::CEGLNativeTypeRaspberryPI()
 {
@@ -321,36 +326,6 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
   return false;
 #endif
 }
-
-#if defined(TARGET_RASPBERRY_PI)
-static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
-{
-  float display_aspect;
-  switch (aspect) {
-    case HDMI_ASPECT_4_3:   display_aspect = 4.0/3.0;   break;
-    case HDMI_ASPECT_14_9:  display_aspect = 14.0/9.0;  break;
-    case HDMI_ASPECT_16_9:  display_aspect = 16.0/9.0;  break;
-    case HDMI_ASPECT_5_4:   display_aspect = 5.0/4.0;   break;
-    case HDMI_ASPECT_16_10: display_aspect = 16.0/10.0; break;
-    case HDMI_ASPECT_15_9:  display_aspect = 15.0/9.0;  break;
-    case HDMI_ASPECT_64_27: display_aspect = 64.0/27.0; break;
-    default:                display_aspect = 16.0/9.0;  break;
-  }
-  return display_aspect;
-}
-
-static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
-{
-  float display_aspect;
-  switch (aspect) {
-    case SDTV_ASPECT_4_3:  display_aspect = 4.0/3.0;  break;
-    case SDTV_ASPECT_14_9: display_aspect = 14.0/9.0; break;
-    case SDTV_ASPECT_16_9: display_aspect = 16.0/9.0; break;
-    default:               display_aspect = 4.0/3.0;  break;
-  }
-  return display_aspect;
-}
-#endif
 
 bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
@@ -639,3 +614,35 @@ bool CEGLNativeTypeRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 
 #endif
 
+
+// private utility functions
+
+#if defined(TARGET_RASPBERRY_PI)
+static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
+{
+  float display_aspect;
+  switch (aspect) {
+    case HDMI_ASPECT_4_3:   display_aspect = 4.0/3.0;   break;
+    case HDMI_ASPECT_14_9:  display_aspect = 14.0/9.0;  break;
+    case HDMI_ASPECT_16_9:  display_aspect = 16.0/9.0;  break;
+    case HDMI_ASPECT_5_4:   display_aspect = 5.0/4.0;   break;
+    case HDMI_ASPECT_16_10: display_aspect = 16.0/10.0; break;
+    case HDMI_ASPECT_15_9:  display_aspect = 15.0/9.0;  break;
+    case HDMI_ASPECT_64_27: display_aspect = 64.0/27.0; break;
+    default:                display_aspect = 16.0/9.0;  break;
+  }
+  return display_aspect;
+}
+
+static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
+{
+  float display_aspect;
+  switch (aspect) {
+    case SDTV_ASPECT_4_3:  display_aspect = 4.0/3.0;  break;
+    case SDTV_ASPECT_14_9: display_aspect = 14.0/9.0; break;
+    case SDTV_ASPECT_16_9: display_aspect = 16.0/9.0; break;
+    default:               display_aspect = 4.0/3.0;  break;
+  }
+  return display_aspect;
+}
+#endif
