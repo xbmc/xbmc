@@ -16,7 +16,7 @@ RANLIB="@RANLIB@"
 OBJDUMP="@OBJDUMP@"
 
 if test "@platform_os@" = "ios" ; then
-  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@"
+  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
   export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
 fi
 
