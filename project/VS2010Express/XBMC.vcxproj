@@ -1821,7 +1821,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\AudioDecoder.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\CDDAcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\CodecFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\FLACcodec.cpp" />
@@ -2654,7 +2653,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\CDDAcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
     <ClInclude Include="..\..\lib\DllAdpcm.h" />
     <ClInclude Include="..\..\lib\DllASAP.h" />
