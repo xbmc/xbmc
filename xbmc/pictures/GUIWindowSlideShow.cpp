@@ -229,7 +229,6 @@ void CGUIWindowSlideShow::Reset()
   m_bPause = false;
   m_bPlayingVideo = false;
   m_bErrorMessage = false;
-  m_bReloadImage = false;
   m_Image[0].UnLoad();
   m_Image[0].Close();
   m_Image[1].UnLoad();
@@ -447,7 +446,6 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       if (m_Image[m_iCurrentPic].IsLoaded())
       {
         // current image was already loaded, so we can ignore this error.
-        m_bReloadImage = false;
         m_bErrorMessage = false;
       }
       else
@@ -527,54 +525,23 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_Image[1 - m_iCurrentPic].IsLoaded() && m_Image[1 - m_iCurrentPic].SlideNumber() != m_iNextSlide)
     m_Image[1 - m_iCurrentPic].Close();
 
-  // if we're reloading current image
-  if (m_bReloadImage)
-  {
-    if (m_bLoadNextPic || m_slides->Get(m_iCurrentSlide)->IsVideo())
+  if (m_iNextSlide != m_iCurrentSlide && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && m_iLastFailedNextSlide != m_iNextSlide)
+  { // load the next image
+    m_iLastFailedNextSlide = -1;
+    CFileItemPtr item = m_slides->Get(m_iNextSlide);
+    CStdString picturePath = GetPicturePath(item.get());
+    if (!picturePath.IsEmpty())
     {
-      // not reload current if we already wait the next or curent one is video thumb.
-      m_bReloadImage = false;
-    }
-    else if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
-    { // reload the image if we need to
-      CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides->Get(m_iCurrentSlide)->GetPath().c_str(), m_iZoomFactor);
-      // first, our maximal size for this zoom level
-      int maxWidth = (int)((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom);
-      int maxHeight = (int)((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom);
-
-      // the actual maximal size of the image to optimize the sizing based on the known sizing (aspect ratio)
-      int width, height;
-      GetCheckedSize((float)m_Image[m_iCurrentPic].GetOriginalWidth(), (float)m_Image[m_iCurrentPic].GetOriginalHeight(), width, height);
-
-      // use the smaller of the two (no point zooming in more than we have to)
-      if (maxWidth < width)
-        width = maxWidth;
-      if (maxHeight < height)
-        height = maxHeight;
-
-      m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->GetPath(), width, height);
-    }
-  }
-  else
-  {
-    if (m_iNextSlide != m_iCurrentSlide && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && m_iLastFailedNextSlide != m_iNextSlide)
-    { // load the next image
-      m_iLastFailedNextSlide = -1;
-      CFileItemPtr item = m_slides->Get(m_iNextSlide);
-      CStdString picturePath = GetPicturePath(item.get());
-      if (!picturePath.IsEmpty())
-      {
-        if (item->IsVideo())
-          CLog::Log(LOGDEBUG, "Loading the thumb %s for next video %d: %s", picturePath.c_str(), m_iNextSlide, item->GetPath().c_str());
-        else
-          CLog::Log(LOGDEBUG, "Loading the next image %d: %s", m_iNextSlide, item->GetPath().c_str());
-        
-        int maxWidth, maxHeight;
-        GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
-                       (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
-                       maxWidth, maxHeight);
-        m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, picturePath, maxWidth, maxHeight);
-      }
+      if (item->IsVideo())
+        CLog::Log(LOGDEBUG, "Loading the thumb %s for next video %d: %s", picturePath.c_str(), m_iNextSlide, item->GetPath().c_str());
+      else
+        CLog::Log(LOGDEBUG, "Loading the next image %d: %s", m_iNextSlide, item->GetPath().c_str());
+      
+      int maxWidth, maxHeight;
+      GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
+                     (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
+                     maxWidth, maxHeight);
+      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, picturePath, maxWidth, maxHeight);
     }
   }
 
@@ -1091,9 +1058,6 @@ void CGUIWindowSlideShow::ZoomRelative(float fZoom, bool immediate /* = false */
   m_fZoom = fZoom;
 
   // find the nearest zoom factor
-#ifdef RELOAD_ON_ZOOM
-  int iOldZoomFactor = m_iZoomFactor;
-#endif
   for (unsigned int i = 1; i < MAX_ZOOM_FACTOR; i++)
   {
     if (m_fZoom > zoomamount[i])
@@ -1107,14 +1071,7 @@ void CGUIWindowSlideShow::ZoomRelative(float fZoom, bool immediate /* = false */
     break;
   }
 
-  // set the zoom amount and then set so that the image is reloaded at the higher (or lower)
-  // resolution as necessary
   m_Image[m_iCurrentPic].Zoom(m_fZoom, immediate);
-
-#ifdef RELOAD_ON_ZOOM
-  if (m_iZoomFactor == 1 || (iZoomFactor > iOldZoomFactor && !m_Image[m_iCurrentPic].FullSize()))
-    m_bReloadImage = true;
-#endif
 }
 
 void CGUIWindowSlideShow::Move(float fX, float fY)
@@ -1167,37 +1124,24 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
       return;
     }
     CLog::Log(LOGDEBUG, "Finished background loading slot %d, %d: %s", iPic, iSlideNumber, m_slides->Get(iSlideNumber)->GetPath().c_str());
-    if (m_bReloadImage)
+    m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
+    m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
+    
+    m_Image[iPic].m_bIsComic = false;
+    if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
-      if (!m_Image[m_iCurrentPic].IsLoaded() || m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
-      { // wrong image (ie we finished loading the next image, not the current image)
-        delete pTexture;
-        return;
-      }
-      m_Image[m_iCurrentPic].UpdateTexture(pTexture);
-      m_Image[m_iCurrentPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
-      m_bReloadImage = false;
-    }
-    else
-    {
-      m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
-      m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
-
-      m_Image[iPic].m_bIsComic = false;
-      if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
+      CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
+      CStdString strHostName = url.GetHostName();
+      if (URIUtils::GetExtension(strHostName).Equals(".cbr", false) || URIUtils::GetExtension(strHostName).Equals(".cbz", false))
       {
-        CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
-        CStdString strHostName = url.GetHostName();
-        if (URIUtils::GetExtension(strHostName).Equals(".cbr", false) || URIUtils::GetExtension(strHostName).Equals(".cbz", false))
-        {
-          m_Image[iPic].m_bIsComic = true;
-          m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());
-        }
+        m_Image[iPic].m_bIsComic = true;
+        m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());
       }
     }
   }
   else if (iSlideNumber >= m_slides->Size() || GetPicturePath(m_slides->Get(iSlideNumber).get()) != strFileName)
   { // Failed to load image. and not match values calling LoadPic, then something is changed, ignore.
+    CLog::Log(LOGDEBUG, "CGUIWindowSlideShow::OnLoadPic(%d, %d, %s) on failure not match current state (cur %d, next %d, curpic %d, pic[0, 1].slidenumber=%d, %d, %s)", iPic, iSlideNumber, strFileName.c_str(), m_iCurrentSlide, m_iNextSlide, m_iCurrentPic, m_Image[0].SlideNumber(), m_Image[1].SlideNumber(), iSlideNumber >= m_slides->Size() ? "" : m_slides->Get(iSlideNumber)->GetPath().c_str());
   }
   else
   { // Failed to load image.  What should be done??
@@ -1322,23 +1266,8 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
 
 void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight)
 {
-#ifdef RELOAD_ON_ZOOM
-  if (width * height > MAX_PICTURE_SIZE)
-  {
-    float fScale = sqrt((float)MAX_PICTURE_SIZE / (width * height));
-    width = fScale * width;
-    height = fScale * height;
-  }
-  maxWidth = (int)width;
-  maxHeight = (int)height;
-  if (maxWidth > (int)g_Windowing.GetMaxTextureSize())
-    maxWidth = g_Windowing.GetMaxTextureSize();
-  if (maxHeight > (int)g_Windowing.GetMaxTextureSize())
-    maxHeight = g_Windowing.GetMaxTextureSize();
-#else
   maxWidth = g_Windowing.GetMaxTextureSize();
   maxHeight = g_Windowing.GetMaxTextureSize();
-#endif
 }
 
 CStdString CGUIWindowSlideShow::GetPicturePath(CFileItem *item)

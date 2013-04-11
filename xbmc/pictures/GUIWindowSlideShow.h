@@ -148,7 +148,6 @@ private:
   CBackgroundPicLoader* m_pBackgroundLoader;
   int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
-  bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;
