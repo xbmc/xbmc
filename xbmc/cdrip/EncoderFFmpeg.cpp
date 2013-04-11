@@ -229,7 +229,7 @@ bool CEncoderFFmpeg::WriteFrame()
   m_Pkt.data = outbuf;
   m_Pkt.size = encoded;
 
-  if (m_CodecCtx->coded_frame && (uint64_t)m_CodecCtx->coded_frame->pts != AV_NOPTS_VALUE)
+  if (m_CodecCtx->coded_frame && m_CodecCtx->coded_frame->pts != AV_NOPTS_VALUE)
     m_Pkt.pts = m_dllAvUtil.av_rescale_q(m_CodecCtx->coded_frame->pts, m_Stream->time_base, m_CodecCtx->time_base);
 
   if (m_dllAvFormat.av_write_frame(m_Format, &m_Pkt) < 0) {
