@@ -27,82 +27,7 @@
 #include "libavutil/opt.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/pixdesc.h"
-
-/* raw input */
-int ff_raw_read_header(AVFormatContext *s, AVFormatParameters *ap)
-{
-    AVStream *st;
-    enum CodecID id;
-
-    st = avformat_new_stream(s, NULL);
-    if (!st)
-        return AVERROR(ENOMEM);
-
-        id = s->iformat->value;
-        if (id == CODEC_ID_RAWVIDEO) {
-            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-        } else {
-            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-        }
-        st->codec->codec_id = id;
-
-        switch(st->codec->codec_type) {
-        case AVMEDIA_TYPE_AUDIO: {
-            RawAudioDemuxerContext *s1 = s->priv_data;
-
-            st->codec->channels = 1;
-
-            if (id == CODEC_ID_ADPCM_G722)
-                st->codec->sample_rate = 16000;
-
-            if (s1 && s1->sample_rate)
-                st->codec->sample_rate = s1->sample_rate;
-            if (st->codec->sample_rate <= 0) {
-                av_log(s, AV_LOG_WARNING, "Invalid sample rate %d specified using default of 44100\n",
-                       st->codec->sample_rate);
-                st->codec->sample_rate= 44100;
-            }
-
-            if (s1 && s1->channels)
-                st->codec->channels    = s1->channels;
-
-            st->codec->bits_per_coded_sample = av_get_bits_per_sample(st->codec->codec_id);
-            assert(st->codec->bits_per_coded_sample > 0);
-            st->codec->block_align = st->codec->bits_per_coded_sample*st->codec->channels/8;
-            avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
-            break;
-            }
-        case AVMEDIA_TYPE_VIDEO: {
-            FFRawVideoDemuxerContext *s1 = s->priv_data;
-            int width = 0, height = 0, ret = 0;
-            enum PixelFormat pix_fmt;
-            AVRational framerate;
-
-            if (s1->video_size && (ret = av_parse_video_size(&width, &height, s1->video_size)) < 0) {
-                av_log(s, AV_LOG_ERROR, "Couldn't parse video size.\n");
-                goto fail;
-            }
-            if ((pix_fmt = av_get_pix_fmt(s1->pixel_format)) == PIX_FMT_NONE) {
-                av_log(s, AV_LOG_ERROR, "No such pixel format: %s.\n", s1->pixel_format);
-                ret = AVERROR(EINVAL);
-                goto fail;
-            }
-            if ((ret = av_parse_video_rate(&framerate, s1->framerate)) < 0) {
-                av_log(s, AV_LOG_ERROR, "Could not parse framerate: %s.\n", s1->framerate);
-                goto fail;
-            }
-            avpriv_set_pts_info(st, 64, framerate.den, framerate.num);
-            st->codec->width  = width;
-            st->codec->height = height;
-            st->codec->pix_fmt = pix_fmt;
-fail:
-            return ret;
-            }
-        default:
-            return -1;
-        }
-    return 0;
-}
+#include "libavutil/avassert.h"
 
 #define RAW_PACKET_SIZE 1024
 
@@ -126,15 +51,14 @@ int ff_raw_read_partial_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-int ff_raw_audio_read_header(AVFormatContext *s,
-                             AVFormatParameters *ap)
+int ff_raw_audio_read_header(AVFormatContext *s)
 {
     AVStream *st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id = s->iformat->value;
-    st->need_parsing = AVSTREAM_PARSE_FULL;
+    st->codec->codec_id = s->iformat->raw_codec_id;
+    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
     st->start_time = 0;
     /* the parameters will be extracted from the compressed bitstream */
 
@@ -142,8 +66,7 @@ int ff_raw_audio_read_header(AVFormatContext *s,
 }
 
 /* MPEG-1/H.263 input */
-int ff_raw_video_read_header(AVFormatContext *s,
-                             AVFormatParameters *ap)
+int ff_raw_video_read_header(AVFormatContext *s)
 {
     AVStream *st;
     FFRawVideoDemuxerContext *s1 = s->priv_data;
@@ -158,15 +81,15 @@ int ff_raw_video_read_header(AVFormatContext *s,
     }
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = s->iformat->value;
-    st->need_parsing = AVSTREAM_PARSE_FULL;
+    st->codec->codec_id = s->iformat->raw_codec_id;
+    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
 
     if ((ret = av_parse_video_rate(&framerate, s1->framerate)) < 0) {
         av_log(s, AV_LOG_ERROR, "Could not parse framerate: %s.\n", s1->framerate);
         goto fail;
     }
 
-    st->codec->time_base = (AVRational){framerate.den, framerate.num};
+    st->codec->time_base = av_inv_q(framerate);
     avpriv_set_pts_info(st, 64, 1, 1200000);
 
 fail:
@@ -182,32 +105,20 @@ const AVOption ff_rawvideo_options[] = {
     { NULL },
 };
 
-#if CONFIG_G722_DEMUXER
-AVInputFormat ff_g722_demuxer = {
-    .name           = "g722",
-    .long_name      = NULL_IF_CONFIG_SMALL("raw G.722"),
-    .read_header    = ff_raw_read_header,
-    .read_packet    = ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "g722,722",
-    .value = CODEC_ID_ADPCM_G722,
-};
-#endif
-
 #if CONFIG_LATM_DEMUXER
 AVInputFormat ff_latm_demuxer = {
     .name           = "latm",
     .long_name      = NULL_IF_CONFIG_SMALL("raw LOAS/LATM"),
     .read_header    = ff_raw_audio_read_header,
     .read_packet    = ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "latm",
-    .value = CODEC_ID_AAC_LATM,
+    .flags          = AVFMT_GENERIC_INDEX,
+    .extensions     = "latm",
+    .raw_codec_id   = AV_CODEC_ID_AAC_LATM,
 };
 #endif
 
 #if CONFIG_MJPEG_DEMUXER
-FF_DEF_RAWVIDEO_DEMUXER(mjpeg, "raw MJPEG video", NULL, "mjpg,mjpeg,mpo", CODEC_ID_MJPEG)
+FF_DEF_RAWVIDEO_DEMUXER(mjpeg, "raw MJPEG video", NULL, "mjpg,mjpeg,mpo", AV_CODEC_ID_MJPEG)
 #endif
 
 #if CONFIG_MLP_DEMUXER
@@ -216,9 +127,9 @@ AVInputFormat ff_mlp_demuxer = {
     .long_name      = NULL_IF_CONFIG_SMALL("raw MLP"),
     .read_header    = ff_raw_audio_read_header,
     .read_packet    = ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "mlp",
-    .value = CODEC_ID_MLP,
+    .flags          = AVFMT_GENERIC_INDEX,
+    .extensions     = "mlp",
+    .raw_codec_id   = AV_CODEC_ID_MLP,
 };
 #endif
 
@@ -228,9 +139,9 @@ AVInputFormat ff_truehd_demuxer = {
     .long_name      = NULL_IF_CONFIG_SMALL("raw TrueHD"),
     .read_header    = ff_raw_audio_read_header,
     .read_packet    = ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "thd",
-    .value = CODEC_ID_TRUEHD,
+    .flags          = AVFMT_GENERIC_INDEX,
+    .extensions     = "thd",
+    .raw_codec_id   = AV_CODEC_ID_TRUEHD,
 };
 #endif
 
@@ -241,11 +152,11 @@ AVInputFormat ff_shorten_demuxer = {
     .read_header    = ff_raw_audio_read_header,
     .read_packet    = ff_raw_read_partial_packet,
     .flags          = AVFMT_NOBINSEARCH | AVFMT_NOGENSEARCH | AVFMT_NO_BYTE_SEEK,
-    .extensions = "shn",
-    .value = CODEC_ID_SHORTEN,
+    .extensions     = "shn",
+    .raw_codec_id   = AV_CODEC_ID_SHORTEN,
 };
 #endif
 
 #if CONFIG_VC1_DEMUXER
-FF_DEF_RAWVIDEO_DEMUXER(vc1, "raw VC-1", NULL, "vc1", CODEC_ID_VC1)
+FF_DEF_RAWVIDEO_DEMUXER(vc1, "raw VC-1", NULL, "vc1", AV_CODEC_ID_VC1)
 #endif

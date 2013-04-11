@@ -23,10 +23,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#ifndef _LINUX
-enum StreamType;
-enum CodecID;
-#else
+
 #include "DVDDemuxers/DVDDemux.h"
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -39,7 +36,6 @@ extern "C" {
   #include "libavcodec/avcodec.h"
 #endif
 }
-#endif
 
 class CDemuxStream;
 

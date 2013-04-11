@@ -25,6 +25,8 @@
 #include "config.h"
 #include "libavutil/common.h"
 
+#if HAVE_INLINE_ASM
+
 #if ARCH_X86_32
 
 #define MULL MULL
@@ -99,6 +101,12 @@ __asm__ volatile(\
 );
 #endif
 
+#define MASK_ABS(mask, level)                   \
+    __asm__ ("cltd                   \n\t"      \
+             "xorl %1, %0            \n\t"      \
+             "subl %1, %0            \n\t"      \
+             : "+a"(level), "=&d"(mask))
+
 // avoid +32 for shift optimization (gcc should do that ...)
 #define NEG_SSR32 NEG_SSR32
 static inline  int32_t NEG_SSR32( int32_t a, int8_t s){
@@ -118,4 +126,5 @@ static inline uint32_t NEG_USR32(uint32_t a, int8_t s){
     return a;
 }
 
+#endif /* HAVE_INLINE_ASM */
 #endif /* AVCODEC_X86_MATHOPS_H */

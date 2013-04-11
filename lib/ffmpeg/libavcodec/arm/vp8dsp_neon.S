@@ -1,4 +1,4 @@
-/**
+/*
  * VP8 NEON optimisations
  *
  * Copyright (c) 2010 Rob Clark <rob@ti.com>
@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
+#include "libavutil/arm/asm.S"
 #include "neon.S"
 
 function ff_vp8_luma_dc_wht_neon, export=1

@@ -34,11 +34,13 @@
 #include <stdint.h>
 
 #define IVI_VLC_BITS 13 ///< max number of bits of the ivi's huffman codes
+#define IVI4_STREAM_ANALYSER    0
+#define IVI5_IS_PROTECTED       0x20
 
 /**
  *  huffman codebook descriptor
  */
-typedef struct {
+typedef struct IVIHuffDesc {
     int32_t     num_rows;
     uint8_t     xbits[16];
 } IVIHuffDesc;
@@ -46,7 +48,7 @@ typedef struct {
 /**
  *  macroblock/block huffman table descriptor
  */
-typedef struct {
+typedef struct IVIHuffTab {
     int32_t     tab_sel;    /// index of one of the predefined tables
                             /// or "7" for custom one
     VLC         *tab;       /// pointer to the table associated with tab_sel
@@ -60,9 +62,6 @@ enum {
     IVI_MB_HUFF   = 0,      /// Huffman table is used for coding macroblocks
     IVI_BLK_HUFF  = 1       /// Huffman table is used for coding blocks
 };
-
-extern VLC ff_ivi_mb_vlc_tabs [8]; ///< static macroblock Huffman tables
-extern VLC ff_ivi_blk_vlc_tabs[8]; ///< static block Huffman tables
 
 
 /**
@@ -83,7 +82,7 @@ typedef void (DCTransformPtr) (const int32_t *in, int16_t *out, uint32_t pitch, 
 /**
  *  run-value (RLE) table descriptor
  */
-typedef struct {
+typedef struct RVMapDesc {
     uint8_t     eob_sym; ///< end of block symbol
     uint8_t     esc_sym; ///< escape symbol
     uint8_t     runtab[256];
@@ -96,7 +95,7 @@ extern const RVMapDesc ff_ivi_rvmap_tabs[9];
 /**
  *  information for Indeo macroblock (16x16, 8x8 or 4x4)
  */
-typedef struct {
+typedef struct IVIMbInfo {
     int16_t     xpos;
     int16_t     ypos;
     uint32_t    buf_offs; ///< address in the output buffer for this mb
@@ -111,11 +110,12 @@ typedef struct {
 /**
  *  information for Indeo tile
  */
-typedef struct {
+typedef struct IVITile {
     int         xpos;
     int         ypos;
     int         width;
     int         height;
+    int         mb_size;
     int         is_empty;  ///< = 1 if this tile doesn't contain any data
     int         data_size; ///< size of the data in bytes
     int         num_MBs;   ///< number of macroblocks in this tile
@@ -127,11 +127,12 @@ typedef struct {
 /**
  *  information for Indeo wavelet band
  */
-typedef struct {
+typedef struct IVIBandDesc {
     int             plane;          ///< plane number this band belongs to
     int             band_num;       ///< band number
     int             width;
     int             height;
+    int             aheight;        ///< aligned band height
     const uint8_t   *data_ptr;      ///< ptr to the first byte of the band data
     int             data_size;      ///< size of the band data
     int16_t         *buf;           ///< pointer to the output buffer for this band
@@ -148,6 +149,7 @@ typedef struct {
     int             quant_mat;      ///< dequant matrix index
     int             glob_quant;     ///< quant base for this band
     const uint8_t   *scan;          ///< ptr to the scan pattern
+    int             scan_size;      ///< size of the scantable
 
     IVIHuffTab      blk_vlc;        ///< vlc table for decoding block data
 
@@ -160,6 +162,7 @@ typedef struct {
     InvTransformPtr *inv_transform;
     DCTransformPtr  *dc_transform;
     int             is_2d_trans;    ///< 1 indicates that the two-dimensional inverse transform is used
+    int             transform_size; ///< block size of the transform
     int32_t         checksum;       ///< for debug purposes
     int             checksum_present;
     int             bufsize;        ///< band buffer size in bytes
@@ -173,7 +176,7 @@ typedef struct {
 /**
  *  color plane (luma or chroma) information
  */
-typedef struct {
+typedef struct IVIPlaneDesc {
     uint16_t    width;
     uint16_t    height;
     uint8_t     num_bands;  ///< number of bands this plane subdivided into
@@ -181,7 +184,7 @@ typedef struct {
 } IVIPlaneDesc;
 
 
-typedef struct {
+typedef struct IVIPicConfig {
     uint16_t    pic_width;
     uint16_t    pic_height;
     uint16_t    chroma_width;
@@ -191,6 +194,63 @@ typedef struct {
     uint8_t     luma_bands;
     uint8_t     chroma_bands;
 } IVIPicConfig;
+
+typedef struct IVI45DecContext {
+    GetBitContext   gb;
+    AVFrame         frame;
+    RVMapDesc       rvmap_tabs[9];   ///< local corrected copy of the static rvmap tables
+
+    uint32_t        frame_num;
+    int             frame_type;
+    int             prev_frame_type; ///< frame type of the previous frame
+    uint32_t        data_size;       ///< size of the frame data in bytes from picture header
+    int             is_scalable;
+    int             transp_status;   ///< transparency mode status: 1 - enabled
+    const uint8_t   *frame_data;     ///< input frame data pointer
+    int             inter_scal;      ///< signals a sequence of scalable inter frames
+    uint32_t        frame_size;      ///< frame size in bytes
+    uint32_t        pic_hdr_size;    ///< picture header size in bytes
+    uint8_t         frame_flags;
+    uint16_t        checksum;        ///< frame checksum
+
+    IVIPicConfig    pic_conf;
+    IVIPlaneDesc    planes[3];       ///< color planes
+
+    int             buf_switch;      ///< used to switch between three buffers
+    int             dst_buf;         ///< buffer index for the currently decoded frame
+    int             ref_buf;         ///< inter frame reference buffer index
+    int             ref2_buf;        ///< temporal storage for switching buffers
+
+    IVIHuffTab      mb_vlc;          ///< current macroblock table descriptor
+    IVIHuffTab      blk_vlc;         ///< current block table descriptor
+
+    uint8_t         rvmap_sel;
+    uint8_t         in_imf;
+    uint8_t         in_q;            ///< flag for explicitly stored quantiser delta
+    uint8_t         pic_glob_quant;
+    uint8_t         unknown1;
+
+    uint16_t        gop_hdr_size;
+    uint8_t         gop_flags;
+    uint32_t        lock_word;
+
+#if IVI4_STREAM_ANALYSER
+    uint8_t         has_b_frames;
+    uint8_t         has_transp;
+    uint8_t         uses_tiling;
+    uint8_t         uses_haar;
+    uint8_t         uses_fullpel;
+#endif
+
+    int             (*decode_pic_hdr)  (struct IVI45DecContext *ctx, AVCodecContext *avctx);
+    int             (*decode_band_hdr) (struct IVI45DecContext *ctx, IVIBandDesc *band, AVCodecContext *avctx);
+    int             (*decode_mb_info)  (struct IVI45DecContext *ctx, IVIBandDesc *band, IVITile *tile, AVCodecContext *avctx);
+    void            (*switch_buffers)  (struct IVI45DecContext *ctx);
+    int             (*is_nonnull_frame)(struct IVI45DecContext *ctx);
+
+    int gop_invalid;
+    int buf_invalid[3];
+} IVI45DecContext;
 
 /** compare some properties of two pictures */
 static inline int ivi_pic_config_cmp(IVIPicConfig *str1, IVIPicConfig *str2)
@@ -218,17 +278,6 @@ static inline int ivi_scale_mv(int mv, int mv_scale)
 }
 
 /**
- *  Generate a huffman codebook from the given descriptor
- *  and convert it into the FFmpeg VLC table.
- *
- *  @param[in]   cb    pointer to codebook descriptor
- *  @param[out]  vlc   where to place the generated VLC table
- *  @param[in]   flag  flag: 1 - for static or 0 for dynamic tables
- *  @return     result code: 0 - OK, -1 = error (invalid codebook descriptor)
- */
-int  ff_ivi_create_huff_from_desc(const IVIHuffDesc *cb, VLC *vlc, int flag);
-
-/**
  * Initialize static codes used for macroblock and block decoding.
  */
 void ff_ivi_init_static_vlc(void);
@@ -248,23 +297,6 @@ int  ff_ivi_dec_huff_desc(GetBitContext *gb, int desc_coded, int which_tab,
                           IVIHuffTab *huff_tab, AVCodecContext *avctx);
 
 /**
- *  Compare two huffman codebook descriptors.
- *
- *  @param[in]  desc1  ptr to the 1st descriptor to compare
- *  @param[in]  desc2  ptr to the 2nd descriptor to compare
- *  @return         comparison result: 0 - equal, 1 - not equal
- */
-int  ff_ivi_huff_desc_cmp(const IVIHuffDesc *desc1, const IVIHuffDesc *desc2);
-
-/**
- *  Copy huffman codebook descriptors.
- *
- *  @param[out]  dst  ptr to the destination descriptor
- *  @param[in]   src  ptr to the source descriptor
- */
-void ff_ivi_huff_desc_copy(IVIHuffDesc *dst, const IVIHuffDesc *src);
-
-/**
  *  Initialize planes (prepares descriptors, allocates buffers etc).
  *
  *  @param[in,out]  planes  pointer to the array of the plane descriptors
@@ -272,13 +304,6 @@ void ff_ivi_huff_desc_copy(IVIHuffDesc *dst, const IVIHuffDesc *src);
  *  @return             result code: 0 - OK
  */
 int  ff_ivi_init_planes(IVIPlaneDesc *planes, const IVIPicConfig *cfg);
-
-/**
- *  Free planes, bands and macroblocks buffers.
- *
- *  @param[in]  planes  pointer to the array of the plane descriptors
- */
-void ff_ivi_free_buffers(IVIPlaneDesc *planes);
 
 /**
  *  Initialize tile and macroblock descriptors.
@@ -290,62 +315,8 @@ void ff_ivi_free_buffers(IVIPlaneDesc *planes);
  */
 int  ff_ivi_init_tiles(IVIPlaneDesc *planes, int tile_width, int tile_height);
 
-/**
- *  Decode size of the tile data.
- *  The size is stored as a variable-length field having the following format:
- *  if (tile_data_size < 255) than this field is only one byte long
- *  if (tile_data_size >= 255) than this field four is byte long: 0xFF X1 X2 X3
- *  where X1-X3 is size of the tile data
- *
- *  @param[in,out]  gb  the GetBit context
- *  @return     size of the tile data in bytes
- */
-int  ff_ivi_dec_tile_data_size(GetBitContext *gb);
-
-/**
- *  Decode block data:
- *  extract huffman-coded transform coefficients from the bitstream,
- *  dequantize them, apply inverse transform and motion compensation
- *  in order to reconstruct the picture.
- *
- *  @param[in,out]  gb    the GetBit context
- *  @param[in]      band  pointer to the band descriptor
- *  @param[in]      tile  pointer to the tile descriptor
- *  @return     result code: 0 - OK, -1 = error (corrupted blocks data)
- */
-int  ff_ivi_decode_blocks(GetBitContext *gb, IVIBandDesc *band, IVITile *tile);
-
-/**
- *  Handle empty tiles by performing data copying and motion
- *  compensation respectively.
- *
- *  @param[in]  avctx     ptr to the AVCodecContext
- *  @param[in]  band      pointer to the band descriptor
- *  @param[in]  tile      pointer to the tile descriptor
- *  @param[in]  mv_scale  scaling factor for motion vectors
- */
-void ff_ivi_process_empty_tile(AVCodecContext *avctx, IVIBandDesc *band,
-                               IVITile *tile, int32_t mv_scale);
-
-/**
- *  Convert and output the current plane.
- *  This conversion is done by adding back the bias value of 128
- *  (subtracted in the encoder) and clipping the result.
- *
- *  @param[in]   plane      pointer to the descriptor of the plane being processed
- *  @param[out]  dst        pointer to the buffer receiving converted pixels
- *  @param[in]   dst_pitch  pitch for moving to the next y line
- */
-void ff_ivi_output_plane(IVIPlaneDesc *plane, uint8_t *dst, int dst_pitch);
-
-/**
- *  Calculate band checksum from band data.
- */
-uint16_t ivi_calc_band_checksum (IVIBandDesc *band);
-
-/**
- *  Verify that band data lies in range.
- */
-int ivi_check_band (IVIBandDesc *band, const uint8_t *ref, int pitch);
+int ff_ivi_decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
+                        AVPacket *avpkt);
+int ff_ivi_decode_close(AVCodecContext *avctx);
 
 #endif /* AVCODEC_IVI_COMMON_H */

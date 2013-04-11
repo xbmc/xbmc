@@ -18,13 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
+#include "libavutil/arm/asm.S"
 
 /* chroma_mc8(uint8_t *dst, uint8_t *src, int stride, int h, int x, int y) */
 .macro  h264_chroma_mc8 type, codec=h264
 function ff_\type\()_\codec\()_chroma_mc8_neon, export=1
         push            {r4-r7, lr}
-        ldrd            r4,  [sp, #20]
+        ldrd            r4,  r5,  [sp, #20]
   .ifc \type,avg
         mov             lr,  r0
   .endif
@@ -168,7 +168,7 @@ endfunc
 .macro  h264_chroma_mc4 type, codec=h264
 function ff_\type\()_\codec\()_chroma_mc4_neon, export=1
         push            {r4-r7, lr}
-        ldrd            r4,  [sp, #20]
+        ldrd            r4,  r5,  [sp, #20]
   .ifc \type,avg
         mov             lr,  r0
   .endif

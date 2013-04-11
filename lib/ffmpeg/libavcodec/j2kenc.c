@@ -27,6 +27,7 @@
 
 #include <float.h>
 #include "avcodec.h"
+#include "internal.h"
 #include "bytestream.h"
 #include "j2k.h"
 #include "libavutil/common.h"
@@ -93,27 +94,11 @@ static void nspaces(FILE *fd, int n)
     while(n--) putc(' ', fd);
 }
 
-static void printv(int *tab, int l)
-{
-    int i;
-    for (i = 0; i < l; i++)
-        printf("%.3d ", tab[i]);
-    printf("\n");
-}
-
-static void printu(uint8_t *tab, int l)
-{
-    int i;
-    for (i = 0; i < l; i++)
-        printf("%.3hd ", tab[i]);
-    printf("\n");
-}
-
 static void printcomp(J2kComponent *comp)
 {
     int i;
     for (i = 0; i < comp->y1 - comp->y0; i++)
-        printv(comp->data + i * (comp->x1 - comp->x0), comp->x1 - comp->x0);
+        ff_j2k_printv(comp->data + i * (comp->x1 - comp->x0), comp->x1 - comp->x0);
 }
 
 static void dump(J2kEncoderContext *s, FILE *fd)
@@ -285,7 +270,7 @@ static int put_cod(J2kEncoderContext *s)
     // SGcod
     bytestream_put_byte(&s->buf, 0); // progression level
     bytestream_put_be16(&s->buf, 1); // num of layers
-    if(s->avctx->pix_fmt == PIX_FMT_YUV444P){
+    if(s->avctx->pix_fmt == AV_PIX_FMT_YUV444P){
         bytestream_put_byte(&s->buf, 2); // ICT
     }else{
         bytestream_put_byte(&s->buf, 0); // unspecified
@@ -456,7 +441,7 @@ static void init_quantization(J2kEncoderContext *s)
     }
 }
 
-static void init_luts()
+static void init_luts(void)
 {
     int i, a,
         mask = ~((1<<NMSEDEC_FRACBITS)-1);
@@ -870,7 +855,7 @@ static int encode_tile(J2kEncoderContext *s, J2kTile *tile, int tileno)
                                 for (x = xx0; x < xx1; x++){
                                     *ptr = (comp->data[(comp->coord[0][1] - comp->coord[0][0]) * y + x]);
                                     *ptr = (int64_t)*ptr * (int64_t)(8192 * 8192 / band->stepsize) >> 13 - NMSEDEC_FRACBITS;
-                                    *ptr++;
+                                    ptr++;
                                 }
                             }
                         }
@@ -920,18 +905,20 @@ static void reinit(J2kEncoderContext *s)
     }
 }
 
-static int encode_frame(AVCodecContext *avctx,
-                        uint8_t *buf, int buf_size,
-                        void *data)
+static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                        const AVFrame *pict, int *got_packet)
 {
     int tileno, ret;
     J2kEncoderContext *s = avctx->priv_data;
 
-    // init:
-    s->buf = s->buf_start = buf;
-    s->buf_end = buf + buf_size;
+    if ((ret = ff_alloc_packet2(avctx, pkt, avctx->width*avctx->height*9 + FF_MIN_BUFFER_SIZE)) < 0)
+        return ret;
 
-    s->picture = *(AVFrame*)data;
+    // init:
+    s->buf = s->buf_start = pkt->data;
+    s->buf_end = pkt->data + pkt->size;
+
+    s->picture = *pict;
     avctx->coded_frame= &s->picture;
 
     s->lambda = s->picture.quality * LAMBDA_SCALE;
@@ -965,7 +952,11 @@ static int encode_frame(AVCodecContext *avctx,
     bytestream_put_be16(&s->buf, J2K_EOC);
 
     av_log(s->avctx, AV_LOG_DEBUG, "end\n");
-    return s->buf - s->buf_start;
+    pkt->size = s->buf - s->buf_start;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+
+    return 0;
 }
 
 static av_cold int j2kenc_init(AVCodecContext *avctx)
@@ -1003,9 +994,9 @@ static av_cold int j2kenc_init(AVCodecContext *avctx)
     for (i = 0; i < 3; i++)
         s->cbps[i] = 8;
 
-    if (avctx->pix_fmt == PIX_FMT_RGB24){
+    if (avctx->pix_fmt == AV_PIX_FMT_RGB24){
         s->ncomponents = 3;
-    } else if (avctx->pix_fmt == PIX_FMT_GRAY8){
+    } else if (avctx->pix_fmt == AV_PIX_FMT_GRAY8){
         s->ncomponents = 1;
     } else{ // planar YUV
         s->planar = 1;
@@ -1038,17 +1029,18 @@ static int j2kenc_destroy(AVCodecContext *avctx)
 AVCodec ff_jpeg2000_encoder = {
     .name           = "j2k",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_JPEG2000,
+    .id             = AV_CODEC_ID_JPEG2000,
     .priv_data_size = sizeof(J2kEncoderContext),
     .init           = j2kenc_init,
-    .encode         = encode_frame,
+    .encode2        = encode_frame,
     .close          = j2kenc_destroy,
-    .capabilities= CODEC_CAP_EXPERIMENTAL,
-    .long_name = NULL_IF_CONFIG_SMALL("JPEG 2000"),
-    .pix_fmts =
-        (const enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_YUV444P, PIX_FMT_GRAY8,
-/*                              PIX_FMT_YUV420P,
-                              PIX_FMT_YUV422P, PIX_FMT_YUV444P,
-                              PIX_FMT_YUV410P, PIX_FMT_YUV411P,*/
-                              -1}
+    .capabilities   = CODEC_CAP_EXPERIMENTAL,
+    .long_name      = NULL_IF_CONFIG_SMALL("JPEG 2000"),
+    .pix_fmts       = (const enum AVPixelFormat[]) {
+        AV_PIX_FMT_RGB24, AV_PIX_FMT_YUV444P, AV_PIX_FMT_GRAY8,
+/*      AV_PIX_FMT_YUV420P,
+        AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV444P,
+        AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,*/
+        AV_PIX_FMT_NONE
+    }
 };

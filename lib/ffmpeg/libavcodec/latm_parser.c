@@ -50,7 +50,6 @@ static int latm_find_frame_end(AVCodecParserContext *s1, const uint8_t *buf,
     pic_found = pc->frame_start_found;
     state     = pc->state;
 
-    i = 0;
     if (!pic_found) {
         for (i = 0; i < buf_size; i++) {
             state = (state<<8) | buf[i];
@@ -106,7 +105,7 @@ static int latm_parse(AVCodecParserContext *s1, AVCodecContext *avctx,
 }
 
 AVCodecParser ff_aac_latm_parser = {
-    .codec_ids      = { CODEC_ID_AAC_LATM },
+    .codec_ids      = { AV_CODEC_ID_AAC_LATM },
     .priv_data_size = sizeof(LATMParseContext),
     .parser_parse   = latm_parse,
     .parser_close   = ff_parse_close

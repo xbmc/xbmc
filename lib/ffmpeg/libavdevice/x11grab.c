@@ -41,7 +41,9 @@
 #include "libavutil/log.h"
 #include "libavutil/opt.h"
 #include "libavutil/parseutils.h"
+#include "libavutil/time.h"
 #include <time.h>
+#include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xlibint.h>
@@ -56,16 +58,14 @@
 /**
  * X11 Device Demuxer context
  */
-struct x11_grab
-{
+struct x11grab {
     const AVClass *class;    /**< Class for private options. */
     int frame_size;          /**< Size in bytes of a grabbed frame */
     AVRational time_base;    /**< Time base */
     int64_t time_frame;      /**< Current time */
 
-    char *video_size;        /**< String describing video size, set by a private option. */
-    int height;              /**< Height of the grab frame */
     int width;               /**< Width of the grab frame */
+    int height;              /**< Height of the grab frame */
     int x_off;               /**< Horizontal top-left corner coordinate */
     int y_off;               /**< Vertical top-left corner coordinate */
 
@@ -85,10 +85,10 @@ struct x11_grab
 /**
  * Draw grabbing region window
  *
- * @param s x11_grab context
+ * @param s x11grab context
  */
 static void
-x11grab_draw_region_win(struct x11_grab *s)
+x11grab_draw_region_win(struct x11grab *s)
 {
     Display *dpy = s->dpy;
     int screen;
@@ -110,10 +110,10 @@ x11grab_draw_region_win(struct x11_grab *s)
 /**
  * Initialize grabbing region window
  *
- * @param s x11_grab context
+ * @param s x11grab context
  */
 static void
-x11grab_region_win_init(struct x11_grab *s)
+x11grab_region_win_init(struct x11grab *s)
 {
     Display *dpy = s->dpy;
     int screen;
@@ -146,7 +146,6 @@ x11grab_region_win_init(struct x11_grab *s)
  * Initialize the x11 grab device demuxer (public device demuxer API).
  *
  * @param s1 Context from avformat core
- * @param ap Parameters from avformat core
  * @return <ul>
  *          <li>AVERROR(ENOMEM) no memory left</li>
  *          <li>AVERROR(EIO) other failure case</li>
@@ -154,12 +153,12 @@ x11grab_region_win_init(struct x11_grab *s)
  *         </ul>
  */
 static int
-x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
+x11grab_read_header(AVFormatContext *s1)
 {
-    struct x11_grab *x11grab = s1->priv_data;
+    struct x11grab *x11grab = s1->priv_data;
     Display *dpy;
     AVStream *st = NULL;
-    enum PixelFormat input_pixfmt;
+    enum AVPixelFormat input_pixfmt;
     XImage *image;
     int x_off = 0;
     int y_off = 0;
@@ -170,17 +169,21 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     AVRational framerate;
 
     dpyname = av_strdup(s1->filename);
+    if (!dpyname)
+        goto out;
+
     offset = strchr(dpyname, '+');
     if (offset) {
         sscanf(offset, "%d,%d", &x_off, &y_off);
-        x11grab->draw_mouse = !strstr(offset, "nomouse");
+        if (strstr(offset, "nomouse")) {
+            av_log(s1, AV_LOG_WARNING,
+                   "'nomouse' specification in argument is deprecated: "
+                   "use 'draw_mouse' option with value 0 instead\n");
+            x11grab->draw_mouse = 0;
+        }
         *offset= 0;
     }
 
-    if ((ret = av_parse_video_size(&x11grab->width, &x11grab->height, x11grab->video_size)) < 0) {
-        av_log(s1, AV_LOG_ERROR, "Couldn't parse video size.\n");
-        goto out;
-    }
     if ((ret = av_parse_video_rate(&framerate, x11grab->framerate)) < 0) {
         av_log(s1, AV_LOG_ERROR, "Could not parse framerate: %s.\n", x11grab->framerate);
         goto out;
@@ -258,19 +261,19 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     switch (image->bits_per_pixel) {
     case 8:
         av_log (s1, AV_LOG_DEBUG, "8 bit palette\n");
-        input_pixfmt = PIX_FMT_PAL8;
+        input_pixfmt = AV_PIX_FMT_PAL8;
         break;
     case 16:
         if (       image->red_mask   == 0xf800 &&
                    image->green_mask == 0x07e0 &&
                    image->blue_mask  == 0x001f ) {
             av_log (s1, AV_LOG_DEBUG, "16 bit RGB565\n");
-            input_pixfmt = PIX_FMT_RGB565;
+            input_pixfmt = AV_PIX_FMT_RGB565;
         } else if (image->red_mask   == 0x7c00 &&
                    image->green_mask == 0x03e0 &&
                    image->blue_mask  == 0x001f ) {
             av_log(s1, AV_LOG_DEBUG, "16 bit RGB555\n");
-            input_pixfmt = PIX_FMT_RGB555;
+            input_pixfmt = AV_PIX_FMT_RGB555;
         } else {
             av_log(s1, AV_LOG_ERROR, "RGB ordering at image depth %i not supported ... aborting\n", image->bits_per_pixel);
             av_log(s1, AV_LOG_ERROR, "color masks: r 0x%.6lx g 0x%.6lx b 0x%.6lx\n", image->red_mask, image->green_mask, image->blue_mask);
@@ -282,11 +285,11 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         if (        image->red_mask   == 0xff0000 &&
                     image->green_mask == 0x00ff00 &&
                     image->blue_mask  == 0x0000ff ) {
-            input_pixfmt = PIX_FMT_BGR24;
+            input_pixfmt = AV_PIX_FMT_BGR24;
         } else if ( image->red_mask   == 0x0000ff &&
                     image->green_mask == 0x00ff00 &&
                     image->blue_mask  == 0xff0000 ) {
-            input_pixfmt = PIX_FMT_RGB24;
+            input_pixfmt = AV_PIX_FMT_RGB24;
         } else {
             av_log(s1, AV_LOG_ERROR,"rgb ordering at image depth %i not supported ... aborting\n", image->bits_per_pixel);
             av_log(s1, AV_LOG_ERROR, "color masks: r 0x%.6lx g 0x%.6lx b 0x%.6lx\n", image->red_mask, image->green_mask, image->blue_mask);
@@ -295,7 +298,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         }
         break;
     case 32:
-        input_pixfmt = PIX_FMT_RGB32;
+        input_pixfmt = AV_PIX_FMT_0RGB32;
         break;
     default:
         av_log(s1, AV_LOG_ERROR, "image depth %i not supported ... aborting\n", image->bits_per_pixel);
@@ -305,7 +308,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 
     x11grab->frame_size = x11grab->width * x11grab->height * image->bits_per_pixel/8;
     x11grab->dpy = dpy;
-    x11grab->time_base  = (AVRational){framerate.den, framerate.num};
+    x11grab->time_base  = av_inv_q(framerate);
     x11grab->time_frame = av_gettime() / av_q2d(x11grab->time_base);
     x11grab->x_off = x_off;
     x11grab->y_off = y_off;
@@ -313,7 +316,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     x11grab->use_shm = use_shm;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_RAWVIDEO;
+    st->codec->codec_id = AV_CODEC_ID_RAWVIDEO;
     st->codec->width  = x11grab->width;
     st->codec->height = x11grab->height;
     st->codec->pix_fmt = input_pixfmt;
@@ -321,6 +324,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     st->codec->bit_rate = x11grab->frame_size * 1/av_q2d(x11grab->time_base) * 8;
 
 out:
+    av_free(dpyname);
     return ret;
 }
 
@@ -332,7 +336,7 @@ out:
  *          coordinates
  */
 static void
-paint_mouse_pointer(XImage *image, struct x11_grab *s)
+paint_mouse_pointer(XImage *image, struct x11grab *s)
 {
     int x_off = s->x_off;
     int y_off = s->y_off;
@@ -349,10 +353,18 @@ paint_mouse_pointer(XImage *image, struct x11_grab *s)
      * Anyone who performs further investigation of the xlib API likely risks
      * permanent brain damage. */
     uint8_t *pix = image->data;
+    Cursor c;
+    Window w;
+    XSetWindowAttributes attr;
 
     /* Code doesn't currently support 16-bit or PAL8 */
     if (image->bits_per_pixel != 24 && image->bits_per_pixel != 32)
         return;
+
+    c = XCreateFontCursor(dpy, XC_left_ptr);
+    w = DefaultRootWindow(dpy);
+    attr.cursor = c;
+    XChangeWindowAttributes(dpy, w, CWCursor, &attr);
 
     xcim = XFixesGetCursorImage(dpy);
 
@@ -446,7 +458,7 @@ xget_zpixmap(Display *dpy, Drawable d, XImage *image, int x, int y)
 static int
 x11grab_read_packet(AVFormatContext *s1, AVPacket *pkt)
 {
-    struct x11_grab *s = s1->priv_data;
+    struct x11grab *s = s1->priv_data;
     Display *dpy = s->dpy;
     XImage *image = s->image;
     int x_off = s->x_off;
@@ -539,8 +551,6 @@ x11grab_read_packet(AVFormatContext *s1, AVPacket *pkt)
             av_log (s1, AV_LOG_INFO, "XGetZPixmap() failed\n");
         }
     }
-    if (image->bits_per_pixel == 32)
-        XAddPixel(image, 0xFF000000);
 
     if (s->draw_mouse) {
         paint_mouse_pointer(image, s);
@@ -558,7 +568,7 @@ x11grab_read_packet(AVFormatContext *s1, AVPacket *pkt)
 static int
 x11grab_read_close(AVFormatContext *s1)
 {
-    struct x11_grab *x11grab = s1->priv_data;
+    struct x11grab *x11grab = s1->priv_data;
 
     /* Detach cleanly from shared mem */
     if (x11grab->use_shm) {
@@ -582,16 +592,19 @@ x11grab_read_close(AVFormatContext *s1)
     return 0;
 }
 
-#define OFFSET(x) offsetof(struct x11_grab, x)
+#define OFFSET(x) offsetof(struct x11grab, x)
 #define DEC AV_OPT_FLAG_DECODING_PARAM
 static const AVOption options[] = {
-    { "video_size", "A string describing frame size, such as 640x480 or hd720.", OFFSET(video_size), AV_OPT_TYPE_STRING, {.str = "vga"}, 0, 0, DEC },
-    { "framerate", "", OFFSET(framerate), AV_OPT_TYPE_STRING, {.str = "ntsc"}, 0, 0, DEC },
-    { "draw_mouse", "Draw the mouse pointer.", OFFSET(draw_mouse), AV_OPT_TYPE_INT, { 1 }, 0, 1, DEC },
-    { "follow_mouse", "Move the grabbing region when the mouse pointer reaches within specified amount of pixels to the edge of region.",
-      OFFSET(follow_mouse), AV_OPT_TYPE_INT, { 0 }, -1, INT_MAX, DEC, "follow_mouse" },
-    { "centered", "Keep the mouse pointer at the center of grabbing region when following.", 0, AV_OPT_TYPE_CONST, { -1 }, INT_MIN, INT_MAX, DEC, "follow_mouse" },
-    { "show_region", "Show the grabbing region.", OFFSET(show_region), AV_OPT_TYPE_INT, { 0 }, 0, 1, DEC },
+    { "draw_mouse", "draw the mouse pointer", OFFSET(draw_mouse), AV_OPT_TYPE_INT, {.i64 = 1}, 0, 1, DEC },
+
+    { "follow_mouse", "move the grabbing region when the mouse pointer reaches within specified amount of pixels to the edge of region",
+      OFFSET(follow_mouse), AV_OPT_TYPE_INT, {.i64 = 0}, -1, INT_MAX, DEC, "follow_mouse" },
+    { "centered",     "keep the mouse pointer at the center of grabbing region when following",
+      0, AV_OPT_TYPE_CONST, {.i64 = -1}, INT_MIN, INT_MAX, DEC, "follow_mouse" },
+
+    { "framerate",  "set video frame rate",      OFFSET(framerate),   AV_OPT_TYPE_STRING,     {.str = "ntsc"}, 0, 0, DEC },
+    { "show_region", "show the grabbing region", OFFSET(show_region), AV_OPT_TYPE_INT,        {.i64 = 0}, 0, 1, DEC },
+    { "video_size",  "set video frame size",     OFFSET(width),       AV_OPT_TYPE_IMAGE_SIZE, {.str = "vga"}, 0, 0, DEC },
     { NULL },
 };
 
@@ -603,10 +616,10 @@ static const AVClass x11_class = {
 };
 
 /** x11 grabber device demuxer declaration */
-AVInputFormat ff_x11_grab_device_demuxer = {
+AVInputFormat ff_x11grab_demuxer = {
     .name           = "x11grab",
     .long_name      = NULL_IF_CONFIG_SMALL("X11grab"),
-    .priv_data_size = sizeof(struct x11_grab),
+    .priv_data_size = sizeof(struct x11grab),
     .read_header    = x11grab_read_header,
     .read_packet    = x11grab_read_packet,
     .read_close     = x11grab_read_close,

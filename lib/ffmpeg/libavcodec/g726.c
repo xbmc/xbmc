@@ -22,7 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include <limits.h>
+
 #include "libavutil/avassert.h"
+#include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
 #include "avcodec.h"
 #include "internal.h"
@@ -32,7 +34,7 @@
 /**
  * G.726 11bit float.
  * G.726 Standard uses rather odd 11bit floating point arithmentic for
- * numerous occasions. It's a mistery to me why they did it this way
+ * numerous occasions. It's a mystery to me why they did it this way
  * instead of simply using 32bit integer arithmetic.
  */
 typedef struct Float11 {
@@ -75,7 +77,6 @@ typedef struct G726Tables {
 
 typedef struct G726Context {
     AVClass *class;
-    AVFrame frame;
     G726Tables tbls;    /**< static tables needed for computation */
 
     Float11 sr[2];      /**< prev. reconstructed samples */
@@ -330,10 +331,12 @@ static av_cold int g726_encode_init(AVCodecContext *avctx)
 
     g726_reset(c);
 
+#if FF_API_OLD_ENCODE_AUDIO
     avctx->coded_frame = avcodec_alloc_frame();
     if (!avctx->coded_frame)
         return AVERROR(ENOMEM);
     avctx->coded_frame->key_frame = 1;
+#endif
 
     /* select a frame size that will end on a byte boundary and have a size of
        approximately 1024 bytes */
@@ -342,34 +345,41 @@ static av_cold int g726_encode_init(AVCodecContext *avctx)
     return 0;
 }
 
+#if FF_API_OLD_ENCODE_AUDIO
 static av_cold int g726_encode_close(AVCodecContext *avctx)
 {
     av_freep(&avctx->coded_frame);
     return 0;
 }
+#endif
 
-static int g726_encode_frame(AVCodecContext *avctx,
-                            uint8_t *dst, int buf_size, void *data)
+static int g726_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
+                             const AVFrame *frame, int *got_packet_ptr)
 {
     G726Context *c = avctx->priv_data;
-    const int16_t *samples = data;
+    const int16_t *samples = (const int16_t *)frame->data[0];
     PutBitContext pb;
-    int i;
+    int i, ret, out_size;
 
-    init_put_bits(&pb, dst, 1024*1024);
+    out_size = (frame->nb_samples * c->code_size + 7) / 8;
+    if ((ret = ff_alloc_packet2(avctx, avpkt, out_size)) < 0)
+        return ret;
+    init_put_bits(&pb, avpkt->data, avpkt->size);
 
-    for (i = 0; i < avctx->frame_size; i++)
+    for (i = 0; i < frame->nb_samples; i++)
         put_bits(&pb, c->code_size, g726_encode(c, *samples++));
 
     flush_put_bits(&pb);
 
-    return put_bits_count(&pb)>>3;
+    avpkt->size = out_size;
+    *got_packet_ptr = 1;
+    return 0;
 }
 
 #define OFFSET(x) offsetof(G726Context, x)
 #define AE AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
 static const AVOption options[] = {
-    { "code_size", "Bits per code", OFFSET(code_size), AV_OPT_TYPE_INT, { 4 }, 2, 5, AE },
+    { "code_size", "Bits per code", OFFSET(code_size), AV_OPT_TYPE_INT, { .i64 = 4 }, 2, 5, AE },
     { NULL },
 };
 
@@ -388,14 +398,17 @@ static const AVCodecDefault defaults[] = {
 AVCodec ff_adpcm_g726_encoder = {
     .name           = "g726",
     .type           = AVMEDIA_TYPE_AUDIO,
-    .id             = CODEC_ID_ADPCM_G726,
+    .id             = AV_CODEC_ID_ADPCM_G726,
     .priv_data_size = sizeof(G726Context),
     .init           = g726_encode_init,
-    .encode         = g726_encode_frame,
+    .encode2        = g726_encode_frame,
+#if FF_API_OLD_ENCODE_AUDIO
     .close          = g726_encode_close,
-    .capabilities = CODEC_CAP_SMALL_LAST_FRAME,
-    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
+#endif
+    .capabilities   = CODEC_CAP_SMALL_LAST_FRAME,
+    .sample_fmts    = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_S16,
+                                                     AV_SAMPLE_FMT_NONE },
+    .long_name      = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
     .priv_class     = &class,
     .defaults       = defaults,
 };
@@ -406,18 +419,8 @@ static av_cold int g726_decode_init(AVCodecContext *avctx)
 {
     G726Context* c = avctx->priv_data;
 
-    if (avctx->strict_std_compliance >= FF_COMPLIANCE_STRICT &&
-        avctx->sample_rate != 8000) {
-        av_log(avctx, AV_LOG_ERROR, "Only 8kHz sample rate is allowed when "
-               "the compliance level is strict. Reduce the compliance level "
-               "if you wish to decode the stream anyway.\n");
-        return AVERROR(EINVAL);
-    }
-
-    if(avctx->channels != 1){
-        av_log(avctx, AV_LOG_ERROR, "Only mono is supported\n");
-        return AVERROR(EINVAL);
-    }
+    avctx->channels       = 1;
+    avctx->channel_layout = AV_CH_LAYOUT_MONO;
 
     c->code_size = avctx->bits_per_coded_sample;
     if (c->code_size < 2 || c->code_size > 5) {
@@ -428,15 +431,13 @@ static av_cold int g726_decode_init(AVCodecContext *avctx)
 
     avctx->sample_fmt = AV_SAMPLE_FMT_S16;
 
-    avcodec_get_frame_defaults(&c->frame);
-    avctx->coded_frame = &c->frame;
-
     return 0;
 }
 
 static int g726_decode_frame(AVCodecContext *avctx, void *data,
                              int *got_frame_ptr, AVPacket *avpkt)
 {
+    AVFrame *frame     = data;
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     G726Context *c = avctx->priv_data;
@@ -447,12 +448,12 @@ static int g726_decode_frame(AVCodecContext *avctx, void *data,
     out_samples = buf_size * 8 / c->code_size;
 
     /* get output buffer */
-    c->frame.nb_samples = out_samples;
-    if ((ret = avctx->get_buffer(avctx, &c->frame)) < 0) {
+    frame->nb_samples = out_samples;
+    if ((ret = ff_get_buffer(avctx, frame)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return ret;
     }
-    samples = (int16_t *)c->frame.data[0];
+    samples = (int16_t *)frame->data[0];
 
     init_get_bits(&gb, buf, buf_size * 8);
 
@@ -462,8 +463,7 @@ static int g726_decode_frame(AVCodecContext *avctx, void *data,
     if (get_bits_left(&gb) > 0)
         av_log(avctx, AV_LOG_ERROR, "Frame invalidly split, missing parser?\n");
 
-    *got_frame_ptr   = 1;
-    *(AVFrame *)data = c->frame;
+    *got_frame_ptr = 1;
 
     return buf_size;
 }
@@ -477,12 +477,12 @@ static void g726_decode_flush(AVCodecContext *avctx)
 AVCodec ff_adpcm_g726_decoder = {
     .name           = "g726",
     .type           = AVMEDIA_TYPE_AUDIO,
-    .id             = CODEC_ID_ADPCM_G726,
+    .id             = AV_CODEC_ID_ADPCM_G726,
     .priv_data_size = sizeof(G726Context),
     .init           = g726_decode_init,
     .decode         = g726_decode_frame,
     .flush          = g726_decode_flush,
     .capabilities   = CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
+    .long_name      = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
 };
 #endif

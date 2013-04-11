@@ -26,9 +26,6 @@
 #define SINETABLE(size) \
     float ff_sine_##size[size]
 #define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 #include "sinewin_tablegen.h"
 #include "tableprint.h"
 
@@ -38,7 +35,7 @@ int main(void)
 
     write_fileheader();
 
-    for (i = 5; i <= 12; i++) {
+    for (i = 5; i <= 13; i++) {
         ff_init_ff_sine_windows(i);
         printf("SINETABLE(%4i) = {\n", 1 << i);
         write_float_array(ff_sine_windows[i], 1 << i);

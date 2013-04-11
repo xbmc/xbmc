@@ -28,9 +28,6 @@
 #include "libavutil/mathematics.h"
 #include "libavformat/avformat.h"
 
-#undef printf
-#undef fprintf
-
 static char buffer[20];
 
 static const char *ret_str(int v)
@@ -61,8 +58,25 @@ int main(int argc, char **argv)
     const char *filename;
     AVFormatContext *ic = NULL;
     int i, ret, stream_id;
+    int j;
     int64_t timestamp;
     AVDictionary *format_opts = NULL;
+    int64_t seekfirst = AV_NOPTS_VALUE;
+    int firstback=0;
+    int frame_count = 1;
+
+    for(i=2; i<argc; i+=2){
+        if       (!strcmp(argv[i], "-seekforw")){
+            seekfirst = atoi(argv[i+1]);
+        } else if(!strcmp(argv[i], "-seekback")){
+            seekfirst = atoi(argv[i+1]);
+            firstback = 1;
+        } else if(!strcmp(argv[i], "-frames")){
+            frame_count = atoi(argv[i+1]);
+        } else {
+            argc = 1;
+        }
+    }
 
     av_dict_set(&format_opts, "channels", "1", 0);
     av_dict_set(&format_opts, "sample_rate", "22050", 0);
@@ -70,7 +84,7 @@ int main(int argc, char **argv)
     /* initialize libavcodec, and register all codecs and formats */
     av_register_all();
 
-    if (argc != 2) {
+    if (argc < 2) {
         printf("usage: %s input_file\n"
                "\n", argv[0]);
         return 1;
@@ -91,13 +105,17 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if(seekfirst != AV_NOPTS_VALUE){
+        if(firstback)   avformat_seek_file(ic, -1, INT64_MIN, seekfirst, seekfirst, 0);
+        else            avformat_seek_file(ic, -1, seekfirst, seekfirst, INT64_MAX, 0);
+    }
     for(i=0; ; i++){
-        AVPacket pkt;
+        AVPacket pkt = { 0 };
         AVStream *av_uninit(st);
         char ts_buf[60];
 
-        memset(&pkt, 0, sizeof(pkt));
         if(ret>=0){
+            for(j=0; j<frame_count; j++) {
             ret= av_read_frame(ic, &pkt);
             if(ret>=0){
                 char dts_buf[60];
@@ -109,6 +127,7 @@ int main(int argc, char **argv)
             } else
                 printf("ret:%s", ret_str(ret)); // necessary to avoid trailing whitespace
             printf("\n");
+            }
         }
 
         if(i>25) break;

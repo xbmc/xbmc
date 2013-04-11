@@ -27,8 +27,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "libavutil/common.h"
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
+#include "internal.h"
 
 #include <zlib.h>
 
@@ -115,19 +117,18 @@ static int zmbv_me(ZmbvEncContext *c, uint8_t *src, int sstride, uint8_t *prev,
     return bv;
 }
 
-static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void *data)
+static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                        const AVFrame *pict, int *got_packet)
 {
     ZmbvEncContext * const c = avctx->priv_data;
-    AVFrame *pict = data;
     AVFrame * const p = &c->pic;
-    uint8_t *src, *prev;
+    uint8_t *src, *prev, *buf;
     uint32_t *palptr;
-    int len = 0;
     int keyframe, chpal;
     int fl;
-    int work_size = 0;
+    int work_size = 0, pkt_size;
     int bw, bh;
-    int i, j;
+    int i, j, ret;
 
     keyframe = !c->curfrm;
     c->curfrm++;
@@ -138,17 +139,6 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
     p->key_frame= keyframe;
     chpal = !keyframe && memcmp(p->data[1], c->pal2, 1024);
 
-    fl = (keyframe ? ZMBV_KEYFRAME : 0) | (chpal ? ZMBV_DELTAPAL : 0);
-    *buf++ = fl; len++;
-    if(keyframe){
-        deflateReset(&c->zstream);
-        *buf++ = 0; len++; // hi ver
-        *buf++ = 1; len++; // lo ver
-        *buf++ = 1; len++; // comp
-        *buf++ = 4; len++; // format - 8bpp
-        *buf++ = ZMBV_BLOCK; len++; // block width
-        *buf++ = ZMBV_BLOCK; len++; // block height
-    }
     palptr = (uint32_t*)p->data[1];
     src = p->data[0];
     prev = c->prev;
@@ -223,6 +213,9 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
         src += p->linesize[0];
     }
 
+    if (keyframe)
+        deflateReset(&c->zstream);
+
     c->zstream.next_in = c->work_buf;
     c->zstream.avail_in = work_size;
     c->zstream.total_in = 0;
@@ -235,8 +228,27 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
         return -1;
     }
 
+    pkt_size = c->zstream.total_out + 1 + 6*keyframe;
+    if ((ret = ff_alloc_packet2(avctx, pkt, pkt_size)) < 0)
+        return ret;
+    buf = pkt->data;
+
+    fl = (keyframe ? ZMBV_KEYFRAME : 0) | (chpal ? ZMBV_DELTAPAL : 0);
+    *buf++ = fl;
+    if (keyframe) {
+        *buf++ = 0; // hi ver
+        *buf++ = 1; // lo ver
+        *buf++ = 1; // comp
+        *buf++ = 4; // format - 8bpp
+        *buf++ = ZMBV_BLOCK; // block width
+        *buf++ = ZMBV_BLOCK; // block height
+    }
     memcpy(buf, c->comp_buf, c->zstream.total_out);
-    return len + c->zstream.total_out;
+
+    pkt->flags |= AV_PKT_FLAG_KEY*keyframe;
+    *got_packet = 1;
+
+    return 0;
 }
 
 
@@ -265,7 +277,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
         lvl = avctx->compression_level;
     if(lvl < 0 || lvl > 9){
         av_log(avctx, AV_LOG_ERROR, "Compression level should be 0-9, not %i\n", lvl);
-        return -1;
+        return AVERROR(EINVAL);
     }
 
     // Needed if zlib unused or init aborted before deflateInit
@@ -274,7 +286,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
         ((avctx->width + ZMBV_BLOCK - 1) / ZMBV_BLOCK) * ((avctx->height + ZMBV_BLOCK - 1) / ZMBV_BLOCK) * 2 + 4;
     if ((c->work_buf = av_malloc(c->comp_size)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate work buffer.\n");
-        return -1;
+        return AVERROR(ENOMEM);
     }
     /* Conservative upper bound taken from zlib v1.2.1 source via lcl.c */
     c->comp_size = c->comp_size + ((c->comp_size + 7) >> 3) +
@@ -283,12 +295,12 @@ static av_cold int encode_init(AVCodecContext *avctx)
     /* Allocate compression buffer */
     if ((c->comp_buf = av_malloc(c->comp_size)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate compression buffer.\n");
-        return -1;
+        return AVERROR(ENOMEM);
     }
     c->pstride = FFALIGN(avctx->width, 16);
     if ((c->prev = av_malloc(c->pstride * avctx->height)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate picture.\n");
-        return -1;
+        return AVERROR(ENOMEM);
     }
 
     c->zstream.zalloc = Z_NULL;
@@ -300,7 +312,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
         return -1;
     }
 
-    avctx->coded_frame = (AVFrame*)&c->pic;
+    avctx->coded_frame = &c->pic;
 
     return 0;
 }
@@ -326,11 +338,11 @@ static av_cold int encode_end(AVCodecContext *avctx)
 AVCodec ff_zmbv_encoder = {
     .name           = "zmbv",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_ZMBV,
+    .id             = AV_CODEC_ID_ZMBV,
     .priv_data_size = sizeof(ZmbvEncContext),
     .init           = encode_init,
-    .encode         = encode_frame,
+    .encode2        = encode_frame,
     .close          = encode_end,
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_PAL8, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("Zip Motion Blocks Video"),
+    .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_PAL8, AV_PIX_FMT_NONE },
+    .long_name      = NULL_IF_CONFIG_SMALL("Zip Motion Blocks Video"),
 };

@@ -31,8 +31,7 @@ static int dfa_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-static int dfa_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int dfa_read_header(AVFormatContext *s)
 {
     AVIOContext *pb = s->pb;
     AVStream *st;
@@ -51,7 +50,7 @@ static int dfa_read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_DFA;
+    st->codec->codec_id   = AV_CODEC_ID_DFA;
     st->codec->width      = avio_rl16(pb);
     st->codec->height     = avio_rl16(pb);
     mspf = avio_rl32(pb);
@@ -115,5 +114,5 @@ AVInputFormat ff_dfa_demuxer = {
     .read_probe     = dfa_probe,
     .read_header    = dfa_read_header,
     .read_packet    = dfa_read_packet,
-    .flags = AVFMT_GENERIC_INDEX,
+    .flags          = AVFMT_GENERIC_INDEX,
 };

@@ -25,7 +25,6 @@
  * h261codec.
  */
 
-#include "dsputil.h"
 #include "avcodec.h"
 #include "h261.h"
 
@@ -51,4 +50,3 @@ void ff_h261_loop_filter(MpegEncContext *s){
     s->dsp.h261_loop_filter(dest_cb, uvlinesize);
     s->dsp.h261_loop_filter(dest_cr, uvlinesize);
 }
-

@@ -28,7 +28,6 @@
 #define AVCODEC_RV34_H
 
 #include "avcodec.h"
-#include "dsputil.h"
 #include "mpegvideo.h"
 
 #include "h264pred.h"
@@ -106,11 +105,13 @@ typedef struct RV34DecContext{
     int rpr;                 ///< one field size in RV30 slice header
 
     int cur_pts, last_pts, next_pts;
+    int scaled_weight;
     int weight1, weight2;    ///< B frame distance fractions (0.14) used in motion compensation
+    int mv_weight1, mv_weight2;
 
     uint16_t *cbp_luma;      ///< CBP values for luma subblocks
     uint8_t  *cbp_chroma;    ///< CBP values for chroma subblocks
-    int      *deblock_coefs; ///< deblock coefficients for each macroblock
+    uint16_t *deblock_coefs; ///< deblock coefficients for each macroblock
 
     /** 8x8 block available flags (for MV prediction) */
     DECLARE_ALIGNED(8, uint32_t, avail_cache)[3*4];
@@ -131,7 +132,7 @@ typedef struct RV34DecContext{
  */
 int ff_rv34_get_start_offset(GetBitContext *gb, int blocks);
 int ff_rv34_decode_init(AVCodecContext *avctx);
-int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt);
+int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *got_frame, AVPacket *avpkt);
 int ff_rv34_decode_end(AVCodecContext *avctx);
 int ff_rv34_decode_init_thread_copy(AVCodecContext *avctx);
 int ff_rv34_decode_update_thread_context(AVCodecContext *dst, const AVCodecContext *src);

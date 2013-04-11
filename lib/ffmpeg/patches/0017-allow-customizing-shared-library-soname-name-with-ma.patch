@@ -1,27 +1,24 @@
-From 954d92f3fc2c5bd45fc1b4d347f2d9295d269574 Mon Sep 17 00:00:00 2001
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Date: Wed, 23 Feb 2011 19:24:07 +0200
-Subject: [PATCH 17/24] allow customizing shared library soname (name with
- major)
+From 4f4aacd3d85c5caecbc0b0f02739aff0b9d8f657 Mon Sep 17 00:00:00 2001
+Date: Mon, 18 Feb 2013 16:58:33 +0000
+Subject: [PATCH] allow-customizing-shared-library-soname-name-with-ma
 
-This is a hack.
 ---
  configure |    4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/configure b/configure
-index 6255f57..5e11b2d 100755
+index 6b9e668..d4aa8f2 100755
 --- a/configure
 +++ b/configure
-@@ -238,6 +238,7 @@ Advanced options (experts only):
+@@ -269,6 +269,7 @@ Advanced options (experts only):
    --arch=ARCH              select architecture [$arch]
    --cpu=CPU                select the minimum required CPU (affects
                             instruction selection, may crash on older CPUs)
 +  --custom-libname-with-major=NAME  custom library name with major [$SLIBNAME_WITH_MAJOR]
-   --disable-asm            disable all assembler optimizations
-   --disable-altivec        disable AltiVec optimizations
-   --disable-amd3dnow       disable 3DNow! optimizations
-@@ -1298,6 +1299,7 @@ CMDLINE_SET="
+   --enable-pic             build position-independent code
+   --enable-sram            allow use of on-chip SRAM
+   --enable-thumb           compile for Thumb instruction set
+@@ -1527,6 +1528,7 @@ CMDLINE_SET="
      cpu
      cross_prefix
      cxx
@@ -29,7 +26,7 @@ index 6255f57..5e11b2d 100755
      dep_cc
      extra_version
      host_cc
-@@ -2778,6 +2780,8 @@ EOF
+@@ -3408,6 +3410,8 @@ EOF
      exit 1;
  fi
  
@@ -39,5 +36,5 @@ index 6255f57..5e11b2d 100755
      enabled $1 || { enabled $2 && die "$2 is $1 and --enable-$1 is not specified."; }
  }
 -- 
-1.7.9.4
+1.7.10.4
 

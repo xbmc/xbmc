@@ -80,13 +80,16 @@ static int adx_parse(AVCodecParserContext *s1,
         *poutbuf_size = 0;
         return buf_size;
     }
+
+    s1->duration = BLOCK_SAMPLES;
+
     *poutbuf = buf;
     *poutbuf_size = buf_size;
     return next;
 }
 
 AVCodecParser ff_adx_parser = {
-    .codec_ids      = { CODEC_ID_ADPCM_ADX },
+    .codec_ids      = { AV_CODEC_ID_ADPCM_ADX },
     .priv_data_size = sizeof(ADXParseContext),
     .parser_parse   = adx_parse,
     .parser_close   = ff_parse_close,

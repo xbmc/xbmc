@@ -27,6 +27,11 @@
 #include "mpeg4video.h"
 #include "mpeg4video_parser.h"
 
+struct Mp4vParseContext {
+    ParseContext pc;
+    struct MpegEncContext enc;
+    int first_picture;
+};
 
 int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
     int vop_found, i;
@@ -70,8 +75,8 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
                                   AVCodecContext *avctx,
                                   const uint8_t *buf, int buf_size)
 {
-    ParseContext1 *pc = s1->priv_data;
-    MpegEncContext *s = pc->enc;
+    struct Mp4vParseContext *pc = s1->priv_data;
+    MpegEncContext *s = &pc->enc;
     GetBitContext gb1, *gb = &gb1;
     int ret;
 
@@ -88,6 +93,13 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
     if (s->width && (!avctx->width || !avctx->height || !avctx->coded_width || !avctx->coded_height)) {
         avcodec_set_dimensions(avctx, s->width, s->height);
     }
+    if((s1->flags & PARSER_FLAG_USE_CODEC_TS) && s->avctx->time_base.den>0 && ret>=0){
+        av_assert1(s1->pts == AV_NOPTS_VALUE);
+        av_assert1(s1->dts == AV_NOPTS_VALUE);
+
+        s1->pts = av_rescale_q(s->time, (AVRational){1, s->avctx->time_base.den}, (AVRational){1, 1200000});
+    }
+
     s1->pict_type= s->pict_type;
     pc->first_picture = 0;
     return ret;
@@ -95,14 +107,13 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
 
 static av_cold int mpeg4video_parse_init(AVCodecParserContext *s)
 {
-    ParseContext1 *pc = s->priv_data;
+    struct Mp4vParseContext *pc = s->priv_data;
 
-    pc->enc = av_mallocz(sizeof(MpegEncContext));
-    if (!pc->enc)
-        return -1;
+    ff_mpeg4videodec_static_init();
+
     pc->first_picture = 1;
-    pc->enc->quant_precision=5;
-    pc->enc->slice_context_count = 1;
+    pc->enc.quant_precision=5;
+    pc->enc.slice_context_count = 1;
     return 0;
 }
 
@@ -134,10 +145,10 @@ static int mpeg4video_parse(AVCodecParserContext *s,
 
 
 AVCodecParser ff_mpeg4video_parser = {
-    .codec_ids      = { CODEC_ID_MPEG4 },
-    .priv_data_size = sizeof(ParseContext1),
+    .codec_ids      = { AV_CODEC_ID_MPEG4 },
+    .priv_data_size = sizeof(struct Mp4vParseContext),
     .parser_init    = mpeg4video_parse_init,
     .parser_parse   = mpeg4video_parse,
-    .parser_close   = ff_parse1_close,
+    .parser_close   = ff_parse_close,
     .split          = ff_mpeg4video_split,
 };

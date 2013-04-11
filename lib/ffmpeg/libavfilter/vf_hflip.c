@@ -24,8 +24,14 @@
  * horizontal flip filter
  */
 
+#include <string.h>
+
 #include "avfilter.h"
+#include "formats.h"
+#include "internal.h"
+#include "video.h"
 #include "libavutil/pixdesc.h"
+#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/imgutils.h"
 
@@ -36,64 +42,62 @@ typedef struct {
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
-        PIX_FMT_RGB48BE,      PIX_FMT_RGB48LE,
-        PIX_FMT_BGR48BE,      PIX_FMT_BGR48LE,
-        PIX_FMT_ARGB,         PIX_FMT_RGBA,
-        PIX_FMT_ABGR,         PIX_FMT_BGRA,
-        PIX_FMT_RGB24,        PIX_FMT_BGR24,
-        PIX_FMT_RGB565BE,     PIX_FMT_RGB565LE,
-        PIX_FMT_RGB555BE,     PIX_FMT_RGB555LE,
-        PIX_FMT_BGR565BE,     PIX_FMT_BGR565LE,
-        PIX_FMT_BGR555BE,     PIX_FMT_BGR555LE,
-        PIX_FMT_GRAY16BE,     PIX_FMT_GRAY16LE,
-        PIX_FMT_YUV420P16LE,  PIX_FMT_YUV420P16BE,
-        PIX_FMT_YUV422P16LE,  PIX_FMT_YUV422P16BE,
-        PIX_FMT_YUV444P16LE,  PIX_FMT_YUV444P16BE,
-        PIX_FMT_YUV444P,      PIX_FMT_YUV422P,
-        PIX_FMT_YUV420P,      PIX_FMT_YUV411P,
-        PIX_FMT_YUV410P,      PIX_FMT_YUV440P,
-        PIX_FMT_YUVJ444P,     PIX_FMT_YUVJ422P,
-        PIX_FMT_YUVJ420P,     PIX_FMT_YUVJ440P,
-        PIX_FMT_YUVA420P,
-        PIX_FMT_RGB8,         PIX_FMT_BGR8,
-        PIX_FMT_RGB4_BYTE,    PIX_FMT_BGR4_BYTE,
-        PIX_FMT_PAL8,         PIX_FMT_GRAY8,
-        PIX_FMT_NONE
-    };
+    AVFilterFormats *pix_fmts = NULL;
+    int fmt;
 
-    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
+    for (fmt = 0; fmt < AV_PIX_FMT_NB; fmt++) {
+        const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(fmt);
+        if (!(desc->flags & PIX_FMT_HWACCEL ||
+              desc->flags & PIX_FMT_BITSTREAM ||
+              (desc->log2_chroma_w != desc->log2_chroma_h &&
+               desc->comp[0].plane == desc->comp[1].plane)))
+            ff_add_format(&pix_fmts, fmt);
+    }
+
+    ff_set_common_formats(ctx, pix_fmts);
     return 0;
 }
 
 static int config_props(AVFilterLink *inlink)
 {
     FlipContext *flip = inlink->dst->priv;
-    const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[inlink->format];
+    const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get(inlink->format);
 
     av_image_fill_max_pixsteps(flip->max_step, NULL, pix_desc);
-    flip->hsub = av_pix_fmt_descriptors[inlink->format].log2_chroma_w;
-    flip->vsub = av_pix_fmt_descriptors[inlink->format].log2_chroma_h;
+    flip->hsub = pix_desc->log2_chroma_w;
+    flip->vsub = pix_desc->log2_chroma_h;
 
     return 0;
 }
 
-static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
+static int filter_frame(AVFilterLink *inlink, AVFilterBufferRef *in)
 {
-    FlipContext *flip = inlink->dst->priv;
-    AVFilterBufferRef *inpic  = inlink->cur_buf;
-    AVFilterBufferRef *outpic = inlink->dst->outputs[0]->out_buf;
+    AVFilterContext *ctx  = inlink->dst;
+    FlipContext *flip     = ctx->priv;
+    AVFilterLink *outlink = ctx->outputs[0];
+    AVFilterBufferRef *out;
     uint8_t *inrow, *outrow;
     int i, j, plane, step, hsub, vsub;
 
-    for (plane = 0; plane < 4 && inpic->data[plane]; plane++) {
+    out = ff_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
+    if (!out) {
+        avfilter_unref_bufferp(&in);
+        return AVERROR(ENOMEM);
+    }
+    avfilter_copy_buffer_ref_props(out, in);
+
+    /* copy palette if required */
+    if (av_pix_fmt_desc_get(inlink->format)->flags & PIX_FMT_PAL)
+        memcpy(out->data[1], in->data[1], AVPALETTE_SIZE);
+
+    for (plane = 0; plane < 4 && in->data[plane]; plane++) {
         step = flip->max_step[plane];
         hsub = (plane == 1 || plane == 2) ? flip->hsub : 0;
         vsub = (plane == 1 || plane == 2) ? flip->vsub : 0;
 
-        outrow = outpic->data[plane] + (y>>vsub) * outpic->linesize[plane];
-        inrow  = inpic ->data[plane] + (y>>vsub) * inpic ->linesize[plane] + ((inlink->w >> hsub) - 1) * step;
-        for (i = 0; i < h>>vsub; i++) {
+        outrow = out->data[plane];
+        inrow  = in ->data[plane] + ((inlink->w >> hsub) - 1) * step;
+        for (i = 0; i < in->video->h >> vsub; i++) {
             switch (step) {
             case 1:
                 for (j = 0; j < (inlink->w >> hsub); j++)
@@ -134,13 +138,33 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
                     memcpy(outrow + j*step, inrow - j*step, step);
             }
 
-            inrow  += inpic ->linesize[plane];
-            outrow += outpic->linesize[plane];
+            inrow  += in ->linesize[plane];
+            outrow += out->linesize[plane];
         }
     }
 
-    avfilter_draw_slice(inlink->dst->outputs[0], y, h, slice_dir);
+    avfilter_unref_bufferp(&in);
+    return ff_filter_frame(outlink, out);
 }
+
+static const AVFilterPad avfilter_vf_hflip_inputs[] = {
+    {
+        .name         = "default",
+        .type         = AVMEDIA_TYPE_VIDEO,
+        .filter_frame = filter_frame,
+        .config_props = config_props,
+        .min_perms    = AV_PERM_READ,
+    },
+    { NULL }
+};
+
+static const AVFilterPad avfilter_vf_hflip_outputs[] = {
+    {
+        .name = "default",
+        .type = AVMEDIA_TYPE_VIDEO,
+    },
+    { NULL }
+};
 
 AVFilter avfilter_vf_hflip = {
     .name      = "hflip",
@@ -148,13 +172,6 @@ AVFilter avfilter_vf_hflip = {
     .priv_size = sizeof(FlipContext),
     .query_formats = query_formats,
 
-    .inputs    = (const AVFilterPad[]) {{ .name      = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .draw_slice      = draw_slice,
-                                    .config_props    = config_props,
-                                    .min_perms       = AV_PERM_READ, },
-                                  { .name = NULL}},
-    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = avfilter_vf_hflip_inputs,
+    .outputs   = avfilter_vf_hflip_outputs,
 };

@@ -27,20 +27,19 @@
  */
 
 #include "avcodec.h"
-#include "dsputil.h"
-#include "dwt.h"
 #include "ivi_common.h"
 #include "ivi_dsp.h"
 
 void ff_ivi_recompose53(const IVIPlaneDesc *plane, uint8_t *dst,
-                        const int dst_pitch, const int num_bands)
+                        const int dst_pitch)
 {
     int             x, y, indx;
     int32_t         p0, p1, p2, p3, tmp0, tmp1, tmp2;
     int32_t         b0_1, b0_2, b1_1, b1_2, b1_3, b2_1, b2_2, b2_3, b2_4, b2_5, b2_6;
     int32_t         b3_1, b3_2, b3_3, b3_4, b3_5, b3_6, b3_7, b3_8, b3_9;
     int32_t         pitch, back_pitch;
-    const IDWTELEM *b0_ptr, *b1_ptr, *b2_ptr, *b3_ptr;
+    const short     *b0_ptr, *b1_ptr, *b2_ptr, *b3_ptr;
+    const int       num_bands = 4;
 
     /* all bands should have the same pitch */
     pitch = plane->bands[0].pitch;
@@ -55,6 +54,9 @@ void ff_ivi_recompose53(const IVIPlaneDesc *plane, uint8_t *dst,
     b3_ptr = plane->bands[3].buf;
 
     for (y = 0; y < plane->height; y += 2) {
+
+        if (y+2 >= plane->height)
+            pitch= 0;
         /* load storage variables with values */
         if (num_bands > 0) {
             b0_1 = b0_ptr[0];
@@ -84,6 +86,13 @@ void ff_ivi_recompose53(const IVIPlaneDesc *plane, uint8_t *dst,
         }
 
         for (x = 0, indx = 0; x < plane->width; x+=2, indx++) {
+            if (x+2 >= plane->width) {
+                b0_ptr --;
+                b1_ptr --;
+                b2_ptr --;
+                b3_ptr --;
+            }
+
             /* some values calculated in the previous iterations can */
             /* be reused in the next ones, so do appropriate copying */
             b2_1 = b2_2; // b2[x-1,y  ] = b2[x,  y  ]
@@ -171,18 +180,18 @@ void ff_ivi_recompose53(const IVIPlaneDesc *plane, uint8_t *dst,
 
         back_pitch = -pitch;
 
-        b0_ptr += pitch;
-        b1_ptr += pitch;
-        b2_ptr += pitch;
-        b3_ptr += pitch;
+        b0_ptr += pitch + 1;
+        b1_ptr += pitch + 1;
+        b2_ptr += pitch + 1;
+        b3_ptr += pitch + 1;
     }
 }
 
 void ff_ivi_recompose_haar(const IVIPlaneDesc *plane, uint8_t *dst,
-                           const int dst_pitch, const int num_bands)
+                           const int dst_pitch)
 {
     int             x, y, indx, b0, b1, b2, b3, p0, p1, p2, p3;
-    const IDWTELEM *b0_ptr, *b1_ptr, *b2_ptr, *b3_ptr;
+    const short     *b0_ptr, *b1_ptr, *b2_ptr, *b3_ptr;
     int32_t         pitch;
 
     /* all bands should have the same pitch */

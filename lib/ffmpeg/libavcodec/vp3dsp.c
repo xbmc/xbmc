@@ -24,8 +24,12 @@
  * source code.
  */
 
+#include "libavutil/attributes.h"
+#include "libavutil/common.h"
 #include "avcodec.h"
 #include "dsputil.h"
+#include "rnd_avg.h"
+#include "vp3dsp.h"
 
 #define IdctAdjustBeforeShift 8
 #define xC1S7 64277
@@ -210,19 +214,23 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
     }
 }
 
-void ff_vp3_idct_c(DCTELEM *block/* align 16*/){
-    idct(NULL, 0, block, 0);
-}
-
-void ff_vp3_idct_put_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/){
+static void vp3_idct_put_c(uint8_t *dest/*align 8*/, int line_size,
+                           int16_t *block/*align 16*/)
+{
     idct(dest, line_size, block, 1);
+    memset(block, 0, sizeof(*block) * 64);
 }
 
-void ff_vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/){
+static void vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size,
+                           int16_t *block/*align 16*/)
+{
     idct(dest, line_size, block, 2);
+    memset(block, 0, sizeof(*block) * 64);
 }
 
-void ff_vp3_idct_dc_add_c(uint8_t *dest/*align 8*/, int line_size, const DCTELEM *block/*align 16*/){
+static void vp3_idct_dc_add_c(uint8_t *dest/*align 8*/, int line_size,
+                              int16_t *block/*align 16*/)
+{
     int i, dc = (block[0] + 15) >> 5;
 
     for(i = 0; i < 8; i++){
@@ -236,9 +244,11 @@ void ff_vp3_idct_dc_add_c(uint8_t *dest/*align 8*/, int line_size, const DCTELEM
         dest[7] = av_clip_uint8(dest[7] + dc);
         dest += line_size;
     }
+    block[0] = 0;
 }
 
-void ff_vp3_v_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+static void vp3_v_loop_filter_c(uint8_t *first_pixel, int stride,
+                                int *bounding_values)
 {
     unsigned char *end;
     int filter_value;
@@ -254,7 +264,8 @@ void ff_vp3_v_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_valu
     }
 }
 
-void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_values)
+static void vp3_h_loop_filter_c(uint8_t *first_pixel, int stride,
+                                int *bounding_values)
 {
     unsigned char *end;
     int filter_value;
@@ -267,4 +278,43 @@ void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_valu
         first_pixel[-1] = av_clip_uint8(first_pixel[-1] + filter_value);
         first_pixel[ 0] = av_clip_uint8(first_pixel[ 0] - filter_value);
     }
+}
+
+static void put_no_rnd_pixels_l2(uint8_t *dst, const uint8_t *src1,
+                                 const uint8_t *src2, ptrdiff_t stride, int h)
+{
+    int i;
+
+    for (i = 0; i < h; i++) {
+        uint32_t a, b;
+
+        a = AV_RN32(&src1[i * stride]);
+        b = AV_RN32(&src2[i * stride]);
+        AV_WN32A(&dst[i * stride], no_rnd_avg32(a, b));
+        a = AV_RN32(&src1[i * stride + 4]);
+        b = AV_RN32(&src2[i * stride + 4]);
+        AV_WN32A(&dst[i * stride + 4], no_rnd_avg32(a, b));
+    }
+}
+
+av_cold void ff_vp3dsp_init(VP3DSPContext *c, int flags)
+{
+    c->put_no_rnd_pixels_l2 = put_no_rnd_pixels_l2;
+
+    c->idct_put      = vp3_idct_put_c;
+    c->idct_add      = vp3_idct_add_c;
+    c->idct_dc_add   = vp3_idct_dc_add_c;
+    c->v_loop_filter = vp3_v_loop_filter_c;
+    c->h_loop_filter = vp3_h_loop_filter_c;
+
+    c->idct_perm = FF_NO_IDCT_PERM;
+
+    if (ARCH_ARM)
+        ff_vp3dsp_init_arm(c, flags);
+    if (ARCH_BFIN)
+        ff_vp3dsp_init_bfin(c, flags);
+    if (ARCH_PPC)
+        ff_vp3dsp_init_ppc(c, flags);
+    if (ARCH_X86)
+        ff_vp3dsp_init_x86(c, flags);
 }

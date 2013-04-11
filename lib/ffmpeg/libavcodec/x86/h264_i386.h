@@ -34,9 +34,12 @@
 #include "libavcodec/cabac.h"
 #include "cabac.h"
 
+#if HAVE_INLINE_ASM
+
 //FIXME use some macros to avoid duplicating get_cabac (cannot be done yet
 //as that would make optimization work hard)
-#if HAVE_7REGS && !defined(BROKEN_RELOCATIONS)
+#if HAVE_7REGS
+#define decode_significance decode_significance_x86
 static int decode_significance_x86(CABACContext *c, int max_coeff,
                                    uint8_t *significant_coeff_ctx_base,
                                    int *index, x86_reg last_off){
@@ -45,18 +48,38 @@ static int decode_significance_x86(CABACContext *c, int max_coeff,
     int minusindex= 4-(intptr_t)index;
     int bit;
     x86_reg coeff_count;
-    __asm__ volatile(
-        "2:                                     \n\t"
 
-        BRANCHLESS_GET_CABAC("%4", "(%1)", "%3",
-                             "%w3", "%5", "%k0", "%b0", "%6")
+#ifdef BROKEN_RELOCATIONS
+    void *tables;
+
+    __asm__ volatile(
+        "lea   "MANGLE(ff_h264_cabac_tables)", %0      \n\t"
+        : "=&r"(tables)
+    );
+#endif
+
+    __asm__ volatile(
+        "3:                                     \n\t"
+
+        BRANCHLESS_GET_CABAC("%4", "%q4", "(%1)", "%3", "%w3",
+                             "%5", "%q5", "%k0", "%b0",
+                             "%c11(%6)", "%c12(%6)",
+                             AV_STRINGIFY(H264_NORM_SHIFT_OFFSET),
+                             AV_STRINGIFY(H264_LPS_RANGE_OFFSET),
+                             AV_STRINGIFY(H264_MLPS_STATE_OFFSET),
+                             "%13")
 
         "test $1, %4                            \n\t"
-        " jz 3f                                 \n\t"
+        " jz 4f                                 \n\t"
         "add  %10, %1                           \n\t"
 
-        BRANCHLESS_GET_CABAC("%4", "(%1)", "%3",
-                             "%w3", "%5", "%k0", "%b0", "%6")
+        BRANCHLESS_GET_CABAC("%4", "%q4", "(%1)", "%3", "%w3",
+                             "%5", "%q5", "%k0", "%b0",
+                             "%c11(%6)", "%c12(%6)",
+                             AV_STRINGIFY(H264_NORM_SHIFT_OFFSET),
+                             AV_STRINGIFY(H264_LPS_RANGE_OFFSET),
+                             AV_STRINGIFY(H264_MLPS_STATE_OFFSET),
+                             "%13")
 
         "sub  %10, %1                           \n\t"
         "mov  %2, %0                            \n\t"
@@ -65,30 +88,33 @@ static int decode_significance_x86(CABACContext *c, int max_coeff,
         "movl %%ecx, (%0)                       \n\t"
 
         "test $1, %4                            \n\t"
-        " jnz 4f                                \n\t"
+        " jnz 5f                                \n\t"
 
         "add"OPSIZE"  $4, %2                    \n\t"
 
-        "3:                                     \n\t"
+        "4:                                     \n\t"
         "add  $1, %1                            \n\t"
         "cmp  %8, %1                            \n\t"
-        " jb 2b                                 \n\t"
+        " jb 3b                                 \n\t"
         "mov  %2, %0                            \n\t"
         "movl %7, %%ecx                         \n\t"
         "add  %1, %%"REG_c"                     \n\t"
         "movl %%ecx, (%0)                       \n\t"
-        "4:                                     \n\t"
+        "5:                                     \n\t"
         "add  %9, %k0                           \n\t"
         "shr $2, %k0                            \n\t"
-        :"=&q"(coeff_count), "+r"(significant_coeff_ctx_base), "+m"(index),
-         "+&r"(c->low), "=&r"(bit), "+&r"(c->range),
-         "+m"(c->bytestream)
-        :"m"(minusstart), "m"(end), "m"(minusindex), "m"(last_off)
+        : "=&q"(coeff_count), "+r"(significant_coeff_ctx_base), "+m"(index),
+          "+&r"(c->low), "=&r"(bit), "+&r"(c->range)
+        : "r"(c), "m"(minusstart), "m"(end), "m"(minusindex), "m"(last_off),
+          "i"(offsetof(CABACContext, bytestream)),
+          "i"(offsetof(CABACContext, bytestream_end))
+          TABLES_ARG
         : "%"REG_c, "memory"
     );
     return coeff_count;
 }
 
+#define decode_significance_8x8 decode_significance_8x8_x86
 static int decode_significance_8x8_x86(CABACContext *c,
                                        uint8_t *significant_coeff_ctx_base,
                                        int *index, uint8_t *last_coeff_ctx_base, const uint8_t *sig_off){
@@ -97,53 +123,82 @@ static int decode_significance_8x8_x86(CABACContext *c,
     x86_reg coeff_count;
     x86_reg last=0;
     x86_reg state;
+
+#ifdef BROKEN_RELOCATIONS
+    void *tables;
+
+    __asm__ volatile(
+        "lea    "MANGLE(ff_h264_cabac_tables)", %0      \n\t"
+        : "=&r"(tables)
+    );
+#endif
+
     __asm__ volatile(
         "mov %1, %6                             \n\t"
-        "2:                                     \n\t"
+        "3:                                     \n\t"
 
         "mov %10, %0                            \n\t"
         "movzbl (%0, %6), %k6                   \n\t"
         "add %9, %6                             \n\t"
 
-        BRANCHLESS_GET_CABAC("%4", "(%6)", "%3",
-                             "%w3", "%5", "%k0", "%b0", "%7")
+        BRANCHLESS_GET_CABAC("%4", "%q4", "(%6)", "%3", "%w3",
+                             "%5", "%q5", "%k0", "%b0",
+                             "%c12(%7)", "%c13(%7)",
+                             AV_STRINGIFY(H264_NORM_SHIFT_OFFSET),
+                             AV_STRINGIFY(H264_LPS_RANGE_OFFSET),
+                             AV_STRINGIFY(H264_MLPS_STATE_OFFSET),
+                             "%15")
 
         "mov %1, %k6                            \n\t"
         "test $1, %4                            \n\t"
-        " jz 3f                                 \n\t"
+        " jz 4f                                 \n\t"
 
-        "movzbl "MANGLE(last_coeff_flag_offset_8x8)"(%k6), %k6\n\t"
+#ifdef BROKEN_RELOCATIONS
+        "movzbl %c14(%15, %q6), %k6\n\t"
+#else
+        "movzbl "MANGLE(ff_h264_cabac_tables)"+%c14(%k6), %k6\n\t"
+#endif
         "add %11, %6                            \n\t"
 
-        BRANCHLESS_GET_CABAC("%4", "(%6)", "%3",
-                             "%w3", "%5", "%k0", "%b0", "%7")
+        BRANCHLESS_GET_CABAC("%4", "%q4", "(%6)", "%3", "%w3",
+                             "%5", "%q5", "%k0", "%b0",
+                             "%c12(%7)", "%c13(%7)",
+                             AV_STRINGIFY(H264_NORM_SHIFT_OFFSET),
+                             AV_STRINGIFY(H264_LPS_RANGE_OFFSET),
+                             AV_STRINGIFY(H264_MLPS_STATE_OFFSET),
+                             "%15")
 
         "mov %2, %0                             \n\t"
         "mov %1, %k6                            \n\t"
         "movl %k6, (%0)                         \n\t"
 
         "test $1, %4                            \n\t"
-        " jnz 4f                                \n\t"
+        " jnz 5f                                \n\t"
 
         "add"OPSIZE"  $4, %2                    \n\t"
 
-        "3:                                     \n\t"
+        "4:                                     \n\t"
         "addl $1, %k6                           \n\t"
         "mov %k6, %1                            \n\t"
         "cmpl $63, %k6                          \n\t"
-        " jb 2b                                 \n\t"
+        " jb 3b                                 \n\t"
         "mov %2, %0                             \n\t"
         "movl %k6, (%0)                         \n\t"
-        "4:                                     \n\t"
+        "5:                                     \n\t"
         "addl %8, %k0                           \n\t"
         "shr $2, %k0                            \n\t"
-        :"=&q"(coeff_count),"+m"(last), "+m"(index), "+&r"(c->low), "=&r"(bit),
-         "+&r"(c->range), "=&r"(state), "+m"(c->bytestream)
-        :"m"(minusindex), "m"(significant_coeff_ctx_base), "m"(sig_off), "m"(last_coeff_ctx_base)
+        : "=&q"(coeff_count), "+m"(last), "+m"(index), "+&r"(c->low),
+          "=&r"(bit), "+&r"(c->range), "=&r"(state)
+        : "r"(c), "m"(minusindex), "m"(significant_coeff_ctx_base),
+          "m"(sig_off), "m"(last_coeff_ctx_base),
+          "i"(offsetof(CABACContext, bytestream)),
+          "i"(offsetof(CABACContext, bytestream_end)),
+          "i"(H264_LAST_COEFF_FLAG_OFFSET_8x8_OFFSET) TABLES_ARG
         : "%"REG_c, "memory"
     );
     return coeff_count;
 }
 #endif /* HAVE_7REGS && !defined(BROKEN_RELOCATIONS) */
 
+#endif /* HAVE_INLINE_ASM */
 #endif /* AVCODEC_X86_H264_I386_H */

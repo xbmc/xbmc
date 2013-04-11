@@ -33,9 +33,14 @@
 #endif
 
 typedef struct AVCodecTag {
-    enum CodecID id;
+    enum AVCodecID id;
     unsigned int tag;
 } AVCodecTag;
+
+typedef struct CodecMime{
+    char str[32];
+    enum AVCodecID id;
+} CodecMime;
 
 #ifdef __GNUC__
 #define dynarray_add(tab, nb_ptr, elem)\
@@ -52,7 +57,7 @@ do {\
 } while(0)
 #endif
 
-struct tm *brktimegm(time_t secs, struct tm *tm);
+struct tm *ff_brktimegm(time_t secs, struct tm *tm);
 
 char *ff_data_to_hex(char *buf, const uint8_t *src, int size, int lowercase);
 
@@ -118,7 +123,8 @@ int ff_url_join(char *str, int size, const char *proto,
  *
  * @param buff the buffer to append the SDP fragment to
  * @param size the size of the buff buffer
- * @param c the AVCodecContext of the media to describe
+ * @param st the AVStream of the media to describe
+ * @param idx the global stream index
  * @param dest_addr the destination address of the media stream, may be NULL
  * @param dest_type the destination address type, may be NULL
  * @param port the destination port of the media stream, 0 if unknown
@@ -126,7 +132,7 @@ int ff_url_join(char *str, int size, const char *proto,
  * @param fmt the AVFormatContext, which might contain options modifying
  *            the generated SDP
  */
-void ff_sdp_write_media(char *buff, int size, AVCodecContext *c,
+void ff_sdp_write_media(char *buff, int size, AVStream *st, int idx,
                         const char *dest_addr, const char *dest_type,
                         int port, int ttl, AVFormatContext *fmt);
 
@@ -234,7 +240,7 @@ AVChapter *avpriv_new_chapter(AVFormatContext *s, int id, AVRational time_base,
  */
 void ff_reduce_index(AVFormatContext *s, int stream_index);
 
-/*
+/**
  * Convert a relative url into an absolute url, given a base url.
  *
  * @param buf the buffer where output absolute url is written
@@ -245,7 +251,7 @@ void ff_reduce_index(AVFormatContext *s, int stream_index);
 void ff_make_absolute_url(char *buf, int size, const char *base,
                           const char *rel);
 
-enum CodecID ff_guess_image2_codec(const char *filename);
+enum AVCodecID ff_guess_image2_codec(const char *filename);
 
 /**
  * Convert a date string in ISO8601 format to Unix timestamp.
@@ -286,14 +292,16 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index,
                       int64_t (*read_timestamp)(struct AVFormatContext *, int , int64_t *, int64_t ));
 
 /**
- * Set the pts for a given stream. If the new values would be invalid
- * (<= 0), it leaves the AVStream unchanged.
+ * Set the time base and wrapping info for a given stream. This will be used
+ * to interpret the stream's timestamps. If the new time base is invalid
+ * (numerator or denominator are non-positive), it leaves the stream
+ * unchanged.
  *
  * @param s stream
  * @param pts_wrap_bits number of bits effectively used by the pts
- *        (used for wrap control, 33 is the value for MPEG)
- * @param pts_num numerator to convert to seconds (MPEG: 1)
- * @param pts_den denominator to convert to seconds (MPEG: 90000)
+ *        (used for wrap control)
+ * @param pts_num time base numerator
+ * @param pts_den time base denominator
  */
 void avpriv_set_pts_info(AVStream *s, int pts_wrap_bits,
                          unsigned int pts_num, unsigned int pts_den);
@@ -305,5 +313,83 @@ void avpriv_set_pts_info(AVStream *s, int pts_wrap_bits,
 int ff_add_param_change(AVPacket *pkt, int32_t channels,
                         uint64_t channel_layout, int32_t sample_rate,
                         int32_t width, int32_t height);
+
+/**
+ * Set the timebase for each stream from the corresponding codec timebase and
+ * print it.
+ */
+int ff_framehash_write_header(AVFormatContext *s);
+
+/**
+ * Read a transport packet from a media file.
+ *
+ * @param s media file handle
+ * @param pkt is filled
+ * @return 0 if OK, AVERROR_xxx on error
+ */
+int ff_read_packet(AVFormatContext *s, AVPacket *pkt);
+
+/**
+ * Interleave a packet per dts in an output media file.
+ *
+ * Packets with pkt->destruct == av_destruct_packet will be freed inside this
+ * function, so they cannot be used after it. Note that calling av_free_packet()
+ * on them is still safe.
+ *
+ * @param s media file handle
+ * @param out the interleaved packet will be output here
+ * @param pkt the input packet
+ * @param flush 1 if no further packets are available as input and all
+ *              remaining packets should be output
+ * @return 1 if a packet was output, 0 if no packet could be output,
+ *         < 0 if an error occurred
+ */
+int ff_interleave_packet_per_dts(AVFormatContext *s, AVPacket *out,
+                                 AVPacket *pkt, int flush);
+
+void ff_free_stream(AVFormatContext *s, AVStream *st);
+
+/**
+ * Return the frame duration in seconds. Return 0 if not available.
+ */
+void ff_compute_frame_duration(int *pnum, int *pden, AVStream *st,
+                               AVCodecParserContext *pc, AVPacket *pkt);
+
+int ff_get_audio_frame_size(AVCodecContext *enc, int size, int mux);
+
+unsigned int ff_codec_get_tag(const AVCodecTag *tags, enum AVCodecID id);
+
+enum AVCodecID ff_codec_get_id(const AVCodecTag *tags, unsigned int tag);
+
+/**
+ * Select a PCM codec based on the given parameters.
+ *
+ * @param bps     bits-per-sample
+ * @param flt     floating-point
+ * @param be      big-endian
+ * @param sflags  signed flags. each bit corresponds to one byte of bit depth.
+ *                e.g. the 1st bit indicates if 8-bit should be signed or
+ *                unsigned, the 2nd bit indicates if 16-bit should be signed or
+ *                unsigned, etc... This is useful for formats such as WAVE where
+ *                only 8-bit is unsigned and all other bit depths are signed.
+ * @return        a PCM codec id or AV_CODEC_ID_NONE
+ */
+enum AVCodecID ff_get_pcm_codec_id(int bps, int flt, int be, int sflags);
+
+/**
+ * Chooses a timebase for muxing the specified stream.
+ *
+ * The choosen timebase allows sample accurate timestamps based
+ * on the framerate or sample rate for audio streams. It also is
+ * at least as precisse as 1/min_precission would be.
+ */
+AVRational ff_choose_timebase(AVFormatContext *s, AVStream *st, int min_precission);
+
+/**
+ * Generate standard extradata for AVC-Intra based on width/height and field order.
+ */
+void ff_generate_avci_extradata(AVStream *st);
+
+int ff_http_match_no_proxy(const char *no_proxy, const char *hostname);
 
 #endif /* AVFORMAT_INTERNAL_H */

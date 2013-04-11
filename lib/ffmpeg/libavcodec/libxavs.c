@@ -28,6 +28,8 @@
 #include <xavs.h>
 #include "avcodec.h"
 #include "internal.h"
+#include "libavutil/internal.h"
+#include "libavutil/mem.h"
 #include "libavutil/opt.h"
 
 #define END_OF_STREAM 0x001
@@ -37,6 +39,7 @@
 #define XAVS_PART_B8X8 0x100 /* Analyze b16x8, b*/
 
 typedef struct XavsContext {
+    AVClass        *class;
     xavs_param_t    params;
     xavs_t         *enc;
     xavs_picture_t  pic;
@@ -53,6 +56,9 @@ typedef struct XavsContext {
     int fast_pskip;
     int mbtree;
     int mixed_refs;
+
+    int64_t *pts_buffer;
+    int out_frame_count;
 } XavsContext;
 
 static void XAVS_log(void *p, int level, const char *fmt, va_list args)
@@ -70,13 +76,22 @@ static void XAVS_log(void *p, int level, const char *fmt, va_list args)
     av_vlog(p, level_map[level], fmt, args);
 }
 
-static int encode_nals(AVCodecContext *ctx, uint8_t *buf,
-                       int size, xavs_nal_t *nals,
-                       int nnal, int skip_sei)
+static int encode_nals(AVCodecContext *ctx, AVPacket *pkt,
+                       xavs_nal_t *nals, int nnal)
 {
     XavsContext *x4 = ctx->priv_data;
-    uint8_t *p = buf;
-    int i, s;
+    uint8_t *p;
+    int i, s, ret, size = x4->sei_size + FF_MIN_BUFFER_SIZE;
+
+    if (!nnal)
+        return 0;
+
+    for (i = 0; i < nnal; i++)
+        size += nals[i].i_payload;
+
+    if ((ret = ff_alloc_packet2(ctx, pkt, size)) < 0)
+        return ret;
+    p = pkt->data;
 
     /* Write the SEI as part of the first frame. */
     if (x4->sei_size > 0 && nnal > 0) {
@@ -86,30 +101,22 @@ static int encode_nals(AVCodecContext *ctx, uint8_t *buf,
     }
 
     for (i = 0; i < nnal; i++) {
-        /* Don't put the SEI in extradata. */
-        if (skip_sei && nals[i].i_type == NAL_SEI) {
-            x4->sei = av_malloc( 5 + nals[i].i_payload * 4 / 3 );
-            if (xavs_nal_encode(x4->sei, &x4->sei_size, 1, nals + i) < 0)
-                return -1;
-
-            continue;
-        }
         s = xavs_nal_encode(p, &size, 1, nals + i);
         if (s < 0)
             return -1;
         p += s;
     }
+    pkt->size = p - pkt->data;
 
-    return p - buf;
+    return 1;
 }
 
-static int XAVS_frame(AVCodecContext *ctx, uint8_t *buf,
-                      int bufsize, void *data)
+static int XAVS_frame(AVCodecContext *ctx, AVPacket *pkt,
+                      const AVFrame *frame, int *got_packet)
 {
     XavsContext *x4 = ctx->priv_data;
-    AVFrame *frame = data;
     xavs_nal_t *nal;
-    int nnal, i;
+    int nnal, i, ret;
     xavs_picture_t pic_out;
 
     x4->pic.img.i_csp   = XAVS_CSP_I420;
@@ -123,29 +130,44 @@ static int XAVS_frame(AVCodecContext *ctx, uint8_t *buf,
 
         x4->pic.i_pts  = frame->pts;
         x4->pic.i_type = XAVS_TYPE_AUTO;
+        x4->pts_buffer[ctx->frame_number % (ctx->max_b_frames+1)] = frame->pts;
     }
 
     if (xavs_encoder_encode(x4->enc, &nal, &nnal,
                             frame? &x4->pic: NULL, &pic_out) < 0)
     return -1;
 
-    bufsize = encode_nals(ctx, buf, bufsize, nal, nnal, 0);
+    ret = encode_nals(ctx, pkt, nal, nnal);
 
-    if (bufsize < 0)
+    if (ret < 0)
         return -1;
 
-    if (!bufsize && !frame && !(x4->end_of_stream)){
-        buf[bufsize]   = 0x0;
-        buf[bufsize+1] = 0x0;
-        buf[bufsize+2] = 0x01;
-        buf[bufsize+3] = 0xb1;
-        bufsize += 4;
-        x4->end_of_stream = END_OF_STREAM;
-        return bufsize;
+    if (!ret) {
+        if (!frame && !(x4->end_of_stream)) {
+            if ((ret = ff_alloc_packet2(ctx, pkt, 4)) < 0)
+                return ret;
+
+            pkt->data[0] = 0x0;
+            pkt->data[1] = 0x0;
+            pkt->data[2] = 0x01;
+            pkt->data[3] = 0xb1;
+            pkt->dts = 2*x4->pts_buffer[(x4->out_frame_count-1)%(ctx->max_b_frames+1)] -
+                       x4->pts_buffer[(x4->out_frame_count-2)%(ctx->max_b_frames+1)];
+            x4->end_of_stream = END_OF_STREAM;
+            *got_packet = 1;
+        }
+        return 0;
     }
-    /* FIXME: libxavs now provides DTS */
-    /* but AVFrame doesn't have a field for it. */
+
     x4->out_pic.pts = pic_out.i_pts;
+    pkt->pts = pic_out.i_pts;
+    if (ctx->has_b_frames) {
+        if (!x4->out_frame_count)
+            pkt->dts = pkt->pts - (x4->pts_buffer[1] - x4->pts_buffer[0]);
+        else
+            pkt->dts = x4->pts_buffer[(x4->out_frame_count-1)%(ctx->max_b_frames+1)];
+    } else
+        pkt->dts = pkt->pts;
 
     switch (pic_out.i_type) {
     case XAVS_TYPE_IDR:
@@ -163,11 +185,16 @@ static int XAVS_frame(AVCodecContext *ctx, uint8_t *buf,
 
     /* There is no IDR frame in AVS JiZhun */
     /* Sequence header is used as a flag */
-    x4->out_pic.key_frame = pic_out.i_type == XAVS_TYPE_I;
+    if (pic_out.i_type == XAVS_TYPE_I) {
+        x4->out_pic.key_frame = 1;
+        pkt->flags |= AV_PKT_FLAG_KEY;
+    }
 
     x4->out_pic.quality   = (pic_out.i_qpplus1 - 1) * FF_QP2LAMBDA;
 
-    return bufsize;
+    x4->out_frame_count++;
+    *got_packet = ret;
+    return 0;
 }
 
 static av_cold int XAVS_close(AVCodecContext *avctx)
@@ -176,6 +203,7 @@ static av_cold int XAVS_close(AVCodecContext *avctx)
 
     av_freep(&avctx->extradata);
     av_free(x4->sei);
+    av_freep(&x4->pts_buffer);
 
     if (x4->enc)
         xavs_encoder_close(x4->enc);
@@ -203,16 +231,6 @@ static av_cold int XAVS_init(AVCodecContext *avctx)
     if (avctx->flags & CODEC_FLAG_PASS2) {
         x4->params.rc.b_stat_read = 1;
     } else {
-#if FF_API_X264_GLOBAL_OPTS
-        if (avctx->crf) {
-            x4->params.rc.i_rc_method   = XAVS_RC_CRF;
-            x4->params.rc.f_rf_constant = avctx->crf;
-        } else if (avctx->cqp > -1) {
-            x4->params.rc.i_rc_method   = XAVS_RC_CQP;
-            x4->params.rc.i_qp_constant = avctx->cqp;
-        }
-#endif
-
         if (x4->crf >= 0) {
             x4->params.rc.i_rc_method   = XAVS_RC_CRF;
             x4->params.rc.f_rf_constant = x4->crf;
@@ -221,32 +239,6 @@ static av_cold int XAVS_init(AVCodecContext *avctx)
             x4->params.rc.i_qp_constant = x4->cqp;
         }
     }
-
-#if FF_API_X264_GLOBAL_OPTS
-    if (avctx->bframebias)
-        x4->params.i_bframe_bias              = avctx->bframebias;
-    if (avctx->deblockalpha)
-        x4->params.i_deblocking_filter_alphac0 = avctx->deblockalpha;
-    if (avctx->deblockbeta)
-        x4->params.i_deblocking_filter_beta    = avctx->deblockbeta;
-    if (avctx->complexityblur >= 0)
-        x4->params.rc.f_complexity_blur        = avctx->complexityblur;
-    if (avctx->directpred >= 0)
-        x4->params.analyse.i_direct_mv_pred    = avctx->directpred;
-    if (avctx->partitions) {
-        if (avctx->partitions & XAVS_PART_I8X8)
-            x4->params.analyse.inter |= XAVS_ANALYSE_I8x8;
-        if (avctx->partitions & XAVS_PART_P8X8)
-            x4->params.analyse.inter |= XAVS_ANALYSE_PSUB16x16;
-        if (avctx->partitions & XAVS_PART_B8X8)
-            x4->params.analyse.inter |= XAVS_ANALYSE_BSUB16x16;
-    }
-    x4->params.rc.b_mb_tree               = !!(avctx->flags2 & CODEC_FLAG2_MBTREE);
-    x4->params.b_aud          = avctx->flags2 & CODEC_FLAG2_AUD;
-    x4->params.analyse.b_mixed_references = avctx->flags2 & CODEC_FLAG2_MIXED_REFS;
-    x4->params.analyse.b_fast_pskip       = avctx->flags2 & CODEC_FLAG2_FASTPSKIP;
-    x4->params.analyse.b_weighted_bipred = avctx->flags2 & CODEC_FLAG2_WPRED;
-#endif
 
     if (x4->aud >= 0)
         x4->params.b_aud                      = x4->aud;
@@ -360,17 +352,35 @@ static av_cold int XAVS_init(AVCodecContext *avctx)
     if (!x4->enc)
         return -1;
 
+    if (!(x4->pts_buffer = av_mallocz((avctx->max_b_frames+1) * sizeof(*x4->pts_buffer))))
+        return AVERROR(ENOMEM);
+
     avctx->coded_frame = &x4->out_pic;
     /* TAG: Do we have GLOBAL HEADER in AVS */
     /* We Have PPS and SPS in AVS */
     if (avctx->flags & CODEC_FLAG_GLOBAL_HEADER) {
         xavs_nal_t *nal;
-        int nnal, s;
+        int nnal, s, i, size;
+        uint8_t *p;
 
         s = xavs_encoder_headers(x4->enc, &nal, &nnal);
 
-        avctx->extradata      = av_malloc(s);
-        avctx->extradata_size = encode_nals(avctx, avctx->extradata, s, nal, nnal, 1);
+        avctx->extradata = p = av_malloc(s);
+        for (i = 0; i < nnal; i++) {
+            /* Don't put the SEI in extradata. */
+            if (nal[i].i_type == NAL_SEI) {
+                x4->sei = av_malloc( 5 + nal[i].i_payload * 4 / 3 );
+                if (xavs_nal_encode(x4->sei, &x4->sei_size, 1, nal + i) < 0)
+                    return -1;
+
+                continue;
+            }
+            size = xavs_nal_encode(p, &s, 1, nal + i);
+            if (size < 0)
+                return -1;
+            p += size;
+        }
+        avctx->extradata_size = p - avctx->extradata;
     }
     return 0;
 }
@@ -378,19 +388,19 @@ static av_cold int XAVS_init(AVCodecContext *avctx)
 #define OFFSET(x) offsetof(XavsContext, x)
 #define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
 static const AVOption options[] = {
-    { "crf",           "Select the quality for constant quality mode",    OFFSET(crf),           AV_OPT_TYPE_FLOAT,  {-1 }, -1, FLT_MAX, VE },
-    { "qp",            "Constant quantization parameter rate control method",OFFSET(cqp),        AV_OPT_TYPE_INT,    {-1 }, -1, INT_MAX, VE },
-    { "b-bias",        "Influences how often B-frames are used",          OFFSET(b_bias),        AV_OPT_TYPE_INT,    {INT_MIN}, INT_MIN, INT_MAX, VE },
-    { "cplxblur",      "Reduce fluctuations in QP (before curve compression)", OFFSET(cplxblur), AV_OPT_TYPE_FLOAT,  {-1 }, -1, FLT_MAX, VE},
-    { "direct-pred",   "Direct MV prediction mode",                       OFFSET(direct_pred),   AV_OPT_TYPE_INT,    {-1 }, -1, INT_MAX, VE, "direct-pred" },
-    { "none",          NULL,      0,    AV_OPT_TYPE_CONST, { XAVS_DIRECT_PRED_NONE },     0, 0, VE, "direct-pred" },
-    { "spatial",       NULL,      0,    AV_OPT_TYPE_CONST, { XAVS_DIRECT_PRED_SPATIAL },  0, 0, VE, "direct-pred" },
-    { "temporal",      NULL,      0,    AV_OPT_TYPE_CONST, { XAVS_DIRECT_PRED_TEMPORAL }, 0, 0, VE, "direct-pred" },
-    { "auto",          NULL,      0,    AV_OPT_TYPE_CONST, { XAVS_DIRECT_PRED_AUTO },     0, 0, VE, "direct-pred" },
-    { "aud",           "Use access unit delimiters.",                     OFFSET(aud),           AV_OPT_TYPE_INT,    {-1 }, -1, 1, VE},
-    { "mbtree",        "Use macroblock tree ratecontrol.",                OFFSET(mbtree),        AV_OPT_TYPE_INT,    {-1 }, -1, 1, VE},
-    { "mixed-refs",    "One reference per partition, as opposed to one reference per macroblock", OFFSET(mixed_refs), AV_OPT_TYPE_INT, {-1}, -1, 1, VE },
-    { "fast-pskip",    NULL,                                              OFFSET(fast_pskip),    AV_OPT_TYPE_INT,    {-1 }, -1, 1, VE},
+    { "crf",           "Select the quality for constant quality mode",    OFFSET(crf),           AV_OPT_TYPE_FLOAT,  {.dbl = -1 }, -1, FLT_MAX, VE },
+    { "qp",            "Constant quantization parameter rate control method",OFFSET(cqp),        AV_OPT_TYPE_INT,    {.i64 = -1 }, -1, INT_MAX, VE },
+    { "b-bias",        "Influences how often B-frames are used",          OFFSET(b_bias),        AV_OPT_TYPE_INT,    {.i64 = INT_MIN}, INT_MIN, INT_MAX, VE },
+    { "cplxblur",      "Reduce fluctuations in QP (before curve compression)", OFFSET(cplxblur), AV_OPT_TYPE_FLOAT,  {.dbl = -1 }, -1, FLT_MAX, VE},
+    { "direct-pred",   "Direct MV prediction mode",                       OFFSET(direct_pred),   AV_OPT_TYPE_INT,    {.i64 = -1 }, -1, INT_MAX, VE, "direct-pred" },
+    { "none",          NULL,      0,    AV_OPT_TYPE_CONST, { .i64 = XAVS_DIRECT_PRED_NONE },     0, 0, VE, "direct-pred" },
+    { "spatial",       NULL,      0,    AV_OPT_TYPE_CONST, { .i64 = XAVS_DIRECT_PRED_SPATIAL },  0, 0, VE, "direct-pred" },
+    { "temporal",      NULL,      0,    AV_OPT_TYPE_CONST, { .i64 = XAVS_DIRECT_PRED_TEMPORAL }, 0, 0, VE, "direct-pred" },
+    { "auto",          NULL,      0,    AV_OPT_TYPE_CONST, { .i64 = XAVS_DIRECT_PRED_AUTO },     0, 0, VE, "direct-pred" },
+    { "aud",           "Use access unit delimiters.",                     OFFSET(aud),           AV_OPT_TYPE_INT,    {.i64 = -1 }, -1, 1, VE},
+    { "mbtree",        "Use macroblock tree ratecontrol.",                OFFSET(mbtree),        AV_OPT_TYPE_INT,    {.i64 = -1 }, -1, 1, VE},
+    { "mixed-refs",    "One reference per partition, as opposed to one reference per macroblock", OFFSET(mixed_refs), AV_OPT_TYPE_INT, {.i64 = -1}, -1, 1, VE },
+    { "fast-pskip",    NULL,                                              OFFSET(fast_pskip),    AV_OPT_TYPE_INT,    {.i64 = -1 }, -1, 1, VE},
     { NULL },
 };
 
@@ -409,15 +419,14 @@ static const AVCodecDefault xavs_defaults[] = {
 AVCodec ff_libxavs_encoder = {
     .name           = "libxavs",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_CAVS,
+    .id             = AV_CODEC_ID_CAVS,
     .priv_data_size = sizeof(XavsContext),
     .init           = XAVS_init,
-    .encode         = XAVS_frame,
+    .encode2        = XAVS_frame,
     .close          = XAVS_close,
     .capabilities   = CODEC_CAP_DELAY | CODEC_CAP_AUTO_THREADS,
-    .pix_fmts       = (const enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NONE },
-    .long_name      = NULL_IF_CONFIG_SMALL("libxavs - the Chinese Audio Video Standard Encoder"),
+    .pix_fmts       = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
+    .long_name      = NULL_IF_CONFIG_SMALL("libxavs Chinese AVS (Audio Video Standard)"),
     .priv_class     = &class,
     .defaults       = xavs_defaults,
 };
-

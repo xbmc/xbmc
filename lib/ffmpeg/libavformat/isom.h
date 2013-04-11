@@ -30,8 +30,8 @@
 
 /* isom.c */
 extern const AVCodecTag ff_mp4_obj_type[];
-extern const AVCodecTag codec_movvideo_tags[];
-extern const AVCodecTag codec_movaudio_tags[];
+extern const AVCodecTag ff_codec_movvideo_tags[];
+extern const AVCodecTag ff_codec_movaudio_tags[];
 extern const AVCodecTag ff_codec_movsubtitle_tags[];
 
 int ff_mov_iso639_to_lang(const char lang[4], int mp4);
@@ -42,18 +42,18 @@ int ff_mov_lang_to_iso639(unsigned code, char to[4]);
  * Here we just use what is needed to read the chunks
  */
 
-typedef struct {
+typedef struct MOVStts {
     int count;
     int duration;
 } MOVStts;
 
-typedef struct {
+typedef struct MOVStsc {
     int first;
     int count;
     int id;
 } MOVStsc;
 
-typedef struct {
+typedef struct MOVDref {
     uint32_t type;
     char *path;
     char *dir;
@@ -62,14 +62,14 @@ typedef struct {
     int16_t nlvl_to, nlvl_from;
 } MOVDref;
 
-typedef struct {
+typedef struct MOVAtom {
     uint32_t type;
     int64_t size; /* total size (excluding the size and type fields) */
 } MOVAtom;
 
 struct MOVParseTableEntry;
 
-typedef struct {
+typedef struct MOVFragment {
     unsigned track_id;
     uint64_t base_data_offset;
     uint64_t moof_offset;
@@ -79,7 +79,7 @@ typedef struct {
     unsigned flags;
 } MOVFragment;
 
-typedef struct {
+typedef struct MOVTrackExt {
     unsigned track_id;
     unsigned stsd_id;
     unsigned duration;
@@ -87,8 +87,14 @@ typedef struct {
     unsigned flags;
 } MOVTrackExt;
 
+typedef struct MOVSbgp {
+    unsigned int count;
+    unsigned int index;
+} MOVSbgp;
+
 typedef struct MOVStreamContext {
     AVIOContext *pb;
+    int pb_is_copied;
     int ffindex;          ///< AVStream index
     int next_chunk;
     unsigned int chunk_count;
@@ -103,9 +109,11 @@ typedef struct MOVStreamContext {
     unsigned *stps_data;  ///< partial sync sample for mpeg-2 open gop
     int ctts_index;
     int ctts_sample;
-    unsigned int sample_size;
+    unsigned int sample_size; ///< may contain value calculated from stsd or value from stsz atom
+    unsigned int alt_sample_size; ///< always contains sample size from stsz atom
     unsigned int sample_count;
     int *sample_sizes;
+    int keyframe_absent;
     unsigned int keyframe_count;
     int *keyframes;
     int time_scale;
@@ -121,6 +129,7 @@ typedef struct MOVStreamContext {
     unsigned drefs_count;
     MOVDref *drefs;
     int dref_id;
+    int timecode_track;
     int wrong_dts;        ///< dts are wrong due to huge ctts offset (iMovie files)
     int width;            ///< tkhd width
     int height;           ///< tkhd height
@@ -128,6 +137,11 @@ typedef struct MOVStreamContext {
     uint32_t palette[256];
     int has_palette;
     int64_t data_size;
+    uint32_t tmcd_flags;  ///< tmcd track flags
+    int64_t track_end;    ///< used for dts generation in fragmented movie files
+    int start_pad;        ///< amount of samples to skip due to enc-dec delay
+    unsigned int rap_group_count;
+    MOVSbgp *rap_group;
 } MOVStreamContext;
 
 typedef struct MOVContext {
@@ -146,6 +160,8 @@ typedef struct MOVContext {
     int itunes_metadata;  ///< metadata are itunes style
     int chapter_track;
     int use_absolute_path;
+    int ignore_editlist;
+    int64_t next_root_atom; ///< offset of the next root atom
 } MOVContext;
 
 int ff_mp4_read_descr_len(AVIOContext *pb);
@@ -160,11 +176,34 @@ void ff_mp4_parse_es_descr(AVIOContext *pb, int *es_id);
 #define MP4DecSpecificDescrTag          0x05
 #define MP4SLDescrTag                   0x06
 
+#define MOV_TFHD_BASE_DATA_OFFSET       0x01
+#define MOV_TFHD_STSD_ID                0x02
+#define MOV_TFHD_DEFAULT_DURATION       0x08
+#define MOV_TFHD_DEFAULT_SIZE           0x10
+#define MOV_TFHD_DEFAULT_FLAGS          0x20
+#define MOV_TFHD_DURATION_IS_EMPTY  0x010000
+
+#define MOV_TRUN_DATA_OFFSET            0x01
+#define MOV_TRUN_FIRST_SAMPLE_FLAGS     0x04
+#define MOV_TRUN_SAMPLE_DURATION       0x100
+#define MOV_TRUN_SAMPLE_SIZE           0x200
+#define MOV_TRUN_SAMPLE_FLAGS          0x400
+#define MOV_TRUN_SAMPLE_CTS            0x800
+
+#define MOV_FRAG_SAMPLE_FLAG_DEGRADATION_PRIORITY_MASK 0x0000ffff
+#define MOV_FRAG_SAMPLE_FLAG_IS_NON_SYNC               0x00010000
+#define MOV_FRAG_SAMPLE_FLAG_PADDING_MASK              0x000e0000
+#define MOV_FRAG_SAMPLE_FLAG_REDUNDANCY_MASK           0x00300000
+#define MOV_FRAG_SAMPLE_FLAG_DEPENDED_MASK             0x00c00000
+#define MOV_FRAG_SAMPLE_FLAG_DEPENDS_MASK              0x03000000
+
+#define MOV_FRAG_SAMPLE_FLAG_DEPENDS_NO                0x02000000
+#define MOV_FRAG_SAMPLE_FLAG_DEPENDS_YES               0x01000000
+
 int ff_mov_read_esds(AVFormatContext *fc, AVIOContext *pb, MOVAtom atom);
-enum CodecID ff_mov_get_lpcm_codec_id(int bps, int flags);
+enum AVCodecID ff_mov_get_lpcm_codec_id(int bps, int flags);
 
 int ff_mov_read_stsd_entries(MOVContext *c, AVIOContext *pb, int entries);
-void ff_mov_read_chan(AVFormatContext *s, int64_t size, AVCodecContext *codec);
 void ff_mov_write_chan(AVIOContext *pb, int64_t channel_layout);
 
 #endif /* AVFORMAT_ISOM_H */

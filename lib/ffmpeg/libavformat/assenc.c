@@ -31,7 +31,7 @@ static int write_header(AVFormatContext *s)
     AVCodecContext *avctx= s->streams[0]->codec;
     uint8_t *last= NULL;
 
-    if(s->nb_streams != 1 || avctx->codec_id != CODEC_ID_SSA){
+    if(s->nb_streams != 1 || avctx->codec_id != AV_CODEC_ID_SSA){
         av_log(s, AV_LOG_ERROR, "Exactly one ASS/SSA stream is needed.\n");
         return -1;
     }
@@ -72,20 +72,18 @@ static int write_trailer(AVFormatContext *s)
     avio_write(s->pb, avctx->extradata      + ass->extra_index,
                       avctx->extradata_size - ass->extra_index);
 
-    avio_flush(s->pb);
-
     return 0;
 }
 
 AVOutputFormat ff_ass_muxer = {
     .name           = "ass",
-    .long_name      = NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle format"),
+    .long_name      = NULL_IF_CONFIG_SMALL("SSA (SubStation Alpha) subtitle"),
     .mime_type      = "text/x-ssa",
     .extensions     = "ass,ssa",
     .priv_data_size = sizeof(ASSContext),
-    .subtitle_codec = CODEC_ID_SSA,
+    .subtitle_codec = AV_CODEC_ID_SSA,
     .write_header   = write_header,
     .write_packet   = write_packet,
     .write_trailer  = write_trailer,
-    .flags          = AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS,
+    .flags          = AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS | AVFMT_TS_NONSTRICT,
 };

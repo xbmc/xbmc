@@ -94,23 +94,59 @@ Evaluating 'st(0, 123)'
 Evaluating 'st(1, 123); ld(1)'
 'st(1, 123); ld(1)' -> 123.000000
 
+Evaluating 'lte(0, 1)'
+'lte(0, 1)' -> 1.000000
+
+Evaluating 'lte(1, 1)'
+'lte(1, 1)' -> 1.000000
+
+Evaluating 'lte(1, 0)'
+'lte(1, 0)' -> 0.000000
+
+Evaluating 'lt(0, 1)'
+'lt(0, 1)' -> 1.000000
+
+Evaluating 'lt(1, 1)'
+'lt(1, 1)' -> 0.000000
+
+Evaluating 'gt(1, 0)'
+'gt(1, 0)' -> 1.000000
+
+Evaluating 'gt(2, 7)'
+'gt(2, 7)' -> 0.000000
+
+Evaluating 'gte(122, 122)'
+'gte(122, 122)' -> 1.000000
+
 Evaluating 'st(0, 1); while(lte(ld(0), 100), st(1, ld(1)+ld(0));st(0, ld(0)+1)); ld(1)'
-'st(0, 1); while(lte(ld(0), 100), st(1, ld(1)+ld(0));st(0, ld(0)+1)); ld(1)' -> 4950.000000
+'st(0, 1); while(lte(ld(0), 100), st(1, ld(1)+ld(0));st(0, ld(0)+1)); ld(1)' -> 5050.000000
 
 Evaluating 'st(1, 1); st(2, 2); st(0, 1); while(lte(ld(0),10), st(3, ld(1)+ld(2)); st(1, ld(2)); st(2, ld(3)); st(0, ld(0)+1)); ld(3)'
-'st(1, 1); st(2, 2); st(0, 1); while(lte(ld(0),10), st(3, ld(1)+ld(2)); st(1, ld(2)); st(2, ld(3)); st(0, ld(0)+1)); ld(3)' -> 144.000000
+'st(1, 1); st(2, 2); st(0, 1); while(lte(ld(0),10), st(3, ld(1)+ld(2)); st(1, ld(2)); st(2, ld(3)); st(0, ld(0)+1)); ld(3)' -> 233.000000
 
 Evaluating 'while(0, 10)'
 'while(0, 10)' -> nan
 
 Evaluating 'st(0, 1); while(lte(ld(0),100), st(1, ld(1)+ld(0)); st(0, ld(0)+1))'
-'st(0, 1); while(lte(ld(0),100), st(1, ld(1)+ld(0)); st(0, ld(0)+1))' -> 100.000000
+'st(0, 1); while(lte(ld(0),100), st(1, ld(1)+ld(0)); st(0, ld(0)+1))' -> 101.000000
 
 Evaluating 'isnan(1)'
 'isnan(1)' -> 0.000000
 
 Evaluating 'isnan(NAN)'
 'isnan(NAN)' -> 1.000000
+
+Evaluating 'isnan(INF)'
+'isnan(INF)' -> 0.000000
+
+Evaluating 'isinf(1)'
+'isinf(1)' -> 0.000000
+
+Evaluating 'isinf(NAN)'
+'isinf(NAN)' -> 0.000000
+
+Evaluating 'isinf(INF)'
+'isinf(INF)' -> 1.000000
 
 Evaluating 'floor(NAN)'
 'floor(NAN)' -> nan
@@ -148,6 +184,12 @@ Evaluating 'not(NAN)'
 Evaluating 'not(0)'
 'not(0)' -> 1.000000
 
+Evaluating '6.0206dB'
+'6.0206dB' -> 2.000000
+
+Evaluating '-3.0103dB'
+'-3.0103dB' -> 0.707107
+
 Evaluating 'pow(0,1.23)'
 'pow(0,1.23)' -> 0.000000
 
@@ -163,11 +205,50 @@ Evaluating 'pow(-1,1.23)'
 Evaluating 'if(1, 2)'
 'if(1, 2)' -> 2.000000
 
+Evaluating 'if(1, 1, 2)'
+'if(1, 1, 2)' -> 1.000000
+
+Evaluating 'if(0, 1, 2)'
+'if(0, 1, 2)' -> 2.000000
+
 Evaluating 'ifnot(0, 23)'
 'ifnot(0, 23)' -> 23.000000
 
 Evaluating 'ifnot(1, NaN) + if(0, 1)'
 'ifnot(1, NaN) + if(0, 1)' -> 0.000000
+
+Evaluating 'ifnot(1, 1, 2)'
+'ifnot(1, 1, 2)' -> 2.000000
+
+Evaluating 'ifnot(0, 1, 2)'
+'ifnot(0, 1, 2)' -> 1.000000
+
+Evaluating 'taylor(1, 1)'
+'taylor(1, 1)' -> 2.718282
+
+Evaluating 'taylor(eq(mod(ld(1),4),1)-eq(mod(ld(1),4),3), PI/2, 1)'
+'taylor(eq(mod(ld(1),4),1)-eq(mod(ld(1),4),3), PI/2, 1)' -> 1.000000
+
+Evaluating 'root(sin(ld(0))-1, 2)'
+'root(sin(ld(0))-1, 2)' -> 1.570796
+
+Evaluating 'root(sin(ld(0))+6+sin(ld(0)/12)-log(ld(0)), 100)'
+'root(sin(ld(0))+6+sin(ld(0)/12)-log(ld(0)), 100)' -> 60.965601
+
+Evaluating '7000000B*random(0)'
+'7000000B*random(0)' -> 0.003078
+
+Evaluating 'squish(2)'
+'squish(2)' -> 0.000335
+
+Evaluating 'gauss(0.1)'
+'gauss(0.1)' -> 0.396953
+
+Evaluating 'hypot(4,3)'
+'hypot(4,3)' -> 5.000000
+
+Evaluating 'gcd(30,55)*print(min(9,1))'
+'gcd(30,55)*print(min(9,1))' -> 5.000000
 
 12.700000 == 12.7
 0.931323 == 0.931322575

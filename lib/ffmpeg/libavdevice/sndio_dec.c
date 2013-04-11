@@ -28,8 +28,7 @@
 
 #include "sndio_common.h"
 
-static av_cold int audio_read_header(AVFormatContext *s1,
-                                     AVFormatParameters *ap)
+static av_cold int audio_read_header(AVFormatContext *s1)
 {
     SndioData *s = s1->priv_data;
     AVStream *st;
@@ -94,8 +93,8 @@ static av_cold int audio_read_close(AVFormatContext *s1)
 }
 
 static const AVOption options[] = {
-    { "sample_rate", "", offsetof(SndioData, sample_rate), AV_OPT_TYPE_INT, {.dbl = 48000}, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
-    { "channels",    "", offsetof(SndioData, channels),    AV_OPT_TYPE_INT, {.dbl = 2},     1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
+    { "sample_rate", "", offsetof(SndioData, sample_rate), AV_OPT_TYPE_INT, {.i64 = 48000}, 1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
+    { "channels",    "", offsetof(SndioData, channels),    AV_OPT_TYPE_INT, {.i64 = 2},     1, INT_MAX, AV_OPT_FLAG_DECODING_PARAM },
     { NULL },
 };
 

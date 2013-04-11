@@ -40,9 +40,9 @@ static int xwma_probe(AVProbeData *p)
     return 0;
 }
 
-static int xwma_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int xwma_read_header(AVFormatContext *s)
 {
-    int64_t size, av_uninit(data_size);
+    int64_t size;
     int ret;
     uint32_t dpds_table_size = 0;
     uint32_t *dpds_table = 0;
@@ -84,7 +84,7 @@ static int xwma_read_header(AVFormatContext *s, AVFormatParameters *ap)
      * extradata for that. Thus, ask the user for feedback, but try to go on
      * anyway.
      */
-    if (st->codec->codec_id != CODEC_ID_WMAV2) {
+    if (st->codec->codec_id != AV_CODEC_ID_WMAV2) {
         av_log(s, AV_LOG_WARNING, "unexpected codec (tag 0x04%x; id %d)\n",
                               st->codec->codec_tag, st->codec->codec_id);
         av_log_ask_for_sample(s, NULL);
@@ -113,6 +113,17 @@ static int xwma_read_header(AVFormatContext *s, AVFormatParameters *ap)
             /* setup extradata with our experimentally obtained value */
             st->codec->extradata[4] = 31;
         }
+    }
+
+    if (!st->codec->channels) {
+        av_log(s, AV_LOG_WARNING, "Invalid channel count: %d\n",
+               st->codec->channels);
+        return AVERROR_INVALIDDATA;
+    }
+    if (!st->codec->bits_per_coded_sample) {
+        av_log(s, AV_LOG_WARNING, "Invalid bits_per_coded_sample: %d\n",
+               st->codec->bits_per_coded_sample);
+        return AVERROR_INVALIDDATA;
     }
 
     /* set the sample rate */
@@ -189,6 +200,12 @@ static int xwma_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
         /* Estimate the duration from the total number of output bytes. */
         const uint64_t total_decoded_bytes = dpds_table[dpds_table_size - 1];
+
+        if(!bytes_per_sample) {
+            av_log(s, AV_LOG_ERROR, "bytes_per_sample is 0\n");
+            return AVERROR_INVALIDDATA;
+        }
+
         st->duration = total_decoded_bytes / bytes_per_sample;
 
         /* Use the dpds data to build a seek table.  We can only do this after

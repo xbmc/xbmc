@@ -3,20 +3,20 @@
  *
  * Copyright (c) 2001 Michael Niedermayer <michaelni@gmx.at>
  *
- * This file is part of Libav.
+ * This file is part of FFmpeg.
  *
- * Libav is free software; you can redistribute it and/or
+ * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
- * Libav is distributed in the hope that it will be useful,
+ * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with Libav; if not, write to the Free Software
+ * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
@@ -85,7 +85,7 @@
 
 #endif
 
-static inline void FUNC(idctRowCondDC)(DCTELEM *row, int extra_shift)
+static inline void FUNC(idctRowCondDC)(int16_t *row, int extra_shift)
 {
     int a0, a1, a2, a3, b0, b1, b2, b3;
 
@@ -221,7 +221,7 @@ static inline void FUNC(idctRowCondDC)(DCTELEM *row, int extra_shift)
     } while (0)
 
 static inline void FUNC(idctSparseColPut)(pixel *dest, int line_size,
-                                          DCTELEM *col)
+                                          int16_t *col)
 {
     int a0, a1, a2, a3, b0, b1, b2, b3;
 
@@ -245,7 +245,7 @@ static inline void FUNC(idctSparseColPut)(pixel *dest, int line_size,
 }
 
 static inline void FUNC(idctSparseColAdd)(pixel *dest, int line_size,
-                                          DCTELEM *col)
+                                          int16_t *col)
 {
     int a0, a1, a2, a3, b0, b1, b2, b3;
 
@@ -268,7 +268,7 @@ static inline void FUNC(idctSparseColAdd)(pixel *dest, int line_size,
     dest[0] = av_clip_pixel(dest[0] + ((a0 - b0) >> COL_SHIFT));
 }
 
-static inline void FUNC(idctSparseCol)(DCTELEM *col)
+static inline void FUNC(idctSparseCol)(int16_t *col)
 {
     int a0, a1, a2, a3, b0, b1, b2, b3;
 
@@ -284,7 +284,7 @@ static inline void FUNC(idctSparseCol)(DCTELEM *col)
     col[56] = ((a0 - b0) >> COL_SHIFT);
 }
 
-void FUNC(ff_simple_idct_put)(uint8_t *dest_, int line_size, DCTELEM *block)
+void FUNC(ff_simple_idct_put)(uint8_t *dest_, int line_size, int16_t *block)
 {
     pixel *dest = (pixel *)dest_;
     int i;
@@ -298,7 +298,7 @@ void FUNC(ff_simple_idct_put)(uint8_t *dest_, int line_size, DCTELEM *block)
         FUNC(idctSparseColPut)(dest + i, line_size, block + i);
 }
 
-void FUNC(ff_simple_idct_add)(uint8_t *dest_, int line_size, DCTELEM *block)
+void FUNC(ff_simple_idct_add)(uint8_t *dest_, int line_size, int16_t *block)
 {
     pixel *dest = (pixel *)dest_;
     int i;
@@ -312,7 +312,7 @@ void FUNC(ff_simple_idct_add)(uint8_t *dest_, int line_size, DCTELEM *block)
         FUNC(idctSparseColAdd)(dest + i, line_size, block + i);
 }
 
-void FUNC(ff_simple_idct)(DCTELEM *block)
+void FUNC(ff_simple_idct)(int16_t *block)
 {
     int i;
 
