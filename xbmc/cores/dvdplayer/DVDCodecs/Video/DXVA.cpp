@@ -940,7 +940,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   pic->reordered_opaque = avctx->reordered_opaque;
   pic->type = FF_BUFFER_TYPE_USER;
-  // pic->age  = 256*256*256*64;	// decrepated.
+
   for(unsigned i = 0; i < 4; i++)
   {
     pic->data[i] = NULL;
