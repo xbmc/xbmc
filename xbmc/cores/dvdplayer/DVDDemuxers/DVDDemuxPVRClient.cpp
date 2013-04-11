@@ -419,7 +419,13 @@ void CDVDDemuxPVRClient::RequestStreams()
       {
         st = new CDemuxStreamSubtitlePVRClient(this);
       }
-      st->identifier = props.stream[i].iIdentifier;
+      if(props.stream[i].iIdentifier)
+      {
+        st->ExtraData = new uint8_t[4];
+        st->ExtraSize = 4;
+        ((uint16_t*)st->ExtraData)[0] = (props.stream[i].iIdentifier >> 0) & 0xFFFFu;
+        ((uint16_t*)st->ExtraData)[1] = (props.stream[i].iIdentifier >> 4) & 0xFFFFu;
+      }
       m_streams[i] = st;
     }
     else

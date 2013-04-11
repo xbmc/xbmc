@@ -83,7 +83,6 @@ public:
   int bitspersample;
 
   // SUBTITLE
-  int identifier;
 
   // CODEC EXTRADATA
   void*        extradata; // extra data for codec to use
