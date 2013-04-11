@@ -443,7 +443,6 @@
 			<width>117</width>
 			<height>176</height>
 			<texture background="true">default-poster-small.png</texture>
-			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
@@ -474,7 +473,6 @@
 			<height>182</height>
 			<texture background="true">default-poster-small.png</texture>
 			<include>Border</include>
-			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
