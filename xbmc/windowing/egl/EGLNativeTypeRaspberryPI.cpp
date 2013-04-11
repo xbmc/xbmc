@@ -225,7 +225,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 
   DestroyDispmaxWindow();
 
-  if(!m_fixedMode && GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
+  if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
   {
     sem_init(&m_tv_synced, 0, 0);
     m_DllBcmHost->vc_tv_register_callback(CallbackTvServiceCallback, this);
@@ -273,6 +273,33 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
                           (res.dwFlags & D3DPRESENTFLAG_MODE3DSBS) ? " SBS":"",
                           (res.dwFlags & D3DPRESENTFLAG_MODE3DTB) ? " TB":"");
+    }
+    m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);
+    sem_destroy(&m_tv_synced);
+
+    m_desktopRes = res;
+  }
+  else if(!GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
+  {
+    sem_init(&m_tv_synced, 0, 0);
+    m_DllBcmHost->vc_tv_register_callback(CallbackTvServiceCallback, this);
+
+    SDTV_OPTIONS_T options;
+    options.aspect = get_sdtv_aspect_from_display_aspect((float)res.iScreenWidth / (float)res.iScreenHeight);
+
+    int success = m_DllBcmHost->vc_tv_sdtv_power_on((SDTV_MODE_T)GETFLAGS_MODE(res.dwFlags), &options);
+
+    if (success == 0)
+    {
+      CLog::Log(LOGDEBUG, "EGL set SDTV mode (%d,%d)=%d\n",
+                          GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
+
+      sem_wait(&m_tv_synced);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "EGL failed to set SDTV mode (%d,%d)=%d\n",
+                          GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
     }
     m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);
     sem_destroy(&m_tv_synced);
@@ -444,8 +471,6 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
   if(!m_DllBcmHost)
     return false;
 
-  m_fixedMode               = false;
-
   /* read initial desktop resolution before probe resolutions.
    * probing will replace the desktop resolution when it finds the same one.
    * we raplace it because probing will generate more detailed 
@@ -494,7 +519,7 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
       m_desktopRes.iHeight      = tv_state.display.sdtv.height;
       m_desktopRes.iScreenWidth = tv_state.display.sdtv.width;
       m_desktopRes.iScreenHeight= tv_state.display.sdtv.height;
-      m_desktopRes.dwFlags      = D3DPRESENTFLAG_INTERLACED;
+      m_desktopRes.dwFlags      = MAKEFLAGS(HDMI_RES_GROUP_INVALID, tv_state.display.sdtv.mode, 1);
       m_desktopRes.fRefreshRate = (float)tv_state.display.sdtv.frame_rate;
       m_desktopRes.fPixelRatio  = tv_state.display.hdmi.display_options.aspect == 0 ? 1.0f : get_display_aspect_ratio((SDTV_ASPECT_T)tv_state.display.sdtv.display_options.aspect) / ((float)m_desktopRes.iScreenWidth / (float)m_desktopRes.iScreenHeight);
     }
@@ -516,9 +541,6 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
     AddUniqueResolution(m_desktopRes, resolutions);
     CLog::Log(LOGDEBUG, "EGL probe resolution %s:%x\n", m_desktopRes.strMode.c_str(), m_desktopRes.dwFlags);
   }
-
-  if(resolutions.size() < 2)
-    m_fixedMode = true;
 
   DLOG("CEGLNativeTypeRaspberryPI::ProbeResolutions\n");
   return true;
