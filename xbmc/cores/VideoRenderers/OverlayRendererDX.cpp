@@ -160,11 +160,8 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
-COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
+COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
-
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;
@@ -172,14 +169,10 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   m_x      = 0.0f;
   m_y      = 0.0f;
   m_count  = 0;
-
-  int width  = MathUtils::round_int(dst.Width());
-  int height = MathUtils::round_int(dst.Height());
-
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
   SQuads quads;
-  if(!convert_quad(o, pts, width, height, quads))
+  if(!convert_quad(images, quads))
     return;
   
   float u, v;

@@ -119,6 +119,7 @@ namespace OVERLAY {
 
     void      Render(COverlay* o);
     COverlay* Convert(CDVDOverlay* o, double pts);
+    COverlay* Convert(CDVDOverlaySSA* o, double pts);
 
     void      Release(COverlayV& list);
     void      Release(SElementV& list);

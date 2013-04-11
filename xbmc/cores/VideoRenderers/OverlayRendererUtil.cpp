@@ -182,9 +182,8 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   return rgba;
 }
 
-bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& quads)
+bool convert_quad(ASS_Image* images, SQuads& quads)
 {
-  ASS_Image* images = o->m_libass->RenderImage(width, height, pts);
   ASS_Image* img;
 
   if (!images)

@@ -33,7 +33,7 @@ public:
   CDVDSubtitlesLibass();
   virtual ~CDVDSubtitlesLibass();
 
-  ASS_Image* RenderImage(int imageWidth, int imageHeight, double pts);
+  ASS_Image* RenderImage(int imageWidth, int imageHeight, double pts, int* changes = NULL);
   ASS_Event* GetEvents();
 
   int GetNrOfEvents();
