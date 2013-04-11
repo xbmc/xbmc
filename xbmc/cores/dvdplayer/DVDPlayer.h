@@ -332,6 +332,7 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
+  void UpdateReadRate();
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
@@ -341,7 +342,7 @@ protected:
   ECacheState  m_caching;
   CFileItem    m_item;
   unsigned int m_iChannelEntryTimeOut;
-
+  unsigned int m_readrate;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
