@@ -93,6 +93,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("csh",       "application/x-csh"));
   mimeTypes.insert(pair<string, string>("css",       "text/css"));
   mimeTypes.insert(pair<string, string>("cxx",       "text/plain"));
+  mimeTypes.insert(pair<string, string>("dbm",       "audio/dbm"));
   mimeTypes.insert(pair<string, string>("dcr",       "application/x-director"));
   mimeTypes.insert(pair<string, string>("deepv",     "application/x-deepv"));
   mimeTypes.insert(pair<string, string>("def",       "text/plain"));
