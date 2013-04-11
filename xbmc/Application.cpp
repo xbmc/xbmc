@@ -345,6 +345,10 @@
 #include "linux/LinuxTimezone.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include "utils/Environment.h"
+#endif
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -703,7 +707,7 @@ bool CApplication::Create()
 #elif defined(_LINUX)
   setenv("OS","Linux",true);
 #elif defined(_WIN32)
-  SetEnvironmentVariable("OS","win32");
+  CEnvironment::setenv("OS", "win32");
 #endif
 
   g_powerManager.Initialize();
@@ -1174,7 +1178,7 @@ bool CApplication::InitDirectoriesWin32()
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
-  SetEnvironmentVariable("XBMC_HOME", xbmcPath.c_str());
+  CEnvironment::setenv("XBMC_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
@@ -1185,7 +1189,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",CSpecialProtocol::TranslatePath("special://masterprofile/").c_str());
+  CEnvironment::setenv("XBMC_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
 
   CreateUserDirs();
 
