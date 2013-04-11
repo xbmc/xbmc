@@ -15,12 +15,10 @@
 		<include>ListSecondary</include>
 		<!-- LibraryPosters ID 50 -->
 		<include>LibraryPosters</include>
-		<include>PreplayMovie</include>
 		<!-- PreplayShow ID 60 -->
 		<include>PreplayShow</include>
 		<!-- PreplaySeason ID 61 -->
 		<include>PreplaySeason</include>
-		<include>PreplayEpisode</include>
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelVideo ID 71 -->

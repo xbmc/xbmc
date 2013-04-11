@@ -1,78 +1,5 @@
 <?xml version="1.0"?>
 <includes>
-	<!-- -->
-	<!-- MODELS DURING DEV: TO DELETE WHEN FINISHED -->
-	<include name="devDummiesPreplay">
-		<!-- MODEL -->
-		<control type="largeimage">
-			<posy>-22</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>742</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<!--><texture background="true">library-posters-menu-closed.jpg</texture>-->
-			<!--><texture background="true">library-posters-menu-open_.jpg</texture>-->
-			<!--><texture>preplay-movie_.jpg</texture>-->
-			<visible>true</visible>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-		</control>
-		<!-- preplay movie model -->
-		<control type="largeimage">
-			<posy>-22</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>742</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<texture>preplay-movie.jpg</texture>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			<visible>Window.IsActive(41)</visible>
-		</control>
-		<!-- preplay tv show model -->
-		<control type="largeimage">
-			<posy>-22</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>742</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<texture>preplay-tv-show.jpg</texture>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			<visible>Container.Content(Seasons)</visible>
-		</control>
-		<!-- preplay tv season model -->
-		<control type="largeimage">
-			<posy>-22</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>742</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<texture>preplay-tv-season.jpg</texture>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			<visible>Container.Content(Episodes)</visible>
-		</control>
-		<!-- preplay tv episode model -->
-		<control type="largeimage">
-			<posy>-22</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>742</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<texture>preplay-tv-episode.jpg_</texture>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			<visible>Window.IsActive(41)</visible>
-		</control>
-		<!-- preplay movie fanart -->
-		<control type="largeimage">
-			<posy>0</posy>
-			<posx>0</posx>
-			<width>1280</width>
-			<height>720</height>
-			<aspectratio aligny="top">scale</aspectratio>
-			<texture>preplay-movie-fanart.jpg</texture>
-			<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-			<visible>Window.IsActive(41)</visible>
-		</control>
-	</include>
-	<!-- -->
 	<!-- font colors -->
 	<include name="White1">
 		<textcolor>white</textcolor>
@@ -92,6 +19,11 @@
 		<include>Grey1</include>
 	</include>
 	<include name="LeftInfoFormatWhite">
+		<width min="29" max="600">auto</width>
+		<height>15</height>
+		<font>Condensed-18</font>
+		<include>White2</include>
+	</include>
 	<!-- bg's -->
 	<include name="PlotBG">
 		<control type="group">
@@ -757,7 +689,6 @@
 	</include>
 	<!-- Pre-play Episode -->
 	<include name="PreplayEpisode">
-		<visible>Container.Content(Episode)</visible>
 		<control type="group" id="777">
 			<visible>Container.Content(Episode)</visible>
 			<include>FadeDialog</include>
@@ -928,7 +859,7 @@
 					<posy>306</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>					
+					<itemgap>10</itemgap>
 					<control type="button" id="19101">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
@@ -977,20 +908,10 @@
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
-			<!-- Dummy Play Button -->
-			<control type="button" id="99">
-				<description>Dummy Play Button</description>
-				<posy>-1000</posy>
-				<posx>-1000</posx>
-				<label>PLAY</label>
-				<onleft>1300</onleft>
-				<onright>99</onright>
-			</control>
 		</control>
 	</include>
 	<!-- Pre-play Movie -->
 	<include name="PreplayMovie">
-		<visible>Container.Content(Movie)</visible>
 		<control type="group">
 			<visible>Container.Content(Movie)</visible>
 			<include>FadeDialog</include>
@@ -1142,7 +1063,7 @@
 					<posy>306</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>					
+					<itemgap>10</itemgap>
 					<control type="label">
 						<!-- NOTE: NEED STRING FOR THIS -->
 						<!--><label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>-->
@@ -1183,15 +1104,6 @@
 			</control>
 			<!-- MediaFlags -->
 			<include>MediaFlags</include>
-			<!-- Dummy Play Button -->
-			<control type="button" id="99">
-				<description>Dummy Play Button</description>
-				<posy>-1000</posy>
-				<posx>-1000</posx>
-				<label>PLAY</label>
-				<onleft>1300</onleft>
-				<onright>99</onright>
-			</control>
 		</control>
 	</include>
 </includes>
