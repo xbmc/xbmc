@@ -128,10 +128,17 @@ namespace EPG
 
     void ScrollToBlockOffset(int offset);
     void ScrollToChannelOffset(int offset);
-    void UpdateScrollOffset();
-    void RenderChannelItem(float posX, float posY, CGUIListItem *item, bool focused);
-    void RenderProgrammeItem(float posX, float posY, float width, float height, CGUIListItem *item, bool focused);
+    void UpdateScrollOffset(unsigned int currentTime);
+    void ProcessItem(float posX, float posY, CGUIListItem *item, CGUIListItem *&lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize = -1.0f);
+    void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
     void GetCurrentLayouts();
+
+    void ProcessChannels(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void ProcessRuler(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void RenderChannels();
+    void RenderRuler();
+    void RenderProgrammeGrid();
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
