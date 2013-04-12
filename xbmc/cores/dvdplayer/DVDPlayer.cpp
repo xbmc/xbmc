@@ -85,6 +85,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "LangInfo.h"
+#include "URL.h"
 
 using namespace std;
 using namespace PVR;
@@ -569,7 +570,7 @@ bool CDVDPlayer::OpenInputStream()
   CLog::Log(LOGNOTICE, "Creating InputStream");
 
   // correct the filename if needed
-  CStdString filename(m_filename);
+  CStdString filename = CURL(m_filename).GetFileName();// strip off any url options
   if (filename.Find("dvd://") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
