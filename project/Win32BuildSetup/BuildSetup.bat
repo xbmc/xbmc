@@ -73,14 +73,10 @@ IF %comp%==vs2010 (
   ) ELSE IF EXIST  "%VS100COMNTOOLS%..\IDE\VCExpress.exe" (
 	SET VS_EXE="%VS100COMNTOOLS%..\IDE\VCExpress.exe"
   )
-
-  IF NOT EXIST %VS_EXE% (
-	SET DIETEXT="Visual Studio 2010 Express not installed"
-	goto DIE
-  )
-) ELSE (
-	SET DIETEXT="Unsupported Compiler: %comp%"
-	GOTO DIE
+)
+IF NOT EXIST %VS_EXE% (
+  SET DIETEXT="Visual Studio 2010 Express not installed"
+  goto DIE
 )
 
 ::
