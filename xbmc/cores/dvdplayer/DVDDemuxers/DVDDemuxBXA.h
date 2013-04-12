@@ -76,7 +76,7 @@ public:
 protected:
   friend class CDemuxStreamAudioBXA;
   CDVDInputStream* m_pInput;
-  double m_pts;
+  int64_t m_bytes;
 
   CDemuxStreamAudioBXA *m_stream;
 
