@@ -82,6 +82,38 @@ public:
   static void ClearTempFonts();
 
   static void ClearSubtitles();
+
+  /** \brief Retrieves paths that could contain associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] common_sub_dirs[] An array of sub directory names to look for.
+  *   \param[out] paths A vector of found paths to look for associated files.
+  */
+  static void GetPathsToLookForAssociatedItems(const std::string& videoPath,
+    const char* common_sub_dirs[],
+    std::vector<std::string>& paths);
+
+  /** \brief Searches for associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] paths A vector of paths to look for associated files.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static void ScanPathsForAssociatedItems(const std::string& videoPath,
+    std::vector<std::string>& paths,
+    const std::vector<std::string>& item_exts,
+    std::vector<std::string>& itemPaths);
+
+  /** \brief Searches in an archive for associated files of a given video.
+  *   \param[in] strArchivePath The full path of the archive.
+  *   \param[in] videoNameNoExt The filename of the video without extension for which associated files should be retrieved.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static int ScanArchiveForAssociatedItems(const std::string& strArchivePath,
+    const std::string& videoNameNoExt,
+    const std::vector<std::string>& item_exts,
+    std::vector<std::string>& itemPaths);
+
   static void ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles );
   static int ScanArchiveForSubtitles( const std::string& strArchivePath, const std::string& strMovieFileNameNoExt, std::vector<std::string>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const std::string& strMovie, const std::string& strSubtitles, ExternalStreamInfo& info); 
