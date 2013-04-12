@@ -63,9 +63,9 @@ index 951305d..8ba83b6 100644
      if (!ctx_pic->bitstream)
          ctx_pic->bitstream = buffer;
 @@ -258,6 +265,7 @@ static int end_frame(AVCodecContext *avctx)
-                                      &ctx_pic->pp, sizeof(ctx_pic->pp),
-                                      &ctx_pic->qm, sizeof(ctx_pic->qm),
-                                      commit_bitstream_and_slice_buffer);
+     if (!ret)
+         ff_mpeg_draw_horiz_band(s, 0, avctx->height);
+     return ret;
 +    av_freep(ctx_pic->slice);
  }
  
