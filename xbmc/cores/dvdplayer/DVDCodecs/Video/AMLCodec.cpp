@@ -1509,23 +1509,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     // then ffmpeg avg_frame_rate next
     am_private->video_rate = 0.5 + (float)UNIT_FREQ * hints.fpsscale / hints.fpsrate;
   }
-  else
-  {
-    // stupid PVR hacks because it does not fill in all of hints.
-    if (hints.codec == CODEC_ID_MPEG2VIDEO)
-    {
-      if (hints.width <= 720 && hints.height <= 480)
-        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 30000;
-      else
-        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1000 / 25000;
 
-
-      if (hints.width == 1280)
-        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 60000;
-      else if (hints.width == 1920)
-        am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 30000;
-    }
-  }
   // check for 1920x1080, interlaced, 25 fps
   // incorrectly reported as 50 fps (yes, video_rate == 1920)
   if (hints.width == 1920 && am_private->video_rate == 1920)

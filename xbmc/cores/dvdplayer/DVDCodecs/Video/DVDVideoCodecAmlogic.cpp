@@ -194,6 +194,9 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
 
+  if (pData)
+    FrameRateTracking( pData, iSize, dts, pts);
+
   if (!m_opened)
   {
     if (m_Codec && !m_Codec->OpenDecoder(m_hints))
@@ -203,9 +206,6 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
 
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
-
-  if (pData)
-    FrameRateTracking( pData, iSize, dts, pts);
 
   return m_Codec->Decode(pData, iSize, dts, pts);
 }
@@ -350,6 +350,49 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(BYTE *pData, int iSize, double dts
 
       CLog::Log(LOGDEBUG, "%s: detected mpeg2 aspect ratio(%f), framerate(%f), video_rate(%d)",
         __MODULE_NAME__, m_mpeg2_sequence->ratio, m_framerate, m_video_rate);
+
+      // update hints for 1st frame fixup.
+      switch(m_mpeg2_sequence->rate_info)
+      {
+        default:
+        case 0x01:
+          m_hints.rfpsrate = 24000.0;
+          m_hints.rfpsscale = 1001.0;
+          break;
+        case 0x02:
+          m_hints.rfpsrate = 24000.0;
+          m_hints.rfpsscale = 1000.0;
+          break;
+        case 0x03:
+          m_hints.rfpsrate = 25000.0;
+          m_hints.rfpsscale = 1000.0;
+          break;
+        case 0x04:
+          m_hints.rfpsrate = 30000.0;
+          m_hints.rfpsscale = 1001.0;
+          break;
+        case 0x05:
+          m_hints.rfpsrate = 30000.0;
+          m_hints.rfpsscale = 1000.0;
+          break;
+        case 0x06:
+          m_hints.rfpsrate = 50000.0;
+          m_hints.rfpsscale = 1000.0;
+          break;
+        case 0x07:
+          m_hints.rfpsrate = 60000.0;
+          m_hints.rfpsscale = 1001.0;
+          break;
+        case 0x08:
+          m_hints.rfpsrate = 60000.0;
+          m_hints.rfpsscale = 1000.0;
+          break;
+      }
+      m_hints.width    = m_mpeg2_sequence->width;
+      m_hints.height   = m_mpeg2_sequence->height;
+      m_hints.aspect   = m_mpeg2_sequence->ratio;
+      m_hints.fpsrate  = m_hints.rfpsrate;
+      m_hints.fpsscale = m_hints.rfpsscale;
     }
     return;
   }
