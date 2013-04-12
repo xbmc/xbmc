@@ -255,15 +255,16 @@ bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
 {
   try
   {
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     if (bUseCache)
     {
       bool bPathInCache;
-      if (g_directoryCache.FileExists(strPath, bPathInCache))
+      URIUtils::AddSlashAtEnd(realPath);
+      if (g_directoryCache.FileExists(realPath, bPathInCache))
         return true;
       if (bPathInCache)
         return false;
     }
-    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       return pDirectory->Exists(realPath.c_str());
