@@ -93,6 +93,38 @@ public:
   static void ClearTempFonts();
 
   static void ClearSubtitles();
+
+  /** \brief Retrieves paths that could contain associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] common_sub_dirs[] An array of sub directory names to look for.
+  *   \param[out] paths A vector of found paths to look for associated files.
+  */
+  static void GetPathsToLookForAssociatedItems(const CStdString& videoPath,
+    const char * common_sub_dirs[],
+    std::vector<CStdString>& paths);
+
+  /** \brief Searches for associated files of a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[in] paths A vector of paths to look for associated files.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static void ScanPathsForAssociatedItems(const CStdString& videoPath,
+    const std::vector<CStdString>& paths,
+    CStdStringArray item_exts,
+    std::vector<CStdString>& itemPaths);
+
+  /** \brief Searches in an archive for associated files of a given video.
+  *   \param[in] strArchivePath The full path of the archive.
+  *   \param[in] videoNameNoExt The filename of the video without extension for which associated files should be retrieved.
+  *   \param[in] item_exts An array of extensions specifying the associated files.
+  *   \param[out] itemPaths A vector containing the full paths of all found associated files.
+  */
+  static int ScanArchiveForAssociatedItems( const CStdString& strArchivePath,
+    const CStdString& videoNameNoExt,
+    CStdStringArray item_exts,
+    std::vector<CStdString>& itemPaths );
+
   static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
   static int ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const CStdString& strMovie, const CStdString& strSubtitles, ExternalStreamInfo& info); 
