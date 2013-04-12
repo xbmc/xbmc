@@ -254,7 +254,7 @@ void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionLi
 
   // Free memory not used on screen
   if ((int)m_rulerItems.size() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
-    FreeRulerMemory(CorrectOffset(rulerOffset - cacheBeforeRuler, 0), CorrectOffset(rulerOffset + m_blocksPerPage + 1 + cacheAfterRuler, 0));
+    FreeRulerMemory(CorrectOffset(rulerOffset/m_rulerUnit+1 - cacheBeforeRuler, 0), CorrectOffset(rulerOffset/m_rulerUnit+1 + m_blocksPerPage + 1 + cacheAfterRuler, 0));
 
   CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
   float pos = (m_orientation == VERTICAL) ? originRuler.x : originRuler.y;
