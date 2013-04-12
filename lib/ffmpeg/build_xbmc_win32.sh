@@ -34,6 +34,7 @@ OPTIONS="
 --enable-encoder=aac \
 --enable-runtime-cpudetect \
 --enable-avfilter \
+--enable-dxva2 \
 --disable-doc"
 
 #
@@ -88,6 +89,7 @@ fi
 # 
 
 # enable break on error:
+exit 0
 set -e
 
 make $MAKEFLAGS 
