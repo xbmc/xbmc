@@ -457,7 +457,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   {
     delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
+    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
   }
   return MHD_YES;
 }
