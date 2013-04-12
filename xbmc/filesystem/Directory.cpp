@@ -259,7 +259,8 @@ bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
     if (bUseCache)
     {
       bool bPathInCache;
-      if (g_directoryCache.FileExists(strPath, bPathInCache))
+      URIUtils::AddSlashAtEnd(realPath);
+      if (g_directoryCache.FileExists(realPath, bPathInCache))
         return true;
       if (bPathInCache)
         return false;
