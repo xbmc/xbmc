@@ -38,6 +38,7 @@ SET buildmode=noclean
 SET promptlevel=errprompt
 SET buildmingwlibs=true
 SET exitcode=0
+SET useshell=rxvt
 
 ::
 :: Check command line options
@@ -50,6 +51,7 @@ FOR %%b in (%*) DO (
 	IF %%b==noprompt SET promptlevel=noprompt
 	IF %%b==prompt SET promptlevel=prompt
 	IF %%b==nomingwlibs SET buildmingwlibs=false
+    IF %%b==sh SET useshell=sh
 )
 
 ::
@@ -126,7 +128,12 @@ IF %buildmingwlibs%==true (
   IF %buildmode%==clean ECHO makeclean>makeclean
   IF %promptlevel%==prompt ECHO prompt>prompt
 
-  call buildmingwlibs.bat
+  rem only use sh to please jenkins
+  IF %useshell%==sh (
+    call buildmingwlibs.bat sh
+  ) ELSE (
+    call buildmingwlibs.bat
+  )
 
   IF NOT EXIST mingwlibsok (
   	set DIETEXT="failed to build mingw libs"
