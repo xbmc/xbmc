@@ -278,7 +278,7 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
 
         if((pkt->duration > 0) && (pkt->duration != stv->iFpsScale))
         {
-          CLog::Log(LOGDEBUG, "%s - {%d} iFpsScale changed from %d to %d",  __FUNCTION__, stv->iId, stv->iFpsScale, pkt->duration);
+          CLog::Log(LOGDEBUG, "%s - {%d} iFpsScale changed from %d to %f",  __FUNCTION__, stv->iId, stv->iFpsScale, pkt->duration);
           stv->iFpsScale = pkt->duration;
           CLog::Log(LOGDEBUG, "%s - {%d} iFpsRate changed from %d to %d",  __FUNCTION__, stv->iId, stv->iFpsRate, DVD_TIME_BASE);
           stv->iFpsRate = DVD_TIME_BASE;
