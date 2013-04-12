@@ -366,6 +366,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     {
       if (methodType == GET)
       {
+        // handle If-Modified-Since
         string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
         if (!ifModifiedSince.empty())
         {
@@ -382,7 +383,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
               if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
               {
                 getData = false;
-                response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+                response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
                 responseCode = MHD_HTTP_NOT_MODIFIED;
               }
             }
@@ -409,7 +410,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       CStdString contentLength;
       contentLength.Format("%I64d", file->GetLength());
 
-      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
       {
         file->Close();
@@ -459,6 +460,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
     return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
   }
+
   return MHD_YES;
 }
 
@@ -516,7 +518,7 @@ void* CWebServer::UriRequestLogger(void *cls, const char *uri)
 }
 
 #if (MHD_VERSION >= 0x00090200)
-ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
+ssize_t CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, size_t max)
 #elif (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 #else   //libmicrohttpd < 0.4.0
