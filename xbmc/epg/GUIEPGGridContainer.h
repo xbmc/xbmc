@@ -173,7 +173,7 @@ namespace EPG
                       // changing around)
 
     void FreeChannelMemory(int keepStart, int keepEnd);
-    void FreeProgrammeMemory(int keepStart, int keepEnd);
+    void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
     void FreeRulerMemory(int keepStart, int keepEnd);
 
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);

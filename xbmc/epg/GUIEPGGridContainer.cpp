@@ -362,10 +362,6 @@ void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirty
   int cacheBeforeProgramme, cacheAfterProgramme;
   GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
 
-  // Free memory not used on screen
-  if ((int)m_programmeItems.size() > m_ProgrammesPerPage + cacheBeforeProgramme + cacheAfterProgramme)
-    FreeProgrammeMemory(CorrectOffset(blockOffset - cacheBeforeProgramme, 0), CorrectOffset(blockOffset + m_ProgrammesPerPage + 1 + cacheAfterProgramme, 0));
-
   CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
   float posA = (m_orientation != VERTICAL) ? originProgramme.y : originProgramme.x;
   float endA = (m_orientation != VERTICAL) ? m_posY + m_height : m_posX + m_width;
@@ -384,6 +380,9 @@ void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirty
   {
     if (channel >= (int)m_channelItems.size())
       break;
+
+    // Free memory not used on screen
+    FreeProgrammeMemory(channel, CorrectOffset(blockOffset - cacheBeforeProgramme, 0), CorrectOffset(blockOffset + m_ProgrammesPerPage + 1 + cacheAfterProgramme, 0));
 
     int block = blockOffset;
     float posA2 = posA;
@@ -1964,30 +1963,42 @@ void CGUIEPGGridContainer::FreeChannelMemory(int keepStart, int keepEnd)
   }
 }
 
-void CGUIEPGGridContainer::FreeProgrammeMemory(int keepStart, int keepEnd)
+void CGUIEPGGridContainer::FreeProgrammeMemory(int channel, int keepStart, int keepEnd)
 {
   if (keepStart < keepEnd)
   { // remove before keepStart and after keepEnd
-    for (unsigned int i = 0; i < m_epgItemsPtr.size(); i++)
+    if (keepStart > 0 && keepStart < m_blocks)
     {
-      unsigned long progIdx = m_epgItemsPtr[i].start;
-      unsigned long lastIdx = m_epgItemsPtr[i].stop;
-
-      for (unsigned int j = progIdx; j < keepStart+progIdx && j < lastIdx; ++j)
-        m_programmeItems[j]->FreeMemory();
-      for (unsigned int j = keepEnd+progIdx + 1; j < lastIdx; ++j)
-        m_programmeItems[j]->FreeMemory();
+      // if item exist and block is not part of visible item
+      CGUIListItemPtr last = m_gridIndex[channel][keepStart].item;
+      for (int i = keepStart - 1 ; i > 0 ; i--)
+      {
+        if (m_gridIndex[channel][i].item && m_gridIndex[channel][i].item != last)
+        {
+          m_gridIndex[channel][i].item->FreeMemory();
+          // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
+          // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
+          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          last = m_gridIndex[channel][i].item;
+        }
+      }
     }
-  }
-  else
-  { // wrapping
-    for (unsigned int i = 0; i < m_epgItemsPtr.size(); i++)
-    {
-      unsigned long progIdx = m_epgItemsPtr[i].start;
-      unsigned long lastIdx = m_epgItemsPtr[i].stop;
 
-      for (unsigned int j = keepEnd+progIdx + 1; j < keepStart+progIdx && j < lastIdx; ++j)
-        m_programmeItems[j]->FreeMemory();
+    if (keepEnd > 0 && keepEnd < m_blocks)
+    {
+      CGUIListItemPtr last = m_gridIndex[channel][keepEnd].item;
+      for (int i = keepEnd + 1 ; i < m_blocks ; i++)
+      {
+        // if item exist and block is not part of visible item
+        if (m_gridIndex[channel][i].item && m_gridIndex[channel][i].item != last)
+        {
+          m_gridIndex[channel][i].item->FreeMemory();
+          // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
+          // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
+          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          last = m_gridIndex[channel][i].item;
+        }
+      }
     }
   }
 }
