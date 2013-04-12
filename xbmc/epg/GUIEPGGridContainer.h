@@ -217,8 +217,6 @@ namespace EPG
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;
 
-    unsigned int m_renderTime;
-
     int   m_scrollTime;
     bool  m_gridWrapAround; //! only when no more data available should this be true
 

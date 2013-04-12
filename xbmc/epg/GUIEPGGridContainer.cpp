@@ -62,7 +62,6 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_programmeScrollSpeed  = 0;
   m_programmeScrollLastTime  = 0;
   m_scrollTime            = scrollTime ? scrollTime : 1;
-  m_renderTime            = 0;
   m_item                  = NULL;
   m_lastItem              = NULL;
   m_lastChannel           = NULL;
@@ -109,7 +108,6 @@ void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &d
   ProcessRuler(currentTime, dirtyregions);
   ProcessProgrammeGrid(currentTime, dirtyregions);
 
-  m_renderTime = currentTime;
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
