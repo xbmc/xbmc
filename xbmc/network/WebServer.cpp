@@ -738,6 +738,7 @@ const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
   if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
   if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
   if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
+  if (strcmp(ext, ".dbm") == 0)   return "audio/dbm";
   if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
   if (strcmp(ext, ".fli") == 0)   return "video/fli";
   if (strcmp(ext, ".gif") == 0)   return "image/gif";
