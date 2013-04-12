@@ -112,6 +112,9 @@ namespace XFILE
           else
             baseDir += group;
           URIUtils::AddSlashAtEnd(baseDir);
+
+          if (mediaType = MediaTypeEpisode)
+            baseDir += "-1/-1/";
         }
 
         CVideoDbUrl videoUrl;

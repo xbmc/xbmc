@@ -697,12 +697,6 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const CStdString &type)
     groups.push_back(FieldStudio);
     groups.push_back(FieldTag);
   }
-  else if (type == "episodes")
-  {
-    groups.push_back(FieldActor);
-    groups.push_back(FieldDirector);
-    groups.push_back(FieldWriter);
-  }
   else if (type == "musicvideos")
   {
     groups.push_back(FieldArtist);
