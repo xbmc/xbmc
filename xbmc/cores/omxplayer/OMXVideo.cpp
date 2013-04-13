@@ -92,6 +92,7 @@ COMXVideo::COMXVideo() : m_video_codec_name("")
   m_av_clock          = NULL;
   m_res_callback      = NULL;
   m_res_ctx           = NULL;
+  m_submitted_eos     = false;
 }
 
 COMXVideo::~COMXVideo()
@@ -169,6 +170,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
   m_decoded_height = hints.height;
 
   m_hdmi_clock_sync = hdmi_clock_sync;
+  m_submitted_eos = false;
 
   if(!m_decoded_width || !m_decoded_height)
     return false;
@@ -323,6 +325,8 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
   componentName = "OMX.broadcom.video_render";
   if(!m_omx_render.Initialize((const std::string)componentName, OMX_IndexParamVideoInit))
     return false;
+
+  m_omx_render.ResetEos();
 
   componentName = "OMX.broadcom.video_scheduler";
   if(!m_omx_sched.Initialize((const std::string)componentName, OMX_IndexParamVideoInit))
@@ -1035,10 +1039,12 @@ int COMXVideo::GetInputBufferSize()
   return m_omx_decoder.GetInputBufferSize();
 }
 
-void COMXVideo::WaitCompletion()
+void COMXVideo::SubmitEOS()
 {
   if(!m_is_open)
     return;
+
+  m_submitted_eos = true;
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
@@ -1061,27 +1067,11 @@ void COMXVideo::WaitCompletion()
     CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
     return;
   }
+}
 
-  unsigned int nTimeOut = 30000;
-
-  while(nTimeOut)
-  {
-    if(m_omx_render.IsEOS())
-    {
-      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
-      break;
-    }
-
-    if(nTimeOut == 0)
-    {
-      CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
-      break;
-    }
-    Sleep(50);
-    nTimeOut -= 50;
-  }
-
-  m_omx_render.ResetEos();
-
-  return;
+bool COMXVideo::IsEOS()
+{
+  if(!m_is_open)
+    return true;
+  return m_omx_render.IsEOS();
 }

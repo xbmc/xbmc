@@ -88,7 +88,6 @@ protected:
   bool                      m_DecoderOpen;
 
   DllBcmHost                m_DllBcmHost;
-  bool                      m_send_eos;
   bool                      m_bad_state;
 
   virtual void OnStartup();
@@ -106,7 +105,7 @@ public:
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
   bool IsStalled()                                  { return m_stalled;  }
-  bool IsEOS()                                      { return m_send_eos; };
+  bool IsEOS();
   void WaitForBuffers();
   bool CloseStream(bool bWaitForBuffers);
   bool CodecChange();
@@ -121,6 +120,7 @@ public:
   double GetCacheTime();
   double GetCurrentPTS() { return m_audioClock; };
   void WaitCompletion();
+  void SubmitEOS();
   void  RegisterAudioCallback(IAudioCallback* pCallback);
   void  UnRegisterAudioCallback();
   void SetCurrentVolume(float fVolume);
