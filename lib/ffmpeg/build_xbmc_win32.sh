@@ -51,7 +51,7 @@ OPTIONS="
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
-make $MAKEFLAGS &&
+mingw32-make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
 cp .libs/avcodec-54.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avformat-54.dll /xbmc/system/players/dvdplayer/ &&
