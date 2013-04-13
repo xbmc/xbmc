@@ -8,7 +8,7 @@ then
   then
     rm -r .libs
   fi
-  make distclean
+  mingw32-make distclean
 fi
 
 if [ $NUMBER_OF_PROCESSORS > 1 ]; then
