@@ -431,10 +431,10 @@ lib/cmyth/Makefile
 /system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
-/system/players/dvdplayer/avcodec-53.dll
-/system/players/dvdplayer/avfilter-2.dll
-/system/players/dvdplayer/avformat-53.dll
-/system/players/dvdplayer/avutil-51.dll
+/system/players/dvdplayer/avcodec-54.dll
+/system/players/dvdplayer/avfilter-3.dll
+/system/players/dvdplayer/avformat-54.dll
+/system/players/dvdplayer/avutil-52.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
 /system/players/dvdplayer/libdvdcss-2.dll
