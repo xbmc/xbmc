@@ -103,7 +103,7 @@ private:
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
-  static const char *CreateMimeTypeFromExtension(const char *ext);
+  static std::string CreateMimeTypeFromExtension(const char *ext);
 
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;

@@ -27,6 +27,7 @@
 #include "threads/SingleLock.h"
 #include "utils/Base64.h"
 #include "utils/log.h"
+#include "utils/Mime.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -731,60 +732,10 @@ int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum M
   return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
 }
 
-const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
+std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
-  if (strcmp(ext, ".aif") == 0)   return "audio/aiff";
-  if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
-  if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
-  if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";
-  if (strcmp(ext, ".avi") == 0)   return "video/avi";
-  if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
-  if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
-  if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
-  if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
-  if (strcmp(ext, ".fli") == 0)   return "video/fli";
-  if (strcmp(ext, ".gif") == 0)   return "image/gif";
-  if (strcmp(ext, ".htm") == 0)   return "text/html";
-  if (strcmp(ext, ".html") == 0)  return "text/html";
-  if (strcmp(ext, ".htmls") == 0) return "text/html";
-  if (strcmp(ext, ".ico") == 0)   return "image/x-icon";
-  if (strcmp(ext, ".it") == 0)    return "audio/it";
-  if (strcmp(ext, ".jpeg") == 0)  return "image/jpeg";
-  if (strcmp(ext, ".jpg") == 0)   return "image/jpeg";
-  if (strcmp(ext, ".json") == 0)  return "application/json";
   if (strcmp(ext, ".kar") == 0)   return "audio/midi";
-  if (strcmp(ext, ".list") == 0)  return "text/plain";
-  if (strcmp(ext, ".log") == 0)   return "text/plain";
-  if (strcmp(ext, ".lst") == 0)   return "text/plain";
-  if (strcmp(ext, ".m2v") == 0)   return "video/mpeg";
-  if (strcmp(ext, ".m3u") == 0)   return "audio/x-mpequrl";
-  if (strcmp(ext, ".mid") == 0)   return "audio/midi";
-  if (strcmp(ext, ".midi") == 0)  return "audio/midi";
-  if (strcmp(ext, ".mod") == 0)   return "audio/mod";
-  if (strcmp(ext, ".mov") == 0)   return "video/quicktime";
-  if (strcmp(ext, ".mp2") == 0)   return "audio/mpeg";
-  if (strcmp(ext, ".mp3") == 0)   return "audio/mpeg3";
-  if (strcmp(ext, ".mpa") == 0)   return "audio/mpeg";
-  if (strcmp(ext, ".mpeg") == 0)  return "video/mpeg";
-  if (strcmp(ext, ".mpg") == 0)   return "video/mpeg";
-  if (strcmp(ext, ".mpga") == 0)  return "audio/mpeg";
-  if (strcmp(ext, ".pcx") == 0)   return "image/x-pcx";
-  if (strcmp(ext, ".png") == 0)   return "image/png";
-  if (strcmp(ext, ".rm") == 0)    return "audio/x-pn-realaudio";
-  if (strcmp(ext, ".s3m") == 0)   return "audio/s3m";
-  if (strcmp(ext, ".sid") == 0)   return "audio/x-psid";
-  if (strcmp(ext, ".tif") == 0)   return "image/tiff";
-  if (strcmp(ext, ".tiff") == 0)  return "image/tiff";
-  if (strcmp(ext, ".txt") == 0)   return "text/plain";
-  if (strcmp(ext, ".uni") == 0)   return "text/uri-list";
-  if (strcmp(ext, ".viv") == 0)   return "video/vivo";
-  if (strcmp(ext, ".wav") == 0)   return "audio/wav";
-  if (strcmp(ext, ".xm") == 0)    return "audio/xm";
-  if (strcmp(ext, ".xml") == 0)   return "text/xml";
-  if (strcmp(ext, ".zip") == 0)   return "application/zip";
   if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
-  if (strcmp(ext, ".js") == 0)    return "application/javascript";
-  if (strcmp(ext, ".css") == 0)   return "text/css";
-  return NULL;
+  return CMime::GetMimeType(ext);
 }
 #endif
