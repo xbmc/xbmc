@@ -937,6 +937,7 @@ void COMXPlayer::Process()
 {
   bool bOmxWaitVideo = false;
   bool bOmxWaitAudio = false;
+  bool bOmxSentEOFs = false;
 
   if (!OpenInputStream())
   {
@@ -1222,28 +1223,24 @@ void COMXPlayer::Process()
       }
 
       // make sure we tell all players to finish it's data
-      if(m_CurrentAudio.inited)
+      if (!bOmxSentEOFs)
       {
-        m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
-        bOmxWaitAudio = true;
+        if(m_CurrentAudio.inited)
+        {
+          m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+          bOmxWaitAudio = true;
+        }
+        if(m_CurrentVideo.inited)
+        {
+          m_player_video.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+          bOmxWaitVideo = true;
+        }
+        if(m_CurrentSubtitle.inited)
+          m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        if(m_CurrentTeletext.inited)
+          m_player_teletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        bOmxSentEOFs = true;
       }
-      if(m_CurrentVideo.inited)
-      {
-        m_player_video.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
-        bOmxWaitVideo = true;
-      }
-      if(m_CurrentSubtitle.inited)
-        m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
-      if(m_CurrentTeletext.inited)
-        m_player_teletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
-      m_CurrentAudio.inited    = false;
-      m_CurrentVideo.inited    = false;
-      m_CurrentSubtitle.inited = false;
-      m_CurrentTeletext.inited = false;
-      m_CurrentAudio.started    = false;
-      m_CurrentVideo.started    = false;
-      m_CurrentSubtitle.started = false;
-      m_CurrentTeletext.started = false;
 
       // if we are caching, start playing it again
       SetCaching(CACHESTATE_DONE);
@@ -1270,6 +1267,15 @@ void COMXPlayer::Process()
 
       if (!m_pInputStream->IsEOF())
         CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
+
+      m_CurrentAudio.inited    = false;
+      m_CurrentVideo.inited    = false;
+      m_CurrentSubtitle.inited = false;
+      m_CurrentTeletext.inited = false;
+      m_CurrentAudio.started    = false;
+      m_CurrentVideo.started    = false;
+      m_CurrentSubtitle.started = false;
+      m_CurrentTeletext.started = false;
 
       break;
     }
