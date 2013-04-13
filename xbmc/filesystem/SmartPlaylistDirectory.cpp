@@ -113,7 +113,7 @@ namespace XFILE
             baseDir += group;
           URIUtils::AddSlashAtEnd(baseDir);
 
-          if (mediaType = MediaTypeEpisode)
+          if (mediaType == MediaTypeEpisode)
             baseDir += "-1/-1/";
         }
 
