@@ -158,6 +158,8 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
 , m_control(NULL)
 , m_delegate(NULL)
 , m_started(false)
+, m_has_audio(false)
+, m_has_video(false)
 {
   m_control  = CUPnP::GetInstance()->m_MediaController;
 
@@ -433,6 +435,8 @@ void CUPnPPlayer::DoAudioWork()
       m_current_meta = (const char*)meta;
       CFileItemPtr item = GetFileItem(uri, meta);
       g_application.CurrentFileItem() = *item;
+      m_has_video = item->IsVideo();
+      m_has_audio = m_has_video || item->IsAudio();
       CApplicationMessenger::Get().SetCurrentItem(*item.get());
     }
 
