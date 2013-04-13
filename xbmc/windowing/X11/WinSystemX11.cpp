@@ -583,10 +583,10 @@ void CWinSystemX11::NotifyAppFocusChange(bool bGaining)
 
 void CWinSystemX11::NotifyMouseCoverage(bool covered)
 {
-  if (!m_bFullScreen)
+  if (!m_bFullScreen || !m_mainWindow)
     return;
 
-  if (covered)
+  if (covered && !m_bIsGrabbed)
   {
     int result = -1;
     while (result != GrabSuccess && result != AlreadyGrabbed)
@@ -595,11 +595,13 @@ void CWinSystemX11::NotifyMouseCoverage(bool covered)
       XbmcThreads::ThreadSleep(100);
     }
     XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+    m_bIsGrabbed = true;
   }
-  else
+  else if (!covered && m_bIsGrabbed)
   {
     XUngrabKeyboard(m_dpy, CurrentTime);
     XUngrabPointer(m_dpy, CurrentTime);
+    m_bIsGrabbed = false;
   }
 }
 
@@ -955,7 +957,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
         XbmcThreads::ThreadSleep(100);
       }
       XGrabKeyboard(m_dpy, m_mainWindow, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+      m_bIsGrabbed = true;
     }
+    else
+      m_bIsGrabbed = false;
 
     CDirtyRegionList dr;
     RefreshGlxContext(!m_currentOutput.Equals(output));
