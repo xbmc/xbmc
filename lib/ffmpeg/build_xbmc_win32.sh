@@ -89,7 +89,6 @@ fi
 # 
 
 # enable break on error:
-exit 0
 set -e
 
 make $MAKEFLAGS 
