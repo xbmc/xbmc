@@ -38,8 +38,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo() const { return false; }
-  virtual bool HasAudio() const { return false; }
+  virtual bool HasVideo() const { return m_has_video; }
+  virtual bool HasAudio() const { return m_has_audio; }
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float fPercent = 0);
   virtual float GetPercentage();
@@ -76,6 +76,8 @@ private:
   CStdString             m_current_uri;
   CStdString             m_current_meta;
   bool                   m_started;
+  bool                   m_has_audio;
+  bool                   m_has_video;
 };
 
 } /* namespace UPNP */
