@@ -99,7 +99,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     {
 
       CSong song;
-      XMLUtils::GetInt(node,"position",song.iTrack);
+      XMLUtils::GetInt(node, "position", song.iTrack);
 
       if (song.iTrack == 0)
         bIncrement = true;
@@ -163,20 +163,9 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     // add a <song> tag
     TiXmlElement cast("track");
     TiXmlNode *node = album->InsertEndChild(cast);
-    TiXmlElement title("title");
-    TiXmlNode *titleNode = node->InsertEndChild(title);
-    TiXmlText name(it->strTitle);
-    titleNode->InsertEndChild(name);
-    TiXmlElement year("position");
-    TiXmlNode *yearNode = node->InsertEndChild(year);
-    CStdString strTrack;
-    strTrack.Format("%i",it->iTrack);
-    TiXmlText name2(strTrack);
-    yearNode->InsertEndChild(name2);
-    TiXmlElement duration("duration");
-    TiXmlNode *durNode = node->InsertEndChild(duration);
-    TiXmlText name3(StringUtils::SecondsToTimeString(it->iDuration));
-    durNode->InsertEndChild(name3);
+    XMLUtils::SetString(node,   "title",    it->strTitle);
+    XMLUtils::SetInt(node,      "position", it->iTrack);
+    XMLUtils::SetString(node,   "duration", StringUtils::SecondsToTimeString(it->iDuration));
   }
 
   return true;
