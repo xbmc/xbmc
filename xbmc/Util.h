@@ -128,7 +128,6 @@ public:
     std::vector<std::string>& itemPaths);
 
   static void ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles );
-  static int ScanArchiveForSubtitles( const std::string& strArchivePath, const std::string& strMovieFileNameNoExt, std::vector<std::string>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const CStdString& strMovie, const CStdString& strSubtitles, ExternalStreamInfo& info); 
   static bool FindVobSubPair( const std::vector<std::string>& vecSubtitles, const std::string& strIdxPath, std::string& strSubPath );
   static bool IsVobSub(const std::vector<std::string>& vecSubtitles, const std::string& strSubPath);
