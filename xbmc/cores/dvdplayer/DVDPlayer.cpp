@@ -82,6 +82,7 @@
 #include "xbmc/playlists/PlayListM3U.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "URL.h"
 #include "LangInfo.h"
 #include "ApplicationMessenger.h"
 
@@ -569,7 +570,8 @@ bool CDVDPlayer::OpenInputStream()
 
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
-  if (filename.Left(7) == "http://" && filename.Right(5) == ".m3u8")
+  // ensure to strip off the url options by using a temp CURL object
+  if (filename.Left(7) == "http://" && CURL(filename).GetFileName().Right(5) == ".m3u8")
   {
     // get the available bandwidth (as per user settings)
     int maxrate = g_guiSettings.GetInt("network.bandwidth");
