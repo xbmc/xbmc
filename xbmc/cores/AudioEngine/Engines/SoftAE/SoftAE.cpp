@@ -1480,7 +1480,7 @@ void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 void CSoftAE::ProcessSuspend()
 {
   unsigned int curSystemClock = 0;
-#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
+#if defined(TARGET_WINDOWS)
   if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
       !g_advancedSettings.m_streamSilence)
   {
