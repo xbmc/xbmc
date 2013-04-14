@@ -77,8 +77,8 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
   if (!response)
     return MHD_NO;
 
-  ret = MHD_add_response_header(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
-  ret |= MHD_add_response_header(response, MHD_HTTP_HEADER_CONNECTION, "close");
+  ret = AddHeader(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  ret |= AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     MHD_destroy_response (response);
@@ -324,7 +324,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
 
   multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
-    MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
+    AddHeader(response, it->first.c_str(), it->second.c_str());
 
   MHD_queue_response(request.connection, responseCode, response);
   MHD_destroy_response(response);
@@ -350,7 +350,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
   response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
   if (response)
   {
-    MHD_add_response_header(response, "Location", strURL.c_str());
+    AddHeader(response, "Location", strURL.c_str());
     return MHD_YES;
   }
   return MHD_NO;
@@ -418,7 +418,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
         delete file;
         return MHD_NO;
       }
-      MHD_add_response_header(response, "Content-Length", contentLength);
+      AddHeader(response, "Content-Length", contentLength);
     }
 
     // set the Content-Type header
@@ -426,7 +426,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     ext = ext.ToLower();
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
     if (mime)
-      MHD_add_response_header(response, "Content-Type", mime);
+      AddHeader(response, "Content-Type", mime);
 
     // set the Last-Modified header
     struct __stat64 statBuffer;
@@ -436,7 +436,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       if (time != NULL)
       {
         CDateTime lastModified = *time;
-        MHD_add_response_header(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
+        AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
       }
     }
 
@@ -446,7 +446,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       expiryTime += CDateTimeSpan(1, 0, 0, 0);
     else
       expiryTime += CDateTimeSpan(365, 0, 0, 0);
-    MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+    AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
     // only close the CFile instance if libmicrohttpd doesn't have to grab the data of the file
     if (!getData)
@@ -737,5 +737,13 @@ std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
   if (strcmp(ext, ".kar") == 0)   return "audio/midi";
   if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
   return CMime::GetMimeType(ext);
+}
+
+int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value)
+{
+  if (response == NULL || name.empty())
+    return 0;
+
+  return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
 #endif

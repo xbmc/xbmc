@@ -105,6 +105,8 @@ private:
 
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
+  static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
+
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;
   std::string m_Credentials64Encoded;
