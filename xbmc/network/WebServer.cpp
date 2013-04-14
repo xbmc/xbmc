@@ -28,6 +28,7 @@
 #include "utils/Base64.h"
 #include "utils/log.h"
 #include "utils/Mime.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -363,6 +364,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     bool getData = true;
+
+    // get the MIME type for the Content-Type header
+    CStdString ext = URIUtils::GetExtension(strURL);
+    ext = ext.ToLower();
+    string mimeType = CreateMimeTypeFromExtension(ext.c_str());
+
     if (methodType != HEAD)
     {
       if (methodType == GET)
@@ -422,11 +429,8 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     }
 
     // set the Content-Type header
-    CStdString ext = URIUtils::GetExtension(strURL);
-    ext = ext.ToLower();
-    const char *mime = CreateMimeTypeFromExtension(ext.c_str());
-    if (mime)
-      AddHeader(response, "Content-Type", mime);
+    if (!mimeType.empty())
+      AddHeader(response, "Content-Type", mimeType.c_str());
 
     // set the Last-Modified header
     struct __stat64 statBuffer;
@@ -442,7 +446,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    if (mime && strncmp(mime, "text/html", 9) == 0)
+    if (StringUtils::EqualsNoCase(mimeType, "text/html") ||
+        StringUtils::EqualsNoCase(mimeType, "text/css") ||
+        StringUtils::EqualsNoCase(mimeType, "application/javascript"))
       expiryTime += CDateTimeSpan(1, 0, 0, 0);
     else
       expiryTime += CDateTimeSpan(365, 0, 0, 0);
