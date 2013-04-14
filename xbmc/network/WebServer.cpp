@@ -365,6 +365,11 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   {
     bool getData = true;
 
+    // try to get the file's last modified date
+    CDateTime lastModified;
+    if (!GetLastModifiedDateTime(file, lastModified))
+      lastModified.Reset();
+
     // get the MIME type for the Content-Type header
     CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
@@ -376,25 +381,16 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       {
         // handle If-Modified-Since
         string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-        if (!ifModifiedSince.empty())
+        if (!ifModifiedSince.empty() && lastModified.IsValid())
         {
           CDateTime ifModifiedSinceDate;
           ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
 
-          struct __stat64 statBuffer;
-          if (file->Stat(&statBuffer) == 0)
+          if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
           {
-            struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
-            if (time != NULL)
-            {
-              CDateTime lastModified = *time;
-              if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
-              {
-                getData = false;
-                response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-                responseCode = MHD_HTTP_NOT_MODIFIED;
-              }
-            }
+            getData = false;
+            response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+            responseCode = MHD_HTTP_NOT_MODIFIED;
           }
         }
       }
@@ -433,16 +429,8 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       AddHeader(response, "Content-Type", mimeType.c_str());
 
     // set the Last-Modified header
-    struct __stat64 statBuffer;
-    if (file->Stat(&statBuffer) == 0)
-    {
-      struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
-      if (time != NULL)
-      {
-        CDateTime lastModified = *time;
-        AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
-      }
-    }
+    if (lastModified.IsValid())
+      AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
 
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
@@ -751,5 +739,22 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
     return 0;
 
   return MHD_add_response_header(response, name.c_str(), value.c_str());
+}
+
+bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified)
+{
+  if (file == NULL)
+    return false;
+
+  struct __stat64 statBuffer;
+  if (file->Stat(&statBuffer) != 0)
+    return false;
+
+  struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+  if (time == NULL)
+    return false;
+
+  lastModified = *time;
+  return true;
 }
 #endif

@@ -34,6 +34,12 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
 
+namespace XFILE
+{
+  class CFile;
+}
+class CDateTime;
+
 class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
@@ -106,6 +112,7 @@ private:
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
   static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
+  static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;
