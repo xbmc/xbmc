@@ -1033,7 +1033,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
@@ -1042,7 +1041,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           break;
         }
         else
-#endif
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           m_streams[iId] = st;
@@ -1110,16 +1108,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->pPrivate = pStream;
     m_streams[iId]->flags = (CDemuxStream::EFlags)pStream->disposition;
 
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
-    // API added on: 2010-10-15
-    // (Note that while the function was available earlier, the generic
-    // metadata tags were not populated by default)
     AVDictionaryEntry *langTag = m_dllAvUtil.av_dict_get(pStream->metadata, "language", NULL, 0);
     if (langTag)
       strncpy(m_streams[iId]->language, langTag->value, 3);
-#else
-    strcpy( m_streams[iId]->language, pStream->language );
-#endif
 
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
@@ -1180,11 +1171,8 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
   if(m_pFormatContext == NULL)
     return 0;
-  #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
-    return m_pFormatContext->nb_chapters;
-  #else
-    return 0;
-  #endif
+
+  return m_pFormatContext->nb_chapters;
 }
 
 int CDVDDemuxFFmpeg::GetChapter()
@@ -1197,15 +1185,14 @@ int CDVDDemuxFFmpeg::GetChapter()
   || m_iCurrentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
-    for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
-    {
-      AVChapter *chapter = m_pFormatContext->chapters[i];
-      if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
-      && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
-        return i + 1;
-    }
-  #endif
+  for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+  {
+    AVChapter *chapter = m_pFormatContext->chapters[i];
+    if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
+    && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
+      return i + 1;
+  }
+
   return 0;
 }
 
@@ -1216,23 +1203,14 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
     ich->GetChapterName(strChapterName);
   else
   {
-    #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
-      int chapterIdx = GetChapter();
-      if(chapterIdx <= 0)
-        return;
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
-      // API added on: 2010-10-15
-      // (Note that while the function was available earlier, the generic
-      // metadata tags were not populated by default)
-      AVDictionaryEntry *titleTag = m_dllAvUtil.av_dict_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
-                                                              "title", NULL, 0);
-      if (titleTag)
-        strChapterName = titleTag->value;
-#else
-      if (m_pFormatContext->chapters[chapterIdx-1]->title)
-        strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
-#endif
-    #endif
+    int chapterIdx = GetChapter();
+    if(chapterIdx <= 0)
+      return;
+
+    AVDictionaryEntry *titleTag = m_dllAvUtil.av_dict_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
+                                                          "title", NULL, 0);
+    if (titleTag)
+      strChapterName = titleTag->value;
   }
 }
 
@@ -1258,16 +1236,12 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(m_pFormatContext == NULL)
     return false;
 
-    #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
-        if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
-            return false;
+  if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
+    return false;
 
-        AVChapter *ch = m_pFormatContext->chapters[chapter-1];
-        double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
-        return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
-    #else
-        return false;
-    #endif
+  AVChapter *ch = m_pFormatContext->chapters[chapter-1];
+  double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
+  return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
 void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
