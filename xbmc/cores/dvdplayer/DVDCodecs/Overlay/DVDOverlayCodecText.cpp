@@ -44,6 +44,13 @@ bool CDVDOverlayCodecText::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_bIsSSA = (hints.codec == CODEC_ID_SSA);
   if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
     return true;
+#if defined(LIBAVCODEC_FROM_FFMPEG) && LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,53,100)
+  // API changed in:
+  // ffmpeg: commit 2626cc4580bfd560c6983338d77b2c11c16af94f (11 Aug 2012)
+  //         release 1.0 (28 Sept 2012)
+  if(hints.codec == AV_CODEC_ID_SUBRIP)
+    return true;
+#endif
   return false;
 }
 
