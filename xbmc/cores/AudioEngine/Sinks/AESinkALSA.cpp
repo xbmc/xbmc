@@ -66,6 +66,18 @@ static unsigned int ALSASampleRateList[] =
   0
 };
 
+static int CheckNP2(unsigned x)
+{
+    --x;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return ++x;
+}
+
+
 CAESinkALSA::CAESinkALSA() :
   m_pcm(NULL)
 {
@@ -373,13 +385,15 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
    after those are fixed.
   */
   periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 20);
-  bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) sampleRate / 5);
+  bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) sampleRate / 4);
+  bufferSize  = CheckNP2(bufferSize);
   
   /* 
    According to upstream we should set buffer size first - so make sure it is always at least
    4x period size to not get underruns (some systems seem to have issues with only 2 periods)
   */
   periodSize = std::min(periodSize, bufferSize / 4);
+  periodSize  = CheckNP2(periodSize);
 
   bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t)8192);
   periodSize  = bufferSize / ALSA_PERIODS;
