@@ -560,7 +560,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_type = "song";
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
-  m_iAlbumId = song.iAlbumId;
+  m_iAlbumId = song.idAlbum;
 }
 
 void CMusicInfoTag::Serialize(CVariant& value) const

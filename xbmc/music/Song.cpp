@@ -54,7 +54,7 @@ CSong::CSong(CMusicInfoTag& tag)
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
-  iAlbumId = -1;
+  idAlbum = -1;
 }
 
 CSong::CSong()
@@ -83,7 +83,7 @@ void CSong::Serialize(CVariant& value) const
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
-  value["albumid"] = iAlbumId;
+  value["albumid"] = idAlbum;
 }
 
 void CSong::Clear()
@@ -113,7 +113,7 @@ void CSong::Clear()
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.Empty();
   iKaraokeDelay = 0;
-  iAlbumId = -1;
+  idAlbum = -1;
   bCompilation = false;
   embeddedArt.clear();
 }

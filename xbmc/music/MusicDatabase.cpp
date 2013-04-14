@@ -896,7 +896,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.genre = StringUtils::Split(m_pDS->fv(song_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   // and the rest...
   song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
-  song.iAlbumId = m_pDS->fv(song_idAlbum).get_asInt();
+  song.idAlbum = m_pDS->fv(song_idAlbum).get_asInt();
   song.iTrack = m_pDS->fv(song_iTrack).get_asInt() ;
   song.iDuration = m_pDS->fv(song_iDuration).get_asInt() ;
   song.iYear = m_pDS->fv(song_iYear).get_asInt() ;
