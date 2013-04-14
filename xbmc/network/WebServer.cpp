@@ -33,6 +33,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+//#define WEBSERVER_DEBUG
+
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
@@ -376,6 +378,16 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   CFile *file = new CFile();
 
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver  [IN] %s", strURL.c_str());
+  multimap<string, string> headers;
+  if (GetRequestHeaderValues(connection, MHD_HEADER_KIND, headers) > 0)
+  {
+    for (multimap<string, string>::const_iterator header = headers.begin(); header != headers.end(); header++)
+      CLog::Log(LOGDEBUG, "webserver  [IN] %s: %s", header->first.c_str(), header->second.c_str());
+  }
+#endif
+
   if (file->Open(strURL, READ_NO_CACHE))
   {
     bool getData = true;
@@ -640,6 +652,10 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   if (context == NULL || context->file == NULL)
     return -1;
 
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
+#endif
+
   // check if we need to add the end-boundary
   if (context->rangeCount > 1 && context->ranges.empty())
   {
@@ -696,6 +712,9 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 
   // add the number of read bytes to the number of written bytes
   written += res;
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] wrote %d bytes from %" PRId64 " in range (%" PRId64 " - %" PRId64 ")", written, context->writePosition, start, end);
+#endif
   // update the current write position
   context->writePosition += res;
 
@@ -723,6 +742,9 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
     context->file = NULL;
   }
 
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] done");
+#endif
   delete context;
 }
 
@@ -927,6 +949,9 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
   if (response == NULL || name.empty())
     return 0;
 
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", name.c_str(), value.c_str());
+#endif
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
 
