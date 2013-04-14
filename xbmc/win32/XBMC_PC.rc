@@ -71,12 +71,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Team XBMC"
             VALUE "FileDescription", "XBMC"
-            VALUE "FileVersion", "12.2-PRE"
+            VALUE "FileVersion", "12.2"
             VALUE "InternalName", "XBMC.exe"
             VALUE "LegalCopyright", "Copyright (c) Team XBMC.  All rights reserved."
             VALUE "OriginalFilename", "XBMC.exe"
             VALUE "ProductName", "XBMC for Windows"
-            VALUE "ProductVersion", "12.2-PRE"
+            VALUE "ProductVersion", "12.2"
         END
     END
     BLOCK "VarFileInfo"
