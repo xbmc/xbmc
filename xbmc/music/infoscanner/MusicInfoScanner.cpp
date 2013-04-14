@@ -179,16 +179,8 @@ void CMusicInfoScanner::Process()
           m_handle->SetPercentage(percentage);
         }
 
-        // find album info
-        ADDON::ScraperPtr scraper;
-        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ALBUMS) || !scraper)
-          continue;
-        
-        CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
         CMusicAlbumInfo albumInfo;
-        DownloadAlbumInfo(album, scraper, albumInfo); // genre field holds path - see fetchalbuminfo()
-        m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().songs);
-        GetAlbumArtwork(params.GetAlbumId(), albumInfo.GetAlbum());
+        UpdateDatabaseAlbumInfo(*it, albumInfo, false);
 
         if (m_bStop || bCanceled)
           break;
@@ -214,16 +206,8 @@ void CMusicInfoScanner::Process()
           m_handle->SetPercentage(percentage);
         }
         
-        // find album info
-        ADDON::ScraperPtr scraper;
-        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ARTISTS) || !scraper)
-          continue;
-
         CMusicArtistInfo artistInfo;
-        DownloadArtistInfo(artist, scraper, artistInfo); // genre field holds path - see fetchartistinfo()
-        m_musicDatabase.SetArtistInfo(params.GetArtistId(), artistInfo.GetArtist());
-        map<string, string> artwork = GetArtistArtwork(params.GetArtistId(), &artist);
-        m_musicDatabase.SetArtForItem(params.GetArtistId(), "artist", artwork);
+        UpdateDatabaseArtistInfo(*it, artistInfo, false);
 
         if (m_bStop || bCanceled)
           break;
@@ -704,8 +688,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
           m_musicDatabase.SetArtistInfo(downloadedArtist.idArtist,
                                         downloadedArtist);
 
-          map<string, string> artwork = GetArtistArtwork(downloadedArtist.idArtist,
-                                                         &downloadedArtist);
+          URIUtils::GetParentPath(album->strPath, downloadedArtist.strPath);
+          map<string, string> artwork = GetArtistArtwork(downloadedArtist);
           // check thumb stuff
           m_musicDatabase.SetArtForItem(downloadedArtist.idArtist, "artist", artwork);
           m_artistCache.insert(make_pair(*artistCredit, downloadedArtist));
@@ -765,8 +749,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
             m_musicDatabase.SetArtistInfo(downloadedArtist.idArtist,
                                           downloadedArtist);
             // check thumb stuff
-            map<string, string> artwork = GetArtistArtwork(downloadedArtist.idArtist,
-                                                           &downloadedArtist);
+            URIUtils::GetParentPath(album->strPath, downloadedArtist.strPath);
+            map<string, string> artwork = GetArtistArtwork(downloadedArtist);
             m_musicDatabase.SetArtForItem(downloadedArtist.idArtist, "artist", artwork);
             m_artistCache.insert(make_pair(*artistCredit, downloadedArtist));
           }
@@ -1039,6 +1023,96 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   }
   md5state.getDigest(hash);
   return count;
+}
+
+INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, CMusicAlbumInfo& albumInfo, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
+{
+  m_musicDatabase.Open();
+  CQueryParams params;
+  CDirectoryNode::GetDatabaseInfo(strPath, params);
+
+  if (params.GetAlbumId() == -1)
+    return INFO_ERROR;
+
+  CAlbum album;
+  m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.songs);
+
+  // find album info
+  ADDON::ScraperPtr scraper;
+  if (!m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ALBUMS) || !scraper)
+    return INFO_ERROR;
+  m_musicDatabase.Close();
+
+loop:
+  CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
+  INFO_RET albumDownloadStatus = DownloadAlbumInfo(album, scraper, albumInfo, pDialog);
+  if (albumDownloadStatus == INFO_NOT_FOUND)
+  {
+    if (pDialog && bAllowSelection)
+    {
+      if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false))
+        return INFO_CANCELLED;
+
+      CStdString strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+        return INFO_CANCELLED;
+
+      album.artist = StringUtils::Split(strTempArtist, g_advancedSettings.m_musicItemSeparator);
+      goto loop;
+    }
+  }
+  else if (albumDownloadStatus == INFO_ADDED)
+  {
+    m_musicDatabase.Open();
+    m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().songs);
+    GetAlbumArtwork(params.GetAlbumId(), albumInfo.GetAlbum());
+    albumInfo.SetLoaded(true);
+    m_musicDatabase.Close();
+  }
+  return albumDownloadStatus;
+}
+
+INFO_RET CMusicInfoScanner::UpdateDatabaseArtistInfo(const CStdString& strPath, CMusicArtistInfo& artistInfo, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
+{
+  m_musicDatabase.Open();
+  CQueryParams params;
+  CDirectoryNode::GetDatabaseInfo(strPath, params);
+
+  if (params.GetArtistId() == -1)
+    return INFO_ERROR;
+
+  CArtist artist;
+  m_musicDatabase.GetArtistInfo(params.GetArtistId(), artist);
+
+  // find album info
+  ADDON::ScraperPtr scraper;
+  if (!m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ARTISTS) || !scraper)
+    return INFO_ERROR;
+  m_musicDatabase.Close();
+
+loop:
+  CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, artist.strArtist.c_str());
+  INFO_RET artistDownloadStatus = DownloadArtistInfo(artist, scraper, artistInfo, pDialog);
+  if (artistDownloadStatus == INFO_NOT_FOUND)
+  {
+    if (pDialog && bAllowSelection)
+    {
+      if (!CGUIKeyboardFactory::ShowAndGetInput(artist.strArtist, g_localizeStrings.Get(16025), false))
+        return INFO_CANCELLED;
+      goto loop;
+    }
+  }
+  else if (artistDownloadStatus == INFO_ADDED)
+  {
+    m_musicDatabase.Open();
+    m_musicDatabase.SetArtistInfo(params.GetArtistId(), artistInfo.GetArtist());
+    m_musicDatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
+    map<string, string> artwork = GetArtistArtwork(artist);
+    m_musicDatabase.SetArtForItem(params.GetArtistId(), "artist", artwork);
+    artistInfo.SetLoaded();
+    m_musicDatabase.Close();
+  }
+  return artistDownloadStatus;
 }
 
 #define THRESHOLD .95f
@@ -1485,22 +1559,26 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, Sc
   return bMusicBrainz;
 }
 
-map<string, string> CMusicInfoScanner::GetArtistArtwork(long id, const CArtist *artist)
+map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
 {
-  CStdString artistPath;
-  m_musicDatabase.Open();
-  bool checkLocal = m_musicDatabase.GetArtistPath(id, artistPath);
-  m_musicDatabase.Close();
-
-  CFileItem item(artistPath, true);
   map<string, string> artwork;
 
   // check thumb
+  CStdString strFolder;
   CStdString thumb;
-  if (checkLocal)
-    thumb = item.GetUserMusicThumb(true);
-  if (thumb.IsEmpty() && artist)
-    thumb = CScraperUrl::GetThumbURL(artist->thumbURL.GetFirstThumb());
+  if (!artist.strPath.IsEmpty())
+  {
+    strFolder = artist.strPath;
+    for (int i = 0; i < 3 && thumb.IsEmpty(); ++i)
+    {
+      CFileItem item(strFolder, true);
+      thumb = item.GetUserMusicThumb(true);
+      CStdString strTemp = strFolder;
+      URIUtils::GetParentPath(strTemp, strFolder);
+    }
+  }
+  if (thumb.IsEmpty())
+    thumb = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
   if (!thumb.IsEmpty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
@@ -1509,10 +1587,19 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(long id, const CArtist *
 
   // check fanart
   CStdString fanart;
-  if (checkLocal)
-    fanart = item.GetLocalFanart();
-  if (fanart.IsEmpty() && artist)
-    fanart = artist->fanart.GetImageURL();
+  if (!artist.strPath.IsEmpty())
+  {
+    strFolder = artist.strPath;
+    for (int i = 0; i < 3 && fanart.IsEmpty(); ++i)
+    {
+      CFileItem item(strFolder, true);
+      fanart = item.GetLocalFanart();
+      CStdString strTemp = strFolder;
+      URIUtils::GetParentPath(strFolder, strFolder);
+    }
+  }
+  if (fanart.IsEmpty())
+    fanart = artist.fanart.GetImageURL();
   if (!fanart.IsEmpty())
   {
     CTextureCache::Get().BackgroundCacheImage(fanart);

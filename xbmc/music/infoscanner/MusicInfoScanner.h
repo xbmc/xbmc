@@ -110,10 +110,58 @@ public:
    */
   static void FindArtForAlbums(VECALBUMS &albums, const CStdString &path);
 
+  /*! \brief Update the database information for a MusicDB album
+   Given a musicdb:// style path pointing to an album, search and update its info
+   with the scrapers. If info is found, update the database and artwork with the new
+   information.
+   \param strPath [in] musicdb:// style path to the album in the database
+   \param albumInfo [in/out] a CMusicAlbumInfo struct which will be populated with the output of the scraper
+   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+   \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
+   */
+  INFO_RET UpdateDatabaseAlbumInfo(const CStdString& strPath, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+ 
+  /*! \brief Update the database information for a MusicDB artist
+   Given a musicdb:// style path pointing to an artist, search and update its info
+   with the scrapers. If info is found, update the database and artwork with the new
+   information.
+   \param strPath [in] musicdb:// style path to the artist in the database
+   \param albumInfo [in/out] a CMusicArtistInfo struct which will be populated with the output of the scraper
+   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+   \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
+   */
+  INFO_RET UpdateDatabaseArtistInfo(const CStdString& strPath, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+
+  /*! \brief Using the scrapers download metadata for an album
+   Given a CAlbum style struct containing some data about an album, query
+   the scrapers to try and get more information about the album. The responsibility
+   is with the caller to do something with that information. It will be passed back
+   in a MusicInfo struct, which you can save, display to the user or throw away.
+   \param album [in] a partially or fully filled out album structure containing the search query
+   \param scraper [in] the scraper to query, usually the default or the relevant scraper for the musicdb path
+   \param albumInfo [in/out] a CMusicAlbumInfo struct which will be populated with the output of the scraper
+   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+   */
   INFO_RET DownloadAlbumInfo(const CAlbum& album, ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog = NULL);
+
+  /*! \brief Using the scrapers download metadata for an artist
+   Given a CAlbum style struct containing some data about an artist, query
+   the scrapers to try and get more information about the artist. The responsibility
+   is with the caller to do something with that information. It will be passed back
+   in a MusicInfo struct, which you can save, display to the user or throw away.
+   \param artist [in] a partially or fully filled out artist structure containing the search query
+   \param scraper [in] the scraper to query, usually the default or the relevant scraper for the musicdb path
+   \param artistInfo [in/out] a CMusicAlbumInfo struct which will be populated with the output of the scraper
+   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
+   */
   INFO_RET DownloadArtistInfo(const CArtist& artist, ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, CGUIDialogProgress* pDialog = NULL);
 
-  std::map<std::string, std::string> GetArtistArtwork(long id, const CArtist *artist = NULL);
+  /*! \brief Search for art for an artist
+   Look for art for an artist. Checks the artist structure for thumbs, and checks
+   the artist path (if non-empty) for artist/folder tbns, etc.
+   \param artist [in] an artist
+   */
+  std::map<std::string, std::string> GetArtistArtwork(const CArtist& artist);
 protected:
   virtual void Process();
 
