@@ -58,7 +58,7 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 
-CMusicInfoScanner::CMusicInfoScanner() : CThread("MusicInfoScanner")
+CMusicInfoScanner::CMusicInfoScanner() : CThread("MusicInfoScanner"), m_fileCountReader(this, "MusicFileCounter")
 {
   m_bRunning = false;
   m_showDialog = false;
@@ -104,9 +104,8 @@ void CMusicInfoScanner::Process()
 
       // Create the thread to count all files to be scanned
       SetPriority( GetMinPriority() );
-      CThread fileCountReader(this, "MusicFileCounter");
       if (m_handle)
-        fileCountReader.Create();
+        m_fileCountReader.Create();
 
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
@@ -151,7 +150,7 @@ void CMusicInfoScanner::Process()
         }
       }
 
-      fileCountReader.StopThread();
+      m_fileCountReader.StopThread();
 
       m_musicDatabase.EmptyCache();
 
@@ -219,6 +218,8 @@ void CMusicInfoScanner::Process()
 
 void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
 {
+  m_fileCountReader.StopThread();
+  StopThread();
   m_pathsToScan.clear();
   m_albumsScanned.clear();
   m_artistsScanned.clear();
@@ -235,7 +236,6 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
     m_pathsToScan.insert(strDirectory);
   m_pathsToCount = m_pathsToScan;
   m_scanType = 0;
-  StopThread();
   Create();
   m_bRunning = true;
 }
@@ -244,6 +244,8 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory,
                                        bool refresh)
 {
   m_albumsToScan.clear();
+  m_fileCountReader.StopThread();
+  StopThread();
   m_albumsScanned.clear();
 
   CFileItemList items;
@@ -285,7 +287,6 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory,
   m_musicDatabase.Close();
 
   m_scanType = 1;
-  StopThread();
   Create();
   m_bRunning = true;
 }
@@ -294,6 +295,8 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
                                         bool refresh)
 {
   m_artistsToScan.clear();
+  m_fileCountReader.StopThread();
+  StopThread();
   m_artistsScanned.clear();
   CFileItemList items;
 
@@ -334,7 +337,6 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
   m_musicDatabase.Close();
 
   m_scanType = 2;
-  StopThread();
   Create();
   m_bRunning = true;
 }
@@ -853,53 +855,6 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
   }
 }
 
-// This function is run by another thread
-void CMusicInfoScanner::Run()
-{
-  int count = 0;
-  while (!m_bStop && m_pathsToCount.size())
-    count+=CountFilesRecursively(*m_pathsToCount.begin());
-  m_itemCount = count;
-}
-
-// Recurse through all folders we scan and count files
-int CMusicInfoScanner::CountFilesRecursively(const CStdString& strPath)
-{
-  // load subfolder
-  CFileItemList items;
-//  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
-  CDirectory::GetDirectory(strPath, items, g_advancedSettings.m_musicExtensions, DIR_FLAG_NO_FILE_DIRS);
-
-  if (m_bStop)
-    return 0;
-
-  // true for recursive counting
-  int count = CountFiles(items, true);
-
-  // remove this path from the list we're processing
-  set<CStdString>::iterator it = m_pathsToCount.find(strPath);
-  if (it != m_pathsToCount.end())
-    m_pathsToCount.erase(it);
-
-//  CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
-  return count;
-}
-
-int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
-{
-  int count = 0;
-  for (int i=0; i<items.Size(); ++i)
-  {
-    const CFileItemPtr pItem=items[i];
-
-    if (recursive && pItem->m_bIsFolder)
-      count+=CountFilesRecursively(pItem->GetPath());
-    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
-      count++;
-  }
-  return count;
-}
-
 int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
@@ -1358,4 +1313,51 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(long id, const CArtist *
   }
 
   return artwork;
+}
+
+// This function is the Run() function of the IRunnable
+// CFileCountReader and runs in a separate thread.
+void CMusicInfoScanner::Run()
+{
+  int count = 0;
+  while (!m_bStop && m_pathsToCount.size())
+  {
+    count+=CountFilesRecursively(*m_pathsToCount.begin());
+  }
+  m_itemCount = count;
+}
+
+// Recurse through all folders we scan and count files
+int CMusicInfoScanner::CountFilesRecursively(const CStdString& strPath)
+{
+  // load subfolder
+  CFileItemList items;
+  CDirectory::GetDirectory(strPath, items, g_advancedSettings.m_musicExtensions, DIR_FLAG_NO_FILE_DIRS);
+
+  if (m_bStop)
+    return 0;
+
+  int count = CountFiles(items, true);
+
+  // true for recursive counting
+  set<CStdString>::iterator it = m_pathsToCount.find(strPath);
+  if (it != m_pathsToCount.end())
+    m_pathsToCount.erase(it);
+
+  return count;
+}
+
+int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
+{
+  int count = 0;
+  for (int i=0; i<items.Size(); ++i)
+  {
+    const CFileItemPtr pItem=items[i];
+    
+    if (recursive && pItem->m_bIsFolder)
+      count+=CountFilesRecursively(pItem->GetPath());
+    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+      count++;
+  }
+  return count;
 }

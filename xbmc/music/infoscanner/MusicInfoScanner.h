@@ -145,5 +145,6 @@ protected:
   std::vector<long> m_artistsScanned;
   std::vector<long> m_albumsScanned;
   int m_flags;
+  CThread m_fileCountReader;
 };
 }
