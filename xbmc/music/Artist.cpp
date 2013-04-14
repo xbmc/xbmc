@@ -37,10 +37,10 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise, g_advancedSettings.m_musicItemSeparator);
 
-  XMLUtils::GetString(artist, "born", strBorn);
-  XMLUtils::GetString(artist, "formed", strFormed);
+  XMLUtils::GetString(artist,      "born", strBorn);
+  XMLUtils::GetString(artist,    "formed", strFormed);
   XMLUtils::GetString(artist, "biography", strBiography);
-  XMLUtils::GetString(artist, "died", strDied);
+  XMLUtils::GetString(artist,      "died", strDied);
   XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
   size_t iThumbCount = thumbURL.m_url.size();
