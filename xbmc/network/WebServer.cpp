@@ -21,6 +21,7 @@
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
 #include "URL.h"
+#include "Util.h"
 #include "XBDateTime.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
@@ -41,9 +42,23 @@
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 
+#define CONTENT_RANGE_FORMAT  "bytes %" PRId64 "-%" PRId64 "/%" PRId64
+
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
+
+typedef struct {
+  CFile *file;
+  HttpRanges ranges;
+  size_t rangeCount;
+  int64_t rangesLength;
+  string boundary;
+  string boundaryWithHeader;
+  bool boundaryWritten;
+  string contentType;
+  int64_t writePosition;
+} HttpFileDownloadContext;
 
 vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 
@@ -364,6 +379,8 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     bool getData = true;
+    bool ranged = false;
+    int64_t fileLength = file->GetLength();
 
     // try to get the file's last modified date
     CDateTime lastModified;
@@ -377,6 +394,16 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
     if (methodType != HEAD)
     {
+      int64_t firstPosition = 0;
+      int64_t lastPosition = fileLength - 1;
+      uint64_t totalLength = 0;
+      HttpFileDownloadContext *context = new HttpFileDownloadContext();
+      context->file = file;
+      context->rangesLength = fileLength;
+      context->contentType = mimeType;
+      context->boundaryWritten = false;
+      context->writePosition = 0;
+
       if (methodType == GET)
       {
         // handle If-Modified-Since
@@ -393,19 +420,105 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
             responseCode = MHD_HTTP_NOT_MODIFIED;
           }
         }
+
+        if (getData)
+        {
+          // handle Range header
+          context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Range"), fileLength, context->ranges, firstPosition, lastPosition);
+
+          // handle If-Range header but only if the Range header is present
+          if (!context->ranges.empty())
+          {
+            string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Range");
+            if (!ifRange.empty() && lastModified.IsValid())
+            {
+              CDateTime ifRangeDate;
+              ifRangeDate.SetFromRFC1123DateTime(ifRange);
+
+              // check if the last modification is newer than the If-Range date
+              // if so we have to server the whole file instead
+              if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+                context->ranges.clear();
+            }
+          }
+        }
       }
 
       if (getData)
-        response = MHD_create_response_from_callback(file->GetLength(),
+      {
+        // if there are no ranges, add the whole range
+        if (context->ranges.empty() || context->rangesLength == fileLength)
+        {
+          if (context->rangesLength == fileLength)
+            context->ranges.clear();
+
+          context->ranges.push_back(HttpRange(0, fileLength - 1));
+          context->rangesLength = fileLength;
+          firstPosition = 0;
+          lastPosition = fileLength - 1;
+        }
+        else
+          responseCode = MHD_HTTP_PARTIAL_CONTENT;
+
+        // remember the total number of ranges
+        context->rangeCount = context->ranges.size();
+        // remember the total length
+        totalLength = context->rangesLength;
+
+        // we need to remember whether we are ranged because the range length
+        // might change and won't be reliable anymore for length comparisons
+        ranged = context->rangeCount > 1 || context->rangesLength < fileLength;
+
+        // adjust the MIME type and range length in case of multiple ranges
+        // which requires multipart boundaries
+        if (context->rangeCount > 1)
+        {
+          context->boundary = GenerateMultipartBoundary();
+          mimeType = "multipart/byteranges; boundary=" + context->boundary;
+
+          // build part of the boundary with the optional Content-Type header
+          // "--<boundary>\r\nContent-Type: <content-type>\r\n
+          context->boundaryWithHeader = "\r\n--" + context->boundary + "\r\n";
+          if (!context->contentType.empty())
+            context->boundaryWithHeader += "Content-Type: " + context->contentType + "\r\n";
+
+          // for every range, we need to add a boundary with header
+          for (HttpRanges::const_iterator range = context->ranges.begin(); range != context->ranges.end(); range++)
+          {
+            // we need to temporarily add the Content-Range header to the
+            // boundary to be able to determine the length
+            string completeBoundaryWithHeader = context->boundaryWithHeader;
+            completeBoundaryWithHeader += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT,
+                                                              range->first, range->second, range->second - range->first + 1);
+            completeBoundaryWithHeader += "\r\n\r\n";
+
+            totalLength += completeBoundaryWithHeader.size();
+          }
+          // and at the very end a special end-boundary "\r\n--<boundary>--"
+          totalLength += 4 + context->boundary.size() + 2;
+        }
+
+        // set the initial write position
+        context->writePosition = context->ranges.begin()->first;
+
+        // create the response object
+        response = MHD_create_response_from_callback(totalLength,
                                                      2048,
-                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderCallback, context,
                                                      &CWebServer::ContentReaderFreeCallback);
+      }
+
       if (response == NULL)
       {
         file->Close();
         delete file;
+        delete context;
         return MHD_NO;
       }
+
+      // add Content-Range header
+      if (ranged)
+        AddHeader(response, "Content-Range", StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength).c_str());
     }
     else
     {
@@ -423,6 +536,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
       }
       AddHeader(response, "Content-Length", contentLength);
     }
+
+    // add "Accept-Ranges: bytes" header
+    AddHeader(response, "Accept-Ranges", "bytes");
 
     // set the Content-Type header
     if (!mimeType.empty())
@@ -520,21 +636,94 @@ int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int ma
 int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 #endif
 {
-  CFile *file = (CFile *)cls;
-  if((unsigned int)pos != file->GetPosition())
-    file->Seek(pos);
-  unsigned res = file->Read(buf, max);
-  if(res == 0)
+  HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
+  if (context == NULL || context->file == NULL)
     return -1;
-  return res;
+
+  // check if we need to add the end-boundary
+  if (context->rangeCount > 1 && context->ranges.empty())
+  {
+    // put together the end-boundary
+    string endBoundary = "\r\n--" + context->boundary + "--";
+    if (max != endBoundary.size())
+      return -1;
+
+    // copy the boundary into the buffer
+    memcpy(buf, endBoundary.c_str(), endBoundary.size());
+    return endBoundary.size();
+  }
+
+  if (context->ranges.empty())
+    return -1;
+
+  int64_t start = context->ranges.at(0).first;
+  int64_t end = context->ranges.at(0).second;
+  int64_t maximum = (int64_t)max;
+  int written = 0;
+
+  if (context->rangeCount > 1 && !context->boundaryWritten)
+  {
+    // put together the boundary for the current range
+    string boundary = context->boundaryWithHeader;
+    boundary += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT, start, end, end - start + 1) + "\r\n\r\n";
+
+    // copy the boundary into the buffer
+    memcpy(buf, boundary.c_str(), boundary.size());
+    // advance the buffer position
+    buf += boundary.size();
+    // update the number of written byte
+    written += boundary.size();
+    // update the maximum number of bytes
+    maximum -= boundary.size();
+    context->boundaryWritten = true;
+  }
+
+  // check if the current position is within this range
+  // if not, set it to the start position
+  if (context->writePosition < start || context->writePosition > end)
+    context->writePosition = start;
+  // adjust the maximum number of read bytes
+  maximum = std::min(maximum, end - context->writePosition + 1);
+
+  // seek to the position if necessary
+  if(context->writePosition != context->file->GetPosition())
+    context->file->Seek(context->writePosition);
+
+  // read data from the file
+  unsigned int res = context->file->Read(buf, maximum);
+  if (res == 0)
+    return -1;
+
+  // add the number of read bytes to the number of written bytes
+  written += res;
+  // update the current write position
+  context->writePosition += res;
+
+  // if we have read all the data from the current range
+  // remove it from the list
+  if (context->writePosition >= end + 1)
+  {
+    context->ranges.erase(context->ranges.begin());
+    context->boundaryWritten = false;
+  }
+
+  return written;
 }
 
 void CWebServer::ContentReaderFreeCallback(void *cls)
 {
-  CFile *file = (CFile *)cls;
-  file->Close();
+  HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
+  if (context == NULL)
+    return;
 
-  delete file;
+  if (context->file != NULL)
+  {
+    context->file->Close();
+    delete context->file;
+    context->file = NULL;
+  }
+
+  delete context;
 }
 
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
@@ -739,6 +928,101 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
     return 0;
 
   return MHD_add_response_header(response, name.c_str(), value.c_str());
+}
+
+int64_t CWebServer::ParseRangeHeader(const std::string &rangeHeaderValue, int64_t totalLength, HttpRanges &ranges, int64_t &firstPosition, int64_t &lastPosition)
+{
+  firstPosition = 0;
+  lastPosition = totalLength - 1;
+
+  if (rangeHeaderValue.empty() || !StringUtils::StartsWith(rangeHeaderValue, "bytes="))
+    return totalLength;
+
+  int64_t rangesLength = 0;
+
+  // remove "bytes=" from the beginning
+  string rangesValue = rangeHeaderValue.substr(6);
+  // split the value of the "Range" header by ","
+  vector<string> rangeValues = StringUtils::Split(rangesValue, ",");
+  for (vector<string>::const_iterator range = rangeValues.begin(); range != rangeValues.end(); range++)
+  {
+    // there must be a "-" in the range definition
+    if (range->find("-") == string::npos)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    vector<string> positions = StringUtils::Split(*range, "-");
+    if (positions.size() > 2)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    int64_t positionStart = -1;
+    int64_t positionEnd = -1;
+    if (!positions.at(0).empty())
+      positionStart = str2int64(positions.at(0), -1);
+    if (!positions.at(1).empty())
+      positionEnd = str2int64(positions.at(1), -1);
+
+    if (positionStart < 0 && positionEnd < 0)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    // if there's no end position, use the file's length
+    if (positionEnd < 0)
+      positionEnd = totalLength - 1;
+    else if (positionStart < 0)
+    {
+      positionStart = totalLength - positionEnd;
+      positionEnd = totalLength - 1;
+    }
+
+    if (positionEnd < positionStart)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    if (ranges.empty())
+    {
+      firstPosition = positionStart;
+      lastPosition = positionEnd;
+    }
+    else
+    {
+      if (positionStart < firstPosition)
+        firstPosition = positionStart;
+      if (positionEnd > lastPosition)
+        lastPosition = positionEnd;
+    }
+
+    ranges.push_back(HttpRange(positionStart, positionEnd));
+    rangesLength += positionEnd - positionStart + 1;
+  }
+
+  if (!ranges.empty() || rangesLength > 0)
+    return rangesLength;
+
+  return totalLength;
+}
+
+std::string CWebServer::GenerateMultipartBoundary()
+{
+  static char chars[] = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  // create a string of length 30 to 40 and pre-fill it with "-"
+  size_t count = (size_t)CUtil::GetRandomNumber() % 11 + 30;
+  string boundary(count, '-');
+
+  for (size_t i = (size_t)CUtil::GetRandomNumber() % 5 + 8; i < count; i++)
+    boundary.replace(i, 1, 1, chars[(size_t)CUtil::GetRandomNumber() % 64]);
+
+  return boundary;
 }
 
 bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified)
