@@ -252,7 +252,8 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
 #define CHECK_UPDATE(st, trg, src, invalid) do { \
       if(src != invalid \
       && src != st->trg) { \
-        CLog::Log(LOGDEBUG, "%s - {%d} " #trg " changed from %d to %d",  __FUNCTION__, st->iId, st->trg, src); \
+        CLog::Log(LOGDEBUG, "%s - {%d} " #trg " changed from %.0f to %.0f", \
+          __FUNCTION__, st->iId, (double)st->trg, (double)src); \
         st->trg = src; \
         st->changes++; \
         st->disabled = false; \
@@ -267,23 +268,27 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
     {
       case STREAM_AUDIO: {
         CDemuxStreamAudioPVRClient* sta = static_cast<CDemuxStreamAudioPVRClient*>(st);
-        CHECK_UPDATE(sta, iChannels     , pvr->m_context->channels   , 0);
-        CHECK_UPDATE(sta, iSampleRate   , pvr->m_context->sample_rate, 0);
+        CHECK_UPDATE(sta, iChannels      , pvr->m_context->channels             , 0);
+        CHECK_UPDATE(sta, iSampleRate    , pvr->m_context->sample_rate          , 0);
+        CHECK_UPDATE(sta, iBlockAlign    , pvr->m_context->block_align          , 0);
+        CHECK_UPDATE(sta, iBitRate       , pvr->m_context->bit_rate             , 0);
+        CHECK_UPDATE(sta, iBitsPerSample , pvr->m_context->bits_per_coded_sample, 0);
         break;
       }
       case STREAM_VIDEO: {
         CDemuxStreamVideoPVRClient* stv = static_cast<CDemuxStreamVideoPVRClient*>(st);
-        CHECK_UPDATE(stv, iWidth        , pvr->m_context->width , 0);
-        CHECK_UPDATE(stv, iHeight       , pvr->m_context->height, 0);
+        CHECK_UPDATE(stv, iWidth      , pvr->m_context->width , 0);
+        CHECK_UPDATE(stv, iHeight     , pvr->m_context->height, 0);
 
-        if((pkt->duration > 0) && (pkt->duration != stv->iFpsScale))
+        if (pvr->m_context->sample_aspect_ratio.den > 0)
         {
-          CLog::Log(LOGDEBUG, "%s - {%d} iFpsScale changed from %d to %f",  __FUNCTION__, stv->iId, stv->iFpsScale, pkt->duration);
-          stv->iFpsScale = pkt->duration;
-          CLog::Log(LOGDEBUG, "%s - {%d} iFpsRate changed from %d to %d",  __FUNCTION__, stv->iId, stv->iFpsRate, DVD_TIME_BASE);
-          stv->iFpsRate = DVD_TIME_BASE;
-          stv->changes += 2;
-          stv->disabled = false;
+          CHECK_UPDATE(stv, fAspect   ,
+            ((float)(pvr->m_context->sample_aspect_ratio.num / pvr->m_context->sample_aspect_ratio.den)), 0);
+        }
+        if (pkt->duration > 0)
+        {
+          CHECK_UPDATE(stv, iFpsScale , pkt->duration         , 0);
+          CHECK_UPDATE(stv, iFpsRate  , DVD_TIME_BASE         , 0);
         }
         break;
       }
