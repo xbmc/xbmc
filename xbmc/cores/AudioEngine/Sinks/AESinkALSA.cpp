@@ -509,6 +509,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
   }
 
   int ret;
+  unsigned int writeout = frames;
 
   ret = snd_pcm_avail(m_pcm);
   if (ret < 0) 
@@ -522,19 +523,21 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
     ret = snd_pcm_wait(m_pcm, m_timeout);
     if (ret < 0)
       HandleError("snd_pcm_wait", ret);
+
+    // snd_pcm_wait sometimes does not wait until we have at
+    // least periodSize buffer free to write in
+    // we ask the pcm again before writing
+    ret = snd_pcm_avail(m_pcm);
+    if (ret <= 0)
+      return 0;
+    writeout = (unsigned int) ret;
+    if (writeout > frames)
+      writeout = frames;
   }
 
-  ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+  ret = snd_pcm_writei(m_pcm, (void*)data, writeout);
   if (ret < 0)
-  {
-    HandleError("snd_pcm_writei(1)", ret);
-    ret = snd_pcm_writei(m_pcm, (void*)data, frames);
-    if (ret < 0)
-    {
-      HandleError("snd_pcm_writei(2)", ret);
-      ret = 0;
-    }
-  }
+    HandleError("snd_pcm_writei", ret);
 
   if ( ret > 0 && snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
     snd_pcm_start(m_pcm);
