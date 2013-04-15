@@ -125,7 +125,7 @@
 #endif
 
 /* PLEX */
-#include "Client/MyPlexManager.h"
+#include "Client/MyPlex/MyPlexManager.h"
 #include "PlexUtils.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
 #include "PlexApplication.h"

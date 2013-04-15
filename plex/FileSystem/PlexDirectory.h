@@ -24,6 +24,8 @@
 
 #include "utils/log.h"
 
+#include "FileSystem/PlexFile.h"
+
 namespace XFILE
 {
   class CPlexDirectory : public IDirectory, public IJobCallback
@@ -71,6 +73,8 @@ namespace XFILE
 
       virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+      long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }
+
     private:
       bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);
       void ReadChildren(TiXmlElement* element, CFileItemList& container);
@@ -103,6 +107,8 @@ namespace XFILE
       CStdString m_body;
       CStdString m_data;
       CURL m_url;
+
+      CPlexFile m_file;
 
   };
 }

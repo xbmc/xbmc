@@ -11,7 +11,7 @@
 
 #include <dialogs/GUIDialogBoxBase.h>
 #include "PlexTypes.h"
-#include "Client/MyPlexManager.h"
+#include "Client/MyPlex/MyPlexManager.h"
 
 class CGUIDialogMyPlexPin : public CGUIDialogBoxBase
 {

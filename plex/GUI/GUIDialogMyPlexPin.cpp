@@ -12,7 +12,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIButtonControl.h"
 #include "LocalizeStrings.h"
-#include "Client/MyPlexManager.h"
+#include "Client/MyPlex/MyPlexManager.h"
 #include "GUIWindowManager.h"
 
 void
@@ -63,24 +63,31 @@ CGUIDialogMyPlexPin::OnMessage(CGUIMessage &message)
       return true;
     }
   }
-  if (message.GetMessage() == GUI_MSG_MYPLEX_GOT_PIN)
+  if (message.GetMessage() == GUI_MSG_MYPLEX_STATE_CHANGE)
   {
-    CStdString line;
-//    line.Format("%s %s", g_localizeStrings.Get(44103), m_pinLogin.m_pin);
-    SetLine(2, line);
-    return true;
-  }
+    CMyPlexManager::EMyPlexState state = static_cast<CMyPlexManager::EMyPlexState>(message.GetParam1());
 
-  else if (message.GetMessage() == GUI_MSG_MYPLEX_GOT_TOKEN)
-  {
-    SetLine(0, g_localizeStrings.Get(44104));
-    SetLine(2, "");
-    SetButtonText(g_localizeStrings.Get(186));
-    SetInvalid();
+    if (state == CMyPlexManager::STATE_WAIT_PIN)
+    {
+      CStdString line;
+      //    line.Format("%s %s", g_localizeStrings.Get(44103), m_pinLogin.m_pin);
+      SetLine(2, line);
+      return true;
+    }
+    else if (state == CMyPlexManager::STATE_LOGGEDIN)
+    {
+      SetLine(0, g_localizeStrings.Get(44104));
+      SetLine(2, "");
+      SetButtonText(g_localizeStrings.Get(186));
+      SetInvalid();
+      m_done = true;
 
-    m_done = true;
+      return true;
+    }
+    else if (state == CMyPlexManager::STATE_NOT_LOGGEDIN)
+    {
 
-    return true;
+    }
   }
 
   return CGUIDialogBoxBase::OnMessage(message);

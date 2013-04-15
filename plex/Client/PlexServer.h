@@ -19,26 +19,27 @@ typedef boost::shared_ptr<CPlexConnection> CPlexConnectionPtr;
 
 #define PLEX_SERVER_CLASS_SECONDARY "secondary"
 
-class CPlexServerConnTestJob : public CJob
+class CPlexServerConnTestThread : public CThread
 {
-public:
-  CPlexServerConnTestJob(CPlexConnectionPtr conn, CPlexServerPtr server) : CJob()
-  {
-    m_conn = conn;
-    m_server = server;
-  }
+  public:
+    CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server)
+      : CThread("connection test"), m_conn(conn), m_server(server)
+    {
+      Create(true);
+    }
 
-  bool DoWork();
+    void Process();
 
-  CPlexConnectionPtr m_conn;
-  CPlexServerPtr m_server;
+  private:
+    CPlexConnectionPtr m_conn;
+    CPlexServerPtr m_server;
 };
 
-class CPlexServer : public boost::enable_shared_from_this<CPlexServer>, public CJobQueue
+class CPlexServer : public boost::enable_shared_from_this<CPlexServer>
 {
 public:
   CPlexServer(const CStdString& uuid, const CStdString& name, bool owned)
-  : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_owned(owned), m_uuid(uuid), m_name(name) {}
+    : m_owned(owned), m_uuid(uuid), m_name(name) {}
 
   CPlexServer() {}
 
@@ -66,8 +67,8 @@ public:
 
   bool operator== (const CPlexServer& otherServer) { return m_uuid.Equals(otherServer.m_uuid); }
 
-  /* CJobQueue members */
-  virtual void OnJobComplete(unsigned int jobId, bool success, CJob *job);
+  /* ConnTestThread */
+  void OnConnectionTest(CPlexConnectionPtr conn, bool success);
 
   void GetConnections(std::vector<CPlexConnectionPtr> &conns);
   int GetNumConnections() const;

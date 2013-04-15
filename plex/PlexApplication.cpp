@@ -13,7 +13,7 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "plex/Helper/PlexHTHelper.h"
-#include "Client/MyPlexManager.h"
+#include "Client/MyPlex/MyPlexManager.h"
 #include "AdvancedSettings.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ PlexApplication::Start()
     }
   }
 
-  //MyPlexManager::Get().scanAsync();
+  g_myplexManager.Create();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

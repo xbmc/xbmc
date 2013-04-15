@@ -43,7 +43,7 @@
 #include "AlarmClock.h"
 #include "Key.h"
 
-#include "Client/MyPlexManager.h"
+#include "Client/MyPlex/MyPlexManager.h"
 #include "PlexDirectory.h"
 #include "PlexLibrarySectionManager.h"
 #include "threads/SingleLock.h"

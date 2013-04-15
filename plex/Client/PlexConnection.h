@@ -5,6 +5,7 @@
 #include "PlexUtils.h"
 
 #include "Client/PlexServer.h"
+#include "Client/MyPlex/MyPlexManager.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -48,12 +49,12 @@ public:
     return m_url;
   }
 
-  CStdString GetAccessToken() const
+  virtual CStdString GetAccessToken() const
   {
     return m_token;
   }
 
-  CStdString GetAccessTokenParameter() const
+  virtual CStdString GetAccessTokenParameter() const
   {
     return "X-Plex-Token";
   }
@@ -87,4 +88,21 @@ private:
 
   bool m_refreshed;
 
+};
+
+class CMyPlexConnection : public CPlexConnection
+{
+  public:
+    CMyPlexConnection(int type, const CStdString& host, int port)
+      : CPlexConnection(type, host, port) {}
+
+    virtual CStdString GetAccessToken() const
+    {
+      return g_myplexManager.GetAuthToken();
+    }
+
+    virtual CStdString GetAccessTokenParameter() const
+    {
+      return "auth_token";
+    }
 };

@@ -14,17 +14,18 @@ using namespace std;
 bool
 CPlexServerReachabilityJob::DoWork()
 {
-  if (m_force == true || !m_server->GetActiveConnection())
+  if (m_force == true ||
+      !m_server->GetActiveConnection())
   {
     return m_server->UpdateReachability();
   }
   return m_server->GetActiveConnection();
 }
 
-CPlexServerManager::CPlexServerManager()
+CPlexServerManager::CPlexServerManager() : CJobQueue(false, 10, CJob::PRIORITY_NORMAL)
 {
   _myPlexServer = CPlexServerPtr(new CPlexServer("myplex", "myPlex", true));
-  _myPlexServer->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));
+  _myPlexServer->AddConnection(CPlexConnectionPtr(new CMyPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));
 
   _localServer = CPlexServerPtr(new CPlexServer("local", PlexUtils::GetHostName(), true));
   _localServer->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400)));

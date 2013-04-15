@@ -10,24 +10,26 @@
 
 using namespace std;
 
-bool
-CPlexServerConnTestJob::DoWork()
+void
+CPlexServerConnTestThread::Process()
 {
-  if (!m_conn->IsLocal())
-    Sleep(50);
-
+  bool success = false;
+  boost::timer t;
   CPlexConnection::ConnectionState state = m_conn->TestReachability(m_server);
+
   if (state == CPlexConnection::CONNECTION_STATE_REACHABLE)
   {
-    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork Connection SUCCESS %s ~ localConn: %s conn: %s",
-              m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
-    return true;
+    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %f sec, Connection SUCCESS %s ~ localConn: %s conn: %s",
+              t.elapsed(), m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
+    success = true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork took %f sec, Connection FAILURE %s ~ localConn: %s conn: %s",
+              t.elapsed(), m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
   }
 
-  CLog::Log(LOGDEBUG, "CPlexServerConnTestJob:DoWork Connection FAILURE %s ~ localConn: %s conn: %s",
-            m_server->GetName().c_str(), m_conn->IsLocal() ? "YES" : "NO", m_conn->GetAddress().Get().c_str());
-
-  return false;
+  m_server->OnConnectionTest(m_conn, success);
 }
 
 bool
@@ -145,6 +147,7 @@ CPlexServer::UpdateReachability()
   CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability Updating reachability for %s with %ld connections.", m_name.c_str(), m_connections.size());
 
   m_bestConnection.reset();
+  m_testEvent.Reset();
   m_connectionsLeft = m_connections.size();
   m_complete = false;
 
@@ -153,39 +156,76 @@ CPlexServer::UpdateReachability()
 
   BOOST_FOREACH(CPlexConnectionPtr conn, sortedConnections)
   {
-    CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->GetAddress().Get().c_str());
-    AddJob(new CPlexServerConnTestJob(conn, GetShared()));
+    CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
+
+    new CPlexServerConnTestThread(conn, GetShared());
+
+    //AddJob(new CPlexServerConnTestJob(conn, GetShared()));
   }
 
-  if (m_testEvent.WaitMSec(30000))
-  {
-    CSingleLock lk(m_testingLock);
-    m_complete = true;
-    m_activeConnection = m_bestConnection;
-  }
+  m_testEvent.WaitMSec(30000);
 
-  CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete Connectivity test to %s completed in %.1f Seconds -> %s",
+  CSingleLock tlk(m_testingLock);
+  m_complete = true;
+  m_activeConnection = m_bestConnection;
+
+  CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability Connectivity test to %s completed in %.1f Seconds -> %s",
             m_name.c_str(), m_connTestTimer.elapsed(), m_activeConnection ? m_activeConnection->toString().c_str() : "FAILED");
 
   return (bool)m_bestConnection;
 }
 
+#if 0
 void
 CPlexServer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CPlexServerConnTestJob* conTestJob = (CPlexServerConnTestJob*)job;
+  CPlexServerConnTestJob* conTestJob = static_cast<CPlexServerConnTestJob*>(job);
+
+  CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s : %s", conTestJob->m_conn->toString().c_str(), success ? "SUCCESS" : "FAILED");
 
   CSingleLock lk(m_testingLock);
   if(success)
   {
     if(!m_bestConnection)
+    {
+      CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s is now bestConnection", conTestJob->m_conn->toString().c_str());
       m_bestConnection = conTestJob->m_conn;
+    }
     else if (conTestJob->m_conn->IsLocal() && !m_bestConnection->IsLocal())
       m_activeConnection = conTestJob->m_conn;
   }
 
   if (--m_connectionsLeft == 0 && m_complete == false)
+  {
+    CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s signaling event...", conTestJob->m_conn->toString().c_str());
     m_testEvent.Set();
+  }
+
+  CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %d connections left to test", m_connectionsLeft);
+
+  CJobQueue::OnJobComplete(jobID, success, job);
+}
+#endif
+
+void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
+{
+  CLog::Log(LOGDEBUG, "CPlexServer::OnConnectionTest %s : %s", conn->toString().c_str(), success ? "SUCCESS" : "FAILED");
+
+  CSingleLock lk(m_testingLock);
+  if (success)
+  {
+    if (!m_bestConnection)
+    {
+      m_bestConnection = conn;
+    }
+    else if (conn->IsLocal() && !m_bestConnection->IsLocal())
+      m_activeConnection = conn;
+  }
+
+  if (--m_connectionsLeft == 0 && m_complete == false)
+  {
+    m_testEvent.Set();
+  }
 }
 
 bool
@@ -228,7 +268,7 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
     }
     else
     {
-      m_connections.push_back(*it);
+      m_connections.push_back(conn);
       changed = true;
     }
   }
@@ -288,7 +328,7 @@ CPlexServer::BuildURL(const CStdString &path) const
     return CURL();
 
   CURL url = connection->BuildURL(path);
-  if (!url.HasOption("X-Plex-Token"))
+  if (!url.HasOption(connection->GetAccessTokenParameter()))
   {
     /* See if we can find a token in our other connections */
     CStdString token;
@@ -302,7 +342,7 @@ CPlexServer::BuildURL(const CStdString &path) const
     }
 
     if (!token.empty())
-      url.SetOption("X-Plex-Token", token);
+      url.SetOption(connection->GetAccessTokenParameter(), token);
   }
   return url;
 }

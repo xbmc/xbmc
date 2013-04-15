@@ -35,6 +35,9 @@ CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems
 
   if (boost::ends_with(m_url.GetFileName(), "/children/"))
   {
+    /* When we are asking for /children/ we also ask for the parent
+     * path to get more information for the path we want to navigate
+     * to */
     CURL augmentUrl = m_url;
     CStdString newFile = m_url.GetFileName();
     boost::replace_last(newFile, "/children", "");
@@ -42,9 +45,20 @@ CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems
     AddAugmentation(augmentUrl);
   }
 
+  CStdString data;
+  if (!m_file.Get(m_url.Get(), data))
+  {
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to fetch data from %s", m_url.Get().c_str());
+    if (m_file.GetLastHTTPResponseCode() == 500)
+    {
+      /* internal server error, we should handle this .. */
+    }
+    return false;
+  }
+
   CXBMCTinyXML doc;
 
-  if (!doc.LoadFile(strPath))
+  if (!doc.Parse(data))
   {
     CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", strPath.c_str());
     CancelAugmentations();
@@ -70,6 +84,7 @@ void
 CPlexDirectory::CancelDirectory()
 {
   CancelAugmentations();
+  m_file.Cancel();
 }
 
 typedef boost::bimap<EPlexDirectoryType, CStdString> DirectoryTypeMap;

@@ -38,6 +38,7 @@ CPlexConnection::ConnectionState
 CPlexConnection::TestReachability(CPlexServerPtr server)
 {
   CCurlFile http;
+
   CURL url = BuildURL("/");
   CStdString rootXml;
 
@@ -89,6 +90,14 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
   m_refreshed = true;
 
   return changed;
+}
+
+bool CPlexConnection::operator ==(const CPlexConnection &other)
+{
+  bool uriMatches = m_url.Get().Equals(other.GetAddress().Get());
+  bool tokenMatches = m_token.Equals(other.m_token);
+
+  return (uriMatches && tokenMatches);
 }
 
 CStdString
