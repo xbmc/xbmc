@@ -15,7 +15,7 @@
 
   ;Name and file
   Name "XBMC"
-  OutFile "XBMCSetup-${xbmc_revision}-${xbmc_target}.exe"
+  OutFile "XBMCSetup-${xbmc_revision}-${xbmc_branch}.exe"
 
   XPStyle on
   
