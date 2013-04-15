@@ -7,7 +7,7 @@
 		<include>SlideshowDimmed</include>
 		<!-- ViewsSearch.xml -->
 		<include>SearchMain</include>
+		<include>debugInfos</include>
 		<include>Grid</include>
-		<include>WindowFade</include>
 	</controls>
 </window>

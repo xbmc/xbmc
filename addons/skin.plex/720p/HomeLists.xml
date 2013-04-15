@@ -66,7 +66,7 @@
 			<animation effect="fade" start="0" end="100" time="200" condition="true">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
 			<visible>[Control.HasFocus(11000) + !Control.IsVisible(11001)] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11002) | Control.HasFocus(11003) | Control.HasFocus(11004)]</visible>
-		</control>		
+		</control>
 	</include>
 	<include name="ListItemTitle1">
 		<posx>95</posx>
@@ -235,7 +235,7 @@
 					<control type="image">
 						<posx>17</posx>
 						<posy>333</posy>
-						<width>355</width>
+						<width>356</width>
 						<height>324</height>
 						<include>BlackRounded</include>
 						<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
@@ -261,14 +261,14 @@
 						<control type="image">
 							<posy>47</posy>
 							<posx>34</posx>
-							<width>361</width>
-							<height>213</height>
+							<width>362</width>
+							<height>214</height>
 							<include>BorderBlack</include>
 							<animation effect="fade" start="0" end="10" condition="true">Conditional</animation>
 						</control>
 						<control type="image">
-							<width>381</width>
-							<height>233</height>
+							<width>382</width>
+							<height>234</height>
 							<include>Shadow</include>
 						</control>
 						<!-- on deck -->
@@ -276,17 +276,17 @@
 							<visible>ControlGroup(7002).HasFocus</visible>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>355</width>
-								<height>207</height>
+								<width>356</width>
+								<height>208</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11001).ListItem.Thumb]</texture>
+								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11001).ListItem.Art(thumb)]</texture>
 								<fadetime>300</fadetime>
 								<visible>!Container(11001).ListItem.Type(movie)</visible>
 							</control>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>355</width>
-								<height>207</height>
+								<width>356</width>
+								<height>208</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11001).ListItem.Property(Fanart_Image)]</texture>
 								<fadetime>300</fadetime>
@@ -296,8 +296,8 @@
 								<visible>Container(11001).ListItem.Status(InProgress)</visible>
 								<posx>372</posx>
 								<posy>274</posy>
-								<width>19</width>
-								<height>19</height>
+								<width>20</width>
+								<height>20</height>
 								<texture>$INFO[Container(11001).ListItem.Overlay]</texture>
 							</control>
 						</control>
@@ -306,17 +306,17 @@
 							<visible>ControlGroup(7001).HasFocus</visible>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>355</width>
-								<height>207</height>
+								<width>356</width>
+								<height>208</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11000).ListItem.Thumb]</texture>
+								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11000).ListItem.Art(thumb)]</texture>
 								<fadetime>300</fadetime>
 								<visible>!Container(11000).ListItem.Type(movie)</visible>
 							</control>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>355</width>
-								<height>207</height>
+								<width>356</width>
+								<height>208</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11000).ListItem.Property(Fanart_Image)]</texture>
 								<fadetime>300</fadetime>
@@ -338,7 +338,7 @@
 					<width>315</width>
 					<height>177</height>
 					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-					<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11003).ListItem.Thumb]</texture>
+					<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11003).ListItem.Art(thumb)]</texture>
 				</control>
 				</control>-->
 					</control>
@@ -434,28 +434,27 @@
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
 		<control type="image">
-			<width>143</width>
+			<width>144</width>
 			<height>202</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>117</width>
+			<width>118</width>
 			<height>176</height>
 			<texture background="true">default-poster-small.png</texture>
-			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>117</width>
+			<width>118</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>117</width>
+			<width>118</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -464,30 +463,29 @@
 	</include>
 	<include name="ListItemPosterSelected">
 		<control type="image">
-			<width>145</width>
+			<width>146</width>
 			<height>205</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>123</width>
+			<width>124</width>
 			<height>182</height>
 			<texture background="true">default-poster-small.png</texture>
 			<include>Border</include>
-			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>123</width>
+			<width>124</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<include>Border</include>
 			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>123</width>
+			<width>124</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -509,7 +507,7 @@
 			<control type="image">
 				<posx>37</posx>
 				<posy>202</posy>
-				<width>117</width>
+				<width>118</width>
 				<height>25</height>
 				<include>Card</include>
 				<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
@@ -558,8 +556,8 @@
 			<visible>ListItem.Status(InProgress)</visible>
 			<posx>133</posx>
 			<posy>207</posy>
-			<width>15</width>
-			<height>15</height>
+			<width>16</width>
+			<height>16</height>
 			<info>ListItem.Overlay</info>
 			<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7001).HasFocus">Conditional</animation>
 		</control>
@@ -567,7 +565,7 @@
 	<include name="ListItemPosterDimmer">
 		<posx>37</posx>
 		<posy>50</posy>
-		<width>125</width>
+		<width>126</width>
 		<height>176</height>
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 		<texture diffuse="posterMaskSmall.png" background="true">posterMaskSmall.png</texture>
@@ -578,45 +576,45 @@
 	<!-- Square Items -->
 	<include name="ListItemSquare">
 		<control type="image">
-			<width>151</width>
-			<height>151</height>
+			<width>152</width>
+			<height>152</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>125</width>
-			<height>125</height>
+			<width>126</width>
+			<height>126</height>
 			<texture background="true">default-square-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>125</width>
-			<height>125</height>
+			<width>126</width>
+			<height>126</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
 	<include name="ListItemSquareSelected">
 		<control type="image">
 			<posx>25</posx>
 			<posy>37</posy>
-			<width>149</width>
-			<height>149</height>
+			<width>150</width>
+			<height>150</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>131</width>
-			<height>131</height>
+			<width>132</width>
+			<height>132</height>
 			<texture background="true">default-square-small.png</texture>
 			<include>Border</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>131</width>
-			<height>131</height>
+			<width>132</width>
+			<height>132</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<include>Border</include>
 		</control>
 	</include>
@@ -624,7 +622,7 @@
 		<control type="image">
 			<posx>37</posx>
 			<posy>172</posy>
-			<width>125</width>
+			<width>126</width>
 			<height>54</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
@@ -632,8 +630,8 @@
 		<control type="image">
 			<posx>37</posx>
 			<posy>199</posy>
-			<width>125</width>
-			<height>27</height>
+			<width>126</width>
+			<height>28</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
 		</control>
@@ -662,36 +660,36 @@
 	<!-- Wide Items -->
 	<include name="ListItemWide">
 		<control type="image">
-			<width>221</width>
+			<width>222</width>
 			<height>142</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>195</width>
+			<width>196</width>
 			<height>116</height>
 			<texture background="true">default-thumb-small.png</texture>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>195</width>
+			<width>196</width>
 			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
 	<include name="ListItemWideCard">
 		<control type="image">
 			<posx>37</posx>
 			<posy>163</posy>
-			<width>195</width>
+			<width>196</width>
 			<height>60</height>
 			<include>Card</include>
 			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
 		</control>
 		<control type="image">
 			<posx>37</posx>
-			<posy>193</posy>
+			<posy>194</posy>
 			<width>195</width>
 			<height>30</height>
 			<include>Card</include>
@@ -1390,8 +1388,8 @@
 								<control type="image">
 									<posy>50</posy>
 									<posx>37</posx>
-									<width>195</width>
-									<height>117</height>
+									<width>196</width>
+									<height>118</height>
 									<include>Border</include>
 								</control>
 							</control>
@@ -1407,8 +1405,8 @@
 								<control type="image">
 									<posy>50</posy>
 									<posx>37</posx>
-									<width>195</width>
-									<height>117</height>
+									<width>196</width>
+									<height>118</height>
 									<include>Border</include>
 								</control>
 							</control>
@@ -1464,8 +1462,8 @@
 								<control type="image">
 									<posy>50</posy>
 									<posx>37</posx>
-									<width>195</width>
-									<height>117</height>
+									<width>196</width>
+									<height>118</height>
 									<include>Border</include>
 								</control>
 							</control>
@@ -1481,8 +1479,8 @@
 								<control type="image">
 									<posy>50</posy>
 									<posx>37</posx>
-									<width>195</width>
-									<height>117</height>
+									<width>196</width>
+									<height>118</height>
 									<include>Border</include>
 								</control>
 							</control>

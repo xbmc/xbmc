@@ -12,12 +12,12 @@
 				<description>Thumb image</description>
 				<posx>InfoDialogLargeThumbPosX</posx>
 				<posy>104</posy>
-				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 				<control type="image">
 					<width>InfoDialogLargeThumbWidth</width>
 					<height>366</height>
 					<texture>DefaultAlbumCover.png</texture>
-					<info>ListItem.Thumb</info>
+					<info>ListItem.Art(thumb)</info>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<bordertexture border="14">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
@@ -34,7 +34,7 @@
 					<width>InfoDialogLargeThumbTextWidth</width>
 					<height>350</height>
 					<texture flipy="true" diffuse="DiffuseMirror3.png">DefaultAlbumCover.png</texture>
-					<info>ListItem.Thumb</info>
+					<info>ListItem.Art(thumb)</info>
 					<aspectratio aligny="top">keep</aspectratio>
 				</control>
 			</control>

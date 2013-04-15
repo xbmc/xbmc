@@ -39,7 +39,7 @@
 				<control type="image">
 					<posx>-1</posx>
 					<posy>-1</posy>
-					<width>677</width>
+					<width>678</width>
 					<height>452</height>
 					<texture>transparent.png</texture>
 					<bordertexture border="10">border-black.png</bordertexture>
@@ -48,7 +48,7 @@
 					<animation effect="fade" start="40" end="0" time="0">WindowClose</animation>
 				</control>
 				<control type="image">
-					<width>675</width>
+					<width>676</width>
 					<height>450</height>
 					<texture border="10">base-rounded.png</texture>
 					<colordiffuse>FF000000</colordiffuse>

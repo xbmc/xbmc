@@ -210,7 +210,7 @@
 			<posy>0</posy>
 			<posx>0</posx>
 			<width>1280</width>
-			<height>49</height>
+			<height>50</height>
 			<include>Black</include>
 		</control>
 		<!-- Clock -->

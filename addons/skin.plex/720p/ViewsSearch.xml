@@ -73,7 +73,7 @@
 			<width>116</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
@@ -102,7 +102,7 @@
 			<width>122</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<include>Border</include>
 			<visible>!ListItem.Type(episode)</visible>
 		</control>
@@ -214,7 +214,7 @@
 			<width>116</width>
 			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
 	<include name="SearchScreenSquareSelected">
@@ -236,7 +236,7 @@
 			<width>122</width>
 			<height>122</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<include>Border</include>
 		</control>
 	</include>
@@ -297,7 +297,7 @@
 			<width>116</width>
 			<height>146</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
 	<include name="SearchScreenPortraitCard">
@@ -344,7 +344,7 @@
 			<width>195</width>
 			<height>106</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 	</include>
 	<include name="SearchScreenWideSelected">
@@ -364,7 +364,7 @@
 			<width>201</width>
 			<height>112</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Thumb]</texture>
+			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
@@ -535,7 +535,7 @@
 				<posy>10</posy>
 				<width>128</width>
 				<height>140</height>
-				<info>ListItem.Thumb</info>
+				<info>ListItem.Art(thumb)</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">
@@ -583,7 +583,7 @@
 				<posy>10</posy>
 				<width>128</width>
 				<height>140</height>
-				<info>ListItem.Thumb</info>
+				<info>ListItem.Art(thumb)</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">
@@ -627,6 +627,7 @@
 		</focusedlayout>
 	</include>
 	<include name="Search_Keyboard_Button">
+		<posy>9</posy>
 		<width>60</width>
 		<height>60</height>
 		<font>Bold-17</font>
@@ -660,6 +661,18 @@
 		<texturenofocus>button_kb.png</texturenofocus>
 		<texturefocus>button_kb_on.png</texturefocus>
 		<textureclick>button_kb_click.png</textureclick>
+	</include>
+	<include name="Search_Keyboard_Press_Button">
+		<posy>50</posy>
+		<width>100</width>
+		<height>44</height>
+		<onup>95</onup>
+		<ondown>-</ondown>
+		<align>center</align>
+		<aligny>center</aligny>
+		<font>CondensedBold-18</font>
+		<texturefocus border="12">black-rounded.png</texturefocus>
+		<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
 	</include>
 	<!-- variables for SearchItemFullInfo -->
 	<variable name="SearchItemFullInfoTitle">
@@ -698,7 +711,7 @@
 	<include name="SearchItemFullInfoSlide">
 		<animation effect="slide" start="0" end="376" time="200" tween="out" condition="ControlGroup(7001).HasFocus | ControlGroup(7002).HasFocus | ControlGroup(7004).HasFocus">Conditional</animation>
 	</include>
-	<!-- *NEW* Item Full Info -->
+	<!-- Full Info slide -->
 	<include name="SearchItemFullInfo">
 		<control type="group">
 			<!-- left side presentation -->
@@ -791,7 +804,7 @@
 								<width>323</width>
 								<height>197</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(9004).ListItem.Thumb]</texture>
+								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(9004).ListItem.Art(thumb)]</texture>
 								<fadetime>200</fadetime>
 							</control>
 							<control type="image">
@@ -915,7 +928,6 @@
 							<onup>310</onup>
 							<ondown>71</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]A[/B]</label>
 						</control>
 						<control type="button" id="66">
@@ -926,7 +938,6 @@
 							<onup>310</onup>
 							<ondown>72</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]B[/B]</label>
 						</control>
 						<control type="button" id="67">
@@ -937,7 +948,6 @@
 							<onup>310</onup>
 							<ondown>73</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]C[/B]</label>
 						</control>
 						<control type="button" id="68">
@@ -948,7 +958,6 @@
 							<onup>310</onup>
 							<ondown>74</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]D[/B]</label>
 						</control>
 						<control type="button" id="69">
@@ -959,7 +968,6 @@
 							<onup>310</onup>
 							<ondown>75</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]E[/B]</label>
 						</control>
 						<control type="button" id="70">
@@ -970,7 +978,6 @@
 							<onup>310</onup>
 							<ondown>76</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]F[/B]</label>
 						</control>
 					</control>
@@ -985,7 +992,6 @@
 							<onup>65</onup>
 							<ondown>77</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]G[/B]</label>
 						</control>
 						<control type="button" id="72">
@@ -996,7 +1002,6 @@
 							<onup>66</onup>
 							<ondown>78</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]H[/B]</label>
 						</control>
 						<control type="button" id="73">
@@ -1007,7 +1012,6 @@
 							<onup>67</onup>
 							<ondown>79</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]I[/B]</label>
 						</control>
 						<control type="button" id="74">
@@ -1018,7 +1022,6 @@
 							<onup>68</onup>
 							<ondown>80</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]J[/B]</label>
 						</control>
 						<control type="button" id="75">
@@ -1029,7 +1032,6 @@
 							<onup>69</onup>
 							<ondown>81</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]K[/B]</label>
 						</control>
 						<control type="button" id="76">
@@ -1040,7 +1042,6 @@
 							<onup>70</onup>
 							<ondown>82</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]L[/B]</label>
 						</control>
 					</control>
@@ -1055,7 +1056,6 @@
 							<onup>71</onup>
 							<ondown>83</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]M[/B]</label>
 						</control>
 						<control type="button" id="78">
@@ -1066,7 +1066,6 @@
 							<onup>72</onup>
 							<ondown>84</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]N[/B]</label>
 						</control>
 						<control type="button" id="79">
@@ -1077,7 +1076,6 @@
 							<onup>73</onup>
 							<ondown>85</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]O[/B]</label>
 						</control>
 						<control type="button" id="80">
@@ -1088,7 +1086,6 @@
 							<onup>74</onup>
 							<ondown>86</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]P[/B]</label>
 						</control>
 						<control type="button" id="81">
@@ -1099,7 +1096,6 @@
 							<onup>75</onup>
 							<ondown>87</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]Q[/B]</label>
 						</control>
 						<control type="button" id="82">
@@ -1110,7 +1106,6 @@
 							<onup>76</onup>
 							<ondown>88</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]R[/B]</label>
 						</control>
 					</control>
@@ -1125,7 +1120,6 @@
 							<onup>77</onup>
 							<ondown>89</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]S[/B]</label>
 						</control>
 						<control type="button" id="84">
@@ -1136,7 +1130,6 @@
 							<onup>78</onup>
 							<ondown>90</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]T[/B]</label>
 						</control>
 						<control type="button" id="85">
@@ -1147,7 +1140,6 @@
 							<onup>79</onup>
 							<ondown>91</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]U[/B]</label>
 						</control>
 						<control type="button" id="86">
@@ -1158,7 +1150,6 @@
 							<onup>80</onup>
 							<ondown>92</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]V[/B]</label>
 						</control>
 						<control type="button" id="87">
@@ -1169,7 +1160,6 @@
 							<onup>81</onup>
 							<ondown>93</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]W[/B]</label>
 						</control>
 						<control type="button" id="88">
@@ -1180,7 +1170,6 @@
 							<onup>82</onup>
 							<ondown>94</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]X[/B]</label>
 						</control>
 					</control>
@@ -1195,7 +1184,6 @@
 							<onup>83</onup>
 							<ondown>95</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]Y[/B]</label>
 						</control>
 						<control type="button" id="90">
@@ -1206,7 +1194,6 @@
 							<onup>84</onup>
 							<ondown>96</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]Z[/B]</label>
 						</control>
 						<control type="button" id="91">
@@ -1217,7 +1204,6 @@
 							<onup>85</onup>
 							<ondown>97</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12310][/B]</label>
 						</control>
 						<control type="button" id="92">
@@ -1228,7 +1214,6 @@
 							<onup>86</onup>
 							<ondown>98</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12311][/B]</label>
 						</control>
 						<control type="button" id="93">
@@ -1239,7 +1224,6 @@
 							<onup>87</onup>
 							<ondown>99</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12312][/B]</label>
 						</control>
 						<control type="button" id="94">
@@ -1250,7 +1234,6 @@
 							<onup>88</onup>
 							<ondown>100</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12313][/B]</label>
 						</control>
 					</control>
@@ -1265,7 +1248,6 @@
 							<onup>89</onup>
 							<ondown>8</ondown>
 							<posx>0</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12314][/B]</label>
 						</control>
 						<control type="button" id="96">
@@ -1276,7 +1258,6 @@
 							<onup>90</onup>
 							<ondown>8</ondown>
 							<posx>54</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12315][/B]</label>
 						</control>
 						<control type="button" id="97">
@@ -1287,7 +1268,6 @@
 							<onup>91</onup>
 							<ondown>32</ondown>
 							<posx>108</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12316][/B]</label>
 						</control>
 						<control type="button" id="98">
@@ -1298,7 +1278,6 @@
 							<onup>92</onup>
 							<ondown>32</ondown>
 							<posx>162</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12317][/B]</label>
 						</control>
 						<control type="button" id="99">
@@ -1309,7 +1288,6 @@
 							<onup>93</onup>
 							<ondown>10</ondown>
 							<posx>216</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12318][/B]</label>
 						</control>
 						<control type="button" id="100">
@@ -1320,7 +1298,6 @@
 							<onup>94</onup>
 							<ondown>10</ondown>
 							<posx>270</posx>
-							<posy>9</posy>
 							<label>[B]$LOCALIZE[12319][/B]</label>
 						</control>
 					</control>
@@ -1328,94 +1305,28 @@
 						<width>348</width>
 						<height>54</height>
 						<!-- Delete button -->
-						<control type="image">
-							<posx>0</posx>
-							<posy>50</posy>
-							<width>100</width>
-							<height>44</height>
-							<texture border="10">base-rounded.png</texture>
-							<colordiffuse>FF000000</colordiffuse>
-							<animation effect="fade" start="0" end="50" time="400" condition="true">Conditional</animation>
-						</control>
 						<control type="button" id="8">
-							<font>CondensedBold-16</font>
 							<posx>0</posx>
-							<posy>50</posy>
-							<width>100</width>
-							<height>44</height>
 							<onleft>100</onleft>
 							<onright>32</onright>
-							<onup>95</onup>
-							<ondown>-</ondown>
 							<label>Delete</label>
-							<aligny>center</aligny>
-							<onclick/>
-							<textcolor>FF666666</textcolor>
-							<focusedcolor>orangeLight</focusedcolor>
+							<include>Search_Keyboard_Press_Button</include>
 						</control>
-						<control type="group">
+						<!-- Space -->
+						<control type="button" id="32">
 							<posx>108</posx>
-							<posy>50</posy>
-							<width>100</width>
-							<height>54</height>
-							<!-- Space -->
-							<control type="image">
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>100</width>
-								<height>44</height>
-								<texture border="10">base-rounded.png</texture>
-								<colordiffuse>FF000000</colordiffuse>
-								<animation effect="fade" start="0" end="50" time="400" condition="true">Conditional</animation>
-							</control>
-							<control type="button" id="32">
-								<font>CondensedBold-16</font>
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>100</width>
-								<height>44</height>
-								<onleft>8</onleft>
-								<onright>10</onright>
-								<onup>97</onup>
-								<ondown>-</ondown>
-								<label>Space</label>
-								<aligny>center</aligny>
-								<onclick/>
-								<textcolor>FF666666</textcolor>
-								<focusedcolor>orangeLight</focusedcolor>
-							</control>
+							<onleft>8</onleft>
+							<onright>10</onright>
+							<label>Space</label>
+							<include>Search_Keyboard_Press_Button</include>
 						</control>
-						<control type="group">
-							<!-- Clear -->
+						<!-- Clear -->
+						<control type="button" id="10">
 							<posx>216</posx>
-							<posy>50</posy>
-							<width>100</width>
-							<height>54</height>
-							<control type="image">
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>100</width>
-								<height>44</height>
-								<texture border="10">base-rounded.png</texture>
-								<colordiffuse>FF000000</colordiffuse>
-								<animation effect="fade" start="0" end="50" time="400" condition="true">Conditional</animation>
-							</control>
-							<control type="button" id="10">
-								<font>CondensedBold-16</font>
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>100</width>
-								<height>44</height>
-								<onleft>32</onleft>
-								<onright>9001</onright>
-								<onup>99</onup>
-								<ondown>-</ondown>
-								<label>Clear</label>
-								<aligny>center</aligny>
-								<onclick/>
-								<textcolor>FF666666</textcolor>
-								<focusedcolor>orangeLight</focusedcolor>
-							</control>
+							<onleft>32</onleft>
+							<onright>9001</onright>
+							<label>Clear</label>
+							<include>Search_Keyboard_Press_Button</include>
 						</control>
 					</control>
 				</control>
@@ -2303,7 +2214,7 @@
 									<width>116</width>
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="image">
 									<posx>160</posx>
@@ -2383,7 +2294,7 @@
 									<width>122</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>

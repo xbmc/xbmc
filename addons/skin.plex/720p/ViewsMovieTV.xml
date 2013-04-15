@@ -5,29 +5,29 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>208</width>
-			<height>299</height>
+			<height>300</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>185</width>
-			<height>273</height>
+			<height>274</height>
 			<texture background="true">default-poster-middle.png</texture>
 		</control>
 		<control type="image">
 			<posx>13</posx>
 			<posy>13</posy>
 			<width>185</width>
-			<height>273</height>
-			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+			<height>274</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Art(thumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>
 	<include name="MovieTVPosterSelectedBorder">
 		<control type="image">
 			<width>192</width>
-			<height>279</height>
+			<height>280</height>
 			<include>Border</include>
 		</control>
 	</include>

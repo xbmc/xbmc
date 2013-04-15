@@ -19,7 +19,7 @@
 				<posx>-253</posx>
 				<posy>48</posy>
 				<height>680</height>
-				<width>253</width>
+				<width>254</width>
 				<include>Black</include>
 				<animation type="Conditional" condition="true">
 					<effect type="fade" start="0" end="75"/>
@@ -35,8 +35,8 @@
 			<control type="image">
 				<posy>500</posy>
 				<posx>74</posx>
-				<width>15</width>
-				<height>31</height>
+				<width>16</width>
+				<height>32</height>
 				<aspectratio>scale</aspectratio>
 				<texture>arrow-big.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
@@ -55,7 +55,7 @@
 				<posy>680</posy>
 				<posx>30</posx>
 				<width>12</width>
-				<height>17</height>
+				<height>18</height>
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>

@@ -231,7 +231,7 @@
 	<include name="NowPlaying">
 		<control type="largeimage">
 			<include>FullScreenScaled</include>
-			<texture>$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<texture>$INFO[Player.Art(fanart)]</texture>
 			<include>BackgroundFade</include>
 			<animation effect="fade" end="70" time="0" condition="true">conditional</animation>
 		</control>
@@ -244,7 +244,7 @@
 			<texture>plex.png</texture>
 			<aspectratio>keep</aspectratio>
 			<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
-			<visible>IsEmpty(MusicPlayer.Fanart)</visible>
+			<visible>IsEmpty(Player.Art(fanart))</visible>
 		</control>
 		<!-- Fanart grainy overlay -->
 		<control type="image">

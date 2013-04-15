@@ -897,7 +897,7 @@
 						<posx>140</posx>
 						<posy>23</posy>
 						<width>340</width>
-						<height>53</height>
+						<height>54</height>
 						<include>BaseRounded</include>
 					</control>
 					<control type="label" id="10083">
@@ -934,7 +934,7 @@
 						<posx>140</posx>
 						<posy>100</posy>
 						<width>340</width>
-						<height>53</height>
+						<height>54</height>
 						<include>BaseRounded</include>
 					</control>
 					<control type="label" id="10084">
