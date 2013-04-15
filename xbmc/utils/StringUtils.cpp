@@ -587,6 +587,8 @@ size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
       s += l;
       while ((l = IsUTF8Letter(s)) > 0) s += l;
     }
+    else
+      ++s;
     while (*s && *s == ' ') s++;
 
     // and repeat until we're done
