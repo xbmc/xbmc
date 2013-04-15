@@ -175,38 +175,6 @@ CPlexServer::UpdateReachability()
   return (bool)m_bestConnection;
 }
 
-#if 0
-void
-CPlexServer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-{
-  CPlexServerConnTestJob* conTestJob = static_cast<CPlexServerConnTestJob*>(job);
-
-  CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s : %s", conTestJob->m_conn->toString().c_str(), success ? "SUCCESS" : "FAILED");
-
-  CSingleLock lk(m_testingLock);
-  if(success)
-  {
-    if(!m_bestConnection)
-    {
-      CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s is now bestConnection", conTestJob->m_conn->toString().c_str());
-      m_bestConnection = conTestJob->m_conn;
-    }
-    else if (conTestJob->m_conn->IsLocal() && !m_bestConnection->IsLocal())
-      m_activeConnection = conTestJob->m_conn;
-  }
-
-  if (--m_connectionsLeft == 0 && m_complete == false)
-  {
-    CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %s signaling event...", conTestJob->m_conn->toString().c_str());
-    m_testEvent.Set();
-  }
-
-  CLog::Log(LOGDEBUG, "CPlexServer::OnJobComplete %d connections left to test", m_connectionsLeft);
-
-  CJobQueue::OnJobComplete(jobID, success, job);
-}
-#endif
-
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
 {
   CLog::Log(LOGDEBUG, "CPlexServer::OnConnectionTest %s : %s", conn->toString().c_str(), success ? "SUCCESS" : "FAILED");
