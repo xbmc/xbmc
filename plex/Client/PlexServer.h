@@ -42,7 +42,7 @@ public:
 
   CPlexServer() {}
 
-  void CollectDataFromRoot(const CStdString xmlData);
+  bool CollectDataFromRoot(const CStdString xmlData);
   CStdString toString() const;
 
   bool HasActiveLocalConnection() const;

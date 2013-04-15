@@ -30,7 +30,7 @@ CPlexServerConnTestJob::DoWork()
   return false;
 }
 
-void
+bool
 CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
   CXBMCTinyXML doc;
@@ -39,6 +39,17 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
   {
     TiXmlElement* root = doc.RootElement();
     bool boolValue;
+    std::string uuid;
+
+    /* first we need to check that this is the server we should talk to */
+    if (root->QueryStringAttribute("machineIdentifier", &uuid))
+    {
+      if (!m_uuid.Equals(uuid.c_str()))
+      {
+        CLog::Log(LOGWARNING, "CPlexServer::CollectDataFromRoot we wanted to talk to %s but got %s, dropping this connection.", m_uuid.c_str(), uuid.c_str());
+        return false;
+      }
+    }
 
     if (root->QueryBoolAttribute("allowMediaDeletion", &boolValue))
       m_supportsDeletion = boolValue;
@@ -64,6 +75,13 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 
     CLog::Log(LOGDEBUG, "CPlexServer::CollectDataFromRoot knowledge complete: %s", toString().c_str());
   }
+  else
+  {
+    CLog::Log(LOGWARNING, "CPlexServer::CollectDataFromRoot parser fail!");
+    return false;
+  }
+
+  return true;
 }
 
 bool

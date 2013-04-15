@@ -43,8 +43,14 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
 
   if (http.Get(url.Get(), rootXml))
   {
-    server->CollectDataFromRoot(rootXml);
-    m_state = CONNECTION_STATE_REACHABLE;
+    if (server->CollectDataFromRoot(rootXml))
+      m_state = CONNECTION_STATE_REACHABLE;
+    else
+      /* if collect data from root fails, it can be because
+       * we got a parser error from root XML == not good.
+       * or we got a server we didn't expect == not good.
+       * so let's just mark this connection as bad */
+      m_state = CONNECTION_STATE_UNREACHABLE;
   }
   else
   {
