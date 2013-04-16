@@ -438,28 +438,24 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             } else {
 
                 // set a general content type
-                audio = image = video = false;
-                const char* content = NULL;
+                std::string content;
                 if (ObjectClass.StartsWith("object.item.videoitem")) {
                     pItem->SetMimeType("video/octet-stream");
                     content = "video";
-                    video = true;
                 }
                 else if(ObjectClass.StartsWith("object.item.audioitem")) {
                     pItem->SetMimeType("audio/octet-stream");
                     content = "audio";
-                    audio = true;
                 }
                 else if(ObjectClass.StartsWith("object.item.imageitem")) {
                     pItem->SetMimeType("image/octet-stream");
                     content = "image";
-                    image = true;
                 }
 
                 // attempt to find a valid resource (may be multiple)
                 PLT_MediaItemResource resource;
                 if(NPT_SUCCEEDED(NPT_ContainerFind((*entry)->m_Resources,
-                                  CResourceFinder("http-get", content), resource))) {
+                                  CResourceFinder("http-get", content.c_str()), resource))) {
 
                     // set metadata
                     if (resource.m_Size != (NPT_LargeSize)-1) {
@@ -467,15 +463,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
 
                     // look for metadata
-                    if(video) {
+                    if(content.compare("video") == 0) {
                         pItem->SetLabelPreformated(false);
                         UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
 
-                    } else if(audio) {
+                    } else if(content.compare("audio") == 0) {
                         pItem->SetLabelPreformated(false);
                         UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
 
-                    } else if(image) {
+                    } else if(content.compare("image") == 0) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
                     }
