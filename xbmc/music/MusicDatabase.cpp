@@ -5405,7 +5405,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       // and always show any artists linked to an album (may be different from above due to album artist tag)
       strSQL +=   "(SELECT album_artist.idArtist FROM album_artist"; // All artists linked to an album
       if (albumArtistsOnly)
-        strSQL += " WHERE album_artist.boolFeatured = 0";            // then exclude those that have no extra artists
+        strSQL += " JOIN album ON album.idAlbum = album_artist.idAlbum WHERE album.bCompilation = 0 ";            // then exclude those that have no extra artists
       strSQL +=   ")";
     }
 
