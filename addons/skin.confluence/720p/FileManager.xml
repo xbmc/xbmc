@@ -123,6 +123,16 @@
 				<ondown>20</ondown>
 				<pagecontrol>30</pagecontrol>
 				<scrolltime>200</scrolltime>
+				<draghint>
+				    <control type="image">
+					    <posx>0</posx>
+					    <posy>-15</posy>
+					    <width>540</width>
+					    <height>16</height>
+					    <texture>CalibrateSubtitles.png</texture>
+					    <aspectratio>stretch</aspectratio>
+				      </control>
+				</draghint>
 				<itemlayout height="35" width="540">
 					<control type="image">
 						<posx>0</posx>

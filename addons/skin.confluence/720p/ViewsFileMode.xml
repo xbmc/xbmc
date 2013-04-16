@@ -222,6 +222,7 @@
 			</control>
 		</control>
 	</include>
+	
 	<include name="ThumbnailView">
 		<control type="group">
 			<visible>Control.IsVisible(500)</visible>
@@ -239,6 +240,16 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
+				<draghint>
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>16</width>
+                                <height>250</height>
+                                <texture>dragHintVertical.png</texture>
+                                <aspectratio>stretch</aspectratio>
+                            </control>
+                </draghint>
 				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows) + !Container.Content(Sets)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
@@ -271,7 +282,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<info>ListItem.Label</info>
+						<info>ListItem.Label2</info>
 					</control>
 					<control type="image">
 						<posx>170</posx>
@@ -314,7 +325,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<info>ListItem.Label</info>
+						<info>ListItem.Label2</info>
 					</control>
 					<control type="image">
 						<posx>180</posx>
@@ -522,7 +533,21 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
+						<visible>!listitem.isdropped</visible>
 						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<posy>0</posy>
+						<width>950</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<visible>listitem.isdropped</visible>
+						<label>$INFO[ListItem.Label] ... dropped</label>
 					</control>
 					<control type="label">
 						<posx>1060</posx>
