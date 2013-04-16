@@ -53,9 +53,9 @@ bool CGUIListContainer::OnAction(const CAction &action)
     break;
   case ACTION_PAGE_DOWN:
     {
-      if (GetOffset() == (int)m_items.size() - m_itemsPerPage || (int)m_items.size() < m_itemsPerPage)
+      if (GetOffset() == m_items.Size() - m_itemsPerPage || m_items.Size() < m_itemsPerPage)
       { // already at the last page, so move to the last item.
-        SetCursor(m_items.size() - GetOffset() - 1);
+        SetCursor(m_items.Size() - GetOffset() - 1);
       }
       else
       { // scroll down to the next page
@@ -93,11 +93,11 @@ bool CGUIListContainer::OnAction(const CAction &action)
       {
         handled = true;
         m_analogScrollCount -= 0.4f;
-        if (GetOffset() + m_itemsPerPage < (int)m_items.size() && GetCursor() >= m_itemsPerPage / 2)
+        if (GetOffset() + m_itemsPerPage < m_items.Size() && GetCursor() >= m_itemsPerPage / 2)
         {
           Scroll(1);
         }
-        else if (GetCursor() < m_itemsPerPage - 1 && GetOffset() + GetCursor() < (int)m_items.size() - 1)
+        else if (GetCursor() < m_itemsPerPage - 1 && GetOffset() + GetCursor() < m_items.Size() - 1)
         {
           SetCursor(GetCursor() + 1);
         }
@@ -121,7 +121,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
       {
-        int item = std::min(GetOffset() + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
+        int item = std::min(GetOffset() + (int)message.GetParam1() - 1, m_items.Size() - 1);
         SelectItem(item);
       }
     }
@@ -141,11 +141,11 @@ bool CGUIListContainer::MoveUp(bool wrapAround)
   }
   else if (wrapAround)
   {
-    if (m_items.size() > 0)
+    if (m_items.Size() > 0)
     { // move 2 last item in list, and set our container moving up
-      int offset = m_items.size() - m_itemsPerPage;
+      int offset = m_items.Size() - m_itemsPerPage;
       if (offset < 0) offset = 0;
-      SetCursor(m_items.size() - offset - 1);
+      SetCursor(m_items.Size() - offset - 1);
       ScrollToOffset(offset);
       SetContainerMoving(-1);
     }
@@ -157,7 +157,7 @@ bool CGUIListContainer::MoveUp(bool wrapAround)
 
 bool CGUIListContainer::MoveDown(bool wrapAround)
 {
-  if (GetOffset() + GetCursor() + 1 < (int)m_items.size())
+  if (GetOffset() + GetCursor() + 1 < m_items.Size())
   {
     if (GetCursor() + 1 < m_itemsPerPage)
     {
@@ -184,9 +184,9 @@ void CGUIListContainer::Scroll(int amount)
 {
   // increase or decrease the offset
   int offset = GetOffset() + amount;
-  if (offset > (int)m_items.size() - m_itemsPerPage)
+  if (offset > m_items.Size() - m_itemsPerPage)
   {
-    offset = m_items.size() - m_itemsPerPage;
+    offset = m_items.Size() - m_itemsPerPage;
   }
   if (offset < 0) offset = 0;
   ScrollToOffset(offset);
@@ -225,7 +225,7 @@ void CGUIListContainer::SelectItem(int item)
   // Check that our offset is valid
   ValidateOffset();
   // only select an item if it's in a valid range
-  if (item >= 0 && item < (int)m_items.size())
+  if (item >= 0 && item < m_items.Size())
   {
     // Select the item requested
     if (item >= GetOffset() && item < GetOffset() + m_itemsPerPage)
@@ -255,7 +255,7 @@ int CGUIListContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint
   while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
   {
     const CGUIListItemLayout *layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
-    if (pos < layout->Size(m_orientation) && row + GetOffset() < (int)m_items.size())
+    if (pos < layout->Size(m_orientation) && row + GetOffset() < m_items.Size())
     { // found correct "row" -> check horizontal
       if (!InsideLayout(layout, point))
         return -1;
@@ -307,7 +307,7 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
 
 bool CGUIListContainer::HasNextPage() const
 {
-  return (GetOffset() != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  return (GetOffset() != m_items.Size() - m_itemsPerPage && m_items.Size() >= m_itemsPerPage);
 }
 
 bool CGUIListContainer::HasPreviousPage() const

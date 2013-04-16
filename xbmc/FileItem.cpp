@@ -1558,6 +1558,23 @@ CFileItemList::CFileItemList()
   m_replaceListing = false;
 }
 
+CFileItemList::CFileItemList(const CFileItemList& rhs) 
+  : CFileItem(rhs), 
+    m_items(rhs.m_items), 
+    m_map(rhs.m_map), 
+    m_sortDetails(rhs.m_sortDetails)
+{
+  m_fastLookup = rhs.m_fastLookup;
+  m_bIsFolder = rhs.m_bIsFolder;
+  m_cacheToDisc = rhs.m_cacheToDisc;
+  m_sortMethod = rhs.m_sortMethod;
+  m_sortOrder = rhs.m_sortOrder;
+  m_sortIgnoreFolders = rhs.m_sortIgnoreFolders;
+  m_replaceListing = rhs.m_replaceListing;
+  m_cacheToDisc = rhs.m_cacheToDisc;
+  m_content = rhs.m_content;
+}
+
 CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
 {
   m_fastLookup = false;
@@ -1716,6 +1733,17 @@ void CFileItemList::Remove(int iItem)
     }
     m_items.erase(m_items.begin() + iItem);
   }
+}
+
+void CFileItemList::RemoveRange(int iRangeBegin, int iRangeEnd)
+{
+  CSingleLock lock(m_lock);
+  if (m_fastLookup)
+  {
+    for (int i = iRangeBegin; i<iRangeEnd; ++i)
+      m_map.erase(m_items[i]->GetPath());
+  }
+  m_items.erase(m_items.begin() + iRangeBegin, m_items.begin() + iRangeEnd);
 }
 
 void CFileItemList::Append(const CFileItemList& itemlist)
@@ -3065,6 +3093,25 @@ bool CFileItem::LoadMusicTag()
     }
   }
   return false;
+}
+
+void CFileItemList::Move(int position, int move)
+{
+  int newPosition = position + move;
+  if (newPosition < 0 ||
+      (unsigned)newPosition >= m_items.size() ||
+      position < 0 ||
+      (unsigned)position >= m_items.size() ||
+      move == 0)
+    return;
+  
+  int direction = (move>0) ? 1 : -1;
+  
+  for (; move!=0; move-=direction) 
+  {
+    std::swap(m_items[position], m_items[position+direction]);
+    position+=direction;
+  }
 }
 
 void CFileItemList::Swap(unsigned int item1, unsigned int item2)

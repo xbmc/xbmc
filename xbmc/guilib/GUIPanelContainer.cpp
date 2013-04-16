@@ -64,9 +64,9 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
 
   int current = (offset - cacheBefore) * m_itemsPerRow;
   int col = 0;
-  while (pos < end && m_items.size())
+  while (pos < end && m_items.Size())
   {
-    if (current >= (int)m_items.size())
+    if (current >= m_items.Size())
       break;
     if (current >= 0)
     {
@@ -122,9 +122,9 @@ void CGUIPanelContainer::Render()
     CGUIListItemPtr focusedItem;
     int current = (offset - cacheBefore) * m_itemsPerRow;
     int col = 0;
-    while (pos < end && m_items.size())
+    while (pos < end && m_items.Size())
     {
-      if (current >= (int)m_items.size())
+      if (current >= m_items.Size())
         break;
       if (current >= 0)
       {
@@ -188,9 +188,9 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     break;
   case ACTION_PAGE_DOWN:
     {
-      if ((GetOffset() + m_itemsPerPage) * m_itemsPerRow >= (int)m_items.size() || (int)m_items.size() < m_itemsPerPage)
+      if ((GetOffset() + m_itemsPerPage) * m_itemsPerRow >= m_items.Size() || m_items.Size() < m_itemsPerPage)
       { // already at the last page, so move to the last item.
-        SetCursor(m_items.size() - GetOffset() * m_itemsPerRow - 1);
+        SetCursor(m_items.Size() - GetOffset() * m_itemsPerRow - 1);
       }
       else
       { // scroll down to the next page
@@ -228,11 +228,11 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
       {
         handled = true;
         m_analogScrollCount -= AnalogScrollSpeed();
-        if ((GetOffset() + m_itemsPerPage) * m_itemsPerRow < (int)m_items.size())// && GetCursor() >= m_itemsPerPage * m_itemsPerRow / 2)
+        if ((GetOffset() + m_itemsPerPage) * m_itemsPerRow < m_items.Size())// && GetCursor() >= m_itemsPerPage * m_itemsPerRow / 2)
         {
           Scroll(1);
         }
-        else if (GetCursor() < m_itemsPerPage * m_itemsPerRow - 1 && GetOffset() * m_itemsPerRow + GetCursor() < (int)m_items.size() - 1)
+        else if (GetCursor() < m_itemsPerPage * m_itemsPerRow - 1 && GetOffset() * m_itemsPerRow + GetCursor() < m_items.Size() - 1)
         {
           SetCursor(GetCursor() + 1);
         }
@@ -299,17 +299,17 @@ void CGUIPanelContainer::OnDown()
 
 bool CGUIPanelContainer::MoveDown(bool wrapAround)
 {
-  if (GetCursor() + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (GetOffset() + 1 + GetCursor() / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
+  if (GetCursor() + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (GetOffset() + 1 + GetCursor() / m_itemsPerRow) * m_itemsPerRow < m_items.Size())
   { // move to last item if necessary
-    if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - 1 - GetOffset()*m_itemsPerRow);
+    if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= m_items.Size())
+      SetCursor(m_items.Size() - 1 - GetOffset()*m_itemsPerRow);
     else
       SetCursor(GetCursor() + m_itemsPerRow);
   }
-  else if ((GetOffset() + 1 + GetCursor() / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
+  else if ((GetOffset() + 1 + GetCursor() / m_itemsPerRow) * m_itemsPerRow < m_items.Size())
   { // we scroll to the next row, and move to last item if necessary
-    if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - 1 - (GetOffset() + 1)*m_itemsPerRow);
+    if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= m_items.Size())
+      SetCursor(m_items.Size() - 1 - (GetOffset() + 1)*m_itemsPerRow);
     ScrollToOffset(GetOffset() + 1);
   }
   else if (wrapAround)
@@ -334,8 +334,8 @@ bool CGUIPanelContainer::MoveUp(bool wrapAround)
     SetCursor((GetCursor() % m_itemsPerRow) + (m_itemsPerPage - 1) * m_itemsPerRow);
     int offset = max((int)GetRows() - m_itemsPerPage, 0);
     // should check here whether cursor is actually allowed here, and reduce accordingly
-    if (offset * m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - offset * m_itemsPerRow - 1);
+    if (offset * m_itemsPerRow + GetCursor() >= m_items.Size())
+      SetCursor(m_items.Size() - offset * m_itemsPerRow - 1);
     ScrollToOffset(offset);
     SetContainerMoving(-1);
   }
@@ -352,8 +352,8 @@ bool CGUIPanelContainer::MoveLeft(bool wrapAround)
   else if (wrapAround)
   { // wrap around
     SetCursor(GetCursor() + m_itemsPerRow - 1);
-    if (GetOffset() * m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - GetOffset() * m_itemsPerRow - 1);
+    if (GetOffset() * m_itemsPerRow + GetCursor() >= m_items.Size())
+      SetCursor(m_items.Size() - GetOffset() * m_itemsPerRow - 1);
   }
   else
     return false;
@@ -363,7 +363,7 @@ bool CGUIPanelContainer::MoveLeft(bool wrapAround)
 bool CGUIPanelContainer::MoveRight(bool wrapAround)
 {
   int col = GetCursor() % m_itemsPerRow;
-  if (col + 1 < m_itemsPerRow && GetOffset() * m_itemsPerRow + GetCursor() + 1 < (int)m_items.size())
+  if (col + 1 < m_itemsPerRow && GetOffset() * m_itemsPerRow + GetCursor() + 1 < m_items.Size())
     SetCursor(GetCursor() + 1);
   else if (wrapAround) // move first item in row
     SetCursor(GetCursor() - col);
@@ -438,7 +438,7 @@ void CGUIPanelContainer::CalculateLayout()
 unsigned int CGUIPanelContainer::GetRows() const
 {
   assert(m_itemsPerRow > 0);
-  return (m_items.size() + m_itemsPerRow - 1) / m_itemsPerRow;
+  return (m_items.Size() + m_itemsPerRow - 1) / m_itemsPerRow;
 }
 
 float CGUIPanelContainer::AnalogScrollSpeed() const
@@ -466,7 +466,7 @@ int CGUIPanelContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoin
     for (int x = 0; x < m_itemsPerRow; x++)
     {
       int item = x + y * m_itemsPerRow;
-      if (posX < sizeX && posY < sizeY && item + GetOffset() < (int)m_items.size())
+      if (posX < sizeX && posY < sizeY && item + GetOffset() < m_items.Size())
       { // found
         return item;
       }
@@ -508,7 +508,7 @@ void CGUIPanelContainer::SelectItem(int item)
   // Check that our offset is valid
   ValidateOffset();
   // only select an item if it's in a valid range
-  if (item >= 0 && item < (int)m_items.size())
+  if (item >= 0 && item < m_items.Size())
   {
     // Select the item requested
     if (item >= GetOffset() * m_itemsPerRow && item < (GetOffset() + m_itemsPerPage) * m_itemsPerRow)
