@@ -22,6 +22,7 @@
 #include "GUIListItem.h"
 #include "GUIInfoManager.h"
 #include "Key.h"
+#include "GUIListDragHandler.h"
 
 using namespace std;
 
@@ -93,6 +94,9 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
   // to have same behaviour when scrolling down, we need to set page control to offset+1
   UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0));
 
+  if (m_dragHint)
+    m_dragHint->DoProcess(currentTime, dirtyregions);
+  
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
@@ -166,6 +170,9 @@ void CGUIPanelContainer::Render()
 
     g_graphicsContext.RestoreClipRegion();
   }
+  if (m_dragHandler)
+    m_dragHandler->Render();
+  
   CGUIControl::Render();
 }
 
@@ -538,3 +545,101 @@ bool CGUIPanelContainer::HasNextPage() const
   return (GetOffset() != (int)GetRows() - m_itemsPerPage && (int)GetRows() > m_itemsPerPage);
 }
 
+CRect CGUIPanelContainer::GetItemBox(int position)
+{
+  CRect result;
+  
+  int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+  
+
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
+  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
+  
+  int row = floor(position/m_itemsPerRow);
+  int col = position-(row*m_itemsPerRow);
+  
+  int rowHeight = m_layout->Size(m_orientation);
+  int rowWidth = m_layout->Size(ORIENTATION(1-m_orientation));
+  if (m_orientation == VERTICAL) 
+  {
+    result.y1 = m_posY+(row-GetOffset())*rowHeight;
+    result.y2 = result.y1+rowHeight;
+    result.x1 = m_posX+col*rowWidth;
+    result.x2 = result.x1+rowWidth;
+  }
+  else
+  {
+    result.x1 = m_posX+(row-GetOffset())*rowHeight;
+    result.x2 = result.x1+rowHeight;
+    result.y1 = m_posY+col*rowWidth;
+    result.y2 = result.x1+rowWidth;
+  }
+  
+  return result;
+}
+
+DragHintInfo CGUIPanelContainer::GetDragHintInfo(int position)
+{
+  return DragHintInfo(GetItemBox(position), ORIENTATION(1-m_orientation));
+}
+
+bool CGUIPanelContainer::OverEmptySpace(const CPoint& point)
+{
+  int rowsPerPage = m_itemsPerPage/m_itemsPerRow;
+  int completeRows;
+  int itemsInIncompleteRow;
+  
+  if ((int)GetNumItems() < m_itemsPerPage) //we don't have enough content to fill one page
+  {
+    completeRows = floor(GetNumItems()/m_itemsPerRow);
+    itemsInIncompleteRow = GetNumItems() - (completeRows*m_itemsPerRow);
+  }
+  
+  int visibleItems = GetNumItems() - GetOffset()*m_itemsPerPage;
+  if (visibleItems < m_itemsPerPage) //we have enough content, BUT the last row is incomplete
+  {
+    completeRows = rowsPerPage-1;
+    itemsInIncompleteRow = m_itemsPerRow - (m_itemsPerPage - visibleItems);
+  }
+  
+  //check our incomplete row
+  if (itemsInIncompleteRow>0)
+  { 
+    for (int i=(completeRows*m_itemsPerRow)+itemsInIncompleteRow; i < (completeRows+1)*m_itemsPerRow; ++i)
+    {
+      if (GetItemBox(i).PtInRect(point))
+        return true;
+    }
+  }
+  
+  if (itemsInIncompleteRow>0)
+    ++completeRows;
+  else 
+    completeRows+=2; //ignore the incomplete row and only check the empty ones
+
+  
+  if (completeRows<=rowsPerPage)
+  {
+    if (m_orientation == VERTICAL) 
+    {
+      CRect BBox(m_posX,
+                 m_posY+m_layout->Size(m_orientation)*completeRows,
+                 m_posX+m_width,
+                 m_posY+m_layout->Size(m_orientation)*rowsPerPage);
+      return BBox.PtInRect(point);
+    }
+    else 
+    {
+      CRect BBox(m_posX+m_layout->Size(m_orientation)*completeRows,
+                 m_posY,
+                 m_posX+m_layout->Size(m_orientation)*rowsPerPage,
+                 m_posY+m_height);
+      return BBox.PtInRect(point);
+    }
+  }
+  
+  return false;  
+}
