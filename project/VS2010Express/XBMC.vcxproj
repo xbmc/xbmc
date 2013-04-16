@@ -446,7 +446,6 @@
     <ClCompile Include="..\..\xbmc\epg\EpgInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainer.cpp" />
-    <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AddonsDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp" />
@@ -470,6 +469,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\DllLibCurl.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\File.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileCache.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\FavouritesDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileDirectoryFactory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileFactory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileReaderFile.cpp" />
@@ -1192,6 +1192,7 @@
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CircularCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryCache.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\FavouritesDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AddonsDirectory.h" />
@@ -2061,7 +2062,6 @@
     <ClInclude Include="..\..\xbmc\epg\EpgInfoTag.h" />
     <ClInclude Include="..\..\xbmc\epg\EpgSearchFilter.h" />
     <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainer.h" />
-    <ClInclude Include="..\..\xbmc\Favourites.h" />
     <ClInclude Include="..\..\xbmc\FileItem.h" />
     <ClInclude Include="..\..\xbmc\filesystem\PVRDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h" />
