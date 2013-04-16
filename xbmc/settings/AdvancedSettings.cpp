@@ -364,6 +364,9 @@ void CAdvancedSettings::Initialize()
 
   /* Let's default to a higher quality of pics */
   m_imageRes = 1080;
+
+  m_bForceJpegImageFormat = false;
+
   /* END PLEX */
 
 
@@ -1115,6 +1118,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetUInt(pRootElement, "cachereadrate", m_cacheReadRate);
   XMLUtils::GetBoolean(pRootElement, "alwaysreinitcoreaudio", m_bAlwaysReinitCoreAudio);
   XMLUtils::GetBoolean(pRootElement, "hidefanouts", m_bHideFanouts);
+  XMLUtils::GetBoolean(pRootElement, "forcejpegimageformat", m_bForceJpegImageFormat);
   /* END PLEX */
 
   // load in the GUISettings overrides:

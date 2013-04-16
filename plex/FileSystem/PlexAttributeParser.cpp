@@ -14,6 +14,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "AdvancedSettings.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexAttributeParserBase::Process(const CURL& url, const CStdString& key, const CStdString& value, CFileItem& item)
 {
@@ -111,6 +113,9 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   mediaUrl.SetOption("width", width);
   mediaUrl.SetOption("height", height);
   mediaUrl.SetOption("url", imageURL.Get());
+  if (g_advancedSettings.m_bForceJpegImageFormat)
+    mediaUrl.SetOption("format", "jpg");
+
   mediaUrl.SetFileName("photo/:/transcode");
 
   //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaUrl::Process setting %s = %s for item %s", propertyName.c_str(), mediaUrl.Get().c_str(), item.GetLabel().c_str());
