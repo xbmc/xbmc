@@ -51,7 +51,7 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);
   virtual void Reset();
-  virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };
+  virtual unsigned int GetNumItems() const { return m_items.Size() - m_extraItems; };
   virtual int GetCurrentPage() const;
   virtual void SetPageControlRange();
   virtual void UpdatePageControl(int offset);

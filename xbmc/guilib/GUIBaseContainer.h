@@ -29,6 +29,7 @@
 #include "GUIListItemLayout.h"
 #include "boost/shared_ptr.hpp"
 #include "utils/Stopwatch.h"
+#include "FileItem.h"
 
 typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
@@ -131,7 +132,7 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
-  virtual unsigned int GetNumItems() const { return m_items.size(); };
+  virtual unsigned int GetNumItems() const { return m_items.Size(); };
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   virtual void OnFocus();
@@ -152,7 +153,7 @@ protected:
   ORIENTATION m_orientation;
   int m_itemsPerPage;
 
-  std::vector< CGUIListItemPtr > m_items;
+  CFileItemList m_items;
   typedef std::vector<CGUIListItemPtr> ::iterator iItems;
   CGUIListItemPtr m_lastItem;
 

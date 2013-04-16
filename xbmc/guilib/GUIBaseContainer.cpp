@@ -104,7 +104,7 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   GetCacheOffsets(cacheBefore, cacheAfter);
 
   // Free memory not used on screen
-  if ((int)m_items.size() > m_itemsPerPage + cacheBefore + cacheAfter)
+  if ((int)m_items.Size() > m_itemsPerPage + cacheBefore + cacheAfter)
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
 
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
@@ -120,10 +120,10 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   end += cacheAfter * m_layout->Size(m_orientation);
 
   int current = offset - cacheBefore;
-  while (pos < end && m_items.size())
+  while (pos < end && m_items.Size())
   {
     int itemNo = CorrectOffset(current, 0);
-    if (itemNo >= (int)m_items.size())
+    if (itemNo >= (int)m_items.Size())
       break;
     bool focused = (current == GetOffset() + GetCursor());
     if (itemNo >= 0)
@@ -225,10 +225,10 @@ void CGUIBaseContainer::Render()
     float focusedPos = 0;
     CGUIListItemPtr focusedItem;
     int current = offset - cacheBefore;
-    while (pos < end && m_items.size())
+    while (pos < end && m_items.Size())
     {
       int itemNo = CorrectOffset(current, 0);
-      if (itemNo >= (int)m_items.size())
+      if (itemNo >= (int)m_items.Size())
         break;
       bool focused = (current == GetOffset() + GetCursor());
       if (itemNo >= 0)
@@ -355,8 +355,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     return true;
 
   case ACTION_LAST_PAGE:
-    if (m_items.size())
-      SelectItem(m_items.size() - 1);
+    if (m_items.Size())
+      SelectItem(m_items.Size() - 1);
     return true;
 
   case ACTION_NEXT_LETTER:
@@ -404,8 +404,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       { // bind our items
         Reset();
         CFileItemList *items = (CFileItemList *)message.GetPointer();
-        for (int i = 0; i < items->Size(); i++)
-          m_items.push_back(items->Get(i));
+        m_items.Clear();
+        m_items.Assign(*items);
         UpdateLayout(true); // true to refresh all items
         UpdateScrollByLetter();
         SelectItem(message.GetParam1());
@@ -440,7 +440,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
     { // update our list contents
-      for (unsigned int i = 0; i < m_items.size(); ++i)
+      for (int i = 0; i < m_items.Size(); ++i)
         m_items[i]->SetInvalid();
     }
     else if (message.GetMessage() == GUI_MSG_MOVE_OFFSET)
@@ -551,7 +551,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
 
   // find the current letter we're focused on
   unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
-  unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.size();
+  unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.Size();
   do
   {
     CGUIListItemPtr item = m_items[i];
@@ -560,7 +560,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
       SelectItem(i);
       return;
     }
-    i = (i+1) % m_items.size();
+    i = (i+1) % m_items.Size();
   } while (i != offset);
   // no match found - repeat with a single letter
   if (m_match.size() > 1)
@@ -630,7 +630,7 @@ int CGUIBaseContainer::GetSelectedItem() const
 
 CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
 {
-  if (!m_items.size())
+  if (!m_items.Size())
     return CGUIListItemPtr();
   int item = GetSelectedItem() + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
@@ -638,13 +638,13 @@ CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) co
 
   if (flag & INFOFLAG_LISTITEM_WRAP)
   {
-    item %= ((int)m_items.size());
-    if (item < 0) item += m_items.size();
+    item %= ((int)m_items.Size());
+    if (item < 0) item += m_items.Size();
     return m_items[item];
   }
   else
   {
-    if (item >= 0 && item < (int)m_items.size())
+    if (item >= 0 && item < (int)m_items.Size())
       return m_items[item];
   }
   return CGUIListItemPtr();
@@ -732,7 +732,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
     if (m_staticContent)
     { // "select" action
       int selected = GetSelectedItem();
-      if (selected >= 0 && selected < (int)m_items.size())
+      if (selected >= 0 && selected < (int)m_items.Size())
       {
         CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[selected]);
         item->GetClickActions().ExecuteActions(GetID(), GetParentID());
@@ -753,7 +753,7 @@ CStdString CGUIBaseContainer::GetDescription() const
 {
   CStdString strLabel;
   int item = GetSelectedItem();
-  if (item >= 0 && item < (int)m_items.size())
+  if (item >= 0 && item < (int)m_items.Size())
   {
     CGUIListItemPtr pItem = m_items[item];
     if (pItem->m_bIsFolder)
@@ -819,7 +819,8 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
 {
   if (updateAllItems)
   { // free memory of items
-    for (iItems it = m_items.begin(); it != m_items.end(); it++)
+    VECFILEITEMS items(m_items.GetList());
+    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); it++)
       (*it)->FreeMemory();
   }
   // and recalculate the layout
@@ -871,10 +872,10 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
-    std::vector<CGUIListItemPtr> items;
+    CFileItemList items;
     int reselect = -1;
     int selected = GetSelectedItem();
-    CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
+    CGUIListItem* selectedItem = (selected >= 0 && selected < m_items.Size()) ? m_items[selected].get() : NULL;
     bool updateItemsProperties = false;
     if (!m_staticUpdateTime)
       m_staticUpdateTime = CTimeUtils::GetFrameTime();
@@ -890,10 +891,10 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
         refreshItems = true;
       if (staticItem->IsVisible())
       {
-        items.push_back(staticItem);
+        items.Add(staticItem);
         // if item is selected and it changed position, re-select it
-        if (staticItem.get() == selectedItem && selected != (int)items.size() - 1)
-          reselect = items.size() - 1;
+        if (staticItem.get() == selectedItem && selected != items.Size() - 1)
+          reselect = items.Size() - 1;
       }
       // update any properties
       if (updateItemsProperties)
@@ -902,9 +903,10 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
     if (refreshItems)
     {
       Reset();
-      m_items = items;
+      m_items.Clear();
+      m_items.Assign(items);
       SetPageControlRange();
-      if (reselect >= 0 && reselect < (int)m_items.size())
+      if (reselect >= 0 && reselect < (int)m_items.Size())
         SelectItem(reselect);
       SetInvalid();
     }
@@ -937,7 +939,7 @@ void CGUIBaseContainer::UpdateScrollByLetter()
 
   // for scrolling by letter we have an offset table into our vector.
   CStdString currentMatch;
-  for (unsigned int i = 0; i < m_items.size(); i++)
+  for (int i = 0; i < m_items.Size(); i++)
   {
     CGUIListItemPtr item = m_items[i];
     // The letter offset jumping is only for ASCII characters at present, and
@@ -954,7 +956,7 @@ void CGUIBaseContainer::UpdateScrollByLetter()
 
 unsigned int CGUIBaseContainer::GetRows() const
 {
-  return m_items.size();
+  return m_items.Size();
 }
 
 inline float CGUIBaseContainer::Size() const
@@ -1022,7 +1024,7 @@ int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 void CGUIBaseContainer::Reset()
 {
   m_wasReset = true;
-  m_items.clear();
+  m_items.ClearItems();
   m_lastItem.reset();
 }
 
@@ -1085,14 +1087,14 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
 {
   if (keepStart < keepEnd)
   { // remove before keepStart and after keepEnd
-    for (int i = 0; i < keepStart && i < (int)m_items.size(); ++i)
+    for (int i = 0; i < keepStart && i < m_items.Size(); ++i)
       m_items[i]->FreeMemory();
-    for (int i = std::max(keepEnd + 1, 0); i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < m_items.Size(); ++i)
       m_items[i]->FreeMemory();
   }
   else
   { // wrapping
-    for (int i = std::max(keepEnd + 1, 0); i < keepStart && i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < keepStart && i < m_items.Size(); ++i)
       m_items[i]->FreeMemory();
   }
 }
@@ -1110,7 +1112,7 @@ bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPo
 void CGUIBaseContainer::DumpTextureUse()
 {
   CLog::Log(LOGDEBUG, "%s for container %u", __FUNCTION__, GetID());
-  for (unsigned int i = 0; i < m_items.size(); ++i)
+  for (int i = 0; i < m_items.Size(); ++i)
   {
     CGUIListItemPtr item = m_items[i];
     if (item->GetFocusedLayout()) item->GetFocusedLayout()->DumpTextureUse();
@@ -1251,14 +1253,14 @@ void CGUIBaseContainer::SetOffset(int offset)
 
 bool CGUIBaseContainer::CanFocus() const
 {
-  return (!m_items.empty() && CGUIControl::CanFocus());
+  return (!m_items.IsEmpty() && CGUIControl::CanFocus());
 }
 
 void CGUIBaseContainer::SelectStaticItemById(int id)
 {
   if (m_staticContent)
   {
-    for (unsigned int i = 0 ; i < m_items.size() ; i++)
+    for (int i = 0 ; i < m_items.Size() ; i++)
     {
       CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[i]);
       if (item->m_iprogramCount == id)
