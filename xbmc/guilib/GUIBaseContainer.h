@@ -30,6 +30,12 @@
 #include "utils/Stopwatch.h"
 #include "FileItem.h"
 
+class CGUIListDragHandler;
+struct DragHintInfo;
+
+#define ITEM_IS_DRAGGED_FLAG "isdragged"
+#define ITEM_IS_DROPPED_FLAG "isdropped"
+
 /*!
  \ingroup controls
  \brief
@@ -51,6 +57,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void FreeResources(bool immediately = false);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
 
@@ -85,7 +92,13 @@ public:
    \param offset CPoint holding the offset in skin coordinates.
    */
   void SetRenderOffset(const CPoint &offset);
-
+  
+  bool IsReorderable() const { return m_items.IsReorderable(); }
+  virtual bool IsDropable() const;
+  virtual void DraggedAway();
+  virtual void DragStop();
+  void MoveItemInternally(int pos, int newPos);
+  
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
@@ -94,6 +107,9 @@ protected:
   bool OnClick(int actionID);
 
   virtual void ProcessItem(float posX, float posY, CGUIListItemPtr& item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
+  CGUIControl* LoadControl(TiXmlElement *child, CGUIControl *group);
+  
 
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -150,7 +166,14 @@ protected:
   void UpdateScrollOffset(unsigned int currentTime);
 
   CScroller m_scroller;
-
+  
+  CGUIListDragHandler *m_dragHandler;
+    //DragHandler needs access to several BaseContainer internals,
+    //and this is better than exposing them via getters/setters
+  friend class CGUIListDragHandler;
+  boost::shared_ptr<CGUIControl> m_dragHint;
+  
+  
   bool m_staticContent;
   bool m_staticDefaultAlways;
   int  m_staticDefaultItem;
@@ -186,6 +209,39 @@ protected:
   void SetOffset(int offset);
   inline int GetOffset() const { return m_offset; };
 
+  /*! Checks wether the list is shorter than m_itemsPerPage. If so, it returns true, if the given point hovers
+      the space where items would be, if the list is full.
+   */
+  virtual bool OverEmptySpace(const CPoint& point);
+  
+  
+  /* \brief Returns the Bounding Box of the hovered item, as well as the Orientation the drag&drop logic
+   uses to determine where to add the drag hint
+   \param The position of the hovered item
+   \sa GetItemBox
+   */
+  virtual DragHintInfo GetDragHintInfo(int position);
+  /*! \brief Returns the bounding box of the item at the given position.
+   NOTE: the item at the given position needs to be actually visible, otherwise undefined result
+   */
+  virtual CRect GetItemBox(int position);
+  /*! \brief Responsible for deciding at what position a FileItem should be inserted during drag&drop
+   This function is only called when the container is reorderable, otherwise the FileItemList.SortMethod will be used
+   \param point current mouse position during drag&drop
+   \param currentPos the last result we returned
+   \param hintPosition out - the position where a dragHint should be drawn
+   \return the position in the list, where the dragged item should be inserted
+   \sa IsReorderable 
+   \sa GUIListDragHandler
+   */
+  virtual int GetDropPositionFromPoint(const CPoint& point) { return GetCursorFromPoint(point) + GetRealOffset(); }
+  /*! \brief Called during drag and drop. This function is responsible to decide if we should scroll right now.
+   \param point the current mouse position
+   \return Should return -1 when we should scoll upwards, 1 for downwards and 0 for no scrolling
+   */
+  short NeedsScrolling(const CPoint& point);
+  
+  virtual int GetRealOffset() { return GetOffset(); }
 private:
   int m_cursor;
   int m_offset;

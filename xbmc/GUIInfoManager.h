@@ -34,6 +34,8 @@
 #include "utils/Observer.h"
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
+#include "FileItem.h"
+#include "guilib/GUIControl.h"
 
 #include <list>
 #include <map>
@@ -790,6 +792,49 @@ public:
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool m_performingSeek;
+  
+  /*! \brief Should be called as soon as dragging starts
+   This function is responsible of setting all the values, so they can be exposed to skiners
+   \param draggedFileItem the file item the user started to drag (can be NULL)
+   \param controlStart the control where the dragging began (can be NULL)
+   \param windowID the window (or dialog) ID of the active window when dragging started
+   \sa DraggingStop
+   \sa DragHover
+   */
+  void DraggingStart(CFileItemPtr draggedFileItem, CGUIControl* controlStart, int windowID);
+  /*! \brief Should be called as soon as dragging stops
+   Will call the draggedAway() function of the CGUIControl* given during DraggingStart
+   Will also clean up all the values set during DraggingStart
+   \sa DraggingStart
+   \sa DragHover
+   */
+  void DraggingStop();
+  /*! \brief Should be called whenever the user hovers an item during drag&drop, that has an appropriate ondrop action
+   If called with hoveredObject==NULL, it means the user currently does not hovere an control with an appropriate ondrop action
+   \param hoveredObject the control the user is currently hovering (can be NULL)
+   \sa DraggingStart
+   \sa DraggingStop()
+   */
+  void DragHover(CGUIControl* hoveredObject);
+  /*! \brief Returns the value that was given for draggedFileItem at DraggingStart.
+   Can be NULL (when NULL was given during DraggingStart, or we are currently not dragging)
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  const CFileItemPtr GetDraggedFileItem() const { return m_draggedFileItem; }
+  /*! \brief Returns the value that was given for controlStart at DraggingStart.
+   Can be NULL (when NULL was given during DraggingStart, or we are currently not dragging)
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  CGUIControl* GetDragStartControl() const { return m_dragStartControl; }
+  /*! \brief Returns the value that was given for windowID at DraggingStart.
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  int GetDragStartWindow() const { return m_dragStartWindowID; }
+
+  CFileItemPtr GetCurrentListItem(CGUIWindow *window);
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();
@@ -938,6 +983,12 @@ protected:
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
   int m_libraryHasMovieSets;
+  
+    //Drag&Drop stuff
+  CGUIControl* m_dragStartControl;
+  int m_dragStartWindowID;
+  CFileItemPtr m_draggedFileItem;
+  CGUIControl* m_dragHoveredControl;
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;

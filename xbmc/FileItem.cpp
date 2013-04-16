@@ -1914,12 +1914,21 @@ bool CFileItemList::IsDropable(const CFileItemPtr& item) const
   return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsDropable(item) : false;
 }
 
-void CFileItemList::OnDrop()
-{
+
+bool CFileItemList::OnDropAdd(CFileItemPtr item, int position) 
+{ 
   if (m_dropPolicy.get()==NULL)
-    return;
+    return false;
   
-  m_dropPolicy->OnDrop(*this);
+  return m_dropPolicy->OnDropAdd(*this, item, position);
+}
+
+bool CFileItemList::OnDropMove(int posBefore, int posAfter) 
+{ 
+  if (m_dropPolicy.get()==NULL)
+    return false;
+  
+  return m_dropPolicy->OnDropMove(*this, posBefore, posAfter);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
@@ -2018,8 +2027,8 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_sortOrder;
     ar << m_sortIgnoreFolders;
     ar << (int)m_cacheToDisc;
-      //TODO: how to archive the m_dropable?!?
-
+    (*m_dropPolicy) >> ar;
+    
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {

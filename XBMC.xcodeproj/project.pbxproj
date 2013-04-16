@@ -26,6 +26,7 @@
 
 /* Begin PBXBuildFile section */
 		0E2D4644170F246600AEFF7A /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E2D4642170F246600AEFF7A /* FavouritesDirectory.cpp */; };
+		0E2D478F17105A2C00AEFF7A /* GUIListDragHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E2D478D17105A2C00AEFF7A /* GUIListDragHandler.cpp */; };
 		0E7BAD5B1722F22800274FC3 /* GUIDropPolicy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E7BAD591722F22800274FC3 /* GUIDropPolicy.cpp */; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
@@ -3148,6 +3149,8 @@
 		0E2D4642170F246600AEFF7A /* FavouritesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesDirectory.cpp; sourceTree = "<group>"; };
 		0E2D4643170F246600AEFF7A /* FavouritesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesDirectory.h; sourceTree = "<group>"; };
 		0E30286C1759FCC200D93596 /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
+		0E2D478D17105A2C00AEFF7A /* GUIListDragHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListDragHandler.cpp; sourceTree = "<group>"; };
+		0E2D478E17105A2C00AEFF7A /* GUIListDragHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListDragHandler.h; sourceTree = "<group>"; };
 		0E7BAD591722F22800274FC3 /* GUIDropPolicy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDropPolicy.cpp; sourceTree = "<group>"; };
 		0E7BAD5A1722F22800274FC3 /* GUIDropPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDropPolicy.h; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
@@ -5760,6 +5763,8 @@
 				18B7C71A1294222D009E7A26 /* GUILabelControl.h */,
 				18B7C7751294222E009E7A26 /* GUIListContainer.cpp */,
 				18B7C71B1294222D009E7A26 /* GUIListContainer.h */,
+				0E2D478D17105A2C00AEFF7A /* GUIListDragHandler.cpp */,
+				0E2D478E17105A2C00AEFF7A /* GUIListDragHandler.h */,
 				18B7C7761294222E009E7A26 /* GUIListGroup.cpp */,
 				18B7C71C1294222D009E7A26 /* GUIListGroup.h */,
 				18B7C7771294222E009E7A26 /* GUIListItem.cpp */,
@@ -10516,6 +10521,7 @@
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				0E2D4644170F246600AEFF7A /* FavouritesDirectory.cpp in Sources */,
 				0E7BAD5B1722F22800274FC3 /* GUIDropPolicy.cpp in Sources */,
+				0E2D478F17105A2C00AEFF7A /* GUIListDragHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

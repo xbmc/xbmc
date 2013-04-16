@@ -31,6 +31,9 @@
 #include "Key.h"
 #include "utils/MathUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "input/MouseStat.h"
+#include "utils/Variant.h"
+#include "GUIListDragHandler.h"
 
 using namespace std;
 
@@ -60,10 +63,12 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
+  m_dragHandler = NULL;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
+  SAFE_DELETE(m_dragHandler);
 }
 
 void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -73,6 +78,9 @@ void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &di
   if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
     m_pageChangeTimer.Stop();
   m_wasReset = false;
+  
+  if (m_dragHint)
+    m_dragHint->DoProcess(currentTime, dirtyregions);
 }
 
 void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -131,6 +139,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   // when we are scrolling up, offset will become lower (integer division, see offset calc)
   // to have same behaviour when scrolling down, we need to set page control to offset+1
   UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0));
+  
+  if (m_dragHandler)
+    m_dragHandler->Process(currentTime, dirtyregions);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -251,6 +262,10 @@ void CGUIBaseContainer::Render()
 
     g_graphicsContext.RestoreClipRegion();
   }
+  
+  if (m_dragHandler)
+    m_dragHandler->Render();
+  
 
   CGUIControl::Render();
 }
@@ -314,7 +329,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         m_scrollItemsPerFrame += std::max(minSpeed, speed*maxSpeed); // accelerate to max speed
         m_lastHoldTime = CTimeUtils::GetFrameTime();
 
-        if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
+        if (m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
           return false;
 
         while (m_scrollItemsPerFrame >= 1)
@@ -648,7 +663,8 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
+  if (!m_dragHandler) //only if we are not dragging anything
+    SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
 
@@ -709,7 +725,122 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     ScrollToOffset(toOffset);
     return EVENT_RESULT_HANDLED;
   }
+  else if (event.m_id == ACTION_MOUSE_DRAG) 
+  {
+    if (event.m_state == 1 && HitTest(point))
+    {
+      SAFE_DELETE(m_dragHandler); 
+
+      bool dropable = IsReorderable();
+      m_dragHandler = new CGUIListDragHandler(true, IsReorderable(), dropable, m_dragHint, this);
+      m_dragHandler->DragStart(point);
+      return EVENT_RESULT_HANDLED;
+    }
+    else if (event.m_state == 2 && HitTest(point) && g_infoManager.GetDraggedFileItem())
+    {
+      if (!m_dragHandler)
+      { //The users wants to drop sth. on the list, that comes from the outside
+        bool canDrop = IsDropable();
+        m_dragHandler = new CGUIListDragHandler(false, IsReorderable(), canDrop, m_dragHint, this);
+        m_dragHandler->DragStart(point);
+      }
+      
+      return m_dragHandler->DragMove(point);
+    }
+    else if (event.m_state == 3 && g_infoManager.GetDraggedFileItem())
+    {
+      ASSERT(m_dragHandler); //that should not happen
+      
+      m_dragHandler->DragMove(point);
+      EVENT_RESULT result = m_dragHandler->OnDrop();
+      DragStop();
+      return result;      
+    }
+  }
   return EVENT_RESULT_UNHANDLED;
+}
+
+void CGUIBaseContainer::DragStop()
+{  
+  SAFE_DELETE(m_dragHandler);
+}
+
+void CGUIBaseContainer::DraggedAway()
+{  
+  ASSERT(m_dragHandler);
+  m_dragHandler->DraggedAway();
+  if (!m_dragHandler->m_bInternal)
+    SAFE_DELETE(m_dragHandler);
+}
+
+void CGUIBaseContainer::MoveItemInternally(int pos, int newPos)
+{
+  m_items.Move(pos, newPos-pos);
+}
+
+bool CGUIBaseContainer::IsDropable() const
+{
+  return m_items.IsDropable(g_infoManager.GetDraggedFileItem());
+}
+
+
+DragHintInfo CGUIBaseContainer::GetDragHintInfo(int position)
+{
+  return DragHintInfo(GetItemBox(position), m_orientation);
+}
+
+CRect CGUIBaseContainer::GetItemBox(int position)
+{
+  CRect result;
+  
+  int offset = (int)floorf(m_scroller.GetValue() / m_layout->Size(m_orientation));
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+  float drawOffset = (offset-cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
+  if (GetOffset() + GetCursor() < offset)
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
+  else if (position < GetOffset() + GetCursor())
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
+  
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  
+  float pos = drawOffset + (position-GetOffset())*m_layout->Size(m_orientation);
+  float size = (position == GetOffset()+GetCursor()) ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+  
+  if (m_orientation == VERTICAL) 
+  {
+    result.y1 = pos+m_posY;
+    result.y2 = pos+m_posY+size;
+    result.x1 = m_posX;
+    result.x2 = m_posX+m_width;
+  }
+  else
+  {
+    result.x1 = pos+m_posX;
+    result.x2 = pos+m_posX+size;
+    result.y1 = m_posY;
+    result.y2 = m_posY+m_height;
+  }
+  
+  return result;
+}
+
+bool CGUIBaseContainer::OverEmptySpace(const CPoint& point)
+{
+  if ((int)GetNumItems() < m_itemsPerPage)
+  {
+    int pos = GetNumItems()*m_layout->Size(m_orientation) - (m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation));
+    int difference = m_itemsPerPage - GetNumItems();
+    if (m_orientation == VERTICAL && pos+m_posY<point.y && point.y < pos + m_posY + difference*m_layout->Size(m_orientation))
+    {
+      return true;
+    }
+    else if (m_orientation == HORIZONTAL && pos + m_posX <point.x && point.x < pos + m_posX + difference*m_layout->Size(m_orientation))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool CGUIBaseContainer::OnClick(int actionID)
@@ -789,13 +920,23 @@ void CGUIBaseContainer::AllocResources()
   CGUIControl::AllocResources();
   CalculateLayout();
   UpdateStaticItems(true);
+  if (m_dragHint)
+    m_dragHint->AllocResources();
   if (m_staticDefaultItem != -1) // select default item
     SelectStaticItemById(m_staticDefaultItem);
+}
+
+void CGUIBaseContainer::DynamicResourceAlloc(bool bOnOff)
+{
+  if (m_dragHint)
+    m_dragHint->DynamicResourceAlloc(bOnOff);
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
+  if (m_dragHint)
+    m_dragHint->FreeResources(immediately);
   if (m_staticContent)
   { // free any static content
     Reset();
@@ -1034,6 +1175,44 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
     m_focusedLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
+  itemElement = layout->FirstChildElement("draghint");
+  if (itemElement)
+  {
+    CGUIControl* control = LoadControl(itemElement->FirstChildElement(), this);
+    if (control)
+    {
+      control->SetVisible(false);
+      control->SetParentControl(this);
+      control->SetPushUpdates(m_pushedUpdates);
+      m_dragHint = boost::shared_ptr<CGUIControl>(control);
+    }
+  }
+}
+
+
+  //TODO: this is almost an exact copy of GUIListItemLayout::LoadControl... so perhabs I should merge them?!?
+CGUIControl* CGUIBaseContainer::LoadControl(TiXmlElement *child, CGUIControl *group)
+{
+  if (!group) return NULL;
+  
+  CRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
+  
+  CGUIControlFactory factory;
+  CGUIControl *control = factory.Create(0, rect, child, true);  // true indicating we're inside a list for the
+                                                                // different label control + defaults.
+  if (control)
+  {
+    if (control->IsGroup())
+    {
+      TiXmlElement *grandChild = child->FirstChildElement("control");
+      while (grandChild)
+      {
+        LoadControl(grandChild, (CGUIControlGroup *)control);
+        grandChild = grandChild->NextSiblingElement("control");
+      }
+    }
+  }
+  return control;
 }
 
 void CGUIBaseContainer::LoadContent(TiXmlElement *content)
@@ -1106,6 +1285,8 @@ void CGUIBaseContainer::DumpTextureUse()
     if (item->GetFocusedLayout()) item->GetFocusedLayout()->DumpTextureUse();
     if (item->GetLayout()) item->GetLayout()->DumpTextureUse();
   }
+  if (m_dragHint)
+    m_dragHint->DumpTextureUse();
 }
 #endif
 
@@ -1266,4 +1447,27 @@ void CGUIBaseContainer::OnFocus()
     SelectStaticItemById(m_staticDefaultItem);
 
   CGUIControl::OnFocus();
+}
+
+
+short CGUIBaseContainer::NeedsScrolling(const CPoint& point)
+{
+    //Check if we need to scroll up
+  if (m_orientation == VERTICAL)
+  {
+    if (point.y > m_posY && point.y < m_posY + (m_layout->Size(m_orientation)/2))
+      return -1;
+    int end = m_posY + m_height;
+    if (point.y > end - (m_layout->Size(m_orientation)/2) && point.y < end)
+      return 1;
+  }
+  if (m_orientation == HORIZONTAL)
+  {
+    if (point.x > m_posX && point.x < m_posX + (m_layout->Size(m_orientation)/2))
+      return -1;
+    int end = m_posX + m_width;
+    if (point.x > end - (m_layout->Size(m_orientation)/2) && point.x < end)
+      return 1;
+  }
+  return 0; //don't scroll
 }

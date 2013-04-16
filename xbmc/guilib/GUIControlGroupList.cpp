@@ -499,8 +499,7 @@ EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMous
     SetInvalid();
     return EVENT_RESULT_HANDLED;
   }
-
-  return EVENT_RESULT_UNHANDLED;
+  return CGUIControl::OnMouseEvent(point, event);;
 }
 
 float CGUIControlGroupList::GetTotalSize() const

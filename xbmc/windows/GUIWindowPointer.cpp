@@ -70,7 +70,8 @@ void CGUIWindowPointer::OnWindowLoaded()
   for (iControls i = m_children.begin();i != m_children.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    pControl->SetVisible(false);
+    if(pControl->GetID() > 0 && pControl->GetID() < 5)
+      pControl->SetVisible(false);
   }
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
@@ -86,6 +87,10 @@ void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     MarkDirtyRegion();
     m_active = active;
   }
+  CGUIControl* pControl = (CGUIControl *)GetControl(m_pointer);
+  if(pControl && pControl->IsGroup())
+    pControl->Process(currentTime, dirtyregions);
+  
   SetPosition((float)g_Mouse.GetX(), (float)g_Mouse.GetY());
   SetPointer(g_Mouse.GetState());
   return CGUIWindow::Process(currentTime, dirtyregions);

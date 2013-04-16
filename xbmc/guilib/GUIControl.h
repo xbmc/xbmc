@@ -129,7 +129,7 @@ public:
    \return EVENT_RESULT corresponding to whether the control handles this event
    \sa SendMouseEvent, HitTest, CanFocusFromPoint, CMouseEvent
    */
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) { return EVENT_RESULT_UNHANDLED; };
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
   /*! \brief Unfocus the control if the given point on screen is not within it's boundary
    \param point the location in transformed skin coordinates from the upper left corner of the parent control.
@@ -196,6 +196,7 @@ public:
                                     const CGUIAction &left, const CGUIAction &right,
                                     const CGUIAction &back, bool replace = true);
   void SetNavigationAction(int direction, const CGUIAction &action, bool replace = true);
+  void SetDropAction(const CGUIAction& drop, bool replace = true);
   int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
   int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
   int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
@@ -240,6 +241,18 @@ public:
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
+  
+  /*! \brief responsible for deciding if the currently dragged intem can be dropped on this control
+   \result true, if the item can be dropped here */
+  virtual bool IsDropable() const;
+  /*! \brief Automatically called when this item has previously been hovered during drag&drop but not anymore
+   */
+  virtual void DraggedAway();
+  /*! Called when dragging stopped. This function will be called on the CGUIControl* where the dragging started, 
+   as well as on the item where the user dropped.
+   */
+  virtual void DragStop();
+  
 
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
@@ -321,6 +334,7 @@ protected:
   CGUIAction m_actionBack;
   CGUIAction m_actionNext;
   CGUIAction m_actionPrev;
+  CGUIAction m_actionDrop;
 
   float m_posX;
   float m_posY;

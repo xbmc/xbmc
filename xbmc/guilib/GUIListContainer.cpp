@@ -213,8 +213,11 @@ void CGUIListContainer::ValidateOffset()
 
 void CGUIListContainer::SetCursor(int cursor)
 {
-  if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
-  if (cursor < 0) cursor = 0;
+  if (!m_dragHandler)
+  {
+    if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
+    if (cursor < 0) cursor = 0;
+  }
   if (!m_wasReset)
     SetContainerMoving(cursor - GetCursor());
   CGUIBaseContainer::SetCursor(cursor);

@@ -57,6 +57,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "input/MouseStat.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -117,6 +118,9 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_fps = 0.0f;
   m_AVInfoValid = false;
   ResetLibraryBools();
+  m_dragStartControl = NULL;
+  m_dragHoveredControl = NULL;
+  m_dragStartWindowID = -1;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -5338,4 +5342,45 @@ bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
     }
   }
   return false;
+}
+
+CFileItemPtr CGUIInfoManager::GetCurrentListItem(CGUIWindow *window) 
+{ 
+  CFileItemPtr ptr = GetDraggedFileItem();
+  if (ptr) 
+    return ptr;
+  if (window)
+    return window->GetCurrentListItem();
+  return CFileItemPtr();
+}
+
+void CGUIInfoManager::DraggingStart(CFileItemPtr draggedFileItem, CGUIControl* startControl, int windowID) 
+{ 
+  m_draggedFileItem = draggedFileItem;
+  if (m_draggedFileItem)
+    m_draggedFileItem->SetProperty(ITEM_IS_DRAGGED_FLAG, CVariant(true));
+  m_dragStartControl = startControl;
+  g_Mouse.SetState(MOUSE_STATE_DRAG);
+  m_dragStartWindowID = windowID;
+}
+
+void CGUIInfoManager::DraggingStop() 
+{ 
+  if (m_dragStartControl)
+     m_dragStartControl->DragStop();
+  if(m_draggedFileItem)
+    m_draggedFileItem->ClearProperty(ITEM_IS_DRAGGED_FLAG);
+  m_dragStartControl = NULL;
+  m_draggedFileItem = CFileItemPtr(); 
+  m_dragHoveredControl = NULL; 
+  g_Mouse.SetState(MOUSE_STATE_NORMAL);
+}
+
+void CGUIInfoManager::DragHover(CGUIControl* hoveredObject) 
+{
+  if (m_dragHoveredControl!=hoveredObject && m_dragHoveredControl!=NULL)
+  {
+    m_dragHoveredControl->DraggedAway();
+  }
+  m_dragHoveredControl = hoveredObject;
 }

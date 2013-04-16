@@ -272,7 +272,7 @@ EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEv
     OnAction(CAction(ACTION_SELECT_ITEM));
     return EVENT_RESULT_HANDLED;
   }
-  return EVENT_RESULT_UNHANDLED;
+  return CGUIControl::OnMouseEvent(point, event);
 }
 
 CStdString CGUIButtonControl::GetDescription() const

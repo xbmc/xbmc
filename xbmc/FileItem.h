@@ -618,6 +618,10 @@ public:
   bool IsReorderable() const { return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsReorderable() : false; }
   void SetDropPolicy(IGUIDropPolicy* dropPolicy) { m_dropPolicy = std::auto_ptr<IGUIDropPolicy>(dropPolicy); }
   bool IsDropable(const CFileItemPtr& item) const;
+  bool OnDropAdd(CFileItemPtr item, int position);
+  bool OnDropMove(int posBefore, int posAfter);
+  CFileItemPtr CreateDropDummy(const CFileItemPtr orig) { return m_dropPolicy->CreateDummy(orig); }
+  bool IsDropDuplicate(const CFileItemPtr& item) { return m_dropPolicy->IsDuplicate(item, *this); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
