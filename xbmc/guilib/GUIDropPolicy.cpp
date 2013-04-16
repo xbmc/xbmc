@@ -40,6 +40,10 @@ IGUIDropPolicy* IGUIDropPolicy::Create(CArchive& ar)
   {
     case DPT_NONE:
       return NULL;
+    case DPT_MUSIC_PLAYLIST:
+      return new MusicPlaylistDropPolicy();      
+    case DPT_VIDEO_PLAYLIST:
+      return new VideoPlaylistDropPolicy();
   }
   return NULL;
 }
@@ -54,3 +58,68 @@ CFileItemPtr IGUIDropPolicy::CreateDummy(const CFileItemPtr item)
 { 
   return CFileItemPtr(new CFileItem(*item)); 
 }
+
+bool PlaylistDropPolicy::OnAdd(CFileItemList& list, CFileItemPtr item, int position,  int PlaylistType) 
+{ 
+  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PlaylistType);
+  playlist.Insert(item, position);
+  
+  if (g_playlistPlayer.GetCurrentPlaylist() == PlaylistType)
+  { //if we dropped on the currently playing playlist, we might need to adjust the currently playling song
+    int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+    if (position <= iCurrentSong)
+      ++iCurrentSong;
+    g_playlistPlayer.SetCurrentSong(iCurrentSong);
+  }
+  return true;
+}
+bool PlaylistDropPolicy::OnMove(CFileItemList& list, int posBefore, int posAfter,  int PlaylistType) 
+{
+  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PlaylistType);
+  playlist.Move(posBefore, posAfter-posBefore);
+  
+  if (g_playlistPlayer.GetCurrentPlaylist() == PlaylistType)
+  { //if we dropped on the currently playing playlist, we might need to adjust the currently playling song
+    int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+    if (posBefore == iCurrentSong)
+      iCurrentSong = posAfter;
+    if (posBefore > iCurrentSong && posAfter <= iCurrentSong)
+      ++iCurrentSong;
+    if (posBefore < iCurrentSong && posAfter > iCurrentSong)
+      --iCurrentSong;
+    g_playlistPlayer.SetCurrentSong(iCurrentSong);
+  }
+  return true;
+}
+
+bool MusicPlaylistDropPolicy::IsDropable(const CFileItemPtr& item) const 
+{
+  return item->IsAudio(); 
+}
+
+bool MusicPlaylistDropPolicy::OnDropAdd(CFileItemList& list, CFileItemPtr item, int position) 
+{
+  return OnAdd(list, item, position, PLAYLIST_MUSIC); 
+}
+
+bool MusicPlaylistDropPolicy::OnDropMove(CFileItemList& list, int posBefore, int posAfter) 
+{
+  return OnMove(list, posBefore, posAfter, PLAYLIST_MUSIC); 
+}
+
+
+bool VideoPlaylistDropPolicy::IsDropable(const CFileItemPtr& item) const 
+{
+  return item->IsVideo(); 
+}
+
+bool VideoPlaylistDropPolicy::OnDropAdd(CFileItemList& list, CFileItemPtr item, int position) 
+{
+  return OnAdd(list, item, position, PLAYLIST_VIDEO); 
+}
+
+bool VideoPlaylistDropPolicy::OnDropMove(CFileItemList& list, int posBefore, int posAfter) 
+{
+  return OnMove(list, posBefore, posAfter, PLAYLIST_VIDEO); 
+}
+
