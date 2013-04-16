@@ -59,7 +59,13 @@ IF %comp%==vs2010 (
   set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /clean "%buildconfig%"
   set EXE= "..\VS2010Express\XBMC\%buildconfig%\XBMC.exe"
   set PDB= "..\VS2010Express\XBMC\%buildconfig%\XBMC.pdb"
-  for /f "tokens=* delims= " %%a in ('git rev-parse --abbrev-ref HEAD') do set BRANCH=%%a
+  
+  :: when building with jenkins there's no branch. First git command gets the branch even there
+  :: but is empty in a normal build environment. Second git command gets the branch there.
+  for /f "tokens=3 delims=/" %%a in ('git branch -r --contains HEAD') do set BRANCH=%%a 
+  IF %BRANCH%==na (
+    for /f "tokens=* delims= " %%a in ('git rev-parse --abbrev-ref HEAD') do set BRANCH=%%a
+  )
 	
   rem	CONFIG END
   rem -------------------------------------------------------------
