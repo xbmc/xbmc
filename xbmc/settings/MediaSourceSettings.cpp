@@ -115,9 +115,6 @@ bool CMediaSourceSettings::Save()
 
 bool CMediaSourceSettings::Save(const std::string &file) const
 {
-  if (!CFile::Exists(file))
-    return false;
-
   // TODO: Should we be specifying utf8 here??
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_SOURCES);
