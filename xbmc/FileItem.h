@@ -33,6 +33,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
+#include "guilib/GUIDropPolicy.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -606,6 +607,10 @@ public:
   const CStdString &GetContent() const { return m_content; };
 
   void ClearSortState();
+  
+  bool IsReorderable() const { return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsReorderable() : false; }
+  void SetDropPolicy(IGUIDropPolicy* dropPolicy) { m_dropPolicy = std::auto_ptr<IGUIDropPolicy>(dropPolicy); }
+  bool IsDropable(const CFileItemPtr& item) const;
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
@@ -632,8 +637,8 @@ private:
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;
+  boost::shared_ptr<IGUIDropPolicy> m_dropPolicy;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
-
   CCriticalSection m_lock;
 };

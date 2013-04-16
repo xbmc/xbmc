@@ -1573,6 +1573,7 @@ CFileItemList::CFileItemList(const CFileItemList& rhs)
   m_replaceListing = rhs.m_replaceListing;
   m_cacheToDisc = rhs.m_cacheToDisc;
   m_content = rhs.m_content;
+  m_dropPolicy = shared_ptr<IGUIDropPolicy>(rhs.m_dropPolicy->Copy());
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
@@ -1657,6 +1658,7 @@ void CFileItemList::Clear()
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
+  m_dropPolicy = shared_ptr<IGUIDropPolicy>();
 }
 
 void CFileItemList::ClearItems()
@@ -1769,6 +1771,11 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
   m_cacheToDisc = itemlist.m_cacheToDisc;
+  if (itemlist.m_dropPolicy.get()!=NULL)
+    m_dropPolicy     = shared_ptr<IGUIDropPolicy>(itemlist.m_dropPolicy->Copy());
+  else
+    m_dropPolicy     = shared_ptr<IGUIDropPolicy>();
+  
 }
 
 bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */)
@@ -1785,7 +1792,12 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   m_sortMethod     = items.m_sortMethod;
   m_sortOrder      = items.m_sortOrder;
   m_sortIgnoreFolders = items.m_sortIgnoreFolders;
+  if (items.m_dropPolicy.get()!=NULL)
+    m_dropPolicy     = shared_ptr<IGUIDropPolicy>(items.m_dropPolicy->Copy());
+  else
+    m_dropPolicy     = shared_ptr<IGUIDropPolicy>();
 
+  
   if (copyItems)
   {
     // make a copy of each item
@@ -1881,6 +1893,19 @@ void CFileItemList::Reserve(int iCount)
 {
   CSingleLock lock(m_lock);
   m_items.reserve(iCount);
+}
+
+bool CFileItemList::IsDropable(const CFileItemPtr& item) const
+{
+  return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsDropable(item) : false;
+}
+
+void CFileItemList::OnDrop()
+{
+  if (m_dropPolicy.get()==NULL)
+    return;
+  
+  m_dropPolicy->OnDrop(*this);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
@@ -1979,6 +2004,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_sortOrder;
     ar << m_sortIgnoreFolders;
     ar << (int)m_cacheToDisc;
+      //TODO: how to archive the m_dropable?!?
 
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
@@ -2040,6 +2066,8 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> m_sortIgnoreFolders;
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
+    
+    m_dropPolicy = shared_ptr<IGUIDropPolicy>(IGUIDropPolicy::Create(ar));
 
     unsigned int detailSize = 0;
     ar >> detailSize;
