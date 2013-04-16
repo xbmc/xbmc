@@ -62,7 +62,7 @@ IF %comp%==vs2010 (
   
   :: when building with jenkins there's no branch. First git command gets the branch even there
   :: but is empty in a normal build environment. Second git command gets the branch there.
-  for /f "tokens=3 delims=/" %%a in ('git branch -r --contains HEAD') do set BRANCH=%%a 
+  for /f "tokens=3 delims=/" %%a in ('git branch -r --contains HEAD') do set BRANCH=%%a
   IF %BRANCH%==na (
     for /f "tokens=* delims= " %%a in ('git rev-parse --abbrev-ref HEAD') do set BRANCH=%%a
   )
