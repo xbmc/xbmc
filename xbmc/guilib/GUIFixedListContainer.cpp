@@ -315,3 +315,23 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
   }
 }
 
+CRect CGUIFixedListContainer::GetItemBox(int position)
+{
+  position -= GetOffset();
+  
+  float adujust = (m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation));
+  if(m_orientation == HORIZONTAL)
+  {
+    return CRect(m_posX + position * m_layout->Size(m_orientation) - adujust,
+                 m_posY,
+                 m_posX + (position+1) * m_layout->Size(m_orientation) + adujust,
+                 m_posY + m_height);
+  }
+  else 
+  {
+    return CRect(m_posX,
+                 m_posY + position * m_layout->Size(m_orientation) - adujust,
+                 m_posX + m_width,
+                 m_posY + (position+1) * m_layout->Size(m_orientation) + adujust);
+  }
+}

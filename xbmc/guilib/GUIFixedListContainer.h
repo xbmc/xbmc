@@ -39,7 +39,7 @@ public:
   virtual CGUIFixedListContainer *Clone() const { return new CGUIFixedListContainer(*this); };
 
   virtual bool OnAction(const CAction &action);
-
+  
 protected:
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
@@ -54,6 +54,7 @@ protected:
   virtual int GetCurrentPage() const;
 
 private:
+  virtual CRect GetItemBox(int position);
   /*!
    \brief Get the minimal and maximal cursor positions in the list
 
