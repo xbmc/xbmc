@@ -29,7 +29,8 @@ namespace XBMCAddon
                        const String& line2,
                        const String& line3,
                        const String& nolabel,
-                       const String& yeslabel) throw (WindowException)
+                       const String& yeslabel,
+                       int autoclose) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
       const int window = WINDOW_DIALOG_YES_NO;
@@ -51,6 +52,9 @@ namespace XBMCAddon
         pDialog->SetChoice(0,nolabel);
       if (!yeslabel.empty())
         pDialog->SetChoice(1,yeslabel);
+
+      if (autoclose > 0)
+        pDialog->SetAutoClose(autoclose);
 
       //send message and wait for user input
       XBMCWaitForThreadMessage(TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW);
