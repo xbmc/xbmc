@@ -36,6 +36,7 @@
 #include "cores/IPlayer.h"
 #include "FileItem.h"
 #include "guilib/GUIControl.h"
+#include "utils/log.h"
 
 #include <list>
 #include <map>
@@ -423,6 +424,9 @@ namespace INFO
 
 #define SYSTEM_PROFILEAUTOLOGIN     1004
 
+#define DRAGNDROP_HOVERED_ID        1500
+#define DRAGNDROP_DRAGGING          1501
+
 #define PVR_CONDITIONS_START        1100
 #define PVR_IS_RECORDING            (PVR_CONDITIONS_START)
 #define PVR_HAS_TIMER               (PVR_CONDITIONS_START + 1)
@@ -636,9 +640,12 @@ namespace INFO
 #define LISTITEM_PROGRESS           (LISTITEM_START + 137)
 #define LISTITEM_HAS_EPG            (LISTITEM_START + 138)
 #define LISTITEM_VOTES              (LISTITEM_START + 139)
+#define LISTITEM_ISDRAGGED          (LISTITEM_START + 140)
+#define LISTITEM_ISDROPPED          (LISTITEM_START + 141)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
-#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
+#define LISTITEM__PROPERTY_SIZE     1000
+#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + LISTITEM__PROPERTY_SIZE)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
 #define MUSICPLAYER_PROPERTY_OFFSET 800 // 100 id's reserved for musicplayer props.
@@ -646,6 +653,9 @@ namespace INFO
 
 #define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
 #define CONDITIONAL_LABEL_END         37000
+
+#define DRAGGING_ITEM_BEGIN         (CONDITIONAL_LABEL_END + 1) //37001
+#define DRAGGING_ITEM_END           (DRAGGING_ITEM_BEGIN + LISTITEM__PROPERTY_SIZE)
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
