@@ -10,6 +10,12 @@
 
 using namespace std;
 
+CPlexServerConnTestThread::CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server)
+  : CThread("ConnectionTest: " + conn->GetAddress().GetHostName()), m_conn(conn), m_server(server)
+{
+  Create(true);
+}
+
 void
 CPlexServerConnTestThread::Process()
 {
@@ -341,3 +347,5 @@ CPlexServer::toString() const
 
   return ret;
 }
+
+

@@ -22,12 +22,7 @@ typedef boost::shared_ptr<CPlexConnection> CPlexConnectionPtr;
 class CPlexServerConnTestThread : public CThread
 {
   public:
-    CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server)
-      : CThread("connection test"), m_conn(conn), m_server(server)
-    {
-      Create(true);
-    }
-
+    CPlexServerConnTestThread(CPlexConnectionPtr conn, CPlexServerPtr server);
     void Process();
 
   private:

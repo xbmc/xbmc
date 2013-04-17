@@ -11,18 +11,21 @@
 
 using namespace std;
 
-bool
-CPlexServerReachabilityJob::DoWork()
+void
+CPlexServerReachabilityThread::Process()
 {
+  bool success = false;
   if (m_force == true ||
       !m_server->GetActiveConnection())
   {
-    return m_server->UpdateReachability();
+    success = m_server->UpdateReachability();
   }
-  return m_server->GetActiveConnection();
+  success = m_server->GetActiveConnection();
+
+  g_plexServerManager.ServerReachabilityDone(m_server, success);
 }
 
-CPlexServerManager::CPlexServerManager() : CJobQueue(false, 10, CJob::PRIORITY_NORMAL)
+CPlexServerManager::CPlexServerManager()
 {
   _myPlexServer = CPlexServerPtr(new CPlexServer("myplex", "myPlex", true));
   _myPlexServer->AddConnection(CPlexConnectionPtr(new CMyPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "my.plexapp.com", 443)));
@@ -157,7 +160,7 @@ CPlexServerManager::UpdateReachability(bool force)
 
   CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
-    AddJob(new CPlexServerReachabilityJob(p.second, force));
+    new CPlexServerReachabilityThread(p.second, false);
 }
 
 void
@@ -181,13 +184,12 @@ CPlexServerManager::ClearBestServer()
   m_bestServer.reset();
 }
 
-void
-CPlexServerManager::OnJobComplete(unsigned int jobId, bool succeed, CJob *job)
+void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool success)
 {
-  CPlexServerReachabilityJob* reachJob = (CPlexServerReachabilityJob*)job;
-  if (succeed)
+  if (success)
   {
-    CPlexServerPtr server = reachJob->m_server;
+    CSingleLock lk(m_bestServerLock);
+
     if (server->GetOwned() &&
         (server->GetServerClass().empty() || !server->GetServerClass().Equals(PLEX_SERVER_CLASS_SECONDARY)))
     {
@@ -199,8 +201,6 @@ CPlexServerManager::OnJobComplete(unsigned int jobId, bool succeed, CJob *job)
       ClearBestServer();
     }
   }
-
-  CJobQueue::OnJobComplete(jobId, succeed, job);
 }
 
 void

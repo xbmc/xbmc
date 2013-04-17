@@ -14,28 +14,22 @@ typedef std::map<CStdString, CPlexServerPtr> PlexServerMap;
 typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
 
 
-class CPlexServerReachabilityJob : public CJob
+class CPlexServerReachabilityThread : public CThread
 {
-public:
-  CPlexServerReachabilityJob(CPlexServerPtr server, bool force)
-  {
-    m_force = force;
-    m_server = server;
-  }
-  bool DoWork();
-  bool m_force;
-  CPlexServerPtr m_server;
+  public:
+    CPlexServerReachabilityThread(CPlexServerPtr server, bool force)
+      : CThread("ServerReachability: " + server->GetName()), m_server(server), m_force(force)
+    {
+      Create(true);
+    }
 
-  virtual bool operator==(const CJob* job) const
-  {
-    CPlexServerReachabilityJob *oJob = (CPlexServerReachabilityJob*)job;
-    if (oJob->m_server == m_server && oJob->m_force == m_force)
-      return true;
-    return false;
-  }
+    void Process();
+
+    CPlexServerPtr m_server;
+    bool m_force;
 };
 
-class CPlexServerManager : public CJobQueue
+class CPlexServerManager
 {
 public:
   enum CPlexServerOwnedModifier
@@ -68,7 +62,7 @@ public:
   void ServerRefreshComplete(int connectionType);
   void UpdateReachability(bool force = false);
 
-  virtual void OnJobComplete(unsigned int jobId, bool succeed, CJob* job);
+  void ServerReachabilityDone(CPlexServerPtr server, bool success);
 
 private:
   CPlexServerPtr _myPlexServer;
