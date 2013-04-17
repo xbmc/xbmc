@@ -53,6 +53,8 @@ public:
    * Set navigation route
    */
   void SetNavigation(int id);
+  
+  void SendThreadMessage(bool flag=true) { m_sendThreadMessages = flag; }
 private:
   struct cond_action_pair
   {

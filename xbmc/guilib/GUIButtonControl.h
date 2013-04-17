@@ -32,6 +32,11 @@
 #include "GUILabel.h"
 #include "GUIControl.h"
 
+class CGUIControlHoveredCallback;
+class CTimer;
+
+#define HOVERED_CLICK_DELAY 2000
+
 /*!
  \ingroup controls
  \brief
@@ -79,6 +84,9 @@ public:
 
   virtual CRect CalcRenderRegion() const;
 
+  virtual void DraggedAway();
+  virtual void DragStop();
+  void DragCleanup();
 protected:
   friend class CGUISpinControlEx;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
@@ -101,6 +109,9 @@ protected:
   CGUIAction m_clickActions;
   CGUIAction m_focusActions;
   CGUIAction m_unfocusActions;
+  
+  CTimer* m_dragHoveredTimer;
+  CGUIControlHoveredCallback* m_dragHoveredCallback;
 
   bool m_bSelected;
 };

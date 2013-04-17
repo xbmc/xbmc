@@ -23,8 +23,29 @@
 #include "GUIDialog.h"
 #include "GUIFontManager.h"
 #include "Key.h"
+#include "threads/Timer.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
+
+/*! \brief This timer will be startet, when the user hoveres this button while drag&drop AND the button has
+     a valid ondrop action. 
+     It is responsible to notify the button when the timer ran out, and the onclick action should be executed
+ */
+struct CGUIControlHoveredCallback : public ITimerCallback 
+{
+  
+  CGUIControlHoveredCallback(CGUIButtonControl* pointer) : m_pointer(pointer) {}
+
+  void OnTimeout()
+  {
+    CGUIMessage msg(GUI_MSG_DRAG_HOVERED_ACTION, 0, 0);
+    msg.SetPointer(m_pointer);
+    g_windowManager.SendThreadMessage(msg, 0);
+  }
+protected:
+  void *m_pointer;
+};
 
 CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -37,10 +58,13 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
   m_alpha = 255;
   m_focusCounter = 0;
   ControlType = GUICONTROL_BUTTON;
+  m_dragHoveredTimer = NULL;
+  m_dragHoveredCallback = NULL;
 }
 
 CGUIButtonControl::~CGUIButtonControl(void)
 {
+  DragCleanup();
 }
 
 void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -182,7 +206,12 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
       return true;
     }
   }
-
+  if (message.GetMessage() == GUI_MSG_DRAG_HOVERED_ACTION && message.GetPointer() == this)
+  {
+    DragCleanup();
+    m_clickActions.ExecuteActions(GetID(), GetParentID());
+    return true;
+  }
   return CGUIControl::OnMessage(message);
 }
 
@@ -272,7 +301,52 @@ EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEv
     OnAction(CAction(ACTION_SELECT_ITEM));
     return EVENT_RESULT_HANDLED;
   }
+  if (event.m_id == ACTION_MOUSE_DRAG) {
+    if (!HitTest(point) || !IsVisible())
+    {
+      DragCleanup();
+      return EVENT_RESULT_UNHANDLED;
+    }
+    
+    if (event.m_state == 2)
+    {
+      if (IsDropable())
+      {
+          //Set us as drop target
+        g_infoManager.DragHover(this);
+        
+        if (!m_dragHoveredTimer)
+        {
+          m_dragHoveredTimer = new CTimer(new CGUIControlHoveredCallback(this));
+          m_dragHoveredTimer->Start(HOVERED_CLICK_DELAY, false);
+        }
+        
+        return EVENT_RESULT_HANDLED;
+      }
+    }
+  }
   return CGUIControl::OnMouseEvent(point, event);
+}
+
+void CGUIButtonControl::DraggedAway() 
+{ 
+  DragCleanup();
+  CGUIControl::DraggedAway();
+}
+
+void CGUIButtonControl::DragStop() 
+{
+  DragCleanup();
+  CGUIControl::DragStop();
+}
+
+
+void CGUIButtonControl::DragCleanup()
+{
+  if (m_dragHoveredTimer && m_dragHoveredTimer->IsRunning())
+    m_dragHoveredTimer->Stop(true);
+  SAFE_DELETE(m_dragHoveredTimer);
+  SAFE_DELETE(m_dragHoveredCallback);
 }
 
 CStdString CGUIButtonControl::GetDescription() const
