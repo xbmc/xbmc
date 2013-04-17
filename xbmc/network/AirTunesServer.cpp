@@ -521,7 +521,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   }
 
   ServerInstance = new CAirTunesServer(port, nonlocal);
-  if (ServerInstance->Initialize(password))
+  if (ServerInstance->Initialize(pw))
   {
 #ifndef TARGET_WINDOWS
     ServerInstance->Create();
