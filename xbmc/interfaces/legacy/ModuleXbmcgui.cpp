@@ -25,6 +25,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
+#define NOTIFICATION_INFO     "info"
+#define NOTIFICATION_WARNING  "warning"
+#define NOTIFICATION_ERROR    "error"
+
 namespace XBMCAddon
 {
   namespace xbmcgui
@@ -52,5 +56,10 @@ namespace XBMCAddon
       CSingleLock gl(g_graphicsContext);
       return g_windowManager.GetTopMostModalDialogID();
     }
+    
+    const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }
+    const char* getNOTIFICATION_WARNING() { return NOTIFICATION_WARNING; }
+    const char* getNOTIFICATION_ERROR()   { return NOTIFICATION_ERROR; }
+
   }
 }
