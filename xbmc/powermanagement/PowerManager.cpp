@@ -38,6 +38,8 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
+#elif defined(TARGET_RASPBERRY_PI)
+#include "linux/RaspberryPIPowerSyscall.h"
 #elif defined(TARGET_ANDROID)
 #include "android/AndroidPowerSyscall.h"
 #elif defined(TARGET_POSIX)
@@ -74,6 +76,8 @@ void CPowerManager::Initialize()
 {
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
+#elif defined(TARGET_RASPBERRY_PI)
+  m_instance = new CRaspberryPIPowerSyscall();
 #elif defined(TARGET_ANDROID)
   m_instance = new CAndroidPowerSyscall();
 #elif defined(TARGET_POSIX)
