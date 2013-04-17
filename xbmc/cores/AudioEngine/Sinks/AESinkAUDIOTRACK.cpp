@@ -172,7 +172,12 @@ double CAESinkAUDIOTRACK::GetDelay()
   // AudioMixer (if any) and audio hardware driver.
 
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
-  return sinkbuffer_seconds_to_empty + m_audiotrack_empty_sec;
+  sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec;
+#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
+  if (sinkbuffer_seconds_to_empty > 0.0)
+    sinkbuffer_seconds_to_empty += 0.250;
+#endif
+  return sinkbuffer_seconds_to_empty;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTime()
@@ -181,7 +186,12 @@ double CAESinkAUDIOTRACK::GetCacheTime()
   // to underrun the buffer if no sample is added.
 
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
-  return sinkbuffer_seconds_to_empty + m_audiotrack_empty_sec;
+  sinkbuffer_seconds_to_empty += m_audiotrack_empty_sec;
+#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
+  if (sinkbuffer_seconds_to_empty > 0.0)
+    sinkbuffer_seconds_to_empty += 0.250;
+#endif
+  return sinkbuffer_seconds_to_empty;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTotal()
