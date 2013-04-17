@@ -165,8 +165,6 @@ CPlexServer::UpdateReachability()
     CLog::Log(LOGDEBUG, "CPlexServer::UpdateReachability testing connection %s", conn->toString().c_str());
 
     new CPlexServerConnTestThread(conn, GetShared());
-
-    //AddJob(new CPlexServerConnTestJob(conn, GetShared()));
   }
 
   m_testEvent.WaitMSec(30000);
@@ -183,8 +181,6 @@ CPlexServer::UpdateReachability()
 
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
 {
-  CLog::Log(LOGDEBUG, "CPlexServer::OnConnectionTest %s : %s", conn->toString().c_str(), success ? "SUCCESS" : "FAILED");
-
   CSingleLock lk(m_testingLock);
   if (success)
   {
