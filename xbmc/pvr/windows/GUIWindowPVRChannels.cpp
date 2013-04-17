@@ -49,18 +49,14 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   CGUIWindowPVRCommon(parent,
                       bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV,
                       bRadio ? CONTROL_BTNCHANNELS_RADIO : CONTROL_BTNCHANNELS_TV,
-                      bRadio ? CONTROL_LIST_CHANNELS_RADIO: CONTROL_LIST_CHANNELS_TV),
-  CThread("PVRChannelWin")
+                      bRadio ? CONTROL_LIST_CHANNELS_RADIO: CONTROL_LIST_CHANNELS_TV)
 {
   m_bRadio              = bRadio;
   m_bShowHiddenChannels = false;
-  m_bThreadCreated      = false;
 }
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
 {
-  if (m_bThreadCreated)
-    StopThread(true);
 }
 
 void CGUIWindowPVRChannels::ResetObservers(void)
@@ -266,13 +262,6 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
-
-  if (!m_bThreadCreated)
-  {
-    m_bThreadCreated = true;
-    Create();
-    SetPriority(-1);
-  }
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
@@ -607,19 +596,4 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
   pDlgInfo->DoModal();
 
   return;
-}
-
-void CGUIWindowPVRChannels::Process(void)
-{
-  // ugly hack to refresh the progress bars and item contents every 5 seconds
-  int iCount(0);
-  while (!m_bStop)
-  {
-    if (++iCount == 100)
-    {
-      iCount = 0;
-      SetInvalid();
-    }
-    Sleep(50);
-  }
 }
