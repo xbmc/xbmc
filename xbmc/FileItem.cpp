@@ -1877,6 +1877,20 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
   return CFileItemPtr();
 }
 
+int CFileItemList::Find(const CStdString& strPath) const
+{
+  CSingleLock lock(m_lock);
+  
+    // slow method...
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr pItem = m_items[i];
+    if (pItem->GetPath().Equals(strPath))
+      return i;
+  }
+  return -1;
+}
+
 int CFileItemList::Size() const
 {
   CSingleLock lock(m_lock);

@@ -507,6 +507,13 @@ public:
   const VECFILEITEMS GetList() const { return m_items; }
   CFileItemPtr Get(const CStdString& strPath);
   const CFileItemPtr Get(const CStdString& strPath) const;
+  /*! \brief Finds the item with the given path and returns it's position in the list
+   NOTE: this never uses the fast lookup, so Get() should be preferred if you don't
+   need to know the position of the item
+   \param strPath The item path, we are looking for
+   \retun the position of the found object or -1 if not found
+   */
+  int Find(const CStdString& strPath) const;
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
