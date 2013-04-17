@@ -87,6 +87,16 @@ int64_t PlexUtils::Size(const CStdString& strFileName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexUtils::AppendPathToURL(CURL& baseURL, const string& relativePath)
+{
+  string filename = baseURL.GetFileName();
+  if (boost::ends_with(filename, "/") == false)
+    filename += "/";
+  filename += relativePath;
+  baseURL.SetFileName(filename);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 string PlexUtils::AppendPathToURL(const string& baseURL, const string& relativePath)
 {
   string ret = baseURL;
