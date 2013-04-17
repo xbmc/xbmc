@@ -692,9 +692,7 @@ void CAirPlayServer::restoreVolume()
 {
   if (ServerInstance->m_origVolume != -1)
   {
-    float oldVolume = g_application.GetVolume();
     g_application.SetVolume((float)ServerInstance->m_origVolume);
-    CApplicationMessenger::Get().ShowVolumeBar(oldVolume < (float)ServerInstance->m_origVolume);
     ServerInstance->m_origVolume = -1;
   }
 }
