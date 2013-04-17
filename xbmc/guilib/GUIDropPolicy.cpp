@@ -44,6 +44,9 @@ IGUIDropPolicy* IGUIDropPolicy::Create(CArchive& ar)
       return new MusicPlaylistDropPolicy();      
     case DPT_VIDEO_PLAYLIST:
       return new VideoPlaylistDropPolicy();
+    case DPT_FILE_MANAGER:
+      ar >> str;
+      return new FileManagerDropPolicy(str);
   }
   return NULL;
 }
@@ -121,5 +124,26 @@ bool VideoPlaylistDropPolicy::OnDropAdd(CFileItemList& list, CFileItemPtr item, 
 bool VideoPlaylistDropPolicy::OnDropMove(CFileItemList& list, int posBefore, int posAfter) 
 {
   return OnMove(list, posBefore, posAfter, PLAYLIST_VIDEO); 
+}
+
+
+bool FileManagerDropPolicy::OnDropAdd(CFileItemList& list, CFileItemPtr item, int position)
+{
+  if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
+    return false;
+  
+  CFileItemList toCopy;
+  item->Select(true);
+  toCopy.Add(item);
+  
+  CGUIWindowFileManager* jobManager = (CGUIWindowFileManager*)g_windowManager.GetWindow(WINDOW_FILES);
+  if(!jobManager)
+    return false;
+  jobManager->AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy,  //Should dragging mean "copy" or "move"???
+                                           toCopy,
+                                           list.GetPath(),
+                                           true, 16201, 16202));
+  item->Select(false);
+  return true;
 }
 

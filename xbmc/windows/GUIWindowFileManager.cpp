@@ -39,6 +39,7 @@
 #include "network/Network.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
+#include "guilib/GUIDropPolicy.h" 
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -62,6 +63,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "URL.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -669,6 +671,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
+  m_vecItems[iList]->SetDropPolicy(new FileManagerDropPolicy(m_Directory[iList]->GetPath()));
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
   g_windowManager.SendMessage(msg);
 }

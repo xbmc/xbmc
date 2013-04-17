@@ -92,7 +92,8 @@ enum DropPolicyType
 {
   DPT_NONE = 0,
   DPT_MUSIC_PLAYLIST,
-  DPT_VIDEO_PLAYLIST
+  DPT_VIDEO_PLAYLIST,
+  DPT_FILE_MANAGER,
 };
 
 
@@ -127,5 +128,21 @@ struct VideoPlaylistDropPolicy : public PlaylistDropPolicy
   virtual bool OnDropMove(CFileItemList& list, int posBefore, int posAfter);
 protected:
   CStdString m_path;
+};
+
+struct FileManagerDropPolicy : public IGUIDropPolicy
+{
+  FileManagerDropPolicy(const CStdString targetDir)
+  : IGUIDropPolicy(false),
+  m_targetDir(targetDir)
+  {}
+  virtual bool IsDropable(const CFileItemPtr& item) const { return true; }
+  virtual IGUIDropPolicy* Copy() const { return new FileManagerDropPolicy(m_targetDir); }
+  virtual bool OnDropAdd(CFileItemList& list, CFileItemPtr item, int position);
+  virtual bool OnDropMove(CFileItemList& list, int posBefore, int posAfter) { return false; }
+  
+  virtual void operator>>(CArchive& ar) { ar << DPT_FILE_MANAGER; ar << m_targetDir; }
+protected:
+  const CStdString m_targetDir;
 };
 
