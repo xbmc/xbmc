@@ -676,7 +676,9 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr ""
 
-#empty string with id 168
+msgctxt "#168"
+msgid "Info"
+msgstr ""
 
 #: xbmc/settings/settings.xml
 msgctxt "#169"

@@ -24,6 +24,7 @@
 #include "ApplicationMessenger.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "filesystem/StackDirectory.h"
 #include "filesystem/ZipManager.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -55,6 +56,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
 
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
@@ -324,7 +327,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->GetPath().Equals("add")))
+    if ((pItem->m_bIsFolder || pItem->IsVideoDb() || pItem->IsMusicDb()) && (!pItem->m_dwSize || pItem->GetPath().Equals("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -779,6 +782,33 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
   }
 }
 
+void CGUIWindowFileManager::OnInfo(int iList)
+{
+  CFileItemPtr selItem;
+  for (int i = 0; i < m_vecItems[iList]->Size();++i)
+  {
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
+    if (pItem->IsSelected())
+    { 
+      selItem = pItem;
+      break;
+    }
+  }
+
+  if (!selItem)
+    return;
+
+  if (selItem->HasVideoInfoTag())
+  {
+    CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
+    if (!pDlgInfo)
+      return;
+
+    pDlgInfo->SetMovie(selItem.get());
+    pDlgInfo->DoModal();
+  }
+}
+
 void CGUIWindowFileManager::Refresh(int iList)
 {
   int nSel = GetSelectedItem(iList);
@@ -1002,10 +1032,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       choices.Add(6, 115); // Copy
     if (CanMove(list) && showEntry)
       choices.Add(7, 116); // Move
+    if (pItem->IsVideoDb() || pItem->IsMusicDb())
+      choices.Add(14, 168); // Info
+
   }
   if (CanNewFolder(list))
     choices.Add(8, 20309); // New Folder
-  if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
+  if (item >= 0 && ((pItem->m_bIsFolder && !pItem->IsParentFolder()) || (pItem->IsVideoDb() || pItem->IsMusicDb())))
     choices.Add(9, 13393); // Calculate Size
   choices.Add(10, 5);     // Settings
   choices.Add(11, 20128); // Go To Root
@@ -1058,9 +1091,44 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     for (int i=0; i<m_vecItems[list]->Size(); ++i)
     {
       CFileItemPtr pItem2=m_vecItems[list]->Get(i);
-      if (pItem2->m_bIsFolder && pItem2->IsSelected())
+      if (pItem2->IsSelected())
       {
-        int64_t folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
+        int64_t folderSize = -1;
+        if (pItem2->m_bIsFolder)
+        {
+          folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
+        } 
+        else if (pItem2->IsVideoDb() || pItem2->IsMusicDb())
+        {
+          CStdString strFileNameAndPath;
+          if (pItem2->HasVideoInfoTag())
+            strFileNameAndPath = pItem2->GetVideoInfoTag()->m_strFileNameAndPath;
+
+          if (strFileNameAndPath.empty())
+            continue;
+
+          std::vector<CStdString> vecPaths;
+          if (URIUtils::IsStack(strFileNameAndPath)) 
+          {
+            CStackDirectory::GetPaths(strFileNameAndPath, vecPaths);
+          }
+          else
+            vecPaths.push_back(strFileNameAndPath);
+
+          if (vecPaths.size() > 0)
+          {
+            folderSize = 0;
+            for (std::vector<CStdString>::iterator it = vecPaths.begin() ; it != vecPaths.end(); ++it)
+            {
+              CFile f;
+              if (!f.Open(*it))
+                continue;
+
+              folderSize += f.GetLength();
+              f.Close();
+            }
+          }
+        }
         if (folderSize >= 0)
         {
           pItem2->m_dwSize = folderSize;
@@ -1091,6 +1159,9 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (btnid == 13)
     CancelJobs();
+
+  if (btnid == 14)
+    OnInfo(list);
 
   if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
   { // deselect item as we didn't do anything
