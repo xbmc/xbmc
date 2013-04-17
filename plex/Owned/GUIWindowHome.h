@@ -75,12 +75,11 @@ typedef std::pair<int, CFileItemListPtr> contentListPair;
 class CPlexSectionLoadJob : public CJob
 {
   public:
-    CPlexSectionLoadJob(const CStdString& url, int contentType) :
+    CPlexSectionLoadJob(const CURL& url, int contentType) :
       CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
 
     bool DoWork()
     {
-
       XFILE::CPlexDirectory dir;
       m_list->Clear();
       return dir.GetDirectory(m_url, *m_list.get());
@@ -88,10 +87,10 @@ class CPlexSectionLoadJob : public CJob
 
     int GetContentType() const { return m_contentType; }
     CFileItemListPtr GetFileItemList() const { return m_list; }
-    CStdString GetUrl() const { return m_url; }
+    CURL GetUrl() const { return m_url; }
 
   private:
-    CStdString m_url;
+    CURL m_url;
     CFileItemListPtr m_list;
     int m_contentType;
 };
@@ -110,12 +109,12 @@ class CPlexSectionFanout : public IJobCallback
     static CStdString GetBestServerUrl(const CStdString& extraUrl="");
 
   private:
-    int LoadSection(const CStdString& url, int contentType);
+    int LoadSection(const CURL& url, int contentType);
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {}
 
     std::map<int, CFileItemListPtr> m_fileLists;
-    CStdString m_url;
+    CURL m_url;
     boost::timer m_age;
     CCriticalSection m_critical;
     SectionTypes m_sectionType;

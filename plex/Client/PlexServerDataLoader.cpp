@@ -30,9 +30,11 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
   if (success)
   {
     CSingleLock lk(m_dataLock);
-    if (j->m_sectionList)
+    if (j->m_sectionList && j->m_server->GetOwned())
       m_sectionMap[j->m_server->GetUUID()] = j->m_sectionList;
-    if (j->m_channelList)
+    else if (j->m_sectionList && !j->m_server->GetOwned())
+      m_sharedSectionsMap[j->m_server->GetUUID()] = j->m_sectionList;
+    else if (j->m_channelList)
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
 
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
@@ -47,8 +49,14 @@ CFileItemListPtr
 CPlexServerDataLoader::GetSectionsForUUID(const CStdString &uuid)
 {
   CSingleLock lk(m_dataLock);
+
   if (m_sectionMap.find(uuid) != m_sectionMap.end())
     return m_sectionMap[uuid];
+
+  /* not found in our server map, check shared servers */
+  if (m_sharedSectionsMap.find(uuid) != m_sectionMap.end())
+    return m_sectionMap[uuid];
+
   return CFileItemListPtr();
 }
 
@@ -79,8 +87,26 @@ bool
 CPlexServerDataLoaderJob::DoWork()
 {
   m_sectionList = FetchList("/library/sections");
-  m_channelList = FetchList("/channels/all");
+
+  if (m_server->GetOwned())
+    m_channelList = FetchList("/channels/all");
+
   return true;
+}
+
+CFileItemListPtr
+CPlexServerDataLoader::GetAllSharedSections() const
+{
+  CSingleLock lk(m_dataLock);
+  CFileItemList* list = new CFileItemList;
+
+  BOOST_FOREACH(ServerDataPair pair, m_sharedSectionsMap)
+  {
+    for (int i = 0; i < pair.second->Size(); i++)
+      list->Add(pair.second->Get(i));
+  }
+
+  return CFileItemListPtr(list);
 }
 
 CFileItemListPtr

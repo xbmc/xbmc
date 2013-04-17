@@ -55,7 +55,12 @@ namespace XFILE
 
       CPlexDirectory() : m_isAugmented(false) {}
 
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+      bool GetDirectory(const CURL& url, CFileItemList& items);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items)
+      {
+        return GetDirectory(CURL(strPath), items);
+      }
+
       virtual void CancelDirectory();
 
       static EPlexDirectoryType GetDirectoryType(const CStdString& typeStr);

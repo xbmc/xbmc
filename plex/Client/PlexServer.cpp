@@ -283,7 +283,7 @@ CPlexServer::BuildPlexURL(const CStdString& path) const
 }
 
 CURL
-CPlexServer::BuildURL(const CStdString &path) const
+CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
 {
   CSingleLock lk(m_connLock);
   CPlexConnectionPtr connection = m_activeConnection;
@@ -296,6 +296,10 @@ CPlexServer::BuildURL(const CStdString &path) const
     return CURL();
 
   CURL url = connection->BuildURL(path);
+
+  if (!options.empty())
+    url.SetOptions(options);
+
   if (!url.HasOption(connection->GetAccessTokenParameter()))
   {
     /* See if we can find a token in our other connections */

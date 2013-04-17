@@ -50,6 +50,7 @@ public:
   CFileItemListPtr GetChannelsForServer(const CPlexServerPtr &server) { return GetChannelsForUUID(server->GetUUID()); }
 
   CFileItemListPtr GetAllSections() const;
+  CFileItemListPtr GetAllSharedSections() const;
   CFileItemListPtr GetAllChannels() const;
 
   bool HasChannels() const { return m_channelMap.size() > 0; }
@@ -61,6 +62,8 @@ private:
 
   ServerDataMap m_sectionMap;
   ServerDataMap m_channelMap;
+
+  ServerDataMap m_sharedSectionsMap;
 };
 
 XBMC_GLOBAL_REF(CPlexServerDataLoader, g_plexServerDataLoader);

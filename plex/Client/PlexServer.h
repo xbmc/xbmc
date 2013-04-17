@@ -73,7 +73,7 @@ public:
   void GetConnections(std::vector<CPlexConnectionPtr> &conns);
   int GetNumConnections() const;
 
-  CURL BuildURL(const CStdString& path) const;
+  CURL BuildURL(const CStdString& path, const CStdString& options="") const;
   CURL BuildPlexURL(const CStdString& path) const;
   void AddConnection(CPlexConnectionPtr connection);
 

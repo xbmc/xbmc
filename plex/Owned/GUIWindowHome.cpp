@@ -119,7 +119,7 @@ std::vector<contentListPair> CPlexSectionFanout::GetContentLists()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-int CPlexSectionFanout::LoadSection(const CStdString& url, int contentType)
+int CPlexSectionFanout::LoadSection(const CURL &url, int contentType)
 {
   CPlexSectionLoadJob* job = new CPlexSectionLoadJob(url, contentType);
   return CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_HIGH);
@@ -130,10 +130,10 @@ CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
 {
   CPlexServerPtr server = g_plexServerManager.GetBestServer();
   if (server)
-    return server->BuildURL(extraUrl).Get();
+    return server->BuildPlexURL(extraUrl).Get();
 
   CPlexServerPtr local = g_plexServerManager.FindByUUID("local");
-  return local->BuildURL(extraUrl).Get();
+  return local->BuildPlexURL(extraUrl).Get();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ void CPlexSectionFanout::Refresh()
   CSingleLock lk(m_critical);
   m_fileLists.clear();
 
-  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Refresh for %s", m_url.c_str());
+  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Refresh for %s", m_url.Get().c_str());
 
   CURL trueUrl(m_url);
 
@@ -183,21 +183,25 @@ void CPlexSectionFanout::Refresh()
 #endif
       
       trueUrl.SetOption("unwatched", "1");
-      trueUrl.SetFileName(PlexUtils::AppendPathToURL(trueUrl.GetFileName(), "recentlyAdded"));
+      PlexUtils::AppendPathToURL(trueUrl, "recentlyAdded");
       
       m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));
 
       if (m_sectionType == SECTION_TYPE_MOVIE || m_sectionType == SECTION_TYPE_SHOW)
       {
         trueUrl = CURL(m_url);
-        trueUrl.SetFileName(PlexUtils::AppendPathToURL(trueUrl.GetFileName(), "onDeck"));
+        PlexUtils::AppendPathToURL(trueUrl, "onDeck");
         m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_ON_DECK));
       }
     }
 
     /* We don't want to wait on the fanart, so don't add it to the outstandingjobs map */
     if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
-      LoadSection(PlexUtils::AppendPathToURL(m_url, "arts"), CONTENT_LIST_FANART);
+    {
+      CURL artsUrl(m_url);
+      PlexUtils::AppendPathToURL(artsUrl, "arts");
+      LoadSection(artsUrl, CONTENT_LIST_FANART);
+    }
   }
 }
 
@@ -225,13 +229,13 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
   if (m_outstandingJobs.size() == 0 && load->GetContentType() != CONTENT_LIST_FANART)
   {
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
-    msg.SetStringParam(m_url);
+    msg.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg);
   }
   else if (load->GetContentType() == CONTENT_LIST_FANART)
   {
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
-    msg.SetStringParam(m_url);
+    msg.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg);
   }
 }
@@ -245,11 +249,11 @@ void CPlexSectionFanout::Show()
   {
     /* we are up to date, just send the messages */
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
-    msg.SetStringParam(m_url);
+    msg.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg);
 
     CGUIMessage msg2(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
-    msg2.SetStringParam(m_url);
+    msg2.SetStringParam(m_url.Get());
     g_windowManager.SendThreadMessage(msg2);
   }
 }
@@ -266,7 +270,7 @@ bool CPlexSectionFanout::NeedsRefresh()
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
     refreshTime = 100;
 
-  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:NeedsRefresh %s, age %f, refresh %s", m_url.c_str(), m_age.elapsed(), m_age.elapsed() > refreshTime ? "yes" : "no");
+  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:NeedsRefresh %s, age %f, refresh %s", m_url.Get().c_str(), m_age.elapsed(), m_age.elapsed() > refreshTime ? "yes" : "no");
   return m_age.elapsed() > refreshTime;
 }
 
@@ -666,193 +670,6 @@ void CGUIWindowHome::UpdateSections()
   control->SetStaticContent(newList);
 
 }
-
-#if 0
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::UpdateSections()
-{
-  // This will be our new list.
-  vector<CGUIListItemPtr> newList;
-
-  CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");
-
-  // Get the old list.
-  CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
-  if (control == 0)
-    control = (CGUIBaseContainer* )GetControl(300);
-
-  if (control)
-  {
-    vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
-
-    // First collect all the real items, minus the channel entries.
-    BOOST_FOREACH(CGUIListItemPtr item, oldList)
-    {
-      // Collect the channel items. They may get removed after that, so we'll keep them around.
-      CFileItem* fileItem = (CFileItem* )item.get();
-      if (fileItem->m_iprogramCount == CHANNELS_VIDEO)
-        m_videoChannelItem = item;
-      else if (fileItem->m_iprogramCount == CHANNELS_MUSIC)
-        m_musicChannelItem = item;
-      else if (fileItem->m_iprogramCount == CHANNELS_PHOTO)
-        m_photoChannelItem = item;
-      else if (fileItem->m_iprogramCount == CHANNELS_APPLICATION)
-        m_applicationChannelItem = item;
-      else if (item->HasProperty("plex") == false)
-        newList.push_back(item);
-    }
-
-
-    map<string, HostSourcesPtr> sourcesMap;
-    CPlexSourceScanner::GetMap(sourcesMap);
-
-    // Collect the channels, keeping track of how many there are.
-    int numVideo = 0;
-    int numPhoto = 0;
-    int numMusic = 0;
-    int numApplication = 0;
-
-    BOOST_FOREACH(string_sources_pair nameSource, sourcesMap)
-    {
-      numVideo += nameSource.second->videoSources.size();
-      numPhoto += nameSource.second->pictureSources.size();
-      numMusic += nameSource.second->musicSources.size();
-      numApplication += nameSource.second->applicationSources.size();
-    }
-    
-    // Now collect the library sections.
-    vector<CFileItemPtr> newSections;
-    PlexLibrarySectionManager::Get().getOwnedSections(newSections);
-
-    // Count the names.
-    map<string, int> nameCounts;
-    BOOST_FOREACH(CFileItemPtr section, newSections)
-    {
-      CStdString sectionName = section->GetLabel();
-      ++nameCounts[sectionName.ToLower()];
-    }
-
-    // Add the queue if needed.
-    /*
-    CFileItemList queue;
-    if (MyPlexManager::Get().getPlaylist(queue, "queue", true) && queue.Size() > 0)
-    {
-      CFileItemPtr queue = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44021)));
-      queue->SetProperty("type", "mixed");
-      queue->SetProperty("typeNumber", PLEX_METADATA_MIXED);
-      queue->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("queue"));
-      queue->SetPath(queue->GetProperty("key").asString());
-      newSections.push_back(queue);
-    }
-    
-    CFileItemList recommendations;
-    if (MyPlexManager::Get().getPlaylist(recommendations, "recommendations", true) && recommendations.Size() > 0)
-    {
-      CFileItemPtr rec = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44022)));
-      rec->SetProperty("type", "mixed");
-      rec->SetProperty("typeNumber", PLEX_METADATA_MIXED);
-      rec->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("recommendations"));
-      rec->SetPath(rec->GetProperty("key").asString());
-      newSections.push_back(rec);
-    }*/
-
-    // Add the shared content menu if needed.
-    if (PlexLibrarySectionManager::Get().getNumSharedSections() > 0)
-    {
-      CFileItemPtr shared = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44020)));
-      shared->SetProperty("key", "plex://shared");
-      shared->SetPath(shared->GetProperty("key").asString());
-      newSections.push_back(shared);
-    }
-
-    // Now add the new ones.
-    int id = 1000;
-    BOOST_FOREACH(CFileItemPtr item, newSections)
-    {
-      CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem());
-      newItem->SetLabel(item->GetLabel());
-      newItem->SetProperty("plex", "1");
-
-      if (item->GetProperty("key").asString().find("/library/sections") != string::npos)
-        newItem->SetProperty("section", "1");
-
-      CStdString sectionName = item->GetLabel();
-      if (nameCounts[sectionName.ToLower()] > 1)
-        newItem->SetLabel2(item->GetLabel2());
-
-      // Adding the section for preloading the fans
-      AddSection(item->GetPath(), (int)item->GetProperty("typeNumber").asInteger());
-
-      if (item->GetProperty("key").asString().find("/shared") != string::npos)
-      {
-        CStdString path = "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)";
-        newItem->SetClickActions(CGUIAction("", path));
-        newItem->SetPath(path);
-      }
-      else if (item->GetProperty("type").asString() == "artist")
-      {
-        CStdString path = "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)";
-        newItem->SetClickActions(CGUIAction("", path));
-        newItem->SetPath(path);
-      }
-      else if (item->GetProperty("type").asString() == "photo")
-      {
-        CStdString path = "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)";
-        newItem->SetClickActions(CGUIAction("", path));
-        newItem->SetPath(path);
-      }
-      else
-      {
-        CStdString path = "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)";
-        newItem->SetClickActions(CGUIAction("", path));
-        newItem->SetPath(path);
-      }
-
-      newItem->m_idepth = 0;
-      if (item->HasArt(PLEX_ART_FANART))
-        newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
-      newItem->m_iprogramCount = id++;
-      newItem->SetProperty("sectionPath", item->GetPath());
-
-      newList.push_back(newItem);
-    }
-
-    // See what channel entries to add.
-    if (numApplication > 0)
-    {
-      newList.push_back(m_applicationChannelItem);
-      m_applicationChannelItem->SetProperty("sectionPath", "channel://application");
-      AddSection("channel://application", PLEX_METADATA_CHANNEL_APPLICATION);
-    }
-
-    if (numVideo > 0)
-    {
-      newList.push_back(m_videoChannelItem);
-      m_videoChannelItem->SetProperty("sectionPath", "channel://video");
-      AddSection("channel://video", PLEX_METADATA_CHANNEL_VIDEO);
-    }
-
-    if (numPhoto > 0)
-    {
-      newList.push_back(m_photoChannelItem);
-      m_photoChannelItem->SetProperty("sectionPath", "channel://photo");
-      AddSection("channel://photo", PLEX_METADATA_CHANNEL_PHOTO);
-    }
-
-    if (numMusic > 0)
-    {
-      newList.push_back(m_musicChannelItem);
-      m_musicChannelItem->SetProperty("sectionPath", "channel://music");
-      AddSection("channel://music", PLEX_METADATA_CHANNEL_MUSIC);
-    }
-
-    // Replace 'em.
-    control->SetStaticContent(newList);
-
-    RestoreSection();
-  }
-}
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::HideAllLists()

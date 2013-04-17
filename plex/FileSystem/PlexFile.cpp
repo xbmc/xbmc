@@ -30,7 +30,9 @@ CPlexFile::BuildHTTPURL(CURL& url)
     return false;
   }
 
-  newUrl = server->BuildURL(url.GetFileName());
+  CLog::Log(LOGDEBUG, "Passing %s to BuildURL", url.GetFileName().c_str());
+
+  newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
   CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTPURL translated '%s' to '%s'", url.Get().c_str(), newUrl.Get().c_str());
   url = newUrl;
 

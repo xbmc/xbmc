@@ -27,11 +27,11 @@ using namespace XFILE;
 
 /* IDirectory Interface */
 bool
-CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems)
+CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 {
-  m_url = CURL(strPath);
+  m_url = url;
 
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", strPath.c_str());
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
 
   if (boost::ends_with(m_url.GetFileName(), "/children/"))
   {
@@ -60,14 +60,14 @@ CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList& fileItems
 
   if (!doc.Parse(data))
   {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", strPath.c_str());
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", m_url.Get().c_str());
     CancelAugmentations();
     return false;
   }
 
   if (!ReadMediaContainer(doc.RootElement(), fileItems))
   {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", strPath.c_str());
+    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
     CancelAugmentations();
     return false;
   }
