@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "guilib/GUIDropPolicy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -52,6 +53,8 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   if (!pNode.get())
     return false;
 
+  items.SetDropPolicy(new VideoDBDropPolicy());//TODO: remove, this is just for testing different list kinds...
+  
   bool bResult = pNode->GetChilds(items);
   for (int i=0;i<items.Size();++i)
   {

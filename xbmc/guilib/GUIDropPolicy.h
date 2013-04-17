@@ -94,7 +94,9 @@ enum DropPolicyType
   DPT_MUSIC_PLAYLIST,
   DPT_VIDEO_PLAYLIST,
   DPT_FILE_MANAGER,
-  DPT_FAVOURITES
+  DPT_FAVOURITES,
+  DPT_VIDEODB,
+  DPT_MUSICDB
 };
 
 
@@ -160,5 +162,27 @@ struct CFavouritesDropPolicy : public IGUIDropPolicy
   
   virtual bool IsDuplicate(const CFileItemPtr& item, const CFileItemList& list);
   virtual void operator>>(CArchive& ar) { ar << (int)DPT_FAVOURITES; }
+};
+
+struct MusicDBDropHandler : public IGUIDropPolicy
+{ 
+  MusicDBDropHandler() : IGUIDropPolicy(true) {}
+  virtual bool IsDropable(const CFileItemPtr& item) const { return false; }
+  virtual IGUIDropPolicy* Copy() const { return new MusicDBDropHandler(); }
+  virtual bool OnDropAdd(CFileItemList& list, CFileItemPtr item, int position) { return true; }
+  virtual bool OnDropMove(CFileItemList& list, int posBefore, int posAfter) { return true; }
+  virtual void operator>>(CArchive& ar) { ar << (int)DPT_MUSICDB; }
+  
+};
+
+struct VideoDBDropPolicy : public IGUIDropPolicy
+{ 
+  VideoDBDropPolicy() : IGUIDropPolicy(true) {}
+  virtual bool IsDropable(const CFileItemPtr& item) const { return false; }
+  virtual IGUIDropPolicy* Copy() const { return new VideoDBDropPolicy(); }
+  virtual bool OnDropAdd(CFileItemList& list, CFileItemPtr item, int position) { return true; }
+  virtual bool OnDropMove(CFileItemList& list, int posBefore, int posAfter) { return true; }
+  virtual void operator>>(CArchive& ar) { ar << (int)DPT_VIDEODB; }
+  
 };
 

@@ -49,6 +49,10 @@ IGUIDropPolicy* IGUIDropPolicy::Create(CArchive& ar)
       return new FileManagerDropPolicy(str);
     case DPT_FAVOURITES:
       return new CFavouritesDropPolicy();
+    case DPT_VIDEODB:
+      return new VideoDBDropPolicy();
+    case DPT_MUSICDB:
+      return new MusicDBDropHandler();
   }
   return NULL;
 }

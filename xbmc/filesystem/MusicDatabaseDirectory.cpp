@@ -51,6 +51,8 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   if (!pNode.get())
     return false;
 
+  items.SetDropPolicy(new MusicDBDropHandler());//TODO: remove, this is just for testing different list kinds... 
+  
   bool bResult = pNode->GetChilds(items);
   for (int i=0;i<items.Size();++i)
   {
