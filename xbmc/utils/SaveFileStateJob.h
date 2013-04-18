@@ -34,7 +34,12 @@ bool CSaveFileStateJob::DoWork()
   if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->m_strFileNameAndPath.Find("removable://") == 0)
     progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (m_item.HasProperty("original_listitem_url"))
-    progressTrackingFile = m_item.GetProperty("original_listitem_url").asString();
+  {
+    // only use original_listitem_url for Python & UPnP sources
+    CStdString original = m_item.GetProperty("original_listitem_url").asString();
+    if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original))
+      progressTrackingFile = original;
+  }
 
   if (progressTrackingFile != "")
   {
