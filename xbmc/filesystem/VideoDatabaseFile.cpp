@@ -60,28 +60,24 @@ CStdString CVideoDatabaseFile::TranslateUrl(const CURL& url)
   StringUtils::SplitString(strPath, "/", pathElem);
   if (pathElem.size() == 0)
     return "";
-  if (!StringUtils::IsNaturalNumber(pathElem.at(2)))
-    return "";
-  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE) atol(pathElem.at(2).c_str());
-  switch (type) {
-  case 4:
+
+  CStdString itemType = pathElem.at(2);
+  VIDEODB_CONTENT_TYPE type;
+  if (itemType.Equals("movies") || itemType.Equals("recentlyaddedmovies"))
     type = VIDEODB_CONTENT_MOVIES;
-    break;
-  case 2:
-  case 5:
+  else if (itemType.Equals("episodes") || itemType.Equals("recentlyaddedepisodes"))
     type = VIDEODB_CONTENT_EPISODES;
-    break;
-  case 6:
+  else if (itemType.Equals("musicvideos") || itemType.Equals("recentlyaddedmusicvideos"))
     type = VIDEODB_CONTENT_MUSICVIDEOS;
-    break;
-  }
+  else
+    return "";
 
   CVideoDatabase videoDatabase;
   if (!videoDatabase.Open())
     return "";
 
   CStdString realFilename;
-  videoDatabase.GetFilePathById(idDb, realFilename, (VIDEODB_CONTENT_TYPE)type);
+  videoDatabase.GetFilePathById(idDb, realFilename, type);
 
   return realFilename;
 }
