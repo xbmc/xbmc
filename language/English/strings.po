@@ -6350,6 +6350,20 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr ""
 
+#empty strings from id 15201 to 15206
+
+#: xbmc/GUIInfoManager.cpp
+msgctxt "#15207"
+msgid "Connected"
+msgstr ""
+
+#: xbmc/GUIInfoManager.cpp
+msgctxt "#15208"
+msgid "Not connected"
+msgstr ""
+
+#empty strings from id 15209 to 15212
+
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#15213"
 msgid "Play using..."
