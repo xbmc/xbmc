@@ -635,7 +635,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
       CVideoDatabase database;
       database.Open();
       if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
-          CFileItemPtr mvideos(new CFileItem("videodb://3/", true));
+          CFileItemPtr mvideos(new CFileItem("library://video/musicvideos/", true));
           mvideos->SetLabel(g_localizeStrings.Get(20389));
           items.Add(mvideos);
       }
