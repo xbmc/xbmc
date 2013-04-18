@@ -1859,10 +1859,11 @@ void CAMLCodec::SetSpeed(int speed)
       m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
       break;
     default:
-      Reset();
       m_dll->codec_resume(&am_private->vcodec);
-      m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
-      //m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
+      if (am_private->video_format == VFORMAT_H264)
+        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
+      else
+        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
       break;
   }
 }
