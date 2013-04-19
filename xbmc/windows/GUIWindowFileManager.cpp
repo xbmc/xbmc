@@ -57,6 +57,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 
 #include "utils/JobManager.h"
@@ -1093,7 +1094,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       CFileItemPtr pItem2=m_vecItems[list]->Get(i);
       if (pItem2->IsSelected())
       {
-        int64_t folderSize = -1;
+        int64_t folderSize = 0;
         if (pItem2->m_bIsFolder)
         {
           folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
@@ -1103,32 +1104,23 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
           CStdString strFileNameAndPath;
           if (pItem2->HasVideoInfoTag())
             strFileNameAndPath = pItem2->GetVideoInfoTag()->m_strFileNameAndPath;
+          else if (pItem2->HasMusicInfoTag())
+            strFileNameAndPath = pItem2->GetMusicInfoTag()->m_strURL;
 
           if (strFileNameAndPath.empty())
             continue;
 
-          std::vector<CStdString> vecPaths;
           if (URIUtils::IsStack(strFileNameAndPath)) 
-          {
-            CStackDirectory::GetPaths(strFileNameAndPath, vecPaths);
-          }
-          else
-            vecPaths.push_back(strFileNameAndPath);
+            continue;
 
-          if (vecPaths.size() > 0)
-          {
-            folderSize = 0;
-            for (std::vector<CStdString>::iterator it = vecPaths.begin() ; it != vecPaths.end(); ++it)
-            {
-              CFile f;
-              if (!f.Open(*it))
-                continue;
+          CFile f;
+          if (!f.Open(strFileNameAndPath))
+            continue;
 
-              folderSize += f.GetLength();
-              f.Close();
-            }
-          }
+          folderSize += f.GetLength();
+          f.Close();
         }
+
         if (folderSize >= 0)
         {
           pItem2->m_dwSize = folderSize;
