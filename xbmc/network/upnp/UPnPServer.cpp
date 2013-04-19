@@ -501,6 +501,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
             object = Build(item, true, context, thumb_loader);
+            object->m_ParentID = "-1";
         } else {
             return NPT_FAILURE;
         }
