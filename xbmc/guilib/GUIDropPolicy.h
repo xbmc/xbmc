@@ -94,6 +94,7 @@ enum DropPolicyType
   DPT_MUSIC_PLAYLIST,
   DPT_VIDEO_PLAYLIST,
   DPT_FILE_MANAGER,
+  DPT_FAVOURITES
 };
 
 
@@ -144,5 +145,20 @@ struct FileManagerDropPolicy : public IGUIDropPolicy
   virtual void operator>>(CArchive& ar) { ar << DPT_FILE_MANAGER; ar << m_targetDir; }
 protected:
   const CStdString m_targetDir;
+};
+
+
+struct CFavouritesDropPolicy : public IGUIDropPolicy
+{
+  CFavouritesDropPolicy()  : IGUIDropPolicy(true) {}
+  virtual bool IsDropable(const CFileItemPtr& item) const { return true; }
+  virtual IGUIDropPolicy* Copy() const { return new CFavouritesDropPolicy(); }
+  bool OnDrop(CFileItemList& items);
+  virtual bool OnDropAdd(CFileItemList& list, CFileItemPtr item, int position) { return OnDrop(list); }
+  virtual bool OnDropMove(CFileItemList& list, int posBefore, int posAfter) { return OnDrop(list); }
+  virtual CFileItemPtr CreateDummy(const CFileItemPtr item);
+  
+  virtual bool IsDuplicate(const CFileItemPtr& item, const CFileItemList& list);
+  virtual void operator>>(CArchive& ar) { ar << (int)DPT_FAVOURITES; }
 };
 

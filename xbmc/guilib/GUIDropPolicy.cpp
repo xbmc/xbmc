@@ -47,6 +47,8 @@ IGUIDropPolicy* IGUIDropPolicy::Create(CArchive& ar)
     case DPT_FILE_MANAGER:
       ar >> str;
       return new FileManagerDropPolicy(str);
+    case DPT_FAVOURITES:
+      return new CFavouritesDropPolicy();
   }
   return NULL;
 }
@@ -147,3 +149,23 @@ bool FileManagerDropPolicy::OnDropAdd(CFileItemList& list, CFileItemPtr item, in
   return true;
 }
 
+
+CFileItemPtr CFavouritesDropPolicy::CreateDummy(const CFileItemPtr item) 
+{
+  CFileItemPtr result(new CFileItem(*item));
+  XFILE::CFavouritesDirectory favs;
+  result->SetPath(favs.GetExecutePath(item.get(), g_infoManager.GetDragStartWindow()));
+  return result;
+}
+
+bool CFavouritesDropPolicy::OnDrop(CFileItemList& items) 
+{
+  XFILE::CFavouritesDirectory favs;
+  return favs.Save(items);
+}
+
+bool CFavouritesDropPolicy::IsDuplicate(const CFileItemPtr& item, const CFileItemList& list)
+{
+  XFILE::CFavouritesDirectory favs;
+  return favs.IsFavourite(item.get(), g_infoManager.GetDragStartWindow());
+}
