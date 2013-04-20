@@ -53,7 +53,7 @@ class PERIPHERALS::DllLibCEC : public DllDynamic, DllLibCECInterface
 };
 
 CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals *manager) :
-    CPeripheralBus(manager, PERIPHERAL_BUS_CEC),
+    CPeripheralBus("PeripBusCEC", manager, PERIPHERAL_BUS_CEC),
     m_dll(new DllLibCEC),
     m_cecAdapter(NULL)
 {

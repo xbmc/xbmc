@@ -31,7 +31,7 @@ static GUID USB_NIC_GUID =  { 0xAD498944, 0x762F, 0x11D0, { 0x8D, 0xCB, 0x00, 0x
 using namespace PERIPHERALS;
 
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
-    CPeripheralBus(manager, PERIPHERAL_BUS_USB)
+    CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
   /* device removals aren't always triggering OnDeviceRemoved events, so poll for changes every 5 seconds to be sure we don't miss anything */
   m_iRescanTime = 5000;

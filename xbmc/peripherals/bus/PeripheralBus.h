@@ -42,7 +42,7 @@ namespace PERIPHERALS
   class CPeripheralBus : protected CThread
   {
   public:
-    CPeripheralBus(CPeripherals *manager, PeripheralBusType type);
+    CPeripheralBus(const CStdString &threadname, CPeripherals *manager, PeripheralBusType type);
     virtual ~CPeripheralBus(void) { Clear(); }
 
     /*!
