@@ -33,7 +33,7 @@ namespace PERIPHERALS
 
   /*!
    * @class CPeripheralBus
-   * This represents a bus on the system. By default, this bus instance will scan for changes every second.
+   * This represents a bus on the system. By default, this bus instance will scan for changes every 5 seconds.
    * If this bus only has to be updated after a notification sent by the system, set m_bNeedsPolling to false
    * in the constructor, and implement the OnDeviceAdded(), OnDeviceChanged() and OnDeviceRemoved() methods.
    *
