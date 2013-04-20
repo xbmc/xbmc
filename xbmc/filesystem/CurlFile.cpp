@@ -247,6 +247,7 @@ CCurlFile::CReadState::CReadState()
   m_bufferSize = 0;
   m_cancelled = false;
   m_bFirstLoop = true;
+  m_requireRange = false;
   m_headerdone = false;
   m_readBuffer = 0;
   m_isPaused = false;
@@ -303,12 +304,14 @@ bool CCurlFile::CReadState::Seek(int64_t pos)
 void CCurlFile::CReadState::SetResume(void)
 {
   /*
-   * Explicitly set RANGE header when filepos=0 as some http servers require us to always send the range
+   * Explicitly set RANGE header when filepos=0 for some http servers require us to always send the range
    * request header. If we don't the server may provide different content causing seeking to fail.
    * This only affects HTTP-like items, for FTP it's a null operation.
    */
-  if (m_filePos == 0)
+  if (m_requireRange && m_filePos == 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-");
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
 }
@@ -396,6 +399,7 @@ CCurlFile::CCurlFile()
   m_proxytype = PROXY_HTTP;
   m_state = new CReadState();
   m_skipshout = false;
+  m_requireRange = false;
   m_httpresponse = -1;
 }
 
@@ -607,6 +611,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     // the 302 response's body length, which cause the next read request failed, so we ignore
     // content-length for shoutcast file to workaround this.
     g_curlInterface.easy_setopt(h, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
+
+  state->m_requireRange = m_requireRange;
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -772,6 +778,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_skipshout = true;
         else if (name.Equals("seekable") && value.Equals("0"))
           m_seekable = false;
+        else if (name.Equals("require_range") && value.Equals("1"))
+          m_requireRange = true;
         else
           SetRequestHeader(name, value);
       }
