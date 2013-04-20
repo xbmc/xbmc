@@ -114,6 +114,7 @@ namespace XFILE
           int64_t         m_filePos;
           bool            m_bFirstLoop;
           bool            m_isPaused;
+          bool            m_sendRange;
 
           char*           m_readBuffer;
 
