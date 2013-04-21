@@ -33,6 +33,10 @@ ifeq ($(OS),osx)
   EXCLUDED_DEPENDS = libusb
 endif
 
+ifeq ($(OS),android)
+  EXCLUDED_DEPENDS = libshairplay
+endif
+
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
 ZLIB=
