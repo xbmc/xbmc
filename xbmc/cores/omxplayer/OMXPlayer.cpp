@@ -1302,7 +1302,7 @@ void COMXPlayer::Process()
     if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
     if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
 
-    if(m_change_volume)
+    if(m_change_volume && m_CurrentAudio.started)
     {
       m_player_audio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume);
       m_change_volume = false;
