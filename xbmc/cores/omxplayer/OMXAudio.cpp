@@ -66,7 +66,7 @@ static unsigned int WAVEChannels[OMX_MAX_CHANNELS] =
   SPEAKER_TOP_FRONT_CENTER, SPEAKER_LOW_FREQUENCY,
   SPEAKER_BACK_LEFT,        SPEAKER_BACK_RIGHT,
   SPEAKER_SIDE_LEFT,        SPEAKER_SIDE_RIGHT,
-  SPEAKER_BACK_CENTER,      SPEAKER_SIDE_RIGHT
+  SPEAKER_BACK_CENTER,      0
 };
 
 static const uint16_t AC3Bitrates[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
@@ -111,7 +111,6 @@ COMXAudio::COMXAudio() :
   m_eEncoding       (OMX_AUDIO_CodingPCM),
   m_extradata       (NULL   ),
   m_extrasize       (0      ),
-  m_vizBufferSamples(0      ),
   m_last_pts        (DVD_NOPTS_VALUE)
 {
   m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
@@ -356,7 +355,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_pcm_output.eNumData            = OMX_NumericalDataSigned;
   m_pcm_output.eEndian             = OMX_EndianLittle;
   m_pcm_output.bInterleaved        = OMX_TRUE;
-  m_pcm_output.nBitPerSample       = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
+  m_pcm_output.nBitPerSample       = 16; // float is decoded to 16bit integer by gpu
   m_pcm_output.ePCMMode            = OMX_AUDIO_PCMModeLinear;
   m_pcm_output.nChannels           = m_OutputChannels;
   m_pcm_output.nSamplingRate       = m_format.m_sampleRate;
@@ -364,27 +363,29 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_SampleRate    = m_format.m_sampleRate;
   m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_BufferLen     = m_BytesPerSec = m_format.m_sampleRate * 
-    (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3) * 
-    m_format.m_channelLayout.Count();
+    (m_BitsPerSample >> 3) * m_format.m_channelLayout.Count();
   m_BufferLen     *= AUDIO_BUFFER_SECONDS;
-  m_ChunkLen      = 6144;
+  // should be big enough that common formats (e.g. 6 channel DTS) fit in a single packet.
+  // we don't mind less common formats being split (e.g. ape/wma output large frames)
+  m_ChunkLen      = 32*1024;
 
   m_wave_header.Samples.wSamplesPerBlock    = 0;
   m_wave_header.Format.nChannels            = m_format.m_channelLayout.Count();
   m_wave_header.Format.nBlockAlign          = m_format.m_channelLayout.Count() * 
-    (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
-  m_wave_header.Format.wFormatTag           = WAVE_FORMAT_PCM;
+    (m_BitsPerSample >> 3);
+  // 0x8000 is custom format interpreted by GPU as WAVE_FORMAT_IEEE_FLOAT_PLANAR
+  m_wave_header.Format.wFormatTag           = m_BitsPerSample == 32 ? 0x8000 : WAVE_FORMAT_PCM;
   m_wave_header.Format.nSamplesPerSec       = m_format.m_sampleRate;
   m_wave_header.Format.nAvgBytesPerSec      = m_BytesPerSec;
-  m_wave_header.Format.wBitsPerSample       = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
-  m_wave_header.Samples.wValidBitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
+  m_wave_header.Format.wBitsPerSample       = m_BitsPerSample;
+  m_wave_header.Samples.wValidBitsPerSample = m_BitsPerSample;
   m_wave_header.Format.cbSize               = 0;
   m_wave_header.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
 
   m_pcm_input.eNumData              = OMX_NumericalDataSigned;
   m_pcm_input.eEndian               = OMX_EndianLittle;
   m_pcm_input.bInterleaved          = OMX_TRUE;
-  m_pcm_input.nBitPerSample         = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
+  m_pcm_input.nBitPerSample         = m_BitsPerSample;
   m_pcm_input.ePCMMode              = OMX_AUDIO_PCMModeLinear;
   m_pcm_input.nChannels             = m_format.m_channelLayout.Count();
   m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
@@ -737,37 +738,42 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     return len;
   }
 
-  m_vizBufferSamples = 0;
-
-  if (m_pCallback && len)
+  if (m_pCallback && len && !(m_Passthrough || m_HWDecode))
   {
     /* input samples */
-    m_vizBufferSamples = len / (CAEUtil::DataFormatToBits(AE_FMT_S16LE) >> 3);
-    CAEConvert::AEConvertToFn m_convertFn = CAEConvert::ToFloat(AE_FMT_S16LE);
+    unsigned int vizBufferSamples = len / (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
+
     /* input frames */
-    unsigned int frames = m_vizBufferSamples / m_format.m_channelLayout.Count();
+    unsigned int frames = vizBufferSamples / m_format.m_channelLayout.Count();
+    float *floatBuffer = (float *)data;
 
-    /* check convert buffer */
-    CheckOutputBufferSize((void **)&m_vizBuffer, &m_vizBufferSize, m_vizBufferSamples * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+    if (m_format.m_dataFormat != AE_FMT_FLOAT)
+    {
+      CAEConvert::AEConvertToFn m_convertFn = CAEConvert::ToFloat(m_format.m_dataFormat);
 
-    /* convert to float */
-    m_convertFn((uint8_t *)data, m_vizBufferSamples, (float *)m_vizBuffer);
+      /* check convert buffer */
+      CheckOutputBufferSize((void **)&m_vizBuffer, &m_vizBufferSize, vizBufferSamples * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
 
-    /* check remap buffer */
-    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+      /* convert to float */
+      m_convertFn((uint8_t *)data, vizBufferSamples, (float *)m_vizBuffer);
+      floatBuffer = (float *)m_vizBuffer;
+    }
+
+    // Viz channel count is 2
+    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * sizeof(float));
 
     /* remap */
-    m_vizRemap.Remap((float *)m_vizBuffer, (float*)m_vizRemapBuffer, frames);
+    m_vizRemap.Remap(floatBuffer, (float*)m_vizRemapBuffer, frames);
 
     /* output samples */
-    m_vizBufferSamples = m_vizBufferSamples / m_format.m_channelLayout.Count() * 2;
+    vizBufferSamples = vizBufferSamples / m_format.m_channelLayout.Count() * 2;
 
     /* viz size is limited */
-    if(m_vizBufferSamples > VIS_PACKET_SIZE)
-      m_vizBufferSamples = VIS_PACKET_SIZE;
+    if(vizBufferSamples > VIS_PACKET_SIZE)
+      vizBufferSamples = VIS_PACKET_SIZE;
 
     if(m_pCallback)
-      m_pCallback->OnAudioData((float *)m_vizRemapBuffer, m_vizBufferSamples);
+      m_pCallback->OnAudioData((float *)m_vizRemapBuffer, vizBufferSamples);
   }
 
   if(m_eEncoding == OMX_AUDIO_CodingDTS && m_LostSync && (m_Passthrough || m_HWDecode))
@@ -784,14 +790,17 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
       return len;
   }
 
-  unsigned int demuxer_bytes = (unsigned int)len;
+  int m_InputChannels = m_format.m_channelLayout.Count();
+  unsigned pitch = (m_Passthrough || m_HWDecode) ? 1:(m_BitsPerSample >> 3) * m_InputChannels;
+  unsigned int demuxer_samples = len / pitch;
+  unsigned int demuxer_samples_sent = 0;
   uint8_t *demuxer_content = (uint8_t *)data;
 
   OMX_ERRORTYPE omx_err;
 
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
 
-  while(demuxer_bytes)
+  while(demuxer_samples_sent < demuxer_samples)
   {
     // 200ms timeout
     omx_buffer = m_omx_decoder.GetInputBuffer(200);
@@ -805,8 +814,31 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     omx_buffer->nOffset = 0;
     omx_buffer->nFlags  = 0;
 
-    omx_buffer->nFilledLen = (demuxer_bytes > omx_buffer->nAllocLen) ? omx_buffer->nAllocLen : demuxer_bytes;
-    memcpy(omx_buffer->pBuffer, demuxer_content, omx_buffer->nFilledLen);
+    unsigned int remaining = demuxer_samples-demuxer_samples_sent;
+    unsigned int samples_space = omx_buffer->nAllocLen/pitch;
+    unsigned int samples = std::min(remaining, samples_space);
+
+    omx_buffer->nFilledLen = samples * pitch;
+
+    if (samples < demuxer_samples && m_BitsPerSample==32 && !(m_Passthrough || m_HWDecode))
+    {
+       uint8_t *dst = omx_buffer->pBuffer;
+       uint8_t *src = demuxer_content + demuxer_samples_sent * (m_BitsPerSample >> 3);
+       // we need to extract samples from planar audio, so the copying needs to be done per plane
+       for (int i=0; i<m_InputChannels; i++)
+       {
+         memcpy(dst, src, omx_buffer->nFilledLen / m_InputChannels);
+         dst += omx_buffer->nFilledLen / m_InputChannels;
+         src += demuxer_samples * (m_BitsPerSample >> 3);
+       }
+       assert(dst <= omx_buffer->pBuffer + m_ChunkLen);
+    }
+    else
+    {
+       uint8_t *dst = omx_buffer->pBuffer;
+       uint8_t *src = demuxer_content + demuxer_samples_sent * pitch;
+       memcpy(dst, src, omx_buffer->nFilledLen);
+    }
 
     uint64_t val  = (uint64_t)(pts == DVD_NOPTS_VALUE) ? 0 : pts;
 
@@ -843,10 +875,9 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
     omx_buffer->nTimeStamp = ToOMXTime(val);
 
-    demuxer_bytes -= omx_buffer->nFilledLen;
-    demuxer_content += omx_buffer->nFilledLen;
+    demuxer_samples_sent += samples;
 
-    if(demuxer_bytes == 0)
+    if(demuxer_samples_sent == demuxer_samples)
       omx_buffer->nFlags |= OMX_BUFFERFLAG_ENDOFFRAME;
 
     int nRetry = 0;
@@ -923,7 +954,6 @@ int COMXAudio::SetPlaySpeed(int iSpeed)
 
 void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
 {
-  m_vizBufferSamples = 0;
   if(!m_Passthrough && !m_HWDecode)
   {
     m_pCallback = pCallback;
@@ -937,7 +967,6 @@ void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
 void COMXAudio::UnRegisterAudioCallback()
 {
   m_pCallback = NULL;
-  m_vizBufferSamples = 0;
 }
 
 unsigned int COMXAudio::GetAudioRenderingLatency()

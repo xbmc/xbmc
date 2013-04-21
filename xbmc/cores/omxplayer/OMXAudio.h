@@ -117,7 +117,6 @@ private:
   int           m_extrasize;
   std::string   m_deviceuse;
   // stuff for visualisation
-  unsigned int  m_vizBufferSamples;
   double        m_last_pts;
   int           m_vizBufferSize;
   uint8_t       *m_vizBuffer;
