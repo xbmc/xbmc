@@ -51,6 +51,7 @@ CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()
 {
   m_pInput = NULL;
   m_stream = NULL;
+  m_bytes = 0;
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));
 }
 
@@ -101,7 +102,7 @@ void CDVDDemuxBXA::Dispose()
   m_stream = NULL;
 
   m_pInput = NULL;
-  m_pts    = 0;
+  m_bytes = 0;
 
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));
 }
@@ -151,9 +152,9 @@ DemuxPacket* CDVDDemuxBXA::Read()
     int n = (m_header.channels * m_header.bitsPerSample * m_header.sampleRate)>>3;
     if (n > 0)
     {
-      m_pts += ((double)pPacket->iSize * DVD_TIME_BASE) / n;
-      pPacket->dts = m_pts;
-      pPacket->pts = m_pts;
+      m_bytes += pPacket->iSize;
+      pPacket->dts = (double)m_bytes * DVD_TIME_BASE / n;
+      pPacket->pts = pPacket->dts;
     }
     else
     {
