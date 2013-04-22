@@ -261,7 +261,7 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
-bool CLangCodeExpander::ConvertToTwoCharCode(const CStdString& lang, CStdString& code)
+bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
 {
   if (lang.length() == 2)
   {
