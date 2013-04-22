@@ -28,6 +28,13 @@ class CLangCodeExpander
 {
 public:
 
+  enum LANGFORMATS
+  {
+    ISO_639_1,
+    ISO_639_2,
+    ENGLISH_NAME
+  };
+
   CLangCodeExpander(void);
   ~CLangCodeExpander(void);
 
