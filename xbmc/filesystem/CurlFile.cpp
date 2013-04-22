@@ -884,6 +884,7 @@ void CCurlFile::Reset()
 bool CCurlFile::Open(const CURL& url)
 {
   m_opened = true;
+  m_seekable = true;
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
@@ -894,7 +895,6 @@ bool CCurlFile::Open(const CURL& url)
   if( m_state->m_easyHandle == NULL )
     g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
 
-  m_seekable = true;
   // setup common curl options
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
