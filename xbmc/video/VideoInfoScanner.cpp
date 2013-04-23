@@ -1369,28 +1369,6 @@ namespace VIDEO
       CFileItem item;
       item.SetPath(file->strPath);
 
-      // handle .nfo files
-      CNfoFile::NFOResult result=CNfoFile::NO_NFO;
-      CScraperUrl scrUrl;
-      ScraperPtr info(scraper);
-      item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
-      if (useLocal)
-        result = CheckForNFOFile(&item, false, info,scrUrl);
-      if (result == CNfoFile::FULL_NFO)
-      {
-        m_nfoReader.GetDetails(*item.GetVideoInfoTag());
-        // override with episode and season number from file if available
-        if (file->iEpisode > -1)
-        {
-          item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
-          item.GetVideoInfoTag()->m_iSeason = file->iSeason;
-        }
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
-          return INFO_ERROR;
- 
-        continue;
-     }
-
       if (!hasEpisodeGuide)
       {
         // fetch episode guide
@@ -1434,6 +1412,28 @@ namespace VIDEO
             continue;
           }
         }
+      }
+
+      // handle .nfo files
+      CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+      CScraperUrl scrUrl;
+      ScraperPtr info(scraper);
+      item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+      if (useLocal)
+        result = CheckForNFOFile(&item, false, info,scrUrl);
+      if (result == CNfoFile::FULL_NFO)
+      {
+        m_nfoReader.GetDetails(*item.GetVideoInfoTag());
+        // override with episode and season number from file if available
+        if (file->iEpisode > -1)
+        {
+          item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+          item.GetVideoInfoTag()->m_iSeason = file->iSeason;
+        }
+        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
+          return INFO_ERROR;
+ 
+        continue;
       }
 
       EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
