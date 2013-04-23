@@ -13,8 +13,8 @@
 
 	<regions>
 	<region name="Argentina" locale="AR">
-  	  	<dateshort>D/M/YYYY</dateshort>
-  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+  	  	<dateshort>DD/MM/YYYY</dateshort>
+  	  	<datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
   	  	<tempunit>C</tempunit>
 		<speedunit>kmh</speedunit>
