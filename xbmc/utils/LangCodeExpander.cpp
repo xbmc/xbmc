@@ -202,6 +202,14 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
         return true;
       }
     }
+    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    {
+      if (strCharCode.Equals(RegionCode2To3[index].id))
+      {
+        strThreeCharCode = strCharCode;
+        return true;
+      }
+    }
   }
   else if (strCharCode.size() > 3)
   {
@@ -303,10 +311,17 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
       return true;
     }
     else if (tmp.length() == 3)
-      return ConvertToTwoCharCode(tmp, code);
+      return ConvertToTwoCharCode(code, tmp);
   }
 
-  return false;
+  // try xbmc specific language names
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
+  CLangInfo langInfo;
+  if (!langInfo.Load(strLangInfoPath))
+    return false;
+
+  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode());
 }
 
 bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
