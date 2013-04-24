@@ -231,7 +231,7 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
-  if (m_aspect_ratio > 0.0 && !m_hints.forced_aspect)
+  if (m_aspect_ratio > 1.0 && !m_hints.forced_aspect)
   {
     pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_aspect_ratio)) & -3;
     if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
