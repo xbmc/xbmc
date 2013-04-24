@@ -33,7 +33,7 @@ typedef struct LCENTRY
 } LCENTRY;
 
 extern const struct LCENTRY g_iso639_1[143];
-extern const struct LCENTRY g_iso639_2[536];
+extern const struct LCENTRY g_iso639_2[537];
 
 struct CharCodeConvertionWithHack
 {
@@ -459,8 +459,9 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[536] =
+extern const LCENTRY g_iso639_2[537] =
 {
+  { MAKECODE('\0','a','b','k'), "Abkhaz" },
   { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },
   { MAKECODE('\0','a','c','h'), "Acoli" },
