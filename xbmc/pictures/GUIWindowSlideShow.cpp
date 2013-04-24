@@ -860,6 +860,16 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
 
+  case GUI_MSG_SHOW_PICTURE:
+    {
+      CStdString strFile = message.GetStringParam();
+      Reset();
+      CFileItem item(strFile, false);
+      Add(&item);
+      RunSlideShow("", false, false, true, "", false);
+    }
+    break;
+
   case GUI_MSG_START_SLIDESHOW:
     {
       CStdString strFolder = message.GetStringParam();

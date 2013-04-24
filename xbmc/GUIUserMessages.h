@@ -129,3 +129,6 @@
 
 // Sent to the AddonSetting dialogs from addons if they updated a setting
 #define GUI_MSG_SETTING_UPDATED       GUI_MSG_USER + 35
+
+// Message sent to CGUIWindowSlideshow to show picture
+#define GUI_MSG_SHOW_PICTURE          GUI_MSG_USER + 36
