@@ -491,6 +491,34 @@ namespace XBMCAddon
       CAEFactory::Resume();
     }
 
+    String convertLanguage(const char* language, int format)
+    {
+      CStdString convertedLanguage;
+      switch (format)
+      {
+      case CLangCodeExpander::ENGLISH_NAME:
+        {
+          g_LangCodeExpander.Lookup(convertedLanguage, language);
+          // maybe it's a check whether the language exists or not
+          if (convertedLanguage.empty())
+          {
+            g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+            g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
+          }
+          break;
+        }
+      case CLangCodeExpander::ISO_639_1:
+        g_LangCodeExpander.ConvertToTwoCharCode(convertedLanguage, language);
+        break;
+      case CLangCodeExpander::ISO_639_2:
+        g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+        break;
+      default:
+        return "";
+      }
+      return convertedLanguage.c_str();
+    }
+
     int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }
     int getSERVER_AIRPLAYSERVER() { return CApplication::ES_AIRPLAYSERVER; }
     int getSERVER_UPNPSERVER() { return CApplication::ES_UPNPSERVER; }
