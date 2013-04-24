@@ -32,8 +32,8 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[143];
-extern const struct LCENTRY g_iso639_2[536];
+extern const struct LCENTRY g_iso639_1[144];
+extern const struct LCENTRY g_iso639_2[537];
 
 struct CharCodeConvertionWithHack
 {
@@ -312,10 +312,11 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-extern const LCENTRY g_iso639_1[143] =
+extern const LCENTRY g_iso639_1[144] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
+  { MAKECODE('\0','\0','a','b'), "Abkhaz" },
   { MAKECODE('\0','\0','a','b'), "Abkhazian" },
   { MAKECODE('\0','\0','a','f'), "Afrikaans" },
   { MAKECODE('\0','\0','a','m'), "Amharic" },
@@ -336,7 +337,7 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','c','s'), "Czech" },
   { MAKECODE('\0','\0','c','y'), "Welsh" },
   { MAKECODE('\0','\0','d','a'), "Dansk" },
-  { MAKECODE('\0','\0','d','e'), "Deutsch" },
+  { MAKECODE('\0','\0','d','e'), "German" },
   { MAKECODE('\0','\0','d','z'), "Bhutani" },
   { MAKECODE('\0','\0','e','l'), "Greek" },
   { MAKECODE('\0','\0','e','n'), "English" },
@@ -407,7 +408,7 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','p','a'), "Punjabi" },
   { MAKECODE('\0','\0','p','l'), "Polish" },
   { MAKECODE('\0','\0','p','s'), "Pashto, Pushto" },
-  { MAKECODE('\0','\0','p','t'), "Portugues" },
+  { MAKECODE('\0','\0','p','t'), "Portuguese" },
   { MAKECODE('\0','\0','q','u'), "Quechua" },
   { MAKECODE('\0','\0','r','m'), "Rhaeto-Romance" },
   { MAKECODE('\0','\0','r','n'), "Kirundi" },
@@ -459,9 +460,10 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[536] =
+extern const LCENTRY g_iso639_2[537] =
 {
-    { MAKECODE('\0','a','b','k'), "Abkhazian" },
+  { MAKECODE('\0','a','b','k'), "Abkhaz" },
+  { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },
   { MAKECODE('\0','a','c','h'), "Acoli" },
   { MAKECODE('\0','a','d','a'), "Adangme" },
