@@ -76,7 +76,8 @@ public:
   bool SetCurrentVolume(float fVolume);
   void SetDynamicRangeCompression(long drc) { m_drc = drc; }
   int SetPlaySpeed(int iSpeed);
-  void WaitCompletion();
+  void SubmitEOS();
+  bool IsEOS();
   void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   void Flush();
