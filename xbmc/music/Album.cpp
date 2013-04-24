@@ -150,6 +150,26 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     {
 
       CSong song;
+      const TiXmlElement* songArtistCreditsNode = node->FirstChildElement("songArtistCredits");
+      if (songArtistCreditsNode)
+        song.artistCredits.clear();
+      
+      while (songArtistCreditsNode)
+      {
+        if (songArtistCreditsNode->FirstChild())
+        {
+          CArtistCredit artistCredit;
+          XMLUtils::GetString(songArtistCreditsNode,  "artist",               artistCredit.m_strArtist);
+          XMLUtils::GetString(songArtistCreditsNode,  "musicBrainzArtistID",  artistCredit.m_strMusicBrainzArtistID);
+          XMLUtils::GetString(songArtistCreditsNode,  "joinphrase",           artistCredit.m_strJoinPhrase);
+          XMLUtils::GetBoolean(songArtistCreditsNode, "featuring",            artistCredit.m_boolFeatured);
+          song.artistCredits.push_back(artistCredit);
+        }
+        
+        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("albumArtistCredits");
+      }
+
+      XMLUtils::GetString(node,   "musicBrainzTrackID",   song.strMusicBrainzTrackID);
       XMLUtils::GetInt(node, "position", song.iTrack);
 
       if (song.iTrack == 0)
@@ -211,25 +231,36 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   XMLUtils::SetInt(album,         "rating", iRating);
   XMLUtils::SetInt(album,           "year", iYear);
 
-  for( VECARTISTCREDITS::const_iterator it = artistCredits.begin();it != artistCredits.end();++it)
+  for( VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin();artistCredit != artistCredits.end();++artistCredit)
   {
     // add an <albumArtistCredits> tag
     TiXmlElement albumArtistCreditsElement("albumArtistCredits");
     TiXmlNode *albumArtistCreditsNode = album->InsertEndChild(albumArtistCreditsElement);
-    XMLUtils::SetString(albumArtistCreditsNode,               "artist", it->m_strArtist);
-    XMLUtils::SetString(albumArtistCreditsNode,  "musicBrainzArtistID", it->m_strMusicBrainzArtistID);
-    XMLUtils::SetString(albumArtistCreditsNode,           "joinphrase", it->m_strJoinPhrase);
-    XMLUtils::SetString(albumArtistCreditsNode,            "featuring", it->GetArtist());
+    XMLUtils::SetString(albumArtistCreditsNode,               "artist", artistCredit->m_strArtist);
+    XMLUtils::SetString(albumArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
+    XMLUtils::SetString(albumArtistCreditsNode,           "joinphrase", artistCredit->m_strJoinPhrase);
+    XMLUtils::SetString(albumArtistCreditsNode,            "featuring", artistCredit->GetArtist());
   }
 
-  for( VECSONGS::const_iterator it = songs.begin();it != songs.end();++it)
+  for( VECSONGS::const_iterator song = songs.begin(); song != songs.end(); ++song)
   {
     // add a <song> tag
     TiXmlElement cast("track");
     TiXmlNode *node = album->InsertEndChild(cast);
-    XMLUtils::SetString(node,   "title",    it->strTitle);
-    XMLUtils::SetInt(node,      "position", it->iTrack);
-    XMLUtils::SetString(node,   "duration", StringUtils::SecondsToTimeString(it->iDuration));
+    for( VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+    {
+      // add an <albumArtistCredits> tag
+      TiXmlElement songArtistCreditsElement("songArtistCredits");
+      TiXmlNode *songArtistCreditsNode = node->InsertEndChild(songArtistCreditsElement);
+      XMLUtils::SetString(songArtistCreditsNode,               "artist", artistCredit->m_strArtist);
+      XMLUtils::SetString(songArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
+      XMLUtils::SetString(songArtistCreditsNode,           "joinphrase", artistCredit->m_strJoinPhrase);
+      XMLUtils::SetString(songArtistCreditsNode,            "featuring", artistCredit->GetArtist());
+    }
+    XMLUtils::SetString(node,   "musicBrainzTrackID",   song->strMusicBrainzTrackID);
+    XMLUtils::SetString(node,   "title",                song->strTitle);
+    XMLUtils::SetInt(node,      "position",             song->iTrack);
+    XMLUtils::SetString(node,   "duration",             StringUtils::SecondsToTimeString(song->iDuration));
   }
 
   return true;
