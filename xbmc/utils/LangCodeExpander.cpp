@@ -461,7 +461,7 @@ extern const LCENTRY g_iso639_1[143] =
 
 extern const LCENTRY g_iso639_2[536] =
 {
-    { MAKECODE('\0','a','b','k'), "Abkhazian" },
+  { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },
   { MAKECODE('\0','a','c','h'), "Acoli" },
   { MAKECODE('\0','a','d','a'), "Adangme" },
