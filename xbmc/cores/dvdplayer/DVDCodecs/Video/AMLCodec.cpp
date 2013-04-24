@@ -860,6 +860,13 @@ static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
         return PLAYER_SUCCESS;
     }
 
+    if ((p[0]==0 && p[1]==0 && p[2]==1) && size < HDR_BUF_SIZE) {
+        CLog::Log(LOGDEBUG, "add 264 header in stream before header len=%d",size);
+        memcpy(buffer, buf, size);
+        pkt->hdr->size = size;
+        return PLAYER_SUCCESS;
+    }
+
     if (size < 4) {
         return PLAYER_FAILED;
     }
@@ -1473,10 +1480,12 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
   m_dst_rect.SetRect(0, 0, 0, 0);
-  m_zoom           = -1;
-  m_contrast       = -1;
-  m_brightness     = -1;
+  m_zoom = -1;
+  m_contrast = -1;
+  m_brightness = -1;
   m_vbufsize = 500000 * 2;
+  m_start_dts = 0;
+  m_start_pts = 0;
   m_hints = hints;
 
   ShowMainVideo(false);
@@ -1553,6 +1562,16 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       am_private->extrasize       = hints.extrasize;
       am_private->extradata       = (uint8_t*)malloc(hints.extrasize);
       memcpy(am_private->extradata, hints.extradata, hints.extrasize);
+      // tvheadend passes the 1st NAL as three byte, fix it.
+      if (am_private->extradata[0] == 0x00 &&
+          am_private->extradata[1] == 0x00 &&
+          am_private->extradata[2] == 0x01)
+      {
+        am_private->extrasize = hints.extrasize + 1;
+        am_private->extradata = (uint8_t*)realloc(am_private->extradata, am_private->extrasize);
+        am_private->extradata[0] = 0x00;
+        memcpy(&am_private->extradata[1], hints.extradata, hints.extrasize);
+      }
       break;
     case VFORMAT_REAL:
     case VFORMAT_MPEG12:
@@ -1576,7 +1595,10 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
     hints.aspect, video_ratio.num, video_ratio.den);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d), hints.extrasize(%d)",
-    hints.orientation, hints.forced_aspect, hints.extrasize);
+    hints.orientation, hints.forced_aspect, am_private->extrasize);
+
+  //for (int i = 0; i < am_private->extrasize; ++i)
+  //  CLog::Log(LOGDEBUG, "extradata[%d] = 0x%2x", i, am_private->extradata[i]);
 
   // default video codec params
   am_private->vcodec.has_video   = 1;
@@ -1604,7 +1626,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       am_private->vcodec.am_sysinfo.format = VIDEO_DEC_FORMAT_H264;
       am_private->vcodec.am_sysinfo.param  = (void*)EXTERNAL_PTS;
       // h264 in an avi file
-      if (hints.ptsinvalid)
+      if (m_hints.ptsinvalid)
         am_private->vcodec.am_sysinfo.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_REAL:
@@ -1744,6 +1766,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   if (!m_opened)
     return VC_BUFFER;
 
+  unsigned char *pData_fixup = NULL;
   // grr, m_RenderUpdateCallBackFn in g_renderManager is NULL'ed during
   // g_renderManager.Configure call by player, which happens after the codec
   // OpenDecoder call. So we need to restore it but it does not seem to stick :)
@@ -1751,24 +1774,54 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
 
   if (pData)
   {
-    am_private->am_pkt.data       = pData;
-    am_private->am_pkt.data_size  = size;
+    if (pData[0] == 0x00 && pData[1] == 0x00 && pData[2] == 0x01)
+    {
+      // tvheadend pass the 1st NAL as three-byte, fix it.
+      pData_fixup = (unsigned char*)malloc(size + 1);
+      pData_fixup[0] = 0x00;
+      memcpy(&pData_fixup[1], pData, size);
+      am_private->am_pkt.data = pData_fixup;
+      am_private->am_pkt.data_size = size + 1;
+    }
+    else
+    {
+      am_private->am_pkt.data = pData;
+      am_private->am_pkt.data_size = size;
+    }
+
     am_private->am_pkt.newflag    = 1;
     am_private->am_pkt.isvalid    = 1;
     am_private->am_pkt.avduration = 0;
 
-    if (pts == DVD_NOPTS_VALUE)
+    // handle pts, including 31bit wrap, aml can only handle 31
+    // bit pts as it uses an int in kernel.
+    if (m_hints.ptsinvalid || pts == DVD_NOPTS_VALUE)
       am_private->am_pkt.avpts = AV_NOPTS_VALUE;
     else
-      am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;
+    {
+      am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;\
+      if (!m_start_pts && am_private->am_pkt.avpts >= 0x7fffffff)
+        m_start_pts = am_private->am_pkt.avpts & ~0x0000ffff;
+    }
+    if (am_private->am_pkt.avpts != (int64_t)AV_NOPTS_VALUE)
+      am_private->am_pkt.avpts -= m_start_pts;
 
+
+    // handle dts, including 31bit wrap, aml can only handle 31
+    // bit dts as it uses an int in kernel.
     if (dts == DVD_NOPTS_VALUE)
       am_private->am_pkt.avdts = AV_NOPTS_VALUE;
     else
+    {
       am_private->am_pkt.avdts = 0.5 + (dts * PTS_FREQ) / DVD_TIME_BASE;
+      if (!m_start_dts && am_private->am_pkt.avdts >= 0x7fffffff)
+        m_start_dts = am_private->am_pkt.avdts & ~0x0000ffff;
+    }
+    if (am_private->am_pkt.avdts != (int64_t)AV_NOPTS_VALUE)
+      am_private->am_pkt.avdts -= m_start_dts;
 
-    //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: dts(%f), pts(%f), avdts(%llx), avpts(%llx)",
-    //  dts, pts, am_private->am_pkt.avdts, am_private->am_pkt.avpts);
+    //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: siz(%d), dts(%f), pts(%f), avdts(%llx), avpts(%llx)",
+    //  size, dts, pts, am_private->am_pkt.avdts, am_private->am_pkt.avpts);
 
     set_header_info(am_private);
     write_av_packet(am_private, &am_private->am_pkt);
@@ -1791,6 +1844,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   // keep hw buffered demux above 1 second
   if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
   {
+    free(pData_fixup);
     return VC_BUFFER;
   }
 
@@ -1816,6 +1870,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
     "rtn(%d), m_cur_pictcnt(%lld), m_cur_pts(%f), lastpts(%f), GetTimeSize(%f), GetDataSize(%d)",
     rtn, m_cur_pictcnt, (float)m_cur_pts/PTS_FREQ, (float)am_private->am_pkt.lastpts/PTS_FREQ, GetTimeSize(), GetDataSize());
 */
+  free(pData_fixup);
   return rtn;
 }
 
@@ -1934,11 +1989,20 @@ void CAMLCodec::Process()
         m_cur_pictcnt++;
         m_ready_event.Set();
 
+        // correct video pts by starting pts.
+        if (m_start_pts != 0)
+          pts_video += m_start_pts;
+        else if (m_start_dts != 0)
+          pts_video += m_start_dts;
+
         double app_pts = GetPlayerPtsSeconds();
         // add in audio delay/display latency contribution
         double offset  = g_renderManager.GetDisplayLatency() - g_settings.m_currentVideoSettings.m_AudioDelay;
         // correct video pts by user set delay and rendering delay
         app_pts += offset;
+
+        //CLog::Log(LOGDEBUG, "CAMLCodec::Process: app_pts(%f), pts_video/PTS_FREQ(%f)",
+        //  app_pts, (double)pts_video/PTS_FREQ);
 
         double error = app_pts - (double)pts_video/PTS_FREQ;
         double abs_error = fabs(error);
@@ -1981,7 +2045,15 @@ void CAMLCodec::SetVideoPtsSeconds(const double pts)
 {
   //CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoPtsSeconds: pts(%f)", pts);
   if (pts >= 0.0)
-      set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
+  {
+    int64_t pts_video = (int64_t)(pts * PTS_FREQ);
+    if (m_start_pts != 0)
+      pts_video -= m_start_pts;
+    else if (m_start_dts != 0)
+      pts_video -= m_start_dts;
+
+    set_pts_pcrscr(pts_video);
+  }
 }
 
 void CAMLCodec::ShowMainVideo(const bool show)

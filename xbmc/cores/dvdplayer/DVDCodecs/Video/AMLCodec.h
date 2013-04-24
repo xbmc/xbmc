@@ -74,6 +74,8 @@ private:
   volatile int64_t m_old_pictcnt;
   volatile double  m_timesize;
   volatile int64_t m_vbufsize;
+  int64_t          m_start_dts;
+  int64_t          m_start_pts;
   CEvent           m_ready_event;
 
   CRect            m_dst_rect;
