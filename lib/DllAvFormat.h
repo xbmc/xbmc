@@ -46,6 +46,10 @@ extern "C" {
   void xbmc_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
+  #if defined(TARGET_DARWIN)
+    void ff_read_frame_flush(AVFormatContext *s);    // internal replacement 
+    #define xbmc_read_frame_flush ff_read_frame_flush
+  #endif
 #endif
 }
 
