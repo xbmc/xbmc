@@ -1,3 +1,7 @@
+[B]2.1.5[/B]
+
+- Updated language files from Transifex
+
 [B]2.1.4[/B]
 
 - Updated language files from Transifex
