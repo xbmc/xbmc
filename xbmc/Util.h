@@ -133,6 +133,12 @@ public:
   static bool IsVobSub(const std::vector<std::string>& vecSubtitles, const std::string& strSubPath);
   static std::string GetVobSubSubFromIdx(const std::string& vobSubIdx);
   static std::string GetVobSubIdxFromSub(const std::string& vobSub);
+  
+  /** \brief Retrieves paths of external audio files for a given video.
+  *   \param[in] videoPath The full path of the video file.
+  *   \param[out] vecAudio A vector containing the full paths of all found external audio files.
+  */
+  static void ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio);
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
