@@ -27,6 +27,7 @@
 #undef restrict
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
+#include "DllSwResample.h"
 
 class CAEEncoderFFmpeg: public IAEEncoder
 {
@@ -49,6 +50,7 @@ private:
   DllAvCodec  m_dllAvCodec;
   DllAvFormat m_dllAvFormat;
   DllAvUtil   m_dllAvUtil;
+  DllSwResample m_dllSwResample;
 
   std::string                m_CodecName;
   CodecID                   m_CodecID;
@@ -57,7 +59,9 @@ private:
 
   AEAudioFormat     m_CurrentFormat;
   AVCodecContext   *m_CodecCtx;
+  SwrContext       *m_SwrCtx;
   CAEChannelInfo    m_Layout;
+  AVPacket          m_Pkt;
   uint8_t           m_Buffer[IEC61937_DATA_OFFSET + FF_MIN_BUFFER_SIZE];
   int               m_BufferSize;
   int               m_OutputSize;
@@ -67,5 +71,9 @@ private:
   unsigned int      m_NeededFrames;
 
   unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
+
+  bool              m_NeedConversion;
+  uint8_t          *m_ResampBuffer;
+  int               m_ResampBufferSize;
 };
 
