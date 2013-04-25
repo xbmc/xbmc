@@ -2417,6 +2417,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Fulmotondro"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "kaj"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Unknown"

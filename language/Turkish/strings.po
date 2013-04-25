@@ -2287,11 +2287,11 @@ msgstr "Albüm seviyesini kullan"
 
 msgctxt "#641"
 msgid "PreAmp Level - Replay gained files"
-msgstr "Kuvvetlendirme düzeyi - Replay gain olan dosyalar"
+msgstr "Kuvvetlendirme Düzeyi - Replay gain olan dosyalar"
 
 msgctxt "#642"
 msgid "PreAmp Level - Non replay gained files"
-msgstr "Kuvvetlendirme düzeyi - Replay gain olmayan dosyalar"
+msgstr "Kuvvetlendirme Düzeyi - Replay gain olmayan dosyalar"
 
 msgctxt "#643"
 msgid "Avoid clipping on replay gained files"

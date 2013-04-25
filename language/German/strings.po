@@ -403,7 +403,7 @@ msgstr "Diese Datei(en) verschieben?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Diese Datei(en) wirklich löschen? - Kann nicht rückgängig gemacht werden!"
+msgstr "Diese Datei(en) wirklich löschen?[CR]Gelöschte Dateien können nicht wiederhergestellt werden!"
 
 msgctxt "#126"
 msgid "Status"
@@ -7587,7 +7587,7 @@ msgstr "und dass der neue Ordnername gültig ist."
 
 msgctxt "#20074"
 msgid "MPAA rating"
-msgstr "FSK"
+msgstr "Altersfreigabe"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
@@ -10635,11 +10635,11 @@ msgstr "Der Adapter konnte nicht geöffnet werden"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr "Geräte, welche den TV anschalten, wenn XBMC startet"
+msgstr "Geräte, die eingeschaltet werden, wenn XBMC startet"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Geräte, welche den TV ausschalten, wenn XBMC beendet wird"
+msgstr "Geräte, die ausgeschaltet werden, wenn XBMC beendet wird"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"

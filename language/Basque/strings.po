@@ -3177,6 +3177,10 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Lanbroa"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "eta"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "/"

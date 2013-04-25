@@ -335,7 +335,7 @@ msgstr "Sim"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Apresentar Slides"
+msgstr "Slides"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -383,15 +383,15 @@ msgstr "Nova pasta"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Confirmar: Copiar"
+msgstr "Confirmar cópia de ficheiro"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Confirmar: Mover"
+msgstr "Confirmar movimentação de ficheiro"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Confirmar: Apagar"
+msgstr "Confirmar eliminação de ficheiro"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -419,7 +419,7 @@ msgstr "Geral"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Apresentar Slides"
+msgstr "Slides"
 
 msgctxt "#130"
 msgid "System info"
@@ -675,7 +675,7 @@ msgstr "A pedir informação de %s"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "A carregar detalhes do vídeo"
+msgstr "Carregando detalhes do vídeo"
 
 msgctxt "#199"
 msgid "Web interface"
@@ -1279,7 +1279,7 @@ msgstr "Álbuns recentes"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#361"
 msgid "R. Slideshow"
@@ -2719,7 +2719,7 @@ msgstr "Número máximo de clientes"
 
 msgctxt "#798"
 msgid "Internet access"
-msgstr "Acesso à Internet"
+msgstr "Acesso Internet"
 
 msgctxt "#799"
 msgid "Library Update"
@@ -3819,7 +3819,7 @@ msgstr "Definir como padrão para todos os vídeos"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
-msgstr "Isto apagará os valores guardados previamente "
+msgstr "Isto apagará os valores guardados anteriormente"
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
@@ -3875,7 +3875,7 @@ msgstr "Tempo"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
@@ -4751,7 +4751,7 @@ msgstr "Permitir aceleração por hardware (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr "Ver automaticamente o vídeo seguinte"
+msgstr "Reproduzir automaticamente o vídeo seguinte"
 
 msgctxt "#13434"
 msgid "Play only this"
@@ -5163,7 +5163,7 @@ msgstr "Fuso horário"
 
 msgctxt "#14081"
 msgid "File lists"
-msgstr "Lista de ficheiros"
+msgstr "Lista ficheiros"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
@@ -5215,7 +5215,7 @@ msgstr "Dispositivos"
 
 msgctxt "#14095"
 msgid "Power saving"
-msgstr "Poupança energia"
+msgstr "Energia"
 
 msgctxt "#14096"
 msgid "Rip"
@@ -5755,7 +5755,7 @@ msgstr "Todos os vídeos"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "Não vistos"
+msgstr "Por Ver"
 
 msgctxt "#16102"
 msgid "Watched"
@@ -6203,7 +6203,7 @@ msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "Intervalo de atualizações do EPG"
+msgstr "Intervalo de actualizações do EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
@@ -6807,7 +6807,7 @@ msgstr "Exibir notificação em actualizações de temporizador"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Usar números de canais da backend (só funciona com um addon PVR activo)"
+msgstr "Usar números de canais da backend (funciona só com um addon PVR activo)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7991,7 +7991,7 @@ msgstr "Servidor UPnP"
 
 msgctxt "#20176"
 msgid "Show video info"
-msgstr "Mostrar informação do vídeo"
+msgstr "Mostrar informação de vídeo"
 
 msgctxt "#20177"
 msgid "Done"
@@ -8023,7 +8023,7 @@ msgstr "Recarregar o tema"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
-msgstr "Rodar imagens utilizando informação EXIF "
+msgstr "Rodar imagens utilizando informação EXIF"
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
@@ -8043,7 +8043,7 @@ msgstr "Anunciar actualizações da biblioteca por UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
-msgstr "Ligar deslocamento automático para Sinopse e Crítica"
+msgstr "Activar deslocamento automático para Sinopse e Crítica"
 
 msgctxt "#20190"
 msgid "Custom"
@@ -9759,7 +9759,7 @@ msgstr "Informação de vídeos"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#24009"
 msgid "Script"
@@ -10071,7 +10071,7 @@ msgstr "Mostrar menus BluRay"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr "Reproduzir o titulo principal: %d"
+msgstr "Reproduzir item principal: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
@@ -10203,7 +10203,7 @@ msgstr "Nascer do Sol"
 
 msgctxt "#33028"
 msgid "Sunset"
-msgstr "Pôr-do-Sol"
+msgstr "Pôr do Sol"
 
 msgctxt "#33029"
 msgid "Details"
@@ -10583,7 +10583,7 @@ msgstr "Activar suporte para joystick e gamepad"
 
 msgctxt "#35102"
 msgid "Disable joystick when device is present"
-msgstr "Desactivar joystick sempre que o dispositivo esteja presente"
+msgstr "Desactivar joystick quando o dispositivo está presente"
 
 msgctxt "#35500"
 msgid "Location"

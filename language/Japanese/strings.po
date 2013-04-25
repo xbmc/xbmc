@@ -3213,6 +3213,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "小さく"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "and"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "of"
