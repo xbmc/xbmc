@@ -2265,6 +2265,35 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
   return false;
 }
 
+
+void CUtil::ScanForExternalAudio(const CStdString& videoPath, std::vector<CStdString>& vecAudio )
+{
+  unsigned int startTimer = XbmcThreads::SystemClockMillis();
+
+  // new array for commons audio sub dirs
+  const char * common_audio_dirs[] = {"audio",
+    "tracks",
+    NULL};
+
+  CFileItem item(videoPath, false);
+  if ( item.IsInternetStream()
+   ||  item.IsHDHomeRun()
+   ||  item.IsSlingbox()
+   ||  item.IsPlayList()
+   ||  item.IsLiveTV()
+   || !item.IsVideo()) 
+    return;
+
+  vector<CStdString> strLookInPaths;
+  GetPathsToLookForAssociatedItems(videoPath, common_audio_dirs, strLookInPaths);
+
+  CStdStringArray audio_exts;
+  StringUtils::SplitString(g_advancedSettings.m_musicExtensions, "|", audio_exts);
+  ScanPathsForAssociatedItems(videoPath, strLookInPaths, audio_exts, vecAudio);
+
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
+}
+
 bool CUtil::CanBindPrivileged()
 {
 #ifdef TARGET_POSIX
