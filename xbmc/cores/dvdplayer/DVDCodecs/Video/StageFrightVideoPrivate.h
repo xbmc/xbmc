@@ -73,6 +73,7 @@ enum StageFrightQuirks
 {
   QuirkNone = 0,
   QuirkSWRender = 0x01,
+  QuirkRkSWRender = 0x02,
 };
 
 class CStageFrightVideoPrivate : public MediaBufferObserver

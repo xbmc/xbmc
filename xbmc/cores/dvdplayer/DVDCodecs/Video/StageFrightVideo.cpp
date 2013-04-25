@@ -45,6 +45,8 @@
 #include <new>
 
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
+#define OMX_TI_COLOR_FormatYUV420PackedSemiPlanar 0x7F000100
+
 #define CLASSNAME "CStageFrightVideo"
 
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
@@ -53,6 +55,30 @@
 const char *MEDIA_MIMETYPE_VIDEO_WMV  = "video/x-ms-wmv";
 
 using namespace android;
+
+struct RK_VPU_FRAME
+{
+    uint32_t FrameBusAddr[2];       //0: Y address; 1: UV address;
+    uint32_t FrameWidth;         //16X▒▒▒▒▒▒
+    uint32_t FrameHeight;        //16X▒▒▒▒߶▒
+    uint32_t OutputWidth;        //▒▒16X▒▒▒▒
+    uint32_t OutputHeight;       //▒▒16X▒▒▒▒
+    uint32_t DisplayWidth;       //▒▒ʾ▒▒▒
+    uint32_t DisplayHeight;      //▒▒ʾ▒߶▒
+    uint32_t CodingType;
+    uint32_t FrameType;          //frame;top_field_first;bot_field_first
+    uint32_t ColorType;
+    uint32_t DecodeFrmNum;
+    uint32_t ShowTimeLow;
+    uint32_t ShowTimeHigh;
+    uint32_t ErrorInfo;          //▒▒֡▒Ĵ▒▒▒▒▒Ϣ▒▒▒▒▒ظ▒ϵͳ▒▒▒▒▒▒▒
+    uint32_t     employ_cnt;
+    /*
+    VPUMemLinear_t  vpumem;
+    RK_VPU_FRAME *    next_frame;
+    uint32_t Res[4];
+    */
+};
 
 static int64_t pts_dtoi(double pts)
 {
@@ -441,6 +467,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     
   sp<MetaData> outFormat;
   int32_t cropLeft, cropTop, cropRight, cropBottom;
+  //Vector<String8> matchingCodecs;
 
   p->meta = new MetaData;
   if (p->meta == NULL)
@@ -487,6 +514,24 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     break;
   }
 
+  /*
+  OMXCodec::findMatchingCodecs(mimetype, false, NULL, OMXCodec::kHardwareCodecsOnly | (p->quirks & QuirkSWRender ? OMXCodec::kClientNeedsFramebuffer : 0), &matchingCodecs);
+  if (matchingCodecs.isEmpty()) {
+    CLog::Log(LOGDEBUG, "%s::%s - no matching component\n", CLASSNAME, __func__);
+    goto fail;
+  }
+
+  for (size_t i = 0; i < matchingCodecs.size(); ++i) 
+  {
+    const char *componentNameBase = matchingCodecs[i].string();
+    if (!strncmp(componentNameBase, "OMX.rk.", 7))
+    {
+      // force opaque Software mode on rockchip
+      p->quirks |= QuirkRkSWRender;
+    }
+  }
+  */
+
   p->meta->setCString(kKeyMIMEType, mimetype);
   p->meta->setInt32(kKeyWidth, p->width);
   p->meta->setInt32(kKeyHeight, p->height);
@@ -516,7 +561,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     p->natwin = g_xbmcapp.GetAndroidVideoWindow();
     native_window_api_connect(p->natwin.get(), NATIVE_WINDOW_API_MEDIA);
   }
-
+  
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
                                          OMXCodec::kHardwareCodecsOnly | (p->quirks & QuirkSWRender ? OMXCodec::kClientNeedsFramebuffer : 0),
@@ -548,15 +593,20 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
       goto fail;
       
     }
-    else if (!strncmp(component, "OMX.rk.", 7) && g_advancedSettings.m_stagefrightConfig.useAVCcodec != 1 && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1) 
+    else if (!strncmp(component, "OMX.rk.", 7))
     {
-      if (p->width % 32 != 0 || p->height % 16 != 0)
+      if (g_advancedSettings.m_stagefrightConfig.useAVCcodec != 1 && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1) 
       {
-        // Buggy. Hard crash on non MOD16 height videos and stride errors for non MOD32 width
-        CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MOD16)");
-        goto fail;
-        
+        if (p->width % 32 != 0 || p->height % 16 != 0)
+        {
+          // Buggy. Hard crash on non MOD16 height videos and stride errors for non MOD32 width
+          CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MOD16)");
+          goto fail;
+          
+        }
       }
+      // Enable opaque Software mode on rockchip
+      p->quirks |= QuirkRkSWRender;
     }
   }
 
@@ -737,7 +787,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   #endif
   } 
   else if (pDvdVideoPicture->format == RENDER_FMT_YUV420P)
-  {
+  {    
     pDvdVideoPicture->color_range  = 0;
     pDvdVideoPicture->color_matrix = 4;
 
@@ -745,7 +795,15 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     unsigned int chroma_pixels = luma_pixels/4;
     BYTE* data = NULL;
     if (frame->medbuf && !p->drop_state)
-      data = (BYTE*)((long)frame->medbuf->data() + frame->medbuf->range_offset());
+    {
+      if (p->quirks & QuirkRkSWRender)
+      {
+        RK_VPU_FRAME* rk_frame =  (RK_VPU_FRAME*)((long)frame->medbuf->data() + frame->medbuf->range_offset());
+        data = (BYTE*)((long)rk_frame->FrameBusAddr[0] + 0x60000000);
+      }
+      else
+        data = (BYTE*)((long)frame->medbuf->data() + frame->medbuf->range_offset());
+    }
     switch (p->videoColorFormat)
     {
       case OMX_COLOR_FormatYUV420Planar:
@@ -760,6 +818,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
         break;
       case OMX_COLOR_FormatYUV420SemiPlanar:
       case OMX_QCOM_COLOR_FormatYVU420SemiPlanar:
+      case OMX_TI_COLOR_FormatYUV420PackedSemiPlanar:
         pDvdVideoPicture->iLineSize[0] = frame->width;
         pDvdVideoPicture->iLineSize[1] = frame->width;
         pDvdVideoPicture->iLineSize[2] = 0;
