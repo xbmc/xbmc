@@ -44,6 +44,7 @@
 
 
 class CDVDInputStream;
+typedef boost::shared_ptr<CDVDInputStream> InputStreamPtr;
 
 class CDVDDemux;
 class CDemuxStreamVideo;
@@ -374,8 +375,9 @@ protected:
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
 
-  CDVDInputStream* m_pInputStream;  // input stream for current playing file
-  CDVDDemux* m_pDemuxer;            // demuxer for current playing file
+  CDVDDemux* m_pDemuxer;                            // demuxer for current playing file
+  CDVDInputStream* m_pInputStream;                  // master input stream for current playing file
+  std::map<int, InputStreamPtr> m_pInputStreams;    // input streams for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
 
   CStdString m_lastSub;
