@@ -21,6 +21,7 @@
 #include "system.h"
 #include "GUIAudioManager.h"
 #include "Key.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
@@ -299,6 +300,8 @@ IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
   IAESound *sound = CAEFactory::MakeSound(filename);
   if (!sound)
     return NULL;
+
+  sound->SetVolume(g_advancedSettings.m_navSoundLevel);
 
   CSoundInfo info;
   info.usage = 1;

@@ -80,6 +80,7 @@ void CAdvancedSettings::Initialize()
   m_allChannelStereo = false;
   m_streamSilence = false;
   m_audioSinkBufferDurationMsec = 50;
+  m_navSoundLevel = 0.3f;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
@@ -451,6 +452,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
+
+    XMLUtils::GetFloat(pElement, "navsoundlevel", m_navSoundLevel, 0.0f, 1.0f);
+
   }
 
   pElement = pRootElement->FirstChildElement("omx");

@@ -117,6 +117,7 @@ class CAdvancedSettings : public ISettingsHandler
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
+    float m_navSoundLevel;	// navigation sound volume relative to global system volume
 
     bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;

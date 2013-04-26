@@ -35,7 +35,7 @@ class CXBApplicationEx : public IWindowManagerCallback
 {
 public:
   CXBApplicationEx();
-  ~CXBApplicationEx();
+  virtual ~CXBApplicationEx();
 
   // Variables for timing
   bool m_bStop;
