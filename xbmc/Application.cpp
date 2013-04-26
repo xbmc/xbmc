@@ -2483,6 +2483,15 @@ void CApplication::SetStandAlone(bool value)
   g_advancedSettings.m_handleMounting = m_bStandalone = value;
 }
 
+// PingApp () resets the idle timer and wakes processes.
+// Extend when needed.
+
+void CApplication::PingApp ()
+{
+  ResetSystemIdleTimer();
+  WakeUpScreenSaver();
+}
+
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
