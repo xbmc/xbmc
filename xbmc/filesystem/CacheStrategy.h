@@ -66,7 +66,7 @@ protected:
 */
 class CSimpleFileCache : public CCacheStrategy {
 public:
-  CSimpleFileCache();
+  CSimpleFileCache(bool needFreqRandomSeek=false);
   virtual ~CSimpleFileCache();
 
   virtual int Open() ;
@@ -89,6 +89,7 @@ protected:
   volatile int64_t m_nStartPosition;
   volatile int64_t m_nWritePosition;
   volatile int64_t m_nReadPosition;
+  bool m_bNeedFreqRandomSeek;
 };
 
 }

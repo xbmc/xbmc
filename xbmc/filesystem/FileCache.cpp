@@ -78,15 +78,15 @@ private:
 };
 
 
-CFileCache::CFileCache() : CThread("FileCache")
+CFileCache::CFileCache(bool needFreqRandomSeek) : CThread("FileCache")
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
    m_writePos = 0;
-   if (g_advancedSettings.m_cacheMemBufferSize == 0)
-     m_pCache = new CSimpleFileCache();
+   if (g_advancedSettings.m_cacheMemBufferSize == 0 || needFreqRandomSeek)
+     m_pCache = new CSimpleFileCache(needFreqRandomSeek);
    else
      m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
                                  , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
