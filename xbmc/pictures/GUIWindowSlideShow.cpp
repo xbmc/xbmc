@@ -291,6 +291,8 @@ void CGUIWindowSlideShow::Add(const CFileItem *picture)
   {
     // item without tag; assume it is a picture and force tag generation
     item->GetPictureInfoTag();
+    // videos can have picture tags but they should have a video mime type 
+    item->GetMimeType(true);
   }
   AnnouncePlaylistAdd(item, m_slides->Size());
 
@@ -390,6 +392,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
+  // prevent next image being shown between two consecutive videos; dont waste cpu
+  if (m_bPlayingVideo) return ;
 
   // if we haven't processed yet, we should mark the whole screen
   if (!HasProcessed())
@@ -522,7 +526,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_Image[m_iCurrentPic].Process(currentTime, regions);
   }
 
-  if (m_slides->Get(m_iCurrentSlide)->IsVideo() && bSlideShow)
+  // play video, but only if one isn't already playing
+  if (m_slides->Get(m_iCurrentSlide)->IsVideo() && !m_bPlayingVideo)
   { 
     CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
     m_bPlayingVideo = true;
@@ -856,6 +861,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       if (m_slides->Size() <= 1)
         m_bSlideShow = false;
 
+      // stop all video when becoming visible, e.g. an interrupted video
+      if (g_application.IsPlayingVideo())
+        g_application.StopPlaying();
+
       return true;
     }
     break;
@@ -885,24 +894,22 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
 
-    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-      {
-        m_bPlayingVideo = false;
-        if (m_bSlideShow)
-          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-      }
-      break;
-
     case GUI_MSG_PLAYBACK_STARTED:
       {
-        if (m_bSlideShow && m_bPlayingVideo)
-          g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+        m_bPlayingVideo = true;
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
       break;
 
-    case GUI_MSG_PLAYBACK_STOPPED:
+    case GUI_MSG_PLAYBACK_ENDED:
+	case GUI_MSG_PLAYBACK_STOPPED:
       {
-        if (m_bSlideShow && m_bPlayingVideo)
+        if (m_bPlayingVideo)
+        {
+          m_bPlayingVideo = false;
+          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        }
+        else
         {
           m_bSlideShow = false;
           g_windowManager.PreviousWindow();
