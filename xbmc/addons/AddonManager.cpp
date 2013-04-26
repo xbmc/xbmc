@@ -131,9 +131,16 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #if defined(TARGET_ANDROID)                                                                                                                                                      
           if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
             break;                                                                                                                                                                 
- #elif defined(_LINUX) && !defined(TARGET_DARWIN)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
-          break;
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(__amd64__)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux64")) && value.empty())
+          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+            break;
+#else
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux32")) && value.empty())
+          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+            break;
+#endif
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
           break;

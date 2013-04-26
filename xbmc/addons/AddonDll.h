@@ -95,7 +95,15 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
 #if defined(TARGET_ANDROID)
   m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
 #elif defined(_LINUX) && !defined(TARGET_DARWIN)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
+#if defined(__amd64__)
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux64");
+    if (m_strLibName.empty())
+      m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
+#else
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux32");
+    if (m_strLibName.empty())
+      m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
+#endif
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
 #elif defined(_WIN32) && defined(HAS_DX)
