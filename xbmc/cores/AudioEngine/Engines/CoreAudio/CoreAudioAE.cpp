@@ -173,7 +173,7 @@ bool CCoreAudioAE::Initialize()
 bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   enum AEDataFormat rawDataFormat)
 {
-
+  unsigned int maxChannelCountInStreams = 0;
   // remove any deleted streams
   CSingleLock streamLock(m_streamLock);
   for (StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
@@ -190,6 +190,10 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
       // close all converter
       stream->CloseConverter();
     }
+
+    if (stream->GetChannelCount() > maxChannelCountInStreams)
+        maxChannelCountInStreams = stream->GetChannelCount();
+
     ++itt;
   }
 
@@ -263,7 +267,16 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
         m_format.m_dataFormat   = AE_FMT_S16NE;
         break;
       case AE_FMT_LPCM:
-        m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_7_1);
+        // audio midi setup can be setup to 2.0 or 7.1
+        // if we have the number of max channels from streams we use that for
+        // selecting either 2.0 or 7.1 setup depending on that.
+        // This allows DPII modes on amps for enhancing stereo sound
+        // (when switching to 7.1 - all 8 channels will be pushed out preventing most amps
+        // to switch to DPII mode)
+        if (maxChannelCountInStreams == 1 || maxChannelCountInStreams == 2)
+          m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+        else
+          m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_7_1);
         m_format.m_sampleRate   = sampleRate;
         m_format.m_dataFormat   = AE_FMT_FLOAT;
         break;
