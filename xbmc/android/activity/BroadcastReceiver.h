@@ -31,4 +31,4 @@ private:
   CBroadcastReceiver();
 };
 
-extern "C" void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent);
+extern "C" void jni_BroadcastReceiverReceiveIntent(JNIEnv *env, jobject thiz, jobject intent);

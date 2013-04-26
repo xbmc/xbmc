@@ -77,6 +77,7 @@ bool CAndroidJNIManager::Load(JavaVM* vm, int jniVersion)
         return false;
     }
 
+    RegisterClass(env, &g_xbmcapp);
     m_broadcastReceiver = new CBroadcastReceiver();
     RegisterClass(env, m_broadcastReceiver);
 

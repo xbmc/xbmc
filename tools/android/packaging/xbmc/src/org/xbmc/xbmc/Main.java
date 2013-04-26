@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 public class Main extends NativeActivity 
 {
+  native void ReceiveViewIntent(Intent intent);
+
   public Main() 
   {
     super();
@@ -15,5 +17,14 @@ public class Main extends NativeActivity
   public void onCreate(Bundle savedInstanceState) 
   {
     super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) 
+  {
+    super.onNewIntent(intent);
+
+    if (intent.getAction() == Intent.ACTION_VIEW)
+      ReceiveViewIntent(intent);
   }
 }
