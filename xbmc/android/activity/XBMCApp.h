@@ -52,6 +52,10 @@ struct androidPackage
 
 class CXBMCApp : public IActivityHandler
 {
+friend class CAndroidJNIManager;
+public:
+  void OnSystemUiNavigationShown(JNIEnv *env, jobject thiz);
+
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
@@ -95,6 +99,8 @@ public:
   static bool GetStorageUsage(const std::string &path, std::string &usage);
   static int GetMaxSystemVolume();
 
+  static void HideActionBar();
+  static void ShowActionBar();
   static int GetDPI();
 protected:
   // limit who can access Volume
@@ -118,6 +124,10 @@ private:
   bool m_exiting;
   pthread_t m_thread;
   
+  //used for hiding action bar
+  static jmethodID m_midShowActionBar;
+  static jmethodID m_midHideActionBar;
+  
   static ANativeWindow* m_window;
   
   void XBMC_Pause(bool pause);
@@ -125,3 +135,5 @@ private:
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 };
+
+extern "C" void jni_MainOnSystemUiNavigationShown(JNIEnv *env, jobject thiz);

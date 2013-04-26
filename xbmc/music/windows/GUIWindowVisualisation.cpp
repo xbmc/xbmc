@@ -30,6 +30,10 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
+
 using namespace MUSIC_INFO;
 
 #define START_FADE_LENGTH  2.0f // 2 seconds on startup
@@ -72,6 +76,9 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
     // save the settings
     g_settings.Save();
+#if defined(TARGET_ANDROID)
+    CXBMCApp::ShowActionBar();
+#endif
     g_windowManager.PreviousWindow();
     return true;
     break;
@@ -158,10 +165,16 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
       CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
       if (pList && pList->IsDialogRunning()) pList->Close(true);
+#if defined(TARGET_ANDROID)
+      CXBMCApp::ShowActionBar();
+#endif
     }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
       // check whether we've come back here from a window during which time we've actually
       // stopped playing music
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingAudio())
@@ -208,6 +221,9 @@ EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CM
     {
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
     }
     return EVENT_RESULT_HANDLED;
   }
