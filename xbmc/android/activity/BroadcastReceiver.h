@@ -25,6 +25,8 @@ class CBroadcastReceiver : public CAndroidJNIBase
 {
 friend class CAndroidJNIManager;
 public:
+  static CBroadcastReceiver &GetInstance() {static CBroadcastReceiver temp; return temp;};
+
   void ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent);
 
 private:

@@ -18,6 +18,7 @@
  *
  */
 #include <jni.h>
+#include "XBMCApp.h"
 #include "Intents.h"
 #include "BroadcastReceiver.h"
 
@@ -28,10 +29,13 @@ CBroadcastReceiver::CBroadcastReceiver() : CAndroidJNIBase("org/xbmc/xbmc/XBMCBr
 
 void CBroadcastReceiver::ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
 {
+  if (!g_xbmcapp.isValid())
+    return;
+    
   CAndroidIntents::getInstance().ReceiveIntent(env, intent);
 }
 
 void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
 {
-  CAndroidJNIManager::GetInstance().GetBroadcastReceiver()->ReceiveIntent(env, thiz, intent);
+  CBroadcastReceiver::GetInstance().ReceiveIntent(env, thiz, intent);
 }
