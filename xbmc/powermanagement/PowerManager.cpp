@@ -165,6 +165,11 @@ bool CPowerManager::Suspend()
   return false;
 }
 
+bool CPowerManager::AllowSuspend()
+{
+  return CanSuspend() ? m_instance->AllowSuspend() : false;
+}
+
 bool CPowerManager::Hibernate()
 {
   if (CanHibernate() && m_instance->Hibernate())

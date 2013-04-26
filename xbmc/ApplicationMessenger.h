@@ -89,6 +89,7 @@ namespace MUSIC_INFO
 #define TMSG_RENDERER_FLUSH       312
 #define TMSG_INHIBITIDLESHUTDOWN  313
 #define TMSG_LOADPROFILE          314
+#define TMSG_ALLOWSUSPEND         315
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -198,6 +199,7 @@ public:
   void Quit();
   void Hibernate();
   void Suspend();
+  void AllowSuspend();
   void Restart();
   void RestartApp();
   void Reset();

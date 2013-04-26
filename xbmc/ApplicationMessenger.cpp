@@ -233,6 +233,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             Powerdown();
             break;
 
+          case POWERSTATE_ALLOWSUSPEND:
+            AllowSuspend();
+            break;
+
           case POWERSTATE_SUSPEND:
             Suspend();
             break;
@@ -280,6 +284,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_PVRManager.SetWakeupCommand();
         g_powerManager.Suspend();
+      }
+      break;
+      
+    case TMSG_ALLOWSUSPEND:
+      {
+        g_powerManager.AllowSuspend();
       }
       break;
 
@@ -1125,6 +1135,12 @@ void CApplicationMessenger::Hibernate()
 void CApplicationMessenger::Suspend()
 {
   ThreadMessage tMsg = {TMSG_SUSPEND};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::AllowSuspend()
+{
+  ThreadMessage tMsg = {TMSG_ALLOWSUSPEND};
   SendMessage(tMsg);
 }
 

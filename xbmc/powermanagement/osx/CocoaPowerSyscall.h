@@ -39,6 +39,7 @@ public:
 
   virtual bool Powerdown(void);
   virtual bool Suspend(void);
+  virtual bool AllowSuspend(void);
   virtual bool Hibernate(void);
   virtual bool Reboot(void);
 
@@ -48,6 +49,8 @@ public:
   virtual bool CanReboot(void);
           bool HasBattery(void);
   virtual int  BatteryLevel(void);
+  
+  static void BlockSystemSleep(bool bBlock);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:

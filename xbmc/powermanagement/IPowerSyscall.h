@@ -37,6 +37,7 @@ public:
   virtual ~IPowerSyscall() {};
   virtual bool Powerdown()    = 0;
   virtual bool Suspend()      = 0;
+  virtual bool AllowSuspend() {return false;}
   virtual bool Hibernate()    = 0;
   virtual bool Reboot()       = 0;
 

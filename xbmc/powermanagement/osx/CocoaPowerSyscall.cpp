@@ -130,6 +130,16 @@ bool CCocoaPowerSyscall::Suspend(void)
 #endif
 }
 
+// allow the os to control the power management
+// (for example sleeping the system when no other apps
+// are holding any assertions)
+bool CCocoaPowerSyscall::AllowSuspend(void)
+{
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::AllowSuspend");
+  BlockSystemSleep(false);
+  return true;
+}
+
 bool CCocoaPowerSyscall::Hibernate(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Hibernate");
@@ -227,6 +237,34 @@ bool CCocoaPowerSyscall::HasBattery(void)
 int CCocoaPowerSyscall::BatteryLevel(void)
 {
   return DarwinBatteryLevel();
+}
+
+void CCocoaPowerSyscall::BlockSystemSleep(bool bBlock)
+{
+#if defined(TARGET_DARWIN_OSX)
+  // see Technical Q&A QA1340
+  static IOPMAssertionID assertionID = 0;
+  
+  if (bBlock)
+  {
+    if (assertionID == 0)
+    {
+      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
+      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+                                  kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+      CLog::Log(LOGINFO, "%s - acquire kIOPMAssertionTypeNoDisplaySleep assertion", __PRETTY_FUNCTION__);
+    }
+  }
+  else
+  {
+    if (assertionID != 0)
+    {
+      IOPMAssertionRelease(assertionID);
+      assertionID = 0;
+      CLog::Log(LOGINFO, "%s - release kIOPMAssertionTypeNoDisplaySleep assertion", __PRETTY_FUNCTION__);
+    }
+  }
+#endif
 }
 
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)

@@ -54,7 +54,6 @@ public:
 
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
-  virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
 
   virtual void Register(IDispResource *resource);
