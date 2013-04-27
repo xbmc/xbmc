@@ -1569,8 +1569,7 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
     {
       CFileItem item(strFolder, true);
       thumb = item.GetUserMusicThumb(true);
-      CStdString strTemp = strFolder;
-      URIUtils::GetParentPath(strTemp, strFolder);
+      strFolder = URIUtils::GetParentPath(strFolder);
     }
   }
   if (thumb.IsEmpty())
@@ -1590,8 +1589,7 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
     {
       CFileItem item(strFolder, true);
       fanart = item.GetLocalFanart();
-      CStdString strTemp = strFolder;
-      URIUtils::GetParentPath(strFolder, strFolder);
+      strFolder = URIUtils::GetParentPath(strFolder);
     }
   }
   if (fanart.IsEmpty())

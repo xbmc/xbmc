@@ -201,11 +201,28 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
-  // set artist thumb as well
-  if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
+   // set artist thumb as well
+  CMusicDatabase db;
+  db.Open();
+  if (item->IsMusicDb())
   {
-    CMusicDatabase db;
-    db.Open();
+    std::vector<int> artists;
+    CVariant artistthumbs;
+    db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
+    for (std::vector<int>::const_iterator artistId = artists.begin(); artistId != artists.end(); ++artistId)
+    {
+      std::string thumb = db.GetArtForItem(*artistId, "artist", "thumb");
+      if (!thumb.empty())
+        artistthumbs.push_back(thumb);
+    }
+    if (artistthumbs.size())
+    {
+      m_song->SetProperty("artistthumbs", artistthumbs);
+      m_song->SetProperty("artistthumb", artistthumbs[0]);
+    }
+  }
+  else if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
+  {
     int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
     std::string thumb = db.GetArtForItem(idArtist, "artist", "thumb");
     if (!thumb.empty())
