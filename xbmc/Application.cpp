@@ -4546,7 +4546,8 @@ void CApplication::UpdateFileState()
       // Check whether we're *really* playing video else we may race when getting eg. stream details
       if (IsPlayingVideo())
       {
-        // Special case for DVDs: Only extract streamdetails if title length > 15m. Should yield more correct info
+        /* Always update streamdetails, except for DVDs where we only update
+           streamdetails if title length > 15m (Should yield more correct info) */
         if (!(m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) || m_pPlayer->GetTotalTime() > 15*60*1000)
         {
           CStreamDetails details;
