@@ -4082,7 +4082,25 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr ""
 
-#empty strings from id 10035 to 10039
+msgctxt "#10035"
+msgid "Reset"
+msgstr ""
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr ""
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr ""
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr ""
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10040"
