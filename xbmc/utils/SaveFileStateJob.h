@@ -99,10 +99,9 @@ bool CSaveFileStateJob::DoWork()
         if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->HasStreamDetails())
         {
           CFileItem dbItem(m_item);
-          videodatabase.GetStreamDetails(dbItem); // Fetch stream details from the db (if any)
 
           // Check whether the item's db streamdetails need updating
-          if (!dbItem.GetVideoInfoTag()->HasStreamDetails() || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
+          if (!videodatabase.GetStreamDetails(dbItem) || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
           {
             videodatabase.SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
             updateListing = true;
