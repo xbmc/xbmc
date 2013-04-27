@@ -20,7 +20,9 @@
 
 #include "WINJoystick.h"
 #include "input/ButtonTranslator.h"
+#include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Setting.h"
 #include "utils/log.h"
 
 #include <math.h>
@@ -70,6 +72,16 @@ CJoystick::CJoystick()
 CJoystick::~CJoystick()
 {
   ReleaseJoysticks();
+}
+
+void CJoystick::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "input.enablejoystick")
+    SetEnabled(((CSettingBool*)setting)->GetValue() && PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 }
 
 void CJoystick::ReleaseJoysticks()

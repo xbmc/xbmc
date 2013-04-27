@@ -21,7 +21,7 @@
 #include "PVRChannelGroups.h"
 
 #include "FileItem.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -52,7 +52,7 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::GetGroupsFromClients(void)
 {
-  if (! g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
+  if (! CSettings::Get().GetBool("pvrmanager.syncchannelgroups"))
     return true;
 
   return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
@@ -160,7 +160,7 @@ void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannel &channel)
 
 bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
-  bool bUpdateAllGroups = !bChannelsOnly && g_guiSettings.GetBool("pvrmanager.syncchannelgroups");
+  bool bUpdateAllGroups = !bChannelsOnly && CSettings::Get().GetBool("pvrmanager.syncchannelgroups");
   bool bReturn(true);
 
   // sync groups
@@ -218,7 +218,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   if (!database)
     return false;
 
-  bool bSyncWithBackends = g_guiSettings.GetBool("pvrmanager.syncchannelgroups");
+  bool bSyncWithBackends = CSettings::Get().GetBool("pvrmanager.syncchannelgroups");
 
   CSingleLock lock(m_critSection);
 

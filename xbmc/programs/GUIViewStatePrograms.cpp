@@ -21,24 +21,23 @@
 #include "GUIViewStatePrograms.h"
 #include "FileItem.h"
 #include "view/ViewState.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 
 using namespace XFILE;
-using namespace ADDON;
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
   else
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
-  
-  CViewState *viewState = CViewStateSettings::Get().Get("programs");
+
+  const CViewState *viewState = CViewStateSettings::Get().Get("programs");
   SetSortMethod(viewState->m_sortMethod);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortOrder);

@@ -20,13 +20,14 @@
  *
  */
 
+#include <map>
+#include <vector>
+
+#include "settings/ISettingCallback.h"
 #include "utils/StdString.h"
 
 class CFileItem;
 class CMediaSource;
-
-#include <vector>
-#include <map>
 
 typedef std::vector<CMediaSource> VECSOURCES;
 
@@ -41,7 +42,7 @@ typedef enum
   LOCK_MODE_EEPROM_PARENTAL    =  5
 } LockType;
 
-class CGUIPassword
+class CGUIPassword : public ISettingCallback
 {
 public:
   CGUIPassword(void);
@@ -63,6 +64,8 @@ public:
   void LockSources(bool lock);
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const CStdString& strPath, VECSOURCES& vecSources);
+
+  virtual void OnSettingAction(const CSetting *setting);
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;

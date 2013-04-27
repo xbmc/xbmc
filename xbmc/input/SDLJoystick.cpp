@@ -21,6 +21,7 @@
 #include "system.h"
 #include "SDLJoystick.h"
 #include "ButtonTranslator.h"
+#include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
@@ -43,6 +44,16 @@ CJoystick::CJoystick()
   m_HatState = SDL_HAT_CENTERED;
   m_ActiveFlags = JACTIVE_NONE;
   SetDeadzone(0);
+}
+
+void CJoystick::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "input.enablejoystick")
+    SetEnabled(((CSettingBool*)setting)->GetValue() && PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 }
 
 void CJoystick::Initialize()

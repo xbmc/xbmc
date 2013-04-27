@@ -30,7 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
-#include "settings/GUISettings.h"
+#include "settings/DisplaySettings.h"
 #include "input/KeyboardStat.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -744,7 +744,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // send pre-configuration change now and do not
       //  wait for switch videomode callback. This gives just
       //  a little more advanced notice of the display pre-change.
-      if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+      if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
         CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
 
       // switch videomode
@@ -780,7 +780,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_window_screen = [[last_view window] screen];
     last_window_origin = [[last_view window] frame].origin;
 
-    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    if (CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     {
       // This is Cocca Windowed FullScreen Mode
       // Get the screen rect of our current display
@@ -888,7 +888,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
       SetMenuBarVisible(true);
 
-    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    if (CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     {
       // restore the windowed window level
       [[last_view window] setLevel:NSNormalWindowLevel];

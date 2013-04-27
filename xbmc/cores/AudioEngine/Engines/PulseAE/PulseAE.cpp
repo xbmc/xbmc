@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "settings/Settings.h"
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
 #include "guilib/LocalizeStrings.h"

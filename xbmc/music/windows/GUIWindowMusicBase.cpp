@@ -55,10 +55,9 @@
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -146,10 +145,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       // save current window, unless the current window is the music playlist window
       if (GetID() != WINDOW_MUSIC_PLAYLIST &&
-          g_guiSettings.GetInt("mymusic.startwindow") != GetID())
+          CSettings::Get().GetInt("mymusic.startwindow") != GetID())
       {
-        g_guiSettings.SetInt("mymusic.startwindow", GetID());
-        g_settings.Save();
+        CSettings::Get().SetInt("mymusic.startwindow", GetID());
+        CSettings::Get().Save();
       }
 
       return true;
@@ -175,11 +174,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         if (nWindow == GetID())
           return true;
 
-        g_guiSettings.SetInt("mymusic.startwindow", nWindow);
-        g_settings.Save();
+        CSettings::Get().SetInt("mymusic.startwindow", nWindow);
+        CSettings::Get().Save();
         g_windowManager.ChangeActiveWindow(nWindow);
 
-        CGUIMessage msg2(GUI_MSG_SETFOCUS, g_guiSettings.GetInt("mymusic.startwindow"), CONTROL_BTNTYPE);
+        CGUIMessage msg2(GUI_MSG_SETFOCUS, CSettings::Get().GetInt("mymusic.startwindow"), CONTROL_BTNTYPE);
         g_windowManager.SendMessage(msg2);
 
         return true;
@@ -207,7 +206,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
           // or be at the files window and have file deletion enabled
           else if (GetID() == WINDOW_MUSIC_FILES &&
-                   g_guiSettings.GetBool("filelists.allowfiledeletion"))
+                   CSettings::Get().GetBool("filelists.allowfiledeletion"))
           {
             OnDeleteItem(iItem);
           }
@@ -669,7 +668,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item
-  CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_guiSettings.GetInt("mymusic.startwindow") - WINDOW_MUSIC_FILES);
+  CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, CSettings::Get().GetInt("mymusic.startwindow") - WINDOW_MUSIC_FILES);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -959,7 +958,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     // turned on, but we still want to use the playlist player in order to handle more queued items
     // following etc.
     // Karaoke items also can be added in runtime (while the song is played), so it should be queued too.
-    if ( (g_guiSettings.GetBool("musicplayer.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
+    if ( (CSettings::Get().GetBool("musicplayer.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
        || pItem->IsKaraoke() )
     {
       // TODO: Should the playlist be cleared if nothing is already playing?
@@ -1043,7 +1042,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
-     (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
+     (!CSettings::Get().GetBool("musicfiles.usetags") && !items.IsCDDA()))
   {
     return;
   }
@@ -1151,7 +1150,7 @@ void CGUIWindowMusicBase::OnInitWindow()
     {
       g_application.StartMusicScan("", CMusicInfoScanner::SCAN_RESCAN);
       CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
-      g_settings.Save();
+      CSettings::Get().Save();
     }
   }
 }

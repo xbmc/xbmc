@@ -20,13 +20,13 @@
 
 #include "GUIDialogTeletext.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
 #include "Application.h"
 #include "guilib/GUITexture.h"
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "cores/IPlayer.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -119,7 +119,7 @@ void CGUIDialogTeletext::OnInitWindow()
   m_windowLoaded      = true;
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-  if (g_guiSettings.GetBool("videoplayer.teletextscale"))
+  if (CSettings::Get().GetBool("videoplayer.teletextscale"))
   {
     /* Fixed aspect ratio to 4:3 for teletext */
     left = g_graphicsContext.ScaleFinalXCoord((float)(m_coordsRes.iWidth-m_coordsRes.iHeight*4/3)/2, 0);

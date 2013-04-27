@@ -19,15 +19,19 @@
  *
  */
 
+#include <set>
 #include <vector>
 
 #include "guilib/Resolution.h"
+#include "settings/ISettingCallback.h"
 #include "settings/ISubSettings.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 class TiXmlNode;
 
-class CDisplaySettings : public ISubSettings
+class CDisplaySettings : public ISettingCallback, public ISubSettings,
+                         public Observable
 {
 public:
   static CDisplaySettings& Get();
@@ -35,6 +39,9 @@ public:
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;
   virtual void Clear();
+
+  virtual bool OnSettingChanging(const CSetting *setting);
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
 
   /*!
    \brief Returns the currently active resolution
@@ -80,13 +87,21 @@ public:
   bool IsNonLinearStretched() const { return m_nonLinearStretched; }
   void SetNonLinearStretched(bool nonLinearStretch) { m_nonLinearStretched = nonLinearStretch; }
 
+  static void SettingOptionsRefreshChangeDelaysFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsRefreshRatesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
+  static void SettingOptionsResolutionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsScreensFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+
 protected:
   CDisplaySettings();
   CDisplaySettings(const CDisplaySettings&);
   CDisplaySettings const& operator=(CDisplaySettings const&);
   virtual ~CDisplaySettings();
 
-  RESOLUTION GetResolutionFromString(const std::string &strResolution) const;
+  static RESOLUTION GetResolutionFromString(const std::string &strResolution);
+  static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
+  static RESOLUTION GetResolutionForScreen();
 
 private:
   // holds the real gui resolution
@@ -100,5 +115,14 @@ private:
   float m_pixelRatio;         // current pixel ratio
   float m_verticalShift;      // current vertical shift
   bool  m_nonLinearStretched;   // current non-linear stretch
+
+  /*!
+   \brief A set of pairs consisting of a setting identifier
+   and a boolean value which should be ignored in specific
+   situations. If the boolean value is "true" the whole
+   OnSettingChanging() logic must be skipped once. If it
+   is "false" only showing the GUI dialog must be skipped.
+   */
+  std::set< std::pair<std::string, bool> > m_ignoreSettingChanging;
   CCriticalSection m_critical;
 };

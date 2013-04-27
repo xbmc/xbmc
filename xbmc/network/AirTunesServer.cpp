@@ -580,6 +580,14 @@ void CAirTunesServer::StopServer(bool bWait)
   }
 }
 
+ bool CAirTunesServer::IsRunning()
+ {
+   if (ServerInstance == NULL)
+     return false;
+
+   return ((CThread*)ServerInstance)->IsRunning();
+ }
+
 CAirTunesServer::CAirTunesServer(int port, bool nonlocal) : CThread("AirTunesServer")
 {
   m_port = port;

@@ -39,7 +39,9 @@
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
+#include "settings/SettingPath.h"
+#include "settings/Settings.h"
+#include "settings/windows/GUIControlSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -204,10 +206,21 @@ void CScreenShot::TakeScreenshot()
 {
   static bool savingScreenshots = false;
   static vector<CStdString> screenShots;
-
   bool promptUser = false;
+  CStdString strDir;
+
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
+  CSettingPath *screenshotSetting = (CSettingPath*)CSettings::Get().GetSetting("debug.screenshotpath");
+  if (screenshotSetting != NULL)
+  {
+    strDir = screenshotSetting->GetValue();
+    if (strDir.empty())
+    {
+      if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+        strDir = screenshotSetting->GetValue();
+    }
+  }
+
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -231,7 +244,17 @@ void CScreenShot::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
+        CStdString newDir;
+        if (screenshotSetting != NULL)
+        {
+          newDir = screenshotSetting->GetValue();
+          if (newDir.empty())
+          {
+            if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+              newDir = screenshotSetting->GetValue();
+          }
+        }
+
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)

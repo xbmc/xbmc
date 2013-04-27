@@ -20,14 +20,13 @@
  *
  */
 
-#include "system.h"
+#include <vector>
 
+#include "system.h"
 #include "cores/IPlayerCallback.h"
 #include "settings/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
-
-#include <vector>
 
 /*----------------------------------------------------------------------
 |   forward references

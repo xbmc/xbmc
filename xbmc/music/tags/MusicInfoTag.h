@@ -38,6 +38,13 @@ class CArtist;
 #define REPLAY_GAIN_HAS_TRACK_PEAK 4
 #define REPLAY_GAIN_HAS_ALBUM_PEAK 8
 
+enum ReplayGain
+{
+  REPLAY_GAIN_NONE  = 0,
+  REPLAY_GAIN_ALBUM,
+  REPLAY_GAIN_TRACK
+};
+
 namespace MUSIC_INFO
 {
   class EmbeddedArtInfo

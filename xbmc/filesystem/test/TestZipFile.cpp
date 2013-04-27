@@ -20,9 +20,9 @@
 
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
+#include "settings/Settings.h"
 #include "test/TestUtils.h"
 
 #include <errno.h>
@@ -37,19 +37,21 @@ protected:
     /* Add default settings for locale.
      * Settings here are taken from CGUISettings::Initialize()
      */
-    CSettingsCategory *loc = g_guiSettings.AddCategory(7, "locale", 14090);
-    g_guiSettings.AddString(loc, "locale.language",248,"english",
+    /* TODO
+    CSettingsCategory *loc = CSettings::Get().AddCategory(7, "locale", 14090);
+    CSettings::Get().AddString(loc, "locale.language",248,"english",
                             SPIN_CONTROL_TEXT);
-    g_guiSettings.AddString(loc, "locale.country", 20026, "USA",
+    CSettings::Get().AddString(loc, "locale.country", 20026, "USA",
                             SPIN_CONTROL_TEXT);
-    g_guiSettings.AddString(loc, "locale.charset", 14091, "DEFAULT",
+    CSettings::Get().AddString(loc, "locale.charset", 14091, "DEFAULT",
                             SPIN_CONTROL_TEXT); // charset is set by the
                                                 // language file
+    */
   }
 
   ~TestZipFile()
   {
-    g_guiSettings.Clear();
+    CSettings::Get().Unload();
   }
 };
 

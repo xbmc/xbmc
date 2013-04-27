@@ -63,6 +63,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "utils/RssReader.h"
 
 using namespace std;
 using namespace EPG;

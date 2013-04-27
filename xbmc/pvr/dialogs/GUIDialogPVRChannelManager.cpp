@@ -38,7 +38,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClients.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 
 #define BUTTON_OK                 4
@@ -332,10 +332,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   CStdString strThumb;
   VECSOURCES shares;
-  if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
+  if (CSettings::Get().GetString("pvrmenu.iconpath") != "")
   {
     CMediaSource share1;
-    share1.strPath = g_guiSettings.GetString("pvrmenu.iconpath");
+    share1.strPath = CSettings::Get().GetString("pvrmenu.iconpath");
     share1.strName = g_localizeStrings.Get(19018);
     shares.push_back(share1);
   }

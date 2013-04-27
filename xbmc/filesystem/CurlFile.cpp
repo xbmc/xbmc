@@ -23,7 +23,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "File.h"
 
 #include <map>
@@ -725,19 +725,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( strProtocol.Equals("http")
        ||  strProtocol.Equals("https"))
   {
-    if (g_guiSettings.GetBool("network.usehttpproxy")
-        && !g_guiSettings.GetString("network.httpproxyserver").empty()
-        && !g_guiSettings.GetString("network.httpproxyport").empty()
+    if (CSettings::Get().GetBool("network.usehttpproxy")
+        && !CSettings::Get().GetString("network.httpproxyserver").empty()
+        && !CSettings::Get().GetString("network.httpproxyport").empty()
         && m_proxy.IsEmpty())
     {
-      m_proxy = g_guiSettings.GetString("network.httpproxyserver");
-      m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
-      if (g_guiSettings.GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
+      m_proxy = CSettings::Get().GetString("network.httpproxyserver");
+      m_proxy += ":" + CSettings::Get().GetString("network.httpproxyport");
+      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
       {
-        m_proxyuserpass = g_guiSettings.GetString("network.httpproxyusername");
-        m_proxyuserpass += ":" + g_guiSettings.GetString("network.httpproxypassword");
+        m_proxyuserpass = CSettings::Get().GetString("network.httpproxyusername");
+        m_proxyuserpass += ":" + CSettings::Get().GetString("network.httpproxypassword");
       }
-      m_proxytype = (ProxyType)g_guiSettings.GetInt("network.httpproxytype");
+      m_proxytype = (ProxyType)CSettings::Get().GetInt("network.httpproxytype");
       CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 

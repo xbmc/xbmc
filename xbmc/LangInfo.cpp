@@ -19,14 +19,24 @@
  */
 
 #include "LangInfo.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "Application.h"
+#include "FileItem.h"
+#include "Util.h"
+#include "filesystem/Directory.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
+#include "utils/Weather.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
+using namespace PVR;
 
 #define TEMP_UNIT_STRINGS 20027
 
@@ -195,6 +205,28 @@ CLangInfo::~CLangInfo()
 {
 }
 
+void CLangInfo::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "locale.audiolanguage")
+    SetAudioLanguage(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.subtitlelanguage")
+    SetSubtitleLanguage(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.language")
+  {
+    if (!SetLanguage(((CSettingString*)setting)->GetValue()))
+      ((CSettingString*)CSettings::Get().GetSetting("locale.language"))->Reset();
+  }
+  else if (settingId == "locale.country")
+  {
+    g_langInfo.SetCurrentRegion(((CSettingString*)setting)->GetValue());
+    g_weatherManager.Refresh(); // need to reset our weather, as temperatures need re-translating.
+  }
+}
+
 bool CLangInfo::Load(const CStdString& strFileName)
 {
   SetDefaults();
@@ -328,7 +360,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=g_guiSettings.GetString("locale.country");
+    const CStdString& strName=CSettings::Get().GetString("locale.country");
     SetCurrentRegion(strName);
   }
 
@@ -376,7 +408,7 @@ void CLangInfo::SetDefaults()
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
-  strCharSet=g_guiSettings.GetString("locale.charset");
+  strCharSet=CSettings::Get().GetString("locale.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_currentRegion->m_strGuiCharSet;
 
@@ -385,11 +417,38 @@ CStdString CLangInfo::GetGuiCharSet() const
 
 CStdString CLangInfo::GetSubtitleCharSet() const
 {
-  CStdString strCharSet=g_guiSettings.GetString("subtitles.charset");
+  CStdString strCharSet=CSettings::Get().GetString("subtitles.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_currentRegion->m_strSubtitleCharSet;
 
   return strCharSet;
+}
+
+bool CLangInfo::SetLanguage(const std::string &strLanguage)
+{
+  string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  if (!g_langInfo.Load(strLangInfoPath))
+    return false;
+
+  if (ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
+  {
+    CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
+    CStdString strFontSet;
+    if (!g_fontManager.GetFirstFontSetUnicode(strFontSet))
+      CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
+  }
+
+  g_charsetConverter.reset();
+
+  if (!g_localizeStrings.Load("special://xbmc/language/", strLanguage))
+    return false;
+
+  // also tell our weather and skin to reload as these are localized
+  g_weatherManager.Refresh();
+  g_PVRManager.LocalizationChanged();
+  g_application.ReloadSkin();
+
+  return true;
 }
 
 // three char language code (not win32 specific)
@@ -529,4 +588,65 @@ CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit() const
 const CStdString& CLangInfo::GetSpeedUnitString() const
 {
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
+}
+
+void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  SettingOptionsLanguagesFillerGeneral(setting, list, current);
+}
+
+void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  vector<string> languages;
+  languages.push_back(g_localizeStrings.Get(308));
+  languages.push_back(g_localizeStrings.Get(309));
+  vector<string> languageKeys;
+  languageKeys.push_back("original");
+  languageKeys.push_back("default");
+  SettingOptionsLanguagesFillerGeneral(setting, list, current, languages, languageKeys);
+}
+
+void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  CStdStringArray regions;
+  g_langInfo.GetRegionNames(regions);
+  sort(regions.begin(), regions.end(), sortstringbyname());
+
+  for (unsigned int i = 0; i < regions.size(); ++i)
+    list.push_back(make_pair(regions[i], regions[i]));
+}
+
+void CLangInfo::SettingOptionsLanguagesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current,
+                                                     const std::vector<std::string> &languages /* = std::vector<std::string>() */,
+                                                     const std::vector<std::string> &languageKeys /* = std::vector<std::string>() */)
+{
+  //find languages...
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory("special://xbmc/language/", items);
+
+  vector<string> vecLanguage;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    if (pItem->m_bIsFolder)
+    {
+      if (StringUtils::EqualsNoCase(pItem->GetLabel(), ".svn") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
+        continue;
+
+      vecLanguage.push_back(pItem->GetLabel());
+    }
+  }
+
+  sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
+  // Add language options passed by parameter at the beginning
+  if (languages.size() > 0)
+  {
+    for (unsigned int i = 0; i < languages.size(); ++i)
+      list.push_back(make_pair(languages[i], languageKeys[i]));
+  }
+  
+  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
+    list.push_back(make_pair(vecLanguage[i], vecLanguage[i]));
 }

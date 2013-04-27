@@ -22,6 +22,7 @@
 #include "system.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
@@ -36,7 +37,7 @@ namespace PERIPHERALS
 {
   #define g_peripherals CPeripherals::Get()
 
-  class CPeripherals
+  class CPeripherals : public ISettingCallback
   {
   public:
     static CPeripherals &Get(void);
@@ -195,6 +196,9 @@ namespace PERIPHERALS
       return false;
 #endif
     }
+    
+    virtual void OnSettingChanged(const CSetting *setting);
+    virtual void OnSettingAction(const CSetting *setting);
 
   private:
     CPeripherals(void);

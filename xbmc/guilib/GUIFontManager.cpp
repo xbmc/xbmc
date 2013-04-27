@@ -26,13 +26,17 @@
 #include "GUIFont.h"
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/Setting.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "FileItem.h"
 #include "URL.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -575,4 +579,30 @@ bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
   }
 
   return false;
+}
+
+void GUIFontManager::SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  CFileItemList items;
+  CFileItemList items2;
+
+  // find TTF fonts
+  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items2);
+
+  if (XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
+  {
+    items.Append(items2);
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr pItem = items[i];
+
+      if (!pItem->m_bIsFolder)
+      {
+        if (!URIUtils::GetExtension(pItem->GetLabel()).Equals(".ttf"))
+          continue;
+
+        list.push_back(make_pair(pItem->GetLabel(), pItem->GetLabel()));
+      }
+    }
+  }
 }

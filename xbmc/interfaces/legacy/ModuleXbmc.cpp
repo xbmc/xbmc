@@ -36,8 +36,6 @@
 #include "XTimeUtils.h"
 #endif
 #include "guilib/LocalizeStrings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -46,6 +44,8 @@
 #include "utils/Crc32.h"
 #include "FileItem.h"
 #include "LangInfo.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "URL.h"
@@ -178,13 +178,13 @@ namespace XBMCAddon
     String getSkinDir()
     {
       TRACE;
-      return g_guiSettings.GetString("lookandfeel.skin");
+      return CSettings::Get().GetString("lookandfeel.skin");
     }
 
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       TRACE;
-      CStdString lang = g_guiSettings.GetString("locale.language");
+      CStdString lang = CSettings::Get().GetString("locale.language");
 
       switch (format)
       {

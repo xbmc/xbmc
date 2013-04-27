@@ -138,7 +138,7 @@ namespace XBMCAddon
       std::string mask = maskparam;
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
       if (!shares) 
-        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
+        throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!maskparam.empty() && !maskparam.size() == 0))
         mask += "|.rar|.zip";
@@ -162,7 +162,7 @@ namespace XBMCAddon
       CStdStringArray tmpret;
       String lmask = mask;
       if (!shares) 
-        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
+        throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!lmask.empty() && !(lmask.size() == 0)))
         lmask += "|.rar|.zip";

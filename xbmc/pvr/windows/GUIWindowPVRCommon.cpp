@@ -41,7 +41,6 @@
 #include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -517,7 +516,7 @@ bool CGUIWindowPVRCommon::ActionPlayChannel(CFileItem *item)
   else
   {
     /* open channel */
-    bReturn = PlayFile(item, g_guiSettings.GetBool("pvrplayback.playminimized"));
+    bReturn = PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
   }
 
   return bReturn;

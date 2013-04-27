@@ -21,13 +21,13 @@
  */
 
 #include "URL.h"
-#include "settings/GUISettings.h"
 #if _MSC_VER > 1400
 #include "Cfgmgr32.h"
 #endif
 #include "MediaSource.h"
-#include "utils/Stopwatch.h"
 #include "guilib/Geometry.h"
+#include "powermanagement/PowerManager.h"
+#include "utils/Stopwatch.h"
 
 enum Drive_Types
 {

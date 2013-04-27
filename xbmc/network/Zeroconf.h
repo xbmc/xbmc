@@ -50,7 +50,7 @@ public:
                       const std::string& fcr_type,
                       const std::string& fcr_name,
                       unsigned int f_port,
-                      const std::vector<std::pair<std::string, std::string> >& txt);
+                      std::vector<std::pair<std::string, std::string> > txt /*= std::vector<std::pair<std::string, std::string> >()*/);
 
   ///removes the specified service
   ///returns false if fcr_identifier does not exist
@@ -62,7 +62,7 @@ public:
   //starts publishing
   //services that were added with PublishService(...) while Zeroconf wasn't
   //started, get published now.
-  void Start();
+  bool Start();
 
   // unpublishs all services (but keeps them stored in this class)
   // a call to Start() will republish them

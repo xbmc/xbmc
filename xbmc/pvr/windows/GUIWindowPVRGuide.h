@@ -26,8 +26,18 @@
 #include "utils/Observer.h"
 #include "../channels/PVRChannelGroup.h"
 
+class CSetting;
+
 namespace PVR
 {
+  enum EpgGuideView
+  {
+    GUIDE_VIEW_CHANNEL  = 0,
+    GUIDE_VIEW_NOW,
+    GUIDE_VIEW_NEXT,
+    GUIDE_VIEW_TIMELINE
+  };
+
   class CGUIWindowPVR;
 
   class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
@@ -45,6 +55,8 @@ namespace PVR
     void SetInvalid(void) { UpdateData(); }
     void UnregisterObservers(void);
     void ResetObservers(void);
+    
+    static void SettingOptionsEpgGuideViewFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
   private:
     bool SelectPlayingFile(void);

@@ -40,7 +40,7 @@
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "commons/Exception.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
@@ -1033,7 +1033,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-        if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
+        if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && CSettings::Get().GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           m_streams[iId] = st;

@@ -28,9 +28,8 @@
 #include "utils/MathUtils.h"
 #include "utils/EndianSwap.h"
 #include "threads/SingleLock.h"
-#include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"
@@ -529,8 +528,7 @@ void CSoftAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.passthroughaac"    ||
       setting == "audiooutput.truehdpassthrough" ||
       setting == "audiooutput.dtshdpassthrough"  ||
-      setting == "audiooutput.channels"     ||
-      setting == "audiooutput.useexclusivemode"  ||
+      setting == "audiooutput.channels"          ||
       setting == "audiooutput.multichannellpcm"  ||
       setting == "audiooutput.stereoupmix")
   {
@@ -552,13 +550,13 @@ void CSoftAE::LoadSettings()
   if (m_audiophile)
     CLog::Log(LOGINFO, "CSoftAE::LoadSettings - Audiophile switch enabled");
 
-  m_stereoUpmix = g_guiSettings.GetBool("audiooutput.stereoupmix");
+  m_stereoUpmix = CSettings::Get().GetBool("audiooutput.stereoupmix");
   if (m_stereoUpmix)
     CLog::Log(LOGINFO, "CSoftAE::LoadSettings - Stereo upmix is enabled");
 
   /* load the configuration */
   m_stdChLayout = AE_CH_LAYOUT_2_0;
-  switch (g_guiSettings.GetInt("audiooutput.channels"))
+  switch (CSettings::Get().GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
@@ -575,21 +573,21 @@ void CSoftAE::LoadSettings()
   }
 
   // force optical/coax to 2.0 output channels
-  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+  if (!m_rawPassthrough && CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958)
     m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   /* get the output devices and ensure they exist */
-  m_device            = g_guiSettings.GetString("audiooutput.audiodevice");
-  m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  m_device            = CSettings::Get().GetString("audiooutput.audiodevice");
+  m_passthroughDevice = CSettings::Get().GetString("audiooutput.passthroughdevice");
   VerifySoundDevice(m_device           , false);
   VerifySoundDevice(m_passthroughDevice, true );
 
   m_transcode = (
-    g_guiSettings.GetBool("audiooutput.ac3passthrough") /*||
-    g_guiSettings.GetBool("audiooutput.dtspassthrough") */
+    CSettings::Get().GetBool("audiooutput.ac3passthrough") /*||
+    CSettings::Get().GetBool("audiooutput.dtspassthrough") */
   ) && (
-      (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958) ||
-      (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI && !g_guiSettings.GetBool("audiooutput.multichannellpcm"))
+      (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958) ||
+      (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI && !CSettings::Get().GetBool("audiooutput.multichannellpcm"))
   );
 }
 

@@ -22,6 +22,7 @@
 
 #include "FileItem.h"
 #include "PVRChannel.h"
+#include "settings/ISettingCallback.h"
 #include "utils/JobManager.h"
 
 #include <boost/shared_ptr.hpp>
@@ -54,9 +55,9 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   /** A group of channels */
-  class CPVRChannelGroup : private Observer,
-                           public Observable,
-                           public IJobCallback
+  class CPVRChannelGroup : public Observable,
+                           public IJobCallback,
+                           public ISettingCallback
 
   {
     friend class CPVRChannelGroups;
@@ -232,7 +233,7 @@ namespace PVR
 
     //@}
 
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    virtual void OnSettingChanged(const CSetting *setting);
 
     /*!
      * @brief Get a channel given it's EPG ID.

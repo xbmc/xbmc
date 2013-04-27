@@ -29,7 +29,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "GUIDialogPVRGuideInfo.h"
 #include "view/ViewState.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIInfoManager.h"
 #include "cores/IPlayer.h"
 
@@ -188,7 +188,7 @@ void CGUIDialogPVRChannelsOSD::Clear()
 
 void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
 {
-  if (g_guiSettings.GetBool("pvrmenu.closechannelosdonswitch"))
+  if (CSettings::Get().GetBool("pvrmenu.closechannelosdonswitch"))
     Close();
   else
     m_viewControl.SetSelectedItem(iItem);

@@ -23,13 +23,13 @@
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-#include "GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecUtils.h"
 #include "DVDVideoCodecVideoToolBox.h"
 #include "lib/DllSwScale.h"
 #include "lib/DllAvFormat.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "osx/DarwinUtils.h"
@@ -1058,7 +1058,7 @@ CDVDVideoCodecVideoToolBox::~CDVDVideoCodecVideoToolBox()
 
 bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (g_guiSettings.GetBool("videoplayer.usevideotoolbox") && !hints.software)
+  if (CSettings::Get().GetBool("videoplayer.usevideotoolbox") && !hints.software)
   {
     m_dllAvUtil = new DllAvUtil;
     m_dllAvFormat = new DllAvFormat;

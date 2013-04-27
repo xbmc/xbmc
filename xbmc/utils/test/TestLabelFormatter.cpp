@@ -20,7 +20,7 @@
 
 #include "utils/LabelFormatter.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 
 #include "test/TestUtils.h"
@@ -33,18 +33,20 @@ class TestLabelFormatter : public testing::Test
 protected:
   TestLabelFormatter()
   {
-    CSettingsCategory* fl = g_guiSettings.AddCategory(7, "filelists", 14081);
-    g_guiSettings.AddBool(fl, "filelists.showparentdiritems", 13306, true);
-    g_guiSettings.AddBool(fl, "filelists.showextensions", 497, true);
-    g_guiSettings.AddBool(fl, "filelists.ignorethewhensorting", 13399, true);
-    g_guiSettings.AddBool(fl, "filelists.allowfiledeletion", 14071, false);
-    g_guiSettings.AddBool(fl, "filelists.showaddsourcebuttons", 21382,  true);
-    g_guiSettings.AddBool(fl, "filelists.showhidden", 21330, false);
+    /* TODO
+    CSettingsCategory* fl = CSettings::Get().AddCategory(7, "filelists", 14081);
+    CSettings::Get().AddBool(fl, "filelists.showparentdiritems", 13306, true);
+    CSettings::Get().AddBool(fl, "filelists.showextensions", 497, true);
+    CSettings::Get().AddBool(fl, "filelists.ignorethewhensorting", 13399, true);
+    CSettings::Get().AddBool(fl, "filelists.allowfiledeletion", 14071, false);
+    CSettings::Get().AddBool(fl, "filelists.showaddsourcebuttons", 21382,  true);
+    CSettings::Get().AddBool(fl, "filelists.showhidden", 21330, false);
+    */
   }
 
   ~TestLabelFormatter()
   {
-    g_guiSettings.Clear();
+    CSettings::Get().Unload();
   }
 };
 

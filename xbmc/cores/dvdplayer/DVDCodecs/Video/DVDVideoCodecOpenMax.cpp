@@ -26,7 +26,6 @@
 
 #if defined(HAVE_LIBOPENMAX)
 #include "DVDClock.h"
-#include "settings/GUISettings.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecOpenMax.h"
 #include "OpenMaxVideo.h"
@@ -52,7 +51,7 @@ CDVDVideoCodecOpenMax::~CDVDVideoCodecOpenMax()
 bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   // we always qualify even if DVDFactoryCodec does this too.
-  if (g_guiSettings.GetBool("videoplayer.useomx") && !hints.software)
+  if (CSettings::Get().GetBool("videoplayer.useomx") && !hints.software)
   {
     m_convert_bitstream = false;
 

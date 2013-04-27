@@ -85,7 +85,7 @@ TEST_F(TestURIUtils, RemoveExtension)
 {
   CStdString ref, var;
 
-  /* NOTE: g_settings need to be set to find other extensions. */
+  /* NOTE: CSettings need to be set to find other extensions. */
   ref = "/path/to/file";
   var = "/path/to/file.xml";
   URIUtils::RemoveExtension(var);

@@ -22,7 +22,7 @@
 #include "GUIWindowPVR.h"
 #include "GUIWindowPVRCommon.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 using namespace PVR;
 
@@ -32,7 +32,7 @@ CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
   PVRWindow ActiveView = GetActiveView();
   if (ActiveView == PVR_WINDOW_RECORDINGS)
   {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, e
     else
       AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, empty

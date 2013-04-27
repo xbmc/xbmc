@@ -54,7 +54,7 @@
 #undef ELEMENT
 #undef COMMENT
 #undef UNKNOWN
-#undef TEXT
+//#undef TEXT
 #undef DECLARATION
 #undef TYPECOUNT
 
