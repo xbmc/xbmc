@@ -37,8 +37,8 @@ SRCS=AlarmClock.cpp \
      LangCodeExpander.cpp \
      log.cpp \
      md5.cpp \
-     Observer.cpp \
      Mime.cpp \
+     Observer.cpp \
      PerformanceSample.cpp \
      PerformanceStats.cpp \
      POUtils.cpp \
