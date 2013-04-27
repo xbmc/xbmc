@@ -27,6 +27,9 @@
 #ifdef TARGET_WINDOWS
 #if _M_IX86_FP>0 && !defined(__SSE__)
 #define __SSE__
+#if _M_IX86_FP>1 && !defined(__SSE2__)
+#define __SSE2__
+#endif
 #endif
 #endif
 
@@ -34,6 +37,10 @@
 #include <xmmintrin.h>
 #else
 #define __m128 void
+#endif
+
+#ifdef __SSE2__
+#include <emmintrin.h>
 #endif
 
 #ifdef __GNUC__
@@ -63,7 +70,7 @@ class CAEUtil
 {
 private:
   static unsigned int m_seed;
-  #ifdef __SSE__
+  #ifdef __SSE2__
     static __m128i m_sseSeed;
   #endif
 
