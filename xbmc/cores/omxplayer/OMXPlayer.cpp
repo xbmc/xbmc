@@ -3099,9 +3099,9 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
 
   unsigned flags = 0;
   if(m_filename.find("3DSBS") != string::npos || m_filename.find("HSBS") != string::npos)
-    flags = CONF_FLAGS_FORMAT_SBS;
+    flags = CONF_FLAGS_STEREO_MODE_SBS;
   else if(m_filename.find("3DTAB") != string::npos || m_filename.find("HTAB") != string::npos)
-    flags = CONF_FLAGS_FORMAT_TB;
+    flags = CONF_FLAGS_STEREO_MODE_TAB;
   m_omxPlayerVideo.SetFlags(flags);
 
   /* store information about stream */

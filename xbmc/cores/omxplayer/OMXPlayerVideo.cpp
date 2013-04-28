@@ -668,8 +668,8 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     float xscale = display.Width()  / gui.Width();
     float yscale = display.Height() / gui.Height();
     // video is displayed in absolute coordinates (bypassing half width or height GUI mode)
-    if (m_flags & CONF_FLAGS_FORMAT_SBS) xscale *= 2.0f;
-    if (m_flags & CONF_FLAGS_FORMAT_TB)  yscale *= 2.0f;
+    if (m_flags & CONF_FLAGS_STEREO_MODE_SBS) xscale *= 2.0f;
+    if (m_flags & CONF_FLAGS_STEREO_MODE_TAB) yscale *= 2.0f;
     dst_rect.x1 *= xscale;
     dst_rect.x2 *= xscale;
     dst_rect.y1 *= yscale;
@@ -699,20 +699,20 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height)
     m_bAllowFullscreen = false; // only allow on first configure
   }
 
-  if(m_flags & CONF_FLAGS_FORMAT_SBS)
+  if(m_flags & CONF_FLAGS_STEREO_MODE_SBS)
   {
     if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DSBS))
     {
       CLog::Log(LOGNOTICE, "3DSBS movie found");
-      flags |= CONF_FLAGS_FORMAT_SBS;
+      flags |= CONF_FLAGS_STEREO_MODE_SBS;
     }
   }
-  else if(m_flags & CONF_FLAGS_FORMAT_TB)
+  else if(m_flags & CONF_FLAGS_STEREO_MODE_TAB)
   {
     if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DTB))
     {
       CLog::Log(LOGNOTICE, "3DTB movie found");
-      flags |= CONF_FLAGS_FORMAT_TB;
+      flags |= CONF_FLAGS_STEREO_MODE_TAB;
     }
   }
 
