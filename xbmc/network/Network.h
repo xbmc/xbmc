@@ -24,6 +24,8 @@
 #include <vector>
 #include "utils/StdString.h"
 #include "system.h"
+#include <string>
+using namespace std;
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
@@ -128,3 +130,9 @@ public:
 #include "windows/NetworkWin32.h"
 #endif
 #endif
+
+//creates, binds and listens a tcp socket on the desired port. Set bindLocal to
+//true to bind to localhost only. The socket will listen over ipv6 if possible
+//and fall back to ipv4 if ipv6 is not available on the platform.
+int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlog, const char *callerName);
+

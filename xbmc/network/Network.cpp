@@ -30,6 +30,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <string>
 
 using namespace std;
 
@@ -331,3 +332,74 @@ void CNetwork::StopServices(bool bWait)
     g_application.StopAirplayServer(bWait);
 #endif
 }
+
+//creates, binds and listens a tcp socket on the desired port. Set bindLocal to
+//true to bind to localhost only. The socket will listen over ipv6 if possible
+//and fall back to ipv4 if ipv6 is not available on the platform.
+int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlog, const char *callerName)
+{
+  struct sockaddr_storage addr;
+  struct sockaddr_in6 *s6;
+  struct sockaddr_in  *s4;
+  int 	 sock, no=0;
+  bool   v4_fallback = false;
+
+  memset(&addr, 0, sizeof(addr));
+
+  if((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0)
+    v4_fallback = true;
+
+  //in case we're on ipv6, make sure the socket is dual stacked
+  if(!v4_fallback)
+    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (void *)&no, sizeof(no)); 
+
+  if(v4_fallback)
+	sock = socket(PF_INET, SOCK_STREAM, 0);
+
+  if (sock == INVALID_SOCKET)
+  {
+	
+    CLog::Log(LOGERROR, "%s Server: Failed to create serversocket", callerName);
+    return INVALID_SOCKET;
+  }
+
+  if(v4_fallback) {
+	addr.ss_family	= AF_INET;
+    s4 = (struct sockaddr_in *) &addr;
+	s4->sin_port = htons(port);
+
+    if(bindLocal)
+		s4->sin_addr.s_addr = INADDR_LOOPBACK;
+    else
+		s4->sin_addr.s_addr = INADDR_ANY;
+
+  } else {
+	addr.ss_family	= AF_INET6;
+    s6 = (struct sockaddr_in6 *) &addr;
+	s6->sin6_port = htons(port);
+
+    if(bindLocal)
+		s6->sin6_addr	= in6addr_loopback;
+	else
+		s6->sin6_addr	= in6addr_any;
+  }
+
+  if (bind(sock, (struct sockaddr *) &addr, 
+		(addr.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) : 
+									   sizeof(struct sockaddr_in)  ) < 0)
+  {
+    close(sock);
+    CLog::Log(LOGERROR, "%s Server: Failed to bind serversocket", callerName);
+    return INVALID_SOCKET;
+  }
+
+  if (listen(sock, backlog) < 0)
+  {
+    close(sock);
+    CLog::Log(LOGERROR, "%s Server: Failed to set listen", callerName);
+    return INVALID_SOCKET;
+  }
+
+  return sock;
+}
+

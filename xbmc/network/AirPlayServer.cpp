@@ -354,38 +354,9 @@ bool CAirPlayServer::Initialize()
 {
   Deinitialize();
 
-  struct sockaddr_in myaddr;
-  memset(&myaddr, 0, sizeof(myaddr));
-
-  myaddr.sin_family = AF_INET;
-  myaddr.sin_port = htons(m_port);
-
-  if (m_nonlocal)
-    myaddr.sin_addr.s_addr = INADDR_ANY;
-  else
-    inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
-
-  m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
-
-  if (m_ServerSocket == INVALID_SOCKET)
-  {
-
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to create serversocket");
-    return false;
-  }
-
-  if (bind(m_ServerSocket, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
-  {
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to bind serversocket");
-    close(m_ServerSocket);
-    return false;
-  }
-
-  if (listen(m_ServerSocket, 10) < 0)
-  {
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to set listen");
-    close(m_ServerSocket);
-    return false;
+  if((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10,
+		"AIRPLAY")) == INVALID_SOCKET) {
+	return false;
   }
 
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
