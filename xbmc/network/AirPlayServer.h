@@ -81,7 +81,7 @@ private:
     void Disconnect();
 
     int m_socket;
-    struct sockaddr m_cliaddr;
+    struct sockaddr_storage m_cliaddr;
     socklen_t m_addrlen;
     CCriticalSection m_critSection;
     int  m_sessionCounter;
