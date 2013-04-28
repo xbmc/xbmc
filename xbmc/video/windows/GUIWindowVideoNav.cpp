@@ -1949,7 +1949,7 @@ bool CGUIWindowVideoNav::GetSetForMovie(CFileItemPtr &movieItem, CFileItemPtr &s
     return false;
 }
 
-bool CGUIWindowVideoNav::SetMovieSet (CFileItemPtr &movieItem, CFileItemPtr &selectedSet)
+bool CGUIWindowVideoNav::SetMovieSet(CFileItemPtr &movieItem, CFileItemPtr &selectedSet)
 {
   CVideoDatabase videodb;
   if (!videodb.Open())
