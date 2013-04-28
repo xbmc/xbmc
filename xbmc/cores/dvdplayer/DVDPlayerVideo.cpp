@@ -1047,6 +1047,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
+    flags |= GetStereoModeFlags(m_hints.stereo_mode);
+
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
     if(!g_renderManager.Configure(pPicture->iWidth
                                 , pPicture->iHeight
