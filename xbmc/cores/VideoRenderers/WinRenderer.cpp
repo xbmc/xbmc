@@ -325,7 +325,7 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   if (clear)
-    pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
+    g_graphicsContext.Clear(m_clearColour);
 
   if(alpha < 255)
     pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
@@ -834,7 +834,6 @@ void CWinRenderer::ScaleFixedPipeline()
   pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
   pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
   pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
 
   pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
   pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
