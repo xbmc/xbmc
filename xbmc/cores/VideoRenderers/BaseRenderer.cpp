@@ -243,11 +243,11 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     curr.iScreenHeight *= 2;
   }
   // work out resolution if we switch to 3D mode
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+  if(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS)
   {
     curr.iScreenWidth /= 2;
   }
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+  else if(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB)
   {
     curr.iScreenHeight /= 2;
   }
@@ -268,7 +268,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       continue;
 
     // For 3D choose the closest refresh rate 
-    if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+    if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     {
       float diff = (info.fRefreshRate - fRefreshRate);
       if(diff < 0)
@@ -295,7 +295,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   }
 
   // For 3D overwrite weight
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+  if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     weight = 0;
   else
     weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
@@ -600,7 +600,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  if (m_iFlags & (CONF_FLAGS_FORMAT_SBS | CONF_FLAGS_FORMAT_TB))
+  if (m_iFlags & (CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_MODE_TAB))
     viewMode = ViewModeNormal;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
@@ -611,9 +611,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
   float screenHeight = (float)(info.Overscan.bottom - info.Overscan.top);
 
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+  if(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS)
     screenWidth /= 2;
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+  else if(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB)
     screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
