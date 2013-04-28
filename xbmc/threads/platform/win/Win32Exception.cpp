@@ -309,7 +309,7 @@ cleanup:
 }
 
 access_violation::access_violation(EXCEPTION_POINTERS* info) :
-  win32_exception(info,"access_voilation"), mAccessType(Invalid), mBadAddress(0)
+  win32_exception(info,"access_violation"), mAccessType(Invalid), mBadAddress(0)
 {
   switch(info->ExceptionRecord->ExceptionInformation[0])
   {
