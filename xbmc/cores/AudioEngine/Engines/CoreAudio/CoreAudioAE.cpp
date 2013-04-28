@@ -105,8 +105,8 @@ CCoreAudioAE::CCoreAudioAE() :
 
 CCoreAudioAE::~CCoreAudioAE()
 {
-  Shutdown();
   RegisterDeviceChangedCB(false, this);
+  Shutdown();
 }
 
 void CCoreAudioAE::Shutdown()
@@ -150,6 +150,10 @@ void CCoreAudioAE::AudioDevicesChanged()
   // again (yeah that really is the case - duh)
   Sleep(500);
   CSingleLock engineLock(m_engineLock);
+
+  // re-check initialized since it can have changed when we waited and grabbed the lock
+  if (!m_Initialized)
+    return;
   OpenCoreAudio(m_lastSampleRate, COREAUDIO_IS_RAW(m_lastStreamFormat), m_lastStreamFormat);
 }
 
