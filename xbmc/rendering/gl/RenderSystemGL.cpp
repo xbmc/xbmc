@@ -667,6 +667,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   glDisable(GL_POLYGON_STIPPLE);
+  glDrawBuffer(GL_BACK);
 
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
   {
@@ -692,6 +693,14 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
       glPolygonStipple(stipple_3d+4);
   }
 
+  if(m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glDrawBuffer(GL_BACK_LEFT);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glDrawBuffer(GL_BACK_RIGHT);
+  }
+
 }
 
 bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
@@ -702,6 +711,15 @@ bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
     case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
     case RENDER_STEREO_MODE_INTERLACED:
       return true;
+    case RENDER_STEREO_MODE_HARDWAREBASED: {
+      //This is called by setting init, at which point GL is not inited
+      //luckily if GL doesn't support this, it will just behave as if
+      //it was not in effect.
+      //GLboolean stereo = GL_FALSE;
+      //glGetBooleanv(GL_STEREO, &stereo);
+      //return stereo == GL_TRUE ? true : false;
+      return true;
+    }
     default:
       return CRenderSystemBase::SupportsStereo(mode);
   }
