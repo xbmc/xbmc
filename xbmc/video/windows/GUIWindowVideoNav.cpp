@@ -269,8 +269,6 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
 
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  CFileItem directory(strDirectory, true);
-
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
