@@ -264,6 +264,21 @@
 		DFDB00271516403A005079A4 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00221516403A005079A4 /* MemBufferCache.cpp */; };
 		DFDD077316C0B58B000A1F73 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */; };
 		DFE3505B1532535500F84CAA /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */; };
+		DFECFAEB172D9C7B00A43CF7 /* GUIControlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFAE9172D9C7B00A43CF7 /* GUIControlSettings.cpp */; };
+		DFECFB39172D9D2800A43CF7 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB1F172D9D2800A43CF7 /* ISetting.cpp */; };
+		DFECFB3A172D9D2800A43CF7 /* Setting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB23172D9D2800A43CF7 /* Setting.cpp */; };
+		DFECFB3B172D9D2800A43CF7 /* SettingAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB25172D9D2800A43CF7 /* SettingAddon.cpp */; };
+		DFECFB3C172D9D2800A43CF7 /* SettingCategoryAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB27172D9D2800A43CF7 /* SettingCategoryAccess.cpp */; };
+		DFECFB3D172D9D2800A43CF7 /* SettingConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB29172D9D2800A43CF7 /* SettingConditions.cpp */; };
+		DFECFB3E172D9D2800A43CF7 /* SettingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB2B172D9D2800A43CF7 /* SettingControl.cpp */; };
+		DFECFB3F172D9D2800A43CF7 /* SettingDependency.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB2D172D9D2800A43CF7 /* SettingDependency.cpp */; };
+		DFECFB40172D9D2800A43CF7 /* SettingPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB2F172D9D2800A43CF7 /* SettingPath.cpp */; };
+		DFECFB41172D9D2800A43CF7 /* SettingSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB31172D9D2800A43CF7 /* SettingSection.cpp */; };
+		DFECFB42172D9D2800A43CF7 /* SettingsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB33172D9D2800A43CF7 /* SettingsManager.cpp */; };
+		DFECFB43172D9D2800A43CF7 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB35172D9D2800A43CF7 /* SettingUpdate.cpp */; };
+		DFECFB44172D9D2800A43CF7 /* SettingVisibility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB37172D9D2800A43CF7 /* SettingVisibility.cpp */; };
+		DFECFB47172D9D4900A43CF7 /* BooleanLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB45172D9D4900A43CF7 /* BooleanLogic.cpp */; };
+		DFECFB4F172D9D8E00A43CF7 /* NetworkServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB4D172D9D8E00A43CF7 /* NetworkServices.cpp */; };
 		DFF7A92315F7C62900D316E9 /* PltMimeType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFF7A91F15F7C62900D316E9 /* PltMimeType.cpp */; };
 		DFF7A92415F7C62900D316E9 /* PltProtocolInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFF7A92115F7C62900D316E9 /* PltProtocolInfo.cpp */; };
 		DFF7A93215F7C73B00D316E9 /* NptPosixTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFF7A93015F7C73B00D316E9 /* NptPosixTime.cpp */; };
@@ -276,7 +291,6 @@
 		F52CC6361713AD5100113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6341713AD5100113454 /* DirectoryNodeGrouped.cpp */; };
 		F52CC6C71713BDEE00113454 /* DirectoryNodeGrouped.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52CC6C51713BDEE00113454 /* DirectoryNodeGrouped.cpp */; };
 		F56352D916E543BD00D21BAD /* UPnPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352D716E543BD00D21BAD /* UPnPSettings.cpp */; };
-		F56352E916E543F800D21BAD /* GUISettingControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352DD16E543F800D21BAD /* GUISettingControls.cpp */; };
 		F56352EA16E543F800D21BAD /* GUIWindowSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352DF16E543F800D21BAD /* GUIWindowSettings.cpp */; };
 		F56352EB16E543F800D21BAD /* GUIWindowSettingsCategory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352E116E543F800D21BAD /* GUIWindowSettingsCategory.cpp */; };
 		F56352ED16E543F800D21BAD /* GUIWindowSettingsScreenCalibration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352E516E543F800D21BAD /* GUIWindowSettingsScreenCalibration.cpp */; };
@@ -864,7 +878,6 @@
 		F56C8ADC131F42ED000AD0F6 /* GUIWindowPrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86A4131F42EB000AD0F6 /* GUIWindowPrograms.cpp */; };
 		F56C8ADF131F42ED000AD0F6 /* RenderSystemGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86AC131F42EB000AD0F6 /* RenderSystemGLES.cpp */; };
 		F56C8AE0131F42ED000AD0F6 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86AE131F42EB000AD0F6 /* RenderSystem.cpp */; };
-		F56C8AE6131F42ED000AD0F6 /* GUISettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86BC131F42EB000AD0F6 /* GUISettings.cpp */; };
 		F56C8AE7131F42ED000AD0F6 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86BE131F42EB000AD0F6 /* AdvancedSettings.cpp */; };
 		F56C8AED131F42ED000AD0F6 /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86CA131F42EB000AD0F6 /* Settings.cpp */; };
 		F56C8AEF131F42ED000AD0F6 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86CE131F42EB000AD0F6 /* VideoSettings.cpp */; };
@@ -1571,6 +1584,38 @@
 		DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		DFE350591532535500F84CAA /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
 		DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
+		DFECFAE9172D9C7B00A43CF7 /* GUIControlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIControlSettings.cpp; path = windows/GUIControlSettings.cpp; sourceTree = "<group>"; };
+		DFECFAEA172D9C7B00A43CF7 /* GUIControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIControlSettings.h; path = windows/GUIControlSettings.h; sourceTree = "<group>"; };
+		DFECFB1F172D9D2800A43CF7 /* ISetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISetting.cpp; sourceTree = "<group>"; };
+		DFECFB20172D9D2800A43CF7 /* ISetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISetting.h; sourceTree = "<group>"; };
+		DFECFB21172D9D2800A43CF7 /* ISettingCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingCallback.h; sourceTree = "<group>"; };
+		DFECFB22172D9D2800A43CF7 /* ISettingCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISettingCreator.h; sourceTree = "<group>"; };
+		DFECFB23172D9D2800A43CF7 /* Setting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Setting.cpp; sourceTree = "<group>"; };
+		DFECFB24172D9D2800A43CF7 /* Setting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Setting.h; sourceTree = "<group>"; };
+		DFECFB25172D9D2800A43CF7 /* SettingAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingAddon.cpp; sourceTree = "<group>"; };
+		DFECFB26172D9D2800A43CF7 /* SettingAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingAddon.h; sourceTree = "<group>"; };
+		DFECFB27172D9D2800A43CF7 /* SettingCategoryAccess.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingCategoryAccess.cpp; sourceTree = "<group>"; };
+		DFECFB28172D9D2800A43CF7 /* SettingCategoryAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingCategoryAccess.h; sourceTree = "<group>"; };
+		DFECFB29172D9D2800A43CF7 /* SettingConditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingConditions.cpp; sourceTree = "<group>"; };
+		DFECFB2A172D9D2800A43CF7 /* SettingConditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingConditions.h; sourceTree = "<group>"; };
+		DFECFB2B172D9D2800A43CF7 /* SettingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingControl.cpp; sourceTree = "<group>"; };
+		DFECFB2C172D9D2800A43CF7 /* SettingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingControl.h; sourceTree = "<group>"; };
+		DFECFB2D172D9D2800A43CF7 /* SettingDependency.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingDependency.cpp; sourceTree = "<group>"; };
+		DFECFB2E172D9D2800A43CF7 /* SettingDependency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingDependency.h; sourceTree = "<group>"; };
+		DFECFB2F172D9D2800A43CF7 /* SettingPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingPath.cpp; sourceTree = "<group>"; };
+		DFECFB30172D9D2800A43CF7 /* SettingPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingPath.h; sourceTree = "<group>"; };
+		DFECFB31172D9D2800A43CF7 /* SettingSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingSection.cpp; sourceTree = "<group>"; };
+		DFECFB32172D9D2800A43CF7 /* SettingSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingSection.h; sourceTree = "<group>"; };
+		DFECFB33172D9D2800A43CF7 /* SettingsManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsManager.cpp; sourceTree = "<group>"; };
+		DFECFB34172D9D2800A43CF7 /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
+		DFECFB35172D9D2800A43CF7 /* SettingUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingUpdate.cpp; sourceTree = "<group>"; };
+		DFECFB36172D9D2800A43CF7 /* SettingUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingUpdate.h; sourceTree = "<group>"; };
+		DFECFB37172D9D2800A43CF7 /* SettingVisibility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingVisibility.cpp; sourceTree = "<group>"; };
+		DFECFB38172D9D2800A43CF7 /* SettingVisibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingVisibility.h; sourceTree = "<group>"; };
+		DFECFB45172D9D4900A43CF7 /* BooleanLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BooleanLogic.cpp; sourceTree = "<group>"; };
+		DFECFB46172D9D4900A43CF7 /* BooleanLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BooleanLogic.h; sourceTree = "<group>"; };
+		DFECFB4D172D9D8E00A43CF7 /* NetworkServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkServices.cpp; sourceTree = "<group>"; };
+		DFECFB4E172D9D8E00A43CF7 /* NetworkServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkServices.h; sourceTree = "<group>"; };
 		DFF7A91F15F7C62900D316E9 /* PltMimeType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMimeType.cpp; sourceTree = "<group>"; };
 		DFF7A92015F7C62900D316E9 /* PltMimeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMimeType.h; sourceTree = "<group>"; };
 		DFF7A92115F7C62900D316E9 /* PltProtocolInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltProtocolInfo.cpp; sourceTree = "<group>"; };
@@ -1604,8 +1649,6 @@
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F56352D716E543BD00D21BAD /* UPnPSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPSettings.cpp; sourceTree = "<group>"; };
 		F56352D816E543BD00D21BAD /* UPnPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPSettings.h; sourceTree = "<group>"; };
-		F56352DD16E543F800D21BAD /* GUISettingControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUISettingControls.cpp; path = windows/GUISettingControls.cpp; sourceTree = "<group>"; };
-		F56352DE16E543F800D21BAD /* GUISettingControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUISettingControls.h; path = windows/GUISettingControls.h; sourceTree = "<group>"; };
 		F56352DF16E543F800D21BAD /* GUIWindowSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowSettings.cpp; path = windows/GUIWindowSettings.cpp; sourceTree = "<group>"; };
 		F56352E016E543F800D21BAD /* GUIWindowSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowSettings.h; path = windows/GUIWindowSettings.h; sourceTree = "<group>"; };
 		F56352E116E543F800D21BAD /* GUIWindowSettingsCategory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowSettingsCategory.cpp; path = windows/GUIWindowSettingsCategory.cpp; sourceTree = "<group>"; };
@@ -2909,8 +2952,6 @@
 		F56C86AD131F42EB000AD0F6 /* RenderSystemGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystemGLES.h; sourceTree = "<group>"; };
 		F56C86AE131F42EB000AD0F6 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		F56C86AF131F42EB000AD0F6 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
-		F56C86BC131F42EB000AD0F6 /* GUISettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISettings.cpp; sourceTree = "<group>"; };
-		F56C86BD131F42EB000AD0F6 /* GUISettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISettings.h; sourceTree = "<group>"; };
 		F56C86BE131F42EB000AD0F6 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
 		F56C86BF131F42EB000AD0F6 /* AdvancedSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettings.h; sourceTree = "<group>"; };
 		F56C86CA131F42EB000AD0F6 /* Settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Settings.cpp; sourceTree = "<group>"; };
@@ -3828,8 +3869,8 @@
 		F56352DB16E543DE00D21BAD /* windows */ = {
 			isa = PBXGroup;
 			children = (
-				F56352DD16E543F800D21BAD /* GUISettingControls.cpp */,
-				F56352DE16E543F800D21BAD /* GUISettingControls.h */,
+				DFECFAE9172D9C7B00A43CF7 /* GUIControlSettings.cpp */,
+				DFECFAEA172D9C7B00A43CF7 /* GUIControlSettings.h */,
 				F56352DF16E543F800D21BAD /* GUIWindowSettings.cpp */,
 				F56352E016E543F800D21BAD /* GUIWindowSettings.h */,
 				F56352E116E543F800D21BAD /* GUIWindowSettingsCategory.cpp */,
@@ -5896,6 +5937,8 @@
 				F56C8645131F42EB000AD0F6 /* GUIDialogNetworkSetup.h */,
 				F56C8646131F42EB000AD0F6 /* Network.cpp */,
 				F56C8647131F42EB000AD0F6 /* Network.h */,
+				DFECFB4D172D9D8E00A43CF7 /* NetworkServices.cpp */,
+				DFECFB4E172D9D8E00A43CF7 /* NetworkServices.h */,
 				F56C8648131F42EB000AD0F6 /* Socket.cpp */,
 				F56C8649131F42EB000AD0F6 /* Socket.h */,
 				F56C864A131F42EB000AD0F6 /* TCPServer.cpp */,
@@ -6072,16 +6115,40 @@
 				F56C86BF131F42EB000AD0F6 /* AdvancedSettings.h */,
 				DF28EE0A170E1E78005FA9D2 /* DisplaySettings.cpp */,
 				DF28EE0B170E1E78005FA9D2 /* DisplaySettings.h */,
-				F56C86BC131F42EB000AD0F6 /* GUISettings.cpp */,
-				F56C86BD131F42EB000AD0F6 /* GUISettings.h */,
+				DFECFB1F172D9D2800A43CF7 /* ISetting.cpp */,
+				DFECFB20172D9D2800A43CF7 /* ISetting.h */,
+				DFECFB21172D9D2800A43CF7 /* ISettingCallback.h */,
+				DFECFB22172D9D2800A43CF7 /* ISettingCreator.h */,
 				DF898FBA1709B8E600B35C21 /* ISettingsHandler.h */,
 				DF898FBB1709B8E600B35C21 /* ISubSettings.h */,
 				DF898FBC1709B8E600B35C21 /* MediaSettings.cpp */,
 				DF898FBD1709B8E600B35C21 /* MediaSettings.h */,
 				DF898FBE1709B8E600B35C21 /* MediaSourceSettings.cpp */,
 				DF898FBF1709B8E600B35C21 /* MediaSourceSettings.h */,
+				DFECFB23172D9D2800A43CF7 /* Setting.cpp */,
+				DFECFB24172D9D2800A43CF7 /* Setting.h */,
+				DFECFB25172D9D2800A43CF7 /* SettingAddon.cpp */,
+				DFECFB26172D9D2800A43CF7 /* SettingAddon.h */,
+				DFECFB27172D9D2800A43CF7 /* SettingCategoryAccess.cpp */,
+				DFECFB28172D9D2800A43CF7 /* SettingCategoryAccess.h */,
+				DFECFB29172D9D2800A43CF7 /* SettingConditions.cpp */,
+				DFECFB2A172D9D2800A43CF7 /* SettingConditions.h */,
+				DFECFB2B172D9D2800A43CF7 /* SettingControl.cpp */,
+				DFECFB2C172D9D2800A43CF7 /* SettingControl.h */,
+				DFECFB2D172D9D2800A43CF7 /* SettingDependency.cpp */,
+				DFECFB2E172D9D2800A43CF7 /* SettingDependency.h */,
+				DFECFB2F172D9D2800A43CF7 /* SettingPath.cpp */,
+				DFECFB30172D9D2800A43CF7 /* SettingPath.h */,
 				F56C86CA131F42EB000AD0F6 /* Settings.cpp */,
 				F56C86CB131F42EB000AD0F6 /* Settings.h */,
+				DFECFB31172D9D2800A43CF7 /* SettingSection.cpp */,
+				DFECFB32172D9D2800A43CF7 /* SettingSection.h */,
+				DFECFB33172D9D2800A43CF7 /* SettingsManager.cpp */,
+				DFECFB34172D9D2800A43CF7 /* SettingsManager.h */,
+				DFECFB35172D9D2800A43CF7 /* SettingUpdate.cpp */,
+				DFECFB36172D9D2800A43CF7 /* SettingUpdate.h */,
+				DFECFB37172D9D2800A43CF7 /* SettingVisibility.cpp */,
+				DFECFB38172D9D2800A43CF7 /* SettingVisibility.h */,
 				DF898FC01709B8E600B35C21 /* SkinSettings.cpp */,
 				DF898FC11709B8E600B35C21 /* SkinSettings.h */,
 				F56C86CE131F42EB000AD0F6 /* VideoSettings.cpp */,
@@ -6160,6 +6227,8 @@
 				DF52775D151BAFA000B5B63B /* Base64.h */,
 				F56C8716131F42EC000AD0F6 /* BitstreamStats.cpp */,
 				F56C8717131F42EC000AD0F6 /* BitstreamStats.h */,
+				DFECFB45172D9D4900A43CF7 /* BooleanLogic.cpp */,
+				DFECFB46172D9D4900A43CF7 /* BooleanLogic.h */,
 				F56C8718131F42EC000AD0F6 /* CharsetConverter.cpp */,
 				F56C8719131F42EC000AD0F6 /* CharsetConverter.h */,
 				F56C871A131F42EC000AD0F6 /* CPUInfo.cpp */,
@@ -7331,7 +7400,6 @@
 				F56C8ADC131F42ED000AD0F6 /* GUIWindowPrograms.cpp in Sources */,
 				F56C8ADF131F42ED000AD0F6 /* RenderSystemGLES.cpp in Sources */,
 				F56C8AE0131F42ED000AD0F6 /* RenderSystem.cpp in Sources */,
-				F56C8AE6131F42ED000AD0F6 /* GUISettings.cpp in Sources */,
 				F56C8AE7131F42ED000AD0F6 /* AdvancedSettings.cpp in Sources */,
 				F56C8AED131F42ED000AD0F6 /* Settings.cpp in Sources */,
 				F56C8AEF131F42ED000AD0F6 /* VideoSettings.cpp in Sources */,
@@ -7731,7 +7799,6 @@
 				DFD5813116C829350008EEA0 /* DAVCommon.cpp in Sources */,
 				DFD5813216C829350008EEA0 /* DAVFile.cpp in Sources */,
 				F56352D916E543BD00D21BAD /* UPnPSettings.cpp in Sources */,
-				F56352E916E543F800D21BAD /* GUISettingControls.cpp in Sources */,
 				F56352EA16E543F800D21BAD /* GUIWindowSettings.cpp in Sources */,
 				F56352EB16E543F800D21BAD /* GUIWindowSettingsCategory.cpp in Sources */,
 				F56352ED16E543F800D21BAD /* GUIWindowSettingsScreenCalibration.cpp in Sources */,
@@ -7756,6 +7823,21 @@
 				7C87B2DA162CE3C300EF897D /* PlayerController.cpp in Sources */,
 				F52CC6361713AD5100113454 /* DirectoryNodeGrouped.cpp in Sources */,
 				F52CC6C71713BDEE00113454 /* DirectoryNodeGrouped.cpp in Sources */,
+				DFECFAEB172D9C7B00A43CF7 /* GUIControlSettings.cpp in Sources */,
+				DFECFB39172D9D2800A43CF7 /* ISetting.cpp in Sources */,
+				DFECFB3A172D9D2800A43CF7 /* Setting.cpp in Sources */,
+				DFECFB3B172D9D2800A43CF7 /* SettingAddon.cpp in Sources */,
+				DFECFB3C172D9D2800A43CF7 /* SettingCategoryAccess.cpp in Sources */,
+				DFECFB3D172D9D2800A43CF7 /* SettingConditions.cpp in Sources */,
+				DFECFB3E172D9D2800A43CF7 /* SettingControl.cpp in Sources */,
+				DFECFB3F172D9D2800A43CF7 /* SettingDependency.cpp in Sources */,
+				DFECFB40172D9D2800A43CF7 /* SettingPath.cpp in Sources */,
+				DFECFB41172D9D2800A43CF7 /* SettingSection.cpp in Sources */,
+				DFECFB42172D9D2800A43CF7 /* SettingsManager.cpp in Sources */,
+				DFECFB43172D9D2800A43CF7 /* SettingUpdate.cpp in Sources */,
+				DFECFB44172D9D2800A43CF7 /* SettingVisibility.cpp in Sources */,
+				DFECFB47172D9D4900A43CF7 /* BooleanLogic.cpp in Sources */,
+				DFECFB4F172D9D8E00A43CF7 /* NetworkServices.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
