@@ -264,6 +264,10 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
   if (!m_bRenderCreated)
     return false;
 
+  /* clear is not affected by stipple pattern, so we can only clear on first frame */
+  if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    return true;
+
   float r = GET_R(color) / 255.0f;
   float g = GET_G(color) / 255.0f;
   float b = GET_B(color) / 255.0f;
@@ -583,7 +587,7 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
     return;
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
-  glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+//  glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
 }
 
 void CRenderSystemGL::SetScissors(const CRect &rect)
@@ -621,5 +625,87 @@ void CRenderSystemGL::ResetGLErrors()
     }
   }
 }
+static const GLubyte stipple_3d[] = {
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+};
+
+void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+{
+  CRenderSystemBase::SetStereoMode(mode, view);
+
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  glDisable(GL_POLYGON_STIPPLE);
+
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+  }
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
+  }
+
+  if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED)
+  {
+    glEnable(GL_POLYGON_STIPPLE);
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glPolygonStipple(stipple_3d);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glPolygonStipple(stipple_3d+4);
+  }
+
+}
+
+bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
+{
+  switch(mode)
+  {
+    case RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN:
+    case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
+    case RENDER_STEREO_MODE_INTERLACED:
+      return true;
+    default:
+      return CRenderSystemBase::SupportsStereo(mode);
+  }
+}
+
 
 #endif
