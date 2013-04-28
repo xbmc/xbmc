@@ -78,7 +78,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_pInfo->y = y;
   m_pInfo->width = w;
   m_pInfo->height = h;
-  m_pInfo->pixelRatio = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).fPixelRatio;
+  m_pInfo->pixelRatio = g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
 
   m_pInfo->name = strdup(Name().c_str());
   m_pInfo->presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());

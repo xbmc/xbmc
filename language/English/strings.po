@@ -14125,8 +14125,50 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36421 to 36999
+#empty strings from id 36421 to 36499
 #end reservation
+
+#: system/settings/settings.xml
+msgctxt "#36501"
+msgid "Stereoscopic 3d Mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36502"
+msgid "None"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36504"
+msgid "Side by side"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr ""
+
+#reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"

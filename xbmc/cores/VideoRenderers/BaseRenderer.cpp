@@ -430,7 +430,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float outputFrameRatio = inputFrameRatio / CDisplaySettings::Get().GetResolutionInfo(GetResolution()).fPixelRatio;
+  float outputFrameRatio = inputFrameRatio / g_graphicsContext.GetPixelRatio(GetResolution());
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
@@ -587,9 +587,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  if (m_iFlags & (CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_MODE_TAB))
-    viewMode = ViewModeNormal;
-
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution
@@ -622,7 +619,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // zoom image so no black bars
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / g_graphicsContext.GetPixelRatio(res);
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
@@ -640,7 +637,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio);
     }
     else
     {
@@ -652,7 +649,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
            (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeWideZoom))
   { // super zoom
-    float stretchAmount = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
+    float stretchAmount = (screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio;
     CDisplaySettings::Get().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
     CDisplaySettings::Get().SetZoomAmount(pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0)));
     CDisplaySettings::Get().SetNonLinearStretched(true);
@@ -669,7 +666,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio);
     }
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
@@ -677,7 +674,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // get the size of the media file
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / g_graphicsContext.GetPixelRatio(res);
     // now calculate the correct zoom amount.  First zoom to full width.
     float newHeight = screenWidth / outputFrameRatio;
     if (newHeight > screenHeight)

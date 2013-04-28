@@ -1886,6 +1886,14 @@
             <dependency type="enable" on="property" name="IsFullscreen" />
           </dependencies>
         </setting>
+        <setting id="videoscreen.mode3d" type="integer" label="36501" help="">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>mode3d</options>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting>
       </group>
       <group id="2">
         <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">

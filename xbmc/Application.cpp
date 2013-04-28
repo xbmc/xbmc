@@ -2101,8 +2101,21 @@ void CApplication::Render()
   g_renderManager.FrameMove();
 
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
-  if (RenderNoPresent())
-    hasRendered = true;
+  if(g_graphicsContext.GetStereoMode())
+  {
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+    if(RenderNoPresent())
+      hasRendered = true;
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_RIGHT);
+    if(RenderNoPresent())
+      hasRendered = true;
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+  }
+  else
+  {
+    if(RenderNoPresent())
+      hasRendered = true;
+  }
 
   g_renderManager.FrameFinish();
 

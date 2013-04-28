@@ -67,7 +67,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->y          = 0;
   m_pInfo->width      = iWidth;
   m_pInfo->height     = iHeight;
-  m_pInfo->pixelRatio = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).fPixelRatio;
+  m_pInfo->pixelRatio = g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
   m_pInfo->name       = strdup(Name().c_str());
   m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
