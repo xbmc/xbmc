@@ -1056,6 +1056,30 @@ static unsigned int GetFlagsColorTransfer(unsigned int color_transfer)
   return 0;
 }
 
+static unsigned int GetStereoModeFlags(const std::string mode)
+{
+  static std::map<std::string, unsigned int> convert;
+  if(convert.empty())
+  {
+    convert["mono"]                   = 0u;
+    convert["left_right"]             = CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT;
+    convert["bottom_top"]             = CONF_FLAGS_STEREO_MODE_TAB | CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT;
+    convert["top_bottom"]             = CONF_FLAGS_STEREO_MODE_TAB | CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT;
+    convert["checkerboard_rl"]        = 0u;
+    convert["checkerboard_lr"]        = 0u;
+    convert["row_interleaved_rl"]     = 0u;
+    convert["row_interleaved_lr"]     = 0u;
+    convert["col_interleaved_rl"]     = 0u;
+    convert["col_interleaved_lr"]     = 0u;
+    convert["anaglyph_cyan_red"]      = 0u;
+    convert["right_left"]             = CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT;
+    convert["anaglyph_green_magenta"] = 0u;
+    convert["block_lr"]               = 0u;
+    convert["block_rl"]               = 0u;
+  }
+  return convert[mode];
+}
+
 int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
   /* picture buffer is not allowed to be modified in this call */
@@ -1102,6 +1126,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       flags |= CONF_FLAGS_FULLSCREEN;
       m_bAllowFullscreen = false; // only allow on first configure
     }
+
+    flags |= GetStereoModeFlags(m_hints.stereo_mode);
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
     if(!g_renderManager.Configure(pPicture->iWidth

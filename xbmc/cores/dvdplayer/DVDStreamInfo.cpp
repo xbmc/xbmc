@@ -63,6 +63,7 @@ void CDVDStreamInfo::Clear()
   forced_aspect = false;
   bitsperpixel = 0;
   pid = 0;
+  stereo_mode.clear();
 
   channels   = 0;
   samplerate = 0;
@@ -103,7 +104,8 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  forced_aspect != right.forced_aspect
   ||  bitsperpixel != right.bitsperpixel
   ||  pid != right.pid
-  ||  vfr      != right.vfr) return false;
+  ||  vfr      != right.vfr
+  ||  stereo_mode != right.stereo_mode ) return false;
 
   // AUDIO
   if( channels      != right.channels
@@ -164,6 +166,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   pid = right.pid;
   vfr = right.vfr;
   software = right.software;
+  stereo_mode = right.stereo_mode;
 
   // AUDIO
   channels      = right.channels;
@@ -217,6 +220,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     orientation = stream->iOrientation;
     bitsperpixel = stream->iBitsPerPixel;
     pid = stream->iPhysicalId;
+    stereo_mode = stream->stereo_mode;
   }
   else if(  right.type == STREAM_SUBTITLE )
   {

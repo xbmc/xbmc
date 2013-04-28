@@ -314,6 +314,8 @@ float CBaseRenderer::GetAspectRatio() const
 {
   float width = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
   float height = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  //if(g_graphicsContext.GetStereoView())
+  //  width *= 0.5;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
@@ -574,10 +576,49 @@ void CBaseRenderer::ManageDisplay()
 {
   const CRect view = g_graphicsContext.GetViewWindow();
 
-  m_sourceRect.x1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  m_sourceRect.y1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  m_sourceRect.x2 = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  m_sourceRect.y2 = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  m_sourceRect.x1 = 0.0f;
+  m_sourceRect.y1 = 0.0f;
+  m_sourceRect.x2 = (float)m_sourceWidth;
+  m_sourceRect.y2 = (float)m_sourceHeight;
+
+  unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
+  int          stereo_view  = g_graphicsContext.GetStereoView();
+
+  if(CONF_FLAGS_STEREO_CADENCE(stereo_mode) == CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT)
+  {
+    if     (stereo_view == RENDER_STEREO_VIEW_LEFT)  stereo_view = RENDER_STEREO_VIEW_RIGHT;
+    else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
+  }
+
+  switch(stereo_mode)
+  {
+    case CONF_FLAGS_STEREO_MODE_TAB:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.y2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      break;
+
+    case CONF_FLAGS_STEREO_MODE_SBS:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.x2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+      break;
+
+    default:
+      /* assume SBS if nothing reported and we are doing 3d rendering */
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.x2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+      break;
+  }
+
+  m_sourceRect.x1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
+  m_sourceRect.y1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
+  m_sourceRect.x2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
+  m_sourceRect.y2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
@@ -594,9 +635,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float screenWidth = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left);
   float screenHeight = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top);
 
-  if(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS)
+  if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     screenWidth /= 2;
-  else if(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB)
+  else if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
     screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
