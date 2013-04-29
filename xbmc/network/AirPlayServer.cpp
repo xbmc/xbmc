@@ -353,12 +353,10 @@ void CAirPlayServer::Process()
 bool CAirPlayServer::Initialize()
 {
   Deinitialize();
-
-  if((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10,
-		"AIRPLAY")) == INVALID_SOCKET) {
-	return false;
-  }
-
+  
+  if ((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY")) == INVALID_SOCKET)
+    return false;
+  
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
   return true;
 }
