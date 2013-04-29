@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.1.4"
+  version="2.1.5"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -21,6 +21,7 @@
     <summary lang="bg">Облик от Jezz_X. (стандартния за XBMC)</summary>
     <summary lang="ca">Aparença Confluence, per Jezz_X. (Aparença per defecte de l'XBMC)</summary>
     <summary lang="cs">Motiv Confluence od Jezz_X. (výchozí motiv XBMC)</summary>
+    <summary lang="cy">Croen Confluence gan Jezz_X. (Croen rhagosodedig XBMC)</summary>
     <summary lang="da">Confluence skin af Jezz_X. (XBMC's standardskin)</summary>
     <summary lang="de">Confluence, ein Skin von Jezz_X. (XBMC standard Skin)</summary>
     <summary lang="el">Το κέλυφος Confluence από τον Jezz_X (προεπιλεγμένο κέλυφος του XBMC).</summary>
@@ -31,17 +32,20 @@
     <summary lang="et">Confluence rüü autorilt Jezz_X. (XBMC vaikerüü)</summary>
     <summary lang="fi">Confluence-ulkoasu Jezz_X:ltä. (XBMC:n oletus ulkoasu)</summary>
     <summary lang="fil">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
+    <summary lang="fo">Confluence útsjónd av Jezz_X. (XBMC's vanliga útsjónd)</summary>
     <summary lang="fr">Thème Confluence par Jezz_X. (thème par défaut)</summary>
     <summary lang="gl">Pel Confluence por Jezz_Z. (Pel predeterminada de XBMC)</summary>
     <summary lang="he">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="hr">Confluence izgled autora Jezz_X. (XBMC podrazumijevani izgled)</summary>
     <summary lang="hu">Confluence felszín. Készítő: Jezz_X (XBMC alapértelmezett felszín)</summary>
+    <summary lang="id">Skin Confluence oleh Jezz_X. (Skin bawaan XBMC)</summary>
     <summary lang="is">Confluence eftir Jezz_X. (Sjálfgefið útlit XBMC)</summary>
     <summary lang="it">Skin Confluence da Jezz_X. (skin predefinita di XBMC)</summary>
     <summary lang="ja">Confluence スキン by Jezz_X. (XBMC デフォルトスキン)</summary>
     <summary lang="km">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듦 (XBMC 기본 스킨)</summary>
     <summary lang="lt">Teminė išvaizda Confluence sukurta Jezz_X.(XBMC numatytoji teminė išvaizda)</summary>
+    <summary lang="lv">Confluence āda no Jeez_X. (XBMC pamatāda)</summary>
     <summary lang="mk">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="nl">Confluence skin door Jezz_X</summary>
     <summary lang="no">Confluence tema av Jezz_X. (XBMC standardtema)</summary>
@@ -68,6 +72,7 @@
     <description lang="bg">Confluence е стандартният облик на XBMC 9.11 и по-новите версии. Представлява смесица от концепциите на много от популярните облици. Целта е да се интегрират тези добри идеи в подходящ и удобен вид за хора, които се сблъскват за първи път с XBMC.</description>
     <description lang="ca">Confluence és l'aparença per defecte de l'XBMC 9.11 i superior. És una combinació de conceptes de moltes aparences populars, i intenta adoptar i integrar les seves bones idees en una aparença que sigui senzilla d'entendre i utilitzar per els nous usuaris d'XBMC.</description>
     <description lang="cs">Confluence je výchozí vzhled pro XBMC 9.11 a novější. Jedná se o kombinaci konceptů z mnoha jiných populárních vzhledů, která se pokouší uchopit a integrovat jejich dobré nápady do vzhledu, který by měl být pro nového uživatele XBMC jednoduchý na pochopení a používání.</description>
+    <description lang="cy">Confluence yw croen rhagosodedig XBMC 9.11 ac uwch. Mae'n gyfuniad o gysyniadau o nifer o grwyn poblogaidd ac mae'n ymdrechu i gyfuno eu syniadau da hwy i groen ddylai fod yn hawdd i ddefnyddiwr cyntaf XBMC ei deall a'i ddefnyddio.</description>
     <description lang="da">Confluence er standardskin'et til XBMC 9.11 og senere versioner. Det er en kombination af koncepter fra mange populære skins, og det forsøger at omfavne og integrere de gode ideer i et skin, der er let for førstegangsbrugere af XBMC at forstå og bruge.</description>
     <description lang="de">Confluence ist der standard Skin für XBMC 9.11 und später. Er ist eine Kombination mehrer unterschiedlicher Skin-Konzepte und versucht dabei die besten Ideen zu kombinieren, um einen einfachen Einstieg für neue XBMC-Nutzer zu ermöglichen.</description>
     <description lang="el">Το Confluence είναι το προεπιλεγμένο κέλυφος για τις εκδόσεις XBMC 9.11 και άνω. Είναι ένας συνδυασμός από πολλά δημοφιλή κελύφη, και επιχειρεί να συμπεριλάβει τις καλύτερες ιδέες τους σε ένα κέλυφος το οποίο είναι εύκολο σε αρχάριους χρήστες του XBMC να κατανοήσουν και χρησιμοποιήσουν.</description>
@@ -78,17 +83,20 @@
     <description lang="et">Confluence on vaikerüü XBMC-le alates versioonist 9.11. Confluence on paljude populaarsete rüüde kombineerimise tulemus, mis üritab omavahel tööle panna teiste rüüde parimaid lahendusi, et saavutada rüü, mis oleks esmakasutajale ühtmoodi selge ja kerge kasutada.</description>
     <description lang="fi">Confluence on oletus ulkoasu XBMC:n versiosta 9.11 lähtien. Se on yhdistelmä useiden suosittujen ulkoasujen konsepteista, ja yritys omaksua ja integroida heidän hyvät ideat ulkoasuun, jonka pitäisi olla helppokäyttöinen ja -tajuinen kaikille XBMC:n käyttäjille.</description>
     <description lang="fil">Ang Confluence ay ang default skin ng XBMC 9.11 at pataas. Ito ay kombinasyon ng mga konsepto at pagsubok paghaluin ang mga mahusay na ideya mula sa maraming popular na skins para ito ay maging madali sa mga unang beses gumamit ng XBMC.</description>
+    <description lang="fo">Confluence er vanliga útsjóndin, sum er brúkt í XBMC síðan útg. 9.11. Hetta er ein samansjóðan av fleiri hugtøkum. Ætlanin er at útsjóndin skal lætta um móttøku og nýtslu av XBMC fyri nýggjar brúkarar.</description>
     <description lang="fr">Confluence est le thème par défaut à partir d'XBMC 9.11. Reprenant les concepts issus de plusieurs thèmes populaires, il est une tentative d'inclusion et d'intégration des meilleures idées afin d'en rendre la compréhension et l'utilisation faciles y compris par des débutants.</description>
     <description lang="gl">Confluence é a pel predeterminada para XBMC 9.11 e posteriores. É unha combinación de conceptos de algunhas peles populares, e tenta abranguer e integrar  as súas mellores ideas nunha pel que sexa fácil de entender e utilizar para as usuarias que utilizan por primeira vez XBMC.</description>
     <description lang="he">Confluence הוא סקין ברירת המחדל של XBMC 9.11 ומעלה. זהו צירוף של קונספטים מסקינים פופולריים רבים, וניסיונות לאמץ ולסכם את הרעיונות הטובים שלהם לתוך סקין שיהיה פשוט להבנה ולשימוש עבור משתמשי XBMC חדשים.</description>
     <description lang="hr">Confluence je podrazumijevani izgled od verzije XBMC 9.11 naviše. To je mješavina ideja i zamisli iz drugih popularnih izgleda, pokušaj da se objedine njihove dobre osobine u izgledu lak za uporabu i razumijevanje od novih XMBC korisnika.</description>
     <description lang="hu">A Confluence az alapértelmezett felszín az XBMC-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű felszín elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen az XBMC-vel először találkozóknak is.</description>
+    <description lang="id">Confluence merupakan skin bawaan untuk XBMC 9.11 dan selanjutnya. Merupakan kombinasi konsep dari beberapa skin populer, dan berusaha untuk merangkul dan menyatukan ide bagus mereka ke sebuah skin yang mudah dipakai dan dipahami oleh pengguna XBMC pertama kali.</description>
     <description lang="is">Confluence er sjálfgefið útlit XBMC 9.11 og nýrra. Það er samsetning hugmynda frá mörgum vinsælum útlitum og er tilraun til að fanga og innlima þær góðu hugmyndir í útlit þar sem hugmyndin er að skuli vera einfalt fyrir fyrir nýja XBMC notendur að skilja og nota</description>
     <description lang="it">Confluence è la skin predefinita di XBMC dalla versione 9.11 in poi. E' una combinazione di elementi provenienti da altre skin popolari e cerca di integrare e coinvolgere tutte le loro grandi idee in una skin facile da usare e comprendere per l'utente inesperto di XBMC.</description>
     <description lang="ja">Confluence は XBMC 9.11 およびそれ以上のバージョンで標準のスキンです。さまざまな人気のスキンのコンセプトを組み合わせ、ユーザが初めて XBMC に触れる際に便利に使えるようにしてあります。</description>
     <description lang="km">Confluence គឺ ជាស្គីនចំបងរបស់ XBMC 9.11 and about. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
     <description lang="ko">Confluence 는 XBMC 9.11 이상의 기본 스킨입니다. 많은 인기 스킨의 컨셉과 좋은 아이디어를 모아서 하나의 스킨으로 만들었으며 초보자도 사용하기 쉽습니다.</description>
     <description lang="lt">Confluence yra numatytoji teminė išvaizda pradedant XBMC 9.11. Tai daugelio populiarių teminų išvaizdų derinys. Bandymas priimti ir integruoti vartotojų idėjas į teminę išvaizdą katra turėtų būti lengvai suprantama  pirmą kartą naudojantiems XBMC</description>
+    <description lang="lv">Confluence ir pamatāda XBMC 9.11 un jaunākām versijām. Tā ir dažādu populāru ādu konceptu kombinācija un cenšas pieņemt un integrēt to labās idejas ādā, kas būtu jauniem XBMC lietotājiem viegli saprotama un lietojama.</description>
     <description lang="mk">Confluence е подразбирачки изглед за XBMC 9.11 па нагоре. Тој е комбинација на концепти од повеќе популарни изгледи, и настојува да ги обедини и истакне нивните добри идеи во еден изглед разбирлив за корисници почетници</description>
     <description lang="nl">Confluence is de standaard skin voor XBMC 9.11 en hoger. Het combineert de concepten van andere populaire skins, waarbij het tracht hun goede ideëen te integreren in een skin die gemakkelijk in gebruik is.</description>
     <description lang="no">Confluence er standard tema for XBMC 9.11 og oppover. Det er en kombinasjon av konseptene fra mange populære tema, og prøver å omfavne og integrere de gode idéene i et tema som bør være lett å forstå og benytte for nye XBMC-brukere.</description>
@@ -114,6 +122,7 @@
     <disclaimer lang="bg">Confluence е стандартният облик на XBMC. Премахването му може да предизвика проблеми</disclaimer>
     <disclaimer lang="ca">Confluence és l'aparença per defecte de l'XBMC, la seva eliminació pot causar problemes.</disclaimer>
     <disclaimer lang="cs">Confluence je výchozím vzhledem XBMC, jeho odstranění může způsobit problémy</disclaimer>
+    <disclaimer lang="cy">Confluence yw croen rhagosodedig XBMC, gall ei dynnu achosi anhawsterau</disclaimer>
     <disclaimer lang="da">Confluence er standardskin'et til XBMC. Fjernes det, kan der opstå problemer</disclaimer>
     <disclaimer lang="de">Confluence ist der standard Skin für XBMC. Die Deinstallation kann zu unerwünschten Nebeneffekten führen.</disclaimer>
     <disclaimer lang="el">Το Confluence είναι το προεπιλεγμένο κέλυφος για το XBMC, η αφαίρεσή του μπορεί να δημιουργήσει προβλήματα</disclaimer>
@@ -124,16 +133,19 @@
     <disclaimer lang="et">Confluence on XBMC vaikerüü. Selle eemaldamine võib põhjustada ootamatusi.</disclaimer>
     <disclaimer lang="fi">Confluence on XBMC:n oletus ulkoasu, sen poistaminen saattaa aiheuttaa ongelmia</disclaimer>
     <disclaimer lang="fil">Ang Confluence ay ang default skin ng XBMC. Ang pagtanggal nito ay maaring magdulot ng problema</disclaimer>
+    <disclaimer lang="fo">Confluence er vanliga útsjónding brúkt av XBMC. Strikan kann viðføra brek.</disclaimer>
     <disclaimer lang="fr">Confluence est le thème par défaut de XBMC, le supprimer peut créer des problèmes</disclaimer>
     <disclaimer lang="gl">Confluence é a pel predeterminada para XBMC e eliminala pode causas problemas.</disclaimer>
     <disclaimer lang="he">Confluence הוא סקין ברירת המחדל של XBMC, הסרה שלו עלולה לגרום לבעיות.</disclaimer>
     <disclaimer lang="hr">Confluence je podrazumijevani izgled za XBMC, njegovo odstranjivanje može uzrokovati teškoće.</disclaimer>
     <disclaimer lang="hu">A Confluence az alapértelmezett XBMC felszín. Eltávolítása problémákat okozhat.</disclaimer>
+    <disclaimer lang="id">Confluence merupakan skin bawaan untuk XBMC, menghapusnya mungkin menyebabkan permasalahan</disclaimer>
     <disclaimer lang="is">Confluence er sjálfgefið útlit XBMC, það getur orsakað vandamál að fjarlægja það.</disclaimer>
     <disclaimer lang="it">Confluence è la skin predefinita di XBMC, l'eliminazione potrebbe comportare dei problemi.</disclaimer>
     <disclaimer lang="ja">Confluence は XBMC のデフォルトスキンですので、これを削除するとうまく動かなくなる可能性があります</disclaimer>
     <disclaimer lang="ko">Confluence는 XBMC의 기본스킨으로 제거시 문제가 생길수 있습니다.</disclaimer>
     <disclaimer lang="lt">Confluence yra numatytoji XBMC teminė išvaizda, ją panaikinus ar pakeitus gali kilti problemų</disclaimer>
+    <disclaimer lang="lv">Confluence ir XBMC pamatāda, dzēšot to var rasties problēmas</disclaimer>
     <disclaimer lang="mk">Confluence е подразбирачка маска, бришењето може да предизвика пречки</disclaimer>
     <disclaimer lang="nl">Confluence is de standaard XMBC skin, het verwijderen van Confluence kan leiden tot problemen.</disclaimer>
     <disclaimer lang="no">Confluence er standard tema for XBMC, å fjerne det kan skape problemer</disclaimer>

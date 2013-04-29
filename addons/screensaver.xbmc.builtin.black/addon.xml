@@ -1,16 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm swart maak.</summary>
+    <summary lang="am">መመልከቻ ማዳኛ የእርስዎን መመልከቻ ጥቁር ያደርገዋል </summary>
     <summary lang="ar">شاشة التوقف التي تحول شاشتك لأسود</summary>
+    <summary lang="ast">Un curiapantalles que pon la pantalla en prieto</summary>
     <summary lang="be">Ахоўнік экрану што робіць экран чорным</summary>
     <summary lang="bg">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="ca">Estalvi de pantalla que posa la pantalla en negre</summary>
     <summary lang="cs">Šetřič obrazovky, který začerní vaši obrazovku</summary>
+    <summary lang="cy">Ardwr sgrin sy'n troi eich sgrin yn ddu</summary>
     <summary lang="da">Pauseskærm som gør din skærm sort</summary>
     <summary lang="de">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
     <summary lang="el">Προφύλαξη οθόνης που αμαυρώνει την οθόνη σας</summary>
@@ -30,6 +33,7 @@
     <summary lang="ja">画面を黒くするスクリーンセーバー</summary>
     <summary lang="ko">화면을 검게하는 화면보호기</summary>
     <summary lang="lt">Ekrano užsklanda, kuri paverčia jūsų ekraną juodu fonu</summary>
+    <summary lang="lv">Ekrānsaudzētājs, kurš padara jūsu ekrānu melnu</summary>
     <summary lang="mk">Заштита на екран која го прави екранот црн</summary>
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>
@@ -43,16 +47,20 @@
     <summary lang="sl">Ohranjevalnik zaslona, ki počrni zaslon.</summary>
     <summary lang="sv">En skärmsläckare som gör din skärm svart</summary>
     <summary lang="ta_IN">திரையை கறுப்பாக்கும் திரைகாப்பான்</summary>
+    <summary lang="th">สกรีนเซฟเวอร์ที่จะพักหน้าจอของคุณให้เป็นสีดำ</summary>
     <summary lang="uk">Заставка заповнює екран чорним кольором</summary>
     <summary lang="vi">Trình bảo vệ màn hình này sẽ chuyển màn hình của bạn sang màu đen</summary>
     <summary lang="zh">黑屏屏幕保护程序</summary>
     <summary lang="zh_TW">讓螢幕變全黑的螢幕保護程式</summary>
     <description lang="af">Die is 'n eenvoudige sluimerskerm wat jou skerm swart maak.</description>
+    <description lang="am">ጥቁር ቀላል መመልከቻ ማዳኛ የእርስዎን መመልከቻ ጥቁር ያደርገዋል </description>
     <description lang="ar">بلاك شاشة توقف بسيطة تحول شاشتك لأسود</description>
+    <description lang="ast">Black ye un cenciellu curiapantalles que pon la pantalla en prieto.</description>
     <description lang="be">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="bg">"Black" е просто скрийнсейвър, който ще направи екрана Ви черен.</description>
     <description lang="ca">Black és un estalvi de pantalla simple que posarà la teva pantalla en negre.</description>
     <description lang="cs">Black je jednoduchý šetřič obrazovky, který začerní vaši obrazovku.</description>
+    <description lang="cy">Mae Black yn arbedwr sgrin syml sy'n troi eich sgrin yn ddu.</description>
     <description lang="da">Black er en simpel pauseskærm, der gør din skærm sort.</description>
     <description lang="de">Black ist ein einfacher Bildschirmschoner, welcher den Bildschirm schwarz abdunkelt</description>
     <description lang="el">Η Black είναι μία απλή προφύλαξη οθόνης που αμαυρώνει την οθόνη σας.</description>
@@ -72,6 +80,7 @@
     <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
     <description lang="lt">Black yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
+    <description lang="lv">"Melns" ir vienkāršs ekrānsaudzētājs, kurš padara jūsu ekrānu melnu.</description>
     <description lang="mk">Црна е едноставна заштита на екран која екранот го прави црн.</description>
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
@@ -85,6 +94,7 @@
     <description lang="sl">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sv">Detta är en enkel skärmsläckare som gör din skärm svart.</description>
     <description lang="ta_IN">கருப்பு மிகவும் எளிமையான திரைகாப்பான் இது திரையை கறுப்பாக்கிவிடும்</description>
+    <description lang="th">หน้าจอสีดำเป็นสกรีนเซฟเวอร์แบบง่ายๆที่จะเปิดหน้าจอของคุณให้เป็นสีดำ</description>
     <description lang="uk">Black є простою заставкою що заповнює екран чорним кольором.</description>
     <description lang="vi">Màu đen là một trình bảo vệ màn hình đơn giản nhất</description>
     <description lang="zh">黑屏屏保是一个简单的屏幕保护程序，它使你的显示器进入黑屏状态。</description>

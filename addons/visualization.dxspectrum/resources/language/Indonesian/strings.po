@@ -20,14 +20,58 @@ msgctxt "#30000"
 msgid "Mode"
 msgstr "Mode"
 
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Diisi"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Wireframe"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Point"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Tinggi bar"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Kecil"
+
 msgctxt "#30006"
 msgid "Default"
 msgstr "Standar"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Besar"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Sangat Besar"
 
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Kecepatan"
 
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Sangat Pelan"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Pelan"
+
 msgctxt "#30012"
 msgid "Default"
 msgstr "Standar"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Cepat"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Sangat Cepat"

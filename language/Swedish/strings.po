@@ -603,7 +603,7 @@ msgstr "Låt"
 
 msgctxt "#180"
 msgid "Duration"
-msgstr "Varaktighet"
+msgstr "Speltid"
 
 msgctxt "#181"
 msgid "Select album"

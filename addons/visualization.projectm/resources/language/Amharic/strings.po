@@ -27,3 +27,11 @@ msgstr "መካከለኛ "
 msgctxt "#30003"
 msgid "High"
 msgstr "ከፍተኛ "
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f secs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
