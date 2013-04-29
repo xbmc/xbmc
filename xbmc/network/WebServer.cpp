@@ -47,7 +47,8 @@ vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 CWebServer::CWebServer()
 {
   m_running = false;
-  m_daemon = NULL;
+  m_daemon_ip6 = NULL;
+  m_daemon_ip4 = NULL;
   m_needcredentials = true;
   m_Credentials64Encoded = "eGJtYzp4Ym1j"; // xbmc:xbmc
 }
@@ -575,9 +576,15 @@ bool CWebServer::Start(int port, const string &username, const string &password)
   SetCredentials(username, password);
   if (!m_running)
   {
-    m_daemon = StartMHD(0 , port);
+  	int v6testSock;
+  	if((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) > 0) {
+      close(v6testSock);
+      m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
+  	}
 
-    m_running = m_daemon != NULL;
+    m_daemon_ip4 = StartMHD(0 , port);
+
+    m_running = (m_daemon_ip6 != NULL) | (m_daemon_ip4 != NULL);
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
     else
@@ -590,7 +597,12 @@ bool CWebServer::Stop()
 {
   if (m_running)
   {
-    MHD_stop_daemon(m_daemon);
+	if(m_daemon_ip6 != NULL)
+    	MHD_stop_daemon(m_daemon_ip6);
+
+	if(m_daemon_ip4 != NULL)
+    	MHD_stop_daemon(m_daemon_ip4);
+
     m_running = false;
     CLog::Log(LOGNOTICE, "WebServer: Stopped the webserver");
   } else 
