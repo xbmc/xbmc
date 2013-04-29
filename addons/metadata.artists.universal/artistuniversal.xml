@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2012-05-28">
+<scraper framework="1.1" date="2013-02-27">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.musicbrainz.org/ws/2/artist/\1?inc=url-rels&lt;/url&gt;" dest="3">
 			<expression>http://musicbrainz.org/artist/(.+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<CreateArtistSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://search.musicbrainz.org/ws/2/artist/?fmt=xml&amp;query=artist:$$4&amp;limit=100&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://search.musicbrainz.org/ws/2/artist/?fmt=xml&amp;query=artist:&quot;$$4&quot;&amp;limit=100&lt;/url&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
@@ -20,7 +20,7 @@
 		</RegExp>
 	</CreateArtistSearchUrl>
 	<GetArtistSearchResults dest="8">
-		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+		<RegExp input="$$5" output="&lt;results sorted=&quot;yes&quot;&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;genre&gt;\7&lt;/genre&gt;&lt;url cache=&quot;mb-\1-artist.xml&quot;&gt;http://www.musicbrainz.org/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/entity&gt;" dest="9">
 				<expression repeat="yes" noclean="1">artist id=&quot;([^&quot;]*)&quot;(?:\stype=&quot;[^&quot;]*&quot;)* ext:score=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;/name&gt;(&lt;sort-name&gt;[^&lt;]*&lt;/sort-name&gt;)?(&lt;gender&gt;[^&lt;]*&lt;/gender&gt;)?(&lt;country&gt;[^&lt;]*&lt;/country&gt;)?(&lt;disambiguation&gt;([^&lt;]*))?</expression>
 			</RegExp>
@@ -41,7 +41,7 @@
 			</RegExp>
 			<!--AMGID - Artist-->
 			<RegExp input="$$1" output="\2" dest="9">
-				<expression noclean="1">&gt;&lt;relation type=&quot;allmusic&quot;&gt;&lt;target&gt;http://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
+				<expression noclean="1">&gt;http://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;artist(?:\stype=&quot;[^&quot;]*&quot;)* id=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)</expression>
@@ -92,6 +92,15 @@
 				<expression>last.fm</expression>
 			</RegExp>
 			<RegExp input="$INFO[biogsource]" output="&lt;chain function=&quot;GetTADBBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[genressource]" output="&lt;chain function=&quot;GetTADBArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[discogsource]" output="&lt;chain function=&quot;GetTADBDiscographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
+			<RegExp input="$INFO[lifespansource]" output="&lt;chain function=&quot;GetTADBLifeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression>TheAudioDb.com</expression>
 			</RegExp>
 			<expression noclean="1"/>

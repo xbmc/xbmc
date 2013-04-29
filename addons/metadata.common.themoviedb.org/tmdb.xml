@@ -132,17 +132,23 @@
 		</RegExp>
 	</ParseFallbackTMDBTagline>
 
-	<GetTMDBSetByIdChain dest="4">
+	<GetTMDBSetByIdChain clearbuffers="no" dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBSet&quot; cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1" />
+			</RegExp>
+			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBSet&quot; cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</GetTMDBSetByIdChain>
-	<GetTMDBLangSetByIdChain dest="4">
+	<GetTMDBLangSetByIdChain clearbuffers="no" dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBSet&quot; cache=&quot;tmdb-$INFO[tmdbsetlanguage]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[tmdbsetlanguage]&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1" />
+			</RegExp>
+			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBSet&quot; cache=&quot;tmdb-$INFO[tmdbsetlanguage]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[tmdbsetlanguage]&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />

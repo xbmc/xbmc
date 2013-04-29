@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Welsh language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cy/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Estyn lluniau bach album o fanart.tv</string>
+    <string id="30001">Estynnwch luniau bach albwm o theaudiodb.com</string>
+</strings>

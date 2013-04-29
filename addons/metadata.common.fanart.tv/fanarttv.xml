@@ -39,7 +39,7 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="16">
-				<expression noclean="1">&quot;artistbackground&quot;:\[(.*?)\],&quot;</expression>
+				<expression noclean="1">&quot;artistbackground&quot;:\[(.*?)\}\]</expression>
 			</RegExp>
 			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="14">
 				<expression repeat="yes" noclean="1">&quot;id&quot;:&quot;\d*&quot;,&quot;url&quot;:&quot;([^&quot;]*)</expression>

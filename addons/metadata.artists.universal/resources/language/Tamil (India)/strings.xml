@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Tamil (India) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">HTBackdrops.com இருந்து கலைஞர் விசிறிபடங்களை செயல்படுத்து</string>
+    <string id="30001">allmusic.com இருந்து கலைஞர் குறும்படம்களை செயல்படுத்து</string>
+    <string id="30002">last.fm இருந்து கலைஞர் குறும்படம்களை செயல்படுத்து</string>
+    <string id="30003">HTBackdrops.com இருந்து கலைஞர் குறும்படம்களை செயல்படுத்து</string>
+    <string id="30004">Fanart.tv இருந்து கலைஞர் விசிறிபடங்களை செயல்படுத்து</string>
+    <string id="30005">Fanart.tv இருந்து கலைஞர் குறும்படம்களை செயல்படுத்து</string>
+    <string id="30006">கலைஞர் வாழ்க்கை வரலாறு கைப்பற்று</string>
+    <string id="30007">குறுப்படம்</string>
+    <string id="30008">கலைஞர் டிஸ்கோகிராபி கைப்பற்று</string>
+    <string id="30009">கலைஞர் வகைகள் கைப்பற்று</string>
+    <string id="30010">கலைஞர் பாணிகள் கைப்பற்று</string>
+    <string id="30011">கலைஞர் ஆயுள் கைப்பற்று</string>
+    <string id="30012">கலைஞர் மனநிலை கைப்பற்று</string>
+    <string id="30014">கலைஞர் எந்த ஆண்டு முதல் நடிக்க துவங்கியதை கைப்பற்று</string>
+    <string id="30015">விரும்பிய மொழி</string>
+    <string id="30016">கலைஞர் வாழ்க்கை வரலாறு இதற்க்கு பின்தள்ளு</string>
+    <string id="30017">கலைஞர் டிஸ்கோகிராபி இதற்க்கு பின்தள்ளு</string>
+    <string id="30018">கலைஞர் வகைகள் இதற்க்கு பின்தள்ளு</string>
+    <string id="30019">கலைஞர் பாணிகள் இதற்க்கு பின்தள்ளு</string>
+    <string id="30020">கலைஞர் ஆயுள் இதற்க்கு பின்தள்ளு</string>
+    <string id="30021">பின்தள்ளு</string>
+    <string id="30022">theaudiodb.com இருந்து கலைஞர் குறும்படம்களை செயல்படுத்து</string>
+    <string id="30023">theaudiodb.com இருந்து கலைஞர் விசிறிபடங்களை செயல்படுத்து</string>
+</strings>

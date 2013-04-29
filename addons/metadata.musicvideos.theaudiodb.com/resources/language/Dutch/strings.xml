@@ -4,5 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Verkrijg album thumbs van fanart.tv</string>
+    <string id="30000">Pak albumminiaturen van fanart.tv</string>
+    <string id="30001">Haal Albumminiaturen van theaudiodb.com</string>
 </strings>

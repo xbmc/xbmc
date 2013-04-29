@@ -3,6 +3,7 @@
   <category label="128">
     <setting type="lsep" label="General Settings"/>
       <setting label="30002" type="labelenum" values="TheAudioDb.com|amazon.de|None" id="albumreviewsource" default="TheAudioDb.com"/>
+      <setting label="30003" type="labelenum" values="en|de|es|fr|it|cn|jp|ru|pt|se|nl|hu" id="tadbalbumlanguage" default="en" visible="eq(-1,0)"/>
       <setting type="sep"/>
       <setting label="30004" type="labelenum" values="MusicBrainz|allmusic.com|None" id="albumratingsource" default="MusicBrainz"/>
       <setting label="30005" type="labelenum" values="allmusic.com|None" id="albumstylessource" default="allmusic.com"/>
@@ -14,6 +15,7 @@
     <setting type="lsep" label="Artwork Settings"/>
       <setting label="30000" type="bool" id="fanarttvalbumthumbs" default="true"/>
       <setting label="30010" type="bool" id="tadbalbumthumbs" default="true"/>
-      <setting label="30008" type="bool" id="allmusicalbumthumbs" default="true"/>
+      <setting label="30001" type="bool" id="lastfmalbumthumbs" default="false"/>
+      <setting label="30008" type="bool" id="allmusicalbumthumbs" default="false"/>
   </category>
 </settings>

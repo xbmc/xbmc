@@ -4,5 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Obtener miniatura de album de fanart.tv</string>
+    <string id="30000">Obtener miniaturas de álbum de fanart.tv</string>
+    <string id="30001">Descargar miniaturas de álbum de theaudiodb.com</string>
 </strings>
