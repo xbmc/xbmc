@@ -47,6 +47,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
@@ -206,31 +207,32 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
 
 CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
 {
-  if (strPath.Equals("musicdb://genres/") || strPath.Equals("musicdb://1/"))
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  if (path.Equals("musicdb://genres/"))
     return "Genres";
-  else if (strPath.Equals("musicdb://artists/") || strPath.Equals("musicdb://2/"))
+  else if (path.Equals("musicdb://artists/"))
     return "Artists";
-  else if (strPath.Equals("musicdb://albums/") || strPath.Equals("musicdb://3/"))
+  else if (path.Equals("musicdb://albums/"))
     return "Albums";
-  else if (strPath.Equals("musicdb://songs/") || strPath.Equals("musicdb://4/"))
+  else if (path.Equals("musicdb://songs/"))
     return "Songs";
-  else if (strPath.Equals("musicdb://top100/") || strPath.Equals("musicdb://5/"))
+  else if (path.Equals("musicdb://top100/"))
     return "Top100";
-  else if (strPath.Equals("musicdb://top100/songs/") || strPath.Equals("musicdb://5/2/"))
+  else if (path.Equals("musicdb://top100/songs/"))
     return "Top100Songs";
-  else if (strPath.Equals("musicdb://top100/albums/") || strPath.Equals("musicdb://5/1/"))
+  else if (path.Equals("musicdb://top100/albums/"))
     return "Top100Albums";
-  else if (strPath.Equals("musicdb://recentlyaddedalbums/") || strPath.Equals("musicdb://6/"))
+  else if (path.Equals("musicdb://recentlyaddedalbums/"))
     return "RecentlyAddedAlbums";
-  else if (strPath.Equals("musicdb://recentlyplayedalbums/") || strPath.Equals("musicdb://7/"))
+  else if (path.Equals("musicdb://recentlyplayedalbums/"))
     return "RecentlyPlayedAlbums";
-  else if (strPath.Equals("musicdb://compilations/") || strPath.Equals("musicdb://8/"))
+  else if (path.Equals("musicdb://compilations/"))
     return "Compilations";
-  else if (strPath.Equals("musicdb://years/") || strPath.Equals("musicdb://9/"))
+  else if (path.Equals("musicdb://years/"))
     return "Years";
-  else if (strPath.Equals("musicdb://singles/") || strPath.Equals("musicdb://10/"))
+  else if (path.Equals("musicdb://singles/"))
     return "Singles";
-  else if (strPath.Equals("special://musicplaylists/"))
+  else if (path.Equals("special://musicplaylists/"))
     return "Playlists";
   else
   {
