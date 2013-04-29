@@ -346,6 +346,14 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   struct sockaddr_in  *s4;
   int    sock;
   bool   v4_fallback = false;
+
+#ifdef WINSOCK_VERSION
+  const char yes = 1;
+  const char no = 0;
+#else
+  unsigned int yes = 1;
+  unsigned int no = 0;
+#endif
   
   memset(&addr, 0, sizeof(addr));
   
@@ -353,12 +361,13 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     v4_fallback = true;
   
   //in case we're on ipv6, make sure the socket is dual stacked
-  unsigned int no = 0;
   if (!v4_fallback)
-    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char *) &no, sizeof(no)); 
+    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)); 
   
   if (v4_fallback)
     sock = socket(PF_INET, SOCK_STREAM, 0);
+
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
   
   if (sock == INVALID_SOCKET)
   {
