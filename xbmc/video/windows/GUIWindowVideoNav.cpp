@@ -49,6 +49,7 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
+#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -201,63 +202,64 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
 {
-  if (strPath.Equals("videodb://movies/genres/") || strPath.Equals("videodb://1/1/"))
+  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
+  if (path.Equals("videodb://movies/genres/"))
     return "MovieGenres";
-  else if (strPath.Equals("videodb://movies/titles/") || strPath.Equals("videodb://1/2/"))
+  else if (path.Equals("videodb://movies/titles/"))
     return "MovieTitles";
-  else if (strPath.Equals("videodb://movies/years/") || strPath.Equals("videodb://1/3/"))
+  else if (path.Equals("videodb://movies/years/"))
     return "MovieYears";
-  else if (strPath.Equals("videodb://movies/actors/") || strPath.Equals("videodb://1/4/"))
+  else if (path.Equals("videodb://movies/actors/"))
     return "MovieActors";
-  else if (strPath.Equals("videodb://movies/directors/") || strPath.Equals("videodb://1/5/"))
+  else if (path.Equals("videodb://movies/directors/"))
     return "MovieDirectors";
-  else if (strPath.Equals("videodb://movies/studios/") || strPath.Equals("videodb://1/6/"))
+  else if (path.Equals("videodb://movies/studios/"))
     return "MovieStudios";
-  else if (strPath.Equals("videodb://movies/sets/") || strPath.Equals("videodb://1/7/"))
+  else if (path.Equals("videodb://movies/sets/"))
     return "MovieSets";
-  else if (strPath.Equals("videodb://movies/countries/") || strPath.Equals("videodb://1/8/"))
+  else if (path.Equals("videodb://movies/countries/"))
     return "MovieCountries";
-  else if (strPath.Equals("videodb://movies/tags/") || strPath.Equals("videodb://1/9/"))
+  else if (path.Equals("videodb://movies/tags/"))
     return "MovieTags";
-  else if (strPath.Equals("videodb://movies/") || strPath.Equals("videodb://1/"))
+  else if (path.Equals("videodb://movies/"))
     return "Movies";
-  else if (strPath.Equals("videodb://tvshows/genres/") || strPath.Equals("videodb://2/1/"))
+  else if (path.Equals("videodb://tvshows/genres/"))
     return "TvShowGenres";
-  else if (strPath.Equals("videodb://tvshows/titles/") || strPath.Equals("videodb://2/2/"))
+  else if (path.Equals("videodb://tvshows/titles/"))
     return "TvShowTitles";
-  else if (strPath.Equals("videodb://tvshows/years/") || strPath.Equals("videodb://2/3/"))
+  else if (path.Equals("videodb://tvshows/years/"))
     return "TvShowYears";
-  else if (strPath.Equals("videodb://tvshows/actors/") || strPath.Equals("videodb://2/4/"))
+  else if (path.Equals("videodb://tvshows/actors/"))
     return "TvShowActors";
-  else if (strPath.Equals("videodb://tvshows/studios/") || strPath.Equals("videodb://2/9/"))
+  else if (path.Equals("videodb://tvshows/studios/"))
     return "TvShowStudios";
-  else if (strPath.Equals("videodb://tvshows/tags/") || strPath.Equals("videodb://2/"))
+  else if (path.Equals("videodb://tvshows/tags/"))
     return "TvShowTags";
-  else if (strPath.Equals("videodb://tvshows/") || strPath.Equals("videodb://2/"))
+  else if (path.Equals("videodb://tvshows/"))
     return "TvShows";
-  else if (strPath.Equals("videodb://musicvideos/genres/") || strPath.Equals("videodb://3/1/"))
+  else if (path.Equals("videodb://musicvideos/genres/"))
     return "MusicVideoGenres";
-  else if (strPath.Equals("videodb://musicvideos/titles/") || strPath.Equals("videodb://3/2/"))
+  else if (path.Equals("videodb://musicvideos/titles/"))
     return "MusicVideoTitles";
-  else if (strPath.Equals("videodb://musicvideos/years/") || strPath.Equals("videodb://3/3/"))
+  else if (path.Equals("videodb://musicvideos/years/"))
     return "MusicVideoYears";
-  else if (strPath.Equals("videodb://musicvideos/artists/") || strPath.Equals("videodb://3/4/"))
+  else if (path.Equals("videodb://musicvideos/artists/"))
     return "MusicVideoArtists";
-  else if (strPath.Equals("videodb://musicvideos/albums/") || strPath.Equals("videodb://3/5/"))
+  else if (path.Equals("videodb://musicvideos/albums/"))
     return "MusicVideoDirectors";
-  else if (strPath.Equals("videodb://musicvideos/tags/") || strPath.Equals("videodb://3/9/"))
+  else if (path.Equals("videodb://musicvideos/tags/"))
     return "MusicVideoTags";
-  else if (strPath.Equals("videodb://musicvideos/") || strPath.Equals("videodb://3/"))
+  else if (path.Equals("videodb://musicvideos/"))
     return "MusicVideos";
-  else if (strPath.Equals("videodb://recentlyaddedmovies/") || strPath.Equals("videodb://4/"))
+  else if (path.Equals("videodb://recentlyaddedmovies/"))
     return "RecentlyAddedMovies";
-  else if (strPath.Equals("videodb://recentlyaddedepisodes/") || strPath.Equals("videodb://5/"))
+  else if (path.Equals("videodb://recentlyaddedepisodes/"))
     return "RecentlyAddedEpisodes";
-  else if (strPath.Equals("videodb://recentlyaddedmusicvideos/") || strPath.Equals("videodb://6/"))
+  else if (path.Equals("videodb://recentlyaddedmusicvideos/"))
     return "RecentlyAddedMusicVideos";
-  else if (strPath.Equals("special://videoplaylists/"))
+  else if (path.Equals("special://videoplaylists/"))
     return "Playlists";
-  else if (strPath.Equals("sources://video/"))
+  else if (path.Equals("sources://video/"))
     return "Files";
   else
   {
