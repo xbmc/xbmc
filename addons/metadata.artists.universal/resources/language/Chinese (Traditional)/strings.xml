@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Chinese (Traditional) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">啟用HTBackdrops.com演出者資訊</string>
+    <string id="30001">啟用allmusic.com演出者縮圖</string>
+    <string id="30002">啟用last.fm演出者縮圖</string>
+    <string id="30003">啟用HTBackdrops.com演出者縮圖</string>
+    <string id="30004">啟用fanart.tv演出者資料庫</string>
+    <string id="30005">啟用 fanart.tv演出者縮圖</string>
+    <string id="30006">演出者簡介取得於</string>
+    <string id="30007">圖片</string>
+    <string id="30008">演出者專輯目錄取得於</string>
+    <string id="30009">演出者類型取得於</string>
+    <string id="30010">演出者風格取得於</string>
+    <string id="30011">演出者生日資訊取得於</string>
+    <string id="30012">演出者意境取得於</string>
+    <string id="30014">演出者活躍的年代取得於</string>
+    <string id="30015">偏好的語言</string>
+    <string id="30016">備選演出者簡介取得於</string>
+    <string id="30017">備選演出者專輯目錄取得於</string>
+    <string id="30018">備選演出者類型取得於</string>
+    <string id="30019">備選演出者風格取得於</string>
+    <string id="30020">備選演出者生日資訊取得於</string>
+    <string id="30021">備選</string>
+    <string id="30022">啟用theaudiaodb.com演出者縮圖</string>
+    <string id="30023">啟用theaudiaodb.com演出者專輯資訊</string>
+</strings>

@@ -64,8 +64,14 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
+			<RegExp input="" output="" dest="11">
+				<expression />
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="11">
-				<expression clear="yes" fixchars="1">strBiography&quot;:&quot;(.*?)&quot;,&quot;</expression>
+				<expression fixchars="1">strBiographyEN&quot;:&quot;(.*?)&quot;,&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="11">
+				<expression fixchars="1">strBiography$INFO[tadbartistlanguage]&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
@@ -94,7 +100,10 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
-				<expression clear="yes" fixchars="1">strBiography&quot;:&quot;(.*?)&quot;,&quot;</expression>
+				<expression fixchars="1">strBiographyen&quot;:&quot;(.*?)&quot;,&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="2">
+				<expression fixchars="1">strBiography$INFO[tadbartistlanguage]&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -105,6 +114,11 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBDiscographyByID>
+	<GetTADBDiscographyByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBDiscography&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/discography-mb.php?s=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetTADBDiscographyByMBID>
 	<ParseTADBDiscography dest="5" clearbuffers="no">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="2">
@@ -122,6 +136,11 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBLifeSpanByID>
+	<GetTADBLifeSpanByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBLifeSpanByMBID>
 	<ParseTADBLifeSpan dest="5" clearbuffers="no">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="2">
@@ -130,14 +149,55 @@
 			<RegExp input="" output="" dest="11">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="11">
-				<expression noclean="1">intFormedYear&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$1" output="&lt;formed&gt;\2 (\1)&lt;/formed&gt;" dest="11">
+				<expression fixchars="2" noclean="1">intFormedYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="11+">
 				<expression noclean="1">strDisbanded&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="11">
-				<expression noclean="1">intBornYear&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$1" output="&lt;born&gt;\2 (\1)&lt;/born&gt;" dest="11">
+				<expression fixchars="2" noclean="1">intBornYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="11+">
+				<expression noclean="1">intDiedYear&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="2">
+				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetMBFallbackLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>MusicBrainz</expression>
+				</RegExp>
+				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistLifeSpanByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>allmusic.com</expression>
+				</RegExp>
+			<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$11" dest="2">
+				<expression noclean="1">&lt;(?:born|formed)*&gt;(.+)&lt;/(?:born|formed)*&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseTADBLifeSpan>
+
+	<GetTADBFallbackLifeSpanByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBFallbackLifeSpan&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBFallbackLifeSpanByMBID>
+	<ParseTADBFallbackLifeSpan dest="5" clearbuffers="no">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="2">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="11">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;formed&gt;\2 (\1)&lt;/formed&gt;" dest="11">
+				<expression fixchars="2" noclean="1">intFormedYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="11+">
+				<expression noclean="1">strDisbanded&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;born&gt;\2 (\1)&lt;/born&gt;" dest="11">
+				<expression fixchars="2" noclean="1">intBornYear&quot;:&quot;([^&quot;]*).*?strCountry&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="11+">
 				<expression noclean="1">intDiedYear&quot;:&quot;([^&quot;]*)</expression>
@@ -147,24 +207,61 @@
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
-	</ParseTADBLifeSpan>
+	</ParseTADBFallbackLifeSpan>
 
 	<GetTADBArtistGenresByID dest="5" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBArtistGenresByID>
+	<GetTADBArtistGenresByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBArtistGenresByMBID>
 	<ParseTADBArtistGenres dest="5" clearbuffers="no">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression noclean="1">strGenre&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="" output="" dest="11">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="11">
+				<expression fixchars="1">strSubGenre&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$11" output="$$12" dest="2">
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>last.fm</expression>
+				</RegExp>
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistGenresByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>allmusic.com</expression>
+				</RegExp>
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$11" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
+				<expression>(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseTADBArtistGenres>
+
+	<GetTADBFallbackArtistGenresByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistGenres&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBFallbackArtistGenresByMBID>
+	<ParseTADBFallbackArtistGenres dest="5" clearbuffers="no">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="2">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
+				<expression noclean="1">strSubGenre&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTADBFallbackArtistGenres>
 
 
 	<GetTADBAlbumReviewByID dest="5">
@@ -180,7 +277,10 @@
 	<ParseTADBAlbumReview dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
-				<expression fixchars="1">strDescription&quot;:&quot;(.*?)&quot;,&quot;</expression>
+				<expression fixchars="1">strDescriptionEN&quot;:&quot;(.*?)&quot;,&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
+				<expression fixchars="1">strDescription$INFO[tadbalbumlanguage]&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -219,6 +319,11 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumDateByID>
+	<GetTADBAlbumDateByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumDate&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumDateByMBID>
 	<ParseTADBAlbumDate dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="2">
@@ -233,10 +338,15 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumGenresByID>
+	<GetTADBAlbumGenresByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumGenres&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumGenresByMBID>
 	<ParseTADBAlbumGenres dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression noclean="1">strGenre&quot;:&quot;([^&quot;]*)</expression>
+				<expression noclean="1">strSubGenre&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

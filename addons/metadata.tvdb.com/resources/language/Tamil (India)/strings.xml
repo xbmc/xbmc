@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Tamil (India) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ta_IN/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">டிவிடி வரிசை பயன்படுத்து</string>
+    <string id="30001">தனி வரிசை (தனி சீசன்) பயன்படுத்து</string>
+    <string id="30002">விசிறிபடத்தை காண்பி</string>
+    <string id="30003">சுவரொட்டிகள் விருப்பு</string>
+    <string id="30004">மொழி</string>
+</strings>
