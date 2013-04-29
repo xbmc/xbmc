@@ -27,6 +27,7 @@
 #include "utils/Crc32.h"
 #include "guilib/TextureManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -43,7 +44,8 @@ CMusicDatabaseDirectory::~CMusicDatabaseDirectory(void)
 
 bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return false;
@@ -66,7 +68,8 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
 
 NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const CStdString& strPath)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return NODE_TYPE_NONE;
@@ -76,7 +79,8 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const CStdString& strPa
 
 NODE_TYPE CMusicDatabaseDirectory::GetDirectoryType(const CStdString& strPath)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return NODE_TYPE_NONE;
@@ -86,7 +90,8 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryType(const CStdString& strPath)
 
 NODE_TYPE CMusicDatabaseDirectory::GetDirectoryParentType(const CStdString& strPath)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return NODE_TYPE_NONE;
@@ -114,7 +119,7 @@ bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
-  CStdString path(strDirectory);
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strDirectory);
   URIUtils::RemoveSlashAtEnd(path);
 
   Crc32 crc;
@@ -136,13 +141,14 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 {
   strLabel = "";
 
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strDirectory);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
   if (!pNode.get())
     return false;
 
   // first see if there's any filter criteria
   CQueryParams params;
-  CDirectoryNode::GetDatabaseInfo(strDirectory, params);
+  CDirectoryNode::GetDatabaseInfo(path, params);
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -242,7 +248,8 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
 
 bool CMusicDatabaseDirectory::Exists(const char* strPath)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return false;
@@ -255,7 +262,8 @@ bool CMusicDatabaseDirectory::Exists(const char* strPath)
 
 bool CMusicDatabaseDirectory::CanCache(const CStdString& strPath)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
   if (!pNode.get())
     return false;
   return pNode->CanCache();
@@ -301,4 +309,3 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
 
   return "";
 }
-
