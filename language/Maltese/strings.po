@@ -2737,6 +2737,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Tempesti"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "u"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "%s: %s MB of %s MB Vojta"

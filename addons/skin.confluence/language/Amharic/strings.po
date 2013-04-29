@@ -16,6 +16,10 @@ msgstr ""
 "Language: am\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "መቀየሪያ "
+
 msgctxt "#31003"
 msgid "Power Options"
 msgstr "የሀይል ምርጫዎች"
@@ -140,6 +144,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "መደብ"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "ማሳያ \"ማስቆሚያ\" በተንሸራታች ስእል ማሳያ "
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "የተለያዩ ምርጫዎች"
@@ -184,6 +192,22 @@ msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "ግጥም መጨ - መሪያ "
 
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "የንዑስ አርእስት ተጨማ-ሪዎች "
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "የቤት ገጽ ቪዲዮ ንዑስ አርእስት"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "የቤት ገጽ ሙዚቃ ንዑስ አርእስት"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "የቤት ገጽ የስእል ንዑስ አርእስት"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "ሙዚቃ OSD"
@@ -211,6 +235,10 @@ msgstr "ተገኝቷል"
 msgctxt "#31207"
 msgid "Find More Items"
 msgstr "ተጨማሪ እቃዎች ያግኙ"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "ወደ ፊት የሚመጡ "
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -311,6 +339,10 @@ msgstr "ቡድን እንደገና መሰየሚያ"
 msgctxt "#31505"
 msgid "Delete Group"
 msgstr "ቡድን ማጥፊያ"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "የጣቢያ ምርጫዎች "
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

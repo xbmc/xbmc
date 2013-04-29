@@ -50,7 +50,7 @@ msgstr "Música - Ficheiros"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "A reproduzir"
+msgstr "Reproduzindo"
 
 msgctxt "#31024"
 msgid "Page"
@@ -90,7 +90,7 @@ msgstr "Info"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "A reproduzir"
+msgstr "A Reproduzir Agora"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -182,7 +182,7 @@ msgstr "Ocultar botões do Menu Principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Activar ecrã de fundo personalizado."
+msgstr "Activar ecrã de fundo personalizado"
 
 msgctxt "#31110"
 msgid "Background path:"

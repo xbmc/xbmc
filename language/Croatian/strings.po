@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Upravitelj dat."
+msgstr "Upravitelj datoteka"
 
 msgctxt "#8"
 msgid "Weather"
@@ -51,7 +51,7 @@ msgstr "Vrijeme"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "XBMC media centar"
+msgstr "XBMC medijski centar"
 
 msgctxt "#11"
 msgid "Monday"
@@ -311,7 +311,7 @@ msgstr "Prikaz: Lista"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Skeniraj"
+msgstr "Pretraži"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -479,7 +479,7 @@ msgstr "Trenutno:"
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "Izgradi:"
+msgstr "Inačica:"
 
 msgctxt "#145"
 msgid "Network:"
@@ -499,7 +499,7 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC"
+msgstr "MAC adresa"
 
 msgctxt "#150"
 msgid "IP address"
@@ -539,7 +539,7 @@ msgstr "Slobodna memorija"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Ne povezan"
+msgstr "Niste povezani"
 
 msgctxt "#160"
 msgid "Free"
@@ -563,7 +563,7 @@ msgstr "Nema diska"
 
 msgctxt "#165"
 msgid "Disc present"
-msgstr "Disk je prepoznat"
+msgstr "Disk je dostupan"
 
 msgctxt "#166"
 msgid "Skin"
@@ -571,7 +571,7 @@ msgstr "Izgled"
 
 msgctxt "#169"
 msgid "Resolution"
-msgstr "Razlučljivost"
+msgstr "Razlučivost"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
@@ -579,7 +579,7 @@ msgstr "Prilagodi brzinu osvježavanja zaslona i videa"
 
 msgctxt "#172"
 msgid "Release date"
-msgstr "Datum izlaska:"
+msgstr "Datum izdavanja:"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
@@ -651,7 +651,7 @@ msgstr "Poništi"
 
 msgctxt "#193"
 msgid "Scan"
-msgstr "Skeniraj"
+msgstr "Pretraži"
 
 msgctxt "#194"
 msgid "Searching..."
@@ -679,11 +679,11 @@ msgstr "Web sučelje"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "Tag"
+msgstr "Linija oznaka"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Kratak opis"
+msgstr "Kratki prikaz zapleta"
 
 msgctxt "#205"
 msgid "Votes"
@@ -727,7 +727,7 @@ msgstr "Količina zooma"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Omjer točke"
+msgstr "Omjer točaka"
 
 msgctxt "#218"
 msgid "DVD drive"
@@ -799,7 +799,7 @@ msgstr "Quincunx"
 
 msgctxt "#236"
 msgid "Gaussian cubic"
-msgstr "Gaussian kocka"
+msgstr "Gausova kocka"
 
 msgctxt "#237"
 msgid "Minification"
@@ -831,7 +831,7 @@ msgstr "Osvježenje zaslona"
 
 msgctxt "#244"
 msgid "Full screen"
-msgstr "Puni ekran"
+msgstr "Puni zaslon"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
@@ -875,7 +875,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "Preuzimanje freedb za CDDB info"
+msgstr "Preuzimanje informacija o CD-u"
 
 msgctxt "#257"
 msgid "Error"
@@ -883,7 +883,7 @@ msgstr "Greška"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Omogući čitanje tag oznaka"
+msgstr "Omogući čitanje oznaka"
 
 msgctxt "#259"
 msgid "Opening"
@@ -939,11 +939,11 @@ msgstr "Top 100"
 
 msgctxt "#272"
 msgid "Top-Left overscan compensation"
-msgstr "Gornji lijevi rub zaslona"
+msgstr "Kompenzacija preskeniranja po gornjem-lijevom kutu"
 
 msgctxt "#273"
 msgid "Bottom-Right overscan compensation"
-msgstr "Donji desni rub zaslona"
+msgstr "Kompenzacija preskeniranja po donjem-desnom rubu"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
@@ -4625,6 +4625,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Dozvoli hardvare ubrzanje (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Automatski pokreni slijedeći video"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metoda A/V sinkronizacije"
@@ -5759,7 +5763,7 @@ msgstr "Prikaži istjecanje vremena do stanja mirovanja"
 
 msgctxt "#17997"
 msgid "%i MByte"
-msgstr "%i MBit"
+msgstr "%i MByte"
 
 msgctxt "#17998"
 msgid "%i hours"
@@ -6461,6 +6465,14 @@ msgctxt "#19187"
 msgid "Reset the EPG database"
 msgstr "Reset  EPG  podatke"
 
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "EPG se ponovno pokreće"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Nastavi sa poslijednjim kanalom pri pokretanju"
+
 msgctxt "#19190"
 msgid "Minimized"
 msgstr "Minimiziraj"
@@ -6469,9 +6481,41 @@ msgctxt "#19191"
 msgid "PVR service"
 msgstr "PVR servis"
 
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Nijedan od spojenih pozadinskih PVR uređaja ne podržava pretragu kanala"
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Pretraga kanala ne može biti pokrenuta. Provjerite dnevnik za detalje."
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "Želite nastaviti?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Akcije klijenta"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "Specifične akcije PVR klijenta"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Snimanje otpočeto: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Snimanje završeno: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Upravitelj kanala"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG izvor:"
 
 msgctxt "#19201"
 msgid "Channel name:"
@@ -6493,6 +6537,22 @@ msgctxt "#19205"
 msgid "Group management"
 msgstr "Grupa za upravljanje"
 
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Aktiviraj EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grupe:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Unesite naziv novoga kanala"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC virtualna pozadina"
+
 msgctxt "#19210"
 msgid "Client"
 msgstr "Klijent"
@@ -6500,6 +6560,22 @@ msgstr "Klijent"
 msgctxt "#19211"
 msgid "Delete channel"
 msgstr "Obriši kanal"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Ova lista sadrži promjene"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Odaberi pozadinu"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Unesite važeći URL za novi kanal"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "PVR pozadinski uređaj ne podržava brojače vremena."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6509,9 +6585,57 @@ msgctxt "#19217"
 msgid "All TV channels"
 msgstr "Svi TV kanali"
 
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Vidljiv"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Negrupirani kanali"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Kanali u"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Sinkroniziraj grupe kanala sa pozadinskim uređajima"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nijedan PVR dodatak ne može biti omogućen. Provjerite postavke ili dnevnik za više informacija."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Snimanje prekinuto"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Zakaži Snimanje"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Snimanje otpočeto"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Snimanje kompletno"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Snimanje Obrisano"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Zatvori OSD kanala pri mijenjanju kanala"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Obriši rezultate pretraživanja"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -8964,6 +9088,10 @@ msgstr "Zaustavlja se"
 msgctxt "#23054"
 msgid "Running"
 msgstr "Pokrenut"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "4:3 omjer teletekst prikaza"
 
 msgctxt "#23100"
 msgid "External Player Active"

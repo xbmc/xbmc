@@ -15,11 +15,11 @@ msgstr ""
 
 msgctxt "#0"
 msgid "Programs"
-msgstr "برنامه ها"
+msgstr "برنامه‌ها"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "تصاویر"
+msgstr "عکس‌ها"
 
 msgctxt "#2"
 msgid "Music"
@@ -3153,6 +3153,10 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "غبار"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "و"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "از"
@@ -5549,9 +5553,121 @@ msgctxt "#16205"
 msgid "Delete failed"
 msgstr "حذف با شکست مواجه شد"
 
+msgctxt "#16206"
+msgid "Failed to delete at least one file"
+msgstr "نمی توان حداقل یک فایل را حذف کرد"
+
+msgctxt "#16300"
+msgid "Video scaling method"
+msgstr "روش تغییر اندازه ی تصویر"
+
+msgctxt "#16301"
+msgid "Nearest neighbour"
+msgstr "نزدیک ترین همسایه"
+
+msgctxt "#16302"
+msgid "Bilinear"
+msgstr "خطی"
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "مکعبی"
+
+msgctxt "#16304"
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+msgctxt "#16305"
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+msgctxt "#16306"
+msgid "Sinc8"
+msgstr "Sinc8"
+
+msgctxt "#16307"
+msgid "Bicubic (software)"
+msgstr "مکعبی (نرم افزاری)"
+
+msgctxt "#16308"
+msgid "Lanczos (software)"
+msgstr "Lanczos (نرم افزاری)"
+
+msgctxt "#16309"
+msgid "Sinc (software)"
+msgstr "Sinc (نرم افزاری)"
+
+msgctxt "#16310"
+msgid "Temporal"
+msgstr "موقتی"
+
+msgctxt "#16311"
+msgid "Temporal/Spatial"
+msgstr "موقتی / فاصله دار"
+
+msgctxt "#16312"
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU) تعدیل نویز"
+
+msgctxt "#16313"
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU) تیزی"
+
+msgctxt "#16314"
+msgid "Inverse Telecine"
+msgstr " Telecine معکوس"
+
+msgctxt "#16315"
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 بهینه شده"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "خودکار"
+
+msgctxt "#16317"
+msgid "Temporal (Half)"
+msgstr "موقتی (نصفه)"
+
+msgctxt "#16318"
+msgid "Temporal/Spatial (Half)"
+msgstr "موقتی / فاصله دار(نصفه)"
+
+msgctxt "#16319"
+msgid "DXVA"
+msgstr "DXVA"
+
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+msgctxt "#16321"
+msgid "DXVA Best"
+msgstr "DXVA بهترین"
+
+msgctxt "#16322"
+msgid "Spline36"
+msgstr "نوار باریک36"
+
+msgctxt "#16323"
+msgid "Spline36 optimized"
+msgstr "نوار باریک36 بهینه شده"
+
+msgctxt "#16324"
+msgid "Software Blend"
+msgstr "آمیختگی نرم افزاری "
+
+msgctxt "#16400"
+msgid "Post-processing"
+msgstr "پس - پردازشی"
+
+msgctxt "#17500"
+msgid "Display sleep timeout"
+msgstr "نمایش زمان تا خواب"
+
+msgctxt "#19000"
+msgid "Switch to channel"
+msgstr "تغییر به کانال"
 
 msgctxt "#19031"
 msgid "Next"
@@ -5561,6 +5677,10 @@ msgctxt "#19040"
 msgid "Timer"
 msgstr "تایمر"
 
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "ضبط شده ها"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "پخش"
@@ -5569,49 +5689,1149 @@ msgctxt "#19607"
 msgid "Fashion"
 msgstr "حالت"
 
+msgctxt "#20000"
+msgid "Saved music folder"
+msgstr "ذخیره پوشه موسیقی"
+
+msgctxt "#20001"
+msgid "Use external DVD player"
+msgstr "استفاده ازپخش کننده دی وی دی خارجی"
+
+msgctxt "#20002"
+msgid "External DVD player"
+msgstr "پخش کننده دی وی دی خارجی"
+
+msgctxt "#20003"
+msgid "Trainers folder"
+msgstr "پوشه مربیان"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "پوشه عکس صفحه"
+
+msgctxt "#20006"
+msgid "Playlists folder"
+msgstr "پوشه لیست پخش"
+
+msgctxt "#20007"
+msgid "Recordings"
+msgstr "ضبط شده ها"
+
+msgctxt "#20008"
+msgid "Screenshots"
+msgstr "عکس های گرفته شده"
+
+msgctxt "#20009"
+msgid "Use XBMC"
+msgstr "استفاده از XBMC"
+
+msgctxt "#20011"
+msgid "Music playlists"
+msgstr "لیست پخش موسیقی"
+
+msgctxt "#20012"
+msgid "Video playlists"
+msgstr "لیست پخش ویدیو"
+
+msgctxt "#20013"
+msgid "Do you wish to launch the game?"
+msgstr "آیا می خواهید این بازی را اجرا کنید ؟"
+
+msgctxt "#20014"
+msgid "Sort by: Playlist"
+msgstr "چینش با: لیست پخش"
+
+msgctxt "#20015"
+msgid "Remote thumb"
+msgstr "تصویر کوچک راه دور"
+
+msgctxt "#20016"
+msgid "Current thumb"
+msgstr "تصویر کوچک فعلی"
+
+msgctxt "#20017"
+msgid "Local thumb"
+msgstr "تصویر کوچک محلی"
+
+msgctxt "#20018"
+msgid "No thumb"
+msgstr "بدون تصویر کوچک"
+
+msgctxt "#20019"
+msgid "Choose thumbnail"
+msgstr "تصویر کوچک را انتخاب کنید"
+
 msgctxt "#20023"
 msgid "Conflict"
 msgstr "تداخل"
+
+msgctxt "#20024"
+msgid "Scan new"
+msgstr "اسکن جدید"
+
+msgctxt "#20025"
+msgid "Scan all"
+msgstr "اسکن همه"
+
+msgctxt "#20026"
+msgid "Region"
+msgstr "ناحیه"
 
 msgctxt "#20037"
 msgid "Summary"
 msgstr "خلاصه"
 
+msgctxt "#20038"
+msgid "Lock music window"
+msgstr "قفل پنجره موسیقی"
+
+msgctxt "#20039"
+msgid "Lock videos window"
+msgstr "قفل پنجره ویدیوها"
+
+msgctxt "#20040"
+msgid "Lock pictures window"
+msgstr "قفل پنجره تصاویر"
+
+msgctxt "#20041"
+msgid "Lock programs & scripts windows"
+msgstr "قفل پنجره برنامه ها و اسکریپت ها"
+
+msgctxt "#20042"
+msgid "Lock file manager"
+msgstr "قفل مدیر فایل"
+
+msgctxt "#20043"
+msgid "Lock settings"
+msgstr "تنظیمات قفل"
+
+msgctxt "#20044"
+msgid "Start fresh"
+msgstr "شروع تازه"
+
+msgctxt "#20045"
+msgid "Enter master mode"
+msgstr "ورود به حالت مستر"
+
+msgctxt "#20046"
+msgid "Leave master mode"
+msgstr "ترک حالت مستر"
+
+msgctxt "#20047"
+msgid "Create profile '%s'?"
+msgstr "ایجاد پروفایل  '%s'?"
+
+msgctxt "#20048"
+msgid "Start with fresh settings"
+msgstr "شروع با تنطیمات تازه"
+
+msgctxt "#20049"
+msgid "Best available"
+msgstr "بهترین های موجود"
+
+msgctxt "#20050"
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "سویچ اتوماتیک بین 16x9 و 4x3"
+
+msgctxt "#20051"
+msgid "Treat stacked files as single file"
+msgstr "درمان فایل های انباشته به عنوان یک فایل تنها"
+
+msgctxt "#20052"
+msgid "Caution"
+msgstr "احتیاط"
+
+msgctxt "#20053"
+msgid "Left master mode"
+msgstr "حالت مستر سمت چپ"
+
+msgctxt "#20054"
+msgid "Entered master mode"
+msgstr "وارد حالت مستر شده است"
+
+msgctxt "#20055"
+msgid "Allmusic.com thumb"
+msgstr "تصویر کوچک  Allmusic.com"
+
+msgctxt "#20057"
+msgid "Remove thumbnail"
+msgstr "حذف تصویر کوچک"
+
+msgctxt "#20058"
+msgid "Add profile..."
+msgstr "افزودن پروفایل ..."
+
+msgctxt "#20059"
+msgid "Query info for all albums"
+msgstr "پرس و جوی اطلاعات تمام آلبوم ها"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "اطلاعات مدیا"
+
+msgctxt "#20061"
+msgid "Separate"
+msgstr "جدا"
+
+msgctxt "#20062"
+msgid "Shares with default"
+msgstr "اشتراک با پیش فرض"
+
+msgctxt "#20063"
+msgid "Shares with default (read only)"
+msgstr "اشتراک با پیش فرض (فقط خواندنی)"
+
+msgctxt "#20064"
+msgid "Copy default"
+msgstr "پیش فرض کپی"
+
+msgctxt "#20065"
+msgid "Profile picture"
+msgstr "عکس پروفایل"
+
+msgctxt "#20066"
+msgid "Lock preferences"
+msgstr " تنظیمات قفل"
+
+msgctxt "#20067"
+msgid "Edit profile"
+msgstr "ویرایش پروفایل"
+
+msgctxt "#20068"
+msgid "Profile lock"
+msgstr "قفل پروفایل"
+
+msgctxt "#20069"
+msgid "Could not create folder"
+msgstr "نمی توان پوشه را ایجاد کرد"
+
+msgctxt "#20070"
+msgid "Profile directory"
+msgstr "پوشه ی پروفایل"
+
+msgctxt "#20071"
+msgid "Start with fresh media sources"
+msgstr "شروع با منابع مدیای تازه"
+
+msgctxt "#20072"
+msgid "Make sure the selected folder is writable"
+msgstr "مطمئن شود که پوشه ی انتخاب شده قابل نوشتن است"
+
+msgctxt "#20073"
+msgid "and that the new folder name is valid"
+msgstr "و نام پوشه ی جدید معتبر است"
+
+msgctxt "#20074"
+msgid "MPAA rating"
+msgstr "رتبه‌بندی سنی"
+
+msgctxt "#20075"
+msgid "Enter master lock code"
+msgstr "گذرواژه اصلی را وارد کنید"
+
+msgctxt "#20076"
+msgid "Ask for master lock code on startup"
+msgstr "درخواست گذرواژه اصلی هنگام شروع "
+
+msgctxt "#20077"
+msgid "Skin settings"
+msgstr "تنظیمات پوسته"
+
+msgctxt "#20078"
+msgid "- no link set -"
+msgstr "- هیچ لینکی مشخص نشده است -"
+
+msgctxt "#20079"
+msgid "Enable animations"
+msgstr "فعال کردن انیمیشن‌ها"
+
+msgctxt "#20080"
+msgid "Disable RSS during music"
+msgstr "غیرفعال کردن RSS هنگام پخش موسیقی"
+
+msgctxt "#20081"
+msgid "Enable shortcut buttons"
+msgstr "فعال کردن کلیدهای میانبر"
+
+msgctxt "#20082"
+msgid "Show programs in main menu"
+msgstr "نمایش برنامه‌ها در منوی اصلی"
+
+msgctxt "#20083"
+msgid "Show music info"
+msgstr "نمایش اطلاعات موسیقی"
+
+msgctxt "#20084"
+msgid "Show weather info"
+msgstr "نمایش اطلاعات آب و هوا"
+
+msgctxt "#20085"
+msgid "Show system info"
+msgstr "نمایش اطلاعات سیستم"
+
+msgctxt "#20086"
+msgid "Show available disc space C: E: F:"
+msgstr "نمایش فضای موجود در دیسک‌های :C: E: F"
+
+msgctxt "#20087"
+msgid "Show available disc space E: F: G:"
+msgstr "نمایش فضای موجود در دیسک‌های :E : F: G"
+
+msgctxt "#20088"
+msgid "Weather info"
+msgstr "اطلاعات آب و هوا"
+
+msgctxt "#20089"
+msgid "Drive space free"
+msgstr "فضای خالی دیسک"
+
+msgctxt "#20090"
+msgid "Enter the name of an existing share"
+msgstr "نام یک اشتراک موجود را وارد نمایید"
+
+msgctxt "#20091"
+msgid "Lock code"
+msgstr "گذارواژه"
+
+msgctxt "#20092"
+msgid "Load profile"
+msgstr "بارگذاری پروفایل"
+
+msgctxt "#20093"
+msgid "Profile name"
+msgstr "نام پروفایل"
+
+msgctxt "#20094"
+msgid "Media sources"
+msgstr "منبع رسانه‌ای"
+
+msgctxt "#20095"
+msgid "Enter profile lock code"
+msgstr "گذرواژه پروفایل را وارد کنید"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "صفحه ورود"
+
+msgctxt "#20097"
+msgid "Fetching album info"
+msgstr "دریافت اطلاعات آلبوم"
+
+msgctxt "#20098"
+msgid "Fetching info for album"
+msgstr "دریافت اطلاعات برای آلبوم"
+
+msgctxt "#20099"
+msgid "Can't rip CD or track while playing from CD"
+msgstr "امکان تبدیل سی‌دی یا ترک درحال پخش از سی‌دی نیست"
+
+msgctxt "#20100"
+msgid "Master lock code and settings"
+msgstr "گذرواژه اصلی و تنظیمات"
+
+msgctxt "#20101"
+msgid "Entering master lock code always enables master mode"
+msgstr "وارد کردن گذرواژه اصلی همیشه حالت اصلی را فعال می‌کند"
+
+msgctxt "#20102"
+msgid "or copy from default?"
+msgstr "یا کپی از پیش‌فرض؟"
+
+msgctxt "#20103"
+msgid "Save changes to profile?"
+msgstr "تغییرات در پروفایل ذخیره شود؟"
+
+msgctxt "#20104"
+msgid "Old settings found."
+msgstr "تنظیمات قدیمی یافت نشد."
+
+msgctxt "#20105"
+msgid "Do you want to use them?"
+msgstr "آیا می‌خواهید از آن‌ها استفاده کنید؟"
+
+msgctxt "#20106"
+msgid "Old media sources found."
+msgstr "منبع رسانه‌ای قدیمی یافت شد."
+
+msgctxt "#20107"
+msgid "Separate (locked)"
+msgstr "جداگانه (قفل شده)"
+
+msgctxt "#20108"
+msgid "Root"
+msgstr "ریشه"
+
+msgctxt "#20109"
+msgid "- Zoom"
+msgstr "- زوم"
+
+msgctxt "#20110"
+msgid "UPnP settings"
+msgstr "تنظیمات UPnP "
+
+msgctxt "#20111"
+msgid "Autostart UPnP client"
+msgstr "شروع خودکار UPnP"
+
+msgctxt "#20112"
+msgid "Last login: %s"
+msgstr "آخرین ورود: %s"
+
+msgctxt "#20113"
+msgid "Never logged on"
+msgstr "هرگز وارد نشده"
+
+msgctxt "#20114"
+msgid "Profile %i / %i"
+msgstr "پروفایل  %i  ا   %i"
+
+msgctxt "#20115"
+msgid "User login / Select a profile"
+msgstr "ورود کاربر / انتخاب پروفایل"
+
+msgctxt "#20116"
+msgid "Use lock on login screen"
+msgstr "استفاده از قفل در صفحه ورودی"
+
+msgctxt "#20117"
+msgid "Invalid lock code."
+msgstr "گذرواژه اشتباه است"
+
+msgctxt "#20118"
+msgid "This requires the master lock to be set."
+msgstr "ثبت این گزینه نیاز به گذرواژه اصلی دارد."
+
+msgctxt "#20119"
+msgid "Would you like to set it now?"
+msgstr "آیا همکنون مایل به ثبت این گزینه هستید؟"
+
+msgctxt "#20120"
+msgid "Loading program information"
+msgstr "در حال بارگذارای اطلاعات"
+
+msgctxt "#20121"
+msgid "Party on!"
+msgstr "حالت میهمانی روشن!"
+
+msgctxt "#20122"
+msgid "True"
+msgstr "درست"
+
+msgctxt "#20123"
+msgid "Mixing drinks"
+msgstr "مخلوط کردن نوشیدنی‌ها"
+
+msgctxt "#20124"
+msgid "Filling glasses"
+msgstr "پرکردن لیوان‌ها"
+
+msgctxt "#20125"
+msgid "Logged on as"
+msgstr "وارد شده به عنوان"
+
+msgctxt "#20126"
+msgid "Log off"
+msgstr "خروج"
+
+msgctxt "#20128"
+msgid "Go to root"
+msgstr "رفتن به ریشه"
+
 msgctxt "#20131"
 msgid "Blend"
 msgstr "ترکیب"
+
+msgctxt "#20132"
+msgid "Restart video"
+msgstr "ریست ویدئو"
+
+msgctxt "#20133"
+msgid "Edit network location"
+msgstr "ویرایش محل شبکه"
+
+msgctxt "#20134"
+msgid "Remove network location"
+msgstr "حذف محل شبکه"
+
+msgctxt "#20135"
+msgid "Do you want to scan the folder?"
+msgstr "آیا می‌خواهید پوشه را اسکن کنید؟"
+
+msgctxt "#20136"
+msgid "Memory unit"
+msgstr "واحد حافظه"
+
+msgctxt "#20137"
+msgid "Memory unit mounted"
+msgstr "واحد حافظه متصل شده"
+
+msgctxt "#20138"
+msgid "Unable to mount memory unit"
+msgstr "امکان اتصال واحد حافظه نیست"
+
+msgctxt "#20139"
+msgid "In port %i, slot %i"
+msgstr "در پورت %i و اسلات %i"
+
+msgctxt "#20140"
+msgid "Lock screensaver"
+msgstr "فقل محافظ صفحه"
+
+msgctxt "#20141"
+msgid "Set"
+msgstr "ثبت"
 
 msgctxt "#20142"
 msgid "Username"
 msgstr "نام کاربری"
 
+msgctxt "#20143"
+msgid "Enter password for"
+msgstr "ورود گذرواژه برای"
+
+msgctxt "#20144"
+msgid "Shutdown timer"
+msgstr "تایمر خاموش کردن"
+
+msgctxt "#20145"
+msgid "Shutdown interval (in minutes)"
+msgstr "بازه خاموش کردن (دقیقه)"
+
+msgctxt "#20146"
+msgid "Started, shutdown in %im"
+msgstr "شروع شد، خاموش کردن در%i دقیقه"
+
+msgctxt "#20147"
+msgid "Shutdown in 30 minutes"
+msgstr "خاموش کردن ظرف ۳۰ دقیقه"
+
+msgctxt "#20148"
+msgid "Shutdown in 60 minutes"
+msgstr "خاموش کردن ظرف ۶۰ دقیقه"
+
+msgctxt "#20149"
+msgid "Shutdown in 120 minutes"
+msgstr "خاموش کردن ظرف ۱۲۰ دقیقه"
+
+msgctxt "#20150"
+msgid "Custom shutdown timer"
+msgstr "تایمر خاموش کردن دستی"
+
+msgctxt "#20151"
+msgid "Cancel shutdown timer"
+msgstr "لغو تایمر خاموش کردن"
+
+msgctxt "#20152"
+msgid "Lock preferences for %s"
+msgstr "قفل تنظیمات برای %s"
+
+msgctxt "#20153"
+msgid "Browse..."
+msgstr "مرور..."
+
+msgctxt "#20154"
+msgid "Summary information"
+msgstr "اطلاعات خلاصه"
+
+msgctxt "#20155"
+msgid "Storage information"
+msgstr "اطلاعات ذخیره سازی"
+
+msgctxt "#20156"
+msgid "Hard disk information"
+msgstr "اطلاعات هارد دیسک"
+
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "اطلاعات دی‌وی‌دی"
+
 msgctxt "#20158"
 msgid "Network information"
 msgstr "اطلاعات شبکه"
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "اطلاعات کتابخانه"
+
+msgctxt "#20160"
+msgid "Hardware information"
+msgstr "اطلاعات سخت افزار"
+
+msgctxt "#20161"
+msgid "Total"
+msgstr "جمع"
+
+msgctxt "#20162"
+msgid "Used"
+msgstr "استفاده‌شده"
 
 msgctxt "#20163"
 msgid "of"
 msgstr "از"
 
+msgctxt "#20164"
+msgid "Locking not supported"
+msgstr "قفل گذاری پشتیبانی نمی‌شود"
+
+msgctxt "#20165"
+msgid "Not locked"
+msgstr "قفل نیست"
+
+msgctxt "#20166"
+msgid "Locked"
+msgstr "فقل شده"
+
+msgctxt "#20167"
+msgid "Frozen"
+msgstr "فریز شده"
+
+msgctxt "#20168"
+msgid "Requires reset"
+msgstr "نیازمند ریست است"
+
 msgctxt "#20169"
 msgid "Week"
 msgstr "هفته"
+
+msgctxt "#20170"
+msgid "Line"
+msgstr "خط"
+
+msgctxt "#20171"
+msgid "Windows network (SMB)"
+msgstr "شبکه ویندوزی (SMB)"
+
+msgctxt "#20172"
+msgid "XBMSP server"
+msgstr "سرور XBMSP"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "سرور FTP"
+
+msgctxt "#20174"
+msgid "iTunes music share (DAAP)"
+msgstr "پایگاه موسیقی iTunes یا DAAP"
+
+msgctxt "#20175"
+msgid "UPnP server"
+msgstr "سرور UPnP"
+
+msgctxt "#20176"
+msgid "Show video info"
+msgstr "نمایش اطلاعات ویدئو"
 
 msgctxt "#20177"
 msgid "Done"
 msgstr "انجام شد"
 
+msgctxt "#20178"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#20179"
+msgid "Caps Lock"
+msgstr "Caps Lock"
+
+msgctxt "#20180"
+msgid "Symbols"
+msgstr "علامت‌ها"
+
+msgctxt "#20181"
+msgid "Backspace"
+msgstr "Backspace"
+
+msgctxt "#20182"
+msgid "Space"
+msgstr "Space"
+
+msgctxt "#20183"
+msgid "Reload skin"
+msgstr "بازنشانی پوسته"
+
+msgctxt "#20184"
+msgid "Rotate pictures using EXIF information"
+msgstr "چرخاندن عکس‌ها با استفاده از اطلاعات EXIF"
+
+msgctxt "#20185"
+msgid "Use poster view styles for TV shows"
+msgstr "استفاده از حالت نمایش پوستری برای سریال‌ها"
+
 msgctxt "#20186"
 msgid "Please wait"
 msgstr "لطفا منتظر بمانید"
+
+msgctxt "#20187"
+msgid "UPnP"
+msgstr "UPnP"
+
+msgctxt "#20189"
+msgid "Enable auto scrolling for plot & review"
+msgstr "فعال‌کردن حرکت خودکار برای خلاصه و بررسی"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "سفارشی"
+
+msgctxt "#20191"
+msgid "Enable debug logging"
+msgstr "فعال‌کردن گزارش‌گیری اشکال‌زدایی"
+
+msgctxt "#20192"
+msgid "Download additional information during updates"
+msgstr "دانلود اطلاعات اضافی در طول بروزرسانی"
+
+msgctxt "#20193"
+msgid "Default service for album information"
+msgstr "سرویس پیش‌فرض برای اطلاعات آلبوم"
+
+msgctxt "#20194"
+msgid "Default service for artist information"
+msgstr "سرویس پیش‌فرض برای اطلاعات خواننده"
+
+msgctxt "#20195"
+msgid "Change scraper"
+msgstr "تغییر سرویس دریافت اطلاعات"
+
+msgctxt "#20196"
+msgid "Export music library"
+msgstr "خروجی‌گرفتن کتابخانه موسیقی"
+
+msgctxt "#20197"
+msgid "Import music library"
+msgstr "وارد‌کردن کتابخانه موسیقی"
+
+msgctxt "#20198"
+msgid "No artist found!"
+msgstr "هیچ خواننده‌ای پیدا نشد!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "دانلود اطلاعات هنرمند ناموفق بود"
 
+msgctxt "#20250"
+msgid "Party on! (videos)"
+msgstr "حالت میهمانی روشن! (ویدئو)"
+
+msgctxt "#20251"
+msgid "Mixing drinks (videos)"
+msgstr "مخلوط کردن نوشیدنی‌ها (ویدئو)"
+
+msgctxt "#20252"
+msgid "Filling glasses (videos)"
+msgstr "پرکردن لیوان‌ها (ویدئو)"
+
+msgctxt "#20253"
+msgid "WebDAV server (HTTP)"
+msgstr "سرور WebDAV حالت HTTP"
+
+msgctxt "#20254"
+msgid "WebDAV server (HTTPS)"
+msgstr "سرور WebDAV حالت HTTPS"
+
+msgctxt "#20255"
+msgid "First logon, edit your profile"
+msgstr "نخستین ورود، پروفایل خود را ویرایش کنید"
+
+msgctxt "#20256"
+msgid "HTS Tvheadend client"
+msgstr "کلاینت HTS Tvheadend"
+
+msgctxt "#20257"
+msgid "VDR Streamdev client"
+msgstr "کلاینت VDR Streamdev"
+
+msgctxt "#20258"
+msgid "MythTV client"
+msgstr "کلاینت MythTV"
+
+msgctxt "#20259"
+msgid "Network Filesystem (NFS)"
+msgstr "فایل سیستم شبکه (NFS)"
+
+msgctxt "#20260"
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+msgctxt "#20261"
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20300"
+msgid "Web server directory (HTTP)"
+msgstr "Web server directory (HTTP)"
+
+msgctxt "#20301"
+msgid "Web server directory (HTTPS)"
+msgstr "Web server directory (HTTPS)"
+
+msgctxt "#20302"
+msgid "Unable to write to folder:"
+msgstr "امکان نوشتن در پوشه نیست:"
+
+msgctxt "#20303"
+msgid "Do you want to skip and proceed?"
+msgstr "آیا می‌خواهید گذر کنید و ادامه دهید؟"
+
+msgctxt "#20304"
+msgid "RSS Feed"
+msgstr "فید RSS"
+
+msgctxt "#20307"
+msgid "Secondary DNS"
+msgstr "DNS دومین"
+
+msgctxt "#20308"
+msgid "DHCP server:"
+msgstr "سرور DHCP:"
+
+msgctxt "#20309"
+msgid "Make new folder"
+msgstr "ساخت پوشه جدید"
+
+msgctxt "#20310"
+msgid "Dim LCD on playback"
+msgstr "تیره کردن LCD در هنگام پخش"
+
+msgctxt "#20311"
+msgid "Unknown or onboard (protected)"
+msgstr "نامشخص (محافظت‌شده)"
+
+msgctxt "#20312"
+msgid "Dim LCD on paused"
+msgstr "تیره کردن LCD در هنگام مکث"
+
+msgctxt "#20314"
+msgid "Videos - Library"
+msgstr "ویدئوها - کتابخانه"
+
+msgctxt "#20316"
+msgid "Sort by: ID"
+msgstr "مرتب‌سازی با: ID"
+
+msgctxt "#20324"
+msgid "Play part..."
+msgstr "پخش قسمت..."
+
+msgctxt "#20325"
+msgid "Calibration reset"
+msgstr "ریست کالیبره کردن"
+
+msgctxt "#20326"
+msgid "This will reset the calibration values for %s"
+msgstr "این گزینه مقادیر کالیبره کردن را برای %s ریست می‌کند"
+
+msgctxt "#20327"
+msgid "to it's default values."
+msgstr "به مقادیر پیش‌فرض آن."
+
+msgctxt "#20328"
+msgid "Browse for destination"
+msgstr "مرور برای مقصد"
+
+msgctxt "#20329"
+msgid "Movies are in separate folders that match the movie title"
+msgstr "فیلم‌ها در پوشه‌های جداگانه منطبق با نام فیلم قرار دارند"
+
+msgctxt "#20330"
+msgid "Use folder names for lookups"
+msgstr "استفاده از نام پوشه‌ها برای جستجو"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "فایل"
+
+msgctxt "#20332"
+msgid "Use file or folder names in lookups?"
+msgstr "از نام فایل‌ها یا پوشه‌ها در جستجو استفاده شود؟"
+
+msgctxt "#20333"
+msgid "Set content"
+msgstr "مشخص‌کردن محتوا"
+
+msgctxt "#20334"
+msgid "Folder"
+msgstr "پوشه"
+
+msgctxt "#20335"
+msgid "Look for content recursively?"
+msgstr "محتوا به صورت بازگشتی جستجو شود؟"
+
+msgctxt "#20336"
+msgid "Unlock sources"
+msgstr "قفل‌گشایی منابع"
+
+msgctxt "#20337"
+msgid "Actor"
+msgstr "بازیگر"
+
+msgctxt "#20338"
+msgid "Movie"
+msgstr "فیلم"
+
+msgctxt "#20339"
+msgid "Director"
+msgstr "کارگردان"
+
+msgctxt "#20340"
+msgid "Do you want to remove all items within"
+msgstr "آیا می‌خواهید همه موارد داخلی را پاک کنید"
+
+msgctxt "#20341"
+msgid "this path from the XBMC library?"
+msgstr "این مسیر از کتابخانه XBMC؟"
+
 msgctxt "#20342"
 msgid "Movies"
 msgstr "فیلم ها"
+
+msgctxt "#20343"
+msgid "TV shows"
+msgstr "سریال‌ها"
+
+msgctxt "#20344"
+msgid "This directory contains"
+msgstr "این پوشه شامل"
+
+msgctxt "#20345"
+msgid "Run automated scan"
+msgstr "اجرای اسکن خودکار"
+
+msgctxt "#20346"
+msgid "Scan recursively"
+msgstr "اسکن به صورت بازگشتی"
+
+msgctxt "#20347"
+msgid "as"
+msgstr "به عنوان"
+
+msgctxt "#20348"
+msgid "Directors"
+msgstr "کارگردانان"
+
+msgctxt "#20349"
+msgid "No video files found in this path!"
+msgstr "هیچ فایل ویدئویی در این مسیر پیدا نشد!"
+
+msgctxt "#20350"
+msgid "votes"
+msgstr "رای"
+
+msgctxt "#20351"
+msgid "TV show information"
+msgstr "اطلاعات سریال"
+
+msgctxt "#20352"
+msgid "Episode information"
+msgstr "اطلاعات قسمت"
+
+msgctxt "#20353"
+msgid "Loading TV show details"
+msgstr "بارگذاری جزئیات سریال"
+
+msgctxt "#20354"
+msgid "Fetching episode guide"
+msgstr "دریافت راهنمای قسمت‌ها"
+
+msgctxt "#20355"
+msgid "Loading info for episodes in directory"
+msgstr "در حال بارگذاری اطلاعات برای قسمت‌های داخل پوشه"
+
+msgctxt "#20356"
+msgid "Select TV show:"
+msgstr "انتخاب سریال:"
+
+msgctxt "#20357"
+msgid "Enter the TV show name"
+msgstr "نام سریال را وارد کنید"
+
+msgctxt "#20358"
+msgid "Season %i"
+msgstr "فصل %i"
+
+msgctxt "#20359"
+msgid "Episode"
+msgstr "قسمت"
+
+msgctxt "#20360"
+msgid "Episodes"
+msgstr "قسمت"
+
+msgctxt "#20361"
+msgid "Loading episode details"
+msgstr "در حال بارگذاری جزئیات قسمت"
+
+msgctxt "#20362"
+msgid "Remove episode from library"
+msgstr "این قسمت را از کتابخانه پاک کن"
+
+msgctxt "#20363"
+msgid "Remove TV show from library"
+msgstr "این سریال را از کتابخانه حذف کن"
+
+msgctxt "#20364"
+msgid "TV show"
+msgstr "سریال"
+
+msgctxt "#20365"
+msgid "Episode plot"
+msgstr "خلاصه قسمت"
+
+msgctxt "#20366"
+msgid "* All seasons"
+msgstr "* همه قسمت‌ها"
+
+msgctxt "#20367"
+msgid "Hide watched"
+msgstr "مخفی‌کردن دیده شده‌ها"
+
+msgctxt "#20368"
+msgid "Prod code"
+msgstr "Prod code"
+
+msgctxt "#20369"
+msgid "Show plot for unwatched items"
+msgstr "نمایش خلاصه برای موارد دیده نشده"
+
+msgctxt "#20370"
+msgid "* Hidden to prevent spoilers *"
+msgstr "* مخفی شده برای جلوگیری از لو رفتن داستان *"
+
+msgctxt "#20371"
+msgid "Set season thumb"
+msgstr "انتخاب تصویر کوچک فصل"
+
+msgctxt "#20372"
+msgid "Season image"
+msgstr "تصویر فصل"
+
+msgctxt "#20373"
+msgid "Season"
+msgstr "فصل"
+
+msgctxt "#20374"
+msgid "Downloading movie information"
+msgstr "دانلود اطلاعات فیلم"
+
+msgctxt "#20376"
+msgid "Original title"
+msgstr "عنوان اصلی"
+
+msgctxt "#20377"
+msgid "Refresh TV show information"
+msgstr "بازسازی اطلاعات سریال"
+
+msgctxt "#20378"
+msgid "Refresh info for all episodes?"
+msgstr "اطلاعات برای همه قسمت‌ها بازسازی شود؟"
+
+msgctxt "#20379"
+msgid "Selected folder contains a single TV show"
+msgstr "پوشه انتخابی تنها یک سریال دارد"
+
+msgctxt "#20380"
+msgid "Exclude selected folder from scans"
+msgstr "لغو پوشه انتخابی از اسکن‌ها"
+
+msgctxt "#20381"
+msgid "Specials"
+msgstr "ویژه‌ها"
+
+msgctxt "#20382"
+msgid "Automatically grab season thumbs"
+msgstr "دریافت خودکار تصاویر فصل‌ها"
+
+msgctxt "#20383"
+msgid "Selected folder contains a single video"
+msgstr "پوشه انتخابی تنها یک ویدئو دارد"
+
+msgctxt "#20384"
+msgid "Link to TV show"
+msgstr "لینک کردن به سریال"
+
+msgctxt "#20385"
+msgid "Remove link to TV show"
+msgstr "حذف لینک به سریال"
+
+msgctxt "#20386"
+msgid "Recently added movies"
+msgstr "فیلم‌های جدید"
+
+msgctxt "#20387"
+msgid "Recently added episodes"
+msgstr "قسمت‌های جدید"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "استدیوها"
+
+msgctxt "#20389"
+msgid "Music videos"
+msgstr "موزیک ویدئو"
+
+msgctxt "#20390"
+msgid "Recently added music videos"
+msgstr "موزیک ویدئوهای جدید"
+
+msgctxt "#20391"
+msgid "Music video"
+msgstr "موزیک ویدئو"
+
+msgctxt "#20392"
+msgid "Remove music video from library"
+msgstr "موزیک ویدئو را از کتابخانه پاک کن"
+
+msgctxt "#20393"
+msgid "Music video information"
+msgstr "اطلاعات موزیک ویدئو"
+
+msgctxt "#20394"
+msgid "Loading music video information"
+msgstr "بارگذاری اطلاعات موزیک ویدئو"
+
+msgctxt "#20395"
+msgid "Mixed"
+msgstr "میکس"
+
+msgctxt "#20396"
+msgid "Go to albums by artist"
+msgstr "رفتن به آلبوم‌ها با خواننده"
+
+msgctxt "#20397"
+msgid "Go to album"
+msgstr "رفتن به آلبوم‌"
+
+msgctxt "#20398"
+msgid "Play song"
+msgstr "پخش آهنگ"
+
+msgctxt "#20399"
+msgid "Go to music videos from album"
+msgstr "رفتن به موزیک ویدئو از آلبوم"
+
+msgctxt "#20400"
+msgid "Go to music videos by artist"
+msgstr "رفتن به موزیک ویدئوها با خواننده"
+
+msgctxt "#20401"
+msgid "Play music video"
+msgstr "پخش موزیک ویدئو"
+
+msgctxt "#20402"
+msgid "Download actor thumbnails when adding to library"
+msgstr "دانلود عکس بازیگر هنگام افزودن به کتابخانه"
+
+msgctxt "#20403"
+msgid "Set actor thumb"
+msgstr "انتخاب عکس بازیگر"
+
+msgctxt "#20405"
+msgid "Remove episode bookmark"
+msgstr "حذف "
+
+msgctxt "#20406"
+msgid "Set episode bookmark"
+msgstr "حذف بوک‌مارک قسمت"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -5620,6 +6840,10 @@ msgstr "فن آرت"
 msgctxt "#20422"
 msgid "Always"
 msgstr "همیشه"
+
+msgctxt "#20429"
+msgid "Separate"
+msgstr "جدا"
 
 msgctxt "#20445"
 msgid "Fanart"
@@ -5645,6 +6869,10 @@ msgctxt "#22032"
 msgid "- Colours"
 msgstr "- رنگ‌ها"
 
+msgctxt "#24005"
+msgid "Media sources"
+msgstr "منبع رسانه‌ای"
+
 msgctxt "#24007"
 msgid "Movie information"
 msgstr "اطلاعات فیلم"
@@ -5652,6 +6880,10 @@ msgstr "اطلاعات فیلم"
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr "زیر نویس ها"
+
+msgctxt "#24015"
+msgid "Music video information"
+msgstr "اطلاعات موزیک ویدئو"
 
 msgctxt "#24016"
 msgid "Album information"
@@ -5676,6 +6908,10 @@ msgstr "این فایل چند بخشی است, قسمت مورد نظر را ب
 msgctxt "#34122"
 msgid "Always"
 msgstr "همیشه"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "نام"
 
 msgctxt "#36016"
 msgid "Connected"

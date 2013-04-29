@@ -16,6 +16,10 @@ msgstr ""
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Kualiteti i \"Rendering\""
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Poshtë"
@@ -27,3 +31,47 @@ msgstr "Mesatare"
 msgctxt "#30003"
 msgid "High"
 msgstr "Lartë"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maksimum"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Mënyra e përziejer"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Kohëzgjatja (me kalim të but) e të paravendosurit"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Kohëzgjatja e të paravendosurit"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Ndjeshmërija ndaj muzikës"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Paketë e të paravendosurve"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Paketi i parazgjedhur"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Regjistri i paravendosurve i zgjedhur nga përdoruesi"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Regjistri i paravendosurve i përdoruesit"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sekonda"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
