@@ -164,8 +164,9 @@ on with the Android toolchain and creating an Android Application Package
 --------------------------------------------------------------------
 
    # cd $HOME/xbmc-android
-   # make -C tools/android/xbmc
+   # make -C tools/depends/target/xbmc
    # make
+   # make apk
 
    After the first build (assuming bootstrap and configure are successful),
    subsequent builds can be run with a simple 'make' and 'make apk'.
