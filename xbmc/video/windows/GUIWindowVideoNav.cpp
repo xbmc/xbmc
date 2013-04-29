@@ -241,7 +241,7 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "MusicVideoTitles";
   else if (strPath.Equals("videodb://musicvideos/years/") || strPath.Equals("videodb://3/3/"))
     return "MusicVideoYears";
-  else if (strPath.Equals("videodb://musicvideos/artist/") || strPath.Equals("videodb://3/4/"))
+  else if (strPath.Equals("videodb://musicvideos/artists/") || strPath.Equals("videodb://3/4/"))
     return "MusicVideoArtists";
   else if (strPath.Equals("videodb://musicvideos/albums/") || strPath.Equals("videodb://3/5/"))
     return "MusicVideoDirectors";
