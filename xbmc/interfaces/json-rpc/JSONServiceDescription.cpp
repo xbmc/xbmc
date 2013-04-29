@@ -591,14 +591,12 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
   // Let's check the type of the provided parameter
   if (!IsType(value, type))
   {
-    CLog::Log(LOGDEBUG, "JSONRPC: Type mismatch in type %s", name.c_str());
     errorMessage.Format("Invalid type %s received", ValueTypeToString(value.type()));
     errorData["message"] = errorMessage.c_str();
     return InvalidParams;
   }
   else if (value.isNull() && !HasType(type, NullValue))
   {
-    CLog::Log(LOGDEBUG, "JSONRPC: Value is NULL in type %s", name.c_str());
     errorData["message"] = "Received value is null";
     return InvalidParams;
   }
@@ -621,7 +619,6 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
 
     if (!ok)
     {
-      CLog::Log(LOGDEBUG, "JSONRPC: Value in type %s does not match any of the union type definitions", name.c_str());
       errorData["message"] = "Received value does not match any of the union type definitions";
       return InvalidParams;
     }
