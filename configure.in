@@ -2455,6 +2455,7 @@ OUTPUT_FILES="Makefile \
     xbmc/peripherals/devices/Makefile \
     xbmc/android/activity/Makefile \
     xbmc/android/loader/Makefile \
+    xbmc/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile"
 
