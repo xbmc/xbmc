@@ -6,7 +6,6 @@ LIBNAME=zlib
 VERSION=1.2.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://zlib.net/
 # configuration settings
 CONFIGURE= CC="$(CC)" CFLAGS="$(CFLAGS)" ./configure --prefix=$(PREFIX) --static
 
