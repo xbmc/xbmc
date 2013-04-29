@@ -105,14 +105,50 @@ public:
   /////////////////////////////////////////////////
   // Song CRUD
   /////////////////////////////////////////////////
-  /*! \brief Add an album and all its songs to the database
-   \param album the album to add
-   \param songIDs [out] the ids of the added songs
-   \return the id of the album
+  /*! \brief Add a song to the database
+   \param idAlbum [in] the database ID of the album for the song
+   \param strTitle [in] the title of the song (required to be non-empty)
+   \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
+   \param strPathAndFileName [in] the path and filename to the song
+   \param strComment [in] the ids of the added songs
+   \param strThumb [in] the ids of the added songs
+   \param artists [in] a vector of artist names (will only be used for the cache names in the album views)
+   \param genres [in] a vector of genres to which this song belongs
+   \param iTrack [in] the track number and disc number of the song
+   \param iDuration [in] the duration of the song
+   \param iYear [in] the year of the song
+   \param iTimesPlayed [in] the number of times the song has been played
+   \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
+   \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
+   \param dtLastPlayed [in] the time the song was last played
+   \param rating [in] a rating for the song
+   \param iKaraokeNumber [in] the karaoke id of the song
+   \return the id of the song
    */
-  int  AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
-  bool GetSongById(int idSong, CSong& song);
-  int  UpdateSong(const CSong& song, int idSong = -1);
+  int AddSong(const int idAlbum, const CStdString& strTitle, const CStdString& strMusicBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& artists, const std::vector<std::string>& genres, int iTrack, int iDuration, int iYear, const int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
+  bool GetSong(int idSong, CSong& song);
+
+  /*! \brief Update a song in the database
+   \param idSong [in] the database ID of the song to update
+   \param strTitle [in] the title of the song (required to be non-empty)
+   \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
+   \param strPathAndFileName [in] the path and filename to the song
+   \param strComment [in] the ids of the added songs
+   \param strThumb [in] the ids of the added songs
+   \param artists [in] a vector of artist names (will only be used for the cache names in the album views)
+   \param genres [in] a vector of genres to which this song belongs
+   \param iTrack [in] the track number and disc number of the song
+   \param iDuration [in] the duration of the song
+   \param iYear [in] the year of the song
+   \param iTimesPlayed [in] the number of times the song has been played
+   \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
+   \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
+   \param dtLastPlayed [in] the time the song was last played
+   \param rating [in] a rating for the song
+   \param iKaraokeNumber [in] the karaoke id of the song
+   \return the id of the song
+   */
+  int UpdateSong(int idSong, const CStdString& strTitle, const CStdString& strMusicBrainzTrackID, const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb, const std::vector<std::string>& artists, const std::vector<std::string>& genres, int iTrack, int iDuration, int iYear, int iTimesPlayed, int iStartOffset, int iEndOffset, const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber);
   // bool DeleteSong(int idSong);
 
   //// Misc Song
@@ -279,7 +315,7 @@ public:
   /////////////////////////////////////////////////
   // Karaoke
   /////////////////////////////////////////////////
-  void AddKaraokeData(int idSong, const CSong& song);
+  void AddKaraokeData(int idSong, int iKaraokeNumber, DWORD crc);
   bool GetSongByKaraokeNumber( int number, CSong& song );
   bool SetKaraokeSongDelay( int idSong, int delay );
   int GetKaraokeSongsCount();

@@ -720,7 +720,17 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
     for (VECSONGS::iterator song = album->songs.begin(); song != album->songs.end(); ++song)
     {
       song->idAlbum = cachedAlbum->second.idAlbum;
-      song->idSong = m_musicDatabase.AddSong(*song);
+      song->idSong = m_musicDatabase.AddSong(cachedAlbum->second.idAlbum,
+                                             song->strTitle, song->strMusicBrainzTrackID,
+                                             song->strFileName, song->strComment,
+                                             song->strThumb,
+                                             song->artist, song->genre,
+                                             song->iTrack, song->iDuration, song->iYear,
+                                             song->iTimesPlayed, song->iStartOffset,
+                                             song->iEndOffset,
+                                             song->lastPlayed,
+                                             song->rating,
+                                             song->iKaraokeNumber);
       for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
       {
         if (m_bStop)

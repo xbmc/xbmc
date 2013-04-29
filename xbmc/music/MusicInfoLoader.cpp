@@ -166,7 +166,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
         CSong song;
-        if (m_musicDatabase.GetSongById(param.GetSongId(), song))
+        if (m_musicDatabase.GetSong(param.GetSongId(), song))
         {
           pItem->GetMusicInfoTag()->SetSong(song);
           if (!song.strThumb.empty())

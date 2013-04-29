@@ -261,7 +261,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITranspor
     return InternalError;
 
   CSong song;
-  if (!musicdatabase.GetSongById(idSong, song))
+  if (!musicdatabase.GetSong(idSong, song))
     return InvalidParams;
 
   CFileItemList items;
@@ -484,7 +484,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
     return InternalError;
 
   CSong song;
-  if (!musicdatabase.GetSongById(id, song) || song.idSong != id)
+  if (!musicdatabase.GetSong(id, song) || song.idSong != id)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "title"))
@@ -512,7 +512,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
   if (ParameterNotNull(parameterObject, "musicbrainztrackid"))
     song.strMusicBrainzTrackID = parameterObject["musicbrainztrackid"].asString();
 
-  if (musicdatabase.UpdateSong(song, id) <= 0)
+  if (musicdatabase.UpdateSong(id, song.strTitle, song.strMusicBrainzTrackID, song.strFileName, song.strComment, song.strThumb, song.artist, song.genre, song.iTrack, song.iDuration, song.iYear, song.iTimesPlayed, song.iStartOffset, song.iEndOffset, song.lastPlayed, song.rating, song.iKaraokeNumber) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
@@ -620,7 +620,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   if (songID != -1)
   {
     CSong song;
-    if (musicdatabase.GetSongById(songID, song))
+    if (musicdatabase.GetSong(songID, song))
     {
       list.Add(CFileItemPtr(new CFileItem(song)));
       success = true;
