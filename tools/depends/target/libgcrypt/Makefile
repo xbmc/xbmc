@@ -27,7 +27,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p0 < ../01-static-mpi_mpi-internal.patch 
+	cd $(PLATFORM); patch -p1 < ../01-inline-gcc.patch
 	cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
 	cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
