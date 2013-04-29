@@ -43,7 +43,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   Close();
 
   // create the socket
-  m_iSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  m_iSock = socket(PF_INET6, SOCK_DGRAM, IPPROTO_UDP);
 
   if (m_iSock == INVALID_SOCKET)
   {
@@ -79,7 +79,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   // set the port
   m_addr = addr;
   m_iPort = port;
-  m_addr.saddr.sin_port = htons(port);
+  m_addr.saddr.sin6_port = htons(port);
 
   // bind the socket ( try from port to port+range )
   while (m_iPort <= port + range)
@@ -89,7 +89,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
       CLog::Log(LOGWARNING, "UDP: Error binding socket on port %d", m_iPort);
       CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
       m_iPort++;
-      m_addr.saddr.sin_port = htons(m_iPort);
+      m_addr.saddr.sin6_port = htons(m_iPort);
     }
     else
     {
