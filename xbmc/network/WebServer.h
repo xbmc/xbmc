@@ -119,7 +119,8 @@ private:
   static std::string GenerateMultipartBoundary();
   static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
-  struct MHD_Daemon *m_daemon;
+  struct MHD_Daemon *m_daemon_ip6;
+  struct MHD_Daemon *m_daemon_ip4;
   bool m_running, m_needcredentials;
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
