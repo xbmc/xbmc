@@ -369,9 +369,9 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
 	s4->sin_port = htons(port);
 
     if(bindLocal)
-		s4->sin_addr.s_addr = INADDR_LOOPBACK;
+		s4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     else
-		s4->sin_addr.s_addr = INADDR_ANY;
+		s4->sin_addr.s_addr = htonl(INADDR_ANY);
 
   } else {
 	addr.ss_family	= AF_INET6;
