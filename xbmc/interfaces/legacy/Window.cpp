@@ -653,7 +653,7 @@ namespace XBMCAddon
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       CStdString lowerKey = key;
       std::string value = ref(window)->GetProperty(lowerKey.ToLower()).asString();
-      return value.c_str();
+      return value;
     }
 
     void Window::clearProperty(const char* key)

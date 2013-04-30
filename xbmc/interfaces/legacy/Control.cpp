@@ -1013,7 +1013,7 @@ namespace XBMCAddon
     {
       if (!pGUIControl) 
         return NULL;
-      return strText.c_str();
+      return strText;
     }
     // ============================================================
 
@@ -1079,7 +1079,7 @@ namespace XBMCAddon
     {
       if (!pGUIControl) 
         return NULL;
-      return strText.c_str();
+      return strText;
     }
 
     void ControlEdit::setText(const String& text) throw(UnimplementedException)
