@@ -186,7 +186,8 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
     // for pgs subtitles the packet pts of the end_segments are wrong
     // instead use the subtitle pts to calc the offset here
     // see http://git.videolan.org/?p=ffmpeg.git;a=commit;h=2939e258f9d1fff89b3b68536beb931b54611585
-    if (m_Subtitle.pts != DVD_NOPTS_VALUE)
+
+    if (m_Subtitle.pts != AV_NOPTS_VALUE && pPacket->pts != DVD_NOPTS_VALUE)
     {
       pts_offset = m_Subtitle.pts - pPacket->pts ;
     }
