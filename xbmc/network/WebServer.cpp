@@ -33,10 +33,6 @@
 #pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
 
-#ifdef TARGET_WINDOWS
-#define close closesocket
-#endif
-
 #define MAX_POST_BUFFER_SIZE 2048
 
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
@@ -583,7 +579,7 @@ bool CWebServer::Start(int port, const string &username, const string &password)
     int v6testSock;
     if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) > 0)
     {
-      close(v6testSock);
+      closesocket(v6testSock);
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
     }
     

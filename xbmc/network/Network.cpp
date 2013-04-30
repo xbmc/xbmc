@@ -27,10 +27,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
-#ifdef TARGET_WINDOWS
-#define close closesocket
-#endif
-
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -402,14 +398,14 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
             (addr.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) :
                                            sizeof(struct sockaddr_in)  ) < 0)
   {
-    close(sock);
+    closesocket(sock);
     CLog::Log(LOGERROR, "%s Server: Failed to bind serversocket", callerName);
     return INVALID_SOCKET;
   }
 
   if (listen(sock, backlog) < 0)
   {
-    close(sock);
+    closesocket(sock);
     CLog::Log(LOGERROR, "%s Server: Failed to set listen", callerName);
     return INVALID_SOCKET;
   }
