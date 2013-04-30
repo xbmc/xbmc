@@ -323,7 +323,7 @@ void CAirPlayServer::Process()
       {
         CLog::Log(LOGDEBUG, "AIRPLAY Server: New connection detected");
         CTCPClient newconnection;
-        newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
+        newconnection.m_socket = accept(m_ServerSocket, (struct sockaddr*) &newconnection.m_cliaddr, &newconnection.m_addrlen);
         sessionCounter++;
         newconnection.m_sessionCounter = sessionCounter;
 
@@ -383,7 +383,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
   m_socket = INVALID_SOCKET;
   m_httpParser = new HttpParser();
 
-  m_addrlen = sizeof(struct sockaddr);
+  m_addrlen = sizeof(struct sockaddr_storage);
   m_pLibPlist = new DllLibPlist();
 
   m_bAuthenticated = false;
