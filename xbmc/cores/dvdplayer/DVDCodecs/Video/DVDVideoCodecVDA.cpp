@@ -809,7 +809,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     {
       // Nvidia gpu's are all powerful and work the way god intended
       m_decode_async = true;
-      m_use_cvBufferRef = true;
+      //Possible more Nvidia gpu's like 320M, 9400, 9600 don´t handle correctly when using cvBufferRef 
+      m_use_cvBufferRef = false;
     }
     else if (rendervendor.find("intel") != std::string::npos)
     {
