@@ -1,0 +1,13 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux64
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+#clean without depends for skipping depends build if possible
+cd $WORKSPACE;git clean -xfd -e "tools/depends"
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  #clean up the rest too
+  cd $WORKSPACE;git clean -xfd
+  cd $WORKSPACE/tools/depends/;./bootstrap
+fi
