@@ -341,17 +341,7 @@ void XBPyThread::Process()
       if (pDlgToast)
       {
         CStdString desc;
-        CStdString path;
-        CStdString script;
-        URIUtils::Split(m_source, path, script);
-        if (script.Equals("default.py"))
-        {
-          CStdString path2;
-          URIUtils::RemoveSlashAtEnd(path);
-          URIUtils::Split(path, path2, script);
-        }
-
-        desc.Format(g_localizeStrings.Get(2100), script);
+        desc.Format(g_localizeStrings.Get(2100), addon->Name());
         pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
       }
     }
