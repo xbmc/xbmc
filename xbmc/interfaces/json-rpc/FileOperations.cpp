@@ -83,11 +83,10 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   CStdString strPath = parameterObject["directory"].asString();
 
   // Check if this directory is part of a source and whether it's locked
-  VECSOURCES *sources;
   bool isSource;
   for (unsigned int index = 0; index < SourcesSize; index++)
   {
-    sources = CMediaSourceSettings::Get().GetSources(SourceNames[index]);
+    VECSOURCES* sources = CMediaSourceSettings::Get().GetSources(SourceNames[index]);
     int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
       return InvalidParams;

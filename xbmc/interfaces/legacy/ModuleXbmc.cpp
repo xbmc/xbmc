@@ -349,12 +349,11 @@ namespace XBMCAddon
       if (!condition)
         return false;
 
-      int id;
       bool ret;
       {
         LOCKGUI;
 
-        id = g_windowManager.GetTopMostModalDialogID();
+        int id = g_windowManager.GetTopMostModalDialogID();
         if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
         ret = g_infoManager.EvaluateBool(condition,id);
       }
