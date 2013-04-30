@@ -476,7 +476,6 @@ namespace XBMCAddon
     {
       LOCKGUI;
 
-      String tmp;
       if (strcmpi(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
