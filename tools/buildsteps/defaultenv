@@ -30,10 +30,15 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;
+
   android)
     DEFAULT_SDK_VERSION=10
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
+    ;;
+
+  linux*)
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
 esac
 
 if [ $SDK_VERSION == "Default" ]
