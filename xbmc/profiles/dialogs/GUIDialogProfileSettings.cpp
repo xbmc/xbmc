@@ -129,6 +129,8 @@ void CGUIDialogProfileSettings::CreateSettings()
 
     m_settings.push_back(setting2);
   }
+
+  AddBool(7,37015,&m_bAutoLogin,true);
 }
 
 void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
@@ -287,6 +289,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
         CDirectory::Remove(URIUtils::AddFileToFolder("special://masterprofile/", defaultDir));
     }
     dialog->m_strDirectory = userDir;
+    dialog->m_bAutoLogin = false;
     dialog->m_bNeedSave = true;
   }
   else
@@ -300,6 +303,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       dialog->m_iDbMode += 2;
     if (profile->hasSources())
       dialog->m_iSourcesMode += 2;
+    dialog->m_bAutoLogin = (!(CProfilesManager::Get().UsingLoginScreen()) && (CProfilesManager::Get().GetAutoLoginProfileId() == (int)iProfile));
 
     dialog->m_locks = profile->GetLocks();
   }
@@ -381,6 +385,15 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_iDbMode & 2) == 2);
     profile->setSources((dialog->m_iSourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
+
+    if (dialog->m_bAutoLogin)
+    {
+      CProfilesManager::Get().SetAutoLoginProfileId(iProfile);
+      if (CProfilesManager::Get().UsingLoginScreen())
+        CProfilesManager::Get().ToggleLoginScreen();
+    }
+    else if (CProfilesManager::Get().GetAutoLoginProfileId() == (int)iProfile)
+      CProfilesManager::Get().SetAutoLoginProfileId(-1); // Last used profile
 
     CProfilesManager::Get().Save();
     return true;

@@ -12459,3 +12459,8 @@ msgstr ""
 msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
+
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
+msgctxt "#37015"
+msgid "Auto login using this profile"
+msgstr ""
