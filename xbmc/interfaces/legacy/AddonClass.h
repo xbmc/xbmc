@@ -70,6 +70,9 @@ namespace XBMCAddon
     String classname;
     CCriticalSection thisLock;
     bool m_isDeallocating;
+    // no copying
+    inline AddonClass(const AddonClass&);
+
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     bool isDeleted;
@@ -93,9 +96,6 @@ namespace XBMCAddon
       Synchronize lock(*this);
       m_isDeallocating = true;
     }
-
-    // no copying
-    inline AddonClass(const AddonClass& other) {}
 
   public:
     AddonClass(const char* classname);
