@@ -398,7 +398,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
       s6->sin6_addr = in6addr_any;
   }
 
-  if (bind( sock, (struct sockaddr *) &addr,
+  if (::bind( sock, (struct sockaddr *) &addr,
             (addr.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) :
                                            sizeof(struct sockaddr_in)  ) < 0)
   {
