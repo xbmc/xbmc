@@ -1291,19 +1291,19 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
   {
+    m_droptime += iFrameDuration;
+#ifndef PROFILE
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
     // to the flip timestamp
     double current   = fabs(m_dropbase -  m_droptime);
     double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
-    double frametime = (double)DVD_TIME_BASE / maxfps;
 
-    m_droptime += iFrameDuration;
-#ifndef PROFILE
     if( next < current && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
       return result | EOS_DROPPED;
 #endif
-
+    
+    double frametime = (double)DVD_TIME_BASE / maxfps;
     while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
     while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
 

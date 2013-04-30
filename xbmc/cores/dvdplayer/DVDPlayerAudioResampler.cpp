@@ -142,10 +142,28 @@ void CDVDPlayerResampler::ResizeSampleBuffer(int nrframes)
 {
   if (m_buffersize < nrframes)
   {
-    m_buffersize = nrframes * 2;
-    m_buffer = (float*)realloc(m_buffer, m_buffersize * m_nrchannels * sizeof(float));
-    m_ptsbuffer = (double*)realloc(m_ptsbuffer, m_buffersize * sizeof(double));
-    CLog::Log(LOGDEBUG, "CDVDPlayerResampler: resized buffers to hold %i frames", m_buffersize);
+    int newBufferSize = nrframes * 2;
+    float* newBuffer = (float*)realloc(m_buffer, newBufferSize * m_nrchannels * sizeof(float));
+    if (newBuffer)
+    {
+      m_buffer = newBuffer;
+      m_buffersize = newBufferSize;
+
+      double* newPtsBuffer = (double*)realloc(m_ptsbuffer, m_buffersize * sizeof(double));
+      if (newPtsBuffer)
+      {
+        m_ptsbuffer = newPtsBuffer;
+        CLog::Log(LOGDEBUG, "CDVDPlayerResampler: resized buffers to hold %i frames", m_buffersize);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "ResizeSampleBuffer - %s - failed : could not realloc the buffer m_ptsbuffer", __FUNCTION__);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ResizeSampleBuffer - %s - failed : could not realloc the buffer m_buffer", __FUNCTION__);
+    }
   }
 }
 

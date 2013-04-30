@@ -59,6 +59,10 @@ CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
   /* make enough room for at-least two audio frames */
   m_DecodeSize   = 0;
   m_DecodeBuffer = NULL;
+  m_bSupportsAC3Out = false;
+  m_bSupportsDTSOut = false;
+  m_bSupportsAACOut = false;
+  m_LostSync = false;
 }
 
 CDVDAudioCodecPassthroughFFmpeg::~CDVDAudioCodecPassthroughFFmpeg(void)
