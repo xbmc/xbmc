@@ -672,7 +672,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
       if (musicdatabase.GetGenresByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), genreids))
       {
         CVariant genreidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator genreid = genreids.begin(); genreid != genreids.end(); genreid++)
+        for (std::vector<int>::const_iterator genreid = genreids.begin(); genreid != genreids.end(); ++genreid)
           genreidObj.push_back(*genreid);
 
         item->SetProperty("genreid", genreidObj);
@@ -684,7 +684,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
       if (musicdatabase.GetArtistsByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), true, artistids))
       {
         CVariant artistidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); artistid++)
+        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); ++artistid)
           artistidObj.push_back(*artistid);
 
         item->SetProperty("artistid", artistidObj);
@@ -717,7 +717,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
       if (musicdatabase.GetGenresBySong(item->GetMusicInfoTag()->GetDatabaseId(), genreids))
       {
         CVariant genreidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator genreid = genreids.begin(); genreid != genreids.end(); genreid++)
+        for (std::vector<int>::const_iterator genreid = genreids.begin(); genreid != genreids.end(); ++genreid)
           genreidObj.push_back(*genreid);
 
         item->SetProperty("genreid", genreidObj);
@@ -729,7 +729,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
       if (musicdatabase.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artistids))
       {
         CVariant artistidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); artistid++)
+        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); ++artistid)
           artistidObj.push_back(*artistid);
 
         item->SetProperty("artistid", artistidObj);
@@ -741,7 +741,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
       if (musicdatabase.GetArtistsByAlbum(item->GetMusicInfoTag()->GetAlbumId(), true, albumartistids))
       {
         CVariant albumartistidObj(CVariant::VariantTypeArray);
-        for (std::vector<int>::const_iterator albumartistid = albumartistids.begin(); albumartistid != albumartistids.end(); albumartistid++)
+        for (std::vector<int>::const_iterator albumartistid = albumartistids.begin(); albumartistid != albumartistids.end(); ++albumartistid)
           albumartistidObj.push_back(*albumartistid);
 
         item->SetProperty("albumartistid", albumartistidObj);

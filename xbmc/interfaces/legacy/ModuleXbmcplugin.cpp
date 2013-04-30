@@ -46,7 +46,7 @@ namespace XBMCAddon
     {
       CFileItemList fitems;
       for (std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >::const_iterator item = items.begin();
-           item < items.end(); item++ )
+           item < items.end(); ++item )
       {
         const Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool>* pItem = &(*item);
         const String& url = pItem->first();

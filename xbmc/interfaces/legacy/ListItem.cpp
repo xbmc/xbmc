@@ -251,7 +251,7 @@ namespace XBMCAddon
 
       if (strcmpi(type, "video") == 0)
       {
-        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); it++)
+        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           CStdString key = it->first;
           key.ToLower();
@@ -379,7 +379,7 @@ namespace XBMCAddon
       }
       else if (strcmpi(type, "music") == 0)
       {
-        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); it++)
+        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           CStdString key = it->first;
 
@@ -442,7 +442,7 @@ namespace XBMCAddon
       }
       else if (strcmpi(type,"pictures") == 0)
       {
-        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); it++)
+        for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           CStdString key = it->first;
           key.ToLower();
@@ -480,7 +480,7 @@ namespace XBMCAddon
       if (strcmpi(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
-        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); it++)
+        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
           const String& key = it->first;
           const CStdString value(it->second.c_str());
@@ -501,7 +501,7 @@ namespace XBMCAddon
       else if (strcmpi(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
-        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); it++)
+        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
           const String& key = it->first;
           const String& value = it->second;
@@ -518,7 +518,7 @@ namespace XBMCAddon
       else if (strcmpi(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
-        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); it++)
+        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
           const String& key = it->first;
           const String& value = it->second;
@@ -534,7 +534,7 @@ namespace XBMCAddon
       throw (ListItemException)
     {
       int itemCount = 0;
-      for (std::vector<Tuple<String,String> >::const_iterator iter = items.begin(); iter < items.end(); iter++, itemCount++)
+      for (std::vector<Tuple<String,String> >::const_iterator iter = items.begin(); iter < items.end(); ++iter, ++itemCount)
       {
         Tuple<String,String> tuple = *iter;
         if (tuple.GetNumValuesSet() != 2)
