@@ -107,7 +107,7 @@
 			<description>control area</description>
 			<posx>30</posx>
 			<posy>230</posy>
-			<width>640</width>
+			<width>610</width>
 			<height>265</height>
 			<itemgap>5</itemgap>
 			<pagecontrol>60</pagecontrol>
@@ -115,6 +115,21 @@
 			<onright>60</onright>
 			<onup>28</onup>
 			<ondown>28</ondown>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>645</posx>
+			<posy>230</posy>
+			<width>25</width>
+			<height>265</height>
+			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>ScrollBarNib.png</textureslidernib>
+			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+			<onleft>5</onleft>
+			<onright>28</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
