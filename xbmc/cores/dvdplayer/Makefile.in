@@ -12,7 +12,6 @@ SRCS += DVDOverlayRenderer.cpp
 SRCS += DVDPerformanceCounter.cpp
 SRCS += DVDPlayer.cpp
 SRCS += DVDPlayerAudio.cpp
-SRCS += DVDPlayerAudioResampler.cpp
 SRCS += DVDPlayerSubtitle.cpp
 SRCS += DVDPlayerTeletext.cpp
 SRCS += DVDPlayerVideo.cpp
