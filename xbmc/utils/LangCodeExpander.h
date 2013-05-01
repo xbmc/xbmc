@@ -28,11 +28,27 @@ class CLangCodeExpander
 {
 public:
 
+  enum LANGFORMATS
+  {
+    ISO_639_1,
+    ISO_639_2,
+    ENGLISH_NAME
+  };
+
   CLangCodeExpander(void);
   ~CLangCodeExpander(void);
 
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 2-Char (ISO 639-1) code.  
+  *   \param[out] code The 2-Char language code of the given language lang.
+  *   \param[in] lang The language that should be converted.
+  *   \return true if the conversion succeeded, false otherwise. 
+  */ 
+  bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang);
 #ifdef TARGET_WINDOWS
   bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
   bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
@@ -50,12 +66,26 @@ public:
   void Clear();
 protected:
 
+  /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
+  *          to its string representation.
+  *   \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
+  *   \param[out] ret The string representation of the given language code code.
+  */ 
+  void CodeToString(long code, CStdString& ret);
 
   typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
 
   bool LookupInDb(CStdString& desc, const CStdString& code);
   bool LookupInMap(CStdString& desc, const CStdString& code);
+
+  /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,
+  *          code of the given english language name.
+  *   \param[in] desc The english language name for which a code is looked for.
+  *   \param[out] code The ISO 639-1, ISO 639-2/T, or ISO 639-2/B code of the given language desc.
+  *   \return true if the a code was found, false otherwise.
+  */ 
+  bool ReverseLookup(const CStdString& desc, CStdString& code);
 };
 
 extern CLangCodeExpander g_LangCodeExpander;

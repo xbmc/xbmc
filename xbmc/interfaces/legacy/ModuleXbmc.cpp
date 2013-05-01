@@ -52,6 +52,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/LangCodeExpander.h"
 
 #include "CallbackHandler.h"
 #include "AddonUtils.h"
@@ -180,10 +181,54 @@ namespace XBMCAddon
       return g_guiSettings.GetString("lookandfeel.skin");
     }
 
-    String getLanguage()
+    String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       TRACE;
-      return g_guiSettings.GetString("locale.language");
+      CStdString lang = g_guiSettings.GetString("locale.language");
+
+      switch (format)
+      {
+      case CLangCodeExpander::ENGLISH_NAME:
+        {
+          if (region)
+          {
+            CStdString region = "-" + g_langInfo.GetCurrentRegion();
+            return (lang += region).c_str();
+          }
+          return lang.c_str();
+        }
+      case CLangCodeExpander::ISO_639_1:
+        {
+          CStdString langCode;
+          g_LangCodeExpander.ConvertToTwoCharCode(langCode, lang);
+          if (region)
+          {
+            CStdString region = g_langInfo.GetRegionLocale();
+            CStdString region2Code;
+            g_LangCodeExpander.ConvertToTwoCharCode(region2Code, region);
+            region2Code = "-" + region2Code;
+            return (langCode += region2Code).c_str();
+          }
+          return langCode.c_str();
+        }
+      case CLangCodeExpander::ISO_639_2:
+        {
+          CStdString langCode;
+          g_LangCodeExpander.ConvertToThreeCharCode(langCode, lang);
+          if (region)
+          {
+            CStdString region = g_langInfo.GetRegionLocale();
+            CStdString region3Code;
+            g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region, true);
+            region3Code = "-" + region3Code;
+            return (langCode += region3Code).c_str();
+          }
+
+          return langCode.c_str();
+        }
+      default:
+        return "";
+      }
     }
 
     String getIPAddress()
@@ -481,6 +526,11 @@ namespace XBMCAddon
     // render capture flags
     int getCAPTURE_FLAG_CONTINUOUS() { return (int)CAPTUREFLAG_CONTINUOUS; }
     int getCAPTURE_FLAG_IMMEDIATELY() { return (int)CAPTUREFLAG_IMMEDIATELY; }
+
+    // language string formats
+    int getISO_639_1() { return CLangCodeExpander::ISO_639_1; } 
+    int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
+    int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
     const int lLOGNOTICE = LOGNOTICE;
   }
