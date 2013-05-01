@@ -26,6 +26,7 @@
 #include "guilib/DirtyRegion.h"
 #include <tinyxml.h>
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
@@ -1204,10 +1205,10 @@ CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
   return NULL;
 }
 
-bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
+bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGrid /* = false */)
 {
   /* point has already had origin set to m_posX, m_posY */
-  if (!m_focusedProgrammeLayout || !m_programmeLayout)
+  if (!m_focusedProgrammeLayout || !m_programmeLayout || (justGrid && point.x < 0))
     return false;
 
   int channel = (int)(point.y / m_channelHeight);
@@ -1218,6 +1219,10 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   if (channel < 0) channel = 0;
   if (block > m_blocksPerPage) block = m_blocksPerPage - 1;
   if (block < 0) block = 0;
+
+  // bail if block isn't occupied
+  if (!m_gridIndex[channel + m_channelOffset][block + m_blockOffset].item)
+    return false;
 
   SetChannel(channel);
   SetBlock(block);
@@ -1243,6 +1248,40 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
   case ACTION_MOUSE_WHEEL_DOWN:
     OnMouseWheel(1, point);
     return EVENT_RESULT_HANDLED;
+  case ACTION_GESTURE_BEGIN:
+    {
+      // we want exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+      SendWindowMessage(msg);
+      return EVENT_RESULT_HANDLED;
+    }
+  case ACTION_GESTURE_END:
+    {
+      // we're done with exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+      SendWindowMessage(msg);
+      ScrollToChannelOffset(MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
+      ScrollToBlockOffset(MathUtils::round_int(m_programmeScrollOffset / m_blockSize));
+      return EVENT_RESULT_HANDLED;
+    }
+  case ACTION_GESTURE_PAN:
+    {
+      if (m_orientation == VERTICAL)
+      {
+        m_programmeScrollOffset -= event.m_offsetX;
+        m_channelScrollOffset -= event.m_offsetY;
+      }
+      else
+      {
+        m_channelScrollOffset -= event.m_offsetX;
+        m_programmeScrollOffset -= event.m_offsetY;
+      }
+
+      m_channelOffset = MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation));
+      m_blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+      ValidateOffset();
+      return EVENT_RESULT_HANDLED;
+    }
   default:
     return EVENT_RESULT_UNHANDLED;
   }
@@ -1251,7 +1290,7 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
 bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight));
+  SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight), false);
   return CGUIControl::OnMouseOver(point);
 }
 
@@ -1528,25 +1567,25 @@ void CGUIEPGGridContainer::ValidateOffset()
   if (!m_programmeLayout)
     return;
 
-  if (m_channelOffset > m_channels - m_channelsPerPage)
+  if (m_channelOffset > m_channels - m_channelsPerPage || m_channelScrollOffset > (m_channels - m_channelsPerPage) * m_channelHeight)
   {
     m_channelOffset = m_channels - m_channelsPerPage;
     m_channelScrollOffset = m_channelOffset * m_channelHeight;
   }
 
-  if (m_channelOffset < 0)
+  if (m_channelOffset < 0 || m_channelScrollOffset < 0)
   {
     m_channelOffset = 0;
     m_channelScrollOffset = 0;
   }
 
-  if (m_blockOffset > m_blocks - m_blocksPerPage)
+  if (m_blockOffset > m_blocks - m_blocksPerPage || m_programmeScrollOffset > (m_blocks - m_blocksPerPage) * m_blockSize)
   {
     m_blockOffset = m_blocks - m_blocksPerPage;
     m_programmeScrollOffset = m_blockOffset * m_blockSize;
   }
 
-  if (m_blockOffset < 0)
+  if (m_blockOffset < 0 || m_programmeScrollOffset < 0)
   {
     m_blockOffset = 0;
     m_programmeScrollOffset = 0;
