@@ -43,7 +43,7 @@ bool CMusicInfoTagLoaderDatabase::Load(const CStdString& strFileName, CMusicInfo
   XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strFileName,param);
 
   CSong song;
-  if (database.GetSongById(param.GetSongId(),song))
+  if (database.GetSong(param.GetSongId(),song))
     tag.SetSong(song);
 
   database.Close();

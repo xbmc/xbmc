@@ -272,7 +272,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                     if (params.GetSongId() >= 0 ) {
                         CSong song;
-                        if (db.GetSongById(params.GetSongId(), song))
+                        if (db.GetSong(params.GetSongId(), song))
                             item->GetMusicInfoTag()->SetSong(song);
                     }
                     else if (params.GetAlbumId() >= 0 ) {

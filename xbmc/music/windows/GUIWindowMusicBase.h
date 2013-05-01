@@ -85,15 +85,14 @@ protected:
   void OnInfoAll(int iItem, bool bCurrent=false, bool refresh=false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
-  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, MUSIC_GRABBER::CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection);
-  bool FindArtistInfo(const CStdString& strArtist, MUSIC_GRABBER::CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection);
+  bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);
+  bool FindArtistInfo(const CFileItem* artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection);
 
-  void ShowAlbumInfo(const CAlbum& album, const CStdString& path, bool bShowInfo = true);
-  void ShowArtistInfo(const CArtist& artist, const CStdString& path, bool bShowInfo = true);
+  void ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
+  void ShowArtistInfo(const CFileItem *pItem, bool bShowInfo = true);
   void ShowSongInfo(CFileItem* pItem);
   void UpdateThumb(const CAlbum &album, const CStdString &path);
 
-  void OnManualAlbumInfo();
   void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const CStdString& strPlayList);

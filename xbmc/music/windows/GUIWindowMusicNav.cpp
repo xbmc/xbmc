@@ -148,11 +148,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         UpdateButtons();
       }
-      else if (iControl == CONTROL_BTNMANUALINFO)
-      {
-        OnManualAlbumInfo();
-        return true;
-      }
       else if (iControl == CONTROL_SEARCH)
       {
         if (m_searchWithEdit)

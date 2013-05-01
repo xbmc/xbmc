@@ -418,11 +418,11 @@ namespace XBMCAddon
           else if (key == "musicbrainztrackid")
             item->GetMusicInfoTag()->SetMusicBrainzTrackID(value);
           else if (key == "musicbrainzartistid")
-            item->GetMusicInfoTag()->SetMusicBrainzArtistID(value);
+            item->GetMusicInfoTag()->SetMusicBrainzArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
           else if (key == "musicbrainzalbumid")
             item->GetMusicInfoTag()->SetMusicBrainzAlbumID(value);
           else if (key == "musicbrainzalbumartistid")
-            item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(value);
+            item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
           else if (key == "musicbrainztrmid")
             item->GetMusicInfoTag()->SetMusicBrainzTRMID(value);
           else if (key == "comment")

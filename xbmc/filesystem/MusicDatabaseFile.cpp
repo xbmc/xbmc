@@ -54,7 +54,7 @@ CStdString CMusicDatabaseFile::TranslateUrl(const CURL& url)
   long idSong=atol(strFileName.c_str());
 
   CSong song;
-  if (!musicDatabase.GetSongById(idSong, song))
+  if (!musicDatabase.GetSong(idSong, song))
     return "";
 
   CStdString strExtensionFromDb;
