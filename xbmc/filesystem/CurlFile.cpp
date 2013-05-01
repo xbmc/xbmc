@@ -901,11 +901,11 @@ bool CCurlFile::Open(const CURL& url)
   map<string, EndTime>::iterator it = s_hostLastAccessTime.find(url2.GetHostName());
   if (it != s_hostLastAccessTime.end())
   {
+    s_hostLastAccessTime.erase(it);
     if (!it->second.IsTimePast()) {
       CLog::Log(LOGDEBUG, "CurlFile::Open(%p) rate limiting queries to '%s' to avoid saturating, waiting %dmsec", (void*)this, it->first.c_str(), it->second.MillisLeft());
       Sleep(it->second.MillisLeft());
     }
-    s_hostLastAccessTime.erase(it);
   }
   s_hostLastAccessTime.insert(make_pair(url2.GetHostName(), EndTime(1500)));
   lock.Leave();
