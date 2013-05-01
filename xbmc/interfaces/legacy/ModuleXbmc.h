@@ -404,6 +404,21 @@ namespace XBMCAddon
      */  
     void audioResume();
 
+    /**
+    * convertLanguage(language, format) -- Returns the given language converted to the given format as a string.
+    *
+    * language: string either as name in English, two letter code (ISO 639-1), or three letter code (ISO 639-2/T(B)
+    *
+    * format: format of the returned language string
+    *         xbmc.ISO_639_1: two letter code as defined in ISO 639-1
+    *         xbmc.ISO_639_2: three letter code as defined in ISO 639-2/T or ISO 639-2/B
+    *         xbmc.ENGLISH_NAME: full language name in English (default)
+    *
+    * example:
+    *   - language = xbmc.convertLanguage(English, xbmc.ISO_639_2)
+    */
+    String convertLanguage(const char* language, int format); 
+
     SWIG_CONSTANT_FROM_GETTER(int,SERVER_WEBSERVER);
     SWIG_CONSTANT_FROM_GETTER(int,SERVER_AIRPLAYSERVER);
     SWIG_CONSTANT_FROM_GETTER(int,SERVER_UPNPSERVER);
