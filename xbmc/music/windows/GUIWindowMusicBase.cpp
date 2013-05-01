@@ -359,20 +359,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
 }
 
-void CGUIWindowMusicBase::OnManualAlbumInfo()
-{
-  CAlbum album;
-  album.idAlbum = -1; // not in the db
-  if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false))
-    return;
-
-  CStdString strArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strArtist, g_localizeStrings.Get(16025), false))
-    return;
-
-//  ShowAlbumInfo(album, true); FIXME
-}
-
 void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo /* = true */)
 {
   CQueryParams params;
