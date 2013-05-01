@@ -29,6 +29,7 @@
 #ifdef _DEBUG
 #include "utils/TimeUtils.h"
 #endif
+#include "threads/SystemClock.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "URL.h"
@@ -298,6 +299,17 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
     return emptyTexture;
   }
 
+  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end(); i++)
+  {
+    CTextureMap* pMap = i->first;
+    if (pMap->GetName() == strTextureName)
+    {
+      m_vecTextures.push_back(pMap);
+      m_unusedTextures.erase(i);
+      return pMap->GetTexture();
+    }
+  }
+
   if (checkBundleOnly && bundle == -1)
     return emptyTexture;
 
@@ -439,7 +451,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.push_back(pMap);
+        m_unusedTextures.push_back(make_pair(pMap, XbmcThreads::SystemClockMillis()));
         i = m_vecTextures.erase(i);
       }
       return;
@@ -449,12 +461,20 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
   CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
 
-void CGUITextureManager::FreeUnusedTextures()
+void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 {
+  unsigned int currFrameTime = XbmcThreads::SystemClockMillis();
   CSingleLock lock(g_graphicsContext);
-  for (ivecTextures i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
-    delete *i;
-  m_unusedTextures.clear();
+  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end();)
+  {
+    if (currFrameTime - i->second >= timeDelay)
+    {
+      delete i->first;
+      i = m_unusedTextures.erase(i);
+    }
+    else
+      i++;
+  }
 
 #if defined(HAS_GL) || defined(HAS_GLES)
   for (unsigned int i = 0; i < m_unusedHwTextures.size(); ++i)
