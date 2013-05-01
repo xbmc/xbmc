@@ -40,6 +40,18 @@ class IAEPacketizer;
 #define AE_SOUND_IDLE   1 /* only play sounds while no streams are running */
 #define AE_SOUND_ALWAYS 2 /* always play sounds */
 
+enum AEQuality:int
+{
+  AE_QUALITY_UNKNOWN  = -1,
+  AE_QUALITY_DEFAULT  =  0,
+  AE_QUALITY_SIMPLEST = 10,
+  AE_QUALITY_FAST     = 20,
+  AE_QUALITY_STANDARD = 30,
+  AE_QUALITY_BETTER   = 40,
+  AE_QUALITY_BEST     = 50,
+  AE_QUALITY_INSANE   = 100
+};
+
 /**
  * IAE Interface
  */
