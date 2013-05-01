@@ -23,6 +23,8 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "Texture.h"
+#include "guilib/GUIWindowManager.h"
 
 using namespace std;
 
@@ -83,6 +85,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_allocateDynamically = false;
   m_isAllocated = NO;
   m_invalid = true;
+  m_batchDraw.texture = NULL;
 }
 
 CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
@@ -99,7 +102,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_aspect = right.m_aspect;
 
   m_allocateDynamically = right.m_allocateDynamically;
-
+  m_batchDraw = right.m_batchDraw;
   // defaults
   m_vertex.SetRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
 
@@ -172,15 +175,13 @@ void CGUITextureBase::Render()
       return;
   }
 
+  m_batchDraw.vertices.clear();
+
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
   color_t color = m_diffuseColor;
   if (m_alpha != 0xFF) color = MIX_ALPHA(m_alpha, m_diffuseColor);
   color = g_graphicsContext.MergeAlpha(color);
-
-  // setup our renderer
-  Begin(color);
-
   // compute the texture coordinates
   float u1, u2, u3, v1, v2, v3;
   u1 = m_info.border.x1;
@@ -229,9 +230,18 @@ void CGUITextureBase::Render()
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
   }
 
-  // close off our renderer
-  End();
-
+  m_batchDraw.texture=m_texture.m_textures[m_currentFrame];
+  m_batchDraw.color = color;
+  m_batchDraw.dirty = true;
+  if (m_diffuse.size())
+    m_batchDraw.diffuseTexture=m_diffuse.m_textures[0];
+  else
+    m_batchDraw.diffuseTexture=NULL;
+  if (m_batchDraw.vertices.size())
+  {
+    CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
+    sceneGraph->Add(m_batchDraw);
+  }
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
     g_graphicsContext.RestoreClipRegion();
 }
@@ -259,27 +269,94 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     OrientateTexture(diffuse, m_diffuseU, m_diffuseV, m_info.orientation);
   }
 
-  float x[4], y[4], z[4];
-
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 
-  x[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
-  y[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  z[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  x[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
-  y[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  z[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  x[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
-  y[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  z[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  x[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
-  y[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
-  z[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  PackedVertex packedvertex[4];
 
-  if (y[2] == y[0]) y[2] += 1.0f; if (x[2] == x[0]) x[2] += 1.0f;
-  if (y[3] == y[1]) y[3] += 1.0f; if (x[3] == x[1]) x[3] += 1.0f;
+  packedvertex[0].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  packedvertex[0].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  packedvertex[0].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  packedvertex[1].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  packedvertex[1].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  packedvertex[1].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  packedvertex[2].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  packedvertex[2].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  packedvertex[2].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  packedvertex[3].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  packedvertex[3].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  packedvertex[3].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-  Draw(x, y, z, texture, diffuse, orientation);
+  if (packedvertex[2].y == packedvertex[0].y) packedvertex[2].y += 1.0f;
+  if (packedvertex[3].x == packedvertex[0].x) packedvertex[2].x += 1.0f;
+  if (packedvertex[3].y == packedvertex[1].y) packedvertex[3].y += 1.0f;
+  if (packedvertex[3].x == packedvertex[1].x) packedvertex[3].x += 1.0f;
+  // Setup texture coordinates
+  //TopLeft
+  packedvertex[0].u1 = texture.x1;
+  packedvertex[0].v1 = texture.y1;
+  //TopRight
+  if (orientation & 4)
+  {
+    packedvertex[1].u1 = texture.x1;
+    packedvertex[1].v1 = texture.y2;
+  }
+  else
+  {
+    packedvertex[1].u1 = texture.x2;
+    packedvertex[1].v1 = texture.y1;
+  }
+  //BottomRight
+  packedvertex[2].u1 = texture.x2;
+  packedvertex[2].v1 = texture.y2;
+  //BottomLeft
+  if (orientation & 4)
+  {
+    packedvertex[3].u1 = texture.x2;
+    packedvertex[3].v1 = texture.y1;
+  }
+  else
+  {
+    packedvertex[3].u1 = texture.x1;
+    packedvertex[3].v1 = texture.y2;
+  }
+
+  if (m_diffuse.size())
+  {
+    //TopLeft
+    packedvertex[0].u2 = diffuse.x1;
+    packedvertex[0].v2 = diffuse.y1;
+    //TopRight
+    if (m_info.orientation & 4)
+    {
+      packedvertex[1].u2 = diffuse.x1;
+      packedvertex[1].v2 = diffuse.y2;
+    }
+    else
+    {
+      packedvertex[1].u2 = diffuse.x2;
+      packedvertex[1].v2 = diffuse.y1;
+    }
+    //BottomRight
+    packedvertex[2].u2 = diffuse.x2;
+    packedvertex[2].v2 = diffuse.y2;
+    //BottomLeft
+    if (m_info.orientation & 4)
+    {
+      packedvertex[3].u2 = diffuse.x2;
+      packedvertex[3].v2 = diffuse.y1;
+    }
+    else
+    {
+      packedvertex[3].u2 = diffuse.x1;
+      packedvertex[3].v2 = diffuse.y2;
+    }
+  }
+
+  m_batchDraw.vertices.push_back(packedvertex[0]);
+  m_batchDraw.vertices.push_back(packedvertex[1]);
+  m_batchDraw.vertices.push_back(packedvertex[2]);
+  m_batchDraw.vertices.push_back(packedvertex[3]);
+
 }
 
 bool CGUITextureBase::AllocResources()
@@ -351,9 +428,6 @@ bool CGUITextureBase::AllocResources()
   }
 
   CalculateSize();
-
-  // call our implementation
-  Allocate();
 
   return changed;
 }
@@ -471,10 +545,8 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
 
-  // call our implementation
-  Free();
-
   m_isAllocated = NO;
+  m_batchDraw.texture = NULL;
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
