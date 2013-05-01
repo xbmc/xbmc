@@ -532,7 +532,8 @@ void CSoftAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.channels"     ||
       setting == "audiooutput.useexclusivemode"  ||
       setting == "audiooutput.multichannellpcm"  ||
-      setting == "audiooutput.stereoupmix")
+      setting == "audiooutput.stereoupmix"       ||
+      setting == "audiooutput.resamplequality")
   {
     OpenSink();
   }
@@ -555,6 +556,8 @@ void CSoftAE::LoadSettings()
   m_stereoUpmix = g_guiSettings.GetBool("audiooutput.stereoupmix");
   if (m_stereoUpmix)
     CLog::Log(LOGINFO, "CSoftAE::LoadSettings - Stereo upmix is enabled");
+
+  m_resampleQuality = (enum AEQuality) g_guiSettings.GetInt("audiooutput.resamplequality");
 
   /* load the configuration */
   m_stdChLayout = AE_CH_LAYOUT_2_0;
@@ -776,7 +779,7 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
     ASSERT(encodedSampleRate);
 
   CSingleLock streamLock(m_streamLock);
-  CSoftAEStream *stream = new CSoftAEStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
+  CSoftAEStream *stream = new CSoftAEStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options, m_resampleQuality);
   m_newStreams.push_back(stream);
   streamLock.Leave();
   // this is really needed here

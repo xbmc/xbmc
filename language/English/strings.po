@@ -12043,8 +12043,52 @@ msgctxt "#34123"
 msgid "Never"
 msgstr ""
 
-#empty strings from id 34124 to 34200
-#34124-34200 reserved for future use
+#empty strings from id 34124 to 34129
+#34124-34129 reserved for future use
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34130"
+msgid "Resampling quality"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34131"
+msgid "Simplest"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34132"
+msgid "Fast"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34133"
+msgid "Standard"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34134"
+msgid "Better"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34135"
+msgid "Best"
+msgstr ""
+
+#. Resampling quality
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#34136"
+msgid "Insane"
+msgstr ""
+
+#empty strings from id 34137 to 34200
+#34137-34200 reserved for future use
 
 #: xbmc\PlayListPlayer.cpp
 msgctxt "#34201"

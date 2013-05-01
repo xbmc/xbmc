@@ -134,6 +134,7 @@ private:
   std::string m_deviceFriendlyName;
   bool m_audiophile;
   bool m_stereoUpmix;
+  AEQuality m_resampleQuality;
 
   /* internal vars */
   bool             m_running, m_reOpen;
