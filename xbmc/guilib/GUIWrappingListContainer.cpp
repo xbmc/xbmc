@@ -22,6 +22,7 @@
 #include "FileItem.h"
 #include "Key.h"
 #include "utils/log.h"
+#include "GUIListDragHandler.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
@@ -249,4 +250,45 @@ void CGUIWrappingListContainer::SetPageControlRange()
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetNumItems());
     SendWindowMessage(msg);
   }
+}
+
+int CGUIWrappingListContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint) const
+{
+  if (!m_focusedLayout || !m_layout)
+    return -1;
+  
+  int row = 0;
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
+  {
+    const CGUIListItemLayout *layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
+    if (pos < layout->Size(m_orientation) && row + GetOffset() < m_items.Size())
+    { // found correct "row" -> check horizontal
+      if (!InsideLayout(layout, point))
+        return -1;
+      
+      if (itemPoint)
+        *itemPoint = m_orientation == VERTICAL ? CPoint(point.x, pos) : CPoint(pos, point.y);
+      return row;
+    }
+    row++;
+    pos -= layout->Size(m_orientation);
+  }
+  return -1;
+}
+
+int CGUIWrappingListContainer::GetDropPositionFromPoint(const CPoint& point) 
+{
+  int cursor = CorrectOffset(GetOffset(), GetCursorFromPoint(point));
+  return cursor;
+}
+
+DragHintInfo CGUIWrappingListContainer::GetDragHintInfo(int position)
+{
+  return CGUIBaseContainer::GetDragHintInfo(position);
+}
+
+CRect CGUIWrappingListContainer::GetItemBox(int position)
+{
+  return CGUIBaseContainer::GetItemBox(position);
 }
