@@ -144,7 +144,7 @@ void CGUIDialogTeletext::OnInitWindow()
     Close();
   }
 
-  m_pTxtTexture = new CTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
+  m_pTxtTexture = new CBaseTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
   if (!m_pTxtTexture)
   {
     CLog::Log(LOGERROR, "%s: failed to create texture", __FUNCTION__);

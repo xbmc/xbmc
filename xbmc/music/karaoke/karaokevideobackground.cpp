@@ -169,7 +169,7 @@ bool KaraokeVideoBackground::Start( const CStdString& filename )
   }
   
   // Allocate the texture
-  m_texture = new CTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
+  m_texture = new CBaseTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
   
   if ( !m_texture )
   {
