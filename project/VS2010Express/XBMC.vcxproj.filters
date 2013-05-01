@@ -363,9 +363,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.cpp">
-      <Filter>cores\dvdplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
@@ -3054,9 +3051,6 @@
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
-      <Filter>cores\dvdplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.h">
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.h">
