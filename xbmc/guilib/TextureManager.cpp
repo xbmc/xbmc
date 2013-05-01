@@ -204,7 +204,7 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
   m_texture.Add(texture, delay);
 
   if (texture)
-    m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
+    m_memUsage += sizeof(CBaseTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
 }
 
 /************************************************************************/
@@ -366,7 +366,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
       for (int iImage = 0; iImage < iImages; iImage++)
       {
-        CTexture *glTexture = new CTexture();
+        CBaseTexture *glTexture = new CBaseTexture();
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];

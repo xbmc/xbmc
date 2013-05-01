@@ -233,7 +233,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
   }
 
   // create an xbmc texture
-  *ppTexture = new CTexture();
+  *ppTexture = new CBaseTexture();
   (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), frame.HasAlpha(), buffer);
 
   delete[] buffer;
