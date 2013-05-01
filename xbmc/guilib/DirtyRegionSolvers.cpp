@@ -34,14 +34,15 @@ void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionL
 
 void CFillViewportAlwaysRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
-  CDirtyRegion unifiedRegion(g_graphicsContext.GetViewWindow());
-  output.push_back(unifiedRegion);
+  CRect screen(0,0,(float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+  output.push_back(CDirtyRegion(screen));
 }
 
 void CFillViewportOnChangeRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
+  CRect screen(0,0,(float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
   if (input.size() > 0)
-    output.assign(1,g_graphicsContext.GetViewWindow());
+    output.assign(1,CDirtyRegion(screen));
 }
 
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()
