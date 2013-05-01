@@ -76,6 +76,7 @@ class IPlayer;
 class CWebServer;
 class CHTTPImageHandler;
 class CHTTPVfsHandler;
+class CHTTPSpecialHandler;
 #ifdef HAS_JSONRPC
 class CHTTPJsonRpcHandler;
 #endif
@@ -295,6 +296,7 @@ public:
   CWebServer& m_WebServer;
   CHTTPImageHandler& m_httpImageHandler;
   CHTTPVfsHandler& m_httpVfsHandler;
+  CHTTPSpecialHandler& m_httpSpecialHandler;
 #ifdef HAS_JSONRPC
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
 #endif
