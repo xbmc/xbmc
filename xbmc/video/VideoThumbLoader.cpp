@@ -83,7 +83,11 @@ bool CThumbExtractor::DoWork()
     return false;
 
   if (URIUtils::IsRemote(m_item.GetPath()) && !URIUtils::IsOnLAN(m_item.GetPath()))
-    return false;
+  {
+    // A quasi internet filesystem like webdav is generally fast enough for extracting stuff
+    if (!URIUtils::IsDAV(m_item.GetPath()))
+      return false;
+  }
 
   bool result=false;
   if (m_thumb)
