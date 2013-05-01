@@ -21,25 +21,24 @@
 #include "Song.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Variant.h"
+#include "FileItem.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
 
-CSong::CSong(CMusicInfoTag& tag)
+CSong::CSong(CFileItem& item)
 {
+  CMusicInfoTag& tag = *item.GetMusicInfoTag();
   SYSTEMTIME stTime;
   tag.GetReleaseDate(stTime);
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
-  strFileName = tag.GetURL();
   artist = tag.GetArtist();
   strAlbum = tag.GetAlbum();
   albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
-  strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
-  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
-  strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
-  strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   strComment = tag.GetComment();
   rating = tag.GetRating();
   iYear = stTime.wYear;
@@ -47,9 +46,10 @@ CSong::CSong(CMusicInfoTag& tag)
   iDuration = tag.GetDuration();
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
-  strThumb = "";
-  iStartOffset = 0;
-  iEndOffset = 0;
+  strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
+  strThumb = item.GetUserMusicThumb(true);
+  iStartOffset = item.m_lStartOffset;
+  iEndOffset = item.m_lEndOffset;
   idSong = -1;
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
@@ -74,10 +74,6 @@ void CSong::Serialize(CVariant& value) const
   value["track"] = iTrack;
   value["year"] = iYear;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
-  value["musicbrainzartistid"] = strMusicBrainzArtistID;
-  value["musicbrainzalbumid"] = strMusicBrainzAlbumID;
-  value["musicbrainzalbumartistid"] = strMusicBrainzAlbumArtistID;
-  value["musicbrainztrmid"] = strMusicBrainzTRMID;
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
@@ -96,10 +92,6 @@ void CSong::Clear()
   genre.clear();
   strThumb.Empty();
   strMusicBrainzTrackID.Empty();
-  strMusicBrainzArtistID.Empty();
-  strMusicBrainzAlbumID.Empty();
-  strMusicBrainzAlbumArtistID.Empty();
-  strMusicBrainzTRMID.Empty();
   strComment.Empty();
   rating = '0';
   iTrack = 0;

@@ -27,7 +27,7 @@
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 #include "music/tags/MusicInfoTag.h" // for EmbeddedArt
-
+#include "Artist.h"
 #include <map>
 #include <vector>
 
@@ -44,6 +44,7 @@ public:
   CStdString strGenre;
 };
 
+class CFileItem;
 
 /*!
  \ingroup music
@@ -54,7 +55,7 @@ class CSong: public ISerializable
 {
 public:
   CSong() ;
-  CSong(MUSIC_INFO::CMusicInfoTag& tag);
+  CSong(CFileItem& item);
   virtual ~CSong(){};
   void Clear() ;
   virtual void Serialize(CVariant& value) const;
@@ -82,16 +83,13 @@ public:
   CStdString strFileName;
   CStdString strTitle;
   std::vector<std::string> artist;
+  VECARTISTCREDITS artistCredits;
   CStdString strAlbum;
   std::vector<std::string> albumArtist;
   std::vector<std::string> genre;
   CStdString strThumb;
   MUSIC_INFO::EmbeddedArtInfo embeddedArt;
   CStdString strMusicBrainzTrackID;
-  CStdString strMusicBrainzArtistID;
-  CStdString strMusicBrainzAlbumID;
-  CStdString strMusicBrainzAlbumArtistID;
-  CStdString strMusicBrainzTRMID;
   CStdString strComment;
   char rating;
   int iTrack;

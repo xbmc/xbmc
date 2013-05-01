@@ -26,6 +26,7 @@
 #include "settings/GUISettings.h"
 #include "File.h"
 
+#include <map>
 #include <vector>
 #include <climits>
 
@@ -42,9 +43,12 @@
 #include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace XCURL;
+using namespace XbmcThreads;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
@@ -59,6 +63,9 @@ curl_proxytype proxyType2CUrlProxyType[] = {
   CURLPROXY_SOCKS5,
   CURLPROXY_SOCKS5_HOSTNAME,
 };
+
+static CCriticalSection s_hostMapLock;
+static map<string, EndTime> s_hostLastAccessTime; // used to rate-limit queries by host/domain
 
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
@@ -888,6 +895,20 @@ bool CCurlFile::Open(const CURL& url)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
+
+  // Rate-limit queries per domain to 1 per 2s
+  CSingleLock lock(s_hostMapLock);
+  map<string, EndTime>::iterator it = s_hostLastAccessTime.find(url2.GetHostName());
+  if (it != s_hostLastAccessTime.end())
+  {
+    if (!it->second.IsTimePast()) {
+      CLog::Log(LOGDEBUG, "CurlFile::Open(%p) rate limiting queries to '%s' to avoid saturating, waiting %dmsec", (void*)this, it->first.c_str(), it->second.MillisLeft());
+      Sleep(it->second.MillisLeft());
+    }
+    s_hostLastAccessTime.erase(it);
+  }
+  s_hostLastAccessTime.insert(make_pair(url2.GetHostName(), EndTime(1500)));
+  lock.Leave();
 
   CLog::Log(LOGDEBUG, "CurlFile::Open(%p) %s", (void*)this, m_url.c_str());
 
