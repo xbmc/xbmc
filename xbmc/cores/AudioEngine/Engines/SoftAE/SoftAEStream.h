@@ -36,7 +36,7 @@ class CSoftAEStream : public IAEStream
 {
 protected:
   friend class CSoftAE;
-  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options);
+  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options, enum AEQuality resampleQuality = AE_QUALITY_DEFAULT);
   virtual ~CSoftAEStream();
 
   void Initialize();
@@ -141,6 +141,7 @@ private:
   bool                m_autoStart;
   bool                m_draining;
   CAELimiter          m_limiter;
+  int                 m_samplerateQuality;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;

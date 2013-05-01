@@ -34,7 +34,7 @@
 
 using namespace std;
 
-CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options) :
+CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options, enum AEQuality resampleQuality /*= AE_QUALITY_DEFAULT*/) :
   m_resampleRatio   (1.0  ),
   m_internalRatio   (1.0  ),
   m_convertBuffer   (NULL ),
@@ -65,6 +65,16 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_forceResample         = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused                = (options & AESTREAM_PAUSED) != 0;
   m_autoStart             = (options & AESTREAM_AUTOSTART) != 0;
+  if (resampleQuality >= AE_QUALITY_BEST)
+    m_samplerateQuality = SRC_SINC_BEST_QUALITY;
+  else if (resampleQuality >= AE_QUALITY_STANDARD)
+    m_samplerateQuality = SRC_SINC_MEDIUM_QUALITY;
+  else if (resampleQuality >= AE_QUALITY_FAST)
+    m_samplerateQuality = SRC_SINC_FASTEST;
+  else if (resampleQuality >= AE_QUALITY_SIMPLEST)
+    m_samplerateQuality = SRC_LINEAR;
+  else 
+    m_samplerateQuality = SRC_SINC_MEDIUM_QUALITY; /* Default */
 
   if (m_autoStart)
     m_paused = true;
@@ -189,7 +199,7 @@ void CSoftAEStream::Initialize()
   if (m_resample)
   {
     int err;
-    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelLayout.Count(), &err);
+    m_ssrc                   = src_new(m_samplerateQuality, m_initChannelLayout.Count(), &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_internalRatio          = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.src_ratio     = m_internalRatio;
