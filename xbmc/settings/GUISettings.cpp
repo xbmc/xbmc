@@ -499,6 +499,12 @@ void CGUISettings::Initialize()
     channelLayout.insert(make_pair(34100+layout, layout));
   AddInt(ao, "audiooutput.channels", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.normalizelevels", 346, true);
+  map<int,int> resamplequality;
+  resamplequality.insert(make_pair(34131, AE_QUALITY_SIMPLEST));
+  resamplequality.insert(make_pair(34132, AE_QUALITY_FAST));
+  resamplequality.insert(make_pair(34133, AE_QUALITY_STANDARD));
+  resamplequality.insert(make_pair(34135, AE_QUALITY_BEST));
+  AddInt(ao, "audiooutput.resamplequality", 34130, AE_QUALITY_STANDARD, resamplequality, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
 #if defined(TARGET_DARWIN_IOS)
