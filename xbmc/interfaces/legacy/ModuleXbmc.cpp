@@ -219,7 +219,7 @@ namespace XBMCAddon
           {
             CStdString region = g_langInfo.GetRegionLocale();
             CStdString region3Code;
-            g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region, true);
+            g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region);
             region3Code = "-" + region3Code;
             return (langCode += region3Code).c_str();
           }
