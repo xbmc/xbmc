@@ -5,13 +5,13 @@ Subject: [PATCH 4/4] ffmpeg 1.2 - fixed dvd still frames ended up in internal
  lavf
 
 ---
- lib/ffmpeg/libavformat/utils.c | 2 +-
+ libavformat/utils.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/ffmpeg/libavformat/utils.c b/lib/ffmpeg/libavformat/utils.c
+diff --git a/libavformat/utils.c b/libavformat/utils.c
 index c3bd3d9..72f59d2 100644
---- a/lib/ffmpeg/libavformat/utils.c
-+++ b/lib/ffmpeg/libavformat/utils.c
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
 @@ -706,7 +706,7 @@ no_packet:
  
          if(end || av_log2(pd->buf_size) != av_log2(pd->buf_size - pkt->size)){
