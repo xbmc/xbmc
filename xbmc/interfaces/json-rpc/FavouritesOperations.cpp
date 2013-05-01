@@ -25,8 +25,8 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
-#include "utils\URIUtils.h"
-#include "guilib\WindowIDs.h"
+#include "utils/URIUtils.h"
+#include "guilib/WindowIDs.h"
 #include <vector>
 
 using namespace std;
