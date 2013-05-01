@@ -54,6 +54,7 @@ namespace XBMCAddon
        * line3          : [opt] string or unicode - line #3 text.
        * nolabel        : [opt] label to put on the no button.
        * yeslabel       : [opt] label to put on the yes button.
+       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
        * 
        * *Note, Returns True if 'Yes' was pressed, else False.
        * 
@@ -65,7 +66,8 @@ namespace XBMCAddon
                  const String& line2 = emptyString,
                  const String& line3 = emptyString,
                  const String& nolabel = emptyString,
-                 const String& yeslabel = emptyString) throw (WindowException);
+                 const String& yeslabel = emptyString,
+                 int autoclose = 0) throw (WindowException);
 
       /**
        * select(heading, list) -- Show a select dialog.
