@@ -112,7 +112,7 @@ namespace XBMCAddon
       CApplicationMessenger::Get().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
 
-    void Player::playPlaylist(const PlayList* playlist, bool windowed)
+    void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
     {
       TRACE;
       DelayedCallGuard dc(languageHook);
@@ -127,7 +127,9 @@ namespace XBMCAddon
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
-        CApplicationMessenger::Get().PlayListPlayerPlay();
+        if (startpos > -1)
+          g_playlistPlayer.SetCurrentSong(startpos);
+        CApplicationMessenger::Get().PlayListPlayerPlay(startpos);
       }
       else
         playCurrent(windowed);
