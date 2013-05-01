@@ -29,6 +29,10 @@
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
+#ifdef TARGET_WINDOWS
+#pragma comment(lib, "libsamplerate-0.lib")
+#endif
+
 /* typecast AE to CSoftAE */
 #define AE (*((CSoftAE*)CAEFactory::GetEngine()))
 
