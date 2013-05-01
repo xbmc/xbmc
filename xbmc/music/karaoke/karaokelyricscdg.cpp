@@ -192,7 +192,7 @@ void CKaraokeLyricsCDG::Render()
                    (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right,
                    (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom);
 
-  CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
+  g_Windowing.GetSceneGraph()->DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
 }
 
 void CKaraokeLyricsCDG::cmdMemoryPreset( const char * data )

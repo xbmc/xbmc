@@ -105,7 +105,7 @@ void CGUIDialogTeletext::Render()
   }
 
   color_t color = ((color_t)(teletextFadeAmount * 2.55f) & 0xff) << 24 | 0xFFFFFF;
-  CGUITexture::DrawQuad(m_vertCoords, color, m_pTxtTexture);
+  g_Windowing.GetSceneGraph()->DrawQuad(m_vertCoords, color, m_pTxtTexture);
 
   CGUIDialog::Render();
 }

@@ -147,7 +147,7 @@ void KaraokeVideoBackground::Render()
 
   // We got a frame. Draw it.
   CRect vertCoords((float) m_displayLeft, (float) m_displayTop, (float) m_displayRight, (float) m_displayBottom );
-  CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_texture );
+  g_Windowing.GetSceneGraph()->DrawQuad(vertCoords, 0xffffffff, m_texture );
 }
 
 bool KaraokeVideoBackground::Start( const CStdString& filename )

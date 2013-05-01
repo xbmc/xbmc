@@ -22,6 +22,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
 #include "Application.h"
+#include "windowing/WindowingFactory.h"
 #include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
@@ -62,6 +63,6 @@ void CGUIWindowScreensaverDim::Render()
   color_t color = ((color_t)(m_dimLevel * 2.55f) & 0xff) << 24;
   color = g_graphicsContext.MergeAlpha(color);
   CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-  CGUITexture::DrawQuad(rect, color);
+  g_Windowing.GetSceneGraph()->DrawQuad(rect, color);
   CGUIDialog::Render();
 }
