@@ -26,7 +26,7 @@
  */
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "guilib/gui3d.h"
 
 #ifdef HAS_GL
@@ -83,7 +83,7 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
   CWIN32Util::CheckGLVersion();
 
-  g_guiSettings.SetBool("videoscreen.fakefullscreen", true);
+  CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
 
   return true;
 }

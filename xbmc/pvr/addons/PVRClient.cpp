@@ -19,6 +19,7 @@
  */
 
 #include <vector>
+#include "Application.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
 #include "epg/Epg.h"
@@ -27,8 +28,8 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
 
 using namespace std;
 using namespace ADDON;
@@ -1431,7 +1432,7 @@ bool CPVRClient::CanSeekStream(void) const
 void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
 {
   memset(&qualityInfo, 0, sizeof(qualityInfo));
-  if (g_guiSettings.GetBool("pvrplayback.signalquality"))
+  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
   {
     strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
     strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
@@ -1466,7 +1467,7 @@ void CPVRClient::UpdateCharInfoSignalStatus(void)
   PVR_SIGNAL_STATUS qualityInfo;
   ResetQualityData(qualityInfo);
 
-  if (g_guiSettings.GetBool("pvrplayback.signalquality"))
+  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
     SignalQuality(qualityInfo);
 
   CSingleLock lock(m_critSection);

@@ -27,6 +27,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/DisplaySettings.h"
 #include "guilib/Texture.h"
 #include "windowing/X11/XRandR.h"
 #include <vector>

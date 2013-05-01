@@ -40,7 +40,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "URL.h"
 
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -597,7 +597,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
         SortDescription sorting;
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
-        sorting.sortAttributes = g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
+        sorting.sortAttributes = CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SORT_METHOD_PLAYLIST_ORDER is ascending.
@@ -1090,8 +1090,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
-      g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
+    bool do_not_add_karaoke = CSettings::Get().GetBool("karaoke.enabled") &&
+      CSettings::Get().GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
     if (m_vecItems->IsPlugin())

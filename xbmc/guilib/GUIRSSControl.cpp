@@ -20,7 +20,7 @@
 
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "utils/RssManager.h"
@@ -112,7 +112,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && CRssManager::Get().IsActive())
+  if (CSettings::Get().GetBool("lookandfeel.enablerssfeeds") && CRssManager::Get().IsActive())
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed

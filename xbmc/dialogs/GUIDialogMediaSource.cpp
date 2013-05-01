@@ -31,8 +31,8 @@
 #include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
@@ -252,13 +252,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "SAP Streams";
     extraShares.push_back(share1);
 
-    if (g_guiSettings.GetString("audiocds.recordingpath",false) != "")
+    if (CSettings::Get().GetString("audiocds.recordingpath") != "")
     {
       share1.strPath = "special://recordings/";
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
-
  }
   else if (m_type == "video")
   {
@@ -326,7 +325,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
 
     share1.m_ignore = true;
-    if (g_guiSettings.GetString("debug.screenshotpath",false)!= "")
+    if (CSettings::Get().GetString("debug.screenshotpath") != "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);

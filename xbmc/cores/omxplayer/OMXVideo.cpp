@@ -34,7 +34,6 @@
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
 
-
 #include <sys/time.h>
 #include <inttypes.h>
 

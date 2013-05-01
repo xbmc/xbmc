@@ -20,9 +20,11 @@
 #include "system.h"
 
 #include "AEFactory.h"
+#include "Utils/AEUtil.h"
 
 #if defined(TARGET_DARWIN)
   #include "Engines/CoreAudio/CoreAudioAE.h"
+  #include "settings/SettingsManager.h"
 #else
   #include "Engines/SoftAE/SoftAE.h"
 #endif
@@ -30,6 +32,10 @@
 #if defined(HAS_PULSEAUDIO)
   #include "Engines/PulseAE/PulseAE.h"
 #endif
+
+#include "guilib/LocalizeStrings.h"
+#include "settings/Setting.h"
+#include "utils/StringUtils.h"
 
 IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;
@@ -296,4 +302,59 @@ void CAEFactory::GarbageCollect()
 {
   if(AE)
     AE->GarbageCollect();
+}
+
+void CAEFactory::SettingOptionsAudioDevicesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  SettingOptionsAudioDevicesFillerGeneral(setting, list, current, false);
+}
+
+void CAEFactory::SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  SettingOptionsAudioDevicesFillerGeneral(setting, list, current, true);
+}
+
+void CAEFactory::SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  list.push_back(std::make_pair(g_localizeStrings.Get(338), AUDIO_ANALOG));
+#if !defined(TARGET_RASPBERRY_PI)
+  list.push_back(std::make_pair(g_localizeStrings.Get(339), AUDIO_IEC958));
+#endif
+  list.push_back(std::make_pair(g_localizeStrings.Get(420), AUDIO_HDMI));
+}
+
+void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
+{
+  current = ((const CSettingString*)setting)->GetValue();
+  std::string firstDevice;
+
+  bool foundValue = false;
+  AEDeviceList sinkList;
+  EnumerateOutputDevices(sinkList, passthrough);
+#if !defined(TARGET_DARWIN)
+  if (sinkList.size() == 0)
+    list.push_back(std::make_pair("Error - no devices found", "error"));
+  else
+  {
+#endif
+    for (AEDeviceList::const_iterator sink = sinkList.begin(); sink != sinkList.end(); sink++)
+    {
+      if (sink == sinkList.begin())
+        firstDevice = sink->second;
+
+#if defined(TARGET_DARWIN)
+      list.push_back(StringSettingOption(sink->first, sink->first));
+#else
+      list.push_back(std::make_pair(sink->first, sink->second));
+#endif
+
+      if (StringUtils::EqualsNoCase(current, sink->second))
+        foundValue = true;
+    }
+#if !defined(TARGET_DARWIN)
+  }
+#endif
+
+  if (!foundValue)
+    current = firstDevice;
 }

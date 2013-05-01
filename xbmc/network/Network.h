@@ -1,6 +1,4 @@
-#ifndef NETWORK_H_
-#define NETWORK_H_
-
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://www.xbmc.org
@@ -22,8 +20,11 @@
  */
 
 #include <vector>
-#include "utils/StdString.h"
+
 #include "system.h"
+
+#include "settings/ISettingCallback.h"
+#include "utils/StdString.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
@@ -74,8 +75,6 @@ public:
    virtual void SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
 };
 
-
-
 class CNetwork
 {
 public:
@@ -122,9 +121,9 @@ public:
 
    static int ParseHex(char *str, unsigned char *addr);
 };
+
 #ifdef HAS_LINUX_NETWORK
 #include "linux/NetworkLinux.h"
 #else
 #include "windows/NetworkWin32.h"
-#endif
 #endif

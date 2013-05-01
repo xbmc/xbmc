@@ -22,7 +22,6 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
@@ -44,6 +43,7 @@
 #include <iomanip>
 #include <numeric>
 #include <iterator>
+#include "guilib/GraphicContext.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -204,7 +204,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
+  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
   {
     g_VideoReferenceClock.Create();
     //we have to wait for the clock to start otherwise alsa can cause trouble
@@ -234,8 +234,8 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
-  m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
+  m_bCalcFrameRate = CSettings::Get().GetBool("videoplayer.usedisplayasclock") ||
+                     CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;

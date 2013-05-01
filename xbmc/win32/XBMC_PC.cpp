@@ -18,8 +18,8 @@
  *
  */
 
-#include "settings/AdvancedSettings.h"
 #include "AppParamParser.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "threads/platform/win/Win32Exception.h"

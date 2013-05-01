@@ -24,7 +24,6 @@
 #include "GUIWindowWeather.h"
 #include "guilib/GUIImage.h"
 #include "utils/Weather.h"
-#include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 #ifdef HAS_PYTHON

@@ -25,7 +25,7 @@
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "TextureCache.h"
@@ -284,8 +284,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
             m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
-      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
-               g_guiSettings.GetBool("myvideos.extractflags"))
+      else if (CSettings::Get().GetBool("myvideos.extractthumb") &&
+               CSettings::Get().GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
         CStdString path(item.GetPath());
@@ -301,7 +301,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
 
     // flag extraction
-    if (g_guiSettings.GetBool("myvideos.extractflags") &&
+    if (CSettings::Get().GetBool("myvideos.extractflags") &&
        (!pItem->HasVideoInfoTag()                     ||
         !pItem->GetVideoInfoTag()->HasStreamDetails() ||
          pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))

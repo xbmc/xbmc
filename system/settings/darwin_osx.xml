@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="system">
+    <category id="input">
+      <group id="1">
+        <setting id="input.appleremotealwayson">
+          <level>1</level>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

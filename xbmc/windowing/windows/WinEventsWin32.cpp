@@ -43,8 +43,8 @@
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "Shlobj.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "peripherals/Peripherals.h"
 #include "utils/JobManager.h"
 #include "network/Zeroconf.h"
@@ -487,7 +487,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case SC_MONITORPOWER:
           if (g_application.IsPlaying() || g_application.IsPaused())
             return 0;
-          else if(g_guiSettings.GetInt("powermanagement.displaysoff") == 0)
+          else if(CSettings::Get().GetInt("powermanagement.displaysoff") == 0)
             return 0;
           break;
         case SC_SCREENSAVE:

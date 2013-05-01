@@ -23,9 +23,8 @@
 #include "WinRenderer.h"
 #include "Util.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
@@ -382,7 +381,7 @@ unsigned int CWinRenderer::PreInit()
 
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
-  m_iRequestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+  m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
 
   if ((g_advancedSettings.m_DXVAForceProcessorRenderer || m_iRequestedMethod == RENDER_METHOD_DXVA) && !m_processor.PreInit())
     CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
@@ -1085,7 +1084,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = g_guiSettings.GetInt("videoplayer.hqscalers");
+        int minScale = CSettings::Get().GetInt("videoplayer.hqscalers");
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;

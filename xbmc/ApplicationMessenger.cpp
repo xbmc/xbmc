@@ -22,6 +22,7 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
+#include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #ifdef HAS_PYTHON
@@ -34,11 +35,11 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
+#include "guilib/Key.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/IPlayer.h"
@@ -227,7 +228,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-        switch (g_guiSettings.GetInt("powermanagement.shutdownstate"))
+        switch (CSettings::Get().GetInt("powermanagement.shutdownstate"))
         {
           case POWERSTATE_SHUTDOWN:
             Powerdown();
@@ -456,7 +457,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         {
           if(items.Size() == 0)
           {
-            g_guiSettings.SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
+            CSettings::Get().SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
             g_application.ActivateScreenSaver();
           }
           else

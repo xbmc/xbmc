@@ -49,8 +49,8 @@
 #include "music/Album.h"
 #include "music/Song.h"
 #include "URL.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -167,7 +167,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
   m_strLabel2 = bHasEpgNow ? epgNow.Title() :
-      g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+      CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
         StringUtils::EmptyString :
         g_localizeStrings.Get(19055); // no information available
 
@@ -2529,7 +2529,7 @@ void CFileItemList::StackFiles()
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        if (!g_guiSettings.GetBool("filelists.showextensions"))
+        if (!CSettings::Get().GetBool("filelists.showextensions"))
           URIUtils::RemoveExtension(stackName);
 
         item1->SetLabel(stackName);
@@ -2654,7 +2654,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
   }
 
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);

@@ -20,7 +20,6 @@
 
 #include "GUIDialogContentSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
-#include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "addons/IAddon.h"

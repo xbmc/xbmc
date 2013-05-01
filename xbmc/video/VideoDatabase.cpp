@@ -41,7 +41,6 @@
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -4243,7 +4242,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
 
     CMediaSettings::Get().SetVideoNeedsUpdate(63);
-    g_settings.Save();
+    CSettings::Get().Save();
   }
   if (iVersion < 64)
   { // add idShow to episode table
@@ -9668,7 +9667,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         sorting.sortBy = xsp.GetOrder();
       if (xsp.GetOrderDirection() != SortOrderNone)
         sorting.sortOrder = xsp.GetOrderDirection();
-      if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }

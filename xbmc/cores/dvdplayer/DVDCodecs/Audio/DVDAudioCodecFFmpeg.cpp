@@ -24,7 +24,11 @@
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
+
+#if defined(TARGET_DARWIN)
+#include "settings/Settings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -72,9 +76,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
 #if defined(TARGET_DARWIN)
-  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
   if (audioMode == AUDIO_HDMI)
-    m_bLpcmMode = g_guiSettings.GetBool("audiooutput.multichannellpcm");
+    m_bLpcmMode = CSettings::Get().GetBool("audiooutput.multichannellpcm");
 #endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);

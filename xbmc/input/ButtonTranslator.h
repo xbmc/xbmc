@@ -30,6 +30,7 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"
 #endif
+#include "utils/StdString.h"
 
 class CKey;
 class CAction;

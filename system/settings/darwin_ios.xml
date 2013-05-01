@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="videos">
+    <category id="videoplayer">
+      <group id="2">
+        <setting id="videoplayer.adjustrefreshrate">
+          <level>4</level>
+        </setting>
+        <setting id="videoplayer.pauseafterrefreshchange">
+          <level>4</level>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="system">
+    <category id="videoscreen">
+      <group id="1">
+        <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+    <category id="audiooutput">
+      <group id="1">
+        <setting id="audiooutput.ac3passthrough">
+          <visible>IsAppleTV2</visible>
+        </setting>
+        <setting id="audiooutput.dtspassthrough">
+          <visible>IsAppleTV2</visible>
+        </setting>
+        <setting id="audiooutput.multichannellpcm">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="audiooutput.audiodevice">
+          <default>Default</default>
+        </setting>
+        <setting id="audiooutput.passthroughdevice">
+          <level>4</level>
+          <default>Default</default>
+        </setting>
+      </group>
+    </category>
+    <category id="input">
+      <group id="2">
+        <setting id="input.enablemouse">
+          <level>4</level>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

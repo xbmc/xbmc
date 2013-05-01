@@ -18,6 +18,7 @@
  *
  */
 
+#include "system.h"
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
@@ -59,10 +60,10 @@
 #include "utils/XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
-#include "settings/Settings.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "utils/RssReader.h"
 
 using namespace std;
 using namespace EPG;

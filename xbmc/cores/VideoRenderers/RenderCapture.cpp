@@ -22,8 +22,8 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/fastmemcpy.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
@@ -94,7 +94,7 @@ void CRenderCaptureGL::BeginRender()
   if (!m_asyncChecked)
   {
 #ifndef HAS_GLES
-    bool usePbo = g_guiSettings.GetBool("videoplayer.usepbo");
+    bool usePbo = CSettings::Get().GetBool("videoplayer.usepbo");
     m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object") && usePbo;
     m_occlusionQuerySupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query");
 

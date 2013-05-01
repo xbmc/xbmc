@@ -25,6 +25,15 @@
 
 #include "karaokelyrics.h"
 
+// Karaoke colours
+// If you want to add more colors, it should be done the following way:
+// 1. Increase KARAOKE_COLOR_END
+// 2. Add a new color description in language/English/strings.xml in block
+//    with id 22040 + KARAOKE_COLOR_END value
+// 3. Add a new color hex mask into gLyricColors structure in karaoke/karaokelyricstext.cpp
+#define KARAOKE_COLOR_START  0
+#define KARAOKE_COLOR_END    4
+
 class CGUITextLayout;
 class CGUIFont;
 

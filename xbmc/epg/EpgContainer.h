@@ -21,6 +21,7 @@
  */
 
 #include "XBDateTime.h"
+#include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
@@ -38,8 +39,9 @@ namespace EPG
   #define g_EpgContainer CEpgContainer::Get()
 
   class CEpgContainer : public Observer,
-    public Observable,
-    private CThread
+                        public Observable,
+                        public ISettingCallback,
+                        private CThread
   {
     friend class CEpgDatabase;
 
@@ -106,6 +108,8 @@ namespace EPG
      * @param msg The update message.
      */
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
+
+    virtual void OnSettingChanged(const CSetting *setting);
 
     CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
 

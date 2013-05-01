@@ -107,7 +107,7 @@ public:
    \return true if the addon has settings, false otherwise
    \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  bool HasSettings();
+  virtual bool HasSettings();
 
   /*! \brief Check whether the user has configured this addon or not
    \return true if previously saved settings are found, false otherwise

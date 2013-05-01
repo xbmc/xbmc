@@ -34,9 +34,9 @@
 #include <sys/time.h>
 #include <inttypes.h>
 #include "guilib/GraphicContext.h"
-#include "settings/DisplaySettings.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
 
 #ifdef CLASSNAME
 #undef CLASSNAME

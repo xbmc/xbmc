@@ -23,7 +23,6 @@
 #include "utils/log.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 

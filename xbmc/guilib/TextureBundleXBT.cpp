@@ -25,7 +25,7 @@
 #include "GraphicContext.h"
 #include "utils/log.h"
 #include "addons/Skin.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
@@ -58,7 +58,7 @@ bool CTextureBundleXBT::OpenBundle()
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
+    CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
     if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
     {
       CStdString themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));

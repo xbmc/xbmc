@@ -26,7 +26,7 @@
 #include "filesystem/File.h"
 #include "music/MusicDatabase.h"
 #include "playlists/SmartPlayList.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -70,7 +70,7 @@ namespace XFILE
     sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
       sorting.sortAttributes = SortAttributeIgnoreArticle;
 
     std::string option = !filter ? "xsp" : "filter";

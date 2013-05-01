@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001
@@ -36,11 +37,13 @@
 
 // Class to manage all connected joysticks
 
-class CJoystick
+class CJoystick : public ISettingCallback
 {
 public:
   CJoystick();
   ~CJoystick();
+
+  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void Reset(bool axis=false);

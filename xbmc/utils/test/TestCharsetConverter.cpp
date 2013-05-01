@@ -18,7 +18,7 @@
  *
  */
 
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 
 #include "gtest/gtest.h"
@@ -83,19 +83,21 @@ protected:
     /* Add default settings for locale.
      * Settings here are taken from CGUISettings::Initialize()
      */
-    CSettingsCategory *loc = g_guiSettings.AddCategory(7, "locale", 14090);
-    g_guiSettings.AddString(loc, "locale.language",248,"english",
+    /* TODO
+    CSettingsCategory *loc = CSettings::Get().AddCategory(7, "locale", 14090);
+    CSettings::Get().AddString(loc, "locale.language",248,"english",
                             SPIN_CONTROL_TEXT);
-    g_guiSettings.AddString(loc, "locale.country", 20026, "USA",
+    CSettings::Get().AddString(loc, "locale.country", 20026, "USA",
                             SPIN_CONTROL_TEXT);
-    g_guiSettings.AddString(loc, "locale.charset", 14091, "DEFAULT",
+    CSettings::Get().AddString(loc, "locale.charset", 14091, "DEFAULT",
                             SPIN_CONTROL_TEXT); // charset is set by the
                                                 // language file
 
-    /* Add default settings for subtitles */
-    CSettingsCategory *sub = g_guiSettings.AddCategory(5, "subtitles", 287);
-    g_guiSettings.AddString(sub, "subtitles.charset", 735, "DEFAULT",
+    // Add default settings for subtitles
+    CSettingsCategory *sub = CSettings::Get().AddCategory(5, "subtitles", 287);
+    CSettings::Get().AddString(sub, "subtitles.charset", 735, "DEFAULT",
                             SPIN_CONTROL_TEXT);
+    */
 
     g_charsetConverter.reset();
     g_charsetConverter.clear();
@@ -103,7 +105,7 @@ protected:
 
   ~TestCharsetConverter()
   {
-    g_guiSettings.Clear();
+    CSettings::Get().Unload();
   }
 
   CStdStringA refstra1, refstra2, varstra1;

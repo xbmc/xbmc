@@ -20,7 +20,7 @@
 
 #include "utils/DownloadQueueManager.h"
 #include "threads/Thread.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
@@ -40,23 +40,25 @@ class TestDownloadQueueManager : public testing::Test
 protected:
   TestDownloadQueueManager()
   {
-    CSettingsCategory* net = g_guiSettings.AddCategory(4, "network", 798);
-    g_guiSettings.AddBool(net, "network.usehttpproxy", 708, false);
-    g_guiSettings.AddString(net, "network.httpproxyserver", 706, "",
+    /* TODO
+    CSettingsCategory* net = CSettings::Get().AddCategory(4, "network", 798);
+    CSettings::Get().AddBool(net, "network.usehttpproxy", 708, false);
+    CSettings::Get().AddString(net, "network.httpproxyserver", 706, "",
                             EDIT_CONTROL_INPUT);
-    g_guiSettings.AddString(net, "network.httpproxyport", 730, "8080",
+    CSettings::Get().AddString(net, "network.httpproxyport", 730, "8080",
                             EDIT_CONTROL_NUMBER_INPUT, false, 707);
-    g_guiSettings.AddString(net, "network.httpproxyusername", 1048, "",
+    CSettings::Get().AddString(net, "network.httpproxyusername", 1048, "",
                             EDIT_CONTROL_INPUT);
-    g_guiSettings.AddString(net, "network.httpproxypassword", 733, "",
+    CSettings::Get().AddString(net, "network.httpproxypassword", 733, "",
                             EDIT_CONTROL_HIDDEN_INPUT,true,733);
-    g_guiSettings.AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024,
+    CSettings::Get().AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024,
                          SPIN_CONTROL_INT_PLUS, 14048, 351);
+    */
   }
 
   ~TestDownloadQueueManager()
   {
-    g_guiSettings.Clear();
+    CSettings::Get().Unload();
   }
 };
 

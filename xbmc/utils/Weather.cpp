@@ -28,7 +28,6 @@
 #include "Temperature.h"
 #include "network/Network.h"
 #include "Application.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
@@ -43,6 +42,7 @@
 #include "addons/AddonManager.h"
 #include "interfaces/python/XBPython.h"
 #include "CharsetConverter.h"
+#include "addons/GUIDialogAddonSettings.h"
 
 using namespace std;
 using namespace ADDON;
@@ -80,7 +80,7 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER))
+  if (!ADDON::CAddonMgr::Get().GetAddon(CSettings::Get().GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER))
     return false;
 
   // initialize our sys.argv variables
@@ -458,8 +458,8 @@ const day_forecast &CWeather::GetForecast(int day) const
  */
 void CWeather::SetArea(int iLocation)
 {
-  g_guiSettings.SetInt("weather.currentlocation", iLocation);
-  g_settings.Save();
+  CSettings::Get().SetInt("weather.currentlocation", iLocation);
+  CSettings::Get().Save();
 }
 
 /*!
@@ -468,7 +468,7 @@ void CWeather::SetArea(int iLocation)
  */
 int CWeather::GetArea() const
 {
-  return g_guiSettings.GetInt("weather.currentlocation");
+  return CSettings::Get().GetInt("weather.currentlocation");
 }
 
 CJob *CWeather::GetJob() const
@@ -481,3 +481,31 @@ void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   m_info = ((CWeatherJob *)job)->GetInfo();
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
+
+void CWeather::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string settingId = setting->GetId();
+  if (settingId == "weather.addon")
+    Refresh();
+}
+
+void CWeather::OnSettingAction(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string settingId = setting->GetId();
+  if (settingId == "weather.addonsettings")
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      Refresh();
+    }
+  }
+}
+

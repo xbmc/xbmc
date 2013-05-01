@@ -22,11 +22,23 @@
  */
 
 #if !defined(__arm__)
-class XBMCHelper
+
+#include "settings/ISettingCallback.h"
+
+enum AppleRemoteOptions
+{
+  APPLE_REMOTE_DISABLED    = 0,
+  APPLE_REMOTE_STANDARD,
+  APPLE_REMOTE_UNIVERSAL,
+  APPLE_REMOTE_MULTIREMOTE
+};
+
+class XBMCHelper : public ISettingCallback
 {
  public:
-
   static XBMCHelper& GetInstance();
+
+  virtual bool OnSettingChanging(const CSetting *setting);
 
   void Start();
   void Stop();

@@ -22,8 +22,8 @@
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/Variant.h"
 
@@ -71,14 +71,14 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  int iFlatten = g_guiSettings.GetInt("videolibrary.flattentvshows");
+  int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
   bool bFlatten = (items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2;
   if (items.GetObjectCount() == 2 && iFlatten == 1)
     if (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0)
       bFlatten = true; // flatten if one season + specials
 
-  if (iFlatten > 0 && !bFlatten && CMediaSettings::Get().GetWatchedMode("tvshows") == WatchedModeUnwatched) 
+  if (iFlatten > 0 && !bFlatten && CMediaSettings::Get().GetWatchedMode("tvshows") == WatchedModeUnwatched)
   {
     int count = 0;
     for(int i = 0; i < items.Size(); i++) 

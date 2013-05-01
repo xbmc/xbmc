@@ -41,8 +41,8 @@
 #include "utils/AsyncFileCopy.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
@@ -271,7 +271,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.IsEmpty())
         item->SetArt("thumb", it->thumb);
-      else if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+      else if (CSettings::Get().GetBool("videolibrary.actorthumbs"))
       { // backward compatibility
         CStdString thumb = CScraperUrl::GetThumbURL(it->thumbUrl.GetFirstThumb());
         if (!thumb.IsEmpty())
@@ -361,7 +361,7 @@ void CGUIDialogVideoInfo::Update()
   // setup plot text area
   CStdString strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (!(!m_movieItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
-    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !g_guiSettings.GetBool("videolibrary.showunwatchedplots"))
+    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
       strTmp = g_localizeStrings.Get(20370);
 
   strTmp.Trim();

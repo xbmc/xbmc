@@ -28,9 +28,11 @@
 #include "PlatformDefs.h"
 #include "Util.h"
 
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "utils/log.h"
 #include "system.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/SystemInfo.h"
 
 #include "threads/Atomics.h"
@@ -88,6 +90,50 @@ XBMCHelper::XBMCHelper()
 }
 
 /////////////////////////////////////////////////////////////////////////////
+bool XBMCHelper::OnSettingChanging(const CSetting *setting)
+{
+  if (setting == NULL)
+    return false;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "input.appleremotemode")
+  {
+    int remoteMode = ((CSettingInt*)setting)->GetValue();
+
+    // if it's not disabled, start the event server or else apple remote won't work
+    if (remoteMode != APPLE_REMOTE_DISABLED)
+    {
+      // if starting the event server fails, we have to revert the change
+      if (!CSettings::Get().SetBool("services.esenabled", true))
+        return false;
+    }
+
+    // if XBMC helper is running, prompt user before effecting change
+    if (IsRunning() && GetMode() != remoteMode)
+    {
+      bool cancelled;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
+        return false;
+      // reload configuration
+      else
+        Configure();
+    }
+    // set new configuration.
+    else
+      Configure();
+
+    if (ErrorStarting() == true)
+    {
+      // inform user about error
+      CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::Start()
 {
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
@@ -123,10 +169,10 @@ void XBMCHelper::Configure()
 
   // Read the new configuration.
   m_errorStarting = false;
-  m_mode = g_guiSettings.GetInt("input.appleremotemode");
-  m_sequenceDelay = g_guiSettings.GetInt("input.appleremotesequencetime");
-  m_alwaysOn = g_guiSettings.GetBool("input.appleremotealwayson");
-  CStdString port_string = g_guiSettings.GetString("services.esport");
+  m_mode = CSettings::Get().GetInt("input.appleremotemode");
+  m_sequenceDelay = CSettings::Get().GetInt("input.appleremotesequencetime");
+  m_alwaysOn = CSettings::Get().GetBool("input.appleremotealwayson");
+  CStdString port_string = CSettings::Get().GetString("services.esport");
   m_port = atoi(port_string.c_str());
 
 
@@ -138,7 +184,7 @@ void XBMCHelper::Configure()
       m_errorStarting = true;
 
     m_mode = APPLE_REMOTE_DISABLED;
-    g_guiSettings.SetInt("input.appleremotemode", APPLE_REMOTE_DISABLED);
+    CSettings::Get().SetInt("input.appleremotemode", APPLE_REMOTE_DISABLED);
   }
 
   // New configuration.

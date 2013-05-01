@@ -29,7 +29,6 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDClock.h"
 #include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "Application.h"
@@ -617,7 +616,7 @@ void CVDPAU::SetColor()
     vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_601, &m_CSCMatrix);
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  if (g_guiSettings.GetBool("videoscreen.limitedrange"))
+  if (CSettings::Get().GetBool("videoscreen.limitedrange"))
   {
     void const * pm_CSCMatix[] = { &studioCSC };
     vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);

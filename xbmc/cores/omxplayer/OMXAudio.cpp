@@ -33,7 +33,8 @@
 #include "linux/XMemUtils.h"
 
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 
@@ -710,7 +711,7 @@ bool COMXAudio::SetCurrentVolume(float fVolume)
     const float* coeff = downmixing_coefficients_8;
 
     // normally we normalalise the levels, can be skipped (boosted) at risk of distortion
-    if(!g_guiSettings.GetBool("audiooutput.normalizelevels"))
+    if(!CSettings::Get().GetBool("audiooutput.normalizelevels"))
     {
       double sum_L = 0;
       double sum_R = 0;

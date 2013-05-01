@@ -1,4 +1,4 @@
-SRCS=GUISettingControls.cpp \
+SRCS=GUIControlSettings.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsScreenCalibration.cpp \

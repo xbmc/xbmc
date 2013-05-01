@@ -31,10 +31,9 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -641,7 +640,7 @@ float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (g_guiSettings.GetInt("videoscreen.vsync") != VSYNC_DISABLED)
+  if (CSettings::Get().GetInt("videoscreen.vsync") != VSYNC_DISABLED)
   {
     fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();

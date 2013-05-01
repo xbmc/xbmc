@@ -47,10 +47,9 @@
 #include "playlists/PlayList.h"
 #include "utils/AsyncFileCopy.h"
 #include "storage/MediaManager.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "input/MouseStat.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -367,37 +366,6 @@ void CGUIWindowFileManager::ClearFileItems(int iList)
 
 void CGUIWindowFileManager::UpdateButtons()
 {
-
-  /*
-   // Update sorting control
-   bool bSortOrder=false;
-   if ( m_bViewSource )
-   {
-    if (m_strSourceDirectory.IsEmpty())
-     bSortOrder=g_settings.m_bMyFilesSourceRootSortOrder;
-    else
-     bSortOrder=g_settings.m_bMyFilesSourceSortOrder;
-   }
-   else
-   {
-    if (m_strDestDirectory.IsEmpty())
-     bSortOrder=g_settings.m_bMyFilesDestRootSortOrder;
-    else
-     bSortOrder=g_settings.m_bMyFilesDestSortOrder;
-   }
-
-   if (bSortOrder)
-    {
-      CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_windowManager.SendMessage(msg);
-    }
-    else
-    {
-      CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_windowManager.SendMessage(msg);
-    }
-
-  */
   // update our current directory labels
   CStdString strDir = CURL(m_Directory[0]->GetPath()).GetWithoutUserDetails();
   if (strDir.IsEmpty())
@@ -490,7 +458,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   CStdString strParentPath;
   URIUtils::GetParentPath(strDirectory, strParentPath);
-  if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
+  if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || CSettings::Get().GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
@@ -502,7 +470,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems[iList]->Add(pItem);
   }
-  else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
+  else if (items.IsEmpty() || CSettings::Get().GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);

@@ -20,13 +20,15 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
+#include "LangInfo.h"
+#include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/WindowIDs.h"
+#include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "settings/GUISettings.h"
 
 // fallback for new skin resolution code
 #include "filesystem/Directory.h"
@@ -97,6 +99,11 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
 
 CSkinInfo::~CSkinInfo()
 {
+}
+
+bool CSkinInfo::HasSettings()
+{
+  return HasSkinFile("SkinSettings.xml");
 }
 
 struct closestRes
@@ -197,7 +204,7 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncl
 
 int CSkinInfo::GetStartWindow() const
 {
-  int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");
+  int windowID = CSettings::Get().GetInt("lookandfeel.startupwindow");
   assert(m_startupWindows.size());
   for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
   {
@@ -263,12 +270,175 @@ int CSkinInfo::GetFirstWindow() const
 bool CSkinInfo::IsInUse() const
 {
   // Could extend this to prompt for reverting to the standard skin perhaps
-  return g_guiSettings.GetString("lookandfeel.skin") == ID();
+  return CSettings::Get().GetString("lookandfeel.skin") == ID();
 }
 
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString& name, int context)
 {
   return m_includes.CreateSkinVariable(name, context);
+}
+
+void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  // There is a default theme (just defaults.xml)
+  // any other *.xml files are additional color themes on top of this one.
+  
+  // add the default label
+  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard defaults.xml will be used!
+
+  // Search for colors in the Current skin!
+  vector<string> vecColors;
+  string strPath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+
+  CFileItemList items;
+  CDirectory::GetDirectory(CSpecialProtocol::TranslatePathConvertCase(strPath), items, ".xml");
+  // Search for Themes in the Current skin!
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    if (!pItem->m_bIsFolder && !StringUtils::EqualsNoCase(pItem->GetLabel(), "defaults.xml"))
+    { // not the default one
+      vecColors.push_back(pItem->GetLabel().Mid(0, pItem->GetLabel().size() - 4));
+    }
+  }
+  sort(vecColors.begin(), vecColors.end(), sortstringbyname());
+
+  for (int i = 0; i < (int) vecColors.size(); ++i)
+    list.push_back(make_pair(vecColors[i], vecColors[i]));
+
+  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  // Remove the .xml extension from the Themes
+  if (URIUtils::GetExtension(settingValue) == ".xml")
+    URIUtils::RemoveExtension(settingValue);
+  
+  // Set the choosen theme
+  current = settingValue;
+}
+
+void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
+
+  CXBMCTinyXML xmlDoc;
+  if (!xmlDoc.LoadFile(strPath))
+  {
+    CLog::Log(LOGERROR, "FillInSkinFonts: Couldn't load %s", strPath.c_str());
+    return;
+  }
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+
+  std::string strValue = pRootElement->ValueStr();
+  if (strValue != "fonts")
+  {
+    CLog::Log(LOGERROR, "FillInSkinFonts: file %s doesn't start with <fonts>", strPath.c_str());
+    return;
+  }
+
+  const TiXmlNode *pChild = pRootElement->FirstChild();
+  strValue = pChild->ValueStr();
+  if (strValue == "fontset")
+  {
+    while (pChild)
+    {
+      strValue = pChild->ValueStr();
+      if (strValue == "fontset")
+      {
+        const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+        const char* idLocAttr = ((TiXmlElement*) pChild)->Attribute("idloc");
+        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+        bool isUnicode = (unicodeAttr && stricmp(unicodeAttr, "true") == 0);
+
+        bool isAllowed = true;
+        if (g_langInfo.ForceUnicodeFont() && !isUnicode)
+          isAllowed = false;
+
+        if (idAttr != NULL && isAllowed)
+        {
+          if (idLocAttr)
+            list.push_back(make_pair(g_localizeStrings.Get(atoi(idLocAttr)), idAttr));
+          else
+            list.push_back(make_pair(idAttr, idAttr));
+        }
+      }
+
+      pChild = pChild->NextSibling();
+    }
+  }
+  else
+  {
+    // Since no fontset is defined, there is no selection of a fontset, so disable the component
+    list.push_back(make_pair(g_localizeStrings.Get(13278), ""));
+  }
+}
+
+void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  //find skins...
+  CFileItemList items;
+  CDirectory::GetDirectory("special://xbmc/sounds/", items);
+  CDirectory::GetDirectory("special://home/sounds/", items);
+
+  vector<string> vecSoundSkins;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr pItem = items[i];
+    if (pItem->m_bIsFolder)
+    {
+      if (StringUtils::EqualsNoCase(pItem->GetLabel(), ".svn") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
+          StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
+        continue;
+
+      vecSoundSkins.push_back(pItem->GetLabel());
+    }
+  }
+
+  list.push_back(make_pair(g_localizeStrings.Get(474), "OFF"));
+  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT"));
+
+  sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
+  for (unsigned int i = 0; i < vecSoundSkins.size(); i++)
+    list.push_back(make_pair(vecSoundSkins[i], vecSoundSkins[i]));
+}
+
+void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  // there is a default theme (just Textures.xpr/xbt)
+  // any other *.xpr|*.xbt files are additional themes on top of this one.
+  const CSettingString *pSettingString = (const CSettingString *)setting;
+
+  // add the default Label
+  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
+
+  // search for themes in the current skin!
+  vector<CStdString> vecTheme;
+  CUtil::GetSkinThemes(vecTheme);
+
+  // sort the themes for GUI and list them
+  for (int i = 0; i < (int) vecTheme.size(); ++i)
+    list.push_back(make_pair(vecTheme[i], vecTheme[i]));
+
+  // set the choosen theme and remove the extension from the current theme (backward compat)
+  CStdString settingValue = pSettingString->GetValue();
+  URIUtils::RemoveExtension(settingValue);
+  current = settingValue;
+}
+
+void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  const vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
+
+  for (vector<CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); it++)
+  {
+    string windowName = it->m_name;
+    if (StringUtils::IsNaturalNumber(windowName))
+      windowName = g_localizeStrings.Get(atoi(windowName.c_str()));
+    int windowID = it->m_id;
+
+    list.push_back(make_pair(windowName, windowID));
+  }
 }
 
 } /*namespace ADDON*/

@@ -32,7 +32,7 @@
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
 #include "guilib/LocalizeStrings.h"
@@ -231,7 +231,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_LABEL:
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", label2Mask));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", label2Mask));
@@ -240,7 +240,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", label2Mask));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", label2Mask));
@@ -249,7 +249,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_ARTIST:
     case SORT_METHOD_ARTIST_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%T", "%A"));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%T", "%A"));
@@ -258,7 +258,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_ALBUM:
     case SORT_METHOD_ALBUM_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%T", "%B"));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_ALBUM, 558, LABEL_MASKS("%T", "%B"));
@@ -327,7 +327,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_VIDEO_SORT_TITLE:
     case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", label2Mask));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%T", label2Mask));
@@ -346,7 +346,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_STUDIO:
     case SORT_METHOD_STUDIO_IGNORE_THE:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
           dir->m_listItems->AddSortMethod(SORT_METHOD_STUDIO_IGNORE_THE, 572, LABEL_MASKS("%T", "%U"));
         else
           dir->m_listItems->AddSortMethod(SORT_METHOD_STUDIO, 572, LABEL_MASKS("%T", "%U"));
@@ -374,8 +374,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
       }
     case SORT_METHOD_PLAYLIST_ORDER:
       {
-        CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
-        CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
+        CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
+        CStdString strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
         dir->m_listItems->AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
         break;
