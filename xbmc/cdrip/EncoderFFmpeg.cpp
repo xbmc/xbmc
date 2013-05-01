@@ -33,7 +33,7 @@
 #include "EncoderFFmpeg.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/URIUtils.h"
 
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
@@ -86,7 +86,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   m_Format->oformat  = fmt;
-  m_Format->bit_rate = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
+  m_Format->bit_rate = CSettings::Get().GetInt("audiocds.bitrate") * 1000;
 
   /* add a stream to it */
   m_Stream = m_dllAvFormat.avformat_new_stream(m_Format, codec);

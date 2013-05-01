@@ -29,7 +29,6 @@ typedef enum
 {
   ObservableMessageNone,
   ObservableMessageCurrentItem,
-  ObservableMessageGuiSettings,
   ObservableMessageAddons,
   ObservableMessageEpg,
   ObservableMessageEpgContainer,

@@ -34,7 +34,7 @@
 #include "Platinum.h"
 #include "URL.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
@@ -467,7 +467,7 @@ CUPnP::StartClient()
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
     // start controller
-    if (g_guiSettings.GetBool("services.upnpcontroller")) {
+    if (CSettings::Get().GetBool("services.upnpcontroller")) {
         m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
     }
 }
@@ -504,7 +504,7 @@ CUPnP::CreateServer(int port /* = 0 */)
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
 
     device->m_ModelName        = "XBMC Media Center";
@@ -521,12 +521,12 @@ CUPnP::CreateServer(int port /* = 0 */)
 /*----------------------------------------------------------------------
 |   CUPnP::StartServer
 +---------------------------------------------------------------------*/
-void
+bool
 CUPnP::StartServer()
 {
-    if (!m_ServerHolder->m_Device.IsNull()) return;
+    if (!m_ServerHolder->m_Device.IsNull()) return false;
 
-    // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
+    // load upnpserver.xml
     CStdString filename;
     URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
     CUPnPSettings::Get().Load(filename);
@@ -559,7 +559,7 @@ CUPnP::StartServer()
 
     // save UUID
     CUPnPSettings::Get().SetServerUUID(m_ServerHolder->m_Device->GetUUID().GetChars());
-    CUPnPSettings::Get().Save(filename);
+    return CUPnPSettings::Get().Save(filename);
 }
 
 /*----------------------------------------------------------------------
@@ -588,7 +588,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
@@ -603,9 +603,9 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 /*----------------------------------------------------------------------
 |   CUPnP::StartRenderer
 +---------------------------------------------------------------------*/
-void CUPnP::StartRenderer()
+bool CUPnP::StartRenderer()
 {
-    if (!m_RendererHolder->m_Device.IsNull()) return;
+    if (!m_RendererHolder->m_Device.IsNull()) return false;
 
     CStdString filename;
     URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
@@ -629,7 +629,7 @@ void CUPnP::StartRenderer()
 
     // save UUID
     CUPnPSettings::Get().SetRendererUUID(m_RendererHolder->m_Device->GetUUID().GetChars());
-    CUPnPSettings::Get().Save(filename);
+    return CUPnPSettings::Get().Save(filename);
 }
 
 /*----------------------------------------------------------------------

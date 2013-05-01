@@ -21,6 +21,7 @@
 
 #include <vector>
 
+#include "settings/ISettingCallback.h"
 #include "settings/ISettingsHandler.h"
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
@@ -82,7 +83,7 @@ struct RefreshVideoLatency
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings : public ISettingsHandler
+class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 {
   public:
     CAdvancedSettings();
@@ -90,6 +91,8 @@ class CAdvancedSettings : public ISettingsHandler
     static CAdvancedSettings* getInstance();
 
     virtual void OnSettingsLoaded();
+
+    virtual void OnSettingChanged(const CSetting *setting);
 
     void Initialize();
     bool Initialized() { return m_initialized; };
@@ -363,6 +366,7 @@ class CAdvancedSettings : public ISettingsHandler
 
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
+    bool m_loaded;
 
     void SetDebugMode(bool debug);
 

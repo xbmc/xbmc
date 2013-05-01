@@ -19,7 +19,6 @@
  */
 
 #include "WIN32Util.h"
-#include "settings/GUISettings.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "storage/cdioSupport.h"

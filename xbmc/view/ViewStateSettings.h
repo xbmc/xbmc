@@ -25,6 +25,7 @@
 #include "ViewState.h"
 #include "guilib/GraphicContext.h"
 #include "settings/ISubSettings.h"
+#include "settings/Setting.h"
 #include "threads/CriticalSection.h"
 
 class TiXmlNode;
@@ -36,9 +37,14 @@ public:
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;
+  virtual void Clear();
 
   const CViewState* Get(const std::string &viewState) const;
   CViewState* Get(const std::string &viewState);
+
+  SettingLevel GetSettingLevel() const { return m_settingLevel; }
+  void SetSettingLevel(SettingLevel settingLevel);
+  void CycleSettingLevel();
 
 protected:
   CViewStateSettings();
@@ -48,6 +54,7 @@ protected:
 
 private:
   std::map<std::string, CViewState*> m_viewStates;
+  SettingLevel m_settingLevel;
   CCriticalSection m_critical;
 
   void AddViewState(const std::string& strTagName, int defaultView = DEFAULT_VIEW_LIST, SORT_METHOD defaultSort = SORT_METHOD_LABEL);

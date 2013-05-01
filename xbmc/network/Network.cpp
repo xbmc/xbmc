@@ -18,18 +18,14 @@
  *
  */
 
-#include "system.h"
-#include "Network.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "utils/RssManager.h"
-#include "utils/log.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
+#include "Network.h"
+#include "ApplicationMessenger.h"
+#include "network/NetworkServices.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -128,7 +124,6 @@ CStdString CNetwork::GetHostName(void)
     return CStdString(hostName);
 }
 
-
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
    vector<CNetworkInterface*>& ifaces = GetInterfaceList();
@@ -204,19 +199,16 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   switch( message )
   {
     case SERVICES_UP:
-    {
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-      StartServices();
-    }
-    break;
+      CNetworkServices::Get().Start();
+      break;
+
     case SERVICES_DOWN:
-    {
       CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
-      StopServices(false); //tell network services to stop, but don't wait for them yet
+      CNetworkServices::Get().Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
-      StopServices(true); //wait for network services to stop
-    }
-    break;
+      CNetworkServices::Get().Stop(true); // wait for network services to stop
+      break;
   }
 }
 
@@ -275,59 +267,4 @@ bool CNetwork::WakeOnLan(const char* mac)
   closesocket(packet);
   CLog::Log(LOGINFO, "%s - Magic packet send to '%s'", __FUNCTION__, mac);
   return true;
-}
-
-void CNetwork::StartServices()
-{
-#ifdef HAS_WEB_SERVER
-  if (!g_application.StartWebServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
-#endif
-#ifdef HAS_UPNP
-  g_application.StartUPnP();
-#endif
-#ifdef HAS_EVENT_SERVER
-  if (!g_application.StartEventServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
-#endif
-#ifdef HAS_JSONRPC
-  if (!g_application.StartJSONRPCServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
-#endif
-#ifdef HAS_ZEROCONF
-  g_application.StartZeroconf();
-#endif
-#ifdef HAS_AIRPLAY
-  g_application.StartAirplayServer();
-#endif
-  CRssManager::Get().Start();
-}
-
-void CNetwork::StopServices(bool bWait)
-{
-  if (bWait)
-  {
-#ifdef HAS_UPNP
-    g_application.StopUPnP(bWait);
-#endif
-#ifdef HAS_ZEROCONF
-    g_application.StopZeroconf();
-#endif
-#ifdef HAS_WEB_SERVER
-    g_application.StopWebServer();
-#endif    
-    // smb.Deinit(); if any file is open over samba this will break.
-
-    CRssManager::Get().Stop();
-  }
-
-#ifdef HAS_EVENT_SERVER
-  g_application.StopEventServer(bWait, false);
-#endif
-#ifdef HAS_JSONRPC
-    g_application.StopJSONRPCServer(bWait);
-#endif
-#if defined(HAS_AIRPLAY) || defined(HAS_AIRTUNES)
-    g_application.StopAirplayServer(bWait);
-#endif
 }

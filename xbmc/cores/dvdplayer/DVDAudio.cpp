@@ -26,7 +26,6 @@
 #include "DVDPlayerAudio.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 
 using namespace std;

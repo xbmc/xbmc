@@ -50,6 +50,7 @@ class CPlayerController;
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "settings/ISettingsHandler.h"
+#include "settings/ISettingCallback.h"
 #include "settings/ISubSettings.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -70,21 +71,6 @@ class CInertialScrollingHandler;
 class DPMSSupport;
 class CSplash;
 class CBookmark;
-class CWebServer;
-class IPlayer;
-#ifdef HAS_WEB_SERVER
-class CWebServer;
-class CHTTPImageHandler;
-class CHTTPVfsHandler;
-#ifdef HAS_JSONRPC
-class CHTTPJsonRpcHandler;
-#endif
-#ifdef HAS_WEB_INTERFACE
-class CHTTPWebinterfaceHandler;
-class CHTTPWebinterfaceAddonsHandler;
-#endif
-#endif
-
 class CNetwork;
 
 namespace VIDEO
@@ -102,6 +88,16 @@ namespace MUSIC_INFO
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
 #define VOLUME_CONTROL_STEPS 90    // 90 steps
 
+// replay gain settings struct for quick access by the player multiple
+// times per second (saves doing settings lookup)
+struct ReplayGainSettings
+{
+  int iPreAmp;
+  int iNoGainPreAmp;
+  int iType;
+  bool bAvoidClipping;
+};
+
 class CBackgroundPlayer : public CThread
 {
 public:
@@ -114,7 +110,7 @@ protected:
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
-                     public ISettingsHandler, public ISubSettings
+                     public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
 public:
 
@@ -147,27 +143,8 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  bool StartWebServer();
-  void StopWebServer();
-  bool StartAirplayServer();
-  void StopAirplayServer(bool bWait);
-  bool StartJSONRPCServer();
-  void StopJSONRPCServer(bool bWait);
-  void StartUPnP();
-  void StopUPnP(bool bWait);
-  void StartUPnPClient();
-  void StopUPnPClient();
-  void StartUPnPRenderer();
-  void StopUPnPRenderer();
-  void StartUPnPServer();
-  void StopUPnPServer();
   void StartPVRManager(bool bOpenPVRWindow = false);
   void StopPVRManager();
-  bool StartEventServer();
-  bool StopEventServer(bool bWait, bool promptuser);
-  void RefreshEventServer();
-  void StartZeroconf();
-  void StopZeroconf();
   bool IsCurrentThread() const;
   void Stop(int exitCode);
   void RestartApp();
@@ -291,19 +268,6 @@ public:
 
   IPlayer* m_pPlayer;
 
-#ifdef HAS_WEB_SERVER
-  CWebServer& m_WebServer;
-  CHTTPImageHandler& m_httpImageHandler;
-  CHTTPVfsHandler& m_httpVfsHandler;
-#ifdef HAS_JSONRPC
-  CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
-#endif
-#ifdef HAS_WEB_INTERFACE
-  CHTTPWebinterfaceHandler& m_httpWebinterfaceHandler;
-  CHTTPWebinterfaceAddonsHandler& m_httpWebinterfaceAddonsHandler;
-#endif
-#endif
-
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
@@ -379,11 +343,17 @@ public:
   bool GetRenderGUI() const { return m_renderGUI; };
 
   bool SetLanguage(const CStdString &strLanguage);
+
+  ReplayGainSettings& GetReplayGainSettings() { return m_replayGainSettings; }
 protected:
   virtual bool OnSettingsSaving() const;
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;
+
+  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingAction(const CSetting *setting);
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
 
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -494,6 +464,7 @@ protected:
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
 
+  ReplayGainSettings m_replayGainSettings;
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);

@@ -23,7 +23,7 @@
 #include "addons/AddonManager.h"
 #include "Application.h"
 #include "GUIPassword.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
@@ -139,7 +139,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_addon.reset();
       // Setup new screensaver instance
       AddonPtr addon;
-      if (!CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
         return false;
 
       m_addon = boost::dynamic_pointer_cast<CScreenSaver>(addon);

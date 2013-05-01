@@ -20,7 +20,7 @@
 
 #include "Addon.h"
 #include "AddonManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "interfaces/python/XBPython.h"
@@ -411,7 +411,7 @@ bool CAddon::LoadStrings()
   // Path where the language strings reside
   CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
-  m_hasStrings = m_strings.Load(chosenPath, g_guiSettings.GetString("locale.language"));
+  m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString("locale.language"));
   return m_checkedStrings = true;
 }
 

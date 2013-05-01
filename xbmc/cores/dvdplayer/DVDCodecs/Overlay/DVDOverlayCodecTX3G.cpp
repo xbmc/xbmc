@@ -24,7 +24,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
@@ -64,7 +64,7 @@ CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle D
   m_pOverlay = NULL;
   // stupid, this comes from a static global in GUIWindowFullScreen.cpp
   uint32_t colormap[8] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF, 0xFFE5E5E5, 0xFFC0C0C0 };
-  m_textColor = colormap[g_guiSettings.GetInt("subtitles.color")];
+  m_textColor = colormap[CSettings::Get().GetInt("subtitles.color")];
 }
 
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()

@@ -19,7 +19,7 @@
  */
 #include "system.h" //HAS_ZEROCONF define
 #include "Zeroconf.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 #ifdef _LINUX
 #if !defined(TARGET_DARWIN)
@@ -67,7 +67,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                const std::string& fcr_type,
                                const std::string& fcr_name,
                                unsigned int f_port,
-                               const std::vector<std::pair<std::string, std::string> >& txt)
+                               std::vector<std::pair<std::string, std::string> > txt /* = std::vector<std::pair<std::string, std::string> >() */)
 {
   CSingleLock lock(*mp_crit_sec);
   CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port, txt};
@@ -99,21 +99,22 @@ bool CZeroconf::HasService(const std::string& fcr_identifier) const
   return (m_service_map.find(fcr_identifier) != m_service_map.end());
 }
 
-void CZeroconf::Start()
+bool CZeroconf::Start()
 {
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    g_guiSettings.SetBool("services.zeroconf", false);
-    if (g_guiSettings.GetBool("services.airplay"))
-      g_guiSettings.SetBool("services.airplay", false);
-    return;
+    CSettings::Get().SetBool("services.zeroconf", false);
+    if (CSettings::Get().GetBool("services.airplay"))
+      CSettings::Get().SetBool("services.airplay", false);
+    return false;
   }
   if(m_started)
-    return;
+    return true;
   m_started = true;
 
   CJobManager::GetInstance().AddJob(new CPublish(m_service_map), NULL);
+  return true;
 }
 
 void CZeroconf::Stop()

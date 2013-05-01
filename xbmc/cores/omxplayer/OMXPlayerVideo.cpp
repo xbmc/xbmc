@@ -41,7 +41,6 @@
 #include "windowing/WindowingFactory.h"
 #include "DVDOverlayRenderer.h"
 #include "settings/DisplaySettings.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderFormats.h"
@@ -119,7 +118,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
 
   m_hints       = hints;
   m_Deinterlace = ( CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
-  m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
+  m_hdmi_clock_sync = (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_flush       = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;

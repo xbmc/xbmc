@@ -32,7 +32,7 @@
 #include "ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -67,7 +67,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLay
     musicUrl.AddOption("xsp", xsp);
   }
 
-  bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
+  bool albumArtistsOnly = !CSettings::Get().GetBool("musiclibrary.showcompilationartists");
   if (parameterObject["albumartistsonly"].isBoolean())
     albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
 

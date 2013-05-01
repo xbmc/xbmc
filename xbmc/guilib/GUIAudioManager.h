@@ -20,12 +20,13 @@
  *
  */
 
+#include <map>
+
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "settings/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 #include "utils/StdString.h"
-#include "cores/AudioEngine/Interfaces/AESound.h"
-
-#include <map>
 
 // forward definitions
 class CAction;
@@ -34,7 +35,7 @@ class IAESound;
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
-class CGUIAudioManager
+class CGUIAudioManager : public ISettingCallback
 {
   class CWindowSounds
   {
@@ -53,6 +54,8 @@ class CGUIAudioManager
 public:
   CGUIAudioManager();
   ~CGUIAudioManager();
+
+  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void DeInitialize();

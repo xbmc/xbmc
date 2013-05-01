@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
-#include "settings/GUISettings.h"
 #if defined(HAS_AMLPLAYER)
 #include "cores/amlplayer/AMLUtils.h"
 #endif

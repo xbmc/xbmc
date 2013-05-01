@@ -40,6 +40,7 @@
 #include "pythreadstate.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
+#include "guilib/GraphicContext.h"
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"

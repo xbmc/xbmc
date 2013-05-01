@@ -20,14 +20,15 @@
 
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
+#include "URL.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/Base64.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/Base64.h"
-#include "threads/SingleLock.h"
-#include "XBDateTime.h"
-#include "URL.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")

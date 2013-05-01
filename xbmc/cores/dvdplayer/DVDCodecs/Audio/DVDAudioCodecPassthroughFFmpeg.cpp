@@ -21,7 +21,7 @@
 #include "DVDAudioCodecPassthroughFFmpeg.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-#include "settings/GUISettings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -293,14 +293,14 @@ bool CDVDAudioCodecPassthroughFFmpeg::SupportsFormat(CDVDStreamInfo &hints)
 
 bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
 
   // TODO - move this stuff somewhere else
   if (AUDIO_IS_BITSTREAM(audioMode))
   {
-    m_bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
-    m_bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
-    m_bSupportsAACOut = g_guiSettings.GetBool("audiooutput.passthroughaac");
+    m_bSupportsAC3Out = CSettings::Get().GetBool("audiooutput.ac3passthrough");
+    m_bSupportsDTSOut = CSettings::Get().GetBool("audiooutput.dtspassthrough");
+    m_bSupportsAACOut = CSettings::Get().GetBool("audiooutput.passthroughaac");
   }
   else
     return false;

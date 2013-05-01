@@ -37,7 +37,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
@@ -81,7 +81,7 @@ namespace VIDEO
 
       m_database.Open();
 
-      if (m_showDialog && !g_guiSettings.GetBool("videolibrary.backgroundupdate"))
+      if (m_showDialog && !CSettings::Get().GetBool("videolibrary.backgroundupdate"))
       {
         CGUIDialogExtendedProgressBar* dialog =
           (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
@@ -1260,7 +1260,7 @@ namespace VIDEO
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+    if (CSettings::Get().GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);

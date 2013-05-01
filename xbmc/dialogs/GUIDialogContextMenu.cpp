@@ -28,8 +28,8 @@
 #include "GUIPassword.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "GUIDialogMediaSource.h"
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
@@ -40,7 +40,6 @@
 #include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -368,8 +367,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
       buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
 
       bool maxRetryExceeded = false;
-      if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
-        maxRetryExceeded = (share->m_iBadPwdCount >= g_guiSettings.GetInt("masterlock.maxretries"));
+      if (CSettings::Get().GetInt("masterlock.maxretries") != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= CSettings::Get().GetInt("masterlock.maxretries"));
 
       if (maxRetryExceeded)
         buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
@@ -607,8 +606,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   case CONTEXT_BUTTON_REACTIVATE_LOCK:
     {
       bool maxRetryExceeded = false;
-      if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
-        maxRetryExceeded = (share->m_iBadPwdCount >= g_guiSettings.GetInt("masterlock.maxretries"));
+      if (CSettings::Get().GetInt("masterlock.maxretries") != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= CSettings::Get().GetInt("masterlock.maxretries"));
       if (!maxRetryExceeded)
       {
         // don't prompt user for mastercode when reactivating a lock

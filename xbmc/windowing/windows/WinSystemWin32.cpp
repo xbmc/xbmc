@@ -22,9 +22,9 @@
 #include "WinEventsWin32.h"
 #include "resource.h"
 #include "guilib/gui3d.h"
-#include "settings/DisplaySettings.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 
 #ifdef _WIN32
@@ -257,7 +257,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 {
   m_IsAlteringWindow = true;
 
-  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (CSettings::Get().GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceResize = false;
 
@@ -284,7 +284,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
-  if (fullScreen && g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  if (fullScreen && CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     ChangeResolution(res);
 
   ResizeInternal(forceResize);

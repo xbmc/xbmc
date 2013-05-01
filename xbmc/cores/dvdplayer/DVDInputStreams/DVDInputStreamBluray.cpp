@@ -24,7 +24,7 @@
 #include "IDVDPlayer.h"
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -380,7 +380,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   if(m_navmode)
   {
-    int region = g_guiSettings.GetInt("dvds.playerregion");
+    int region = CSettings::Get().GetInt("dvds.playerregion");
     if(region == 0)
     {
       CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - region dvd must be set in setting, assuming region 1");

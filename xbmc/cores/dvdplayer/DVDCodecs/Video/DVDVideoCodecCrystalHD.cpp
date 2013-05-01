@@ -26,10 +26,10 @@
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "settings/GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecCrystalHD.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -51,7 +51,7 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (g_guiSettings.GetBool("videoplayer.usechd") && !hints.software)
+  if (CSettings::Get().GetBool("videoplayer.usechd") && !hints.software)
   {
     switch (hints.codec)
     {

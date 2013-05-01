@@ -37,9 +37,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/VideoSettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -575,8 +575,8 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 
     m_audio_info  = "none";
     m_audio_delay = 0;
-    m_audio_passthrough_ac3 = g_guiSettings.GetBool("audiooutput.ac3passthrough");
-    m_audio_passthrough_dts = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+    m_audio_passthrough_ac3 = CSettings::Get().GetBool("audiooutput.ac3passthrough");
+    m_audio_passthrough_dts = CSettings::Get().GetBool("audiooutput.dtspassthrough");
 
     m_video_info  = "none";
     m_video_width    =  0;

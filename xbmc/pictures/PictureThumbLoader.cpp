@@ -27,9 +27,9 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
-#include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "video/VideoThumbLoader.h"
 
 using namespace XFILE;
@@ -73,7 +73,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
       {
         thumb = thumbURL;
       }
-      else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
+      else if (CSettings::Get().GetBool("myvideos.extractthumb") && CSettings::Get().GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);

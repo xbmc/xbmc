@@ -47,6 +47,7 @@
 #include "Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
+#include "settings/ISettingCallback.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -62,12 +63,21 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_AUTO,
                  VIEW_TYPE_MAX };
 
+enum AdjustRefreshRate
+{
+  ADJUST_REFRESHRATE_OFF          = 0,
+  ADJUST_REFRESHRATE_ALWAYS,
+  ADJUST_REFRESHRATE_ON_STARTSTOP
+};
 
-class CGraphicContext : public CCriticalSection
+class CGraphicContext : public CCriticalSection,
+                        public ISettingCallback
 {
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
+
+  virtual void OnSettingChanged(const CSetting *setting);
 
   // the following two functions should wrap any
   // GL calls to maintain thread safety

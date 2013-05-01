@@ -32,7 +32,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -238,7 +238,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   ClearQualityInfo(qualityInfo);
 
   PVR_CLIENT client;
-  if (g_guiSettings.GetBool("pvrplayback.signalquality") &&
+  if (CSettings::Get().GetBool("pvrplayback.signalquality") &&
       g_PVRClients->GetPlayingClient(client))
   {
     client->SignalQuality(qualityInfo);

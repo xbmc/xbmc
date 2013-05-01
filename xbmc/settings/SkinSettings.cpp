@@ -22,7 +22,7 @@
 
 #include "SkinSettings.h"
 #include "GUIInfoManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -277,5 +277,5 @@ void CSkinSettings::Clear()
 
 std::string CSkinSettings::GetCurrentSkin() const
 {
-  return g_guiSettings.GetString("lookandfeel.skin");
+  return CSettings::Get().GetString("lookandfeel.skin");
 }

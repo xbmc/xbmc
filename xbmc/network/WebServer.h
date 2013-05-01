@@ -29,9 +29,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <vector>
+
 #include "interfaces/json-rpc/ITransportLayer.h"
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
-#include "httprequesthandler/IHTTPRequestHandler.h"
 
 class CWebServer : public JSONRPC::ITransportLayer
 {
@@ -54,6 +55,7 @@ public:
   static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);
+
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);

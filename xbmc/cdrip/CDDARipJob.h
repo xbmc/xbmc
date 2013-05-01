@@ -37,7 +37,7 @@ public:
   //! \param input The input file url
   //! \param output The output file url
   //! \param tag The music tag to attach to track
-  //! \param encoder The encoder to use. See GUISettings.h
+  //! \param encoder The encoder to use. See Encoder.h
   //! \param eject Should we eject tray on finish?
   //! \param rate The sample rate of the input
   //! \param channels Number of audio channels in input

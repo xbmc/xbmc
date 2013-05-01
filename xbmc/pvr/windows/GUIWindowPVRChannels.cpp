@@ -37,7 +37,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 #include "epg/EpgContainer.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -446,7 +446,7 @@ bool CGUIWindowPVRChannels::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
     /* play channel */
-    bReturn = PlayFile(item, g_guiSettings.GetBool("pvrplayback.playminimized"));
+    bReturn = PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
   }
 
   return bReturn;
@@ -492,10 +492,10 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
 
     CStdString strThumb;
     VECSOURCES shares;
-    if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
+    if (CSettings::Get().GetString("pvrmenu.iconpath") != "")
     {
       CMediaSource share1;
-      share1.strPath = g_guiSettings.GetString("pvrmenu.iconpath");
+      share1.strPath = CSettings::Get().GetString("pvrmenu.iconpath");
       share1.strName = g_localizeStrings.Get(19018);
       shares.push_back(share1);
     }

@@ -23,7 +23,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "utils/MathUtils.h"
-#include "settings/GUISettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -244,7 +243,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
       CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
       CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
-      g_settings.Save();
+      CSettings::Get().Save();
     }
   }
   else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)

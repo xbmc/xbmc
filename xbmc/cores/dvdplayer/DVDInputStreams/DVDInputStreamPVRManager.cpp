@@ -28,7 +28,7 @@
 #include "utils/StringUtils.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 using namespace XFILE;
 using namespace PVR;
@@ -131,7 +131,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
     }
   }
 
-  ResetScanTimeout((unsigned int) g_guiSettings.GetInt("pvrplayback.scantime") * 1000);
+  ResetScanTimeout((unsigned int) CSettings::Get().GetInt("pvrplayback.scantime") * 1000);
   m_content = content;
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", transFile.c_str());
 

@@ -359,7 +359,7 @@ void Vortex::Init( LPDIRECT3DDEVICE9 pD3DDevice, int iPosX, int iPosY, int iWidt
 	g_AnnouncePreset.Init(m_pScriptEngine, "ANNOUNCE");
 	g_AnnouncePreset.m_presetId = 3;
 
-	if ( g_Settings.PresetLocked )
+	if ( CSettings::Get().PresetLocked )
 	{
 		// Check that the preset locked in the settings file is still valid
 		if ( g_currPresetId >= g_PresetFiles.NumFiles() || g_currPresetId < 0 )
@@ -367,7 +367,7 @@ void Vortex::Init( LPDIRECT3DDEVICE9 pD3DDevice, int iPosX, int iPosY, int iWidt
 			g_currPresetId = GetRandomPreset();
 		}
 	}
-	else if ( g_Settings.RandomPresetsEnabled )
+	else if ( CSettings::Get().RandomPresetsEnabled )
 	{
 		g_currPresetId = GetRandomPreset();
 	}
@@ -379,7 +379,7 @@ void Vortex::Init( LPDIRECT3DDEVICE9 pD3DDevice, int iPosX, int iPosY, int iWidt
 	char filename[ 256 ];
 	sprintf( filename, "%s%s", g_PresetPath, g_PresetFiles.GetFilename( g_currPresetId ) );
 	g_presets[ 0 ]->Begin( filename );
-	g_mainCounter = g_Settings.TimeBetweenPresets + ((rand() % 100) / 100.0f) * g_Settings.TimeBetweenPresetsRand;
+	g_mainCounter = CSettings::Get().TimeBetweenPresets + ((rand() % 100) / 100.0f) * CSettings::Get().TimeBetweenPresetsRand;
 	g_currentState = STATE_RENDER_PRESET;
 }
 
@@ -809,7 +809,7 @@ void Vortex::Render()
 	case STATE_RENDER_PRESET:
 		{
 			//      OutputDebugString("STATE = STATE_RENDER_PRESET\n");
-			if ( !g_Settings.PresetLocked )
+			if ( !CSettings::Get().PresetLocked )
 			{
 				g_mainCounter -= g_timePass;
 			}
@@ -821,7 +821,7 @@ void Vortex::Render()
 				if ( g_mainCounter <= 0 )
 				{
 					// Not in a transition, preset not locked and time for a new preset
-					if ( g_Settings.RandomPresetsEnabled )
+					if ( CSettings::Get().RandomPresetsEnabled )
 					{
 						int nextPreset = GetRandomPreset();	
 						if ( nextPreset == g_currPresetId )
@@ -843,14 +843,14 @@ void Vortex::Render()
 				}
 
 				g_finished = true;
-				g_mainCounter = g_Settings.TimeBetweenPresets + ((rand() % 100) / 100.0f) * g_Settings.TimeBetweenPresetsRand;
+				g_mainCounter = CSettings::Get().TimeBetweenPresets + ((rand() % 100) / 100.0f) * CSettings::Get().TimeBetweenPresetsRand;
 
 				// Load preset
 				sprintf(filename, "%s%s", g_PresetPath, g_PresetFiles.GetFilename( g_currPresetId ) );
 				if ( g_presets[ 1 ]->Begin( filename ) == true )
 				{
 					// Load and begin transition
-					if ( g_Settings.TransitionsEnabled && g_TransitionFiles.NumFiles() != 0 )
+					if ( CSettings::Get().TransitionsEnabled && g_TransitionFiles.NumFiles() != 0 )
 					{
 						g_transitionId = ( g_transitionId + 1 ) % g_TransitionFiles.NumFiles();
 						sprintf( filename, "%s%s", g_TransitionPath, g_TransitionFiles.GetFilename( g_transitionId ) );
@@ -880,7 +880,7 @@ void Vortex::Render()
 			//      OutputDebugString("STATE = STATE_TRANSITION\n");
 			if (g_finished)
 			{
-				g_mainCounter = g_Settings.TimeBetweenPresets + ((rand() % 100) / 100.0f) * g_Settings.TimeBetweenPresetsRand;
+				g_mainCounter = CSettings::Get().TimeBetweenPresets + ((rand() % 100) / 100.0f) * CSettings::Get().TimeBetweenPresetsRand;
 				SwapPresets();
 				g_finished = false;
 
@@ -913,7 +913,7 @@ void Vortex::Render()
 //	Renderer::Rect( -1.0, -1.0, 1.0, 1.0, 0xff000000 );
 /*
 
-	if ( g_Settings.ShowAudioAnalysis )
+	if ( CSettings::Get().ShowAudioAnalysis )
 	{
 		FLOAT BAR_WIDTH = 1.0f / 128;
 		/ *
@@ -994,12 +994,12 @@ void Vortex::Render()
 	}
 
 */
-	if( g_Settings.ShowDebugConsole )
+	if( CSettings::Get().ShowDebugConsole )
 	{
 		DebugConsole::Render();
 	}
 
-	if( g_Settings.ShowFPS )
+	if( CSettings::Get().ShowFPS )
 	{
 		char FrameRate[256];
 		sprintf_s(FrameRate, 256, "FPS = %0.02f\n", fFPS );

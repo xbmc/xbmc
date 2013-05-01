@@ -26,7 +26,6 @@
 #include "guilib/GUIImage.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "guilib/GUIKeyboardFactory.h"
 

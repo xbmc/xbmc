@@ -22,7 +22,7 @@
 
 #include "utils/CharsetConverter.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include <math.h>
 
@@ -600,10 +600,10 @@ CStdString CKaraokeLyricsTextKAR::convertText( const char * data )
   CStdString strUTF8;
 
   // Use some heuristics; need to replace by real detection stuff later
-  if ( g_charsetConverter.isValidUtf8(data) || g_guiSettings.GetString("karaoke.charset") == "DEFAULT" )
+  if ( g_charsetConverter.isValidUtf8(data) || CSettings::Get().GetString("karaoke.charset") == "DEFAULT" )
     strUTF8 = data;
   else
-    g_charsetConverter.stringCharsetToUtf8( g_guiSettings.GetString("karaoke.charset"), data, strUTF8 );
+    g_charsetConverter.stringCharsetToUtf8( CSettings::Get().GetString("karaoke.charset"), data, strUTF8 );
 
   if ( strUTF8.size() == 0 )
     strUTF8 = " ";

@@ -3617,7 +3617,9 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr ""
 
-#empty string with id 1274
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr ""
 
 #. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -4080,14 +4082,48 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr ""
 
-#empty strings from id 10035 to 10039
+msgctxt "#10035"
+msgid "Reset"
+msgstr ""
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr ""
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr ""
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr ""
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr ""
 
-#empty strings from id 10041 to 10099
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr ""
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr ""
+
+msgctxt "#10043"
+msgid "Help"
+msgstr ""
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr ""
+
+#empty strings from id 10045 to 10099
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
@@ -5669,7 +5705,7 @@ msgstr ""
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#13435"
-msgid "Enable HQ Scalers for scalings above %"
+msgid "Enable HQ Scalers for scalings above"
 msgstr ""
 
 #empty strings from id 13436 to 13499
@@ -12060,7 +12096,7 @@ msgstr ""
 
 xbmc\network\windows\ZeroconfWIN.cpp
 msgctxt "#34300"
-msgid "Failed to start zeroconf"
+msgid "Failed to start Zeroconf"
 msgstr ""
 
 #: xbmc\network\windows\ZeroconfWIN.cpp
@@ -12068,7 +12104,19 @@ msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr ""
 
-#empty strings from id 34302 to 34399
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr ""
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr ""
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr ""
+
+#empty strings from id 34305 to 34399
 
 #: xbmc\cores\VideoRenderers\LinuxRendererGL.cpp
 msgctxt "#34400"

@@ -23,8 +23,8 @@
  * - use Observable here, so we can use event driven operations later
  */
 
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -116,8 +116,8 @@ bool CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  m_bUsingBackendChannelOrder   = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
-  m_bUsingBackendChannelNumbers = g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers");
+  m_bUsingBackendChannelOrder   = CSettings::Get().GetBool("pvrmanager.backendchannelorder");
+  m_bUsingBackendChannelNumbers = CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers");
 
   int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
@@ -137,7 +137,6 @@ bool CPVRChannelGroup::Load(void)
 
   SortAndRenumber();
 
-  g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
   return true;
@@ -146,14 +145,13 @@ bool CPVRChannelGroup::Load(void)
 void CPVRChannelGroup::Unload(void)
 {
   CSingleLock lock(m_critSection);
-  g_guiSettings.UnregisterObserver(this);
   m_members.clear();
 }
 
 bool CPVRChannelGroup::Update(void)
 {
   if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED ||
-      !g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
+      !CSettings::Get().GetBool("pvrmanager.syncchannelgroups"))
     return true;
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
@@ -240,7 +238,7 @@ bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::str
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  if (g_guiSettings.GetString("pvrmenu.iconpath").IsEmpty())
+  if (CSettings::Get().GetString("pvrmenu.iconpath").empty())
     return;
 
   CPVRDatabase *database = GetPVRDatabase();
@@ -257,7 +255,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     if (!groupMember.channel->IconPath().IsEmpty())
       continue;
 
-    CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
+    CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
     CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
 
     CStdString strIconPath = strBasePath + strSanitizedChannelName;
@@ -884,7 +882,7 @@ bool CPVRChannelGroup::Renumber(void)
 {
   bool bReturn(false);
   unsigned int iChannelNumber(0);
-  bool bUseBackendChannelNumbers(g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers") && g_PVRClients->EnabledClientAmount() == 1);
+  bool bUseBackendChannelNumbers(CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers") && g_PVRClients->EnabledClientAmount() == 1);
 
   if (PreventSortAndRenumber())
     return true;
@@ -978,18 +976,24 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
     m_members.at(iChannelPtr).channel->SetCachedChannelNumber(0);
 }
 
-void CPVRChannelGroup::Notify(const Observable &obs, const ObservableMessage msg)
+void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
 {
+  if (setting == NULL)
+    return;
+
   /* TODO: while pvr manager is starting up do accept setting changes. */
   if(!g_PVRManager.IsStarted())
   {
     CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
+    return;
   }
-  else if (msg == ObservableMessageGuiSettings)
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "pvrmanager.backendchannelorder" || settingId == "pvrmanager.usebackendchannelnumbers")
   {
     CSingleLock lock(m_critSection);
-    bool bUsingBackendChannelOrder   = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
-    bool bUsingBackendChannelNumbers = g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers");
+    bool bUsingBackendChannelOrder   = CSettings::Get().GetBool("pvrmanager.backendchannelorder");
+    bool bUsingBackendChannelNumbers = CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers");
     bool bChannelNumbersChanged      = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
     bool bChannelOrderChanged        = m_bUsingBackendChannelOrder != bUsingBackendChannelOrder;
 

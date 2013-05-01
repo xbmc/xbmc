@@ -1420,9 +1420,6 @@
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\GUISettings.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
@@ -2922,9 +2919,6 @@
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.cpp">
       <Filter>settings\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\windows\GUISettingControls.cpp">
-      <Filter>settings\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\windows\GUIWindowSettings.cpp">
       <Filter>settings\windows</Filter>
     </ClCompile>
@@ -2990,6 +2984,51 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.cpp">
       <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\windows\GUIControlSettings.cpp">
+      <Filter>settings\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\ISetting.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\Setting.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingCategoryAccess.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingConditions.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingControl.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingDependency.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingVisibility.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\BooleanLogic.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingUpdate.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingsManager.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingAddon.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingPath.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\SettingSection.cpp">
+      <Filter>settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4319,9 +4358,6 @@
       <Filter>rendering\gl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\AdvancedSettings.h">
-      <Filter>settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\GUISettings.h">
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\Settings.h">
@@ -5756,9 +5792,6 @@
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettings.h">
       <Filter>settings\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\windows\GUISettingControls.h">
-      <Filter>settings\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettings.h">
       <Filter>settings\windows</Filter>
     </ClInclude>
@@ -5845,6 +5878,60 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.h">
       <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\windows\GUIControlSettings.h">
+      <Filter>settings\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\ISetting.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\ISettingCallback.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\Setting.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingCategoryAccess.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingConditions.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingControl.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingDependency.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingVisibility.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\NetworkServices.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\BooleanLogic.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingUpdate.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingsManager.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\ISettingCreator.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingAddon.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingPath.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\SettingSection.h">
+      <Filter>settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

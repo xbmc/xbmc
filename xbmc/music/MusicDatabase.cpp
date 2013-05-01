@@ -44,8 +44,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/MediaSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
@@ -53,6 +51,7 @@
 #include "karaoke/karaokelyricsfactory.h"
 #endif
 #include "storage/MediaManager.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
@@ -2408,7 +2407,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
 #ifdef HAS_DVD_DRIVE
-  if (!g_guiSettings.GetBool("audiocds.usecddb"))
+  if (!CSettings::Get().GetBool("audiocds.usecddb"))
     return false;
 
   // check network connectivity
@@ -2508,7 +2507,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     else
       pDialogProgress->Close();
-  } // if (pCdInfo->HasCDDBInfo() && g_settings.m_bUseCDDB)
+  }
 
   // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
 
@@ -3673,7 +3672,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("DROP TABLE thumb");
 
     CMediaSettings::Get().SetMusicNeedsUpdate(27);
-    g_settings.Save();
+    CSettings::Get().Save();
   }
 
   if (version < 29)
@@ -4496,7 +4495,7 @@ bool CMusicDatabase::GetItems(const CStdString &strBaseDir, const CStdString &it
   else if (itemType.Equals("years"))
     return GetYearsNav(strBaseDir, items, filter);
   else if (itemType.Equals("artists"))
-    return GetArtistsNav(strBaseDir, items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, filter, sortDescription);
+    return GetArtistsNav(strBaseDir, items, !CSettings::Get().GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, filter, sortDescription);
   else if (itemType.Equals("albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
   else if (itemType.Equals("songs"))
@@ -5538,7 +5537,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       if (xsp.GetOrder() != SortByNone)
         sorting.sortBy = xsp.GetOrder();
       sorting.sortOrder = xsp.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-      if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }

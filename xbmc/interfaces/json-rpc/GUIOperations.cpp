@@ -27,7 +27,7 @@
 #include "interfaces/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 
 using namespace std;
@@ -111,7 +111,7 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVar
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
   else if (property.Equals("skin"))
   {
-    CStdString skinId = g_guiSettings.GetString("lookandfeel.skin");
+    CStdString skinId = CSettings::Get().GetString("lookandfeel.skin");
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(skinId, addon, ADDON_SKIN);
 

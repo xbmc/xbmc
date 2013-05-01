@@ -85,13 +85,11 @@ void CEventServer::StartServer()
     return;
 
   // set default port
-  string port = (const char*)g_guiSettings.GetString("services.esport");
-  assert(port.length());
-  m_iPort = atoi(port.c_str());
+  m_iPort = CSettings::Get().GetInt("services.esport");
   assert(m_iPort <= 65535 && m_iPort >= 1);
 
   // max clients
-  m_iMaxClients = g_guiSettings.GetInt("services.esmaxclients");
+  m_iMaxClients = CSettings::Get().GetInt("services.esmaxclients");
   if (m_iMaxClients < 0)
   {
     CLog::Log(LOGERROR, "ES: Invalid maximum number of clients specified %d", m_iMaxClients);
@@ -156,7 +154,6 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
-  std::vector<std::pair<std::string, std::string> > txt;
 
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
@@ -178,7 +175,7 @@ void CEventServer::Run()
   }
 
   // bind to IP and start listening on port
-  int port_range = g_guiSettings.GetInt("services.esportrange");
+  int port_range = CSettings::Get().GetInt("services.esportrange");
   if (port_range < 1 || port_range > 100)
   {
     CLog::Log(LOGERROR, "ES: Invalid port range specified %d, defaulting to 10", port_range);
@@ -191,6 +188,7 @@ void CEventServer::Run()
   }
 
   // publish service
+  std::vector<std::pair<std::string, std::string> > txt;
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
                                g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),

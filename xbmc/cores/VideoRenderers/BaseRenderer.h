@@ -20,12 +20,16 @@
  *
  */
 
+#include <vector>
+
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
 #include "RenderFormats.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
+
+class CSetting;
 
 typedef struct YV12Image
 {
@@ -65,6 +69,18 @@ enum ERENDERFEATURE
   RENDERFEATURE_POSTPROCESS
 };
 
+// Render Methods
+enum RenderMethods
+{
+  RENDER_METHOD_AUTO     = 0,
+  RENDER_METHOD_ARB,
+  RENDER_METHOD_GLSL,
+  RENDER_METHOD_SOFTWARE,
+  RENDER_METHOD_D3D_PS,
+  RENDER_METHOD_DXVA,
+  RENDER_OVERLAYS        = 99   // to retain compatibility
+};
+
 typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
 struct DVDVideoPicture;
@@ -91,6 +107,8 @@ public:
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
 
   virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
+
+  static void SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
 protected:
   void       ChooseBestResolution(float fps);

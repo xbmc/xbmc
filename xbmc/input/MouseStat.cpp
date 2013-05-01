@@ -20,8 +20,9 @@
 
 #include "MouseStat.h"
 #include "guilib/Key.h"
-#include "windowing/WindowingFactory.h"
+#include "settings/Setting.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 
 CMouseStat::CMouseStat()
 {
@@ -35,6 +36,16 @@ CMouseStat::CMouseStat()
 
 CMouseStat::~CMouseStat()
 {
+}
+
+void CMouseStat::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "input.enablemouse")
+    SetEnabled(((CSettingBool*)setting)->GetValue());
 }
 
 void CMouseStat::Initialize()

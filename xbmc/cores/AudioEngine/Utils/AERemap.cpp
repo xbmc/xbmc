@@ -24,7 +24,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -197,7 +197,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
 
   #undef RM
 
-  if (g_guiSettings.GetBool("audiooutput.stereoupmix"))
+  if (CSettings::Get().GetBool("audiooutput.stereoupmix"))
     BuildUpmixMatrix(input, output);
 
   /* normalize the values */
@@ -207,7 +207,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   else
   {
     //FIXME: guisetting is reversed, change the setting name after frodo
-    normalize = !g_guiSettings.GetBool("audiooutput.normalizelevels");
+    normalize = !CSettings::Get().GetBool("audiooutput.normalizelevels");
     CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (normalize ? "enabled" : "disabled"));
   }
 

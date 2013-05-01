@@ -30,9 +30,8 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
 #include "Favourites.h"
-#include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -129,7 +128,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
           CMediaSettings::Get().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO));
-          g_settings.Save();
+          CSettings::Get().Save();
           UpdateButtons();
           Refresh();
         }
@@ -172,7 +171,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
         // save settings
         CMediaSettings::Get().SetVideoPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL);
-        g_settings.Save();
+        CSettings::Get().Save();
 
         UpdateButtons();
       }
@@ -377,7 +376,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   {
     // need 2 rename it
     CStdString strPath, strFolder;
-    URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strFolder);
+    URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video", strFolder);
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     URIUtils::AddFileToFolder(strFolder, strNewFileName, strPath);

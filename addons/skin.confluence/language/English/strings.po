@@ -41,7 +41,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-#empty string with id 31007
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr ""
 
 msgctxt "#31008"
 msgid "Fullscreen"

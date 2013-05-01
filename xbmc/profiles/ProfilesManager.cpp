@@ -36,7 +36,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
 #include "input/MouseStat.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -91,11 +90,11 @@ bool CProfilesManager::OnSettingsLoading()
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  string strDir = g_guiSettings.GetString("system.playlistspath");
+  string strDir = CSettings::Get().GetString("system.playlistspath");
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    g_guiSettings.SetString("system.playlistspath", strDir.c_str());
+    CSettings::Get().SetString("system.playlistspath", strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -244,9 +243,15 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   m_currentProfile = index;
 
-  // load the new settings
-  if (!g_settings.Load())
+  // first unload any old settings
+  CSettings::Get().Unload();
+  // then load the new settings
+  if (!CSettings::Get().Load())
+  {
+    CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
     return false;
+  }
+  CSettings::Get().SetLoaded();
 
   CreateProfileFolders();
 
@@ -254,7 +259,7 @@ bool CProfilesManager::LoadProfile(size_t index)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  string strLanguage = g_guiSettings.GetString("locale.language");
+  string strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
   string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
@@ -266,7 +271,7 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   CDatabaseManager::Get().Initialize();
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+  g_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();
@@ -278,7 +283,10 @@ bool CProfilesManager::LoadProfile(size_t index)
   {
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
-      g_guiSettings.LoadMasterLock(doc.RootElement());
+    {
+      CSettings::Get().LoadSetting(doc.RootElement(), "masterlock.maxretries");
+      CSettings::Get().LoadSetting(doc.RootElement(), "masterlock.startuplock");
+    }
   }
 
   CPasswordManager::GetInstance().Clear();
@@ -333,7 +341,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (index == m_currentProfile)
   {
     LoadProfile(0);
-    g_settings.Save();
+    CSettings::Get().Save();
   }
 
   CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));

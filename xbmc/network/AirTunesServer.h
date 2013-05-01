@@ -53,6 +53,7 @@ public:
 
   static bool StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password="");
   static void StopServer(bool bWait);
+  static bool IsRunning();
   static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
   static void SetCoverArtFromBuffer(const char *buffer, unsigned int size);
 

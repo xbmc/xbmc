@@ -29,7 +29,7 @@
 #include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include "Artist.h"
@@ -173,7 +173,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
             pItem->SetArt("thumb", song.strThumb);
         }
       }
-      else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
+      else if (CSettings::Get().GetBool("musicfiles.usetags") || pItem->IsCDDA())
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser

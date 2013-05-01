@@ -38,13 +38,13 @@
 #include "Autorun.h"
 #include "GUIUserMessages.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "utils/XBMCTinyXML.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/JobManager.h"
 #include "AutorunMediaJob.h"
-#include "settings/GUISettings.h"
 
 #include "FileItem.h"
 #include "filesystem/File.h"
@@ -722,13 +722,15 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  if (g_guiSettings.GetInt("audiocds.autoaction") != AUTOCD_NONE || g_guiSettings.GetBool("dvds.autorun"))
-    if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP)
+#ifdef HAS_DVD_DRIVE
+  if (CSettings::Get().GetInt("audiocds.autoaction") != AUTOCD_NONE || CSettings::Get().GetBool("dvds.autorun"))
+    if (CSettings::Get().GetInt("audiocds.autoaction") == AUTOCD_RIP)
       CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_LOW);
     else
       CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
+#endif
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)

@@ -20,8 +20,7 @@
 
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
-#include "utils/XBMCTinyXML.h"
+#include "settings/Settings.h"
 #include "test/TestUtils.h"
 
 #include "gtest/gtest.h"
@@ -31,26 +30,29 @@ class TestFileFactory : public testing::Test
 protected:
   TestFileFactory()
   {
-    std::vector<CStdString> advancedsettings =
-      CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
-    std::vector<CStdString> guisettings =
-      CXBMCTestUtils::Instance().getGUISettingsFiles();
-    std::vector<CStdString>::iterator it;
-    for (it = advancedsettings.begin(); it < advancedsettings.end(); it++)
+    if (CSettings::Get().Initialize())
     {
-      g_advancedSettings.ParseSettingsFile(*it);
-    }
-    for (it = guisettings.begin(); it < guisettings.end(); it++)
-    {
-      CXBMCTinyXML xml(*it);
-      g_guiSettings.LoadXML(xml.RootElement());
-    }
+      std::vector<CStdString> advancedsettings =
+        CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
+      std::vector<CStdString> guisettings =
+        CXBMCTestUtils::Instance().getGUISettingsFiles();
+      
+      std::vector<CStdString>::iterator it;
+      for (it = guisettings.begin(); it < guisettings.end(); it++)
+        CSettings::Get().Load(*it);
+
+      for (it = advancedsettings.begin(); it < advancedsettings.end(); it++)
+        g_advancedSettings.ParseSettingsFile(*it);
+
+      CSettings::Get().SetLoaded();
+    }    
   }
 
   ~TestFileFactory()
   {
     g_advancedSettings.Clear();
-    g_guiSettings.Clear();
+    CSettings::Get().Unload();
+    CSettings::Get().Uninitialize();
   }
 };
 

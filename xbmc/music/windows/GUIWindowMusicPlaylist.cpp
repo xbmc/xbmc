@@ -33,9 +33,8 @@
 #include "GUIUserMessages.h"
 #include "Favourites.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -140,7 +139,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, !(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC)));
           CMediaSettings::Get().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC));
-          g_settings.Save();
+          CSettings::Get().Save();
           UpdateButtons();
           Refresh();
         }
@@ -190,7 +189,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
         // save settings
         CMediaSettings::Get().SetMusicPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
-        g_settings.Save();
+        CSettings::Get().Save();
 
         UpdateButtons();
       }
@@ -286,7 +285,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
   {
     // need 2 rename it
     CStdString strFolder, strPath;
-    URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strFolder);
+    URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music", strFolder);
     strNewFileName= CUtil::MakeLegalFileName( strNewFileName );
     strNewFileName += ".m3u";
     URIUtils::AddFileToFolder(strFolder, strNewFileName, strPath);
@@ -449,12 +448,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.nowplayingtrackformat");
+    CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
     if (strTrackLeft.IsEmpty())
-      strTrackLeft = g_guiSettings.GetString("musicfiles.trackformat");
-    CStdString strTrackRight=g_guiSettings.GetString("musicfiles.nowplayingtrackformatright");
+      strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
+    CStdString strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.IsEmpty())
-      strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
+      strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
     formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())

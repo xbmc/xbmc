@@ -18,6 +18,7 @@
  *
  */
 
+#include "system.h"
 #include "GUIListContainer.h"
 #include "GUIListItem.h"
 #include "Key.h"

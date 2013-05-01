@@ -24,7 +24,6 @@
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
 #include "utils/SeekHandler.h"
 
 #define SEEK_BAR_DISPLAY_TIME 2000L

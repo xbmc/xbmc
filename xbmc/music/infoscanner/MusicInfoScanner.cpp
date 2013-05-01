@@ -39,7 +39,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -86,7 +86,7 @@ void CMusicInfoScanner::Process()
 
     m_musicDatabase.Open();
 
-    if (m_showDialog && !g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+    if (m_showDialog && !CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
     {
       CGUIDialogExtendedProgressBar* dialog =
         (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
@@ -1182,7 +1182,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
-  if (!scraper.CheckValidOrFallback(g_guiSettings.GetString("musiclibrary.albumsscraper")))
+  if (!scraper.CheckValidOrFallback(CSettings::Get().GetString("musiclibrary.albumsscraper")))
   { // the current scraper is invalid, as is the default - bail
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return INFO_ERROR;

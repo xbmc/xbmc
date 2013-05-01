@@ -21,6 +21,8 @@
 
 #include "PeripheralHID.h"
 
+class CSetting;
+
 namespace PERIPHERALS
 {
   class CPeripheralImon : public CPeripheralHID

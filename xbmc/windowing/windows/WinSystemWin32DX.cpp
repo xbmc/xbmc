@@ -20,7 +20,7 @@
 
 
 #include "WinSystemWin32DX.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "guilib/gui3d.h"
 
 #ifdef HAS_DX
@@ -38,7 +38,7 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
 {
-  return (g_guiSettings.GetBool("videoscreen.fakefullscreen") || !fullScreen);
+  return (CSettings::Get().GetBool("videoscreen.fakefullscreen") || !fullScreen);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)

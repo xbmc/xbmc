@@ -27,7 +27,7 @@
 #if defined(HAVE_OMXLIB)
 
 #include "video/VideoReferenceClock.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 #include "OMXClock.h"
 #include "utils/MathUtils.h"
@@ -318,7 +318,7 @@ bool OMXClock::OMXSetReferenceClock(bool lock /* = true */)
   OMX_TIME_CONFIG_ACTIVEREFCLOCKTYPE refClock;
   OMX_INIT_STRUCTURE(refClock);
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && m_has_video)
+  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && m_has_video)
     refClock.eClock = OMX_TIME_RefClockVideo;
   else if(m_has_audio)
     refClock.eClock = OMX_TIME_RefClockAudio;
@@ -761,7 +761,7 @@ bool OMXClock::OMXMediaTime(double pts, bool fixPreroll /* = true*/, bool lock /
   OMX_INIT_STRUCTURE(timeStamp);
   timeStamp.nPortIndex = m_omx_clock.GetInputPort();
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && m_has_video)
+  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && m_has_video)
     index = OMX_IndexConfigTimeCurrentVideoReference;
   else if(m_has_audio)
     index = OMX_IndexConfigTimeCurrentAudioReference;

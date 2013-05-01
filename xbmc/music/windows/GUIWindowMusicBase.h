@@ -100,7 +100,7 @@ protected:
   typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
 
-  // member variables to save frequently used g_guiSettings (which is slow)
+  // member variables to save frequently used CSettings (which is slow)
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
   MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;

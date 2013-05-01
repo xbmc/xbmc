@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "input/KeyboardStat.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
@@ -95,7 +95,7 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
-  int defaultShutdown = g_guiSettings.GetInt("powermanagement.shutdownstate");
+  int defaultShutdown = CSettings::Get().GetInt("powermanagement.shutdownstate");
 
   switch (defaultShutdown)
   {
@@ -134,7 +134,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  g_guiSettings.SetInt("powermanagement.shutdownstate", defaultShutdown);
+  ((CSettingInt*)CSettings::Get().GetSetting("powermanagement.shutdownstate"))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
@@ -284,4 +284,21 @@ void CPowerManager::OnLowBattery()
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
   CAnnouncementManager::Announce(System, "xbmc", "OnLowBattery");
+}
+
+void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  if (g_powerManager.CanPowerdown())
+    list.push_back(make_pair(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));
+  if (g_powerManager.CanHibernate())
+    list.push_back(make_pair(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE));
+  if (g_powerManager.CanSuspend())
+    list.push_back(make_pair(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND));
+  if (!g_application.IsStandAlone())
+  {
+    list.push_back(make_pair(g_localizeStrings.Get(13009), POWERSTATE_QUIT));
+#if !defined(TARGET_DARWIN_IOS)
+    list.push_back(make_pair(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
+#endif
+  }
 }

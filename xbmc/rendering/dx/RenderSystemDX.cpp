@@ -22,7 +22,6 @@
 #ifdef HAS_DX
 
 #include "threads/SystemClock.h"
-#include "settings/Settings.h"
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -30,8 +29,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/D3DResource.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/SystemInfo.h"
 #include "Application.h"
 #include "Util.h"

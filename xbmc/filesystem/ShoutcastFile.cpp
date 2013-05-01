@@ -26,7 +26,6 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "ShoutcastFile.h"
-#include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
 #include "utils/RegExp.h"

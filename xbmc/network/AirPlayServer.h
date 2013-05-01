@@ -46,6 +46,7 @@ public:
   //AirPlayServer impl.
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
+  static bool IsRunning();
   static bool SetCredentials(bool usePassword, const CStdString& password);
   static bool IsPlaying(){ return m_isPlaying > 0;}
   static void backupVolume();

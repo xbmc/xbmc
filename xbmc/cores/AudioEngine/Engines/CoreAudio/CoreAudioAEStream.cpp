@@ -26,7 +26,6 @@
 #include "xbmc/cores/AudioEngine/Interfaces/AE.h"
 #include "xbmc/cores/AudioEngine/AEFactory.h"
 #include "xbmc/cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"

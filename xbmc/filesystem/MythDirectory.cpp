@@ -24,8 +24,8 @@
 #include "DllLibCMyth.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
@@ -326,7 +326,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
    */
   if (type != TV_SHOWS)
   {
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
       items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%K", "%J"));
     else
       items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%K", "%J"));
@@ -392,7 +392,7 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
   }
   m_dll->ref_release(list);
 
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
     items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
   else
     items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
@@ -469,7 +469,7 @@ bool CMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   /*
    * Video sort title is set to the channel number.
    */
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
     items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556 /* Title */, LABEL_MASKS("%K", "%B"));
   else
     items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556 /* Title */, LABEL_MASKS("%K", "%B"));

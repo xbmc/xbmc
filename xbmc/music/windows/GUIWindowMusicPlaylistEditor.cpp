@@ -32,7 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -397,7 +397,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
     CStdString path, strBase;
-    URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strBase);
+    URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music", strBase);
     URIUtils::AddFileToFolder(strBase, name + ".m3u", path);
     playlist.Save(path);
     m_strLoadedPlaylist = name;
@@ -407,7 +407,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
-  FormatItemLabels(newItems, LABEL_MASKS(g_guiSettings.GetString("musicfiles.trackformat"), g_guiSettings.GetString("musicfiles.trackformatright"), "%L", ""));
+  FormatItemLabels(newItems, LABEL_MASKS(CSettings::Get().GetString("musicfiles.trackformat"), CSettings::Get().GetString("musicfiles.trackformatright"), "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
 }

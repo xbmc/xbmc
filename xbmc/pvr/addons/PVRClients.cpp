@@ -23,15 +23,14 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIUserMessages.h"
-#include "settings/GUISettings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -1155,7 +1154,7 @@ bool CPVRClients::UpdateAddons(void)
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
     // Please visit xbmc.org/pvr to learn more.
     m_bNoAddonWarningDisplayed = true;
-    g_guiSettings.SetBool("pvrmanager.enabled", false);
+    CSettings::Get().SetBool("pvrmanager.enabled", false);
     CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_MYPVR, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_MYPVR);

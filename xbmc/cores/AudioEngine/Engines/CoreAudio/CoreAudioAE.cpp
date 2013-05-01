@@ -26,8 +26,8 @@
 #include "CoreAudioAESound.h"
 #include "Application.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
@@ -214,12 +214,12 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   if (m_rawPassthrough)
     CLog::Log(LOGINFO, "CCoreAudioAE::OpenCoreAudio - RAW passthrough enabled");
 
-  std::string m_outputDevice =  g_guiSettings.GetString("audiooutput.audiodevice");
+  std::string m_outputDevice =  CSettings::Get().GetString("audiooutput.audiodevice");
 
   // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
-  switch (g_guiSettings.GetInt("audiooutput.channels"))
+  switch (CSettings::Get().GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
@@ -236,7 +236,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   }
 #endif
   // force optical/coax to 2.0 output channels
-  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+  if (!m_rawPassthrough && CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958)
     m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   // setup the desired format
