@@ -1,6 +1,7 @@
 SRCS=AddonsOperations.cpp \
      ApplicationOperations.cpp \
      AudioLibrary.cpp \
+     FavouritesOperations.cpp \
      FileItemHandler.cpp \
      FileOperations.cpp \
      GUIOperations.cpp \
