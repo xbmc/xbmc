@@ -25,14 +25,11 @@
 #include "utils/StdString.h"
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
+#include "windowing/WindowingFactory.h"
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
-
-class CTexture;
-class CGLTexture;
-class CDXTexture;
 
 /*!
 \ingroup textures
@@ -40,11 +37,11 @@ class CDXTexture;
 */
 class CBaseTexture
 {
-
+friend class CRenderSystemGL;
+friend class CRenderSystemGLES;
 public:
+  ~CBaseTexture();
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
-
-  virtual ~CBaseTexture();
 
   /*! \brief Load a texture from a file
    Loads a texture from a file, restricting in size if needed based on maxHeight and maxWidth.
@@ -76,13 +73,9 @@ public:
 
   bool HasAlpha() const;
 
-  virtual void CreateTextureObject() = 0;
-  virtual void DestroyTextureObject() = 0;
-  virtual void LoadToGPU() = 0;
-  virtual void BindToUnit(unsigned int unit) = 0;
-
   unsigned char* GetPixels() const { return m_pixels; }
   unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
+  unsigned int GetBlockSize() const;
   unsigned int GetRows() const { return GetRows(m_textureHeight); }
   unsigned int GetTextureWidth() const { return m_textureWidth; }
   unsigned int GetTextureHeight() const { return m_textureHeight; }
@@ -102,7 +95,9 @@ public:
 
   static unsigned int PadPow2(unsigned int x);
   bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
-
+  TextureObject GetTextureObject() const { return m_texture; };
+  void SetTextureObject (TextureObject object) { m_texture = object;};
+  unsigned int GetFormat() { return m_format; };
 private:
   // no copy constructor
   CBaseTexture(const CBaseTexture &copy);
@@ -115,7 +110,6 @@ protected:
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;
   unsigned int GetRows(unsigned int height) const;
-  unsigned int GetBlockSize() const;
 
   unsigned int m_imageWidth;
   unsigned int m_imageHeight;
@@ -129,12 +123,5 @@ protected:
   unsigned int m_format;
   int m_orientation;
   bool m_hasAlpha;
+  TextureObject m_texture;
 };
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "TextureGL.h"
-#define CTexture CGLTexture
-#elif defined(HAS_DX)
-#include "TextureDX.h"
-#define CTexture CDXTexture
-#endif
