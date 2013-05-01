@@ -27,6 +27,8 @@
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
 
+
+class CBaseTexture;
 class CRenderSystemGL : public CRenderSystemBase
 {
 public:
@@ -66,8 +68,13 @@ public:
   virtual void GetGLSLVersion(int& major, int& minor);
 
   virtual void ResetGLErrors();
-
+  virtual void DrawSceneGraphImpl( const CSceneGraph *sceneGraph, const CDirtyRegionList *regions = NULL);
+  virtual bool LoadToGPU(CBaseTexture *baseTexture);
+  virtual TextureObject CreateTextureObject() const;
+  virtual void DestroyTextureObject(TextureObject texture);
+  void BindToUnit(CBaseTexture *baseTexture, unsigned int unit);
 protected:
+  bool LoadToGPU(TextureObject object, unsigned int width, unsigned int height, unsigned int pitch, unsigned int rows, unsigned int format, const unsigned char *pixels);
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl(const CDirtyRegionList& dirty) = 0;
   void CalculateMaxTexturesize();
@@ -89,6 +96,7 @@ protected:
   GLdouble   m_view[16];
   GLdouble   m_projection[16];
   GLint      m_viewPort[4];
+  bool       m_needsClear;
 };
 
 #endif // RENDER_SYSTEM_H

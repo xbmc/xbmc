@@ -28,7 +28,9 @@
 #include "guilib/DirtyRegion.h"
 #include "utils/StdString.h"
 #include <stdint.h>
+#include "SceneGraph.h"
 
+class CSceneGraph;
 typedef enum _RenderingSystemType
 {
   RENDERING_SYSTEM_OPENGL,
@@ -41,9 +43,9 @@ typedef enum _RenderingSystemType
 *   We currently have two engines: OpenGL and DirectX
 *   This interface is very basic since a lot of the actual details will go in to the derived classes
 */
-
+typedef const void* TextureObject;
 typedef uint32_t color_t;
-
+class CBaseTexture;
 enum
 {
   RENDER_CAPS_DXT      = (1 << 0),
@@ -96,7 +98,11 @@ public:
   virtual void RestoreHardwareTransform() = 0;
 
   virtual bool TestRender() = 0;
-
+  virtual bool LoadToGPU(CBaseTexture *baseTexture) = 0;
+  virtual TextureObject CreateTextureObject() const = 0;
+  virtual void DestroyTextureObject(TextureObject texture) = 0;
+  virtual void BindToUnit(CBaseTexture *baseTexture, unsigned int unit) = 0;
+  virtual void DrawSceneGraphImpl( const CSceneGraph *sceneGraph, const CDirtyRegionList *regions = NULL) = 0;
   /**
    * Project (x,y,z) 3d scene coordinates to (x,y) 2d screen coordinates
    */
@@ -113,8 +119,12 @@ public:
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
-
+  CSceneGraph* GetSceneGraph() const { return m_sceneGraph; }
+  void DrawSceneGraph(const CDirtyRegionList *regions = NULL);
 protected:
+  bool SwapBlueRed(const unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset = 0);
+  unsigned int GetPitch(unsigned int format, unsigned int width);
+  unsigned int GetRows(unsigned int format, unsigned int height);
   bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
   bool                m_bVSync;
@@ -128,6 +138,9 @@ protected:
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;
   unsigned int m_renderQuirks;
+
+private:
+  CSceneGraph  *m_sceneGraph;
 };
 
 #endif // RENDER_SYSTEM_H

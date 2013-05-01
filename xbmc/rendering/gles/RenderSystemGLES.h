@@ -38,9 +38,11 @@ enum ESHADERMETHOD
   SM_MULTI_BLENDCOLOR,
   SM_TEXTURE_RGBA,
   SM_TEXTURE_RGBA_BLENDCOLOR,
-  SM_ESHADERCOUNT
+  SM_ESHADERCOUNT,
+  SM_NONE,
 };
 
+class CBaseTexture;
 class CRenderSystemGLES : public CRenderSystemBase
 {
 public:
@@ -85,8 +87,16 @@ public:
   GLint GUIShaderGetCol();
   GLint GUIShaderGetCoord0();
   GLint GUIShaderGetCoord1();
+  GLint GUIShaderGetUniCol();
+
+  virtual void DrawSceneGraphImpl( const CSceneGraph *sceneGraph, const CDirtyRegionList *dirtyRegions = NULL);
+  virtual bool LoadToGPU(CBaseTexture *baseTexture);
+  virtual TextureObject CreateTextureObject() const;
+  virtual void DestroyTextureObject(TextureObject texture);
+  virtual void BindToUnit(CBaseTexture *baseTexture, unsigned int unit);
 
 protected:
+  bool LoadToGPU(TextureObject texture, unsigned int width, unsigned int height, unsigned int pitch, unsigned int rows, unsigned int format, const unsigned char *pixels);
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl(const CDirtyRegionList &dirty) = 0;
   void CalculateMaxTexturesize();
@@ -99,7 +109,7 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
-
+  bool       m_needsClear;
   CStdString m_RenderExtensions;
 
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method

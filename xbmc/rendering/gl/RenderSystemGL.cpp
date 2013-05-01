@@ -32,6 +32,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
+#include "guilib/Texture.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -109,7 +110,7 @@ bool CRenderSystemGL::InitRenderSystem()
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
-
+  m_needsClear = true;
   // init glew library
   GLenum err = glewInit();
   if (GLEW_OK != err)
@@ -328,6 +329,7 @@ bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
   }
 
+  m_needsClear = true;
   return result;
 }
 
@@ -620,6 +622,300 @@ void CRenderSystemGL::ResetGLErrors()
       break;
     }
   }
+}
+
+void CRenderSystemGL::DrawSceneGraphImpl( const CSceneGraph *sceneGraph, const CDirtyRegionList *dirtyRegions)
+{
+  unsigned int unit, alpha, range = 0;
+
+  if(g_Windowing.UseLimitedColor())
+    range = 235 - 16;
+  else
+    range = 255 -  0;
+
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+  
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); i++)
+  {
+    if (i->vertices.size() < 4)
+      continue;
+    if(i->texture)
+      LoadToGPU(i->texture);
+    if (i->diffuseTexture)
+      LoadToGPU(i->diffuseTexture);
+  }
+
+  // Clear directly before the first draw in each frame
+  if (m_needsClear)
+  {
+    if (dirtyRegions)
+    {
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); region++)
+      {
+        SetScissors(*region);
+        ClearBuffers(0);
+        ResetScissors();
+      }
+    }
+    else
+      ClearBuffers(0);
+    m_needsClear = false;
+  }
+
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); i++)
+  {
+    if (i->vertices.size() < 4)
+    continue;
+
+    bool enableAlpha = false;    
+    unsigned int triangleVerts = 6 * (i->vertices.size() / 4);
+    unsigned char r,g,b,a = 0;
+    GLushort idx[triangleVerts];
+    GLushort *itr = idx;
+    bool useSingleDiffuseColor = i->color != 0;
+    for(unsigned int j=0; j < i->vertices.size(); j+=4)
+    {
+      *itr++ = j + 0;
+      *itr++ = j + 1;
+      *itr++ = j + 2;
+      *itr++ = j + 0;
+      *itr++ = j + 2;
+      *itr++ = j + 3;
+     }
+  
+    unit=0;
+
+    r = GET_R(i->color) * range / 255;
+    g = GET_G(i->color) * range / 255;
+    b = GET_B(i->color) * range / 255;
+    a = GET_A(i->color);
+
+    if (i->texture)
+      BindToUnit(i->texture, unit++);
+
+    // alpha blending
+    alpha=GET_A(i->color);
+    enableAlpha = alpha < 255 || ( i->texture && i->texture->HasAlpha());
+
+
+    // diffuse color
+    if (useSingleDiffuseColor)
+      glColor4ub((GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a);
+    else
+    {
+      glEnableClientState(GL_COLOR_ARRAY);
+      glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, r));
+    }
+
+    // optional diffuse texture
+    if (i->diffuseTexture)
+    {
+      enableAlpha |= i->diffuseTexture->HasAlpha();
+      BindToUnit(i->diffuseTexture, unit++);
+      glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+      glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+      // diffuse texture coords
+      glTexCoordPointer(2, GL_FLOAT        , sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, u2));
+    }
+    
+    if (enableAlpha)
+      glEnable(GL_BLEND);
+    else
+      glDisable(GL_BLEND);
+
+    // screen coords
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer  (3, GL_FLOAT        , sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, x));
+
+    if (i->texture)
+    {
+      // texture coords
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glTexCoordPointer(2, GL_FLOAT        , sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, u1));
+    }
+
+    // draw
+    if (dirtyRegions)
+    {
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); region++)
+      {
+        SetScissors(*region);
+        glDrawElements(GL_TRIANGLES, triangleVerts, GL_UNSIGNED_SHORT, idx);
+        ResetScissors();
+      }
+    }
+    else
+    {
+      glDrawElements(GL_TRIANGLES, triangleVerts, GL_UNSIGNED_SHORT, idx);
+    }
+    
+    if (!useSingleDiffuseColor)
+      glDisableClientState(GL_COLOR_ARRAY);
+
+    // unbind diffuse texture
+    if (i->diffuseTexture)
+    {
+      glActiveTexture(1);
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    if (i->texture)
+    {
+      glActiveTexture(0);
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    
+    if (i->texture || i->diffuseTexture)
+      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  }
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisableClientState(GL_VERTEX_ARRAY);
+
+}
+
+TextureObject CRenderSystemGL::CreateTextureObject() const
+{
+  if(!m_bRenderCreated)
+    return NULL;
+  GLuint *texture = new GLuint;
+  glGenTextures(1, texture);
+  return (TextureObject) texture;
+}
+void CRenderSystemGL::DestroyTextureObject(TextureObject texture)
+{
+  if(!m_bRenderCreated)
+    return;
+  if (texture)
+    glDeleteTextures(1, (GLuint*) texture);
+}
+
+
+bool CRenderSystemGL::LoadToGPU(TextureObject texture, unsigned int width, unsigned int height, unsigned int pitch, unsigned int rows, unsigned int format, const unsigned char *pixels)
+{
+  unsigned int finalWidth = width;
+  unsigned int finalHeight = height;
+
+  // Bind the texture object
+  VerifyGLState();
+  if (!texture)
+    return false;
+  glBindTexture(GL_TEXTURE_2D, *((GLuint*)texture));
+
+  // Set the texture's stretching properties
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  unsigned int maxSize = GetMaxTextureSize();
+  if (height > maxSize)
+  {
+    CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", height, maxSize);
+    finalHeight = maxSize;
+  }
+  if (width > maxSize)
+  {
+    CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", width, maxSize);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
+    finalWidth = maxSize;
+  }
+
+  GLenum glformat = GL_BGRA;
+  GLint numcomponents = GL_RGBA;
+
+  switch (format)
+  {
+  case XB_FMT_DXT1:
+    glformat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+    break;
+  case XB_FMT_DXT3:
+    glformat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    break;
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    glformat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+    break;
+  case XB_FMT_RGB8:
+    glformat = GL_RGB;
+    numcomponents = GL_RGB;
+    break;
+  case XB_FMT_A8:
+    glformat = GL_ALPHA;
+    numcomponents = GL_ALPHA;
+    break;
+  case XB_FMT_A8L8:
+    glformat = GL_LUMINANCE_ALPHA;
+    numcomponents = GL_LUMINANCE_ALPHA;
+    break;
+  case XB_FMT_A8R8G8B8:
+  default:
+    break;
+  }
+
+  VerifyGLState();
+  if ((format & XB_FMT_DXT_MASK) == 0)
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, numcomponents, finalWidth, finalHeight, 0,
+      glformat, GL_UNSIGNED_BYTE, pixels);
+  }
+  else
+  {
+    // changed from glCompressedTexImage2D to support GL < 1.3
+    glCompressedTexImage2DARB(GL_TEXTURE_2D, 0, glformat,
+      finalWidth, finalHeight, 0, pitch * rows, pixels);
+  }
+
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  VerifyGLState();
+  return true;
+}
+
+bool CRenderSystemGL::LoadToGPU(CBaseTexture *baseTexture)
+{
+  if (!baseTexture)
+    return false;
+  if (baseTexture->m_loadedToGPU)
+    return true;
+  unsigned int width, height, pitch, rows, format;
+  width = baseTexture->GetTextureWidth();
+  height = baseTexture->GetTextureHeight();
+  format = baseTexture->GetFormat();
+  pitch = GetPitch(format, width);
+  rows = GetRows(format, height);
+  TextureObject object = baseTexture->GetTextureObject();
+  if(!object)
+  {
+    object = CreateTextureObject();
+    baseTexture->SetTextureObject(object);
+  }
+  baseTexture->m_loadedToGPU = LoadToGPU(object, width, height, pitch, rows, format, (const unsigned char*)baseTexture->GetPixels());
+  VerifyGLState();
+  return true;
+}
+
+void CRenderSystemGL::BindToUnit(CBaseTexture *baseTexture, unsigned int unit)
+{
+  TextureObject object = baseTexture->GetTextureObject();
+  if (!object)
+    return;
+  glActiveTexture(GL_TEXTURE0 + unit);
+  glBindTexture(GL_TEXTURE_2D, *((GLuint*)object));
+  glClientActiveTexture(GL_TEXTURE0 + unit);
+  glEnable(GL_TEXTURE_2D);
+  VerifyGLState();
 }
 
 #endif
