@@ -30,7 +30,7 @@
 #include "IInputHandler.h"
 
 #include "xbmc.h"
-
+#include "android/jni/Context.h"
 
 // forward delares
 class CAESinkAUDIOTRACK;
@@ -50,11 +50,12 @@ struct androidPackage
 };
 
 
-class CXBMCApp : public IActivityHandler
+class CXBMCApp : public IActivityHandler, public CJNIContext
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
+  virtual void onReceive(CJNIIntent intent);
 
   bool isValid() { return m_activity != NULL; }
 

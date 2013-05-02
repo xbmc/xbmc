@@ -79,8 +79,8 @@ void* thread_run(void* obj)
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 
-CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
-  : m_wakeLock(NULL)
+CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
+  : CJNIContext(nativeActivity), m_wakeLock(NULL)
 {
   m_activity = nativeActivity;
   m_firstrun = true;
@@ -992,3 +992,8 @@ void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
   env->DeleteLocalRef(cAudioManager);
 }
 
+void CXBMCApp::onReceive(CJNIIntent intent)
+{
+  std::string action = intent.getAction();
+  android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+}
