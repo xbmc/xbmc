@@ -267,15 +267,9 @@ bool CSettings::Load()
 bool CSettings::Load(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(file))
-  {
-    CLog::Log(LOGERROR, "CSettings: error loading settings from %s, Line %d\n%s", file.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
-  }
-
   bool updated = false;
-  TiXmlElement *root = xmlDoc.RootElement();
-  if (!m_settingsManager->Load(root, updated))
+  if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
+      !m_settingsManager->Load(xmlDoc.RootElement(), updated))
   {
     CLog::Log(LOGERROR, "CSettingsManager: unable to load settings from %s, creating new default settings", file.c_str());
     if (!Reset())
