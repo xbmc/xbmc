@@ -9,7 +9,7 @@ then
     --host=arm-linux-androideabi \
     --with-sdk-path=$SDK_PATH \
     --with-ndk=$NDK_PATH \
-    --with-sdk=android-$SDK_VERSION \
+    $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT
 fi
