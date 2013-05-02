@@ -160,7 +160,6 @@ void CMusicInfoScanner::Process()
       tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
-    bool bCanceled;
     if (m_scanType == 1) // load album info
     {
       for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
@@ -182,7 +181,7 @@ void CMusicInfoScanner::Process()
         CMusicAlbumInfo albumInfo;
         UpdateDatabaseAlbumInfo(*it, albumInfo, false);
 
-        if (m_bStop || bCanceled)
+        if (m_bStop)
           break;
       }
     }
@@ -209,7 +208,7 @@ void CMusicInfoScanner::Process()
         CMusicArtistInfo artistInfo;
         UpdateDatabaseArtistInfo(*it, artistInfo, false);
 
-        if (m_bStop || bCanceled)
+        if (m_bStop)
           break;
       }
     }
