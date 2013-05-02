@@ -3,8 +3,8 @@ n1.2 rev e820e3a distribution.
 
 All patches in the patches folder are already applied to the ffmpeg code base and
 are only kept here for tracking history. Some of patches are ours and some are
-backports from ffmpegs upstream. Patches that has become obsolete since ffmpeg
-n0.10.2 are moved to obsolete-patches, also for tracking reasons.
+backports from ffmpegs upstream. Patches that have become obsolete since ffmpeg
+n0.10.2 are moved to the directory obsolete-patches, also for tracking reasons.
 
 Normally you can have a look into that patchfile itself to see if its a backport
 or not (we normally leave the original commit message and the committer in there).
@@ -12,7 +12,7 @@ You can also use "git log lib/ffmpeg/patches" to show the history where the patc
 file came from.
 
 Whenever you need to patch a new ffmpeg versions you apply the patch and then add
-the git diff to the patches folder in the next commit (if its a backport - adapt
+the git diff to the patches folder in the next commit. If its a backport - adapt
 the patch so that it clearly states that it is a change from upstream and which
-commit in ffmpeg repo it is). Please use an uniq patch number this check that
-the number doesn't conflict with others in obsolete patches.
+commit in ffmpeg repo it is. Please pick an uniq patch number that doesn't
+conflict with others in both the directories /patches and /patches/obsolete-patches
