@@ -435,7 +435,6 @@
 		F56C7912131EC154000AD0F6 /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72D2131EC151000AD0F6 /* DVDPerformanceCounter.cpp */; };
 		F56C7913131EC154000AD0F6 /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72D4131EC151000AD0F6 /* DVDPlayer.cpp */; };
 		F56C7914131EC154000AD0F6 /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72D6131EC151000AD0F6 /* DVDPlayerAudio.cpp */; };
-		F56C7915131EC154000AD0F6 /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72D8131EC151000AD0F6 /* DVDPlayerAudioResampler.cpp */; };
 		F56C7916131EC154000AD0F6 /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72DA131EC151000AD0F6 /* DVDPlayerSubtitle.cpp */; };
 		F56C7917131EC154000AD0F6 /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72DC131EC151000AD0F6 /* DVDPlayerTeletext.cpp */; };
 		F56C7918131EC154000AD0F6 /* DVDPlayerVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C72DE131EC151000AD0F6 /* DVDPlayerVideo.cpp */; };
@@ -2016,8 +2015,6 @@
 		F56C72D5131EC151000AD0F6 /* DVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayer.h; sourceTree = "<group>"; };
 		F56C72D6131EC151000AD0F6 /* DVDPlayerAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerAudio.cpp; sourceTree = "<group>"; };
 		F56C72D7131EC151000AD0F6 /* DVDPlayerAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerAudio.h; sourceTree = "<group>"; };
-		F56C72D8131EC151000AD0F6 /* DVDPlayerAudioResampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerAudioResampler.cpp; sourceTree = "<group>"; };
-		F56C72D9131EC151000AD0F6 /* DVDPlayerAudioResampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerAudioResampler.h; sourceTree = "<group>"; };
 		F56C72DA131EC151000AD0F6 /* DVDPlayerSubtitle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerSubtitle.cpp; sourceTree = "<group>"; };
 		F56C72DB131EC151000AD0F6 /* DVDPlayerSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerSubtitle.h; sourceTree = "<group>"; };
 		F56C72DC131EC151000AD0F6 /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
@@ -4386,8 +4383,6 @@
 				F56C72D5131EC151000AD0F6 /* DVDPlayer.h */,
 				F56C72D6131EC151000AD0F6 /* DVDPlayerAudio.cpp */,
 				F56C72D7131EC151000AD0F6 /* DVDPlayerAudio.h */,
-				F56C72D8131EC151000AD0F6 /* DVDPlayerAudioResampler.cpp */,
-				F56C72D9131EC151000AD0F6 /* DVDPlayerAudioResampler.h */,
 				F56C72DA131EC151000AD0F6 /* DVDPlayerSubtitle.cpp */,
 				F56C72DB131EC151000AD0F6 /* DVDPlayerSubtitle.h */,
 				F56C72DC131EC151000AD0F6 /* DVDPlayerTeletext.cpp */,
@@ -6901,7 +6896,6 @@
 				F56C7912131EC154000AD0F6 /* DVDPerformanceCounter.cpp in Sources */,
 				F56C7913131EC154000AD0F6 /* DVDPlayer.cpp in Sources */,
 				F56C7914131EC154000AD0F6 /* DVDPlayerAudio.cpp in Sources */,
-				F56C7915131EC154000AD0F6 /* DVDPlayerAudioResampler.cpp in Sources */,
 				F56C7916131EC154000AD0F6 /* DVDPlayerSubtitle.cpp in Sources */,
 				F56C7917131EC154000AD0F6 /* DVDPlayerTeletext.cpp in Sources */,
 				F56C7918131EC154000AD0F6 /* DVDPlayerVideo.cpp in Sources */,
