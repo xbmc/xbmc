@@ -79,6 +79,22 @@ using ADDON::AddonPtr;
 using namespace CDDB;
 #endif
 
+static void AnnounceRemove(const std::string& content, int id)
+{
+  CVariant data;
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
+}
+
+static void AnnounceUpdate(const std::string& content, int id)
+{
+  CVariant data;
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
+}
+
 CMusicDatabase::CMusicDatabase(void)
 {
 }
@@ -5229,22 +5245,6 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
     if (GetAlbumInfo(idAlbum,album,NULL,true)) // true to force additional information
       SetPropertiesFromAlbum(item,album);
   }
-}
-
-void CMusicDatabase::AnnounceRemove(const std::string& content, int id)
-{
-  CVariant data;
-  data["type"] = content;
-  data["id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
-}
-
-void CMusicDatabase::AnnounceUpdate(const std::string& content, int id)
-{
-  CVariant data;
-  data["type"] = content;
-  data["id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
 }
 
 void CMusicDatabase::SetArtForItem(int mediaId, const string &mediaType, const map<string, string> &art)
