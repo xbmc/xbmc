@@ -5231,7 +5231,7 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   }
 }
 
-void CMusicDatabase::AnnounceRemove(std::string content, int id)
+void CMusicDatabase::AnnounceRemove(const std::string& content, int id)
 {
   CVariant data;
   data["type"] = content;
@@ -5239,7 +5239,7 @@ void CMusicDatabase::AnnounceRemove(std::string content, int id)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
 }
 
-void CMusicDatabase::AnnounceUpdate(std::string content, int id)
+void CMusicDatabase::AnnounceUpdate(const std::string& content, int id)
 {
   CVariant data;
   data["type"] = content;

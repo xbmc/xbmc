@@ -523,6 +523,6 @@ private:
     artist_strFanart
   } ArtistFields;
 
-  void AnnounceRemove(std::string content, int id);
-  void AnnounceUpdate(std::string content, int id);
+  void AnnounceRemove(const std::string& content, int id);
+  void AnnounceUpdate(const std::string& content, int id);
 };
