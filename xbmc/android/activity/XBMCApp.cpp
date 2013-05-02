@@ -377,72 +377,19 @@ int CXBMCApp::GetDPI()
 
 bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
 {
-  if (!m_activity)
-    return false;
-
-  JNIEnv* env = xbmc_jnienv();
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // oPackageManager = new PackageManager();
-  jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-  env->DeleteLocalRef(cActivity);
-
-  // adata[] = oPackageManager.getInstalledApplications(0);
-  jclass cPackageManager = env->GetObjectClass(oPackageManager);
-  jmethodID mgetInstalledApplications = env->GetMethodID(cPackageManager, "getInstalledApplications", "(I)Ljava/util/List;");
-  jmethodID mgetApplicationLabel = env->GetMethodID(cPackageManager, "getApplicationLabel", "(Landroid/content/pm/ApplicationInfo;)Ljava/lang/CharSequence;");
-  jobject odata = env->CallObjectMethod(oPackageManager, mgetInstalledApplications, 0);
-  jclass cdata = env->GetObjectClass(odata);
-  jmethodID mtoArray = env->GetMethodID(cdata, "toArray", "()[Ljava/lang/Object;");
-  jobjectArray adata = (jobjectArray)env->CallObjectMethod(odata, mtoArray);
-  env->DeleteLocalRef(cdata);
-  env->DeleteLocalRef(odata);
-  env->DeleteLocalRef(cPackageManager);
-
-  int size = env->GetArrayLength(adata);
-  for (int i = 0; i < size; i++)
+  CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
+  int numPackages = packageList.size();
+  for (int i = 0; i < numPackages; i++)
   {
-    // oApplicationInfo = adata[i];
-    jobject oApplicationInfo = env->GetObjectArrayElement(adata, i);
-    jclass cApplicationInfo = env->GetObjectClass(oApplicationInfo);
-    jfieldID mclassName = env->GetFieldID(cApplicationInfo, "packageName", "Ljava/lang/String;");
-    jstring sapplication = (jstring)env->GetObjectField(oApplicationInfo, mclassName);
-
-    if (!sapplication)
-    {
-      env->DeleteLocalRef(cApplicationInfo);
-      env->DeleteLocalRef(oApplicationInfo);
-      continue;
-    }
-    // cname = oApplicationInfo.packageName;
-    const char* cname = env->GetStringUTFChars(sapplication, NULL);
-    androidPackage desc;
-    desc.packageName = cname;
-    env->ReleaseStringUTFChars(sapplication, cname);
-    env->DeleteLocalRef(sapplication);
-    env->DeleteLocalRef(cApplicationInfo);
-
-    jstring spackageLabel = (jstring) env->CallObjectMethod(oPackageManager, mgetApplicationLabel, oApplicationInfo);
-    if (!spackageLabel)
-    {
-      env->DeleteLocalRef(oApplicationInfo);
-      continue;
-    }
-    // cname = opackageManager.getApplicationLabel(oApplicationInfo);
-    const char* cpackageLabel = env->GetStringUTFChars(spackageLabel, NULL);
-    desc.packageLabel = cpackageLabel;
-    env->ReleaseStringUTFChars(spackageLabel, cpackageLabel);
-    env->DeleteLocalRef(spackageLabel);
-    env->DeleteLocalRef(oApplicationInfo);
-
-    if (!HasLaunchIntent(desc.packageName))
+    androidPackage newPackage;
+    newPackage.packageName = packageList.get(i).packageName;
+    newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+    CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
+    if (!intent || !intent.hasCategory("android.intent.category.LAUNCHER"))
       continue;
 
-    applications->push_back(desc);
+    applications->push_back(newPackage);
   }
-  env->DeleteLocalRef(oPackageManager);
   return true;
 }
 
