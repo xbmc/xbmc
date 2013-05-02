@@ -233,6 +233,9 @@ void CXBMCApp::run()
 
   SetupEnv();
 
+  CJNIIntent startIntent = getIntent();
+  android_printf("XBMC Started with action: %s\n",startIntent.getAction().c_str());
+
   CJNIIntentFilter batteryFilter;
   batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
   registerReceiver(*this, batteryFilter);
