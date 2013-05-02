@@ -1,0 +1,37 @@
+SRCS      += JNIBase.cpp
+SRCS      += JNIThreading.cpp
+SRCS      += Context.cpp
+SRCS      += BroadcastReceiver.cpp
+SRCS      += Intent.cpp
+SRCS      += PackageManager.cpp
+SRCS      += AudioManager.cpp
+SRCS      += PowerManager.cpp
+SRCS      += WakeLock.cpp
+SRCS      += Environment.cpp
+SRCS      += File.cpp
+SRCS      += IntentFilter.cpp
+SRCS      += SystemClock.cpp
+SRCS      += jutils.cpp
+SRCS      += URI.cpp
+SRCS      += WifiInfo.cpp
+SRCS      += WifiManager.cpp
+SRCS      += ScanResult.cpp
+SRCS      += List.cpp
+SRCS      += DhcpInfo.cpp
+SRCS      += ConnectivityManager.cpp
+SRCS      += Enum.cpp
+SRCS      += NetworkInfo.cpp
+SRCS      += WifiConfiguration.cpp
+SRCS      += BitSet.cpp
+SRCS      += ClassLoader.cpp
+SRCS      += StatFs.cpp
+SRCS      += System.cpp
+SRCS      += ApplicationInfo.cpp
+SRCS      += BitmapDrawable.cpp
+SRCS      += CharSequence.cpp
+
+LIB        = jni.a
+
+CXXFLAGS+=-std=gnu++0x
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
