@@ -41,6 +41,7 @@ case $XBMC_PLATFORM_DIR in
 
   linux*)
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
 esac
 
 if [ "$SDK_VERSION" == "Default" ]
