@@ -114,6 +114,7 @@ namespace XFILE
           int64_t         m_filePos;
           bool            m_bFirstLoop;
           bool            m_isPaused;
+          bool            m_requireRange;
 
           char*           m_readBuffer;
 
@@ -175,6 +176,7 @@ namespace XFILE
       bool            m_multisession;
       bool            m_skipshout;
       bool            m_postdataset;
+      bool            m_requireRange;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
