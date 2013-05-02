@@ -33,6 +33,7 @@
 #include "android/jni/Context.h"
 
 // forward delares
+class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 typedef struct _JNIEnv JNIEnv;
 
@@ -106,14 +107,12 @@ protected:
 
 private:
   static bool HasLaunchIntent(const std::string &package);
-  bool getWakeLock(JNIEnv *env);
-  void acquireWakeLock();
-  void releaseWakeLock();
+  bool getWakeLock();
   void run();
   void stop();
   void SetupEnv();
   static ANativeActivity *m_activity;
-  jobject m_wakeLock;
+  CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;  
   bool m_firstrun;
   bool m_exiting;
