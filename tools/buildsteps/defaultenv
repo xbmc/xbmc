@@ -41,23 +41,23 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
 esac
 
-if [ $SDK_VERSION == "Default" ]
+if [ "$SDK_VERSION" == "Default" ]
 then
   SDK_VERSION=$DEFAULT_SDK_VERSION
 fi
 
-if [ $XBMC_DEPENDS_ROOT == "Default" ]
+if [ "$XBMC_DEPENDS_ROOT" == "Default" ]
 then
   XBMC_DEPENDS_ROOT=$DEFAULT_XBMC_DEPENDS_ROOT
 fi
 
-if [ $Configuration == "Default" ]
+if [ "$Configuration" == "Default" ]
 then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
 #clamp release builds to 1 thread only
-if [ $Configuration == "Release" ]
+if [ "$Configuration" == "Release" ]
 then
   BUILDTHREADS=1
 fi
@@ -81,7 +81,7 @@ function pathChanged ()
   local checkPath
   ret="0"
   #no optims in release builds!
-  if [ $Configuration == "Release" ]
+  if [ "$Configuration" == "Release" ]
   then
     echo "1"
     return
