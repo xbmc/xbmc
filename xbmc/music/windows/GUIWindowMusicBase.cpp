@@ -1142,13 +1142,18 @@ bool CGUIWindowMusicBase::CanContainFilter(const CStdString &strDirectory) const
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 27 && !g_application.IsMusicScanning() &&
+  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 35 && !g_application.IsMusicScanning() &&
       g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC))
   {
     // rescan of music library required
     if (CGUIDialogYesNo::ShowAndGetInput(799, 800, 801, -1))
     {
-      g_application.StartMusicScan("", CMusicInfoScanner::SCAN_RESCAN);
+      int flags = CMusicInfoScanner::SCAN_RESCAN;
+      if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
+        flags |= CMusicInfoScanner::SCAN_ONLINE;
+      if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
+        flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+      g_application.StartMusicScan("", flags);
       CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
       CSettings::Get().Save();
     }

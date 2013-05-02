@@ -3727,6 +3727,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
     m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
 
+    m_pDS->exec("UPDATE song SET strMusicBrainzTrackID = NULL where strMusicBrainzTrackID = ''");
     m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
   }
 
@@ -3736,6 +3737,8 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
     m_pDS->exec("ALTER TABLE album_artist ADD strJoinPhrase text\n");
     m_pDS->exec("ALTER TABLE song_artist ADD strJoinPhrase text\n");
+    CMediaSettings::Get().SetMusicNeedsUpdate(35);
+    CSettings::Get().Save();
   }
 
   // always recreate the views after any table change
