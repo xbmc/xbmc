@@ -797,70 +797,23 @@ int CXBMCApp::GetBatteryLevel()
 
 bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* = "" */)
 {
-  if (m_activity == NULL)
-    return false;
+  std::string sType;
+  std::string mountedState;
+  bool mounted = false;
+  if (type == "music")
+    sType = "Music"; // Environment.DIRECTORY_MUSIC
+  else if (type == "videos")
+    sType = "Movies"; // Environment.DIRECTORY_MOVIES
+  else if (type == "pictures")
+    sType = "Pictures"; // Environment.DIRECTORY_PICTURES
+  else if (type == "photos")
+    sType = "DCIM"; // Environment.DIRECTORY_DCIM
+  else if (type == "downloads")
+    sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
 
-  JNIEnv* env = xbmc_jnienv();
-
-  // check if external storage is available
-  // String sStorageState = android.os.Environment.getExternalStorageState();
-  jclass cEnvironment = env->FindClass("android/os/Environment");
-  jmethodID midEnvironmentGetExternalStorageState = env->GetStaticMethodID(cEnvironment, "getExternalStorageState", "()Ljava/lang/String;");
-  jstring sStorageState = (jstring)env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStorageState);
-  // if (sStorageState != Environment.MEDIA_MOUNTED && sStorageState != Environment.MEDIA_MOUNTED_READ_ONLY) return false;
-  const char* storageState = env->GetStringUTFChars(sStorageState, NULL);
-  bool mounted = strcmp(storageState, "mounted") == 0 || strcmp(storageState, "mounted_ro") == 0;
-  env->ReleaseStringUTFChars(sStorageState, storageState);
-  env->DeleteLocalRef(sStorageState);
-
-  if (mounted)
-  {
-    jobject oExternalStorageDirectory = NULL;
-    if (type.empty() || type == "files")
-    {
-      // File oExternalStorageDirectory = Environment.getExternalStorageDirectory();
-      jmethodID midEnvironmentGetExternalStorageDirectory = env->GetStaticMethodID(cEnvironment, "getExternalStorageDirectory", "()Ljava/io/File;");
-      oExternalStorageDirectory = env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStorageDirectory);
-    }
-    else if (type == "music" || type == "videos" || type == "pictures" || type == "photos" || type == "downloads")
-    {
-      jstring sType = NULL;
-      if (type == "music")
-        sType = env->NewStringUTF("Music"); // Environment.DIRECTORY_MUSIC
-      else if (type == "videos")
-        sType = env->NewStringUTF("Movies"); // Environment.DIRECTORY_MOVIES
-      else if (type == "pictures")
-        sType = env->NewStringUTF("Pictures"); // Environment.DIRECTORY_PICTURES
-      else if (type == "photos")
-        sType = env->NewStringUTF("DCIM"); // Environment.DIRECTORY_DCIM
-      else if (type == "downloads")
-        sType = env->NewStringUTF("Download"); // Environment.DIRECTORY_DOWNLOADS
-
-      // File oExternalStorageDirectory = Environment.getExternalStoragePublicDirectory(sType);
-      jmethodID midEnvironmentGetExternalStoragePublicDirectory = env->GetStaticMethodID(cEnvironment, "getExternalStoragePublicDirectory", "(Ljava/lang/String;)Ljava/io/File;");
-      oExternalStorageDirectory = env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStoragePublicDirectory, sType);
-      env->DeleteLocalRef(sType);
-    }
-
-    if (oExternalStorageDirectory != NULL)
-    {
-      // path = oExternalStorageDirectory.getAbsolutePath();
-      jclass cFile = env->GetObjectClass(oExternalStorageDirectory);
-      jmethodID midFileGetAbsolutePath = env->GetMethodID(cFile, "getAbsolutePath", "()Ljava/lang/String;");
-      env->DeleteLocalRef(cFile);
-      jstring sPath = (jstring)env->CallObjectMethod(oExternalStorageDirectory, midFileGetAbsolutePath);
-      const char* cPath = env->GetStringUTFChars(sPath, NULL);
-      path = cPath;
-      env->ReleaseStringUTFChars(sPath, cPath);
-      env->DeleteLocalRef(sPath);
-      env->DeleteLocalRef(oExternalStorageDirectory);
-    }
-    else
-      mounted = false;
-  }
-
-  env->DeleteLocalRef(cEnvironment);
-
+  path = CJNIEnvironment::getExternalStoragePublicDirectory(sType).getAbsolutePath();
+  mountedState = CJNIEnvironment::getExternalStorageState();
+  mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
   return mounted && !path.empty();
 }
 
