@@ -294,6 +294,7 @@ void CXBMCApp::run()
 {
   int status = 0;
 
+  SetupEnv();
   android_printf(" => waiting for a window");
   // Hack!
   // TODO: Change EGL startup so that we can start headless, then create the
@@ -996,4 +997,26 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 {
   std::string action = intent.getAction();
   android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+}
+
+void CXBMCApp::SetupEnv()
+{
+  setenv("XBMC_ANDROID_SYSTEM_LIBS", CJNISystem::getProperty("java.library.path").c_str(), 0);
+  setenv("XBMC_ANDROID_DATA", getApplicationInfo().dataDir.c_str(), 0);
+  setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
+  setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
+
+  std::string cacheDir = getCacheDir().getAbsolutePath();
+  setenv("XBMC_TEMP", (cacheDir + "/temp").c_str(), 0);
+  setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+  setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+
+  std::string externalDir = getExternalFilesDir("").getAbsolutePath();
+  if (!externalDir.size())
+    externalDir = getDir("org.xbmc.xbmc", 1).getAbsolutePath();
+
+  if (externalDir.size())
+    setenv("HOME", externalDir.c_str(), 0);
+  else
+    setenv("HOME", getenv("XBMC_TEMP"), 0);
 }

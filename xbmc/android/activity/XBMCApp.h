@@ -111,7 +111,7 @@ private:
   void releaseWakeLock();
   void run();
   void stop();
-
+  void SetupEnv();
   static ANativeActivity *m_activity;
   jobject m_wakeLock;
   
