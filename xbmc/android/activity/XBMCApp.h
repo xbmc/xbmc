@@ -114,7 +114,7 @@ private:
   void SetupEnv();
   static ANativeActivity *m_activity;
   jobject m_wakeLock;
-  
+  static int m_batteryLevel;  
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

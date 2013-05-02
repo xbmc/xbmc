@@ -78,6 +78,7 @@ void* thread_run(void* obj)
 
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
+int CXBMCApp::m_batteryLevel = 0;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIContext(nativeActivity), m_wakeLock(NULL)
@@ -295,6 +296,11 @@ void CXBMCApp::run()
   int status = 0;
 
   SetupEnv();
+
+  CJNIIntentFilter batteryFilter;
+  batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
+  registerReceiver(*this, batteryFilter);
+
   android_printf(" => waiting for a window");
   // Hack!
   // TODO: Change EGL startup so that we can start headless, then create the
@@ -445,46 +451,7 @@ bool CXBMCApp::StartActivity(const string &package, const string &intent, const 
 
 int CXBMCApp::GetBatteryLevel()
 {
-  if (m_activity == NULL)
-    return -1;
-
-  JNIEnv* env = xbmc_jnienv();
-
-  jobject oActivity = m_activity->clazz;
-
-  // IntentFilter oIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-  jclass cIntentFilter = env->FindClass("android/content/IntentFilter");
-  jmethodID midIntentFilterCtor = env->GetMethodID(cIntentFilter, "<init>", "(Ljava/lang/String;)V");
-  jstring sIntentBatteryChanged = env->NewStringUTF("android.intent.action.BATTERY_CHANGED"); // Intent.ACTION_BATTERY_CHANGED
-  jobject oIntentFilter = env->NewObject(cIntentFilter, midIntentFilterCtor, sIntentBatteryChanged);
-  env->DeleteLocalRef(cIntentFilter);
-  env->DeleteLocalRef(sIntentBatteryChanged);
-
-  // Intent oBatteryStatus = activity.registerReceiver(null, oIntentFilter);
-  jclass cActivity = env->GetObjectClass(oActivity);
-  jmethodID midActivityRegisterReceiver = env->GetMethodID(cActivity, "registerReceiver", "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;");
-  env->DeleteLocalRef(cActivity);
-  jobject oBatteryStatus = env->CallObjectMethod(oActivity, midActivityRegisterReceiver, NULL, oIntentFilter);
-
-  jclass cIntent = env->GetObjectClass(oBatteryStatus);
-  jmethodID midIntentGetIntExtra = env->GetMethodID(cIntent, "getIntExtra", "(Ljava/lang/String;I)I");
-  env->DeleteLocalRef(cIntent);
-  
-  // int iLevel = oBatteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-  jstring sBatteryManagerExtraLevel = env->NewStringUTF("level"); // BatteryManager.EXTRA_LEVEL
-  jint iLevel = env->CallIntMethod(oBatteryStatus, midIntentGetIntExtra, sBatteryManagerExtraLevel, (jint)-1);
-  env->DeleteLocalRef(sBatteryManagerExtraLevel);
-  // int iScale = oBatteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-  jstring sBatteryManagerExtraScale = env->NewStringUTF("scale"); // BatteryManager.EXTRA_SCALE
-  jint iScale = env->CallIntMethod(oBatteryStatus, midIntentGetIntExtra, sBatteryManagerExtraScale, (jint)-1);
-  env->DeleteLocalRef(sBatteryManagerExtraScale);
-  env->DeleteLocalRef(oBatteryStatus);
-  env->DeleteLocalRef(oIntentFilter);
-
-  if (iLevel <= 0 || iScale < 0)
-    return iLevel;
-
-  return ((int)iLevel * 100) / (int)iScale;
+  return m_batteryLevel;
 }
 
 bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* = "" */)
@@ -587,6 +554,8 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 {
   std::string action = intent.getAction();
   android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+  if (action == "android.intent.action.BATTERY_CHANGED")
+    m_batteryLevel = intent.getIntExtra("level",-1);
 }
 
 void CXBMCApp::SetupEnv()
