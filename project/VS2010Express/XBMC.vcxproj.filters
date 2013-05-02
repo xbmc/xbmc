@@ -3027,6 +3027,9 @@
     <ClCompile Include="..\..\xbmc\settings\SettingSection.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5926,6 +5929,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\SettingSection.h">
       <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
