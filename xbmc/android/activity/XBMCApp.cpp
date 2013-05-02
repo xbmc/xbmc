@@ -44,7 +44,26 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
-#include "JNIThreading.h"
+#include <android/bitmap.h>
+#include "android/jni/JNIThreading.h"
+#include "android/jni/BroadcastReceiver.h"
+#include "android/jni/Intent.h"
+#include "android/jni/PackageManager.h"
+#include "android/jni/Context.h"
+#include "android/jni/AudioManager.h"
+#include "android/jni/PowerManager.h"
+#include "android/jni/WakeLock.h"
+#include "android/jni/Environment.h"
+#include "android/jni/File.h"
+#include "android/jni/IntentFilter.h"
+#include "android/jni/NetworkInfo.h"
+#include "android/jni/ConnectivityManager.h"
+#include "android/jni/System.h"
+#include "android/jni/ApplicationInfo.h"
+#include "android/jni/StatFs.h"
+#include "android/jni/BitmapDrawable.h"
+#include "android/jni/Bitmap.h"
+#include "android/jni/CharSequence.h"
 
 #define GIGABYTES       1073741824
 
