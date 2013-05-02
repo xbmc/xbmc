@@ -1026,6 +1026,7 @@
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
 		F5BD034F148D496A001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD034D148D496A001B5583 /* CryptThreading.cpp */; };
 		F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5DB701A17322E0C00D4DF21 /* FavouritesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DB701817322E0C00D4DF21 /* FavouritesOperations.cpp */; };
 		F5E112DB143577A000175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112B2143577A000175026 /* PeripheralBusUSB.cpp */; };
 		F5E112DC143577A000175026 /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112B4143577A000175026 /* PeripheralBus.cpp */; };
 		F5E112E0143577A000175026 /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112BD143577A000175026 /* Peripheral.cpp */; };
@@ -3255,6 +3256,8 @@
 		F5BD034E148D496A001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE73113D3F9D800225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		F5DB701817322E0C00D4DF21 /* FavouritesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesOperations.cpp; sourceTree = "<group>"; };
+		F5DB701917322E0C00D4DF21 /* FavouritesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesOperations.h; sourceTree = "<group>"; };
 		F5E112B2143577A000175026 /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
 		F5E112B3143577A000175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
 		F5E112B4143577A000175026 /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
@@ -6556,6 +6559,8 @@
 				18968DDD14155E01005BA742 /* ApplicationOperations.h */,
 				F5AE4140134175520004BD79 /* AudioLibrary.cpp */,
 				F5AE4141134175520004BD79 /* AudioLibrary.h */,
+				F5DB701817322E0C00D4DF21 /* FavouritesOperations.cpp */,
+				F5DB701917322E0C00D4DF21 /* FavouritesOperations.h */,
 				F5AE4146134175520004BD79 /* FileItemHandler.cpp */,
 				F5AE4147134175520004BD79 /* FileItemHandler.h */,
 				F5AE4148134175520004BD79 /* FileOperations.cpp */,
@@ -7832,6 +7837,7 @@
 				DFECFB44172D9D2800A43CF7 /* SettingVisibility.cpp in Sources */,
 				DFECFB47172D9D4900A43CF7 /* BooleanLogic.cpp in Sources */,
 				DFECFB4F172D9D8E00A43CF7 /* NetworkServices.cpp in Sources */,
+				F5DB701A17322E0C00D4DF21 /* FavouritesOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
