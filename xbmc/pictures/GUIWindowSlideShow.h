@@ -77,9 +77,9 @@ public:
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
+                    const CStdString &beginSlidePath="", bool startSlideShow = true,
                     SORT_METHOD method = SORT_METHOD_LABEL,
-                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="",
-                    const CStdString &beginSlidePath="", bool startSlideShow = true);
+                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
   void AddFromPath(const CStdString &strPath, bool bRecursive,
                    SORT_METHOD method=SORT_METHOD_LABEL, 
                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
