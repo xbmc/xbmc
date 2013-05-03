@@ -931,6 +931,16 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
 
+  case GUI_MSG_SHOW_PICTURE:
+    {
+      CStdString strFile = message.GetStringParam();
+      Reset();
+      CFileItem item(strFile, false);
+      Add(&item);
+      RunSlideShow("", false, false, true, "", false);
+    }
+    break;
+
   case GUI_MSG_START_SLIDESHOW:
     {
       CStdString strFolder = message.GetStringParam();
@@ -952,7 +962,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         if ((iParams & 8) == 8)
           bPause = true;
       }
-      RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom, SORT_METHOD_LABEL, SortOrderAscending, "", beginSlidePath, !bPause);
+      RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom, beginSlidePath, !bPause);
     }
     break;
 
@@ -1193,9 +1203,9 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
 
 void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
                                        bool bRecursive /* = false */, bool bRandom /* = false */, 
-                                       bool bNotRandom /* = false */, SORT_METHOD method /* = SORT_METHOD_LABEL */, 
-                                       SortOrder order /* = SortOrderAscending */, const CStdString &strExtensions /* = "" */,
-                                       const CStdString &beginSlidePath /* = "" */, bool startSlideShow /* = true */)
+                                       bool bNotRandom /* = false */, const CStdString &beginSlidePath /* = "" */,
+                                       bool startSlideShow /* = true */, SORT_METHOD method /* = SORT_METHOD_LABEL */,
+                                       SortOrder order /* = SortOrderAscending */, const CStdString &strExtensions /* = "" */)
 {
   // stop any video
   if (g_application.IsPlayingVideo())

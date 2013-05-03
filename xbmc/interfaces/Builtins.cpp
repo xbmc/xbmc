@@ -638,6 +638,18 @@ int CBuiltins::Execute(const CStdString& execString)
       }
     }
   }
+  else if (execute.Equals("showPicture"))
+  {
+    if (!params.size())
+    {
+      CLog::Log(LOGERROR, "XBMC.ShowPicture called with empty parameter");
+      return -2;
+    }
+    CGUIMessage msg(GUI_MSG_SHOW_PICTURE, 0, 0);
+    msg.SetStringParam(params[0]);
+    CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow) pWindow->OnMessage(msg);
+  }
   else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
   {
     if (!params.size())
