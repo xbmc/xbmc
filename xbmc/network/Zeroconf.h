@@ -79,6 +79,8 @@ public:
   static bool   IsInstantiated() { return  smp_instance != 0; }
   // win32: process results from the bonjour daemon
   virtual void  ProcessResults() {}
+  // returns if the service is started and services are announced
+  bool IsStarted() { return m_started; }
 
 protected:
   //methods to implement for concrete implementations

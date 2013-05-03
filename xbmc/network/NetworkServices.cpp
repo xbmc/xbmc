@@ -898,7 +898,7 @@ bool CNetworkServices::StartZeroconf()
 bool CNetworkServices::IsZeroconfRunning()
 {
 #ifdef HAS_ZEROCONF
-  return CZeroconf::GetInstance()->IsInstantiated();
+  return CZeroconf::GetInstance()->IsStarted();
 #endif // HAS_ZEROCONF
   return false;
 }
