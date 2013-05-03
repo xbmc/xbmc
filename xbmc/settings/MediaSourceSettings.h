@@ -54,7 +54,7 @@ public:
 protected:
   CMediaSourceSettings();
   CMediaSourceSettings(const CMediaSourceSettings&);
-  CMediaSourceSettings const& operator=(CMediaSourceSettings const&);
+  CMediaSourceSettings& operator=(CMediaSourceSettings const&);
   virtual ~CMediaSourceSettings();
 
 private:

@@ -96,7 +96,7 @@ public:
 protected:
   CMediaSettings();
   CMediaSettings(const CMediaSettings&);
-  CMediaSettings const& operator=(CMediaSettings const&);
+  CMediaSettings& operator=(CMediaSettings const&);
   virtual ~CMediaSettings();
 
   static std::string GetWatchedContent(const std::string &content);
