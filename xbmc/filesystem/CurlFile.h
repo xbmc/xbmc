@@ -46,7 +46,7 @@ namespace XFILE
         PROXY_SOCKS5,
         PROXY_SOCKS5_REMOTE,
       } ProxyType;
-    
+
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
@@ -114,6 +114,7 @@ namespace XFILE
           int64_t         m_filePos;
           bool            m_bFirstLoop;
           bool            m_isPaused;
+          bool            m_seekable;
 
           char*           m_readBuffer;
 
@@ -171,7 +172,6 @@ namespace XFILE
       bool            m_forWrite;
       bool            m_inError;
       bool            m_useOldHttpVersion;
-      bool            m_seekable;
       bool            m_multisession;
       bool            m_skipshout;
       bool            m_postdataset;

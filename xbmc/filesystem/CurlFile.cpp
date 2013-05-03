@@ -257,6 +257,7 @@ CCurlFile::CReadState::CReadState()
   m_headerdone = false;
   m_readBuffer = 0;
   m_isPaused = false;
+  m_seekable = true;
 }
 
 CCurlFile::CReadState::~CReadState()
@@ -314,8 +315,10 @@ void CCurlFile::CReadState::SetResume(void)
    * request header. If we don't the server may provide different content causing seeking to fail.
    * This only affects HTTP-like items, for FTP it's a null operation.
    */
-  if (m_filePos == 0)
+  if (m_seekable && m_filePos == 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-");
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
 }
@@ -387,7 +390,6 @@ CCurlFile::CCurlFile()
   m_forWrite = false;
   m_inError = false;
   m_multisession  = true;
-  m_seekable = true;
   m_useOldHttpVersion = false;
   m_connecttimeout = 0;
   m_lowspeedtime = 0;
@@ -779,7 +781,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         else if (name.Equals("noshout") && value.Equals("true"))
           m_skipshout = true;
         else if (name.Equals("seekable") && value.Equals("0"))
-          m_seekable = false;
+          m_state->m_seekable = false;
         else
           SetRequestHeader(name, value);
       }
@@ -892,7 +894,7 @@ void CCurlFile::Reset()
 bool CCurlFile::Open(const CURL& url)
 {
   m_opened = true;
-  m_seekable = true;
+  m_state->m_seekable = true;
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
@@ -971,15 +973,15 @@ bool CCurlFile::Open(const CURL& url)
     m_state->m_fileSize = 0;
 
   if(m_state->m_fileSize <= 0)
-    m_seekable = false;
-  if (m_seekable)
+    m_state->m_seekable = false;
+  if (m_state->m_seekable)
   {
     if(url2.GetProtocol().Equals("http")
     || url2.GetProtocol().Equals("https"))
     {
       // if server says explicitly it can't seek, respect that
       if(m_state->m_httpheader.GetValue("Accept-Ranges").Equals("none"))
-        m_seekable = false;
+        m_state->m_seekable = false;
     }
   }
 
@@ -1177,7 +1179,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   if(m_state->Seek(nextPos))
     return nextPos;
 
-  if(!m_seekable)
+  if(!m_state->m_seekable)
     return -1;
 
   CReadState* oldstate = NULL;
@@ -1205,7 +1207,8 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
   {
-    m_seekable = false;
+    m_state->m_seekable = false;
+
     if(oldstate)
     {
       delete m_state;
@@ -1445,9 +1448,23 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_COULDNT_CONNECT    ||
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
+            {
               CURLresult = msg->data.result;
+            }
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
+                       msg->data.result == CURLE_HTTP_RETURNED_ERROR) &&
+                       m_bFirstLoop                                   &&
+                       m_filePos == 0                                 &&
+                       m_seekable)
+            {
+              // If server returns a range or http error, retry with range disabled
+              CURLresult = msg->data.result;
+              m_seekable = false;
+            }
             else
+            {
               return false;
+            }
           }
         }
 
@@ -1608,7 +1625,7 @@ bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString use
 int CCurlFile::IoControl(EIoControl request, void* param)
 {
   if(request == IOCTRL_SEEK_POSSIBLE)
-    return m_seekable ? 1 : 0;
+    return m_state->m_seekable ? 1 : 0;
 
   return -1;
 }
