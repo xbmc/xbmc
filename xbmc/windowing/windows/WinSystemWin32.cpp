@@ -267,7 +267,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     RestoreDesktopResolution(m_nScreen);
   }
 
-  if(!m_bFullScreen && fullScreen)
+  if(m_hWnd && !m_bFullScreen && fullScreen)
   {
     // save position of windowed mode
     WINDOWINFO wi;
@@ -350,6 +350,8 @@ RECT CWinSystemWin32::ScreenRect(int screen)
 
 bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 {
+  if (m_hWnd == NULL)
+    return false;
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
   RECT rc;
