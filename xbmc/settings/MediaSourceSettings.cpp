@@ -363,7 +363,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   else
   {
     // validate the paths
-    for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); path++)
+    for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
     {
       CURL url(*path);
       string protocol = url.GetProtocol();

@@ -78,13 +78,13 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
           m_sections[section->GetId()] = section;
 
         // get all settings and add them to the settings map
-        for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); categoryIt++)
+        for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); ++categoryIt)
         {
           (*categoryIt)->CheckVisible();
-          for (SettingGroupList::const_iterator groupIt = (*categoryIt)->GetGroups().begin(); groupIt != (*categoryIt)->GetGroups().end(); groupIt++)
+          for (SettingGroupList::const_iterator groupIt = (*categoryIt)->GetGroups().begin(); groupIt != (*categoryIt)->GetGroups().end(); ++groupIt)
           {
             (*groupIt)->CheckVisible();
-            for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); settingIt++)
+            for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
             {
               (*settingIt)->CheckVisible();
 
@@ -117,16 +117,16 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
     sectionNode = sectionNode->NextSibling(XML_SECTION);
   }
 
-  for (SettingMap::iterator itSettingDep = m_settings.begin(); itSettingDep != m_settings.end(); itSettingDep++)
+  for (SettingMap::iterator itSettingDep = m_settings.begin(); itSettingDep != m_settings.end(); ++itSettingDep)
   {
     if (itSettingDep->second.setting == NULL)
       continue;
 
     const SettingDependencies& deps = itSettingDep->second.setting->GetDependencies();
-    for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); depIt++)
+    for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
     {
       std::set<std::string> settingIds = depIt->GetSettings();
-      for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); itSettingId++)
+      for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
       {
         SettingMap::iterator setting = m_settings.find(*itSettingId);
         if (setting == m_settings.end())
@@ -193,7 +193,7 @@ bool CSettingsManager::Save(TiXmlNode *root) const
   }
 
   // save any ISubSettings implementations
-  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); ++it)
   {
     if (!(*it)->Save(root))
       return false;
@@ -214,7 +214,7 @@ void CSettingsManager::Unload()
   // OnSettingChanging() and OnSettingChanged()
   m_loaded = false;
 
-  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); setting++)
+  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
     setting->second.setting->Reset();
 
   OnSettingsUnloaded();
@@ -226,13 +226,13 @@ void CSettingsManager::Clear()
   Unload();
 
   m_settings.clear();
-  for (SettingSectionMap::iterator section = m_sections.begin(); section != m_sections.end(); section++)
+  for (SettingSectionMap::iterator section = m_sections.begin(); section != m_sections.end(); ++section)
     delete section->second;
   m_sections.clear();
 
   OnSettingsCleared();
 
-  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); ++it)
     (*it)->Clear();
 
   m_initialized = false;
@@ -272,7 +272,7 @@ void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::s
   if (callback == NULL)
     return;
 
-  for (std::set<std::string>::const_iterator settingIt = settingList.begin(); settingIt != settingList.end(); settingIt++)
+  for (std::set<std::string>::const_iterator settingIt = settingList.begin(); settingIt != settingList.end(); ++settingIt)
   {
     std::string id = *settingIt;
     StringUtils::ToLower(id);
@@ -295,7 +295,7 @@ void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::s
 void CSettingsManager::UnregisterCallback(ISettingCallback *callback)
 {
   CSingleLock lock(m_critical);
-  for (SettingMap::iterator settingIt = m_settings.begin(); settingIt != m_settings.end(); settingIt++)
+  for (SettingMap::iterator settingIt = m_settings.begin(); settingIt != m_settings.end(); ++settingIt)
     settingIt->second.callbacks.erase(callback);
 }
 
@@ -586,7 +586,7 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
   if (parent == NULL)
     return false;
 
-  for (SettingMap::const_iterator it = m_settings.begin(); it != m_settings.end(); it++)
+  for (SettingMap::const_iterator it = m_settings.begin(); it != m_settings.end(); ++it)
   {
     if (it->second.setting->GetType() == SettingTypeAction)
       continue;
@@ -631,7 +631,7 @@ bool CSettingsManager::Deserialize(const TiXmlNode *node, std::map<std::string, 
   if (node == NULL)
     return false;
 
-  for (SettingMap::iterator it = m_settings.begin(); it != m_settings.end(); it++)
+  for (SettingMap::iterator it = m_settings.begin(); it != m_settings.end(); ++it)
   {
     if (LoadSetting(node, it->second.setting) && loadedSettings != NULL)
       loadedSettings->insert(make_pair(it->first, it->second.setting));
@@ -659,7 +659,7 @@ bool CSettingsManager::OnSettingChanging(const CSetting *setting)
 
   for (CallbackSet::iterator callback = settingData.callbacks.begin();
         callback != settingData.callbacks.end();
-        callback++)
+        ++callback)
   {
     if (!(*callback)->OnSettingChanging(setting))
       return false;
@@ -684,14 +684,14 @@ void CSettingsManager::OnSettingChanged(const CSetting *setting)
     
   for (CallbackSet::iterator callback = settingData.callbacks.begin();
         callback != settingData.callbacks.end();
-        callback++)
+        ++callback)
     (*callback)->OnSettingChanged(setting);
 
   // now handle any settings which depend on the changed setting
   const SettingDependencyMap& deps = GetDependencies(setting);
-  for (SettingDependencyMap::const_iterator depsIt = deps.begin(); depsIt != deps.end(); depsIt++)
+  for (SettingDependencyMap::const_iterator depsIt = deps.begin(); depsIt != deps.end(); ++depsIt)
   {
-    for (SettingDependencies::const_iterator depIt = depsIt->second.begin(); depIt != depsIt->second.end(); depIt++)
+    for (SettingDependencies::const_iterator depIt = depsIt->second.begin(); depIt != depsIt->second.end(); ++depIt)
       UpdateSettingByDependency(depsIt->first, *depIt);
   }
 }
@@ -712,7 +712,7 @@ void CSettingsManager::OnSettingAction(const CSetting *setting)
 
   for (CallbackSet::iterator callback = settingData.callbacks.begin();
         callback != settingData.callbacks.end();
-        callback++)
+        ++callback)
     (*callback)->OnSettingAction(setting);
 }
 
@@ -733,7 +733,7 @@ bool CSettingsManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   bool ret = false;
   for (CallbackSet::iterator callback = settingData.callbacks.begin();
         callback != settingData.callbacks.end();
-        callback++)
+        ++callback)
     ret |= (*callback)->OnSettingUpdate(setting, oldSettingId, oldSettingNode);
 
   return ret;
@@ -755,7 +755,7 @@ void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const c
 
   for (CallbackSet::iterator callback = settingData.callbacks.begin();
         callback != settingData.callbacks.end();
-        callback++)
+        ++callback)
     (*callback)->OnSettingPropertyChanged(setting, propertyName);
 }
 
@@ -782,7 +782,7 @@ CSetting* CSettingsManager::CreateSetting(const std::string &settingType, const 
 bool CSettingsManager::OnSettingsLoading()
 {
   CSingleLock lock(m_critical);
-  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); it++)
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
   {
     if (!(*it)->OnSettingsLoading())
       return false;
@@ -794,14 +794,14 @@ bool CSettingsManager::OnSettingsLoading()
 void CSettingsManager::OnSettingsLoaded()
 {
   CSingleLock lock(m_critical);
-  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); it++)
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
     (*it)->OnSettingsLoaded();
 }
 
 bool CSettingsManager::OnSettingsSaving() const
 {
   CSingleLock lock(m_critical);
-  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); it++)
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
   {
     if (!(*it)->OnSettingsSaving())
       return false;
@@ -813,21 +813,21 @@ bool CSettingsManager::OnSettingsSaving() const
 void CSettingsManager::OnSettingsSaved() const
 {
   CSingleLock lock(m_critical);
-  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); it++)
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
     (*it)->OnSettingsSaved();
 }
 
 void CSettingsManager::OnSettingsCleared()
 {
   CSingleLock lock(m_critical);
-  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); it++)
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
     (*it)->OnSettingsCleared();
 }
 
 bool CSettingsManager::Load(const TiXmlNode *settings)
 {
   bool ok = true;
-  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); ++it)
     ok &= (*it)->Load(settings);
 
   return ok;
@@ -871,13 +871,13 @@ bool CSettingsManager::UpdateSettings(const TiXmlNode *root)
 {
   bool updated = false;
 
-  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); setting++)
+  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
   {
     const std::set<CSettingUpdate>& updates = setting->second.setting->GetUpdates();
     if (updates.empty())
       continue;
 
-    for (std::set<CSettingUpdate>::const_iterator update = updates.begin(); update != updates.end(); update++)
+    for (std::set<CSettingUpdate>::const_iterator update = updates.begin(); update != updates.end(); ++update)
       updated |= UpdateSetting(root, setting->second.setting, *update);
   }
 

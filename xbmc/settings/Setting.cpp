@@ -541,7 +541,7 @@ bool CSettingInt::CheckValidity(int value) const
   {
     //if the setting is an std::map, check if we got a valid value before assigning it
     bool ok = false;
-    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); it++)
+    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); ++it)
     {
       if (it->second == value)
       {
