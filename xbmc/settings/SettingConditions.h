@@ -93,7 +93,7 @@ public:
   void AddCondition(const std::string &condition);
   void AddCondition(const std::string &identifier, SettingConditionCheck condition);
 
-  bool Check(const std::string &condition, const std::string &value = "", const std::string settingId = "") const;
+  bool Check(const std::string &condition, const std::string &value = "", const std::string &settingId = "") const;
 
 private:
   CSettingConditionsManager(const CSettingConditionsManager&);

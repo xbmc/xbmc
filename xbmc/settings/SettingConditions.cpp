@@ -122,7 +122,7 @@ void CSettingConditionsManager::AddCondition(const std::string &identifier, Sett
   m_conditions.insert(SettingConditionPair(identifier, condition));
 }
 
-bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const std::string settingId /* = "" */) const
+bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const std::string &settingId /* = "" */) const
 {
   if (condition.empty())
     return false;
