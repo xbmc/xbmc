@@ -1293,6 +1293,8 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
 
 int CSoftAE::RunTranscodeStage(bool hasAudio)
 {
+  if (!m_encoder) return 0;
+  
   /* if we dont have enough samples to encode yet, return */
   unsigned int block     = m_encoderFormat.m_frames * m_encoderFormat.m_frameSize;
   unsigned int sinkBlock = m_sinkFormat.m_frames    * m_sinkFormat.m_frameSize;
