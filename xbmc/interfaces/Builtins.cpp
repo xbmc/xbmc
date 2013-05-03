@@ -770,7 +770,6 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Left(14).Equals("seekpercentage"))
     {
       CStdString offset = "";
-      float offsetpercent;
       if (parameter.size() == 14)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (parameter.size() < 17) // arg must be at least "(N)"
@@ -779,7 +778,7 @@ int CBuiltins::Execute(const CStdString& execString)
       {
         // Don't bother checking the argument: an invalid arg will do seek(0)
         offset = parameter.Mid(15).TrimRight(")");
-        offsetpercent = (float) atof(offset.c_str());
+        float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
         else if (g_application.IsPlaying())

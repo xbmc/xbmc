@@ -193,9 +193,9 @@ namespace XBMCAddon
           if (region)
           {
             CStdString region = "-" + g_langInfo.GetCurrentRegion();
-            return (lang += region).c_str();
+            return (lang += region);
           }
-          return lang.c_str();
+          return lang;
         }
       case CLangCodeExpander::ISO_639_1:
         {
@@ -207,9 +207,9 @@ namespace XBMCAddon
             CStdString region2Code;
             g_LangCodeExpander.ConvertToTwoCharCode(region2Code, region);
             region2Code = "-" + region2Code;
-            return (langCode += region2Code).c_str();
+            return (langCode += region2Code);
           }
-          return langCode.c_str();
+          return langCode;
         }
       case CLangCodeExpander::ISO_639_2:
         {
@@ -221,10 +221,10 @@ namespace XBMCAddon
             CStdString region3Code;
             g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region);
             region3Code = "-" + region3Code;
-            return (langCode += region3Code).c_str();
+            return (langCode += region3Code);
           }
 
-          return langCode.c_str();
+          return langCode;
         }
       default:
         return "";
@@ -349,12 +349,11 @@ namespace XBMCAddon
       if (!condition)
         return false;
 
-      int id;
       bool ret;
       {
         LOCKGUI;
 
-        id = g_windowManager.GetTopMostModalDialogID();
+        int id = g_windowManager.GetTopMostModalDialogID();
         if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
         ret = g_infoManager.EvaluateBool(condition,id);
       }
@@ -516,7 +515,7 @@ namespace XBMCAddon
       default:
         return "";
       }
-      return convertedLanguage.c_str();
+      return convertedLanguage;
     }
 
     int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }

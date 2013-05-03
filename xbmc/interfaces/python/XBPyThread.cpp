@@ -159,7 +159,7 @@ static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
-       iter != acs.end(); iter++)
+       iter != acs.end(); ++iter)
   {
     if (!firstTime) message += ",";
     else firstTime = false;

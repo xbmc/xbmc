@@ -285,14 +285,13 @@ JSONRPC_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer
 
 JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int speed;
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
       if (parameterObject["speed"].isInteger())
       {
-        speed = (int)parameterObject["speed"].asInteger();
+        int speed = (int)parameterObject["speed"].asInteger();
         if (speed != 0)
         {
           // If the player is paused we first need to unpause
@@ -305,7 +304,6 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
       }
       else if (parameterObject["speed"].isString())
       {
-        speed = g_application.GetPlaySpeed();
         if (parameterObject["speed"].asString().compare("increment") == 0)
           CBuiltins::Execute("playercontrol(forward)");
         else

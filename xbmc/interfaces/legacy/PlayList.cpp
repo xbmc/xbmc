@@ -143,10 +143,9 @@ namespace XBMCAddon
 
     XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i) throw (PlayListException)
     {
-      long pos = -1;
       int iPlayListSize = size();
 
-      pos = i;
+      long pos = i;
       if (pos < 0) pos += iPlayListSize;
 
       if (pos < 0 || pos >= iPlayListSize)

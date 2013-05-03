@@ -258,7 +258,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       // sure that the default value is a valid enum value
       else
       {
-        for (std::vector<CVariant>::const_iterator itr = enums.begin(); itr != enums.end(); itr++)
+        for (std::vector<CVariant>::const_iterator itr = enums.begin(); itr != enums.end(); ++itr)
         {
           if (value["default"] == *itr)
           {
@@ -347,7 +347,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     {
       // Get all child elements of the "properties"
       // object and loop through them
-      for (CVariant::const_iterator_map itr = value["properties"].begin_map(); itr != value["properties"].end_map(); itr++)
+      for (CVariant::const_iterator_map itr = value["properties"].begin_map(); itr != value["properties"].end_map(); ++itr)
       {
         // Create a new type definition, store the name
         // of the current property into it, parse it
@@ -469,7 +469,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       // parse all elements and store them
       else if (value["items"].isArray())
       {
-        for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); itemItr++)
+        for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); ++itemItr)
         {
           JSONSchemaTypeDefinitionPtr item = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
           if (!item->Parse(*itemItr))
@@ -517,7 +517,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
   if (value.isMember("enum") && value["enum"].isArray())
   {
     // Loop through all elements in the "enum" array
-    for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
+    for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); ++enumItr)
     {
       // Check for duplicates and eliminate them
       bool approved = true;
@@ -550,7 +550,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       // sure that the default value is a valid enum value
       else
       {
-        for (std::vector<CVariant>::const_iterator itr = enums.begin(); itr != enums.end(); itr++)
+        for (std::vector<CVariant>::const_iterator itr = enums.begin(); itr != enums.end(); ++itr)
         {
           if (value["default"] == *itr)
           {
@@ -780,7 +780,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
     unsigned int handled = 0;
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesEnd = properties.end();
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
-    for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; propertiesIterator++)
+    for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; ++propertiesIterator)
     {
       if (value.isMember(propertiesIterator->second->name))
       {
@@ -854,7 +854,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
   if (enums.size() > 0)
   {
     bool valid = false;
-    for (std::vector<CVariant>::const_iterator enumItr = enums.begin(); enumItr != enums.end(); enumItr++)
+    for (std::vector<CVariant>::const_iterator enumItr = enums.begin(); enumItr != enums.end(); ++enumItr)
     {
       if (*enumItr == value)
       {
@@ -1075,7 +1075,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
 
         JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesEnd = properties.end();
         JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
-        for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; propertiesIterator++)
+        for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; ++propertiesIterator)
         {
           propertiesIterator->second->Print(false, false, true, printDescriptions, output["properties"][propertiesIterator->first]);
         }
@@ -1634,7 +1634,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<std::string> &values)
 {
   std::vector<CVariant> enums;
-  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); it++)
+  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it)
     enums.push_back(CVariant(*it));
 
   return AddEnum(name, enums, CVariant::VariantTypeString);
@@ -1643,7 +1643,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<int> &values)
 {
   std::vector<CVariant> enums;
-  for (std::vector<int>::const_iterator it = values.begin(); it != values.end(); it++)
+  for (std::vector<int>::const_iterator it = values.begin(); it != values.end(); ++it)
     enums.push_back(CVariant(*it));
 
   return AddEnum(name, enums, CVariant::VariantTypeInteger);
@@ -1725,7 +1725,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
       // Loop through all printed types to get all referenced types
       std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator;
       std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIteratorEnd = types.end();
-      for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
+      for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; ++typeIterator)
         getReferencedTypes(typeIterator->second, referencedTypes);
 
       // Loop through all printed method's parameters and return value to get all referenced types
@@ -1761,7 +1761,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
 
   std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator;
   std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIteratorEnd = types.end();
-  for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
+  for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; ++typeIterator)
   {
     CVariant currentType = CVariant(CVariant::VariantTypeObject);
     typeIterator->second->Print(false, true, true, printDescriptions, currentType);
@@ -1813,7 +1813,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
   // Print notification description
   std::map<std::string, CVariant>::const_iterator notificationIterator;
   std::map<std::string, CVariant>::const_iterator notificationIteratorEnd = notifications.end();
-  for (notificationIterator = notifications.begin(); notificationIterator != notificationIteratorEnd; notificationIterator++)
+  for (notificationIterator = notifications.begin(); notificationIterator != notificationIteratorEnd; ++notificationIterator)
     result["notifications"][notificationIterator->first] = notificationIterator->second[notificationIterator->first];
 
   return OK;
@@ -1949,7 +1949,7 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionP
   {
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iter;
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iterEnd = type->properties.end();
-    for (iter = type->properties.begin(); iter != iterEnd; iter++)
+    for (iter = type->properties.begin(); iter != iterEnd; ++iter)
       getReferencedTypes(iter->second, referencedTypes);
   }
   // If the current type is an array we need to check its items

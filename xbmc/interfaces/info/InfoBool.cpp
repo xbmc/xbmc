@@ -92,7 +92,7 @@ void InfoExpression::Parse(const CStdString &expression)
       // handle closing parenthesis
       if (expression[i] == ']')
       {
-        while (operators.size())
+        while (!operators.empty())
         {
           char oper = operators.top();
           operators.pop();
@@ -156,7 +156,7 @@ bool InfoExpression::Evaluate(const CGUIListItem *item, bool &result)
     short expr = *it;
     if (expr == -OPERATOR_NOT)
     { // NOT the top item on the stack
-      if (save.size() < 1) return false;
+      if (save.empty()) return false;
       bool expr = save.top();
       save.pop();
       save.push(!expr);
