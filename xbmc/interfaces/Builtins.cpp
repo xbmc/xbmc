@@ -127,6 +127,7 @@ const BUILT_IN commands[] = {
   { "Minimize",                   false,  "Minimize XBMC" },
   { "Reset",                      false,  "Reset the system (same as reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
+  { "ActivateScreenSaver",        false,  "Activates the screensaver" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
   { "ReplaceWindowAndFocus",      true,   "Replaces the current window with the new one and sets focus to the specified id" },
@@ -325,6 +326,10 @@ int CBuiltins::Execute(const CStdString& execString)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendMessage(msg);
+  }
+  else if (execute.Equals("activatescreensaver"))
+  {
+    g_application.ActivateScreenSaver();
   }
   else if (execute.Equals("takescreenshot"))
   {
