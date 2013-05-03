@@ -725,8 +725,6 @@ CGUIControl* CGUIWindowSettingsCategory::AddSettingControl(CGUIControl *pControl
 
 void CGUIWindowSettingsCategory::OnClick(BaseSettingControlPtr pSettingControl)
 {
-  std::string strSetting = pSettingControl->GetSetting()->GetId();
-
   // we need to first set the delayed setting and then execute OnClick()
   // because OnClick() triggers OnSettingChanged() and there we need to
   // know if the changed setting is delayed or not

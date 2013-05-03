@@ -331,10 +331,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
       {
         // translate special tags
         if (!strPath.empty() && strPath.at(0) == '$')
-        {
-          string strPathOld(strPath);
           strPath = CUtil::TranslateSpecialSource(strPath);
-        }
 
         // need to check path validity again as CUtil::TranslateSpecialSource() may have failed
         if (!strPath.empty())
