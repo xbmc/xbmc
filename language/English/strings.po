@@ -12230,7 +12230,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#35102"
-msgid "Disable joystick when device is present"
+msgid "Disable joystick when this device is present"
 msgstr ""
 
 #empty strings from id 35103 to 35499
