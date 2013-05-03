@@ -200,6 +200,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
                                   { "filenameandpath",  PLAYER_FILEPATH },
+                                  { "isinternetstream", PLAYER_ISINTERNETSTREAM },
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
                                   { "seekenabled",      PLAYER_CAN_SEEK }};
 
@@ -2406,6 +2407,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case PLAYER_PASSTHROUGH:
       bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
+      break;
+    case PLAYER_ISINTERNETSTREAM:
+      bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
       break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
