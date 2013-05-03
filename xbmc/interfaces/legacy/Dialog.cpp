@@ -176,7 +176,7 @@ namespace XBMCAddon
 
       std::vector<String> valuelist;
       int index = 0;
-      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); iter++)
+      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); ++iter)
         valuelist[index++] = (*iter);
 
       return valuelist;

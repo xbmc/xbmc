@@ -99,7 +99,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
       CGUIListItem::ArtMap artMap = item->GetArt();
       CVariant artObj(CVariant::VariantTypeObject);
-      for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); artIt++)
+      for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); ++artIt)
       {
         if (!artIt->second.empty())
           artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
@@ -187,7 +187,7 @@ void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr
 
   std::set<std::string> originalFields = fields;
 
-  for (std::set<std::string>::const_iterator fieldIt = originalFields.begin(); fieldIt != originalFields.end(); fieldIt++)
+  for (std::set<std::string>::const_iterator fieldIt = originalFields.begin(); fieldIt != originalFields.end(); ++fieldIt)
   {
     if (GetField(*fieldIt, serialization, item, result, fetchedArt, thumbLoader) && result.isMember(*fieldIt) && !result[*fieldIt].empty())
       fields.erase(*fieldIt);

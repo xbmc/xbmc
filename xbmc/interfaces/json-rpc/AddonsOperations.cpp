@@ -73,7 +73,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransport
     addonTypes.push_back(addonType);
 
   VECADDONS addons;
-  for (vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); typeIt++)
+  for (vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); ++typeIt)
   {
     VECADDONS typeAddons;
     if (*typeIt == ADDON_UNKNOWN)

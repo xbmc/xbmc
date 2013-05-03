@@ -69,7 +69,7 @@ namespace XBMCAddon
           iter = g_callQueue.begin();
         }
         else
-          iter++;
+          ++iter;
       }
     }
   }
@@ -127,7 +127,7 @@ namespace XBMCAddon
         iter = g_callQueue.begin();
       }
       else // if we're not in the right thread for this callback...
-        iter++;
+        ++iter;
     }  
   }
 
@@ -148,7 +148,7 @@ namespace XBMCAddon
         iter = g_callQueue.erase(iter);
       }
       else
-        iter++;
+        ++iter;
     }
   }
 }
