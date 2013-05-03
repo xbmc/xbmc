@@ -22,6 +22,7 @@
 
 #include "GUIWindowPVRCommon.h"
 #include "epg/GUIEPGGridContainer.h"
+#include "utils/Stopwatch.h"
 #include "threads/CriticalSection.h"
 
 namespace PVR
@@ -56,6 +57,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded(void);
     virtual void OnWindowUnload(void);
+    virtual void FrameMove();
     virtual void Reset(void);
     virtual void Cleanup(void);
 
@@ -85,5 +87,7 @@ namespace PVR
     bool                     m_bWasReset;
 
     CCriticalSection         m_critSection;
+
+    CStopWatch               m_refreshWatch;
   };
 }

@@ -22,14 +22,13 @@
 
 #include "GUIWindowPVRCommon.h"
 #include "utils/Observer.h"
-#include "threads/Thread.h"
 #include "../channels/PVRChannelGroup.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer, private CThread
+  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer
   {
     friend class CGUIWindowPVR;
 
@@ -48,7 +47,6 @@ namespace PVR
     void UnregisterObservers(void);
 
   private:
-    void Process(void);
     bool OnClickButton(CGUIMessage &message);
     bool OnClickList(CGUIMessage &message);
 
@@ -70,6 +68,5 @@ namespace PVR
     CPVRChannelGroupPtr m_selectedGroup;
     bool              m_bShowHiddenChannels;
     bool              m_bRadio;
-    bool              m_bThreadCreated;
   };
 }
