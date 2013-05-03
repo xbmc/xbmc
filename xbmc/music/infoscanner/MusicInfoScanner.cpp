@@ -519,7 +519,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       for (vector<string>::const_iterator it = tag.GetMusicBrainzArtistID().begin(); it != tag.GetMusicBrainzArtistID().end(); ++it)
       {
         CStdString strJoinPhrase = (it == --tag.GetMusicBrainzArtistID().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit mbartist(song.artist[0], *it, strJoinPhrase);
+        CArtistCredit mbartist(tag.GetArtist().empty() ? "" : tag.GetArtist()[0], *it, strJoinPhrase);
         song.artistCredits.push_back(mbartist);
       }
       song.artist = tag.GetArtist();
@@ -553,7 +553,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         {
           // Picard always stored the display artist string in the first artist slot, no need to split it
           CStdString strJoinPhrase = (it == --tag.GetMusicBrainzAlbumArtistID().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-          CArtistCredit mbartist(tag.GetAlbumArtist()[0], *it, strJoinPhrase);
+          CArtistCredit mbartist(tag.GetAlbumArtist().empty() ? "" : tag.GetAlbumArtist()[0], *it, strJoinPhrase);
           album.artistCredits.push_back(mbartist);
         }
         album.artist = tag.GetAlbumArtist();
