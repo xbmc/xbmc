@@ -44,6 +44,12 @@ CGUIDialogContentSettings::CGUIDialogContentSettings(void)
   : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"), m_origContent(CONTENT_NONE)
 {
   m_bNeedSave = false;
+  m_bShowScanSettings = false;
+  m_bScanRecursive = false;
+  m_bUseDirNames = false;
+  m_bSingleItem = false;
+  m_bExclude = false;
+  m_bNoUpdate = false;
   m_content = CONTENT_NONE;
   m_vecItems = new CFileItemList;
 }

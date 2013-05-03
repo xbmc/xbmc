@@ -29,6 +29,12 @@
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
     : CGUIWindow(WINDOW_TEST_PATTERN, "")
 {
+  m_pattern = 0;
+  m_bounceX = 0;
+  m_bounceY = 0;
+  m_bounceDirectionX = 0;
+  m_bounceDirectionY = 0;
+  m_blinkFrame = 0;
   m_needsScaling = false;
 }
 

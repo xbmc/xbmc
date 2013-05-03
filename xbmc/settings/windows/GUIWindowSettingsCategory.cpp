@@ -92,6 +92,12 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml"),
       m_settings(CSettings::Get()),
       m_iCategory(0), m_iSection(0),
+      m_pOriginalSpin(NULL),
+      m_pOriginalRadioButton(NULL),
+      m_pOriginalCategoryButton(NULL),
+      m_pOriginalButton(NULL),
+      m_pOriginalEdit(NULL),
+      m_pOriginalImage(NULL),
       m_delayedTimer(this),
       m_returningFromSkinLoad(false)
 {
