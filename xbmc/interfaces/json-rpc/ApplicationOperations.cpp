@@ -109,7 +109,7 @@ JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransport
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
   if (property.Equals("volume"))
-    result = g_application.GetVolume();
+    result = (int)g_application.GetVolume();
   else if (property.Equals("muted"))
     result = g_application.IsMuted();
   else if (property.Equals("name"))
