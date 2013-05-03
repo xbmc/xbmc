@@ -350,7 +350,7 @@ void CGUIWindowSettingsCategory::DoProcess(unsigned int currentTime, CDirtyRegio
     }
   }
   CGUIWindow::DoProcess(currentTime, dirtyregions);
-  if (bAlphaFaded)
+  if (control && bAlphaFaded)
   {
     control->SetFocus(false);
     if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
