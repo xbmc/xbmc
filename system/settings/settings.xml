@@ -1849,7 +1849,7 @@
         </setting>
         <setting id="videoscreen.resolution" type="integer" label="169" help="">
           <level>0</level>
-          <default>0</default>
+          <default>16</default> <!-- RES_DESKTOP -->
           <constraints>
             <options>resolutions</options>
           </constraints>
