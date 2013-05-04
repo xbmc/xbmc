@@ -348,10 +348,10 @@ void XBPyThread::Process()
         }
         else
         {
+          CStdString path;
           URIUtils::Split(m_source, path, script);
           if (script.Equals("default.py"))
           {
-            CStdString path;
             CStdString path2;
             URIUtils::RemoveSlashAtEnd(path);
             URIUtils::Split(path, path2, script);
