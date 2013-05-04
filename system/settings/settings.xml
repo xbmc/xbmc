@@ -2233,15 +2233,23 @@
     <category id="debug" label="14092" help="">
       <group id="1">
         <setting id="debug.showloginfo" type="boolean" label="20191" help="">
-          <level>2</level>
+          <level>1</level>
           <default>false</default>
         </setting>
         <setting id="debug.screenshotpath" type="path" label="20004" help="">
-          <level>2</level>
+          <level>1</level>
           <default></default>
           <allowempty>true</allowempty>
           <heading>657</heading>
           <control type="button" format="path" />
+        </setting>
+        <setting id="debug.setextraloglevel" type="action" label="666" help="">
+          <level>1</level>
+          <control type="button" format="action">
+            <dependencies>
+              <dependency type="enable" setting="debug.showloginfo">true</dependency>
+            </dependencies>
+          </control>
         </setting>
       </group>
     </category>

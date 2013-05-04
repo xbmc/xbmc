@@ -2725,7 +2725,11 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr ""
 
-#empty strings from id 666 to 699
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr ""
+
+#empty strings from id 667 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"

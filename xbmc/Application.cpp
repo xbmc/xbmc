@@ -783,6 +783,12 @@ bool CApplication::Create()
     return false;
   }
 
+  // set logging from debug add-on
+  AddonPtr addon;
+  CAddonMgr::Get().GetAddon("xbmc.debug", addon);
+  if (addon)
+    g_advancedSettings.SetExtraLogsFromAddon(addon.get());
+
   g_peripherals.Initialise();
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
