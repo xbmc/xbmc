@@ -59,7 +59,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("asp",       "text/asp"));
   mimeTypes.insert(pair<string, string>("asx",       "video/x-ms-asf"));
   mimeTypes.insert(pair<string, string>("au",        "audio/basic"));
-  mimeTypes.insert(pair<string, string>("avi",       "video/x-msvideo"));
+  mimeTypes.insert(pair<string, string>("avi",       "video/avi"));
   mimeTypes.insert(pair<string, string>("avs",       "video/avs-video"));
   mimeTypes.insert(pair<string, string>("bcpio",     "application/x-bcpio"));
   mimeTypes.insert(pair<string, string>("bin",       "application/octet-stream"));
@@ -193,7 +193,8 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("jpeg",      "image/jpeg"));
   mimeTypes.insert(pair<string, string>("jpg",       "image/jpeg"));
   mimeTypes.insert(pair<string, string>("jps",       "image/x-jps"));
-  mimeTypes.insert(pair<string, string>("js",        "application/x-javascript"));
+  mimeTypes.insert(pair<string, string>("js",        "application/javascript"));
+  mimeTypes.insert(pair<string, string>("json",      "application/json"));
   mimeTypes.insert(pair<string, string>("jut",       "image/jutvision"));
   mimeTypes.insert(pair<string, string>("kar",       "music/x-karaoke"));
   mimeTypes.insert(pair<string, string>("ksh",       "application/x-ksh"));
@@ -404,6 +405,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("text",      "text/plain"));
   mimeTypes.insert(pair<string, string>("tgz",       "application/x-compressed"));
   mimeTypes.insert(pair<string, string>("tif",       "image/tiff"));
+  mimeTypes.insert(pair<string, string>("tiff",      "image/tiff"));
   mimeTypes.insert(pair<string, string>("tr",        "application/x-troff"));
   mimeTypes.insert(pair<string, string>("ts",        "video/mp2t"));
   mimeTypes.insert(pair<string, string>("tsi",       "audio/tsp-audio"));

@@ -24,6 +24,20 @@
 
 #include "Variant.h"
 
+#ifndef strtoll
+#ifdef TARGET_WINDOWS
+#define strtoll  _strtoi64
+#define strtoull _strtoui64
+#define wcstoll  _wcstoi64
+#define wcstoull _wcstoui64
+#else // TARGET_WINDOWS
+#define strtoll  (int64_t)strtod
+#define strtoull (uint64_t)strtod
+#define wcstoll  (int64_t)wcstod
+#define wcstoull (uint64_t)wcstod
+#endif // TARGET_WINDOWS
+#endif // strtoll
+
 using namespace std;
 
 string trimRight(const string &str)
@@ -51,7 +65,7 @@ wstring trimRight(const wstring &str)
 int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  int64_t result = strtol(trimRight(str).c_str(), &end, 0);
+  int64_t result = strtoll(trimRight(str).c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -61,7 +75,7 @@ int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  int64_t result = wcstol(trimRight(str).c_str(), &end, 0);
+  int64_t result = wcstoll(trimRight(str).c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -71,7 +85,7 @@ int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
 uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  uint64_t result = strtoul(trimRight(str).c_str(), &end, 0);
+  uint64_t result = strtoull(trimRight(str).c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -81,7 +95,7 @@ uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
 uint64_t str2uint64(const wstring &str, uint64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  uint64_t result = wcstoul(trimRight(str).c_str(), &end, 0);
+  uint64_t result = wcstoull(trimRight(str).c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 

@@ -34,6 +34,15 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
 
+namespace XFILE
+{
+  class CFile;
+}
+class CDateTime;
+
+typedef std::pair<int64_t, int64_t> HttpRange;
+typedef std::vector<HttpRange> HttpRanges;
+
 class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
@@ -103,7 +112,12 @@ private:
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
-  static const char *CreateMimeTypeFromExtension(const char *ext);
+  static std::string CreateMimeTypeFromExtension(const char *ext);
+
+  static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
+  static int64_t ParseRangeHeader(const std::string &rangeHeaderValue, int64_t totalLength, HttpRanges &ranges, int64_t &firstPosition, int64_t &lastPosition);
+  static std::string GenerateMultipartBoundary();
+  static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;
