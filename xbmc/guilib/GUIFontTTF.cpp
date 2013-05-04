@@ -279,7 +279,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   delete(m_texture);
   m_texture = NULL;
-  delete [] m_cachePixels;
+  delete[] m_cachePixels;
   delete[] m_char;
   m_char = NULL;
 
@@ -720,18 +720,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   float tb = texture.y2 * m_textureScaleY;
 
   m_color = color;
-  BatchDraw *draw = NULL;
-  BatchDraw temp;
-  for (std::vector<BatchDraw>::iterator i = m_batchDraws.begin(); i != m_batchDraws.end(); i++)
-  {
-    if (i->color == color)
-    {
-      draw = &*i;
-      break;
-    }
-  }
-  if (!draw)
-    draw = &*(m_batchDraws.insert(m_batchDraws.end(), temp));
+  BatchDraw draw = m_batchDraws[color];
 
   PackedVertex packedvertex[4];
   for(int i = 0; i < 4; i++)
@@ -753,11 +742,11 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   packedvertex[3].u1 = tl;
   packedvertex[3].v1 = tb;
 
-  draw->color = color;
-  draw->vertices.push_back(packedvertex[0]);
-  draw->vertices.push_back(packedvertex[1]);
-  draw->vertices.push_back(packedvertex[2]);
-  draw->vertices.push_back(packedvertex[3]);
+  draw.color = color;
+  draw.vertices.push_back(packedvertex[0]);
+  draw.vertices.push_back(packedvertex[1]);
+  draw.vertices.push_back(packedvertex[2]);
+  draw.vertices.push_back(packedvertex[3]);
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)
@@ -831,13 +820,13 @@ void CGUIFontTTF::End()
   if (--m_nestedBeginCount > 0)
     return;
 
-  for (std::vector<BatchDraw>::iterator i = m_batchDraws.begin(); i != m_batchDraws.end(); i++)
+  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
+  for (mapDraws::iterator i = m_batchDraws.begin(); i != m_batchDraws.end(); ++i)
   {
-    i->texture = m_texture;
-    i->diffuseTexture = NULL;
-    i->dirty = true;
-    CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
-    sceneGraph->Add(*i);
+    i->second.texture = m_texture;
+    i->second.diffuseTexture = NULL;
+    i->second.dirty = true;
+    sceneGraph->Add(i->second);
   }
 }
 
@@ -860,7 +849,8 @@ CBaseTexture* CGUIFontTTF::ReallocTexture(unsigned int& newHeight)
   m_textureWidth = m_texture->GetWidth();
   m_texturePitch = m_texture->GetPitch();
   m_textureBlockSize = m_texture->GetBlockSize();
-  unsigned char* newCachedPixels = new unsigned char[m_texturePitch * m_textureHeight];
+  size_t newSize = m_texturePitch * m_textureHeight;
+  unsigned char* newCachedPixels = new unsigned char[newSize];
   if (m_cachePixels)
   {
     unsigned char* src = m_cachePixels;
@@ -871,12 +861,12 @@ CBaseTexture* CGUIFontTTF::ReallocTexture(unsigned int& newHeight)
       src += oldPitch;
       dst += oldPitch;
     }
-    delete [] m_cachePixels;
+    delete[] m_cachePixels;
     m_cachePixels = newCachedPixels;
   }
   else
   {
-    memset(newCachedPixels, 0, m_texturePitch * m_textureHeight);
+    memset(newCachedPixels, 0, newSize);
     m_cachePixels = newCachedPixels;
   }
   return m_texture;
@@ -902,10 +892,8 @@ bool CGUIFontTTF::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, un
      source += bitmap.width;
      target += m_texturePitch;
   }
-  // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
 
-  // Since we have a new texture, we need to delete the old one
-  // the Begin(); End(); stuff is handled by whoever called us
+  // Update the GPU texture
   m_texture->Update(m_textureWidth, m_textureHeight, m_texturePitch, XB_FMT_A8L8, m_cachePixels, true);
   return TRUE;
 }

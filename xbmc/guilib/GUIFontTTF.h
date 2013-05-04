@@ -28,6 +28,7 @@
  */
 
 #include "rendering/SceneGraph.h"
+#include <map>
 
 // forward definition
 class CBaseTexture;
@@ -48,6 +49,7 @@ typedef uint32_t character_t;
 typedef uint32_t color_t;
 typedef std::vector<character_t> vecText;
 typedef std::vector<color_t> vecColors;
+typedef std::map<color_t, BatchDraw> mapDraws;
 
 /*!
  \ingroup textures
@@ -157,7 +159,7 @@ private:
   CStdString m_strFileName;
   int m_referenceCount;
   unsigned char *m_cachePixels;
-  std::vector<BatchDraw> m_batchDraws;
+  mapDraws m_batchDraws;
 };
 #define CGUIFontTTF CGUIFontTTFBase
 #endif
