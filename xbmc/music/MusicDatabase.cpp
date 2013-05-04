@@ -3743,7 +3743,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
     m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
 
-    m_pDS->exec("UPDATE song SET strMusicBrainzTrackID = NULL where strMusicBrainzTrackID = ''");
+    m_pDS->exec("UPDATE song SET strMusicBrainzTrackID = NULL");
     m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
   }
 
