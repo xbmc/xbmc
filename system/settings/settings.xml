@@ -1587,6 +1587,7 @@
           <level>0</level>
           <default>weather.wunderground</default>
           <addontype>xbmc.python.weather</addontype>
+          <allowempty>true</allowempty>
         </setting>
         <setting id="weather.addonsettings" type="action" label="21417" help="">
           <level>0</level>
