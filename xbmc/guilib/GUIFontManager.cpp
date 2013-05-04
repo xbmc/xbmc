@@ -129,7 +129,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   CStdString TTFfontName;
   TTFfontName.Format("%s_%f_%f%s", strFilename, newSize, aspect, border ? "_border" : "");
 
-  CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
+  CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
@@ -222,7 +222,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     CStdString TTFfontName;
     TTFfontName.Format("%s_%f_%f%s", strFilename, newSize, aspect, fontInfo.border ? "_border" : "");
-    CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
+    CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
     if (!pFontFile)
     {
       pFontFile = new CGUIFontTTF(TTFfontName);
@@ -243,7 +243,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
 void GUIFontManager::UnloadTTFFonts()
 {
-  for (vector<CGUIFontTTFBase*>::iterator i = m_vecFontFiles.begin(); i != m_vecFontFiles.end(); i++)
+  for (vector<CGUIFontTTF*>::iterator i = m_vecFontFiles.begin(); i != m_vecFontFiles.end(); i++)
     delete (*i);
 
   m_vecFontFiles.clear();
@@ -265,9 +265,9 @@ void GUIFontManager::Unload(const CStdString& strFontName)
   }
 }
 
-void GUIFontManager::FreeFontFile(CGUIFontTTFBase *pFont)
+void GUIFontManager::FreeFontFile(CGUIFontTTF *pFont)
 {
-  for (vector<CGUIFontTTFBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
+  for (vector<CGUIFontTTF*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
     if (pFont == *it)
     {
@@ -278,11 +278,11 @@ void GUIFontManager::FreeFontFile(CGUIFontTTFBase *pFont)
   }
 }
 
-CGUIFontTTFBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
+CGUIFontTTF* GUIFontManager::GetFontFile(const CStdString& strFileName)
 {
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
-    CGUIFontTTFBase* pFont = (CGUIFontTTFBase *)m_vecFontFiles[i];
+    CGUIFontTTF* pFont = (CGUIFontTTF *)m_vecFontFiles[i];
     if (pFont->GetFileName().Equals(strFileName))
       return pFont;
   }

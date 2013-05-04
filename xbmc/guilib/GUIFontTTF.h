@@ -56,14 +56,14 @@ typedef std::map<color_t, BatchDraw> mapDraws;
  \brief
  */
 
-class CGUIFontTTFBase
+class CGUIFontTTF
 {
   friend class CGUIFont;
 
 public:
 
-  CGUIFontTTFBase(const CStdString& strFileName);
-  ~CGUIFontTTFBase(void);
+  CGUIFontTTF(const CStdString& strFileName);
+  ~CGUIFontTTF(void);
 
   void Clear();
 
@@ -161,5 +161,4 @@ private:
   unsigned char *m_cachePixels;
   mapDraws m_batchDraws;
 };
-#define CGUIFontTTF CGUIFontTTFBase
 #endif

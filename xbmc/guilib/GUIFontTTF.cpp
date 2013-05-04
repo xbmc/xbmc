@@ -51,7 +51,7 @@ using namespace std;
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
-int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
+int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
                                                   // A larger number means more of the "dead space" is placed between
                                                   // words rather than between letters.
 
@@ -133,7 +133,7 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
+CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
 {
   m_texture = NULL;
   m_cachePixels = NULL;
@@ -159,17 +159,17 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_nTexture = 0;
 }
 
-CGUIFontTTFBase::~CGUIFontTTFBase(void)
+CGUIFontTTF::~CGUIFontTTF(void)
 {
   Clear();
 }
 
-void CGUIFontTTFBase::AddReference()
+void CGUIFontTTF::AddReference()
 {
   m_referenceCount++;
 }
 
-void CGUIFontTTFBase::RemoveReference()
+void CGUIFontTTF::RemoveReference()
 {
   // delete this object when it's reference count hits zero
   m_referenceCount--;
@@ -178,7 +178,7 @@ void CGUIFontTTFBase::RemoveReference()
 }
 
 
-void CGUIFontTTFBase::ClearCharacterCache()
+void CGUIFontTTF::ClearCharacterCache()
 {
   delete(m_texture);
 
@@ -196,7 +196,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
   m_textureBlockSize = 0;
 }
 
-void CGUIFontTTFBase::Clear()
+void CGUIFontTTF::Clear()
 {
   delete(m_texture);
   m_texture = NULL;
@@ -219,7 +219,7 @@ void CGUIFontTTFBase::Clear()
 
 }
 
-bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
+bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
@@ -309,7 +309,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   return true;
 }
 
-void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
+void CGUIFontTTF::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
 {
   Begin();
 
@@ -418,7 +418,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
+float CGUIFontTTF::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
 {
   float width = 0;
   while (start != end)
@@ -438,33 +438,33 @@ float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecTe
   return width;
 }
 
-float CGUIFontTTFBase::GetCharWidthInternal(character_t ch)
+float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 {
   Character *c = GetCharacter(ch);
   if (c) return c->advance;
   return 0;
 }
 
-float CGUIFontTTFBase::GetTextHeight(float lineSpacing, int numLines) const
+float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
   return (float)(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
 }
 
-float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
+float CGUIFontTTF::GetLineHeight(float lineSpacing) const
 {
   if (m_face)
     return lineSpacing * m_face->size->metrics.height / 64.0f;
   return 0.0f;
 }
 
-unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
+unsigned int CGUIFontTTF::spacing_between_characters_in_texture = 1;
 
-unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
+unsigned int CGUIFontTTF::GetTextureLineHeight() const
 {
   return m_cellHeight + spacing_between_characters_in_texture;
 }
 
-CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
 {
   wchar_t letter = (wchar_t)(chr & 0xffff);
   character_t style = (chr & 0x3000000) >> 24;
@@ -552,7 +552,7 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
   return m_char + low;
 }
 
-bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
+bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 {
   int glyph_index = FT_Get_Char_Index( m_face, letter );
 
@@ -657,7 +657,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   return true;
 }
 
-void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -750,7 +750,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTFBase::ObliqueGlyph(FT_GlyphSlot slot)
+void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 {
   /* only oblique outline glyphs */
   if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
@@ -773,7 +773,7 @@ void CGUIFontTTFBase::ObliqueGlyph(FT_GlyphSlot slot)
 
 
 // Embolden code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
+void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
 {
   if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
     return;
