@@ -136,12 +136,7 @@ void CDVDDemuxPVRClient::Dispose()
 {
   for (int i = 0; i < MAX_STREAMS; i++)
   {
-    if (m_streams[i])
-    {
-      if (m_streams[i]->ExtraData)
-        delete[] (BYTE*)(m_streams[i]->ExtraData);
-      delete m_streams[i];
-    }
+    delete m_streams[i];
     m_streams[i] = NULL;
   }
 
@@ -154,11 +149,6 @@ void CDVDDemuxPVRClient::DisposeStream(int iStreamId)
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
     return;
-  if (m_streams[iStreamId]->ExtraData)
-  {
-    delete[] (uint8_t*)m_streams[iStreamId]->ExtraData;
-    m_streams[iStreamId]->ExtraData = NULL;
-  }
   delete m_streams[iStreamId];
   m_streams[iStreamId] = NULL;
 }
