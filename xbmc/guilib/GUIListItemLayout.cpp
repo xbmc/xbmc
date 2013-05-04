@@ -108,16 +108,22 @@ unsigned int CGUIListItemLayout::GetFocusedItem() const
 
 void CGUIListItemLayout::SetWidth(float width)
 {
-  m_group.EnlargeWidth(width - m_width);
-  m_width = width;
-  SetInvalid();
+  if (m_width != width)
+  {
+    m_group.EnlargeWidth(width - m_width);
+    m_width = width;
+    SetInvalid();
+  }
 }
 
 void CGUIListItemLayout::SetHeight(float height)
 {
-  m_group.EnlargeHeight(height - m_height);
-  m_height = height;
-  SetInvalid();
+  if (m_height != height)
+  {
+    m_group.EnlargeHeight(height - m_height);
+    m_height = height;
+    SetInvalid();
+  }
 }
 
 void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
