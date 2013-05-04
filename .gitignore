@@ -667,6 +667,9 @@ lib/cmyth/Makefile
 /xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
 /xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
 
+#/xbmc/utils
+/xbmc/utils/Makefile
+
 #/xbmc/visualizations/
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
