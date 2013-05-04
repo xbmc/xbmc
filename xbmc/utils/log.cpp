@@ -38,6 +38,7 @@
 #define m_repeatLogLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLogLevel
 #define m_repeatLine XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLine
 #define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
+#define m_extraLogLevels XBMC_GLOBAL_USE(CLog::CLogGlobals).m_extraLogLevels
 
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -64,12 +65,17 @@ void CLog::Log(int loglevel, const char *format, ... )
 {
   static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%"PRIu64" %7s: ";
   CSingleLock waitLock(critSec);
+  int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
+  loglevel = loglevel & LOGMASK;
 #if !(defined(_DEBUG) || defined(PROFILE))
   if (m_logLevel > LOG_LEVEL_NORMAL ||
      (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
 #endif
   {
     if (!m_file)
+      return;
+
+    if (extras != 0 && (m_extraLogLevels & extras) == 0)
       return;
 
     SYSTEMTIME time;
@@ -216,6 +222,12 @@ void CLog::SetLogLevel(int level)
 int CLog::GetLogLevel()
 {
   return m_logLevel;
+}
+
+void CLog::SetExtraLogLevels(int level)
+{
+  CSingleLock waitLock(critSec);
+  m_extraLogLevels = level;
 }
 
 void CLog::OutputDebugString(const std::string& line)

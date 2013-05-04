@@ -35,8 +35,13 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
+#include "addons/IAddon.h"
+#include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonSettings.h"
 
+using namespace ADDON;
 using namespace XFILE;
+using namespace std;
 
 CAdvancedSettings::CAdvancedSettings()
 {
@@ -76,6 +81,21 @@ void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == "debug.showloginfo")
     SetDebugMode(((CSettingBool*)setting)->GetValue());
+}
+
+void CAdvancedSettings::OnSettingAction(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string settingId = setting->GetId();
+  if (settingId == "debug.setextraloglevel")
+  {
+    AddonPtr addon;
+    CAddonMgr::Get().GetAddon("xbmc.debug", addon);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon, true);
+    SetExtraLogsFromAddon(addon.get());
+  }
 }
 
 void CAdvancedSettings::Initialize()
@@ -362,6 +382,7 @@ void CAdvancedSettings::Initialize()
   m_videoExtensions += "|.pvr";
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
+  m_extraLogLevels = 0;
 
   #if defined(TARGET_DARWIN)
     CStdString logDir = getenv("HOME");
@@ -1284,4 +1305,17 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     m_logLevel = level;
     CLog::SetLogLevel(level);
   }
+}
+
+void CAdvancedSettings::SetExtraLogsFromAddon(ADDON::IAddon* addon)
+{
+  m_extraLogLevels = 0;
+  for (int i=LOGMASKBIT;i<31;++i)
+  {
+    CStdString str;
+    str.Format("bit%i", i-LOGMASKBIT+1);
+    if (addon->GetSetting(str) == "true")
+      m_extraLogLevels |= (1 << i);
+  }
+  CLog::SetExtraLogLevels(m_extraLogLevels);
 }

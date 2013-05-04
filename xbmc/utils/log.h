@@ -46,6 +46,7 @@ public:
     int         m_repeatLogLevel;
     std::string m_repeatLine;
     int         m_logLevel;
+    int         m_extraLogLevels;
     CCriticalSection critSec;
   };
 
@@ -57,6 +58,7 @@ public:
   static bool Init(const char* path);
   static void SetLogLevel(int level);
   static int  GetLogLevel();
+  static void SetExtraLogLevels(int level);
 private:
   static void OutputDebugString(const std::string& line);
 };

@@ -26,8 +26,7 @@
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
 #define LOG_LEVEL_DEBUG         1 // shows all
 #define LOG_LEVEL_DEBUG_FREEMEM 2 // shows all + shows freemem on screen
-#define LOG_LEVEL_DEBUG_SAMBA   3 // shows all + freemem on screen + samba debugging
-#define LOG_LEVEL_MAX           LOG_LEVEL_DEBUG_SAMBA
+#define LOG_LEVEL_MAX           LOG_LEVEL_DEBUG_FREEMEM
 
 // ones we use in the code
 #define LOGDEBUG   0
@@ -38,6 +37,17 @@
 #define LOGSEVERE  5
 #define LOGFATAL   6
 #define LOGNONE    7
+
+// extra masks - from bit 5
+#define LOGMASKBIT 5
+#define LOGMASK   ((1 << LOGMASKBIT)-1)
+
+#define LOGSAMBA  (1 << (LOGMASKBIT+0))
+#define LOGCURL   (1 << (LOGMASKBIT+1))
+#define LOGCMYTH  (1 << (LOGMASKBIT+2))
+#define LOGFFMPEG (1 << (LOGMASKBIT+3))
+#define LOGRTMP   (1 << (LOGMASKBIT+4))
+#define LOGDBUS   (1 << (LOGMASKBIT+5))
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,3,4)))
