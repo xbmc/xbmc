@@ -4636,7 +4636,8 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
     // find all artists
     sql = "SELECT artist.idArtist AS idArtist, strArtist, "
-          "  strBorn, strFormed, strGenres,"
+          "  strMusicBrainzArtistID, "
+          "  strBorn, strFormed, strGenres, "
           "  strMoods, strStyles, strInstruments, "
           "  strBiography, strDied, strDisbanded, "
           "  strYearsActive, strImage, strFanart "
