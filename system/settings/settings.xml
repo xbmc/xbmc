@@ -2233,11 +2233,11 @@
     <category id="debug" label="14092" help="">
       <group id="1">
         <setting id="debug.showloginfo" type="boolean" label="20191" help="">
-          <level>2</level>
+          <level>1</level>
           <default>false</default>
         </setting>
         <setting id="debug.screenshotpath" type="path" label="20004" help="">
-          <level>2</level>
+          <level>1</level>
           <default></default>
           <allowempty>true</allowempty>
           <heading>657</heading>
