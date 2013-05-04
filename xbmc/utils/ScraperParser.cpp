@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "utils/StringUtils.h"
-
+#include "utils/XSLTUtils.h"
 #include <sstream>
 #include <cstring>
 
@@ -338,12 +338,51 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
   }
 }
 
+void CScraperParser::ParseXSLT(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend)
+{
+  TiXmlElement* pSheet = element->FirstChildElement();
+  if (pSheet)
+  {
+    XSLTUtils xsltUtils;
+    CStdString strXslt;
+    strXslt << *pSheet;
+
+    if (!xsltUtils.SetInput(input))
+      CLog::Log(LOGDEBUG, "could not parse input XML");
+
+    if (!xsltUtils.SetStylesheet(strXslt))
+      CLog::Log(LOGDEBUG, "could not parse stylesheet XML");
+
+    xsltUtils.XSLTTransform(dest);
+  }
+}
+
+TiXmlElement *FirstChildScraperElement(TiXmlElement *element)
+{
+  for (TiXmlElement *child = element->FirstChildElement(); child; child = child->NextSiblingElement())
+  {
+    if (child->ValueStr() == "RegExp" || child->ValueStr() == "XSLT")
+      return child;
+  }
+  return NULL;
+}
+
+TiXmlElement *NextSiblingScraperElement(TiXmlElement *element)
+{
+  for (TiXmlElement *next = element->NextSiblingElement(); next; next = next->NextSiblingElement())
+  {
+    if (next->ValueStr() == "RegExp" || next->ValueStr() == "XSLT")
+      return next;
+  }
+  return NULL;
+}
+
 void CScraperParser::ParseNext(TiXmlElement* element)
 {
   TiXmlElement* pReg = element;
   while (pReg)
   {
-    TiXmlElement* pChildReg = pReg->FirstChildElement("RegExp");
+    TiXmlElement* pChildReg = FirstChildScraperElement(pReg);
     if (pChildReg)
       ParseNext(pChildReg);
     else
@@ -394,13 +433,17 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       if (bExecute)
       {
         if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
-          ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+        {
+          if (pReg->ValueStr() == "XSLT")
+            ParseXSLT(strInput, m_param[iDest - 1], pReg, bAppend);
+          else
+            ParseExpression(strInput, m_param[iDest - 1],pReg,bAppend);
+        }
         else
           CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
                              "out of bounds, skipping expression");
       }
-
-      pReg = pReg->NextSiblingElement("RegExp");
+      pReg = NextSiblingScraperElement(pReg);
   }
 }
 
@@ -415,7 +458,7 @@ const CStdString CScraperParser::Parse(const CStdString& strTag,
   }
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
-  TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
+  TiXmlElement* pChildStart = FirstChildScraperElement(pChildElement);
   m_scraper = scraper;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
