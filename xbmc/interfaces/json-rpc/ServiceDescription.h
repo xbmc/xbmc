@@ -3179,6 +3179,7 @@ namespace JSONRPC
           "\"limits\": { \"$ref\": \"List.LimitsReturned\", \"required\": true },"
           "\"favourites\": { \"type\": \"array\","
             "\"items\": { \"$ref\": \"Favourite.Details.Favourite\" }"
+          "}"
         "}"
       "}"
     "}",
@@ -3197,7 +3198,6 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}"
-  "}"
   };
 
   const char* const JSONRPC_SERVICE_NOTIFICATIONS[] = {  
