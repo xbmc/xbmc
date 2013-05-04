@@ -22,6 +22,7 @@
 			<textcolor>50FFFFFF</textcolor>
 			<wrapmultiline>false</wrapmultiline>
 		</control>
+		<include>NowPlayingOverlay</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>

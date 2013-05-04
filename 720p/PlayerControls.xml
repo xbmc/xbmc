@@ -1,25 +1,399 @@
 <?xml version="1.0"?>
 <window type="dialog" id="400">
-	<defaultcontrol always="true">218</defaultcontrol>
+	<defaultcontrol always="true">300</defaultcontrol>
 	<controls>
 		<control type="group">
-			<posx>138</posx>
-			<posy>156</posy>
-			<visible>![Window.IsActive(Home) | Window.Next(2006) | Window.IsActive(2006) | Window.IsActive(NowPlaying)] + Player.HasAudio</visible>
-			<include>MusicNowPlayingSlideLeft</include>
-			<include>MusicOSDPlayerControls</include>
-		</control>
-		<control type="group">
-			<posx>138</posx>
-			<posy>625</posy>
-			<visible>Window.IsActive(Home) + !Window.Next(2006) + Player.HasAudio</visible>
-			<include>MusicNowPlayingSlideLeft</include>
-			<include>MusicNowPlayingHomeSlideAnim</include>
-			<include>MusicOSDPlayerControls</include>
-		</control>
-		<control type="group">
-			<visible>Window.IsActive(2006)</visible>
-			<include>MusicVisControls</include>
+			<posy>100</posy>
+			<posx>500</posx>
+			<!-- bg's -->
+			<control type="group">
+				<posx>0</posx>
+				<posy>0</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>550</height>
+					<texture border="10">base-rounded.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>550</height>
+					<texture>transparent.png</texture>
+					<bordertexture border="10">border-black.png</bordertexture>
+					<bordersize>1</bordersize>
+					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				</control>
+			</control>
+			<!-- now playing -->
+			<control type="group">
+				<posy>50</posy>
+				<posx>42</posx>
+				<animation type="Visible">
+					<effect type="fade" start="0" end="100" time="1000" delay="300"/>
+				</animation>
+				<!-- cover -->
+				<control type="image" id="99">
+					<posy>80</posy>
+					<posx>3</posx>
+					<width>360</width>
+					<height>360</height>
+					<texture>$INFO[MusicPlayer.Cover]</texture>
+					<aspectratio scalediffuse="false" align="right">stretch</aspectratio>
+					<visible>Player.HasAudio</visible>
+				</control>
+				<!-- card -->
+				<control type="image">
+					<posx>3</posx>
+					<posy>300</posy>
+					<width>360</width>
+					<height>140</height>
+					<texture border="10">base.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+					<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+				</control>
+				<!-- progress bar -->
+				<control type="group">
+					<posy>400</posy>
+					<posx>0</posx>
+					<control type="image">
+						<posx>3</posx>
+						<posy>0</posy>
+						<width>360</width>
+						<height>40</height>
+						<texture border="10">base.png</texture>
+						<colordiffuse>FF000000</colordiffuse>
+						<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="label">
+						<posy>20</posy>
+						<posx>10</posx>
+						<width>324</width>
+						<label>$INFO[Player.Time]</label>
+						<align>left</align>
+						<font>Condensed-16</font>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="progress" id="21">
+						<description>Progress bar</description>
+						<posy>8</posy>
+						<posx>60</posx>
+						<height>1</height>
+						<width>246</width>
+						<info>Player.Progress</info>
+						<texturebg border="13">OSDProgressBack.png</texturebg>
+						<midtexture border="13">OSDProgressMid.png</midtexture>
+						<righttexture>-</righttexture>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist</visible>
+					</control>
+					<!-- duration -->
+					<control type="label">
+						<posy>20</posy>
+						<posx>355</posx>
+						<width>200</width>
+						<align>right</align>
+						<font>Condensed-16</font>
+						<label>$INFO[Player.Duration]</label>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+				</control>
+				<!-- infos -->
+				<control type="group">
+					<posy>325</posy>
+					<posx>10</posx>
+					<visible>Player.HasMusicPlaylist</visible>
+					<control type="label">
+						<width>350</width>
+						<label>$INFO[MusicPlayer.Artist]</label>
+						<align>left</align>
+						<font>Condensed-18</font>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posy>27</posy>
+						<width>350</width>
+						<label>$INFO[MusicPlayer.Title]</label>
+						<align>left</align>
+						<font>Condensed-18</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+					<control type="label">
+						<posy>54</posy>
+						<width>350</width>
+						<label>$INFO[MusicPlayer.Album]</label>
+						<align>left</align>
+						<font>Condensed-18</font>
+						<textcolor>FF999999</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+					</control>
+				</control>
+			</control>
+			<!-- next playing -->
+			<control type="group">
+				<posy>20</posy>
+				<posx>42</posx>
+				<control type="group">
+					<posy>40</posy>
+					<posx>110</posx>
+					<control type="label">
+						<posy>20</posy>
+						<width>220</width>
+						<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
+						<font>Condensed-16</font>
+						<textcolor>FF999999</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>left</align>
+					</control>
+					<control type="label">
+						<posy>43</posy>
+						<width>220</width>
+						<label>$INFO[MusicPlayer.Offset(1).Title]</label>
+						<font>Condensed-16</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>ff222222</shadowcolor>
+						<align>left</align>
+					</control>
+				</control>
+				<!-- cover next playing -->
+				<control type="group">
+					<posx>3</posx>
+					<control type="image">
+						<width>90</width>
+						<height>90</height>
+						<texture>$INFO[MusicPlayer.Offset(1).Cover]</texture>
+						<aspectratio scalediffuse="false" align="right">stretch</aspectratio>
+					</control>
+				</control>
+			</control>
+			<!-- osd -->
+			<control type="group" id="300">
+				<posx>45</posx>
+				<posy>495</posy>
+				<defaultcontrol always="true">711</defaultcontrol>
+				<!-- repeat -->
+				<control type="group">
+					<posy>9</posy>
+					<posx>0</posx>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat.png</texture>
+						<visible>!Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-one.png</texture>
+						<visible>!Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+						<colordiffuse>FF999999</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-all.png</texture>
+						<visible>!Control.HasFocus(708) + Playlist.IsRepeat</visible>
+						<colordiffuse>FF999999</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat.png</texture>
+						<visible>Control.HasFocus(708) + !Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-one.png</texture>
+						<visible>Control.HasFocus(708) + Playlist.IsRepeatOne</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>30</height>
+						<texture>b-repeat-all.png</texture>
+						<visible>Control.HasFocus(708) + Playlist.IsRepeat</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="button" id="708">
+						<width>32</width>
+						<height>30</height>
+						<onleft>713</onleft>
+						<onright>709</onright>
+						<onup>-</onup>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onclick>XBMC.PlayerControl(Repeat)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(708)</visible>
+					</control>
+				</control>
+				<!-- shuffle -->
+				<control type="group">
+					<posy>9</posy>
+					<posx>52</posx>
+					<control type="image">
+						<width>40</width>
+						<height>30</height>
+						<texture>b-shuffle.png</texture>
+						<visible>!Control.HasFocus(709) + !Playlist.IsRandom</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="image">
+						<width>40</width>
+						<height>30</height>
+						<texture>b-shuffle.png</texture>
+						<visible>!Control.HasFocus(709) + Playlist.IsRandom</visible>
+						<colordiffuse>FF999999</colordiffuse>
+					</control>
+					<control type="button" id="709">
+						<width>40</width>
+						<height>30</height>
+						<onleft>708</onleft>
+						<onright>710</onright>
+						<onup>-</onup>
+						<texturefocus>b-shuffle.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onclick>XBMC.PlayerControl(Random)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(709)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<!--><control type="group">
+						<posy>-17</posy>
+						<posx>583</posx>
+						<control type="label">
+							<width>48</width>
+							<height>48</height>
+							<label>off</label>
+							<font>Condensed-16</font>
+							<visible>!Playlist.IsRandom</visible>
+						</control>
+						<control type="label">
+							<width>48</width>
+							<height>48</height>
+							<label>on</label>
+							<font>Condensed-16</font>
+							<textcolor>orange</textcolor>
+							<visible>Playlist.IsRandom</visible>
+						</control>
+					</control>-->
+				</control>
+				<!-- previous -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>130</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-previous.png</texture>
+						<visible>!Control.HasFocus(710)</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="button" id="710">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-previous.png</texturefocus>
+						<texturenofocus>b-previous.png</texturenofocus>
+						<onleft>709</onleft>
+						<onright>711</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Previous)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(710)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- play/pause -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>170</posx>
+					<control type="image">
+						<width>20</width>
+						<height>22</height>
+						<texture>b-pause2.png</texture>
+						<visible>!Control.HasFocus(711) + !Player.Paused</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="image">
+						<width>20</width>
+						<height>22</height>
+						<texture>b-play2.png</texture>
+						<visible>!Control.HasFocus(711) + Player.Paused</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="togglebutton" id="711">
+						<width>20</width>
+						<height>22</height>
+						<texturefocus>b-pause2.png</texturefocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>b-play2.png</alttexturefocus>
+						<onleft>710</onleft>
+						<onright>712</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Play)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- next -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>210</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-next.png</texture>
+						<visible>!Control.HasFocus(712)</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="button" id="712">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-next.png</texturefocus>
+						<texturenofocus>b-next.png</texturenofocus>
+						<onleft>711</onleft>
+						<onright>713</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Next)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+				<!-- stop -->
+				<control type="group">
+					<posy>13</posy>
+					<posx>270</posx>
+					<control type="image">
+						<width>22</width>
+						<height>22</height>
+						<texture>b-stop.png</texture>
+						<visible>!Control.HasFocus(713)</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="button" id="713">
+						<width>22</width>
+						<height>22</height>
+						<texturefocus>b-stop.png</texturefocus>
+						<texturenofocus>b-stop.png</texturenofocus>
+						<onleft>712</onleft>
+						<onright>708</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>PlayerControl(Stop)</onclick>
+						<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+				</control>
+			</control>
 		</control>
 	</controls>
 </window>
