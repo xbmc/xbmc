@@ -390,12 +390,12 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
 void CNetworkServices::Start()
 {
   StartZeroconf();
-  if (!StartWebserver())
+  if (CSettings::Get().GetBool("services.webserver") && !StartWebserver())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
   StartUPnP();
-  if (!StartEventServer())
+  if (CSettings::Get().GetBool("services.esenabled") && !StartEventServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
-  if (!StartJSONRPCServer())
+  if (CSettings::Get().GetBool("services.esenabled") && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
   StartAirPlayServer();
   StartAirTunesServer();
