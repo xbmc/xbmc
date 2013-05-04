@@ -31,10 +31,10 @@
 #define wcstoll  _wcstoi64
 #define wcstoull _wcstoui64
 #else // TARGET_WINDOWS
-#define strtoll  (int64_t)strtod
-#define strtoull (uint64_t)strtod
-#define wcstoll  (int64_t)wcstod
-#define wcstoull (uint64_t)wcstod
+#define strtoll(str, endptr, base)  (int64_t)strtod(str, endptr)
+#define strtoull(str, endptr, base) (uint64_t)strtod(str, endptr)
+#define wcstoll(str, endptr, base)  (int64_t)wcstod(str, endptr)
+#define wcstoull(str, endptr, base) (uint64_t)wcstod(str, endptr)
 #endif // TARGET_WINDOWS
 #endif // strtoll
 
