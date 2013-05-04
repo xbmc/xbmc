@@ -146,6 +146,7 @@ on with the Android toolchain and creating an Android Application Package
    # ./configure --help
 
    Run configure with the correct settings for you local configuration.
+   See tools/depends/README for examples.
 
    Anyone working on the dependencies themselves will want to set the
    environment variables specified in ~/.bashrc or similar, to avoid
