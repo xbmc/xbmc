@@ -408,7 +408,7 @@ namespace JSONRPC
         "\"enum\": [ \"instrument\", \"style\", \"mood\", \"born\", \"formed\","
                   "\"description\", \"genre\", \"died\", \"disbanded\","
                   "\"yearsactive\", \"musicbrainzartistid\", \"fanart\","
-                  "\"compilationartist\", \"thumbnail\" ]"
+                  "\"thumbnail\", \"compilationartist\" ]"
       "}"
     "}",
     "\"Audio.Fields.Album\": {"
@@ -1250,7 +1250,7 @@ namespace JSONRPC
     "}",
     "\"Favourite.Type\": {"
       "\"type\": \"string\","
-        "\"enum\": [ \"media\", \"window\", \"script\", \"unknown\" ]"
+      "\"enum\": [ \"media\", \"window\", \"script\", \"unknown\" ]"
     "}",
     "\"Favourite.Details.Favourite\": {"
       "\"type\": \"array\","

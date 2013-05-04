@@ -1333,7 +1333,7 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }	  
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1360,7 +1360,7 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }	  
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1923,7 +1923,7 @@
       { "name": "type", "$ref": "Favourite.Type", "required": true },
       { "name": "path", "$ref": "Optional.String", "description": "Required for media and script favourites types" },
       { "name": "window", "$ref": "Optional.String", "description": "Required for window favourite type" },
-      { "name": "windowparameter", "$ref": "Optional.String"},
+      { "name": "windowparameter", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" }
     ],
     "returns": "string"

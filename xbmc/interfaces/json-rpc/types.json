@@ -1217,13 +1217,13 @@
   },
   "Favourite.Fields.Favourite": {
     "extends": "Item.Fields.Base",
-      "items": { "type": "string",
-        "enum": [ "window", "windowparameter", "thumbnail", "path" ]
+    "items": { "type": "string",
+      "enum": [ "window", "windowparameter", "thumbnail", "path" ]
     }
   },
   "Favourite.Type": {
-     "type": "string",
-      "enum": [ "media", "window", "script", "unknown" ]
+    "type": "string",
+    "enum": [ "media", "window", "script", "unknown" ]
   },
   "Favourite.Details.Favourite": {
     "type": "array",
