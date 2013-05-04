@@ -73,8 +73,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  // Only shown cURL debug into with loglevel DEBUG_SAMBA or higher
-  if( g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_SAMBA )
+  if ((g_advancedSettings.m_extraLogLevels & LOGCURL) == 0)
     return 0;
 
   CStdString strLine;

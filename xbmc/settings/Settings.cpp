@@ -810,6 +810,7 @@ void CSettings::InitializeISettingCallbacks()
   // register any ISettingCallback implementations
   std::set<std::string> settingSet;
   settingSet.insert("debug.showloginfo");
+  settingSet.insert("debug.setextraloglevel");
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();

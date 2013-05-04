@@ -2243,6 +2243,14 @@
           <heading>657</heading>
           <control type="button" format="path" />
         </setting>
+        <setting id="debug.setextraloglevel" type="action" label="666" help="">
+          <level>1</level>
+          <control type="button" format="action">
+            <dependencies>
+              <dependency type="enable" setting="debug.showloginfo">true</dependency>
+            </dependencies>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="masterlock" label="12360" help="">
