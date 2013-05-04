@@ -2725,6 +2725,7 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr ""
 
+#: xbmc/settings/settings.xml
 msgctxt "#666"
 msgid "Verbose logging..."
 msgstr ""
