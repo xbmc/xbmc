@@ -659,13 +659,12 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
   for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); i++)
   {
-    if (i->texture)
-      LoadToGPU(i->texture);
-    if (i->diffuseTexture)
-      LoadToGPU(i->diffuseTexture);
-
-    if (i->vertices.size() < 4)
-      continue;
+    CBaseTexture *texture = (CBaseTexture*)i->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)i->GetDiffuseTexture();
+    if (texture)
+      LoadToGPU(texture);
+    if (diffuseTexture)
+      LoadToGPU(diffuseTexture);
   }
 
   // Clear directly before the first draw in each frame
@@ -690,13 +689,14 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     unit = 0;
     unsigned int r,g,b,a = 0;
 
-    if (i->vertices.size() < 4)
-      continue;
-
-    unsigned int triangleVerts = 6 * (i->vertices.size() / 4);
+    const PackedVertices *vertices = i->GetVertices();
+    CBaseTexture *texture = (CBaseTexture*)i->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)i->GetDiffuseTexture();
+    int32_t color = i->GetColor();
+    unsigned int triangleVerts = 6 * (vertices->size() / 4);
     GLushort idx[triangleVerts];
     GLushort *itr = idx;
-    for(unsigned int j=0; j < i->vertices.size(); j+=4)
+    for(unsigned int j=0; j < vertices->size(); j+=4)
     {
       *itr++ = j + 0;
       *itr++ = j + 1;
@@ -706,21 +706,21 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
       *itr++ = j + 3;
      }
 
-    if (i->texture)
-      BindToUnit(i->texture, unit++);
+    if (texture)
+      BindToUnit(texture, unit++);
 
-    r = GET_R(i->color) * range / 255;
-    g = GET_G(i->color) * range / 255;
-    b = GET_B(i->color) * range / 255;
-    a = GET_A(i->color);
+    r = GET_R(color) * range / 255;
+    g = GET_G(color) * range / 255;
+    b = GET_B(color) * range / 255;
+    a = GET_A(color);
 
-    bool hasAlpha = a < 255 || (i->texture && i->texture->HasAlpha());
+    bool hasAlpha = a < 255 || (texture && texture->HasAlpha());
 
-    if (i->diffuseTexture)
+    if (diffuseTexture)
     {
-      BindToUnit(i->diffuseTexture, unit++);
+      BindToUnit(diffuseTexture, unit++);
 
-      hasAlpha |= i->diffuseTexture->HasAlpha();
+      hasAlpha |= diffuseTexture->HasAlpha();
 
       if (r == 255 && g == 255 && b == 255 && a == 255 )
       {
@@ -731,7 +731,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
         EnableGUIShader(SM_MULTI_BLENDCOLOR);
       }
     }
-    else if (i->texture)
+    else if (texture)
     {
       EnableGUIShader(SM_TEXTURE);
     }
@@ -747,9 +747,9 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
     glUniform4f(uniColLoc, ((float)r / 255.0), ((float)g / 255.0), ((float)b / 255.0), ((float)a / 255.0));
 
-    if (i->diffuseTexture)
+    if (diffuseTexture)
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, u2));
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, u2));
       glEnableVertexAttribArray(tex1Loc);
     }
 
@@ -764,11 +764,11 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     }
 
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, x));
-    if (i->texture)
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, x));
+    if (texture)
     {
       glEnableVertexAttribArray(tex0Loc);
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&i->vertices[0] + offsetof(PackedVertex, u1));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, u1));
     }
 
     if (dirtyRegions)
@@ -789,12 +789,12 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     // TODO: Create wrappers for things like blending on/off and shader
     // switching to prevent unnecessary changes.
 
-    if (i->diffuseTexture)
+    if (diffuseTexture)
     {
       glDisableVertexAttribArray(tex1Loc);
       glBindTexture(GL_TEXTURE_2D, 0);
     }
-    if (i->texture)
+    if (texture)
     {
       glActiveTexture(GL_TEXTURE0);
       glBindTexture(GL_TEXTURE_2D, 0);
