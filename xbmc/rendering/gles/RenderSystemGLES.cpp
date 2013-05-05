@@ -917,7 +917,7 @@ bool CRenderSystemGLES::LoadToGPU(TextureObject texture, unsigned int width, uns
 
 bool CRenderSystemGLES::LoadToGPU(CBaseTexture *baseTexture)
 {
-  if (baseTexture->m_loadedToGPU)
+  if (baseTexture->IsLoadedToGPU())
     return true;
   unsigned int width, height, pitch, rows, format;
   width = baseTexture->GetTextureWidth();
@@ -931,7 +931,8 @@ bool CRenderSystemGLES::LoadToGPU(CBaseTexture *baseTexture)
     object = CreateTextureObject();
     baseTexture->SetTextureObject(object);
   }
-  baseTexture->m_loadedToGPU = LoadToGPU(object, width, height, pitch, rows, format, (const unsigned char*)baseTexture->GetPixels());
+  if (LoadToGPU(object, width, height, pitch, rows, format, (const unsigned char*)baseTexture->GetPixels()))
+    baseTexture->SetLoadedToGPU();
   VerifyGLState();
   return true;
 }
