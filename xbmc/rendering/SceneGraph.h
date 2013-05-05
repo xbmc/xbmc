@@ -21,49 +21,9 @@
 #include <vector>
 #include "threads/CriticalSection.h"
 #include "guilib/Geometry.h"
+#include "BatchDraw.h"
 
-typedef uint32_t color_t;
 class CBaseTexture;
-
-
-struct PackedVertex
-{
-  float x, y, z;            // screen coords
-  float u1, v1;             // texture coords (required for texturing)
-  float u2, v2;             // difuse texture cords (required for diffuse texturing)
-  unsigned char r, g, b, a; // per-vertex colors (only necessary when diffuse color varies by vertex)
-};
-typedef std::vector<PackedVertex> PackedVertices;
-
-/*! \brief A collection of data required to perform a single render call.
-     This can include many vertices as long as they can be batched into a
-     single draw call
- */
-class BatchDraw
-{
-friend class CSceneGraph;
-public:
-  BatchDraw() : m_texture(NULL), m_diffuseTexture(NULL), m_dirty(true), m_color(0) {};
-  void Reset() { *this = BatchDraw(); }
-  void SetTexture(const CBaseTexture *texture) { m_texture = (CBaseTexture*) texture; }
-  void SetDiffuseTexture(const CBaseTexture *diffuseTexture) { m_diffuseTexture = (CBaseTexture*) diffuseTexture; }
-  void SetDirty(bool dirty) { m_dirty = dirty; }
-  void SetColor(uint32_t color) { m_color = color; }
-  void AddVertices(const PackedVertices &vertices)
-  {
-    m_vertices.insert(m_vertices.end(), vertices.begin(), vertices.end());
-  }
-  void AddVertices(const PackedVertex *vertex, int count)
-  {
-    m_vertices.insert(m_vertices.end(), vertex, vertex+count);
-  }
-private:
-  CBaseTexture *m_texture;
-  CBaseTexture *m_diffuseTexture;
-  bool m_dirty;
-  uint32_t m_color;
-  PackedVertices m_vertices;
-};
 
 class CSceneGraph
 {
