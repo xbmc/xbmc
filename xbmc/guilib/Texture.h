@@ -37,8 +37,6 @@ struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 */
 class CBaseTexture
 {
-friend class CRenderSystemGL;
-friend class CRenderSystemGLES;
 public:
   ~CBaseTexture();
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
@@ -98,6 +96,8 @@ public:
   TextureObject GetTextureObject() const { return m_texture; };
   void SetTextureObject (TextureObject object) { m_texture = object;};
   unsigned int GetFormat() { return m_format; };
+  bool IsLoadedToGPU() const { return m_loadedToGPU; };
+  void SetLoadedToGPU() { m_loadedToGPU = true; };
 private:
   // no copy constructor
   CBaseTexture(const CBaseTexture &copy);
