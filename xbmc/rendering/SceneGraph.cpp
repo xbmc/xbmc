@@ -49,7 +49,7 @@ void CSceneGraph::Add(const BatchDraw &batch)
   m_batches.push_back(batch);
 }
 
-void CSceneGraph::Clear()
+void CSceneGraph::Reset()
 {
   CSingleLock lock(m_critSection);
   m_batches.clear();

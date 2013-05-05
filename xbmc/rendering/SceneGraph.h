@@ -79,7 +79,7 @@ public:
   /*! \brief Discard all current batches in the scene. If the scene was not
        drawn already, the current batches will never be seen.
    */
-  void Clear();
+  void Reset();
 
   /*! \brief Quick way to add a rectangle to the scene, with optional texture.
       If texture coords are missing, the entire texture will be drawn.
