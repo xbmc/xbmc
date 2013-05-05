@@ -43,7 +43,7 @@ CSceneGraph::const_iterator CSceneGraph::end() const
   return m_batches.size() ? &*m_batches.end() : NULL;
 }
 
-void CSceneGraph::Add(const BatchDraw &batch)
+void CSceneGraph::Add(const CBatchDraw &batch)
 {
   CSingleLock lock(m_critSection);
   m_batches.push_back(batch);
@@ -57,7 +57,7 @@ void CSceneGraph::Reset()
 
 void CSceneGraph::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
-  BatchDraw quad;
+  CBatchDraw quad;
   PackedVertices packedvertices;
   RectToVertices(rect, packedvertices);
 
@@ -108,8 +108,8 @@ void CSceneGraph::RectToVertices(const CRect &rect, PackedVertices &packedvertic
 void CSceneGraph::MergeSimilar()
 {
   if (m_batches.size() < 2) return;
-  std::vector<BatchDraw>::iterator batchesEnd = m_batches.end();
-  for (std::vector<BatchDraw>::iterator i =  m_batches.begin(); i != batchesEnd -1;)
+  std::vector<CBatchDraw>::iterator batchesEnd = m_batches.end();
+  for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != batchesEnd -1;)
   {
     if( i->m_texture == (i+1)->m_texture && \
         i->m_diffuseTexture == (i+1)->m_diffuseTexture && \

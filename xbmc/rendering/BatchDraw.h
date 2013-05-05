@@ -34,11 +34,11 @@ class CBaseTexture;
      This can include many vertices as long as they can be batched into a
      single draw call
  */
-class BatchDraw
+class CBatchDraw
 {
 friend class CSceneGraph;
 public:
-  BatchDraw();
+  CBatchDraw();
   void Reset();
   void SetTexture(const CBaseTexture *texture);
   void SetDiffuseTexture(const CBaseTexture *diffuseTexture);

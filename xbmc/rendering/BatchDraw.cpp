@@ -19,42 +19,42 @@
 */
 #include "BatchDraw.h"
 
-BatchDraw::BatchDraw()
+CBatchDraw::CBatchDraw()
 : m_texture(NULL), m_diffuseTexture(NULL), m_dirty(true), m_color(0)
 {
 }
 
-void BatchDraw::Reset()
+void CBatchDraw::Reset()
 {
-  *this = BatchDraw();
+  *this = CBatchDraw();
 }
 
-void BatchDraw::SetTexture(const CBaseTexture *texture)
+void CBatchDraw::SetTexture(const CBaseTexture *texture)
 {
   m_texture = (CBaseTexture*) texture;
 }
 
-void BatchDraw::SetDiffuseTexture(const CBaseTexture *diffuseTexture)
+void CBatchDraw::SetDiffuseTexture(const CBaseTexture *diffuseTexture)
 {
   m_diffuseTexture = (CBaseTexture*) diffuseTexture;
 }
 
-void BatchDraw::SetDirty(bool dirty)
+void CBatchDraw::SetDirty(bool dirty)
 {
   m_dirty = dirty;
 }
 
-void BatchDraw::SetColor(uint32_t color)
+void CBatchDraw::SetColor(uint32_t color)
 {
   m_color = color;
 }
 
-void BatchDraw::AddVertices(const PackedVertices &vertices)
+void CBatchDraw::AddVertices(const PackedVertices &vertices)
 {
   m_vertices.insert(m_vertices.end(), vertices.begin(), vertices.end());
 }
 
-void BatchDraw::AddVertices(const PackedVertex *vertex, int count)
+void CBatchDraw::AddVertices(const PackedVertex *vertex, int count)
 {
   m_vertices.insert(m_vertices.end(), vertex, vertex+count);
 }
