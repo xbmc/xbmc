@@ -39,15 +39,29 @@ typedef std::vector<PackedVertex> PackedVertices;
      This can include many vertices as long as they can be batched into a
      single draw call
  */
-struct BatchDraw
+class BatchDraw
 {
-  BatchDraw() : texture(NULL), diffuseTexture(NULL), dirty(true), color(0) { vertices.reserve(4); };
-  CBaseTexture *texture;
-  CBaseTexture *diffuseTexture;
-  bool dirty;
-  uint32_t color;
-
-  PackedVertices vertices;
+friend class CSceneGraph;
+public:
+  BatchDraw() : m_texture(NULL), m_diffuseTexture(NULL), m_dirty(true), m_color(0) {};
+  void SetTexture(const CBaseTexture *texture) { m_texture = (CBaseTexture*) texture; }
+  void SetDiffuseTexture(const CBaseTexture *diffuseTexture) { m_diffuseTexture = (CBaseTexture*) diffuseTexture; }
+  void SetDirty(bool dirty) { m_dirty = dirty; }
+  void SetColor(uint32_t color) { m_color = color; }
+  void AddVertices(const PackedVertices &vertices)
+  {
+    m_vertices.insert(m_vertices.end(), vertices.begin(), vertices.end());
+  }
+  void AddVertices(const PackedVertex *vertex, int count)
+  {
+    m_vertices.insert(m_vertices.end(), vertex, vertex+count);
+  }
+private:
+  CBaseTexture *m_texture;
+  CBaseTexture *m_diffuseTexture;
+  bool m_dirty;
+  uint32_t m_color;
+  PackedVertices m_vertices;
 };
 
 class CSceneGraph

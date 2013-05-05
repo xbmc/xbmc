@@ -74,11 +74,9 @@ void CSceneGraph::DrawQuad(const CRect &rect, color_t color, CBaseTexture *textu
     packedvertices[3].v1 = coords.y2;
   }
 
-  quad.color = color;
-  quad.texture = texture;
-  quad.dirty = true;
-  quad.diffuseTexture = NULL;
-  quad.vertices = packedvertices;
+  quad.SetColor(color);
+  quad.SetTexture(texture);
+  quad.AddVertices(packedvertices);
   Add(quad);
 }
 
@@ -113,14 +111,14 @@ void CSceneGraph::MergeSimilar()
   std::vector<BatchDraw>::iterator batchesEnd = m_batches.end();
   for (std::vector<BatchDraw>::iterator i =  m_batches.begin(); i != batchesEnd -1;)
   {
-    if( i->texture == (i+1)->texture && \
-        i->diffuseTexture == (i+1)->diffuseTexture && \
-        i->vertices.size() >= 4 && \
-        i->color == (i+1)->color && \
-        (i+1)->vertices.size() >= 4)
+    if( i->m_texture == (i+1)->m_texture && \
+        i->m_diffuseTexture == (i+1)->m_diffuseTexture && \
+        i->m_vertices.size() >= 4 && \
+        i->m_color == (i+1)->m_color && \
+        (i+1)->m_vertices.size() >= 4)
 
     {
-      i->vertices.insert(i->vertices.end(), (i+1)->vertices.begin(), (i+1)->vertices.end());
+      i->m_vertices.insert(i->m_vertices.end(), (i+1)->m_vertices.begin(), (i+1)->m_vertices.end());
       i = m_batches.erase(i+1);
       batchesEnd = m_batches.end();
       if (i == batchesEnd)
