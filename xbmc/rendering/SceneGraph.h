@@ -44,6 +44,7 @@ class BatchDraw
 friend class CSceneGraph;
 public:
   BatchDraw() : m_texture(NULL), m_diffuseTexture(NULL), m_dirty(true), m_color(0) {};
+  void Reset() { *this = BatchDraw(); }
   void SetTexture(const CBaseTexture *texture) { m_texture = (CBaseTexture*) texture; }
   void SetDiffuseTexture(const CBaseTexture *diffuseTexture) { m_diffuseTexture = (CBaseTexture*) diffuseTexture; }
   void SetDirty(bool dirty) { m_dirty = dirty; }
