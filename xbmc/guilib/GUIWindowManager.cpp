@@ -559,8 +559,6 @@ bool CGUIWindowManager::Render()
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
   {
     hasRendered = true;
-    BatchDraw quad, quad2;
-    PackedVertices dirtyvertices, dirtyvertices2;
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions(); 
 
