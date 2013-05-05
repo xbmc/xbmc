@@ -834,13 +834,13 @@ CBaseTexture* CGUIFontTTF::ReallocTexture(unsigned int& newHeight)
   if(!m_texture)
     m_texture = new CBaseTexture;
 
-  m_texture->Allocate(m_textureWidth, newHeight, XB_FMT_A8L8);
   if (!m_texture)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
     delete m_texture;
     return NULL;
   }
+  m_texture->Allocate(m_textureWidth, newHeight, XB_FMT_A8L8);
   m_textureHeight = m_texture->GetHeight();
   m_textureWidth = m_texture->GetWidth();
   m_texturePitch = m_texture->GetPitch();
