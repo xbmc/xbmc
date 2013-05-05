@@ -550,7 +550,7 @@ bool CGUIWindowManager::Render()
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
   CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
-  sceneGraph->Clear();
+  sceneGraph->Reset();
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
   bool hasRendered = dirtyRegions.size() > 0;
 

@@ -161,7 +161,7 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
-  BatchDraw m_batchDraw;
+  CBatchDraw m_batchDraw;
 };
 
 #define CGUITexture CGUITextureBase

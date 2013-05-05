@@ -85,7 +85,6 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_allocateDynamically = false;
   m_isAllocated = NO;
   m_invalid = true;
-  m_batchDraw.texture = NULL;
 }
 
 CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
@@ -175,7 +174,7 @@ void CGUITextureBase::Render()
       return;
   }
 
-  m_batchDraw.vertices.clear();
+  m_batchDraw.Reset();
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
@@ -230,18 +229,15 @@ void CGUITextureBase::Render()
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
   }
 
-  m_batchDraw.texture=m_texture.m_textures[m_currentFrame];
-  m_batchDraw.color = color;
-  m_batchDraw.dirty = true;
+  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
+
+  m_batchDraw.SetTexture(m_texture.m_textures[m_currentFrame]);
+  m_batchDraw.SetColor(color);
   if (m_diffuse.size())
-    m_batchDraw.diffuseTexture=m_diffuse.m_textures[0];
-  else
-    m_batchDraw.diffuseTexture=NULL;
-  if (m_batchDraw.vertices.size())
-  {
-    CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
-    sceneGraph->Add(m_batchDraw);
-  }
+    m_batchDraw.SetDiffuseTexture(m_diffuse.m_textures[0]);
+
+  sceneGraph->Add(m_batchDraw);
+
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
     g_graphicsContext.RestoreClipRegion();
 }
@@ -352,11 +348,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     }
   }
 
-  m_batchDraw.vertices.push_back(packedvertex[0]);
-  m_batchDraw.vertices.push_back(packedvertex[1]);
-  m_batchDraw.vertices.push_back(packedvertex[2]);
-  m_batchDraw.vertices.push_back(packedvertex[3]);
-
+  m_batchDraw.AddVertices(&packedvertex[0], 4);
 }
 
 bool CGUITextureBase::AllocResources()
@@ -546,7 +538,7 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_texCoordsScaleV = 1.0f;
 
   m_isAllocated = NO;
-  m_batchDraw.texture = NULL;
+  m_batchDraw.Reset();
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)

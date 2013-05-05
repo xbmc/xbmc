@@ -720,7 +720,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, c
   float tb = texture.y2 * m_textureScaleY;
 
   m_color = color;
-  BatchDraw draw = m_batchDraws[color];
+  CBatchDraw draw = m_batchDraws[color];
 
   PackedVertex packedvertex[4];
   for(int i = 0; i < 4; i++)
@@ -742,11 +742,8 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, c
   packedvertex[3].u1 = tl;
   packedvertex[3].v1 = tb;
 
-  draw.color = color;
-  draw.vertices.push_back(packedvertex[0]);
-  draw.vertices.push_back(packedvertex[1]);
-  draw.vertices.push_back(packedvertex[2]);
-  draw.vertices.push_back(packedvertex[3]);
+  draw.SetColor(color);
+  draw.AddVertices(&packedvertex[0], 4);
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)
@@ -823,9 +820,8 @@ void CGUIFontTTF::End()
   CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
   for (mapDraws::iterator i = m_batchDraws.begin(); i != m_batchDraws.end(); ++i)
   {
-    i->second.texture = m_texture;
-    i->second.diffuseTexture = NULL;
-    i->second.dirty = true;
+    i->second.SetTexture(m_texture);
+    i->second.SetDirty(true);
     sceneGraph->Add(i->second);
   }
 }

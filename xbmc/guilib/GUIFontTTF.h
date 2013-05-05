@@ -49,7 +49,7 @@ typedef uint32_t character_t;
 typedef uint32_t color_t;
 typedef std::vector<character_t> vecText;
 typedef std::vector<color_t> vecColors;
-typedef std::map<color_t, BatchDraw> mapDraws;
+typedef std::map<color_t, CBatchDraw> mapDraws;
 
 /*!
  \ingroup textures
