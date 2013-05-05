@@ -1573,7 +1573,7 @@ CFileItemList::CFileItemList(const CFileItemList& rhs)
   m_replaceListing = rhs.m_replaceListing;
   m_cacheToDisc = rhs.m_cacheToDisc;
   m_content = rhs.m_content;
-  m_dropPolicy = shared_ptr<IGUIDropPolicy>(rhs.m_dropPolicy->Copy());
+  m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>(rhs.m_dropPolicy->Copy());
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
@@ -1658,7 +1658,7 @@ void CFileItemList::Clear()
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
-  m_dropPolicy = shared_ptr<IGUIDropPolicy>();
+  m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>();
 }
 
 void CFileItemList::ClearItems()
@@ -1772,9 +1772,9 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_mapProperties = itemlist.m_mapProperties;
   m_cacheToDisc = itemlist.m_cacheToDisc;
   if (itemlist.m_dropPolicy.get()!=NULL)
-    m_dropPolicy     = shared_ptr<IGUIDropPolicy>(itemlist.m_dropPolicy->Copy());
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>(itemlist.m_dropPolicy->Copy());
   else
-    m_dropPolicy     = shared_ptr<IGUIDropPolicy>();
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>();
   
 }
 
@@ -1793,9 +1793,9 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   m_sortOrder      = items.m_sortOrder;
   m_sortIgnoreFolders = items.m_sortIgnoreFolders;
   if (items.m_dropPolicy.get()!=NULL)
-    m_dropPolicy     = shared_ptr<IGUIDropPolicy>(items.m_dropPolicy->Copy());
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>(items.m_dropPolicy->Copy());
   else
-    m_dropPolicy     = shared_ptr<IGUIDropPolicy>();
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>();
 
   
   if (copyItems)
@@ -2090,7 +2090,7 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
     
-    m_dropPolicy = shared_ptr<IGUIDropPolicy>(IGUIDropPolicy::Create(ar));
+    m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>(IGUIDropPolicy::Create(ar));
 
     unsigned int detailSize = 0;
     ar >> detailSize;
