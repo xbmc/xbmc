@@ -645,7 +645,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
   if (!m_bRenderCreated)
     return;
-  int range, unit = 0;
+  int range;
 
   if(g_Windowing.UseLimitedColor())
     range = 235 - 16;
@@ -686,7 +686,6 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
   for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
   {
-    unit = 0;
     unsigned int r,g,b,a = 0;
 
     const PackedVertices *vertices = i->GetVertices();
@@ -707,7 +706,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
      }
 
     if (texture)
-      BindToUnit(texture, unit++);
+      BindToUnit(texture, 0);
 
     r = GET_R(color) * range / 255;
     g = GET_G(color) * range / 255;
@@ -718,7 +717,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
     if (diffuseTexture)
     {
-      BindToUnit(diffuseTexture, unit++);
+      BindToUnit(diffuseTexture, 1);
 
       hasAlpha |= diffuseTexture->HasAlpha();
 
