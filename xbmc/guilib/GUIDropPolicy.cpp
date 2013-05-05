@@ -53,6 +53,8 @@ IGUIDropPolicy* IGUIDropPolicy::Create(CArchive& ar)
       return new VideoDBDropPolicy();
     case DPT_MUSICDB:
       return new MusicDBDropHandler();
+    default:
+      return NULL;
   }
   return NULL;
 }
