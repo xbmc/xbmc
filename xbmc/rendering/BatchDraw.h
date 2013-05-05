@@ -46,6 +46,12 @@ public:
   void SetColor(uint32_t color);
   void AddVertices(const PackedVertices &vertices);
   void AddVertices(const PackedVertex *vertex, int count);
+
+  const CBaseTexture* GetTexture() const;
+  const CBaseTexture* GetDiffuseTexture() const;
+  bool IsDirty() const;
+  uint32_t GetColor() const;
+  const PackedVertices* GetVertices() const;
 private:
   CBaseTexture *m_texture;
   CBaseTexture *m_diffuseTexture;

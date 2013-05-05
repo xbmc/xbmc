@@ -58,3 +58,27 @@ void CBatchDraw::AddVertices(const PackedVertex *vertex, int count)
 {
   m_vertices.insert(m_vertices.end(), vertex, vertex+count);
 }
+
+const CBaseTexture* CBatchDraw::GetTexture() const
+{
+  return m_texture;
+}
+
+const CBaseTexture* CBatchDraw::GetDiffuseTexture() const
+{
+  return m_diffuseTexture;
+}
+
+bool CBatchDraw::IsDirty() const
+{
+  return m_dirty;
+}
+
+uint32_t CBatchDraw::GetColor() const
+{
+  return m_color;
+}
+const PackedVertices* CBatchDraw::GetVertices() const
+{
+  return &m_vertices;
+}
