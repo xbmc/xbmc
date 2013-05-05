@@ -59,7 +59,7 @@ public:
        attributes. Contiguous batches can be merged under some conditions which
        results in less draw calls
   */
-  void MergeSimilar();
+  void PreProcess();
 
 private:
   void RectToVertices(const CRect &rect, PackedVertices &packedvertices);

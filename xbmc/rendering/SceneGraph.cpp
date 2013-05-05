@@ -105,7 +105,7 @@ void CSceneGraph::RectToVertices(const CRect &rect, PackedVertices &packedvertic
   packedvertices.push_back(vertex);
 }
 
-void CSceneGraph::MergeSimilar()
+void CSceneGraph::PreProcess()
 {
   if (m_batches.size() < 2) return;
   for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != m_batches.end() -1;)
