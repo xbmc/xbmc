@@ -608,7 +608,7 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 
 void CGraphicContext::Clear(color_t color)
 {
-  g_Windowing.ClearBuffers(color);
+  g_Windowing.GetSceneGraph()->DrawQuad(CRect(0,0,m_iScreenWidth, m_iScreenHeight), color);
 }
 
 void CGraphicContext::CaptureStateBlock()
