@@ -5,7 +5,14 @@
 #include <stream_format.h>
 
 #define MSG_SIZE                    64
+#if defined(HAS_AMLPLAYER_CHAPTERS)
+#define MAX_CHAPTERS                64
+#endif
+#if defined(HAS_AMLPLAYER_VIDEO_STREAMS10)
+#define MAX_VIDEO_STREAMS           10
+#else
 #define MAX_VIDEO_STREAMS           8
+#endif
 #define MAX_AUDIO_STREAMS           8
 #define MAX_SUB_INTERNAL            8
 #define MAX_SUB_EXTERNAL            24
@@ -64,8 +71,6 @@ typedef enum
     PLAYER_DIVX_AUTHORERR   =   0x40001,
     PLAYER_DIVX_RENTAL_EXPIRED  =   0x40002,
     PLAYER_DIVX_RENTAL_VIEW =   0x40003,
-
-	
 }player_status;
 
 
@@ -107,6 +112,7 @@ typedef struct
 
 typedef struct
 {    
+    int index;
     int id;
     int channel;
     int sample_rate;
@@ -114,10 +120,14 @@ typedef struct
     aformat_t aformat;
     int duration;
 	audio_tag_info *audio_tag;    
+#if defined(HAS_AMLPLAYER_AUDIO_LANG)
+    char audio_language[4];
+#endif
 }maudio_info_t;
 
 typedef struct
 {
+    int index;
     char id;
     char internal_external; //0:internal_sub 1:external_sub       
     unsigned short width;
@@ -147,7 +157,23 @@ typedef struct
     int cur_sub_index;	
     int seekable;
     int drm_check;
+#if defined(HAS_AMLPLAYER_VIDEO_STREAMS10)
+    int t1;
+    int t2;
+#endif
+#if defined(HAS_AMLPLAYER_CHAPTERS)
+    int has_chapter;
+    int total_chapter_num;
+#endif
 }mstream_info_t;
+
+#if defined(HAS_AMLPLAYER_CHAPTERS)
+typedef struct
+{
+    char    *name;
+    int64_t seekto_ms;
+} mchapter_info_t;
+#endif
 
 typedef struct
 {	
@@ -155,6 +181,9 @@ typedef struct
 	mvideo_info_t *video_info[MAX_VIDEO_STREAMS];
 	maudio_info_t *audio_info[MAX_AUDIO_STREAMS];
     msub_info_t *sub_info[MAX_SUB_STREAMS];
+#if defined(HAS_AMLPLAYER_CHAPTERS)
+	mchapter_info_t *chapter_info[MAX_CHAPTERS];
+#endif
 }media_info_t;
 
 typedef struct player_info
@@ -213,7 +242,22 @@ typedef enum
 	PLAYER_EVENTS_ERROR,					///<ext1=error_code,ext2=message char *
 	PLAYER_EVENTS_BUFFERING,				///<ext1=buffered=d,d={0-100},ext2=0,
 	PLAYER_EVENTS_FILE_TYPE,				///<ext1=player_file_type_t*,ext2=0
+	PLAYER_EVENTS_HTTP_WV,				        ///<(need use DRMExtractor),ext1=0, ext2=0
+	PLAYER_EVENTS_HWBUF_DATA_SIZE_CHANGED,		///<(need use DRMExtractor),ext1=0, ext2=0
 }player_events;
+
+typedef struct
+{
+    int vbufused;
+    int vbufsize;
+    int vdatasize;
+    int abufused;
+    int abufsize;
+    int adatasize;
+    int sbufused;
+    int sbufsize;
+    int sdatasize;
+}hwbufstats_t;
 
 typedef struct
 {
@@ -231,7 +275,7 @@ typedef struct
 	int	video_index;						//video track, no assigned, please set to -1
 	int	audio_index;						//audio track, no assigned, please set to -1
 	int sub_index;							//subtitle track, no assigned, please set to -1
-	int t_pos;                  //start postion, use second as unit
+	float t_pos;							//start postion, use second as unit
 	int	read_max_cnt;						//read retry maxium counts, if exceed it, return error
 	int avsync_threshold;                             //for adec av sync threshold in ms
 	union
@@ -265,7 +309,9 @@ typedef struct
 	int is_type_parser;						 //is try to get file type 
 	int buffing_starttime_s;			//for rest buffing_middle,buffering seconds data to start.
 	int buffing_force_delay_s;
+	int lowbuffermode_flag;
 	int reserved [56];					//reserved  for furthur used,some one add more ,can del reserved num
+	int SessionID;
  }play_control_t; 
 
 #endif

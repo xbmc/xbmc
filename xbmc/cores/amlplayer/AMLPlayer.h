@@ -43,6 +43,7 @@ public:
   CAMLSubTitleThread(DllLibAmplayer* dll);
   virtual ~CAMLSubTitleThread();
 
+  void         Flush();
   void         UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms);
 protected:
   virtual void Process(void);
@@ -81,13 +82,15 @@ public:
   virtual void  SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
   virtual void  SetMute(bool bOnOff);
-  virtual void  SetVolume(float volume);
   virtual bool  ControlsVolume() {return true;}
+  virtual void  SetVolume(float volume);
   virtual void  SetDynamicRangeCompression(long drc)              {}
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
   virtual void  GetGeneralInfo(CStdString &strVideoInfo) {};
   virtual void  Update(bool bPauseDrawing);
+  virtual void  GetVideoRect(CRect& SrcRect, CRect& DestRect);
+  virtual void  GetVideoAspectRatio(float &fAR);
   virtual bool  CanRecord()                                       {return false;};
   virtual bool  IsRecording()                                     {return false;};
   virtual bool  Record(bool bOnOff)                               {return false;};
@@ -118,9 +121,9 @@ public:
   virtual int   SeekChapter(int iChapter);
 
   virtual float GetActualFPS();
-  virtual void  SeekTime(__int64 iTime = 0);
-  virtual __int64 GetTime();
-  virtual __int64 GetTotalTime();
+  virtual void  SeekTime(int64_t iTime = 0);
+  virtual int64_t GetTime();
+  virtual int64_t GetTotalTime();
   virtual void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual int   GetSourceBitrate();
@@ -150,14 +153,6 @@ public:
   virtual bool  SetPlayerState(CStdString state)                  {return false;};
 
   virtual CStdString GetPlayingTitle()                            {return "";};
-/*
-  virtual void  GetRenderFeatures(Features* renderFeatures);
-  virtual void  GetDeinterlaceMethods(Features* deinterlaceMethods);
-  virtual void  GetDeinterlaceModes(Features* deinterlaceModes);
-  virtual void  GetScalingMethods(Features* scalingMethods);
-  virtual void  GetAudioCapabilities(Features* audioCaps);
-  virtual void  GetSubtitleCapabilities(Features* subCaps);
-*/
 
   virtual void  GetRenderFeatures(std::vector<int> &renderFeatures);
   virtual void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
@@ -236,7 +231,6 @@ private:
   CDVDPlayerSubtitle     *m_dvdPlayerSubtitle;
   CDVDOverlayContainer   *m_dvdOverlayContainer;
 
-  int                     m_chapter_index;
   int                     m_chapter_count;
 
   int                     m_show_mainvideo;

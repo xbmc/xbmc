@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,5 +25,6 @@ int aml_set_sysfs_int(const char *path, const int val);
 int aml_get_sysfs_int(const char *path);
 
 bool aml_present();
+int  aml_get_cputype();
 void aml_cpufreq_limit(bool limit);
 void aml_set_audio_passthrough(bool passthrough);
