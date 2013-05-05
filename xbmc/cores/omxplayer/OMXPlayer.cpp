@@ -2149,9 +2149,15 @@ void COMXPlayer::HandleMessages()
               CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
           // dts after successful seek
-          m_StateInput.dts = start;
+          if (m_StateInput.time_src  == ETIMESOURCE_CLOCK && start == DVD_NOPTS_VALUE)
+            m_StateInput.dts = DVD_MSEC_TO_TIME(time);
+          else
+            m_StateInput.dts = start;
 
           FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
+          // let clock know the new time so progress bar updates immediately
+          if(m_StateInput.dts != DVD_NOPTS_VALUE)
+            m_av_clock.OMXMediaTime(m_StateInput.dts);
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
@@ -2177,6 +2183,10 @@ void COMXPlayer::HandleMessages()
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
           FlushBuffers(false, start, true);
+          // let clock know the new time so progress bar updates immediately
+          if(start != DVD_NOPTS_VALUE)
+            m_av_clock.OMXMediaTime(start);
+
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
 
@@ -3347,9 +3357,6 @@ void COMXPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     CSingleLock lock(m_StateSection);
     m_State = m_StateInput;
   }
-  // let clock know the new time so progress bar updates immediately
-  if(startpts != DVD_NOPTS_VALUE)
-    m_av_clock.OMXMediaTime(startpts);
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
