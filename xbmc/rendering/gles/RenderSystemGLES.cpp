@@ -657,7 +657,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
   GLint tex1Loc = -1;
   GLint uniColLoc = -1;
 
-  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); i++)
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
   {
     CBaseTexture *texture = (CBaseTexture*)i->GetTexture();
     CBaseTexture *diffuseTexture = (CBaseTexture*)i->GetDiffuseTexture();
@@ -672,7 +672,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
   {
     if (dirtyRegions)
     {
-      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); region++)
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); ++region)
       {
         SetScissors(*region);
         ClearBuffers(0);
@@ -684,7 +684,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     m_needsClear = false;
   }
 
-  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); i++)
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
   {
     unit = 0;
     unsigned int r,g,b,a = 0;
@@ -773,7 +773,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
     if (dirtyRegions)
     {
-      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); region++)
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); ++region)
       {
         SetScissors(*region);
         glDrawElements(GL_TRIANGLES, triangleVerts, GL_UNSIGNED_SHORT, idx);
