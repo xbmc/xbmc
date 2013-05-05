@@ -110,6 +110,11 @@ void CSceneGraph::PreProcess()
   if (m_batches.size() < 2) return;
   for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != m_batches.end() -1;)
   {
+    if(i->m_vertices.size() < 4)
+    {
+      i = m_batches.erase(i);
+      continue;
+    }
     if(i->CanMerge(*(i+1)))
     {
       i->Merge(*(i+1));
