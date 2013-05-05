@@ -108,23 +108,14 @@ void CSceneGraph::RectToVertices(const CRect &rect, PackedVertices &packedvertic
 void CSceneGraph::MergeSimilar()
 {
   if (m_batches.size() < 2) return;
-  std::vector<CBatchDraw>::iterator batchesEnd = m_batches.end();
-  for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != batchesEnd -1;)
+  for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != m_batches.end() -1;)
   {
-    if( i->m_texture == (i+1)->m_texture && \
-        i->m_diffuseTexture == (i+1)->m_diffuseTexture && \
-        i->m_vertices.size() >= 4 && \
-        i->m_color == (i+1)->m_color && \
-        (i+1)->m_vertices.size() >= 4)
-
+    if(i->CanMerge(*(i+1)))
     {
-      i->m_vertices.insert(i->m_vertices.end(), (i+1)->m_vertices.begin(), (i+1)->m_vertices.end());
+      i->Merge(*(i+1));
       i = m_batches.erase(i+1);
-      batchesEnd = m_batches.end();
-      if (i == batchesEnd)
-        break;
+      continue;
     }
-    else
-      i++;
+    i++;
   }
 }
