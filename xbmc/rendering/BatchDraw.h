@@ -47,6 +47,11 @@ public:
   void AddVertices(const PackedVertices &vertices);
   void AddVertices(const PackedVertex *vertex, int count);
 
+  inline bool CanMerge(const CBatchDraw &rhs) { return CanMerge(*this, rhs);};
+  inline void Merge(const CBatchDraw &rhs) { Merge(*this, rhs); }
+  static bool CanMerge(const CBatchDraw &lhs, const CBatchDraw &rhs);
+  static void Merge(CBatchDraw &lhs, const CBatchDraw &rhs);
+
   const CBaseTexture* GetTexture() const;
   const CBaseTexture* GetDiffuseTexture() const;
   bool IsDirty() const;

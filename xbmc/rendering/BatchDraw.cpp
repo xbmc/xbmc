@@ -82,3 +82,15 @@ const PackedVertices* CBatchDraw::GetVertices() const
 {
   return &m_vertices;
 }
+
+bool CBatchDraw::CanMerge(const CBatchDraw &lhs, const CBatchDraw &rhs)
+{
+  return lhs.m_texture == rhs.m_texture && \
+         lhs.m_color == rhs.m_color && \
+         lhs.m_diffuseTexture == rhs.m_diffuseTexture;
+}
+
+void CBatchDraw::Merge(CBatchDraw &lhs, const CBatchDraw &rhs)
+{
+  lhs.m_vertices.insert(lhs.m_vertices.end(), rhs.m_vertices.begin(), rhs.m_vertices.end());
+}
