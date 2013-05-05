@@ -85,6 +85,7 @@ CFileCache::CFileCache() : CThread("FileCache")
    m_seekPos = 0;
    m_readPos = 0;
    m_writePos = 0;
+   m_length = 0;
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
@@ -101,6 +102,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("Fil
   m_seekPos = 0;
   m_readPos = 0;
   m_writePos = 0;
+  m_length = 0;
   m_nSeekResult = 0;
   m_chunkSize = 0;
 }
@@ -169,6 +171,7 @@ bool CFileCache::Open(const CURL& url)
 
   m_readPos = 0;
   m_writePos = 0;
+  m_length = m_source.GetLength();
   m_writeRate = 1024 * 1024;
   m_writeRateActual = 0;
   m_cacheFull = false;
@@ -248,10 +251,17 @@ void CFileCache::Process()
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
+      m_source.Close();
 
       // The thread event will now also cause the wait of an event to return a false.
       if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
       {
+        if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
+        {
+          CLog::Log(LOGERROR,"%s - failed to reopen source <%s>", __FUNCTION__, m_sourcePath.c_str());
+          break;
+        }
+        m_source.IoControl(IOCTRL_SET_CACHE,this);
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed
       }
@@ -441,7 +451,9 @@ int64_t CFileCache::GetPosition()
 
 int64_t CFileCache::GetLength()
 {
-  return m_source.GetLength();
+  if (m_source.IsOpen())
+    m_length = m_source.GetLength();
+  return m_length;
 }
 
 void CFileCache::StopThread(bool bWait /*= true*/)

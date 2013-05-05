@@ -333,6 +333,12 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   return false;
 }
 
+bool CFile::IsOpen() {
+  if (m_pFile)
+    return true;
+  return false;
+}
+
 bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 {
   CURL url = URIUtils::SubstitutePath(strFileName);;
