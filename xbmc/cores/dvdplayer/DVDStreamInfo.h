@@ -63,6 +63,8 @@ public:
   // VIDEO
   int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int fpsrate;
+  int rfpsscale;
+  int rfpsrate;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
   float aspect; // display aspect as reported by demuxer
@@ -74,6 +76,7 @@ public:
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degress counter clockwise
   int bitsperpixel;
+  int pid;
 
   // AUDIO
   int channels;

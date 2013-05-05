@@ -146,7 +146,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     m_channelLayout = GetChannelLayout(format);
     m_passthrough   = false;
   }
-#if defined(HAS_AMLPLAYER)
+#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
   if (aml_present())
   {
     aml_set_audio_passthrough(m_passthrough);
