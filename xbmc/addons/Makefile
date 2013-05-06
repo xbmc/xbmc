@@ -12,6 +12,7 @@ SRCS=Addon.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \
      GUIWindowAddonBrowser.cpp \
+     Peripheral.cpp \
      PluginSource.cpp \
      Repository.cpp \
      Scraper.cpp \

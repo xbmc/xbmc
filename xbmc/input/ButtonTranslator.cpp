@@ -34,6 +34,8 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
+#include "addons/AddonManager.h"
+#include "addons/Peripheral.h"
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -41,6 +43,7 @@
 #include "SDLJoystick.h"
 #endif
 
+using namespace ADDON;
 using namespace std;
 using namespace XFILE;
 
@@ -552,10 +555,21 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
     }
   }
 
-  if (!success)
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_PERIPHERAL, addons);
+
+  // don't load references if old style files were found
+  if (m_translatorMap.empty())
   {
-    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
-    return false;
+    for (unsigned int i= 0; i < addons.size(); ++i)
+    {
+      PeripheralPtr peripheral = boost::dynamic_pointer_cast<CPeripheral>(addons[i]);
+      if (peripheral && peripheral->IsReference())
+      {
+        peripheral->LoadKeymaps();
+        AddPeripheral(peripheral);
+      }
+    }
   }
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
@@ -582,6 +596,32 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
     CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
   // don't return false - it is to only indicate a fatal error (which this is not)
 #endif
+
+  // load the rest of the add-ons
+  for (unsigned int i= 0; i < addons.size(); ++i)
+  {
+    PeripheralPtr peripheral = boost::dynamic_pointer_cast<CPeripheral>(addons[i]);
+    if (peripheral && !peripheral->IsReference() && !peripheral->IsConditional())
+    {
+      peripheral->LoadKeymaps();
+      AddPeripheral(peripheral);
+      lircmapPath = peripheral->Path();
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+#ifdef _WIN32
+      lircmapPath = URIUtils::AddFileToFolder(peripheral->Path(), "irss/");
+#else
+      lircmapPath = URIUtils::AddFileToFolder(peripheral->Path(), "lirc/");
+#endif
+      lircmapPath = URIUtils::AddFileToFolder(lircmapPath, REMOTEMAP);
+
+      if (CFile::Exists(lircmapPath))
+      {
+        if (!LoadLircMap(lircmapPath))
+          CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", lircmapPath.c_str());
+      }
+#endif
+    }
+  }
 
   // Done!
   m_Loaded = true;
@@ -692,7 +732,8 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
   {
-    if (strcmpi(pButton->Value(), "altname")==0)
+    if (strcmpi(pButton->Value(), "altname")==0 ||
+        strcmpi(pButton->Value(), "alias")==0)
       RemoteNames.push_back(string(pButton->GetText()));
     else
     {
@@ -1559,4 +1600,49 @@ int CButtonTranslator::GetTouchActionCode(int window, int action)
     return ACTION_NONE;
 
   return touchIt->second.id;
+}
+
+/* \brief Merge and add the data from one map into another
+ * \details This merges the two maps. Data from inMap will be
+ *          appended for each key. The data corresponding
+ *          to each key is taken from inMap, overriding the
+ *          original data if it existed.
+ * \param[in/out] outMap On entry, the original map. On return, the merged map
+ * \param[in] The map with the new data
+ */
+  template<class Key, class Data>
+static void MergeMaps(std::map<Key, Data>& outMap,
+                      const std::map<Key, Data>& inMap)
+{
+  typename std::map<Key, Data>::const_iterator keyIt;
+  for (keyIt = inMap.begin(); keyIt != inMap.end(); ++keyIt)
+  {
+    if (outMap.find(keyIt->first) == outMap.end())
+      outMap.insert(*keyIt);
+    else
+    {
+      typename Data::const_iterator dataIt;
+      for (dataIt = keyIt->second.begin();
+           dataIt != keyIt->second.end(); ++dataIt)
+      {
+        typename Data::iterator outIt = 
+          outMap[keyIt->first].find(dataIt->first);
+        if (outIt == outMap[keyIt->first].end() ||
+            outIt->second != dataIt->second)
+        {
+          if (outIt != outMap[keyIt->first].end())
+            outMap[keyIt->first].erase(outIt);
+        }
+      }
+    }
+  }
+}
+
+void CButtonTranslator::AddPeripheral(const ADDON::PeripheralPtr& peripheral)
+{
+  MergeMaps(m_translatorMap, peripheral->GetTranslatorMap());
+  MergeMaps(m_touchMap, peripheral->GetTouchMap());
+  MergeMaps(m_joystickButtonMap, peripheral->GetJoyButtonMap());
+  MergeMaps(m_joystickAxisMap, peripheral->GetJoyAxisMap());
+  MergeMaps(m_joystickHatMap, peripheral->GetJoyHatMap());
 }

@@ -35,6 +35,11 @@
 class CKey;
 class CAction;
 class TiXmlNode;
+namespace ADDON
+{
+  class CPeripheral;
+  typedef boost::shared_ptr<CPeripheral> PeripheralPtr;
+}
 
 struct CButtonAction
 {
@@ -123,6 +128,11 @@ public:
   static void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
 
   typedef std::map<CStdString, CStdString> lircButtonMap;
+
+  /*! \brief Add keymaps from a peripheral
+   * ! \param[in] peripheral The peripheral to add keymaps from
+   */
+  void AddPeripheral(const ADDON::PeripheralPtr& peripheral);
 private:
 
   // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
