@@ -659,8 +659,8 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
   for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
   {
-    CBaseTexture *texture = (CBaseTexture*)i->GetTexture();
-    CBaseTexture *diffuseTexture = (CBaseTexture*)i->GetDiffuseTexture();
+    CBaseTexture *texture = (CBaseTexture*)(*i)->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)(*i)->GetDiffuseTexture();
     if (texture)
       LoadToGPU(texture);
     if (diffuseTexture)
@@ -688,10 +688,10 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
   {
     unsigned int r,g,b,a = 0;
 
-    const PackedVertices *vertices = i->GetVertices();
-    CBaseTexture *texture = (CBaseTexture*)i->GetTexture();
-    CBaseTexture *diffuseTexture = (CBaseTexture*)i->GetDiffuseTexture();
-    int32_t color = i->GetColor();
+    const PackedVerticesPtr vertices = (*i)->GetVertices();
+    CBaseTexture *texture = (CBaseTexture*)(*i)->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)(*i)->GetDiffuseTexture();
+    int32_t color = (*i)->GetColor();
     unsigned int triangleVerts = 6 * (vertices->size() / 4);
     GLushort idx[triangleVerts];
     GLushort *itr = idx;
@@ -748,7 +748,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
 
     if (diffuseTexture)
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, u2));
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, u2));
       glEnableVertexAttribArray(tex1Loc);
     }
 
@@ -763,11 +763,11 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     }
 
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, x));
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, x));
     if (texture)
     {
       glEnableVertexAttribArray(tex0Loc);
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices[0] + offsetof(PackedVertex, u1));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, u1));
     }
 
     if (dirtyRegions)
