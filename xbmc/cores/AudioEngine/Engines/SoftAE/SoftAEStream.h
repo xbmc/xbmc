@@ -29,6 +29,7 @@
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"
 #include "Utils/AEBuffer.h"
+#include "Utils/AERingBuffer.h"
 #include "Utils/AELimiter.h"
 
 class IAEPostProc;
@@ -122,7 +123,7 @@ private:
 
   CAEConvert::AEConvertToFn m_convertFn;
 
-  CAEBuffer           m_inputBuffer;
+  CAERingBuffer       m_inputBuffer;
   unsigned int        m_bytesPerSample;
   unsigned int        m_bytesPerFrame;
   unsigned int        m_samplesPerFrame;
