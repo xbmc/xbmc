@@ -206,7 +206,7 @@ private:
   int UDFFindPartition( int partnum, struct Partition *part );
   int UDFGetAVDP( struct avdp_t *avdp);
   int DVDReadLBUDF( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted );
-  int UDFReadBlocksRaw( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted );
+  int ReadAt( int64_t pos, size_t len, unsigned char *data );
   int UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partition, struct FileAD *File );
   int UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *partition, struct AD *FileICB, int cache_file_info);
   int SetUDFCache(UDFCacheType type, uint32_t nr, void *data);

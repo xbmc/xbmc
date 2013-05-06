@@ -377,93 +377,6 @@ static CFile* file_open(const char *target)
   return fp;
 }
 
-
-/**
- * seek into the device.
- */
-static int file_seek(CFile* fp, int blocks)
-{
-  off64_t pos;
-
-  pos = fp->Seek((off64_t)blocks * (off64_t)DVD_VIDEO_LB_LEN, SEEK_SET);
-
-  if(pos < 0) {
-    return (int) pos;
-  }
-  /* assert pos % DVD_VIDEO_LB_LEN == 0 */
-  return (int) (pos / DVD_VIDEO_LB_LEN);
-}
-
-/**
- * read data from the device.
- */
-static int file_read(CFile* fp, void *buffer, int blocks, int flags)
-{
-  size_t len;
-  ssize_t ret;
-
-  len = (size_t)blocks * DVD_VIDEO_LB_LEN;
-
-  while(len > 0) {
-
-    ret = fp->Read(buffer, len);
-
-    if(ret < 0) {
-      /* One of the reads failed, too bad.  We won't even bother
-       * returning the reads that went OK, and as in the POSIX spec
-       * the file position is left unspecified after a failure. */
-      return ret;
-    }
-
-    if(ret == 0) {
-      /* Nothing more to read.  Return all of the whole blocks, if any.
-       * Adjust the file position back to the previous block boundary. */
-      size_t bytes = (size_t)blocks * DVD_VIDEO_LB_LEN - len;
-      off_t over_read = -(off_t)(bytes % DVD_VIDEO_LB_LEN);
-      /*off_t pos =*/ fp->Seek(over_read, SEEK_CUR);
-      /* should have pos % 2048 == 0 */
-      return (int) (bytes / DVD_VIDEO_LB_LEN);
-    }
-
-    len -= ret;
-  }
-
-  return blocks;
-}
-
-/**
- * close the DVD device and clean up.
- */
-static int file_close(CFile* fp)
-{
-  fp->Close();
-
-  return 0;
-}
-
-// offset is in bytes, force_size is in sectors
-uint64_t DVDFileSeekForce(BD_FILE bdfile, uint64_t offset, int64_t force_size)
-{
-  /* Check arguments. */
-  if( bdfile == NULL || offset <= 0 )
-      return -1;
-
-  // if -1 then round up to the next block
-  if( force_size < 0 )
-    force_size = (offset + DVD_VIDEO_LB_LEN) - (offset % DVD_VIDEO_LB_LEN);
-
-  if(bdfile->filesize < (uint64_t)force_size ) {
-    bdfile->filesize = force_size;
-    CLog::Log(LOGERROR, "DVDFileSeekForce - ignored size of file indicated in UDF");
-  }
-
-  if( offset > bdfile->filesize )
-    return -1;
-
-  bdfile->seek_pos = offset;
-  return offset;
-}
-
 int udf25::UDFScanDirX( udf_dir_t *dirp )
 {
   char filename[ MAX_UDF_FILE_NAME_LEN ];
@@ -730,40 +643,39 @@ int udf25::GetUDFCache(UDFCacheType type, uint32_t nr, void *data)
   return 0;
 }
 
-int udf25::UDFReadBlocksRaw( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted )
+int udf25::ReadAt( int64_t pos, size_t len, unsigned char *data )
 {
-  int ret;
+  int64_t ret;
+  ret = m_fp->Seek(pos, SEEK_SET);
+  if(ret < 0)
+    return (int)ret;
 
-  ret = file_seek( m_fp, (int) lb_number );
-  if( ret != (int) lb_number ) {
-    CLog::Log(LOGERROR, "udf25::UDFReadBlocksRaw -  Can't seek to block %u (got %u)", lb_number, ret );
-    return 0;
+  ret = m_fp->Read(data, len);
+  if(ret < (int64_t)len)
+  {
+    CLog::Log(LOGERROR, "udf25::ReadFile - less data than requested available!" );
+    return (int)ret;
   }
-
-  ret = file_read( m_fp, (char *) data, (int) block_count, encrypted );
-  return ret;
+  return (int)ret;
 }
 
 int udf25::DVDReadLBUDF( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted )
 {
   int ret;
-  size_t count = block_count;
+  size_t  len = block_count * DVD_VIDEO_LB_LEN;
+  int64_t pos = lb_number   * DVD_VIDEO_LB_LEN;
 
-  while(count > 0) {
+  ret = ReadAt(pos, len, data);
+  if(ret < 0)
+    return ret;
 
-    ret = UDFReadBlocksRaw(lb_number, count, data, encrypted);
-
-    if(ret <= 0) {
-      /* One of the reads failed or nothing more to read, too bad.
-       * We won't even bother returning the reads that went ok. */
-      return ret;
-    }
-
-    count -= (size_t)ret;
-    lb_number += (uint32_t)ret;
+  if((unsigned int)ret < len)
+  {
+    CLog::Log(LOGERROR, "udf25::DVDReadLBUDF -  Block was not complete, setting to wanted %u (got %u)", (unsigned int)len, (unsigned int)ret);
+    memset(&data[ret], 0, len - ret);
   }
 
-  return block_count;
+  return len / DVD_VIDEO_LB_LEN;
 }
 
 int udf25::UDFGetAVDP( struct avdp_t *avdp)
@@ -1199,43 +1111,46 @@ HANDLE udf25::OpenFile( const char* isoname, const char* filename )
 long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
 {
   BD_FILE bdfile = (BD_FILE)hFile;
-  unsigned char *secbuf_base, *secbuf;
-  unsigned int numsec, seek_sector, seek_byte, fileoff;
-  int ret;
+  unsigned int seek_sector, seek_byte;
+  long    len_origin = lSize;
+  int64_t pos;
+  size_t  len;
+  int     ret;
 
   /* Check arguments. */
   if( bdfile == NULL || pBuffer == NULL )
     return -1;
 
-  seek_sector =(unsigned int) (bdfile->seek_pos / DVD_VIDEO_LB_LEN);
-  seek_byte   = bdfile->seek_pos % DVD_VIDEO_LB_LEN;
+  /* Correct for file boundaries */
+  if( (uint64_t)lSize > (bdfile->filesize - bdfile->seek_pos))
+    lSize = (bdfile->filesize - bdfile->seek_pos);
 
-  numsec = ( ( seek_byte + lSize ) / DVD_VIDEO_LB_LEN ) +
-    ( ( ( seek_byte + lSize ) % DVD_VIDEO_LB_LEN ) ? 1 : 0 );
+  while(lSize > 0)
+  {
+    seek_sector =(unsigned int) (bdfile->seek_pos / DVD_VIDEO_LB_LEN);
+    seek_byte   =(unsigned int) (bdfile->seek_pos % DVD_VIDEO_LB_LEN);
 
-  secbuf_base = (unsigned char *) malloc( numsec * DVD_VIDEO_LB_LEN + 2048 );
-  secbuf = (unsigned char *)(((uintptr_t)secbuf_base & ~((uintptr_t)2047)) + 2048);
-  if( !secbuf_base ) {
-    CLog::Log(LOGERROR, "udf25::ReadFile - Can't allocate memory for file read!" );
-    return 0;
+    pos = ((int64_t)UDFFileBlockPos(bdfile->file, seek_sector) - 32) * DVD_VIDEO_LB_LEN + seek_byte;
+
+    /* don't cross sector boundaries */
+    len = std::min<size_t>(lSize, DVD_VIDEO_LB_LEN - seek_byte);
+
+    ret = ReadAt(pos, len, pBuffer);
+    if(ret < 0)
+    {
+      CLog::Log(LOGERROR, "udf25::ReadFile - error during read" );
+      return ret;
+    }
+
+    if(ret == 0)
+      break;
+
+    bdfile->seek_pos += ret;
+    pBuffer          += ret;
+    lSize            -= ret;
   }
 
-  fileoff = UDFFileBlockPos(bdfile->file, seek_sector);
-  fileoff -= 32;
-
-  ret = UDFReadBlocksRaw( fileoff, (size_t) numsec, secbuf, 0 );
-
-  if( ret != (int) numsec ) {
-    free( secbuf_base );
-    return ret < 0 ? ret : 0;
-  }
-
-  memcpy( pBuffer, &(secbuf[ seek_byte ]), lSize );
-  free( secbuf_base );
-
-  DVDFileSeekForce(bdfile, bdfile->seek_pos + lSize, -1);
-
-  return lSize;
+  return len_origin - lSize;
 }
 
 void udf25::CloseFile(HANDLE hFile)
@@ -1252,7 +1167,7 @@ void udf25::CloseFile(HANDLE hFile)
 
   if(m_fp)
   {
-    file_close(m_fp);
+    m_fp->Close();
     delete(m_fp);
     m_fp = NULL;
   }
