@@ -964,6 +964,7 @@
     <ClCompile Include="..\..\xbmc\settings\SettingConditions.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingControl.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingDependency.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\SettingLevel.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingPath.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingSection.cpp" />
@@ -1143,6 +1144,7 @@
     <ClInclude Include="..\..\xbmc\settings\SettingConditions.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingControl.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingDependency.h" />
+    <ClInclude Include="..\..\xbmc\settings\SettingLevel.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingPath.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingSection.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingsManager.h" />
