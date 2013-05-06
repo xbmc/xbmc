@@ -720,30 +720,31 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, c
   float tb = texture.y2 * m_textureScaleY;
 
   m_color = color;
-  CBatchDraw draw = m_batchDraws[color];
-
-  PackedVertex packedvertex[4];
+  mapVertices::iterator draw = m_vertices.find(color);
+  PackedVerticesPtr packedvertex = PackedVerticesPtr(new PackedVertices(4));
   for(int i = 0; i < 4; i++)
   {
-    packedvertex[i].x = x[i];
-    packedvertex[i].y = y[i];
-    packedvertex[i].z = z[i];
+    packedvertex->at(i).x = x[i];
+    packedvertex->at(i).y = y[i];
+    packedvertex->at(i).z = z[i];
   }
 
-  packedvertex[0].u1 = tl;
-  packedvertex[0].v1 = tt;
+  packedvertex->at(0).u1 = tl;
+  packedvertex->at(0).v1 = tt;
 
-  packedvertex[1].u1 = tr;
-  packedvertex[1].v1 = tt;
+  packedvertex->at(1).u1 = tr;
+  packedvertex->at(1).v1 = tt;
 
-  packedvertex[2].u1 = tr;
-  packedvertex[2].v1 = tb;
+  packedvertex->at(2).u1 = tr;
+  packedvertex->at(2).v1 = tb;
 
-  packedvertex[3].u1 = tl;
-  packedvertex[3].v1 = tb;
+  packedvertex->at(3).u1 = tl;
+  packedvertex->at(3).v1 = tb;
 
-  draw.SetColor(color);
-  draw.AddVertices(&packedvertex[0], 4);
+  if (draw != m_vertices.end())
+    draw->second->insert(draw->second->end(), packedvertex->begin(), packedvertex->end());
+  else
+    m_vertices.insert(make_pair(color, packedvertex));
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)
@@ -805,7 +806,7 @@ void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
 void CGUIFontTTF::Begin()
 {
   if (m_nestedBeginCount == 0)
-    m_batchDraws.clear();
+    m_vertices.clear();
   m_nestedBeginCount++;
 }
 
@@ -818,11 +819,14 @@ void CGUIFontTTF::End()
     return;
 
   CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
-  for (mapDraws::iterator i = m_batchDraws.begin(); i != m_batchDraws.end(); ++i)
+  for (mapVertices::iterator i = m_vertices.begin(); i != m_vertices.end(); ++i)
   {
-    i->second.SetTexture(m_texture);
-    i->second.SetDirty(true);
-    sceneGraph->Add(i->second);
+    CBatchDrawPtr temp = CBatchDrawPtr(new CBatchDraw);
+    temp->SetTexture(m_texture);
+    temp->SetDirty(true);
+    temp->SetColor(i->first);
+    temp->SetVertices(i->second);
+    sceneGraph->Add(temp);
   }
 }
 
