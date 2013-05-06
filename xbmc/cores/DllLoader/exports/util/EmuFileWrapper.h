@@ -69,10 +69,10 @@ public:
   EmuFileObject* GetFileObjectByStream(FILE* stream);  
   XFILE::CFile* GetFileXbmcByDescriptor(int fd);
   XFILE::CFile* GetFileXbmcByStream(FILE* stream);
-  int GetDescriptorByStream(FILE* stream);
+  static int GetDescriptorByStream(FILE* stream);
   FILE* GetStreamByDescriptor(int fd);
-  bool DescriptorIsEmulatedFile(int fd);
-  bool StreamIsEmulatedFile(FILE* stream);
+  static bool DescriptorIsEmulatedFile(int fd);
+  static bool StreamIsEmulatedFile(FILE* stream);
 private:
   EmuFileObject m_files[MAX_EMULATED_FILES];
   CCriticalSection m_criticalSection;

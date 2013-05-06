@@ -120,7 +120,7 @@ public:
 
   RESOLUTION GetResolution();
 
-  float GetMaximumFPS();
+  static float GetMaximumFPS();
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
   int    GetSkippedFrames()  { return m_QueueSkip; }
@@ -132,7 +132,7 @@ public:
 
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
-  double GetPresentTime();
+  static double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
