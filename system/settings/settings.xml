@@ -415,6 +415,11 @@
           <level>2</level>
           <default>true</default>
         </setting>
+        <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="">
+          <visible>HAVE_LIBSTAGEFRIGHTDECODER</visible>
+          <level>2</level>
+          <default>true</default>
+        </setting>
         <setting id="videoplayer.usepbo" type="boolean" label="13424" help="">
           <visible>HAS_GL</visible>
           <level>4</level>

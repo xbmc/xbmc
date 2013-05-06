@@ -755,8 +755,6 @@ void CSettings::InitializeConditions()
 #endif
 #ifdef HAVE_LIBSTAGEFRIGHT
   m_settingsManager->AddCondition("have_libstagefrightdecoder");
-  if (g_sysinfo.HasLibstagefrightDecoder())
-    m_settingsManager->AddCondition("haslibstagefrightdecoder");
 #endif
 #ifdef TARGET_DARWIN_IOS_ATV2
   if (g_sysinfo.IsAppleTV2())

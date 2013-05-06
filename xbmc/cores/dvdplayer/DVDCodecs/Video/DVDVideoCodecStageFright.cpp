@@ -28,7 +28,7 @@
 
 #if defined(HAVE_LIBSTAGEFRIGHT)
 #include "DVDClock.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecStageFright.h"
 #include "StageFrightVideo.h"
