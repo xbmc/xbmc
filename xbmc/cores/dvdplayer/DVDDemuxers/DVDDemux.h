@@ -139,7 +139,7 @@ public:
 
   int  changes; // increment on change which player may need to know about
 
-  int orig_type; // type of origininal source
+  int orig_type; // type of original source
 
   enum EFlags
   { FLAG_NONE     = 0x0000 
