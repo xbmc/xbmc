@@ -301,7 +301,7 @@ void CAESinkAUDIOTRACK::Process()
   m_audiotrack_empty_sec = 0.0;
 
   // setup a 1/4 second internal sink lockless ring buffer
-  m_sinkbuffer = new AERingBuffer(m_sink_frameSize * m_format.m_sampleRate / 4);
+  m_sinkbuffer = new CAERingBuffer(m_sink_frameSize * m_format.m_sampleRate / 4);
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_sink_frameSize * m_format.m_sampleRate);
   m_sinkbuffer_sec = (double)m_sinkbuffer_sec_per_byte * m_sinkbuffer->GetMaxSize();
 

@@ -35,10 +35,10 @@
  * If you intend to call the Reset() method, please use Locks.
  * All other operations are thread-safe.
  */
-class AERingBuffer {
+class CAERingBuffer {
 
 public:
-  AERingBuffer() :
+  CAERingBuffer() :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -48,7 +48,7 @@ public:
   {
   }
 
-  AERingBuffer(unsigned int size) :
+  CAERingBuffer(unsigned int size) :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -59,10 +59,10 @@ public:
     Create(size);
   }
 
-  ~AERingBuffer()
+  ~CAERingBuffer()
   {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer::~AERingBuffer: Deleting buffer.");
+    CLog::Log(LOGDEBUG, "CAERingBuffer::~CAERingBuffer: Deleting buffer.");
 #endif
     _aligned_free(m_Buffer);
   }
@@ -91,7 +91,7 @@ public:
    */
   void Reset() {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer::Reset: Buffer reset.");
+    CLog::Log(LOGDEBUG, "CAERingBuffer::Reset: Buffer reset.");
 #endif
     m_iWritten = 0;
     m_iRead = 0;
@@ -112,7 +112,7 @@ public:
     //do we have enough space for all the data?
     if (size > space) {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer: Not enough space, ignoring data. Requested: %u Available: %u",size, space);
+    CLog::Log(LOGDEBUG, "CAERingBuffer: Not enough space, ignoring data. Requested: %u Available: %u",size, space);
 #endif
       return AE_RING_BUFFER_FULL;
     }
@@ -121,7 +121,7 @@ public:
     if ( m_iSize > size + m_iWritePos )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
 #endif
       memcpy(&(m_Buffer[m_iWritePos]), src, size);
       m_iWritePos+=size;
@@ -132,7 +132,7 @@ public:
       unsigned int first = m_iSize - m_iWritePos;
       unsigned int second = size - first;
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
 #endif
       memcpy(&(m_Buffer[m_iWritePos]), src, first);
       memcpy(&(m_Buffer[0]), &src[first], second);
@@ -159,7 +159,7 @@ public:
     if( space <= 0 )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Can't read from empty buffer.");
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't read from empty buffer.");
 #endif
       return AE_RING_BUFFER_EMPTY;
     }
@@ -168,7 +168,7 @@ public:
     if( size > space )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Can't read %u bytes when we only have %u.", size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't read %u bytes when we only have %u.", size, space);
 #endif
       return AE_RING_BUFFER_NOTAVAILABLE;
     }
@@ -189,7 +189,7 @@ public:
       unsigned int first = m_iSize - m_iReadPos;
       unsigned int second = size - first;
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
 #endif
       if (dest)
       {
@@ -217,7 +217,7 @@ public:
         bufferContents[i] = '_';
     }
     bufferContents[m_iSize] = '\0';
-    CLog::Log(LOGDEBUG, "AERingBuffer::Dump()\n%s",bufferContents);
+    CLog::Log(LOGDEBUG, "CAERingBuffer::Dump()\n%s", bufferContents);
     _aligned_free(bufferContents);
   }
 

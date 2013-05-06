@@ -22,7 +22,7 @@
 #include "Interfaces/AESink.h"
 #include "Utils/AEDeviceInfo.h"
 
-class AERingBuffer;
+class CAERingBuffer;
 
 class CAESinkAUDIOTRACK : public CThread, public IAESink
 {
@@ -54,7 +54,7 @@ private:
   bool               m_volume_changed;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16LE;
-  AERingBuffer      *m_sinkbuffer;
+  CAERingBuffer     *m_sinkbuffer;
   unsigned int       m_sink_frameSize;
   double             m_sinkbuffer_sec;
   double             m_sinkbuffer_sec_per_byte;
