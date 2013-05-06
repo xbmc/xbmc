@@ -209,9 +209,10 @@ public:
    */
   void Dump()
   {
-    unsigned char* bufferContents =  (unsigned char *)_aligned_malloc(m_iSize + 1,16);
-    for (unsigned int i=0; i<m_iSize; i++) {
-      if (i >= m_iReadPos && i<m_iWritePos)
+    unsigned char* bufferContents = (unsigned char *)_aligned_malloc(m_iSize + 1, 16);
+    for (unsigned int i = 0; i < m_iSize; i++)
+    {
+      if (i >= m_iReadPos && i < m_iWritePos)
         bufferContents[i] = m_Buffer[i];
       else
         bufferContents[i] = '_';
@@ -248,10 +249,10 @@ public:
   }
 
 private:
-  unsigned int m_iReadPos;
-  unsigned int m_iWritePos;
-  unsigned int m_iRead;
-  unsigned int m_iWritten;
-  unsigned int m_iSize;
+  unsigned int   m_iReadPos;
+  unsigned int   m_iWritePos;
+  unsigned int   m_iRead;
+  unsigned int   m_iWritten;
+  unsigned int   m_iSize;
   unsigned char *m_Buffer;
 };
