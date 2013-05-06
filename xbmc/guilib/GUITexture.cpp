@@ -174,7 +174,8 @@ void CGUITextureBase::Render()
       return;
   }
 
-  m_batchDraw.Reset();
+  if(m_batchDraw)
+    m_batchDraw->Reset();
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
@@ -204,6 +205,8 @@ void CGUITextureBase::Render()
   //       look weird for stuff with borders, as will the -ve height/width
   //       for flipping
 
+  m_batchDraw = boost::shared_ptr<CBatchDraw> (new CBatchDraw);
+
   // left segment (0,0,u1,v3)
   if (m_info.border.x1)
   {
@@ -229,13 +232,13 @@ void CGUITextureBase::Render()
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
   }
 
-  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
 
-  m_batchDraw.SetTexture(m_texture.m_textures[m_currentFrame]);
-  m_batchDraw.SetColor(color);
+  m_batchDraw->SetTexture(m_texture.m_textures[m_currentFrame]);
+  m_batchDraw->SetColor(color);
   if (m_diffuse.size())
-    m_batchDraw.SetDiffuseTexture(m_diffuse.m_textures[0]);
+    m_batchDraw->SetDiffuseTexture(m_diffuse.m_textures[0]);
 
+  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
   sceneGraph->Add(m_batchDraw);
 
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
@@ -267,7 +270,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 
-  PackedVertex packedvertex[4];
+  PackedVertices packedvertex(4);
 
   packedvertex[0].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
   packedvertex[0].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
@@ -348,7 +351,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     }
   }
 
-  m_batchDraw.AddVertices(&packedvertex[0], 4);
+  m_batchDraw->AddVertices(packedvertex);
 }
 
 bool CGUITextureBase::AllocResources()
@@ -538,7 +541,8 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_texCoordsScaleV = 1.0f;
 
   m_isAllocated = NO;
-  m_batchDraw.Reset();
+  if(m_batchDraw)
+    m_batchDraw->Reset();
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
