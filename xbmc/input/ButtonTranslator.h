@@ -96,25 +96,11 @@ public:
   bool TranslateJoystickString(int window, const char* szDevice, int id,
                                short inputType, int& action, CStdString& strAction,
                                bool &fullrange);
+  typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
+  typedef std::map<std::string, JoystickMap> JoystickMappings; // <name, mappings>
 #endif
 
   bool TranslateTouchAction(int touchAction, int touchPointers, int &window, int &action);
-
-private:
-  typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
-
-  // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
-  std::map<int, buttonMap> m_translatorMap;
-  // m_deviceList contains the list of connected HID devices
-  std::list<CStdString> m_deviceList;
-
-  int GetActionCode(int window, int action);
-  int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
-  int GetActionCode(int window, int id, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const;
-#endif
-  int GetFallbackWindow(int windowID);
 
   static uint32_t TranslateGamepadString(const char *szButton);
   static uint32_t TranslateRemoteString(const char *szButton);
@@ -126,9 +112,27 @@ private:
   static uint32_t TranslateMouseCommand(const char *szButton);
 
   static uint32_t TranslateAppCommand(const char *szButton);
+  static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
+
+  typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
+  static void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
+
+  typedef std::map<CStdString, CStdString> lircButtonMap;
+private:
+
+  // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
+  std::map<int, buttonMap> m_translatorMap;
+  // m_deviceList contains the list of connected HID devices
+  std::list<CStdString> m_deviceList;
+
+  int GetActionCode(int window, int action);
+  int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  int GetActionCode(int window, int id, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const;
+#endif
+  int GetFallbackWindow(int windowID);
 
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
 
   bool LoadKeymap(const CStdString &keymapPath);
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
@@ -137,20 +141,18 @@ private:
 
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
 
-  typedef std::map<CStdString, CStdString> lircButtonMap;
   std::map<CStdString, lircButtonMap*> lircRemotesMap;
 #endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   void MapJoystickActions(int windowID, TiXmlNode *pJoystick);
 
-  std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
-  std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
-  std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
+  JoystickMappings m_joystickButtonMap;      // <joy name, button map>
+  JoystickMappings m_joystickAxisMap;        // <joy name, axis map>
+  JoystickMappings m_joystickHatMap;        // <joy name, hat map>
 #endif
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
-  static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
   int GetTouchActionCode(int window, int action);
 
   std::map<int, buttonMap> m_touchMap;
