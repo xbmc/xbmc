@@ -43,7 +43,7 @@ CSceneGraph::const_iterator CSceneGraph::end() const
   return m_batches.size() ? &*m_batches.end() : NULL;
 }
 
-void CSceneGraph::Add(const CBatchDraw &batch)
+void CSceneGraph::Add(CBatchDrawPtr batch)
 {
   CSingleLock lock(m_critSection);
   m_batches.push_back(batch);
@@ -57,67 +57,67 @@ void CSceneGraph::Reset()
 
 void CSceneGraph::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
-  CBatchDraw quad;
-  PackedVertices packedvertices;
+  PackedVerticesPtr packedvertices = PackedVerticesPtr(new PackedVertices);
   RectToVertices(rect, packedvertices);
 
   if (texture)
   {
     CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
-    packedvertices[0].u1 = coords.x1;
-    packedvertices[0].v1 = coords.y1;
-    packedvertices[1].u1 = coords.x2;
-    packedvertices[1].v1 = coords.y1;
-    packedvertices[2].u1 = coords.x2;
-    packedvertices[2].v1 = coords.y2;
-    packedvertices[3].u1 = coords.x1;
-    packedvertices[3].v1 = coords.y2;
+    packedvertices->at(0).u1 = coords.x1;
+    packedvertices->at(0).v1 = coords.y1;
+    packedvertices->at(1).u1 = coords.x2;
+    packedvertices->at(1).v1 = coords.y1;
+    packedvertices->at(2).u1 = coords.x2;
+    packedvertices->at(2).v1 = coords.y2;
+    packedvertices->at(3).u1 = coords.x1;
+    packedvertices->at(3).v1 = coords.y2;
   }
 
-  quad.SetColor(color);
-  quad.SetTexture(texture);
-  quad.AddVertices(packedvertices);
+  CBatchDrawPtr quad = CBatchDrawPtr(new CBatchDraw);
+  quad->SetColor(color);
+  quad->SetTexture(texture);
+  quad->SetVertices(packedvertices);
   Add(quad);
 }
 
-void CSceneGraph::RectToVertices(const CRect &rect, PackedVertices &packedvertices)
+void CSceneGraph::RectToVertices(const CRect &rect, PackedVerticesPtr packedvertices)
 {
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
   PackedVertex vertex;
   vertex.x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y1));
   vertex.y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y1));
   vertex.z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y1));
-  packedvertices.push_back(vertex);
+  packedvertices->push_back(vertex);
 
   vertex.x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y1));
   vertex.y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y1));
   vertex.z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y1));
-  packedvertices.push_back(vertex);
+  packedvertices->push_back(vertex);
 
   vertex.x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y2));
   vertex.y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y2));
   vertex.z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y2));
-  packedvertices.push_back(vertex);
+  packedvertices->push_back(vertex);
 
   vertex.x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y2));
   vertex.y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y2));
   vertex.z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y2));
-  packedvertices.push_back(vertex);
+  packedvertices->push_back(vertex);
 }
 
 void CSceneGraph::PreProcess()
 {
   if (m_batches.size() < 2) return;
-  for (std::vector<CBatchDraw>::iterator i =  m_batches.begin(); i != m_batches.end() -1;)
+  for (std::vector<CBatchDrawPtr>::iterator i =  m_batches.begin(); i != m_batches.end() -1;)
   {
-    if(i->m_vertices.size() < 4)
+    if((*i)->m_vertices->size() < 4)
     {
       i = m_batches.erase(i);
       continue;
     }
-    if(i->CanMerge(*(i+1)))
+    if((*i)->CanMerge(**(i+1)))
     {
-      i->Merge(*(i+1));
+      (*i)->Merge(**(i+1));
       i = m_batches.erase(i+1);
       continue;
     }

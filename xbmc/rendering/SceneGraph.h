@@ -28,13 +28,13 @@ class CBaseTexture;
 class CSceneGraph
 {
 public:
-  typedef const CBatchDraw *const_iterator;
+  typedef const CBatchDrawPtr *const_iterator;
   CSceneGraph();
   CSceneGraph(const CSceneGraph& other);
   /*! \brief Queue a new batch in the scene. It will not be visible until
       the graph is drawn
    */
-  void Add(const CBatchDraw &batch);
+  void Add(CBatchDrawPtr batch);
 
   /*! \brief Discard all current batches in the scene. If the scene was not
        drawn already, the current batches will never be seen.
@@ -62,7 +62,7 @@ public:
   void PreProcess();
 
 private:
-  void RectToVertices(const CRect &rect, PackedVertices &packedvertices);
-  std::vector<CBatchDraw> m_batches;
+  void RectToVertices(const CRect &rect, PackedVerticesPtr packedvertices);
+  std::vector<CBatchDrawPtr> m_batches;
   CCriticalSection m_critSection;
 };

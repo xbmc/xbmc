@@ -22,6 +22,7 @@
 CBatchDraw::CBatchDraw()
 : m_texture(NULL), m_diffuseTexture(NULL), m_dirty(true), m_color(0)
 {
+  m_vertices = PackedVerticesPtr(new PackedVertices);
 }
 
 void CBatchDraw::Reset()
@@ -51,12 +52,12 @@ void CBatchDraw::SetColor(uint32_t color)
 
 void CBatchDraw::AddVertices(const PackedVertices &vertices)
 {
-  m_vertices.insert(m_vertices.end(), vertices.begin(), vertices.end());
+  m_vertices->insert(m_vertices->end(), vertices.begin(), vertices.end());
 }
 
 void CBatchDraw::AddVertices(const PackedVertex *vertex, int count)
 {
-  m_vertices.insert(m_vertices.end(), vertex, vertex+count);
+  m_vertices->insert(m_vertices->end(), vertex, vertex+count);
 }
 
 const CBaseTexture* CBatchDraw::GetTexture() const
@@ -78,9 +79,9 @@ uint32_t CBatchDraw::GetColor() const
 {
   return m_color;
 }
-const PackedVertices* CBatchDraw::GetVertices() const
+const PackedVerticesPtr CBatchDraw::GetVertices() const
 {
-  return &m_vertices;
+  return m_vertices;
 }
 
 bool CBatchDraw::CanMerge(const CBatchDraw &lhs, const CBatchDraw &rhs)
@@ -92,5 +93,10 @@ bool CBatchDraw::CanMerge(const CBatchDraw &lhs, const CBatchDraw &rhs)
 
 void CBatchDraw::Merge(CBatchDraw &lhs, const CBatchDraw &rhs)
 {
-  lhs.m_vertices.insert(lhs.m_vertices.end(), rhs.m_vertices.begin(), rhs.m_vertices.end());
+  lhs.m_vertices->insert(lhs.m_vertices->end(), rhs.m_vertices->begin(), rhs.m_vertices->end());
+}
+
+void CBatchDraw::SetVertices(PackedVerticesPtr vertices)
+{
+  m_vertices = vertices;
 }

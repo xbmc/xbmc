@@ -20,6 +20,8 @@
 #pragma once
 #include <vector>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
+
 typedef uint32_t color_t;
 struct PackedVertex
 {
@@ -29,6 +31,8 @@ struct PackedVertex
   unsigned char r, g, b, a; // per-vertex colors (only necessary when diffuse color varies by vertex)
 };
 typedef std::vector<PackedVertex> PackedVertices;
+typedef boost::shared_ptr<PackedVertices> PackedVerticesPtr;
+
 class CBaseTexture;
 /*! \brief A collection of data required to perform a single render call.
      This can include many vertices as long as they can be batched into a
@@ -46,6 +50,7 @@ public:
   void SetColor(uint32_t color);
   void AddVertices(const PackedVertices &vertices);
   void AddVertices(const PackedVertex *vertex, int count);
+  void SetVertices(PackedVerticesPtr vertices);
 
   inline bool CanMerge(const CBatchDraw &rhs) { return CanMerge(*this, rhs);};
   inline void Merge(const CBatchDraw &rhs) { Merge(*this, rhs); }
@@ -56,12 +61,13 @@ public:
   const CBaseTexture* GetDiffuseTexture() const;
   bool IsDirty() const;
   uint32_t GetColor() const;
-  const PackedVertices* GetVertices() const;
+  const PackedVerticesPtr GetVertices() const;
 private:
   CBaseTexture *m_texture;
   CBaseTexture *m_diffuseTexture;
   bool m_dirty;
   uint32_t m_color;
-  PackedVertices m_vertices;
+  PackedVerticesPtr m_vertices;
 };
 
+typedef boost::shared_ptr<CBatchDraw> CBatchDrawPtr;
