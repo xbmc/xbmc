@@ -362,7 +362,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 
   CStdString strFilename = URIUtils::GetFileName(strPath);
 
-  URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
+  strPath = URIUtils::AddFileToFolder(strDirectory, strFilename);
 
   // i *hate* windows
   if (!CFile::Exists(strPath))

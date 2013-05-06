@@ -284,11 +284,10 @@ void CGUIWindowMusicPlayList::SavePlayList()
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strFolder, strPath;
-    URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music", strFolder);
-    strNewFileName= CUtil::MakeLegalFileName( strNewFileName );
+    CStdString strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
-    URIUtils::AddFileToFolder(strFolder, strNewFileName, strPath);
+    CStdString strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
 
     // get selected item
     int iItem = m_viewControl.GetSelectedItem();

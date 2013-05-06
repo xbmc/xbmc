@@ -107,15 +107,7 @@ public:
                                 const CStdString& strFilePathInArchive,
                                 const CStdString& strPwd="");
 
-  static void AddFileToFolder(const CStdString& strFolder,
-                              const CStdString& strFile, CStdString& strResult);
-  static CStdString AddFileToFolder(const CStdString &strFolder, 
-                                    const CStdString &strFile)
-  {
-    CStdString result;
-    AddFileToFolder(strFolder, strFile, result);
-    return result;
-  }
+  static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 
   static bool ProtocolHasParentInHostname(const CStdString& prot);
   static bool ProtocolHasEncodedHostname(const CStdString& prot);

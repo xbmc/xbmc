@@ -129,25 +129,25 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
     RootDir = FullFileName;
 
   if (RootDir.Equals("subtitles"))
-    URIUtils::AddFileToFolder(CSettings::Get().GetString("subtitles.custompath"), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("subtitles.custompath"), FileName);
   else if (RootDir.Equals("userdata"))
-    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName);
   else if (RootDir.Equals("database"))
-    URIUtils::AddFileToFolder(CProfilesManager::Get().GetDatabaseFolder(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetDatabaseFolder(), FileName);
   else if (RootDir.Equals("thumbnails"))
-    URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), FileName);
   else if (RootDir.Equals("recordings") || RootDir.Equals("cdrips"))
-    URIUtils::AddFileToFolder(CSettings::Get().GetString("audiocds.recordingpath"), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("audiocds.recordingpath"), FileName);
   else if (RootDir.Equals("screenshots"))
-    URIUtils::AddFileToFolder(CSettings::Get().GetString("debug.screenshotpath"), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("debug.screenshotpath"), FileName);
   else if (RootDir.Equals("musicplaylists"))
-    URIUtils::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName);
   else if (RootDir.Equals("videoplaylists"))
-    URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName);
   else if (RootDir.Equals("skin"))
-    URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName);
   else if (RootDir.Equals("logpath"))
-    URIUtils::AddFileToFolder(g_advancedSettings.m_logFolder, FileName, translatedPath);
+    translatedPath = URIUtils::AddFileToFolder(g_advancedSettings.m_logFolder, FileName);
 
 
   // from here on, we have our "real" special paths
@@ -162,7 +162,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   {
     CStdString basePath = GetPath(RootDir);
     if (!basePath.IsEmpty())
-      URIUtils::AddFileToFolder(basePath, FileName, translatedPath);
+      translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
     else
       translatedPath.clear();
   }

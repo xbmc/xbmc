@@ -193,7 +193,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, CStdS
 
   if (!strAlbumDir.IsEmpty())
   {
-    URIUtils::AddFileToFolder(strDirectory, strAlbumDir, strDirectory);
+    strDirectory = URIUtils::AddFileToFolder(strDirectory, strAlbumDir);
     URIUtils::AddSlashAtEnd(strDirectory);
   }
 

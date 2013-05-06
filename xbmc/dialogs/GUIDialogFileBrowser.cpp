@@ -205,7 +205,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       {
         if (m_browsingForFolders == 2)
         {
-          CStdString strTest;
           int iItem = m_viewControl.GetSelectedItem();
 
           CStdString strPath;
@@ -214,7 +213,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           else
             strPath = (*m_vecItems)[iItem]->GetPath();
 
-          URIUtils::AddFileToFolder(strPath,"1",strTest);
+          CStdString strTest = URIUtils::AddFileToFolder(strPath, "1");
           CFile file;
           if (file.OpenForWrite(strTest,true))
           {
@@ -252,8 +251,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         CStdString strInput;
         if (CGUIKeyboardFactory::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false))
         {
-          CStdString strPath;
-          URIUtils::AddFileToFolder(m_vecItems->GetPath(),strInput,strPath);
+          CStdString strPath = URIUtils::AddFileToFolder(m_vecItems->GetPath(), strInput);
           if (CDirectory::Create(strPath))
             Update(m_vecItems->GetPath());
           else

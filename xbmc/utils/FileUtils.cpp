@@ -71,7 +71,7 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
         CStdString filePath(paths[i]);
         URIUtils::RemoveSlashAtEnd(filePath);
         URIUtils::GetDirectory(filePath, filePath);
-        URIUtils::AddFileToFolder(filePath, strFileName, filePath);
+        filePath = URIUtils::AddFileToFolder(filePath, strFileName);
         if (CFile::Rename(paths[i], filePath))
           success = true;
       }

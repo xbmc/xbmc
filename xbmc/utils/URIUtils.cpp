@@ -932,24 +932,21 @@ bool URIUtils::CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdSt
   return strc1.Equals(strc2);
 }
 
-void URIUtils::AddFileToFolder(const CStdString& strFolder, 
-                                const CStdString& strFile,
-                                CStdString& strResult)
+CStdString URIUtils::AddFileToFolder(const CStdString& strFolder, 
+                                const CStdString& strFile)
 {
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
     if (url.GetFileName() != strFolder)
     {
-      AddFileToFolder(url.GetFileName(), strFile, strResult);
-      url.SetFileName(strResult);
-      strResult = url.Get();
-      return;
+      url.SetFileName(AddFileToFolder(url.GetFileName(), strFile));
+      return url.Get();
     }
   }
 
-  strResult = strFolder;
-  if(!strResult.IsEmpty())
+  CStdString strResult = strFolder;
+  if (!strResult.IsEmpty())
     AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
@@ -963,6 +960,8 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder,
     strResult.Replace('\\', '/');
   else
     strResult.Replace('/', '\\');
+
+  return strResult;
 }
 
 CStdString URIUtils::GetDirectory(const CStdString &filePath)
