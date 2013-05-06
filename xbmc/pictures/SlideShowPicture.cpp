@@ -720,8 +720,7 @@ void CSlideShowPic::Render()
 
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
 {
-  CBatchDraw draw;
-  PackedVertex vertices[4];
+  PackedVerticesPtr vertices = boost::shared_ptr<PackedVertices> (new PackedVertices(4));
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
   if (pTexture)
   {
@@ -729,32 +728,33 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
   }
   
-  vertices[0].x  = x[0];
-  vertices[0].y  = y[0];
-  vertices[0].z  = 0;
-  vertices[0].u1 = u1;
-  vertices[0].v1 = v1;
+  vertices->at(0).x  = x[0];
+  vertices->at(0).y  = y[0];
+  vertices->at(0).z  = 0;
+  vertices->at(0).u1 = u1;
+  vertices->at(0).v1 = v1;
 
-  vertices[3].x  = x[1];
-  vertices[3].y  = y[1];
-  vertices[3].z  = 0;
-  vertices[3].u1 = u2;
-  vertices[3].v1 = v1;
+  vertices->at(3).x  = x[1];
+  vertices->at(3).y  = y[1];
+  vertices->at(3).z  = 0;
+  vertices->at(3).u1 = u2;
+  vertices->at(3).v1 = v1;
 
-  vertices[2].x  = x[2];
-  vertices[2].y  = y[2];
-  vertices[2].z  = 0;
-  vertices[2].u1 = u2;
-  vertices[2].v1 = v2;
+  vertices->at(2).x  = x[2];
+  vertices->at(2).y  = y[2];
+  vertices->at(2).z  = 0;
+  vertices->at(2).u1 = u2;
+  vertices->at(2).v1 = v2;
 
-  vertices[1].x  = x[3];
-  vertices[1].y  = y[3];
-  vertices[1].z  = 0;
-  vertices[1].u1 = u1;
-  vertices[1].v1 = v2;
+  vertices->at(1).x  = x[3];
+  vertices->at(1).y  = y[3];
+  vertices->at(1).z  = 0;
+  vertices->at(1).u1 = u1;
+  vertices->at(1).v1 = v2;
 
-  draw.SetTexture(pTexture);
-  draw.SetColor(color);
-  draw.AddVertices(&vertices[0],4);
+  CBatchDrawPtr draw = boost::shared_ptr<CBatchDraw> (new CBatchDraw);
+  draw->SetTexture(pTexture);
+  draw->SetColor(color);
+  draw->SetVertices(vertices);
   g_Windowing.GetSceneGraph()->Add(draw);
 }
