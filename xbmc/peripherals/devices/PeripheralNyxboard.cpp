@@ -23,7 +23,10 @@
 #include "guilib/Key.h"
 #include "utils/log.h"
 #include "Application.h"
+#include "addons/AddonManager.h"
+#include "addons/Peripheral.h"
 
+using namespace ADDON;
 using namespace PERIPHERALS;
 using namespace std;
 
@@ -31,6 +34,14 @@ CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralScanResult& scanResult)
   CPeripheralHID(scanResult)
 {
   m_features.push_back(FEATURE_NYXBOARD);
+  AddonPtr addon;
+  CAddonMgr::Get().GetAddon("peripheral.nyxboard", addon);
+  PeripheralPtr peripheral = boost::dynamic_pointer_cast<ADDON::CPeripheral>(addon);
+  if (peripheral)
+  {
+    peripheral->LoadKeymaps();
+    CButtonTranslator::GetInstance().AddPeripheral(peripheral);
+  }
 }
 
 bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode)
