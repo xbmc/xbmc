@@ -2015,12 +2015,32 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     int idSet = -1;
     if (!details.m_strSet.empty())
     {
-      idSet = AddSet(details.m_strSet);
-      // add art if not available
+	  idSet = AddSet(details.m_strSet);
       map<string, string> setArt;
-      if (!GetArtForItem(idSet, "set", setArt))
+
+	  if (GetArtForItem(idSet, "set", setArt))
+	  {
+		  for (map<string, string>::const_iterator i = details.m_setArt.begin(); i != details.m_setArt.end(); ++i)
+		  {
+			  if (!setArt[i->first].empty())
+			  {
+				  if (isMovieSetArtwork(details.m_strSet, i->first, i->second) && !isMovieSetArtwork(details.m_strSet, i->first, setArt[i->first]))
+				  {
+			  	     CLog::Log(LOGDEBUG, "VideoDatabase: Movie Set '%s' %s: Replaced %s with %s", details.m_strSet.c_str(), i->first.c_str(), setArt[i->first].c_str(), i->second.c_str());
+					 SetArtForItem(idSet, "set", i->first, i->second);
+				  }
+			  }
+			  else
+				SetArtForItem(idSet, "set", i->first, i->second);
+		  }
+	  }
+	  else if(!details.m_setArt.empty())
+	  {
+        SetArtForItem(idSet, "set", details.m_setArt);
+	  }
+	  else
         SetArtForItem(idSet, "set", artwork);
-    }
+	}
 
     // add tags...
     for (unsigned int i = 0; i < details.m_tags.size(); i++)
@@ -3687,6 +3707,18 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+}
+
+
+bool CVideoDatabase::isMovieSetArtwork(const string &setName, const string &mediaType, const string &mediaFile)
+{
+	CStdString setImage = URIUtils::GetFileName(mediaFile);
+	URIUtils::RemoveExtension(setImage);
+
+	if ((setImage == mediaType) || setImage == "set-" + mediaType || setImage == setName + "-" + mediaType)
+		return true;
+
+	return false;
 }
 
 void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const map<string, string> &art)
