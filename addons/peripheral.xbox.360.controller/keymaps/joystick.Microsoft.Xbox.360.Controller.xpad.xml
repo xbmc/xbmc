@@ -1,0 +1,301 @@
+<!-- This file contains the mappings for a Microsoft Xbox 360 Controller to actions within XBMC    -->
+<!-- The drivers for Linux and Windows do not always match. Mappings for Win32 will be presented   -->
+<!-- first, with Linux alts second.                                                                -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+
+<!-- The format of a mapping is:                                -->
+<!--    <device name="name">                                    -->
+<!--      <button id="x">action</button>                        -->
+<!--      <axis id="x" limit="y">action</axis>                  -->
+<!--      <hat id="1" position="left">action</hat>              -->
+<!--    </device>                                               -->
+
+<!-- Note that the action can be a built-in function.           -->
+<!-- eg <button id="x">XBMC.ActivateWindow(Home)</button>       -->
+<!-- would automatically go to Home on the press of button 'x'. -->
+
+<!-- Joystick Name: Xbox 360 Wireless Receiver                  -->
+
+<!-- Button Mappings in Windows:               -->
+<!--                                           -->
+<!-- ID              Button                    -->
+<!--                                           -->
+<!-- 1               A                         -->
+<!-- 2               B                         -->
+<!-- 3               X                         -->
+<!-- 4               Y                         -->
+<!-- 5               Left Sholder              -->
+<!-- 6               Right Sholder             -->
+<!-- 7               Back                      -->
+<!-- 8               Start                     -->
+<!-- 9               Left Stick Button         -->
+<!-- 10              Right Stick Button        -->
+<!-- 11              D-Pad Up                  -->
+<!-- 12              D-Pad Down                -->
+<!-- 13              D-Pad Left                -->
+<!-- 14              D-Pad Right               -->
+<!-- 15              Back                      -->
+
+<!-- Linux alterations for default Xpad Driver -->
+<!-- 9               Guide                     -->
+<!-- 10              Left Stick Button         -->
+<!-- 11              Right Stick Button        -->
+<!-- 12              D-Pad Left                -->
+<!-- 13              D-Pad Right               -->
+<!-- 14              D-Pad Up                  -->
+<!-- 15              D-Pad Down                -->
+<!-- Axis 6 +1/-1    Triggers - malfunctioning -->
+
+<!-- Axis Mappings:                   -->
+<!--                                  -->
+<!-- ID              Button           -->
+<!--                                  -->
+<!-- 1               Left Stick L/R   -->
+<!-- 2               Left Stick U/D   -->
+<!-- 3 limit +1      Left Trigger     -->
+<!-- 3 limit -1      Right Trigger    -->
+<!-- 4               Right Stick L/R  -->
+<!-- 5               Right Stick U/D  -->
+
+<!-- Hat Mappings for some drivers:   -->
+<!--                                  -->
+<!-- ID  Position    Button           -->
+<!--                                  -->
+<!-- 1   up          D-Pad Up         -->
+<!-- 1   down        D-Pad Down       -->
+<!-- 1   left        D-Pad Left       -->
+<!-- 1   right       D-Pad Right      -->
+
+
+<keymap device="joystick" name="xbox360-xpad">
+  <alias>Microsoft X-Box 360 pad</alias>
+  <alias>BigBen Interactive XBOX 360 Controller</alias>
+  <alias>Generic X-Box pad</alias>
+  <alias>Logitech Chillstream Controller</alias>
+  <alias>Mad Catz Wired Xbox 360 Controller</alias>
+  <alias>Mad Catz Wired Xbox 360 Controller (SFIV)</alias>
+  <alias>Pelican 'TSZ' Wired Xbox 360 Controller</alias>
+  <alias>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</alias>
+  <alias>Xbox 360 Wireless Receiver</alias>
+  <global>
+    <button id="1">Select</button>
+    <button id="2">Back</button>
+    <button id="3">ContextMenu</button>
+    <button id="4">FullScreen</button>
+    <button id="5">Queue</button>
+    <button id="6">Playlist</button>
+    <button id="7">PreviousMenu</button>
+    <button id="8">XBMC.ActivateWindow(Home)</button>
+    <button id="9">XBMC.ActivateWindow(Home)</button>
+    <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>
+    <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+    <button id="12">Left</button>
+    <button id="13">Right</button>
+    <button id="14">Up</button>
+    <button id="15">Down</button>
+    <axis id="1" limit="-1">AnalogSeekBack</axis>
+    <axis id="1" limit="+1">AnalogSeekForward</axis>
+    <axis id="2" limit="-1">AnalogSeekForward</axis>
+    <axis id="2" limit="+1">AnalogSeekBack</axis>
+    <axis id="4" limit="-1">VolumeDown</axis>
+    <axis id="4" limit="+1">VolumeUp</axis>
+    <axis id="5" limit="-1">VolumeUp</axis>
+    <axis id="5" limit="+1">VolumeDown</axis>
+    <axis id="6" limit="-1">ScrollUp</axis>
+    <axis id="6" limit="+1">ScrollDown</axis>
+    <hat id="1" position="up">Up</hat>
+    <hat id="1" position="down">Down</hat>
+    <hat id="1" position="left">Left</hat>
+    <hat id="1" position="right">Right</hat>
+  </global>
+  <Home>
+    <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+  </Home>
+  <MyFiles>
+    <button id="6">Highlight</button>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <button id="5">Delete</button>
+  </MyMusicPlaylist>
+  <FullscreenVideo>
+    <button id="1">Pause</button>
+    <button id="2">Stop</button>
+    <button id="3">OSD</button>
+    <button id="5">AspectRatio</button>
+    <button id="6">ShowSubtitles</button>
+    <button id="7">SmallStepBack</button>
+    <button id="8">Info</button>
+    <button id="9">XBMC.ActivateWindow(Home)</button>  <!-- guide -->
+    <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
+    <button id="11">AudioNextLanguage</button>  <!-- right stick -->
+    <button id="12">StepBack</button>
+    <button id="13">StepForward</button>
+    <button id="14">BigStepForward</button>
+    <button id="15">BigStepBack</button>
+    <axis id="6" limit="-1">AnalogRewind</axis>
+    <axis id="6" limit="+1">AnalogFastForward</axis>
+    <hat id="1" position="up">BigStepForward</hat>
+    <hat id="1" position="down">BigStepBack</hat>
+    <hat id="1" position="left">StepBack</hat>
+    <hat id="1" position="right">StepForward</hat>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <button id="12">PreviousChannelGroup</button>
+    <button id="13">NextChannelGroup</button>
+    <button id="14">ChannelUp</button>
+    <button id="15">ChannelDown</button>
+    <hat id="1" position="up">ChannelUp</hat>
+    <hat id="1" position="down">ChannelDown</hat>
+    <hat id="1" position="left">PreviousChannelGroup</hat>
+    <hat id="1" position="right">NextChannelGroup</hat>
+  </FullscreenLiveTV>
+  <FullscreenInfo>
+    <button id="2">Close</button>
+    <button id="3">OSD</button>
+    <button id="8">Close</button>
+    <axis id="6" limit="+1">AnalogRewind</axis>
+    <axis id="6" limit="-1">AnalogFastForward</axis>
+  </FullscreenInfo>
+  <PlayerControls>
+    <button id="3">Close</button>
+    <button id="10">Close</button>
+    <button id="11">Close</button>
+  </PlayerControls>
+  <Visualisation>
+    <button id="1">Pause</button>
+    <button id="2">Stop</button>
+    <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
+    <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+    <button id="6">Info</button>
+    <button id="11">XBMC.ActivateWindow(MusicOSD)</button>
+    <button id="12">PreviousPreset</button>
+    <button id="13">NextPreset</button>
+    <button id="14">SkipPrevious</button>
+    <button id="15">SkipNext</button>
+    <axis id="6" limit="-1">AnalogRewind</axis>
+    <axis id="6" limit="+1">AnalogFastForward</axis>
+    <hat id="1" position="up">SkipNext</hat>
+    <hat id="1" position="down">SkipPrevious</hat>
+    <hat id="1" position="left">PreviousPreset</hat>
+    <hat id="1" position="right">NextPreset</hat>
+  </Visualisation>
+  <MusicOSD>
+    <button id="3">Close</button>
+    <button id="6">Info</button>
+  </MusicOSD>
+  <VisualisationSettings>
+    <button id="2">Close</button>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <button id="2">Close</button>
+  </VisualisationPresetList>
+  <SlideShow>
+    <button id="1">Pause</button>
+    <button id="2">Stop</button>
+    <button id="4">ZoomNormal</button>
+    <button id="5">Rotate</button>
+    <button id="6">CodecInfo</button>
+    <button id="12">PreviousPicture</button>
+    <button id="13">NextPicture</button>
+    <button id="14">ZoomIn</button>
+    <button id="15">ZoomOut</button>
+    <axis id="1">AnalogMove</axis>
+    <axis id="2">AnalogMove</axis>
+    <axis id="6" limit="+1">ZoomOut</axis>
+    <axis id="6" limit="-1">ZoomIn</axis>
+    <hat id="1" position="up">ZoomIn</hat>
+    <hat id="1" position="down">ZoomOut</hat>
+    <hat id="1" position="left">PreviousPicture</hat>
+    <hat id="1" position="right">NextPicture</hat>
+  </SlideShow>
+  <ScreenCalibration>
+    <button id="3">ResetCalibration</button>
+    <button id="5">NextResolution</button>
+    <button id="6">NextCalibration</button>
+  </ScreenCalibration>
+  <GUICalibration>
+    <button id="3">ResetCalibration</button>
+    <button id="5">NextResolution</button>
+    <button id="6">NextCalibration</button>
+  </GUICalibration>
+  <VideoOSD>
+    <button id="3">Close</button>
+  </VideoOSD>
+  <VideoMenu>
+    <button id="2">Stop</button>
+    <button id="3">OSD</button>
+    <button id="5">AspectRatio</button>
+    <button id="8">Info</button>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <button id="5">AspectRatio</button>
+    <button id="3">Close</button>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <button id="5">AspectRatio</button>
+    <button id="3">Close</button>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <button id="5">Delete</button>
+  </VideoBookmarks>
+  <MyVideoPlaylist>
+    <button id="5">Delete</button>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <button id="2">BackSpace</button>
+    <button id="4">Symbols</button>
+    <button id="5">Shift</button>
+    <button id="10">Enter</button>
+    <axis id="6" limit="+1">CursorLeft</axis>
+    <axis id="6" limit="-1">CursorRight</axis>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <button id="2">Close</button>
+    <button id="3">Close</button>
+  </ContextMenu>
+  <Scripts>
+    <button id="3">Info</button>
+  </Scripts>
+  <Settings>
+    <button id="2">PreviousMenu</button>
+  </Settings>
+  <AddonInformation>
+    <button id="2">Close</button>
+  </AddonInformation>
+  <AddonSettings>
+    <button id="2">Close</button>
+  </AddonSettings>
+  <TextViewer>
+    <button id="2">Close</button>
+  </TextViewer>
+  <shutdownmenu>
+    <button id="2">PreviousMenu</button>
+    <button id="10">PreviousMenu</button>
+  </shutdownmenu>
+  <submenu>
+    <button id="2">PreviousMenu</button>
+  </submenu>
+  <MusicInformation>
+    <button id="2">Close</button>
+  </MusicInformation>
+  <MovieInformation>
+    <button id="2">Close</button>
+  </MovieInformation>
+  <NumericInput>
+    <button id="2">BackSpace</button>
+    <button id="10">Enter</button>
+  </NumericInput>
+  <GamepadInput>
+    <button id="11">Stop</button>
+  </GamepadInput>
+  <LockSettings>
+    <button id="2">PreviousMenu</button>
+    <button id="11">Close</button>
+  </LockSettings>
+  <ProfileSettings>
+    <button id="2">PreviousMenu</button>
+    <button id="11">Close</button>
+  </ProfileSettings>
+</keymap>
