@@ -295,7 +295,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
       audioframe.pts  = m_audioClock;
 
-      if (audioframe.size <= 0)
+      if (audioframe.size == 0)
         continue;
 
       audioframe.channel_layout        = m_pAudioCodec->GetChannelMap();

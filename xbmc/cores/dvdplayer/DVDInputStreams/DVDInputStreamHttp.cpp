@@ -97,7 +97,7 @@ int CDVDInputStreamHttp::Read(uint8_t* buf, int buf_size)
   if (m_pFile) ret = m_pFile->Read(buf, buf_size);
   else return -1;
 
-  if( ret <= 0 ) m_eof = true;
+  if( ret == 0 ) m_eof = true;
 
   return (int)(ret & 0xFFFFFFFF);
 }

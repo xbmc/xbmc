@@ -178,7 +178,7 @@ int CDVDInputStreamPVRManager::Read(uint8_t* buf, int buf_size)
     unsigned int ret = m_pFile->Read(buf, buf_size);
 
     /* we currently don't support non completing reads */
-    if( ret <= 0 ) m_eof = true;
+    if( ret == 0 ) m_eof = true;
 
     return (int)(ret & 0xFFFFFFFF);
   }
