@@ -262,8 +262,6 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   image->bpp      = 1;
 
   return source;
-
-  return -1;
 }
 
 void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)

@@ -362,8 +362,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   image->bpp      = im.bpp;
 
   return source;
-
-  return -1;
 }
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
