@@ -29,6 +29,7 @@
 
 CPulseAESound::CPulseAESound(const std::string &filename, pa_context *context, pa_threaded_mainloop *mainLoop) :
   IAESound         (filename),
+  m_pulseName      (StringUtils::CreateUUID()),
   m_filename       (filename),
   m_dataSent       (0       ),
   m_context        (context ),
@@ -36,8 +37,7 @@ CPulseAESound::CPulseAESound(const std::string &filename, pa_context *context, p
   m_stream         (NULL    ),
   m_op             (NULL    ),
   m_maxVolume      (0.0f    ),
-  m_volume         (0.0f    ),
-  m_pulseName      (StringUtils::CreateUUID())
+  m_volume         (0.0f    )  
 {
   m_wavLoader.Load(filename);
 }
