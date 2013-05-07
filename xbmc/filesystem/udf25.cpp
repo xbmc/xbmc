@@ -360,23 +360,6 @@ static int UDFDescriptor( uint8_t *data, uint16_t *TagID )
   return 0;
 }
 
-/**
- * initialize and open a DVD device or file.
- */
-static CFile* file_open(const char *target)
-{
-  CFile* fp = new CFile();
-
-  if(!fp->Open(target))
-  {
-    CLog::Log(LOGERROR,"file_open - Could not open input");
-    delete fp;
-    return NULL;
-  }
-
-  return fp;
-}
-
 int udf25::UDFScanDirX( udf_dir_t *dirp )
 {
   char filename[ MAX_UDF_FILE_NAME_LEN ];
@@ -843,10 +826,6 @@ int udf25::UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partit
 
   return 0;
 }
-void udf25::UDFFreeFile(UDF_FILE file)
-{
-  free(file);
-}
 
 int udf25::UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *partition, struct AD *FileICB, int cache_file_info)
 {
@@ -967,8 +946,8 @@ udf25::udf25( )
 
 udf25::~udf25( )
 {
-  if(m_fp)
-    m_fp->Close();
+  delete m_fp;
+  free(m_udfcache);
 }
 
 UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
@@ -1080,31 +1059,38 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   return result;
 }
 
-HANDLE udf25::OpenFile( const char* isoname, const char* filename )
+bool udf25::Open(const char *isofile)
+{
+  m_fp = new CFile();
+
+  if(!m_fp->Open(isofile))
+  {
+    CLog::Log(LOGERROR,"file_open - Could not open input");
+    delete m_fp;
+    m_fp = NULL;
+    return false;
+  }
+  return true;
+}
+
+HANDLE udf25::OpenFile( const char* filename )
 {
   uint64_t filesize;
   UDF_FILE file = NULL;
   BD_FILE bdfile = NULL;
 
-  m_fp = file_open(isoname);
-  if(m_fp)
-  {
-    file = UDFFindFile(filename, &filesize);
-    if(file)
-    {
-      bdfile = (BD_FILE)malloc(sizeof(*bdfile));
-      memset(bdfile, 0, sizeof(*bdfile));
+  if(!m_fp)
+    return INVALID_HANDLE_VALUE;
 
-      bdfile->file = file;
-      bdfile->filesize = filesize;
-    }
-    else
-    {
-      CloseFile(NULL);
-    }
-  }
+  file = UDFFindFile(filename, &filesize);
+  if(!file)
+    return INVALID_HANDLE_VALUE;
 
-  return bdfile ? (HANDLE)bdfile : INVALID_HANDLE_VALUE;
+  bdfile = (BD_FILE)calloc(1, sizeof(*bdfile));
+
+  bdfile->file     = file;
+  bdfile->filesize = filesize;
+  return (HANDLE)bdfile;
 }
 
 
@@ -1155,21 +1141,14 @@ long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
 
 void udf25::CloseFile(HANDLE hFile)
 {
+  if(hFile == INVALID_HANDLE_VALUE)
+    return;
+
   BD_FILE bdfile = (BD_FILE)hFile;
   if(bdfile)
   {
     free(bdfile->file);
     free(bdfile);
-  }
-
-  free(m_udfcache);
-  m_udfcache = NULL;
-
-  if(m_fp)
-  {
-    m_fp->Close();
-    delete(m_fp);
-    m_fp = NULL;
   }
 }
 
@@ -1227,31 +1206,26 @@ int64_t udf25::GetFilePosition(HANDLE hFile)
   return bdfile->seek_pos;
 }
 
-udf_dir_t *udf25::OpenDir(  const char *isofile, const char *subdir )
+udf_dir_t *udf25::OpenDir( const char *subdir )
 {
   udf_dir_t *result;
   BD_FILE bd_file;
 
-  bd_file = (BD_FILE)OpenFile(isofile, subdir);
+  bd_file = (BD_FILE)OpenFile(subdir);
 
   if (bd_file == (BD_FILE)INVALID_HANDLE_VALUE)
-  {
     return NULL;
-  }
-  result = (udf_dir_t *)malloc(sizeof(*result));
-  if (!result) {
-    UDFFreeFile(bd_file->file);
-    free(bd_file);
-    return NULL;
-  }
 
-  memset(result, 0, sizeof(*result));
+  result = (udf_dir_t *)calloc(1, sizeof(udf_dir_t));
+  if (!result) {
+    CloseFile((HANDLE)bd_file);
+    return NULL;
+  }
 
   result->dir_location = UDFFileBlockPos(bd_file->file, 0);
   result->dir_current  = UDFFileBlockPos(bd_file->file, 0);
   result->dir_length   = (uint32_t) bd_file->filesize;
-  UDFFreeFile(bd_file->file);
-  free(bd_file);
+  CloseFile((HANDLE)bd_file);
 
   return result;
 }

@@ -183,11 +183,12 @@ public:
   int64_t GetFileSize(HANDLE hFile);
   int64_t GetFilePosition(HANDLE hFile);
   int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);
-  HANDLE OpenFile(  const char *isofile, const char* filename );
+  bool   Open(const char *isofile);
+  HANDLE OpenFile( const char* filename );
   long ReadFile(HANDLE fd, unsigned char *pBuffer, long lSize);
   void CloseFile(HANDLE hFile);
 
-  udf_dir_t *OpenDir( const char *isofile, const char *subdir );
+  udf_dir_t *OpenDir( const char *subdir );
   udf_dirent_t *ReadDir( udf_dir_t *dirp );
   int CloseDir( udf_dir_t *dirp );
 
@@ -198,7 +199,6 @@ public:
 private:
   UDF_FILE UDFFindFile( const char* filename, uint64_t *filesize );
   int UDFScanDirX( udf_dir_t *dirp );
-  void UDFFreeFile(UDF_FILE file);
   int DVDUDFCacheLevel(int level);
   void* GetUDFCacheHandle();
   void SetUDFCacheHandle(void *cache);
