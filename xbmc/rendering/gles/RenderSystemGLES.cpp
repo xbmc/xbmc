@@ -744,7 +744,7 @@ void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const 
     tex1Loc = GUIShaderGetCoord1();
     uniColLoc = GUIShaderGetUniCol();
 
-    glUniform4f(uniColLoc, ((float)r / 255.0), ((float)g / 255.0), ((float)b / 255.0), ((float)a / 255.0));
+    glUniform4f(uniColLoc, (r / 255.0f), (g / 255.0f), (b / 255.0f), (a / 255.0f));
 
     if (diffuseTexture)
     {
