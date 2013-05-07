@@ -73,23 +73,15 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   // get the <level> or <levels> tag
   int level = -1;
   const TiXmlNode *levels;
-  if (XMLUtils::GetInt(node, XML_ELM_LEVEL, level))
+  m_level.SetLevel(SETTINGS_LEVEL_DEFAULT);
+  if (XMLUtils::GetInt(node, XML_ELM_LEVEL, level) && SettingLevelBasic <= level && level <= SettingLevelInternal)
   {
-    if (level < SettingLevelBasic || level > SettingLevelInternal)
-      level = SETTINGS_LEVEL_DEFAULT;
     m_level.SetLevel((SettingLevel)level);
   }
   else if ((levels = node->FirstChild(XML_ELM_LEVELS)) != NULL)
   {
     if (!m_level.Deserialize(levels, m_settingsManager))
-    {
       CLog::Log(LOGWARNING, "CSetting: error reading <%s> tag of \"%s\"", XML_ELM_LEVELS, m_id.c_str());
-      m_level.SetLevel(SETTINGS_LEVEL_DEFAULT);
-    }
-  }
-  else
-  {
-    m_level.SetLevel(SETTINGS_LEVEL_DEFAULT);
   }
 
   const TiXmlElement *control = node->FirstChildElement("control");
