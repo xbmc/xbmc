@@ -65,7 +65,8 @@ bool CLevelCondition::Deserialize(const TiXmlNode *node)
 
   // get the level this condition is intended for
   int level = -1;
-  if (element->QueryIntAttribute(XML_ATTR_VALUE, &level) != TIXML_SUCCESS || !(0 <= level && level <= SettingLevelInternal))
+  if (element->QueryIntAttribute(XML_ATTR_VALUE, &level) != TIXML_SUCCESS ||
+        level < SettingLevelBasic || level > SettingLevelInternal)
     return false;
 
   if (!CSettingCondition::Deserialize(node))
