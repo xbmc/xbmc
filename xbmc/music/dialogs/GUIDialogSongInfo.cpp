@@ -260,8 +260,8 @@ void CGUIDialogSongInfo::OnGetThumb()
 
 
   // Grab the thumbnail from the web
-  CStdString thumbFromWeb;
   /*
+  CStdString thumbFromWeb;
   URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg", thumbFromWeb);
   if (DownloadThumbnail(thumbFromWeb))
   {
@@ -322,7 +322,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   if (result == "thumb://None")
     newThumb = "-";
   else if (result == "thumb://allmusic.com")
-    newThumb = thumbFromWeb;
+    newThumb.clear();
   else if (result == "thumb://Local")
     newThumb = localThumb;
   else
