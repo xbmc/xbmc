@@ -33,6 +33,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #include "guilib/Texture.h"
+#include "rendering/SceneGraph.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {

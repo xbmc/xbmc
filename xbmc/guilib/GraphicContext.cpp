@@ -34,6 +34,7 @@
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/IPlayer.h"
+#include "rendering/SceneGraph.h"
 
 using namespace std;
 

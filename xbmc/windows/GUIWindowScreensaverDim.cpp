@@ -23,6 +23,7 @@
 #include "guilib/GUITexture.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
+#include "rendering/SceneGraph.h"
 #include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)

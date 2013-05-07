@@ -34,6 +34,7 @@
 #include "settings/DisplaySettings.h"
 #include "video/FFmpegVideoDecoder.h"
 #include "system.h"
+#include "rendering/SceneGraph.h"
 
 KaraokeVideoBackground::KaraokeVideoBackground()
 {

@@ -27,6 +27,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "cores/IPlayer.h"
 #include "settings/Settings.h"
+#include "rendering/SceneGraph.h"
 
 using namespace std;
 

@@ -28,7 +28,6 @@
 #include "guilib/DirtyRegion.h"
 #include "utils/StdString.h"
 #include <stdint.h>
-#include "SceneGraph.h"
 
 class CSceneGraph;
 typedef enum _RenderingSystemType

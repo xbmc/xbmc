@@ -25,6 +25,7 @@
 #include "utils/MathUtils.h"
 #include "Texture.h"
 #include "guilib/GUIWindowManager.h"
+#include "rendering/SceneGraph.h"
 
 using namespace std;
 

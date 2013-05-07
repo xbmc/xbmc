@@ -28,6 +28,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "karaokelyricscdg.h"
+#include "rendering/SceneGraph.h"
 
 
 CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )

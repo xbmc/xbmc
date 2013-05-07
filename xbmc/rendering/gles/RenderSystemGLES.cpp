@@ -34,6 +34,7 @@
 #include "utils/MathUtils.h"
 #include "guilib/Texture.h"
 #include "threads/Thread.h"
+#include "rendering/SceneGraph.h"
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
      "guishader_frag_texture.glsl",
