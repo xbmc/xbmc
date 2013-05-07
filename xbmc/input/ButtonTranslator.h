@@ -40,6 +40,11 @@ struct CButtonAction
 {
   int id;
   CStdString strID; // needed for "XBMC.ActivateWindow()" type actions
+
+  bool operator !=(const CButtonAction& two)
+  {
+    return id != two.id || strID != two.strID;
+  }
 };
 ///
 /// singleton class to map from buttons to actions
