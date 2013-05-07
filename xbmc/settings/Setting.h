@@ -28,6 +28,7 @@
 #include "ISettingCallback.h"
 #include "SettingControl.h"
 #include "SettingDependency.h"
+#include "SettingLevel.h"
 #include "SettingUpdate.h"
 #include "threads/CriticalSection.h"
 
@@ -39,14 +40,6 @@ typedef enum {
   SettingTypeString,
   SettingTypeAction
 } SettingType;
-
-typedef enum {
-  SettingLevelBasic  = 0,
-  SettingLevelStandard,
-  SettingLevelAdvanced,
-  SettingLevelExpert,
-  SettingLevelInternal
-} SettingLevel;
 
 typedef std::pair<int, int> SettingOption;
 typedef std::vector<SettingOption> SettingOptions;
@@ -70,7 +63,7 @@ public:
 
   int GetLabel() const { return m_label; }
   int GetHelp() const { return m_help; }
-  SettingLevel GetLevel() const { return m_level; }
+  SettingLevel GetLevel() const { return m_level.GetLevel(); }
   const CSettingControl& GetControl() const { return m_control; }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
@@ -88,7 +81,7 @@ protected:
   ISettingCallback *m_callback;
   int m_label;
   int m_help;
-  SettingLevel m_level;
+  CSettingLevel m_level;
   CSettingControl m_control;
   SettingDependencies m_dependencies;
   std::set<CSettingUpdate> m_updates;

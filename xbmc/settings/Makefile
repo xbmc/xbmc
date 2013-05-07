@@ -9,6 +9,7 @@ SRCS=AdvancedSettings.cpp \
      SettingConditions.cpp \
      SettingControl.cpp \
      SettingDependency.cpp \
+     SettingLevel.cpp \
      SettingPath.cpp \
      SettingSection.cpp \
      Settings.cpp \

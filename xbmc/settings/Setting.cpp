@@ -27,7 +27,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
-#define XML_ELM_LEVEL       "level"
 #define XML_ELM_DEFAULT     "default"
 #define XML_ELM_VALUE       "value"
 
@@ -41,7 +40,7 @@ CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* =
   : ISetting(id, settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
-    m_level(SettingLevelStandard),
+    m_level(settingsManager),
     m_changed(false)
 { }
   
@@ -49,7 +48,7 @@ CSetting::CSetting(const std::string &id, const CSetting &setting)
   : ISetting(id, setting.m_settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
-    m_level(SettingLevelStandard),
+    m_level(setting.m_settingsManager),
     m_changed(false)
 {
   m_id = id;
@@ -73,13 +72,19 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (element->QueryIntAttribute(XML_ATTR_HELP, &m_help) == TIXML_SUCCESS && tmp > 0)
     m_help = tmp;
 
-  // get the <level>
+  // get the <level> or <levels> tag
   int level = -1;
-  if (XMLUtils::GetInt(node, XML_ELM_LEVEL, level))
-    m_level = (SettingLevel)level;
-    
-  if (m_level < (int)SettingLevelBasic || m_level > (int)SettingLevelInternal)
-    m_level = SettingLevelStandard;
+  const TiXmlNode *levels;
+  m_level.SetLevel(SETTINGS_LEVEL_DEFAULT);
+  if (XMLUtils::GetInt(node, XML_ELM_LEVEL, level) && SettingLevelBasic <= level && level <= SettingLevelInternal)
+  {
+    m_level.SetLevel((SettingLevel)level);
+  }
+  else if ((levels = node->FirstChild(XML_ELM_LEVELS)) != NULL)
+  {
+    if (!m_level.Deserialize(levels))
+      CLog::Log(LOGWARNING, "CSetting: error reading <%s> tag of \"%s\"", XML_ELM_LEVELS, m_id.c_str());
+  }
 
   const TiXmlElement *control = node->FirstChildElement("control");
   if (control != NULL)
