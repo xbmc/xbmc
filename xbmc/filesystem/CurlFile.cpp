@@ -476,7 +476,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // Enable cookie engine for current handle to re-use them in future requests
   CStdString strCookieFile;
   CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
-  URIUtils::AddFileToFolder(strTempPath, "cookies.dat", strCookieFile);
+  strCookieFile = URIUtils::AddFileToFolder(strTempPath, "cookies.dat");
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());

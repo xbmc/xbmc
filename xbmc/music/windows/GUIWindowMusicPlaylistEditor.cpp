@@ -396,9 +396,8 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
-    CStdString path, strBase;
-    URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music", strBase);
-    URIUtils::AddFileToFolder(strBase, name + ".m3u", path);
+    CStdString strBase = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    CStdString path = URIUtils::AddFileToFolder(strBase, name + ".m3u");
     playlist.Save(path);
     m_strLoadedPlaylist = name;
   }

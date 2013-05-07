@@ -8290,8 +8290,7 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   {
     // create a folder in this directory
     CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle);
-    CStdString TVFolder;
-    URIUtils::AddFileToFolder(showPath, showName, TVFolder);
+    CStdString TVFolder = URIUtils::AddFileToFolder(showPath, showName);
     if (CDirectory::Create(TVFolder))
     { // right - grab the episodes and dump them as well
       CFileItemList episodes;
@@ -8303,8 +8302,7 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
         CStdString episode;
         episode.Format("%s.s%02de%02d.avi", showName.c_str(), tag->m_iSeason, tag->m_iEpisode);
         // and make a file
-        CStdString episodePath;
-        URIUtils::AddFileToFolder(TVFolder, episode, episodePath);
+        CStdString episodePath = URIUtils::AddFileToFolder(TVFolder, episode);
         CFile file;
         if (file.OpenForWrite(episodePath))
           file.Close();
@@ -8655,8 +8653,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         }
         else
         {
-          CStdString nfoFile;
-          URIUtils::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
+          CStdString nfoFile = URIUtils::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo");
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -9088,7 +9085,7 @@ void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPat
       URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
     strDest = strFileName;
   else
-    URIUtils::AddFileToFolder(strPath, strFileName, strDest);
+    strDest = URIUtils::AddFileToFolder(strPath, strFileName);
 }
 
 void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)

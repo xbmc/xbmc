@@ -512,9 +512,8 @@ namespace XBMCAddon
     {
       TRACE;
       // Path where the language strings reside
-      CStdString pathToLanguageFile = m_scriptPath;
-      URIUtils::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-      URIUtils::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+      CStdString pathToLanguageFile = URIUtils::AddFileToFolder(m_scriptPath, "resources");
+      pathToLanguageFile = URIUtils::AddFileToFolder(pathToLanguageFile, "language");
       URIUtils::AddSlashAtEnd(pathToLanguageFile);
 
       // allocate a bunch of strings

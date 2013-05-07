@@ -275,12 +275,12 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
 
         if ( retVal == 1 )
         {
-          URIUtils::AddFileToFolder(path, "karaoke.html", path);
+          path = URIUtils::AddFileToFolder(path, "karaoke.html");
           musicdatabase.ExportKaraokeInfo( path, true );
         }
         else
         {
-          URIUtils::AddFileToFolder(path, "karaoke.csv", path);
+          path = URIUtils::AddFileToFolder(path, "karaoke.csv");
           musicdatabase.ExportKaraokeInfo( path, false );
         }
         musicdatabase.Close();
