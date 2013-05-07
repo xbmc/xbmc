@@ -30,9 +30,12 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
-#include "rendering/BatchDraw.h"
+#include <boost/shared_ptr.hpp>
 
 typedef uint32_t color_t;
+class PackedVertex;
+typedef class std::vector<PackedVertex> PackedVertices;
+typedef class boost::shared_ptr<PackedVertices> PackedVerticesPtr;
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
