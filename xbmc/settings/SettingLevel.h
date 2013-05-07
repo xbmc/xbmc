@@ -80,10 +80,10 @@ private:
 class CSettingLevel
 {
 public:
-  CSettingLevel();
+  CSettingLevel(CSettingsManager *settingsManager = NULL);
   virtual ~CSettingLevel() { }
 
-  virtual bool Deserialize(const TiXmlNode *node, CSettingsManager *settingsManager = NULL);
+  virtual bool Deserialize(const TiXmlNode *node);
 
   /**
    * Alternative, simplified deserialization method, where only a default level
@@ -101,4 +101,5 @@ public:
 private:
   SettingLevel m_default;
   std::vector<CLevelCondition> m_levelConditions;
+  CSettingsManager *m_settingsManager;
 };

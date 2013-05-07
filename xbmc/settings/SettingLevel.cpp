@@ -75,11 +75,11 @@ bool CLevelCondition::Deserialize(const TiXmlNode *node)
   return true;
 }
 
-CSettingLevel::CSettingLevel()
-  : m_default(SETTINGS_LEVEL_DEFAULT)
+CSettingLevel::CSettingLevel(CSettingsManager *settingsManager /* = NULL */)
+  : m_default(SETTINGS_LEVEL_DEFAULT), m_settingsManager(settingsManager)
 { }
 
-bool CSettingLevel::Deserialize(const TiXmlNode *node, CSettingsManager *settingsManager /* = NULL */)
+bool CSettingLevel::Deserialize(const TiXmlNode *node)
 {
   if (node == NULL)
     return false;
@@ -98,7 +98,7 @@ bool CSettingLevel::Deserialize(const TiXmlNode *node, CSettingsManager *setting
   const TiXmlElement *level = node->FirstChildElement(XML_ELM_LEVEL);
   while (level != NULL)
   {
-    CLevelCondition levelCondition(settingsManager);
+    CLevelCondition levelCondition(m_settingsManager);
     if (!levelCondition.Deserialize(level))
       return false;
     vec_lvl.push_back(levelCondition);

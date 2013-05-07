@@ -40,6 +40,7 @@ CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* =
   : ISetting(id, settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
+    m_level(settingsManager),
     m_changed(false)
 { }
   
@@ -47,6 +48,7 @@ CSetting::CSetting(const std::string &id, const CSetting &setting)
   : ISetting(id, setting.m_settingsManager),
     m_callback(NULL),
     m_label(-1), m_help(-1),
+    m_level(setting.m_settingsManager),
     m_changed(false)
 {
   m_id = id;
@@ -80,7 +82,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   }
   else if ((levels = node->FirstChild(XML_ELM_LEVELS)) != NULL)
   {
-    if (!m_level.Deserialize(levels, m_settingsManager))
+    if (!m_level.Deserialize(levels))
       CLog::Log(LOGWARNING, "CSetting: error reading <%s> tag of \"%s\"", XML_ELM_LEVELS, m_id.c_str());
   }
 
