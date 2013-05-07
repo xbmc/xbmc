@@ -79,13 +79,6 @@ protected:
    */
   virtual void OnClick(BaseSettingControlPtr pSettingControl);
 
-  /* TODO
-  void OnRefreshRateChanged(RESOLUTION resolution);
-  
-  void FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange);
-  void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);
-  */
-
   CSettingSection* GetSection(int windowID) const;
   BaseSettingControlPtr GetSettingControl(const std::string &setting);
   BaseSettingControlPtr GetSettingControl(int controlId);
