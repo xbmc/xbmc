@@ -85,7 +85,11 @@ specifies where the resulting toolchain should be installed (your choice).
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain>/android-14 --platform=android-14
+     --install-dir=<android-toolchain>/android-14 --platform=android-14 \
+     --toolchain=arm-linux-androideabi-4.7
+
+Make sure to pick a toolchain for your desired architecture. Currently only
+gcc 4.7 toolchains are supported, anything else will likely fail to build.
 
 ATTENTION FOR X86 BUILDS - THIS DOES NOT APPLY TO 99% OF BUILDS:
 If you want to build for the x86 platform there is a flaw in the mentioned
