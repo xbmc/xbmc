@@ -27,7 +27,7 @@
  *
  */
 
-#include "rendering/SceneGraph.h"
+#include <boost/shared_ptr.hpp>
 #include <map>
 
 // forward definition
@@ -44,6 +44,9 @@ typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
 typedef struct FT_StrokerRec_ *FT_Stroker;
+
+class PackedVertex;
+typedef class boost::shared_ptr<std::vector<PackedVertex> > PackedVerticesPtr;
 
 typedef uint32_t character_t;
 typedef uint32_t color_t;

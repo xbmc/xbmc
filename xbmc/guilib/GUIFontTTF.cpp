@@ -31,6 +31,7 @@
 #include <math.h>
 #include "windowing/WindowingFactory.h"
 #include "guilib/GUIWindowManager.h"
+#include "rendering/SceneGraph.h"
 
 // stuff for freetype
 #include <ft2build.h>
