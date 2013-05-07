@@ -326,7 +326,7 @@ void CAESinkDirectSound::Deinitialize()
   m_dwBufferLen = 0;
 }
 
-bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CAESinkDirectSound::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   if (!m_initialized || m_isDirtyDS)
     return false;

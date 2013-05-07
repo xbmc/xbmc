@@ -170,7 +170,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
     _aligned_free(m_alignedS16), m_alignedS16 = NULL;
 }
 
-bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   return ((m_format.m_sampleRate    == format.m_sampleRate) &&
           (m_format.m_dataFormat    == format.m_dataFormat) &&
