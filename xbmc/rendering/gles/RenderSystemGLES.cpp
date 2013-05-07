@@ -825,7 +825,10 @@ void CRenderSystemGLES::DestroyTextureObject(TextureObject texture)
   if(!m_bRenderCreated)
     return;
   if (texture)
+  {
     glDeleteTextures(1, (GLuint*) texture);
+    delete (GLuint*)texture;
+  }
 }
 
 bool CRenderSystemGLES::LoadToGPU(TextureObject texture, unsigned int width, unsigned int height, unsigned int pitch, unsigned int rows, unsigned int format, const unsigned char *pixels)

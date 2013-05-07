@@ -800,7 +800,10 @@ void CRenderSystemGL::DestroyTextureObject(TextureObject texture)
   if(!m_bRenderCreated)
     return;
   if (texture)
+  {
     glDeleteTextures(1, (GLuint*) texture);
+    delete texture;
+  }
 }
 
 
