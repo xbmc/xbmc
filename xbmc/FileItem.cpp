@@ -2321,13 +2321,13 @@ void CFileItemList::StackFolders()
         {
           CStdString path;
           CStdString dvdPath;
-          URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO", path);
+          path = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO");
           if (CFile::Exists(path))
             dvdPath = path;
           else
           {
-            URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS", dvdPath);
-            URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
+            dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS");
+            path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
             dvdPath.Empty();
             if (CFile::Exists(path))
               dvdPath = path;
@@ -2335,13 +2335,13 @@ void CFileItemList::StackFolders()
 #ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv", path);
+            path = URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv");
             if (CFile::Exists(path))
               dvdPath = path;
             else
             {
-              URIUtils::AddFileToFolder(item->GetPath(), "BDMV", dvdPath);
-              URIUtils::AddFileToFolder(dvdPath, "index.bdmv", path);
+              dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "BDMV");
+              path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
               dvdPath.Empty();
               if (CFile::Exists(path))
                 dvdPath = path;
@@ -2685,11 +2685,11 @@ CStdString CFileItem::GetTBNFile() const
     URIUtils::GetParentPath(m_strPath,strPath);
     CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
     CStdString strTBNFile = item.GetTBNFile();
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strReturn);
+    strReturn = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
     if (CFile::Exists(strReturn))
       return strReturn;
 
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
@@ -2697,7 +2697,7 @@ CStdString CFileItem::GetTBNFile() const
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
 
   CURL url(strFile);
@@ -2766,7 +2766,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     */
     CStdString strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
@@ -2774,7 +2774,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(strFile),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
   }
 
   if (IsMultiPath())
@@ -2808,7 +2808,6 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
 
 CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jpg" */) const
 {
-  CStdString folderThumb;
   CStdString strFolder = m_strPath;
 
   if (IsStack() ||
@@ -2821,8 +2820,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  URIUtils::AddFileToFolder(strFolder, folderJPG, folderThumb);
-  return folderThumb;
+  return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
 CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
@@ -2895,17 +2893,17 @@ CStdString CFileItem::GetLocalFanart() const
     CStackDirectory dir;
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
     CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strFile2);
+    strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
 
   // no local fanart available for these
@@ -3151,17 +3149,17 @@ CStdString CFileItem::FindTrailer() const
     CStackDirectory dir;
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
     CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strFile2);
+    strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath));
   }
 
   // no local trailer available for these

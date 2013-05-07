@@ -1187,8 +1187,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       bool local=false;
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
-        CStdString strThumb;
-        URIUtils::AddFileToFolder(artistPath,"folder.jpg",strThumb);
+        CStdString strThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
         if (XFILE::CFile::Exists(strThumb))
         {
           CFileItemPtr pItem(new CFileItem(strThumb,false));
@@ -1204,8 +1203,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
       {
         CStdString picturePath;
-        CStdString strThumb;
-        URIUtils::AddFileToFolder(picturePath,"folder.jpg",strThumb);
+        CStdString strThumb = URIUtils::AddFileToFolder(picturePath, "folder.jpg");
         if (XFILE::CFile::Exists(strThumb))
         {
           CFileItemPtr pItem(new CFileItem(strThumb,false));

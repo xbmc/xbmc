@@ -564,8 +564,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 #else
 #define REMOTEMAP "IRSSmap.xml"
 #endif
-  CStdString lircmapPath;
-  URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  CStdString lircmapPath = URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP);
   lircRemotesMap.clear();
   if(CFile::Exists(lircmapPath))
     success |= LoadLircMap(lircmapPath);

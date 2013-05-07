@@ -1152,8 +1152,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
   }
 
   // handle nfo files
-  CStdString strNfo;
-  URIUtils::AddFileToFolder(album.strPath, "album.nfo", strNfo);
+  CStdString strNfo = URIUtils::AddFileToFolder(album.strPath, "album.nfo");
   CNfoFile::NFOResult result = CNfoFile::NO_NFO;
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
@@ -1366,8 +1365,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
   }
 
   // handle nfo files
-  CStdString strNfo;
-  URIUtils::AddFileToFolder(artist.strPath, "artist.nfo", strNfo);
+  CStdString strNfo = URIUtils::AddFileToFolder(artist.strPath, "artist.nfo");
   CNfoFile::NFOResult result=CNfoFile::NO_NFO;
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))

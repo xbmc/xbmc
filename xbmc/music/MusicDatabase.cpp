@@ -949,7 +949,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 
   // Get filename with full path
   if (!bWithMusicDbPath)
-    URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString(), song.strFileName);
+    song.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString());
   else
   {
     CStdString strFileName = m_pDS->fv(song_strFileName).get_asString();
@@ -990,8 +990,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetComment(record->at(song_comment).get_asString());
   item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
   item->GetMusicInfoTag()->SetLastPlayed(record->at(song_lastplayed).get_asString());
-  CStdString strRealPath;
-  URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString(), strRealPath);
+  CStdString strRealPath = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetCompilation(record->at(song_bCompilation).get_asInt() == 1);
   item->GetMusicInfoTag()->SetAlbumArtist(record->at(song_strAlbumArtists).get_asString());
@@ -2017,8 +2016,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
     CStdString strSongsToDelete = "";
     while (!m_pDS->eof())
     { // get the full song path
-      CStdString strFileName;
-      URIUtils::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(), m_pDS->fv("song.strFileName").get_asString(), strFileName);
+      CStdString strFileName = URIUtils::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(), m_pDS->fv("song.strFileName").get_asString());
 
       //  Special case for streams inside an ogg file. (oggstream)
       //  The last dir in the path is the ogg file that
@@ -4597,8 +4595,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
         else
         {
-          CStdString nfoFile;
-          URIUtils::AddFileToFolder(strPath, "album.nfo", nfoFile);
+          CStdString nfoFile = URIUtils::AddFileToFolder(strPath, "album.nfo");
           if (overwrite || !CFile::Exists(nfoFile))
           {
             if (!xmlDoc.SaveFile(nfoFile))
@@ -4682,8 +4679,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
         else
         {
-          CStdString nfoFile;
-          URIUtils::AddFileToFolder(strPath, "artist.nfo", nfoFile);
+          CStdString nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
           if (overwrite || !CFile::Exists(nfoFile))
           {
             if (!xmlDoc.SaveFile(nfoFile))
