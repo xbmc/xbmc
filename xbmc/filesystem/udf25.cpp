@@ -374,8 +374,10 @@ int udf25::UDFScanDirX( udf_dir_t *dirp )
   struct Partition partition;
   uint8_t filetype;
 
-  if(!(GetUDFCache(PartitionCache, 0, &partition)))
-    return 0;
+  if(!(GetUDFCache(PartitionCache, 0, &partition))) {
+    if(!UDFFindPartition(0, &partition))
+      return 0;
+  }
 
   /* Scan dir for ICB of file */
   lbnum = dirp->dir_current;
@@ -777,6 +779,36 @@ int udf25::UDFFindPartition( int partnum, struct Partition *part )
     }
   } while( i-- && ( ( !part->valid ) || ( !volvalid ) ) );
 
+  /* Look for a metadata partition */
+  lbnum = part->Start;
+  do {
+    if( DVDReadLBUDF( lbnum++, 1, LogBlock, 0 ) <= 0 )
+      TagID = 0;
+    else
+      UDFDescriptor( LogBlock, &TagID );
+
+    /*
+     * It seems that someone added a FileType of 250, which seems to be
+     * a "redirect" style file entry. If we discover such an entry, we
+     * add on the "location" to partition->Start, and try again.
+     * Who added this? Is there any official guide somewhere?
+     * 2008/09/17 lundman
+     * Should we handle 261(250) as well? FileEntry+redirect
+     */
+    if( TagID == 266 ) {
+      struct FileAD File;
+      uint8_t filetype;
+      UDFExtFileEntry( LogBlock, &filetype, part, &File );
+      if (filetype == 250) {
+        part->Start  += File.AD_chain[0].Location;
+        part->Length  = File.AD_chain[0].Length;
+        break;
+      }
+    }
+
+  } while( ( lbnum < part->Start + part->Length )
+          && ( TagID != 8 ) && ( TagID != 256 ) );
+
   /* We only care for the partition, not the volume */
   return part->valid;
 }
@@ -983,24 +1015,6 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
         TagID = 0;
       else
         UDFDescriptor( LogBlock, &TagID );
-
-       /*
-        * It seems that someone added a FileType of 250, which seems to be
-        * a "redirect" style file entry. If we discover such an entry, we
-        * add on the "location" to partition->Start, and try again.
-        * Who added this? Is there any official guide somewhere?
-        * 2008/09/17 lundman
-        * Should we handle 261(250) as well? FileEntry+redirect
-        */
-       if( TagID == 266 ) {
-           UDFExtFileEntry( LogBlock, &filetype, &partition, &File );
-           if (filetype == 250) {
-              partition.Start += File.AD_chain[0].Location;
-              lbnum = partition.Start;
-              SetUDFCache(PartitionCache, 0, &partition);
-              continue;
-          }
-      }
 
       /* File Set Descriptor */
       if( TagID == 256 )  /* File Set Descriptor */
