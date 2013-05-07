@@ -231,11 +231,10 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
     return -1;
   }
 
-  int navresult;
   int iBytesRead;
 
   while(true) {
-    navresult = ProcessBlock(buf, &iBytesRead);
+    int navresult = ProcessBlock(buf, &iBytesRead);
     if (navresult == NAVRESULT_HOLD)       return 0; // return 0 bytes read;
     else if (navresult == NAVRESULT_ERROR) return -1;
     else if (navresult == NAVRESULT_DATA)  return iBytesRead;

@@ -191,10 +191,9 @@ unsigned int CDVDAudio::AddPacketsRenderer(unsigned char* data, unsigned int len
   timeout += CDVDClock::GetAbsoluteClock();
 
   unsigned int  total = len;
-  unsigned int  copied;
   do
   {
-    copied = m_pAudioStream->AddData(data, len);
+    unsigned int copied = m_pAudioStream->AddData(data, len);
     data += copied;
     len -= copied;
     if (len < m_dwPacketSize)

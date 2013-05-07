@@ -814,7 +814,6 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
   if (ScnHdr->SizeOfRawData > 0)
   {
     unsigned int i;
-    char ch;
     // Print the Raw Data
 
     printf("\nRAW DATA");
@@ -822,7 +821,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
     {
       if ((i % 16) == 0)
         printf("\n  %08X: ", i);
-      ch = data[i];
+      char ch = data[i];
       printf("%02X ", (unsigned int)ch);
     }
     printf("\n\n");

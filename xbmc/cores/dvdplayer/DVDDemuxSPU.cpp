@@ -362,8 +362,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
   /* The subtitles are interlaced, we need two offsets */
   unsigned int i_id = 0;                   /* Start on the even SPU layer */
   unsigned int pi_table[2];
-  unsigned int *pi_offset;
-
+  
   /* Colormap statistics */
   int i_border = -1;
   int stats[4]; stats[0] = stats[1] = stats[2] = stats[3] = 0;
@@ -373,7 +372,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
 
   for ( i_y = 0 ; i_y < i_height ; i_y++ )
   {
-    pi_offset = pi_table + i_id;
+    unsigned int *pi_offset = pi_table + i_id;
 
     for ( i_x = 0 ; i_x < i_width ; i_x += i_code >> 2 )
     {

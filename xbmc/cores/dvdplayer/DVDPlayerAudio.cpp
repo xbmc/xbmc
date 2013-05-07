@@ -525,7 +525,6 @@ void CDVDPlayerAudio::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
-  int result;
   bool packetadded(false);
 
   DVDAudioFrame audioframe;
@@ -534,7 +533,7 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     //Don't let anybody mess with our global variables
-    result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0 ||
+    int result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0 ||
                          CAEFactory::IsSuspended()); // blocks if no audio is available, but leaves critical section before doing so
 
     UpdatePlayerInfo();

@@ -672,12 +672,11 @@ void CMPCOutputThread::CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
   }
   //copy chroma
   //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
-  uint8_t *s_uv;
   uint8_t *d_u = pBuffer->m_u_buffer_ptr;
   uint8_t *d_v = pBuffer->m_v_buffer_ptr;
   for (int y = 0; y < h/2; y++)
   {
-    s_uv = procOut->UVbuff + (y * stride);
+    uint8_t *s_uv = procOut->UVbuff + (y * stride);
     for (int x = 0; x < w/2; x++)
     {
       *d_u++ = *s_uv++;
@@ -700,12 +699,11 @@ void CMPCOutputThread::CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   }
   //copy chroma
   //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
-  uint8_t *s_uv;
   uint8_t *d_u = pBuffer->m_u_buffer_ptr;
   uint8_t *d_v = pBuffer->m_v_buffer_ptr;
   for (int y = 0; y < h/4; y++)
   {
-    s_uv = procOut->UVbuff + (y * stride);
+    uint8_t *s_uv = procOut->UVbuff + (y * stride);
     for (int x = 0; x < w/2; x++)
     {
       *d_u++ = *s_uv++;

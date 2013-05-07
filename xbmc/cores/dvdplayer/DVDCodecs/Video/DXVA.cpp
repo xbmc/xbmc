@@ -1383,12 +1383,11 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
         return 0;
 
       // Convert to NV12 - Chroma
-      uint8_t *s_u, *s_v, *d_uv;
       for (unsigned y = 0; y < picture->iHeight/2; y++)
       {
-        s_u = picture->data[1] + (y * picture->iLineSize[1]);
-        s_v = picture->data[2] + (y * picture->iLineSize[2]);
-        d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
+        uint8_t *s_u = picture->data[1] + (y * picture->iLineSize[1]);
+        uint8_t *s_v = picture->data[2] + (y * picture->iLineSize[2]);
+        uint8_t *d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
         for (unsigned x = 0; x < picture->iWidth/2; x++)
         {
           *d_uv++ = *s_u++;
