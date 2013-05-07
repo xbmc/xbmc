@@ -107,6 +107,10 @@ protected:
   volatile int      m_omx_decoder_state;
   sem_t             *m_omx_decoder_state_change;
   std::vector<omx_codec_capability> m_omx_decoder_capabilities;
+
+private:
+  COpenMax(const COpenMax& other);
+  COpenMax& operator=(const COpenMax&);
 };
 
 #endif

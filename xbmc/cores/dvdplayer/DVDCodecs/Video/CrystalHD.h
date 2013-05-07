@@ -208,6 +208,8 @@ protected:
 
 private:
   CCrystalHD();
+  CCrystalHD(const CCrystalHD& other);
+  CCrystalHD& operator=(const CCrystalHD&);
   static CCrystalHD *m_pInstance;
 
   // bitstream to bytestream (Annex B) conversion support.
