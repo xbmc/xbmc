@@ -86,6 +86,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_allocateDynamically = false;
   m_isAllocated = NO;
   m_invalid = true;
+  m_vertexIndex = 0;
 }
 
 CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
@@ -102,7 +103,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_aspect = right.m_aspect;
 
   m_allocateDynamically = right.m_allocateDynamically;
-  m_batchDraw = right.m_batchDraw;
   // defaults
   m_vertex.SetRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
 
@@ -122,6 +122,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
 
   m_isAllocated = NO;
   m_invalid = true;
+  m_vertexIndex = 0;
 }
 
 CGUITextureBase::~CGUITextureBase(void)
@@ -175,9 +176,6 @@ void CGUITextureBase::Render()
       return;
   }
 
-  if(m_batchDraw)
-    m_batchDraw->Reset();
-
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
   color_t color = m_diffuseColor;
@@ -206,47 +204,67 @@ void CGUITextureBase::Render()
   //       look weird for stuff with borders, as will the -ve height/width
   //       for flipping
 
-  m_batchDraw = boost::shared_ptr<CBatchDraw> (new CBatchDraw);
+
+  int reserve = 1;
+  if (m_info.border.x1)
+  {
+    reserve++;
+    reserve += m_info.border.y1 != 0;
+    reserve += m_info.border.y2 != 0;
+  }
+
+  if (m_info.border.x2)
+  {
+    reserve++;
+    reserve += m_info.border.y1 != 0;
+    reserve += m_info.border.y2 != 0;
+  }
+  reserve += m_info.border.y1 != 0;
+  reserve += m_info.border.y2 != 0;
+  PackedVerticesPtr batchVertices = PackedVerticesPtr(new PackedVertices(reserve*4));
 
   // left segment (0,0,u1,v3)
+  m_vertexIndex = 0;
   if (m_info.border.x1)
   {
     if (m_info.border.y1)
-      Render(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1, u3, v3);
-    Render(m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2, u3, v3);
+      Render(batchVertices, m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1, u3, v3);
+    Render(batchVertices, m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2, u3, v3);
     if (m_info.border.y2)
-      Render(m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1, m_vertex.y2, 0, v2, u1, v3, u3, v3);
+      Render(batchVertices, m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1, m_vertex.y2, 0, v2, u1, v3, u3, v3);
   }
   // middle segment (u1,0,u2,v3)
   if (m_info.border.y1)
-    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
-  Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
+    Render(batchVertices, m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
+  Render(batchVertices, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
   if (m_info.border.y2)
-    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3);
+    Render(batchVertices, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3);
   // right segment
   if (m_info.border.x2)
   { // have a left border
     if (m_info.border.y1)
-      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1, u3, v3);
-    Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2, m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2, u3, v3);
+      Render(batchVertices, m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1, u3, v3);
+    Render(batchVertices, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2, m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2, u3, v3);
     if (m_info.border.y2)
-      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
+      Render(batchVertices, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
   }
+  m_vertexIndex = 0;
 
-
-  m_batchDraw->SetTexture(m_texture.m_textures[m_currentFrame]);
-  m_batchDraw->SetColor(color);
+  CBatchDrawPtr batchDraw = CBatchDrawPtr(new CBatchDraw);
+  batchDraw->SetTexture(m_texture.m_textures[m_currentFrame]);
+  batchDraw->SetColor(color);
+  batchDraw->SetVertices(batchVertices);
   if (m_diffuse.size())
-    m_batchDraw->SetDiffuseTexture(m_diffuse.m_textures[0]);
+    batchDraw->SetDiffuseTexture(m_diffuse.m_textures[0]);
 
   CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
-  sceneGraph->Add(m_batchDraw);
+  sceneGraph->Add(batchDraw);
 
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
     g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUITextureBase::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2, float u3, float v3)
+void CGUITextureBase::Render(PackedVerticesPtr batchVertices, float left, float top, float right, float bottom, float u1, float v1, float u2, float v2, float u3, float v3)
 {
   CRect diffuse(u1, v1, u2, v2);
   CRect texture(u1, v1, u2, v2);
@@ -271,88 +289,85 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 
-  PackedVertices packedvertex(4);
+  batchVertices->at(m_vertexIndex+0).x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  batchVertices->at(m_vertexIndex+0).y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  batchVertices->at(m_vertexIndex+0).z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  batchVertices->at(m_vertexIndex+1).x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  batchVertices->at(m_vertexIndex+1).y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  batchVertices->at(m_vertexIndex+1).z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  batchVertices->at(m_vertexIndex+2).x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  batchVertices->at(m_vertexIndex+2).y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  batchVertices->at(m_vertexIndex+2).z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  batchVertices->at(m_vertexIndex+3).x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  batchVertices->at(m_vertexIndex+3).y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  batchVertices->at(m_vertexIndex+3).z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-  packedvertex[0].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
-  packedvertex[0].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  packedvertex[0].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  packedvertex[1].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
-  packedvertex[1].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  packedvertex[1].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  packedvertex[2].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
-  packedvertex[2].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  packedvertex[2].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  packedvertex[3].x = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
-  packedvertex[3].y = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
-  packedvertex[3].z = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
-
-  if (packedvertex[2].y == packedvertex[0].y) packedvertex[2].y += 1.0f;
-  if (packedvertex[3].x == packedvertex[0].x) packedvertex[2].x += 1.0f;
-  if (packedvertex[3].y == packedvertex[1].y) packedvertex[3].y += 1.0f;
-  if (packedvertex[3].x == packedvertex[1].x) packedvertex[3].x += 1.0f;
+  if (batchVertices->at(m_vertexIndex+2).y == batchVertices->at(m_vertexIndex+0).y) batchVertices->at(m_vertexIndex+2).y += 1.0f;
+  if (batchVertices->at(m_vertexIndex+3).x == batchVertices->at(m_vertexIndex+0).x) batchVertices->at(m_vertexIndex+2).x += 1.0f;
+  if (batchVertices->at(m_vertexIndex+3).y == batchVertices->at(m_vertexIndex+1).y) batchVertices->at(m_vertexIndex+3).y += 1.0f;
+  if (batchVertices->at(m_vertexIndex+3).x == batchVertices->at(m_vertexIndex+1).x) batchVertices->at(m_vertexIndex+3).x += 1.0f;
   // Setup texture coordinates
   //TopLeft
-  packedvertex[0].u1 = texture.x1;
-  packedvertex[0].v1 = texture.y1;
+  batchVertices->at(m_vertexIndex+0).u1 = texture.x1;
+  batchVertices->at(m_vertexIndex+0).v1 = texture.y1;
   //TopRight
   if (orientation & 4)
   {
-    packedvertex[1].u1 = texture.x1;
-    packedvertex[1].v1 = texture.y2;
+    batchVertices->at(m_vertexIndex+1).u1 = texture.x1;
+    batchVertices->at(m_vertexIndex+1).v1 = texture.y2;
   }
   else
   {
-    packedvertex[1].u1 = texture.x2;
-    packedvertex[1].v1 = texture.y1;
+    batchVertices->at(m_vertexIndex+1).u1 = texture.x2;
+    batchVertices->at(m_vertexIndex+1).v1 = texture.y1;
   }
   //BottomRight
-  packedvertex[2].u1 = texture.x2;
-  packedvertex[2].v1 = texture.y2;
+  batchVertices->at(m_vertexIndex+2).u1 = texture.x2;
+  batchVertices->at(m_vertexIndex+2).v1 = texture.y2;
   //BottomLeft
   if (orientation & 4)
   {
-    packedvertex[3].u1 = texture.x2;
-    packedvertex[3].v1 = texture.y1;
+    batchVertices->at(m_vertexIndex+3).u1 = texture.x2;
+    batchVertices->at(m_vertexIndex+3).v1 = texture.y1;
   }
   else
   {
-    packedvertex[3].u1 = texture.x1;
-    packedvertex[3].v1 = texture.y2;
+    batchVertices->at(m_vertexIndex+3).u1 = texture.x1;
+    batchVertices->at(m_vertexIndex+3).v1 = texture.y2;
   }
 
   if (m_diffuse.size())
   {
     //TopLeft
-    packedvertex[0].u2 = diffuse.x1;
-    packedvertex[0].v2 = diffuse.y1;
+    batchVertices->at(m_vertexIndex+0).u2 = diffuse.x1;
+    batchVertices->at(m_vertexIndex+0).v2 = diffuse.y1;
     //TopRight
     if (m_info.orientation & 4)
     {
-      packedvertex[1].u2 = diffuse.x1;
-      packedvertex[1].v2 = diffuse.y2;
+      batchVertices->at(m_vertexIndex+1).u2 = diffuse.x1;
+      batchVertices->at(m_vertexIndex+1).v2 = diffuse.y2;
     }
     else
     {
-      packedvertex[1].u2 = diffuse.x2;
-      packedvertex[1].v2 = diffuse.y1;
+      batchVertices->at(m_vertexIndex+1).u2 = diffuse.x2;
+      batchVertices->at(m_vertexIndex+1).v2 = diffuse.y1;
     }
     //BottomRight
-    packedvertex[2].u2 = diffuse.x2;
-    packedvertex[2].v2 = diffuse.y2;
+    batchVertices->at(m_vertexIndex+2).u2 = diffuse.x2;
+    batchVertices->at(m_vertexIndex+2).v2 = diffuse.y2;
     //BottomLeft
     if (m_info.orientation & 4)
     {
-      packedvertex[3].u2 = diffuse.x2;
-      packedvertex[3].v2 = diffuse.y1;
+      batchVertices->at(m_vertexIndex+3).u2 = diffuse.x2;
+      batchVertices->at(m_vertexIndex+3).v2 = diffuse.y1;
     }
     else
     {
-      packedvertex[3].u2 = diffuse.x1;
-      packedvertex[3].v2 = diffuse.y2;
+      batchVertices->at(m_vertexIndex+3).u2 = diffuse.x1;
+      batchVertices->at(m_vertexIndex+3).v2 = diffuse.y2;
     }
   }
-
-  m_batchDraw->AddVertices(packedvertex);
+  m_vertexIndex+=4;
 }
 
 bool CGUITextureBase::AllocResources()
@@ -542,8 +557,6 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_texCoordsScaleV = 1.0f;
 
   m_isAllocated = NO;
-  if(m_batchDraw)
-    m_batchDraw->Reset();
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
