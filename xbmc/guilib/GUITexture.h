@@ -30,7 +30,7 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
-#include "rendering/SceneGraph.h"
+#include "rendering/BatchDraw.h"
 
 typedef uint32_t color_t;
 
