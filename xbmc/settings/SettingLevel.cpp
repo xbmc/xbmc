@@ -120,7 +120,9 @@ void CSettingLevel::SetLevel(SettingLevel level)
 SettingLevel CSettingLevel::GetLevel() const
 {
   for (vector<CLevelCondition>::const_iterator it = m_levelConditions.begin(); it != m_levelConditions.end(); ++it)
+  {
     if (it->Check())
       return it->GetLevel();
+  }
   return m_default;
 }
