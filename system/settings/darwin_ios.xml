@@ -3,18 +3,29 @@
   <section id="videos">
     <category id="videoplayer">
       <group id="2">
+        <setting id="videoplayer.hqscalers">
+          <visible>false</visible>
+        </setting>
         <setting id="videoplayer.adjustrefreshrate">
-          <level>4</level>
+          <visible>false</visible>
         </setting>
         <setting id="videoplayer.pauseafterrefreshchange">
-          <level>4</level>
+          <visible>false</visible>
         </setting>
       </group>
+    </category>
+  </section>
+  <section id="music">
+    <category id="audiocds" label="620" help="">
+      <visible>false</visible>
     </category>
   </section>
   <section id="system">
     <category id="videoscreen">
       <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
+        </setting>
         <setting id="videoscreen.blankdisplays">
           <visible>false</visible>
         </setting>
@@ -31,21 +42,39 @@
         <setting id="audiooutput.multichannellpcm">
           <visible>false</visible>
         </setting>
+        <setting id="audiooutput.truehdpassthrough">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.dtshdpassthrough">
+          <visible>false</visible>
+        </setting>
       </group>
       <group id="2">
         <setting id="audiooutput.audiodevice">
           <default>Default</default>
+          <visible>false</visible>
         </setting>
         <setting id="audiooutput.passthroughdevice">
-          <level>4</level>
           <default>Default</default>
+          <visible>false</visible>
         </setting>
       </group>
     </category>
     <category id="input">
+      <group id="1">
+        <setting id="input.peripherals">
+          <visible>false</visible>
+        </setting>
+        <setting id="input.appleremotemode">
+          <visible>false</visible>
+        </setting>
+        <setting id="input.appleremotesequencetime">
+          <visible>false</visible>
+        </setting>
+      </group>
       <group id="2">
         <setting id="input.enablemouse">
-          <level>4</level>
+          <visible>false</visible>
         </setting>
       </group>
     </category>
