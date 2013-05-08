@@ -29,20 +29,39 @@
 class CSettingsManager;
 
 /*!
-  \ingroup settings
-  \brief Group of settings being part of a category
-  \sa CSettingCategory
-  \sa CSetting
-  */
+ \ingroup settings
+ \brief Group of settings being part of a category
+ \sa CSettingCategory
+ \sa CSetting
+ */
 class CSettingGroup : public ISetting
 {
 public:
+  /*!
+   \brief Creates a new setting group with the given identifier.
+
+   \param id Identifier of the setting group
+   \param settingsManager Reference to the settings manager
+   */
   CSettingGroup(const std::string &id, CSettingsManager *settingsManager = NULL);
   ~CSettingGroup();
 
+  // implementation of ISetting
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
+  /*!
+   \brief Gets the full list of settings belonging to the setting group.
+
+   \return Full list of settings belonging to the setting group
+   */
   const SettingList& GetSettings() const { return m_settings; }
+  /*!
+   \brief Gets the list of settings assigned to the given setting level (or
+   below) belonging to the setting group.
+
+   \param level Level the settings should be assigned to
+   \return List of settings belonging to the setting group
+   */
   SettingList GetSettings(SettingLevel level) const;
 
 private:
@@ -52,24 +71,59 @@ private:
 typedef std::vector<CSettingGroup *> SettingGroupList;
 
 /*!
-  \ingroup settings
-  \brief Category of groups of settings being part of a section
-  \sa CSettingSection
-  \sa CSettingGroup
-  */
+ \ingroup settings
+ \brief Category of groups of settings being part of a section
+ \sa CSettingSection
+ \sa CSettingGroup
+ */
 class CSettingCategory : public ISetting
 {
 public:
+  /*!
+   \brief Creates a new setting category with the given identifier.
+
+   \param id Identifier of the setting category
+   \param settingsManager Reference to the settings manager
+   */
   CSettingCategory(const std::string &id, CSettingsManager *settingsManager = NULL);
   ~CSettingCategory();
 
+  // implementation of ISetting
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
+  /*!
+   \brief Gets the localizeable label ID of the setting category.
+
+   \return Localizeable label ID of the setting category
+   */
   const int GetLabel() const { return m_label; }
+  /*!
+   \brief Gets the localizeable help ID of the setting category.
+
+   \return Localizeable help ID of the setting category
+   */
   const int GetHelp() const { return m_help; }
+  /*!
+   \brief Gets the full list of setting groups belonging to the setting
+   category.
+
+   \return Full list of setting groups belonging to the setting category
+   */
   const SettingGroupList& GetGroups() const { return m_groups; }
+  /*!
+   \brief Gets the list of setting groups belonging to the setting category
+   that contain settings assigned to the given setting level (or below).
+
+   \param level Level the settings should be assigned to
+   \return List of setting groups belonging to the setting category
+   */
   SettingGroupList GetGroups(SettingLevel level) const;
 
+  /*!
+   \brief Whether the setting category can be accessed or not.
+
+   \return True if the setting category can be accessed, false otherwise
+   */
   bool CanAccess() const;
 
 private:
@@ -82,22 +136,52 @@ private:
 typedef std::vector<CSettingCategory *> SettingCategoryList;
 
 /*!
-  \ingroup settings
-  \brief Section of setting categories
-  \sa CSettings
-  \sa CSettingCategory
-  */
+ \ingroup settings
+ \brief Section of setting categories
+ \sa CSettings
+ \sa CSettingCategory
+ */
 class CSettingSection : public ISetting
 {
 public:
+  /*!
+   \brief Creates a new setting section with the given identifier.
+
+   \param id Identifier of the setting section
+   \param settingsManager Reference to the settings manager
+   */
   CSettingSection(const std::string &id, CSettingsManager *settingsManager = NULL);
   ~CSettingSection();
 
+  // implementation of ISetting
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
+  /*!
+   \brief Gets the localizeable label ID of the setting section.
+
+   \return Localizeable label ID of the setting section
+   */
   const int GetLabel() const { return m_label; }
+  /*!
+   \brief Gets the localizeable help ID of the setting section.
+
+   \return Localizeable help ID of the setting section
+   */
   const int GetHelp() const { return m_help; }
+  /*!
+   \brief Gets the full list of setting categories belonging to the setting
+   section.
+
+   \return Full list of setting categories belonging to the setting section
+   */
   const SettingCategoryList& GetCategories() const { return m_categories; }
+  /*!
+   \brief Gets the list of setting categories belonging to the setting section
+   that contain settings assigned to the given setting level (or below).
+
+   \param level Level the settings should be assigned to
+   \return List of setting categories belonging to the setting section
+   */
   SettingCategoryList GetCategories(SettingLevel level) const;
 
 private:

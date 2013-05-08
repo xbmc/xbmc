@@ -31,6 +31,10 @@
 #include "SettingUpdate.h"
 #include "threads/CriticalSection.h"
 
+/*!
+ \ingroup settings
+ \brief Basic setting types available in the settings system.
+ */
 typedef enum {
   SettingTypeNone = 0,
   SettingTypeBool,
@@ -40,6 +44,10 @@ typedef enum {
   SettingTypeAction
 } SettingType;
 
+/*!
+ \ingroup settings
+ \brief Levels which every setting is assigned to.
+ */
 typedef enum {
   SettingLevelBasic  = 0,
   SettingLevelStandard,
@@ -51,6 +59,11 @@ typedef enum {
 typedef std::pair<int, int> SettingOption;
 typedef std::vector<SettingOption> SettingOptions;
 
+/*!
+ \ingroup settings
+ \brief Setting base class containing all the properties which are common to
+ all settings independent of the setting type.
+ */
 class CSetting : public ISetting,
                  protected ISettingCallback
 {
@@ -77,7 +90,7 @@ public:
 
 protected:
   friend class CSettingsManager;
-    
+
   virtual bool OnSettingChanging(const CSetting *setting);
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
@@ -98,6 +111,11 @@ protected:
 
 typedef std::vector<CSetting *> SettingList;
 
+/*!
+ \ingroup settings
+ \brief Boolean setting implementation.
+ \sa CSetting
+ */
 class CSettingBool : public CSetting
 {
 public:
@@ -128,6 +146,11 @@ private:
   bool m_default;
 };
 
+/*!
+ \ingroup settings
+ \brief Integer setting implementation
+ \sa CSetting
+ */
 class CSettingInt : public CSetting
 {
 public:
@@ -156,7 +179,7 @@ public:
   int GetMinimum() const { return m_min; }
   int GetStep() const { return m_step; }
   int GetMaximum() const { return m_max; }
-    
+
   int GetFormat() const { return m_format; }
   int GetMinimumLabel() const { return m_labelMin; }
   const std::string& GetFormatString() const { return m_strFormat; }
@@ -179,6 +202,11 @@ private:
   std::string m_optionsFiller;
 };
 
+/*!
+ \ingroup settings
+ \brief Real number setting implementation.
+ \sa CSetting
+ */
 class CSettingNumber : public CSetting
 {
 public:
@@ -201,7 +229,7 @@ public:
   bool SetValue(double value);
   double GetDefault() const { return m_default; }
   void SetDefault(double value);
-    
+
   double GetMinimum() const { return m_min; }
   double GetStep() const { return m_step; }
   double GetMaximum() const { return m_max; }
@@ -217,6 +245,11 @@ private:
   double m_max;
 };
 
+/*!
+ \ingroup settings
+ \brief String setting implementation.
+ \sa CSetting
+ */
 class CSettingString : public CSetting
 {
 public:
@@ -241,7 +274,7 @@ public:
 
   virtual bool AllowEmpty() const { return m_allowEmpty; }
   virtual int GetHeading() const { return m_heading; }
-  
+
   const std::string& GetOptionsFiller() const { return m_optionsFiller; }
 
 protected:
@@ -254,13 +287,22 @@ protected:
   std::string m_optionsFiller;
 };
 
+/*!
+ \ingroup settings
+ \brief Action setting implementation.
+
+ A setting action will trigger a call to the OnSettingAction() callback method
+ when activated.
+
+ \sa CSetting
+ */
 class CSettingAction : public CSetting
 {
 public:
   CSettingAction(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingAction(const std::string &id, const CSettingAction &setting);
   virtual ~CSettingAction() { }
-    
+
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   virtual int GetType() const { return SettingTypeAction; }
