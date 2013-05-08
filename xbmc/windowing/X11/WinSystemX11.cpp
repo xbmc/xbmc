@@ -267,9 +267,9 @@ void CWinSystemX11::UpdateResolutions()
     XMode mode = g_xrandr.GetCurrentMode(currentMonitor);
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
-      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), out->screen, mode.w, mode.h, mode.hz);
+      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
     else
-      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), out->screen, mode.h, mode.w, mode.hz);
+      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.h, mode.w, mode.hz);
     CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
     CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = currentMonitor;
   }
@@ -304,6 +304,7 @@ void CWinSystemX11::UpdateResolutions()
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
+      res.iScreen = 0; // not used by X11
       res.iWidth  = mode.w;
       res.iHeight = mode.h;
       res.iScreenWidth  = mode.w;
