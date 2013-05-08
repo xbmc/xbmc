@@ -529,6 +529,8 @@ bool CSettings::Initialize(const std::string &file)
     return false;
   }
 
+  CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
+  
   TiXmlElement *root = xmlDoc.RootElement();
   if (root == NULL)
     return false;
