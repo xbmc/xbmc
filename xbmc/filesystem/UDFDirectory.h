@@ -21,18 +21,19 @@
  *
  */
 
-#include "IDirectory.h"
+#include "IFileDirectory.h"
 
 namespace XFILE
 {
 class CUDFDirectory :
-      public IDirectory
+      public IFileDirectory
 {
 public:
   CUDFDirectory(void);
   virtual ~CUDFDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool Exists(const char* strPath);
+  virtual bool ContainsFiles(const CStdString& strPath) { return true; }
 };
 }
 

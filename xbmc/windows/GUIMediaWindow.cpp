@@ -980,7 +980,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     return true;
   }
 
-  if (!pItem->m_bIsFolder && pItem->IsFileFolder())
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetPath(), pItem.get(), "");
@@ -1582,6 +1582,10 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
+
+  if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
+    buttons.Add(CONTEXT_BUTTON_BROWSE_INTO, 37015);
+
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1605,6 +1609,13 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
           Refresh();
+      return true;
+    }
+  case CONTEXT_BUTTON_BROWSE_INTO:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      if(Update(item->GetPath()))
+        return true;
       return true;
     }
   case CONTEXT_BUTTON_USER1:

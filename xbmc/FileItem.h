@@ -66,6 +66,19 @@ class CURL;
 
 class CMediaSource;
 
+enum EFileFolderType {
+  EFILEFOLDER_TYPE_ALWAYS     = 1<<0,
+  EFILEFOLDER_TYPE_ONCLICK    = 1<<1,
+  EFILEFOLDER_TYPE_ONBROWSE   = 1<<2,
+
+  EFILEFOLDER_MASK_ALL        = 0xff,
+  EFILEFOLDER_MASK_ONCLICK    = EFILEFOLDER_TYPE_ALWAYS
+                              | EFILEFOLDER_TYPE_ONCLICK,
+  EFILEFOLDER_MASK_ONBROWSE   = EFILEFOLDER_TYPE_ALWAYS
+                              | EFILEFOLDER_TYPE_ONCLICK
+                              | EFILEFOLDER_TYPE_ONBROWSE,
+};
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
@@ -175,7 +188,7 @@ public:
   bool CanQueue() const;
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
-  bool IsFileFolder() const;
+  bool IsFileFolder(EFileFolderType types = EFILEFOLDER_MASK_ALL) const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;

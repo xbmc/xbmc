@@ -12512,3 +12512,9 @@ msgstr ""
 msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
+
+#: xbmc/Windows/GUIMediaWindow.cpp
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr ""
+
