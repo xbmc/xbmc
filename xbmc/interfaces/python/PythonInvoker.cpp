@@ -184,8 +184,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  CStdString scriptDir;
-  URIUtils::GetDirectory(CSpecialProtocol::TranslatePath(m_source), scriptDir);
+  CStdString scriptDir = URIUtils::GetDirectory(CSpecialProtocol::TranslatePath(m_source));
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 

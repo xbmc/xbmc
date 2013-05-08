@@ -14,8 +14,7 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
     FileName[DataSize]=0;
     if (Create)
     {
-      CStdString strPath;
-      URIUtils::GetDirectory(DestName,strPath);
+      CStdString strPath = URIUtils::GetDirectory(DestName);
       CUtil::CreateDirectoryEx(strPath);
       if (symlink(FileName,DestName)==-1)
       {

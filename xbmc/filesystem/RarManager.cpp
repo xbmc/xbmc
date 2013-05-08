@@ -145,8 +145,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     return false;
   }
   strCachedPath = CUtil::MakeLegalPath(strCachedPath);
-  CStdString strCachedDir;
-  URIUtils::GetDirectory(strCachedPath, strCachedDir);
   int64_t iOffset = -1;
   if (iRes != 2)
   {
@@ -179,7 +177,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     if (iSize > 1024*1024 || iSize == -2) // 1MB
       bShowProgress=true;
 
-    CStdString strDir2(strCachedDir);
+    CStdString strDir2 = URIUtils::GetDirectory(strCachedPath);
     URIUtils::RemoveSlashAtEnd(strDir2);
     if (!CDirectory::Exists(strDir2))
       CDirectory::Create(strDir2);

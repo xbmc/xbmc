@@ -6777,13 +6777,14 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
     if (strPath.IsEmpty() || !m_pDB.get() || !m_pDS.get()) return ScraperPtr();
 
     ScraperPtr scraper;
-    CStdString strPath1;
-    CStdString strPath2(strPath);
+    CStdString strPath2;
 
     if (URIUtils::IsMultiPath(strPath))
       strPath2 = CMultiPathDirectory::GetFirstPath(strPath);
+    else
+      strPath2 = strPath;
 
-    URIUtils::GetDirectory(strPath2,strPath1);
+    CStdString strPath1 = URIUtils::GetDirectory(strPath2);
     int idPath = GetPathId(strPath1);
 
     if (idPath > -1)

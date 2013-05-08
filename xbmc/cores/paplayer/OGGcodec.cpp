@@ -65,8 +65,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     //  The directory we are in, is the file
     //  that contains the bitstream to play,
     //  so extract it
-    CStdString strPath=strFile;
-    URIUtils::GetDirectory(strPath, strFile);
+    strFile = URIUtils::GetDirectory(strFile);
     URIUtils::RemoveSlashAtEnd(strFile); // we want the filename
   }
 

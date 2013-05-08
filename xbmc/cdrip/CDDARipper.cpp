@@ -312,8 +312,7 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   {
     if(CJobQueue::QueueEmpty())
     {
-      CStdString dir;
-      URIUtils::GetDirectory(((CCDDARipJob*)job)->GetOutput(), dir);
+      CStdString dir = URIUtils::GetDirectory(((CCDDARipJob*)job)->GetOutput());
       bool unimportant;
       int source = CUtil::GetMatchingSource(dir, *CMediaSourceSettings::Get().CMediaSourceSettings::GetSources("music"), unimportant);
 

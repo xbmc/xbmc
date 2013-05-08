@@ -324,10 +324,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     {
       CMediaSource share;
       std::vector<CStdString> paths;
-      CStdString strPath1;
-      URIUtils::GetDirectory(strPath,strPath1);
-      paths.push_back(strPath1);
-      strPath1 = CSettings::Get().GetString("subtitles.custompath");
+      paths.push_back(URIUtils::GetDirectory(strPath));
       paths.push_back(CSettings::Get().GetString("subtitles.custompath"));
       share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
       shares.push_back(share);

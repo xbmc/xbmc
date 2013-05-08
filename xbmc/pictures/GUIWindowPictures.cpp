@@ -72,7 +72,7 @@ void CGUIWindowPictures::OnInitWindow()
     CGUIWindowSlideShow* wndw = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     CStdString path;
     if (wndw && wndw->GetCurrentSlide())
-      URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath(),path);
+      path = URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath());
     if (path.Equals(m_vecItems->GetPath()))
     {
       if (wndw && wndw->GetCurrentSlide())

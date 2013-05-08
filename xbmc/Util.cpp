@@ -700,8 +700,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   if (!fn_template.Find("%03d"))
     return "";
 
-  CStdString searchPath;
-  URIUtils::GetDirectory(fn_template, searchPath);
+  CStdString searchPath = URIUtils::GetDirectory(fn_template);
   CStdString mask = URIUtils::GetExtension(fn_template);
 
   CStdString name;
