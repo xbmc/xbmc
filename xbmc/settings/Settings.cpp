@@ -54,6 +54,9 @@
 #include "osx/XBMCHelper.h"
 #include "cores/AudioEngine/Engines/CoreAudio/CoreAudioHardware.h"
 #endif // defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN)
+#include "osx/DarwinUtils.h"
+#endif
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
@@ -587,21 +590,24 @@ void CSettings::InitializeSettingTypes()
 void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_DARWIN)
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
-  #if defined(TARGET_DARWIN)
+
+#if defined(TARGET_DARWIN)
   if (!g_sysinfo.IsAppleTV2() || GetIOSVersion() >= 4.3)
   {
     timezonecountry->SetVisible(false);
     timezone->SetVisible(false);
   }
-  #endif
-
+#endif
+ 
+#if defined(TARGET_LINUX)
   if (timezonecountry->IsVisible())
     timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
   if (timezone->IsVisible())
     timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
+#endif
 #endif
 }
 
