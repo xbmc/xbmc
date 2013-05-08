@@ -72,6 +72,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     {
       int infos=0;
       m_headofdoc = strstr(m_headofdoc,"<episodedetails");
+      bNfo = GetDetails(details);
       while (m_headofdoc && details.m_iEpisode != episode)
       {
         m_headofdoc = strstr(m_headofdoc+1,"<episodedetails");
