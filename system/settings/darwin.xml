@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
   <section id="system">
-    <category id="videoscreen" label="21373" help="">
+    <category id="videoscreen" label="21373" help="36416">
       <group id="1">
         <setting id="videoscreen.resolution" label="131" />
       </group>
@@ -21,7 +21,7 @@
     </category>
     <category id="input">
       <group id="1">
-        <setting id="input.appleremotemode" type="integer" label="13600" help="">
+        <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
           <level>1</level>
           <default>1</default> <!-- APPLE_REMOTE_STANDARD -->
           <constraints>
@@ -34,7 +34,7 @@
           </constraints>
           <control type="spinner" format="string"/>
         </setting>
-        <setting id="input.appleremotealwayson" type="boolean" label="13602" help="">
+        <setting id="input.appleremotealwayson" type="boolean" label="13602" help="36417">
           <level>4</level>
           <default>false</default>
           <control>
@@ -43,7 +43,7 @@
             </dependencies>
           </control>
         </setting>
-        <setting id="input.appleremotesequencetime" type="integer" label="13603" help="">
+        <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
           <level>1</level>
           <default>500</default>
           <constraints>
