@@ -1815,7 +1815,7 @@
           <heading>733</heading>
           <control type="edit" format="string" attributes="hidden">
             <dependencies>
-              <dependency type="enable" setting="services.airplay">true</dependency>
+              <dependency type="enable" setting="services.useairplaypassword">true</dependency>
             </dependencies>
           </control>
         </setting>
