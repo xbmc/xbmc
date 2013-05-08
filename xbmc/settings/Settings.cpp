@@ -751,7 +751,7 @@ void CSettings::InitializeConditions()
   if (g_sysinfo.HasVideoToolBoxDecoder())
     m_settingsManager->AddCondition("hasvideotoolboxdecoder");
 #endif
-#ifdef TARGET_DARWIN_IOS_ATV
+#ifdef TARGET_DARWIN_IOS_ATV2
   if (g_sysinfo.IsAppleTV2())
     m_settingsManager->AddCondition("isappletv2");
 #endif
