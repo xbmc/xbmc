@@ -551,7 +551,16 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_LINUX)
   if (CFile::Exists(SETTINGS_XML_FOLDER "linux.xml") && !Initialize(SETTINGS_XML_FOLDER "linux.xml"))
     CLog::Log(LOGFATAL, "Unable to load linux-specific settings definitions");
-#if defined(TARGET_DARWIN)
+#elif defined(TARGET_ANDROID)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
+    CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
+#elif defined(TARGET_RASPBERRY_PI)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
+    CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
+#elif defined(TARGET_FREEBSD)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "freebsd.xml") && !Initialize(SETTINGS_XML_FOLDER "freebsd.xml"))
+    CLog::Log(LOGFATAL, "Unable to load freebsd-specific settings definitions");
+#elif defined(TARGET_DARWIN)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin.xml"))
     CLog::Log(LOGFATAL, "Unable to load darwin-specific settings definitions");
 #if defined(TARGET_DARWIN_OSX)
@@ -564,16 +573,6 @@ bool CSettings::InitializeDefinitions()
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios_atv2.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios_atv2.xml"))
     CLog::Log(LOGFATAL, "Unable to load atv2-specific settings definitions");
 #endif
-#endif
-#elif defined(TARGET_ANDROID)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
-    CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
-#elif defined(TARGET_RASPBERRY_PI)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
-    CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
-#elif defined(TARGET_FREEBSD)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "freebsd.xml") && !Initialize(SETTINGS_XML_FOLDER "freebsd.xml"))
-    CLog::Log(LOGFATAL, "Unable to load freebsd-specific settings definitions");
 #endif
 #endif
   if (CFile::Exists(SETTINGS_XML_FOLDER "appliance.xml") && !Initialize(SETTINGS_XML_FOLDER "appliance.xml"))
