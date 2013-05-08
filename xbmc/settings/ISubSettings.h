@@ -21,6 +21,11 @@
 
 class TiXmlNode;
 
+/*!
+ \ingroup settings
+ \brief Interface defining methods to load additional setting values from an
+ XML file being loaded by the settings system.
+ */
 class ISubSettings
 {
 public:
