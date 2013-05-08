@@ -223,7 +223,7 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   if (!HasSlashAtEnd(strParent))
   {
     // currently GetDirectory() removes trailing slashes
-    GetDirectory(strParent.Mid(0), strParent);
+    GetDirectory(strParent, strParent);
     AddSlashAtEnd(strParent);
   }
 }

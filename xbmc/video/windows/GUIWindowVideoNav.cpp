@@ -732,11 +732,11 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 
     if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
     {
-      URIUtils::GetDirectory(strDeletePath.Mid(0),strDeletePath);
+      URIUtils::GetDirectory(strDeletePath, strDeletePath);
       if (strDeletePath.Right(9).Equals("VIDEO_TS/"))
       {
         URIUtils::RemoveSlashAtEnd(strDeletePath);
-        URIUtils::GetDirectory(strDeletePath.Mid(0),strDeletePath);
+        URIUtils::GetDirectory(strDeletePath, strDeletePath);
       }
     }
     if (URIUtils::HasSlashAtEnd(strDeletePath))
