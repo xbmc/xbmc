@@ -419,6 +419,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       else
         m_subsLayout = NULL;
 
+      MarkDirtyRegion();
       return true;
     }
   case GUI_MSG_WINDOW_DEINIT:
@@ -745,15 +746,23 @@ void CGUIWindowFullScreen::FrameMove()
 
 void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
 {
+  bool lastRender = m_hasRendered;
+  m_hasRendered = g_renderManager.Prepare();
+
+  if (m_hasRendered || lastRender)
+    MarkDirtyRegion();
+
+  CGUIWindow::Process(currentTime, dirtyregion);
+
   // TODO: This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
   //       which is probably the job of the renderer as it can more easily track resizing etc.
-  MarkDirtyRegion();
-  CGUIWindow::Process(currentTime, dirtyregion);
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowFullScreen::Render()
 {
+  bool wait = g_application.IsPlaying() && !g_application.IsPaused();
+  g_renderManager.Present(wait);
   if (g_application.m_pPlayer)
     RenderTTFSubtitles();
   CGUIWindow::Render();
@@ -945,5 +954,7 @@ void CGUIWindowFullScreen::ToggleOSD()
       pOSD->Close();
     else
       pOSD->DoModal();
+
+    MarkDirtyRegion();
   }
 }

@@ -84,4 +84,6 @@ private:
   
   CCriticalSection m_fontLock;
   CGUITextLayout* m_subsLayout;
+
+  bool m_hasRendered;
 };
