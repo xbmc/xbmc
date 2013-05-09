@@ -74,14 +74,12 @@ static int UDFExtentAD( uint8_t *data, uint32_t *Length, uint32_t *Location )
   return 0;
 }
 
-static int UDFShortAD( uint8_t *data, struct AD *ad,
-                       struct Partition *partition )
+static int UDFShortAD( uint8_t *data, struct AD *ad )
 {
   ad->Length = GETN4(0);
   ad->Flags = ad->Length >> 30;
   ad->Length &= 0x3FFFFFFF;
   ad->Location = GETN4(4);
-  ad->Partition = partition->Number; /* use number of current partition */
   return 0;
 }
 
@@ -107,6 +105,37 @@ static int UDFExtAD( uint8_t *data, struct AD *ad )
   return 0;
 }
 
+static int UDFAD( uint8_t *ptr, uint32_t len, struct AD *ad, uint16_t flags)
+{
+  switch( flags & 0x0007 ) {
+    case 0:
+      UDFShortAD( ptr, ad );
+      return 8;
+    case 1:
+      UDFLongAD( ptr, ad );
+      return 16;
+    case 2:
+      UDFExtAD( ptr, ad );
+      return 20;
+    case 3:
+      switch( len ) {
+        case 8:
+          UDFShortAD( ptr, ad );
+          break;
+        case 16:
+          UDFLongAD( ptr,  ad );
+          break;
+        case 20:
+          UDFExtAD( ptr, ad );
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return len;
+}
 
 static int UDFICB( uint8_t *data, uint8_t *FileType, uint16_t *Flags )
 {
@@ -161,37 +190,7 @@ static int UDFExtFileEntry( uint8_t *data, uint8_t *FileType,
     ad->Flags = 0;
     fad->num_AD++;
 
-    switch( flags & 0x0007 ) {
-    case 0:
-        UDFShortAD( &data[ p ], ad, partition );
-        p += 8;
-        break;
-    case 1:
-        UDFLongAD( &data[ p ], ad );
-        p += 16;
-        break;
-    case 2:
-        UDFExtAD( &data[ p ], ad );
-        p += 20;
-        break;
-    case 3:
-        switch( L_AD ) {
-        case 8:
-            UDFShortAD( &data[ p ], ad, partition );
-            break;
-        case 16:
-            UDFLongAD( &data[ p ],  ad );
-            break;
-        case 20:
-            UDFExtAD( &data[ p ], ad );
-            break;
-        }
-        p += L_AD;
-        break;
-    default:
-        p += L_AD;
-        break;
-    }
+    p += UDFAD( &data[ p ], L_AD, ad, flags );
   }
   return 0;
 
@@ -251,51 +250,18 @@ static int UDFFileEntry( uint8_t *data, uint8_t *FileType,
     return 0;
 
   p = 176 + L_EA;
-  curr_ad = 0;
-
-  /* Function changed to record all AD chains, not just the last one! */
+  fad->num_AD = 0;
   while( p < 176 + L_EA + L_AD ) {
     struct AD *ad;
 
     if (curr_ad >= UDF_MAX_AD_CHAINS) return 0;
 
-    ad =  &fad->AD_chain[curr_ad];
+    ad =  &fad->AD_chain[fad->num_AD];
     ad->Partition = partition->Number;
     ad->Flags = 0;
-    // Increase AD chain ptr
-    curr_ad++;
+    fad->num_AD++;
 
-    switch( flags & 0x0007 ) {
-    case 0:
-      UDFShortAD( &data[ p ], ad, partition );
-      p += 8;
-      break;
-    case 1:
-      UDFLongAD( &data[ p ], ad );
-      p += 16;
-      break;
-    case 2:
-      UDFExtAD( &data[ p ], ad );
-      p += 20;
-      break;
-    case 3:
-      switch( L_AD ) {
-      case 8:
-        UDFShortAD( &data[ p ], ad, partition );
-        break;
-      case 16:
-        UDFLongAD( &data[ p ], ad );
-        break;
-      case 20:
-        UDFExtAD( &data[ p ], ad );
-        break;
-      }
-      p += L_AD;
-      break;
-    default:
-      p += L_AD;
-      break;
-    }
+    p += UDFAD( &data[ p ], L_AD, ad, flags );
   }
   return 0;
 }
