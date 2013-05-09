@@ -710,6 +710,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   static NSView* last_view = NULL;
   static NSSize last_view_size;
   static NSPoint last_view_origin;
+  static NSInteger last_window_level = NSNormalWindowLevel;
   bool was_fullscreen = m_bFullScreen;
   static int lastDisplayNr = res.iScreen;
   NSOpenGLContext* cur_context;
@@ -779,6 +780,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_view_origin = [last_view frame].origin;
     last_window_screen = [[last_view window] screen];
     last_window_origin = [[last_view window] frame].origin;
+    last_window_level = [[last_view window] level];
 
     if (CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     {
@@ -891,7 +893,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     {
       // restore the windowed window level
-      [[last_view window] setLevel:NSNormalWindowLevel];
+      [[last_view window] setLevel:last_window_level];
 
       // Get rid of the new window we created.
       if (windowedFullScreenwindow != NULL)
