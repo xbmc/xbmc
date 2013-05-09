@@ -172,7 +172,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   && m_nHeight == newHeight)
     return true;
 
-  if (!SetWindow(newWidth, newHeight, false, CSettings::Get().GetString("videoscreen.monitor")))
+  if (!SetWindow(newWidth, newHeight, false, m_userOutput))
   {
     return false;
   }
@@ -180,7 +180,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_nWidth  = newWidth;
   m_nHeight = newHeight;
   m_bFullScreen = false;
-  m_currentOutput = CSettings::Get().GetString("videoscreen.monitor");
+  m_currentOutput = m_userOutput;
 
   return false;
 }
@@ -234,13 +234,13 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 #endif
 
-  if (!SetWindow(res.iWidth, res.iHeight, fullScreen, CSettings::Get().GetString("videoscreen.monitor")))
+  if (!SetWindow(res.iWidth, res.iHeight, fullScreen, m_userOutput))
     return false;
 
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
-  m_currentOutput = CSettings::Get().GetString("videoscreen.monitor");
+  m_currentOutput = m_userOutput;
 
   return true;
 }
@@ -250,34 +250,32 @@ void CWinSystemX11::UpdateResolutions()
   CWinSystemBase::UpdateResolutions();
 
 #if defined(HAS_XRANDR)
-  CStdString currentMonitor;
   int numScreens = XScreenCount(m_dpy);
   g_xrandr.SetNumScreens(numScreens);
   if(g_xrandr.Query(true))
   {
-    currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
+    m_userOutput = CSettings::Get().GetString("videoscreen.monitor");
     // check if the monitor is connected
-    XOutput *out = g_xrandr.GetOutput(currentMonitor);
+    XOutput *out = g_xrandr.GetOutput(m_userOutput);
     if (!out)
     {
       // choose first output
-      currentMonitor = g_xrandr.GetModes()[0].name;
-      out = g_xrandr.GetOutput(currentMonitor);
-      CSettings::Get().SetString("videoscreen.monitor", currentMonitor);
+      m_userOutput = g_xrandr.GetModes()[0].name;
+      out = g_xrandr.GetOutput(m_userOutput);
     }
-    XMode mode = g_xrandr.GetCurrentMode(currentMonitor);
+    XMode mode = g_xrandr.GetCurrentMode(m_userOutput);
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
       UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
     else
       UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.h, mode.w, mode.hz);
     CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
-    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = currentMonitor;
+    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = m_userOutput;
   }
   else
 #endif
   {
-    CSettings::Get().SetString("videoscreen.monitor", "Default");
+    m_userOutput = "No Output";
     m_nScreen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, m_nScreen);
     int h = DisplayHeight(m_dpy, m_nScreen);
@@ -291,7 +289,7 @@ void CWinSystemX11::UpdateResolutions()
 
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
 
-  XOutput *out = g_xrandr.GetOutput(currentMonitor);
+  XOutput *out = g_xrandr.GetOutput(m_userOutput);
   string modename = "";
 
   if (out != NULL)
@@ -691,9 +689,8 @@ void CWinSystemX11::NotifyXRREvent()
   }
   m_bIsInternalXrr = false;
 
-  CStdString currentOutput = CSettings::Get().GetString("videoscreen.monitor");
-  XOutput *out = g_xrandr.GetOutput(currentOutput);
-  XMode   mode = g_xrandr.GetCurrentMode(currentOutput);
+  XOutput *out = g_xrandr.GetOutput(m_userOutput);
+  XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
 
   if (out)
     CLog::Log(LOGDEBUG, "%s - current output: %s, mode: %s, refresh: %.3f", __FUNCTION__
