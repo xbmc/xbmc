@@ -267,41 +267,34 @@ static int UDFFileEntry( uint8_t *data, struct FileAD *fad )
   return 0;
 }
 
-// The API users will refer to block 0 as start of file and going up
-// we need to convert that to actual disk block;
-// partition_start + file_start + offset
-// but keep in mind that file_start is chained, and not contiguous.
-//
-// We return "0" as error, since a File can not start at physical block 0
-//
-// Who made Location be blocks, but Length be bytes? Can bytes be uneven
-// blocksize in the middle of a chain?
-//
-uint32_t UDFFileBlockPos(struct FileAD *File, uint32_t file_block)
+uint32_t UDFFilePos(struct FileAD *File, uint64_t pos, uint64_t *res)
 {
-  uint32_t result, i, offset;
+  uint32_t i;
 
-  if (!File) return 0;
+  for (i = 0; i < File->num_AD; i++) {
 
-  // Look through the chain to see where this block would belong.
-  for (i = 0, offset = 0; i < File->num_AD; i++) {
-
-    // Is "file_block" inside this chain? Then use this chain.
-    if (file_block < (offset + (File->AD_chain[i].Length /  DVD_VIDEO_LB_LEN)))
+    if (pos < File->AD_chain[i].Length)
       break;
 
-    offset += (File->AD_chain[i].Length /  DVD_VIDEO_LB_LEN);
-
+    pos -= File->AD_chain[i].Length;
   }
 
-  if (i >= File->num_AD)
-    i = 0; // This was the default behavior before I fixed things.
+  if (i == File->num_AD)
+    return 0;
 
-  //if(offset == 0)
-  //  offset = 32;
+  *res = (uint64_t)(File->Partition_Start + File->AD_chain[i].Location) * DVD_VIDEO_LB_LEN + pos;
+  return File->AD_chain[i].Length - pos;
+}
 
-  result = File->Partition_Start + File->AD_chain[i].Location + file_block - offset;
-  return result;
+uint32_t UDFFileBlockPos(struct FileAD *File, uint32_t lb)
+{
+  uint64_t res;
+  uint32_t rem;
+  rem = UDFFilePos(File, lb * DVD_VIDEO_LB_LEN, &res);
+  if(rem > 0)
+    return res / DVD_VIDEO_LB_LEN;
+  else
+    return 0;
 }
 
 static int UDFFileIdentifier( uint8_t *data, uint8_t *FileCharacteristics,
@@ -1099,29 +1092,26 @@ HANDLE udf25::OpenFile( const char* filename )
 long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
 {
   BD_FILE bdfile = (BD_FILE)hFile;
-  unsigned int seek_sector, seek_byte;
-  long    len_origin = lSize;
-  int64_t pos;
-  size_t  len;
-  int     ret;
+  long    len_origin;
+  uint64_t pos;
+  uint32_t len;
+  int      ret;
 
   /* Check arguments. */
   if( bdfile == NULL || pBuffer == NULL )
     return -1;
 
-  /* Correct for file boundaries */
-  if( (uint64_t)lSize > (bdfile->filesize - bdfile->seek_pos))
-    lSize = (bdfile->filesize - bdfile->seek_pos);
-
+  len_origin = lSize;
   while(lSize > 0)
   {
-    seek_sector =(unsigned int) (bdfile->seek_pos / DVD_VIDEO_LB_LEN);
-    seek_byte   =(unsigned int) (bdfile->seek_pos % DVD_VIDEO_LB_LEN);
+    len = UDFFilePos(bdfile->file, bdfile->seek_pos, &pos);
+    if(len == 0)
+      break;
 
-    pos = ((int64_t)UDFFileBlockPos(bdfile->file, seek_sector) - 32) * DVD_VIDEO_LB_LEN + seek_byte;
+    pos -= 32 * DVD_VIDEO_LB_LEN; /* why? */
 
-    /* don't cross sector boundaries */
-    len = std::min<size_t>(lSize, DVD_VIDEO_LB_LEN - seek_byte);
+    if(lSize < len)
+      len = lSize;
 
     ret = ReadAt(pos, len, pBuffer);
     if(ret < 0)
