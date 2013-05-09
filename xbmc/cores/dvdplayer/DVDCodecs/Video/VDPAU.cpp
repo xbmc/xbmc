@@ -184,6 +184,9 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     return false;
   }
 
+  if ((avctx->codec_id == CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+    return false;
+
   if (!dl_handle)
   {
     dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
@@ -239,10 +242,15 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     InitCSCMatrix(avctx->coded_height);
 
     /* finally setup ffmpeg */
+    memset(&m_hwContext, 0, sizeof(AVVDPAUContext));
+    m_hwContext.render = CVDPAU::Render;
+    m_hwContext.bitstream_buffers_allocated = 0;
     avctx->get_buffer      = CVDPAU::FFGetBuffer;
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+    avctx->hwaccel_context = &m_hwContext;
+    avctx->thread_count    = 1;
 
     g_Windowing.Register(this);
     return true;
@@ -270,6 +278,11 @@ void CVDPAU::Close()
       m_dllAvUtil.av_freep(&render->bitstream_buffers);
     render->bitstream_buffers_allocated = 0;
     free(render);
+  }
+
+  if (m_hwContext.bitstream_buffers_allocated)
+  {
+    m_dllAvUtil.av_freep(&m_hwContext.bitstream_buffers);
   }
 
   g_Windowing.Unregister(this);
@@ -497,11 +510,10 @@ int CVDPAU::Check(AVCodecContext* avctx)
 
 bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 {
-  if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
-#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL)
-  if (format == PIX_FMT_VDPAU_MPEG4) return true;
-#endif
-  else return false;
+  if (format == AV_PIX_FMT_VDPAU)
+    return true;
+  else
+    return false;
 }
 
 void CVDPAU::CheckFeatures()
@@ -914,35 +926,35 @@ void CVDPAU::FiniVDPAUOutput()
 }
 
 
-void CVDPAU::ReadFormatOf( PixelFormat fmt
+void CVDPAU::ReadFormatOf( AVCodecID codec
                          , VdpDecoderProfile &vdp_decoder_profile
                          , VdpChromaType     &vdp_chroma_type)
 {
-  switch (fmt)
+  switch (codec)
   {
-    case PIX_FMT_VDPAU_MPEG1:
+    case AV_CODEC_ID_MPEG1VIDEO:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-    case PIX_FMT_VDPAU_MPEG2:
+    case AV_CODEC_ID_MPEG2VIDEO:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG2_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-    case PIX_FMT_VDPAU_H264:
+    case  AV_CODEC_ID_H264:
       vdp_decoder_profile = VDP_DECODER_PROFILE_H264_HIGH;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-    case PIX_FMT_VDPAU_WMV3:
+    case AV_CODEC_ID_WMV3:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-    case PIX_FMT_VDPAU_VC1:
+    case AV_CODEC_ID_VC1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
 #if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL) && \
     (defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
-    case PIX_FMT_VDPAU_MPEG4:
+    case AV_CODEC_ID_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
@@ -969,9 +981,9 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   past[1] = past[0] = current = future = NULL;
   CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i surfaceWidth:%i",OutWidth,vid_width,surface_width);
   CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i surfaceHeight:%i",OutHeight,vid_height,surface_height);
-  ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
+  ReadFormatOf(avctx->codec_id, vdp_decoder_profile, vdp_chroma_type);
 
-  if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
+  if(avctx->codec_id == AV_CODEC_ID_H264)
   {
      max_references = ref_frames;
      if (max_references > 16) max_references = 16;
@@ -1229,7 +1241,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     // create a new surface
     VdpDecoderProfile profile;
-    ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
+    ReadFormatOf(avctx->codec_id, profile, vdp->vdp_chroma_type);
     render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
     if (render == NULL)
     {
@@ -1259,8 +1271,9 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   if (render == NULL)
     return -1;
 
-  pic->data[1] =  pic->data[2] = NULL;
-  pic->data[0]= (uint8_t*)render;
+  pic->data[1] = pic->data[2] = NULL;
+  pic->data[0] = (uint8_t*)render;
+  pic->data[3] = (uint8_t*)(uintptr_t)render->surface;
 
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
 
@@ -1313,6 +1326,13 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
 }
 
+VdpStatus CVDPAU::Render(VdpDecoder decoder, VdpVideoSurface target,
+                         VdpPictureInfo const *picture_info,
+                         uint32_t bitstream_buffer_count,
+                         VdpBitstreamBuffer const * bitstream_buffers)
+{
+  return VDP_STATUS_OK;
+}
 
 void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                            const AVFrame *src, int offset[4],
@@ -1355,8 +1375,8 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   }
 
   uint32_t max_refs = 0;
-  if(s->pix_fmt == PIX_FMT_VDPAU_H264)
-    max_refs = render->info.h264.num_ref_frames;
+  if(s->codec_id == AV_CODEC_ID_H264)
+    max_refs = vdp->m_hwContext.info.h264.num_ref_frames;
 
   if(vdp->decoder == VDP_INVALID_HANDLE
   || vdp->vdpauConfigured == false
@@ -1368,9 +1388,9 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
 
   vdp_st = vdp->vdp_decoder_render(vdp->decoder,
                                    render->surface,
-                                   (VdpPictureInfo const *)&(render->info),
-                                   render->bitstream_buffers_used,
-                                   render->bitstream_buffers);
+                                   (VdpPictureInfo const *)&(vdp->m_hwContext.info),
+                                   vdp->m_hwContext.bitstream_buffers_used,
+                                   vdp->m_hwContext.bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
 }
 
