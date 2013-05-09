@@ -96,6 +96,7 @@ protected:
   std::vector<IDispResource*>  m_resources;
   uint64_t                     m_dpyLostTime;
   CStdString                   m_currentOutput;
+  CStdString                   m_userOutput;
   bool                         m_windowDirty;
   bool                         m_bIsInternalXrr;
   bool                         m_newGlContext;
