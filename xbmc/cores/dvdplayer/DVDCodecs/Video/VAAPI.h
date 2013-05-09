@@ -122,6 +122,7 @@ protected:
   static const unsigned  m_surfaces_max = 32;
   unsigned               m_surfaces_count;
   VASurfaceID            m_surfaces[m_surfaces_max];
+  unsigned               m_renderbuffers_count;
 
   int                    m_refs;
   std::list<CSurfacePtr> m_surfaces_used;

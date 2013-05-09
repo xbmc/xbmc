@@ -109,7 +109,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
 
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
-      if(dec->Open(avctx, *cur))
+      if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
       {
         ctx->SetHardware(dec);
         return *cur;
