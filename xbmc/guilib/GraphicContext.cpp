@@ -857,7 +857,6 @@ bool CGraphicContext::ToggleFullScreenRoot ()
 #endif
   }
 
-  SetVideoResolution(newRes);
   CDisplaySettings::Get().SetCurrentResolution(uiRes, true);
 
   return m_bFullScreenRoot;
