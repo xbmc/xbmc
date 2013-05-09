@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 enum ERENDERFEATURE
 {
   RENDERFEATURE_GAMMA,
