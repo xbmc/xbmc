@@ -61,9 +61,12 @@ struct AD {
  * a 4.4GB file uses 5 AD chains. A BluRay disk can store 50GB of data, so the
  * largest file should be 50 GB. So the maximum number of chains should be
  * around 62.
+ *
+ * However, with AD chain extensions there has been examples of chains up to
+ * around 1600 entries.
  */
 
-#define UDF_MAX_AD_CHAINS 50
+#define UDF_MAX_AD_CHAINS 2000
 
 struct FileAD {
     uint64_t Length;
