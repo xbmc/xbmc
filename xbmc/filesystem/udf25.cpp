@@ -174,6 +174,19 @@ static int UDFLogVolume( uint8_t *data, char *VolumeDescriptor )
   return 0;
 }
 
+static int UDFAdEntry( uint8_t *data, struct FileAD *fad )
+{
+  uint32_t L_AD;
+  unsigned int p;
+
+  L_AD = GETN4(20);
+  p = 24;
+  while( p < 24 + L_AD ) {
+    p += UDFAD( &data[ p ], L_AD, fad );
+  }
+  return 0;
+}
+
 static int UDFExtFileEntry( uint8_t *data, struct FileAD *fad )
 {
   uint32_t L_EA, L_AD;
@@ -325,7 +338,6 @@ int udf25::UDFScanDirX( udf_dir_t *dirp )
   struct AD FileICB;
   struct FileAD File;
   struct Partition partition;
-  uint8_t filetype;
 
   if(!(GetUDFCache(PartitionCache, 0, &partition))) {
     if(!UDFFindPartition(0, &partition))
@@ -383,7 +395,7 @@ int udf25::UDFScanDirX( udf_dir_t *dirp )
       // Look up the Filedata
       if( !UDFMapICB( FileICB, &partition, &File))
         return 0;
-      if (filetype == 4)
+      if (File.Type == 4)
         dirp->entry.d_type = DVD_DT_DIR;
       else
         dirp->entry.d_type = DVD_DT_REG; // Add more types?
@@ -783,6 +795,7 @@ int udf25::UDFMapICB( struct AD ICB, struct Partition *partition, struct FileAD 
     return 1;
   }
 
+  memset(File, 0, sizeof(*File));
   File->Partition       = partition->Number;
   File->Partition_Start = partition->Start;
 
@@ -794,22 +807,47 @@ int udf25::UDFMapICB( struct AD ICB, struct Partition *partition, struct FileAD 
 
     if( TagID == 261 ) {
       UDFFileEntry( LogBlock, File );
-      memcpy(&tmpmap.file, File, sizeof(tmpmap.file));
-      SetUDFCache(MapCache, tmpmap.lbn, &tmpmap);
-      return 1;
+      break;
     };
 
     /* ExtendedFileInfo */
     if( TagID == 266 ) {
       UDFExtFileEntry( LogBlock, File );
-      memcpy(&tmpmap.file, File, sizeof(tmpmap.file));
-      SetUDFCache(MapCache, tmpmap.lbn, &tmpmap);
-      return 1;
+      break;
+    }
+
+
+  } while( lbnum <= partition->Start + ICB.Location + ( ICB.Length - 1 )
+             / DVD_VIDEO_LB_LEN );
+
+
+  if(File->Type) {
+
+    /* check if ad chain continues elsewhere */
+    while(File->num_AD && File->AD_chain[File->num_AD-1].Flags == 3) {
+      struct AD* ad = &File->AD_chain[File->num_AD-1];
+
+      /* remove the forward pointer from the list */
+      File->num_AD--;
+
+      if( DVDReadLBUDF( File->Partition_Start + ad->Location, 1, LogBlock, 0 ) <= 0 )
+        TagID = 0;
+      else
+        UDFDescriptor( LogBlock, &TagID );
+
+      if( TagID == 258 ) {
+        /* add all additional entries */
+        UDFAdEntry( LogBlock, File );
+      } else {
+        return 0;
+      }
+    }
+
+    memcpy(&tmpmap.file, File, sizeof(tmpmap.file));
+    SetUDFCache(MapCache, tmpmap.lbn, &tmpmap);
+
+    return 1;
   }
-
-
-  } while( ( lbnum <= partition->Start + ICB.Location + ( ICB.Length - 1 )
-             / DVD_VIDEO_LB_LEN ) && ( TagID != 261 ) && (TagID != 266) );
 
   return 0;
 }
