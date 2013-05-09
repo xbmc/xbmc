@@ -570,6 +570,15 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
     int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
     list.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(241), screen + 1), screen));
   }
+
+  RESOLUTION res = CDisplaySettings::Get().GetDisplayResolution();
+  if (res == RES_WINDOW)
+    current = DM_WINDOWED;
+  else
+  {
+    RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
+    current = resInfo.iScreen;
+  }
 }
 
 void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
