@@ -1837,7 +1837,11 @@
           <constraints>
             <options>screens</options>
           </constraints>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="spinner" format="string" delayed="true">
+            <dependencies>
+              <dependency type="update" setting="videoscreen.screenmode" />
+            </dependencies>
+          </control>
         </setting>
         <setting id="videoscreen.resolution" type="integer" label="169" help="">
           <level>0</level>
