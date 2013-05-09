@@ -58,7 +58,7 @@ float CScrollInfo::GetPixelsPerFrame()
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
-		   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font)
+		   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTF *font)
 {
   m_strFontName = strFontName;
   m_style = style & FONT_STYLE_MASK;
@@ -297,7 +297,7 @@ void CGUIFont::End()
   m_font->End();
 }
 
-void CGUIFont::SetFont(CGUIFontTTFBase *font)
+void CGUIFont::SetFont(CGUIFontTTF *font)
 {
   if (m_font == font)
     return; // no need to update the font if we already have it

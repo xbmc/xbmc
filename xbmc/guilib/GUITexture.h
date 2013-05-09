@@ -30,9 +30,12 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
-#include "system.h" // HAS_GL, HAS_DX, etc
+#include <boost/shared_ptr.hpp>
 
 typedef uint32_t color_t;
+class PackedVertex;
+typedef class std::vector<PackedVertex> PackedVertices;
+typedef class boost::shared_ptr<PackedVertices> PackedVerticesPtr;
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -85,7 +88,7 @@ class CGUITextureBase
 public:
   CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture);
   CGUITextureBase(const CGUITextureBase &left);
-  virtual ~CGUITextureBase(void);
+  ~CGUITextureBase(void);
 
   bool Process(unsigned int currentTime);
   void Render();
@@ -124,15 +127,8 @@ protected:
   void LoadDiffuseImage();
   bool AllocateOnDemand();
   bool UpdateAnimFrame();
-  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
+  void Render(PackedVerticesPtr vertices, float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   void OrientateTexture(CRect &rect, float width, float height, int orientation);
-
-  // functions that our implementation classes handle
-  virtual void Allocate() {}; ///< called after our textures have been allocated
-  virtual void Free() {};     ///< called after our textures have been freed
-  virtual void Begin(color_t color) {};
-  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)=0;
-  virtual void End() {};
 
   bool m_visible;
   color_t m_diffuseColor;
@@ -168,18 +164,8 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+  unsigned int m_vertexIndex;
 };
 
-
-#if defined(HAS_GL)
-#include "GUITextureGL.h"
-#define CGUITexture CGUITextureGL
-#elif defined(HAS_GLES)
-#include "GUITextureGLES.h"
-#define CGUITexture CGUITextureGLES
-#elif defined(HAS_DX)
-#include "GUITextureD3D.h"
-#define CGUITexture CGUITextureD3D
-#endif
-
+#define CGUITexture CGUITextureBase
 #endif

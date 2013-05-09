@@ -52,6 +52,7 @@
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
+#include "windowing/WindowingFactory.h"
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */
@@ -301,6 +302,7 @@ void CXBMCRenderManager::Update(bool bPauseDrawing)
 
 void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  g_Windowing.DrawSceneGraph();
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (!m_pRenderer)
       return;
@@ -689,6 +691,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
 
 void CXBMCRenderManager::Present()
 {
+  g_Windowing.DrawSceneGraph();
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (!m_pRenderer)
       return;

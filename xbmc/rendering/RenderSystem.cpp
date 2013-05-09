@@ -19,6 +19,8 @@
 */
 
 #include "RenderSystem.h"
+#include "guilib/XBTF.h"
+#include "SceneGraph.h"
 
 CRenderSystemBase::CRenderSystemBase()
 {
@@ -30,11 +32,12 @@ CRenderSystemBase::CRenderSystemBase()
   m_renderCaps = 0;
   m_renderQuirks = 0;
   m_minDXTPitch = 0;
+  m_sceneGraph = new CSceneGraph;
 }
 
 CRenderSystemBase::~CRenderSystemBase()
 {
-
+  delete m_sceneGraph;
 }
 
 void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor) const
@@ -65,3 +68,63 @@ bool CRenderSystemBase::SupportsBGRAApple() const
   return (m_renderCaps & RENDER_CAPS_BGRA_APPLE) == RENDER_CAPS_BGRA_APPLE;
 }
 
+unsigned int CRenderSystemBase::GetPitch(unsigned int format, unsigned int width)
+{
+  switch (format)
+  {
+  case XB_FMT_DXT1:
+    return ((width + 3) / 4) * 8;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    return ((width + 3) / 4) * 16;
+  case XB_FMT_A8:
+    return width;
+  case XB_FMT_A8L8:
+    return width*2;
+  case XB_FMT_RGB8:
+    return (((width + 1)* 3 / 4) * 4);
+  case XB_FMT_RGBA8:
+  case XB_FMT_A8R8G8B8:
+  default:
+    return width*4;
+  }
+}
+
+unsigned int CRenderSystemBase::GetRows(unsigned int format, unsigned int height)
+{
+  switch (format)
+  {
+  case XB_FMT_DXT1:
+    return (height + 3) / 4;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    return (height + 3) / 4;
+  default:
+    return height;
+  }
+}
+
+bool CRenderSystemBase::SwapBlueRed(const unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements, unsigned int offset)
+{
+  if (!pixels) return false;
+  unsigned char *dst = (unsigned char*) pixels;
+  for (unsigned int y = 0; y < height; y++)
+  {
+    dst = (unsigned char*) pixels + (y * pitch);
+    for (unsigned int x = 0; x < pitch; x+=elements)
+      std::swap(dst[x+offset], dst[x+2+offset]);
+  }
+  return true;
+}
+
+void CRenderSystemBase::DrawSceneGraph(const CDirtyRegionList *regions)
+{
+  CSceneGraph *sceneGraph = m_sceneGraph;
+  m_sceneGraph = new CSceneGraph;
+
+  sceneGraph->PreProcess();
+  DrawSceneGraphImpl(sceneGraph, regions);
+  delete sceneGraph;
+}

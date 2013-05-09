@@ -32,7 +32,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
-
+#include "guilib/Texture.h"
+#include "threads/Thread.h"
+#include "rendering/SceneGraph.h"
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
      "guishader_frag_texture.glsl",
@@ -47,7 +49,7 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
  , m_pGUIshader(0)
- , m_method(SM_DEFAULT)
+ , m_method(SM_NONE)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -70,10 +72,10 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_renderCaps = 0;
+  m_needsClear = true;
   // Get the GLES version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
-
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
   {
@@ -204,7 +206,6 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
   glClear(flags);
-
   return true;
 }
 
@@ -273,7 +274,6 @@ bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
   }
   
   bool result = PresentRenderImpl(dirty);
-  
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
     int64_t curr, diff;
@@ -285,7 +285,7 @@ bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
     if (abs64(diff - m_iSwapRate) < abs64(diff))
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
   }
-  
+  m_needsClear = true; 
   return result;
 }
 
@@ -575,10 +575,12 @@ void CRenderSystemGLES::InitialiseGUIShader()
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
 {
-  m_method = method;
-  if (m_pGUIshader[m_method])
+  if (method == m_method)
+    return;
+  if (m_pGUIshader[method])
   {
-    m_pGUIshader[m_method]->Enable();
+    m_pGUIshader[method]->Enable();
+    m_method = method;
   }
   else
   {
@@ -588,11 +590,11 @@ void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
 
 void CRenderSystemGLES::DisableGUIShader()
 {
-  if (m_pGUIshader[m_method])
+  if (m_method != SM_NONE && m_pGUIshader[m_method])
   {
     m_pGUIshader[m_method]->Disable();
   }
-  m_method = SM_DEFAULT;
+  m_method = SM_NONE;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetPos()
@@ -625,6 +627,323 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
     return m_pGUIshader[m_method]->GetCord1Loc();
 
   return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetUniCol()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetUniColLoc();
+
+  return -1;
+}
+
+void CRenderSystemGLES::DrawSceneGraphImpl(const CSceneGraph *sceneGraph, const CDirtyRegionList *dirtyRegions)
+{
+
+  if (!m_bRenderCreated)
+    return;
+  int range;
+
+  if(g_Windowing.UseLimitedColor())
+    range = 235 - 16;
+  else
+    range = 255 -  0;
+
+  GLint posLoc  = -1;
+  GLint tex0Loc = -1;
+  GLint tex1Loc = -1;
+  GLint uniColLoc = -1;
+
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
+  {
+    CBaseTexture *texture = (CBaseTexture*)(*i)->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)(*i)->GetDiffuseTexture();
+    if (texture)
+      LoadToGPU(texture);
+    if (diffuseTexture)
+      LoadToGPU(diffuseTexture);
+  }
+
+  // Clear directly before the first draw in each frame
+  if (m_needsClear)
+  {
+    if (dirtyRegions)
+    {
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); ++region)
+      {
+        SetScissors(*region);
+        ClearBuffers(0);
+        ResetScissors();
+      }
+    }
+    else
+      ClearBuffers(0);
+    m_needsClear = false;
+  }
+
+  for(CSceneGraph::const_iterator i = sceneGraph->begin(); i != sceneGraph->end(); ++i)
+  {
+    unsigned int r,g,b,a = 0;
+
+    const PackedVerticesPtr vertices = (*i)->GetVertices();
+    CBaseTexture *texture = (CBaseTexture*)(*i)->GetTexture();
+    CBaseTexture *diffuseTexture = (CBaseTexture*)(*i)->GetDiffuseTexture();
+    int32_t color = (*i)->GetColor();
+    unsigned int triangleVerts = 6 * (vertices->size() / 4);
+    GLushort idx[triangleVerts];
+    GLushort *itr = idx;
+    for(unsigned int j=0; j < vertices->size(); j+=4)
+    {
+      *itr++ = j + 0;
+      *itr++ = j + 1;
+      *itr++ = j + 2;
+      *itr++ = j + 0;
+      *itr++ = j + 2;
+      *itr++ = j + 3;
+     }
+
+    if (texture)
+      BindToUnit(texture, 0);
+
+    r = GET_R(color) * range / 255;
+    g = GET_G(color) * range / 255;
+    b = GET_B(color) * range / 255;
+    a = GET_A(color);
+
+    bool hasAlpha = a < 255 || (texture && texture->HasAlpha());
+
+    if (diffuseTexture)
+    {
+      BindToUnit(diffuseTexture, 1);
+
+      hasAlpha |= diffuseTexture->HasAlpha();
+
+      if (r == 255 && g == 255 && b == 255 && a == 255 )
+      {
+        EnableGUIShader(SM_MULTI);
+      }
+      else
+      {
+        EnableGUIShader(SM_MULTI_BLENDCOLOR);
+      }
+    }
+    else if (texture)
+    {
+      EnableGUIShader(SM_TEXTURE);
+    }
+    else
+    {
+      EnableGUIShader(SM_DEFAULT);
+    }
+
+    posLoc  = GUIShaderGetPos();
+    tex0Loc = GUIShaderGetCoord0();
+    tex1Loc = GUIShaderGetCoord1();
+    uniColLoc = GUIShaderGetUniCol();
+
+    glUniform4f(uniColLoc, (r / 255.0f), (g / 255.0f), (b / 255.0f), (a / 255.0f));
+
+    if (diffuseTexture)
+    {
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, u2));
+      glEnableVertexAttribArray(tex1Loc);
+    }
+
+    if ( hasAlpha )
+    {
+      glEnable( GL_BLEND );
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    }
+    else
+    {
+      glDisable(GL_BLEND);
+    }
+
+    glEnableVertexAttribArray(posLoc);
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, x));
+    if (texture)
+    {
+      glEnableVertexAttribArray(tex0Loc);
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(PackedVertex), (char*)&vertices->at(0) + offsetof(PackedVertex, u1));
+    }
+
+    if (dirtyRegions)
+    {
+      for (CDirtyRegionList::const_iterator region = dirtyRegions->begin(); region != dirtyRegions->end(); ++region)
+      {
+        SetScissors(*region);
+        glDrawElements(GL_TRIANGLES, triangleVerts, GL_UNSIGNED_SHORT, idx);
+        ResetScissors();
+      }
+    }
+    else
+    {
+      glDrawElements(GL_TRIANGLES, triangleVerts, GL_UNSIGNED_SHORT, idx);
+    }
+    // Don't reset state until we're done with all batches. Only reset what
+    // could affect the next set of textures.
+    // TODO: Create wrappers for things like blending on/off and shader
+    // switching to prevent unnecessary changes.
+
+    if (diffuseTexture)
+    {
+      glDisableVertexAttribArray(tex1Loc);
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    if (texture)
+    {
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glDisableVertexAttribArray(tex0Loc);
+    }
+    glDisableVertexAttribArray(posLoc);
+  }
+
+  glDisableVertexAttribArray(tex0Loc);
+  glDisableVertexAttribArray(tex1Loc);
+  DisableGUIShader();
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+TextureObject CRenderSystemGLES::CreateTextureObject() const
+{
+  if(!m_bRenderCreated)
+    return NULL;
+  GLuint *texture = new GLuint;
+  glGenTextures(1, texture);
+  return (TextureObject) texture;
+}
+
+void CRenderSystemGLES::DestroyTextureObject(TextureObject texture)
+{
+  if(!m_bRenderCreated)
+    return;
+  if (texture)
+  {
+    glDeleteTextures(1, (GLuint*) texture);
+    delete (GLuint*)texture;
+  }
+}
+
+bool CRenderSystemGLES::LoadToGPU(TextureObject texture, unsigned int width, unsigned int height, unsigned int pitch, unsigned int rows, unsigned int format, const unsigned char *pixels)
+{
+  
+  if (!m_bRenderCreated)
+    return false;
+  unsigned int finalWidth = width;
+  unsigned int finalHeight = height;
+
+  // Bind the texture object
+  VerifyGLState();
+  if (!texture)
+    return false;
+  glBindTexture(GL_TEXTURE_2D, *((GLuint*)texture));
+
+  // Set the texture's stretching properties
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  unsigned int maxSize = GetMaxTextureSize();
+  if (height > maxSize)
+  {
+    CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", height, maxSize);
+    finalHeight = maxSize;
+  }
+  if (width > maxSize)
+  {
+    CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", width, maxSize);
+    finalWidth = maxSize;
+  }
+
+  // All incoming textures are BGRA, which GLES does not necessarily support.
+  // Some (most?) hardware supports BGRA textures via an extension.
+  // If not, we convert to RGBA first to avoid having to swizzle in shaders.
+  // Explicitly define GL_BGRA_EXT here in the case that it's not defined by
+  // system headers, and trust the extension list instead.
+#ifndef GL_BGRA_EXT
+#define GL_BGRA_EXT 0x80E1
+#endif
+
+  GLint internalformat;
+  GLenum pixelformat;
+
+  switch (format)
+  {
+    default:
+    case XB_FMT_RGBA8:
+      internalformat = pixelformat = GL_RGBA;
+      break;
+    case XB_FMT_RGB8:
+      internalformat = pixelformat = GL_RGB;
+      break;
+    case XB_FMT_A8:
+      internalformat = pixelformat = GL_ALPHA;
+      break;
+    case XB_FMT_A8L8:
+      internalformat = pixelformat = GL_LUMINANCE_ALPHA;
+      break;
+    case XB_FMT_A8R8G8B8:
+      if (SupportsBGRA())
+      {
+        internalformat = pixelformat = GL_BGRA_EXT;
+      }
+      else if (SupportsBGRAApple())
+      {
+        // Apple's implementation does not conform to spec. Instead, they require
+        // differing format/internalformat, more like GL.
+        internalformat = GL_RGBA;
+        pixelformat = GL_BGRA_EXT;
+      }
+      else
+      {
+        SwapBlueRed(pixels, height, pitch);
+        internalformat = pixelformat = GL_RGBA;
+      }
+      break;
+  }
+
+  glTexImage2D(GL_TEXTURE_2D, 0, internalformat, finalWidth, finalHeight, 0,
+    pixelformat, GL_UNSIGNED_BYTE, pixels);
+
+
+  VerifyGLState();
+  return true;
+}
+
+bool CRenderSystemGLES::LoadToGPU(CBaseTexture *baseTexture)
+{
+  if (baseTexture->IsLoadedToGPU())
+    return true;
+  unsigned int width, height, pitch, rows, format;
+  width = baseTexture->GetTextureWidth();
+  height = baseTexture->GetTextureHeight();
+  format = baseTexture->GetFormat();
+  pitch = GetPitch(format, width);
+  rows = GetRows(format, height);
+  TextureObject object = baseTexture->GetTextureObject();
+  if(!object)
+  {
+    object = CreateTextureObject();
+    baseTexture->SetTextureObject(object);
+  }
+  if (LoadToGPU(object, width, height, pitch, rows, format, (const unsigned char*)baseTexture->GetPixels()))
+    baseTexture->SetLoadedToGPU();
+  VerifyGLState();
+  return true;
+}
+
+void CRenderSystemGLES::BindToUnit(CBaseTexture *baseTexture, unsigned int unit)
+{
+  TextureObject object = baseTexture->GetTextureObject();
+  if (!object)
+    return;
+  glActiveTexture(GL_TEXTURE0 + unit);
+  glBindTexture(GL_TEXTURE_2D, *((GLuint*)object));
+  VerifyGLState();
 }
 
 #endif

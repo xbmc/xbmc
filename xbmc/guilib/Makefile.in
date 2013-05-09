@@ -77,16 +77,7 @@ SRCS += VisibleEffect.cpp
 SRCS += XBTF.cpp
 SRCS += XBTFReader.cpp
 
-ifeq (@USE_OPENGL@,1)
-SRCS += TextureGL.cpp
-SRCS += GUIFontTTFGL.cpp
-SRCS += GUITextureGL.cpp
-endif
-
 ifeq (@USE_OPENGLES@,1)
-SRCS += TextureGL.cpp
-SRCS += GUIFontTTFGL.cpp
-SRCS += GUITextureGLES.cpp
 SRCS += MatrixGLES.cpp
 SRCS += GUIShader.cpp
 endif

@@ -35,7 +35,7 @@ typedef uint32_t color_t;
 typedef std::vector<character_t> vecText;
 typedef std::vector<color_t> vecColors;
 
-class CGUIFontTTFBase;
+class CGUIFontTTF;
 
 // flags for alignment
 #define XBFONT_LEFT       0x00000000
@@ -106,7 +106,7 @@ class CGUIFont
 {
 public:
   CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
-	   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font);
+	   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTF *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
@@ -141,12 +141,12 @@ public:
 
   static wchar_t RemapGlyph(wchar_t letter);
 
-  CGUIFontTTFBase* GetFont() const
+  CGUIFontTTF* GetFont() const
   {
     return m_font;
   }
 
-  void SetFont(CGUIFontTTFBase* font);
+  void SetFont(CGUIFontTTF* font);
 
 protected:
   CStdString m_strFontName;
@@ -155,7 +155,7 @@ protected:
   color_t m_textColor;
   float m_lineSpacing;
   float m_origHeight;
-  CGUIFontTTFBase *m_font; // the font object has the size information
+  CGUIFontTTF *m_font; // the font object has the size information
 
 private:
   bool ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const;

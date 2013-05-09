@@ -28,6 +28,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "karaokelyricscdg.h"
+#include "rendering/SceneGraph.h"
 
 
 CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
@@ -109,7 +110,7 @@ bool CKaraokeLyricsCDG::InitGraphics()
 
   if (!m_pCdgTexture)
   {
-	m_pCdgTexture = new CTexture( CDG_FULL_WIDTH, CDG_FULL_HEIGHT, XB_FMT_A8R8G8B8 );
+	m_pCdgTexture = new CBaseTexture( CDG_FULL_WIDTH, CDG_FULL_HEIGHT, XB_FMT_A8R8G8B8 );
   }
 
   if ( !m_pCdgTexture )
@@ -192,7 +193,7 @@ void CKaraokeLyricsCDG::Render()
                    (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right,
                    (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom);
 
-  CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
+  g_Windowing.GetSceneGraph()->DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
 }
 
 void CKaraokeLyricsCDG::cmdMemoryPreset( const char * data )

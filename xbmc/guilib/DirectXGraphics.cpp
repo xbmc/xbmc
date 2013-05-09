@@ -314,7 +314,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
   DWORD width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
 
-  *ppTexture = new CTexture(width, height, XB_FMT_A8R8G8B8);
+  *ppTexture = new CBaseTexture(width, height, XB_FMT_A8R8G8B8);
 
   if (*ppTexture)
   {

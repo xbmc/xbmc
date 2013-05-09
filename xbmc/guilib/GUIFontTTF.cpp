@@ -29,6 +29,9 @@
 #include "windowing/WindowingFactory.h"
 
 #include <math.h>
+#include "windowing/WindowingFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "rendering/SceneGraph.h"
 
 // stuff for freetype
 #include <ft2build.h>
@@ -49,7 +52,7 @@ using namespace std;
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
-int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
+int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
                                                   // A larger number means more of the "dead space" is placed between
                                                   // words rather than between letters.
 
@@ -131,16 +134,15 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
+CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
 {
   m_texture = NULL;
+  m_cachePixels = NULL;
   m_char = NULL;
   m_maxChars = 0;
   m_nestedBeginCount = 0;
 
   m_bTextureLoaded = false;
-  m_vertex_size   = 4*1024;
-  m_vertex        = (SVertex*)malloc(m_vertex_size * sizeof(SVertex));
 
   m_face = NULL;
   m_stroker = NULL;
@@ -151,25 +153,24 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_cellBaseLine = m_cellHeight = 0;
   m_numChars = 0;
   m_posX = m_posY = 0;
-  m_textureHeight = m_textureWidth = 0;
+  m_textureHeight = m_textureWidth = m_texturePitch = m_textureBlockSize = 0;
   m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
   m_color = 0;
-  m_vertex_count = 0;
   m_nTexture = 0;
 }
 
-CGUIFontTTFBase::~CGUIFontTTFBase(void)
+CGUIFontTTF::~CGUIFontTTF(void)
 {
   Clear();
 }
 
-void CGUIFontTTFBase::AddReference()
+void CGUIFontTTF::AddReference()
 {
   m_referenceCount++;
 }
 
-void CGUIFontTTFBase::RemoveReference()
+void CGUIFontTTF::RemoveReference()
 {
   // delete this object when it's reference count hits zero
   m_referenceCount--;
@@ -178,11 +179,9 @@ void CGUIFontTTFBase::RemoveReference()
 }
 
 
-void CGUIFontTTFBase::ClearCharacterCache()
+void CGUIFontTTF::ClearCharacterCache()
 {
   delete(m_texture);
-
-  DeleteHardwareTexture();
 
   m_texture = NULL;
   delete[] m_char;
@@ -194,12 +193,15 @@ void CGUIFontTTFBase::ClearCharacterCache()
   m_posX = m_textureWidth;
   m_posY = -(int)GetTextureLineHeight();
   m_textureHeight = 0;
+  m_texturePitch = 0;
+  m_textureBlockSize = 0;
 }
 
-void CGUIFontTTFBase::Clear()
+void CGUIFontTTF::Clear()
 {
   delete(m_texture);
   m_texture = NULL;
+  delete[] m_cachePixels;
   delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_char = NULL;
@@ -216,12 +218,9 @@ void CGUIFontTTFBase::Clear()
     g_freeTypeLibrary.ReleaseStroker(m_stroker);
   m_stroker = NULL;
 
-  free(m_vertex);
-  m_vertex = NULL;
-  m_vertex_count = 0;
 }
 
-bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
+bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
@@ -281,6 +280,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   delete(m_texture);
   m_texture = NULL;
+  delete[] m_cachePixels;
   delete[] m_char;
   m_char = NULL;
 
@@ -290,6 +290,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_strFilename = strFilename;
 
   m_textureHeight = 0;
+  m_texturePitch = 0;
+  m_textureBlockSize = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 
   m_textureWidth = CBaseTexture::PadPow2(m_textureWidth);
@@ -308,7 +310,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   return true;
 }
 
-void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
+void CGUIFontTTF::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
 {
   Begin();
 
@@ -417,7 +419,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
+float CGUIFontTTF::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
 {
   float width = 0;
   while (start != end)
@@ -437,33 +439,33 @@ float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecTe
   return width;
 }
 
-float CGUIFontTTFBase::GetCharWidthInternal(character_t ch)
+float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 {
   Character *c = GetCharacter(ch);
   if (c) return c->advance;
   return 0;
 }
 
-float CGUIFontTTFBase::GetTextHeight(float lineSpacing, int numLines) const
+float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
   return (float)(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
 }
 
-float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
+float CGUIFontTTF::GetLineHeight(float lineSpacing) const
 {
   if (m_face)
     return lineSpacing * m_face->size->metrics.height / 64.0f;
   return 0.0f;
 }
 
-unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
+unsigned int CGUIFontTTF::spacing_between_characters_in_texture = 1;
 
-unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
+unsigned int CGUIFontTTF::GetTextureLineHeight() const
 {
   return m_cellHeight + spacing_between_characters_in_texture;
 }
 
-CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
 {
   wchar_t letter = (wchar_t)(chr & 0xffff);
   character_t style = (chr & 0x3000000) >> 24;
@@ -551,7 +553,7 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
   return m_char + low;
 }
 
-bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
+bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 {
   int glyph_index = FT_Get_Char_Index( m_face, letter );
 
@@ -656,7 +658,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   return true;
 }
 
-void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -718,94 +720,36 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   float tt = texture.y1 * m_textureScaleY;
   float tb = texture.y2 * m_textureScaleY;
 
-  // grow the vertex buffer if required
-  if(m_vertex_count >= m_vertex_size)
-  {
-    m_vertex_size *= 2;
-    void* old      = m_vertex;
-    m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
-    if (!m_vertex)
-    {
-      free(old);
-      printf("realloc failed in CGUIFontTTF::RenderCharacter. aborting\n");
-      abort();
-    }
-  }
-
   m_color = color;
-  SVertex* v = m_vertex + m_vertex_count;
-
-  unsigned char r = GET_R(color)
-              , g = GET_G(color)
-              , b = GET_B(color)
-              , a = GET_A(color);
-
-  if(g_Windowing.UseLimitedColor())
-  {
-    r = (235 - 16) * r / 255;
-    g = (235 - 16) * g / 255;
-    b = (235 - 16) * b / 255;
-  }
-
+  mapVertices::iterator draw = m_vertices.find(color);
+  PackedVerticesPtr packedvertex = PackedVerticesPtr(new PackedVertices(4));
   for(int i = 0; i < 4; i++)
   {
-    v[i].r = r;
-    v[i].g = g;
-    v[i].b = b;
-    v[i].a = a;
+    packedvertex->at(i).x = x[i];
+    packedvertex->at(i).y = y[i];
+    packedvertex->at(i).z = z[i];
   }
 
-#if defined(HAS_GL) || defined(HAS_DX)
-  for(int i = 0; i < 4; i++)
-  {
-    v[i].x = x[i];
-    v[i].y = y[i];
-    v[i].z = z[i];
-  }
+  packedvertex->at(0).u1 = tl;
+  packedvertex->at(0).v1 = tt;
 
-  v[0].u = tl;
-  v[0].v = tt;
+  packedvertex->at(1).u1 = tr;
+  packedvertex->at(1).v1 = tt;
 
-  v[1].u = tr;
-  v[1].v = tt;
+  packedvertex->at(2).u1 = tr;
+  packedvertex->at(2).v1 = tb;
 
-  v[2].u = tr;
-  v[2].v = tb;
+  packedvertex->at(3).u1 = tl;
+  packedvertex->at(3).v1 = tb;
 
-  v[3].u = tl;
-  v[3].v = tb;
-#else
-  // GLES uses triangle strips, not quads, so have to rearrange the vertex order
-  v[0].u = tl;
-  v[0].v = tt;
-  v[0].x = x[0];
-  v[0].y = y[0];
-  v[0].z = z[0];
-
-  v[1].u = tl;
-  v[1].v = tb;
-  v[1].x = x[3];
-  v[1].y = y[3];
-  v[1].z = z[3];
-
-  v[2].u = tr;
-  v[2].v = tt;
-  v[2].x = x[1];
-  v[2].y = y[1];
-  v[2].z = z[1];
-
-  v[3].u = tr;
-  v[3].v = tb;
-  v[3].x = x[2];
-  v[3].y = y[2];
-  v[3].z = z[2];
-#endif
-
-  m_vertex_count+=4;
+  if (draw != m_vertices.end())
+    draw->second->insert(draw->second->end(), packedvertex->begin(), packedvertex->end());
+  else
+    m_vertices.insert(make_pair(color, packedvertex));
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTFBase::ObliqueGlyph(FT_GlyphSlot slot)
+void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 {
   /* only oblique outline glyphs */
   if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
@@ -828,7 +772,7 @@ void CGUIFontTTFBase::ObliqueGlyph(FT_GlyphSlot slot)
 
 
 // Embolden code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
+void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
 {
   if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
     return;
@@ -860,4 +804,98 @@ void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
   slot->metrics.vertAdvance  += dy;
 }
 
+void CGUIFontTTF::Begin()
+{
+  if (m_nestedBeginCount == 0)
+    m_vertices.clear();
+  m_nestedBeginCount++;
+}
+
+void CGUIFontTTF::End()
+{
+  if (m_nestedBeginCount == 0)
+    return;
+
+  if (--m_nestedBeginCount > 0)
+    return;
+
+  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
+  for (mapVertices::iterator i = m_vertices.begin(); i != m_vertices.end(); ++i)
+  {
+    CBatchDrawPtr temp = CBatchDrawPtr(new CBatchDraw);
+    temp->SetTexture(m_texture);
+    temp->SetDirty(true);
+    temp->SetColor(i->first);
+    temp->SetVertices(i->second);
+    sceneGraph->Add(temp);
+  }
+}
+
+CBaseTexture* CGUIFontTTF::ReallocTexture(unsigned int& newHeight)
+{
+  unsigned int oldHeight = m_textureHeight;
+  unsigned int oldPitch = m_texturePitch;
+  newHeight = CBaseTexture::PadPow2(newHeight);
+  if(!m_texture)
+    m_texture = new CBaseTexture;
+
+  if (!m_texture)
+  {
+    CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
+    delete m_texture;
+    return NULL;
+  }
+  m_texture->Allocate(m_textureWidth, newHeight, XB_FMT_A8L8);
+  m_textureHeight = m_texture->GetHeight();
+  m_textureWidth = m_texture->GetWidth();
+  m_texturePitch = m_texture->GetPitch();
+  m_textureBlockSize = m_texture->GetBlockSize();
+  size_t newSize = m_texturePitch * m_textureHeight;
+  unsigned char* newCachedPixels = new unsigned char[newSize];
+  if (m_cachePixels)
+  {
+    unsigned char* src = m_cachePixels;
+    unsigned char* dst = newCachedPixels;
+    for (unsigned int y = 0; y < oldHeight; y++)
+    {
+      memcpy(dst, src, oldPitch);
+      src += oldPitch;
+      dst += oldPitch;
+    }
+    delete[] m_cachePixels;
+    m_cachePixels = newCachedPixels;
+  }
+  else
+  {
+    memset(newCachedPixels, 0, newSize);
+    m_cachePixels = newCachedPixels;
+  }
+  return m_texture;
+}
+
+bool CGUIFontTTF::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+{
+  FT_Bitmap bitmap = bitGlyph->bitmap;
+
+  unsigned char* source = (unsigned char*) bitmap.buffer;
+  unsigned char* target = (unsigned char*) m_cachePixels + y1 * m_texturePitch + x1 * m_textureBlockSize;
+
+  for (unsigned int y = y1; y < y2; y++)
+  {
+    unsigned char *dst2 = target;
+    unsigned char *src2 = source;
+    for (int x = 0; x < bitmap.width; x++, src2++)
+    {
+      memset(dst2, 0xff, m_textureBlockSize - 1);
+      dst2+= m_textureBlockSize -1;
+      *dst2++ = src2[0];
+    }
+     source += bitmap.width;
+     target += m_texturePitch;
+  }
+
+  // Update the GPU texture
+  m_texture->Update(m_textureWidth, m_textureHeight, m_texturePitch, XB_FMT_A8L8, m_cachePixels, true);
+  return TRUE;
+}
 

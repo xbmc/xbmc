@@ -27,6 +27,9 @@
  *
  */
 
+#include <boost/shared_ptr.hpp>
+#include <map>
+
 // forward definition
 class CBaseTexture;
 
@@ -42,47 +45,39 @@ typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
 typedef struct FT_StrokerRec_ *FT_Stroker;
 
+class PackedVertex;
+typedef class boost::shared_ptr<std::vector<PackedVertex> > PackedVerticesPtr;
+
 typedef uint32_t character_t;
 typedef uint32_t color_t;
 typedef std::vector<character_t> vecText;
 typedef std::vector<color_t> vecColors;
+typedef std::map<color_t, PackedVerticesPtr> mapVertices;
 
 /*!
  \ingroup textures
  \brief
  */
 
-struct SVertex
-{
-  float x, y, z;
-#ifdef HAS_DX
-  unsigned char b, g, r, a;
-#else
-  unsigned char r, g, b, a;
-#endif
-  float u, v;
-};
-
-
-class CGUIFontTTFBase
+class CGUIFontTTF
 {
   friend class CGUIFont;
 
 public:
 
-  CGUIFontTTFBase(const CStdString& strFileName);
-  virtual ~CGUIFontTTFBase(void);
+  CGUIFontTTF(const CStdString& strFileName);
+  ~CGUIFontTTF(void);
 
   void Clear();
 
   bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
 
-  virtual void Begin() = 0;
-  virtual void End() = 0;
+  void Begin();
+  void End();
 
   const CStdString& GetFileName() const { return m_strFileName; };
 
-protected:
+private:
   struct Character
   {
     short offsetX, offsetY;
@@ -112,9 +107,9 @@ protected:
   void RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX);
   void ClearCharacterCache();
 
-  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
-  virtual void DeleteHardwareTexture() = 0;
+  CBaseTexture* ReallocTexture(unsigned int& newHeight);
+  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
+  void DeleteHardwareTexture();
 
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
@@ -124,6 +119,8 @@ protected:
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
+  unsigned int m_texturePitch;
+  unsigned int m_textureBlockSize;
   int m_posX;                        // current position in the texture
   int m_posY;
 
@@ -157,27 +154,14 @@ protected:
   bool m_bTextureLoaded;
   unsigned int m_nTexture;
 
-  SVertex* m_vertex;
-  int      m_vertex_count;
-  int      m_vertex_size;
-
   float    m_textureScaleX;
   float    m_textureScaleY;
 
   static int justification_word_weight;
 
   CStdString m_strFileName;
-
-private:
   int m_referenceCount;
+  unsigned char *m_cachePixels;
+  mapVertices m_vertices;
 };
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "GUIFontTTFGL.h"
-#define CGUIFontTTF CGUIFontTTFGL
-#elif defined(HAS_DX)
-#include "GUIFontTTFDX.h"
-#define CGUIFontTTF CGUIFontTTFDX
-#endif
-
 #endif

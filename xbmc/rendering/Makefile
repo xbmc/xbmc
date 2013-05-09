@@ -1,4 +1,6 @@
-SRCS=RenderSystem.cpp
+SRCS  = BatchDraw.cpp
+SRCS += RenderSystem.cpp
+SRCS += SceneGraph.cpp
      
 LIB=rendering.a
 

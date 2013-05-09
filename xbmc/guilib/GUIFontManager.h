@@ -34,7 +34,7 @@
 
 // Forward
 class CGUIFont;
-class CGUIFontTTFBase;
+class CGUIFontTTF;
 class CXBMCTinyXML;
 class TiXmlNode;
 class CSetting;
@@ -74,7 +74,7 @@ public:
   CGUIFont* GetDefaultFont(bool border = false);
 
   void Clear();
-  void FreeFontFile(CGUIFontTTFBase *pFont);
+  void FreeFontFile(CGUIFontTTF *pFont);
 
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
@@ -88,11 +88,11 @@ public:
 protected:
   void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const;
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
+  CGUIFontTTF* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(CXBMCTinyXML& xmlDoc);
 
   std::vector<CGUIFont*> m_vecFonts;
-  std::vector<CGUIFontTTFBase*> m_vecFontFiles;
+  std::vector<CGUIFontTTF*> m_vecFontFiles;
   std::vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION_INFO m_skinResolution;

@@ -94,6 +94,11 @@ void CGUIRenderingControl::Process(unsigned int currentTime, CDirtyRegionList &d
 
 void CGUIRenderingControl::Render()
 {
+  // since we don't control addon render, it won't be in our scenegraph,
+  // which means that it will be hidden by our final render. We need to draw
+  // The current graph, so that we end up rendering in the correct order.
+  g_Windowing.DrawSceneGraph();
+
   CSingleLock lock(m_rendering);
   if (m_callback)
   {

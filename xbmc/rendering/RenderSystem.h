@@ -29,6 +29,7 @@
 #include "utils/StdString.h"
 #include <stdint.h>
 
+class CSceneGraph;
 typedef enum _RenderingSystemType
 {
   RENDERING_SYSTEM_OPENGL,
@@ -41,9 +42,9 @@ typedef enum _RenderingSystemType
 *   We currently have two engines: OpenGL and DirectX
 *   This interface is very basic since a lot of the actual details will go in to the derived classes
 */
-
+typedef const void* TextureObject;
 typedef uint32_t color_t;
-
+class CBaseTexture;
 enum
 {
   RENDER_CAPS_DXT      = (1 << 0),
@@ -96,11 +97,28 @@ public:
   virtual void RestoreHardwareTransform() = 0;
 
   virtual bool TestRender() = 0;
-
   /**
    * Project (x,y,z) 3d scene coordinates to (x,y) 2d screen coordinates
    */
   virtual void Project(float &x, float &y, float &z) { }
+
+/*! \brief Upload a texture to the GPU.
+    Must come from the main thread */
+  virtual bool LoadToGPU(CBaseTexture *baseTexture) = 0;
+
+/*! \brief Create a texture object for consumption by the GPU.
+    TextureObject is an abstract type that should be cast into the real type
+    by the implementation */
+  virtual TextureObject CreateTextureObject() const = 0;
+
+/*! \brief Destroy a TextureObject.*/
+  virtual void DestroyTextureObject(TextureObject texture) = 0;
+  
+/*! \brief Implementation-specific scene renderer
+     The renderer should iterate the graph and draw it for each dirty region.
+     It is responsible for all clearing, drawing, scissoring, and
+     state-management. */
+  virtual void DrawSceneGraphImpl( const CSceneGraph *sceneGraph, const CDirtyRegionList *regions = NULL) = 0;
 
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
   const CStdString& GetRenderVendor() const { return m_RenderVendor; }
@@ -114,7 +132,19 @@ public:
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
 
+/* \brief Public function for rendering the main scene.
+   Returns immediately */
+  void DrawSceneGraph(const CDirtyRegionList *regions = NULL);
+
+/*! \brief Pointer to the main scene graph.
+    It is invalidated after each call to DrawSceneGraph. Do not cache this
+    value */
+  CSceneGraph* GetSceneGraph() const { return m_sceneGraph; }
+
 protected:
+  bool SwapBlueRed(const unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset = 0);
+  unsigned int GetPitch(unsigned int format, unsigned int width);
+  unsigned int GetRows(unsigned int format, unsigned int height);
   bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
   bool                m_bVSync;
@@ -128,6 +158,9 @@ protected:
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;
   unsigned int m_renderQuirks;
+
+private:
+  CSceneGraph  *m_sceneGraph;
 };
 
 #endif // RENDER_SYSTEM_H

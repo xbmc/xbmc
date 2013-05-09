@@ -34,6 +34,7 @@
 #include "settings/DisplaySettings.h"
 #include "video/FFmpegVideoDecoder.h"
 #include "system.h"
+#include "rendering/SceneGraph.h"
 
 KaraokeVideoBackground::KaraokeVideoBackground()
 {
@@ -147,7 +148,7 @@ void KaraokeVideoBackground::Render()
 
   // We got a frame. Draw it.
   CRect vertCoords((float) m_displayLeft, (float) m_displayTop, (float) m_displayRight, (float) m_displayBottom );
-  CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_texture );
+  g_Windowing.GetSceneGraph()->DrawQuad(vertCoords, 0xffffffff, m_texture );
 }
 
 bool KaraokeVideoBackground::Start( const CStdString& filename )
@@ -169,7 +170,7 @@ bool KaraokeVideoBackground::Start( const CStdString& filename )
   }
   
   // Allocate the texture
-  m_texture = new CTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
+  m_texture = new CBaseTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
   
   if ( !m_texture )
   {

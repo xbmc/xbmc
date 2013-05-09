@@ -34,6 +34,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/Variant.h"
 #include "Key.h"
+#include "rendering/SceneGraph.h"
 
 using namespace std;
 
@@ -549,47 +550,28 @@ bool CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
-
+  CSceneGraph *sceneGraph = g_Windowing.GetSceneGraph();
+  sceneGraph->Reset();
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
+  bool hasRendered = dirtyRegions.size() > 0;
 
-  bool hasRendered = false;
-  // If we visualize the regions we will always render the entire viewport
-  if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
-  {
-    RenderPass();
-    hasRendered = true;
-  }
-  else if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
-  {
-    if (dirtyRegions.size() > 0)
-    {
-      RenderPass();
-      hasRendered = true;
-    }
-  }
-  else
-  {
-    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
-    {
-      if (i->IsEmpty())
-        continue;
-
-      g_graphicsContext.SetScissors(*i);
-      RenderPass();
-      hasRendered = true;
-    }
-    g_graphicsContext.ResetScissors();
-  }
+  RenderPass();
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
   {
+    hasRendered = true;
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions(); 
+
     for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); i++)
-      CGUITexture::DrawQuad(*i, 0x0fff0000);
+      sceneGraph->DrawQuad(*i, 0x0fff0000);
+
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
-      CGUITexture::DrawQuad(*i, 0x4c00ff00);
+      sceneGraph->DrawQuad(*i, 0x4c00ff00);
+
   }
+  if (hasRendered)
+    g_Windowing.DrawSceneGraph(&dirtyRegions);
 
   return hasRendered;
 }

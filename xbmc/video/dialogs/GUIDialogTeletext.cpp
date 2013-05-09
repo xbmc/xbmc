@@ -27,6 +27,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "cores/IPlayer.h"
 #include "settings/Settings.h"
+#include "rendering/SceneGraph.h"
 
 using namespace std;
 
@@ -105,7 +106,7 @@ void CGUIDialogTeletext::Render()
   }
 
   color_t color = ((color_t)(teletextFadeAmount * 2.55f) & 0xff) << 24 | 0xFFFFFF;
-  CGUITexture::DrawQuad(m_vertCoords, color, m_pTxtTexture);
+  g_Windowing.GetSceneGraph()->DrawQuad(m_vertCoords, color, m_pTxtTexture);
 
   CGUIDialog::Render();
 }
@@ -144,7 +145,7 @@ void CGUIDialogTeletext::OnInitWindow()
     Close();
   }
 
-  m_pTxtTexture = new CTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
+  m_pTxtTexture = new CBaseTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
   if (!m_pTxtTexture)
   {
     CLog::Log(LOGERROR, "%s: failed to create texture", __FUNCTION__);

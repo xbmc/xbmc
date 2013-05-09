@@ -33,7 +33,6 @@
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include <assert.h>
-
 using namespace std;
 
 
@@ -204,7 +203,7 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
   m_texture.Add(texture, delay);
 
   if (texture)
-    m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
+    m_memUsage += sizeof(CBaseTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
 }
 
 /************************************************************************/
@@ -366,7 +365,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
       for (int iImage = 0; iImage < iImages; iImage++)
       {
-        CTexture *glTexture = new CTexture();
+        CBaseTexture *glTexture = new CBaseTexture();
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
@@ -458,19 +457,6 @@ void CGUITextureManager::FreeUnusedTextures()
   for (ivecTextures i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
     delete *i;
   m_unusedTextures.clear();
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-  for (unsigned int i = 0; i < m_unusedHwTextures.size(); ++i)
-  {
-    glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
-  }
-#endif
-  m_unusedHwTextures.clear();
-}
-
-void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
-{
-  m_unusedHwTextures.push_back(texture);
 }
 
 void CGUITextureManager::Cleanup()
