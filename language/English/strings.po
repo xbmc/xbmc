@@ -4822,7 +4822,62 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr ""
 
-#empty strings from id 13026 to 13049
+#: system/settings/settings.xml
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr ""
+
+#: xbmc/network/WakeOnAccess.cpp
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr ""
+
+#empty strings from id 13037 to 13049
 
 msgctxt "#13050"
 msgid "Running low on battery"

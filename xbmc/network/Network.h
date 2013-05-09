@@ -63,6 +63,8 @@ public:
    virtual CStdString GetMacAddress(void) = 0;
    virtual void GetMacAddressRaw(char rawMac[6]) = 0;
 
+   virtual bool GetHostMacAddress(unsigned long host, CStdString& mac) = 0;
+
    virtual CStdString GetCurrentIPAddress() = 0;
    virtual CStdString GetCurrentNetmask() = 0;
    virtual CStdString GetCurrentDefaultGateway(void) = 0;
@@ -108,6 +110,10 @@ public:
 
    // Return true if the magic packet was send
    bool WakeOnLan(const char *mac);
+
+   // Return true if host replies to ping
+   bool PingHost(unsigned long host, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
+   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) = 0;
 
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void) = 0;

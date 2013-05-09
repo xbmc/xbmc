@@ -19,6 +19,8 @@
  */
 
 #include <errno.h>
+#include <iphlpapi.h>
+#include <IcmpAPI.h>
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"
 #include "utils/log.h"
@@ -259,6 +261,58 @@ std::vector<CStdString> CNetworkWin32::GetNameServers(void)
 void CNetworkWin32::SetNameServers(std::vector<CStdString> nameServers)
 {
   return;
+}
+
+bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
+{
+  char SendData[]    = "poke";
+  HANDLE hIcmpFile   = IcmpCreateFile();
+  BYTE ReplyBuffer [sizeof(ICMP_ECHO_REPLY) + sizeof(SendData)];
+
+  SetLastError(ERROR_SUCCESS);
+
+  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData), 
+                                NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+
+  DWORD lastErr = GetLastError();
+  if (lastErr != ERROR_SUCCESS)
+    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, WUSysMsg(lastErr).c_str());
+
+  IcmpCloseHandle (hIcmpFile);
+
+  if (dwRetVal != 0)
+  {
+    PICMP_ECHO_REPLY pEchoReply = (PICMP_ECHO_REPLY)ReplyBuffer;
+    return (pEchoReply->Status == IP_SUCCESS);
+  }
+  return false;
+}
+
+bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, CStdString& mac)
+{
+  IPAddr src_ip = inet_addr(GetCurrentIPAddress().c_str());
+  BYTE bPhysAddr[6];      // for 6-byte hardware addresses
+  ULONG PhysAddrLen = 6;  // default to length of six bytes
+
+  memset(&bPhysAddr, 0xff, sizeof (bPhysAddr));
+
+  DWORD dwRetVal = SendARP(host, src_ip, &bPhysAddr, &PhysAddrLen);
+  if (dwRetVal == NO_ERROR)
+  {
+    if (PhysAddrLen == 6)
+    {
+      mac.Format("%02X:%02X:%02X:%02X:%02X:%02X", 
+        bPhysAddr[0], bPhysAddr[1], bPhysAddr[2], 
+        bPhysAddr[3], bPhysAddr[4], bPhysAddr[5]);
+      return true;
+    }
+    else
+      CLog::Log(LOGERROR, "%s - SendArp completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, PhysAddrLen);
+  }
+  else
+    CLog::Log(LOGERROR, "%s - SendArp failed with error (%d)", __FUNCTION__, dwRetVal);
+
+  return false;
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
