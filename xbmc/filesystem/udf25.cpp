@@ -105,9 +105,19 @@ static int UDFExtAD( uint8_t *data, struct AD *ad )
   return 0;
 }
 
-static int UDFAD( uint8_t *ptr, uint32_t len, struct AD *ad, uint16_t flags)
+static int UDFAD( uint8_t *ptr, uint32_t len, struct FileAD *fad)
 {
-  switch( flags & 0x0007 ) {
+  struct AD *ad;
+
+  if (fad->num_AD  >= UDF_MAX_AD_CHAINS)
+    return len;
+
+  ad =  &fad->AD_chain[fad->num_AD];
+  ad->Partition = fad->Partition;
+  ad->Flags     = 0;
+  fad->num_AD++;
+
+  switch( fad->Flags & 0x0007 ) {
     case 0:
       UDFShortAD( ptr, ad );
       return 8;
@@ -164,14 +174,12 @@ static int UDFLogVolume( uint8_t *data, char *VolumeDescriptor )
   return 0;
 }
 
-static int UDFExtFileEntry( uint8_t *data, uint8_t *FileType,
-                            struct Partition *partition, struct FileAD *fad )
+static int UDFExtFileEntry( uint8_t *data, struct FileAD *fad )
 {
-  uint16_t flags;
   uint32_t L_EA, L_AD;
   unsigned int p;
 
-  UDFICB( &data[ 16 ], FileType, &flags );
+  UDFICB( &data[ 16 ], &fad->Type, &fad->Flags );
 
   /* Init ad for an empty file (i.e. there isn't a AD, L_AD == 0 ) */
   fad->Length = GETN8(56); // 64-bit.
@@ -181,16 +189,7 @@ static int UDFExtFileEntry( uint8_t *data, uint8_t *FileType,
   p = 216 + L_EA;
   fad->num_AD = 0;
   while( p < 216 + L_EA + L_AD ) {
-    struct AD *ad;
-
-    if (fad->num_AD  >= UDF_MAX_AD_CHAINS) return 0;
-
-    ad =  &fad->AD_chain[fad->num_AD];
-    ad->Partition = partition->Number;
-    ad->Flags = 0;
-    fad->num_AD++;
-
-    p += UDFAD( &data[ p ], L_AD, ad, flags );
+    p += UDFAD( &data[ p ], L_AD, fad );
   }
   return 0;
 
@@ -231,15 +230,13 @@ static int UDFExtFileEntry( uint8_t *data, uint8_t *FileType,
  * Lund
  */
 
-static int UDFFileEntry( uint8_t *data, uint8_t *FileType,
-                         struct Partition *partition, struct FileAD *fad )
+static int UDFFileEntry( uint8_t *data, struct FileAD *fad )
 {
-  uint16_t flags;
   uint32_t L_EA, L_AD;
   unsigned int p;
   unsigned int curr_ad;
 
-  UDFICB( &data[ 16 ], FileType, &flags );
+  UDFICB( &data[ 16 ], &fad->Type, &fad->Flags );
 
   fad->Length = GETN8( 56 ); /* Was 4 bytes at 60, changed for 64bit. */
 
@@ -252,20 +249,10 @@ static int UDFFileEntry( uint8_t *data, uint8_t *FileType,
   p = 176 + L_EA;
   fad->num_AD = 0;
   while( p < 176 + L_EA + L_AD ) {
-    struct AD *ad;
-
-    if (curr_ad >= UDF_MAX_AD_CHAINS) return 0;
-
-    ad =  &fad->AD_chain[fad->num_AD];
-    ad->Partition = partition->Number;
-    ad->Flags = 0;
-    fad->num_AD++;
-
-    p += UDFAD( &data[ p ], L_AD, ad, flags );
+      p += UDFAD( &data[ p ], L_AD, fad );
   }
   return 0;
 }
-
 
 // The API users will refer to block 0 as start of file and going up
 // we need to convert that to actual disk block;
@@ -394,7 +381,7 @@ int udf25::UDFScanDirX( udf_dir_t *dirp )
 
 
       // Look up the Filedata
-      if( !UDFMapICB( FileICB, &filetype, &partition, &File))
+      if( !UDFMapICB( FileICB, &partition, &File))
         return 0;
       if (filetype == 4)
         dirp->entry.d_type = DVD_DT_DIR;
@@ -763,9 +750,11 @@ int udf25::UDFFindPartition( int partnum, struct Partition *part )
      */
     if( TagID == 266 ) {
       struct FileAD File;
-      uint8_t filetype;
-      UDFExtFileEntry( LogBlock, &filetype, part, &File );
-      if (filetype == 250) {
+      File.Partition       = part->Number;
+      File.Partition_Start = part->Start;
+
+      UDFExtFileEntry( LogBlock, &File );
+      if (File.Type == 250) {
         part->Start  += File.AD_chain[0].Location;
         part->Length  = File.AD_chain[0].Length;
         break;
@@ -779,7 +768,7 @@ int udf25::UDFFindPartition( int partnum, struct Partition *part )
   return part->valid;
 }
 
-int udf25::UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partition, struct FileAD *File )
+int udf25::UDFMapICB( struct AD ICB, struct Partition *partition, struct FileAD *File )
 {
   uint8_t LogBlock_base[DVD_VIDEO_LB_LEN + 2048];
   uint8_t *LogBlock = (uint8_t *)(((uintptr_t)LogBlock_base & ~((uintptr_t)2047)) + 2048);
@@ -790,10 +779,12 @@ int udf25::UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partit
   lbnum = partition->Start + ICB.Location;
   tmpmap.lbn = lbnum;
   if(GetUDFCache(MapCache, lbnum, &tmpmap)) {
-    *FileType = tmpmap.filetype;
     memcpy(File, &tmpmap.file, sizeof(tmpmap.file));
     return 1;
   }
+
+  File->Partition       = partition->Number;
+  File->Partition_Start = partition->Start;
 
   do {
     if( DVDReadLBUDF( lbnum++, 1, LogBlock, 0 ) <= 0 )
@@ -802,18 +793,16 @@ int udf25::UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partit
       UDFDescriptor( LogBlock, &TagID );
 
     if( TagID == 261 ) {
-      UDFFileEntry( LogBlock, FileType, partition, File );
+      UDFFileEntry( LogBlock, File );
       memcpy(&tmpmap.file, File, sizeof(tmpmap.file));
-      tmpmap.filetype = *FileType;
       SetUDFCache(MapCache, tmpmap.lbn, &tmpmap);
       return 1;
     };
 
     /* ExtendedFileInfo */
     if( TagID == 266 ) {
-      UDFExtFileEntry( LogBlock, FileType, partition, File );
+      UDFExtFileEntry( LogBlock, File );
       memcpy(&tmpmap.file, File, sizeof(tmpmap.file));
-      tmpmap.filetype = *FileType;
       SetUDFCache(MapCache, tmpmap.lbn, &tmpmap);
       return 1;
   }
@@ -881,7 +870,6 @@ int udf25::UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *part
         p += UDFFileIdentifier( &cached_dir[ p ], &filechar,
                                 filename, &tmpICB );
         if(cache_file_info && !in_cache) {
-          uint8_t tmpFiletype;
           struct FileAD tmpFile;
 
           memset(&tmpFile, 0, sizeof(tmpFile));
@@ -890,7 +878,7 @@ int udf25::UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *part
             memcpy(FileICB, &tmpICB, sizeof(tmpICB));
             found = 1;
           }
-          UDFMapICB(tmpICB, &tmpFiletype, partition, &tmpFile);
+          UDFMapICB(tmpICB, partition, &tmpFile);
         } else {
           if( !strcasecmp( FileName, filename ) ) {
             memcpy(FileICB, &tmpICB, sizeof(tmpICB));
@@ -959,7 +947,6 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   struct FileAD File;
   char tokenline[ MAX_UDF_FILE_NAME_LEN ];
   char *token;
-  uint8_t filetype;
   struct FileAD *result;
 
   *filesize = 0;
@@ -999,9 +986,9 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   }
 
   /* Find root dir */
-  if( !UDFMapICB( RootICB, &filetype, &partition, &File ) )
+  if( !UDFMapICB( RootICB, &partition, &File ) )
     return NULL;
-  if( filetype != 4 )
+  if( File.Type != 4 )
     return NULL;  /* Root dir should be dir */
   {
     int cache_file_info = 0;
@@ -1012,7 +999,7 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
       if( !UDFScanDir( File, token, &partition, &ICB,
                        cache_file_info))
         return NULL;
-      if( !UDFMapICB( ICB, &filetype, &partition, &File ) )
+      if( !UDFMapICB( ICB, &partition, &File ) )
         return NULL;
       if(!strcmp(token, "index.bdmv"))
         cache_file_info = 1;
@@ -1033,9 +1020,6 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   if (!result) return NULL;
 
   memcpy(result, &File, sizeof(*result));
-
-  result->Partition_Start = partition.Start;
-
   return result;
 }
 

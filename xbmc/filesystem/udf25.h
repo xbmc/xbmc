@@ -68,7 +68,10 @@ struct AD {
 struct FileAD {
     uint64_t Length;
     uint32_t num_AD;
+    uint16_t Partition;
     uint32_t Partition_Start;
+    uint8_t  Type;
+    uint16_t Flags;
     struct AD AD_chain[UDF_MAX_AD_CHAINS];
 };
 
@@ -97,7 +100,6 @@ struct lbudf {
 struct icbmap {
   uint32_t lbn;
   struct FileAD  file;
-  uint8_t filetype;
 };
 
 struct udf_cache {
@@ -207,7 +209,7 @@ private:
   int UDFGetAVDP( struct avdp_t *avdp);
   int DVDReadLBUDF( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted );
   int ReadAt( int64_t pos, size_t len, unsigned char *data );
-  int UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partition, struct FileAD *File );
+  int UDFMapICB( struct AD ICB, struct Partition *partition, struct FileAD *File );
   int UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *partition, struct AD *FileICB, int cache_file_info);
   int SetUDFCache(UDFCacheType type, uint32_t nr, void *data);
 protected:
