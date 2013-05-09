@@ -10124,8 +10124,6 @@ msgctxt "#21363"
 msgid "Episode Bookmark created"
 msgstr ""
 
-
-
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21364"
 msgid "Edit media share"
@@ -12477,6 +12475,1607 @@ msgstr ""
 msgctxt "#36042"
 msgid "Use limited color range (16-235)"
 msgstr ""
+
+#empty strings from id 36043 to 36099
+
+#strings from 36100 to 36999 are reserved for settings descriptions
+
+#: xbmc/settings/settings.xml
+msgctxt "#36101"
+msgid "This section allows you to change the look and feel of the User Interface."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "#36102"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "#36103"
+msgid "This allows you to select the used skin for the User Interface. This will define the look and feel of XBMC."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "#36104"
+msgid "With this option you can change specific skin settings. The available options are dependent on the skin used."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36105"
+msgid "Allows you to change the theme associated with your selected skin."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36106"
+msgid "Allows you to change the colours of your selected skin."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36107"
+msgid "Allows you to choose the fonts displayed in the User Interface. The font sets are configured in the font.xml portion of your skin."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36108"
+msgid "Allows you to zoom in the view of the GUI."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36109"
+msgid "Allows you to select the screen that XBMC starts up to."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36110"
+msgid "Allows you to select or disable the sound scheme used in the User Interface."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36112"
+msgid "Allows you to edit the RSS feeds."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36113"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36114"
+msgid "Chooses the language the User Interface is displayed in."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36115"
+msgid "Allows you to select the various formats used in XBMC for temperature, time and date. The available options are depending on selected language."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36116"
+msgid "Allows you to choose which character set is used for displaying text in the GUI."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36117"
+msgid "Allows to select Country location."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36118"
+msgid "Allows to select Timezone your country is located in."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36119"
+msgid "Sets the default audio track when different language tracks are available."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36120"
+msgid "Sets the default subtitles when different languages are available."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36121"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36122"
+msgid "Determines the display of the parent folder icon (..)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36123"
+msgid "Determines the display of the extensions on media files. For example. 'You Enjoy Myself.mp3' would be simply be displayed as 'You Enjoy Myself'."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36124"
+msgid "Allows for certain tokens to be ignored during sort operations. For example, with this option enabled, 'The Simpsons' would simply be sorted as 'Simpsons'. Tokens are configured through langinfo.xml or through <sorttokens> in advancedsettings.xml."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36125"
+msgid "Allows you to delete and rename files through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36126"
+msgid "Enables showing the add source button from root sections of the user interface."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36127"
+msgid "Shows hidden files and directories."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36128"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36129"
+msgid "Allows you to set the amount of idle time required before displaying the screensaver."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36130"
+msgid "Chooses the screensaver. Note: When fullscreen video playback is paused, or a dialog box is active, XBMC will force the 'Dim' screensaver. To avoid potential worries of plasma screen burn-in, set the Dim screensaver fade level to 0%."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36131"
+msgid "Allows control of such things as Screensaver dim level which controls how much the screen dims when the screensaver is set to dim mode and Slideshow folder, which determines what pictures to use when the screensaver is set to Slideshow mode."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36132"
+msgid "Allows you to preview the selected screensaver."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36133"
+msgid "With this option enabled, XBMC will start the selected visualization instead of displaying the screensaver if music is being played. Conversely if you wish not to have a visualization while playing audio, uncheck this option and visualizations will be disabled."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36134"
+msgid "With this option enabled, XBMC will dim the display when media is paused, Not valid for the 'Dim' screensaver mode."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36135"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36136"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36137"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36138"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36139"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36140"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36141"
+msgid ""Shows plot information for media in the Video Library that is not marked as watched. 
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36142"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36143"
+msgid "Gets thumbnails for actors when scanning media."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36144"
+msgid "Removes the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36146"
+msgid "Checks for new media files on XBMC startup."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36147"
+msgid "Hides the library scanning progress bar during scans."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36148"
+msgid "This function will perform a number of 'cleanup' tasks on your video database and can be run if you have moved, deleted or renamed files.[BR]Removes any videos with invalid paths and all information tied to these files.[BR]Removes all removable media (example: DVD) without checking for existance + all information tied to these files."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36149"
+msgid "Exports the Video Library database to XML files. This will overwrite your current XML files."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36150"
+msgid "Imports a XML file into the Video Library database. If the entry does not exist it is appended.[BR]If it exists:[BR]1. It removes all current info for that entry from the database.[BR]2. Inserts the info for that entry from the XML file."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36151"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36152"
+msgid "When selected this enables automatic playback of the next file in the list."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36153"
+msgid "Controls the method used by the player to process and display the video, (which is called rendering)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36154"
+msgid "Enables hardware decoding of video files using the iwth one of the available options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36155"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36156"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36157"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36158"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36159"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36160"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36161"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36162"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36163"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36164"
+msgid "Defines when the refresh rate adjustments should take place."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36165"
+msgid "Enables the playback to pause for x amount of time during refresh rate change. Range 0.1 milliseconds to 20 seconds. Activate to automatically set the refresh rate which is best matched with the video that is playing (default off). This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates (23.976fps, 24fps, 25fps, 29.97fps, 30 fps, etc.) which need to be properly matched by the refresh rate of the display, in order to be displayed smoothly."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36166"
+msgid "This setting enables syncing the video to the refresh rate of the monitor."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36168"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36169"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36170"
+msgid "Allow video player to try to fit video to screen by ignoring aspect ratio by a certain amount."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36171"
+msgid "Determines the zoom level that 4:3 videos are shown on widescreen displays. For zoom settings best is wide zoom."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the conversion. Currently colorspace is detected by the dimensions of the input material SD is assumed when width < 1000, HD when width > 1000. Vdpau does not know about the color space it can't apply the proper conversion matrix."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36173"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36174"
+msgid "Enables Teletext when watching a live TV stream."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36175"
+msgid "When selected scales Teletext to 4:3 ratio."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36176"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36177"
+msgid "Lets you toggle between Choose, Play, Resume and Show information. Choose, will select item, eg open a directory in files mode On resume XBMC will automatically resume videos from the last position that you were viewing them, even after restarting the system. Default is Play."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36178"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36180"
+msgid "When enabled, XBMC will extract thumbnails from videos that have no thumb in the library and information such as codecs and aspect ratio to display in Library Mode."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36181"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36182"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36183"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36184"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36185"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36186"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36187"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36188"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36189"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36190"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36192"
+msgid "Location of subtitles on the screen."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36193"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36194"
+msgid "Autoruns DVD video when inserted in drive."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36195"
+msgid "Forces a region for DVD playback."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36196"
+msgid "Attempts to skip 'unskippable' introductions before DVD menu."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36197"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36198"
+msgid "Selects the default movie information source, see the add-ons manager for options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36199"
+msgid "Selects the default TV show information source, see the add-ons manager for options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36201"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36202"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36204"
+msgid "Imports channel groups from the backend (if supported by the add-on and backend). Will delete user created groups if they're not found on the backends."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36205"
+msgid "Sorts the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36207"
+msgid "Opens the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36208"
+msgid "Instruct the backend to search for channels (if supported by the add-on and backend)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36209"
+msgid "Delete channel/epg database and reimport the data from backend afterwards."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36210"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36211"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36212"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36213"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36214"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36215"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36216"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36217"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36218"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36222"
+msgid "Do not import EPG data while playing TV, to minimise CPU usage."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36223"
+msgid "EPG data is stored in a local database by default, to speed up EPG importing when XBMC is restarted. Enabling this option will prevent that."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36224"
+msgid "Hides "no information available" labels when no EPG data could be retrieved for a channel."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36226"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen (Defaults: yes)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36228"
+msgid "Shows the last seen channel if switchtig to live tv (Defaults: no) "
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36229"
+msgid "True to display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36230"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36231"
+msgid "When this option is enabled, pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second. When disabled, you need to confirm the switch by pressing ok."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36232"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36233"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36235"
+msgid "Priority of the recording, between 0 and 100. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36239"
+msgid "Displays a notification when timers are added, finished or removed by the backend."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36240"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36241"
+msgid "Enabling this option will execute the "wakeup command" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36243"
+msgid "he command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36245"
+msgid "Execute the wake up command every day at the given time."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36246"
+msgid "When to execute the daily wake up command."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36247"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36248"
+msgid "Will ask for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36251"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36252"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36253"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36254"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36255"
+msgid "Determines if artists that appear only on compilations are shown in the library artist view (default on)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36256"
+msgid "Automatically fetches album and artist information via scrapers during scan."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36257"
+msgid "Selects the default album information source"
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36258"
+msgid "Selects the default artist information source, see the add-ons manager for options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36259"
+msgid "Checks for new and removed media files on XBMC startup."
+msgstr ""
+
+#empty string id 36260
+
+#: xbmc/settings/settings.xml
+msgctxt "36261"
+msgid "This funtion will perform a number of 'cleanup' tasks on your music database and can be run if you have moved, deleted or renamed files.[BR]Removes any songs with invalid paths[BR]Removes any albums which have no references[BR]Removes any artists which have no references[BR]Removes any genres which have no references[BR]Removes any paths which have no references"
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36262"
+msgid "Exports the Music Library database to XML files."
+msgstr ""
+
+#empty string id 36263
+
+#: xbmc/settings/settings.xml
+msgctxt "36264"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36267"
+msgid "When enabled, XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly. You have the option of either using track levels or album levels."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36268"
+msgid "Level in dB - default is 89dB per standard - change with caution."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36269"
+msgid "Level in dB - default is 89dB per standard - change with caution."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36270"
+msgid "Reduce volume of the file if clipping is likely to occur."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36271"
+msgid "Enabling this will cause the player to smoothly fade from one audio track to the next. You can set the amount of overlap of the tracks from 1-15 seconds."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36272"
+msgid "You have the option of only crossfading between songs on the same album or all."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36273"
+msgid "Determines which visualization will be displayed while listening to music. For more information, see Visualizations."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36274"
+msgid "Enabling tag reading will read the tag-information written in every song. This will slow down read time of large directories (particularly over a network), but will give, if properly named, a better description of your music files."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36275"
+msgid "Controls the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36276"
+msgid "Works in the same manner as Track Naming Template, but is used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36277"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36278"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36279"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36280"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36281"
+msgid "When this option is on, XBMC will search for thumbs on remote shares (which as of the time of writing includes DVD and CD media as well, due to the long seek/read times). This can often slow down listing of network folders quite dramatically (particularly if there are many items that have no thumbs), hence the option to turn it off."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36282"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36283"
+msgid "Autoruns CDs when inserted in drive."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36284"
+msgid "This will read the information belonging to a inserted audio CD from an internet database. Thus every song will get its correct name and artist displayed."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36285"
+msgid "This option defines the location on your hard drive that ripped tracks will be saved to."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36286"
+msgid "Controls the way that your ripped songs will be named."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36287"
+msgid "This option defines which audio encoder to use when ripping."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36288"
+msgid "This option defines in which quality you want to rip your files."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36289"
+msgid "This option defines which bitrate to use for the specified audio encoder for audio compression."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36290"
+msgid "For FLAC define compression level, default 5"
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36291"
+msgid "Auto eject disc after rip is complete."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36292"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36293"
+msgid "This turns on XBMC's karaoke function. When playing any music file, XBMC will look for a matching .cdg file, and will display it's graphics."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36294"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36295"
+msgid "Allows you to choose the font displayed during karoake."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36296"
+msgid "Allows you to choose the fontsize displayed during karoake."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36297"
+msgid "Allows you to choose the font color displayed during karoake."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36298"
+msgid "Allows you to choose the character set used during karoake."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36299"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36300"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36301"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36302"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36303"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36304"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36305"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36306"
+msgid "When enabled, if EXIF information (date/time, camera used, etc.) exists, it will be displayed onscreen."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36307"
+msgid "Automatically generates picture thumbnails when entering picture folder."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36308"
+msgid "When enabled, pictures will automatically rotate according to rotate information in the pictures EXIF, if found."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36309"
+msgid "Shows video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36310"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36311"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36312"
+msgid "Controls the amount of time (in seconds) that each image is displayed for in a slideshow."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36313"
+msgid "When enabled, images in a slideshow will pan and zoom while displayed."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36314"
+msgid "When enabled, images in a slideshow will be shuffled."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36315"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36316"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36317"
+msgid "Allows you to select up to three locations for which the weather can be displayed."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36318"
+msgid "Selects the default weather information source, see the add-ons manager for options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36319"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36320"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36321"
+msgid "Displayed name of the XBMC installation when using various network services "
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36322"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36323"
+msgid "Enables the UPnP server. This will enable you to stream media to any UPnP client."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36324"
+msgid "Send out a notification to the UPnP client the library has been updated."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36325"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36326"
+msgid "Enables the UPnP client; this will enable you to steam media from any UPnP server with a control point and control playback from that server."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36327"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36328"
+msgid "Enables the webserver to control XBMC."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36329"
+msgid "Defines the port of the webserver."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36330"
+msgid "Defines the username used for the webserver (default : 'xbmc')."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36331"
+msgid "Defines the password used for the webserver (default : 'xbmc')."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36333"
+msgid "Enables programs on the computer running XBMC to control XBMC via the the Web Interface or JSON-RPC interface protocol."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36334"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36335"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36336"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36337"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36338"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36339"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36340"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36341"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36342"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36343"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36344"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36345"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36346"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36347"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36348"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36349"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36350"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36351"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36352"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36353"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36354"
+msgid "The main benefit is for multi-screen configurations, where xbmc can be used at the same time as other applications without automatically minimizing. Uses a bit more resources and playback may be slightly less smooth."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36355"
+msgid "In a multi-screen configuration, the screens where xbmc is not displayed are blacked out."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36356"
+msgid "This eliminates vertical tearing."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36357"
+msgid "This screen allows you to calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Limits the used color range."
+
+#: xbmc/settings/settings.xml
+msgctxt "36359"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36360"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36361"
+msgid "This allows you to tell XBMC about the type of connection to the audio equipment so it can set the available User Interface options appropriately."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36362"
+msgid "Select your physical speaker layout."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36363"
+msgid "Boosts AC3 streams that have been downmixed to 2 channels."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36364"
+msgid "This upmixes 2 channel stereo sources to what specified by the Speaker Configuration so audio is output on all speakers."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36371"
+msgid "This is the device you use to play LPCM or audio decoded by XBMC such as mp3's and FLAC."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36372"
+msgid "This device you use to play the encoded formats, these are any of the formats checked above in the 'capable receiver' options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36373"
+msgid "This sets how interface sounds are handled such as when navigating the menus, select from Never, Only when playback stopped, or Always."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36374"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36375"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36377"
+msgid "Allow you to use a mouse or use a Touch screen. Note: disabling this may cause you to loose control over XBMC when no keyboard or remote is present."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36378"
+msgid "Allow you to use a joystick to control XBMC."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36379"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36381"
+msgid "Allows you to configure what proxy type is used."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36382"
+msgid "Defines the address used for the proxy server."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36383"
+msgid "Defines the port used for the proxy server."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36384"
+msgid "Defines the username used for the proxy server."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36385"
+msgid "Defines the password used for the proxy server."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36386"
+msgid "If you have limited bandwidth available, select a suitable value here and XBMC will try to keep to these limits."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36387"
+msgid "Turns off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer. Selectable from 5 minutes to 120 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36388"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36389"
+msgid "Sleeps the computer when idle. Selectable from 5 minutes to 120 minutes."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36390"
+msgid "Defines what 'Shutdown' will do by default. Can be set to actually shutdown, suspend, minimize, or quit."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36391"
+msgid "Toggles debug log on / off. Useful for troubleshooting."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36392"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36393"
+msgid "Folder used to save screenshots taken within XBMC. (see Keyboard controls for the screenshot key for your OS)."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36394"
+msgid "Allows you to specify what is included in the debuglog."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36395"
+msgid "Opens the Master Lock dialog, where you can configure your Master Lock options."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36396"
+msgid "Define the PIN code used for the master lock."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36398"
+msgid "Defines the maximum number of retries before XBMC is closed down."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36399"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36400"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36401"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36402"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36403"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36404"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36405"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36406"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36407"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36408"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36409"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36410"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36411"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36412"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36413"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36414"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36415"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36416"
+msgid "Defines the used Apple remote standard used."
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36417"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36418"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36419"
+msgid ""
+msgstr ""
+
+#: xbmc/settings/settings.xml
+msgctxt "36420"
+msgid ""
+msgstr ""
+
+#empty string from 36421 to 36999
+#end reservation
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
