@@ -362,7 +362,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int  m_guiDirtyRegionNoFlipTimeout;
     unsigned int m_addonPackageFolderSize;
 
-    unsigned int m_cacheMemBufferSize;
+    bool m_alwaysForceBuffer;
+    int m_freeMemCachePercent;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
