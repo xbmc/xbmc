@@ -296,7 +296,7 @@ void CMusicDatabase::CreateViews()
                 "        album.idAlbum AS idAlbum, "
                 "        strAlbum, "
                 "        strMusicBrainzAlbumID, "
-                "        GROUP_CONCAT(strArtist, strJoinPhrase ORDER BY iOrder SEPARATOR '') as strArtists "
+                "        GROUP_CONCAT(strArtist, strJoinPhrase ORDER BY iOrder SEPARATOR '') as strArtists, "
                 "        album.strGenres AS strGenres, "
                 "        album.iYear AS iYear, "
                 "        idAlbumInfo, "
