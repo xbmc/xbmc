@@ -317,7 +317,7 @@ static const char* AudioCodecName(int aformat)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAMLSubTitleThread::CAMLSubTitleThread(DllLibAmplayer *dll) :
-  CThread("CAMLSubTitleThread"),
+  CThread("AMLSubTitle"),
   m_dll(dll),
   m_subtitle_codec(-1)
 {
@@ -331,15 +331,7 @@ CAMLSubTitleThread::~CAMLSubTitleThread()
 void CAMLSubTitleThread::Flush()
 {
   CSingleLock lock(m_subtitle_csection);
-  if (m_subtitle_strings.size())
-  {
-    // remove any expired subtitles
-    std::deque<AMLSubtitle*>::iterator it = m_subtitle_strings.begin();
-    while (it != m_subtitle_strings.end())
-    {
-      it = m_subtitle_strings.erase(it);
-    }
-  }
+  m_subtitle_strings.clear();
 }
 
 void CAMLSubTitleThread::UpdateSubtitle(CStdString &subtitle, int64_t elapsed_ms)
@@ -393,7 +385,6 @@ void CAMLSubTitleThread::Process(void)
       int sub_size = m_dll->codec_get_sub_size_fd(m_subtitle_codec);
       if (sub_size > 0)
       {
-        int sub_type = 0, sub_pts = 0;
         // calloc sub_size + 1 so we auto terminate the string
         char *sub_buffer = (char*)calloc(sub_size + 1, 1);
         m_dll->codec_read_sub_data_fd(m_subtitle_codec, sub_buffer, sub_size);
@@ -411,9 +402,9 @@ void CAMLSubTitleThread::Process(void)
 
             AMLSubtitle *subtitle = new AMLSubtitle;
 
-            sub_type  = (sub_buffer[5] << 16)  | (sub_buffer[6] << 8)   | sub_buffer[7];
+            int sub_type = (sub_buffer[5]  << 16) | (sub_buffer[6] << 8)   |  sub_buffer[7];
             // sub_pts are in ffmpeg timebase, not ms timebase, convert it.
-            sub_pts = (sub_buffer[12] << 24) | (sub_buffer[13] << 16) | (sub_buffer[14] << 8) | sub_buffer[15];
+            int sub_pts  = (sub_buffer[12] << 24) | (sub_buffer[13] << 16) | (sub_buffer[14] << 8) | sub_buffer[15];
 
             /* TODO: handle other subtitle codec types
             // subtitle codecs
