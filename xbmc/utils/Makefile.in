@@ -71,6 +71,10 @@ SRCS += Weather.cpp
 SRCS += XBMCTinyXML.cpp
 SRCS += XMLUtils.cpp
 
+ifeq (@USE_OPENGLES@,1)
+SRCS += AMLUtils.cpp
+endif
+
 LIB   = utils.a
 
 include @abs_top_srcdir@/Makefile.include

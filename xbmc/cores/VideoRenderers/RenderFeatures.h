@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,11 +19,21 @@
  *
  */
 
-int aml_set_sysfs_str(const char *path, const char *val);
-int aml_get_sysfs_str(const char *path, char *valstr, const int size);
-int aml_set_sysfs_int(const char *path, const int val);
-int aml_get_sysfs_int(const char *path);
+enum ERENDERFEATURE
+{
+  RENDERFEATURE_GAMMA,
+  RENDERFEATURE_BRIGHTNESS,
+  RENDERFEATURE_CONTRAST,
+  RENDERFEATURE_NOISE,
+  RENDERFEATURE_SHARPNESS,
+  RENDERFEATURE_NONLINSTRETCH,
+  RENDERFEATURE_ROTATION,
+  RENDERFEATURE_STRETCH,
+  RENDERFEATURE_CROP,
+  RENDERFEATURE_ZOOM,
+  RENDERFEATURE_VERTICAL_SHIFT,
+  RENDERFEATURE_PIXEL_RATIO,
+  RENDERFEATURE_POSTPROCESS
+};
 
-bool aml_present();
-void aml_cpufreq_limit(bool limit);
-void aml_set_audio_passthrough(bool passthrough);
+typedef std::vector<int> Features;

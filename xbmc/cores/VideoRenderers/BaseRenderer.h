@@ -25,6 +25,7 @@
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
 #include "RenderFormats.h"
+#include "RenderFeatures.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -52,23 +53,6 @@ enum EFIELDSYNC
   FS_BOT
 };
 
-enum ERENDERFEATURE
-{
-  RENDERFEATURE_GAMMA,
-  RENDERFEATURE_BRIGHTNESS,
-  RENDERFEATURE_CONTRAST,
-  RENDERFEATURE_NOISE,
-  RENDERFEATURE_SHARPNESS,
-  RENDERFEATURE_NONLINSTRETCH,
-  RENDERFEATURE_ROTATION,
-  RENDERFEATURE_STRETCH,
-  RENDERFEATURE_CROP,
-  RENDERFEATURE_ZOOM,
-  RENDERFEATURE_VERTICAL_SHIFT,
-  RENDERFEATURE_PIXEL_RATIO,
-  RENDERFEATURE_POSTPROCESS
-};
-
 // Render Methods
 enum RenderMethods
 {
@@ -82,6 +66,7 @@ enum RenderMethods
 };
 
 typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
+typedef void (*RenderFeaturesCallBackFn)(const void *ctx, Features &renderFeatures);
 
 struct DVDVideoPicture;
 
@@ -107,6 +92,7 @@ public:
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
 
   virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
+  virtual void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
   static void SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
@@ -149,4 +135,7 @@ protected:
 
   const void* m_RenderUpdateCallBackCtx;
   RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
+
+  const void* m_RenderFeaturesCallBackCtx;
+  RenderFeaturesCallBackFn m_RenderFeaturesCallBackFn;
 };
