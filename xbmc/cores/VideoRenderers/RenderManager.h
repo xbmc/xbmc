@@ -66,7 +66,7 @@ public:
 
   // Functions called from mplayer
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
-  bool IsConfigured();
+  bool IsConfigured() const;
 
   int AddVideoPicture(DVDVideoPicture& picture);
 
@@ -110,7 +110,7 @@ public:
 
   void UpdateResolution();
 
-  bool RendererHandlesPresent();
+  bool RendererHandlesPresent() const;
 
 #ifdef HAS_GL
   CLinuxRendererGL    *m_pRenderer;

@@ -274,12 +274,12 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
   return result;
 }
 
-bool CXBMCRenderManager::RendererHandlesPresent()
+bool CXBMCRenderManager::RendererHandlesPresent() const
 {
   return IsConfigured() && m_presentmethod != PRESENT_METHOD_BYPASS;
 }
 
-bool CXBMCRenderManager::IsConfigured()
+bool CXBMCRenderManager::IsConfigured() const
 {
   if (!m_pRenderer)
     return false;
