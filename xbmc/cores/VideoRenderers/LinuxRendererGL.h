@@ -30,6 +30,7 @@
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include "RenderFormats.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "RenderFormats.h"
