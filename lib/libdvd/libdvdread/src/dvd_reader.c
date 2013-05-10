@@ -429,6 +429,9 @@ dvd_reader_t *DVDOpen( const char *ppath )
               /* Also WIN32 does not have symlinks, so we don't need this bit of code. */
 
     /* Resolve any symlinks and get the absolute dir name. */
+#if defined(_XBMC) /* for XBMC, only do symlink resolution for (real) non-xbmc-VFS paths */
+	if ( path[0] == '/' )
+#endif // _XBMC
 	{
       if( ( cdir  = open( ".", O_RDONLY ) ) >= 0 ) {
         if( chdir( path_copy ) == -1 ) {
