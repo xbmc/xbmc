@@ -218,6 +218,24 @@ namespace XBMCAddon
        */
       String numeric(int type, const String& heading, const String& defaultt = emptyString);
       
+      /**
+       * notification(heading, message[, icon, time]) -- Show a Notification alert.
+       * 
+       * heading        : string - dialog heading.
+       * message        : string - dialog message.
+       * icon           : [opt] string - icon to use. (default xbmcgui.NOTIFICATION_INFO)
+       * time           : [opt] integer - time in milliseconds (default 5000)
+       * 
+       * Builtin Icons:
+       *   xbmcgui.NOTIFICATION_INFO
+       *   xbmcgui.NOTIFICATION_WARNING
+       *   xbmcgui.NOTIFICATION_ERROR
+       * 
+       * example:
+       *   - dialog = xbmcgui.Dialog()
+       *   - dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)\n
+       */
+      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0);
     };
 
     /**
