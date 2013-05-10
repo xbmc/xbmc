@@ -302,7 +302,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
   for (int i=0; i< items.Size(); ++i)
   {
     CFileItemPtr pItem=items[i];
-    if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
+    if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_TYPE_ALWAYS))
     {
       auto_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetPath(),pItem.get(),mask));
       if (pDirectory.get())

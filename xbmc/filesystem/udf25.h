@@ -61,14 +61,20 @@ struct AD {
  * a 4.4GB file uses 5 AD chains. A BluRay disk can store 50GB of data, so the
  * largest file should be 50 GB. So the maximum number of chains should be
  * around 62.
+ *
+ * However, with AD chain extensions there has been examples of chains up to
+ * around 1600 entries.
  */
 
-#define UDF_MAX_AD_CHAINS 50
+#define UDF_MAX_AD_CHAINS 2000
 
 struct FileAD {
     uint64_t Length;
     uint32_t num_AD;
+    uint16_t Partition;
     uint32_t Partition_Start;
+    uint8_t  Type;
+    uint16_t Flags;
     struct AD AD_chain[UDF_MAX_AD_CHAINS];
 };
 
@@ -97,7 +103,6 @@ struct lbudf {
 struct icbmap {
   uint32_t lbn;
   struct FileAD  file;
-  uint8_t filetype;
 };
 
 struct udf_cache {
@@ -183,11 +188,12 @@ public:
   int64_t GetFileSize(HANDLE hFile);
   int64_t GetFilePosition(HANDLE hFile);
   int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);
-  HANDLE OpenFile(  const char *isofile, const char* filename );
+  bool   Open(const char *isofile);
+  HANDLE OpenFile( const char* filename );
   long ReadFile(HANDLE fd, unsigned char *pBuffer, long lSize);
   void CloseFile(HANDLE hFile);
 
-  udf_dir_t *OpenDir( const char *isofile, const char *subdir );
+  udf_dir_t *OpenDir( const char *subdir );
   udf_dirent_t *ReadDir( udf_dir_t *dirp );
   int CloseDir( udf_dir_t *dirp );
 
@@ -198,7 +204,6 @@ public:
 private:
   UDF_FILE UDFFindFile( const char* filename, uint64_t *filesize );
   int UDFScanDirX( udf_dir_t *dirp );
-  void UDFFreeFile(UDF_FILE file);
   int DVDUDFCacheLevel(int level);
   void* GetUDFCacheHandle();
   void SetUDFCacheHandle(void *cache);
@@ -206,8 +211,8 @@ private:
   int UDFFindPartition( int partnum, struct Partition *part );
   int UDFGetAVDP( struct avdp_t *avdp);
   int DVDReadLBUDF( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted );
-  int UDFReadBlocksRaw( uint32_t lb_number, size_t block_count, unsigned char *data, int encrypted );
-  int UDFMapICB( struct AD ICB, uint8_t *FileType, struct Partition *partition, struct FileAD *File );
+  int ReadAt( int64_t pos, size_t len, unsigned char *data );
+  int UDFMapICB( struct AD ICB, struct Partition *partition, struct FileAD *File );
   int UDFScanDir( struct FileAD Dir, char *FileName, struct Partition *partition, struct AD *FileICB, int cache_file_info);
   int SetUDFCache(UDFCacheType type, uint32_t nr, void *data);
 protected:
