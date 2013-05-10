@@ -241,11 +241,14 @@ bool CProfilesManager::LoadProfile(size_t index)
   if (m_currentProfile == index)
     return true;
 
-  m_currentProfile = index;
-
-  // first unload any old settings
+  // unload any old settings
   CSettings::Get().Unload();
-  // then load the new settings
+
+  m_currentProfile = index;
+  // point special://profile to the correct profile path
+  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
+
+  // load the new settings
   if (!CSettings::Get().Load())
   {
     CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
