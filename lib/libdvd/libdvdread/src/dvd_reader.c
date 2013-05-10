@@ -429,14 +429,11 @@ dvd_reader_t *DVDOpen( const char *ppath )
               /* Also WIN32 does not have symlinks, so we don't need this bit of code. */
 
     /* Resolve any symlinks and get the absolute dir name. */
+if ( path[0] == '/' )
 	{
       if( ( cdir  = open( ".", O_RDONLY ) ) >= 0 ) {
         if( chdir( path_copy ) == -1 ) {
-#if defined(_XBMC)
-          fprintf( stderr, "libdvdread: failed to change working directory to \"%s\": %s\n", path_copy, strerror(errno)); /* but ignore error */
-#else
           goto DVDOpen_error;
-#endif // _XBMC
         }
 		new_path = malloc(PATH_MAX+1);
 		if(!new_path) {
@@ -450,10 +447,9 @@ dvd_reader_t *DVDOpen( const char *ppath )
         cdir = -1;
         if( retval == -1 ) {
 #if defined(_XBMC)
-          fprintf( stderr, "libdvdread: failed to reset working directory to \".\": %s\n", strerror(errno)); /* but ignore error */
+          perror("libdvdread: failed to reset working directory to \".\""); /* but ignore error */
 #else
           goto DVDOpen_error;
-#endif // _XBMC
         }
 		    path_copy = new_path;
         new_path = NULL;
