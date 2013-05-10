@@ -433,11 +433,7 @@ if ( path[0] == '/' )
 	{
       if( ( cdir  = open( ".", O_RDONLY ) ) >= 0 ) {
         if( chdir( path_copy ) == -1 ) {
-#if defined(_XBMC)
-          fprintf( stderr, "libdvdread: failed to change working directory to \"%s\": %s\n", path_copy, strerror(errno)); /* but ignore error */
-#else
           goto DVDOpen_error;
-#endif // _XBMC
         }
 		new_path = malloc(PATH_MAX+1);
 		if(!new_path) {
@@ -450,12 +446,9 @@ if ( path[0] == '/' )
 		close( cdir );
         cdir = -1;
         if( retval == -1 ) {
-<<<<<<< HEAD
 #if defined(_XBMC)
           perror("libdvdread: failed to reset working directory to \".\""); /* but ignore error */
 #else
-=======
->>>>>>> parent of 3708d88... Fix inability of libdvd 4.2.0 to read DVDs stored as VIDEO_TS files on non-Windows OSs.
           goto DVDOpen_error;
         }
 		    path_copy = new_path;
