@@ -223,11 +223,11 @@ void CFileCache::Process()
       bool sourceSeekFailed = false;
       if (!cacheReachEOF)
       {
-        CLog::Log(LOGDEBUG,"%s, request seek on source to %"PRId64, __FUNCTION__, cacheMaxPos);
+        CLog::Log(LOGDEBUG,"CFileCache::Process - Request seek on source to %"PRId64, cacheMaxPos);
         m_nSeekResult = m_source.Seek(cacheMaxPos, SEEK_SET);
         if (m_nSeekResult != cacheMaxPos)
         {
-          CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %"PRId64, __FUNCTION__, (int)GetLastError(), m_nSeekResult);
+          CLog::Log(LOGERROR,"CFileCache::Process - Error %d seeking. Seek returned %"PRId64, (int)GetLastError(), m_nSeekResult);
           m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
           sourceSeekFailed = true;
         }
