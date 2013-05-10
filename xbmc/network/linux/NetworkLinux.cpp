@@ -30,6 +30,7 @@
 #ifdef TARGET_ANDROID
 #include "android/bionic_supplement/bionic_supplement.h"
 #include "sys/system_properties.h"
+#include <sys/wait.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
