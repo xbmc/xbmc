@@ -183,11 +183,16 @@ protected:
   virtual ~CProfilesManager();
 
 private:
+  /*! \brief Set the current profile id and update the special://profile path
+    \param profileId profile index
+    */
+  void SetCurrentProfileId(size_t profileId);
+
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen;
   int m_autoLoginProfile;
   uint32_t m_lastUsedProfile;
-  uint32_t m_currentProfile;
+  uint32_t m_currentProfile; // do not modify directly, use SetCurrentProfileId() function instead
   int m_nextProfileId; // for tracking the next available id to give to a new profile to ensure id's are not re-used
   CCriticalSection m_critical;
 };
