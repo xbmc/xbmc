@@ -900,20 +900,47 @@ bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
   return URIUtils::IsInternetStream(m_strPath, bStrictCheck);
 }
 
-bool CFileItem::IsFileFolder() const
+bool CFileItem::IsFileFolder(EFileFolderType types) const
 {
-  return (
-    IsSmartPlayList() ||
-   (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
-    IsAPK() ||
-    IsZIP() ||
-    IsRAR() ||
-    IsRSS() ||
-    IsType(".ogg") ||
-    IsType(".nsf") ||
-    IsType(".sid") ||
-    IsType(".sap")
-    );
+  EFileFolderType always_type = EFILEFOLDER_TYPE_ALWAYS;
+
+  /* internet streams are not directly expanded */
+  if(IsInternetStream())
+    always_type = EFILEFOLDER_TYPE_ONCLICK;
+
+
+  if(types & always_type)
+  {
+    if( IsSmartPlayList()
+    || (IsPlayList() && g_advancedSettings.m_playlistAsFolders)
+    || IsAPK()
+    || IsZIP()
+    || IsRAR()
+    || IsRSS()
+    || IsType(".ogg")
+    || IsType(".oga")
+    || IsType(".nsf")
+    || IsType(".sid")
+    || IsType(".sap")
+    || IsType(".xsp")
+#if defined(TARGET_ANDROID)
+    || IsType(".apk")
+#endif
+#ifdef HAS_ASAP_CODEC
+    || ASAPCodec::IsSupportedFormat(URIUtils::GetExtension(m_strPath))
+#endif
+    )
+      return true;
+  }
+
+  if(types & EFILEFOLDER_TYPE_ONBROWSE)
+  {
+    if((IsPlayList() && !g_advancedSettings.m_playlistAsFolders)
+    || IsDVDImage())
+      return true;
+  }
+
+  return false;
 }
 
 

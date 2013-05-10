@@ -28,6 +28,7 @@
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
 #include "ASAPFileDirectory.h"
+#include "UDFDirectory.h"
 #include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
@@ -112,6 +113,9 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
 
   if (pItem->IsRSS())
     return new CRSSDirectory();
+
+  if (pItem->IsDVDImage())
+    return new CUDFDirectory();
 
 #endif
 #if defined(TARGET_ANDROID)
@@ -224,7 +228,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
   }
-  if (g_advancedSettings.m_playlistAsFolders && CPlayListFactory::IsPlaylist(strPath))
+  if (CPlayListFactory::IsPlaylist(strPath))
   { // Playlist file
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
