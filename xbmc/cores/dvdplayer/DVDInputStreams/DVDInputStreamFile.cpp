@@ -53,7 +53,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
 
-  if (content == "video/mp4")
+  if (content == "video/mp4" || content == "video/x-msvideo" || content == "video/avi")
     flags |= READ_MULTI_STREAM;
 
   // open file in binary mode
