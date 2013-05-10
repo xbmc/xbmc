@@ -452,7 +452,7 @@ if ( path[0] == '/' )
         if( retval == -1 ) {
 <<<<<<< HEAD
 #if defined(_XBMC)
-          fprintf( stderr, "libdvdread: failed to reset working directory to \".\": %s\n", strerror(errno)); /* but ignore error */
+          perror("libdvdread: failed to reset working directory to \".\""); /* but ignore error */
 #else
 =======
 >>>>>>> parent of 3708d88... Fix inability of libdvd 4.2.0 to read DVDs stored as VIDEO_TS files on non-Windows OSs.
