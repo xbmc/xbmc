@@ -64,6 +64,9 @@ public:
 /* calcuate bitrate for file while reading */
 #define READ_BITRATE   0x10
 
+/* indicate the caller will seek between multiple streams in the file frequently */
+#define READ_MULTI_STREAM 0x20
+
 class CFileStreamBuffer;
 
 class CFile
