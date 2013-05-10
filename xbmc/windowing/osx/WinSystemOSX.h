@@ -57,6 +57,9 @@ public:
   virtual void ResetOSScreensaver();
   virtual bool EnableFrameLimiter();
 
+  virtual void EnableTextInput(bool bEnable);
+  virtual bool IsTextInputEnabled();
+
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
   
@@ -75,6 +78,8 @@ protected:
   void  FillInVideoModes();
   bool  FlushBuffer(void);
   bool  IsObscured(void);
+  void  StartTextInput();
+  void  StopTextInput();
 
   void* m_glContext;
   static void* m_lastOwnedContext;

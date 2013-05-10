@@ -47,6 +47,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
+#import "osx/OSXTextInputResponder.h"
 
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -1512,6 +1513,52 @@ void CWinSystemOSX::ResetOSScreensaver()
 bool CWinSystemOSX::EnableFrameLimiter()
 {
   return IsObscured();
+}
+
+void CWinSystemOSX::EnableTextInput(bool bEnable)
+{
+  if (bEnable)
+    StartTextInput();
+  else
+    StopTextInput();
+}
+
+OSXTextInputResponder *g_textInputResponder = nil;
+
+bool CWinSystemOSX::IsTextInputEnabled()
+{
+  return g_textInputResponder != nil && [[g_textInputResponder superview] isEqual: [[NSApp keyWindow] contentView]];
+}
+
+void CWinSystemOSX::StartTextInput()
+{
+  NSView *parentView = [[NSApp keyWindow] contentView];
+
+  /* We only keep one field editor per process, since only the front most
+   * window can receive text input events, so it make no sense to keep more
+   * than one copy. When we switched to another window and requesting for
+   * text input, simply remove the field editor from its superview then add
+   * it to the front most window's content view */
+  if (!g_textInputResponder) {
+    g_textInputResponder =
+    [[OSXTextInputResponder alloc] initWithFrame: NSMakeRect(0.0, 0.0, 0.0, 0.0)];
+  }
+
+  if (![[g_textInputResponder superview] isEqual: parentView])
+  {
+    DLOG(@"add fieldEdit to window contentView");
+    [g_textInputResponder removeFromSuperview];
+    [parentView addSubview: g_textInputResponder];
+    [[NSApp keyWindow] makeFirstResponder: g_textInputResponder];
+  }
+}
+void CWinSystemOSX::StopTextInput()
+{
+  if (g_textInputResponder) {
+    [g_textInputResponder removeFromSuperview];
+    [g_textInputResponder release];
+    g_textInputResponder = nil;
+  }
 }
 
 void CWinSystemOSX::Register(IDispResource *resource)
