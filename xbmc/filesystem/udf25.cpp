@@ -590,8 +590,8 @@ int udf25::ReadAt( int64_t pos, size_t len, unsigned char *data )
 {
   int64_t ret;
   ret = m_fp->Seek(pos, SEEK_SET);
-  if(ret < 0)
-    return (int)ret;
+  if(ret != pos)
+    return -1;
 
   ret = m_fp->Read(data, len);
   if(ret < (int64_t)len)
