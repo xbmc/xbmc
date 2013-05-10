@@ -41,8 +41,13 @@ public:
     virtual int64_t WaitForData(unsigned int minimum, unsigned int iMillis) ;
 
     virtual int64_t Seek(int64_t pos) ;
-    virtual void Reset(int64_t pos) ;
+    virtual void Reset(int64_t pos, bool clearAnyway=true) ;
 
+    virtual int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition);
+    virtual int64_t CachedDataEndPos(); 
+    virtual bool IsCachedPosition(int64_t iFilePosition);
+
+    virtual CCacheStrategy *CreateNew();
 protected:
     int64_t           m_beg;       /**< index in file (not buffer) of beginning of valid data */
     int64_t           m_end;       /**< index in file (not buffer) of end of valid data */

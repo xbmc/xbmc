@@ -227,12 +227,14 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
 
     CURL url(URIUtils::SubstitutePath(strFileName));
-    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
+    bool isInternetStream = URIUtils::IsInternetStream(url, true);
+    if ( (flags & READ_NO_CACHE) == 0 && isInternetStream && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     if (m_flags & READ_CACHED)
     {
-      m_pFile = new CFileCache();
+      // for internet stream, if it contains multiple stream, file cache need handle it specially.
+      m_pFile = new CFileCache((m_flags & READ_MULTI_STREAM)!=0 && isInternetStream);
       return m_pFile->Open(url);
     }
 
