@@ -382,7 +382,6 @@ void CCurlFile::CReadState::Disconnect()
 
 CCurlFile::~CCurlFile()
 {
-  CSingleLock lock(s_hostMapLock);
   Close();
   delete m_state;
   delete m_oldState;
@@ -901,33 +900,20 @@ bool CCurlFile::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  map<string, EndTime>::iterator it;
   // Rate-limit queries per domain to 1 per 2s
-  {
-    CSingleLock lock(s_hostMapLock);
-    it = s_hostLastAccessTime.find(url2.GetHostName());
-  }
+  CSingleLock lock(s_hostMapLock);
+  map<string, EndTime>::iterator it = s_hostLastAccessTime.find(url2.GetHostName());
   if (it != s_hostLastAccessTime.end())
   {
+    s_hostLastAccessTime.erase(it);
     if (!it->second.IsTimePast()) {
       CLog::Log(LOGDEBUG, "CurlFile::Open(%p) rate limiting queries to '%s' to avoid saturating, waiting %dmsec", (void*)this, it->first.c_str(), it->second.MillisLeft());
       Sleep(it->second.MillisLeft());
     }
-    {
-      CSingleLock lock(s_hostMapLock);
-      try {
-        s_hostLastAccessTime.erase(it);
-      }
-      catch (...)
-      {
-        CLog::Log(LOGERROR, "CurlFile::Open(%p) iterator invalidated while we were sleeping", (void*)this);
-      }
-    }
   }
-  {
-    CSingleLock lock(s_hostMapLock);
-    s_hostLastAccessTime.insert(make_pair(url2.GetHostName(), EndTime(2000)));
-  }
+  s_hostLastAccessTime.insert(make_pair(url2.GetHostName(), EndTime(1500)));
+  lock.Leave();
+
   CLog::Log(LOGDEBUG, "CurlFile::Open(%p) %s", (void*)this, m_url.c_str());
 
   ASSERT(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
