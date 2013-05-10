@@ -258,7 +258,10 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_bPlaybackStarted = false;
 
   unsigned int playAttempt = XbmcThreads::SystemClockMillis();
-  if (!g_application.PlayFile(*item, bAutoPlay))
+  PlayBackRet ret = g_application.PlayFile(*item, bAutoPlay);
+  if (ret == PLAYBACK_CANCELED)
+    return false;
+  if (ret == PLAYBACK_FAIL)
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->GetPath().c_str());
     playlist.SetUnPlayable(m_iCurrentSong);
