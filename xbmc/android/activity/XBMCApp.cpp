@@ -44,7 +44,26 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
-#include "JNIThreading.h"
+#include <android/bitmap.h>
+#include "android/jni/JNIThreading.h"
+#include "android/jni/BroadcastReceiver.h"
+#include "android/jni/Intent.h"
+#include "android/jni/PackageManager.h"
+#include "android/jni/Context.h"
+#include "android/jni/AudioManager.h"
+#include "android/jni/PowerManager.h"
+#include "android/jni/WakeLock.h"
+#include "android/jni/Environment.h"
+#include "android/jni/File.h"
+#include "android/jni/IntentFilter.h"
+#include "android/jni/NetworkInfo.h"
+#include "android/jni/ConnectivityManager.h"
+#include "android/jni/System.h"
+#include "android/jni/ApplicationInfo.h"
+#include "android/jni/StatFs.h"
+#include "android/jni/BitmapDrawable.h"
+#include "android/jni/Bitmap.h"
+#include "android/jni/CharSequence.h"
 
 #define GIGABYTES       1073741824
 
@@ -59,9 +78,10 @@ void* thread_run(void* obj)
 
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
+int CXBMCApp::m_batteryLevel = 0;
 
-CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
-  : m_wakeLock(NULL)
+CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
+  : CJNIContext(nativeActivity), m_wakeLock(NULL)
 {
   m_activity = nativeActivity;
   m_firstrun = true;
@@ -123,8 +143,7 @@ void CXBMCApp::onDestroy()
 
   if (m_wakeLock != NULL && m_activity != NULL)
   {
-    JNIEnv* env = xbmc_jnienv();
-    env->DeleteGlobalRef(m_wakeLock);
+    delete m_wakeLock;
     m_wakeLock = NULL;
   }
 }
@@ -156,7 +175,8 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
     return;
   }
   m_window = window;
-  acquireWakeLock();
+  if (getWakeLock() &&  m_wakeLock)
+    m_wakeLock->acquire();
   if(!m_firstrun)
   {
     XBMC_SetupDisplay();
@@ -181,7 +201,9 @@ void CXBMCApp::onDestroyWindow()
     XBMC_Pause(true);
   }
 
-  releaseWakeLock();
+  if (m_wakeLock)
+    m_wakeLock->release();
+
   m_window=NULL;
 }
 
@@ -195,85 +217,28 @@ void CXBMCApp::onLostFocus()
   android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
-bool CXBMCApp::getWakeLock(JNIEnv *env)
+bool CXBMCApp::getWakeLock()
 {
-  android_printf("%s", __PRETTY_FUNCTION__);
-  if (m_activity == NULL)
-  {
-    android_printf("  missing activity => unable to use WakeLocks");
-    return false;
-  }
+  if (m_wakeLock)
+    return true;
 
-  if (env == NULL)
-    return false;
+  m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock("org.xbmc.xbmc"));
 
-  if (m_wakeLock == NULL)
-  {
-    jobject oActivity = m_activity->clazz;
-    jclass cActivity = env->GetObjectClass(oActivity);
-
-    // get the wake lock
-    jmethodID midActivityGetSystemService = env->GetMethodID(cActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
-    jstring sPowerService = env->NewStringUTF("power"); // POWER_SERVICE
-    jobject oPowerManager = env->CallObjectMethod(oActivity, midActivityGetSystemService, sPowerService);
-
-    jclass cPowerManager = env->GetObjectClass(oPowerManager);
-    jmethodID midNewWakeLock = env->GetMethodID(cPowerManager, "newWakeLock", "(ILjava/lang/String;)Landroid/os/PowerManager$WakeLock;");
-    jstring sXbmcPackage = env->NewStringUTF("org.xbmc.xbmc");
-    jobject oWakeLock = env->CallObjectMethod(oPowerManager, midNewWakeLock, (jint)0x1a /* FULL_WAKE_LOCK */, sXbmcPackage);
-    m_wakeLock = env->NewGlobalRef(oWakeLock);
-
-    env->DeleteLocalRef(oWakeLock);
-    env->DeleteLocalRef(cPowerManager);
-    env->DeleteLocalRef(oPowerManager);
-    env->DeleteLocalRef(sPowerService);
-    env->DeleteLocalRef(sXbmcPackage);
-    env->DeleteLocalRef(cActivity);
-  }
-
-  return m_wakeLock != NULL;
-}
-
-void CXBMCApp::acquireWakeLock()
-{
-  if (m_activity == NULL)
-    return;
-
-  JNIEnv* env = xbmc_jnienv();
-
-  if (!getWakeLock(env))
-  {
-    android_printf("%s: unable to acquire a WakeLock");
-    return;
-  }
-
-  jclass cWakeLock = env->GetObjectClass(m_wakeLock);
-  jmethodID midWakeLockAcquire = env->GetMethodID(cWakeLock, "acquire", "()V");
-  env->CallVoidMethod(m_wakeLock, midWakeLockAcquire);
-  env->DeleteLocalRef(cWakeLock);
-}
-
-void CXBMCApp::releaseWakeLock()
-{
-  if (m_activity == NULL)
-    return;
-
-  JNIEnv* env = xbmc_jnienv();
-  if (!getWakeLock(env))
-  {
-    android_printf("%s: unable to release a WakeLock");
-    return;
-  }
-
-  jclass cWakeLock = env->GetObjectClass(m_wakeLock);
-  jmethodID midWakeLockRelease = env->GetMethodID(cWakeLock, "release", "()V");
-  env->CallVoidMethod(m_wakeLock, midWakeLockRelease);
-  env->DeleteLocalRef(cWakeLock);
+  return true;
 }
 
 void CXBMCApp::run()
 {
   int status = 0;
+
+  SetupEnv();
+
+  CJNIIntent startIntent = getIntent();
+  android_printf("XBMC Started with action: %s\n",startIntent.getAction().c_str());
+
+  CJNIIntentFilter batteryFilter;
+  batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
+  registerReceiver(*this, batteryFilter);
 
   android_printf(" => waiting for a window");
   // Hack!
@@ -357,503 +322,106 @@ int CXBMCApp::GetDPI()
 
 bool CXBMCApp::ListApplications(vector<androidPackage> *applications)
 {
-  if (!m_activity)
-    return false;
-
-  JNIEnv* env = xbmc_jnienv();
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // oPackageManager = new PackageManager();
-  jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-  env->DeleteLocalRef(cActivity);
-
-  // adata[] = oPackageManager.getInstalledApplications(0);
-  jclass cPackageManager = env->GetObjectClass(oPackageManager);
-  jmethodID mgetInstalledApplications = env->GetMethodID(cPackageManager, "getInstalledApplications", "(I)Ljava/util/List;");
-  jmethodID mgetApplicationLabel = env->GetMethodID(cPackageManager, "getApplicationLabel", "(Landroid/content/pm/ApplicationInfo;)Ljava/lang/CharSequence;");
-  jobject odata = env->CallObjectMethod(oPackageManager, mgetInstalledApplications, 0);
-  jclass cdata = env->GetObjectClass(odata);
-  jmethodID mtoArray = env->GetMethodID(cdata, "toArray", "()[Ljava/lang/Object;");
-  jobjectArray adata = (jobjectArray)env->CallObjectMethod(odata, mtoArray);
-  env->DeleteLocalRef(cdata);
-  env->DeleteLocalRef(odata);
-  env->DeleteLocalRef(cPackageManager);
-
-  int size = env->GetArrayLength(adata);
-  for (int i = 0; i < size; i++)
+  CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
+  int numPackages = packageList.size();
+  for (int i = 0; i < numPackages; i++)
   {
-    // oApplicationInfo = adata[i];
-    jobject oApplicationInfo = env->GetObjectArrayElement(adata, i);
-    jclass cApplicationInfo = env->GetObjectClass(oApplicationInfo);
-    jfieldID mclassName = env->GetFieldID(cApplicationInfo, "packageName", "Ljava/lang/String;");
-    jstring sapplication = (jstring)env->GetObjectField(oApplicationInfo, mclassName);
-
-    if (!sapplication)
-    {
-      env->DeleteLocalRef(cApplicationInfo);
-      env->DeleteLocalRef(oApplicationInfo);
-      continue;
-    }
-    // cname = oApplicationInfo.packageName;
-    const char* cname = env->GetStringUTFChars(sapplication, NULL);
-    androidPackage desc;
-    desc.packageName = cname;
-    env->ReleaseStringUTFChars(sapplication, cname);
-    env->DeleteLocalRef(sapplication);
-    env->DeleteLocalRef(cApplicationInfo);
-
-    jstring spackageLabel = (jstring) env->CallObjectMethod(oPackageManager, mgetApplicationLabel, oApplicationInfo);
-    if (!spackageLabel)
-    {
-      env->DeleteLocalRef(oApplicationInfo);
-      continue;
-    }
-    // cname = opackageManager.getApplicationLabel(oApplicationInfo);
-    const char* cpackageLabel = env->GetStringUTFChars(spackageLabel, NULL);
-    desc.packageLabel = cpackageLabel;
-    env->ReleaseStringUTFChars(spackageLabel, cpackageLabel);
-    env->DeleteLocalRef(spackageLabel);
-    env->DeleteLocalRef(oApplicationInfo);
-
-    if (!HasLaunchIntent(desc.packageName))
+    androidPackage newPackage;
+    newPackage.packageName = packageList.get(i).packageName;
+    newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+    CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
+    if (!intent || !intent.hasCategory("android.intent.category.LAUNCHER"))
       continue;
 
-    applications->push_back(desc);
+    applications->push_back(newPackage);
   }
-  env->DeleteLocalRef(oPackageManager);
   return true;
 }
 
 bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
 {
-  if (!m_activity)
-    return false;
-
-  jthrowable exc;
   JNIEnv* env = xbmc_jnienv();
-
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // oPackageManager = new PackageManager();
-  jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-  env->DeleteLocalRef(cActivity);
-
-  jclass cPackageManager = env->GetObjectClass(oPackageManager);
-  jmethodID mgetApplicationIcon = env->GetMethodID(cPackageManager, "getApplicationIcon", "(Ljava/lang/String;)Landroid/graphics/drawable/Drawable;");
-  env->DeleteLocalRef(cPackageManager);
-
-  jclass cBitmapDrawable = env->FindClass("android/graphics/drawable/BitmapDrawable");
-  jmethodID mBitmapDrawableCtor = env->GetMethodID(cBitmapDrawable, "<init>", "()V");
-  jmethodID mgetBitmap = env->GetMethodID(cBitmapDrawable, "getBitmap", "()Landroid/graphics/Bitmap;");
-
-  // BitmapDrawable oBitmapDrawable;
-  jobject oBitmapDrawable = env->NewObject(cBitmapDrawable, mBitmapDrawableCtor);
-  jstring sPackageName = env->NewStringUTF(packageName.c_str());
-
-  // oBitmapDrawable = oPackageManager.getApplicationIcon(sPackageName)
-  oBitmapDrawable =  env->CallObjectMethod(oPackageManager, mgetApplicationIcon, sPackageName);
-  jobject oBitmap = env->CallObjectMethod(oBitmapDrawable, mgetBitmap);
-  env->DeleteLocalRef(sPackageName);
-  env->DeleteLocalRef(cBitmapDrawable);
-  env->DeleteLocalRef(oBitmapDrawable);
-  env->DeleteLocalRef(oPackageManager);
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Error getting icon size for  %s. Exception follows:", packageName.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    env->DeleteLocalRef(oBitmap);
-    return false;
-  } 
-  jclass cBitmap = env->GetObjectClass(oBitmap);
-  jmethodID mgetWidth = env->GetMethodID(cBitmap, "getWidth", "()I");
-  jmethodID mgetHeight = env->GetMethodID(cBitmap, "getHeight", "()I");
-  env->DeleteLocalRef(cBitmap);
-
-  // width = oBitmap.getWidth;
-  *width = (int)env->CallIntMethod(oBitmap, mgetWidth);
-
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Error getting icon width for %s. Exception follows:", packageName.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    env->DeleteLocalRef(oBitmap);
-    return false;
-  }
-  // height = oBitmap.getHeight;
-  *height = (int)env->CallIntMethod(oBitmap, mgetHeight);
-  env->DeleteLocalRef(oBitmap);
-
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Error getting icon height for %s. Exception follows:", packageName.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    return false;
-  }
+  AndroidBitmapInfo info;
+  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
+  CJNIBitmap icon(drawable.getBitmap());
+  AndroidBitmap_getInfo(env, icon.get(), &info);
+  *width = info.width;
+  *height = info.height;
   return true;
 }
 
 bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int bufSize)
 {
-  if (!m_activity)
-    return false;
-
-  jthrowable exc;
+  void *bitmapBuf = NULL;
   JNIEnv* env = xbmc_jnienv();
-
-  CLog::Log(LOGERROR, "CXBMCApp::GetIconSize Looking for: %s", packageName.c_str());
-
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // oPackageManager = new PackageManager();
-  jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-  env->DeleteLocalRef(cActivity);
-
-  jclass cPackageManager = env->GetObjectClass(oPackageManager);
-  jmethodID mgetApplicationIcon = env->GetMethodID(cPackageManager, "getApplicationIcon", "(Ljava/lang/String;)Landroid/graphics/drawable/Drawable;");
-  env->DeleteLocalRef(cPackageManager);
-
-  jclass cBitmapDrawable = env->FindClass("android/graphics/drawable/BitmapDrawable");
-  jmethodID mBitmapDrawableCtor = env->GetMethodID(cBitmapDrawable, "<init>", "()V");
-  jmethodID mgetBitmap = env->GetMethodID(cBitmapDrawable, "getBitmap", "()Landroid/graphics/Bitmap;");
-
-   // BitmapDrawable oBitmapDrawable;
-  jobject oBitmapDrawable = env->NewObject(cBitmapDrawable, mBitmapDrawableCtor);
-  jstring sPackageName = env->NewStringUTF(packageName.c_str());
-
-  // oBitmapDrawable = oPackageManager.getApplicationIcon(sPackageName)
-  oBitmapDrawable =  env->CallObjectMethod(oPackageManager, mgetApplicationIcon, sPackageName);
-  env->DeleteLocalRef(sPackageName);
-  env->DeleteLocalRef(cBitmapDrawable);
-  env->DeleteLocalRef(oPackageManager);
-  exc = env->ExceptionOccurred();
-  if (exc)
+  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
+  CJNIBitmap bitmap(drawable.getBitmap());
+  AndroidBitmap_lockPixels(env, bitmap.get(), &bitmapBuf);
+  if (bitmapBuf)
   {
-    CLog::Log(LOGERROR, "CXBMCApp::GetIcon Error getting icon for  %s. Exception follows:", packageName.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    return false;
+    memcpy(buffer, bitmapBuf, bufSize);
+    AndroidBitmap_unlockPixels(env, bitmap.get());
+    return true;
   }
-  jobject oBitmap = env->CallObjectMethod(oBitmapDrawable, mgetBitmap);
-  env->DeleteLocalRef(oBitmapDrawable);
-  jclass cBitmap = env->GetObjectClass(oBitmap);
-  jmethodID mcopyPixelsToBuffer = env->GetMethodID(cBitmap, "copyPixelsToBuffer", "(Ljava/nio/Buffer;)V");
-  jobject oPixels = env->NewDirectByteBuffer(buffer,bufSize);
-  env->DeleteLocalRef(cBitmap);
-
-  // memcpy(buffer,oPixels,bufSize); 
-  env->CallVoidMethod(oBitmap, mcopyPixelsToBuffer, oPixels);
-  env->DeleteLocalRef(oPixels);
-  env->DeleteLocalRef(oBitmap);
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::GetIcon Error copying icon for  %s. Exception follows:", packageName.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    return false;
-  }
-  return true;
+  return false;
 }
-
 
 bool CXBMCApp::HasLaunchIntent(const string &package)
 {
-  if (!m_activity)
-    return false;
-
-  JNIEnv* env = xbmc_jnienv();
-
-  jthrowable exc;
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // oPackageManager = new PackageManager();
-  jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-
-  // oPackageIntent = oPackageManager.getLaunchIntentForPackage(package);
-  jclass cPackageManager = env->GetObjectClass(oPackageManager);
-  jmethodID mgetLaunchIntentForPackage = env->GetMethodID(cPackageManager, "getLaunchIntentForPackage", "(Ljava/lang/String;)Landroid/content/Intent;");
-  jstring sPackageName = env->NewStringUTF(package.c_str());
-  jobject oPackageIntent = env->CallObjectMethod(oPackageManager, mgetLaunchIntentForPackage, sPackageName);
-  env->DeleteLocalRef(sPackageName);
-  env->DeleteLocalRef(cPackageManager);
-  env->DeleteLocalRef(oPackageManager);
-
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::HasLaunchIntent Error checking for  Launch Intent for %s. Exception follows:", package.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
-    return false;
-  }
-  if (!oPackageIntent)
-  {
-    return false;
-  }
-
-  env->DeleteLocalRef(oPackageIntent);
-  return true;
+  return GetPackageManager().getLaunchIntentForPackage(package) != NULL;
 }
 
 // Note intent, dataType, dataURI all default to ""
 bool CXBMCApp::StartActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
 {
-  if (!m_activity || !package.size())
-   return false;
-
-  CLog::Log(LOGDEBUG, "CXBMCApp::StartActivity package: '%s' intent: '%s' dataType: '%s' dataURI: '%s'", package.c_str(), intent.c_str(), dataType.c_str(), dataURI.c_str());
-
-  jthrowable exc;
-  JNIEnv* env = xbmc_jnienv();
-
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  jobject oIntent = NULL;
-  jclass cIntent = NULL;
-  if (intent.size())
-  {
-    // Java equivalent for following JNI
-    //    Intent oIntent = new Intent(Intent.ACTION_VIEW);
-    cIntent = env->FindClass("android/content/Intent");
-    jmethodID midIntentCtor = env->GetMethodID(cIntent, "<init>", "(Ljava/lang/String;)V");
-    jstring sIntent = env->NewStringUTF(intent.c_str());
-    oIntent = env->NewObject(cIntent, midIntentCtor, sIntent);
-    env->DeleteLocalRef(sIntent);
-  }
-  else
-  {
-    // oPackageManager = new PackageManager();
-    jmethodID mgetPackageManager = env->GetMethodID(cActivity, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-    jobject oPackageManager = (jobject)env->CallObjectMethod(oActivity, mgetPackageManager);
-
-    // oPackageIntent = oPackageManager.getLaunchIntentForPackage(package);
-    jclass cPackageManager = env->GetObjectClass(oPackageManager);
-    jmethodID mgetLaunchIntentForPackage = env->GetMethodID(cPackageManager, "getLaunchIntentForPackage", "(Ljava/lang/String;)Landroid/content/Intent;");
-    jstring sPackageName = env->NewStringUTF(package.c_str());
-    oIntent = env->CallObjectMethod(oPackageManager, mgetLaunchIntentForPackage, sPackageName);
-    cIntent = env->GetObjectClass(oIntent);
-    env->DeleteLocalRef(cPackageManager);
-    env->DeleteLocalRef(sPackageName);
-    env->DeleteLocalRef(oPackageManager);
-
-    exc = env->ExceptionOccurred();
-    if (exc)
-    {
-      CLog::Log(LOGERROR, "CXBMCApp::StartActivity Failed to load %s. Exception follows:", package.c_str());
-      env->ExceptionDescribe();
-      env->ExceptionClear();
-      env->DeleteLocalRef(cActivity);
-      return false;
-    }
-    if (!oIntent)
-    {
-      CLog::Log(LOGERROR, "CXBMCApp::StartActivity %s has no Launch Intent", package.c_str());
-      env->DeleteLocalRef(cActivity);
-      return false;
-    }
-  }
-
-  jobject oUri;
-  if (dataURI.size())
-  {
-    // Java equivalent for the following JNI
-    //   Uri oUri = Uri.parse(sPath);
-    jclass cUri = env->FindClass("android/net/Uri");
-    jmethodID midUriParse = env->GetStaticMethodID(cUri, "parse", "(Ljava/lang/String;)Landroid/net/Uri;");
-    jstring sPath = env->NewStringUTF(dataURI.c_str());
-    oUri = env->CallStaticObjectMethod(cUri, midUriParse, sPath);
-    env->DeleteLocalRef(sPath);
-    env->DeleteLocalRef(cUri);
-
-    // Run setData or setDataAndType depending on what was passed into the method
-    //   This allows opening market links or external players using the same method
-    if (dataType.size())
-    {
-      // Java equivalent for the following JNI
-      //   oIntent.setDataAndType(oUri, "video/*");
-      jmethodID midIntentSetDataAndType = env->GetMethodID(cIntent, "setDataAndType", "(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;");
-      jstring sMimeType = env->NewStringUTF(dataType.c_str());
-      oIntent = env->CallObjectMethod(oIntent, midIntentSetDataAndType, oUri, sMimeType);
-      env->DeleteLocalRef(sMimeType);
-    }
-    else 
-    {
-      // Java equivalent for the following JNI
-      //   oIntent.setData(oUri);
-      jmethodID midIntentSetData = env->GetMethodID(cIntent, "setData", "(Landroid/net/Uri;)Landroid/content/Intent;");
-      oIntent = env->CallObjectMethod(oIntent, midIntentSetData, oUri);
-    }
-  }
-  
-  // Java equivalent for the following JNI
-  //   oIntent.setPackage(sPackage);
-  jstring sPackage = env->NewStringUTF(package.c_str());
-  jmethodID mSetPackage = env->GetMethodID(cIntent, "setPackage", "(Ljava/lang/String;)Landroid/content/Intent;");
-  oIntent = env->CallObjectMethod(oIntent, mSetPackage, sPackage);
-
-  if (oUri != NULL)
-  {
-    env->DeleteLocalRef(oUri);
-  }
-  env->DeleteLocalRef(cIntent);
-  env->DeleteLocalRef(sPackage);
- 
-  // Java equivalent for the following JNI
-  //   startActivity(oIntent);
-  jmethodID mStartActivity = env->GetMethodID(cActivity, "startActivity", "(Landroid/content/Intent;)V");
-  env->CallVoidMethod(oActivity, mStartActivity, oIntent);
-  env->DeleteLocalRef(cActivity);
-  env->DeleteLocalRef(oIntent);
-
-  exc = env->ExceptionOccurred();
-  if (exc)
-  {
-    CLog::Log(LOGERROR, "CXBMCApp::StartActivity Failed to load %s. Exception follows:", package.c_str());
-    env->ExceptionDescribe();
-    env->ExceptionClear();
+  CJNIIntent newIntent = GetPackageManager().getLaunchIntentForPackage(package);
+  if (!newIntent)
     return false;
-  }
+
+  if (!dataURI.empty())
+    newIntent.setData(dataURI);
+
+  if (!intent.empty())
+    newIntent.setAction(intent);
+
+   startActivity(newIntent);
   return true;
 }
 
 int CXBMCApp::GetBatteryLevel()
 {
-  if (m_activity == NULL)
-    return -1;
-
-  JNIEnv* env = xbmc_jnienv();
-
-  jobject oActivity = m_activity->clazz;
-
-  // IntentFilter oIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-  jclass cIntentFilter = env->FindClass("android/content/IntentFilter");
-  jmethodID midIntentFilterCtor = env->GetMethodID(cIntentFilter, "<init>", "(Ljava/lang/String;)V");
-  jstring sIntentBatteryChanged = env->NewStringUTF("android.intent.action.BATTERY_CHANGED"); // Intent.ACTION_BATTERY_CHANGED
-  jobject oIntentFilter = env->NewObject(cIntentFilter, midIntentFilterCtor, sIntentBatteryChanged);
-  env->DeleteLocalRef(cIntentFilter);
-  env->DeleteLocalRef(sIntentBatteryChanged);
-
-  // Intent oBatteryStatus = activity.registerReceiver(null, oIntentFilter);
-  jclass cActivity = env->GetObjectClass(oActivity);
-  jmethodID midActivityRegisterReceiver = env->GetMethodID(cActivity, "registerReceiver", "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;");
-  env->DeleteLocalRef(cActivity);
-  jobject oBatteryStatus = env->CallObjectMethod(oActivity, midActivityRegisterReceiver, NULL, oIntentFilter);
-
-  jclass cIntent = env->GetObjectClass(oBatteryStatus);
-  jmethodID midIntentGetIntExtra = env->GetMethodID(cIntent, "getIntExtra", "(Ljava/lang/String;I)I");
-  env->DeleteLocalRef(cIntent);
-  
-  // int iLevel = oBatteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-  jstring sBatteryManagerExtraLevel = env->NewStringUTF("level"); // BatteryManager.EXTRA_LEVEL
-  jint iLevel = env->CallIntMethod(oBatteryStatus, midIntentGetIntExtra, sBatteryManagerExtraLevel, (jint)-1);
-  env->DeleteLocalRef(sBatteryManagerExtraLevel);
-  // int iScale = oBatteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-  jstring sBatteryManagerExtraScale = env->NewStringUTF("scale"); // BatteryManager.EXTRA_SCALE
-  jint iScale = env->CallIntMethod(oBatteryStatus, midIntentGetIntExtra, sBatteryManagerExtraScale, (jint)-1);
-  env->DeleteLocalRef(sBatteryManagerExtraScale);
-  env->DeleteLocalRef(oBatteryStatus);
-  env->DeleteLocalRef(oIntentFilter);
-
-  if (iLevel <= 0 || iScale < 0)
-    return iLevel;
-
-  return ((int)iLevel * 100) / (int)iScale;
+  return m_batteryLevel;
 }
 
 bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* = "" */)
 {
-  if (m_activity == NULL)
-    return false;
+  std::string sType;
+  std::string mountedState;
+  bool mounted = false;
+  if (type == "music")
+    sType = "Music"; // Environment.DIRECTORY_MUSIC
+  else if (type == "videos")
+    sType = "Movies"; // Environment.DIRECTORY_MOVIES
+  else if (type == "pictures")
+    sType = "Pictures"; // Environment.DIRECTORY_PICTURES
+  else if (type == "photos")
+    sType = "DCIM"; // Environment.DIRECTORY_DCIM
+  else if (type == "downloads")
+    sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
 
-  JNIEnv* env = xbmc_jnienv();
-
-  // check if external storage is available
-  // String sStorageState = android.os.Environment.getExternalStorageState();
-  jclass cEnvironment = env->FindClass("android/os/Environment");
-  jmethodID midEnvironmentGetExternalStorageState = env->GetStaticMethodID(cEnvironment, "getExternalStorageState", "()Ljava/lang/String;");
-  jstring sStorageState = (jstring)env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStorageState);
-  // if (sStorageState != Environment.MEDIA_MOUNTED && sStorageState != Environment.MEDIA_MOUNTED_READ_ONLY) return false;
-  const char* storageState = env->GetStringUTFChars(sStorageState, NULL);
-  bool mounted = strcmp(storageState, "mounted") == 0 || strcmp(storageState, "mounted_ro") == 0;
-  env->ReleaseStringUTFChars(sStorageState, storageState);
-  env->DeleteLocalRef(sStorageState);
-
-  if (mounted)
-  {
-    jobject oExternalStorageDirectory = NULL;
-    if (type.empty() || type == "files")
-    {
-      // File oExternalStorageDirectory = Environment.getExternalStorageDirectory();
-      jmethodID midEnvironmentGetExternalStorageDirectory = env->GetStaticMethodID(cEnvironment, "getExternalStorageDirectory", "()Ljava/io/File;");
-      oExternalStorageDirectory = env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStorageDirectory);
-    }
-    else if (type == "music" || type == "videos" || type == "pictures" || type == "photos" || type == "downloads")
-    {
-      jstring sType = NULL;
-      if (type == "music")
-        sType = env->NewStringUTF("Music"); // Environment.DIRECTORY_MUSIC
-      else if (type == "videos")
-        sType = env->NewStringUTF("Movies"); // Environment.DIRECTORY_MOVIES
-      else if (type == "pictures")
-        sType = env->NewStringUTF("Pictures"); // Environment.DIRECTORY_PICTURES
-      else if (type == "photos")
-        sType = env->NewStringUTF("DCIM"); // Environment.DIRECTORY_DCIM
-      else if (type == "downloads")
-        sType = env->NewStringUTF("Download"); // Environment.DIRECTORY_DOWNLOADS
-
-      // File oExternalStorageDirectory = Environment.getExternalStoragePublicDirectory(sType);
-      jmethodID midEnvironmentGetExternalStoragePublicDirectory = env->GetStaticMethodID(cEnvironment, "getExternalStoragePublicDirectory", "(Ljava/lang/String;)Ljava/io/File;");
-      oExternalStorageDirectory = env->CallStaticObjectMethod(cEnvironment, midEnvironmentGetExternalStoragePublicDirectory, sType);
-      env->DeleteLocalRef(sType);
-    }
-
-    if (oExternalStorageDirectory != NULL)
-    {
-      // path = oExternalStorageDirectory.getAbsolutePath();
-      jclass cFile = env->GetObjectClass(oExternalStorageDirectory);
-      jmethodID midFileGetAbsolutePath = env->GetMethodID(cFile, "getAbsolutePath", "()Ljava/lang/String;");
-      env->DeleteLocalRef(cFile);
-      jstring sPath = (jstring)env->CallObjectMethod(oExternalStorageDirectory, midFileGetAbsolutePath);
-      const char* cPath = env->GetStringUTFChars(sPath, NULL);
-      path = cPath;
-      env->ReleaseStringUTFChars(sPath, cPath);
-      env->DeleteLocalRef(sPath);
-      env->DeleteLocalRef(oExternalStorageDirectory);
-    }
-    else
-      mounted = false;
-  }
-
-  env->DeleteLocalRef(cEnvironment);
-
+  path = CJNIEnvironment::getExternalStoragePublicDirectory(sType).getAbsolutePath();
+  mountedState = CJNIEnvironment::getExternalStorageState();
+  mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
   return mounted && !path.empty();
 }
 
 bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
 {
-  if (m_activity == NULL)
-    return false;
-
   if (path.empty())
   {
-    ostringstream fmt;
-    fmt.width(24);  fmt << left  << "Filesystem";
-    fmt.width(12);  fmt << right << "Size";
+    std::ostringstream fmt;
+    fmt.width(24);  fmt << std::left  << "Filesystem";
+    fmt.width(12);  fmt << std::right << "Size";
     fmt.width(12);  fmt << "Used";
     fmt.width(12);  fmt << "Avail";
     fmt.width(12);  fmt << "Use %";
@@ -862,48 +430,29 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
     return false;
   }
 
-  JNIEnv* env = xbmc_jnienv();
+  CJNIStatFs fileStat(path);
+  int blockSize = fileStat.getBlockSize();
+  int blockCount = fileStat.getBlockCount();
+  int freeBlocks = fileStat.getFreeBlocks();
 
-  // android.os.StatFs oStats = new android.os.StatFs(sPath);
-  jclass cStatFs = env->FindClass("android/os/StatFs");
-  jmethodID midStatFsCtor = env->GetMethodID(cStatFs, "<init>", "(Ljava/lang/String;)V");
-  jstring sPath = env->NewStringUTF(path.c_str());
-  jobject oStats = env->NewObject(cStatFs, midStatFsCtor, sPath);
-  env->DeleteLocalRef(sPath);
-
-  // int iBlockSize = oStats.getBlockSize();
-  jmethodID midStatFsGetBlockSize = env->GetMethodID(cStatFs, "getBlockSize", "()I");
-  jint iBlockSize = env->CallIntMethod(oStats, midStatFsGetBlockSize);
-  
-  // int iBlocksTotal = oStats.getBlockCount();
-  jmethodID midStatFsGetBlockCount = env->GetMethodID(cStatFs, "getBlockCount", "()I");
-  jint iBlocksTotal = env->CallIntMethod(oStats, midStatFsGetBlockCount);
-  
-  // int iBlocksFree = oStats.getFreeBlocks();
-  jmethodID midStatFsGetFreeBlocks = env->GetMethodID(cStatFs, "getFreeBlocks", "()I");
-  jint iBlocksFree = env->CallIntMethod(oStats, midStatFsGetFreeBlocks);
-
-  env->DeleteLocalRef(oStats);
-  env->DeleteLocalRef(cStatFs);
-
-  if (iBlockSize <= 0 || iBlocksTotal <= 0 || iBlocksFree < 0)
+  if (blockSize <= 0 || blockCount <= 0 || freeBlocks < 0)
     return false;
-  
-  float totalSize = (float)iBlockSize * iBlocksTotal / GIGABYTES;
-  float freeSize = (float)iBlockSize * iBlocksFree / GIGABYTES;
+
+  float totalSize = (float)blockSize * blockCount / GIGABYTES;
+  float freeSize = (float)blockSize * freeBlocks / GIGABYTES;
   float usedSize = totalSize - freeSize;
   float usedPercentage = usedSize / totalSize * 100;
 
-  ostringstream fmt;
-  fmt << fixed;
+  std::ostringstream fmt;
+  fmt << std::fixed;
   fmt.precision(1);
-  fmt.width(24);  fmt << left  << path;
-  fmt.width(12);  fmt << right << totalSize << "G"; // size in GB
+  fmt.width(24);  fmt << std::left  << path;
+  fmt.width(12);  fmt << std::right << totalSize << "G"; // size in GB
   fmt.width(12);  fmt << usedSize << "G"; // used in GB
   fmt.width(12);  fmt << freeSize << "G"; // free
   fmt.precision(0);
   fmt.width(12);  fmt << usedPercentage << "%"; // percentage used
-  
+
   usage = fmt.str();
   return true;
 }
@@ -911,65 +460,61 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
 // Used in Application.cpp to figure out volume steps
 int CXBMCApp::GetMaxSystemVolume()
 {
+  JNIEnv* env = xbmc_jnienv();
   static int maxVolume = -1;
   if (maxVolume == -1)
   {
-    JNIEnv* env = xbmc_jnienv();
     maxVolume = GetMaxSystemVolume(env);
   }
+  android_printf("CXBMCApp::GetMaxSystemVolume: %i",maxVolume);
   return maxVolume;
 }
 
 int CXBMCApp::GetMaxSystemVolume(JNIEnv *env)
 {
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // Get Audio manager
-  //  (AudioManager)getSystemService(Context.AUDIO_SERVICE)
-  jmethodID mgetSystemService = env->GetMethodID(cActivity, "getSystemService","(Ljava/lang/String;)Ljava/lang/Object;");
-  jstring sAudioService = env->NewStringUTF("audio");
-  jobject oAudioManager = env->CallObjectMethod(oActivity, mgetSystemService, sAudioService);
-  env->DeleteLocalRef(sAudioService);
-  env->DeleteLocalRef(cActivity);
-
-  // Get max volume
-  //  int max_volume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-  jclass cAudioManager = env->GetObjectClass(oAudioManager);
-  jmethodID mgetStreamMaxVolume = env->GetMethodID(cAudioManager, "getStreamMaxVolume", "(I)I");
-  jfieldID fstreamMusic = env->GetStaticFieldID(cAudioManager, "STREAM_MUSIC", "I");
-  jint stream_music = env->GetStaticIntField(cAudioManager, fstreamMusic);
-  int maxVolume = (int)env->CallIntMethod(oAudioManager, mgetStreamMaxVolume, stream_music); // AudioManager.STREAM_MUSIC
-
-  env->DeleteLocalRef(oAudioManager);
-  env->DeleteLocalRef(cAudioManager);
-
-  return maxVolume;
+  CJNIAudioManager audioManager(getSystemService("audio"));
+  if (audioManager)
+    return audioManager.getStreamMaxVolume();
+    android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
+  return 0;
 }
 
 void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
 {
-  CLog::Log(LOGDEBUG, "CXBMCApp::SetSystemVolume: %f", percent);
-
-  jobject oActivity = m_activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  // Get Audio manager
-  //  (AudioManager)getSystemService(Context.AUDIO_SERVICE)
-  jmethodID mgetSystemService = env->GetMethodID(cActivity, "getSystemService","(Ljava/lang/String;)Ljava/lang/Object;");
-  jstring sAudioService = env->NewStringUTF("audio");
-  jobject oAudioManager = env->CallObjectMethod(oActivity, mgetSystemService, sAudioService);
-  jclass cAudioManager = env->GetObjectClass(oAudioManager);
-  env->DeleteLocalRef(sAudioService);
-  env->DeleteLocalRef(cActivity);
-
-  // Set volume
-  //   mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max_volume, 0);
-  jfieldID fstreamMusic = env->GetStaticFieldID(cAudioManager, "STREAM_MUSIC", "I");
-  jint stream_music = env->GetStaticIntField(cAudioManager, fstreamMusic);
-  jmethodID msetStreamVolume = env->GetMethodID(cAudioManager, "setStreamVolume", "(III)V");
-  env->CallObjectMethod(oAudioManager, msetStreamVolume, stream_music, int(GetMaxSystemVolume(env)*percent), 0);
-  env->DeleteLocalRef(oAudioManager);
-  env->DeleteLocalRef(cAudioManager);
+  CJNIAudioManager audioManager(getSystemService("audio"));
+  int maxVolume = (int)(GetMaxSystemVolume() * percent);
+  if (audioManager)
+    audioManager.setStreamVolume(maxVolume);
+  else
+    android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
 }
 
+void CXBMCApp::onReceive(CJNIIntent intent)
+{
+  std::string action = intent.getAction();
+  android_printf("CXBMCApp::onReceive Got intent. Action: %s", action.c_str());
+  if (action == "android.intent.action.BATTERY_CHANGED")
+    m_batteryLevel = intent.getIntExtra("level",-1);
+}
+
+void CXBMCApp::SetupEnv()
+{
+  setenv("XBMC_ANDROID_SYSTEM_LIBS", CJNISystem::getProperty("java.library.path").c_str(), 0);
+  setenv("XBMC_ANDROID_DATA", getApplicationInfo().dataDir.c_str(), 0);
+  setenv("XBMC_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
+  setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
+
+  std::string cacheDir = getCacheDir().getAbsolutePath();
+  setenv("XBMC_TEMP", (cacheDir + "/temp").c_str(), 0);
+  setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+  setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
+
+  std::string externalDir = getExternalFilesDir("").getAbsolutePath();
+  if (!externalDir.size())
+    externalDir = getDir("org.xbmc.xbmc", 1).getAbsolutePath();
+
+  if (externalDir.size())
+    setenv("HOME", externalDir.c_str(), 0);
+  else
+    setenv("HOME", getenv("XBMC_TEMP"), 0);
+}

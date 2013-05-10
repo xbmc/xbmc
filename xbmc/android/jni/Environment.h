@@ -18,17 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <jni.h>
-#include "JNIManager.h"
+#include "JNIBase.h"
 
-class CBroadcastReceiver : public CAndroidJNIBase
+class CJNIFile;
+class CJNIEnvironment : public CJNIBase
 {
-friend class CAndroidJNIManager;
 public:
-  void ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent);
-
-private:
-  CBroadcastReceiver();
+  static std::string getExternalStorageState();
+  static CJNIFile getExternalStorageDirectory();
+  static CJNIFile getExternalStoragePublicDirectory(const std::string &type);
+protected:
+  CJNIEnvironment();
+  ~CJNIEnvironment(){};
 };
-
-extern "C" void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent);

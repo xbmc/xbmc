@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,18 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <string>
-#include <jni.h>
+#include "SystemClock.h"
+#include "jutils/jutils-details.hpp"
 
-class CAndroidIntents
+using namespace jni;
+
+int64_t CJNISystemClock::uptimeMillis()
 {
-public:
-  void ReceiveIntent(JNIEnv *env, const jobject &intent);
-  static CAndroidIntents& getInstance() {static CAndroidIntents temp; return temp;};
+  return call_static_method<jlong>("android/os/SystemClock", "uptimeMillis", "()J");
+}
 
-private:
-  CAndroidIntents();
-  CAndroidIntents(CAndroidIntents const&);
-  void operator=(CAndroidIntents const&);
-  std::string GetIntentAction(const jobject &intent);
-};

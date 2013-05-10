@@ -17,21 +17,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <jni.h>
-#include "Intents.h"
-#include "BroadcastReceiver.h"
+#include "Enum.h"
+#include "jutils/jutils-details.hpp"
 
-CBroadcastReceiver::CBroadcastReceiver() : CAndroidJNIBase("org/xbmc/xbmc/XBMCBroadcastReceiver")
+using namespace jni;
+
+std::string CJNIEnum::name()
 {
-  AddMethod(jniNativeMethod("ReceiveIntent", "(Landroid/content/Intent;)V", (void*)jni_ReceiveIntent));
+  return jcast<std::string>(call_method<jhstring>(m_object, "name", "()Ljava/lang/String;"));
 }
 
-void CBroadcastReceiver::ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
+std::string CJNIEnum::toString()
 {
-  CAndroidIntents::getInstance().ReceiveIntent(env, intent);
+  return jcast<std::string>(call_method<jhstring>(m_object, "toString", "()Ljava/lang/String;"));
 }
-
-void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
+bool CJNIEnum::equals(const CJNIEnum &object)
 {
-  CAndroidJNIManager::GetInstance().GetBroadcastReceiver()->ReceiveIntent(env, thiz, intent);
+  return call_method<jboolean>(m_object, "equals", "(Ljava/lang/Object;)Z", object.get());
 }

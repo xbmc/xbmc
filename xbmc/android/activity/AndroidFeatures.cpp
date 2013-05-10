@@ -22,7 +22,7 @@
 #include "utils/log.h"
 
 #include <cpu-features.h>
-#include "JNIThreading.h"
+#include "android/jni/JNIThreading.h"
 
 bool CAndroidFeatures::HasNeon()
 {
