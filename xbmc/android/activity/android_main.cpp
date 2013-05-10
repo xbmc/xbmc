@@ -25,25 +25,25 @@
 
 extern void android_main(struct android_app* state)
 {
-{
-  // make sure that the linker doesn't strip out our glue
-  app_dummy();
-  CEventLoop eventLoop(state);
-  CXBMCApp xbmcApp(state->activity);
-  if (xbmcApp.isValid())
   {
-    IInputHandler inputHandler;
-    eventLoop.run(xbmcApp, inputHandler);
-  }
-  else
-    CXBMCApp::android_printf("android_main: setup failed");
+    // make sure that the linker doesn't strip out our glue
+    app_dummy();
+    CEventLoop eventLoop(state);
+    CXBMCApp xbmcApp(state->activity);
+    if (xbmcApp.isValid())
+    {
+      IInputHandler inputHandler;
+      eventLoop.run(xbmcApp, inputHandler);
+    }
+    else
+      CXBMCApp::android_printf("android_main: setup failed");
 
-  CXBMCApp::android_printf("android_main: Exiting");
-  // We need to call exit() so that all loaded libraries are properly unloaded
-  // otherwise on the next start of the Activity android will simple re-use
-  // those loaded libs in the state they were in when we quit XBMC last time
-  // which will lead to crashes because of global/static classes that haven't
-  // been properly uninitialized
-}
+    CXBMCApp::android_printf("android_main: Exiting");
+    // We need to call exit() so that all loaded libraries are properly unloaded
+    // otherwise on the next start of the Activity android will simple re-use
+    // those loaded libs in the state they were in when we quit XBMC last time
+    // which will lead to crashes because of global/static classes that haven't
+    // been properly uninitialized
+  }
   exit(0);
 }
