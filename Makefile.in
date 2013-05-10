@@ -162,6 +162,7 @@ DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
 DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
+DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
 endif
 
 ifeq (@USE_AMLPLAYER@,1)

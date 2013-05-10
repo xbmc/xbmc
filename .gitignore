@@ -536,6 +536,7 @@ lib/cmyth/Makefile
 /xbmc/android/Makefile
 /xbmc/android/activity/Makefile
 /xbmc/android/loader/Makefile
+/xbmc/android/jni/Makefile
 
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile

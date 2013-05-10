@@ -3,18 +3,16 @@ package org.xbmc.xbmc;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class XBMCBroadcastReceiver extends BroadcastReceiver
 {
-  native void ReceiveIntent(Intent intent);
+  native void _onReceive(Intent intent);
 
   @Override
   public void onReceive(Context context, Intent intent)
   {
-    String actionName = intent.getAction();
-    if (actionName != null)
-    {
-        ReceiveIntent(intent);
-    }
+    Log.d("XBMCBroadcastReceiver", "Received Intent");
+    _onReceive(intent);
   }
 }

@@ -237,7 +237,7 @@ public class Splash extends Activity {
 
   protected void startXBMC() {
     // Run XBMC
-    Intent intent = new Intent();
+    Intent intent = getIntent();
     intent.setClass(this, org.xbmc.xbmc.Main.class);
     startActivity(intent);
     finish();

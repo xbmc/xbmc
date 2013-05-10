@@ -32,7 +32,7 @@
 #if defined(__ARM_NEON__)
 #include <arm_neon.h>
 #include "utils/CPUInfo.h"
-#include "android/activity/JNIThreading.h"
+#include "android/jni/JNIThreading.h"
 
 // LGPLv2 from PulseAudio
 // float values from AE are pre-clamped so we do not need to clamp again here
