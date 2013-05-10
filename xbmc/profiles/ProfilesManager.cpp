@@ -82,8 +82,6 @@ CProfilesManager& CProfilesManager::Get()
 
 bool CProfilesManager::OnSettingsLoading()
 {
-  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
-
   return true;
 }
 
