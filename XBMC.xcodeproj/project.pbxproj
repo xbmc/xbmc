@@ -443,6 +443,7 @@
 		DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
+		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
 		DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02DE816629DBA00F37752 /* PyContext.cpp */; };
@@ -2021,6 +2022,8 @@
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFile.cpp; sourceTree = "<group>"; };
 		DF9A71ED1639C8F6005ECB2E /* HTTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFile.h; sourceTree = "<group>"; };
+		DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WakeOnAccess.cpp; sourceTree = "<group>"; };
+		DFA8157D16713B1200E4E597 /* WakeOnAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WakeOnAccess.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		DFAF6A4C16EBAE3800D6AE12 /* IRssObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRssObserver.h; sourceTree = "<group>"; };
@@ -4032,6 +4035,8 @@
 				432D7CF512D870D600CE4C49 /* TCPServer.h */,
 				E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */,
 				E38E1E8C0D25F9FD00618676 /* UdpClient.h */,
+				DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */,
+				DFA8157D16713B1200E4E597 /* WakeOnAccess.h */,
 				F5A7A859112908F00059D6AA /* WebServer.cpp */,
 				F5A7A85A112908F00059D6AA /* WebServer.h */,
 				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
@@ -7836,6 +7841,7 @@
 				DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */,
 				F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */,
 				DF52566D1732C1890094A464 /* DVDDemuxCDDA.cpp in Sources */,
+				DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

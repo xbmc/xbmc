@@ -43,6 +43,7 @@
 #include "Application.h"
 #include "addons/Addon.h"
 #include "utils/log.h"
+#include "network/WakeOnAccess.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -123,6 +124,7 @@ using namespace XFILE;
 IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 {
   CURL url(strPath);
+  CWakeOnAccess::Get().WakeUpHost(url);
 
   CFileItem item(strPath, false);
   IFileDirectory* pDir=CFileDirectoryFactory::Create(strPath, &item);

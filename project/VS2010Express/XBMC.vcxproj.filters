@@ -1324,6 +1324,9 @@
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp">
       <Filter>network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\WakeOnAccess.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\WebServer.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -4253,6 +4256,9 @@
       <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\UdpClient.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\WakeOnAccess.h">
       <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\WebServer.h">
