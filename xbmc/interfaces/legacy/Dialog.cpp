@@ -9,6 +9,8 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/MediaSourceSettings.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "ModuleXbmcgui.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
@@ -234,6 +236,28 @@ namespace XBMCAddon
       return value;
     }
 
+    void Dialog::notification(const String& heading, const String& message, const String& icon, int time)
+    {
+      DelayedCallGuard dcguard(languageHook);
+
+      CStdString strIcon = getNOTIFICATION_INFO();
+      int iTime = TOAST_DISPLAY_TIME;
+
+      if (time > 0)
+        iTime = time;
+      if (!icon.empty())
+        strIcon = icon;
+      
+      if (strIcon.Equals(getNOTIFICATION_INFO()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime);
+      else if (strIcon.Equals(getNOTIFICATION_WARNING()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime);
+      else if (strIcon.Equals(getNOTIFICATION_ERROR()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime);
+      else
+        CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime);
+    }
+    
     DialogProgress::~DialogProgress() { TRACE; deallocating(); }
 
     void DialogProgress::deallocating()
