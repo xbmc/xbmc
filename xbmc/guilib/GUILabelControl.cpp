@@ -33,6 +33,7 @@ CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, floa
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
   m_startHighlight = m_endHighlight = 0;
+  m_startSelection = m_endSelection = 0;
   m_minWidth = 0;
   if ((labelInfo.align & XBFONT_RIGHT) && m_width)
     m_posX -= m_width;
@@ -74,11 +75,124 @@ bool CGUILabelControl::UpdateColors()
   return changed;
 }
 
+typedef struct InsertPointInfo
+{
+  typedef enum Type
+  {
+    HEAD = 0,
+    HEAD_AND_TAIL,
+    TAIL,
+  } Type;
+
+  bool operator < (const InsertPointInfo& info) const
+  {
+    if (pos < info.pos)
+      return true;
+    if (pos > info.pos)
+      return false;
+    // TAIL always ahead HEAD at same pos.
+    if (type > info.type)
+      return true;
+    if (type < info.type)
+      return false;
+    if (type == HEAD)
+    {
+      // HEADs in same pos, larger block's HEAD ahead
+      if (blockLength > info.blockLength)
+        return true;
+      if (blockLength < info.blockLength)
+        return false;
+      // same pos, type, blocklength, then lower priority HEAD ahead.
+      // then the higher priority block will nested in the lower priority one.
+      return priority < info.priority;
+    }
+    else if (type == TAIL)
+    {
+      // TAILs in same pos, smaill block's TAIL ahead
+      if (blockLength < info.blockLength)
+        return true;
+      if (blockLength > info.blockLength)
+        return false;
+      // same pos, type, blocklength, then higher priority TAIL ahead.
+      return priority > info.priority;
+    }
+    else
+      // order type HEAD_AND_TAIL by priority, higher ahead.
+      return priority > info.priority;
+  }
+
+  int pos;
+  Type type;
+  int blockLength;
+  int priority; // only used when same pos, same type, same blocklength
+  CStdStringW text;
+} InsertPointInfo;
+
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
   CStdString label(m_infoLabel.GetLabel(m_parentID));
 
-  if (m_bShowCursor)
+  if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection)
+  {
+    CStdStringW utf16;
+    g_charsetConverter.utf8ToW(label, utf16);
+
+    std::vector<InsertPointInfo> insertPoints;
+    if (m_bShowCursor)
+    {
+      CStdStringW col;
+      if ((++m_dwCounter % 50) > 25)
+        col.Format(L"[COLOR %x]|[/COLOR]", (color_t)m_label.GetLabelInfo().textColor);
+      else
+        col = L"[COLOR 00FFFFFF]|[/COLOR]";
+      InsertPointInfo info = {m_iCursorPos, InsertPointInfo::HEAD_AND_TAIL, 0, 0, col};
+      insertPoints.push_back(info);
+    }
+    CStdStringW tmp;
+    if (m_startHighlight < m_endHighlight)
+    {
+      if (m_startHighlight > 0 && m_startHighlight <= utf16.size())
+      {
+        tmp.Format(L"[COLOR %x]", (color_t)m_label.GetLabelInfo().disabledColor);
+        InsertPointInfo infoH = {0, InsertPointInfo::HEAD, m_startHighlight, 0, tmp};
+        InsertPointInfo infoT = {m_startHighlight, InsertPointInfo::TAIL, m_startHighlight, 0, L"[/COLOR]"};
+        insertPoints.push_back(infoH);
+        insertPoints.push_back(infoT);
+      }
+      if (m_endHighlight < utf16.size())
+      {
+        tmp.Format(L"[COLOR %x]", (color_t)m_label.GetLabelInfo().disabledColor);
+        InsertPointInfo infoH = {m_endHighlight, InsertPointInfo::HEAD, utf16.size() - m_endHighlight, 0, tmp};
+        InsertPointInfo infoT = {utf16.size(), InsertPointInfo::TAIL, utf16.size() - m_endHighlight, 0, L"[/COLOR]"};
+        insertPoints.push_back(infoH);
+        insertPoints.push_back(infoT);
+      }
+    }
+    if (m_startSelection < m_endSelection && m_endSelection <= utf16.size())
+    {
+      color_t selectedColor = m_label.GetLabelInfo().selectedColor;
+      if (!selectedColor)
+        selectedColor = 0xFFFFFF00;
+      tmp.Format(L"[COLOR %x]", selectedColor);
+      // we set selection insert point higher priority than the highlight disable block, so it is still show the selection
+      InsertPointInfo infoH = {m_startSelection, InsertPointInfo::HEAD, m_startSelection - m_endSelection, 1, tmp};
+      InsertPointInfo infoT = {m_endSelection, InsertPointInfo::TAIL, m_startSelection - m_endSelection, 1, L"[/COLOR]"};
+      insertPoints.push_back(infoH);
+      insertPoints.push_back(infoT);
+    }
+
+    // we sort the insert points to make sure small color block is nested in larger block
+    std::sort(insertPoints.begin(), insertPoints.end());
+
+    // insert the styles from back to front, so we can use the correct insert points.
+    for (int i = insertPoints.size() - 1; i >= 0; --i)
+    {
+      const InsertPointInfo &insertPointInfo = insertPoints[i];
+      utf16.Insert(insertPointInfo.pos, insertPointInfo.text);
+    }
+    g_charsetConverter.wToUTF8(utf16, label);
+  }
+  else if (m_bShowCursor)
   { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
     // virtual keyboard only)
     CStdStringW utf16;
@@ -90,13 +204,6 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
       col = L"[COLOR 00FFFFFF]|[/COLOR]";
     utf16.Insert(m_iCursorPos, col);
     g_charsetConverter.wToUTF8(utf16, label);
-  }
-  else if (m_startHighlight || m_endHighlight)
-  { // this is only used for times/dates, so working in ascii (utf8) is fine
-    CStdString colorLabel;
-    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", (color_t)m_label.GetLabelInfo().disabledColor, label.Left(m_startHighlight),
-                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (color_t)m_label.GetLabelInfo().disabledColor, label.Mid(m_endHighlight));
-    label = colorLabel;
   }
   else if (m_bHasPath)
     label = ShortenPath(label);
@@ -259,6 +366,12 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
 {
   m_startHighlight = start;
   m_endHighlight = end;
+}
+
+void CGUILabelControl::SetSelection(unsigned int start, unsigned int end)
+{
+  m_startSelection = start;
+  m_endSelection = end;
 }
 
 CStdString CGUILabelControl::GetDescription() const

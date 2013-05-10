@@ -62,6 +62,7 @@ public:
   void SetWidthControl(float minWidth, bool bScroll);
   void SetAlignment(uint32_t align);
   void SetHighlight(unsigned int start, unsigned int end);
+  void SetSelection(unsigned int start, unsigned int end);
 
 protected:
   bool UpdateColors();
@@ -82,5 +83,7 @@ protected:
 
   unsigned int m_startHighlight;
   unsigned int m_endHighlight;
+  unsigned int m_startSelection;
+  unsigned int m_endSelection;
 };
 #endif
