@@ -1004,6 +1004,85 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 }
 #endif
 
+static std::string GetRenderFormatName(ERenderFormat format)
+{
+  switch(format)
+  {
+    case RENDER_FMT_YUV420P:   return "YV12";
+    case RENDER_FMT_YUV420P16: return "YV12P16";
+    case RENDER_FMT_YUV420P10: return "YV12P10";
+    case RENDER_FMT_NV12:      return "NV12";
+    case RENDER_FMT_UYVY422:   return "UYVY";
+    case RENDER_FMT_YUYV422:   return "YUY2";
+    case RENDER_FMT_VDPAU:     return "VDPAU";
+    case RENDER_FMT_DXVA:      return "DXVA";
+    case RENDER_FMT_VAAPI:     return "VAAPI";
+    case RENDER_FMT_OMXEGL:    return "OMXEGL";
+    case RENDER_FMT_CVBREF:    return "BGRA";
+    case RENDER_FMT_BYPASS:    return "BYPASS";
+    case RENDER_FMT_NONE:      return "NONE";
+  }
+  return "UNKNOWN";
+}
+
+static unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
+{
+  switch(color_matrix)
+  {
+    case 7: // SMPTE 240M (1987)
+      return CONF_FLAGS_YUVCOEF_240M;
+    case 6: // SMPTE 170M
+    case 5: // ITU-R BT.470-2
+    case 4: // FCC
+      return CONF_FLAGS_YUVCOEF_BT601;
+    case 1: // ITU-R Rec.709 (1990) -- BT.709
+      return CONF_FLAGS_YUVCOEF_BT709;
+    case 3: // RESERVED
+    case 2: // UNSPECIFIED
+    default:
+      if(width > 1024 || height >= 600)
+        return CONF_FLAGS_YUVCOEF_BT709;
+      else
+        return CONF_FLAGS_YUVCOEF_BT601;
+      break;
+  }
+}
+
+static unsigned int GetFlagsChromaPosition(unsigned int chroma_position)
+{
+  switch(chroma_position)
+  {
+    case 1: return CONF_FLAGS_CHROMA_LEFT;
+    case 2: return CONF_FLAGS_CHROMA_CENTER;
+    case 3: return CONF_FLAGS_CHROMA_TOPLEFT;
+  }
+  return 0;
+}
+
+static unsigned int GetFlagsColorPrimaries(unsigned int color_primaries)
+{
+  switch(color_primaries)
+  {
+    case 1: return CONF_FLAGS_COLPRI_BT709;
+    case 4: return CONF_FLAGS_COLPRI_BT470M;
+    case 5: return CONF_FLAGS_COLPRI_BT470BG;
+    case 6: return CONF_FLAGS_COLPRI_170M;
+    case 7: return CONF_FLAGS_COLPRI_240M;
+  }
+  return 0;
+}
+
+static unsigned int GetFlagsColorTransfer(unsigned int color_transfer)
+{
+  switch(color_transfer)
+  {
+    case 1: return CONF_FLAGS_TRC_BT709;
+    case 4: return CONF_FLAGS_TRC_GAMMA22;
+    case 5: return CONF_FLAGS_TRC_GAMMA28;
+  }
+  return 0;
+}
+
 int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
   /* picture buffer is not allowed to be modified in this call */
@@ -1033,118 +1112,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     if(pPicture->color_range == 1)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
 
-    switch(pPicture->color_matrix)
-    {
-      case 7: // SMPTE 240M (1987)
-        flags |= CONF_FLAGS_YUVCOEF_240M;
-        break;
-      case 6: // SMPTE 170M
-      case 5: // ITU-R BT.470-2
-      case 4: // FCC
-        flags |= CONF_FLAGS_YUVCOEF_BT601;
-        break;
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
-        flags |= CONF_FLAGS_YUVCOEF_BT709;
-        break;
-      case 3: // RESERVED
-      case 2: // UNSPECIFIED
-      default:
-        if(pPicture->iWidth > 1024 || pPicture->iHeight >= 600)
-          flags |= CONF_FLAGS_YUVCOEF_BT709;
-        else
-          flags |= CONF_FLAGS_YUVCOEF_BT601;
-        break;
-    }
+    flags |= GetFlagsChromaPosition(pPicture->chroma_position)
+          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight)
+          |  GetFlagsColorPrimaries(pPicture->color_primaries)
+          |  GetFlagsColorTransfer(pPicture->color_transfer);
 
-    switch(pPicture->chroma_position)
-    {
-      case 1:
-        flags |= CONF_FLAGS_CHROMA_LEFT;
-        break;
-      case 2:
-        flags |= CONF_FLAGS_CHROMA_CENTER;
-        break;
-      case 3:
-        flags |= CONF_FLAGS_CHROMA_TOPLEFT;
-        break;
-    }
-
-    switch(pPicture->color_primaries)
-    {
-      case 1:
-        flags |= CONF_FLAGS_COLPRI_BT709;
-        break;
-      case 4:
-        flags |= CONF_FLAGS_COLPRI_BT470M;
-        break;
-      case 5:
-        flags |= CONF_FLAGS_COLPRI_BT470BG;
-        break;
-      case 6:
-        flags |= CONF_FLAGS_COLPRI_170M;
-        break;
-      case 7:
-        flags |= CONF_FLAGS_COLPRI_240M;
-        break;
-    }
-
-    switch(pPicture->color_transfer)
-    {
-      case 1:
-        flags |= CONF_FLAGS_TRC_BT709;
-        break;
-      case 4:
-        flags |= CONF_FLAGS_TRC_GAMMA22;
-        break;
-      case 5:
-        flags |= CONF_FLAGS_TRC_GAMMA28;
-        break;
-    }
-
-    CStdString formatstr;
-
-    switch(pPicture->format)
-    {
-      case RENDER_FMT_YUV420P:
-        formatstr = "YV12";
-        break;
-      case RENDER_FMT_YUV420P16:
-        formatstr = "YV12P16";
-        break;
-      case RENDER_FMT_YUV420P10:
-        formatstr = "YV12P10";
-        break;
-      case RENDER_FMT_NV12:
-        formatstr = "NV12";
-        break;
-      case RENDER_FMT_UYVY422:
-        formatstr = "UYVY";
-        break;
-      case RENDER_FMT_YUYV422:
-        formatstr = "YUY2";
-        break;
-      case RENDER_FMT_VDPAU:
-        formatstr = "VDPAU";
-        break;
-      case RENDER_FMT_DXVA:
-        formatstr = "DXVA";
-        break;
-      case RENDER_FMT_VAAPI:
-        formatstr = "VAAPI";
-        break;
-      case RENDER_FMT_OMXEGL:
-        formatstr = "OMXEGL";
-        break;
-      case RENDER_FMT_CVBREF:
-        formatstr = "BGRA";
-        break;
-      case RENDER_FMT_BYPASS:
-        formatstr = "BYPASS";
-        break;
-      case RENDER_FMT_NONE:
-        formatstr = "NONE";
-        break;
-    }
+    CStdString formatstr = GetRenderFormatName(pPicture->format);
 
     if(m_bAllowFullscreen)
     {
