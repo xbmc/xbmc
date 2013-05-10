@@ -200,9 +200,6 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
 
 int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 {
-
-  CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %"PRId64, iFilePosition);
-
   int64_t iTarget = iFilePosition - m_nStartPosition;
 
   if (iTarget < 0)
