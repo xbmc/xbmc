@@ -6208,7 +6208,7 @@ msgstr "Intervallo di aggiornamento dell' EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Non conservare l'EPD nel database"
+msgstr "Non conservare l'EPG nel database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
