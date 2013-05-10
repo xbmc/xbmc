@@ -95,6 +95,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "network/WakeOnAccess.h"
 
 using namespace XFILE;
 
@@ -114,6 +115,8 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
+  CWakeOnAccess::Get().WakeUpHost(url);
+
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 

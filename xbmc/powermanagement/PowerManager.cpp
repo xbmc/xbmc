@@ -216,7 +216,12 @@ int CPowerManager::BatteryLevel()
 }
 void CPowerManager::ProcessEvents()
 {
-  m_instance->PumpPowerEvents(this);
+  static int nesting = 0;
+
+  if (++nesting == 1)
+    m_instance->PumpPowerEvents(this);
+
+  nesting--;
 }
 
 void CPowerManager::OnSleep()

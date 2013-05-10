@@ -10,6 +10,7 @@ SRCS  = cddb.cpp \
         Socket.cpp \
         TCPServer.cpp \
         UdpClient.cpp \
+        WakeOnAccess.cpp \
         WebServer.cpp \
         ZeroconfBrowser.cpp \
         Zeroconf.cpp \

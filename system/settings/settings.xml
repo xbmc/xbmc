@@ -2230,6 +2230,12 @@
           <control type="spinner" format="string" />
         </setting>
       </group>
+      <group id="2">
+        <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="">
+          <level>1</level>
+          <default>false</default>
+        </setting>
+      </group>
     </category>
     <category id="debug" label="14092" help="">
       <group id="1">

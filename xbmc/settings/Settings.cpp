@@ -50,6 +50,7 @@
 #endif // defined(TARGET_LINUX)
 #include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
+#include "network/WakeOnAccess.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "osx/XBMCHelper.h"
 #include "cores/AudioEngine/Engines/CoreAudio/CoreAudioHardware.h"
@@ -411,6 +412,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSubSettings(&CViewStateSettings::Get());
 
   // unregister ISettingsHandler implementations
+  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
   m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::Get());
   m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::Get());
@@ -799,6 +801,7 @@ void CSettings::InitializeISettingsHandlers()
 #ifdef HAS_UPNP
   m_settingsManager->RegisterSettingsHandler(&CUPnPSettings::Get());
 #endif
+  m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
 }
 
 void CSettings::InitializeISubSettings()
