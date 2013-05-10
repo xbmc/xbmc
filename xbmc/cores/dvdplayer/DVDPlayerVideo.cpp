@@ -1093,21 +1093,26 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
-   || m_output.width != pPicture->iWidth
-   || m_output.height != pPicture->iHeight
-   || m_output.dwidth != pPicture->iDisplayWidth
-   || m_output.dheight != pPicture->iDisplayHeight
-   || m_output.framerate != config_framerate
-   || m_output.color_format != (unsigned int)pPicture->format
-   || m_output.extended_format != pPicture->extended_format
-   || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
+   || ( m_output.width           != pPicture->iWidth )
+   || ( m_output.height          != pPicture->iHeight )
+   || ( m_output.dwidth          != pPicture->iDisplayWidth )
+   || ( m_output.dheight         != pPicture->iDisplayHeight )
+   || ( m_output.framerate       != config_framerate )
+   || ( m_output.color_format    != (unsigned int)pPicture->format )
+   || ( m_output.extended_format != pPicture->extended_format )
+   || ( m_output.color_matrix    != pPicture->color_matrix    && pPicture->color_matrix    != 0 ) // don't reconfigure on unspecified
    || ( m_output.chroma_position != pPicture->chroma_position && pPicture->chroma_position != 0 )
    || ( m_output.color_primaries != pPicture->color_primaries && pPicture->color_primaries != 0 )
-   || ( m_output.color_transfer != pPicture->color_transfer && pPicture->color_transfer != 0 )
-   || m_output.color_range != pPicture->color_range)
+   || ( m_output.color_transfer  != pPicture->color_transfer  && pPicture->color_transfer  != 0 )
+   || ( m_output.color_range     != pPicture->color_range ))
   {
-    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-      config_framerate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i"
+                       , config_framerate
+                       , pPicture->iWidth
+                       , pPicture->iHeight
+                       , pPicture->iDisplayWidth
+                       , pPicture->iDisplayHeight);
+
     unsigned flags = 0;
     if(pPicture->color_range == 1)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
@@ -1126,24 +1131,32 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation))
+    if(!g_renderManager.Configure(pPicture->iWidth
+                                , pPicture->iHeight
+                                , pPicture->iDisplayWidth
+                                , pPicture->iDisplayHeight
+                                , config_framerate
+                                , flags
+                                , pPicture->format
+                                , pPicture->extended_format
+                                , m_hints.orientation))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
 
-    m_output.width = pPicture->iWidth;
-    m_output.height = pPicture->iHeight;
-    m_output.dwidth = pPicture->iDisplayWidth;
-    m_output.dheight = pPicture->iDisplayHeight;
-    m_output.framerate = config_framerate;
-    m_output.color_format = pPicture->format;
+    m_output.width           = pPicture->iWidth;
+    m_output.height          = pPicture->iHeight;
+    m_output.dwidth          = pPicture->iDisplayWidth;
+    m_output.dheight         = pPicture->iDisplayHeight;
+    m_output.framerate       = config_framerate;
+    m_output.color_format    = pPicture->format;
     m_output.extended_format = pPicture->extended_format;
-    m_output.color_matrix = pPicture->color_matrix;
+    m_output.color_matrix    = pPicture->color_matrix;
     m_output.chroma_position = pPicture->chroma_position;
     m_output.color_primaries = pPicture->color_primaries;
-    m_output.color_transfer = pPicture->color_transfer;
-    m_output.color_range = pPicture->color_range;
+    m_output.color_transfer  = pPicture->color_transfer;
+    m_output.color_range     = pPicture->color_range;
   }
 
   double maxfps  = 60.0;
