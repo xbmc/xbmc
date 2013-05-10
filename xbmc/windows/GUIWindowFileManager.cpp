@@ -494,9 +494,8 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   for (int i = 0; i < (int)m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    CStdString strExtension;
-    URIUtils::GetExtension(pItem->GetPath(), strExtension);
-    if (pItem->IsHD() && strExtension == ".tbn")
+    if (pItem->IsHD() &&
+        URIUtils::GetExtension(pItem->GetPath()).CompareNoCase(".tbn") == 0)
     {
       pItem->SetArt("thumb", pItem->GetPath());
     }

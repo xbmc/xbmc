@@ -777,7 +777,7 @@ bool CFileItem::IsVideo() const
      return true;
   }
 
-  URIUtils::GetExtension(m_strPath, extension);
+  extension = URIUtils::GetExtension(m_strPath);
 
   if (extension.IsEmpty())
     return false;
@@ -819,8 +819,7 @@ bool CFileItem::IsDiscStub() const
     return dbItem.IsDiscStub();
   }
 
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
 
   if (strExtension.IsEmpty())
     return false;
@@ -852,7 +851,7 @@ bool CFileItem::IsAudio() const
      return true;
   }
 
-  URIUtils::GetExtension(m_strPath, extension);
+  extension = URIUtils::GetExtension(m_strPath);
 
   if (extension.IsEmpty())
     return false;
@@ -922,8 +921,7 @@ bool CFileItem::IsSmartPlayList() const
   if (HasProperty("library.smartplaylist") && GetProperty("library.smartplaylist").asBoolean())
     return true;
 
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
   strExtension.ToLower();
   return (strExtension == ".xsp");
 }
@@ -950,8 +948,7 @@ bool CFileItem::IsNFO() const
 
 bool CFileItem::IsDVDImage() const
 {
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
   return (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg"));
 }
 

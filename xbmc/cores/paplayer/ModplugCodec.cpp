@@ -47,7 +47,7 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
 
   // set correct codec name
-  URIUtils::GetExtension(strFile,m_CodecName);
+  m_CodecName = URIUtils::GetExtension(strFile);
   m_CodecName.erase(0,1);
   m_CodecName.ToUpper();
 

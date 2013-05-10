@@ -88,8 +88,7 @@ static const vector<string> StringListToVectorString(const StringList& stringLis
 
 bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art /* = NULL */)
 {  
-  CStdString strExtension;
-  URIUtils::GetExtension(strFileName, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFileName);
   strExtension.ToLower();
   strExtension.TrimLeft('.');
 

@@ -242,8 +242,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   CRegExp reTags(true);
   CRegExp reYear;
-  CStdString strExtension;
-  URIUtils::GetExtension(strFileName, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFileName);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -1570,8 +1569,7 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
-      CStdString strExtension;
-      URIUtils::GetExtension(pItem->GetPath(), strExtension);
+      CStdString strExtension = URIUtils::GetExtension(pItem->GetPath());
       if ((strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr")) ||
           (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
       {

@@ -64,15 +64,8 @@ TEST_F(TestURIUtils, GetDirectory)
 
 TEST_F(TestURIUtils, GetExtension)
 {
-  CStdString ref, var;
-
-  ref = ".avi";
-  EXPECT_STREQ(ref.c_str(),
+  EXPECT_STREQ(".avi",
                URIUtils::GetExtension("/path/to/movie.avi").c_str());
-
-  var.clear();
-  URIUtils::GetExtension("/path/to/movie.avi", var);
-  EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST_F(TestURIUtils, GetFileName)

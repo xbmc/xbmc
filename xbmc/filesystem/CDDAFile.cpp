@@ -218,8 +218,7 @@ int64_t CFileCDDA::GetLength()
 bool CFileCDDA::IsValidFile(const CURL& url)
 {
   // Only .cdda files are supported
-  CStdString strExtension;
-  URIUtils::GetExtension(url.Get(), strExtension);
+  CStdString strExtension = URIUtils::GetExtension(url.Get());
   strExtension.MakeLower();
 
   return (strExtension == ".cdda");
