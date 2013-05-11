@@ -54,28 +54,19 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 }
 
 /* returns filename extension including period of filename */
-const CStdString URIUtils::GetExtension(const CStdString& strFileName)
+CStdString URIUtils::GetExtension(const CStdString& strFileName)
 {
-  if(IsURL(strFileName))
+  if (IsURL(strFileName))
   {
     CURL url(strFileName);
     return GetExtension(url.GetFileName());
   }
 
-  int period = strFileName.find_last_of('.');
-  if(period >= 0)
-  {
-    if( strFileName.find_first_of('/', period+1) != string::npos ) return "";
-    if( strFileName.find_first_of('\\', period+1) != string::npos ) return "";
-    return strFileName.substr(period);
-  }
-  else
-    return "";
-}
+  size_t period = strFileName.find_last_of("./\\");
+  if (period == string::npos || strFileName[period] != '.')
+    return CStdString();
 
-void URIUtils::GetExtension(const CStdString& strFile, CStdString& strExtension)
-{
-  strExtension = GetExtension(strFile);
+  return strFileName.substr(period);
 }
 
 void URIUtils::RemoveExtension(CStdString& strFileName)
@@ -94,8 +85,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
   // Extension found
   if (iPos > 0)
   {
-    CStdString strExtension;
-    GetExtension(strFileName, strExtension);
+    CStdString strExtension = GetExtension(strFileName);
     strExtension.ToLower();
     strExtension += "|";
 
@@ -126,8 +116,7 @@ CStdString URIUtils::ReplaceExtension(const CStdString& strFile,
   }
 
   CStdString strChangedFile;
-  CStdString strExtension;
-  GetExtension(strFile, strExtension);
+  CStdString strExtension = GetExtension(strFile);
   if ( strExtension.size() )
   {
     strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
@@ -550,8 +539,7 @@ bool URIUtils::IsStack(const CStdString& strFile)
 
 bool URIUtils::IsRAR(const CStdString& strFile)
 {
-  CStdString strExtension;
-  GetExtension(strFile,strExtension);
+  CStdString strExtension = GetExtension(strFile);
 
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
@@ -593,19 +581,12 @@ bool URIUtils::IsInRAR(const CStdString& strFile)
 
 bool URIUtils::IsAPK(const CStdString& strFile)
 {
-  CStdString strExtension;
-  GetExtension(strFile,strExtension);
-
-  if (strExtension.CompareNoCase(".apk") == 0)
-    return true;
-
-  return false;
+  return GetExtension(strFile).CompareNoCase(".apk") == 0;
 }
 
 bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
-  CStdString strExtension;
-  GetExtension(strFile,strExtension);
+  CStdString strExtension = GetExtension(strFile);
 
   if (strExtension.CompareNoCase(".zip") == 0)
     return true;
@@ -618,8 +599,7 @@ bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool URIUtils::IsArchive(const CStdString& strFile)
 {
-  CStdString extension;
-  GetExtension(strFile, extension);
+  CStdString extension = GetExtension(strFile);
 
   return (extension.CompareNoCase(".zip") == 0 ||
           extension.CompareNoCase(".rar") == 0 ||

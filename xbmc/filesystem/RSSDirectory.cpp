@@ -88,8 +88,7 @@ bool CRSSDirectory::ContainsFiles(const CStdString& strPath)
 
 static bool IsPathToMedia(const CStdString& strPath )
 {
-  CStdString extension;
-  URIUtils::GetExtension(strPath, extension);
+  CStdString extension = URIUtils::GetExtension(strPath);
 
   if (extension.IsEmpty())
     return false;
@@ -112,8 +111,7 @@ static bool IsPathToThumbnail(const CStdString& strPath )
 {
   // Currently just check if this is an image, maybe we will add some
   // other checks later
-  CStdString extension;
-  URIUtils::GetExtension(strPath, extension);
+  CStdString extension = URIUtils::GetExtension(strPath);
 
   if (extension.IsEmpty())
     return false;

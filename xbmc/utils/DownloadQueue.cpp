@@ -97,8 +97,7 @@ TICKET CDownloadQueue::RequestFile(const CStdString& aUrl, IDownloadQueueObserve
 
   CLog::Log(LOGDEBUG, "RequestFile from observer at %p", aObserver);
   // create a temporary destination
-  CStdString strExtension;
-  URIUtils::GetExtension(aUrl, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(aUrl);
 
   TICKET ticket(m_wQueueId, m_dwNextItemId++);
 
