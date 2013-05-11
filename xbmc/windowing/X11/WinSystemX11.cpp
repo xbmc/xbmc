@@ -248,18 +248,62 @@ void CWinSystemX11::UpdateResolutions()
 #if defined(HAS_XRANDR)
   int numScreens = XScreenCount(m_dpy);
   g_xrandr.SetNumScreens(numScreens);
-  if(g_xrandr.Query(true))
+
+  bool switchOnOff = CSettings::Get().GetBool("videoscreen.blankdisplays");
+  m_userOutput = CSettings::Get().GetString("videoscreen.monitor");
+  if (m_userOutput.Equals("Default"))
+    switchOnOff = false;
+
+  if(g_xrandr.Query(true, !switchOnOff))
   {
-    m_userOutput = CSettings::Get().GetString("videoscreen.monitor");
     // check if the monitor is connected
-    XOutput *out = g_xrandr.GetOutput(m_userOutput);
+    // might take a while when connected to a receiver
+    XbmcThreads::EndTime timeout(3000);
+    XOutput *out = NULL;
+    while (!m_userOutput.Equals("Default") && !timeout.IsTimePast())
+    {
+      out = g_xrandr.GetOutput(m_userOutput);
+      if (out)
+      {
+        XMode mode = g_xrandr.GetCurrentMode(m_userOutput);
+        if (mode.isCurrent || switchOnOff)
+          break;
+        else
+        {
+          out = NULL;
+          break;
+        }
+      }
+
+      Sleep(500);
+      if (!g_xrandr.Query(true, !switchOnOff))
+        break;
+    }
     if (!out)
     {
-      // choose first output
       m_userOutput = g_xrandr.GetModes()[0].name;
       out = g_xrandr.GetOutput(m_userOutput);
     }
+
+    // switch on output
+    if(switchOnOff)
+      g_xrandr.TurnOnOutput(m_userOutput);
+
+    // switch off other outputs if desired
+    if (switchOnOff)
+    {
+      std::vector<XOutput> outputs = g_xrandr.GetModes();
+      for (int i=0; i<outputs.size(); i++)
+      {
+        if (outputs[i].name.Equals(m_userOutput))
+          continue;
+        g_xrandr.TurnOffOutput(outputs[i].name);
+      }
+    }
+
     XMode mode = g_xrandr.GetCurrentMode(m_userOutput);
+    if (mode.id.empty())
+      mode = g_xrandr.GetPreferredMode(m_userOutput);
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
       UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
@@ -321,8 +365,8 @@ void CWinSystemX11::UpdateResolutions()
 
       CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
 
-      res.strMode      = StringUtils::Format("%s: %s @ %.2fHz", out.name.c_str(), mode.name.c_str(), mode.hz);
-      res.strOutput    = out.name;
+      res.strMode      = StringUtils::Format("%s: %s @ %.2fHz", out->name.c_str(), mode.name.c_str(), mode.hz);
+      res.strOutput    = out->name;
       res.strId        = mode.id;
       res.iSubtitles   = (int)(0.95*mode.h);
       res.fRefreshRate = mode.hz;
@@ -344,7 +388,9 @@ void CWinSystemX11::UpdateResolutions()
 void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
 {
   vector<XOutput> outs;
+  g_xrandr.Query(true);
   outs = g_xrandr.GetModes();
+  outputs->push_back("Default");
   for(unsigned int i=0; i<outs.size(); ++i)
   {
     outputs->push_back(outs[i].name);
@@ -353,7 +399,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<CStdString> *outputs)
 
 bool CWinSystemX11::IsCurrentOutput(CStdString output)
 {
-  return m_currentOutput.Equals(output);
+  return output.Equals("Default") || m_currentOutput.Equals(output);
 }
 
 bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
@@ -602,14 +648,34 @@ void CWinSystemX11::CheckDisplayEvents()
 #endif
 }
 
-void CWinSystemX11::NotifyXRREvent()
+void CWinSystemX11::NotifyXRREvent(bool poll)
 {
-  CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+  // we may not get an event if desired monitor becomes available
+  // hence we need to poll
+  if (poll)
+  {
+    CStdString output = CSettings::Get().GetString("videoscreen.monitor");
+    if (output.Equals(m_currentOutput) || output.Equals("Default"))
+      return;
+
+    int numScreens = XScreenCount(m_dpy);
+    g_xrandr.SetNumScreens(numScreens);
+    g_xrandr.Query(true);
+    if (!g_xrandr.IsOutputConnected(output))
+      return;
+
+    // if output is turned off by user, respect it
+    XMode mode = g_xrandr.GetCurrentMode(output);
+    if (!mode.isCurrent)
+      return;
+  }
+
+  CLog::Log(LOGDEBUG, "%s - notify display reset event, poll: %d", __FUNCTION__, poll);
   m_windowDirty = true;
 
   CSingleLock lock(g_graphicsContext);
 
-  if (!g_xrandr.Query(true))
+  if (!g_xrandr.Query(!poll))
   {
     CLog::Log(LOGERROR, "WinSystemX11::RefreshWindow - failed to query xrandr");
     return;
@@ -636,7 +702,8 @@ void CWinSystemX11::NotifyXRREvent()
   bool found(false);
   for (i = RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); ++i)
   {
-    if (CDisplaySettings::Get().GetResolutionInfo(i).strId == mode.id)
+    res = CDisplaySettings::Get().GetResolutionInfo(i);
+    if (CDisplaySettings::Get().GetResolutionInfo(i).strId.Equals(mode.id))
     {
       found = true;
       break;
