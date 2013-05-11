@@ -88,6 +88,15 @@ public:
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
+  /*! \brief Update text from a pre-styled vecText/vecColors combination
+   Allows styled text to be passed directly to the text layout.
+   \param text the styled text to set.
+   \param colors the colors used on the text.
+   \param maxWidth the maximum width for wrapping text, defaults to 0 (no max width).
+   \param forceLTRReadingOrder whether to force left to right reading order, defaults to false.
+   */
+  void UpdateStyled(const vecText &text, const vecColors &colors, float maxWidth = 0, bool forceLTRReadingOrder = false);
+
   unsigned int GetTextLength() const;
   void GetFirstText(vecText &text) const;
   void Reset();

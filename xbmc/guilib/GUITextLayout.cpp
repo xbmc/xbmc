@@ -223,20 +223,28 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
   if (text.Equals(m_lastText) && !forceUpdate)
     return false;
 
+  // parse the text for style information
   vecText parsedText;
+  vecColors colors;
+  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, colors, parsedText);
 
+  // and update
+  UpdateStyled(parsedText, colors, maxWidth, forceLTRReadingOrder);
+  m_lastText = text;
+  return true;
+}
+
+void CGUITextLayout::UpdateStyled(const vecText &text, const vecColors &colors, float maxWidth, bool forceLTRReadingOrder)
+{
   // empty out our previous string
   m_lines.clear();
-  m_colors.clear();
-
-  // parse the text into our string objects
-  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, m_colors, parsedText);
+  m_colors = colors;
 
   // if we need to wrap the text, then do so
   if (m_wrap && maxWidth > 0)
-    WrapText(parsedText, maxWidth);
+    WrapText(text, maxWidth);
   else
-    LineBreakText(parsedText, m_lines);
+    LineBreakText(text, m_lines);
 
   // remove any trailing blank lines
   while (!m_lines.empty() && m_lines.back().m_text.empty())
@@ -246,9 +254,6 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
 
   // and cache the width and height for later reading
   CalcTextExtent();
-
-  m_lastText = text;
-  return true;
 }
 
 // BidiTransform is used to handle RTL text flipping in the string
