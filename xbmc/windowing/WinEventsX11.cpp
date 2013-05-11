@@ -213,6 +213,7 @@ bool CWinEventsX11Imp::Init(Display *dpy, Window win)
   WinEvents->m_wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
   WinEvents->m_structureChanged = false;
   WinEvents->m_xrrEventPending = false;
+  WinEvents->m_xrrPollTimer.Set(3000);
 
   // open input method
   char *old_locale = NULL, *old_modifiers = NULL;
@@ -590,6 +591,11 @@ bool CWinEventsX11Imp::MessagePump()
     CLog::Log(LOGERROR,"CWinEventsX11::MessagePump - missed XRR Events");
     g_Windowing.NotifyXRREvent();
     WinEvents->m_xrrEventPending = false;
+  }
+  else if (!g_application.m_pPlayer->IsPlaying() && WinEvents && WinEvents->m_xrrPollTimer.IsTimePast())
+  {
+    g_Windowing.NotifyXRREvent(true);
+    WinEvents->m_xrrPollTimer.Set(3000);
   }
 #endif
 
