@@ -236,7 +236,6 @@ public:
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
   virtual void  GetGeneralInfo(CStdString &strVideoInfo);
-  virtual void  Update(bool bPauseDrawing);
   virtual void  UpdateApplication(double timeout);
   virtual bool  CanRecord();
   virtual bool  IsRecording();

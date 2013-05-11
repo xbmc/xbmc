@@ -53,7 +53,7 @@ public:
   // Functions called from the GUI
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio();
-  void Update(bool bPauseDrawing);
+  void Update();
   void FrameMove();
   void FrameFinish();
   bool FrameWait(int ms);
@@ -95,7 +95,6 @@ public:
   RESOLUTION GetResolution();
 
   float GetMaximumFPS();
-  inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
 
@@ -144,8 +143,6 @@ protected:
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
-
-  bool m_bPauseDrawing;   // true if we should pause rendering
 
   bool m_bIsStarted;
   CSharedSection m_sharedSection;

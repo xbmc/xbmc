@@ -92,7 +92,6 @@ private:
 CXBMCRenderManager::CXBMCRenderManager()
 {
   m_pRenderer = NULL;
-  m_bPauseDrawing = false;
   m_bIsStarted = false;
 
   m_presentfield = FS_NONE;
@@ -264,7 +263,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     if( format & RENDER_FMT_BYPASS )
       m_presentmethod = PRESENT_METHOD_BYPASS;
 
-    m_pRenderer->Update(false);
+    m_pRenderer->Update();
     m_bIsStarted = true;
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
@@ -286,15 +285,12 @@ bool CXBMCRenderManager::IsConfigured() const
   return m_pRenderer->IsConfigured();
 }
 
-void CXBMCRenderManager::Update(bool bPauseDrawing)
+void CXBMCRenderManager::Update()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
-  m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
-  {
-    m_pRenderer->Update(bPauseDrawing);
-  }
+    m_pRenderer->Update();
 
   m_presentevent.Set();
 }
@@ -361,7 +357,6 @@ unsigned int CXBMCRenderManager::PreInit()
   memset(m_errorbuff, 0, sizeof(m_errorbuff));
 
   m_bIsStarted = false;
-  m_bPauseDrawing = false;
   if (!m_pRenderer)
   {
 #if defined(HAS_GL)

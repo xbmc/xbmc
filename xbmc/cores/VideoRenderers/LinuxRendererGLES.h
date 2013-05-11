@@ -124,7 +124,7 @@ public:
   CLinuxRendererGLES();
   virtual ~CLinuxRendererGLES();
 
-  virtual void Update(bool bPauseDrawing);
+  virtual void Update();
   virtual void SetupScreenshot() {};
 
   bool RenderCapture(CRenderCapture* capture);
