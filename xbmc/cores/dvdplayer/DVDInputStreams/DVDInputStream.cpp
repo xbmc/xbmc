@@ -32,10 +32,11 @@ CDVDInputStream::~CDVDInputStream()
 
 bool CDVDInputStream::Open(const char* strFile, const std::string &content)
 {
-  CURL url = CURL(strFile);
+  CURL url(strFile);
 
-  // get rid of any |option parameters which might have sneaked in here
-  // those are only handled by our curl impl.
+  m_url = url;
+  // get rid of any protocol options which might have sneaked in here
+  // but keep them in m_url.
   url.SetProtocolOptions("");
   m_strFileName = url.Get();
 

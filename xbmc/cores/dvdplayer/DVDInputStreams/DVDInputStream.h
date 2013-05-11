@@ -25,6 +25,7 @@
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
+#include "URL.h"
 #include "guilib/Geometry.h"
 
 enum DVDStreamType
@@ -150,6 +151,7 @@ public:
   virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string& GetFileName() { return m_strFileName; }
+  virtual CURL &GetURL() { return m_url; }
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
@@ -176,6 +178,7 @@ public:
 protected:
   DVDStreamType m_streamType;
   std::string m_strFileName;
+  CURL m_url;
   BitstreamStats m_stats;
   std::string m_content;
   CFileItem m_item;

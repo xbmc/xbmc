@@ -47,6 +47,7 @@
 #include "threads/Thread.h"
 #include "threads/SystemClock.h"
 #include "utils/TimeUtils.h"
+#include "URL.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -285,25 +286,32 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
+    CURL url = m_pInput->GetURL();
+    CStdString protocol = url.GetProtocol();
+
+    AVDictionary *options = GetFFMpegOptionsFromURL(url);
+
     int result=-1;
-    if (strFile.substr(0,6) == "mms://")
+    if (protocol.Equals("mms"))
     {
       // try mmsh, then mmst
-      CStdString strFile2;
-      strFile2.Format("mmsh://%s",strFile.substr(6,strFile.size()-6).c_str());
-      result = m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile2.c_str(), iformat, NULL);
+      url.SetProtocol("mmsh");
+      url.SetProtocolOptions("");
+      result = m_dllAvFormat.avformat_open_input(&m_pFormatContext, url.Get().c_str(), iformat, &options);
       if (result < 0)
       {
-        strFile = "mmst://";
-        strFile += strFile2.Mid(7).c_str();
+        url.SetProtocol("mmst");
+        strFile = url.Get();
       } 
     }
-    if (result < 0 && m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0 )
+    if (result < 0 && m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0 )
     {
       CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
+      m_dllAvUtil.av_dict_free(&options);
       return false;
     }
+    m_dllAvUtil.av_dict_free(&options);
   }
   else
   {
@@ -575,6 +583,44 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
         m_pFormatContext->streams[i]->discard = discard;
     }
   }
+}
+
+AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
+{
+  CStdString protocol = url.GetProtocol();
+
+  AVDictionary *options = NULL;
+
+  if (protocol.Equals("http") || protocol.Equals("https"))
+  {
+    std::map<CStdString, CStdString> protocolOptions;
+    url.GetProtocolOptions(protocolOptions);
+    std::string headers;
+    bool hasUserAgent = false;
+    for(std::map<CStdString, CStdString>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
+    {
+      const CStdString &name = it->first;
+      const CStdString &value = it->second;
+
+      if (name.Equals("seekable"))
+        m_dllAvUtil.av_dict_set(&options, "seekable", value.c_str(), 0);
+      else if (name.Equals("User-Agent"))
+      {
+        m_dllAvUtil.av_dict_set(&options, "user-agent", value.c_str(), 0);
+        hasUserAgent = true;
+      }
+      else if (!name.Equals("auth") && !name.Equals("Encoding"))
+        // all other protocol options can be added as http header.
+        headers.append(name).append(": ").append(value).append("\r\n");
+    }
+    if (!hasUserAgent)
+      // set default xbmc user-agent.
+      m_dllAvUtil.av_dict_set(&options, "user-agent", g_advancedSettings.m_userAgent.c_str(), 0);
+
+    if (!headers.empty())
+      m_dllAvUtil.av_dict_set(&options, "headers", headers.c_str(), 0);
+  }
+  return options;
 }
 
 double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
