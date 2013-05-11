@@ -232,9 +232,6 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
   // parse the text into our string objects
   ParseText(text, parsedText);
 
-  // add \n to the end of the string
-  parsedText.push_back(L'\n');
-
   // if we need to wrap the text, then do so
   if (m_wrap && maxWidth > 0)
     WrapText(parsedText, maxWidth);
@@ -558,6 +555,12 @@ void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &line
       lineStart = pos + 1;
     }
     pos++;
+  }
+  // handle the last line if non-empty
+  if (lineStart < text.end() && (nMaxLines <= 0 || lines.size() < (size_t)nMaxLines))
+  {
+    CGUIString string(lineStart, text.end(), true);
+    lines.push_back(string);
   }
 }
 
