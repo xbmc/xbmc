@@ -601,6 +601,9 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     EDEINTERLACEMODE deinterlacemode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
     EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
 
+    if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
+      deinterlacemode = VS_DEINTERLACEMODE_OFF;
+
     if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
       m_presentmethod = PRESENT_METHOD_SINGLE;
     else
