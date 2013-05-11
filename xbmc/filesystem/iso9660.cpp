@@ -752,7 +752,7 @@ HANDLE iso9660::OpenFile(const char *filename)
 
   pContext->m_dwCurrentBlock = m_searchpointer->Location;
   pContext->m_dwFileSize = m_info.curr_filesize = fileinfo.nFileSizeLow;
-  pContext->m_pBuffer = new byte[CIRC_BUFFER_SIZE * BUFFER_SIZE];
+  pContext->m_pBuffer = new uint8_t[CIRC_BUFFER_SIZE * BUFFER_SIZE];
   pContext->m_dwStartBlock = pContext->m_dwCurrentBlock;
   pContext->m_dwFilePos = 0;
   pContext->m_dwCircBuffBegin = 0;
@@ -791,7 +791,7 @@ void iso9660::CloseFile(HANDLE hFile)
   FreeFileContext(hFile);
 }
 //************************************************************************************
-bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte** ppBuffer)
+bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, uint8_t** ppBuffer)
 {
 
   DWORD StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
@@ -891,7 +891,7 @@ void iso9660::ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector)
   }
 }
 //************************************************************************************
-long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
+long iso9660::ReadFile(HANDLE hFile, uint8_t *pBuffer, long lSize)
 {
   bool bError;
   long iBytesRead = 0;
@@ -912,7 +912,7 @@ long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
     //sprintf(szBuf,"pos:%i cblk:%i sblk:%i off:%i",(long)m_dwFilePos, (long)m_dwCurrentBlock,(long)m_dwStartBlock,(long)iOffsetInBuffer);
     //DBG(szBuf);
 
-    byte* pSector;
+    uint8_t* pSector;
     bError = !ReadSectorFromCache(pContext, pContext->m_dwCurrentBlock, &pSector);
     if (!bError)
     {
