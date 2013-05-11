@@ -95,11 +95,28 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITranspor
   return OK;
 }
 
+bool CPlaylistOperations::CheckMediaParameter(int playlist, const CVariant &parameterObject)
+{
+  if (parameterObject["item"].isMember("media"))
+  {
+    if (playlist == PLAYLIST_VIDEO && parameterObject["item"]["media"].asString().compare("video") != 0)
+      return false;
+    if (playlist == PLAYLIST_MUSIC && parameterObject["item"]["media"].asString().compare("music") != 0)
+      return false;
+    if (playlist == PLAYLIST_PICTURE && parameterObject["item"]["media"].asString().compare("video") != 0 && parameterObject["item"]["media"].asString().compare("pictures") != 0)
+      return false;
+  }
+  return true;
+}
+
 JSONRPC_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   CFileItemList list;
   CVariant params = parameterObject;
+
+  if (!CheckMediaParameter(playlist, parameterObject))
+    return InvalidParams;
 
   CGUIWindowSlideShow *slideshow = NULL;
   switch (playlist)
@@ -122,8 +139,8 @@ JSONRPC_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLaye
       slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (!slideshow)
         return FailedToExecute;
-      
-      params["item"]["media"] = "pictures";
+      if (!parameterObject["item"].isMember("media"))
+        params["item"]["media"] = "pictures";
       if (!FillFileItemList(params["item"], list))
         return InvalidParams;
 
@@ -148,6 +165,9 @@ JSONRPC_STATUS CPlaylistOperations::Insert(const CStdString &method, ITransportL
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   if (playlist == PLAYLIST_PICTURE)
     return FailedToExecute;
+
+  if (!CheckMediaParameter(playlist, parameterObject))
+    return InvalidParams;
 
   CFileItemList list;
   CVariant params = parameterObject;

@@ -27,7 +27,7 @@ index c374cb9..6da6db5 100644
 -        s->ctx_flags |= AVFMTCTX_NOHEADER;
 +        /* only flag NOHEADER if we are in file mode,
 +           in streaming mode scanning may take too long for users */
-+        if (!url_is_streamed(pb))
++        if (pb->seekable)
 +            s->ctx_flags |= AVFMTCTX_NOHEADER;
      } else {
          AVStream *st;

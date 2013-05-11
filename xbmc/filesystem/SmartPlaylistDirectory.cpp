@@ -26,14 +26,17 @@
 #include "filesystem/File.h"
 #include "music/MusicDatabase.h"
 #include "playlists/SmartPlayList.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
+#define PROPERTY_GROUP_BY           "group.by"
+#define PROPERTY_GROUP_MIXED        "group.mixed"
 
 namespace XFILE
 {
@@ -67,10 +70,12 @@ namespace XFILE
     sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
       sorting.sortAttributes = SortAttributeIgnoreArticle;
 
     std::string option = !filter ? "xsp" : "filter";
+    const CStdString& group = playlist.GetGroup();
+    bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
 
     if (playlist.GetType().Equals("movies") ||
         playlist.GetType().Equals("tvshows") ||
@@ -86,18 +91,30 @@ namespace XFILE
         {
           switch (mediaType)
           {
-          case MediaTypeTvShow:
-          case MediaTypeEpisode:
-            baseDir = "videodb://2/2/";
-            break;
+            case MediaTypeTvShow:
+              baseDir = "videodb://tvshows/";
+              break;
 
-          case MediaTypeMovie:
-            baseDir = "videodb://1/2/";
-            break;
+            case MediaTypeEpisode:
+              baseDir = "videodb://tvshows/";
+              break;
 
-          default:
-            return false;
+            case MediaTypeMovie:
+              baseDir = "videodb://movies/";
+              break;
+
+            default:
+              return false;
           }
+
+          if (!isGrouped)
+            baseDir += "titles";
+          else
+            baseDir += group;
+          URIUtils::AddSlashAtEnd(baseDir);
+
+          if (mediaType == MediaTypeEpisode)
+            baseDir += "-1/-1/";
         }
 
         CVideoDbUrl videoUrl;
@@ -118,30 +135,68 @@ namespace XFILE
           videoUrl.RemoveOption(option);
         
         CDatabase::Filter dbfilter;
-        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
+        success = db.GetItems(videoUrl.ToString(), items, dbfilter, sorting);
         db.Close();
 
         // if we retrieve a list of episodes and we didn't receive
         // a pre-defined base path, we need to fix it
-        if (strBaseDir.empty() && mediaType == MediaTypeEpisode)
+        if (strBaseDir.empty() && mediaType == MediaTypeEpisode && !isGrouped)
           videoUrl.AppendPath("-1/-1/");
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
-    else if (playlist.GetType().Equals("albums"))
+    else if (playlist.GetType().Equals("artists") ||
+             playlist.GetType().Equals("albums") ||
+             playlist.GetType().Equals("songs") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
       if (db.Open())
       {
+        CSmartPlaylist plist(playlist);
+        if (playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
+          plist.SetType("songs");
+
+        MediaType mediaType = DatabaseUtils::MediaTypeFromString(plist.GetType());
+
+        CStdString baseDir = strBaseDir;
+        if (strBaseDir.empty())
+        {
+          baseDir = "musicdb://";
+          if (!isGrouped)
+          {
+            switch (mediaType)
+            {
+              case MediaTypeArtist:
+                baseDir += "artists";
+                break;
+
+              case MediaTypeAlbum:
+                baseDir += "albums";
+                break;
+
+              case MediaTypeSong:
+                baseDir += "songs";
+                break;
+
+              default:
+                return false;
+            }
+          }
+          else
+            baseDir += group;
+
+          URIUtils::AddSlashAtEnd(baseDir);
+        }
+
         CMusicDbUrl musicUrl;
-        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://3/"))
+        if (!musicUrl.FromString(baseDir))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
         CStdString xsp;
-        if (!playlist.IsEmpty(filter))
+        if (!plist.IsEmpty(filter))
         {
-          if (!playlist.SaveAsJson(xsp, !filter))
+          if (!plist.SaveAsJson(xsp, !filter))
             return false;
         }
 
@@ -151,75 +206,13 @@ namespace XFILE
           musicUrl.RemoveOption(option);
 
         CDatabase::Filter dbfilter;
-        success = db.GetAlbumsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
+        success = db.GetItems(musicUrl.ToString(), items, dbfilter, sorting);
         db.Close();
-        items.SetContent("albums");
-        items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
-      }
-    }
-    else if (playlist.GetType().Equals("artists"))
-    {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        CMusicDbUrl musicUrl;
-        if (!musicUrl.FromString("musicdb://2/"))
-          return false;
 
-        // store the smartplaylist as JSON in the URL as well
-        CStdString xsp;
-        if (!playlist.IsEmpty(filter))
-        {
-          if (!playlist.SaveAsJson(xsp, !filter))
-            return false;
-        }
-
-        if (!xsp.empty())
-          musicUrl.AddOption(option, xsp);
-        else
-          musicUrl.RemoveOption(option);
-
-        CDatabase::Filter dbfilter;
-        success = db.GetArtistsNav(musicUrl.ToString(), items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, dbfilter, sorting);
-        db.Close();
-        items.SetContent("artists");
         items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
       }
     }
 
-    if (playlist.GetType().Equals("songs") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
-    {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        CSmartPlaylist songPlaylist(playlist);
-        if (playlist.GetType().IsEmpty() || playlist.GetType().Equals("mixed"))
-          songPlaylist.SetType("songs");
-        
-        CMusicDbUrl musicUrl;
-        if (!musicUrl.FromString(!strBaseDir.empty() ? strBaseDir : "musicdb://4/"))
-          return false;
-
-        // store the smartplaylist as JSON in the URL as well
-        CStdString xsp;
-        if (!songPlaylist.IsEmpty(filter))
-        {
-          if (!songPlaylist.SaveAsJson(xsp, !filter))
-            return false;
-        }
-
-        if (!xsp.empty())
-          musicUrl.AddOption(option, xsp);
-        else
-          musicUrl.RemoveOption(option);
-
-        CDatabase::Filter dbfilter;
-        success = db.GetSongsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
-        db.Close();
-        items.SetContent("songs");
-        items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
-      }
-    }
     if (playlist.GetType().Equals("musicvideos") || playlist.GetType().Equals("mixed"))
     {
       CVideoDatabase db;
@@ -229,8 +222,20 @@ namespace XFILE
         if (playlist.GetType().Equals("mixed"))
           mvidPlaylist.SetType("musicvideos");
 
+        CStdString baseDir = strBaseDir;
+        if (baseDir.empty())
+        {
+          baseDir = "videodb://musicvideos/";
+
+          if (!isGrouped)
+            baseDir += "titles";
+          else
+            baseDir += group;
+          URIUtils::AddSlashAtEnd(baseDir);
+        }
+
         CVideoDbUrl videoUrl;
-        if (!videoUrl.FromString(!strBaseDir.empty() ? strBaseDir : "videodb://3/2/"))
+        if (!videoUrl.FromString(baseDir))
           return false;
 
         // store the smartplaylist as JSON in the URL as well
@@ -247,8 +252,12 @@ namespace XFILE
           videoUrl.RemoveOption(option);
         
         CFileItemList items2;
-        success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2);
+        CDatabase::Filter dbfilter;
+        success2 = db.GetItems(videoUrl.ToString(), items2, dbfilter, sorting);
+
         db.Close();
+        if (items.Size() <= 0)
+          items.SetPath(videoUrl.ToString());
 
         items.Append(items2);
         if (items2.Size())
@@ -261,9 +270,24 @@ namespace XFILE
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
+
     items.SetLabel(playlist.GetName());
+    if (isGrouped)
+      items.SetContent(group);
+    else
+      items.SetContent(playlist.GetType());
+
     items.SetProperty(PROPERTY_SORT_ORDER, (int)playlist.GetOrder());
     items.SetProperty(PROPERTY_SORT_ASCENDING, playlist.GetOrderDirection() == SortOrderAscending);
+    if (!group.empty())
+    {
+      items.SetProperty(PROPERTY_GROUP_BY, group);
+      items.SetProperty(PROPERTY_GROUP_MIXED, playlist.IsGroupMixed());
+    }
+
+    // sort grouped list by label
+    if (items.Size() > 1 && !group.empty())
+      items.Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderAscending);
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)

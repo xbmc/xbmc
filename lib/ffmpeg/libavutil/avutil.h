@@ -29,19 +29,19 @@
 /**
  * @mainpage
  *
- * @section libav_intro Introduction
+ * @section ffmpeg_intro Introduction
  *
- * This document describe the usage of the different libraries
+ * This document describes the usage of the different libraries
  * provided by FFmpeg.
  *
  * @li @ref libavc "libavcodec" encoding/decoding library
- * @li @subpage libavfilter graph based frame editing library
+ * @li @ref lavfi "libavfilter" graph based frame editing library
  * @li @ref libavf "libavformat" I/O and muxing/demuxing library
  * @li @ref lavd "libavdevice" special devices muxing/demuxing library
  * @li @ref lavu "libavutil" common utility library
- * @li @subpage libpostproc post processing library
- * @li @subpage libswscale  color conversion and scaling library
- *
+ * @li @ref lswr "libswresample" audio resampling, format conversion and mixing
+ * @li @ref lpp  "libpostproc" post processing library
+ * @li @ref lsws "libswscale" color conversion and scaling library
  */
 
 /**
@@ -108,96 +108,6 @@
  * @}
  */
 
-
-/**
- * @defgroup preproc_misc Preprocessor String Macros
- *
- * String manipulation macros
- *
- * @{
- */
-
-#define AV_STRINGIFY(s)         AV_TOSTRING(s)
-#define AV_TOSTRING(s) #s
-
-#define AV_GLUE(a, b) a ## b
-#define AV_JOIN(a, b) AV_GLUE(a, b)
-
-#define AV_PRAGMA(s) _Pragma(#s)
-
-/**
- * @}
- */
-
-/**
- * @defgroup version_utils Library Version Macros
- *
- * Useful to check and match library version in order to maintain
- * backward compatibility.
- *
- * @{
- */
-
-#define AV_VERSION_INT(a, b, c) (a<<16 | b<<8 | c)
-#define AV_VERSION_DOT(a, b, c) a ##.## b ##.## c
-#define AV_VERSION(a, b, c) AV_VERSION_DOT(a, b, c)
-
-/**
- * @}
- *
- * @defgroup lavu_ver Version and Build diagnostics
- *
- * Macros and function useful to check at compiletime and at runtime
- * which version of libavutil is in use.
- *
- * @{
- */
-
-#define LIBAVUTIL_VERSION_MAJOR 51
-#define LIBAVUTIL_VERSION_MINOR 35
-#define LIBAVUTIL_VERSION_MICRO 100
-
-#define LIBAVUTIL_VERSION_INT   AV_VERSION_INT(LIBAVUTIL_VERSION_MAJOR, \
-                                               LIBAVUTIL_VERSION_MINOR, \
-                                               LIBAVUTIL_VERSION_MICRO)
-#define LIBAVUTIL_VERSION       AV_VERSION(LIBAVUTIL_VERSION_MAJOR,     \
-                                           LIBAVUTIL_VERSION_MINOR,     \
-                                           LIBAVUTIL_VERSION_MICRO)
-#define LIBAVUTIL_BUILD         LIBAVUTIL_VERSION_INT
-
-#define LIBAVUTIL_IDENT         "Lavu" AV_STRINGIFY(LIBAVUTIL_VERSION)
-
-/**
- * @}
- *
- * @defgroup depr_guards Deprecation guards
- * Those FF_API_* defines are not part of public API.
- * They may change, break or disappear at any time.
- *
- * They are used mostly internally to mark code that will be removed
- * on the next major version.
- *
- * @{
- */
-#ifndef FF_API_OLD_EVAL_NAMES
-#define FF_API_OLD_EVAL_NAMES (LIBAVUTIL_VERSION_MAJOR < 52)
-#endif
-#ifndef FF_API_GET_BITS_PER_SAMPLE_FMT
-#define FF_API_GET_BITS_PER_SAMPLE_FMT (LIBAVUTIL_VERSION_MAJOR < 52)
-#endif
-#ifndef FF_API_FIND_OPT
-#define FF_API_FIND_OPT                 (LIBAVUTIL_VERSION_MAJOR < 52)
-#endif
-#ifndef FF_API_AV_FIFO_PEEK
-#define FF_API_AV_FIFO_PEEK             (LIBAVUTIL_VERSION_MAJOR < 52)
-#endif
-#ifndef FF_API_OLD_AVOPTIONS
-#define FF_API_OLD_AVOPTIONS            (LIBAVUTIL_VERSION_MAJOR < 52)
-#endif
-
-/**
- * @}
- */
 
 /**
  * @addtogroup lavu_ver
@@ -277,7 +187,7 @@ const char *av_get_media_type_string(enum AVMediaType media_type);
  * either pts or dts.
  */
 
-#define AV_NOPTS_VALUE          INT64_C(0x8000000000000000)
+#define AV_NOPTS_VALUE          ((int64_t)UINT64_C(0x8000000000000000))
 
 /**
  * Internal time base represented as integer
@@ -327,6 +237,7 @@ char av_get_picture_type_char(enum AVPictureType pict_type);
 
 #include "common.h"
 #include "error.h"
+#include "version.h"
 #include "mathematics.h"
 #include "rational.h"
 #include "intfloat_readwrite.h"

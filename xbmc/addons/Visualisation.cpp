@@ -26,6 +26,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"

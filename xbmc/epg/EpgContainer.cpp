@@ -21,7 +21,7 @@
 #include "Application.h"
 #include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
@@ -43,7 +43,7 @@ using namespace PVR;
 typedef std::map<int, CEpg*>::iterator EPGITR;
 
 CEpgContainer::CEpgContainer(void) :
-    CThread("EPG updater")
+    CThread("EPGUpdater")
 {
   m_progressHandle = NULL;
   m_bStop = true;
@@ -131,7 +131,6 @@ void CEpgContainer::Start(void)
 
   m_bIsInitialising = true;
   m_bStop = false;
-  g_guiSettings.RegisterObserver(this);
   LoadSettings();
 
   m_iNextEpgUpdate  = 0;
@@ -157,14 +156,19 @@ bool CEpgContainer::Stop(void)
 
 void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  /* settings were updated */
-  if (msg == ObservableMessageGuiSettings)
+  SetChanged();
+  NotifyObservers(msg);
+}
+
+void CEpgContainer::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "epg.ignoredbforclient" || settingId == "epg.epgupdate" ||
+      settingId == "epg.daystodisplay")
     LoadSettings();
-  else
-  {
-    SetChanged();
-    NotifyObservers(msg);
-  }
 }
 
 void CEpgContainer::LoadFromDB(void)
@@ -275,8 +279,6 @@ void CEpgContainer::Process(void)
 
     Sleep(1000);
   }
-
-  g_guiSettings.UnregisterObserver(this);
 }
 
 CEpg *CEpgContainer::GetById(int iEpgId) const
@@ -359,9 +361,9 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = g_guiSettings.GetBool("epg.ignoredbforclient");
-  m_iUpdateTime        = g_guiSettings.GetInt ("epg.epgupdate") * 60;
-  m_iDisplayTime       = g_guiSettings.GetInt ("epg.daystodisplay") * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CSettings::Get().GetBool("epg.ignoredbforclient");
+  m_iUpdateTime        = CSettings::Get().GetInt ("epg.epgupdate") * 60;
+  m_iDisplayTime       = CSettings::Get().GetInt ("epg.daystodisplay") * 24 * 60 * 60;
 
   return true;
 }
@@ -447,7 +449,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   lock.Leave();
 
   return bReturn ||
-    (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
+    (CSettings::Get().GetBool("epg.preventupdateswhileplayingtv") &&
      g_PVRManager.IsStarted() &&
      g_PVRManager.IsPlaying());
 }

@@ -222,7 +222,7 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
         object.m_Creator = StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
-      object.m_ReferenceID = NPT_String::Format("musicdb://4/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
+      object.m_ReferenceID = NPT_String::Format("musicdb://songs/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
     }
     if (object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
@@ -256,12 +256,12 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
           object.m_Title = tag.m_strTitle;
-          object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
+          object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
         } else if (tag.m_type == "movie") {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
           object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
-          object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
+          object.m_ReferenceID = NPT_String::Format("videodb://movies/titles/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
           object.m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
@@ -273,7 +273,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
           object.m_Date = tag.m_firstAired.GetAsDBDate();
           if(tag.m_iSeason != -1)
-              object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
+              object.m_ReferenceID = NPT_String::Format("videodb://tvshows/0/%i", tag.m_iDbId);
         }
     }
 
@@ -517,7 +517,7 @@ BuildObject(CFileItem&                    item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
-        } else if (item.IsPlayList()) {
+        } else if (item.IsPlayList() || item.IsSmartPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
         }
 

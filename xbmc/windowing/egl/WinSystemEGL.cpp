@@ -23,9 +23,10 @@
 
 #include "WinSystemEGL.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
-#include "settings/GUISettings.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "EGLWrapper.h"
 #include "EGLQuirks.h"
@@ -447,7 +448,7 @@ bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
   RESOLUTION_INFO &curr = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
 
   // if we are using automatic hdmi mode switching
-  if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
   {
     int searchWidth = curr.iScreenWidth;
     int searchHeight = curr.iScreenHeight;

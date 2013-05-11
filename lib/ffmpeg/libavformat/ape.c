@@ -38,8 +38,6 @@
 #define MAC_FORMAT_FLAG_HAS_SEEK_ELEMENTS    16 // has the number of seek elements after the peak level
 #define MAC_FORMAT_FLAG_CREATE_WAV_HEADER    32 // create the wave header on decompression (not stored)
 
-#define MAC_SUBFRAME_SIZE 4608
-
 #define APE_EXTRADATA_SIZE 6
 
 typedef struct {
@@ -152,29 +150,29 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
 #endif
 }
 
-static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
+static int ape_read_header(AVFormatContext * s)
 {
     AVIOContext *pb = s->pb;
     APEContext *ape = s->priv_data;
     AVStream *st;
     uint32_t tag;
     int i;
-    int total_blocks;
-    int64_t pts;
+    int total_blocks, final_size = 0;
+    int64_t pts, file_size;
 
     /* Skip any leading junk such as id3v2 tags */
     ape->junklength = avio_tell(pb);
 
     tag = avio_rl32(pb);
     if (tag != MKTAG('M', 'A', 'C', ' '))
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     ape->fileversion = avio_rl16(pb);
 
     if (ape->fileversion < APE_MIN_VERSION || ape->fileversion > APE_MAX_VERSION) {
         av_log(s, AV_LOG_ERROR, "Unsupported file version - %d.%02d\n",
                ape->fileversion / 1000, (ape->fileversion % 1000) / 10);
-        return -1;
+        return AVERROR_PATCHWELCOME;
     }
 
     if (ape->fileversion >= 3980) {
@@ -253,7 +251,7 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     if(ape->totalframes > UINT_MAX / sizeof(APEFrame)){
         av_log(s, AV_LOG_ERROR, "Too many frames: %"PRIu32"\n",
                ape->totalframes);
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
     if (ape->seektablelength && (ape->seektablelength / sizeof(*ape->seektable)) < ape->totalframes) {
         av_log(s, AV_LOG_ERROR,
@@ -278,6 +276,9 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
             return AVERROR(ENOMEM);
         for (i = 0; i < ape->seektablelength / sizeof(uint32_t); i++)
             ape->seektable[i] = avio_rl32(pb);
+    }else{
+        av_log(s, AV_LOG_ERROR, "Missing seektable\n");
+        return AVERROR_INVALIDDATA;
     }
 
     ape->frames[0].pos     = ape->firstframe;
@@ -289,8 +290,17 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
         ape->frames[i - 1].size = ape->frames[i].pos - ape->frames[i - 1].pos;
         ape->frames[i].skip     = (ape->frames[i].pos - ape->frames[0].pos) & 3;
     }
-    ape->frames[ape->totalframes - 1].size    = ape->finalframeblocks * 4;
     ape->frames[ape->totalframes - 1].nblocks = ape->finalframeblocks;
+    /* calculate final packet size from total file size, if available */
+    file_size = avio_size(pb);
+    if (file_size > 0) {
+        final_size = file_size - ape->frames[ape->totalframes - 1].pos -
+                     ape->wavtaillength;
+        final_size -= final_size & 3;
+    }
+    if (file_size <= 0 || final_size <= 0)
+        final_size = ape->finalframeblocks * 8;
+    ape->frames[ape->totalframes - 1].size = final_size;
 
     for (i = 0; i < ape->totalframes; i++) {
         if(ape->frames[i].skip){
@@ -303,12 +313,6 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
 
     ape_dumpinfo(s, ape);
 
-    /* try to read APE tags */
-    if (pb->seekable) {
-        ff_ape_parse_tag(s);
-        avio_seek(pb, 0, SEEK_SET);
-    }
-
     av_log(s, AV_LOG_DEBUG, "Decoding file - v%d.%02d, compression level %"PRIu16"\n",
            ape->fileversion / 1000, (ape->fileversion % 1000) / 10,
            ape->compressiontype);
@@ -316,22 +320,21 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     /* now we are ready: build format streams */
     st = avformat_new_stream(s, NULL);
     if (!st)
-        return -1;
+        return AVERROR(ENOMEM);
 
     total_blocks = (ape->totalframes == 0) ? 0 : ((ape->totalframes - 1) * ape->blocksperframe) + ape->finalframeblocks;
 
     st->codec->codec_type      = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id        = CODEC_ID_APE;
+    st->codec->codec_id        = AV_CODEC_ID_APE;
     st->codec->codec_tag       = MKTAG('A', 'P', 'E', ' ');
     st->codec->channels        = ape->channels;
     st->codec->sample_rate     = ape->samplerate;
     st->codec->bits_per_coded_sample = ape->bps;
-    st->codec->frame_size      = MAC_SUBFRAME_SIZE;
 
     st->nb_frames = ape->totalframes;
     st->start_time = 0;
-    st->duration  = total_blocks / MAC_SUBFRAME_SIZE;
-    avpriv_set_pts_info(st, 64, MAC_SUBFRAME_SIZE, ape->samplerate);
+    st->duration  = total_blocks;
+    avpriv_set_pts_info(st, 64, 1, ape->samplerate);
 
     st->codec->extradata = av_malloc(APE_EXTRADATA_SIZE);
     st->codec->extradata_size = APE_EXTRADATA_SIZE;
@@ -343,7 +346,13 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     for (i = 0; i < ape->totalframes; i++) {
         ape->frames[i].pts = pts;
         av_add_index_entry(st, ape->frames[i].pos, ape->frames[i].pts, 0, 0, AVINDEX_KEYFRAME);
-        pts += ape->blocksperframe / MAC_SUBFRAME_SIZE;
+        pts += ape->blocksperframe;
+    }
+
+    /* try to read APE tags */
+    if (pb->seekable) {
+        ff_ape_parse_tag(s);
+        avio_seek(pb, 0, SEEK_SET);
     }
 
     return 0;
@@ -357,17 +366,26 @@ static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
     uint32_t extra_size = 8;
 
     if (url_feof(s->pb))
-        return AVERROR(EIO);
-    if (ape->currentframe > ape->totalframes)
-        return AVERROR(EIO);
+        return AVERROR_EOF;
+    if (ape->currentframe >= ape->totalframes)
+        return AVERROR_EOF;
 
-    avio_seek (s->pb, ape->frames[ape->currentframe].pos, SEEK_SET);
+    if (avio_seek(s->pb, ape->frames[ape->currentframe].pos, SEEK_SET) < 0)
+        return AVERROR(EIO);
 
     /* Calculate how many blocks there are in this frame */
     if (ape->currentframe == (ape->totalframes - 1))
         nblocks = ape->finalframeblocks;
     else
         nblocks = ape->blocksperframe;
+
+    if (ape->frames[ape->currentframe].size <= 0 ||
+        ape->frames[ape->currentframe].size > INT_MAX - extra_size) {
+        av_log(s, AV_LOG_ERROR, "invalid packet size: %d\n",
+               ape->frames[ape->currentframe].size);
+        ape->currentframe++;
+        return AVERROR(EIO);
+    }
 
     if (av_new_packet(pkt,  ape->frames[ape->currentframe].size + extra_size) < 0)
         return AVERROR(ENOMEM);
@@ -406,6 +424,8 @@ static int ape_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     if (index < 0)
         return -1;
 
+    if (avio_seek(s->pb, st->index_entries[index].pos, SEEK_SET) < 0)
+        return -1;
     ape->currentframe = index;
     return 0;
 }
@@ -419,5 +439,5 @@ AVInputFormat ff_ape_demuxer = {
     .read_packet    = ape_read_packet,
     .read_close     = ape_read_close,
     .read_seek      = ape_read_seek,
-    .extensions = "ape,apl,mac"
+    .extensions     = "ape,apl,mac",
 };

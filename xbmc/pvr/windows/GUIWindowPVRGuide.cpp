@@ -29,7 +29,7 @@
 #include "epg/EpgContainer.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "pvr/addons/PVRClients.h"
@@ -41,7 +41,7 @@ using namespace EPG;
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
   Observer(),
-  m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview"))
+  m_iGuideView(CSettings::Get().GetInt("epg.defaultguideview"))
 {
   m_cachedTimeline = new CFileItemList;
   m_cachedChannelGroup = CPVRChannelGroupPtr(new CPVRChannelGroup);
@@ -427,15 +427,15 @@ bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
     return false;
 
   CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
-  bool bReturn = g_application.PlayFile(CFileItem(*channel));
-  if (!bReturn)
+  PlayBackRet ret = g_application.PlayFile(CFileItem(*channel));
+  if (ret == PLAYBACK_FAIL)
   {
     CStdString msg;
     msg.Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
     CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
   }
 
-  return bReturn;
+  return ret == PLAYBACK_OK;
 }
 
 bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
@@ -486,4 +486,12 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
+}
+
+void CGUIWindowPVRGuide::SettingOptionsEpgGuideViewFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  list.push_back(make_pair(g_localizeStrings.Get(19029), PVR::GUIDE_VIEW_CHANNEL));
+  list.push_back(make_pair(g_localizeStrings.Get(19030), PVR::GUIDE_VIEW_NOW));
+  list.push_back(make_pair(g_localizeStrings.Get(19031), PVR::GUIDE_VIEW_NEXT));
+  list.push_back(make_pair(g_localizeStrings.Get(19032), PVR::GUIDE_VIEW_TIMELINE));
 }

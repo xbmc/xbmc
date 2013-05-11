@@ -664,7 +664,7 @@ namespace PythonBindings
      String pyCall = 
         (it.@type == 'int' || it.@type == 'long' || it.@type == 'unsigned int' || it.@type == 'unsigned long' || it.@type == 'bool') ? 
         'PyModule_AddIntConstant' : 'PyModule_AddStringConstant' %>
-   ${pyCall}(module,"${it.@sym_name}",(int)${it.@value}); <%
+   ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
   } %>
   }
 

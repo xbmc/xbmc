@@ -197,6 +197,7 @@ public:
   static CStdString GetFrameworksPath(bool forPython = false);
 
   static bool CanBindPrivileged();
+  static bool ValidatePort(int port);
 
   /*!
    * \brief Thread-safe random number generation

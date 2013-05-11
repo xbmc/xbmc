@@ -31,8 +31,8 @@
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -354,7 +354,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       if (!item->IsParentFolder() && !item->IsReadOnly())
       {
         // either we're at the playlist location or its been explicitly allowed
-        if (inPlaylists || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+        if (inPlaylists || CSettings::Get().GetBool("filelists.allowfiledeletion"))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
@@ -483,7 +483,7 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
   bool bCanceled;
   if (CGUIDialogYesNo::ShowAndGetInput(522,20340,20341,20022,bCanceled))
   {
-    CSongMap songs;
+    MAPSONGS songs;
     CMusicDatabase database;
     database.Open();
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(),songs,false);

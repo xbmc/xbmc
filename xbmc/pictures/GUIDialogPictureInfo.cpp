@@ -94,9 +94,9 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
   m_pictureInfo->Clear();
   for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
   {
-    // we don't need want to add both SLIDE_EXIF_DATE_TIME and SLIDE_EXIF_DATE
-    // so we skip one without time
-    if (info == SLIDE_EXIF_DATE)
+    // we only want to add SLIDE_EXIF_DATE_TIME
+    // so we skip the other date formats
+    if (info == SLIDE_EXIF_DATE || info == SLIDE_EXIF_LONG_DATE || info == SLIDE_EXIF_LONG_DATE_TIME )
       continue;
 
     CStdString picInfo = g_infoManager.GetLabel(info);

@@ -29,9 +29,10 @@
 #include "Util.h"
 #include <libsmbclient.h>
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "commons/Exception.h"
 
@@ -122,9 +123,9 @@ void CSMB::Init()
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
-        if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+        if (CSettings::Get().GetString("smb.winsserver").length() > 0 && !StringUtils::EqualsNoCase(CSettings::Get().GetString("smb.winsserver"), "0.0.0.0") )
         {
-          fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
+          fprintf(f, "\twins server = %s\n", CSettings::Get().GetString("smb.winsserver").c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
         }
         else
@@ -136,8 +137,8 @@ void CSMB::Init()
           fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
         // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-        if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
-          fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
+        if ( CSettings::Get().GetString("smb.workgroup").length() > 0 )
+          fprintf(f, "\tworkgroup = %s\n", CSettings::Get().GetString("smb.workgroup").c_str());
         fclose(f);
       }
     }
@@ -155,7 +156,7 @@ void CSMB::Init()
     // setup our context
     m_context = smbc_new_context();
 #ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
+    smbc_setDebug(m_context, (g_advancedSettings.m_extraLogLevels & LOGSAMBA)?10:0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
@@ -164,7 +165,7 @@ void CSMB::Init()
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
     smbc_setUser(m_context, strdup("guest"));
 #else
-    m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
+    m_context->debug = (g_advancedSettings.m_extraLogLevels & LOGSAMBA?10:0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
@@ -182,9 +183,9 @@ void CSMB::Init()
 
 #ifdef TARGET_WINDOWS
       // if a wins-server is set, we have to change name resolve order to
-      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+      if ( CSettings::Get().GetString("smb.winsserver").length() > 0 && !CSettings::Get().GetString("smb.winsserver").Equals("0.0.0.0") )
       {
-        lp_do_parameter( -1, "wins server", g_guiSettings.GetString("smb.winsserver").c_str());
+        lp_do_parameter( -1, "wins server", CSettings::Get().GetString("smb.winsserver").c_str());
         lp_do_parameter( -1, "name resolve order", "bcast wins host");
       }
       else

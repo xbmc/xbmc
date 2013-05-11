@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="2" type="folder" visible="Library.HasContent(TVShows)">
+<node order="2" type="filter" visible="Library.HasContent(TVShows)">
   <label>20343</label>
-  <path>videodb://2/2</path>
   <icon>DefaultTVShows.png</icon>
+  <content>tvshows</content>
+  <order direction="ascending">sorttitle</order>
 </node>

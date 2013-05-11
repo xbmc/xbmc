@@ -40,7 +40,7 @@ bool CFavourites::Load(CFileItemList &items)
     CFavourites::LoadFavourites(favourites, items);
   else
     CLog::Log(LOGDEBUG, "CFavourites::Load - no system favourites found, skipping");
-  URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml", favourites);
+  favourites = URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml");
   if(XFILE::CFile::Exists(favourites))
     CFavourites::LoadFavourites(favourites, items);
   else
@@ -108,7 +108,7 @@ bool CFavourites::Save(const CFileItemList &items)
     rootNode->InsertEndChild(favNode);
   }
 
-  URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml", favourites);
+  favourites = URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml");
   return doc.SaveFile(favourites);
 }
 

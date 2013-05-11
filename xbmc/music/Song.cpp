@@ -21,25 +21,24 @@
 #include "Song.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Variant.h"
+#include "FileItem.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
 
-CSong::CSong(CMusicInfoTag& tag)
+CSong::CSong(CFileItem& item)
 {
+  CMusicInfoTag& tag = *item.GetMusicInfoTag();
   SYSTEMTIME stTime;
   tag.GetReleaseDate(stTime);
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
-  strFileName = tag.GetURL();
   artist = tag.GetArtist();
   strAlbum = tag.GetAlbum();
   albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
-  strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
-  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
-  strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
-  strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   strComment = tag.GetComment();
   rating = tag.GetRating();
   iYear = stTime.wYear;
@@ -47,14 +46,15 @@ CSong::CSong(CMusicInfoTag& tag)
   iDuration = tag.GetDuration();
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
-  strThumb = "";
-  iStartOffset = 0;
-  iEndOffset = 0;
+  strFileName = tag.GetURL().IsEmpty() ? item.GetPath() : tag.GetURL();
+  strThumb = item.GetUserMusicThumb(true);
+  iStartOffset = item.m_lStartOffset;
+  iEndOffset = item.m_lEndOffset;
   idSong = -1;
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
-  iAlbumId = -1;
+  idAlbum = -1;
 }
 
 CSong::CSong()
@@ -74,16 +74,12 @@ void CSong::Serialize(CVariant& value) const
   value["track"] = iTrack;
   value["year"] = iYear;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
-  value["musicbrainzartistid"] = strMusicBrainzArtistID;
-  value["musicbrainzalbumid"] = strMusicBrainzAlbumID;
-  value["musicbrainzalbumartistid"] = strMusicBrainzAlbumArtistID;
-  value["musicbrainztrmid"] = strMusicBrainzTRMID;
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
-  value["albumid"] = iAlbumId;
+  value["albumid"] = idAlbum;
 }
 
 void CSong::Clear()
@@ -96,10 +92,6 @@ void CSong::Clear()
   genre.clear();
   strThumb.Empty();
   strMusicBrainzTrackID.Empty();
-  strMusicBrainzArtistID.Empty();
-  strMusicBrainzAlbumID.Empty();
-  strMusicBrainzAlbumArtistID.Empty();
-  strMusicBrainzTRMID.Empty();
   strComment.Empty();
   rating = '0';
   iTrack = 0;
@@ -113,7 +105,7 @@ void CSong::Clear()
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.Empty();
   iKaraokeDelay = 0;
-  iAlbumId = -1;
+  idAlbum = -1;
   bCompilation = false;
   embeddedArt.clear();
 }
@@ -130,45 +122,3 @@ bool CSong::ArtMatches(const CSong &right) const
   return (right.strThumb == strThumb &&
           embeddedArt.matches(right.embeddedArt));
 }
-
-CSongMap::CSongMap()
-{
-}
-
-std::map<CStdString, CSong>::const_iterator CSongMap::Begin()
-{
-  return m_map.begin();
-}
-
-std::map<CStdString, CSong>::const_iterator CSongMap::End()
-{
-  return m_map.end();
-}
-
-void CSongMap::Add(const CStdString &file, const CSong &song)
-{
-  CStdString lower = file;
-  lower.ToLower();
-  m_map.insert(pair<CStdString, CSong>(lower, song));
-}
-
-CSong* CSongMap::Find(const CStdString &file)
-{
-  CStdString lower = file;
-  lower.ToLower();
-  map<CStdString, CSong>::iterator it = m_map.find(lower);
-  if (it == m_map.end())
-    return NULL;
-  return &(*it).second;
-}
-
-void CSongMap::Clear()
-{
-  m_map.erase(m_map.begin(), m_map.end());
-}
-
-int CSongMap::Size()
-{
-  return (int)m_map.size();
-}
-

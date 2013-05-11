@@ -38,7 +38,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "settings/GUISettings.h"
 #include "storage/MediaManager.h"
 
 using namespace MUSIC_INFO;

@@ -52,9 +52,8 @@ void CGUIColorManager::Load(const CStdString &colorFile)
     LoadXML(xmlDoc);
 
   // first load the default color map if it exists
-  CStdString path, basePath;
-  URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", basePath);
-  URIUtils::AddFileToFolder(basePath, "defaults.xml", path);
+  CStdString basePath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+  CStdString path = URIUtils::AddFileToFolder(basePath, "defaults.xml");
 
   if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
     LoadXML(xmlDoc);
@@ -63,7 +62,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   if (colorFile.CompareNoCase("SKINDEFAULT") == 0)
     return; // nothing to do
 
-  URIUtils::AddFileToFolder(basePath, colorFile, path);
+  path = URIUtils::AddFileToFolder(basePath, colorFile);
   CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
 
   if (xmlDoc.LoadFile(path))

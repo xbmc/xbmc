@@ -35,6 +35,8 @@
 #define SLIDE_COLOUR                907
 #define SLIDE_PROCESS               908
 
+#define SLIDE_EXIF_LONG_DATE        917
+#define SLIDE_EXIF_LONG_DATE_TIME   918
 #define SLIDE_EXIF_DATE             919 /* Implementation only to just get
                                            localized date */
 #define SLIDE_EXIF_DATE_TIME        920
@@ -62,6 +64,9 @@
 #define SLIDE_EXIF_GPS_ALTITUDE     942
 #define SLIDE_EXIF_ORIENTATION      943
 
+#define SLIDE_IPTC_SUBLOCATION      957
+#define SLIDE_IPTC_IMAGETYPE        958
+#define SLIDE_IPTC_TIMECREATED      959
 #define SLIDE_IPTC_SUP_CATEGORIES   960
 #define SLIDE_IPTC_KEYWORDS         961
 #define SLIDE_IPTC_CAPTION          962
@@ -80,7 +85,7 @@
 #define SLIDE_IPTC_COUNTRY          975
 #define SLIDE_IPTC_TX_REFERENCE     976
 #define SLIDE_IPTC_DATE             977
-#define SLIDE_IPTC_COPYRIGHT        978
+#define SLIDE_IPTC_URGENCY          978
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
 

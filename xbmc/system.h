@@ -25,6 +25,9 @@
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
+#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
+#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
+
 /*****************
  * All platforms
  *****************/
@@ -74,7 +77,7 @@
   #define HAS_AIRPLAY
 #endif
 
-#ifdef HAVE_LIBSHAIRPORT
+#if defined(HAVE_LIBSHAIRPORT) || defined(HAVE_LIBSHAIRPLAY)
   #define HAS_AIRTUNES
 #endif
 
@@ -121,6 +124,7 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAS_AIRTUNES
+#define HAVE_LIBSHAIRPLAY
 #define HAVE_LIBCEC
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
@@ -269,3 +273,11 @@
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
 
+/****************
+ * default skin
+ ****************/
+#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#define DEFAULT_SKIN          "skin.touched"
+#else
+#define DEFAULT_SKIN          "skin.confluence"
+#endif

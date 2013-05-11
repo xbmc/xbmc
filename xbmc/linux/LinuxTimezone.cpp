@@ -34,6 +34,8 @@
 #endif
 
 #include "Util.h"
+#include "XBDateTime.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -145,6 +147,26 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    free(line);
 }
 
+void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "locale.timezone")
+  {
+    SetTimezone(((CSettingString*)setting)->GetValue());
+
+    CDateTime::ResetTimezoneBias();
+  }
+  else if (settingId == "locale.timezonecountry")
+  {
+    // nothing to do here. Changing locale.timezonecountry will trigger an
+    // update of locale.timezone and automatically adjust its value
+    // and execute OnSettingChanged() for it as well (see above)
+  }
+}
+
 vector<CStdString> CLinuxTimezone::GetCounties()
 {
    return m_counties;
@@ -219,6 +241,30 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
    }
 
    return timezoneName;
+}
+
+void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  vector<CStdString> countries = g_timezone.GetCounties();
+  for (unsigned int i = 0; i < countries.size(); i++)
+    list.push_back(make_pair(countries[i], countries[i]));
+}
+
+void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  current = ((const CSettingString*)setting)->GetValue();
+  bool found = false;
+  vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString("locale.timezonecountry"));
+  for (unsigned int i = 0; i < timezones.size(); i++)
+  {
+    if (!found && timezones[i].Equals(current.c_str()))
+      found = true;
+
+    list.push_back(make_pair(timezones[i], timezones[i]));
+  }
+
+  if (!found && timezones.size() > 0)
+    current = timezones[0];
 }
 
 CLinuxTimezone g_timezone;

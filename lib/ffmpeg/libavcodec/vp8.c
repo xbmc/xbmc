@@ -1,9 +1,10 @@
-/**
+/*
  * VP8 compatible video decoder
  *
  * Copyright (C) 2010 David Conrad
  * Copyright (C) 2010 Ronald S. Bultje
  * Copyright (C) 2010 Jason Garrett-Glaser
+ * Copyright (C) 2012 Daniel Kang
  *
  * This file is part of FFmpeg.
  *
@@ -36,11 +37,16 @@
 
 static void free_buffers(VP8Context *s)
 {
+    int i;
+    if (s->thread_data)
+        for (i = 0; i < MAX_THREADS; i++) {
+            av_freep(&s->thread_data[i].filter_strength);
+            av_freep(&s->thread_data[i].edge_emu_buffer);
+        }
+    av_freep(&s->thread_data);
     av_freep(&s->macroblocks_base);
-    av_freep(&s->filter_strength);
     av_freep(&s->intra4x4_pred_mode_top);
     av_freep(&s->top_nnz);
-    av_freep(&s->edge_emu_buffer);
     av_freep(&s->top_border);
 
     s->macroblocks = NULL;
@@ -108,7 +114,10 @@ static void vp8_decode_flush(AVCodecContext *avctx)
 
 static int update_dimensions(VP8Context *s, int width, int height)
 {
-    if (width  != s->avctx->width ||
+    AVCodecContext *avctx = s->avctx;
+    int i;
+
+    if (width  != s->avctx->width || ((width+15)/16 != s->mb_width || (height+15)/16 != s->mb_height) && s->macroblocks_base ||
         height != s->avctx->height) {
         if (av_image_check_size(width, height, 0, s->avctx))
             return AVERROR_INVALIDDATA;
@@ -121,14 +130,27 @@ static int update_dimensions(VP8Context *s, int width, int height)
     s->mb_width  = (s->avctx->coded_width +15) / 16;
     s->mb_height = (s->avctx->coded_height+15) / 16;
 
-    s->macroblocks_base        = av_mallocz((s->mb_width+s->mb_height*2+1)*sizeof(*s->macroblocks));
-    s->filter_strength         = av_mallocz(s->mb_width*sizeof(*s->filter_strength));
-    s->intra4x4_pred_mode_top  = av_mallocz(s->mb_width*4);
-    s->top_nnz                 = av_mallocz(s->mb_width*sizeof(*s->top_nnz));
-    s->top_border              = av_mallocz((s->mb_width+1)*sizeof(*s->top_border));
+    s->mb_layout = (avctx->active_thread_type == FF_THREAD_SLICE) && (FFMIN(s->num_coeff_partitions, avctx->thread_count) > 1);
+    if (!s->mb_layout) { // Frame threading and one thread
+        s->macroblocks_base       = av_mallocz((s->mb_width+s->mb_height*2+1)*sizeof(*s->macroblocks));
+        s->intra4x4_pred_mode_top = av_mallocz(s->mb_width*4);
+    }
+    else // Sliced threading
+        s->macroblocks_base       = av_mallocz((s->mb_width+2)*(s->mb_height+2)*sizeof(*s->macroblocks));
+    s->top_nnz                    = av_mallocz(s->mb_width*sizeof(*s->top_nnz));
+    s->top_border                 = av_mallocz((s->mb_width+1)*sizeof(*s->top_border));
+    s->thread_data                = av_mallocz(MAX_THREADS*sizeof(VP8ThreadData));
 
-    if (!s->macroblocks_base || !s->filter_strength || !s->intra4x4_pred_mode_top ||
-        !s->top_nnz || !s->top_border)
+    for (i = 0; i < MAX_THREADS; i++) {
+        s->thread_data[i].filter_strength = av_mallocz(s->mb_width*sizeof(*s->thread_data[0].filter_strength));
+#if HAVE_THREADS
+        pthread_mutex_init(&s->thread_data[i].lock, NULL);
+        pthread_cond_init(&s->thread_data[i].cond, NULL);
+#endif
+    }
+
+    if (!s->macroblocks_base || !s->top_nnz || !s->top_border ||
+        (!s->intra4x4_pred_mode_top && !s->mb_layout))
         return AVERROR(ENOMEM);
 
     s->macroblocks        = s->macroblocks_base + 1;
@@ -162,11 +184,23 @@ static void update_lf_deltas(VP8Context *s)
     VP56RangeCoder *c = &s->c;
     int i;
 
-    for (i = 0; i < 4; i++)
-        s->lf_delta.ref[i]  = vp8_rac_get_sint(c, 6);
+    for (i = 0; i < 4; i++) {
+        if (vp8_rac_get(c)) {
+            s->lf_delta.ref[i] = vp8_rac_get_uint(c, 6);
 
-    for (i = MODE_I4x4; i <= VP8_MVMODE_SPLIT; i++)
-        s->lf_delta.mode[i] = vp8_rac_get_sint(c, 6);
+            if (vp8_rac_get(c))
+                s->lf_delta.ref[i] = -s->lf_delta.ref[i];
+        }
+    }
+
+    for (i = MODE_I4x4; i <= VP8_MVMODE_SPLIT; i++) {
+        if (vp8_rac_get(c)) {
+            s->lf_delta.mode[i] = vp8_rac_get_uint(c, 6);
+
+            if (vp8_rac_get(c))
+                s->lf_delta.mode[i] = -s->lf_delta.mode[i];
+        }
+    }
 }
 
 static int setup_partitions(VP8Context *s, const uint8_t *buf, int buf_size)
@@ -215,12 +249,13 @@ static void get_quants(VP8Context *s)
         } else
             base_qi = yac_qi;
 
-        s->qmat[i].luma_qmul[0]    =       vp8_dc_qlookup[av_clip_uintp2(base_qi + ydc_delta , 7)];
-        s->qmat[i].luma_qmul[1]    =       vp8_ac_qlookup[av_clip_uintp2(base_qi             , 7)];
-        s->qmat[i].luma_dc_qmul[0] =   2 * vp8_dc_qlookup[av_clip_uintp2(base_qi + y2dc_delta, 7)];
-        s->qmat[i].luma_dc_qmul[1] = 155 * vp8_ac_qlookup[av_clip_uintp2(base_qi + y2ac_delta, 7)] / 100;
-        s->qmat[i].chroma_qmul[0]  =       vp8_dc_qlookup[av_clip_uintp2(base_qi + uvdc_delta, 7)];
-        s->qmat[i].chroma_qmul[1]  =       vp8_ac_qlookup[av_clip_uintp2(base_qi + uvac_delta, 7)];
+        s->qmat[i].luma_qmul[0]    =           vp8_dc_qlookup[av_clip_uintp2(base_qi + ydc_delta , 7)];
+        s->qmat[i].luma_qmul[1]    =           vp8_ac_qlookup[av_clip_uintp2(base_qi             , 7)];
+        s->qmat[i].luma_dc_qmul[0] =       2 * vp8_dc_qlookup[av_clip_uintp2(base_qi + y2dc_delta, 7)];
+        /* 101581>>16 is equivalent to 155/100 */
+        s->qmat[i].luma_dc_qmul[1] = (101581 * vp8_ac_qlookup[av_clip_uintp2(base_qi + y2ac_delta, 7)]) >> 16;
+        s->qmat[i].chroma_qmul[0]  =           vp8_dc_qlookup[av_clip_uintp2(base_qi + uvdc_delta, 7)];
+        s->qmat[i].chroma_qmul[1]  =           vp8_ac_qlookup[av_clip_uintp2(base_qi + uvac_delta, 7)];
 
         s->qmat[i].luma_dc_qmul[1] = FFMAX(s->qmat[i].luma_dc_qmul[1], 8);
         s->qmat[i].chroma_qmul[0]  = FFMIN(s->qmat[i].chroma_qmul[0], 132);
@@ -318,12 +353,7 @@ static int decode_frame_header(VP8Context *s, const uint8_t *buf, int buf_size)
         memcpy(s->prob->pred8x8c , vp8_pred8x8c_prob_inter , sizeof(s->prob->pred8x8c));
         memcpy(s->prob->mvc      , vp8_mv_default_prob     , sizeof(s->prob->mvc));
         memset(&s->segmentation, 0, sizeof(s->segmentation));
-    }
-
-    if (!s->macroblocks_base || /* first frame */
-        width != s->avctx->width || height != s->avctx->height) {
-        if ((ret = update_dimensions(s, width, height)) < 0)
-            return ret;
+        memset(&s->lf_delta, 0, sizeof(s->lf_delta));
     }
 
     ff_vp56_init_range_decoder(c, buf, header_size);
@@ -352,6 +382,12 @@ static int decode_frame_header(VP8Context *s, const uint8_t *buf, int buf_size)
     if (setup_partitions(s, buf, buf_size)) {
         av_log(s->avctx, AV_LOG_ERROR, "Invalid partitions\n");
         return AVERROR_INVALIDDATA;
+    }
+
+    if (!s->macroblocks_base || /* first frame */
+        width != s->avctx->width || height != s->avctx->height || (width+15)/16 != s->mb_width || (height+15)/16 != s->mb_height) {
+        if ((ret = update_dimensions(s, width, height)) < 0)
+            return ret;
     }
 
     get_quants(s);
@@ -456,18 +492,25 @@ const uint8_t *get_submv_prob(uint32_t left, uint32_t top)
  * @returns the number of motion vectors parsed (2, 4 or 16)
  */
 static av_always_inline
-int decode_splitmvs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb)
+int decode_splitmvs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb, int layout)
 {
     int part_idx;
     int n, num;
-    VP8Macroblock *top_mb  = &mb[2];
+    VP8Macroblock *top_mb;
     VP8Macroblock *left_mb = &mb[-1];
     const uint8_t *mbsplits_left = vp8_mbsplits[left_mb->partitioning],
-                  *mbsplits_top = vp8_mbsplits[top_mb->partitioning],
+                  *mbsplits_top,
                   *mbsplits_cur, *firstidx;
-    VP56mv *top_mv  = top_mb->bmv;
+    VP56mv *top_mv;
     VP56mv *left_mv = left_mb->bmv;
     VP56mv *cur_mv  = mb->bmv;
+
+    if (!layout) // layout is inlined, s->mb_layout is not
+        top_mb = &mb[2];
+    else
+        top_mb = &mb[-s->mb_width-1];
+    mbsplits_top = vp8_mbsplits[top_mb->partitioning];
+    top_mv = top_mb->bmv;
 
     if (vp56_rac_get_prob_branchy(c, vp8_mbsplit_prob[0])) {
         if (vp56_rac_get_prob_branchy(c, vp8_mbsplit_prob[1])) {
@@ -520,11 +563,11 @@ int decode_splitmvs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb)
 }
 
 static av_always_inline
-void decode_mvs(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y)
+void decode_mvs(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, int layout)
 {
-    VP8Macroblock *mb_edge[3] = { mb + 2 /* top */,
+    VP8Macroblock *mb_edge[3] = { 0 /* top */,
                                   mb - 1 /* left */,
-                                  mb + 1 /* top-left */ };
+                                  0 /* top-left */ };
     enum { CNT_ZERO, CNT_NEAREST, CNT_NEAR, CNT_SPLITMV };
     enum { VP8_EDGE_TOP, VP8_EDGE_LEFT, VP8_EDGE_TOPLEFT };
     int idx = CNT_ZERO;
@@ -533,6 +576,15 @@ void decode_mvs(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y)
     VP56mv near_mv[4];
     uint8_t cnt[4] = { 0 };
     VP56RangeCoder *c = &s->c;
+
+    if (!layout) { // layout is inlined (s->mb_layout is not)
+        mb_edge[0] = mb + 2;
+        mb_edge[2] = mb + 1;
+    }
+    else {
+        mb_edge[0] = mb - s->mb_width-1;
+        mb_edge[2] = mb - s->mb_width-2;
+    }
 
     AV_ZERO32(&near_mv[0]);
     AV_ZERO32(&near_mv[1]);
@@ -588,7 +640,7 @@ void decode_mvs(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y)
 
                 if (vp56_rac_get_prob_branchy(c, vp8_mode_contexts[cnt[CNT_SPLITMV]][3])) {
                     mb->mode = VP8_MVMODE_SPLIT;
-                    mb->mv = mb->bmv[decode_splitmvs(s, c, mb) - 1];
+                    mb->mv = mb->bmv[decode_splitmvs(s, c, mb, layout) - 1];
                 } else {
                     mb->mv.y += read_mv_component(c, s->prob->mvc[0]);
                     mb->mv.x += read_mv_component(c, s->prob->mvc[1]);
@@ -610,14 +662,23 @@ void decode_mvs(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y)
 }
 
 static av_always_inline
-void decode_intra4x4_modes(VP8Context *s, VP56RangeCoder *c,
-                           int mb_x, int keyframe)
+void decode_intra4x4_modes(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb,
+                           int mb_x, int keyframe, int layout)
 {
-    uint8_t *intra4x4 = s->intra4x4_pred_mode_mb;
+    uint8_t *intra4x4 = mb->intra4x4_pred_mode_mb;
+
+    if (layout == 1) {
+        VP8Macroblock *mb_top = mb - s->mb_width - 1;
+        memcpy(mb->intra4x4_pred_mode_top, mb_top->intra4x4_pred_mode_top, 4);
+    }
     if (keyframe) {
         int x, y;
-        uint8_t* const top = s->intra4x4_pred_mode_top + 4 * mb_x;
+        uint8_t* top;
         uint8_t* const left = s->intra4x4_pred_mode_left;
+        if (layout == 1)
+            top = mb->intra4x4_pred_mode_top;
+        else
+            top = s->intra4x4_pred_mode_top + 4 * mb_x;
         for (y = 0; y < 4; y++) {
             for (x = 0; x < 4; x++) {
                 const uint8_t *ctx;
@@ -635,16 +696,17 @@ void decode_intra4x4_modes(VP8Context *s, VP56RangeCoder *c,
 }
 
 static av_always_inline
-void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, uint8_t *segment, uint8_t *ref)
+void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y,
+                    uint8_t *segment, uint8_t *ref, int layout)
 {
     VP56RangeCoder *c = &s->c;
 
     if (s->segmentation.update_map) {
         int bit  = vp56_rac_get_prob(c, s->prob->segmentid[0]);
         *segment = vp56_rac_get_prob(c, s->prob->segmentid[1+bit]) + 2*bit;
-    } else
+    } else if (s->segmentation.enabled)
         *segment = ref ? *ref : *segment;
-    s->segment = *segment;
+    mb->segment = *segment;
 
     mb->skip = s->mbskip_enabled ? vp56_rac_get_prob(c, s->prob->mbskip) : 0;
 
@@ -652,14 +714,17 @@ void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, uint8_
         mb->mode = vp8_rac_get_tree(c, vp8_pred16x16_tree_intra, vp8_pred16x16_prob_intra);
 
         if (mb->mode == MODE_I4x4) {
-            decode_intra4x4_modes(s, c, mb_x, 1);
+            decode_intra4x4_modes(s, c, mb, mb_x, 1, layout);
         } else {
             const uint32_t modes = vp8_pred4x4_mode[mb->mode] * 0x01010101u;
-            AV_WN32A(s->intra4x4_pred_mode_top + 4 * mb_x, modes);
-            AV_WN32A(s->intra4x4_pred_mode_left, modes);
+            if (s->mb_layout == 1)
+                AV_WN32A(mb->intra4x4_pred_mode_top, modes);
+            else
+                AV_WN32A(s->intra4x4_pred_mode_top + 4 * mb_x, modes);
+            AV_WN32A( s->intra4x4_pred_mode_left, modes);
         }
 
-        s->chroma_pred_mode = vp8_rac_get_tree(c, vp8_pred8x8c_tree, vp8_pred8x8c_prob_intra);
+        mb->chroma_pred_mode = vp8_rac_get_tree(c, vp8_pred8x8c_tree, vp8_pred8x8c_prob_intra);
         mb->ref_frame = VP56_FRAME_CURRENT;
     } else if (vp56_rac_get_prob_branchy(c, s->prob->intra)) {
         // inter MB, 16.2
@@ -671,15 +736,15 @@ void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, uint8_
         s->ref_count[mb->ref_frame-1]++;
 
         // motion vectors, 16.3
-        decode_mvs(s, mb, mb_x, mb_y);
+        decode_mvs(s, mb, mb_x, mb_y, layout);
     } else {
         // intra MB, 16.1
         mb->mode = vp8_rac_get_tree(c, vp8_pred16x16_tree_inter, s->prob->pred16x16);
 
         if (mb->mode == MODE_I4x4)
-            decode_intra4x4_modes(s, c, mb_x, 0);
+            decode_intra4x4_modes(s, c, mb, mb_x, 0, layout);
 
-        s->chroma_pred_mode = vp8_rac_get_tree(c, vp8_pred8x8c_tree, s->prob->pred8x8c);
+        mb->chroma_pred_mode = vp8_rac_get_tree(c, vp8_pred8x8c_tree, s->prob->pred8x8c);
         mb->ref_frame = VP56_FRAME_CURRENT;
         mb->partitioning = VP8_SPLITMVMODE_NONE;
         AV_ZERO32(&mb->bmv[0]);
@@ -688,7 +753,7 @@ void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, uint8_
 
 #ifndef decode_block_coeffs_internal
 /**
- * @param c arithmetic bitstream reader context
+ * @param r arithmetic bitstream reader context
  * @param block destination for block coefficients
  * @param probs probabilities to use when reading trees from the bitstream
  * @param i initial coeff index, 0 unless a separate DC block is coded
@@ -696,56 +761,58 @@ void decode_mb_mode(VP8Context *s, VP8Macroblock *mb, int mb_x, int mb_y, uint8_
  * @return 0 if no coeffs were decoded
  *         otherwise, the index of the last coeff decoded plus one
  */
-static int decode_block_coeffs_internal(VP56RangeCoder *c, DCTELEM block[16],
+static int decode_block_coeffs_internal(VP56RangeCoder *r, int16_t block[16],
                                         uint8_t probs[16][3][NUM_DCT_TOKENS-1],
                                         int i, uint8_t *token_prob, int16_t qmul[2])
 {
+    VP56RangeCoder c = *r;
     goto skip_eob;
     do {
         int coeff;
-        if (!vp56_rac_get_prob_branchy(c, token_prob[0]))   // DCT_EOB
-            return i;
+        if (!vp56_rac_get_prob_branchy(&c, token_prob[0]))   // DCT_EOB
+            break;
 
 skip_eob:
-        if (!vp56_rac_get_prob_branchy(c, token_prob[1])) { // DCT_0
+        if (!vp56_rac_get_prob_branchy(&c, token_prob[1])) { // DCT_0
             if (++i == 16)
-                return i; // invalid input; blocks should end with EOB
+                break; // invalid input; blocks should end with EOB
             token_prob = probs[i][0];
             goto skip_eob;
         }
 
-        if (!vp56_rac_get_prob_branchy(c, token_prob[2])) { // DCT_1
+        if (!vp56_rac_get_prob_branchy(&c, token_prob[2])) { // DCT_1
             coeff = 1;
             token_prob = probs[i+1][1];
         } else {
-            if (!vp56_rac_get_prob_branchy(c, token_prob[3])) { // DCT 2,3,4
-                coeff = vp56_rac_get_prob_branchy(c, token_prob[4]);
+            if (!vp56_rac_get_prob_branchy(&c, token_prob[3])) { // DCT 2,3,4
+                coeff = vp56_rac_get_prob_branchy(&c, token_prob[4]);
                 if (coeff)
-                    coeff += vp56_rac_get_prob(c, token_prob[5]);
+                    coeff += vp56_rac_get_prob(&c, token_prob[5]);
                 coeff += 2;
             } else {
                 // DCT_CAT*
-                if (!vp56_rac_get_prob_branchy(c, token_prob[6])) {
-                    if (!vp56_rac_get_prob_branchy(c, token_prob[7])) { // DCT_CAT1
-                        coeff  = 5 + vp56_rac_get_prob(c, vp8_dct_cat1_prob[0]);
+                if (!vp56_rac_get_prob_branchy(&c, token_prob[6])) {
+                    if (!vp56_rac_get_prob_branchy(&c, token_prob[7])) { // DCT_CAT1
+                        coeff  = 5 + vp56_rac_get_prob(&c, vp8_dct_cat1_prob[0]);
                     } else {                                    // DCT_CAT2
                         coeff  = 7;
-                        coeff += vp56_rac_get_prob(c, vp8_dct_cat2_prob[0]) << 1;
-                        coeff += vp56_rac_get_prob(c, vp8_dct_cat2_prob[1]);
+                        coeff += vp56_rac_get_prob(&c, vp8_dct_cat2_prob[0]) << 1;
+                        coeff += vp56_rac_get_prob(&c, vp8_dct_cat2_prob[1]);
                     }
                 } else {    // DCT_CAT3 and up
-                    int a = vp56_rac_get_prob(c, token_prob[8]);
-                    int b = vp56_rac_get_prob(c, token_prob[9+a]);
+                    int a = vp56_rac_get_prob(&c, token_prob[8]);
+                    int b = vp56_rac_get_prob(&c, token_prob[9+a]);
                     int cat = (a<<1) + b;
                     coeff  = 3 + (8<<cat);
-                    coeff += vp8_rac_get_coeff(c, ff_vp8_dct_cat_prob[cat]);
+                    coeff += vp8_rac_get_coeff(&c, ff_vp8_dct_cat_prob[cat]);
                 }
             }
             token_prob = probs[i+1][2];
         }
-        block[zigzag_scan[i]] = (vp8_rac_get(c) ? -coeff : coeff) * qmul[!!i];
+        block[zigzag_scan[i]] = (vp8_rac_get(&c) ? -coeff : coeff) * qmul[!!i];
     } while (++i < 16);
 
+    *r = c;
     return i;
 }
 #endif
@@ -762,7 +829,7 @@ skip_eob:
  *         otherwise, the index of the last coeff decoded plus one
  */
 static av_always_inline
-int decode_block_coeffs(VP56RangeCoder *c, DCTELEM block[16],
+int decode_block_coeffs(VP56RangeCoder *c, int16_t block[16],
                         uint8_t probs[16][3][NUM_DCT_TOKENS-1],
                         int i, int zero_nhood, int16_t qmul[2])
 {
@@ -773,28 +840,28 @@ int decode_block_coeffs(VP56RangeCoder *c, DCTELEM block[16],
 }
 
 static av_always_inline
-void decode_mb_coeffs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb,
+void decode_mb_coeffs(VP8Context *s, VP8ThreadData *td, VP56RangeCoder *c, VP8Macroblock *mb,
                       uint8_t t_nnz[9], uint8_t l_nnz[9])
 {
     int i, x, y, luma_start = 0, luma_ctx = 3;
     int nnz_pred, nnz, nnz_total = 0;
-    int segment = s->segment;
+    int segment = mb->segment;
     int block_dc = 0;
 
     if (mb->mode != MODE_I4x4 && mb->mode != VP8_MVMODE_SPLIT) {
         nnz_pred = t_nnz[8] + l_nnz[8];
 
         // decode DC values and do hadamard
-        nnz = decode_block_coeffs(c, s->block_dc, s->prob->token[1], 0, nnz_pred,
+        nnz = decode_block_coeffs(c, td->block_dc, s->prob->token[1], 0, nnz_pred,
                                   s->qmat[segment].luma_dc_qmul);
         l_nnz[8] = t_nnz[8] = !!nnz;
         if (nnz) {
             nnz_total += nnz;
             block_dc = 1;
             if (nnz == 1)
-                s->vp8dsp.vp8_luma_dc_wht_dc(s->block, s->block_dc);
+                s->vp8dsp.vp8_luma_dc_wht_dc(td->block, td->block_dc);
             else
-                s->vp8dsp.vp8_luma_dc_wht(s->block, s->block_dc);
+                s->vp8dsp.vp8_luma_dc_wht(td->block, td->block_dc);
         }
         luma_start = 1;
         luma_ctx = 0;
@@ -804,10 +871,10 @@ void decode_mb_coeffs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb,
     for (y = 0; y < 4; y++)
         for (x = 0; x < 4; x++) {
             nnz_pred = l_nnz[y] + t_nnz[x];
-            nnz = decode_block_coeffs(c, s->block[y][x], s->prob->token[luma_ctx], luma_start,
+            nnz = decode_block_coeffs(c, td->block[y][x], s->prob->token[luma_ctx], luma_start,
                                       nnz_pred, s->qmat[segment].luma_qmul);
             // nnz+block_dc may be one more than the actual last index, but we don't care
-            s->non_zero_count_cache[y][x] = nnz + block_dc;
+            td->non_zero_count_cache[y][x] = nnz + block_dc;
             t_nnz[x] = l_nnz[y] = !!nnz;
             nnz_total += nnz;
         }
@@ -819,9 +886,9 @@ void decode_mb_coeffs(VP8Context *s, VP56RangeCoder *c, VP8Macroblock *mb,
         for (y = 0; y < 2; y++)
             for (x = 0; x < 2; x++) {
                 nnz_pred = l_nnz[i+2*y] + t_nnz[i+2*x];
-                nnz = decode_block_coeffs(c, s->block[i][(y<<1)+x], s->prob->token[2], 0,
+                nnz = decode_block_coeffs(c, td->block[i][(y<<1)+x], s->prob->token[2], 0,
                                           nnz_pred, s->qmat[segment].chroma_qmul);
-                s->non_zero_count_cache[i][(y<<1)+x] = nnz;
+                td->non_zero_count_cache[i][(y<<1)+x] = nnz;
                 t_nnz[i+2*x] = l_nnz[i+2*y] = !!nnz;
                 nnz_total += nnz;
             }
@@ -966,8 +1033,8 @@ int check_intra_pred4x4_mode_emuedge(int mode, int mb_x, int mb_y, int *copy_buf
 }
 
 static av_always_inline
-void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
-                   int mb_x, int mb_y)
+void intra_predict(VP8Context *s, VP8ThreadData *td, uint8_t *dst[3],
+                   VP8Macroblock *mb, int mb_x, int mb_y)
 {
     AVCodecContext *avctx = s->avctx;
     int x, y, mode, nnz;
@@ -975,7 +1042,7 @@ void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
 
     // for the first row, we need to run xchg_mb_border to init the top edge to 127
     // otherwise, skip it if we aren't going to deblock
-    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE && !mb_y) && (s->deblock_filter || !mb_y))
+    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE && !mb_y) && (s->deblock_filter || !mb_y) && td->thread_nr == 0)
         xchg_mb_border(s->top_border[mb_x+1], dst[0], dst[1], dst[2],
                        s->linesize, s->uvlinesize, mb_x, mb_y, s->mb_width,
                        s->filter.simple, 1);
@@ -989,7 +1056,7 @@ void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
         s->hpc.pred16x16[mode](dst[0], s->linesize);
     } else {
         uint8_t *ptr = dst[0];
-        uint8_t *intra4x4 = s->intra4x4_pred_mode_mb;
+        uint8_t *intra4x4 = mb->intra4x4_pred_mode_mb;
         uint8_t tr_top[4] = { 127, 127, 127, 127 };
 
         // all blocks on the right edge of the macroblock use bottom edge
@@ -1005,7 +1072,7 @@ void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
         }
 
         if (mb->skip)
-            AV_ZERO128(s->non_zero_count_cache);
+            AV_ZERO128(td->non_zero_count_cache);
 
         for (y = 0; y < 4; y++) {
             uint8_t *topright = ptr + 4 - s->linesize;
@@ -1058,12 +1125,12 @@ void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
                     AV_COPY32(ptr+4*x+s->linesize*3, copy_dst+36);
                 }
 
-                nnz = s->non_zero_count_cache[y][x];
+                nnz = td->non_zero_count_cache[y][x];
                 if (nnz) {
                     if (nnz == 1)
-                        s->vp8dsp.vp8_idct_dc_add(ptr+4*x, s->block[y][x], s->linesize);
+                        s->vp8dsp.vp8_idct_dc_add(ptr+4*x, td->block[y][x], s->linesize);
                     else
-                        s->vp8dsp.vp8_idct_add(ptr+4*x, s->block[y][x], s->linesize);
+                        s->vp8dsp.vp8_idct_add(ptr+4*x, td->block[y][x], s->linesize);
                 }
                 topright += 4;
             }
@@ -1074,14 +1141,14 @@ void intra_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
     }
 
     if (avctx->flags & CODEC_FLAG_EMU_EDGE) {
-        mode = check_intra_pred8x8_mode_emuedge(s->chroma_pred_mode, mb_x, mb_y);
+        mode = check_intra_pred8x8_mode_emuedge(mb->chroma_pred_mode, mb_x, mb_y);
     } else {
-        mode = check_intra_pred8x8_mode(s->chroma_pred_mode, mb_x, mb_y);
+        mode = check_intra_pred8x8_mode(mb->chroma_pred_mode, mb_x, mb_y);
     }
     s->hpc.pred8x8[mode](dst[1], s->uvlinesize);
     s->hpc.pred8x8[mode](dst[2], s->uvlinesize);
 
-    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE && !mb_y) && (s->deblock_filter || !mb_y))
+    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE && !mb_y) && (s->deblock_filter || !mb_y) && td->thread_nr == 0)
         xchg_mb_border(s->top_border[mb_x+1], dst[0], dst[1], dst[2],
                        s->linesize, s->uvlinesize, mb_x, mb_y, s->mb_width,
                        s->filter.simple, 0);
@@ -1111,7 +1178,8 @@ static const uint8_t subpel_idx[3][8] = {
  * @param mc_func motion compensation function pointers (bilinear or sixtap MC)
  */
 static av_always_inline
-void vp8_mc_luma(VP8Context *s, uint8_t *dst, AVFrame *ref, const VP56mv *mv,
+void vp8_mc_luma(VP8Context *s, VP8ThreadData *td, uint8_t *dst,
+                 AVFrame *ref, const VP56mv *mv,
                  int x_off, int y_off, int block_w, int block_h,
                  int width, int height, int linesize,
                  vp8_mc_func mc_func[3][3])
@@ -1131,10 +1199,10 @@ void vp8_mc_luma(VP8Context *s, uint8_t *dst, AVFrame *ref, const VP56mv *mv,
         src += y_off * linesize + x_off;
         if (x_off < mx_idx || x_off >= width  - block_w - subpel_idx[2][mx] ||
             y_off < my_idx || y_off >= height - block_h - subpel_idx[2][my]) {
-            s->dsp.emulated_edge_mc(s->edge_emu_buffer, src - my_idx * linesize - mx_idx, linesize,
-                                    block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
-                                    x_off - mx_idx, y_off - my_idx, width, height);
-            src = s->edge_emu_buffer + mx_idx + linesize * my_idx;
+            s->vdsp.emulated_edge_mc(td->edge_emu_buffer, src - my_idx * linesize - mx_idx, linesize,
+                                     block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
+                                     x_off - mx_idx, y_off - my_idx, width, height);
+            src = td->edge_emu_buffer + mx_idx + linesize * my_idx;
         }
         mc_func[my_idx][mx_idx](dst, linesize, src, linesize, block_h, mx, my);
     } else {
@@ -1161,8 +1229,8 @@ void vp8_mc_luma(VP8Context *s, uint8_t *dst, AVFrame *ref, const VP56mv *mv,
  * @param mc_func motion compensation function pointers (bilinear or sixtap MC)
  */
 static av_always_inline
-void vp8_mc_chroma(VP8Context *s, uint8_t *dst1, uint8_t *dst2, AVFrame *ref,
-                   const VP56mv *mv, int x_off, int y_off,
+void vp8_mc_chroma(VP8Context *s, VP8ThreadData *td, uint8_t *dst1, uint8_t *dst2,
+                   AVFrame *ref, const VP56mv *mv, int x_off, int y_off,
                    int block_w, int block_h, int width, int height, int linesize,
                    vp8_mc_func mc_func[3][3])
 {
@@ -1181,16 +1249,16 @@ void vp8_mc_chroma(VP8Context *s, uint8_t *dst1, uint8_t *dst2, AVFrame *ref,
         ff_thread_await_progress(ref, (3 + y_off + block_h + subpel_idx[2][my]) >> 3, 0);
         if (x_off < mx_idx || x_off >= width  - block_w - subpel_idx[2][mx] ||
             y_off < my_idx || y_off >= height - block_h - subpel_idx[2][my]) {
-            s->dsp.emulated_edge_mc(s->edge_emu_buffer, src1 - my_idx * linesize - mx_idx, linesize,
-                                    block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
-                                    x_off - mx_idx, y_off - my_idx, width, height);
-            src1 = s->edge_emu_buffer + mx_idx + linesize * my_idx;
+            s->vdsp.emulated_edge_mc(td->edge_emu_buffer, src1 - my_idx * linesize - mx_idx, linesize,
+                                     block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
+                                     x_off - mx_idx, y_off - my_idx, width, height);
+            src1 = td->edge_emu_buffer + mx_idx + linesize * my_idx;
             mc_func[my_idx][mx_idx](dst1, linesize, src1, linesize, block_h, mx, my);
 
-            s->dsp.emulated_edge_mc(s->edge_emu_buffer, src2 - my_idx * linesize - mx_idx, linesize,
-                                    block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
-                                    x_off - mx_idx, y_off - my_idx, width, height);
-            src2 = s->edge_emu_buffer + mx_idx + linesize * my_idx;
+            s->vdsp.emulated_edge_mc(td->edge_emu_buffer, src2 - my_idx * linesize - mx_idx, linesize,
+                                     block_w + subpel_idx[1][mx], block_h + subpel_idx[1][my],
+                                     x_off - mx_idx, y_off - my_idx, width, height);
+            src2 = td->edge_emu_buffer + mx_idx + linesize * my_idx;
             mc_func[my_idx][mx_idx](dst2, linesize, src2, linesize, block_h, mx, my);
         } else {
             mc_func[my_idx][mx_idx](dst1, linesize, src1, linesize, block_h, mx, my);
@@ -1204,7 +1272,7 @@ void vp8_mc_chroma(VP8Context *s, uint8_t *dst1, uint8_t *dst2, AVFrame *ref,
 }
 
 static av_always_inline
-void vp8_mc_part(VP8Context *s, uint8_t *dst[3],
+void vp8_mc_part(VP8Context *s, VP8ThreadData *td, uint8_t *dst[3],
                  AVFrame *ref_frame, int x_off, int y_off,
                  int bx_off, int by_off,
                  int block_w, int block_h,
@@ -1213,7 +1281,7 @@ void vp8_mc_part(VP8Context *s, uint8_t *dst[3],
     VP56mv uvmv = *mv;
 
     /* Y */
-    vp8_mc_luma(s, dst[0] + by_off * s->linesize + bx_off,
+    vp8_mc_luma(s, td, dst[0] + by_off * s->linesize + bx_off,
                 ref_frame, mv, x_off + bx_off, y_off + by_off,
                 block_w, block_h, width, height, s->linesize,
                 s->put_pixels_tab[block_w == 8]);
@@ -1227,7 +1295,7 @@ void vp8_mc_part(VP8Context *s, uint8_t *dst[3],
     bx_off  >>= 1; by_off  >>= 1;
     width   >>= 1; height  >>= 1;
     block_w >>= 1; block_h >>= 1;
-    vp8_mc_chroma(s, dst[1] + by_off * s->uvlinesize + bx_off,
+    vp8_mc_chroma(s, td, dst[1] + by_off * s->uvlinesize + bx_off,
                   dst[2] + by_off * s->uvlinesize + bx_off, ref_frame,
                   &uvmv, x_off + bx_off, y_off + by_off,
                   block_w, block_h, width, height, s->uvlinesize,
@@ -1248,9 +1316,9 @@ static av_always_inline void prefetch_motion(VP8Context *s, VP8Macroblock *mb, i
         /* For threading, a ff_thread_await_progress here might be useful, but
          * it actually slows down the decoder. Since a bad prefetch doesn't
          * generate bad decoder output, we don't run it here. */
-        s->dsp.prefetch(src[0]+off, s->linesize, 4);
+        s->vdsp.prefetch(src[0]+off, s->linesize, 4);
         off= (mx>>1) + ((my>>1) + (mb_x&7))*s->uvlinesize + 64;
-        s->dsp.prefetch(src[1]+off, src[2]-src[1], 2);
+        s->vdsp.prefetch(src[1]+off, src[2]-src[1], 2);
     }
 }
 
@@ -1258,8 +1326,8 @@ static av_always_inline void prefetch_motion(VP8Context *s, VP8Macroblock *mb, i
  * Apply motion vectors to prediction buffer, chapter 18.
  */
 static av_always_inline
-void inter_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
-                   int mb_x, int mb_y)
+void inter_predict(VP8Context *s, VP8ThreadData *td, uint8_t *dst[3],
+                   VP8Macroblock *mb, int mb_x, int mb_y)
 {
     int x_off = mb_x << 4, y_off = mb_y << 4;
     int width = 16*s->mb_width, height = 16*s->mb_height;
@@ -1268,7 +1336,7 @@ void inter_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
 
     switch (mb->partitioning) {
     case VP8_SPLITMVMODE_NONE:
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 0, 16, 16, width, height, &mb->mv);
         break;
     case VP8_SPLITMVMODE_4x4: {
@@ -1278,7 +1346,7 @@ void inter_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
         /* Y */
         for (y = 0; y < 4; y++) {
             for (x = 0; x < 4; x++) {
-                vp8_mc_luma(s, dst[0] + 4*y*s->linesize + x*4,
+                vp8_mc_luma(s, td, dst[0] + 4*y*s->linesize + x*4,
                             ref, &bmv[4*y + x],
                             4*x + x_off, 4*y + y_off, 4, 4,
                             width, height, s->linesize,
@@ -1304,7 +1372,7 @@ void inter_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
                     uvmv.x &= ~7;
                     uvmv.y &= ~7;
                 }
-                vp8_mc_chroma(s, dst[1] + 4*y*s->uvlinesize + x*4,
+                vp8_mc_chroma(s, td, dst[1] + 4*y*s->uvlinesize + x*4,
                               dst[2] + 4*y*s->uvlinesize + x*4, ref, &uvmv,
                               4*x + x_off, 4*y + y_off, 4, 4,
                               width, height, s->uvlinesize,
@@ -1314,51 +1382,52 @@ void inter_predict(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb,
         break;
     }
     case VP8_SPLITMVMODE_16x8:
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 0, 16, 8, width, height, &bmv[0]);
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 8, 16, 8, width, height, &bmv[1]);
         break;
     case VP8_SPLITMVMODE_8x16:
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 0, 8, 16, width, height, &bmv[0]);
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     8, 0, 8, 16, width, height, &bmv[1]);
         break;
     case VP8_SPLITMVMODE_8x8:
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 0, 8, 8, width, height, &bmv[0]);
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     8, 0, 8, 8, width, height, &bmv[1]);
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     0, 8, 8, 8, width, height, &bmv[2]);
-        vp8_mc_part(s, dst, ref, x_off, y_off,
+        vp8_mc_part(s, td, dst, ref, x_off, y_off,
                     8, 8, 8, 8, width, height, &bmv[3]);
         break;
     }
 }
 
-static av_always_inline void idct_mb(VP8Context *s, uint8_t *dst[3], VP8Macroblock *mb)
+static av_always_inline void idct_mb(VP8Context *s, VP8ThreadData *td,
+                                     uint8_t *dst[3], VP8Macroblock *mb)
 {
     int x, y, ch;
 
     if (mb->mode != MODE_I4x4) {
         uint8_t *y_dst = dst[0];
         for (y = 0; y < 4; y++) {
-            uint32_t nnz4 = AV_RL32(s->non_zero_count_cache[y]);
+            uint32_t nnz4 = AV_RL32(td->non_zero_count_cache[y]);
             if (nnz4) {
                 if (nnz4&~0x01010101) {
                     for (x = 0; x < 4; x++) {
                         if ((uint8_t)nnz4 == 1)
-                            s->vp8dsp.vp8_idct_dc_add(y_dst+4*x, s->block[y][x], s->linesize);
+                            s->vp8dsp.vp8_idct_dc_add(y_dst+4*x, td->block[y][x], s->linesize);
                         else if((uint8_t)nnz4 > 1)
-                            s->vp8dsp.vp8_idct_add(y_dst+4*x, s->block[y][x], s->linesize);
+                            s->vp8dsp.vp8_idct_add(y_dst+4*x, td->block[y][x], s->linesize);
                         nnz4 >>= 8;
                         if (!nnz4)
                             break;
                     }
                 } else {
-                    s->vp8dsp.vp8_idct_dc_add4y(y_dst, s->block[y], s->linesize);
+                    s->vp8dsp.vp8_idct_dc_add4y(y_dst, td->block[y], s->linesize);
                 }
             }
             y_dst += 4*s->linesize;
@@ -1366,16 +1435,16 @@ static av_always_inline void idct_mb(VP8Context *s, uint8_t *dst[3], VP8Macroblo
     }
 
     for (ch = 0; ch < 2; ch++) {
-        uint32_t nnz4 = AV_RL32(s->non_zero_count_cache[4+ch]);
+        uint32_t nnz4 = AV_RL32(td->non_zero_count_cache[4+ch]);
         if (nnz4) {
             uint8_t *ch_dst = dst[1+ch];
             if (nnz4&~0x01010101) {
                 for (y = 0; y < 2; y++) {
                     for (x = 0; x < 2; x++) {
                         if ((uint8_t)nnz4 == 1)
-                            s->vp8dsp.vp8_idct_dc_add(ch_dst+4*x, s->block[4+ch][(y<<1)+x], s->uvlinesize);
+                            s->vp8dsp.vp8_idct_dc_add(ch_dst+4*x, td->block[4+ch][(y<<1)+x], s->uvlinesize);
                         else if((uint8_t)nnz4 > 1)
-                            s->vp8dsp.vp8_idct_add(ch_dst+4*x, s->block[4+ch][(y<<1)+x], s->uvlinesize);
+                            s->vp8dsp.vp8_idct_add(ch_dst+4*x, td->block[4+ch][(y<<1)+x], s->uvlinesize);
                         nnz4 >>= 8;
                         if (!nnz4)
                             goto chroma_idct_end;
@@ -1383,7 +1452,7 @@ static av_always_inline void idct_mb(VP8Context *s, uint8_t *dst[3], VP8Macroblo
                     ch_dst += 4*s->uvlinesize;
                 }
             } else {
-                s->vp8dsp.vp8_idct_dc_add4uv(ch_dst, s->block[4+ch], s->uvlinesize);
+                s->vp8dsp.vp8_idct_dc_add4uv(ch_dst, td->block[4+ch], s->uvlinesize);
             }
         }
 chroma_idct_end: ;
@@ -1395,7 +1464,7 @@ static av_always_inline void filter_level_for_mb(VP8Context *s, VP8Macroblock *m
     int interior_limit, filter_level;
 
     if (s->segmentation.enabled) {
-        filter_level = s->segmentation.filter_level[s->segment];
+        filter_level = s->segmentation.filter_level[mb->segment];
         if (!s->segmentation.absolute_vals)
             filter_level += s->filter.level;
     } else
@@ -1521,38 +1590,6 @@ static av_always_inline void filter_mb_simple(VP8Context *s, uint8_t *dst, VP8Fi
     }
 }
 
-static void filter_mb_row(VP8Context *s, AVFrame *curframe, int mb_y)
-{
-    VP8FilterStrength *f = s->filter_strength;
-    uint8_t *dst[3] = {
-        curframe->data[0] + 16*mb_y*s->linesize,
-        curframe->data[1] +  8*mb_y*s->uvlinesize,
-        curframe->data[2] +  8*mb_y*s->uvlinesize
-    };
-    int mb_x;
-
-    for (mb_x = 0; mb_x < s->mb_width; mb_x++) {
-        backup_mb_border(s->top_border[mb_x+1], dst[0], dst[1], dst[2], s->linesize, s->uvlinesize, 0);
-        filter_mb(s, dst, f++, mb_x, mb_y);
-        dst[0] += 16;
-        dst[1] += 8;
-        dst[2] += 8;
-    }
-}
-
-static void filter_mb_row_simple(VP8Context *s, AVFrame *curframe, int mb_y)
-{
-    VP8FilterStrength *f = s->filter_strength;
-    uint8_t *dst = curframe->data[0] + 16*mb_y*s->linesize;
-    int mb_x;
-
-    for (mb_x = 0; mb_x < s->mb_width; mb_x++) {
-        backup_mb_border(s->top_border[mb_x+1], dst, NULL, NULL, s->linesize, 0, 1);
-        filter_mb_simple(s, dst, f++, mb_x, mb_y);
-        dst += 16;
-    }
-}
-
 static void release_queued_segmaps(VP8Context *s, int is_close)
 {
     int leave_behind = is_close ? 0 : !s->maps_are_invalid;
@@ -1561,30 +1598,276 @@ static void release_queued_segmaps(VP8Context *s, int is_close)
     s->maps_are_invalid = 0;
 }
 
-/**
- * Sets things up for skipping the current frame.
- * In particular, removes it from the reference buffers.
- */
-static void skipframe_clear(VP8Context *s)
+#define MARGIN (16 << 2)
+static void vp8_decode_mv_mb_modes(AVCodecContext *avctx, AVFrame *curframe,
+                                   AVFrame *prev_frame)
 {
-    s->invisible = 1;
-    s->next_framep[VP56_FRAME_CURRENT] = NULL;
-    if (s->update_last)
-        s->next_framep[VP56_FRAME_PREVIOUS] = NULL;
+    VP8Context *s = avctx->priv_data;
+    int mb_x, mb_y;
+
+    s->mv_min.y = -MARGIN;
+    s->mv_max.y = ((s->mb_height - 1) << 6) + MARGIN;
+    for (mb_y = 0; mb_y < s->mb_height; mb_y++) {
+        VP8Macroblock *mb = s->macroblocks_base + ((s->mb_width+1)*(mb_y + 1) + 1);
+        int mb_xy = mb_y*s->mb_width;
+
+        AV_WN32A(s->intra4x4_pred_mode_left, DC_PRED*0x01010101);
+
+        s->mv_min.x = -MARGIN;
+        s->mv_max.x = ((s->mb_width - 1) << 6) + MARGIN;
+        for (mb_x = 0; mb_x < s->mb_width; mb_x++, mb_xy++, mb++) {
+            if (mb_y == 0)
+                AV_WN32A((mb-s->mb_width-1)->intra4x4_pred_mode_top, DC_PRED*0x01010101);
+            decode_mb_mode(s, mb, mb_x, mb_y, curframe->ref_index[0] + mb_xy,
+                           prev_frame && prev_frame->ref_index[0] ? prev_frame->ref_index[0] + mb_xy : NULL, 1);
+            s->mv_min.x -= 64;
+            s->mv_max.x -= 64;
+        }
+        s->mv_min.y -= 64;
+        s->mv_max.y -= 64;
+    }
 }
 
-static int vp8_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
+#if HAVE_THREADS
+#define check_thread_pos(td, otd, mb_x_check, mb_y_check)\
+    do {\
+        int tmp = (mb_y_check << 16) | (mb_x_check & 0xFFFF);\
+        if (otd->thread_mb_pos < tmp) {\
+            pthread_mutex_lock(&otd->lock);\
+            td->wait_mb_pos = tmp;\
+            do {\
+                if (otd->thread_mb_pos >= tmp)\
+                    break;\
+                pthread_cond_wait(&otd->cond, &otd->lock);\
+            } while (1);\
+            td->wait_mb_pos = INT_MAX;\
+            pthread_mutex_unlock(&otd->lock);\
+        }\
+    } while(0);
+
+#define update_pos(td, mb_y, mb_x)\
+    do {\
+    int pos              = (mb_y << 16) | (mb_x & 0xFFFF);\
+    int sliced_threading = (avctx->active_thread_type == FF_THREAD_SLICE) && (num_jobs > 1);\
+    int is_null          = (next_td == NULL) || (prev_td == NULL);\
+    int pos_check        = (is_null) ? 1 :\
+                            (next_td != td && pos >= next_td->wait_mb_pos) ||\
+                            (prev_td != td && pos >= prev_td->wait_mb_pos);\
+    td->thread_mb_pos = pos;\
+    if (sliced_threading && pos_check) {\
+        pthread_mutex_lock(&td->lock);\
+        pthread_cond_broadcast(&td->cond);\
+        pthread_mutex_unlock(&td->lock);\
+    }\
+    } while(0);
+#else
+#define check_thread_pos(td, otd, mb_x_check, mb_y_check)
+#define update_pos(td, mb_y, mb_x)
+#endif
+
+static void vp8_decode_mb_row_no_filter(AVCodecContext *avctx, void *tdata,
+                                        int jobnr, int threadnr)
+{
+    VP8Context *s = avctx->priv_data;
+    VP8ThreadData *prev_td, *next_td, *td = &s->thread_data[threadnr];
+    int mb_y = td->thread_mb_pos>>16;
+    int i, y, mb_x, mb_xy = mb_y*s->mb_width;
+    int num_jobs = s->num_jobs;
+    AVFrame *curframe = s->curframe, *prev_frame = s->prev_frame;
+    VP56RangeCoder *c = &s->coeff_partition[mb_y & (s->num_coeff_partitions-1)];
+    VP8Macroblock *mb;
+    uint8_t *dst[3] = {
+        curframe->data[0] + 16*mb_y*s->linesize,
+        curframe->data[1] +  8*mb_y*s->uvlinesize,
+        curframe->data[2] +  8*mb_y*s->uvlinesize
+    };
+    if (mb_y == 0) prev_td = td;
+    else           prev_td = &s->thread_data[(jobnr + num_jobs - 1)%num_jobs];
+    if (mb_y == s->mb_height-1) next_td = td;
+    else                        next_td = &s->thread_data[(jobnr + 1)%num_jobs];
+    if (s->mb_layout == 1)
+        mb = s->macroblocks_base + ((s->mb_width+1)*(mb_y + 1) + 1);
+    else {
+        mb = s->macroblocks + (s->mb_height - mb_y - 1)*2;
+        memset(mb - 1, 0, sizeof(*mb)); // zero left macroblock
+        AV_WN32A(s->intra4x4_pred_mode_left, DC_PRED*0x01010101);
+    }
+
+    memset(td->left_nnz, 0, sizeof(td->left_nnz));
+    // left edge of 129 for intra prediction
+    if (!(avctx->flags & CODEC_FLAG_EMU_EDGE)) {
+        for (i = 0; i < 3; i++)
+            for (y = 0; y < 16>>!!i; y++)
+                dst[i][y*curframe->linesize[i]-1] = 129;
+        if (mb_y == 1) {
+            s->top_border[0][15] = s->top_border[0][23] = s->top_border[0][31] = 129;
+        }
+    }
+
+    s->mv_min.x = -MARGIN;
+    s->mv_max.x = ((s->mb_width  - 1) << 6) + MARGIN;
+
+    for (mb_x = 0; mb_x < s->mb_width; mb_x++, mb_xy++, mb++) {
+        // Wait for previous thread to read mb_x+2, and reach mb_y-1.
+        if (prev_td != td) {
+            if (threadnr != 0) {
+                check_thread_pos(td, prev_td, mb_x+1, mb_y-1);
+            } else {
+                check_thread_pos(td, prev_td, (s->mb_width+3) + (mb_x+1), mb_y-1);
+            }
+        }
+
+        s->vdsp.prefetch(dst[0] + (mb_x&3)*4*s->linesize + 64, s->linesize, 4);
+        s->vdsp.prefetch(dst[1] + (mb_x&7)*s->uvlinesize + 64, dst[2] - dst[1], 2);
+
+        if (!s->mb_layout)
+            decode_mb_mode(s, mb, mb_x, mb_y, curframe->ref_index[0] + mb_xy,
+                           prev_frame && prev_frame->ref_index[0] ? prev_frame->ref_index[0] + mb_xy : NULL, 0);
+
+        prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_PREVIOUS);
+
+        if (!mb->skip)
+            decode_mb_coeffs(s, td, c, mb, s->top_nnz[mb_x], td->left_nnz);
+
+        if (mb->mode <= MODE_I4x4)
+            intra_predict(s, td, dst, mb, mb_x, mb_y);
+        else
+            inter_predict(s, td, dst, mb, mb_x, mb_y);
+
+        prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_GOLDEN);
+
+        if (!mb->skip) {
+            idct_mb(s, td, dst, mb);
+        } else {
+            AV_ZERO64(td->left_nnz);
+            AV_WN64(s->top_nnz[mb_x], 0);   // array of 9, so unaligned
+
+            // Reset DC block predictors if they would exist if the mb had coefficients
+            if (mb->mode != MODE_I4x4 && mb->mode != VP8_MVMODE_SPLIT) {
+                td->left_nnz[8]     = 0;
+                s->top_nnz[mb_x][8] = 0;
+            }
+        }
+
+        if (s->deblock_filter)
+            filter_level_for_mb(s, mb, &td->filter_strength[mb_x]);
+
+        if (s->deblock_filter && num_jobs != 1 && threadnr == num_jobs-1) {
+            if (s->filter.simple)
+                backup_mb_border(s->top_border[mb_x+1], dst[0], NULL, NULL, s->linesize, 0, 1);
+            else
+                backup_mb_border(s->top_border[mb_x+1], dst[0], dst[1], dst[2], s->linesize, s->uvlinesize, 0);
+        }
+
+        prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_GOLDEN2);
+
+        dst[0] += 16;
+        dst[1] += 8;
+        dst[2] += 8;
+        s->mv_min.x -= 64;
+        s->mv_max.x -= 64;
+
+        if (mb_x == s->mb_width+1) {
+            update_pos(td, mb_y, s->mb_width+3);
+        } else {
+            update_pos(td, mb_y, mb_x);
+        }
+    }
+}
+
+static void vp8_filter_mb_row(AVCodecContext *avctx, void *tdata,
+                              int jobnr, int threadnr)
+{
+    VP8Context *s = avctx->priv_data;
+    VP8ThreadData *td = &s->thread_data[threadnr];
+    int mb_x, mb_y = td->thread_mb_pos>>16, num_jobs = s->num_jobs;
+    AVFrame *curframe = s->curframe;
+    VP8Macroblock *mb;
+    VP8ThreadData *prev_td, *next_td;
+    uint8_t *dst[3] = {
+        curframe->data[0] + 16*mb_y*s->linesize,
+        curframe->data[1] +  8*mb_y*s->uvlinesize,
+        curframe->data[2] +  8*mb_y*s->uvlinesize
+    };
+
+    if (s->mb_layout == 1)
+        mb = s->macroblocks_base + ((s->mb_width+1)*(mb_y + 1) + 1);
+    else
+        mb = s->macroblocks + (s->mb_height - mb_y - 1)*2;
+
+    if (mb_y == 0) prev_td = td;
+    else           prev_td = &s->thread_data[(jobnr + num_jobs - 1)%num_jobs];
+    if (mb_y == s->mb_height-1) next_td = td;
+    else                        next_td = &s->thread_data[(jobnr + 1)%num_jobs];
+
+    for (mb_x = 0; mb_x < s->mb_width; mb_x++, mb++) {
+        VP8FilterStrength *f = &td->filter_strength[mb_x];
+        if (prev_td != td) {
+            check_thread_pos(td, prev_td, (mb_x+1) + (s->mb_width+3), mb_y-1);
+        }
+        if (next_td != td)
+            if (next_td != &s->thread_data[0]) {
+                check_thread_pos(td, next_td, mb_x+1, mb_y+1);
+            }
+
+        if (num_jobs == 1) {
+            if (s->filter.simple)
+                backup_mb_border(s->top_border[mb_x+1], dst[0], NULL, NULL, s->linesize, 0, 1);
+            else
+                backup_mb_border(s->top_border[mb_x+1], dst[0], dst[1], dst[2], s->linesize, s->uvlinesize, 0);
+        }
+
+        if (s->filter.simple)
+            filter_mb_simple(s, dst[0], f, mb_x, mb_y);
+        else
+            filter_mb(s, dst, f, mb_x, mb_y);
+        dst[0] += 16;
+        dst[1] += 8;
+        dst[2] += 8;
+
+        update_pos(td, mb_y, (s->mb_width+3) + mb_x);
+    }
+}
+
+static int vp8_decode_mb_row_sliced(AVCodecContext *avctx, void *tdata,
+                                    int jobnr, int threadnr)
+{
+    VP8Context *s = avctx->priv_data;
+    VP8ThreadData *td = &s->thread_data[jobnr];
+    VP8ThreadData *next_td = NULL, *prev_td = NULL;
+    AVFrame *curframe = s->curframe;
+    int mb_y, num_jobs = s->num_jobs;
+    td->thread_nr = threadnr;
+    for (mb_y = jobnr; mb_y < s->mb_height; mb_y += num_jobs) {
+        if (mb_y >= s->mb_height) break;
+        td->thread_mb_pos = mb_y<<16;
+        vp8_decode_mb_row_no_filter(avctx, tdata, jobnr, threadnr);
+        if (s->deblock_filter)
+            vp8_filter_mb_row(avctx, tdata, jobnr, threadnr);
+        update_pos(td, mb_y, INT_MAX & 0xFFFF);
+
+        s->mv_min.y -= 64;
+        s->mv_max.y -= 64;
+
+        if (avctx->active_thread_type == FF_THREAD_FRAME)
+            ff_thread_report_progress(curframe, mb_y, 0);
+    }
+
+    return 0;
+}
+
+static int vp8_decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
                             AVPacket *avpkt)
 {
     VP8Context *s = avctx->priv_data;
-    int ret, mb_x, mb_y, i, y, referenced;
+    int ret, i, referenced, num_jobs;
     enum AVDiscard skip_thresh;
     AVFrame *av_uninit(curframe), *prev_frame;
 
     release_queued_segmaps(s, 0);
 
     if ((ret = decode_frame_header(s, avpkt->data, avpkt->size)) < 0)
-        return ret;
+        goto err;
 
     prev_frame = s->framep[VP56_FRAME_CURRENT];
 
@@ -1594,6 +1877,11 @@ static int vp8_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     skip_thresh = !referenced ? AVDISCARD_NONREF :
                     !s->keyframe ? AVDISCARD_NONKEY : AVDISCARD_ALL;
 
+    if (avctx->skip_frame >= skip_thresh) {
+        s->invisible = 1;
+        memcpy(&s->next_framep[0], &s->framep[0], sizeof(s->framep[0]) * 4);
+        goto skip_decode;
+    }
     s->deblock_filter = s->filter.level && avctx->skip_loop_filter < skip_thresh;
 
     // release no longer referenced frames
@@ -1618,6 +1906,27 @@ static int vp8_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         av_log(avctx, AV_LOG_FATAL, "Ran out of free frames!\n");
         abort();
     }
+    if (curframe->data[0])
+        vp8_release_frame(s, curframe, 1, 0);
+
+    // Given that arithmetic probabilities are updated every frame, it's quite likely
+    // that the values we have on a random interframe are complete junk if we didn't
+    // start decode on a keyframe. So just don't display anything rather than junk.
+    if (!s->keyframe && (!s->framep[VP56_FRAME_PREVIOUS] ||
+                         !s->framep[VP56_FRAME_GOLDEN] ||
+                         !s->framep[VP56_FRAME_GOLDEN2])) {
+        av_log(avctx, AV_LOG_WARNING, "Discarding interframe without a prior keyframe!\n");
+        ret = AVERROR_INVALIDDATA;
+        goto err;
+    }
+
+    curframe->key_frame = s->keyframe;
+    curframe->pict_type = s->keyframe ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_P;
+    curframe->reference = referenced ? 3 : 0;
+    if ((ret = vp8_alloc_frame(s, curframe))) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed!\n");
+        goto err;
+    }
 
     // check if golden and altref are swapped
     if (s->update_altref != VP56_FRAME_NONE) {
@@ -1637,161 +1946,71 @@ static int vp8_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     }
     s->next_framep[VP56_FRAME_CURRENT]      = curframe;
 
-    if (avctx->skip_frame >= skip_thresh) {
-        skipframe_clear(s);
-        ret = avpkt->size;
-        goto skip_decode;
-    }
-
-    // Given that arithmetic probabilities are updated every frame, it's quite likely
-    // that the values we have on a random interframe are complete junk if we didn't
-    // start decode on a keyframe. So just don't display anything rather than junk.
-    if (!s->keyframe && (!s->framep[VP56_FRAME_PREVIOUS] ||
-                         !s->framep[VP56_FRAME_GOLDEN] ||
-                         !s->framep[VP56_FRAME_GOLDEN2])) {
-        av_log(avctx, AV_LOG_WARNING, "Discarding interframe without a prior keyframe!\n");
-        skipframe_clear(s);
-        ret = AVERROR_INVALIDDATA;
-        goto skip_decode;
-    }
-
-    if (curframe->data[0])
-        vp8_release_frame(s, curframe, 1, 0);
-
-    curframe->key_frame = s->keyframe;
-    curframe->pict_type = s->keyframe ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_P;
-    curframe->reference = referenced ? 3 : 0;
-    if ((ret = vp8_alloc_frame(s, curframe))) {
-        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed!\n");
-        skipframe_clear(s);
-        goto skip_decode;
-    }
-
     ff_thread_finish_setup(avctx);
 
     s->linesize   = curframe->linesize[0];
     s->uvlinesize = curframe->linesize[1];
 
-    if (!s->edge_emu_buffer)
-        s->edge_emu_buffer = av_malloc(21*s->linesize);
+    if (!s->thread_data[0].edge_emu_buffer)
+        for (i = 0; i < MAX_THREADS; i++)
+            s->thread_data[i].edge_emu_buffer = av_malloc(21*s->linesize);
 
     memset(s->top_nnz, 0, s->mb_width*sizeof(*s->top_nnz));
-
     /* Zero macroblock structures for top/top-left prediction from outside the frame. */
-    memset(s->macroblocks + s->mb_height*2 - 1, 0, (s->mb_width+1)*sizeof(*s->macroblocks));
+    if (!s->mb_layout)
+        memset(s->macroblocks + s->mb_height*2 - 1, 0, (s->mb_width+1)*sizeof(*s->macroblocks));
+    if (!s->mb_layout && s->keyframe)
+        memset(s->intra4x4_pred_mode_top, DC_PRED, s->mb_width*4);
 
     // top edge of 127 for intra prediction
     if (!(avctx->flags & CODEC_FLAG_EMU_EDGE)) {
         s->top_border[0][15] = s->top_border[0][23] = 127;
-        memset(s->top_border[1]-1, 127, s->mb_width*sizeof(*s->top_border)+1);
+        s->top_border[0][31] = 127;
+        memset(s->top_border[1], 127, s->mb_width*sizeof(*s->top_border));
     }
     memset(s->ref_count, 0, sizeof(s->ref_count));
-    if (s->keyframe)
-        memset(s->intra4x4_pred_mode_top, DC_PRED, s->mb_width*4);
 
-#define MARGIN (16 << 2)
-    s->mv_min.y = -MARGIN;
-    s->mv_max.y = ((s->mb_height - 1) << 6) + MARGIN;
 
-    for (mb_y = 0; mb_y < s->mb_height; mb_y++) {
-        VP56RangeCoder *c = &s->coeff_partition[mb_y & (s->num_coeff_partitions-1)];
-        VP8Macroblock *mb = s->macroblocks + (s->mb_height - mb_y - 1)*2;
-        int mb_xy = mb_y*s->mb_width;
-        uint8_t *dst[3] = {
-            curframe->data[0] + 16*mb_y*s->linesize,
-            curframe->data[1] +  8*mb_y*s->uvlinesize,
-            curframe->data[2] +  8*mb_y*s->uvlinesize
-        };
+    // Make sure the previous frame has read its segmentation map,
+    // if we re-use the same map.
+    if (prev_frame && s->segmentation.enabled && !s->segmentation.update_map)
+        ff_thread_await_progress(prev_frame, 1, 0);
 
-        memset(mb - 1, 0, sizeof(*mb));   // zero left macroblock
-        memset(s->left_nnz, 0, sizeof(s->left_nnz));
-        AV_WN32A(s->intra4x4_pred_mode_left, DC_PRED*0x01010101);
+    if (s->mb_layout == 1)
+        vp8_decode_mv_mb_modes(avctx, curframe, prev_frame);
 
-        // left edge of 129 for intra prediction
-        if (!(avctx->flags & CODEC_FLAG_EMU_EDGE)) {
-            for (i = 0; i < 3; i++)
-                for (y = 0; y < 16>>!!i; y++)
-                    dst[i][y*curframe->linesize[i]-1] = 129;
-            if (mb_y == 1) // top left edge is also 129
-                s->top_border[0][15] = s->top_border[0][23] = s->top_border[0][31] = 129;
-        }
-
-        s->mv_min.x = -MARGIN;
-        s->mv_max.x = ((s->mb_width  - 1) << 6) + MARGIN;
-        if (prev_frame && s->segmentation.enabled && !s->segmentation.update_map)
-            ff_thread_await_progress(prev_frame, mb_y, 0);
-
-        for (mb_x = 0; mb_x < s->mb_width; mb_x++, mb_xy++, mb++) {
-            /* Prefetch the current frame, 4 MBs ahead */
-            s->dsp.prefetch(dst[0] + (mb_x&3)*4*s->linesize + 64, s->linesize, 4);
-            s->dsp.prefetch(dst[1] + (mb_x&7)*s->uvlinesize + 64, dst[2] - dst[1], 2);
-
-            decode_mb_mode(s, mb, mb_x, mb_y, curframe->ref_index[0] + mb_xy,
-                           prev_frame && prev_frame->ref_index[0] ? prev_frame->ref_index[0] + mb_xy : NULL);
-
-            prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_PREVIOUS);
-
-            if (!mb->skip)
-                decode_mb_coeffs(s, c, mb, s->top_nnz[mb_x], s->left_nnz);
-
-            if (mb->mode <= MODE_I4x4)
-                intra_predict(s, dst, mb, mb_x, mb_y);
-            else
-                inter_predict(s, dst, mb, mb_x, mb_y);
-
-            prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_GOLDEN);
-
-            if (!mb->skip) {
-                idct_mb(s, dst, mb);
-            } else {
-                AV_ZERO64(s->left_nnz);
-                AV_WN64(s->top_nnz[mb_x], 0);   // array of 9, so unaligned
-
-                // Reset DC block predictors if they would exist if the mb had coefficients
-                if (mb->mode != MODE_I4x4 && mb->mode != VP8_MVMODE_SPLIT) {
-                    s->left_nnz[8]      = 0;
-                    s->top_nnz[mb_x][8] = 0;
-                }
-            }
-
-            if (s->deblock_filter)
-                filter_level_for_mb(s, mb, &s->filter_strength[mb_x]);
-
-            prefetch_motion(s, mb, mb_x, mb_y, mb_xy, VP56_FRAME_GOLDEN2);
-
-            dst[0] += 16;
-            dst[1] += 8;
-            dst[2] += 8;
-            s->mv_min.x -= 64;
-            s->mv_max.x -= 64;
-        }
-        if (s->deblock_filter) {
-            if (s->filter.simple)
-                filter_mb_row_simple(s, curframe, mb_y);
-            else
-                filter_mb_row(s, curframe, mb_y);
-        }
-        s->mv_min.y -= 64;
-        s->mv_max.y -= 64;
-
-        ff_thread_report_progress(curframe, mb_y, 0);
+    if (avctx->active_thread_type == FF_THREAD_FRAME)
+        num_jobs = 1;
+    else
+        num_jobs = FFMIN(s->num_coeff_partitions, avctx->thread_count);
+    s->num_jobs   = num_jobs;
+    s->curframe   = curframe;
+    s->prev_frame = prev_frame;
+    s->mv_min.y   = -MARGIN;
+    s->mv_max.y   = ((s->mb_height - 1) << 6) + MARGIN;
+    for (i = 0; i < MAX_THREADS; i++) {
+        s->thread_data[i].thread_mb_pos = 0;
+        s->thread_data[i].wait_mb_pos = INT_MAX;
     }
+    avctx->execute2(avctx, vp8_decode_mb_row_sliced, s->thread_data, NULL, num_jobs);
 
     ff_thread_report_progress(curframe, INT_MAX, 0);
-    ret = avpkt->size;
+    memcpy(&s->framep[0], &s->next_framep[0], sizeof(s->framep[0]) * 4);
+
 skip_decode:
     // if future frames don't use the updated probabilities,
     // reset them to the values we saved
     if (!s->update_probabilities)
         s->prob[0] = s->prob[1];
 
-    memcpy(&s->framep[0], &s->next_framep[0], sizeof(s->framep[0]) * 4);
-
     if (!s->invisible) {
         *(AVFrame*)data = *curframe;
-        *data_size = sizeof(AVFrame);
+        *got_frame      = 1;
     }
 
+    return avpkt->size;
+err:
+    memcpy(&s->next_framep[0], &s->framep[0], sizeof(s->framep[0]) * 4);
     return ret;
 }
 
@@ -1800,10 +2019,10 @@ static av_cold int vp8_decode_init(AVCodecContext *avctx)
     VP8Context *s = avctx->priv_data;
 
     s->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_YUV420P;
+    avctx->pix_fmt = AV_PIX_FMT_YUV420P;
 
-    dsputil_init(&s->dsp, avctx);
-    ff_h264_pred_init(&s->hpc, CODEC_ID_VP8, 8, 1);
+    ff_videodsp_init(&s->vdsp, 8);
+    ff_h264_pred_init(&s->hpc, AV_CODEC_ID_VP8, 8, 1);
     ff_vp8dsp_init(&s->vp8dsp);
 
     return 0;
@@ -1836,6 +2055,8 @@ static int vp8_decode_update_thread_context(AVCodecContext *dst, const AVCodecCo
         (s_src->mb_width != s->mb_width || s_src->mb_height != s->mb_height)) {
         free_buffers(s);
         s->maps_are_invalid = 1;
+        s->mb_width  = s_src->mb_width;
+        s->mb_height = s_src->mb_height;
     }
 
     s->prob[0] = s_src->prob[!s_src->update_probabilities];
@@ -1853,16 +2074,16 @@ static int vp8_decode_update_thread_context(AVCodecContext *dst, const AVCodecCo
 }
 
 AVCodec ff_vp8_decoder = {
-    .name           = "vp8",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_VP8,
-    .priv_data_size = sizeof(VP8Context),
-    .init           = vp8_decode_init,
-    .close          = vp8_decode_free,
-    .decode         = vp8_decode_frame,
-    .capabilities   = CODEC_CAP_DR1 | CODEC_CAP_FRAME_THREADS,
-    .flush = vp8_decode_flush,
-    .long_name = NULL_IF_CONFIG_SMALL("On2 VP8"),
+    .name                  = "vp8",
+    .type                  = AVMEDIA_TYPE_VIDEO,
+    .id                    = AV_CODEC_ID_VP8,
+    .priv_data_size        = sizeof(VP8Context),
+    .init                  = vp8_decode_init,
+    .close                 = vp8_decode_free,
+    .decode                = vp8_decode_frame,
+    .capabilities          = CODEC_CAP_DR1 | CODEC_CAP_FRAME_THREADS | CODEC_CAP_SLICE_THREADS,
+    .flush                 = vp8_decode_flush,
+    .long_name             = NULL_IF_CONFIG_SMALL("On2 VP8"),
     .init_thread_copy      = ONLY_IF_THREADS_ENABLED(vp8_decode_init_thread_copy),
     .update_thread_context = ONLY_IF_THREADS_ENABLED(vp8_decode_update_thread_context),
 };

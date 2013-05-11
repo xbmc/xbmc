@@ -78,7 +78,7 @@ private:
 };
 
 
-CFileCache::CFileCache() : CThread("CFileCache")
+CFileCache::CFileCache(bool useDoubleCache) : CThread("FileCache")
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -88,13 +88,25 @@ CFileCache::CFileCache() : CThread("CFileCache")
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
-     m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
-                                 , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
+   {
+     size_t front = g_advancedSettings.m_cacheMemBufferSize;
+     size_t back = std::max<size_t>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024);
+     if (useDoubleCache)
+     {
+       front = front / 2;
+       back = back / 2;
+     }
+     m_pCache = new CCircularCache(front, back);
+   }
+   if (useDoubleCache)
+   {
+     m_pCache = new CSimpleDoubleCache(m_pCache);
+   }
    m_seekPossible = 0;
    m_cacheFull = false;
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("CFileCache")
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("FileCacheStrategy")
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -198,6 +210,7 @@ void CFileCache::Process()
 
   CWriteRate limiter;
   CWriteRate average;
+  bool cacheReachEOF = false;
 
   while (!m_bStop)
   {
@@ -205,21 +218,30 @@ void CFileCache::Process()
     if (m_seekEvent.WaitMSec(0))
     {
       m_seekEvent.Reset();
-      CLog::Log(LOGDEBUG,"%s, request seek on source to %"PRId64, __FUNCTION__, m_seekPos);
-      m_nSeekResult = m_source.Seek(m_seekPos, SEEK_SET);
-      if (m_nSeekResult != m_seekPos)
+      int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
+      cacheReachEOF = cacheMaxPos == m_source.GetLength();
+      bool sourceSeekFailed = false;
+      if (!cacheReachEOF)
       {
-        CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %"PRId64, __FUNCTION__, (int)GetLastError(), m_nSeekResult);
-        m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+        CLog::Log(LOGDEBUG,"CFileCache::Process - Request seek on source to %"PRId64, cacheMaxPos);
+        m_nSeekResult = m_source.Seek(cacheMaxPos, SEEK_SET);
+        if (m_nSeekResult != cacheMaxPos)
+        {
+          CLog::Log(LOGERROR,"CFileCache::Process - Error %d seeking. Seek returned %"PRId64, (int)GetLastError(), m_nSeekResult);
+          m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+          sourceSeekFailed = true;
+        }
       }
-      else
+      if (!sourceSeekFailed)
       {
-        m_pCache->Reset(m_seekPos);
-        average.Reset(m_seekPos);
-        limiter.Reset(m_seekPos);
-        m_writePos = m_seekPos;
+        m_pCache->Reset(m_seekPos, false);
         m_readPos = m_seekPos;
+        m_writePos = m_pCache->CachedDataEndPos();
+        assert(m_writePos == cacheMaxPos);
+        average.Reset(m_writePos);
+        limiter.Reset(m_writePos);
         m_cacheFull = false;
+        m_nSeekResult = m_seekPos;
       }
 
       m_seekEnded.Set();
@@ -243,7 +265,9 @@ void CFileCache::Process()
       }
     }
 
-    int iRead = m_source.Read(buffer.get(), m_chunkSize);
+    int iRead = 0;
+    if (!cacheReachEOF)
+      iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");

@@ -30,34 +30,35 @@
 typedef struct AnmContext {
     AVFrame frame;
     int palette[AVPALETTE_COUNT];
+    GetByteContext gb;
     int x;  ///< x coordinate position
 } AnmContext;
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
     AnmContext *s = avctx->priv_data;
-    const uint8_t *buf;
     int i;
 
-    avctx->pix_fmt = PIX_FMT_PAL8;
-
-    if (avctx->extradata_size != 16*8 + 4*256)
-        return -1;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
 
     avcodec_get_frame_defaults(&s->frame);
     s->frame.reference = 3;
+    bytestream2_init(&s->gb, avctx->extradata, avctx->extradata_size);
+    if (bytestream2_get_bytes_left(&s->gb) < 16 * 8 + 4 * 256)
+        return AVERROR_INVALIDDATA;
 
-    buf = avctx->extradata + 16*8;
+    bytestream2_skipu(&s->gb, 16 * 8);
     for (i = 0; i < 256; i++)
-        s->palette[i] = bytestream_get_le32(&buf);
+        s->palette[i] = bytestream2_get_le32u(&s->gb);
 
     return 0;
 }
 
 /**
  * Perform decode operation
- * @param dst, dst_end Destination image buffer
- * @param buf, buf_end Source buffer (optional, see below)
+ * @param dst     pointer to destination image buffer
+ * @param dst_end pointer to end of destination image buffer
+ * @param gb GetByteContext (optional, see below)
  * @param pixel Fill color (optional, see below)
  * @param count Pixel count
  * @param x Pointer to x-axis counter
@@ -65,24 +66,22 @@ static av_cold int decode_init(AVCodecContext *avctx)
  * @param linesize Destination image buffer linesize
  * @return non-zero if destination buffer is exhausted
  *
- * a copy operation is achieved when 'buf' is set
- * a fill operation is acheived when 'buf' is null and pixel is >= 0
- * a skip operation is acheived when 'buf' is null and pixel is < 0
+ * a copy operation is achieved when 'gb' is set
+ * a fill operation is achieved when 'gb' is null and pixel is >= 0
+ * a skip operation is achieved when 'gb' is null and pixel is < 0
  */
 static inline int op(uint8_t **dst, const uint8_t *dst_end,
-                     const uint8_t **buf, const uint8_t *buf_end,
+                     GetByteContext *gb,
                      int pixel, int count,
                      int *x, int width, int linesize)
 {
     int remaining = width - *x;
     while(count > 0) {
         int striplen = FFMIN(count, remaining);
-        if (buf) {
-            striplen = FFMIN(striplen, buf_end - *buf);
-            if (*buf >= buf_end)
+        if (gb) {
+            if (bytestream2_get_bytes_left(gb) < striplen)
                 goto exhausted;
-            memcpy(*dst, *buf, striplen);
-            *buf += striplen;
+            bytestream2_get_bufferu(gb, *dst, striplen);
         } else if (pixel >= 0)
             memset(*dst, pixel, striplen);
         *dst      += striplen;
@@ -107,52 +106,52 @@ exhausted:
 }
 
 static int decode_frame(AVCodecContext *avctx,
-                        void *data, int *data_size,
+                        void *data, int *got_frame,
                         AVPacket *avpkt)
 {
     AnmContext *s = avctx->priv_data;
-    const uint8_t *buf = avpkt->data;
     const int buf_size = avpkt->size;
-    const uint8_t *buf_end = buf + buf_size;
     uint8_t *dst, *dst_end;
-    int count;
+    int count, ret;
 
-    if(avctx->reget_buffer(avctx, &s->frame) < 0){
+    if ((ret = avctx->reget_buffer(avctx, &s->frame)) < 0){
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
-        return -1;
+        return ret;
     }
     dst     = s->frame.data[0];
     dst_end = s->frame.data[0] + s->frame.linesize[0]*avctx->height;
 
-    if (buf[0] != 0x42) {
+    bytestream2_init(&s->gb, avpkt->data, buf_size);
+
+    if (bytestream2_get_byte(&s->gb) != 0x42) {
         av_log_ask_for_sample(avctx, "unknown record type\n");
-        return buf_size;
+        return AVERROR_INVALIDDATA;
     }
-    if (buf[1]) {
+    if (bytestream2_get_byte(&s->gb)) {
         av_log_ask_for_sample(avctx, "padding bytes not supported\n");
-        return buf_size;
+        return AVERROR_PATCHWELCOME;
     }
-    buf += 4;
+    bytestream2_skip(&s->gb, 2);
 
     s->x = 0;
     do {
         /* if statements are ordered by probability */
-#define OP(buf, pixel, count) \
-    op(&dst, dst_end, (buf), buf_end, (pixel), (count), &s->x, avctx->width, s->frame.linesize[0])
+#define OP(gb, pixel, count) \
+    op(&dst, dst_end, (gb), (pixel), (count), &s->x, avctx->width, s->frame.linesize[0])
 
-        int type = bytestream_get_byte(&buf);
+        int type = bytestream2_get_byte(&s->gb);
         count = type & 0x7F;
         type >>= 7;
         if (count) {
-            if (OP(type ? NULL : &buf, -1, count)) break;
+            if (OP(type ? NULL : &s->gb, -1, count)) break;
         } else if (!type) {
             int pixel;
-            count = bytestream_get_byte(&buf);  /* count==0 gives nop */
-            pixel = bytestream_get_byte(&buf);
+            count = bytestream2_get_byte(&s->gb);  /* count==0 gives nop */
+            pixel = bytestream2_get_byte(&s->gb);
             if (OP(NULL, pixel, count)) break;
         } else {
             int pixel;
-            type = bytestream_get_le16(&buf);
+            type = bytestream2_get_le16(&s->gb);
             count = type & 0x3FFF;
             type >>= 14;
             if (!count) {
@@ -160,19 +159,19 @@ static int decode_frame(AVCodecContext *avctx,
                     break; // stop
                 if (type == 2) {
                     av_log_ask_for_sample(avctx, "unknown opcode");
-                    return AVERROR_INVALIDDATA;
+                    return AVERROR_PATCHWELCOME;
                 }
                 continue;
             }
-            pixel = type == 3 ? bytestream_get_byte(&buf) : -1;
+            pixel = type == 3 ? bytestream2_get_byte(&s->gb) : -1;
             if (type == 1) count += 0x4000;
-            if (OP(type == 2 ? &buf : NULL, pixel, count)) break;
+            if (OP(type == 2 ? &s->gb : NULL, pixel, count)) break;
         }
-    } while (buf + 1 < buf_end);
+    } while (bytestream2_get_bytes_left(&s->gb) > 0);
 
     memcpy(s->frame.data[1], s->palette, AVPALETTE_SIZE);
 
-    *data_size = sizeof(AVFrame);
+    *got_frame = 1;
     *(AVFrame*)data = s->frame;
     return buf_size;
 }
@@ -188,11 +187,11 @@ static av_cold int decode_end(AVCodecContext *avctx)
 AVCodec ff_anm_decoder = {
     .name           = "anm",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_ANM,
+    .id             = AV_CODEC_ID_ANM,
     .priv_data_size = sizeof(AnmContext),
     .init           = decode_init,
     .close          = decode_end,
     .decode         = decode_frame,
     .capabilities   = CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Deluxe Paint Animation"),
+    .long_name      = NULL_IF_CONFIG_SMALL("Deluxe Paint Animation"),
 };

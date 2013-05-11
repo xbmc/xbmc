@@ -28,6 +28,8 @@
 #include "DVDClock.h"
 #include "DVDSubtitles/DVDSubtitleStream.h"
 
+#include <string.h>
+
 using namespace std;
 
 CDVDDemuxVobsub::CDVDDemuxVobsub()
@@ -38,8 +40,6 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
 {
   for(unsigned i=0;i<m_Streams.size();i++)
   {
-    if(m_Streams[i]->ExtraData)
-      free(m_Streams[i]->ExtraData);
     delete m_Streams[i];
   }
   m_Streams.clear();
@@ -112,7 +112,8 @@ bool CDVDDemuxVobsub::Open(const string& filename, const string& subfilename)
   for(unsigned i=0;i<m_Streams.size();i++)
   {
     m_Streams[i]->ExtraSize = state.extra.length()+1;
-    m_Streams[i]->ExtraData = strdup(state.extra.c_str());
+    m_Streams[i]->ExtraData = new uint8_t[m_Streams[i]->ExtraSize];
+    strcpy((char*)m_Streams[i]->ExtraData, state.extra.c_str());
   }
 
   return true;

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.9.3], [http://trac.xbmc.org])
+AC_INIT([xbmc], [12.9.4], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -20,6 +20,21 @@ AC_DEFUN([XB_ADD_PLAYER],
 [
   AC_MSG_CHECKING([for $2])
   case $add_players in
+    *$2*)
+      AC_SUBST([USE_$1], 1)
+      AC_DEFINE([HAS_$1], 1, [using $2])
+      AC_MSG_RESULT([enabling $2])
+      ;;
+    *)
+      AC_MSG_RESULT([$2 is not enabled])
+  esac
+])
+
+# check for enabling additional codecs
+AC_DEFUN([XB_ADD_CODEC],
+[
+  AC_MSG_CHECKING([for $2])
+  case $add_codecs in
     *$2*)
       AC_SUBST([USE_$1], 1)
       AC_DEFINE([HAS_$1], 1, [using $2])
@@ -140,8 +155,8 @@ libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
-libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
-libshairport_disabled="== AirTunes support disabled. =="
+libshairport_not_found="== Could not find libshairport. =="
+libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
@@ -513,6 +528,12 @@ AC_ARG_ENABLE([gtest],
   [configure_gtest=$enableval],
   [configure_gtest=no])
 
+AC_ARG_ENABLE([codec],
+  [AS_HELP_STRING([--enable-codec],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec)])],
+  [add_codecs=$enableval],
+  [add_codecs=no])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],
@@ -850,7 +871,7 @@ AC_CHECK_SIZEOF([size_t])
 
 # Check for intrinsics
 AC_MSG_CHECKING([for __sync_add_and_fetch(temp, 1)])
-AC_TRY_COMPILE([],[long* temp=0; __sync_add_and_fetch(temp, 1);],
+AC_TRY_LINK([],[long* temp=0; long ret=__sync_add_and_fetch(temp, 1);],
                 [have_builtin_sync_add_and_fetch=yes],
                 [have_builtin_sync_add_and_fetch=no])
 AC_MSG_RESULT($have_builtin_sync_add_and_fetch)
@@ -860,7 +881,7 @@ if test "x$have_builtin_sync_add_and_fetch" = "xyes"; then
 fi
 
 AC_MSG_CHECKING([for __sync_sub_and_fetch(temp, 1)])
-AC_TRY_COMPILE([],[long* temp=0; __sync_sub_and_fetch(temp, 1);],
+AC_TRY_LINK([],[long* temp=0; long ret=__sync_sub_and_fetch(temp, 1);],
                 [have_builtin_sync_sub_and_fetch=yes],
                 [have_builtin_sync_sub_and_fetch=no])
 AC_MSG_RESULT($have_builtin_sync_sub_and_fetch)
@@ -870,7 +891,7 @@ if test "x$have_builtin_sync_sub_and_fetch" = "xyes"; then
 fi
 
 AC_MSG_CHECKING([for __sync_val_compare_and_swap(temp, 1, 1)])
-AC_TRY_COMPILE([],[long *temp = 0; __sync_val_compare_and_swap(temp, 1, 1);],
+AC_TRY_LINK([],[long *temp = 0; long ret=__sync_val_compare_and_swap(temp, 1, 1);],
                 [have_builtin_sync_val_compare_and_swap=yes],
                 [have_builtin_sync_val_compare_and_swap=no])
 AC_MSG_RESULT($have_builtin_sync_val_compare_and_swap)
@@ -1011,6 +1032,7 @@ AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
 if test "$target_platform" = "target_android" ; then
   AC_CHECK_LIB([android],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([log],         [__android_log_vprint],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([jnigraphics],     [main],, AC_MSG_ERROR($missing_library))
 fi
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
   [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
@@ -1436,24 +1458,45 @@ if test "$use_airplay" != "no"; then
   fi
 fi
 
-# libshairport for AirTunes
+# libshairplay for AirTunes (prefered lib)
 USE_AIRTUNES=0
 if test "x$use_airtunes" != "xno"; then
-  AC_CHECK_HEADERS([shairport/shairport.h],,
+  AC_CHECK_HEADERS([shairplay/raop.h],,
    [if test "x$use_airtunes" = "xyes"; then
-      AC_MSG_ERROR($libshairport_not_found)
+      AC_MSG_ERROR($libshairplay_not_found)
     elif test "x$use_airtunes" != "xno"; then
-      AC_MSG_NOTICE($libshairport_not_found)
+      AC_MSG_NOTICE($libshairplay_not_found)
       use_airtunes="no"
     fi
    ])
 
   if test "x$use_airtunes" != "xno"; then
-    XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+    XB_FIND_SONAME([SHAIRPLAY], [shairplay], [use_airtunes])
     USE_AIRTUNES=1
-    AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
-                     [[#include <shairport/shairport.h>]])
-    AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
+    USE_LIBSHAIRPORT=1
+    AC_CHECK_MEMBERS([struct raop_callbacks_s.cls],,,
+                     [[#include <shairplay/raop.h>]])
+    AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."])
+  fi
+
+  #libshairport - as a fallback for AirTunes
+  if test "x$USE_AIRTUNES" == "x0"; then
+    AC_CHECK_HEADERS([shairport/shairport.h],,
+     [if test "x$use_airtunes" = "xyes"; then
+        AC_MSG_ERROR($libshairport_not_found)
+      elif test "x$use_airtunes" != "xno"; then
+        AC_MSG_NOTICE($libshairport_not_found)
+        use_airtunes="no"
+      fi
+     ])
+
+    if test "x$use_airtunes" != "xno"; then
+      XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+      USE_AIRTUNES=1
+      AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
+                       [[#include <shairport/shairport.h>]])
+      AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
+    fi
   fi
 fi
 
@@ -1857,6 +1900,14 @@ case $add_players in
       ;;
 esac
 
+# additional internal codecs
+case $add_codecs in
+  *amcodec*)
+      AC_CHECK_HEADER([amlplayer/codec_error.h],, AC_MSG_ERROR($missing_headers))
+      XB_ADD_CODEC([LIBAMCODEC], [amcodec])
+      ;;
+esac
+
 # platform specific bin utilities
 if test "$build_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
@@ -2240,7 +2291,11 @@ else
 fi
 
 if test "x$use_airtunes" != "xno"; then
-  final_message="$final_message\n  AirTunes support:\tYes"  
+  if test "x$USE_LIBSHAIRPORT" == "x1"; then
+    final_message="$final_message\n  AirTunes support (libshairplay):\tYes"  
+  else
+    final_message="$final_message\n  AirTunes support (libshairport):\tYes"
+  fi
 else
   final_message="$final_message\n  AirTunes support:\tNo"
 fi
@@ -2401,6 +2456,8 @@ OUTPUT_FILES="Makefile \
     xbmc/peripherals/devices/Makefile \
     xbmc/android/activity/Makefile \
     xbmc/android/loader/Makefile \
+    xbmc/android/jni/Makefile \
+    xbmc/utils/Makefile \
     xbmc/main/Makefile"
 
 if test "$use_skin_touched" = "yes"; then

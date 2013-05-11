@@ -41,5 +41,6 @@ namespace JSONRPC
     static int GetPlaylist(const CVariant &playlist);
     static inline void NotifyAll();
     static JSONRPC_STATUS GetPropertyValue(int playlist, const CStdString &property, CVariant &result);
+    static bool CheckMediaParameter(int playlist, const CVariant &parameterObject);
   };
 }

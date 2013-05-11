@@ -1,8 +1,8 @@
 \input texinfo @c -*- texinfo -*-
 
-@settitle FATE Automated Testing Environment
+@settitle FFmpeg Automated Testing Environment
 @titlepage
-@center @titlefont{FATE Automated Testing Environment}
+@center @titlefont{FFmpeg Automated Testing Environment}
 @end titlepage
 
 @node Top
@@ -78,11 +78,14 @@ Do not put a '~' character in the samples path to indicate a home
 directory. Because of shell nuances, this will cause FATE to fail.
 @end float
 
+To use a custom wrapper to run the test, pass @option{--target-exec} to
+@command{configure} or set the @var{TARGET_EXEC} Make variable.
+
 
 @chapter Submitting the results to the FFmpeg result aggregation server
 
   To submit your results to the server you should run fate through the
-shell script tests/fate.sh from the FFmpeg sources. This script needs
+shell script @file{tests/fate.sh} from the FFmpeg sources. This script needs
 to be invoked with a configuration file as its first argument.
 
 @example
@@ -90,11 +93,11 @@ tests/fate.sh /path/to/fate_config
 @end example
 
   A configuration file template with comments describing the individual
-configuration variables can be found at @file{tests/fate_config.sh.template}.
+configuration variables can be found at @file{doc/fate_config.sh.template}.
 
 @ifhtml
   The mentioned configuration template is also available here:
-@verbatiminclude ../tests/fate_config.sh.template
+@verbatiminclude fate_config.sh.template
 @end ifhtml
 
   Create a configuration that suits your needs, based on the configuration
@@ -118,8 +121,9 @@ present in $workdir as specified in the configuration file:
     @item version
 @end itemize
 
-  When you have everything working properly you can create an SSH key and
-send its public part to the FATE server administrator.
+  When you have everything working properly you can create an SSH key pair
+and send the public key to the FATE server administrator who can be contacted
+at the email address @email{fate-admin@@ffmpeg.org}.
 
   Configure your SSH client to use public key authentication with that key
 when connecting to the FATE server. Also do not forget to check the identity
@@ -128,6 +132,11 @@ running your SSH client manually and killing it after you accepted the key.
 The FATE server's fingerprint is:
 
   b1:31:c8:79:3f:04:1d:f8:f2:23:26:5a:fd:55:fa:92
+
+  If you have problems connecting to the FATE server, it may help to try out
+the @command{ssh} command with one or more @option{-v} options. You should
+get detailed output concerning your SSH configuration and the authentication
+process.
 
   The only thing left is to automate the execution of the fate.sh script and
 the synchronisation of the samples directory.
@@ -166,9 +175,20 @@ the synchronisation of the samples directory.
 @item THREADS
     Specify how many threads to use while running regression tests, it is
     quite useful to detect thread-related regressions.
+@item THREAD_TYPE
+    Specify which threading strategy test, either @var{slice} or @var{frame},
+    by default @var{slice+frame}
+@item CPUFLAGS
+    Specify CPU flags.
+@item TARGET_EXEC
+    Specify or override the wrapper used to run the tests.
+    The @var{TARGET_EXEC} option provides a way to run FATE wrapped in
+    @command{valgrind}, @command{qemu-user} or @command{wine} or on remote targets
+    through @command{ssh}.
 @end table
 
-Example:
+@section Examples
+
 @example
-make V=1 SAMPLES=/var/fate/samples THREADS=2 fate
+make V=1 SAMPLES=/var/fate/samples THREADS=2 CPUFLAGS=mmx fate
 @end example

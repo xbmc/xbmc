@@ -33,8 +33,8 @@
 #include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "music/Album.h"
@@ -111,7 +111,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         {
           CFileItem item(*m_song);
           CStdString path;
-          path.Format("musicdb://3/%li",m_albumId);
+          path.Format("musicdb://albums/%li",m_albumId);
           item.SetPath(path);
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);
@@ -201,11 +201,28 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
-  // set artist thumb as well
-  if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
+   // set artist thumb as well
+  CMusicDatabase db;
+  db.Open();
+  if (item->IsMusicDb())
   {
-    CMusicDatabase db;
-    db.Open();
+    std::vector<int> artists;
+    CVariant artistthumbs;
+    db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
+    for (std::vector<int>::const_iterator artistId = artists.begin(); artistId != artists.end(); ++artistId)
+    {
+      std::string thumb = db.GetArtForItem(*artistId, "artist", "thumb");
+      if (!thumb.empty())
+        artistthumbs.push_back(thumb);
+    }
+    if (artistthumbs.size())
+    {
+      m_song->SetProperty("artistthumbs", artistthumbs);
+      m_song->SetProperty("artistthumb", artistthumbs[0]);
+    }
+  }
+  else if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
+  {
     int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
     std::string thumb = db.GetArtForItem(idArtist, "artist", "thumb");
     if (!thumb.empty())
@@ -243,9 +260,9 @@ void CGUIDialogSongInfo::OnGetThumb()
 
 
   // Grab the thumbnail from the web
-  CStdString thumbFromWeb;
   /*
-  URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg", thumbFromWeb);
+  CStdString thumbFromWeb;
+  thumbFromWeb = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg");
   if (DownloadThumbnail(thumbFromWeb))
   {
     CFileItemPtr item(new CFileItem("thumb://allmusic.com", false));
@@ -305,7 +322,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   if (result == "thumb://None")
     newThumb = "-";
   else if (result == "thumb://allmusic.com")
-    newThumb = thumbFromWeb;
+    newThumb.clear();
   else if (result == "thumb://Local")
     newThumb = localThumb;
   else

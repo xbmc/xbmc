@@ -27,7 +27,7 @@
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 #include "music/tags/MusicInfoTag.h" // for EmbeddedArt
-
+#include "Artist.h"
 #include <map>
 #include <vector>
 
@@ -44,6 +44,7 @@ public:
   CStdString strGenre;
 };
 
+class CFileItem;
 
 /*!
  \ingroup music
@@ -54,7 +55,7 @@ class CSong: public ISerializable
 {
 public:
   CSong() ;
-  CSong(MUSIC_INFO::CMusicInfoTag& tag);
+  CSong(CFileItem& item);
   virtual ~CSong(){};
   void Clear() ;
   virtual void Serialize(CVariant& value) const;
@@ -78,19 +79,17 @@ public:
   bool ArtMatches(const CSong &right) const;
 
   long idSong;
+  int idAlbum;
   CStdString strFileName;
   CStdString strTitle;
   std::vector<std::string> artist;
+  VECARTISTCREDITS artistCredits;
   CStdString strAlbum;
   std::vector<std::string> albumArtist;
   std::vector<std::string> genre;
   CStdString strThumb;
   MUSIC_INFO::EmbeddedArtInfo embeddedArt;
   CStdString strMusicBrainzTrackID;
-  CStdString strMusicBrainzArtistID;
-  CStdString strMusicBrainzAlbumID;
-  CStdString strMusicBrainzAlbumArtistID;
-  CStdString strMusicBrainzTRMID;
   CStdString strComment;
   char rating;
   int iTrack;
@@ -100,7 +99,6 @@ public:
   CDateTime lastPlayed;
   int iStartOffset;
   int iEndOffset;
-  int iAlbumId;
   bool bCompilation;
 
   // Karaoke-specific information
@@ -113,21 +111,7 @@ public:
  \ingroup music
  \brief A map of CSong objects, used for CMusicDatabase
  */
-class CSongMap
-{
-public:
-  CSongMap();
-
-  std::map<CStdString, CSong>::const_iterator Begin();
-  std::map<CStdString, CSong>::const_iterator End();
-  CSong *Find(const CStdString &file);
-  void Add(const CStdString &file, const CSong &song);
-  void Clear();
-  int Size();
-
-private:
-  std::map<CStdString, CSong> m_map;
-};
+typedef std::map<std::string, CSong> MAPSONGS;
 
 /*!
  \ingroup music

@@ -35,7 +35,7 @@ class CDVDInputStream;
   #include "config.h"
 #endif
 #ifndef _LINUX
-enum CodecID;
+// enum CodecID; // auto defined when neccesary
 #include <libavcodec/avcodec.h>
 #else
 extern "C" {
@@ -102,9 +102,13 @@ public:
     disabled = false;
     changes = 0;
     flags = FLAG_NONE;
+    orig_type = 0;
   }
 
-  virtual ~CDemuxStream() {}
+  virtual ~CDemuxStream()
+  {
+    delete [] ExtraData;
+  }
 
   virtual void GetStreamInfo(std::string& strInfo)
   {
@@ -127,13 +131,15 @@ public:
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
-  void* ExtraData; // extra data for codec to use
+  uint8_t*     ExtraData; // extra data for codec to use
   unsigned int ExtraSize; // size of extra data
 
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
 
   int  changes; // increment on change which player may need to know about
+
+  int orig_type; // type of original source
 
   enum EFlags
   { FLAG_NONE     = 0x0000 
@@ -154,6 +160,8 @@ public:
   {
     iFpsScale = 0;
     iFpsRate = 0;
+    irFpsScale = 0;
+    irFpsRate = 0;
     iHeight = 0;
     iWidth = 0;
     fAspect = 0.0;
@@ -168,6 +176,8 @@ public:
   virtual ~CDemuxStreamVideo() {}
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
+  int irFpsScale;
+  int irFpsRate;
   int iHeight; // height of the stream reported by the demuxer
   int iWidth; // width of the stream reported by the demuxer
   float fAspect; // display aspect of stream
@@ -207,11 +217,8 @@ class CDemuxStreamSubtitle : public CDemuxStream
 public:
   CDemuxStreamSubtitle() : CDemuxStream()
   {
-    identifier = 0;
     type = STREAM_SUBTITLE;
   }
-
-  int identifier;
 };
 
 class CDemuxStreamTeletext : public CDemuxStream

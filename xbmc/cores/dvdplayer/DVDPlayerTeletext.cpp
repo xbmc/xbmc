@@ -92,7 +92,7 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
 
 
 CDVDTeletextData::CDVDTeletextData()
-: CThread("CDVDTeletextData")
+: CThread("DVDTeletextData")
 , m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;
@@ -113,10 +113,8 @@ CDVDTeletextData::~CDVDTeletextData()
 
 bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
 {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
   if (hints.codec == CODEC_ID_DVB_TELETEXT)
     return true;
-#endif
 
   return false;
 }
@@ -125,14 +123,12 @@ bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
 {
   m_messageQueue.Init();
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
   if (hints.codec == CODEC_ID_DVB_TELETEXT)
   {
     CLog::Log(LOGNOTICE, "Creating teletext data thread");
     Create();
     return true;
   }
-#endif
 
   return false;
 }

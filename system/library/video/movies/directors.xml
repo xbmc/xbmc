@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="5" type="folder">
+<node order="5" type="filter">
   <label>20348</label>
-  <path>videodb://1/5</path>
   <icon>DefaultDirector.png</icon>
+  <content>movies</content>
+  <group>directors</group>
 </node>

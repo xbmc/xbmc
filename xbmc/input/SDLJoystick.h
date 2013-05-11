@@ -22,6 +22,7 @@
 #define SDL_JOYSTICK_H
 
 #include "system.h" // for HAS_SDL_JOYSTICK
+#include "settings/ISettingCallback.h"
 #include <vector>
 #include <string>
 
@@ -45,10 +46,12 @@
 
 // Class to manage all connected joysticks
 
-class CJoystick
+class CJoystick : public ISettingCallback
 {
 public:
   CJoystick();
+
+  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void Reset(bool axis=false);

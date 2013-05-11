@@ -44,7 +44,7 @@ protected:
 protected:
   CStdString m_strCacheFileName;
   CFileItemList* m_mapFileItems;
-  CSongMap m_songsMap;
+  MAPSONGS m_songsMap;
   CStdString m_strPrevPath;
   CMusicDatabase m_musicDatabase;
   unsigned int m_databaseHits;

@@ -36,6 +36,7 @@
 #include "windowing/WindowingFactory.h"
 #include "../../../VideoRenderers/WinRenderer.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
@@ -940,7 +941,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   pic->reordered_opaque = avctx->reordered_opaque;
   pic->type = FF_BUFFER_TYPE_USER;
-  pic->age  = 256*256*256*64; // as everybody else, i've got no idea about this one
+
   for(unsigned i = 0; i < 4; i++)
   {
     pic->data[i] = NULL;

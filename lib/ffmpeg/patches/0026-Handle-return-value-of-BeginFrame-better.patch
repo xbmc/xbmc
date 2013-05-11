@@ -28,14 +28,14 @@ index b6f8aea..3a10f69 100644
  {
 @@ -88,10 +91,17 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
      DXVA2_DecodeBufferDesc buffer[4];
-     DXVA2_DecodeExecuteParams exec;
+     DXVA2_DecodeExecuteParams exec = { 0 };
      int      result;
 +    HRESULT  hr;
 +    int      tries = 0;
  
 -    if (FAILED(IDirectXVideoDecoder_BeginFrame(ctx->decoder,
 +    while ((hr=IDirectXVideoDecoder_BeginFrame(ctx->decoder,
-                                                ff_dxva2_get_surface(s->current_picture_ptr),
+                                                ff_dxva2_get_surface(pic),
 -                                               NULL))) {
 +                                               NULL)) == E_PENDING
 +           && tries < MAX_RETRY_ON_PENDING) {

@@ -57,7 +57,10 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   URIUtils::AddSlashAtEnd(strSub);
 
   udf25 udfIsoReader;
-  udf_dir_t *dirp = udfIsoReader.OpenDir(url.GetHostName(), strSub);
+  if(!udfIsoReader.Open(url.GetHostName()))
+     return false;
+
+  udf_dir_t *dirp = udfIsoReader.OpenDir(strSub);
 
   if (dirp == NULL)
     return false;

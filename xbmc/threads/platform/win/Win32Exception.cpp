@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "WIN32Util.h"
 #include "utils/StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 #define LOG if(logger) logger->Log
 
@@ -115,6 +116,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   // Create the dump file where the xbmc.exe resides
   bool returncode = false;
   CStdString dumpFileName;
+  CStdStringW dumpFileNameW;
   SYSTEMTIME stLocalTime;
   GetLocalTime(&stLocalTime);
 
@@ -125,7 +127,8 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 
   dumpFileName.Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
 
-  HANDLE hDumpFile = CreateFile(dumpFileName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+  g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
+  HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
@@ -186,6 +189,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   #define STACKWALK_MAX_NAMELEN 1024
 
   std::string dumpFileName, strOutput;
+  CStdStringW dumpFileNameW;
   CHAR cTemp[STACKWALK_MAX_NAMELEN];
   DWORD dwBytes;
   SYSTEMTIME stLocalTime;
@@ -223,7 +227,8 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
 
   dumpFileName = StringUtils::Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
 
-  HANDLE hDumpFile = CreateFile(dumpFileName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+  g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
+  HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
@@ -304,7 +309,7 @@ cleanup:
 }
 
 access_violation::access_violation(EXCEPTION_POINTERS* info) :
-  win32_exception(info,"access_voilation"), mAccessType(Invalid), mBadAddress(0)
+  win32_exception(info,"access_violation"), mAccessType(Invalid), mBadAddress(0)
 {
   switch(info->ExceptionRecord->ExceptionInformation[0])
   {

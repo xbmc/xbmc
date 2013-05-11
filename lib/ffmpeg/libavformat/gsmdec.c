@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/opt.h"
 #include "avformat.h"
@@ -47,14 +48,13 @@ static int gsm_read_packet(AVFormatContext *s, AVPacket *pkt)
         av_free_packet(pkt);
         return ret < 0 ? ret : AVERROR(EIO);
     }
-    pkt->size     = ret;
     pkt->duration = 1;
     pkt->pts      = pkt->pos / GSM_BLOCK_SIZE;
 
     return 0;
 }
 
-static int gsm_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int gsm_read_header(AVFormatContext *s)
 {
     GSMDemuxerContext *c = s->priv_data;
     AVStream *st = avformat_new_stream(s, NULL);
@@ -62,8 +62,9 @@ static int gsm_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return AVERROR(ENOMEM);
 
     st->codec->codec_type  = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id    = s->iformat->value;
+    st->codec->codec_id    = s->iformat->raw_codec_id;
     st->codec->channels    = 1;
+    st->codec->channel_layout = AV_CH_LAYOUT_MONO;
     st->codec->sample_rate = c->sample_rate;
     st->codec->bit_rate    = GSM_BLOCK_SIZE * 8 * c->sample_rate / GSM_BLOCK_SAMPLES;
 
@@ -74,7 +75,7 @@ static int gsm_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
 static const AVOption options[] = {
     { "sample_rate", "", offsetof(GSMDemuxerContext, sample_rate),
-       AV_OPT_TYPE_INT, {.dbl = GSM_SAMPLE_RATE}, 1, INT_MAX / GSM_BLOCK_SIZE,
+       AV_OPT_TYPE_INT, {.i64 = GSM_SAMPLE_RATE}, 1, INT_MAX / GSM_BLOCK_SIZE,
        AV_OPT_FLAG_DECODING_PARAM },
     { NULL },
 };
@@ -94,6 +95,6 @@ AVInputFormat ff_gsm_demuxer = {
     .read_packet    = gsm_read_packet,
     .flags          = AVFMT_GENERIC_INDEX,
     .extensions     = "gsm",
-    .value          = CODEC_ID_GSM,
+    .raw_codec_id   = AV_CODEC_ID_GSM,
     .priv_class     = &class,
 };

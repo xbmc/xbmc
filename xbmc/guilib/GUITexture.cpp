@@ -301,11 +301,12 @@ bool CGUITextureBase::AllocResources()
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
-      int images = g_TextureManager.Load(m_info.filename, true);
-      if (images)
+      CTextureArray texture;
+      texture = g_TextureManager.Load(m_info.filename, true);
+      if (texture.size())
       {
         m_isAllocated = NORMAL;
-        m_texture = g_TextureManager.GetTexture(m_info.filename);
+        m_texture = texture;
         changed = true;
       }
     }
@@ -329,15 +330,14 @@ bool CGUITextureBase::AllocResources()
   }
   else if (!IsAllocated())
   {
-    int images = g_TextureManager.Load(m_info.filename);
+    CTextureArray texture = g_TextureManager.Load(m_info.filename);
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
-    m_isAllocated = images ? NORMAL : NORMAL_FAILED;
-    if (!images)
+    m_isAllocated = texture.size() ? NORMAL : NORMAL_FAILED;
+    if (!texture.size())
       return false;
-
-    m_texture = g_TextureManager.GetTexture(m_info.filename);
+    m_texture = texture;
     changed = true;
   }
   m_frameWidth = (float)m_texture.m_width;
@@ -346,8 +346,7 @@ bool CGUITextureBase::AllocResources()
   // load the diffuse texture (if necessary)
   if (!m_info.diffuse.IsEmpty())
   {
-    g_TextureManager.Load(m_info.diffuse);
-    m_diffuse = g_TextureManager.GetTexture(m_info.diffuse);
+    m_diffuse = g_TextureManager.Load(m_info.diffuse);
   }
 
   CalculateSize();

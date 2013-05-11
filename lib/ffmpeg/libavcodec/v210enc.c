@@ -23,17 +23,13 @@
 
 #include "avcodec.h"
 #include "bytestream.h"
+#include "internal.h"
 
 static av_cold int encode_init(AVCodecContext *avctx)
 {
     if (avctx->width & 1) {
         av_log(avctx, AV_LOG_ERROR, "v210 needs even width\n");
-        return -1;
-    }
-
-    if (avctx->pix_fmt != PIX_FMT_YUV422P10) {
-        av_log(avctx, AV_LOG_ERROR, "v210 needs YUV422P10\n");
-        return -1;
+        return AVERROR(EINVAL);
     }
 
     if (avctx->bits_per_raw_sample != 10)
@@ -41,30 +37,30 @@ static av_cold int encode_init(AVCodecContext *avctx)
                avctx->bits_per_raw_sample);
 
     avctx->coded_frame = avcodec_alloc_frame();
+    if (!avctx->coded_frame)
+        return AVERROR(ENOMEM);
 
-    avctx->coded_frame->key_frame = 1;
     avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
 
     return 0;
 }
 
-static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
-                        int buf_size, void *data)
+static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                        const AVFrame *pic, int *got_packet)
 {
-    const AVFrame *pic = data;
     int aligned_width = ((avctx->width + 47) / 48) * 48;
     int stride = aligned_width * 8 / 3;
-    int h, w;
+    int line_padding = stride - ((avctx->width * 8 + 11) / 12) * 4;
+    int h, w, ret;
     const uint16_t *y = (const uint16_t*)pic->data[0];
     const uint16_t *u = (const uint16_t*)pic->data[1];
     const uint16_t *v = (const uint16_t*)pic->data[2];
-    uint8_t *p = buf;
-    uint8_t *pdst = buf;
+    PutByteContext p;
 
-    if (buf_size < aligned_width * avctx->height * 8 / 3) {
-        av_log(avctx, AV_LOG_ERROR, "output buffer too small\n");
-        return -1;
-    }
+    if ((ret = ff_alloc_packet2(avctx, pkt, avctx->height * stride)) < 0)
+        return ret;
+
+    bytestream2_init_writer(&p, pkt->data, pkt->size);
 
 #define CLIP(v) av_clip(v, 4, 1019)
 
@@ -73,7 +69,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
         val =   CLIP(*a++);             \
         val |= (CLIP(*b++) << 10) |     \
                (CLIP(*c++) << 20);      \
-        bytestream_put_le32(&p, val);   \
+        bytestream2_put_le32u(&p, val); \
     } while (0)
 
     for (h = 0; h < avctx->height; h++) {
@@ -89,25 +85,26 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
 
             val = CLIP(*y++);
             if (w == avctx->width - 2)
-                bytestream_put_le32(&p, val);
+                bytestream2_put_le32u(&p, val);
             if (w < avctx->width - 3) {
                 val |= (CLIP(*u++) << 10) | (CLIP(*y++) << 20);
-                bytestream_put_le32(&p, val);
+                bytestream2_put_le32u(&p, val);
 
                 val = CLIP(*v++) | (CLIP(*y++) << 10);
-                bytestream_put_le32(&p, val);
+                bytestream2_put_le32u(&p, val);
             }
         }
 
-        pdst += stride;
-        memset(p, 0, pdst - p);
-        p = pdst;
+        bytestream2_set_buffer(&p, 0, line_padding);
+
         y += pic->linesize[0] / 2 - avctx->width;
         u += pic->linesize[1] / 2 - avctx->width / 2;
         v += pic->linesize[2] / 2 - avctx->width / 2;
     }
 
-    return p - buf;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+    return 0;
 }
 
 static av_cold int encode_close(AVCodecContext *avctx)
@@ -120,10 +117,10 @@ static av_cold int encode_close(AVCodecContext *avctx)
 AVCodec ff_v210_encoder = {
     .name           = "v210",
     .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = CODEC_ID_V210,
+    .id             = AV_CODEC_ID_V210,
     .init           = encode_init,
-    .encode         = encode_frame,
+    .encode2        = encode_frame,
     .close          = encode_close,
-    .pix_fmts       = (const enum PixelFormat[]){PIX_FMT_YUV422P10, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("Uncompressed 4:2:2 10-bit"),
+    .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV422P10, AV_PIX_FMT_NONE },
+    .long_name      = NULL_IF_CONFIG_SMALL("Uncompressed 4:2:2 10-bit"),
 };

@@ -24,10 +24,10 @@
 
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
+#include "Application.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
@@ -105,8 +105,8 @@ CCoreAudioAE::CCoreAudioAE() :
 
 CCoreAudioAE::~CCoreAudioAE()
 {
-  Shutdown();
   RegisterDeviceChangedCB(false, this);
+  Shutdown();
 }
 
 void CCoreAudioAE::Shutdown()
@@ -150,6 +150,10 @@ void CCoreAudioAE::AudioDevicesChanged()
   // again (yeah that really is the case - duh)
   Sleep(500);
   CSingleLock engineLock(m_engineLock);
+
+  // re-check initialized since it can have changed when we waited and grabbed the lock
+  if (!m_Initialized)
+    return;
   OpenCoreAudio(m_lastSampleRate, COREAUDIO_IS_RAW(m_lastStreamFormat), m_lastStreamFormat);
 }
 
@@ -173,7 +177,7 @@ bool CCoreAudioAE::Initialize()
 bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   enum AEDataFormat rawDataFormat)
 {
-
+  unsigned int maxChannelCountInStreams = 0;
   // remove any deleted streams
   CSingleLock streamLock(m_streamLock);
   for (StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
@@ -190,6 +194,10 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
       // close all converter
       stream->CloseConverter();
     }
+
+    if (stream->GetChannelCount() > maxChannelCountInStreams)
+        maxChannelCountInStreams = stream->GetChannelCount();
+
     ++itt;
   }
 
@@ -206,12 +214,12 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   if (m_rawPassthrough)
     CLog::Log(LOGINFO, "CCoreAudioAE::OpenCoreAudio - RAW passthrough enabled");
 
-  std::string m_outputDevice =  g_guiSettings.GetString("audiooutput.audiodevice");
+  std::string m_outputDevice =  CSettings::Get().GetString("audiooutput.audiodevice");
 
   // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
-  switch (g_guiSettings.GetInt("audiooutput.channels"))
+  switch (CSettings::Get().GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
@@ -228,7 +236,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   }
 #endif
   // force optical/coax to 2.0 output channels
-  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+  if (!m_rawPassthrough && CSettings::Get().GetInt("audiooutput.mode") == AUDIO_IEC958)
     m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   // setup the desired format
@@ -263,7 +271,16 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
         m_format.m_dataFormat   = AE_FMT_S16NE;
         break;
       case AE_FMT_LPCM:
-        m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_7_1);
+        // audio midi setup can be setup to 2.0 or 7.1
+        // if we have the number of max channels from streams we use that for
+        // selecting either 2.0 or 7.1 setup depending on that.
+        // This allows DPII modes on amps for enhancing stereo sound
+        // (when switching to 7.1 - all 8 channels will be pushed out preventing most amps
+        // to switch to DPII mode)
+        if (maxChannelCountInStreams == 1 || maxChannelCountInStreams == 2)
+          m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+        else
+          m_format.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_7_1);
         m_format.m_sampleRate   = sampleRate;
         m_format.m_dataFormat   = AE_FMT_FLOAT;
         break;

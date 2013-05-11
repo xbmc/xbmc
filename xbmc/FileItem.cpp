@@ -49,7 +49,6 @@
 #include "music/Album.h"
 #include "music/Song.h"
 #include "URL.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/RegExp.h"
@@ -57,6 +56,9 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
+#ifdef HAS_ASAP_CODEC
+#include "cores/paplayer/ASAPCodec.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -168,7 +170,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
   m_strLabel2 = bHasEpgNow ? epgNow.Title() :
-      g_guiSettings.GetBool("epg.hidenoinfoavailable") ?
+      CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
         StringUtils::EmptyString :
         g_localizeStrings.Get(19055); // no information available
 
@@ -778,14 +780,14 @@ bool CFileItem::IsVideo() const
      return true;
   }
 
-  URIUtils::GetExtension(m_strPath, extension);
+  extension = URIUtils::GetExtension(m_strPath);
 
   if (extension.IsEmpty())
     return false;
 
   extension.ToLower();
 
-  return (g_settings.m_videoExtensions.Find(extension) != -1);
+  return (g_advancedSettings.m_videoExtensions.Find(extension) != -1);
 }
 
 bool CFileItem::IsEPG() const
@@ -820,8 +822,7 @@ bool CFileItem::IsDiscStub() const
     return dbItem.IsDiscStub();
   }
 
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
 
   if (strExtension.IsEmpty())
     return false;
@@ -829,7 +830,7 @@ bool CFileItem::IsDiscStub() const
   strExtension.ToLower();
   strExtension += '|';
 
-  return (g_settings.m_discStubExtensions + '|').Find(strExtension) != -1;
+  return (g_advancedSettings.m_discStubExtensions + '|').Find(strExtension) != -1;
 }
 
 bool CFileItem::IsAudio() const
@@ -853,14 +854,14 @@ bool CFileItem::IsAudio() const
      return true;
   }
 
-  URIUtils::GetExtension(m_strPath, extension);
+  extension = URIUtils::GetExtension(m_strPath);
 
   if (extension.IsEmpty())
     return false;
 
   extension.ToLower();
 
-  return (g_settings.m_musicExtensions.Find(extension) != -1);
+  return (g_advancedSettings.m_musicExtensions.Find(extension) != -1);
 }
 
 bool CFileItem::IsKaraoke() const
@@ -901,20 +902,47 @@ bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
   return URIUtils::IsInternetStream(m_strPath, bStrictCheck);
 }
 
-bool CFileItem::IsFileFolder() const
+bool CFileItem::IsFileFolder(EFileFolderType types) const
 {
-  return (
-    IsSmartPlayList() ||
-   (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
-    IsAPK() ||
-    IsZIP() ||
-    IsRAR() ||
-    IsRSS() ||
-    IsType(".ogg") ||
-    IsType(".nsf") ||
-    IsType(".sid") ||
-    IsType(".sap")
-    );
+  EFileFolderType always_type = EFILEFOLDER_TYPE_ALWAYS;
+
+  /* internet streams are not directly expanded */
+  if(IsInternetStream())
+    always_type = EFILEFOLDER_TYPE_ONCLICK;
+
+
+  if(types & always_type)
+  {
+    if( IsSmartPlayList()
+    || (IsPlayList() && g_advancedSettings.m_playlistAsFolders)
+    || IsAPK()
+    || IsZIP()
+    || IsRAR()
+    || IsRSS()
+    || IsType(".ogg")
+    || IsType(".oga")
+    || IsType(".nsf")
+    || IsType(".sid")
+    || IsType(".sap")
+    || IsType(".xsp")
+#if defined(TARGET_ANDROID)
+    || IsType(".apk")
+#endif
+#ifdef HAS_ASAP_CODEC
+    || ASAPCodec::IsSupportedFormat(URIUtils::GetExtension(m_strPath))
+#endif
+    )
+      return true;
+  }
+
+  if(types & EFILEFOLDER_TYPE_ONBROWSE)
+  {
+    if((IsPlayList() && !g_advancedSettings.m_playlistAsFolders)
+    || IsDVDImage())
+      return true;
+  }
+
+  return false;
 }
 
 
@@ -923,8 +951,7 @@ bool CFileItem::IsSmartPlayList() const
   if (HasProperty("library.smartplaylist") && GetProperty("library.smartplaylist").asBoolean())
     return true;
 
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
   strExtension.ToLower();
   return (strExtension == ".xsp");
 }
@@ -951,8 +978,7 @@ bool CFileItem::IsNFO() const
 
 bool CFileItem::IsDVDImage() const
 {
-  CStdString strExtension;
-  URIUtils::GetExtension(m_strPath, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(m_strPath);
   return (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg"));
 }
 
@@ -2126,7 +2152,7 @@ void CFileItemList::FilterCueItems()
                 else
                 { // try replacing the extension with one of our allowed ones.
                   CStdStringArray extensions;
-                  StringUtils::SplitString(g_settings.m_musicExtensions, "|", extensions);
+                  StringUtils::SplitString(g_advancedSettings.m_musicExtensions, "|", extensions);
                   for (unsigned int i = 0; i < extensions.size(); i++)
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), extensions[i]);
@@ -2294,7 +2320,7 @@ void CFileItemList::StackFolders()
           if (bMatch)
           {
             CFileItemList items;
-            CDirectory::GetDirectory(item->GetPath(),items,g_settings.m_videoExtensions);
+            CDirectory::GetDirectory(item->GetPath(),items,g_advancedSettings.m_videoExtensions);
             // optimized to only traverse listing once by checking for filecount
             // and recording last file item for later use
             int nFiles = 0;
@@ -2322,13 +2348,13 @@ void CFileItemList::StackFolders()
         {
           CStdString path;
           CStdString dvdPath;
-          URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO", path);
+          path = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO");
           if (CFile::Exists(path))
             dvdPath = path;
           else
           {
-            URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS", dvdPath);
-            URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
+            dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS");
+            path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
             dvdPath.Empty();
             if (CFile::Exists(path))
               dvdPath = path;
@@ -2336,13 +2362,13 @@ void CFileItemList::StackFolders()
 #ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv", path);
+            path = URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv");
             if (CFile::Exists(path))
               dvdPath = path;
             else
             {
-              URIUtils::AddFileToFolder(item->GetPath(), "BDMV", dvdPath);
-              URIUtils::AddFileToFolder(dvdPath, "index.bdmv", path);
+              dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "BDMV");
+              path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
               dvdPath.Empty();
               if (CFile::Exists(path))
                 dvdPath = path;
@@ -2530,7 +2556,7 @@ void CFileItemList::StackFiles()
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        if (!g_guiSettings.GetBool("filelists.showextensions"))
+        if (!CSettings::Get().GetBool("filelists.showextensions"))
           URIUtils::RemoveExtension(stackName);
 
         item1->SetLabel(stackName);
@@ -2655,7 +2681,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bo
   }
 
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CSettings::Get().GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
@@ -2686,11 +2712,11 @@ CStdString CFileItem::GetTBNFile() const
     URIUtils::GetParentPath(m_strPath,strPath);
     CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
     CStdString strTBNFile = item.GetTBNFile();
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strReturn);
+    strReturn = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
     if (CFile::Exists(strReturn))
       return strReturn;
 
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
@@ -2698,7 +2724,7 @@ CStdString CFileItem::GetTBNFile() const
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
 
   CURL url(strFile);
@@ -2767,7 +2793,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     */
     CStdString strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
   }
 
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
@@ -2775,7 +2801,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(strFile),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
   }
 
   if (IsMultiPath())
@@ -2809,7 +2835,6 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
 
 CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jpg" */) const
 {
-  CStdString folderThumb;
   CStdString strFolder = m_strPath;
 
   if (IsStack() ||
@@ -2822,8 +2847,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  URIUtils::AddFileToFolder(strFolder, folderJPG, folderThumb);
-  return folderThumb;
+  return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
 CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
@@ -2896,17 +2920,17 @@ CStdString CFileItem::GetLocalFanart() const
     CStackDirectory dir;
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
     CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strFile2);
+    strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
   }
 
   // no local fanart available for these
@@ -2928,11 +2952,11 @@ CStdString CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  CDirectory::GetDirectory(strDir, items, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (IsOpticalMediaFile())
   { // grab from the optical media parent folder as well
     CFileItemList moreItems;
-    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_advancedSettings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
   }
 
@@ -3152,17 +3176,17 @@ CStdString CFileItem::FindTrailer() const
     CStackDirectory dir;
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2),strFile);
+    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
     CStdString strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
-    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile),strFile2);
+    strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
     CStdString strPath, strParent;
     URIUtils::GetDirectory(strFile,strPath);
     URIUtils::GetParentPath(strPath,strParent);
-    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath),strFile);
+    strFile = URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath));
   }
 
   // no local trailer available for these
@@ -3177,7 +3201,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   URIUtils::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  CDirectory::GetDirectory(strDir, items, g_advancedSettings.m_videoExtensions, DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   URIUtils::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");

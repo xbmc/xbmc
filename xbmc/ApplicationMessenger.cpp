@@ -22,6 +22,7 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
+#include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #ifdef HAS_PYTHON
@@ -34,11 +35,11 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
+#include "guilib/Key.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/IPlayer.h"
@@ -75,7 +76,7 @@ using namespace PVR;
 using namespace std;
 using namespace MUSIC_INFO;
 
-CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("DelayedMessage")
 {
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;
@@ -227,7 +228,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-        switch (g_guiSettings.GetInt("powermanagement.shutdownstate"))
+        switch (CSettings::Get().GetInt("powermanagement.shutdownstate"))
         {
           case POWERSTATE_SHUTDOWN:
             Powerdown();
@@ -405,7 +406,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           else
             URIUtils::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
-          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_advancedSettings.m_pictureExtensions);
           if (items.Size() > 0)
           {
             pSlideShow->Reset();
@@ -440,7 +441,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_settings.m_pictureExtensions;
+        CStdString extensions = g_advancedSettings.m_pictureExtensions;
         if (pMsg->dwParam1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -456,7 +457,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         {
           if(items.Size() == 0)
           {
-            g_guiSettings.SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
+            CSettings::Get().SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
             g_application.ActivateScreenSaver();
           }
           else

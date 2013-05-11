@@ -24,6 +24,7 @@
 #include "profiles/ProfilesManager.h"
 #include "Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "network/Network.h"
 #include "utils/URIUtils.h"
@@ -41,6 +42,7 @@ using namespace XFILE;
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
 #define CONTROL_LOGINSCREEN 4
+#define CONTROL_AUTOLOGIN 5
 
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
@@ -168,6 +170,17 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
         CProfilesManager::Get().Save();
         return true;
       }
+      else if (iControl == CONTROL_AUTOLOGIN)
+      {
+        int currentId = CProfilesManager::Get().GetAutoLoginProfileId();
+        int profileId;
+        if (GetAutoLoginProfileChoice(profileId) && (currentId != profileId))
+        {
+          CProfilesManager::Get().SetAutoLoginProfileId(profileId);
+          CProfilesManager::Get().Save();
+        }
+        return true;
+      }
     }
     break;
   }
@@ -219,3 +232,44 @@ void CGUIWindowSettingsProfile::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
+bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!dialog) return false;
+
+  // add items
+  // "Last used profile" option comes first, so up indices by 1
+  int autoLoginProfileId = CProfilesManager::Get().GetAutoLoginProfileId() + 1;
+  CFileItemList items;
+  CFileItemPtr item(new CFileItem());
+  item->SetLabel(g_localizeStrings.Get(37014)); // Last used profile
+  item->SetIconImage("unknown-user.png");
+  items.Add(item);
+
+  for (unsigned int i = 0; i < CProfilesManager::Get().GetNumberOfProfiles(); i++)
+  {
+    const CProfile *profile = CProfilesManager::Get().GetProfile(i);
+    CStdString locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
+    CFileItemPtr item(new CFileItem(profile->getName()));
+    item->SetProperty("Addon.Summary", locked); // lock setting
+    CStdString thumb = profile->getThumb();
+    if (thumb.IsEmpty())
+      thumb = "unknown-user.png";
+    item->SetIconImage(thumb);
+    items.Add(item);
+  }
+
+  dialog->SetHeading(20093); // Profile name
+  dialog->Reset();
+  dialog->SetUseDetails(true);
+  dialog->EnableButton(true, 222); // Cancel
+  dialog->SetItems(&items);
+  dialog->SetSelected(autoLoginProfileId);
+  dialog->DoModal();
+
+  if (dialog->IsButtonPressed() || dialog->GetSelectedLabel() < 0)
+    return false; // user cancelled
+  iProfile = dialog->GetSelectedLabel() - 1;
+
+  return true;
+}

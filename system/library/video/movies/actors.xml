@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="4" type="folder">
+<node order="4" type="filter">
   <label>344</label>
-  <path>videodb://1/4</path>
   <icon>DefaultActor.png</icon>
+  <content>movies</content>
+  <group>actors</group>
 </node>
 

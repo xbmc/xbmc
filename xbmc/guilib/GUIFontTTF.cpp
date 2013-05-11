@@ -27,7 +27,6 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
-#include "settings/GUISettings.h"
 
 #include <math.h>
 

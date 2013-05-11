@@ -23,7 +23,7 @@
 
 #include "WindowInterceptor.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
@@ -512,13 +512,12 @@ namespace XBMCAddon
     {
       TRACE;
       // Path where the language strings reside
-      CStdString pathToLanguageFile = m_scriptPath;
-      URIUtils::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-      URIUtils::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+      CStdString pathToLanguageFile = URIUtils::AddFileToFolder(m_scriptPath, "resources");
+      pathToLanguageFile = URIUtils::AddFileToFolder(pathToLanguageFile, "language");
       URIUtils::AddSlashAtEnd(pathToLanguageFile);
 
       // allocate a bunch of strings
-      return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, g_guiSettings.GetString("locale.language"));
+      return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, CSettings::Get().GetString("locale.language"));
     }
 
     void WindowXML::ClearScriptStrings()

@@ -42,6 +42,8 @@ public:
    virtual CStdString GetMacAddress(void);
    virtual void GetMacAddressRaw(char rawMac[6]);
 
+   virtual bool GetHostMacAddress(unsigned long host, CStdString& mac);
+
    virtual CStdString GetCurrentIPAddress();
    virtual CStdString GetCurrentNetmask();
    virtual CStdString GetCurrentDefaultGateway(void);
@@ -71,6 +73,9 @@ public:
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
     
+   // Ping remote host
+   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
+
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);
    virtual void SetNameServers(std::vector<CStdString> nameServers);

@@ -30,6 +30,8 @@ class PLT_SyncMediaBrowser;
 class PLT_MediaController;
 class PLT_MediaObject;
 class PLT_MediaItemResource;
+class CFileItem;
+class CBookmark;
 
 namespace UPNP
 {
@@ -47,7 +49,7 @@ public:
     ~CUPnP();
 
     // server
-    void StartServer();
+    bool StartServer();
     void StopServer();
 
     // client
@@ -56,7 +58,7 @@ public:
     bool IsClientStarted() { return (m_MediaBrowser != NULL); }
 
     // renderer
-    void StartRenderer();
+    bool StartRenderer();
     void StopRenderer();
     void UpdateState();
 
@@ -66,6 +68,12 @@ public:
     static void   ReleaseInstance(bool bWait);
     static bool   IsInstantiated() { return upnp != NULL; }
 
+    static bool MarkWatched(const CFileItem& item,
+                            const bool watched);
+
+    static bool SaveFileState(const CFileItem& item,
+                              const CBookmark& bookmark,
+                              const bool updatePlayCount);
 private:
     // methods
     CUPnPRenderer* CreateRenderer(int port = 0);

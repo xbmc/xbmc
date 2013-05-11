@@ -60,7 +60,6 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
-  m_pCodecContext->sub_id = hints.identifier;
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->time_base.num = 1;
   m_pCodecContext->time_base.den = DVD_TIME_BASE;
@@ -187,7 +186,8 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
     // for pgs subtitles the packet pts of the end_segments are wrong
     // instead use the subtitle pts to calc the offset here
     // see http://git.videolan.org/?p=ffmpeg.git;a=commit;h=2939e258f9d1fff89b3b68536beb931b54611585
-    if (m_Subtitle.pts != DVD_NOPTS_VALUE)
+
+    if (m_Subtitle.pts != AV_NOPTS_VALUE && pPacket->pts != DVD_NOPTS_VALUE)
     {
       pts_offset = m_Subtitle.pts - pPacket->pts ;
     }
@@ -238,13 +238,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
       return NULL;
 
-#if LIBAVCODEC_VERSION_INT >= (52<<10)
     if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
       return NULL;
     AVSubtitleRect& rect = *m_Subtitle.rects[m_SubtitleIndex];
-#else
-    AVSubtitleRect& rect = m_Subtitle.rects[m_SubtitleIndex];
-#endif
 
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
@@ -260,7 +256,12 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->width    = rect.w;
     overlay->height   = rect.h;
 
-#if (!defined USE_EXTERNAL_FFMPEG) || (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,71,100))
+#if (defined(LIBAVCODEC_FROM_FFMPEG) && LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,71,100)) || \
+    (defined(LIBAVCODEC_FROM_LIBAV)  && LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,33,0))
+    // ffmpeg commit: 1885ffb03d0af28e6bac2bcc8725fa15b93f6ac9 (Nov 3 2012)
+    //       release: 1.1 (Jan 7 2013)
+    // libav  commit: 85f67c4865d8014ded2aaa64b3cba6e2970342d7 (Oct 20 2012)
+    //       release: v9 (Jan 5 2013)
     overlay->bForced  = rect.flags != 0;
 #endif
 

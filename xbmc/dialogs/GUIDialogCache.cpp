@@ -28,7 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
-CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg) : CThread("CGUIDialogCache")
+CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg) : CThread("GUIDialogCache")
 {
   m_strHeader = strHeader;
   m_strLinePrev = strMsg;

@@ -324,7 +324,12 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 continue;
             }
 
-            CStdString id = (char*) (*entry)->m_ObjectID;
+            CStdString id;
+            if ((*entry)->m_ReferenceID.IsEmpty())
+                id = (const char*) (*entry)->m_ObjectID;
+            else
+                id = (const char*) (*entry)->m_ReferenceID;
+
             CURL::Encode(id);
             URIUtils::AddSlashAtEnd(id);
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));

@@ -55,7 +55,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getGenre()
     {
-      return StringUtils::Join(infoTag->m_genre, g_advancedSettings.m_videoItemSeparator).c_str();
+      return StringUtils::Join(infoTag->m_genre, g_advancedSettings.m_videoItemSeparator);
     }
 
     String InfoTagVideo::getTagLine()

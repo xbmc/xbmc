@@ -20,14 +20,20 @@
 
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
+#include "URL.h"
+#include "Util.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/Base64.h"
 #include "utils/log.h"
+#include "utils/Mime.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/Base64.h"
-#include "threads/SingleLock.h"
-#include "XBDateTime.h"
-#include "URL.h"
+
+//#define WEBSERVER_DEBUG
 
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")
@@ -38,16 +44,31 @@
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 
+#define CONTENT_RANGE_FORMAT  "bytes %" PRId64 "-%" PRId64 "/%" PRId64
+
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
+
+typedef struct {
+  CFile *file;
+  HttpRanges ranges;
+  size_t rangeCount;
+  int64_t rangesLength;
+  string boundary;
+  string boundaryWithHeader;
+  bool boundaryWritten;
+  string contentType;
+  int64_t writePosition;
+} HttpFileDownloadContext;
 
 vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 
 CWebServer::CWebServer()
 {
   m_running = false;
-  m_daemon = NULL;
+  m_daemon_ip6 = NULL;
+  m_daemon_ip4 = NULL;
   m_needcredentials = true;
   m_Credentials64Encoded = "eGJtYzp4Ym1j"; // xbmc:xbmc
 }
@@ -75,8 +96,8 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
   if (!response)
     return MHD_NO;
 
-  ret = MHD_add_response_header(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
-  ret |= MHD_add_response_header(response, MHD_HTTP_HEADER_CONNECTION, "close");
+  ret = AddHeader(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  ret |= AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     MHD_destroy_response (response);
@@ -322,7 +343,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &r
 
   multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
-    MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
+    AddHeader(response, it->first.c_str(), it->second.c_str());
 
   MHD_queue_response(request.connection, responseCode, response);
   MHD_destroy_response(response);
@@ -348,7 +369,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
   response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
   if (response)
   {
-    MHD_add_response_header(response, "Location", strURL.c_str());
+    AddHeader(response, "Location", strURL.c_str());
     return MHD_YES;
   }
   return MHD_NO;
@@ -358,92 +379,197 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   CFile *file = new CFile();
 
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver  [IN] %s", strURL.c_str());
+  multimap<string, string> headers;
+  if (GetRequestHeaderValues(connection, MHD_HEADER_KIND, headers) > 0)
+  {
+    for (multimap<string, string>::const_iterator header = headers.begin(); header != headers.end(); header++)
+      CLog::Log(LOGDEBUG, "webserver  [IN] %s: %s", header->first.c_str(), header->second.c_str());
+  }
+#endif
+
   if (file->Open(strURL, READ_NO_CACHE))
   {
     bool getData = true;
+    bool ranged = false;
+    int64_t fileLength = file->GetLength();
+
+    // try to get the file's last modified date
+    CDateTime lastModified;
+    if (!GetLastModifiedDateTime(file, lastModified))
+      lastModified.Reset();
+
+    // get the MIME type for the Content-Type header
+    CStdString ext = URIUtils::GetExtension(strURL);
+    ext = ext.ToLower();
+    string mimeType = CreateMimeTypeFromExtension(ext.c_str());
+
     if (methodType != HEAD)
     {
+      int64_t firstPosition = 0;
+      int64_t lastPosition = fileLength - 1;
+      uint64_t totalLength = 0;
+      HttpFileDownloadContext *context = new HttpFileDownloadContext();
+      context->file = file;
+      context->rangesLength = fileLength;
+      context->contentType = mimeType;
+      context->boundaryWritten = false;
+      context->writePosition = 0;
+
       if (methodType == GET)
       {
+        // handle If-Modified-Since
         string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Modified-Since");
-        if (!ifModifiedSince.empty())
+        if (!ifModifiedSince.empty() && lastModified.IsValid())
         {
           CDateTime ifModifiedSinceDate;
           ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince);
 
-          struct __stat64 statBuffer;
-          if (file->Stat(&statBuffer) == 0)
+          if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
           {
-            struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
-            if (time != NULL)
+            getData = false;
+            response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+            responseCode = MHD_HTTP_NOT_MODIFIED;
+          }
+        }
+
+        if (getData)
+        {
+          // handle Range header
+          context->rangesLength = ParseRangeHeader(GetRequestHeaderValue(connection, MHD_HEADER_KIND, "Range"), fileLength, context->ranges, firstPosition, lastPosition);
+
+          // handle If-Range header but only if the Range header is present
+          if (!context->ranges.empty())
+          {
+            string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, "If-Range");
+            if (!ifRange.empty() && lastModified.IsValid())
             {
-              CDateTime lastModified = *time;
-              if (lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
-              {
-                getData = false;
-                response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
-                responseCode = MHD_HTTP_NOT_MODIFIED;
-              }
+              CDateTime ifRangeDate;
+              ifRangeDate.SetFromRFC1123DateTime(ifRange);
+
+              // check if the last modification is newer than the If-Range date
+              // if so we have to server the whole file instead
+              if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+                context->ranges.clear();
             }
           }
         }
       }
 
       if (getData)
-        response = MHD_create_response_from_callback(file->GetLength(),
+      {
+        // if there are no ranges, add the whole range
+        if (context->ranges.empty() || context->rangesLength == fileLength)
+        {
+          if (context->rangesLength == fileLength)
+            context->ranges.clear();
+
+          context->ranges.push_back(HttpRange(0, fileLength - 1));
+          context->rangesLength = fileLength;
+          firstPosition = 0;
+          lastPosition = fileLength - 1;
+        }
+        else
+          responseCode = MHD_HTTP_PARTIAL_CONTENT;
+
+        // remember the total number of ranges
+        context->rangeCount = context->ranges.size();
+        // remember the total length
+        totalLength = context->rangesLength;
+
+        // we need to remember whether we are ranged because the range length
+        // might change and won't be reliable anymore for length comparisons
+        ranged = context->rangeCount > 1 || context->rangesLength < fileLength;
+
+        // adjust the MIME type and range length in case of multiple ranges
+        // which requires multipart boundaries
+        if (context->rangeCount > 1)
+        {
+          context->boundary = GenerateMultipartBoundary();
+          mimeType = "multipart/byteranges; boundary=" + context->boundary;
+
+          // build part of the boundary with the optional Content-Type header
+          // "--<boundary>\r\nContent-Type: <content-type>\r\n
+          context->boundaryWithHeader = "\r\n--" + context->boundary + "\r\n";
+          if (!context->contentType.empty())
+            context->boundaryWithHeader += "Content-Type: " + context->contentType + "\r\n";
+
+          // for every range, we need to add a boundary with header
+          for (HttpRanges::const_iterator range = context->ranges.begin(); range != context->ranges.end(); range++)
+          {
+            // we need to temporarily add the Content-Range header to the
+            // boundary to be able to determine the length
+            string completeBoundaryWithHeader = context->boundaryWithHeader;
+            completeBoundaryWithHeader += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT,
+                                                              range->first, range->second, range->second - range->first + 1);
+            completeBoundaryWithHeader += "\r\n\r\n";
+
+            totalLength += completeBoundaryWithHeader.size();
+          }
+          // and at the very end a special end-boundary "\r\n--<boundary>--"
+          totalLength += 4 + context->boundary.size() + 2;
+        }
+
+        // set the initial write position
+        context->writePosition = context->ranges.begin()->first;
+
+        // create the response object
+        response = MHD_create_response_from_callback(totalLength,
                                                      2048,
-                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderCallback, context,
                                                      &CWebServer::ContentReaderFreeCallback);
+      }
+
       if (response == NULL)
       {
         file->Close();
         delete file;
+        delete context;
         return MHD_NO;
       }
+
+      // add Content-Range header
+      if (ranged)
+        AddHeader(response, "Content-Range", StringUtils::Format(CONTENT_RANGE_FORMAT, firstPosition, lastPosition, fileLength).c_str());
     }
     else
     {
       getData = false;
 
       CStdString contentLength;
-      contentLength.Format("%I64d", file->GetLength());
+      contentLength.Format("%" PRId64, fileLength);
 
-      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
       if (response == NULL)
       {
         file->Close();
         delete file;
         return MHD_NO;
       }
-      MHD_add_response_header(response, "Content-Length", contentLength);
+      AddHeader(response, "Content-Length", contentLength);
     }
+
+    // add "Accept-Ranges: bytes" header
+    AddHeader(response, "Accept-Ranges", "bytes");
 
     // set the Content-Type header
-    CStdString ext = URIUtils::GetExtension(strURL);
-    ext = ext.ToLower();
-    const char *mime = CreateMimeTypeFromExtension(ext.c_str());
-    if (mime)
-      MHD_add_response_header(response, "Content-Type", mime);
+    if (!mimeType.empty())
+      AddHeader(response, "Content-Type", mimeType.c_str());
 
     // set the Last-Modified header
-    struct __stat64 statBuffer;
-    if (file->Stat(&statBuffer) == 0)
-    {
-      struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
-      if (time != NULL)
-      {
-        CDateTime lastModified = *time;
-        MHD_add_response_header(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
-      }
-    }
+    if (lastModified.IsValid())
+      AddHeader(response, "Last-Modified", lastModified.GetAsRFC1123DateTime());
 
     // set the Expires header
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
-    if (mime && strncmp(mime, "text/html", 9) == 0)
+    if (StringUtils::EqualsNoCase(mimeType, "text/html") ||
+        StringUtils::EqualsNoCase(mimeType, "text/css") ||
+        StringUtils::EqualsNoCase(mimeType, "application/javascript"))
       expiryTime += CDateTimeSpan(1, 0, 0, 0);
     else
       expiryTime += CDateTimeSpan(365, 0, 0, 0);
-    MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+    AddHeader(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
     // only close the CFile instance if libmicrohttpd doesn't have to grab the data of the file
     if (!getData)
@@ -456,8 +582,9 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   {
     delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
+    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
   }
+
   return MHD_YES;
 }
 
@@ -515,28 +642,111 @@ void* CWebServer::UriRequestLogger(void *cls, const char *uri)
 }
 
 #if (MHD_VERSION >= 0x00090200)
-ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
+ssize_t CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, size_t max)
 #elif (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 #else   //libmicrohttpd < 0.4.0
 int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 #endif
 {
-  CFile *file = (CFile *)cls;
-  if((unsigned int)pos != file->GetPosition())
-    file->Seek(pos);
-  unsigned res = file->Read(buf, max);
-  if(res == 0)
+  HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
+  if (context == NULL || context->file == NULL)
     return -1;
-  return res;
+
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
+#endif
+
+  // check if we need to add the end-boundary
+  if (context->rangeCount > 1 && context->ranges.empty())
+  {
+    // put together the end-boundary
+    string endBoundary = "\r\n--" + context->boundary + "--";
+    if (max != endBoundary.size())
+      return -1;
+
+    // copy the boundary into the buffer
+    memcpy(buf, endBoundary.c_str(), endBoundary.size());
+    return endBoundary.size();
+  }
+
+  if (context->ranges.empty())
+    return -1;
+
+  int64_t start = context->ranges.at(0).first;
+  int64_t end = context->ranges.at(0).second;
+  int64_t maximum = (int64_t)max;
+  int written = 0;
+
+  if (context->rangeCount > 1 && !context->boundaryWritten)
+  {
+    // put together the boundary for the current range
+    string boundary = context->boundaryWithHeader;
+    boundary += StringUtils::Format("Content-Range: " CONTENT_RANGE_FORMAT, start, end, end - start + 1) + "\r\n\r\n";
+
+    // copy the boundary into the buffer
+    memcpy(buf, boundary.c_str(), boundary.size());
+    // advance the buffer position
+    buf += boundary.size();
+    // update the number of written byte
+    written += boundary.size();
+    // update the maximum number of bytes
+    maximum -= boundary.size();
+    context->boundaryWritten = true;
+  }
+
+  // check if the current position is within this range
+  // if not, set it to the start position
+  if (context->writePosition < start || context->writePosition > end)
+    context->writePosition = start;
+  // adjust the maximum number of read bytes
+  maximum = std::min(maximum, end - context->writePosition + 1);
+
+  // seek to the position if necessary
+  if(context->writePosition != context->file->GetPosition())
+    context->file->Seek(context->writePosition);
+
+  // read data from the file
+  unsigned int res = context->file->Read(buf, maximum);
+  if (res == 0)
+    return -1;
+
+  // add the number of read bytes to the number of written bytes
+  written += res;
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] wrote %d bytes from %" PRId64 " in range (%" PRId64 " - %" PRId64 ")", written, context->writePosition, start, end);
+#endif
+  // update the current write position
+  context->writePosition += res;
+
+  // if we have read all the data from the current range
+  // remove it from the list
+  if (context->writePosition >= end + 1)
+  {
+    context->ranges.erase(context->ranges.begin());
+    context->boundaryWritten = false;
+  }
+
+  return written;
 }
 
 void CWebServer::ContentReaderFreeCallback(void *cls)
 {
-  CFile *file = (CFile *)cls;
-  file->Close();
+  HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
+  if (context == NULL)
+    return;
 
-  delete file;
+  if (context->file != NULL)
+  {
+    context->file->Close();
+    delete context->file;
+    context->file = NULL;
+  }
+
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] done");
+#endif
+  delete context;
 }
 
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
@@ -575,9 +785,16 @@ bool CWebServer::Start(int port, const string &username, const string &password)
   SetCredentials(username, password);
   if (!m_running)
   {
-    m_daemon = StartMHD(0 , port);
-
-    m_running = m_daemon != NULL;
+    int v6testSock;
+    if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) > 0)
+    {
+      closesocket(v6testSock);
+      m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
+    }
+    
+    m_daemon_ip4 = StartMHD(0 , port);
+    
+    m_running = (m_daemon_ip6 != NULL) || (m_daemon_ip4 != NULL);
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
     else
@@ -590,10 +807,16 @@ bool CWebServer::Stop()
 {
   if (m_running)
   {
-    MHD_stop_daemon(m_daemon);
+    if (m_daemon_ip6 != NULL)
+      MHD_stop_daemon(m_daemon_ip6);
+
+    if (m_daemon_ip4 != NULL)
+      MHD_stop_daemon(m_daemon_ip4);
+    
     m_running = false;
     CLog::Log(LOGNOTICE, "WebServer: Stopped the webserver");
-  } else 
+  }
+  else 
     CLog::Log(LOGNOTICE, "WebServer: Stopped failed because its not running");
 
   return !m_running;
@@ -728,60 +951,133 @@ int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum M
   return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
 }
 
-const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
+std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
-  if (strcmp(ext, ".aif") == 0)   return "audio/aiff";
-  if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
-  if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
-  if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";
-  if (strcmp(ext, ".avi") == 0)   return "video/avi";
-  if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
-  if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
-  if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
-  if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
-  if (strcmp(ext, ".fli") == 0)   return "video/fli";
-  if (strcmp(ext, ".gif") == 0)   return "image/gif";
-  if (strcmp(ext, ".htm") == 0)   return "text/html";
-  if (strcmp(ext, ".html") == 0)  return "text/html";
-  if (strcmp(ext, ".htmls") == 0) return "text/html";
-  if (strcmp(ext, ".ico") == 0)   return "image/x-icon";
-  if (strcmp(ext, ".it") == 0)    return "audio/it";
-  if (strcmp(ext, ".jpeg") == 0)  return "image/jpeg";
-  if (strcmp(ext, ".jpg") == 0)   return "image/jpeg";
-  if (strcmp(ext, ".json") == 0)  return "application/json";
   if (strcmp(ext, ".kar") == 0)   return "audio/midi";
-  if (strcmp(ext, ".list") == 0)  return "text/plain";
-  if (strcmp(ext, ".log") == 0)   return "text/plain";
-  if (strcmp(ext, ".lst") == 0)   return "text/plain";
-  if (strcmp(ext, ".m2v") == 0)   return "video/mpeg";
-  if (strcmp(ext, ".m3u") == 0)   return "audio/x-mpequrl";
-  if (strcmp(ext, ".mid") == 0)   return "audio/midi";
-  if (strcmp(ext, ".midi") == 0)  return "audio/midi";
-  if (strcmp(ext, ".mod") == 0)   return "audio/mod";
-  if (strcmp(ext, ".mov") == 0)   return "video/quicktime";
-  if (strcmp(ext, ".mp2") == 0)   return "audio/mpeg";
-  if (strcmp(ext, ".mp3") == 0)   return "audio/mpeg3";
-  if (strcmp(ext, ".mpa") == 0)   return "audio/mpeg";
-  if (strcmp(ext, ".mpeg") == 0)  return "video/mpeg";
-  if (strcmp(ext, ".mpg") == 0)   return "video/mpeg";
-  if (strcmp(ext, ".mpga") == 0)  return "audio/mpeg";
-  if (strcmp(ext, ".pcx") == 0)   return "image/x-pcx";
-  if (strcmp(ext, ".png") == 0)   return "image/png";
-  if (strcmp(ext, ".rm") == 0)    return "audio/x-pn-realaudio";
-  if (strcmp(ext, ".s3m") == 0)   return "audio/s3m";
-  if (strcmp(ext, ".sid") == 0)   return "audio/x-psid";
-  if (strcmp(ext, ".tif") == 0)   return "image/tiff";
-  if (strcmp(ext, ".tiff") == 0)  return "image/tiff";
-  if (strcmp(ext, ".txt") == 0)   return "text/plain";
-  if (strcmp(ext, ".uni") == 0)   return "text/uri-list";
-  if (strcmp(ext, ".viv") == 0)   return "video/vivo";
-  if (strcmp(ext, ".wav") == 0)   return "audio/wav";
-  if (strcmp(ext, ".xm") == 0)    return "audio/xm";
-  if (strcmp(ext, ".xml") == 0)   return "text/xml";
-  if (strcmp(ext, ".zip") == 0)   return "application/zip";
   if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
-  if (strcmp(ext, ".js") == 0)    return "application/javascript";
-  if (strcmp(ext, ".css") == 0)   return "text/css";
-  return NULL;
+  return CMime::GetMimeType(ext);
+}
+
+int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value)
+{
+  if (response == NULL || name.empty())
+    return 0;
+
+#ifdef WEBSERVER_DEBUG
+  CLog::Log(LOGDEBUG, "webserver [OUT] %s: %s", name.c_str(), value.c_str());
+#endif
+  return MHD_add_response_header(response, name.c_str(), value.c_str());
+}
+
+int64_t CWebServer::ParseRangeHeader(const std::string &rangeHeaderValue, int64_t totalLength, HttpRanges &ranges, int64_t &firstPosition, int64_t &lastPosition)
+{
+  firstPosition = 0;
+  lastPosition = totalLength - 1;
+
+  if (rangeHeaderValue.empty() || !StringUtils::StartsWith(rangeHeaderValue, "bytes="))
+    return totalLength;
+
+  int64_t rangesLength = 0;
+
+  // remove "bytes=" from the beginning
+  string rangesValue = rangeHeaderValue.substr(6);
+  // split the value of the "Range" header by ","
+  vector<string> rangeValues = StringUtils::Split(rangesValue, ",");
+  for (vector<string>::const_iterator range = rangeValues.begin(); range != rangeValues.end(); range++)
+  {
+    // there must be a "-" in the range definition
+    if (range->find("-") == string::npos)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    vector<string> positions = StringUtils::Split(*range, "-");
+    if (positions.size() > 2)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    int64_t positionStart = -1;
+    int64_t positionEnd = -1;
+    if (!positions.at(0).empty())
+      positionStart = str2int64(positions.at(0), -1);
+    if (!positions.at(1).empty())
+      positionEnd = str2int64(positions.at(1), -1);
+
+    if (positionStart < 0 && positionEnd < 0)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    // if there's no end position, use the file's length
+    if (positionEnd < 0)
+      positionEnd = totalLength - 1;
+    else if (positionStart < 0)
+    {
+      positionStart = totalLength - positionEnd;
+      positionEnd = totalLength - 1;
+    }
+
+    if (positionEnd < positionStart)
+    {
+      ranges.clear();
+      return totalLength;
+    }
+
+    if (ranges.empty())
+    {
+      firstPosition = positionStart;
+      lastPosition = positionEnd;
+    }
+    else
+    {
+      if (positionStart < firstPosition)
+        firstPosition = positionStart;
+      if (positionEnd > lastPosition)
+        lastPosition = positionEnd;
+    }
+
+    ranges.push_back(HttpRange(positionStart, positionEnd));
+    rangesLength += positionEnd - positionStart + 1;
+  }
+
+  if (!ranges.empty() || rangesLength > 0)
+    return rangesLength;
+
+  return totalLength;
+}
+
+std::string CWebServer::GenerateMultipartBoundary()
+{
+  static char chars[] = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  // create a string of length 30 to 40 and pre-fill it with "-"
+  size_t count = (size_t)CUtil::GetRandomNumber() % 11 + 30;
+  string boundary(count, '-');
+
+  for (size_t i = (size_t)CUtil::GetRandomNumber() % 5 + 8; i < count; i++)
+    boundary.replace(i, 1, 1, chars[(size_t)CUtil::GetRandomNumber() % 64]);
+
+  return boundary;
+}
+
+bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified)
+{
+  if (file == NULL)
+    return false;
+
+  struct __stat64 statBuffer;
+  if (file->Stat(&statBuffer) != 0)
+    return false;
+
+  struct tm *time = localtime((time_t *)&statBuffer.st_mtime);
+  if (time == NULL)
+    return false;
+
+  lastModified = *time;
+  return true;
 }
 #endif

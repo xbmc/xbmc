@@ -9,14 +9,13 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeAlbumTop100.cpp \
      DirectoryNodeAlbumTop100Song.cpp \
      DirectoryNodeArtist.cpp \
-     DirectoryNodeGenre.cpp \
+     DirectoryNodeGrouped.cpp \
      DirectoryNodeOverview.cpp \
      DirectoryNodeRoot.cpp \
      DirectoryNodeSingles.cpp \
      DirectoryNodeSong.cpp \
      DirectoryNodeSongTop100.cpp \
      DirectoryNodeTop100.cpp \
-     DirectoryNodeYear.cpp \
      DirectoryNodeYearAlbum.cpp \
      DirectoryNodeYearSong.cpp \
      QueryParams.cpp \

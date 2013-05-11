@@ -34,12 +34,13 @@
 #include "Platinum.h"
 #include "URL.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
+#include "video/VideoInfoTag.h"
 #include "guilib/Key.h"
 #include "Util.h"
 
@@ -188,6 +189,81 @@ public:
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         g_windowManager.SendThreadMessage(message);
+    }
+
+    bool MarkWatched(const CFileItem& item, const bool watched)
+    {
+        if (watched) {
+            CFileItem temp(item);
+            temp.SetProperty("original_listitem_url", item.GetPath());
+            return SaveFileState(temp, CBookmark(), watched);
+        }
+        else {
+            CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", item.GetPath().c_str());
+            return InvokeUpdateObject(item.GetPath().c_str(), "<upnp:playCount>1</upnp:playCount>", "<upnp:playCount>0</upnp:playCount>");
+        }
+    }
+
+    bool SaveFileState(const CFileItem& item, const CBookmark& bookmark, const bool updatePlayCount)
+    {
+        string path = item.GetProperty("original_listitem_url").asString();
+        if (!item.HasVideoInfoTag() || path.empty())  {
+          return false;
+        }
+
+        NPT_String curr_value;
+        NPT_String new_value;
+
+        if (item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != bookmark.timeInSeconds) {
+            CLog::Log(LOGDEBUG, "UPNP: Updating resume point for item %s", path.c_str());
+            long time = bookmark.timeInSeconds;
+            if (time < 0) time = 0;
+            curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
+                                                 (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
+            new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
+        }
+        if (updatePlayCount) {
+            CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
+            if (!curr_value.IsEmpty()) curr_value.Append(",");
+            if (!new_value.IsEmpty()) new_value.Append(",");
+            curr_value.Append("<upnp:playCount>0</upnp:playCount>");
+            new_value.Append("<upnp:playCount>1</upnp:playCount>");
+        }
+
+        return InvokeUpdateObject(path.c_str(), (const char*)curr_value, (const char*)new_value);
+    }
+
+    bool InvokeUpdateObject(const char* id, const char* curr_value, const char* new_value)
+    {
+        CURL url(id);
+        PLT_DeviceDataReference device;
+        PLT_Service* cds;
+        PLT_ActionReference action;
+
+        CLog::Log(LOGDEBUG, "UPNP: attempting to invoke UpdateObject for %s", id);
+
+        // check this server supports UpdateObject action
+        NPT_CHECK_LABEL(FindServer(url.GetHostName().c_str(), device),failed);
+        NPT_CHECK_LABEL(device->FindServiceById("urn:upnp-org:serviceId:ContentDirectory", cds),failed);
+
+        NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
+            device,
+            "urn:schemas-upnp-org:service:ContentDirectory:1",
+            "UpdateObject",
+            action));
+
+        NPT_CHECK_LABEL(action->SetArgumentValue("ObjectID", url.GetFileName().c_str()), failed);
+        NPT_CHECK_LABEL(action->SetArgumentValue("CurrentTagValue", curr_value), failed);
+        NPT_CHECK_LABEL(action->SetArgumentValue("NewTagValue", new_value), failed);
+
+        NPT_CHECK_LABEL(m_CtrlPoint->InvokeAction(action, NULL),failed);
+
+        CLog::Log(LOGDEBUG, "UPNP: invoked UpdateObject successfully");
+        return true;
+
+    failed:
+        CLog::Log(LOGINFO, "UPNP: invoking UpdateObject failed");
+        return false;
     }
 };
 
@@ -346,6 +422,34 @@ CUPnPServer* CUPnP::GetServer()
 }
 
 /*----------------------------------------------------------------------
+|   CUPnP::MarkWatched
++---------------------------------------------------------------------*/
+bool
+CUPnP::MarkWatched(const CFileItem& item, const bool watched)
+{
+    if (upnp && upnp->m_MediaBrowser) {
+        // dynamic_cast is safe here, avoids polluting CUPnP.h header file
+        CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+        return browser->MarkWatched(item, watched);
+    }
+    return false;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::SaveFileState
++---------------------------------------------------------------------*/
+bool
+CUPnP::SaveFileState(const CFileItem& item, const CBookmark& bookmark, const bool updatePlayCount)
+{
+    if (upnp && upnp->m_MediaBrowser) {
+        // dynamic_cast is safe here, avoids polluting CUPnP.h header file
+        CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+        return browser->SaveFileState(item, bookmark, updatePlayCount);
+    }
+    return false;
+}
+
+/*----------------------------------------------------------------------
 |   CUPnP::StartClient
 +---------------------------------------------------------------------*/
 void
@@ -363,7 +467,7 @@ CUPnP::StartClient()
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
     // start controller
-    if (g_guiSettings.GetBool("services.upnpcontroller")) {
+    if (CSettings::Get().GetBool("services.upnpcontroller")) {
         m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
     }
 }
@@ -400,7 +504,7 @@ CUPnP::CreateServer(int port /* = 0 */)
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
 
     device->m_ModelName        = "XBMC Media Center";
@@ -417,14 +521,13 @@ CUPnP::CreateServer(int port /* = 0 */)
 /*----------------------------------------------------------------------
 |   CUPnP::StartServer
 +---------------------------------------------------------------------*/
-void
+bool
 CUPnP::StartServer()
 {
-    if (!m_ServerHolder->m_Device.IsNull()) return;
+    if (!m_ServerHolder->m_Device.IsNull()) return false;
 
-    // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
-    CStdString filename;
-    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
+    // load upnpserver.xml
+    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
@@ -455,7 +558,7 @@ CUPnP::StartServer()
 
     // save UUID
     CUPnPSettings::Get().SetServerUUID(m_ServerHolder->m_Device->GetUUID().GetChars());
-    CUPnPSettings::Get().Save(filename);
+    return CUPnPSettings::Get().Save(filename);
 }
 
 /*----------------------------------------------------------------------
@@ -484,7 +587,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
@@ -499,12 +602,11 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 /*----------------------------------------------------------------------
 |   CUPnP::StartRenderer
 +---------------------------------------------------------------------*/
-void CUPnP::StartRenderer()
+bool CUPnP::StartRenderer()
 {
-    if (!m_RendererHolder->m_Device.IsNull()) return;
+    if (!m_RendererHolder->m_Device.IsNull()) return false;
 
-    CStdString filename;
-    URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml", filename);
+    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     m_RendererHolder->m_Device = CreateRenderer(CUPnPSettings::Get().GetRendererPort());
@@ -525,7 +627,7 @@ void CUPnP::StartRenderer()
 
     // save UUID
     CUPnPSettings::Get().SetRendererUUID(m_RendererHolder->m_Device->GetUUID().GetChars());
-    CUPnPSettings::Get().Save(filename);
+    return CUPnPSettings::Get().Save(filename);
 }
 
 /*----------------------------------------------------------------------

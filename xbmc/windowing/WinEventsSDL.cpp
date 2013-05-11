@@ -240,8 +240,8 @@ bool CWinEventsSDL::MessagePump()
         //If the window was inconified or restored
         if( event.active.state & SDL_APPACTIVE )
         {
-          g_application.m_AppActive = event.active.gain != 0;
-          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+          g_application.SetRenderGUI(event.active.gain != 0);
+          g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
         }
         else if (event.active.state & SDL_APPINPUTFOCUS)
       {

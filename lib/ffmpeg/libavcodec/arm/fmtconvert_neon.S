@@ -20,9 +20,7 @@
  */
 
 #include "config.h"
-#include "asm.S"
-
-        preserve8
+#include "libavutil/arm/asm.S"
 
 function ff_float_to_int16_neon, export=1
         subs            r2,  r2,  #8

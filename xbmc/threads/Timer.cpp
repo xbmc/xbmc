@@ -24,7 +24,7 @@
 #include "SystemClock.h"
 
 CTimer::CTimer(ITimerCallback *callback)
-  : CThread("CTimer"),
+  : CThread("Timer"),
     m_callback(callback),
     m_timeout(0),
     m_interval(false),

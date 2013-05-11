@@ -27,6 +27,9 @@
  */
 
 #include "avfilter.h"
+#include "formats.h"
+#include "video.h"
+#include "internal.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/opt.h"
 #include "libavutil/parseutils.h"
@@ -57,7 +60,7 @@ typedef struct {
     int w, h;
     AVRational time_base;
     uint64_t pts;
-    char *size, *rate;
+    char *rate;
     int maxiter;
     double start_x;
     double start_y;
@@ -76,45 +79,37 @@ typedef struct {
 } MBContext;
 
 #define OFFSET(x) offsetof(MBContext, x)
+#define FLAGS AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
 
 static const AVOption mandelbrot_options[] = {
-    {"size",        "set frame size",                OFFSET(size),    AV_OPT_TYPE_STRING,     {.str="640x480"},  CHAR_MIN, CHAR_MAX },
-    {"s",           "set frame size",                OFFSET(size),    AV_OPT_TYPE_STRING,     {.str="640x480"},  CHAR_MIN, CHAR_MAX },
-    {"rate",        "set frame rate",                OFFSET(rate),    AV_OPT_TYPE_STRING,     {.str="25"},  CHAR_MIN, CHAR_MAX },
-    {"r",           "set frame rate",                OFFSET(rate),    AV_OPT_TYPE_STRING,     {.str="25"},  CHAR_MIN, CHAR_MAX },
-    {"maxiter",     "set max iterations number",     OFFSET(maxiter), AV_OPT_TYPE_INT,        {.dbl=7189},  1,        INT_MAX  },
-    {"start_x",     "set the initial x position",    OFFSET(start_x), AV_OPT_TYPE_DOUBLE,     {.dbl=-0.743643887037158704752191506114774}, -100, 100  },
-    {"start_y",     "set the initial y position",    OFFSET(start_y), AV_OPT_TYPE_DOUBLE,     {.dbl=-0.131825904205311970493132056385139}, -100, 100  },
-    {"start_scale", "set the initial scale value",   OFFSET(start_scale), AV_OPT_TYPE_DOUBLE, {.dbl=3.0},  0, FLT_MAX },
-    {"end_scale",   "set the terminal scale value",  OFFSET(end_scale), AV_OPT_TYPE_DOUBLE,   {.dbl=0.3},  0, FLT_MAX },
-    {"end_pts",     "set the terminal pts value",    OFFSET(end_pts), AV_OPT_TYPE_DOUBLE,     {.dbl=400},  0, INT64_MAX },
-    {"bailout",     "set the bailout value",         OFFSET(bailout), AV_OPT_TYPE_DOUBLE,     {.dbl=10},   0, FLT_MAX },
+    {"size",        "set frame size",                OFFSET(w),       AV_OPT_TYPE_IMAGE_SIZE, {.str="640x480"},  CHAR_MIN, CHAR_MAX, FLAGS },
+    {"s",           "set frame size",                OFFSET(w),       AV_OPT_TYPE_IMAGE_SIZE, {.str="640x480"},  CHAR_MIN, CHAR_MAX, FLAGS },
+    {"rate",        "set frame rate",                OFFSET(rate),    AV_OPT_TYPE_STRING,     {.str="25"},  CHAR_MIN, CHAR_MAX, FLAGS },
+    {"r",           "set frame rate",                OFFSET(rate),    AV_OPT_TYPE_STRING,     {.str="25"},  CHAR_MIN, CHAR_MAX, FLAGS },
+    {"maxiter",     "set max iterations number",     OFFSET(maxiter), AV_OPT_TYPE_INT,        {.i64=7189},  1,        INT_MAX, FLAGS },
+    {"start_x",     "set the initial x position",    OFFSET(start_x), AV_OPT_TYPE_DOUBLE,     {.dbl=-0.743643887037158704752191506114774}, -100, 100, FLAGS },
+    {"start_y",     "set the initial y position",    OFFSET(start_y), AV_OPT_TYPE_DOUBLE,     {.dbl=-0.131825904205311970493132056385139}, -100, 100, FLAGS },
+    {"start_scale", "set the initial scale value",   OFFSET(start_scale), AV_OPT_TYPE_DOUBLE, {.dbl=3.0},  0, FLT_MAX, FLAGS },
+    {"end_scale",   "set the terminal scale value",  OFFSET(end_scale), AV_OPT_TYPE_DOUBLE,   {.dbl=0.3},  0, FLT_MAX, FLAGS },
+    {"end_pts",     "set the terminal pts value",    OFFSET(end_pts), AV_OPT_TYPE_DOUBLE,     {.dbl=400},  0, INT64_MAX, FLAGS },
+    {"bailout",     "set the bailout value",         OFFSET(bailout), AV_OPT_TYPE_DOUBLE,     {.dbl=10},   0, FLT_MAX, FLAGS },
 
-    {"outer",       "set outer coloring mode",       OFFSET(outer), AV_OPT_TYPE_INT, {.dbl=NORMALIZED_ITERATION_COUNT}, 0, INT_MAX, 0, "outer"},
-    {"iteration_count", "set iteration count mode",  0, AV_OPT_TYPE_CONST, {.dbl=ITERATION_COUNT}, INT_MIN, INT_MAX, 0, "outer" },
-    {"normalized_iteration_count", "set normalized iteration count mode",   0, AV_OPT_TYPE_CONST, {.dbl=NORMALIZED_ITERATION_COUNT}, INT_MIN, INT_MAX, 0, "outer" },
+    {"outer",       "set outer coloring mode",       OFFSET(outer), AV_OPT_TYPE_INT, {.i64=NORMALIZED_ITERATION_COUNT}, 0, INT_MAX, FLAGS, "outer" },
+    {"iteration_count", "set iteration count mode",  0, AV_OPT_TYPE_CONST, {.i64=ITERATION_COUNT}, INT_MIN, INT_MAX, FLAGS, "outer" },
+    {"normalized_iteration_count", "set normalized iteration count mode",   0, AV_OPT_TYPE_CONST, {.i64=NORMALIZED_ITERATION_COUNT}, INT_MIN, INT_MAX, FLAGS, "outer" },
 
-    {"inner",       "set inner coloring mode",       OFFSET(inner), AV_OPT_TYPE_INT, {.dbl=MINCOL}, 0, INT_MAX, 0, "inner"},
-    {"black",       "set black mode",                0, AV_OPT_TYPE_CONST, {.dbl=BLACK}, INT_MIN, INT_MAX, 0, "inner" },
-    {"period",      "set period mode",               0, AV_OPT_TYPE_CONST, {.dbl=PERIOD}, INT_MIN, INT_MAX, 0, "inner" },
-    {"convergence", "show time until convergence",   0, AV_OPT_TYPE_CONST, {.dbl=CONVTIME}, INT_MIN, INT_MAX, 0, "inner" },
-    {"mincol",      "color based on point closest to the origin of the iterations",   0, AV_OPT_TYPE_CONST, {.dbl=MINCOL}, INT_MIN, INT_MAX, 0, "inner" },
+    {"inner",       "set inner coloring mode",       OFFSET(inner), AV_OPT_TYPE_INT, {.i64=MINCOL}, 0, INT_MAX, FLAGS, "inner" },
+    {"black",       "set black mode",                0, AV_OPT_TYPE_CONST, {.i64=BLACK}, INT_MIN, INT_MAX, FLAGS, "inner"},
+    {"period",      "set period mode",               0, AV_OPT_TYPE_CONST, {.i64=PERIOD}, INT_MIN, INT_MAX, FLAGS, "inner"},
+    {"convergence", "show time until convergence",   0, AV_OPT_TYPE_CONST, {.i64=CONVTIME}, INT_MIN, INT_MAX, FLAGS, "inner"},
+    {"mincol",      "color based on point closest to the origin of the iterations",   0, AV_OPT_TYPE_CONST, {.i64=MINCOL}, INT_MIN, INT_MAX, FLAGS, "inner"},
 
     {NULL},
 };
 
-static const char *mandelbrot_get_name(void *ctx)
-{
-    return "mandelbrot";
-}
+AVFILTER_DEFINE_CLASS(mandelbrot);
 
-static const AVClass mandelbrot_class = {
-    "MBContext",
-    mandelbrot_get_name,
-    mandelbrot_options
-};
-
-static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
+static av_cold int init(AVFilterContext *ctx, const char *args)
 {
     MBContext *mb = ctx->priv;
     AVRational rate_q;
@@ -123,21 +118,14 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     mb->class = &mandelbrot_class;
     av_opt_set_defaults(mb);
 
-    if ((err = (av_set_options_string(mb, args, "=", ":"))) < 0) {
-        av_log(ctx, AV_LOG_ERROR, "Error parsing options string: '%s'\n", args);
+    if ((err = (av_set_options_string(mb, args, "=", ":"))) < 0)
         return err;
-    }
     mb->bailout *= mb->bailout;
 
-    if (av_parse_video_size(&mb->w, &mb->h, mb->size) < 0) {
-        av_log(ctx, AV_LOG_ERROR, "Invalid frame size: %s\n", mb->size);
-        return AVERROR(EINVAL);
-    }
     mb->start_scale /=mb->h;
     mb->end_scale /=mb->h;
 
-    if (av_parse_video_rate(&rate_q, mb->rate) < 0 ||
-        rate_q.den <= 0 || rate_q.num <= 0) {
+    if (av_parse_video_rate(&rate_q, mb->rate) < 0) {
         av_log(ctx, AV_LOG_ERROR, "Invalid frame rate: %s\n", mb->rate);
         return AVERROR(EINVAL);
     }
@@ -157,7 +145,6 @@ static av_cold void uninit(AVFilterContext *ctx)
 {
     MBContext *mb = ctx->priv;
 
-    av_freep(&mb->size);
     av_freep(&mb->rate);
     av_freep(&mb->point_cache);
     av_freep(&mb-> next_cache);
@@ -166,12 +153,12 @@ static av_cold void uninit(AVFilterContext *ctx)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
-        PIX_FMT_BGR32,
-        PIX_FMT_NONE
+    static const enum AVPixelFormat pix_fmts[] = {
+        AV_PIX_FMT_BGR32,
+        AV_PIX_FMT_NONE
     };
 
-    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
+    ff_set_common_formats(ctx, ff_make_format_list(pix_fmts));
     return 0;
 }
 
@@ -359,7 +346,7 @@ static void draw_mandelbrot(AVFilterContext *ctx, uint32_t *color, int linesize,
                         break;
                 if(j){
                     c= i-j;
-                    c= ((c<<5)&0xE0) + ((c<<16)&0xE000) + ((c<<27)&0xE00000);
+                    c= ((c<<5)&0xE0) + ((c<<10)&0xE000) + ((c<<15)&0xE00000);
                 }
                 }else if(mb->inner==CONVTIME){
                     c= floor(i*255.0/mb->maxiter+dv)*0x010101;
@@ -389,25 +376,32 @@ static void draw_mandelbrot(AVFilterContext *ctx, uint32_t *color, int linesize,
     FFSWAP(void*, mb->next_cache, mb->point_cache);
     mb->cache_used = next_cidx;
     if(mb->cache_used == mb->cache_allocated)
-        av_log(0, AV_LOG_INFO, "Mandelbrot cache is too small!\n");
+        av_log(ctx, AV_LOG_INFO, "Mandelbrot cache is too small!\n");
 }
 
 static int request_frame(AVFilterLink *link)
 {
     MBContext *mb = link->src->priv;
-    AVFilterBufferRef *picref = avfilter_get_video_buffer(link, AV_PERM_WRITE, mb->w, mb->h);
+    AVFilterBufferRef *picref = ff_get_video_buffer(link, AV_PERM_WRITE, mb->w, mb->h);
     picref->video->sample_aspect_ratio = (AVRational) {1, 1};
     picref->pts = mb->pts++;
     picref->pos = -1;
 
-    avfilter_start_frame(link, avfilter_ref_buffer(picref, ~0));
     draw_mandelbrot(link->src, (uint32_t*)picref->data[0], picref->linesize[0]/4, picref->pts);
-    avfilter_draw_slice(link, 0, mb->h, 1);
-    avfilter_end_frame(link);
-    avfilter_unref_buffer(picref);
+    ff_filter_frame(link, picref);
 
     return 0;
 }
+
+static const AVFilterPad mandelbrot_outputs[] = {
+    {
+        .name          = "default",
+        .type          = AVMEDIA_TYPE_VIDEO,
+        .request_frame = request_frame,
+        .config_props  = config_props,
+    },
+    { NULL },
+};
 
 AVFilter avfilter_vsrc_mandelbrot = {
     .name        = "mandelbrot",
@@ -418,12 +412,7 @@ AVFilter avfilter_vsrc_mandelbrot = {
     .uninit    = uninit,
 
     .query_formats = query_formats,
-
-    .inputs    = (const AVFilterPad[]) {{ .name = NULL}},
-
-    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .request_frame   = request_frame,
-                                    .config_props    = config_props },
-                                  { .name = NULL}},
+    .inputs        = NULL,
+    .outputs       = mandelbrot_outputs,
+    .priv_class    = &mandelbrot_class,
 };

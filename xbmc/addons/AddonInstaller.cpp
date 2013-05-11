@@ -27,7 +27,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "ApplicationMessenger.h"
 #include "Favourites.h"
@@ -554,7 +553,7 @@ bool CAddonInstallJob::DownloadPackage(const CStdString &path, const CStdString 
 bool CAddonInstallJob::OnPreInstall()
 {
   // check whether this is an active skin - we need to unload it if so
-  if (g_guiSettings.GetString("lookandfeel.skin") == m_addon->ID())
+  if (CSettings::Get().GetString("lookandfeel.skin") == m_addon->ID())
   {
     CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
     return true;
@@ -655,7 +654,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
 
 void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 {
-  if (m_addon->Type() < ADDON_VIZ_LIBRARY && g_settings.m_bAddonNotifications)
+  if (m_addon->Type() < ADDON_VIZ_LIBRARY && CSettings::Get().GetBool("general.addonnotifications"))
   {
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(),
                                           m_addon->Name(),
@@ -668,7 +667,7 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     if (reloadAddon || (!m_update && CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
                                                         g_localizeStrings.Get(24099),"","")))
     {
-      g_guiSettings.SetString("lookandfeel.skin",m_addon->ID().c_str());
+      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
       CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
       if (toast)
       {
@@ -806,7 +805,7 @@ void CAddonUnInstallJob::OnPostUnInstall()
 
   if (m_addon->Type() == ADDON_PVRDLL)
   {
-    if (g_guiSettings.GetBool("pvrmanager.enabled"))
+    if (CSettings::Get().GetBool("pvrmanager.enabled"))
       PVR::CPVRManager::Get().Start(true);
   }
 }

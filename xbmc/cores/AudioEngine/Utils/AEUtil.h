@@ -42,6 +42,23 @@
   #define MEMALIGN(b, x) __declspec(align(b)) x
 #endif
 
+#define AUDIO_IS_BITSTREAM(x) ((x) == AUDIO_IEC958 || (x) == AUDIO_HDMI)
+
+enum AudioOutputs
+{
+  AUDIO_ANALOG  = 0,
+  AUDIO_IEC958,
+  AUDIO_HDMI
+};
+
+// AV sync options
+enum AVSync
+{
+  SYNC_DISCON   = 0,
+  SYNC_SKIPDUP,
+  SYNC_RESAMPLE
+};
+
 class CAEUtil
 {
 private:

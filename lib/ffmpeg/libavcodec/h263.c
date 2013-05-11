@@ -30,7 +30,6 @@
 //#define DEBUG
 #include <limits.h>
 
-#include "dsputil.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
 #include "h263.h"
@@ -98,7 +97,7 @@ void ff_h263_update_motion_val(MpegEncContext * s){
     }
 }
 
-int h263_pred_dc(MpegEncContext * s, int n, int16_t **dc_val_ptr)
+int ff_h263_pred_dc(MpegEncContext * s, int n, int16_t **dc_val_ptr)
 {
     int x, y, wrap, a, c, pred_dc;
     int16_t *dc_val;
@@ -226,7 +225,7 @@ void ff_h263_loop_filter(MpegEncContext * s){
     }
 }
 
-void h263_pred_acdc(MpegEncContext * s, DCTELEM *block, int n)
+void ff_h263_pred_acdc(MpegEncContext * s, int16_t *block, int n)
 {
     int x, y, wrap, a, c, pred_dc, scale, i;
     int16_t *dc_val, *ac_val, *ac_val1;
@@ -313,8 +312,8 @@ void h263_pred_acdc(MpegEncContext * s, DCTELEM *block, int n)
         ac_val1[8 + i] = block[s->dsp.idct_permutation[i   ]];
 }
 
-int16_t *h263_pred_motion(MpegEncContext * s, int block, int dir,
-                        int *px, int *py)
+int16_t *ff_h263_pred_motion(MpegEncContext * s, int block, int dir,
+                             int *px, int *py)
 {
     int wrap;
     int16_t *A, *B, *C, (*mot_val)[2];

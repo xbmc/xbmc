@@ -24,6 +24,7 @@
 
 #include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
+#include "RenderFormats.h"
 #include "BaseRenderer.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"

@@ -46,6 +46,7 @@ public:
   //AirPlayServer impl.
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
+  static bool IsRunning();
   static bool SetCredentials(bool usePassword, const CStdString& password);
   static bool IsPlaying(){ return m_isPlaying > 0;}
   static void backupVolume();
@@ -80,7 +81,7 @@ private:
     void Disconnect();
 
     int m_socket;
-    struct sockaddr m_cliaddr;
+    struct sockaddr_storage m_cliaddr;
     socklen_t m_addrlen;
     CCriticalSection m_critSection;
     int  m_sessionCounter;

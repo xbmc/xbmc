@@ -65,7 +65,7 @@ int ff_mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
                            const uint8_t *buf, int len);
 void ff_mpegts_parse_close(MpegTSContext *ts);
 
-typedef struct {
+typedef struct SLConfigDescr {
     int use_au_start;
     int use_au_end;
     int use_rand_acc_pt;
@@ -82,7 +82,7 @@ typedef struct {
     int packet_seq_num_len;
 } SLConfigDescr;
 
-typedef struct {
+typedef struct Mp4Descr {
     int es_id;
     int dec_config_descr_len;
     uint8_t *dec_config_descr;
@@ -96,10 +96,6 @@ typedef struct {
  * @param stream_type               STREAM_TYPE_xxx
  * @param pp                        Descriptor buffer pointer
  * @param desc_list_end             End of buffer
- * @param mp4_dec_config_descr_len  Length of 'mp4_dec_config_descr', or zero if not present
- * @param mp4_es_id
- * @param pid
- * @param mp4_dec_config_descr
  * @return <0 to stop processing
  */
 int ff_parse_mpeg2_descriptor(AVFormatContext *fc, AVStream *st, int stream_type,

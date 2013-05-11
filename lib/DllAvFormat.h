@@ -42,10 +42,14 @@ extern "C" {
   #else
     #include <ffmpeg/avformat.h>
   #endif
-  /* av_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
-  void av_read_frame_flush(AVFormatContext *s);
+  /* xbmc_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
+  void xbmc_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
+  #if defined(TARGET_DARWIN)
+    void ff_read_frame_flush(AVFormatContext *s);    // internal replacement 
+    #define xbmc_read_frame_flush ff_read_frame_flush
+  #endif
 #endif
 }
 
@@ -115,7 +119,7 @@ public:
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual void avformat_close_input(AVFormatContext **s) { ::avformat_close_input(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
-  virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
+  virtual void av_read_frame_flush(AVFormatContext *s) { ::xbmc_read_frame_flush(s); }
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }

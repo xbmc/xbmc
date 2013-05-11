@@ -19,7 +19,7 @@
  */
 
 #include "FileItem.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "threads/SingleLock.h"
@@ -252,7 +252,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
     NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
+    if (CSettings::Get().GetBool("pvrrecord.timernotifications"))
     {
       /* queue notifications */
       for (unsigned int iNotificationPtr = 0; iNotificationPtr < timerNotifications.size(); iNotificationPtr++)
@@ -497,7 +497,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
   newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
 
-  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
+  int iDuration = CSettings::Get().GetInt("pvrrecord.instantrecordtime");
   CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
 
@@ -657,10 +657,10 @@ void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 
 CDateTime CPVRTimers::GetNextEventTime(void) const
 {
-  const bool dailywakup = g_guiSettings.GetBool("pvrpowermanagement.dailywakeup");
+  const bool dailywakup = CSettings::Get().GetBool("pvrpowermanagement.dailywakeup");
   const CDateTime now = CDateTime::GetUTCDateTime();
-  const CDateTimeSpan prewakeup(0, 0, g_guiSettings.GetInt("pvrpowermanagement.prewakeup"), 0);
-  const CDateTimeSpan idle(0, 0, g_guiSettings.GetInt("pvrpowermanagement.backendidletime"), 0);
+  const CDateTimeSpan prewakeup(0, 0, CSettings::Get().GetInt("pvrpowermanagement.prewakeup"), 0);
+  const CDateTimeSpan idle(0, 0, CSettings::Get().GetInt("pvrpowermanagement.backendidletime"), 0);
 
   CDateTime wakeuptime;
 
@@ -678,7 +678,7 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   if (dailywakup)
   {
     CDateTime dailywakeuptime;
-    dailywakeuptime.SetFromDBTime(g_guiSettings.GetString("pvrpowermanagement.dailywakeuptime", false));
+    dailywakeuptime.SetFromDBTime(CSettings::Get().GetString("pvrpowermanagement.dailywakeuptime"));
     dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
     dailywakeuptime.SetDateTime(

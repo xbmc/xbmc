@@ -15,11 +15,13 @@ PROGS-$(CONFIG_FFPLAY)   += ffplay
 PROGS-$(CONFIG_FFPROBE)  += ffprobe
 PROGS-$(CONFIG_FFSERVER) += ffserver
 
-PROGS      := $(PROGS-yes:%=%$(EXESUF))
+PROGS      := $(PROGS-yes:%=%$(PROGSSUF)$(EXESUF))
 INSTPROGS   = $(PROGS-yes:%=%$(PROGSSUF)$(EXESUF))
-OBJS        = $(PROGS-yes:%=%.o) cmdutils.o
+
+OBJS        = cmdutils.o $(EXEOBJS)
+OBJS-ffmpeg = ffmpeg_opt.o ffmpeg_filter.o
 TESTTOOLS   = audiogen videogen rotozoom tiny_psnr base64
-HOSTPROGS  := $(TESTTOOLS:%=tests/%)
+HOSTPROGS  := $(TESTTOOLS:%=tests/%) doc/print_options
 TOOLS       = qt-faststart trasher
 TOOLS-$(CONFIG_ZLIB) += cws2fws
 
@@ -31,6 +33,7 @@ ALLMANPAGES = $(BASENAMES:%=%.1)
 FFLIBS-$(CONFIG_AVDEVICE) += avdevice
 FFLIBS-$(CONFIG_AVFILTER) += avfilter
 FFLIBS-$(CONFIG_AVFORMAT) += avformat
+FFLIBS-$(CONFIG_AVRESAMPLE) += avresample
 FFLIBS-$(CONFIG_AVCODEC)  += avcodec
 FFLIBS-$(CONFIG_POSTPROC) += postproc
 FFLIBS-$(CONFIG_SWRESAMPLE)+= swresample
@@ -39,6 +42,7 @@ FFLIBS-$(CONFIG_SWSCALE)  += swscale
 FFLIBS := avutil
 
 DATA_FILES := $(wildcard $(SRC_PATH)/presets/*.ffpreset) $(SRC_PATH)/doc/ffprobe.xsd
+EXAMPLES_FILES := $(wildcard $(SRC_PATH)/doc/examples/*.c) $(SRC_PATH)/doc/examples/Makefile $(SRC_PATH)/doc/examples/README
 
 SKIPHEADERS = cmdutils_common_opts.h
 
@@ -49,14 +53,14 @@ FF_DEP_LIBS  := $(DEP_LIBS)
 
 all: $(PROGS)
 
-$(PROGS): %$(EXESUF): %$(PROGSSUF)_g$(EXESUF)
-	$(CP) $< $@$(PROGSSUF)
-	$(STRIP) $@$(PROGSSUF)
+$(PROGS): %$(EXESUF): %_g$(EXESUF)
+	$(CP) $< $@
+	$(STRIP) $@
 
-$(TOOLS): %$(EXESUF): %.o
-	$(LD) $(LDFLAGS) -o $@ $< $(ELIBS)
+$(TOOLS): %$(EXESUF): %.o $(EXEOBJS)
+	$(LD) $(LDFLAGS) $(LD_O) $^ $(ELIBS)
 
-tools/cws2fws$(EXESUF): ELIBS = -lz
+tools/cws2fws$(EXESUF): ELIBS = $(ZLIB)
 
 config.h: .config
 .config: $(wildcard $(FFLIBS:%=$(SRC_PATH)/lib%/all*.c))
@@ -64,9 +68,13 @@ config.h: .config
 	@-printf '\nWARNING: $(?F) newer than config.h, rerun configure\n\n'
 	@-tput sgr0 2>/dev/null
 
-SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES SKIPHEADERS \
-               ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS \
-               HOSTPROGS BUILT_HEADERS TESTOBJS ARCH_HEADERS ARMV6-OBJS TOOLS
+SUBDIR_VARS := CLEANFILES EXAMPLES FFLIBS HOSTPROGS TESTPROGS TOOLS      \
+               HEADERS ARCH_HEADERS BUILT_HEADERS SKIPHEADERS            \
+               ARMV5TE-OBJS ARMV6-OBJS VFP-OBJS NEON-OBJS                \
+               ALTIVEC-OBJS VIS-OBJS                                     \
+               MMX-OBJS YASM-OBJS                                        \
+               MIPSFPU-OBJS MIPSDSPR2-OBJS MIPSDSPR1-OBJS MIPS32R2-OBJS  \
+               OBJS HOSTOBJS TESTOBJS
 
 define RESET
 $(1) :=
@@ -83,12 +91,19 @@ endef
 
 $(foreach D,$(FFLIBS),$(eval $(call DOSUBDIR,lib$(D))))
 
-ffplay.o: CFLAGS += $(SDL_CFLAGS)
-ffplay_g$(EXESUF): FF_EXTRALIBS += $(SDL_LIBS)
-ffserver_g$(EXESUF): LDFLAGS += $(FFSERVERLDFLAGS)
+define DOPROG
+OBJS-$(1) += $(1).o cmdutils.o $(EXEOBJS)
+$(1)$(PROGSSUF)_g$(EXESUF): $$(OBJS-$(1))
+$$(OBJS-$(1)): CFLAGS  += $(CFLAGS-$(1))
+$(1)$(PROGSSUF)_g$(EXESUF): LDFLAGS += $(LDFLAGS-$(1))
+$(1)$(PROGSSUF)_g$(EXESUF): FF_EXTRALIBS += $(LIBS-$(1))
+-include $$(OBJS-$(1):.o=.d)
+endef
 
-%$(PROGSSUF)_g$(EXESUF): %.o cmdutils.o $(FF_DEP_LIBS)
-	$(LD) $(LDFLAGS) -o $@ $< cmdutils.o $(FF_EXTRALIBS)
+$(foreach P,$(PROGS-yes),$(eval $(call DOPROG,$(P))))
+
+%$(PROGSSUF)_g$(EXESUF): %.o $(FF_DEP_LIBS)
+	$(LD) $(LDFLAGS) $(LD_O) $(OBJS-$*) $(FF_EXTRALIBS)
 
 OBJDIRS += tools
 
@@ -122,9 +137,10 @@ install-progs: install-progs-yes $(PROGS)
 	$(Q)mkdir -p "$(BINDIR)"
 	$(INSTALL) -c -m 755 $(INSTPROGS) "$(BINDIR)"
 
-install-data: $(DATA_FILES)
-	$(Q)mkdir -p "$(DATADIR)"
+install-data: $(DATA_FILES) $(EXAMPLES_FILES)
+	$(Q)mkdir -p "$(DATADIR)/examples"
 	$(INSTALL) -m 644 $(DATA_FILES) "$(DATADIR)"
+	$(INSTALL) -m 644 $(EXAMPLES_FILES) "$(DATADIR)/examples"
 
 uninstall: uninstall-libs uninstall-headers uninstall-progs uninstall-data
 
@@ -137,14 +153,13 @@ uninstall-data:
 clean::
 	$(RM) $(ALLPROGS) $(ALLPROGS_G)
 	$(RM) $(CLEANSUFFIXES)
-	$(RM) $(TOOLS)
 	$(RM) $(CLEANSUFFIXES:%=tools/%)
 	$(RM) coverage.info
 	$(RM) -r coverage-html
 
 distclean::
 	$(RM) $(DISTCLEANSUFFIXES)
-	$(RM) config.* .version version.h libavutil/avconfig.h
+	$(RM) config.* .version version.h libavutil/avconfig.h libavcodec/codec_names.h
 
 config:
 	$(SRC_PATH)/configure $(value FFMPEG_CONFIGURATION)
@@ -157,6 +172,8 @@ coverage-html: coverage.info
 	$(Q)mkdir -p $@
 	$(Q)genhtml -o $@ $<
 	$(Q)touch $@
+
+check: all alltools examples testprogs fate
 
 include $(SRC_PATH)/doc/Makefile
 include $(SRC_PATH)/tests/Makefile
@@ -172,5 +189,5 @@ $(sort $(OBJDIRS)):
 # so this saves some time on slow systems.
 .SUFFIXES:
 
-.PHONY: all all-yes alltools *clean config examples install*
+.PHONY: all all-yes alltools check *clean config install*
 .PHONY: testprogs uninstall*

@@ -54,6 +54,7 @@ namespace XBMCAddon
        * line3          : [opt] string or unicode - line #3 text.
        * nolabel        : [opt] label to put on the no button.
        * yeslabel       : [opt] label to put on the yes button.
+       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
        * 
        * *Note, Returns True if 'Yes' was pressed, else False.
        * 
@@ -65,7 +66,8 @@ namespace XBMCAddon
                  const String& line2 = emptyString,
                  const String& line3 = emptyString,
                  const String& nolabel = emptyString,
-                 const String& yeslabel = emptyString) throw (WindowException);
+                 const String& yeslabel = emptyString,
+                 int autoclose = 0) throw (WindowException);
 
       /**
        * select(heading, list) -- Show a select dialog.
@@ -216,6 +218,24 @@ namespace XBMCAddon
        */
       String numeric(int type, const String& heading, const String& defaultt = emptyString);
       
+      /**
+       * notification(heading, message[, icon, time]) -- Show a Notification alert.
+       * 
+       * heading        : string - dialog heading.
+       * message        : string - dialog message.
+       * icon           : [opt] string - icon to use. (default xbmcgui.NOTIFICATION_INFO)
+       * time           : [opt] integer - time in milliseconds (default 5000)
+       * 
+       * Builtin Icons:
+       *   xbmcgui.NOTIFICATION_INFO
+       *   xbmcgui.NOTIFICATION_WARNING
+       *   xbmcgui.NOTIFICATION_ERROR
+       * 
+       * example:
+       *   - dialog = xbmcgui.Dialog()
+       *   - dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)\n
+       */
+      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0);
     };
 
     /**

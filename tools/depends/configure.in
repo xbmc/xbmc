@@ -85,15 +85,15 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    if test "x$use_cpu" = "xarmeabi-v7a"; then
-      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon "
-    fi
     use_sdk="${use_sdk:-android-14}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags+=" -DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -Os -fexceptions"
+    if test "x$use_cpu" = "xarmeabi-v7a"; then
+      platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
+    fi
+    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
-    platform_ldflags=" -L$prefix/$deps_dir/lib/$use_sdk"
-    platform_includes=" -I$prefix/$deps_dir/include/$use_sdk"
+    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
     platform_os="android"
     if test "x$use_gplv3" = "xauto"; then
       use_gplv3=0
@@ -108,8 +108,8 @@ case $host in
     use_sdk="${use_sdk:-android-14}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
-    platform_cxxflags="$platform_cflags -frtti"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
     platform_os="android"
     if test "x$use_gplv3" = "xauto"; then
@@ -123,9 +123,9 @@ case $host in
       use_cpu=$host_cpu
     fi
     use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags+="-Os -fPIC -DPIC"
-    platform_cxxflags="$platform_cflags"
+    platform_cflags="-Os -fPIC -DPIC"
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+    platform_cxxflags="$platform_cflags"
     platform_os="linux"
   ;;
   *i686*-linux-gnu*)
@@ -154,8 +154,9 @@ case $host in
     #darwin builds are always cross
     cross_compiling="yes"
 
-    platform_cflags="-Wl,-search_paths_first -no_compact_linkedit -std=gnu99 -no-cpp-precomp "
-    platform_ldflags="-Wl,-search_paths_first -no_compact_linkedit "
+    platform_cflags="-std=gnu99 -no_compact_linkedit -no-cpp-precomp"
+    platform_ldflags="-Wl,-search_paths_first -no_compact_linkedit"
+    platform_cxxflags="-no_compact_linkedit -no-cpp-precomp"
 
     case $use_xcode in
       3.*.*)
@@ -226,14 +227,16 @@ case $host in
         esac
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
         platform_os="ios"
-        platform_ldflags+=" -L$use_sdk_path/usr/lib/system "
-        platform_cflags="-mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 "
+        tmp_flags="-mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
+        platform_cflags+=" $tmp_flags"
+        platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
+        platform_cxxflags+=" $tmp_flags"
       ;;
     esac
+    platform_cflags+=" -arch $use_cpu -m$platform_min_version"
+    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
+    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version"
     platform_includes="-isysroot $use_sdk_path"
-    platform_cflags+=" -arch $use_cpu -m$platform_min_version "
-    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path "
-    platform_cxxflags="$platform_cflags"
     deps_dir=$sdk_name"_"$use_cpu-target
     tool_dir=buildtools-native;
   ;;
@@ -242,9 +245,8 @@ case $host in
 esac
 
 platform_cflags+=" $passed_cflags"
+platform_ldflags+=" $passed_ldflags $LIBS"
 platform_cxxflags+=" $passed_cxxflags"
-platform_ldflags+=" $passed_ldflags"
-platform_ldflags+=" $LIBS"
 
 if test -n $use_build_toolchain; then
   PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH

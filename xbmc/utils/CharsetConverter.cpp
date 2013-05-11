@@ -22,6 +22,8 @@
 #include "Util.h"
 #include <fribidi/fribidi.h>
 #include "LangInfo.h"
+#include "guilib/LocalizeStrings.h"
+#include "settings/Setting.h"
 #include "threads/SingleLock.h"
 #include "log.h"
 
@@ -337,6 +339,19 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
 
 CCharsetConverter::CCharsetConverter()
 {
+}
+
+void CCharsetConverter::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  // TODO: does this make any sense at all for subtitles and karaoke?
+  if (settingId == "subtitles.charset" ||
+      settingId == "karaoke.charset" ||
+      settingId == "locale.charset")
+    reset();
 }
 
 void CCharsetConverter::clear()
@@ -699,4 +714,14 @@ bool CCharsetConverter::isValidUtf8(const CStdString& str)
 void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest)
 {
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_UTF8, FRIBIDI_TYPE_RTL);
+}
+
+void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  vector<CStdString> vecCharsets = g_charsetConverter.getCharsetLabels();
+  sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
+
+  list.push_back(make_pair(g_localizeStrings.Get(13278), "DEFAULT")); // "Default"
+  for (int i = 0; i < (int) vecCharsets.size(); ++i)
+    list.push_back(make_pair(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i])));
 }

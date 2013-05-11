@@ -18,11 +18,26 @@
  *
  */
 
+#include <limits.h>
+
 #include "MediaSettings.h"
+#include "Application.h"
+#include "Util.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/WindowIDs.h"
+#include "interfaces/Builtins.h"
+#include "music/MusicDatabase.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/Setting.h"
+#include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "video/VideoDatabase.h"
 
 using namespace std;
 
@@ -31,6 +46,17 @@ CMediaSettings::CMediaSettings()
   m_watchedModes["movies"] = WatchedModeAll;
   m_watchedModes["tvshows"] = WatchedModeAll;
   m_watchedModes["musicvideos"] = WatchedModeAll;
+
+  m_musicPlaylistRepeat = false;
+  m_musicPlaylistShuffle = false;
+  m_videoPlaylistRepeat = false;
+  m_videoPlaylistShuffle = false;
+
+  m_videoStartWindowed = false;
+  m_additionalSubtitleDirectoryChecked = 0;
+
+  m_musicNeedsUpdate = 0;
+  m_musicNeedsUpdate = 0;
 }
 
 CMediaSettings::~CMediaSettings()
@@ -106,6 +132,20 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
+
+  // mymusic settings
+  pElement = settings->FirstChildElement("mymusic");
+  if (pElement != NULL)
+  {
+    const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
+    if (pChild != NULL)
+    {
+      XMLUtils::GetBoolean(pChild, "repeat", m_musicPlaylistRepeat);
+      XMLUtils::GetBoolean(pChild, "shuffle", m_musicPlaylistShuffle);
+    }
+    if (!XMLUtils::GetInt(pElement, "needsupdate", m_musicNeedsUpdate, 0, INT_MAX))
+      m_musicNeedsUpdate = 0;
+  }
   
   // Read the watchmode settings for the various media views
   pElement = settings->FirstChildElement("myvideos");
@@ -118,6 +158,15 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_watchedModes["tvshows"] = (WatchedMode)tmp;
     if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
       m_watchedModes["musicvideos"] = (WatchedMode)tmp;
+
+    const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
+    if (pChild != NULL)
+    {
+      XMLUtils::GetBoolean(pChild, "repeat", m_videoPlaylistRepeat);
+      XMLUtils::GetBoolean(pChild, "shuffle", m_videoPlaylistShuffle);
+    }
+    if (!XMLUtils::GetInt(pElement, "needsupdate", m_videoNeedsUpdate, 0, INT_MAX))
+      m_videoNeedsUpdate = 0;
   }
 
   return true;
@@ -156,6 +205,26 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
 
+  // mymusic
+  pNode = settings->FirstChild("mymusic");
+  if (pNode == NULL)
+  {
+    TiXmlElement videosNode("mymusic");
+    pNode = settings->InsertEndChild(videosNode);
+    if (pNode == NULL)
+      return false;
+  }
+
+  TiXmlElement musicPlaylistNode("playlist");
+  TiXmlNode *playlistNode = pNode->InsertEndChild(musicPlaylistNode);
+  if (playlistNode == NULL)
+    return false;
+  XMLUtils::SetBoolean(playlistNode, "repeat", m_musicPlaylistRepeat);
+  XMLUtils::SetBoolean(playlistNode, "shuffle", m_musicPlaylistShuffle);
+
+  XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);
+
+  // myvideos
   pNode = settings->FirstChild("myvideos");
   if (pNode == NULL)
   {
@@ -169,7 +238,109 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchedModes.find("tvshows")->second);
   XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchedModes.find("musicvideos")->second);
 
+  TiXmlElement videoPlaylistNode("playlist");
+  playlistNode = pNode->InsertEndChild(videoPlaylistNode);
+  if (playlistNode == NULL)
+    return false;
+  XMLUtils::SetBoolean(playlistNode, "repeat", m_videoPlaylistRepeat);
+  XMLUtils::SetBoolean(playlistNode, "shuffle", m_videoPlaylistShuffle);
+
+  XMLUtils::SetInt(pNode, "needsupdate", m_videoNeedsUpdate);
+
   return true;
+}
+
+void CMediaSettings::OnSettingAction(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == "karaoke.export")
+  {
+    CContextButtons choices;
+    choices.Add(1, g_localizeStrings.Get(22034));
+    choices.Add(2, g_localizeStrings.Get(22035));
+
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+    if ( retVal > 0 )
+    {
+      CStdString path(CProfilesManager::Get().GetDatabaseFolder());
+      VECSOURCES shares;
+      g_mediaManager.GetLocalDrives(shares);
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+      {
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+
+        if ( retVal == 1 )
+        {
+          path = URIUtils::AddFileToFolder(path, "karaoke.html");
+          musicdatabase.ExportKaraokeInfo( path, true );
+        }
+        else
+        {
+          path = URIUtils::AddFileToFolder(path, "karaoke.csv");
+          musicdatabase.ExportKaraokeInfo( path, false );
+        }
+        musicdatabase.Close();
+      }
+    }
+  }
+  else if (settingId == "karaoke.importcsv")
+  {
+    CStdString path(CProfilesManager::Get().GetDatabaseFolder());
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportKaraokeInfo(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (settingId == "musiclibrary.cleanup")
+  {
+    CMusicDatabase musicdatabase;
+    musicdatabase.Clean();
+    CUtil::DeleteMusicDatabaseDirectoryCache();
+  }
+  else if (settingId == "musiclibrary.export")
+    CBuiltins::Execute("exportlibrary(music)");
+  else if (settingId == "musiclibrary.import")
+  {
+    CStdString path;
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (settingId == "videolibrary.cleanup")
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+      g_application.StartVideoCleanup();
+  }
+  else if (settingId == "videolibrary.export")
+    CBuiltins::Execute("exportlibrary(video)");
+  else if (settingId == "videolibrary.import")
+  {
+    CStdString path;
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
+    {
+      CVideoDatabase videodatabase;
+      videodatabase.Open();
+      videodatabase.ImportFromXML(path);
+      videodatabase.Close();
+    }
+  }
 }
 
 int CMediaSettings::GetWatchedMode(const std::string &content) const

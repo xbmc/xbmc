@@ -32,6 +32,7 @@
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
 #include "websocket/WebSocketManager.h"
+#include "Network.h"
 
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
@@ -85,7 +86,15 @@ void CTCPServer::StopServer(bool bWait)
   }
 }
 
-CTCPServer::CTCPServer(int port, bool nonlocal) : CThread("CTCPServer")
+bool CTCPServer::IsRunning()
+{
+  if (ServerInstance == NULL)
+    return false;
+
+  return ((CThread*)ServerInstance)->IsRunning();
+}
+
+CTCPServer::CTCPServer(int port, bool nonlocal) : CThread("TCPServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;
@@ -436,39 +445,13 @@ bool CTCPServer::InitializeBlue()
 
 bool CTCPServer::InitializeTCP()
 {
+  SOCKET fd;
 
-  struct sockaddr_in myaddr;
-  memset(&myaddr, 0, sizeof(myaddr));
+  Deinitialize();
 
-  myaddr.sin_family = AF_INET;
-  myaddr.sin_port = htons(m_port);
-
-  if (m_nonlocal)
-    myaddr.sin_addr.s_addr = INADDR_ANY;
-  else
-    inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
-
-  SOCKET fd = socket(PF_INET, SOCK_STREAM, 0);
-
-  if (fd == INVALID_SOCKET)
-  {
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket");
+  if ((fd = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "JSONRPC")) == INVALID_SOCKET)
     return false;
-  }
 
-  if (bind(fd, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
-  {
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to bind serversocket");
-    closesocket(fd);
-    return false;
-  }
-
-  if (listen(fd, 10) < 0)
-  {
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");
-    closesocket(fd);
-    return false;
-  }
   m_servers.push_back(fd);
   return true;
 }

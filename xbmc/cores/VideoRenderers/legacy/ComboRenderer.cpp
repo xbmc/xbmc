@@ -21,7 +21,8 @@
 #include "stdafx.h"
 #include "ComboRenderer.h"
 #include "Application.h"
-#include "Settings.h"
+#include "settings/Settings.h"
+#include "settings/DisplaySettings.h"
 
 CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)
@@ -117,7 +118,7 @@ void CComboRenderer::ManageDisplay()
   float fScreenHeight = (float)rv.bottom - rv.top;
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
-  float fPixelRatio = g_settings.m_fPixelRatio;
+  float fPixelRatio = CDisplaySettings::Get().GetPixelRatio();
   float fMaxScreenWidth = (float)CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iWidth;
   float fMaxScreenHeight = (float)CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iHeight;
   if (fOffsetX1 < 0) fOffsetX1 = 0;
@@ -139,7 +140,7 @@ void CComboRenderer::ManageDisplay()
   rs.right = m_iSourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
   rs.bottom = m_iSourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * fPixelRatio, g_settings.m_fZoomAmount);
+  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * fPixelRatio, CDisplaySettings::Get().GetZoomAmount());
 
   // check whether we need to alter our source rect
   if (rd.left < fOffsetX1 || rd.right > fOffsetX1 + fScreenWidth)
@@ -383,7 +384,7 @@ void CComboRenderer::CheckScreenSaver()
   if (g_application.IsInScreenSaver() && !m_bHasDimView)
   {
     D3DLOCKED_RECT lr;
-    float fAmount = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100.0f;
+    float fAmount = (float)CSettings::Get().GetInt("screensaver.dimlevel") / 100.0f;
     if ( D3D_OK == m_YUY2Texture[m_iYUY2RenderBuffer]->LockRect(0, &lr, NULL, 0 ))
     {
       // Drop brightness of current surface to 20%

@@ -20,7 +20,7 @@
 
 #include "Addon.h"
 #include "AddonManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "interfaces/python/XBPython.h"
@@ -252,7 +252,7 @@ CAddon::CAddon(const cp_extension_t *ext)
 {
   BuildLibName(ext);
   BuildProfilePath();
-  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_enabled = true;
   m_hasSettings = true;
   m_hasStrings = false;
@@ -280,7 +280,7 @@ CAddon::CAddon(const AddonProps &props)
   if (props.libname.IsEmpty()) BuildLibName();
   else m_strLibName = props.libname;
   BuildProfilePath();
-  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_enabled = true;
   m_hasSettings = true;
   m_hasStrings = false;
@@ -299,7 +299,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_userSettingsLoaded = rhs.m_userSettingsLoaded;
   m_hasSettings = rhs.m_hasSettings;
   BuildProfilePath();
-  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_strLibName  = rhs.m_strLibName;
   m_enabled = rhs.Enabled();
   m_hasStrings  = false;
@@ -411,7 +411,7 @@ bool CAddon::LoadStrings()
   // Path where the language strings reside
   CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
-  m_hasStrings = m_strings.Load(chosenPath, g_guiSettings.GetString("locale.language"));
+  m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString("locale.language"));
   return m_checkedStrings = true;
 }
 

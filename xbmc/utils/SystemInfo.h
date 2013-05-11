@@ -22,6 +22,7 @@
 
 #include "md5.h"
 #include "InfoLoader.h"
+#include "settings/ISubSettings.h"
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
@@ -76,7 +77,7 @@ private:
   CSysData m_info;
 };
 
-class CSysInfo : public CInfoLoader
+class CSysInfo : public CInfoLoader, public ISubSettings
 {
 public:
   enum WindowsVersion
@@ -92,6 +93,9 @@ public:
 
   CSysInfo(void);
   virtual ~CSysInfo();
+
+  virtual bool Load(const TiXmlNode *settings);
+  virtual bool Save(TiXmlNode *settings) const;
 
   char MD5_Sign[32 + 1];
 
@@ -115,6 +119,7 @@ public:
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
+  bool IsWindows8OrHigher();
   static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
@@ -129,6 +134,9 @@ public:
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 
+  int GetTotalUptime() const { return m_iSystemTimeTotalUp; }
+  void SetTotalUptime(int uptime) { m_iSystemTimeTotalUp = uptime; }
+
 protected:
   virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;
@@ -137,6 +145,7 @@ protected:
 private:
   CSysData m_info;
   static WindowsVersion m_WinVer;
+  int m_iSystemTimeTotalUp; // Uptime in minutes!
   void Reset();
 };
 

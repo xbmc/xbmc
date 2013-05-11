@@ -20,7 +20,7 @@
 */
 #include "WINFileSMB.h"
 #include "URL.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 
 #include <sys/stat.h>
 #include <io.h>

@@ -30,7 +30,7 @@
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
-#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRSSControl.h"
 #include "utils/TimeUtils.h"
@@ -48,7 +48,7 @@ using namespace XFILE;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CRssReader::CRssReader() : CThread("CRssReader")
+CRssReader::CRssReader() : CThread("RSSReader")
 {
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
@@ -133,7 +133,7 @@ void CRssReader::Process()
     m_strColors[iFeed] = "";
 
     CCurlFile http;
-    http.SetUserAgent(g_settings.m_userAgent);
+    http.SetUserAgent(g_advancedSettings.m_userAgent);
     http.SetTimeout(2);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];

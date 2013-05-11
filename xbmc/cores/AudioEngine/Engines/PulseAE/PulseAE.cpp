@@ -24,6 +24,7 @@
 #include "PulseAE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
+#include "Application.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
@@ -126,7 +127,7 @@ bool CPulseAE::CanInit()
 
 bool CPulseAE::Initialize()
 {
-  m_Volume = g_settings.m_fVolumeLevel;
+  m_Volume = g_application.GetVolume(false);
 
   if ((m_MainLoop = pa_threaded_mainloop_new()) == NULL)
   {

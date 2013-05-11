@@ -25,7 +25,6 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/cpluff.dll"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif.dll"
-#define DLL_PATH_LIBID3TAG     "special://xbmcbin/system/libid3tag.dll"
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth.dll"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"
@@ -58,10 +57,10 @@
 #define DLL_PATH_LIBRTMP       "special://xbmcbin/system/players/dvdplayer/librtmp.dll"
 
 /* ffmpeg */
-#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-53.dll"
-#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-53.dll"
-#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-51.dll"
-#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-2.dll"
+#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-54.dll"
+#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-54.dll"
+#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-52.dll"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-3.dll"
 #define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-52.dll"
 #define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-2.dll"
 #define DLL_PATH_LIBSWRESAMPLE "special://xbmcbin/system/players/dvdplayer/swresample-0.dll"

@@ -37,7 +37,6 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "view/ViewState.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -260,7 +259,7 @@ void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL
 
 void CGUIViewState::SetCurrentSortMethod(int method)
 {
-  bool ignoreThe = g_guiSettings.GetBool("filelists.ignorethewhensorting");
+  bool ignoreThe = CSettings::Get().GetBool("filelists.ignorethewhensorting");
 
   if (method < SORT_METHOD_NONE || method >= SORT_METHOD_MAX)
     return; // invalid
@@ -303,18 +302,18 @@ SORT_METHOD CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 
 bool CGUIViewState::HideExtensions()
 {
-  return !g_guiSettings.GetBool("filelists.showextensions");
+  return !CSettings::Get().GetBool("filelists.showextensions");
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return !g_guiSettings.GetBool("filelists.showparentdiritems");
+  return !CSettings::Get().GetBool("filelists.showparentdiritems");
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
   if (CProfilesManager::Get().GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
-    return !g_guiSettings.GetBool("filelists.showaddsourcebuttons");
+    return !CSettings::Get().GetBool("filelists.showaddsourcebuttons");
 
   return true;
 }
@@ -449,7 +448,7 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
   if (db.Open())
   {
     CViewState state;
-    if (db.GetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin")) ||
+    if (db.GetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin")) ||
         db.GetViewState(path, windowID, state, ""))
     {
       SetViewAsControl(state.m_viewMode);
@@ -468,10 +467,10 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
     CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
     if (viewState)
       *viewState = state;
-    db.SetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin"));
+    db.SetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin"));
     db.Close();
     if (viewState)
-      g_settings.Save();
+      CSettings::Get().Save();
   }
 }
 
@@ -485,7 +484,7 @@ void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS lab
     SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
     if (sortBy != SortByNone)
     {
-      sortMethod = SortUtils::TranslateOldSortMethod(sortBy, g_guiSettings.GetBool("filelists.ignorethewhensorting"));
+      sortMethod = SortUtils::TranslateOldSortMethod(sortBy, CSettings::Get().GetBool("filelists.ignorethewhensorting"));
       if (sortMethod == SORT_METHOD_NONE)
         sortMethod = SORT_METHOD_PLAYLIST_ORDER;
       else

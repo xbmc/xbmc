@@ -55,8 +55,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   m_CurrentStream=0;
 
-  CStdString strExtension;
-  URIUtils::GetExtension(strFile, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFile);
 
   //  A bitstream inside a ogg file?
   if (strExtension==".oggstream")

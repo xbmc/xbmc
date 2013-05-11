@@ -2,6 +2,7 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS  = DVDDemux.cpp
 SRCS += DVDDemuxBXA.cpp
+SRCS += DVDDemuxCDDA.cpp
 SRCS += DVDDemuxFFmpeg.cpp
 SRCS += DVDDemuxHTSP.cpp
 SRCS += DVDDemuxPVRClient.cpp

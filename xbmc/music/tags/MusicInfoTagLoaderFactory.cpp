@@ -59,8 +59,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   if (item.IsMusicDb())
     return new CMusicInfoTagLoaderDatabase();
 
-  CStdString strExtension;
-  URIUtils::GetExtension( strFileName, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFileName);
   strExtension.ToLower();
   strExtension.TrimLeft('.');
 

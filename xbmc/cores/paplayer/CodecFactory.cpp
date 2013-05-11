@@ -21,7 +21,6 @@
 #include "system.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
-#include "CDDAcodec.h"
 #include "OGGcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
@@ -51,7 +50,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("cdda"))
-    return new CDDACodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
@@ -182,20 +181,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-  }
-  if (urlFile.GetFileType().Equals("cdda"))
-  {
-    //lets see what it contains...
-    //this kinda sucks 'cause if it's plain cdda the file
-    //will be opened, sniffed and closed before it is opened *again* for cdda
-    //would be better if the papcodecs could work with bitstreams instead of filenames.
-    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
-    dvdcodec->SetContentType("audio/x-spdif-compressed");
-    if (dvdcodec->Init(strFile, filecache))
-    {
-      return dvdcodec;
-    }
-    delete dvdcodec;
   }
   else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
     return CreateOGGCodec(strFile,filecache);

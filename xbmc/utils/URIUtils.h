@@ -35,10 +35,9 @@ public:
   static void GetDirectory(const CStdString& strFilePath,
                            CStdString& strDirectoryPath);
   static CStdString GetDirectory(const CStdString &filePath);
-
-  static const CStdString GetExtension(const CStdString& strFileName);
-  static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
+
+  static CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static CStdString ReplaceExtension(const CStdString& strFile,
                                      const CStdString& strNewExtension);
@@ -107,15 +106,7 @@ public:
                                 const CStdString& strFilePathInArchive,
                                 const CStdString& strPwd="");
 
-  static void AddFileToFolder(const CStdString& strFolder,
-                              const CStdString& strFile, CStdString& strResult);
-  static CStdString AddFileToFolder(const CStdString &strFolder, 
-                                    const CStdString &strFile)
-  {
-    CStdString result;
-    AddFileToFolder(strFolder, strFile, result);
-    return result;
-  }
+  static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile);
 
   static bool ProtocolHasParentInHostname(const CStdString& prot);
   static bool ProtocolHasEncodedHostname(const CStdString& prot);

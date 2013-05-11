@@ -70,7 +70,7 @@
 				<width>260</width>
 				<height>481</height>
 				<itemgap>-1</itemgap>
-				<onleft>60</onleft>
+				<onleft>9000</onleft>
 				<onright>5</onright>
 				<onup>3</onup>
 				<ondown>3</ondown>
@@ -223,6 +223,44 @@
 			<control type="label">
 				<include>WindowTitleCommons</include>
 				<label>[COLOR=blue] - [/COLOR]$INFO[Control.GetLabel(2)]</label>
+			</control>
+		</control>
+		<control type="group">
+			<posx>-250</posx>
+			<include>SideBladeLeft</include>
+			<control type="grouplist" id="9000">
+				<posx>0</posx>
+				<posy>110</posy>
+				<width>250</width>
+				<height>600</height>
+				<onleft>9000</onleft>
+				<onright>3</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onback>3</onback>
+				<itemgap>0</itemgap>
+				<control type="label" id="200">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31007</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="button" id="20">
+					<description>Setting level button</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>10037</label>
+					<onclick>SettingsLevelChange</onclick>
+				</control>
+				<control type="button" id="21">
+					<description>Reset button</description>
+					<include>ButtonCommonValues</include>
+					<label>10035</label>
+					<onclick>SettingsReset</onclick>
+				</control>
 			</control>
 		</control>
 		<include>Clock</include>

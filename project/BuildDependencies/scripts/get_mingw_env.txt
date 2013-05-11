@@ -25,3 +25,4 @@ gettext-0.17-1-mingw32-dev.tar.lzma         http://mirrors.xbmc.org/build-deps/w
 libintl-0.17-1-mingw32-dll-8.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/gettext/gettext-0.17-1/
 libiconv-1.13.1-1-mingw32-dll-2.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
 libiconv-1.13.1-1-mingw32-dev.tar.lzma      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
+make-3.82-5-mingw32-bin.tar.lzma            http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/Extension/make/make-3.82-mingw32/

@@ -31,7 +31,7 @@ using namespace XFILE;
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 
-CDownloadQueue::CDownloadQueue(void) : CThread("CDownloadQueue")
+CDownloadQueue::CDownloadQueue(void) : CThread("DownloadQueue")
 {
   m_bStop = false;
   m_wQueueId = m_wNextQueueId++;
@@ -97,8 +97,7 @@ TICKET CDownloadQueue::RequestFile(const CStdString& aUrl, IDownloadQueueObserve
 
   CLog::Log(LOGDEBUG, "RequestFile from observer at %p", aObserver);
   // create a temporary destination
-  CStdString strExtension;
-  URIUtils::GetExtension(aUrl, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(aUrl);
 
   TICKET ticket(m_wQueueId, m_dwNextItemId++);
 

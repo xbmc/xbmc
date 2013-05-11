@@ -19,17 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "avcodec.h"
-#include "internal.h"
-#include "libavutil/avassert.h"
-#include "bytestream.h"
+#include <string.h>
 
-void av_destruct_packet_nofree(AVPacket *pkt)
-{
-    pkt->data = NULL; pkt->size = 0;
-    pkt->side_data       = NULL;
-    pkt->side_data_elems = 0;
-}
+#include "libavutil/avassert.h"
+#include "libavutil/mem.h"
+#include "avcodec.h"
+#include "bytestream.h"
+#include "internal.h"
 
 void ff_packet_free_side_data(AVPacket *pkt)
 {
@@ -43,47 +39,47 @@ void ff_packet_free_side_data(AVPacket *pkt)
 void av_destruct_packet(AVPacket *pkt)
 {
     av_free(pkt->data);
-    pkt->data = NULL; pkt->size = 0;
-
-    ff_packet_free_side_data(pkt);
+    pkt->data = NULL;
+    pkt->size = 0;
 }
 
 void av_init_packet(AVPacket *pkt)
 {
-    pkt->pts   = AV_NOPTS_VALUE;
-    pkt->dts   = AV_NOPTS_VALUE;
-    pkt->pos   = -1;
-    pkt->duration = 0;
+    pkt->pts                  = AV_NOPTS_VALUE;
+    pkt->dts                  = AV_NOPTS_VALUE;
+    pkt->pos                  = -1;
+    pkt->duration             = 0;
     pkt->convergence_duration = 0;
-    pkt->flags = 0;
-    pkt->stream_index = 0;
-    pkt->destruct= NULL;
-    pkt->side_data       = NULL;
-    pkt->side_data_elems = 0;
+    pkt->flags                = 0;
+    pkt->stream_index         = 0;
+    pkt->destruct             = NULL;
+    pkt->side_data            = NULL;
+    pkt->side_data_elems      = 0;
 }
 
 int av_new_packet(AVPacket *pkt, int size)
 {
-    uint8_t *data= NULL;
-    if((unsigned)size < (unsigned)size + FF_INPUT_BUFFER_PADDING_SIZE)
+    uint8_t *data = NULL;
+    if ((unsigned)size < (unsigned)size + FF_INPUT_BUFFER_PADDING_SIZE)
         data = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if (data){
+    if (data) {
         memset(data + size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    }else
-        size=0;
+    } else
+        size = 0;
 
     av_init_packet(pkt);
-    pkt->data = data;
-    pkt->size = size;
+    pkt->data     = data;
+    pkt->size     = size;
     pkt->destruct = av_destruct_packet;
-    if(!data)
+    if (!data)
         return AVERROR(ENOMEM);
     return 0;
 }
 
 void av_shrink_packet(AVPacket *pkt, int size)
 {
-    if (pkt->size <= size) return;
+    if (pkt->size <= size)
+        return;
     pkt->size = size;
     memset(pkt->data + size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
 }
@@ -94,76 +90,103 @@ int av_grow_packet(AVPacket *pkt, int grow_by)
     av_assert0((unsigned)pkt->size <= INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE);
     if (!pkt->size)
         return av_new_packet(pkt, grow_by);
-    if ((unsigned)grow_by > INT_MAX - (pkt->size + FF_INPUT_BUFFER_PADDING_SIZE))
+    if ((unsigned)grow_by >
+        INT_MAX - (pkt->size + FF_INPUT_BUFFER_PADDING_SIZE))
         return -1;
-    new_ptr = av_realloc(pkt->data, pkt->size + grow_by + FF_INPUT_BUFFER_PADDING_SIZE);
+    new_ptr = av_realloc(pkt->data,
+                         pkt->size + grow_by + FF_INPUT_BUFFER_PADDING_SIZE);
     if (!new_ptr)
         return AVERROR(ENOMEM);
-    pkt->data = new_ptr;
+    pkt->data  = new_ptr;
     pkt->size += grow_by;
     memset(pkt->data + pkt->size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
     return 0;
 }
 
-#define DUP_DATA(dst, src, size, padding) \
-    do { \
-        void *data; \
-        if (padding) { \
-            if ((unsigned)(size) > (unsigned)(size) + FF_INPUT_BUFFER_PADDING_SIZE) \
-                goto failed_alloc; \
-            data = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE); \
-        } else { \
-            data = av_malloc(size); \
-        } \
-        if (!data) \
-            goto failed_alloc; \
-        memcpy(data, src, size); \
-        if (padding) \
-            memset((uint8_t*)data + size, 0, FF_INPUT_BUFFER_PADDING_SIZE); \
-        dst = data; \
-    } while(0)
+#define DUP_DATA(dst, src, size, padding)                               \
+    do {                                                                \
+        void *data;                                                     \
+        if (padding) {                                                  \
+            if ((unsigned)(size) >                                      \
+                (unsigned)(size) + FF_INPUT_BUFFER_PADDING_SIZE)        \
+                goto failed_alloc;                                      \
+            data = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);      \
+        } else {                                                        \
+            data = av_malloc(size);                                     \
+        }                                                               \
+        if (!data)                                                      \
+            goto failed_alloc;                                          \
+        memcpy(data, src, size);                                        \
+        if (padding)                                                    \
+            memset((uint8_t *)data + size, 0,                           \
+                   FF_INPUT_BUFFER_PADDING_SIZE);                       \
+        dst = data;                                                     \
+    } while (0)
+
+/* Makes duplicates of data, side_data, but does not copy any other fields */
+static int copy_packet_data(AVPacket *dst, AVPacket *src)
+{
+    dst->data      = NULL;
+    dst->side_data = NULL;
+    DUP_DATA(dst->data, src->data, dst->size, 1);
+    dst->destruct = av_destruct_packet;
+
+    if (dst->side_data_elems) {
+        int i;
+
+        DUP_DATA(dst->side_data, src->side_data,
+                dst->side_data_elems * sizeof(*dst->side_data), 0);
+        memset(dst->side_data, 0,
+                dst->side_data_elems * sizeof(*dst->side_data));
+        for (i = 0; i < dst->side_data_elems; i++) {
+            DUP_DATA(dst->side_data[i].data, src->side_data[i].data,
+                    src->side_data[i].size, 1);
+            dst->side_data[i].size = src->side_data[i].size;
+            dst->side_data[i].type = src->side_data[i].type;
+        }
+    }
+    return 0;
+
+failed_alloc:
+    av_destruct_packet(dst);
+    return AVERROR(ENOMEM);
+}
 
 int av_dup_packet(AVPacket *pkt)
 {
     AVPacket tmp_pkt;
 
-    if (((pkt->destruct == av_destruct_packet_nofree) || (pkt->destruct == NULL)) && pkt->data) {
+    if (pkt->destruct == NULL && pkt->data) {
         tmp_pkt = *pkt;
-
-        pkt->data      = NULL;
-        pkt->side_data = NULL;
-        DUP_DATA(pkt->data, tmp_pkt.data, pkt->size, 1);
-        pkt->destruct = av_destruct_packet;
-
-        if (pkt->side_data_elems) {
-            int i;
-
-            DUP_DATA(pkt->side_data, tmp_pkt.side_data,
-                     pkt->side_data_elems * sizeof(*pkt->side_data), 0);
-            memset(pkt->side_data, 0, pkt->side_data_elems * sizeof(*pkt->side_data));
-            for (i = 0; i < pkt->side_data_elems; i++) {
-                DUP_DATA(pkt->side_data[i].data, tmp_pkt.side_data[i].data,
-                         pkt->side_data[i].size, 1);
-            }
-        }
+        return copy_packet_data(pkt, &tmp_pkt);
     }
     return 0;
-failed_alloc:
-    av_destruct_packet(pkt);
-    return AVERROR(ENOMEM);
+}
+
+int av_copy_packet(AVPacket *dst, AVPacket *src)
+{
+    *dst = *src;
+    return copy_packet_data(dst, src);
 }
 
 void av_free_packet(AVPacket *pkt)
 {
     if (pkt) {
-        if (pkt->destruct) pkt->destruct(pkt);
-        pkt->data = NULL; pkt->size = 0;
-        pkt->side_data       = NULL;
+        int i;
+
+        if (pkt->destruct)
+            pkt->destruct(pkt);
+        pkt->data            = NULL;
+        pkt->size            = 0;
+
+        for (i = 0; i < pkt->side_data_elems; i++)
+            av_free(pkt->side_data[i].data);
+        av_freep(&pkt->side_data);
         pkt->side_data_elems = 0;
     }
 }
 
-uint8_t* av_packet_new_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
+uint8_t *av_packet_new_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
                                  int size)
 {
     int elems = pkt->side_data_elems;
@@ -173,7 +196,8 @@ uint8_t* av_packet_new_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
     if ((unsigned)size > INT_MAX - FF_INPUT_BUFFER_PADDING_SIZE)
         return NULL;
 
-    pkt->side_data = av_realloc(pkt->side_data, (elems + 1) * sizeof(*pkt->side_data));
+    pkt->side_data = av_realloc(pkt->side_data,
+                                (elems + 1) * sizeof(*pkt->side_data));
     if (!pkt->side_data)
         return NULL;
 
@@ -187,7 +211,7 @@ uint8_t* av_packet_new_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
     return pkt->side_data[elems].data;
 }
 
-uint8_t* av_packet_get_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
+uint8_t *av_packet_get_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
                                  int *size)
 {
     int i;
@@ -247,7 +271,7 @@ int av_packet_split_side_data(AVPacket *pkt){
         p = pkt->data + pkt->size - 8 - 5;
         for (i=1; ; i++){
             size = AV_RB32(p);
-            if (size>INT_MAX || p - pkt->data <= size)
+            if (size>INT_MAX || p - pkt->data < size)
                 return 0;
             if (p[4]&128)
                 break;
@@ -261,7 +285,7 @@ int av_packet_split_side_data(AVPacket *pkt){
         p= pkt->data + pkt->size - 8 - 5;
         for (i=0; ; i++){
             size= AV_RB32(p);
-            av_assert0(size<=INT_MAX && p - pkt->data > size);
+            av_assert0(size<=INT_MAX && p - pkt->data >= size);
             pkt->side_data[i].data = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);
             pkt->side_data[i].size = size;
             pkt->side_data[i].type = p[4]&127;
@@ -278,4 +302,20 @@ int av_packet_split_side_data(AVPacket *pkt){
         return 1;
     }
     return 0;
+}
+
+int av_packet_shrink_side_data(AVPacket *pkt, enum AVPacketSideDataType type,
+                               int size)
+{
+    int i;
+
+    for (i = 0; i < pkt->side_data_elems; i++) {
+        if (pkt->side_data[i].type == type) {
+            if (size > pkt->side_data[i].size)
+                return AVERROR(ENOMEM);
+            pkt->side_data[i].size = size;
+            return 0;
+        }
+    }
+    return AVERROR(ENOENT);
 }

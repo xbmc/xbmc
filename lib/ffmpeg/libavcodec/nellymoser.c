@@ -33,7 +33,6 @@
 
 #include "nellymoser.h"
 #include "avcodec.h"
-#include "dsputil.h"
 
 #define BITSTREAM_READER_LE
 #include "get_bits.h"
@@ -223,4 +222,3 @@ void ff_nelly_get_sample_bits(const float *buf, int *bits)
             bits[i] = 0;
     }
 }
-

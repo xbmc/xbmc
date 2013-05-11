@@ -38,8 +38,7 @@ bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   CStdString strFileToLoad = strFile;
   int song = -1;
-  CStdString strExtension;
-  URIUtils::GetExtension(strFile, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFile);
   strExtension.MakeLower();
   if (strExtension == ".asapstream")
   {

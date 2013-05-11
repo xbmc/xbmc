@@ -19,7 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string.h>
+
 #include "libavutil/intreadwrite.h"
+#include "libavutil/mem.h"
 #include "avcodec.h"
 
 typedef struct H264BSFContext {
@@ -59,6 +62,7 @@ static int h264_mp4toannexb_filter(AVBitStreamFilterContext *bsfc,
                                    const uint8_t *buf, int      buf_size,
                                    int keyframe) {
     H264BSFContext *ctx = bsfc->priv_data;
+    int i;
     uint8_t unit_type;
     int32_t nal_size;
     uint32_t cumul_size = 0;
@@ -82,8 +86,6 @@ static int h264_mp4toannexb_filter(AVBitStreamFilterContext *bsfc,
 
         /* retrieve length coded size */
         ctx->length_size = (*extradata++ & 0x3) + 1;
-        if (ctx->length_size == 3)
-            return AVERROR(EINVAL);
 
         /* retrieve sps and pps unit(s) */
         unit_nb = *extradata++ & 0x1f; /* number of sps unit(s) */
@@ -142,12 +144,8 @@ pps:
         if (buf + ctx->length_size > buf_end)
             goto fail;
 
-        if (ctx->length_size == 1) {
-            nal_size = buf[0];
-        } else if (ctx->length_size == 2) {
-            nal_size = AV_RB16(buf);
-        } else
-            nal_size = AV_RB32(buf);
+        for (nal_size = 0, i = 0; i<ctx->length_size; i++)
+            nal_size = (nal_size << 8) | buf[i];
 
         buf += ctx->length_size;
         unit_type = *buf & 0x1f;
@@ -188,4 +186,3 @@ AVBitStreamFilter ff_h264_mp4toannexb_bsf = {
     sizeof(H264BSFContext),
     h264_mp4toannexb_filter,
 };
-

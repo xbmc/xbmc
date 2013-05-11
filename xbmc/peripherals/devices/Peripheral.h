@@ -25,6 +25,8 @@
 
 class TiXmlDocument;
 
+class CSetting;
+
 namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;

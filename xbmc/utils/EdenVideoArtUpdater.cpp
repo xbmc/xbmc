@@ -31,8 +31,8 @@
 #include "TextureCacheJob.h"
 #include "pictures/Picture.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "guilib/Texture.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -45,7 +45,7 @@ using namespace std;
 using namespace VIDEO;
 using namespace XFILE;
 
-CEdenVideoArtUpdater::CEdenVideoArtUpdater() : CThread("EdenVideoArtUpdater")
+CEdenVideoArtUpdater::CEdenVideoArtUpdater() : CThread("VideoArtUpdater")
 {
   m_textureDB.Open();
 }
@@ -77,7 +77,7 @@ void CEdenVideoArtUpdater::Process()
   handle->SetTitle(g_localizeStrings.Get(12349));
 
   // movies
-  db.GetMoviesByWhere("videodb://1/2/", CDatabase::Filter(), items);
+  db.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter(), items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -111,7 +111,7 @@ void CEdenVideoArtUpdater::Process()
   items.Clear();
 
   // music videos
-  db.GetMusicVideosNav("videodb://3/2/", items, false);
+  db.GetMusicVideosNav("videodb://musicvideos/titles/", items, false);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -146,7 +146,7 @@ void CEdenVideoArtUpdater::Process()
 
   // tvshows
   // count the number of episodes
-  db.GetTvShowsNav("videodb://2/2/", items);
+  db.GetTvShowsNav("videodb://tvshows/titles/", items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -198,7 +198,7 @@ void CEdenVideoArtUpdater::Process()
 
     // now episodes...
     CFileItemList items2;
-    db.GetEpisodesByWhere("videodb://2/2/-1/-1/", db.PrepareSQL("episodeview.idShow=%d", item->GetVideoInfoTag()->m_iDbId), items2);
+    db.GetEpisodesByWhere("videodb://tvshows/titles/-1/-1/", db.PrepareSQL("episodeview.idShow=%d", item->GetVideoInfoTag()->m_iDbId), items2);
     for (int j = 0; j < items2.Size(); j++)
     {
       handle->SetProgress(j, items2.Size());
@@ -225,7 +225,7 @@ void CEdenVideoArtUpdater::Process()
   items.Clear();
 
   // now sets
-  db.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES);
+  db.GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -235,7 +235,7 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
     { // grab the first movie from this set
       CFileItemList items2;
-      db.GetMoviesNav("videodb://1/2/", items2, -1, -1, -1, -1, -1, -1, item->GetVideoInfoTag()->m_iDbId);
+      db.GetMoviesNav("videodb://movies/titles/", items2, -1, -1, -1, -1, -1, -1, item->GetVideoInfoTag()->m_iDbId);
       if (items2.Size() > 1)
       {
         if (db.GetArtForItem(items2[0]->GetVideoInfoTag()->m_iDbId, items2[0]->GetVideoInfoTag()->m_type, artwork))
@@ -246,12 +246,12 @@ void CEdenVideoArtUpdater::Process()
   items.Clear();
 
   // now actors
-  if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+  if (CSettings::Get().GetBool("videolibrary.actorthumbs"))
   {
-    db.GetActorsNav("videodb://1/4/", items, VIDEODB_CONTENT_MOVIES);
-    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_TVSHOWS);
-    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_EPISODES);
-    db.GetActorsNav("videodb://3/4/", items, VIDEODB_CONTENT_MUSICVIDEOS);
+    db.GetActorsNav("videodb://movies/titles/", items, VIDEODB_CONTENT_MOVIES);
+    db.GetActorsNav("videodb://tvshows/titles/", items, VIDEODB_CONTENT_TVSHOWS);
+    db.GetActorsNav("videodb://tvshows/titles/", items, VIDEODB_CONTENT_EPISODES);
+    db.GetActorsNav("videodb://musicvideos/titles/", items, VIDEODB_CONTENT_MUSICVIDEOS);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];

@@ -63,6 +63,12 @@ extern "C" {
 #endif
 }
 
+#if LIBAVCODEC_VERSION_MICRO >= 100
+  #define LIBAVCODEC_FROM_FFMPEG
+#else
+  #define LIBAVCODEC_FROM_LIBAV
+#endif
+
 #include "threads/SingleLock.h"
 
 class DllAvCodecInterface
@@ -81,6 +87,7 @@ public:
   virtual int avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, AVPacket *avpkt)=0;
   virtual int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, AVPacket *avpkt)=0;
   virtual int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, const short *samples)=0;
+  virtual int avcodec_encode_audio2(AVCodecContext *avctx, AVPacket *avpkt, const AVFrame *frame, int *got_packet_ptr)=0;
   virtual int avpicture_get_size(PixelFormat pix_fmt, int width, int height)=0;
   virtual AVCodecContext *avcodec_alloc_context3(AVCodec *codec)=0;
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)=0;
@@ -105,6 +112,8 @@ public:
   virtual AVCodec *av_codec_next(AVCodec *c)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
+  virtual int avcodec_fill_audio_frame(AVFrame *frame, int nb_channels, enum AVSampleFormat sample_fmt, const uint8_t *buf, int buf_size, int align) = 0;
+  virtual void avcodec_free_frame(AVFrame **frame)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -142,6 +151,7 @@ public:
   virtual int avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, AVPacket *avpkt) { return ::avcodec_decode_audio4(avctx, frame, got_frame_ptr, avpkt); }
   virtual int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, AVPacket *avpkt) { return ::avcodec_decode_subtitle2(avctx, sub, got_sub_ptr, avpkt); }
   virtual int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, const short *samples) { return ::avcodec_encode_audio(avctx, buf, buf_size, samples); }
+  virtual int avcodec_encode_audio2(AVCodecContext *avctx, AVPacket *avpkt, const AVFrame *frame, int *got_packet_ptr) { return ::avcodec_encode_audio2(avctx, avpkt, frame, got_packet_ptr); }
   virtual int avpicture_get_size(PixelFormat pix_fmt, int width, int height) { return ::avpicture_get_size(pix_fmt, width, height); }
   virtual AVCodecContext *avcodec_alloc_context3(AVCodec *codec) { return ::avcodec_alloc_context3(codec); }
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode) { ::avcodec_string(buf, buf_size, enc, encode); }
@@ -173,6 +183,8 @@ public:
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
   virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
+  virtual int avcodec_fill_audio_frame(AVFrame *frame, int nb_channels, enum AVSampleFormat sample_fmt, const uint8_t *buf, int buf_size, int align) { return ::avcodec_fill_audio_frame(frame, nb_channels, sample_fmt, buf, buf_size, align); }
+  virtual void avcodec_free_frame(AVFrame **frame) { return ::avcodec_free_frame(frame); };
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -194,6 +206,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_audio4, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_subtitle2, AVCodecContext*, AVSubtitle*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_encode_audio, AVCodecContext*, uint8_t*, int, const short*)
+  DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_encode_audio2, AVCodecContext*, AVPacket*, const AVFrame*, int*)
   DEFINE_FUNC_ALIGNED1(AVCodecContext*, __cdecl, avcodec_alloc_context3, AVCodec *)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED9(int, __cdecl, av_parser_parse2, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t, int64_t)
@@ -221,6 +234,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(enum PixelFormat, avcodec_default_get_format, (struct AVCodecContext *p1, const enum PixelFormat *p2))
+  DEFINE_METHOD6(int, avcodec_fill_audio_frame, (AVFrame* p1, int p2, enum AVSampleFormat p3, const uint8_t* p4, int p5, int p6))
+  DEFINE_METHOD1(void, avcodec_free_frame, (AVFrame **p1))
 
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
   BEGIN_METHOD_RESOLVE()
@@ -236,6 +251,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_decode_audio4)
     RESOLVE_METHOD(avcodec_decode_subtitle2)
     RESOLVE_METHOD(avcodec_encode_audio)
+    RESOLVE_METHOD(avcodec_encode_audio2)
     RESOLVE_METHOD(avpicture_get_size)
     RESOLVE_METHOD(avcodec_alloc_context3)
     RESOLVE_METHOD(avcodec_string)
@@ -255,6 +271,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_codec_next)
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
+    RESOLVE_METHOD(avcodec_fill_audio_frame)
+    RESOLVE_METHOD(avcodec_free_frame)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */

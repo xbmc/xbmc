@@ -4,6 +4,7 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Fanart Etkinleştir</string>
     <string id="30002">Tercih Edilen Dil</string>
     <string id="30004">Fragmanı Etkinleştir (YouTube)</string>
     <string id="30005">Özgün Başlığı Koru</string>

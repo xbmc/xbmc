@@ -506,7 +506,7 @@ static void codebook_trellis_rate(AACEncContext *s, SingleChannelElement *sce,
             idx = cb;
     ppos = max_sfb;
     while (ppos > 0) {
-        assert(idx >= 0);
+        av_assert1(idx >= 0);
         cb = idx;
         stackrun[stack_len] = path[ppos][cb].run;
         stackcb [stack_len] = cb;
@@ -585,7 +585,6 @@ static void search_for_quantizers_anmr(AVCodecContext *avctx, AACEncContext *s,
     q0 = coef2minsf(q0f);
     //maximum scalefactor index is when maximum coefficient after quantizing is still not zero
     q1 = coef2maxsf(q1f);
-    //av_log(NULL, AV_LOG_ERROR, "q0 %d, q1 %d\n", q0, q1);
     if (q1 - q0 > 60) {
         int q0low  = q0;
         int q1high = q1;
@@ -593,7 +592,6 @@ static void search_for_quantizers_anmr(AVCodecContext *avctx, AACEncContext *s,
         int qnrg = av_clip_uint8(log2f(sqrtf(qnrgf/qcnt))*4 - 31 + SCALE_ONE_POS - SCALE_DIV_512);
         q1 = qnrg + 30;
         q0 = qnrg - 30;
-        //av_log(NULL, AV_LOG_ERROR, "q0 %d, q1 %d\n", q0, q1);
         if (q0 < q0low) {
             q1 += q0low - q0;
             q0  = q0low;
@@ -602,7 +600,6 @@ static void search_for_quantizers_anmr(AVCodecContext *avctx, AACEncContext *s,
             q1  = q1high;
         }
     }
-    //av_log(NULL, AV_LOG_ERROR, "q0 %d, q1 %d\n", q0, q1);
 
     for (i = 0; i < TRELLIS_STATES; i++) {
         paths[0][i].cost    = 0.0f;
@@ -714,15 +711,17 @@ static void search_for_quantizers_twoloop(AVCodecContext *avctx,
 {
     int start = 0, i, w, w2, g;
     int destbits = avctx->bit_rate * 1024.0 / avctx->sample_rate / avctx->channels;
-    float dists[128], uplims[128];
+    float dists[128] = { 0 }, uplims[128];
     float maxvals[128];
     int fflag, minscaler;
     int its  = 0;
     int allz = 0;
     float minthr = INFINITY;
 
+    // for values above this the decoder might end up in an endless loop
+    // due to always having more bits than what can be encoded.
+    destbits = FFMIN(destbits, 5800);
     //XXX: some heuristic to determine initial quantizers will reduce search time
-    memset(dists, 0, sizeof(dists));
     //determine zero bands and upper limits
     for (w = 0; w < sce->ics.num_windows; w += sce->ics.group_len[w]) {
         for (g = 0;  g < sce->ics.num_swb; g++) {
@@ -876,7 +875,7 @@ static void search_for_quantizers_faac(AVCodecContext *avctx, AACEncContext *s,
     } else {
         for (w = 0; w < 8; w++) {
             const float *coeffs = sce->coeffs + w*128;
-            start = 0;
+            curband = start = 0;
             for (i = 0; i < 128; i++) {
                 if (i - start >= sce->ics.swb_sizes[curband]) {
                     start += sce->ics.swb_sizes[curband];

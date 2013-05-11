@@ -36,7 +36,6 @@
 #include "XTimeUtils.h"
 #endif
 #include "guilib/LocalizeStrings.h"
-#include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,6 +44,7 @@
 #include "utils/Crc32.h"
 #include "FileItem.h"
 #include "LangInfo.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
@@ -52,6 +52,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/LangCodeExpander.h"
 
 #include "CallbackHandler.h"
 #include "AddonUtils.h"
@@ -177,13 +178,57 @@ namespace XBMCAddon
     String getSkinDir()
     {
       TRACE;
-      return g_guiSettings.GetString("lookandfeel.skin");
+      return CSettings::Get().GetString("lookandfeel.skin");
     }
 
-    String getLanguage()
+    String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       TRACE;
-      return g_guiSettings.GetString("locale.language");
+      CStdString lang = CSettings::Get().GetString("locale.language");
+
+      switch (format)
+      {
+      case CLangCodeExpander::ENGLISH_NAME:
+        {
+          if (region)
+          {
+            CStdString region = "-" + g_langInfo.GetCurrentRegion();
+            return (lang += region);
+          }
+          return lang;
+        }
+      case CLangCodeExpander::ISO_639_1:
+        {
+          CStdString langCode;
+          g_LangCodeExpander.ConvertToTwoCharCode(langCode, lang);
+          if (region)
+          {
+            CStdString region = g_langInfo.GetRegionLocale();
+            CStdString region2Code;
+            g_LangCodeExpander.ConvertToTwoCharCode(region2Code, region);
+            region2Code = "-" + region2Code;
+            return (langCode += region2Code);
+          }
+          return langCode;
+        }
+      case CLangCodeExpander::ISO_639_2:
+        {
+          CStdString langCode;
+          g_LangCodeExpander.ConvertToThreeCharCode(langCode, lang);
+          if (region)
+          {
+            CStdString region = g_langInfo.GetRegionLocale();
+            CStdString region3Code;
+            g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region);
+            region3Code = "-" + region3Code;
+            return (langCode += region3Code);
+          }
+
+          return langCode;
+        }
+      default:
+        return "";
+      }
     }
 
     String getIPAddress()
@@ -304,12 +349,11 @@ namespace XBMCAddon
       if (!condition)
         return false;
 
-      int id;
       bool ret;
       {
         LOCKGUI;
 
-        id = g_windowManager.GetTopMostModalDialogID();
+        int id = g_windowManager.GetTopMostModalDialogID();
         if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
         ret = g_infoManager.EvaluateBool(condition,id);
       }
@@ -409,11 +453,11 @@ namespace XBMCAddon
       TRACE;
       String result;
       if (strcmpi(mediaType, "video") == 0)
-        result = g_settings.m_videoExtensions;
+        result = g_advancedSettings.m_videoExtensions;
       else if (strcmpi(mediaType, "music") == 0)
-        result = g_settings.m_musicExtensions;
+        result = g_advancedSettings.m_musicExtensions;
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_settings.m_pictureExtensions;
+        result = g_advancedSettings.m_pictureExtensions;
 
       // TODO:
       //    else
@@ -444,6 +488,34 @@ namespace XBMCAddon
     void audioResume()
     { 
       CAEFactory::Resume();
+    }
+
+    String convertLanguage(const char* language, int format)
+    {
+      CStdString convertedLanguage;
+      switch (format)
+      {
+      case CLangCodeExpander::ENGLISH_NAME:
+        {
+          g_LangCodeExpander.Lookup(convertedLanguage, language);
+          // maybe it's a check whether the language exists or not
+          if (convertedLanguage.empty())
+          {
+            g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+            g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
+          }
+          break;
+        }
+      case CLangCodeExpander::ISO_639_1:
+        g_LangCodeExpander.ConvertToTwoCharCode(convertedLanguage, language);
+        break;
+      case CLangCodeExpander::ISO_639_2:
+        g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+        break;
+      default:
+        return "";
+      }
+      return convertedLanguage;
     }
 
     int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }
@@ -481,6 +553,11 @@ namespace XBMCAddon
     // render capture flags
     int getCAPTURE_FLAG_CONTINUOUS() { return (int)CAPTUREFLAG_CONTINUOUS; }
     int getCAPTURE_FLAG_IMMEDIATELY() { return (int)CAPTUREFLAG_IMMEDIATELY; }
+
+    // language string formats
+    int getISO_639_1() { return CLangCodeExpander::ISO_639_1; } 
+    int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
+    int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
     const int lLOGNOTICE = LOGNOTICE;
   }

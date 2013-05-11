@@ -11,7 +11,7 @@
  * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
@@ -23,90 +23,117 @@
  * Audio merging filter
  */
 
+#include "libavutil/avstring.h"
+#include "libavutil/bprint.h"
+#include "libavutil/channel_layout.h"
+#include "libavutil/opt.h"
 #include "libswresample/swresample.h" // only for SWR_CH_MAX
 #include "avfilter.h"
+#include "audio.h"
+#include "bufferqueue.h"
 #include "internal.h"
 
-#define QUEUE_SIZE 16
-
 typedef struct {
-    int nb_in_ch[2];       /**< number of channels for each input */
+    const AVClass *class;
+    int nb_inputs;
     int route[SWR_CH_MAX]; /**< channels routing, see copy_samples */
     int bps;
-    struct amerge_queue {
-        AVFilterBufferRef *buf[QUEUE_SIZE];
-        int nb_buf, nb_samples, pos;
-    } queue[2];
+    struct amerge_input {
+        struct FFBufQueue queue;
+        int nb_ch;         /**< number of channels for the input */
+        int nb_samples;
+        int pos;
+    } *in;
 } AMergeContext;
+
+#define OFFSET(x) offsetof(AMergeContext, x)
+#define FLAGS AV_OPT_FLAG_AUDIO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
+
+static const AVOption amerge_options[] = {
+    { "inputs", "specify the number of inputs", OFFSET(nb_inputs),
+      AV_OPT_TYPE_INT, { .i64 = 2 }, 2, SWR_CH_MAX, FLAGS },
+    {0}
+};
+
+AVFILTER_DEFINE_CLASS(amerge);
 
 static av_cold void uninit(AVFilterContext *ctx)
 {
     AMergeContext *am = ctx->priv;
-    int i, j;
+    int i;
 
-    for (i = 0; i < 2; i++)
-        for (j = 0; j < am->queue[i].nb_buf; j++)
-            avfilter_unref_buffer(am->queue[i].buf[j]);
+    for (i = 0; i < am->nb_inputs; i++) {
+        if (am->in)
+            ff_bufqueue_discard_all(&am->in[i].queue);
+        if (ctx->input_pads)
+            av_freep(&ctx->input_pads[i].name);
+    }
+    av_freep(&am->in);
 }
 
 static int query_formats(AVFilterContext *ctx)
 {
     AMergeContext *am = ctx->priv;
-    int64_t inlayout[2], outlayout;
-    const int packing_fmts[] = { AVFILTER_PACKED, -1 };
+    int64_t inlayout[SWR_CH_MAX], outlayout = 0;
     AVFilterFormats *formats;
-    int i;
+    AVFilterChannelLayouts *layouts;
+    int i, overlap = 0, nb_ch = 0;
 
-    for (i = 0; i < 2; i++) {
-        if (!ctx->inputs[i]->in_chlayouts ||
-            !ctx->inputs[i]->in_chlayouts->format_count) {
+    for (i = 0; i < am->nb_inputs; i++) {
+        if (!ctx->inputs[i]->in_channel_layouts ||
+            !ctx->inputs[i]->in_channel_layouts->nb_channel_layouts) {
             av_log(ctx, AV_LOG_ERROR,
                    "No channel layout for input %d\n", i + 1);
             return AVERROR(EINVAL);
         }
-        inlayout[i] = ctx->inputs[i]->in_chlayouts->formats[0];
-        if (ctx->inputs[i]->in_chlayouts->format_count > 1) {
+        inlayout[i] = ctx->inputs[i]->in_channel_layouts->channel_layouts[0];
+        if (ctx->inputs[i]->in_channel_layouts->nb_channel_layouts > 1) {
             char buf[256];
             av_get_channel_layout_string(buf, sizeof(buf), 0, inlayout[i]);
             av_log(ctx, AV_LOG_INFO, "Using \"%s\" for input %d\n", buf, i + 1);
         }
-        am->nb_in_ch[i] = av_get_channel_layout_nb_channels(inlayout[i]);
+        am->in[i].nb_ch = av_get_channel_layout_nb_channels(inlayout[i]);
+        if (outlayout & inlayout[i])
+            overlap++;
+        outlayout |= inlayout[i];
+        nb_ch += am->in[i].nb_ch;
     }
-    if (am->nb_in_ch[0] + am->nb_in_ch[1] > SWR_CH_MAX) {
+    if (nb_ch > SWR_CH_MAX) {
         av_log(ctx, AV_LOG_ERROR, "Too many channels (max %d)\n", SWR_CH_MAX);
         return AVERROR(EINVAL);
     }
-    if (inlayout[0] & inlayout[1]) {
+    if (overlap) {
         av_log(ctx, AV_LOG_WARNING,
-               "Inputs overlap: output layout will be meaningless\n");
-        for (i = 0; i < am->nb_in_ch[0] + am->nb_in_ch[1]; i++)
+               "Input channel layouts overlap: "
+               "output layout will be determined by the number of distinct input channels\n");
+        for (i = 0; i < nb_ch; i++)
             am->route[i] = i;
-        outlayout = av_get_default_channel_layout(am->nb_in_ch[0] +
-                                                  am->nb_in_ch[1]);
+        outlayout = av_get_default_channel_layout(nb_ch);
         if (!outlayout)
-            outlayout = ((int64_t)1 << (am->nb_in_ch[0] + am->nb_in_ch[1])) - 1;
+            outlayout = ((int64_t)1 << nb_ch) - 1;
     } else {
-        int *route[2] = { am->route, am->route + am->nb_in_ch[0] };
+        int *route[SWR_CH_MAX];
         int c, out_ch_number = 0;
 
-        outlayout = inlayout[0] | inlayout[1];
+        route[0] = am->route;
+        for (i = 1; i < am->nb_inputs; i++)
+            route[i] = route[i - 1] + am->in[i - 1].nb_ch;
         for (c = 0; c < 64; c++)
-            for (i = 0; i < 2; i++)
+            for (i = 0; i < am->nb_inputs; i++)
                 if ((inlayout[i] >> c) & 1)
                     *(route[i]++) = out_ch_number++;
     }
-    formats = avfilter_make_all_formats(AVMEDIA_TYPE_AUDIO);
-    avfilter_set_common_sample_formats(ctx, formats);
-    formats = avfilter_make_format_list(packing_fmts);
-    avfilter_set_common_packing_formats(ctx, formats);
-    for (i = 0; i < 2; i++) {
-        formats = NULL;
-        avfilter_add_format(&formats, inlayout[i]);
-        avfilter_formats_ref(formats, &ctx->inputs[i]->out_chlayouts);
+    formats = ff_make_format_list(ff_packed_sample_fmts_array);
+    ff_set_common_formats(ctx, formats);
+    for (i = 0; i < am->nb_inputs; i++) {
+        layouts = NULL;
+        ff_add_channel_layout(&layouts, inlayout[i]);
+        ff_channel_layouts_ref(layouts, &ctx->inputs[i]->out_channel_layouts);
     }
-    formats = NULL;
-    avfilter_add_format(&formats, outlayout);
-    avfilter_formats_ref(formats, &ctx->outputs[0]->in_chlayouts);
+    layouts = NULL;
+    ff_add_channel_layout(&layouts, outlayout);
+    ff_channel_layouts_ref(layouts, &ctx->outputs[0]->in_channel_layouts);
+    ff_set_common_samplerates(ctx, ff_all_samplerates());
     return 0;
 }
 
@@ -114,26 +141,31 @@ static int config_output(AVFilterLink *outlink)
 {
     AVFilterContext *ctx = outlink->src;
     AMergeContext *am = ctx->priv;
-    int64_t layout;
-    char name[3][256];
+    AVBPrint bp;
     int i;
 
-    if (ctx->inputs[0]->sample_rate != ctx->inputs[1]->sample_rate) {
-        av_log(ctx, AV_LOG_ERROR,
-               "Inputs must have the same sample rate "
-               "(%"PRIi64" vs %"PRIi64")\n",
-               ctx->inputs[0]->sample_rate, ctx->inputs[1]->sample_rate);
-        return AVERROR(EINVAL);
+    for (i = 1; i < am->nb_inputs; i++) {
+        if (ctx->inputs[i]->sample_rate != ctx->inputs[0]->sample_rate) {
+            av_log(ctx, AV_LOG_ERROR,
+                   "Inputs must have the same sample rate "
+                   "%d for in%d vs %d\n",
+                   ctx->inputs[i]->sample_rate, i, ctx->inputs[0]->sample_rate);
+            return AVERROR(EINVAL);
+        }
     }
     am->bps = av_get_bytes_per_sample(ctx->outputs[0]->format);
     outlink->sample_rate = ctx->inputs[0]->sample_rate;
     outlink->time_base   = ctx->inputs[0]->time_base;
-    for (i = 0; i < 3; i++) {
-        layout = (i < 2 ? ctx->inputs[i] : ctx->outputs[0])->channel_layout;
-        av_get_channel_layout_string(name[i], sizeof(name[i]), -1, layout);
+
+    av_bprint_init(&bp, 0, 1);
+    for (i = 0; i < am->nb_inputs; i++) {
+        av_bprintf(&bp, "%sin%d:", i ? " + " : "", i);
+        av_bprint_channel_layout(&bp, -1, ctx->inputs[i]->channel_layout);
     }
-    av_log(ctx, AV_LOG_INFO,
-           "in1:%s + in2:%s -> out:%s\n", name[0], name[1], name[2]);
+    av_bprintf(&bp, " -> out:");
+    av_bprint_channel_layout(&bp, -1, ctx->outputs[0]->channel_layout);
+    av_log(ctx, AV_LOG_VERBOSE, "%s\n", bp.str);
+
     return 0;
 }
 
@@ -141,21 +173,23 @@ static int request_frame(AVFilterLink *outlink)
 {
     AVFilterContext *ctx = outlink->src;
     AMergeContext *am = ctx->priv;
-    int i;
+    int i, ret;
 
-    for (i = 0; i < 2; i++)
-        if (!am->queue[i].nb_samples)
-            avfilter_request_frame(ctx->inputs[i]);
+    for (i = 0; i < am->nb_inputs; i++)
+        if (!am->in[i].nb_samples)
+            if ((ret = ff_request_frame(ctx->inputs[i])) < 0)
+                return ret;
     return 0;
 }
 
 /**
- * Copy samples from two input streams to one output stream.
- * @param nb_in_ch  number of channels in each input stream
+ * Copy samples from several input streams to one output stream.
+ * @param nb_inputs number of inputs
+ * @param in        inputs; used only for the nb_ch field;
  * @param route     routing values;
  *                  input channel i goes to output channel route[i];
- *                  i <  nb_in_ch[0] are the channels from the first output;
- *                  i >= nb_in_ch[0] are the channels from the second output
+ *                  i <  in[0].nb_ch are the channels from the first output;
+ *                  i >= in[0].nb_ch are the channels from the second output
  * @param ins       pointer to the samples of each inputs, in packed format;
  *                  will be left at the end of the copied samples
  * @param outs      pointer to the samples of the output, in packet format;
@@ -164,125 +198,158 @@ static int request_frame(AVFilterLink *outlink)
  * @param ns        number of samples to copy
  * @param bps       bytes per sample
  */
-static inline void copy_samples(int nb_in_ch[2], int *route, uint8_t *ins[2],
+static inline void copy_samples(int nb_inputs, struct amerge_input in[],
+                                int *route, uint8_t *ins[],
                                 uint8_t **outs, int ns, int bps)
 {
     int *route_cur;
-    int i, c;
+    int i, c, nb_ch = 0;
 
+    for (i = 0; i < nb_inputs; i++)
+        nb_ch += in[i].nb_ch;
     while (ns--) {
         route_cur = route;
-        for (i = 0; i < 2; i++) {
-            for (c = 0; c < nb_in_ch[i]; c++) {
+        for (i = 0; i < nb_inputs; i++) {
+            for (c = 0; c < in[i].nb_ch; c++) {
                 memcpy((*outs) + bps * *(route_cur++), ins[i], bps);
                 ins[i] += bps;
             }
         }
-        *outs += (nb_in_ch[0] + nb_in_ch[1]) * bps;
+        *outs += nb_ch * bps;
     }
 }
 
-static void filter_samples(AVFilterLink *inlink, AVFilterBufferRef *insamples)
+static int filter_frame(AVFilterLink *inlink, AVFilterBufferRef *insamples)
 {
     AVFilterContext *ctx = inlink->dst;
     AMergeContext *am = ctx->priv;
-    int input_number = inlink == ctx->inputs[1];
-    struct amerge_queue *inq = &am->queue[input_number];
+    AVFilterLink *const outlink = ctx->outputs[0];
+    int input_number;
     int nb_samples, ns, i;
-    AVFilterBufferRef *outbuf, **inbuf[2];
-    uint8_t *ins[2], *outs;
+    AVFilterBufferRef *outbuf, *inbuf[SWR_CH_MAX];
+    uint8_t *ins[SWR_CH_MAX], *outs;
 
-    if (inq->nb_buf == QUEUE_SIZE) {
-        av_log(ctx, AV_LOG_ERROR, "Packet queue overflow; dropped\n");
+    for (input_number = 0; input_number < am->nb_inputs; input_number++)
+        if (inlink == ctx->inputs[input_number])
+            break;
+    av_assert1(input_number < am->nb_inputs);
+    if (ff_bufqueue_is_full(&am->in[input_number].queue)) {
+        av_log(ctx, AV_LOG_ERROR, "Buffer queue overflow\n");
         avfilter_unref_buffer(insamples);
-        return;
+        return AVERROR(ENOMEM);
     }
-    inq->buf[inq->nb_buf++] = avfilter_ref_buffer(insamples, AV_PERM_READ |
-                                                             AV_PERM_PRESERVE);
-    inq->nb_samples += insamples->audio->nb_samples;
-    avfilter_unref_buffer(insamples);
-    if (!am->queue[!input_number].nb_samples)
-        return;
+    ff_bufqueue_add(ctx, &am->in[input_number].queue, insamples);
+    am->in[input_number].nb_samples += insamples->audio->nb_samples;
+    nb_samples = am->in[0].nb_samples;
+    for (i = 1; i < am->nb_inputs; i++)
+        nb_samples = FFMIN(nb_samples, am->in[i].nb_samples);
+    if (!nb_samples)
+        return 0;
 
-    nb_samples = FFMIN(am->queue[0].nb_samples,
-                       am->queue[1].nb_samples);
-    outbuf = avfilter_get_audio_buffer(ctx->outputs[0], AV_PERM_WRITE,
-                                       nb_samples);
+    outbuf = ff_get_audio_buffer(ctx->outputs[0], AV_PERM_WRITE, nb_samples);
     outs = outbuf->data[0];
-    for (i = 0; i < 2; i++) {
-        inbuf[i] = am->queue[i].buf;
-        ins[i] = (*inbuf[i])->data[0] +
-                 am->queue[i].pos * am->nb_in_ch[i] * am->bps;
+    for (i = 0; i < am->nb_inputs; i++) {
+        inbuf[i] = ff_bufqueue_peek(&am->in[i].queue, 0);
+        ins[i] = inbuf[i]->data[0] +
+                 am->in[i].pos * am->in[i].nb_ch * am->bps;
     }
+    avfilter_copy_buffer_ref_props(outbuf, inbuf[0]);
+    outbuf->pts = inbuf[0]->pts == AV_NOPTS_VALUE ? AV_NOPTS_VALUE :
+                  inbuf[0]->pts +
+                  av_rescale_q(am->in[0].pos,
+                               (AVRational){ 1, ctx->inputs[0]->sample_rate },
+                               ctx->outputs[0]->time_base);
+
+    outbuf->audio->nb_samples     = nb_samples;
+    outbuf->audio->channel_layout = outlink->channel_layout;
+    outbuf->audio->channels       = outlink->channels;
+
     while (nb_samples) {
         ns = nb_samples;
-        for (i = 0; i < 2; i++)
-            ns = FFMIN(ns, (*inbuf[i])->audio->nb_samples - am->queue[i].pos);
+        for (i = 0; i < am->nb_inputs; i++)
+            ns = FFMIN(ns, inbuf[i]->audio->nb_samples - am->in[i].pos);
         /* Unroll the most common sample formats: speed +~350% for the loop,
            +~13% overall (including two common decoders) */
         switch (am->bps) {
             case 1:
-                copy_samples(am->nb_in_ch, am->route, ins, &outs, ns, 1);
+                copy_samples(am->nb_inputs, am->in, am->route, ins, &outs, ns, 1);
                 break;
             case 2:
-                copy_samples(am->nb_in_ch, am->route, ins, &outs, ns, 2);
+                copy_samples(am->nb_inputs, am->in, am->route, ins, &outs, ns, 2);
                 break;
             case 4:
-                copy_samples(am->nb_in_ch, am->route, ins, &outs, ns, 4);
+                copy_samples(am->nb_inputs, am->in, am->route, ins, &outs, ns, 4);
                 break;
             default:
-                copy_samples(am->nb_in_ch, am->route, ins, &outs, ns, am->bps);
+                copy_samples(am->nb_inputs, am->in, am->route, ins, &outs, ns, am->bps);
                 break;
         }
 
         nb_samples -= ns;
-        for (i = 0; i < 2; i++) {
-            am->queue[i].nb_samples -= ns;
-            am->queue[i].pos += ns;
-            if (am->queue[i].pos == (*inbuf[i])->audio->nb_samples) {
-                am->queue[i].pos = 0;
-                avfilter_unref_buffer(*inbuf[i]);
-                *inbuf[i] = NULL;
-                inbuf[i]++;
-                ins[i] = *inbuf[i] ? (*inbuf[i])->data[0] : NULL;
+        for (i = 0; i < am->nb_inputs; i++) {
+            am->in[i].nb_samples -= ns;
+            am->in[i].pos += ns;
+            if (am->in[i].pos == inbuf[i]->audio->nb_samples) {
+                am->in[i].pos = 0;
+                avfilter_unref_buffer(inbuf[i]);
+                ff_bufqueue_get(&am->in[i].queue);
+                inbuf[i] = ff_bufqueue_peek(&am->in[i].queue, 0);
+                ins[i] = inbuf[i] ? inbuf[i]->data[0] : NULL;
             }
         }
     }
-    for (i = 0; i < 2; i++) {
-        int nbufused = inbuf[i] - am->queue[i].buf;
-        if (nbufused) {
-            am->queue[i].nb_buf -= nbufused;
-            memmove(am->queue[i].buf, inbuf[i],
-                    am->queue[i].nb_buf * sizeof(**inbuf));
-        }
-    }
-    avfilter_filter_samples(ctx->outputs[0], outbuf);
+    return ff_filter_frame(ctx->outputs[0], outbuf);
 }
+
+static av_cold int init(AVFilterContext *ctx, const char *args)
+{
+    AMergeContext *am = ctx->priv;
+    int ret, i;
+
+    am->class = &amerge_class;
+    av_opt_set_defaults(am);
+    ret = av_set_options_string(am, args, "=", ":");
+    if (ret < 0) {
+        av_log(ctx, AV_LOG_ERROR, "Error parsing options: '%s'\n", args);
+        return ret;
+    }
+    am->in = av_calloc(am->nb_inputs, sizeof(*am->in));
+    if (!am->in)
+        return AVERROR(ENOMEM);
+    for (i = 0; i < am->nb_inputs; i++) {
+        char *name = av_asprintf("in%d", i);
+        AVFilterPad pad = {
+            .name             = name,
+            .type             = AVMEDIA_TYPE_AUDIO,
+            .filter_frame     = filter_frame,
+            .min_perms        = AV_PERM_READ | AV_PERM_PRESERVE,
+        };
+        if (!name)
+            return AVERROR(ENOMEM);
+        ff_insert_inpad(ctx, i, &pad);
+    }
+    return 0;
+}
+
+static const AVFilterPad amerge_outputs[] = {
+    {
+        .name          = "default",
+        .type          = AVMEDIA_TYPE_AUDIO,
+        .config_props  = config_output,
+        .request_frame = request_frame,
+    },
+    { NULL }
+};
 
 AVFilter avfilter_af_amerge = {
     .name          = "amerge",
-    .description   = NULL_IF_CONFIG_SMALL("Merge two audio streams into "
+    .description   = NULL_IF_CONFIG_SMALL("Merge two or more audio streams into "
                                           "a single multi-channel stream."),
     .priv_size     = sizeof(AMergeContext),
+    .init          = init,
     .uninit        = uninit,
     .query_formats = query_formats,
-
-    .inputs    = (const AVFilterPad[]) {
-        { .name             = "in1",
-          .type             = AVMEDIA_TYPE_AUDIO,
-          .filter_samples   = filter_samples,
-          .min_perms        = AV_PERM_READ, },
-        { .name             = "in2",
-          .type             = AVMEDIA_TYPE_AUDIO,
-          .filter_samples   = filter_samples,
-          .min_perms        = AV_PERM_READ, },
-        { .name = NULL }
-    },
-    .outputs   = (const AVFilterPad[]) {
-        { .name             = "default",
-          .type             = AVMEDIA_TYPE_AUDIO,
-          .config_props     = config_output,
-          .request_frame    = request_frame, },
-        { .name = NULL }
-    },
+    .inputs        = NULL,
+    .outputs       = amerge_outputs,
+    .priv_class    = &amerge_class,
 };

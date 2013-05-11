@@ -10,10 +10,10 @@ SRCS=Application.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \
-     LangInfo.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \
+     LangInfo.cpp \
      MediaSource.cpp \
      NfoFile.cpp \
      PasswordManager.cpp \

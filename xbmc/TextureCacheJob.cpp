@@ -23,7 +23,7 @@
 #include "guilib/Texture.h"
 #include "guilib/DDSImage.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
@@ -177,7 +177,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
       && !file.GetMimeType().Left(6).Equals("image/") && !file.GetMimeType().Equals("application/octet-stream")) // ignore non-pictures
     return NULL;
 
-  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation"));
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::Get().GetBool("pictures.useexifrotation"));
   if (!texture)
     return NULL;
 

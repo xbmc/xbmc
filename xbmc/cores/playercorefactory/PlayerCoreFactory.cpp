@@ -21,12 +21,13 @@
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "threads/SingleLock.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/paplayer/DVDPlayerCodec.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "utils/HttpHeader.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
@@ -80,7 +81,7 @@ template<typename T> void unique (T &con)
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const
 {
-  return CreatePlayer( GetPlayerCore(strCore), callback );
+  return CreatePlayer(GetPlayerCore(strCore), callback );
 }
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback) const
@@ -188,7 +189,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if( g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG )
+      if( CSettings::Get().GetInt("audiooutput.mode") == AUDIO_ANALOG )
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
         vecCores.push_back(EPC_PAPLAYER);
@@ -298,6 +299,7 @@ PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY) cons
 bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 {
   CSingleLock lock(m_section);
+
   CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", file.c_str());
   if (!XFILE::CFile::Exists(file))
   { // tell the user it doesn't exist

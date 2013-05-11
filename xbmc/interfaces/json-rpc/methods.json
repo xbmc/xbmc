@@ -1333,7 +1333,7 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }	  
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1360,7 +1360,7 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }	  
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1893,5 +1893,39 @@
       "description": "Object containing key-value pairs of the retrieved info booleans",
       "additionalProperties": { "type": "string" }
     }
+  },
+  "Favourites.GetFavourites": {
+    "type": "method",
+    "description": "Retrieve all favourites",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "type", "type": [ "null", { "$ref": "Favourite.Type" } ], "default": null },
+      { "name": "properties", "$ref": "Favourite.Fields.Favourite" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "favourites": { "type": "array",
+          "items": { "$ref": "Favourite.Details.Favourite" }
+        }
+      }
+    }
+  },
+  "Favourites.AddFavourite": {
+    "type": "method",
+    "description": "Add a favourite with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "title", "type": "string", "required": true },
+      { "name": "type", "$ref": "Favourite.Type", "required": true },
+      { "name": "path", "$ref": "Optional.String", "description": "Required for media and script favourites types" },
+      { "name": "window", "$ref": "Optional.String", "description": "Required for window favourite type" },
+      { "name": "windowparameter", "$ref": "Optional.String" },
+      { "name": "thumbnail", "$ref": "Optional.String" }
+    ],
+    "returns": "string"
   }
 }

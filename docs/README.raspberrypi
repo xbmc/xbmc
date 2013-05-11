@@ -6,7 +6,7 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-For developemnt you can use a customized buildroot to produce a small 
+For development you can use a customized buildroot to produce a small 
 raspberrypi system image which is used to boot the raspberrypi and as
 crosscompile environment.
 

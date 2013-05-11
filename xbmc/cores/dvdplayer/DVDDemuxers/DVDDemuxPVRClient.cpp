@@ -136,12 +136,7 @@ void CDVDDemuxPVRClient::Dispose()
 {
   for (int i = 0; i < MAX_STREAMS; i++)
   {
-    if (m_streams[i])
-    {
-      if (m_streams[i]->ExtraData)
-        delete[] (BYTE*)(m_streams[i]->ExtraData);
-      delete m_streams[i];
-    }
+    delete m_streams[i];
     m_streams[i] = NULL;
   }
 
@@ -154,11 +149,6 @@ void CDVDDemuxPVRClient::DisposeStream(int iStreamId)
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
     return;
-  if (m_streams[iStreamId]->ExtraData)
-  {
-    delete[] (uint8_t*)m_streams[iStreamId]->ExtraData;
-    m_streams[iStreamId]->ExtraData = NULL;
-  }
   delete m_streams[iStreamId];
   m_streams[iStreamId] = NULL;
 }
@@ -419,7 +409,13 @@ void CDVDDemuxPVRClient::RequestStreams()
       {
         st = new CDemuxStreamSubtitlePVRClient(this);
       }
-      st->identifier = props.stream[i].iIdentifier;
+      if(props.stream[i].iIdentifier)
+      {
+        st->ExtraData = new uint8_t[4];
+        st->ExtraSize = 4;
+        ((uint16_t*)st->ExtraData)[0] = (props.stream[i].iIdentifier >> 0) & 0xFFFFu;
+        ((uint16_t*)st->ExtraData)[1] = (props.stream[i].iIdentifier >> 4) & 0xFFFFu;
+      }
       m_streams[i] = st;
     }
     else

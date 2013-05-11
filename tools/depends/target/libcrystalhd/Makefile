@@ -12,4 +12,4 @@ all: .installed-$(PLATFORM)
 
 clean:
 distclean::
-	.installed-$(PLATFORM)
+	rm -f .installed-$(PLATFORM)

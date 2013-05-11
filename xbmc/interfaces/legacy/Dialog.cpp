@@ -9,6 +9,8 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/MediaSourceSettings.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "ModuleXbmcgui.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
@@ -29,7 +31,8 @@ namespace XBMCAddon
                        const String& line2,
                        const String& line3,
                        const String& nolabel,
-                       const String& yeslabel) throw (WindowException)
+                       const String& yeslabel,
+                       int autoclose) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
       const int window = WINDOW_DIALOG_YES_NO;
@@ -51,6 +54,9 @@ namespace XBMCAddon
         pDialog->SetChoice(0,nolabel);
       if (!yeslabel.empty())
         pDialog->SetChoice(1,yeslabel);
+
+      if (autoclose > 0)
+        pDialog->SetAutoClose(autoclose);
 
       //send message and wait for user input
       XBMCWaitForThreadMessage(TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW);
@@ -134,7 +140,7 @@ namespace XBMCAddon
       std::string mask = maskparam;
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
       if (!shares) 
-        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
+        throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!maskparam.empty() && !maskparam.size() == 0))
         mask += "|.rar|.zip";
@@ -158,7 +164,7 @@ namespace XBMCAddon
       CStdStringArray tmpret;
       String lmask = mask;
       if (!shares) 
-        throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
+        throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && (!lmask.empty() && !(lmask.size() == 0)))
         lmask += "|.rar|.zip";
@@ -172,7 +178,7 @@ namespace XBMCAddon
 
       std::vector<String> valuelist;
       int index = 0;
-      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); iter++)
+      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); ++iter)
         valuelist[index++] = (*iter);
 
       return valuelist;
@@ -230,6 +236,28 @@ namespace XBMCAddon
       return value;
     }
 
+    void Dialog::notification(const String& heading, const String& message, const String& icon, int time)
+    {
+      DelayedCallGuard dcguard(languageHook);
+
+      CStdString strIcon = getNOTIFICATION_INFO();
+      int iTime = TOAST_DISPLAY_TIME;
+
+      if (time > 0)
+        iTime = time;
+      if (!icon.empty())
+        strIcon = icon;
+      
+      if (strIcon.Equals(getNOTIFICATION_INFO()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime);
+      else if (strIcon.Equals(getNOTIFICATION_WARNING()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime);
+      else if (strIcon.Equals(getNOTIFICATION_ERROR()))
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime);
+      else
+        CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime);
+    }
+    
     DialogProgress::~DialogProgress() { TRACE; deallocating(); }
 
     void DialogProgress::deallocating()

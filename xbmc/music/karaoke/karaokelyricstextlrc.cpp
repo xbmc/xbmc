@@ -90,8 +90,7 @@ bool CKaraokeLyricsTextLRC::Load()
 
   unsigned int offset = 0;
 
-  CStdString ext, songfilename = getSongFile();
-  URIUtils::GetExtension( songfilename, ext );
+  CStdString songfilename = getSongFile();
 
   // Skip windoze UTF8 file prefix, if any, and reject UTF16 files
   if ( lyricSize > 3 )

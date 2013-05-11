@@ -32,8 +32,8 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[143];
-extern const struct LCENTRY g_iso639_2[536];
+extern const struct LCENTRY g_iso639_1[144];
+extern const struct LCENTRY g_iso639_2[537];
 
 struct CharCodeConvertionWithHack
 {
@@ -202,6 +202,14 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
         return true;
       }
     }
+    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    {
+      if (strCharCode.Equals(RegionCode2To3[index].id))
+      {
+        strThreeCharCode = strCharCode;
+        return true;
+      }
+    }
   }
   else if (strCharCode.size() > 3)
   {
@@ -261,6 +269,93 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
 }
 #endif
 
+bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString& lang)
+{
+  if (lang.length() == 2)
+  {
+    CStdString tmp;
+    if (Lookup(tmp, lang))
+    {
+      code = lang;
+      return true;
+    }
+  }
+  else if (lang.length() == 3)
+  {
+    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    {
+      if (lang.Equals(CharCode2To3[index].id) || (CharCode2To3[index].win_id && lang.Equals(CharCode2To3[index].win_id)))
+      {
+        code = CharCode2To3[index].old;
+        return true;
+      }
+    }
+
+    for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+    {
+      if (lang.Equals(RegionCode2To3[index].id))
+      {
+        code = RegionCode2To3[index].old;
+        return true;
+      }
+    }
+  }
+
+  // check if lang is full language name
+  CStdString tmp;
+  if (ReverseLookup(lang, tmp))
+  {
+    if (tmp.length() == 2)
+    {
+      code = tmp;
+      return true;
+    }
+    else if (tmp.length() == 3)
+      return ConvertToTwoCharCode(code, tmp);
+  }
+
+  // try xbmc specific language names
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", lang.c_str());
+  CLangInfo langInfo;
+  if (!langInfo.Load(strLangInfoPath))
+    return false;
+
+  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode());
+}
+
+bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
+{
+  CStdString descTmp(desc);
+  descTmp.Trim();
+  STRINGLOOKUPTABLE::iterator it;
+  for (it = m_mapUser.begin(); it != m_mapUser.end() ; it++)
+  {
+    if (descTmp.Equals(it->second))
+    {
+      code = it->first;
+      return true;
+    }
+  }
+  for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+  {
+    if (descTmp.Equals(g_iso639_1[i].name))
+    {
+      CodeToString(g_iso639_1[i].code, code);
+      return true;
+    }
+  }
+  for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+  {
+    if (descTmp.Equals(g_iso639_2[i].name))
+    {
+      CodeToString(g_iso639_2[i].code, code);
+      return true;
+    }
+  }
+  return false;
+}
+
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
 {
   STRINGLOOKUPTABLE::iterator it;
@@ -312,10 +407,24 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-extern const LCENTRY g_iso639_1[143] =
+void CLangCodeExpander::CodeToString(long code, CStdString& ret)
+{
+  ret.Empty();
+  for (unsigned int j = 0 ; j < 4 ; j++)
+  {
+    char c = (char) code & 0xFF;
+    if (c == '\0')
+      return;
+    ret.Insert(0, c);
+    code >>= 8;
+  }
+}
+
+extern const LCENTRY g_iso639_1[144] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
+  { MAKECODE('\0','\0','a','b'), "Abkhaz" },
   { MAKECODE('\0','\0','a','b'), "Abkhazian" },
   { MAKECODE('\0','\0','a','f'), "Afrikaans" },
   { MAKECODE('\0','\0','a','m'), "Amharic" },
@@ -336,7 +445,7 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','c','s'), "Czech" },
   { MAKECODE('\0','\0','c','y'), "Welsh" },
   { MAKECODE('\0','\0','d','a'), "Dansk" },
-  { MAKECODE('\0','\0','d','e'), "Deutsch" },
+  { MAKECODE('\0','\0','d','e'), "German" },
   { MAKECODE('\0','\0','d','z'), "Bhutani" },
   { MAKECODE('\0','\0','e','l'), "Greek" },
   { MAKECODE('\0','\0','e','n'), "English" },
@@ -407,7 +516,7 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','p','a'), "Punjabi" },
   { MAKECODE('\0','\0','p','l'), "Polish" },
   { MAKECODE('\0','\0','p','s'), "Pashto, Pushto" },
-  { MAKECODE('\0','\0','p','t'), "Portugues" },
+  { MAKECODE('\0','\0','p','t'), "Portuguese" },
   { MAKECODE('\0','\0','q','u'), "Quechua" },
   { MAKECODE('\0','\0','r','m'), "Rhaeto-Romance" },
   { MAKECODE('\0','\0','r','n'), "Kirundi" },
@@ -459,9 +568,10 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[536] =
+extern const LCENTRY g_iso639_2[537] =
 {
-    { MAKECODE('\0','a','b','k'), "Abkhazian" },
+  { MAKECODE('\0','a','b','k'), "Abkhaz" },
+  { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },
   { MAKECODE('\0','a','c','h'), "Acoli" },
   { MAKECODE('\0','a','d','a'), "Adangme" },

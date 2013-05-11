@@ -22,7 +22,7 @@
 #include "WINSMBDirectory.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "WIN32Util.h"
 #include "utils/AutoPtrHandle.h"

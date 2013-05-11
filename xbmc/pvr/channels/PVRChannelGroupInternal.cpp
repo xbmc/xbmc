@@ -20,11 +20,10 @@
 
 #include "PVRChannelGroupInternal.h"
 
-#include "settings/GUISettings.h"
-#include "settings/AdvancedSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 #include "PVRChannelGroupsContainer.h"

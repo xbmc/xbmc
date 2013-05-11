@@ -41,7 +41,6 @@
 #include "windowing/WindowingFactory.h"
 #include "DVDOverlayRenderer.h"
 #include "settings/DisplaySettings.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderFormats.h"
@@ -68,7 +67,7 @@ public:
 OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDOverlayContainer* pOverlayContainer,
                                CDVDMessageQueue& parent)
-: CThread("COMXPlayerVideo")
+: CThread("OMXPlayerVideo")
 , m_messageQueue("video")
 , m_codecname("")
 , m_messageParent(parent)
@@ -93,7 +92,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_dropbase              = 0.0;
   m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
-  m_send_eos              = false;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
@@ -120,7 +118,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
 
   m_hints       = hints;
   m_Deinterlace = ( CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
-  m_hdmi_clock_sync = (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
+  m_hdmi_clock_sync = (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_flush       = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
@@ -128,8 +126,6 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_iSleepEndTime = DVD_NOPTS_VALUE;
   // force SetVideoRect to be called initially
   m_dst_rect.SetRect(0, 0, 0, 0);
-
-  m_audio_count = m_av_clock->HasAudio();
 
   if (!m_DllBcmHost.Load())
     return false;
@@ -160,7 +156,6 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   */
 
   m_open        = true;
-  m_send_eos    = false;
 
   return true;
 }
@@ -506,10 +501,10 @@ void OMXPlayerVideo::Process()
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
     }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_EOF) && !m_audio_count)
+    else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_EOF");
-      WaitCompletion();
+      SubmitEOS();
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
@@ -673,11 +668,19 @@ int  OMXPlayerVideo::GetDecoderFreeSpace()
   return m_omxVideo.GetFreeSpace();
 }
 
-void OMXPlayerVideo::WaitCompletion()
+void OMXPlayerVideo::SubmitEOS()
 {
-  if(!m_send_eos)
-    m_omxVideo.WaitCompletion();
-  m_send_eos = true;
+  m_omxVideo.SubmitEOS();
+}
+
+bool OMXPlayerVideo::SubmittedEOS()
+{
+  return m_omxVideo.SubmittedEOS();
+}
+
+bool OMXPlayerVideo::IsEOS()
+{
+  return m_omxVideo.IsEOS();
 }
 
 void OMXPlayerVideo::SetSpeed(int speed)

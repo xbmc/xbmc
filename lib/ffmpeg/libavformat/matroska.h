@@ -24,6 +24,7 @@
 
 #include "libavcodec/avcodec.h"
 #include "metadata.h"
+#include "internal.h"
 
 /* EBML version supported */
 #define EBML_VERSION 1
@@ -117,6 +118,7 @@
 #define MATROSKA_ID_VIDEODISPLAYUNIT 0x54B2
 #define MATROSKA_ID_VIDEOFLAGINTERLACED 0x9A
 #define MATROSKA_ID_VIDEOSTEREOMODE 0x53B8
+#define MATROSKA_ID_VIDEOALPHAMODE 0x53C0
 #define MATROSKA_ID_VIDEOASPECTRATIO 0x54B3
 #define MATROSKA_ID_VIDEOCOLORSPACE 0x2EB524
 
@@ -174,6 +176,10 @@
 #define MATROSKA_ID_CLUSTERPOSITION 0xA7
 #define MATROSKA_ID_CLUSTERPREVSIZE 0xAB
 #define MATROSKA_ID_BLOCKGROUP 0xA0
+#define MATROSKA_ID_BLOCKADDITIONS 0x75A1
+#define MATROSKA_ID_BLOCKMORE 0xA6
+#define MATROSKA_ID_BLOCKADDID 0xEE
+#define MATROSKA_ID_BLOCKADDITIONAL 0xA5
 #define MATROSKA_ID_SIMPLEBLOCK 0xA3
 
 /* IDs in the blockgroup master */
@@ -247,13 +253,8 @@ typedef enum {
 
 typedef struct CodecTags{
     char str[20];
-    enum CodecID id;
+    enum AVCodecID id;
 }CodecTags;
-
-typedef struct CodecMime{
-    char str[32];
-    enum CodecID id;
-}CodecMime;
 
 /* max. depth in the EBML tree structure */
 #define EBML_MAX_DEPTH 16
@@ -264,7 +265,7 @@ typedef struct CodecMime{
 extern const CodecTags ff_mkv_codec_tags[];
 extern const CodecMime ff_mkv_mime_tags[];
 extern const AVMetadataConv ff_mkv_metadata_conv[];
-extern const char * const matroska_video_stereo_mode[MATROSKA_VIDEO_STEREO_MODE_COUNT];
-extern const char * const matroska_video_stereo_plane[MATROSKA_VIDEO_STEREO_PLANE_COUNT];
+extern const char * const ff_matroska_video_stereo_mode[MATROSKA_VIDEO_STEREO_MODE_COUNT];
+extern const char * const ff_matroska_video_stereo_plane[MATROSKA_VIDEO_STEREO_PLANE_COUNT];
 
 #endif /* AVFORMAT_MATROSKA_H */

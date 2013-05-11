@@ -1,5 +1,5 @@
 /*
- * SSA/ASS common funtions
+ * SSA/ASS common functions
  * Copyright (c) 2010  Aurelien Jacobs <aurel@gnuage.org>
  *
  * This file is part of FFmpeg.
@@ -21,7 +21,9 @@
 
 #include "avcodec.h"
 #include "ass.h"
+#include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
+#include "libavutil/common.h"
 
 int ff_ass_subtitle_header(AVCodecContext *avctx,
                            const char *font, int font_size,
@@ -29,9 +31,7 @@ int ff_ass_subtitle_header(AVCodecContext *avctx,
                            int bold, int italic, int underline,
                            int alignment)
 {
-    char header[512];
-
-    snprintf(header, sizeof(header),
+    avctx->subtitle_header = av_asprintf(
              "[Script Info]\r\n"
              "ScriptType: v4.00+\r\n"
              "\r\n"
@@ -40,11 +40,10 @@ int ff_ass_subtitle_header(AVCodecContext *avctx,
              "Style: Default,%s,%d,&H%x,&H%x,&H%x,&H%x,%d,%d,%d,1,1,0,%d,10,10,10,0,0\r\n"
              "\r\n"
              "[Events]\r\n"
-             "Format: Layer, Start, End, Text\r\n",
+             "Format: Layer, Start, End, Style, Text\r\n",
              font, font_size, color, color, back_color, back_color,
              -bold, -italic, -underline, alignment);
 
-    avctx->subtitle_header = av_strdup(header);
     if (!avctx->subtitle_header)
         return AVERROR(ENOMEM);
     avctx->subtitle_header_size = strlen(avctx->subtitle_header);
@@ -73,17 +72,21 @@ static int ts_to_string(char *str, int strlen, int ts)
 }
 
 int ff_ass_add_rect(AVSubtitle *sub, const char *dialog,
-                    int ts_start, int ts_end, int raw)
+                    int ts_start, int duration, int raw)
 {
-    int len = 0, dlen, duration = ts_end - ts_start;
+    int len = 0, dlen;
     char s_start[16], s_end[16], header[48] = {0};
     AVSubtitleRect **rects;
 
     if (!raw) {
         ts_to_string(s_start, sizeof(s_start), ts_start);
-        ts_to_string(s_end,   sizeof(s_end),   ts_end  );
-        len = snprintf(header, sizeof(header), "Dialogue: 0,%s,%s,",
+        if (duration == -1)
+            snprintf(s_end, sizeof(s_end), "9:59:59.99");
+        else
+            ts_to_string(s_end, sizeof(s_end), ts_start + duration);
+        len = snprintf(header, sizeof(header), "Dialogue: 0,%s,%s,Default,",
                        s_start, s_end);
+        av_assert0(len < sizeof(header));
     }
 
     dlen = strcspn(dialog, "\n");

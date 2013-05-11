@@ -31,7 +31,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/TextureManager.h"
-#include "settings/GUISettings.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISettingsSliderControl.h"
@@ -188,10 +187,9 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       /* Check for the matching folder for the skin in the fallback skins folder */
-      CStdString basePath;
-      URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
-      URIUtils::AddFileToFolder(basePath, "skins", basePath);
-      URIUtils::AddFileToFolder(basePath, URIUtils::GetFileName(g_SkinInfo->Path()), basePath);
+      CStdString basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
+      basePath = URIUtils::AddFileToFolder(basePath, "skins");
+      basePath = URIUtils::AddFileToFolder(basePath, URIUtils::GetFileName(g_SkinInfo->Path()));
       strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
@@ -207,10 +205,9 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     //FIXME make this static method of current skin?
     CStdString str("none");
     AddonProps props(str, ADDON_SKIN, str, str);
-    CStdString basePath;
-    URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
-    URIUtils::AddFileToFolder(basePath, "skins", basePath);
-    URIUtils::AddFileToFolder(basePath, defaultSkin, basePath);
+    CStdString basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
+    basePath = URIUtils::AddFileToFolder(basePath, "skins");
+    basePath = URIUtils::AddFileToFolder(basePath, defaultSkin);
     props.path = basePath;
 
     CSkinInfo skinInfo(props);

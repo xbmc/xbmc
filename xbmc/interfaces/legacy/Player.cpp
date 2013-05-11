@@ -23,7 +23,6 @@
 #include "ListItem.h"
 #include "PlayList.h"
 #include "PlayListPlayer.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -74,7 +73,7 @@ namespace XBMCAddon
       if (!item.empty())
       {
         // set fullscreen or windowed
-        g_settings.m_bStartVideoWindowed = windowed;
+        CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
         // force a playercore before playing
         g_application.m_eForcedNextPlayer = playerCore;
@@ -102,7 +101,7 @@ namespace XBMCAddon
       TRACE;
       DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
-      g_settings.m_bStartVideoWindowed = windowed;
+      CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
@@ -113,14 +112,14 @@ namespace XBMCAddon
       CApplicationMessenger::Get().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
 
-    void Player::playPlaylist(const PlayList* playlist, bool windowed)
+    void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
     {
       TRACE;
       DelayedCallGuard dc(languageHook);
       if (playlist != NULL)
       {
         // set fullscreen or windowed
-        g_settings.m_bStartVideoWindowed = windowed;
+        CMediaSettings::Get().SetVideoStartWindowed(windowed);
 
         // force a playercore before playing
         g_application.m_eForcedNextPlayer = playerCore;
@@ -128,7 +127,9 @@ namespace XBMCAddon
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
-        CApplicationMessenger::Get().PlayListPlayerPlay();
+        if (startpos > -1)
+          g_playlistPlayer.SetCurrentSong(startpos);
+        CApplicationMessenger::Get().PlayListPlayerPlay(startpos);
       }
       else
         playCurrent(windowed);

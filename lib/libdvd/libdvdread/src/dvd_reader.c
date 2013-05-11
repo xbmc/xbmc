@@ -432,7 +432,11 @@ dvd_reader_t *DVDOpen( const char *ppath )
 	{
       if( ( cdir  = open( ".", O_RDONLY ) ) >= 0 ) {
         if( chdir( path_copy ) == -1 ) {
+#if defined(_XBMC)
+          fprintf( stderr, "libdvdread: failed to change working directory to \"%s\": %s\n", path_copy, strerror(errno)); /* but ignore error */
+#else
           goto DVDOpen_error;
+#endif // _XBMC
         }
 		new_path = malloc(PATH_MAX+1);
 		if(!new_path) {

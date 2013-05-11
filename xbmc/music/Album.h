@@ -26,15 +26,16 @@
 
 #include <map>
 #include <vector>
-
+#include "Artist.h"
 #include "Song.h"
 #include "utils/ScraperUrl.h"
 
 class TiXmlNode;
-
+class CFileItem;
 class CAlbum
 {
 public:
+  CAlbum(const CFileItem& item);
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
   bool operator<(const CAlbum &a) const;
 
@@ -42,7 +43,9 @@ public:
   {
     idAlbum = -1;
     strAlbum.Empty();
+    strMusicBrainzAlbumID.Empty();
     artist.clear();
+    artistCredits.clear();
     genre.clear();
     thumbURL.Clear();
     moods.clear();
@@ -52,6 +55,7 @@ public:
     strReview.Empty();
     strLabel.Empty();
     strType.Empty();
+    strPath.Empty();
     m_strDateOfRelease.Empty();
     iRating=-1;
     iYear=-1;
@@ -59,6 +63,9 @@ public:
     iTimesPlayed = 0;
     songs.clear();
   }
+
+  CStdString GetArtistString() const;
+  CStdString GetGenreString() const;
 
   /*! \brief Load album information from an XML file.
    See CVideoInfoTag::Load for a description of the types of elements we load.
@@ -72,7 +79,9 @@ public:
 
   long idAlbum;
   CStdString strAlbum;
+  CStdString strMusicBrainzAlbumID;
   std::vector<std::string> artist;
+  VECARTISTCREDITS artistCredits;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;
   std::vector<std::string> moods;
@@ -82,6 +91,7 @@ public:
   CStdString strReview;
   CStdString strLabel;
   CStdString strType;
+  CStdString strPath;
   CStdString m_strDateOfRelease;
   int iRating;
   int iYear;

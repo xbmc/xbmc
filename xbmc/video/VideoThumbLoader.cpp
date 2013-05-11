@@ -25,7 +25,7 @@
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "TextureCache.h"
@@ -83,7 +83,11 @@ bool CThumbExtractor::DoWork()
     return false;
 
   if (URIUtils::IsRemote(m_item.GetPath()) && !URIUtils::IsOnLAN(m_item.GetPath()))
-    return false;
+  {
+    // A quasi internet filesystem like webdav is generally fast enough for extracting stuff
+    if (!URIUtils::IsDAV(m_item.GetPath()))
+      return false;
+  }
 
   bool result=false;
   if (m_thumb)
@@ -101,8 +105,9 @@ bool CThumbExtractor::DoWork()
       m_item.SetArt("thumb", m_target);
     }
   }
-  else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
+  else if (!m_item.HasVideoInfoTag() || !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
+    // No tag or no details set, so extract them
     CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_item.GetPath().c_str());
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
@@ -200,10 +205,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   m_database->Open();
 
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() && pItem->IsVideo())
+  if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
-    if (m_database->GetStreamDetails(*pItem))
-      pItem->SetInvalid();
+    if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
+    || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
+    {
+      if (m_database->GetStreamDetails(*pItem))
+        pItem->SetInvalid();
+    }
   }
 
   // video db items normally have info in the database
@@ -211,7 +220,11 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     FillLibraryArt(*pItem);
 
-    if (!pItem->IsVideo() && !pItem->m_bIsFolder)
+    if (!pItem->GetVideoInfoTag()->m_type.empty()         &&
+         pItem->GetVideoInfoTag()->m_type != "movie"      &&
+         pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
+         pItem->GetVideoInfoTag()->m_type != "episode"    &&
+         pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
       m_database->Close();
       return true; // nothing else to be done
@@ -244,10 +257,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     SetArt(*pItem, artwork);
   }
 
-  // thumbnails are special-cased due to auto-generation
+  // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
   {
-    // An auto-generated thumb may have been cached on a different device - check we have it here 
+    // An auto-generated thumb may have been cached on a different device - check we have it here
     CStdString url = pItem->GetArt("thumb");
     if (url.compare(0, 14, "image://video@") == 0 && !CTextureCache::Get().HasCachedImage(url))
       pItem->SetArt("thumb", "");
@@ -262,13 +275,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
-        // Item has cached autogen image but no art entry. Save it to db.
-        CVideoInfoTag* info = pItem->GetVideoInfoTag();
-        if (info->m_iDbId > 0 && !info->m_type.empty())
-          m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
+
+        if (pItem->HasVideoInfoTag())
+        {
+          // Item has cached autogen image but no art entry. Save it to db.
+          CVideoInfoTag* info = pItem->GetVideoInfoTag();
+          if (info->m_iDbId > 0 && !info->m_type.empty())
+            m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
+        }
       }
-      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
-        g_guiSettings.GetBool("myvideos.extractflags"))
+      else if (CSettings::Get().GetBool("myvideos.extractthumb") &&
+               CSettings::Get().GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
         CStdString path(item.GetPath());
@@ -282,21 +299,20 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         return true;
       }
     }
-  }
 
-  // flag extraction
-  if (!pItem->m_bIsFolder &&
-       pItem->HasVideoInfoTag() &&
-       g_guiSettings.GetBool("myvideos.extractflags") &&
-       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
+    // flag extraction
+    if (CSettings::Get().GetBool("myvideos.extractflags") &&
+       (!pItem->HasVideoInfoTag()                     ||
+        !pItem->GetVideoInfoTag()->HasStreamDetails() ||
          pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
-  {
-    CFileItem item(*pItem);
-    CStdString path(item.GetPath());
-    if (URIUtils::IsInRAR(item.GetPath()))
-      SetupRarOptions(item,path);
-    CThumbExtractor* extract = new CThumbExtractor(item,path,false);
-    AddJob(extract);
+    {
+      CFileItem item(*pItem);
+      CStdString path(item.GetPath());
+      if (URIUtils::IsInRAR(item.GetPath()))
+        SetupRarOptions(item,path);
+      CThumbExtractor* extract = new CThumbExtractor(item,path,false);
+      AddJob(extract);
+    }
   }
 
   m_database->Close();
@@ -439,11 +455,10 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
         db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", loader->m_item.GetArt("thumb"));
         db.Close();
       }
-
     }
 
     if (m_pStreamDetailsObs)
-      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
+      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, !info->m_strFileNameAndPath.IsEmpty() ? info->m_strFileNameAndPath : loader->m_item.GetPath(), info->m_iFileId);
     if (m_pObserver)
       m_pObserver->OnItemLoaded(&loader->m_item);
     CFileItemPtr pItem(new CFileItem(loader->m_item));

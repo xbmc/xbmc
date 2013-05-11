@@ -140,7 +140,7 @@ void ff_eac3_apply_spectral_extension(AC3DecodeContext *s)
            each band. */
         bin = s->spx_src_start_freq;
         for (bnd = 0; bnd < s->num_spx_bands; bnd++) {
-            float nscale = s->spx_noise_blend[ch][bnd] * rms_energy[bnd] * (1.0f/(1<<31));
+            float nscale = s->spx_noise_blend[ch][bnd] * rms_energy[bnd] * (1.0f / INT32_MIN);
             float sscale = s->spx_signal_blend[ch][bnd];
             for (i = 0; i < s->spx_band_sizes[bnd]; i++) {
                 float noise  = nscale * (int32_t)av_lfg_get(&s->dith_state);
@@ -321,8 +321,8 @@ int ff_eac3_parse_header(AC3DecodeContext *s)
            rates in bit allocation.  The best assumption would be that it is
            handled like AC-3 DolbyNet, but we cannot be sure until we have a
            sample which utilizes this feature. */
-        av_log_missing_feature(s->avctx, "Reduced sampling rates", 1);
-        return -1;
+        av_log_missing_feature(s->avctx, "Reduced sampling rate", 1);
+        return AVERROR_PATCHWELCOME;
     }
     skip_bits(gbc, 5); // skip bitstream id
 
@@ -491,7 +491,7 @@ int ff_eac3_parse_header(AC3DecodeContext *s)
     s->skip_syntax       = get_bits1(gbc);
     parse_spx_atten_data = get_bits1(gbc);
 
-    /* coupling strategy occurance and coupling use per block */
+    /* coupling strategy occurrence and coupling use per block */
     num_cpl_blocks = 0;
     if (s->channel_mode > 1) {
         for (blk = 0; blk < s->num_blocks; blk++) {

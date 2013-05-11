@@ -40,7 +40,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "URL.h"
 
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -597,7 +597,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
         SortDescription sorting;
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
-        sorting.sortAttributes = g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
+        sorting.sortAttributes = CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SORT_METHOD_PLAYLIST_ORDER is ascending.
@@ -980,7 +980,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     return true;
   }
 
-  if (!pItem->m_bIsFolder && pItem->IsFileFolder())
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetPath(), pItem.get(), "");
@@ -1090,8 +1090,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
-      g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
+    bool do_not_add_karaoke = CSettings::Get().GetBool("karaoke.enabled") &&
+      CSettings::Get().GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
     if (m_vecItems->IsPlugin())
@@ -1358,7 +1358,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   if (pItem->IsInternetStream() || pItem->IsPlayList())
     bResult = g_application.PlayMedia(*pItem, m_guiState->GetPlaylist());
   else
-    bResult = g_application.PlayFile(*pItem);
+    bResult = g_application.PlayFile(*pItem) == PLAYBACK_OK;
 
   if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
     pItem->m_lStartOffset = 0;
@@ -1582,6 +1582,10 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
+
+  if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
+    buttons.Add(CONTEXT_BUTTON_BROWSE_INTO, 37015);
+
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1605,6 +1609,13 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
           Refresh();
+      return true;
+    }
+  case CONTEXT_BUTTON_BROWSE_INTO:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      if(Update(item->GetPath()))
+        return true;
       return true;
     }
   case CONTEXT_BUTTON_USER1:

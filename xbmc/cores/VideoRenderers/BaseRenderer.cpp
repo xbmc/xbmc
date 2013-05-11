@@ -23,13 +23,14 @@
 #include <algorithm>
 #include "BaseRenderer.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
+#include "utils/SystemInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 
@@ -68,13 +69,19 @@ void CBaseRenderer::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCa
   m_RenderUpdateCallBackCtx = ctx;
 }
 
+void CBaseRenderer::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
+{
+  m_RenderFeaturesCallBackFn = fn;
+  m_RenderFeaturesCallBackCtx = ctx;
+}
+
 void CBaseRenderer::ChooseBestResolution(float fps)
 {
   if (fps == 0.0) return;
 
   // Adjust refreshrate to match source fps
 #if !defined(TARGET_DARWIN_IOS)
-  if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
   {
     float weight;
     if (!FindResolutionFromOverride(fps, weight, false)) //find a refreshrate from overrides
@@ -427,7 +434,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
-  float fAllowed    = g_guiSettings.GetInt("videoplayer.errorinaspect") * 0.01f;
+  float fAllowed    = CSettings::Get().GetInt("videoplayer.errorinaspect") * 0.01f;
   if(fCorrection >   fAllowed) fCorrection =   fAllowed;
   if(fCorrection < - fAllowed) fCorrection = - fAllowed;
 
@@ -572,7 +579,7 @@ void CBaseRenderer::ManageDisplay()
   m_sourceRect.x2 = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
   m_sourceRect.y2 = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
-  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount, g_settings.m_fVerticalShift);
+  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)
@@ -607,70 +614,70 @@ void CBaseRenderer::SetViewMode(int viewMode)
   screenWidth   *= xscale;
   screenHeight  *= yscale;
 
-  g_settings.m_fVerticalShift = 0.0f;
-  g_settings.m_bNonLinStretch = false;
+  CDisplaySettings::Get().SetVerticalShift(0.0f);
+  CDisplaySettings::Get().SetNonLinearStretched(false);
 
   if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeZoom ||
-       (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == ViewModeZoom))
+       (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeZoom))
   { // zoom image so no black bars
-    g_settings.m_fPixelRatio = 1.0;
+    CDisplaySettings::Get().SetPixelRatio(1.0);
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
-    g_settings.m_fZoomAmount = newWidth / screenWidth;
+    CDisplaySettings::Get().SetZoomAmount(newWidth / screenWidth);
     if (newWidth < screenWidth)
     { // zoom to full width
       newWidth = screenWidth;
       newHeight = newWidth / outputFrameRatio;
-      g_settings.m_fZoomAmount = newHeight / screenHeight;
+      CDisplaySettings::Get().SetZoomAmount(newHeight / screenHeight);
     }
   }
   else if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch4x3)
   { // stretch image to 4:3 ratio
-    g_settings.m_fZoomAmount = 1.0;
+    CDisplaySettings::Get().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
     }
     else
     {
-      // now we need to set g_settings.m_fPixelRatio so that
+      // now we need to set CDisplaySettings::Get().GetPixelRatio() so that
       // fOutputFrameRatio = 4:3.
-      g_settings.m_fPixelRatio = (4.0f / 3.0f) / sourceFrameRatio;
+      CDisplaySettings::Get().SetPixelRatio((4.0f / 3.0f) / sourceFrameRatio);
     }
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
-           (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == ViewModeWideZoom))
+           (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeWideZoom))
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
-    g_settings.m_fPixelRatio = pow(stretchAmount, float(2.0/3.0));
-    g_settings.m_fZoomAmount = pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0));
-    g_settings.m_bNonLinStretch = true;
+    CDisplaySettings::Get().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
+    CDisplaySettings::Get().SetZoomAmount(pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0)));
+    CDisplaySettings::Get().SetNonLinearStretched(true);
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9 ||
-           (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == ViewModeStretch16x9))
+           (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9))
   { // stretch image to 16:9 ratio
-    g_settings.m_fZoomAmount = 1.0;
+    CDisplaySettings::Get().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
-    { // now we need to set g_settings.m_fPixelRatio so that
+    { // now we need to set CDisplaySettings::Get().GetPixelRatio() so that
       // outputFrameRatio = 16:9.
-      g_settings.m_fPixelRatio = (16.0f / 9.0f) / sourceFrameRatio;
+      CDisplaySettings::Get().SetPixelRatio((16.0f / 9.0f) / sourceFrameRatio);
     }
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
     }
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
   { // zoom image so that the height is the original size
-    g_settings.m_fPixelRatio = 1.0;
+    CDisplaySettings::Get().SetPixelRatio(1.0);
     // get the size of the media file
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full width.
     float newHeight = screenWidth / outputFrameRatio;
     if (newHeight > screenHeight)
@@ -678,25 +685,25 @@ void CBaseRenderer::SetViewMode(int viewMode)
       newHeight = screenHeight;
     }
     // now work out the zoom amount so that no zoom is done
-    g_settings.m_fZoomAmount = (m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom) / newHeight;
+    CDisplaySettings::Get().SetZoomAmount((m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom) / newHeight);
   }
   else if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeCustom)
   {
-    g_settings.m_fZoomAmount = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount;
-    g_settings.m_fPixelRatio = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio;
-    g_settings.m_bNonLinStretch = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch;
-    g_settings.m_fVerticalShift = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift;
+    CDisplaySettings::Get().SetZoomAmount(CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount);
+    CDisplaySettings::Get().SetPixelRatio(CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio);
+    CDisplaySettings::Get().SetNonLinearStretched(CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch);
+    CDisplaySettings::Get().SetVerticalShift(CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift);
   }
   else // if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeNormal)
   {
-    g_settings.m_fPixelRatio = 1.0;
-    g_settings.m_fZoomAmount = 1.0;
+    CDisplaySettings::Get().SetPixelRatio(1.0);
+    CDisplaySettings::Get().SetZoomAmount(1.0);
   }
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = g_settings.m_fZoomAmount;
-  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = g_settings.m_fPixelRatio;
-  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
-  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift = g_settings.m_fVerticalShift;
+  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = CDisplaySettings::Get().GetZoomAmount();
+  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = CDisplaySettings::Get().GetPixelRatio();
+  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch = CDisplaySettings::Get().IsNonLinearStretched();
+  CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift = CDisplaySettings::Get().GetVerticalShift();
 }
 
 void CBaseRenderer::MarkDirty()
@@ -704,3 +711,20 @@ void CBaseRenderer::MarkDirty()
   g_windowManager.MarkDirty(m_destRect);
 }
 
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  list.push_back(make_pair(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
+
+#ifdef HAS_DX
+  if (g_sysinfo.IsVistaOrHigher())
+    list.push_back(make_pair(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
+  list.push_back(make_pair(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
+  list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
+#endif
+
+#ifdef HAS_GL
+  list.push_back(make_pair(g_localizeStrings.Get(13417), RENDER_METHOD_ARB));
+  list.push_back(make_pair(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL));
+  list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
+#endif
+}

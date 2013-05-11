@@ -41,4 +41,5 @@ protected:
   void LoadList();
   void SetLastLoaded();
   void ClearListItems();
+  bool GetAutoLoginProfileChoice(int &iProfile);
 };

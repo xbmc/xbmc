@@ -23,7 +23,7 @@
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
-#include "DirectoryNodeGenre.h"
+#include "DirectoryNodeGrouped.h"
 #include "DirectoryNodeArtist.h"
 #include "DirectoryNodeAlbum.h"
 #include "DirectoryNodeSong.h"
@@ -37,7 +37,6 @@
 #include "DirectoryNodeAlbumTop100Song.h"
 #include "DirectoryNodeAlbumCompilations.h"
 #include "DirectoryNodeAlbumCompilationsSongs.h"
-#include "DirectoryNodeYear.h"
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearSong.h"
 #include "DirectoryNodeSingles.h"
@@ -116,7 +115,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
   case NODE_TYPE_OVERVIEW:
     return new CDirectoryNodeOverview(strName, pParent);
   case NODE_TYPE_GENRE:
-    return new CDirectoryNodeGenre(strName, pParent);
+  case NODE_TYPE_YEAR:
+    return new CDirectoryNodeGrouped(Type, strName, pParent);
   case NODE_TYPE_ARTIST:
     return new CDirectoryNodeArtist(strName, pParent);
   case NODE_TYPE_ALBUM:
@@ -145,8 +145,6 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeAlbumCompilations(strName, pParent);
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     return new CDirectoryNodeAlbumCompilationsSongs(strName, pParent);
-  case NODE_TYPE_YEAR:
-    return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_YEAR_ALBUM:
     return new CDirectoryNodeYearAlbum(strName, pParent);
   case NODE_TYPE_YEAR_SONG:

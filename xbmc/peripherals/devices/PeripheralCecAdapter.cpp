@@ -33,7 +33,6 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -83,7 +82,7 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
 
 CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult) :
   CPeripheralHID(scanResult),
-  CThread("CEC Adapter"),
+  CThread("CECAdapter"),
   m_dll(NULL),
   m_cecAdapter(NULL)
 {
@@ -165,7 +164,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       if (bIgnoreDeactivate)
         CLog::Log(LOGDEBUG, "%s - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     }
-    if (m_configuration.bPowerOffScreensaver == 1 && !bIgnoreDeactivate &&
+    if (m_configuration.bPowerOnScreensaver == 1 && !bIgnoreDeactivate &&
         m_configuration.bActivateSource == 1)
     {
       ActivateSource();
@@ -1240,6 +1239,9 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   m_configuration.bPowerOffScreensaver = config.bPowerOffScreensaver;
   bChanged |= SetSetting("cec_standby_screensaver", m_configuration.bPowerOffScreensaver == 1);
 
+  m_configuration.bPowerOnScreensaver = config.bPowerOnScreensaver;
+  bChanged |= SetSetting("cec_wake_screensaver", m_configuration.bPowerOnScreensaver == 1);
+
   m_configuration.bPowerOffOnStandby = config.bPowerOffOnStandby;
 
   m_configuration.bSendInactiveSource = config.bSendInactiveSource;
@@ -1332,6 +1334,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bUseTVMenuLanguage   = GetSettingBool("use_tv_menu_language") ? 1 : 0;
   m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
   m_configuration.bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
+  m_configuration.bPowerOnScreensaver  = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
   m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
@@ -1403,7 +1406,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
 }
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, libcec_configuration *configuration) :
-    CThread("CEC Adapter Update Thread"),
+    CThread("CECAdapterUpdate"),
     m_adapter(adapter),
     m_configuration(*configuration),
     m_bNextConfigurationScheduled(false),
@@ -1501,8 +1504,8 @@ CStdString CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
-    g_settings.m_bMute = false;
-    g_settings.m_fVolumeLevel = VOLUME_MAXIMUM;
+    g_application.SetMute(false);
+    g_application.SetVolume(VOLUME_MAXIMUM, false);
   }
   else
   {

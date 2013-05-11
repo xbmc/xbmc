@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,92 +20,89 @@
  *
  */
 
+#include <vector>
+
+#include "GUIControlSettings.h"
 #include "guilib/GUIWindow.h"
-#include "settings/GUISettings.h"
-#include "settings/windows/GUISettingControls.h"
-#include "utils/Stopwatch.h"
+#include "settings/SettingDependency.h"
+#include "settings/SettingSection.h"
+#include "settings/Settings.h"
+#include "settings/SettingsManager.h"
+#include "threads/Timer.h"
 
-typedef boost::shared_ptr<CGUIBaseSettingControl> BaseSettingControlPtr;
+typedef boost::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 
-class CGUIWindowSettingsCategory :
-      public CGUIWindow
+class CGUIWindowSettingsCategory
+  : public CGUIWindow,
+    protected ITimerCallback,
+    protected ISettingCallback
 {
 public:
   CGUIWindowSettingsCategory(void);
   virtual ~CGUIWindowSettingsCategory(void);
   virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnBack(int actionID);
-  virtual void FrameMove();
-  virtual void Render();
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
+  virtual int GetID() const { return CGUIWindow::GetID() + m_iSection; };
 
 protected:
   virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  
+  virtual void SetupControls(bool createSettings = true);
+  virtual void FreeControls();
+  void FreeSettingsControls();
 
-  void CheckNetworkSettings();
-  void FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl);
-  void FillInSubtitleFonts(CSetting *pSetting);
-  void FillInCharSets(CSetting *pSetting);
-  void FillInSkinFonts(CSetting *pSetting);
-  void FillInSoundSkins(CSetting *pSetting);
-  void FillInLanguages(CSetting *pSetting, const std::vector<CStdString> &languages = std::vector<CStdString>(), const std::vector<CStdString> &languageKeys = std::vector<CStdString>());
-  DisplayMode FillInScreens(CStdString strSetting, RESOLUTION res);
-  void FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange);
-  void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);
-  void OnRefreshRateChanged(RESOLUTION resolution);
-  void FillInRegions(CSetting *pSetting);
-  void FillInStartupWindow(CSetting *pSetting);
-  void FillInViewModes(CSetting *pSetting, int windowID);
-  void FillInSortMethods(CSetting *pSetting, int windowID);
-  void FillInEpgGuideView(CSetting *pSetting);
-  void FillInPvrStartLastChannel(CSetting *pSetting);
-
-  void FillInSkinThemes(CSetting *pSetting);
-  void FillInSkinColors(CSetting *pSetting);
-
-  void FillInNetworkInterfaces(CSetting *pSetting, float groupWidth, int &iControlID);
-  void NetworkInterfaceChanged(void);
-
-  void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
-
-  virtual void SetupControls();
-  CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);
+  virtual void OnTimeout();
+  virtual void OnSettingChanged(const CSetting *setting);
+  
+  void UpdateControl(const std::string &dependingSetting, const CSettingDependency &dependency);
+  void CheckDependency(BaseSettingControlPtr pSettingControl, const CSettingDependency &dependency);
+  
   void CreateSettings();
   void UpdateSettings();
-  void CheckForUpdates();
-  void FreeSettingsControls();
-  virtual void FreeControls();
-  virtual void OnClick(BaseSettingControlPtr pSettingControl);
-  virtual void OnSettingChanged(BaseSettingControlPtr pSettingControl);
   CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
-  BaseSettingControlPtr GetSetting(const CStdString &strSetting);
+  CGUIControl* AddSeparator(float width, int &iControlID);
+  CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
+  
+  /*!
+    \brief A setting control has been interacted with by the user
 
-  void ValidatePortNumber(BaseSettingControlPtr pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
+    This method is called when the user manually interacts (clicks,
+    edits) with a setting control. It contains handling for both
+    delayed and undelayed settings and either starts the delay timer
+    or triggers the setting change which, on success, results in a
+    callback to OnSettingChanged().
 
-  std::vector<BaseSettingControlPtr> m_vecSettings;
+    \param pSettingControl Setting control that has been interacted with
+   */
+  virtual void OnClick(BaseSettingControlPtr pSettingControl);
+
+  CSettingSection* GetSection(int windowID) const;
+  BaseSettingControlPtr GetSettingControl(const std::string &setting);
+  BaseSettingControlPtr GetSettingControl(int controlId);
+
+  void FillControl(CSetting *pSetting, CGUIControl *pSettingControl);
+  
+  CSettings& m_settings;
+  SettingCategoryList m_categories;
+  std::vector<BaseSettingControlPtr> m_settingControls;
+
+  int m_iCategory;
   int m_iSection;
-  int m_iScreen;
-  vecSettingsCategory m_vecSections;
+  
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalCategoryButton;
   CGUIButtonControl *m_pOriginalButton;
   CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
-
-  CStdString m_strErrorMessage;
-
-  CStdString m_strOldTrackFormat;
-  CStdString m_strOldTrackFormatRight;
-
-  std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
-  std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
-  std::map<CStdString, CStdString> m_SkinFontSetIDs;
+  bool newOriginalEdit;
+  
+  BaseSettingControlPtr m_currentSetting; ///< Current setting control
+  BaseSettingControlPtr m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
+  CTimer m_delayedTimer;                  ///< Delayed setting timer
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
-
-  boost::shared_ptr<CGUIBaseSettingControl> m_delayedSetting; ///< Current delayed setting \sa CGUIBaseSettingControl::SetDelayed()
-  CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
-

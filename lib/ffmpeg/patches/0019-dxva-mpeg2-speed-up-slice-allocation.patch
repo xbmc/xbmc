@@ -36,8 +36,8 @@ diff --git a/libavcodec/dxva2_mpeg2.c b/libavcodec/dxva2_mpeg2.c
 index 8ba83b6..90507f9 100644
 --- a/libavcodec/dxva2_mpeg2.c
 +++ b/libavcodec/dxva2_mpeg2.c
-@@ -224,6 +224,16 @@ static int start_frame(AVCodecContext *avctx,
-     ctx_pic->slice_alloc    = 0;
+@@ -222,6 +222,16 @@
+     ctx_pic->slice_count    = 0;
      ctx_pic->bitstream_size = 0;
      ctx_pic->bitstream      = NULL;
 +
@@ -52,23 +52,24 @@ index 8ba83b6..90507f9 100644
 +
      return 0;
  }
- 
-@@ -258,6 +268,7 @@ static int end_frame(AVCodecContext *avctx)
+
+@@ -251,6 +261,7 @@
      struct MpegEncContext *s = avctx->priv_data;
      struct dxva2_picture_context *ctx_pic =
          s->current_picture_ptr->f.hwaccel_picture_private;
 +    struct dxva_context *ctx = avctx->hwaccel_context;
- 
+     int ret;
+
      if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
-         return -1;
-@@ -266,6 +277,7 @@ static int end_frame(AVCodecContext *avctx)
-                                      &ctx_pic->qm, sizeof(ctx_pic->qm),
-                                      commit_bitstream_and_slice_buffer);
-     av_freep(ctx_pic->slice);
+@@ -261,6 +272,8 @@
+                                     commit_bitstream_and_slice_buffer);
+     if (!ret)
+         ff_mpeg_draw_horiz_band(s, 0, avctx->height);
++
 +    ctx->last_slice_count = ctx_pic->slice_count;
+     return ret;
  }
- 
- AVHWAccel ff_mpeg2_dxva2_hwaccel = {
+
 -- 
 1.7.9.4
 

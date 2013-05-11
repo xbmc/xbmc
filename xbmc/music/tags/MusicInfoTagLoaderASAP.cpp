@@ -41,8 +41,7 @@ bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag
 
   CStdString strFileToLoad = strFile;
   int song = -1;
-  CStdString strExtension;
-  URIUtils::GetExtension(strFile, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFile);
   strExtension.MakeLower();
   if (strExtension == ".asapstream")
   {

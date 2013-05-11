@@ -25,6 +25,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include "settings/ISettingCallback.h"
 #include "settings/ISettingsHandler.h"
 
 class CRssReader;
@@ -38,13 +39,15 @@ typedef struct
 } RssSet;
 typedef std::map<int, RssSet> RssUrls;
 
-class CRssManager : public ISettingsHandler
+class CRssManager : public ISettingCallback, public ISettingsHandler
 {
 public:
   static CRssManager& Get();
 
   virtual void OnSettingsLoaded();
   virtual void OnSettingsCleared();
+
+  virtual void OnSettingAction(const CSetting *setting);
 
   void Start();
   void Stop();

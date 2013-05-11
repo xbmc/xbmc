@@ -56,7 +56,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "URL.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 
@@ -200,21 +200,21 @@ extern "C" void __stdcall init_emu_environ()
 extern "C" void __stdcall update_emu_environ()
 {
   // Use a proxy, if the GUI was configured as such
-  if (g_guiSettings.GetBool("network.usehttpproxy")
-      && !g_guiSettings.GetString("network.httpproxyserver").empty()
-      && !g_guiSettings.GetString("network.httpproxyport").empty()
-      && g_guiSettings.GetInt("network.httpproxytype") == 0)
+  if (CSettings::Get().GetBool("network.usehttpproxy")
+      && !CSettings::Get().GetString("network.httpproxyserver").empty()
+      && !CSettings::Get().GetString("network.httpproxyport").empty()
+      && CSettings::Get().GetInt("network.httpproxytype") == 0)
   {
     CStdString strProxy;
-    if (g_guiSettings.GetString("network.httpproxyusername") &&
-        g_guiSettings.GetString("network.httpproxypassword"))
+    if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
+        !CSettings::Get().GetString("network.httpproxypassword").empty())
     {
-      strProxy.Format("%s:%s@", g_guiSettings.GetString("network.httpproxyusername").c_str(),
-                                g_guiSettings.GetString("network.httpproxypassword").c_str());
+      strProxy.Format("%s:%s@", CSettings::Get().GetString("network.httpproxyusername").c_str(),
+                                CSettings::Get().GetString("network.httpproxypassword").c_str());
     }
 
-    strProxy += g_guiSettings.GetString("network.httpproxyserver");
-    strProxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+    strProxy += CSettings::Get().GetString("network.httpproxyserver");
+    strProxy += ":" + CSettings::Get().GetString("network.httpproxyport");
 
 #ifdef _WIN32
     pgwin32_putenv(("HTTP_PROXY=http://" +strProxy).c_str());
@@ -834,7 +834,7 @@ extern "C"
     }
     else if (url.GetFileName().Find("*.") != string::npos)
     {
-      URIUtils::GetExtension(url.GetFileName(),strMask);
+      strMask = URIUtils::GetExtension(url.GetFileName());
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
     else if (url.GetFileName().Find("*") != string::npos)

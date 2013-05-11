@@ -86,11 +86,17 @@ public:
   static CStdString           TranslateOrder(SortBy order);
   static CStdString           GetField(Field field, const CStdString& strType);
   static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
+  static Field                TranslateGroup(const char *group);
+  static CStdString           TranslateGroup(Field group);
 
   static CStdString           GetLocalizedField(Field field);
   static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static CStdString           GetLocalizedGroup(Field group);
+  static bool                 CanGroupMix(Field group);
+
   static std::vector<Field>   GetFields(const CStdString &type);
   static std::vector<SortBy>  GetOrders(const CStdString &type);
+  static std::vector<Field>   GetGroups(const CStdString &type);
   static FIELD_TYPE           GetFieldType(Field field);
   static bool                 IsFieldBrowseable(Field field);
 
@@ -185,6 +191,11 @@ public:
   bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
   SortOrder GetOrderDirection() const { return m_orderDirection; }
 
+  void SetGroup(const CStdString &group) { m_group = group; }
+  const CStdString& GetGroup() const { return m_group; }
+  void SetGroupMixed(bool mixed) { m_groupMixed = mixed; }
+  bool IsGroupMixed() const { return m_groupMixed; }
+
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
    by playlist A including playlist B which also (perhaps via other playlists) then includes playlistA.
@@ -218,6 +229,8 @@ private:
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
+  CStdString m_group;
+  bool m_groupMixed;
 
   CXBMCTinyXML m_xmlDoc;
 };

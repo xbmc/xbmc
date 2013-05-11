@@ -35,5 +35,17 @@
 			<include>VisibleFadeEffect</include>
 			<include>SmallMusicInfo</include>
 		</control>
+		<control type="button">
+			<visible>SlideShow.IsVideo + [!SlideShow.IsActive | SlideShow.IsPaused]</visible>
+			<description>Video Play Button</description>
+			<posx>540</posx>
+			<posy>260</posy>
+			<width>200</width>
+			<height>200</height>
+			<font>-</font>
+			<onclick>play</onclick>
+			<texturefocus>arrow-big-right.png</texturefocus>
+			<texturenofocus>arrow-big-right.png</texturenofocus>
+		</control>
 	</controls>
 </window>

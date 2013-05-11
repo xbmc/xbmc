@@ -40,27 +40,19 @@ If you run a 64bit operating system you will also need to get ia32-libs
 -----------------------------------------------------------------------------
 
 To develop XBMC for Android the Android SDK and NDK are required.
-Because the Android NDK is lacking support for wide characters (wchar_t)
-which XBMC relies on for Unicode implementation, a third-party NDK
-from Crystax is being used.
 
 --------------------------------------------------------------------
 3.1. Getting the Android SDK and NDK
 --------------------------------------------------------------------
 
 To get the Android SDK, go to http://developer.android.com/sdk and
-download the latest version for your operating system. The Crystax NDK
-can be downloaded from http://www.crystax.net/en/android/ndk
+download the latest version for your operating system. The NDK
+can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
 
-[NOTICE] Compiling XBMC for Android requires at least Crystax Android NDK
-         Revision 7b. Crystax Android NDK Revision 7 and earlier do not work
-         properly for our cause. The corresponding Crystax NDK version
-         is android-ndk-r7-crystax-5.beta3 Do not use the standard Android NDK.
+[NOTICE] Compiling XBMC for Android requires at least Android NDK
+         Revision r8e. Android NDK Revision 7 and earlier do not work
+         properly for our cause.
 
-[NOTICE] We previously used android-ndk-r7-crystax-5.beta2, but it produced
-         binaries that would NOT run on Jellybean 4.2. At this time,
-         android-ndk-r7-crystax-5.beta3 is required.
-         
 After downloading the SDK and NDK extract the files contained in the
 archives to your harddisk.
 
@@ -93,7 +85,11 @@ specifies where the resulting toolchain should be installed (your choice).
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain>/android-14 --platform=android-14
+     --install-dir=<android-toolchain>/android-14 --platform=android-14 \
+     --toolchain=arm-linux-androideabi-4.7
+
+Make sure to pick a toolchain for your desired architecture. Currently only
+gcc 4.7 toolchains are supported, anything else will likely fail to build.
 
 ATTENTION FOR X86 BUILDS - THIS DOES NOT APPLY TO 99% OF BUILDS:
 If you want to build for the x86 platform there is a flaw in the mentioned
@@ -146,6 +142,7 @@ on with the Android toolchain and creating an Android Application Package
    # ./configure --help
 
    Run configure with the correct settings for you local configuration.
+   See tools/depends/README for examples.
 
    Anyone working on the dependencies themselves will want to set the
    environment variables specified in ~/.bashrc or similar, to avoid
@@ -164,8 +161,9 @@ on with the Android toolchain and creating an Android Application Package
 --------------------------------------------------------------------
 
    # cd $HOME/xbmc-android
-   # make -C tools/android/xbmc
+   # make -C tools/depends/target/xbmc
    # make
+   # make apk
 
    After the first build (assuming bootstrap and configure are successful),
    subsequent builds can be run with a simple 'make' and 'make apk'.

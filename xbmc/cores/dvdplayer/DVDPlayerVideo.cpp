@@ -22,7 +22,6 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
@@ -44,6 +43,7 @@
 #include <iomanip>
 #include <numeric>
 #include <iterator>
+#include "guilib/GraphicContext.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -123,7 +123,7 @@ public:
 CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
                                 , CDVDOverlayContainer* pOverlayContainer
                                 , CDVDMessageQueue& parent)
-: CThread("CDVDPlayerVideo")
+: CThread("DVDPlayerVideo")
 , m_messageQueue("video")
 , m_messageParent(parent)
 {
@@ -204,7 +204,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
+  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
   {
     g_VideoReferenceClock.Create();
     //we have to wait for the clock to start otherwise alsa can cause trouble
@@ -234,8 +234,8 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
-  m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
+  m_bCalcFrameRate = CSettings::Get().GetBool("videoplayer.usedisplayasclock") ||
+                     CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
@@ -1188,8 +1188,11 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     limited = true;
 
   //correct any pattern in the timestamps
-  m_pullupCorrection.Add(pts);
-  pts += m_pullupCorrection.GetCorrection();
+  if (m_output.color_format != RENDER_FMT_BYPASS)
+  {
+    m_pullupCorrection.Add(pts);
+    pts += m_pullupCorrection.GetCorrection();
+  }
 
   //try to calculate the framerate
   CalcFrameRate();
@@ -1203,8 +1206,11 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     pts -= DVD_TIME_BASE * interval;
   }
 
-  // Correct pts by user set delay and rendering delay
-  pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+  if (m_output.color_format != RENDER_FMT_BYPASS)
+  {
+    // Correct pts by user set delay and rendering delay
+    pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+  }
 
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock, iFrameDuration;

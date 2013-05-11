@@ -17,17 +17,29 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <EGL/egl.h>
-#include "EGLNativeTypeAmlogic.h"
+
 #include <stdlib.h>
 #include <linux/fb.h>
 #include <sys/ioctl.h>
-#include "utils/StringUtils.h"
+#include <EGL/egl.h>
+
+#include "EGLNativeTypeAmlogic.h"
 #include "guilib/gui3d.h"
-#define m_framebuffer_name "fb0"
+#include "utils/AMLUtils.h"
+#include "utils/StringUtils.h"
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 {
+  const char *env_framebuffer = getenv("FRAMEBUFFER");
+
+  // default to framebuffer 0
+  m_framebuffer_name = "fb0";
+  if (env_framebuffer)
+  {
+    std::string framebuffer(env_framebuffer);
+    std::string::size_type start = framebuffer.find("fb");
+    m_framebuffer_name = framebuffer.substr(start);
+  }
   m_nativeWindow = NULL;
 }
 
@@ -38,7 +50,9 @@ CEGLNativeTypeAmlogic::~CEGLNativeTypeAmlogic()
 bool CEGLNativeTypeAmlogic::CheckCompatibility()
 {
   char name[256] = {0};
-  get_sysfs_str("/sys/class/graphics/fb0/device/modalias", name, 255);
+  std::string modalias = "/sys/class/graphics/" + m_framebuffer_name + "/device/modalias";
+
+  aml_get_sysfs_str(modalias.c_str(), name, 255);
   CStdString strName = name;
   strName.Trim();
   if (strName == "platform:mesonfb")
@@ -48,12 +62,12 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
 void CEGLNativeTypeAmlogic::Initialize()
 {
-  SetCpuMinLimit(true);
+  aml_cpufreq_limit(true);
   return;
 }
 void CEGLNativeTypeAmlogic::Destroy()
 {
-  SetCpuMinLimit(false);
+  aml_cpufreq_limit(false);
   return;
 }
 
@@ -111,47 +125,60 @@ bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 {
   char mode[256] = {0};
-  get_sysfs_str("/sys/class/display/mode", mode, 255);
+  aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
   return ModeToResolution(mode, res);
 }
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  if (res.iScreenWidth == 1920 && res.iScreenHeight == 1080)
+  switch((int)(0.5 + res.fRefreshRate))
   {
-    if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
-    {
-      if ((int)res.fRefreshRate == 60)
-        SetDisplayResolution("1080i");
-      else
-        SetDisplayResolution("1080i50hz");
-    }
-    else
-    {
-      if ((int)res.fRefreshRate == 60)
-        SetDisplayResolution("1080p");
-      else
-        SetDisplayResolution("1080p50hz");
-    }
+    default:
+    case 60:
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1280:
+          SetDisplayResolution("720p");
+          break;
+        case 1920:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("1080i");
+          else
+            SetDisplayResolution("1080p");
+          break;
+      }
+      break;
+    case 50:
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1280:
+          SetDisplayResolution("720p50hz");
+          break;
+        case 1920:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("1080i50hz");
+          else
+            SetDisplayResolution("1080p50hz");
+          break;
+      }
+      break;
+    case 30:
+      SetDisplayResolution("1080p30hz");
+      break;
+    case 24:
+      SetDisplayResolution("1080p24hz");
+      break;
   }
-  else if (res.iScreenWidth == 1280 && res.iScreenHeight == 720)
-  {
-    if ((int)res.fRefreshRate == 60)
-      SetDisplayResolution("720p");
-    else
-      SetDisplayResolution("720p50hz");
-  }
-  else if (res.iScreenWidth == 720  && res.iScreenHeight == 480)
-  {
-    SetDisplayResolution("480p");
-  }
+
   return true;
 }
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
   char valstr[256] = {0};
-  get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
+  aml_get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
   std::vector<CStdString> probe_str;
   StringUtils::SplitString(valstr, "\n", probe_str);
 
@@ -168,92 +195,28 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
 
 bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
 {
-  res->iWidth = 1280;
-  res->iHeight= 720;
-  res->fRefreshRate = 60;
-  res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-  res->iScreen       = 0;
-  res->bFullScreen   = true;
-  res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
-  res->iScreenWidth  = res->iWidth;
-  res->iScreenHeight = res->iHeight;
-  res->strMode.Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-     res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  // check display/mode, it gets defaulted at boot
+  if (!GetNativeResolution(res))
+  {
+    // punt to 720p if we get nothing
+    ModeToResolution("720p", res);
+  }
+
   return true;
 }
 
 bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 {
-  std::string blank_framebuffer = "/sys/class/graphics/fb0/blank";
-  set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
+  std::string blank_framebuffer = "/sys/class/graphics/" + m_framebuffer_name + "/blank";
+  aml_set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
   return true;
-}
-
-int CEGLNativeTypeAmlogic::get_sysfs_str(const char *path, char *valstr, const int size) const
-{
-  int fd = open(path, O_RDONLY);
-  if (fd >= 0)
-  {
-    int len = read(fd, valstr, size - 1);
-    if (len != -1 )
-      valstr[len] = '\0';
-    close(fd);
-  }
-  else
-  {
-    sprintf(valstr, "%s", "fail");
-    return -1;
-  }
-  return 0;
-}
-
-int CEGLNativeTypeAmlogic::set_sysfs_str(const char *path, const char *val) const
-{
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    write(fd, val, strlen(val));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
-
-int CEGLNativeTypeAmlogic::set_sysfs_int(const char *path, const int val) const
-{
-  char bcmd[16];
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    sprintf(bcmd, "%d", val);
-    write(fd, bcmd, strlen(bcmd));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
-
-int CEGLNativeTypeAmlogic::get_sysfs_int(const char *path) const
-{
-  int val = 0;
-  char bcmd[16];
-  int fd = open(path, O_RDONLY);
-  if (fd >= 0)
-  {
-    read(fd, bcmd, sizeof(bcmd));
-    val = strtol(bcmd, NULL, 16);
-    close(fd);
-  }
-  return val;
 }
 
 bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 {
   CStdString modestr = resolution;
   // switch display resolution
-  set_sysfs_str("/sys/class/display/mode", modestr.c_str());
-  usleep(250 * 1000);
+  aml_set_sysfs_str("/sys/class/display/mode", modestr.c_str());
 
   // setup gui freescale depending on display resolution
   DisableFreeScale();
@@ -279,6 +242,7 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
   CStdString fromMode = mode;
   fromMode.Trim();
   // strips, for example, 720p* to 720p
+  // the * indicate the 'native' mode of the display
   if (fromMode.Right(1) == "*")
     fromMode = fromMode.Left(std::max(0, (int)fromMode.size() - 1));
 
@@ -286,56 +250,79 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
   {
     res->iWidth = 1280;
     res->iHeight= 720;
-    res->iScreenWidth  = res->iWidth;
-    res->iScreenHeight = res->iHeight;
+    res->iScreenWidth = 1280;
+    res->iScreenHeight= 720;
     res->fRefreshRate = 60;
-    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (fromMode.Equals("720p50hz"))
   {
     res->iWidth = 1280;
     res->iHeight= 720;
-    res->iScreenWidth  = res->iWidth;
-    res->iScreenHeight = res->iHeight;
+    res->iScreenWidth = 1280;
+    res->iScreenHeight= 720;
     res->fRefreshRate = 50;
-    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (fromMode.Equals("1080p"))
   {
     res->iWidth = 1280;
     res->iHeight= 720;
-    res->iScreenWidth  = 1920;
-    res->iScreenHeight = 1080;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
     res->fRefreshRate = 60;
-    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (fromMode.Equals("1080p24hz"))
+  {
+    res->iWidth = 1280;
+    res->iHeight= 720;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
+    res->fRefreshRate = 24;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (fromMode.Equals("1080p30hz"))
+  {
+    res->iWidth = 1280;
+    res->iHeight= 720;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
+    res->fRefreshRate = 30;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (fromMode.Equals("1080p50hz"))
   {
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
     res->iWidth = 1280;
     res->iHeight= 720;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
     res->fRefreshRate = 50;
-    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (fromMode.Equals("1080i"))
   {
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
     res->iWidth = 1280;
     res->iHeight= 720;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
     res->fRefreshRate = 60;
-    res->dwFlags= D3DPRESENTFLAG_INTERLACED;
+    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
   else if (fromMode.Equals("1080i50hz"))
   {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
-    res->iScreenWidth = 1280;
-    res->iScreenHeight= 720;
+    res->iWidth = 1280;
+    res->iHeight= 720;
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
     res->fRefreshRate = 50;
-    res->dwFlags= D3DPRESENTFLAG_INTERLACED;
+    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
+  else
+  {
+    return false;
+  }
+
 
   res->iScreen       = 0;
   res->bFullScreen   = true;
@@ -349,68 +336,50 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
 
 void CEGLNativeTypeAmlogic::EnableFreeScale()
 {
-  // remove default OSD and video path (default_osd default)
-  set_sysfs_str("/sys/class/vfm/map", "rm all");
-  usleep(60 * 1000);
-
-  // add OSD path
-  set_sysfs_str("/sys/class/vfm/map", "add osdpath osd amvideo");
   // enable OSD free scale using frame buffer size of 720p
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
-  usleep(60 * 1000);
-  // remove OSD path
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_str("/sys/class/vfm/map", "rm osdpath");
-  usleep(60 * 1000);
-  // add video path
-  set_sysfs_str("/sys/class/vfm/map", "add videopath decoder ppmgr amvideo");
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
+
   // enable video free scale (scaling to 1920x1080 with frame buffer size 1280x720)
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  set_sysfs_int("/sys/class/video/disable_video", 1);
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
-  set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
-  set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
-  usleep(60 * 1000);
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
+  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
+  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
+  aml_set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
   //
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
-  usleep(60 * 1000);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
   //
-  set_sysfs_int("/sys/class/video/disable_video", 2);
-  set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
-  set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
+  aml_set_sysfs_int("/sys/class/video/disable_video", 2);
+  aml_set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
+  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
+  //
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
+  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()
 {
   // turn off frame buffer freescale
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  // revert to default video paths
-  set_sysfs_str("/sys/class/vfm/map", "rm all");
-  set_sysfs_str("/sys/class/vfm/map", "add default_osd osd amvideo");
-  set_sysfs_str("/sys/class/vfm/map", "add default decoder ppmgr amvideo");
-  // disable post processing scaler and disable_video special mode
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  set_sysfs_int("/sys/class/video/disable_video", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
+
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
+  aml_set_sysfs_int("/sys/class/video/disable_video", 0);
+  // now default video display to off
+  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
 
   // revert display axis
   int fd0;
-  std::string framebuffer = "/dev/fb0";
+  std::string framebuffer = "/dev/" + m_framebuffer_name;
 
   if ((fd0 = open(framebuffer.c_str(), O_RDWR)) >= 0)
   {
@@ -418,30 +387,9 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
     if (ioctl(fd0, FBIOGET_VSCREENINFO, &vinfo) == 0)
     {
       char daxis_str[255] = {0};
-      sprintf(daxis_str, "%d %d %d %d 0 0 0 0", 0, 0, vinfo.xres, vinfo.yres);
-      set_sysfs_str("/sys/class/display/axis", daxis_str);
+      sprintf(daxis_str, "%d %d %d %d 0 0 0 0", 0, 0, vinfo.xres-1, vinfo.yres-1);
+      aml_set_sysfs_str("/sys/class/display/axis", daxis_str);
     }
     close(fd0);
   }
-}
-
-void CEGLNativeTypeAmlogic::SetCpuMinLimit(bool limit)
-{
-  // when playing hw decoded audio, we cannot drop below 600MHz
-  // or risk hw audio issues. AML code does a 2X scaling based off
-  // /sys/class/audiodsp/codec_mips but tests show that this is
-  // seems risky so we just clamp to 600Mhz to be safe.
-
-  // only adjust if we are running "ondemand"
-  char scaling_governor[256] = {0};
-  get_sysfs_str("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", scaling_governor, 255);
-  if (strncmp(scaling_governor, "ondemand", 255))
-    return;
-
-  int freq;
-  if (limit)
-    freq = 600000;
-  else
-    freq = get_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq");
-  set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", freq);
 }

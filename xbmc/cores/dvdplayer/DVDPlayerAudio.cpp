@@ -25,7 +25,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -99,7 +99,7 @@ public:
 
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
-: CThread("CDVDPlayerAudio")
+: CThread("DVDPlayerAudio")
 , m_messageQueue("audio")
 , m_messageParent(parent)
 , m_dvdAudio((bool&)m_bStop)
@@ -145,7 +145,7 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
 
 bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
 {
-  bool passthrough = AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode"));
+  bool passthrough = AUDIO_IS_BITSTREAM(CSettings::Get().GetInt("audiooutput.mode"));
 
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
   CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, passthrough);
@@ -191,8 +191,8 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
 
   m_synctype = SYNC_DISCON;
   m_setsynctype = SYNC_DISCON;
-  if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
-    m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
+  if (CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
+    m_setsynctype = CSettings::Get().GetInt("videoplayer.synctype");
   m_prevsynctype = -1;
 
   m_error = 0;
@@ -205,7 +205,7 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_errortime = CurrentHostCounter();
   m_silence = false;
 
-  m_maxspeedadjust = g_guiSettings.GetFloat("videoplayer.maxspeedadjust");
+  m_maxspeedadjust = CSettings::Get().GetNumber("videoplayer.maxspeedadjust");
 }
 
 void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -840,7 +840,7 @@ void CDVDPlayerAudio::WaitForBuffers()
 bool CDVDPlayerAudio::SwitchCodecIfNeeded()
 {
   // check if passthrough is disabled
-  if (!AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")))
+  if (!AUDIO_IS_BITSTREAM(CSettings::Get().GetInt("audiooutput.mode")))
     return false;
 
   CLog::Log(LOGDEBUG, "CDVDPlayerAudio: Sample rate changed, checking for passthrough");

@@ -27,7 +27,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "addons/include/xbmc_pvr_types.h"
@@ -444,7 +444,7 @@ CStdString CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
-  else if (strTitle.empty() && !g_guiSettings.GetBool("epg.hidenoinfoavailable"))
+  else if (strTitle.empty() && !CSettings::Get().GetBool("epg.hidenoinfoavailable"))
     strTitle = g_localizeStrings.Get(19055); // no information available
 
   return strTitle;

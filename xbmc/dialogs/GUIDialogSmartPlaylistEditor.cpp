@@ -21,12 +21,13 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -43,6 +44,8 @@ using namespace std;
 #define CONTROL_LIMIT           17
 #define CONTROL_ORDER_FIELD     18
 #define CONTROL_ORDER_DIRECTION 19
+#define CONTROL_GROUP_BY        23
+#define CONTROL_GROUP_MIXED     24
 
 #define CONTROL_OK              20
 #define CONTROL_CANCEL          21
@@ -118,6 +121,10 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnOrderDirection();
       else if (iControl == CONTROL_TYPE)
         OnType();
+      else if (iControl == CONTROL_GROUP_BY)
+        OnGroupBy();
+      else if (iControl == CONTROL_GROUP_MIXED)
+        OnGroupMixed();
       else
         return CGUIDialog::OnMessage(message);
       return true;
@@ -160,7 +167,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     CStdString path;
     if (CGUIKeyboardFactory::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
-      path = URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+      path = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"),m_playlist.GetSaveLocation());
       path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
     }
     else
@@ -175,14 +182,14 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   {
     // check if we need to actually change the save location for this playlist
     // this occurs if the user switches from music video <> songs <> mixed
-    if (m_path.Left(g_guiSettings.GetString("system.playlistspath").size()).Equals(g_guiSettings.GetString("system.playlistspath"))) // fugly, well aware
+    if (StringUtils::EqualsNoCase(m_path.Left(CSettings::Get().GetString("system.playlistspath").size()), CSettings::Get().GetString("system.playlistspath"))) // fugly, well aware
     {
       CStdString filename = URIUtils::GetFileName(m_path);
-      CStdString strFolder = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
+      CStdString strFolder = m_path.Mid(CSettings::Get().GetString("system.playlistspath").size(),m_path.size()-filename.size()-CSettings::Get().GetString("system.playlistspath").size()-1);
       if (strFolder != m_playlist.GetSaveLocation())
       { // move to the correct folder
         XFILE::CFile::Delete(m_path);
-        m_path = URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+        m_path = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"),m_playlist.GetSaveLocation());
         m_path = URIUtils::AddFileToFolder(m_path, filename);
       }
     }
@@ -238,6 +245,24 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
     m_playlist.m_orderDirection = SortOrderAscending;
   else
     m_playlist.m_orderDirection = SortOrderDescending;
+  UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnGroupBy()
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_GROUP_BY);
+  OnMessage(msg);
+  m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup((Field)msg.GetParam1()));
+
+  if (m_playlist.IsGroupMixed() && !CSmartPlaylistRule::CanGroupMix((Field)msg.GetParam1()))
+    m_playlist.SetGroupMixed(false);
+
+  UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnGroupMixed()
+{
+  m_playlist.SetGroupMixed(!m_playlist.IsGroupMixed());
   UpdateButtons();
 }
 
@@ -304,6 +329,43 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
     OnMessage(msg);
   }
+
+  // setup groups
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_BY);
+    OnMessage(msg);
+  }
+  vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup());
+  for (unsigned int i = 0; i < groups.size(); i++)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_BY, groups[i]);
+    msg.SetLabel(CSmartPlaylistRule::GetLocalizedGroup(groups[i]));
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_BY, currentGroup);
+    OnMessage(msg);
+  }
+
+  if (m_playlist.IsGroupMixed())
+    CONTROL_SELECT(CONTROL_GROUP_MIXED);
+  else
+    CONTROL_DESELECT(CONTROL_GROUP_MIXED);
+
+  // disable the group controls if there's no group
+  // or only one group which can't be mixed
+  if (groups.size() == 0 ||
+     (groups.size() == 1 && !CSmartPlaylistRule::CanGroupMix(groups[0])))
+  {
+    CONTROL_DISABLE(CONTROL_GROUP_BY);
+    CONTROL_DISABLE(CONTROL_GROUP_MIXED);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_GROUP_BY);
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GROUP_MIXED, CSmartPlaylistRule::CanGroupMix(currentGroup));
+  }
 }
 
 void CGUIDialogSmartPlaylistEditor::UpdateRuleControlButtons()
@@ -353,7 +415,6 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
 void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 {
   m_cancelled = false;
-  UpdateButtons();
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
@@ -401,6 +462,7 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_TYPE, type);
   m_playlist.SetType(ConvertType(type));
+  UpdateButtons();
 
   CGUIDialog::OnInitWindow();
 }

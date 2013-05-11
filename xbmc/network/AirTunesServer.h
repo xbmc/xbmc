@@ -25,7 +25,7 @@
 
 #ifdef HAS_AIRTUNES
 
-#if defined(TARGET_WINDOWS)
+#if defined(HAVE_LIBSHAIRPLAY)
 #include "DllLibShairplay.h"
 #else
 #include "DllLibShairport.h"
@@ -53,6 +53,7 @@ public:
 
   static bool StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password="");
   static void StopServer(bool bWait);
+  static bool IsRunning();
   static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
   static void SetCoverArtFromBuffer(const char *buffer, unsigned int size);
 
@@ -66,7 +67,7 @@ private:
   void Deinitialize();
 
   int m_port;
-#if defined(TARGET_WINDOWS)
+#if defined(HAVE_LIBSHAIRPLAY)
   static DllLibShairplay *m_pLibShairplay;//the lib
   raop_t *m_pRaop;
   XFILE::CPipeFile *m_pPipe;
@@ -79,7 +80,7 @@ private:
   class AudioOutputFunctions
   {
     public:
-#if defined(TARGET_WINDOWS)
+#if defined(HAVE_LIBSHAIRPLAY)
       static void* audio_init(void *cls, int bits, int channels, int samplerate);
       static void  audio_set_volume(void *cls, void *session, float volume);
 	    static void  audio_set_metadata(void *cls, void *session, const void *buffer, int buflen);

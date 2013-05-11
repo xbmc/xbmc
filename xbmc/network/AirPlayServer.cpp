@@ -212,6 +212,14 @@ void CAirPlayServer::StopServer(bool bWait)
   }
 }
 
+bool CAirPlayServer::IsRunning()
+{
+  if (ServerInstance == NULL)
+    return false;
+
+  return ((CThread*)ServerInstance)->IsRunning();
+}
+
 void CAirPlayServer::AnnounceToClients(int state)
 {
   CSingleLock lock (m_connectionLock);
@@ -323,7 +331,7 @@ void CAirPlayServer::Process()
       {
         CLog::Log(LOGDEBUG, "AIRPLAY Server: New connection detected");
         CTCPClient newconnection;
-        newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
+        newconnection.m_socket = accept(m_ServerSocket, (struct sockaddr*) &newconnection.m_cliaddr, &newconnection.m_addrlen);
         sessionCounter++;
         newconnection.m_sessionCounter = sessionCounter;
 
@@ -353,41 +361,10 @@ void CAirPlayServer::Process()
 bool CAirPlayServer::Initialize()
 {
   Deinitialize();
-
-  struct sockaddr_in myaddr;
-  memset(&myaddr, 0, sizeof(myaddr));
-
-  myaddr.sin_family = AF_INET;
-  myaddr.sin_port = htons(m_port);
-
-  if (m_nonlocal)
-    myaddr.sin_addr.s_addr = INADDR_ANY;
-  else
-    inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
-
-  m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
-
-  if (m_ServerSocket == INVALID_SOCKET)
-  {
-
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to create serversocket");
+  
+  if ((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY")) == INVALID_SOCKET)
     return false;
-  }
-
-  if (bind(m_ServerSocket, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
-  {
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to bind serversocket");
-    close(m_ServerSocket);
-    return false;
-  }
-
-  if (listen(m_ServerSocket, 10) < 0)
-  {
-    CLog::Log(LOGERROR, "AIRPLAY Server: Failed to set listen");
-    close(m_ServerSocket);
-    return false;
-  }
-
+  
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
   return true;
 }
@@ -414,7 +391,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
   m_socket = INVALID_SOCKET;
   m_httpParser = new HttpParser();
 
-  m_addrlen = sizeof(struct sockaddr);
+  m_addrlen = sizeof(struct sockaddr_storage);
   m_pLibPlist = new DllLibPlist();
 
   m_bAuthenticated = false;
@@ -685,16 +662,14 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr,
 void CAirPlayServer::backupVolume()
 {
   if (ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = g_application.GetVolume();
+    ServerInstance->m_origVolume = (int)g_application.GetVolume();
 }
 
 void CAirPlayServer::restoreVolume()
 {
   if (ServerInstance->m_origVolume != -1)
   {
-    float oldVolume = g_application.GetVolume();
     g_application.SetVolume((float)ServerInstance->m_origVolume);
-    CApplicationMessenger::Get().ShowVolumeBar(oldVolume < (float)ServerInstance->m_origVolume);
     ServerInstance->m_origVolume = -1;
   }
 }
@@ -782,9 +757,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        int oldVolume = g_application.GetVolume();
+        float oldVolume = g_application.GetVolume();
         volume *= 100;
-        if(oldVolume != (int)volume)
+        if(oldVolume != volume)
         {
           backupVolume();
           g_application.SetVolume(volume);          

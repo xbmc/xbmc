@@ -66,7 +66,7 @@ public:
 
   // Functions called from mplayer
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
-  bool IsConfigured();
+  bool IsConfigured() const;
 
   int AddVideoPicture(DVDVideoPicture& picture);
 
@@ -110,6 +110,8 @@ public:
 
   void UpdateResolution();
 
+  bool RendererHandlesPresent() const;
+
 #ifdef HAS_GL
   CLinuxRendererGL    *m_pRenderer;
 #elif HAS_GLES == 2
@@ -131,6 +133,7 @@ public:
   CSharedSection& GetSection() { return m_sharedSection; };
 
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
+  void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);
@@ -164,6 +167,7 @@ protected:
     PRESENT_METHOD_BLEND,
     PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
+    PRESENT_METHOD_BYPASS,
   };
 
   double m_displayLatency;

@@ -73,12 +73,15 @@ CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP
     m_libRTMP.LogSetCallback(CDVDInputStreamRTMP_Log);
     switch (g_advancedSettings.m_logLevel)
     {
-      case LOG_LEVEL_DEBUG_SAMBA: level = RTMP_LOGDEBUG2; break;
       case LOG_LEVEL_DEBUG_FREEMEM:
       case LOG_LEVEL_DEBUG: level = RTMP_LOGDEBUG; break;
       case LOG_LEVEL_NORMAL: level = RTMP_LOGINFO; break;
       default: level = RTMP_LOGCRIT; break;
     }
+
+    if (g_advancedSettings.m_extraLogLevels & LOGRTMP)
+      level = RTMP_LOGDEBUG2;
+
     m_libRTMP.LogSetLevel(level);
     RTMP_level = level;
     

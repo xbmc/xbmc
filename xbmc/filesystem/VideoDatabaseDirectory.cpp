@@ -227,25 +227,25 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_TITLE_MOVIES:
-    if (strDirectory.Equals("videodb://1/2/"))
+    if (strDirectory.Equals("videodb://movies/titles/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CSettings::Get().GetBool("myvideos.flatten"))
         return "DefaultMovies.png";
       return "DefaultMovieTitle.png";
     }
     return "";
   case NODE_TYPE_TITLE_TVSHOWS:
-    if (strDirectory.Equals("videodb://2/2/"))
+    if (strDirectory.Equals("videodb://tvshows/titles/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CSettings::Get().GetBool("myvideos.flatten"))
         return "DefaultTVShows.png";
       return "DefaultTVShowTitle.png";
     }
     return "";
   case NODE_TYPE_TITLE_MUSICVIDEOS:
-    if (strDirectory.Equals("videodb://3/2/"))
+    if (strDirectory.Equals("videodb://musicvideos/titles/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CSettings::Get().GetBool("myvideos.flatten"))
         return "DefaultMusicVideos.png";
       return "DefaultMusicVideoTitle.png";
     }

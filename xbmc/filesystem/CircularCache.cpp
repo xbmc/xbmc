@@ -211,11 +211,38 @@ int64_t CCircularCache::Seek(int64_t pos)
   return CACHE_RC_ERROR;
 }
 
-void CCircularCache::Reset(int64_t pos)
+void CCircularCache::Reset(int64_t pos, bool clearAnyway)
 {
   CSingleLock lock(m_sync);
+  if (!clearAnyway && IsCachedPosition(pos))
+  {
+    m_cur = pos;
+    return;
+  }
   m_end = pos;
   m_beg = pos;
   m_cur = pos;
+}
+
+int64_t CCircularCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
+{
+  if (IsCachedPosition(iFilePosition))
+    return m_end;
+  return iFilePosition;
+}
+
+int64_t CCircularCache::CachedDataEndPos()
+{
+  return m_end;
+}
+
+bool CCircularCache::IsCachedPosition(int64_t iFilePosition)
+{
+  return iFilePosition >= m_beg && iFilePosition <= m_end;
+}
+
+CCacheStrategy *CCircularCache::CreateNew()
+{
+  return new CCircularCache(m_size - m_size_back, m_size_back);
 }
 

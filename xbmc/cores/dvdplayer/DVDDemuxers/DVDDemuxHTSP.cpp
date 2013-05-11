@@ -316,7 +316,13 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       uint32_t composition_id = 0, ancillary_id = 0;
       htsmsg_get_u32(sub, "composition_id", &composition_id);
       htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
-      st.s->identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
+      if(composition_id || ancillary_id)
+      {
+        st.s->ExtraData = new uint8_t[4];
+        st.s->ExtraSize = 4;
+        ((uint16_t*)st.s->ExtraData)[0] = composition_id;
+        ((uint16_t*)st.s->ExtraData)[1] = ancillary_id;
+      }
     } else if(!strcmp(type, "TEXTSUB")) {
       st.s = new CDemuxStreamSubtitle();
       st.s->codec = CODEC_ID_TEXT;

@@ -23,8 +23,6 @@
 #include "Application.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
-#include "settings/GUISettings.h"
-#include "settings/Settings.h"
 #include "utils/AlarmClock.h"
 #include "utils/DownloadQueueManager.h"
 #include "GUIInfoManager.h"
@@ -54,8 +52,6 @@
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
 #endif
-
-  CSettings          g_settings;
 
   CXBMCRenderManager g_renderManager;
   CLangInfo          g_langInfo;

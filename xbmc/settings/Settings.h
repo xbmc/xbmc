@@ -19,143 +19,269 @@
  *
  */
 
-#include <vector>
-#include <map>
 #include <set>
+#include <string>
 
-#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
-#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
-
-//FIXME - after eden - make that one nicer somehow...
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-#include "system.h" //for HAS_SKIN_TOUCHED
-#endif
-
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-#define DEFAULT_SKIN          "skin.touched"
-#else
-#define DEFAULT_SKIN          "skin.confluence"
-#endif
-#define DEFAULT_WEB_INTERFACE "webinterface.default"
-#ifdef MID
-#define DEFAULT_VSYNC       VSYNC_DISABLED
-#else  // MID
-#if defined(TARGET_DARWIN) || defined(_WIN32) || defined(TARGET_RASPBERRY_PI)
-#define DEFAULT_VSYNC       VSYNC_ALWAYS
-#else
-#define DEFAULT_VSYNC       VSYNC_DRIVER
-#endif
-#endif // MID
-
-#include "settings/ISettingsHandler.h"
-#include "settings/ISubSettings.h"
-#include "guilib/GraphicContext.h"
+#include "settings/ISettingCallback.h"
+#include "settings/ISettingCreator.h"
+#include "settings/Setting.h"
 #include "threads/CriticalSection.h"
 
-#define CACHE_AUDIO 0
-#define CACHE_VIDEO 1
-#define CACHE_VOB   2
-
-#define VOLUME_MINIMUM 0.0f        // -60dB
-#define VOLUME_MAXIMUM 1.0f        // 0dB
-#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-#define VOLUME_CONTROL_STEPS 90    // 90 steps
-
-class CGUISettings;
+class CSettingSection;
+class CSettingsManager;
 class TiXmlElement;
 class TiXmlNode;
 
-class CSettings : private ISettingsHandler, ISubSettings
+/*!
+ \brief Wrapper around CSettingsManager responsible for properly setting up
+ the settings manager and registering all the callbacks, handlers and custom
+ setting types.
+ \sa CSettingsManager
+ */
+class CSettings : public ISettingCreator
 {
 public:
-  CSettings(void);
-  virtual ~CSettings(void);
+  /*!
+   \brief Creates a new settings wrapper around a new settings manager.
 
-  void RegisterSettingsHandler(ISettingsHandler *settingsHandler);
-  void UnregisterSettingsHandler(ISettingsHandler *settingsHandler);
-  void RegisterSubSettings(ISubSettings *subSettings);
-  void UnregisterSubSettings(ISubSettings *subSettings);
+   For access to the "global" settings wrapper the static Get() method should
+   be used.
+   */
+  CSettings();
+  virtual ~CSettings();
 
-  void Initialize();
+  /*!
+   \brief Returns a "global" settings wrapper which can be used from anywhere.
 
+   \return "global" settings wrapper
+   */
+  static CSettings& Get();
+
+  // implementation of ISettingCreator
+  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
+
+  /*!
+   \brief Initializes the setting system with the generic
+   settings definition and platform specific setting definitions.
+
+   \return True if the initialization was successful, false otherwise
+   */
+  bool Initialize();
+  /*!
+   \brief Loads the setting values.
+
+   \return True if the setting values are successfully loaded, false otherwise
+   */
   bool Load();
-  void Save() const;
-  bool Reset();
+  /*!
+   \brief Loads setting values from the given (XML) file.
 
-  void Clear();
+   \param file Path to an XML file containing setting values
+   \return True if the setting values were successfully loaded, false otherwise
+   */
+  bool Load(const std::string &file);
+  /*!
+   \brief Loads setting values from the given XML element.
 
-  CStdString m_pictureExtensions;
-  CStdString m_musicExtensions;
-  CStdString m_videoExtensions;
-  CStdString m_discStubExtensions;
+   \param root XML element containing setting values
+   \param hide Whether to hide the loaded settings or not
+   \return True if the setting values were successfully loaded, false otherwise
+   */
+  bool Load(const TiXmlElement *root, bool hide = false);
+  /*!
+   \brief Tells the settings system that all setting values
+   have been loaded.
 
-  CStdString m_logFolder;
+   This manual trigger is necessary to enable the ISettingCallback methods
+   being executed.
+   */
+  void SetLoaded();
+  /*!
+   \brief Saves the setting values.
 
-  bool m_bMyMusicSongInfoInVis;
-  bool m_bMyMusicSongThumbInVis;
-  bool m_bMyMusicPlaylistRepeat;
-  bool m_bMyMusicPlaylistShuffle;
-  int m_iMyMusicStartWindow;
+   \return True if the setting values were successfully saved, false otherwise
+   */
+  bool Save();
+  /*!
+   \brief Saves the setting values to the given (XML) file.
 
-  float m_fZoomAmount;      // current zoom amount
-  float m_fPixelRatio;      // current pixel ratio
-  float m_fVerticalShift;   // current vertical shift
-  bool  m_bNonLinStretch;   // current non-linear stretch
+   \param file Path to an XML file
+   \return True if the setting values were successfully saved, false otherwise
+   */
+  bool Save(const std::string &file);
+  /*!
+   \brief Unloads the previously loaded setting values.
 
-  bool m_bMyVideoPlaylistRepeat;
-  bool m_bMyVideoPlaylistShuffle;
-  bool m_bMyVideoNavFlatten;
-  bool m_bStartVideoWindowed;
-  bool m_bAddonAutoUpdate;
-  bool m_bAddonNotifications;
-  bool m_bAddonForeignFilter;
+   The values of all the settings are reset to their default values.
+   */
+  void Unload();
+  /*!
+   \brief Uninitializes the settings system.
 
-  int m_iVideoStartWindow;
+   Unregisters all previously registered callbacks and destroys all setting
+   objects.
+   */
+  void Uninitialize();
 
-  bool m_videoStacking;
+  /*!
+   \brief Registers the given ISettingCallback implementation for the given
+   set of settings.
 
-  int iAdditionalSubtitleDirectoryChecked;
+   \param callback ISettingCallback implementation
+   \param settingList List of setting identifiers for which the given callback shall be triggered
+   */
+  void RegisterCallback(ISettingCallback *callback, const std::set<std::string> &settingList);
+  /*!
+   \brief Unregisters the given ISettingCallback implementation.
 
-  float m_fVolumeLevel;        // float 0.0 - 1.0 range
-  bool m_bMute;
-  int m_iSystemTimeTotalUp;    // Uptime in minutes!
+   \param callback ISettingCallback implementation
+   */
+  void UnregisterCallback(ISettingCallback *callback);
 
-  CStdString m_userAgent;
+  /*!
+   \brief Gets the setting with the given identifier.
 
-  CStdString m_defaultMusicLibSource;
+   \param id Setting identifier
+   \return Setting object with the given identifier or NULL if the identifier is unknown
+   */
+  CSetting* GetSetting(const std::string &id) const;
+  /*!
+   \brief Gets the setting section with the given identifier.
 
-  int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
-  int        m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+   \param section Setting section identifier
+   \return Setting section with the given identifier or NULL if the identifier is unknown
+   */
+  CSettingSection* GetSection(const std::string &section) const;
+  /*!
+   \brief Gets a map of settings (and their dependencies) which depend on
+   the setting with the given identifier.
 
-  bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
+   It is important to note that the returned dependencies are not the
+   dependencies of the setting with the given identifier but the settings
+   (and their dependencies) which depend on the setting with the given
+   identifier.
 
-  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
-  static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
-  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
+   \param id Setting identifier
+   \return Map of settings (and their dependencies) which depend on the setting with the given identifier
+   */
+  SettingDependencyMap GetDependencies(const std::string &id) const;
+  /*!
+   \brief Gets a map of settings (and their dependencies) which depend on
+   the given setting.
 
-protected:
-  bool LoadSettings(const CStdString& strSettingsFile);
-//  bool SaveSettings(const CStdString& strSettingsFile) const;
+   It is important to note that the returned dependencies are not the
+   dependencies of the given setting but the settings (and their dependencies)
+   which depend on the given setting.
+
+   \param setting Setting object
+   \return Map of settings (and their dependencies) which depend on the given setting
+   */
+  SettingDependencyMap GetDependencies(const CSetting *setting) const;
+  /*!
+   \brief Gets the implementation of the setting options filler used by the
+   given setting.
+
+   \param setting Setting object
+   \return Implementation of the setting options filler (either IntegerSettingOptionsFiller or StringSettingOptionsFiller)
+   */
+  void* GetSettingOptionsFiller(const CSetting *setting);
+
+  /*!
+   \brief Gets the boolean value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return Boolean value of the setting with the given identifier
+   */
+  bool GetBool(const std::string &id) const;
+  /*!
+   \brief Gets the integer value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return Integer value of the setting with the given identifier
+   */
+  int GetInt(const std::string &id) const;
+  /*!
+   \brief Gets the real number value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return Real number value of the setting with the given identifier
+   */
+  double GetNumber(const std::string &id) const;
+  /*!
+   \brief Gets the string value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return String value of the setting with the given identifier
+   */
+  std::string GetString(const std::string &id) const;
+
+  /*!
+   \brief Sets the boolean value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Boolean value to set
+   \return True if setting the value was successful, false otherwise
+   */
+  bool SetBool(const std::string &id, bool value);
+  /*!
+   \brief Toggles the boolean value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \return True if toggling the boolean value was successful, false otherwise
+   */
+  bool ToggleBool(const std::string &id);
+  /*!
+   \brief Sets the integer value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Integer value to set
+   \return True if setting the value was successful, false otherwise
+   */
+  bool SetInt(const std::string &id, int value);
+  /*!
+   \brief Sets the real number value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \param value Real number value to set
+   \return True if setting the value was successful, false otherwise
+   */
+  bool SetNumber(const std::string &id, double value);
+  /*!
+   \brief Sets the string value of the setting with the given identifier.
+
+   \param id Setting identifier
+   \param value String value to set
+   \return True if setting the value was successful, false otherwise
+   */
+  bool SetString(const std::string &id, const std::string &value);
+
+  /*!
+   \brief Loads the setting being represented by the given XML node with the
+   given identifier.
+
+   \param node XML node representing the setting to load
+   \param settingId Setting identifier
+   \return True if the setting was successfully loaded from the given XML node, false otherwise
+   */
+  bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
 
 private:
-  // implementation of ISettingsHandler
-  virtual bool OnSettingsLoading();
-  virtual void OnSettingsLoaded();
-  virtual bool OnSettingsSaving() const;
-  virtual void OnSettingsSaved() const;
-  virtual void OnSettingsCleared();
+  CSettings(const CSettings&);
+  CSettings const& operator=(CSettings const&);
 
-  // implementation of ISubSettings
-  virtual bool Load(const TiXmlNode *settings);
-  virtual bool Save(TiXmlNode *settings) const;
+  bool Initialize(const std::string &file);
+  bool InitializeDefinitions();
+  void InitializeSettingTypes();
+  void InitializeVisibility();
+  void InitializeDefaults();
+  void InitializeOptionFillers();
+  void InitializeConditions();
+  void InitializeISettingsHandlers();
+  void InitializeISubSettings();
+  void InitializeISettingCallbacks();
+  bool Reset();
 
+  bool m_initialized;
+  CSettingsManager *m_settingsManager;
   CCriticalSection m_critical;
-  typedef std::set<ISettingsHandler*> SettingsHandlers;
-  SettingsHandlers m_settingsHandlers;
-  typedef std::set<ISubSettings*> SubSettings;
-  SubSettings m_subSettings;
 };
-
-extern class CSettings g_settings;

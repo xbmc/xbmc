@@ -21,7 +21,7 @@
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-#include "settings/GUISettings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 
@@ -49,17 +49,17 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   bool bSupportsTrueHDOut = false;
   bool bSupportsDTSHDOut  = false;
 
-  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
   if (AUDIO_IS_BITSTREAM(audioMode))
   {
-    bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
-    bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+    bSupportsAC3Out = CSettings::Get().GetBool("audiooutput.ac3passthrough");
+    bSupportsDTSOut = CSettings::Get().GetBool("audiooutput.dtspassthrough");
   }
 
   if (audioMode == AUDIO_HDMI)
   {
-    bSupportsTrueHDOut = g_guiSettings.GetBool("audiooutput.truehdpassthrough");
-    bSupportsDTSHDOut  = g_guiSettings.GetBool("audiooutput.dtshdpassthrough" ) && bSupportsDTSOut;
+    bSupportsTrueHDOut = CSettings::Get().GetBool("audiooutput.truehdpassthrough");
+    bSupportsDTSHDOut  = CSettings::Get().GetBool("audiooutput.dtshdpassthrough" ) && bSupportsDTSOut;
   }
 
   /* only get the dts core from the parser if we don't support dtsHD */

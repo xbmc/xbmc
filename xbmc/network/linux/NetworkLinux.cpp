@@ -30,6 +30,7 @@
 #ifdef TARGET_ANDROID
 #include "android/bionic_supplement/bionic_supplement.h"
 #include "sys/system_properties.h"
+#include <sys/wait.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
@@ -37,6 +38,13 @@
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
+#if defined(TARGET_DARWIN_OSX)
+  #include <net/if_types.h>
+  #include <net/route.h>
+  #include <netinet/if_ether.h>
+#else //IOS
+  #include "network/osx/ioshacks.h"
+#endif
   #include <ifaddrs.h>
 #elif defined(TARGET_FREEBSD)
   #include <sys/sockio.h>
@@ -519,6 +527,118 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    }
 #endif
 }
+
+bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
+{
+  char cmd_line [64];
+
+  struct in_addr host_ip; 
+  host_ip.s_addr = remote_ip;
+
+  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+
+  int status = system (cmd_line);
+
+  int result = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+
+  // http://linux.about.com/od/commands/l/blcmdl8_ping.htm ;
+  // 0 reply
+  // 1 no reply
+  // else some error
+
+  if (result < 0 || result > 1)
+    CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
+
+  return result == 0;
+}
+
+#if defined TARGET_DARWIN
+bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString& mac)
+{
+  bool ret = false;
+  size_t needed;
+  char *buf, *next;
+  struct rt_msghdr *rtm;
+  struct sockaddr_inarp *sin;
+  struct sockaddr_dl *sdl;
+  int mib[6];
+  
+  mac = "";
+  
+  mib[0] = CTL_NET;
+  mib[1] = PF_ROUTE;
+  mib[2] = 0;
+  mib[3] = AF_INET;
+  mib[4] = NET_RT_FLAGS;
+  mib[5] = RTF_LLINFO;
+  
+  if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), NULL, &needed, NULL, 0) == 0)
+  {   
+    if (buf = (char*)malloc(needed))
+    {      
+      if (sysctl(mib, sizeof(mib) / sizeof(mib[0]), buf, &needed, NULL, 0) == 0)
+      {        
+        for (next = buf; next < buf + needed; next += rtm->rtm_msglen) 
+        {
+          
+          rtm = (struct rt_msghdr *)next;
+          sin = (struct sockaddr_inarp *)(rtm + 1);
+          sdl = (struct sockaddr_dl *)(sin + 1);
+          
+          if (host_ip != sin->sin_addr.s_addr || sdl->sdl_alen < 6)
+            continue;
+          
+          u_char *cp = (u_char*)LLADDR(sdl);
+          
+          mac.Format("%02X:%02X:%02X:%02X:%02X:%02X",
+                     cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
+          ret = true;
+          break;
+        }
+      }
+      free(buf);
+    }
+  }
+  return ret;
+}
+#else
+bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString& mac)
+{
+  struct arpreq areq;
+  struct sockaddr_in* sin;
+
+  memset(&areq, 0x0, sizeof(areq));
+
+  sin = (struct sockaddr_in *) &areq.arp_pa;
+  sin->sin_family = AF_INET;
+  sin->sin_addr.s_addr = host_ip;
+
+  sin = (struct sockaddr_in *) &areq.arp_ha;
+  sin->sin_family = ARPHRD_ETHER;
+
+  strncpy(areq.arp_dev, m_interfaceName.c_str(), sizeof(areq.arp_dev));
+  areq.arp_dev[sizeof(areq.arp_dev)-1] = '\0';
+
+  int result = ioctl (m_network->GetSocket(), SIOCGARP, (caddr_t) &areq);
+
+  if (result != 0)
+  {
+//  CLog::Log(LOGERROR, "%s - GetHostMacAddress/ioctl failed with errno (%d)", __FUNCTION__, errno);
+    return false;
+  }
+
+  struct sockaddr* res = &areq.arp_ha;
+  mac.Format("%02X:%02X:%02X:%02X:%02X:%02X", 
+    (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2], 
+    (uint8_t) res->sa_data[3], (uint8_t) res->sa_data[4], (uint8_t) res->sa_data[5]);
+
+  for (int i=0; i<6; ++i)
+    if (res->sa_data[i])
+      return true;
+
+  return false;
+}
+#endif
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {

@@ -26,7 +26,6 @@
 #include <stdint.h>
 
 #include "../Utils/AEUtil.h"
-#include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StdString.h"
 #include "utils/log.h"

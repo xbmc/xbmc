@@ -180,7 +180,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
-        URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
+        strnewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
 
       if (pItem->m_bIsFolder)
       {

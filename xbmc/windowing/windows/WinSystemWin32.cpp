@@ -20,11 +20,11 @@
 
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
-#include "settings/Settings.h"
 #include "resource.h"
-#include "settings/DisplaySettings.h"
-#include "settings/GUISettings.h"
+#include "guilib/gui3d.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 
 #ifdef _WIN32
@@ -257,7 +257,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 {
   m_IsAlteringWindow = true;
 
-  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (CSettings::Get().GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceResize = false;
 
@@ -267,7 +267,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     RestoreDesktopResolution(m_nScreen);
   }
 
-  if(!m_bFullScreen && fullScreen)
+  if(m_hWnd && !m_bFullScreen && fullScreen)
   {
     // save position of windowed mode
     WINDOWINFO wi;
@@ -284,7 +284,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
-  if (fullScreen && g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  if (fullScreen && CSettings::Get().GetBool("videoscreen.fakefullscreen"))
     ChangeResolution(res);
 
   ResizeInternal(forceResize);
@@ -350,6 +350,8 @@ RECT CWinSystemWin32::ScreenRect(int screen)
 
 bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 {
+  if (m_hWnd == NULL)
+    return false;
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
   RECT rc;

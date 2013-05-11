@@ -18,18 +18,14 @@
  *
  */
 
-#include "system.h"
-#include "Network.h"
-#include "Application.h"
-#include "ApplicationMessenger.h"
-#include "utils/RssManager.h"
-#include "utils/log.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
+#include "Network.h"
+#include "ApplicationMessenger.h"
+#include "network/NetworkServices.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -128,7 +124,6 @@ CStdString CNetwork::GetHostName(void)
     return CStdString(hostName);
 }
 
-
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
    vector<CNetworkInterface*>& ifaces = GetInterfaceList();
@@ -204,19 +199,16 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   switch( message )
   {
     case SERVICES_UP:
-    {
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-      StartServices();
-    }
-    break;
+      CNetworkServices::Get().Start();
+      break;
+
     case SERVICES_DOWN:
-    {
       CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
-      StopServices(false); //tell network services to stop, but don't wait for them yet
+      CNetworkServices::Get().Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
-      StopServices(true); //wait for network services to stop
-    }
-    break;
+      CNetworkServices::Get().Stop(true); // wait for network services to stop
+      break;
   }
 }
 
@@ -277,57 +269,201 @@ bool CNetwork::WakeOnLan(const char* mac)
   return true;
 }
 
-void CNetwork::StartServices()
+// ping helper
+static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, struct timeval& timeOut, bool tryRead)
 {
-#ifdef HAS_WEB_SERVER
-  if (!g_application.StartWebServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
+  // set non-blocking
+#ifdef _MSC_VER
+  u_long nonblocking = 1;
+  int result = ioctlsocket(soc, FIONBIO, &nonblocking);
+#else
+  int result = fcntl(soc, F_SETFL, fcntl(soc, F_GETFL) | O_NONBLOCK);
 #endif
-#ifdef HAS_UPNP
-  g_application.StartUPnP();
-#endif
-#ifdef HAS_EVENT_SERVER
-  if (!g_application.StartEventServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
-#endif
-#ifdef HAS_JSONRPC
-  if (!g_application.StartJSONRPCServer())
-    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
-#endif
-#ifdef HAS_ZEROCONF
-  g_application.StartZeroconf();
-#endif
-#ifdef HAS_AIRPLAY
-  g_application.StartAirplayServer();
-#endif
-  CRssManager::Get().Start();
-}
 
-void CNetwork::StopServices(bool bWait)
-{
-  if (bWait)
+  if (result != 0)
+    return "set non-blocking option failed";
+
+  result = connect(soc, (struct sockaddr *)&addr, sizeof(addr)); // non-blocking connect, will fail ..
+
+  if (result < 0)
   {
-#ifdef HAS_UPNP
-    g_application.StopUPnP(bWait);
+#ifdef _MSC_VER
+    if (WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+    if (errno != EINPROGRESS)
 #endif
-#ifdef HAS_ZEROCONF
-    g_application.StopZeroconf();
-#endif
-#ifdef HAS_WEB_SERVER
-    g_application.StopWebServer();
-#endif    
-    // smb.Deinit(); if any file is open over samba this will break.
+      return "unexpected connect fail";
 
-    CRssManager::Get().Stop();
+    { // wait for connect to complete
+      fd_set wset;
+      FD_ZERO(&wset); 
+      FD_SET(soc, &wset); 
+
+      result = select(FD_SETSIZE, 0, &wset, 0, &timeOut);
+    }
+
+    if (result < 0)
+      return "select fail";
+
+    if (result == 0) // timeout
+      return ""; // no error
+
+    { // verify socket connection state
+      int err_code = -1;
+      socklen_t code_len = sizeof (err_code);
+
+      result = getsockopt(soc, SOL_SOCKET, SO_ERROR, (char*) &err_code, &code_len);
+
+      if (result != 0)
+        return "getsockopt fail";
+
+      if (err_code != 0)
+        return ""; // no error, just not connected
+    }
   }
 
-#ifdef HAS_EVENT_SERVER
-  g_application.StopEventServer(bWait, false);
-#endif
-#ifdef HAS_JSONRPC
-    g_application.StopJSONRPCServer(bWait);
-#endif
-#if defined(HAS_AIRPLAY) || defined(HAS_AIRTUNES)
-    g_application.StopAirplayServer(bWait);
-#endif
+  if (tryRead)
+  {
+    fd_set rset;
+    FD_ZERO(&rset); 
+    FD_SET(soc, &rset); 
+
+    result = select(FD_SETSIZE, &rset, 0, 0, &timeOut);
+
+    if (result > 0)
+    {
+      char message [32];
+
+      result = recv(soc, message, sizeof(message), 0);
+    }
+
+    if (result == 0)
+      return ""; // no reply yet
+
+    if (result < 0)
+      return "recv fail";
+  }
+
+  return 0; // success
 }
+
+bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
+{
+  if (port == 0) // use icmp ping
+    return PingHost (ipaddr, timeOutMs);
+
+  struct sockaddr_in addr; 
+  addr.sin_family = AF_INET; 
+  addr.sin_port = htons(port); 
+  addr.sin_addr.s_addr = ipaddr; 
+
+  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0); 
+
+  const char* err_msg = "invalid socket";
+
+  if (soc != INVALID_SOCKET)
+  {
+    struct timeval tmout; 
+    tmout.tv_sec = timeOutMs / 1000; 
+    tmout.tv_usec = (timeOutMs % 1000) * 1000; 
+
+    err_msg = ConnectHostPort (soc, addr, tmout, readability_check);
+
+    (void) closesocket (soc);
+  }
+
+  if (err_msg && *err_msg)
+  {
+#ifdef _MSC_VER
+    CStdString sock_err = WUSysMsg(WSAGetLastError());
+#else
+    CStdString sock_err = strerror(errno);
+#endif
+
+    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
+  }
+
+  return err_msg == 0;
+}
+
+//creates, binds and listens a tcp socket on the desired port. Set bindLocal to
+//true to bind to localhost only. The socket will listen over ipv6 if possible
+//and fall back to ipv4 if ipv6 is not available on the platform.
+int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlog, const char *callerName)
+{
+  struct sockaddr_storage addr;
+  struct sockaddr_in6 *s6;
+  struct sockaddr_in  *s4;
+  int    sock;
+  bool   v4_fallback = false;
+
+#ifdef WINSOCK_VERSION
+  const char yes = 1;
+  const char no = 0;
+#else
+  unsigned int yes = 1;
+  unsigned int no = 0;
+#endif
+  
+  memset(&addr, 0, sizeof(addr));
+  
+  if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0)
+    v4_fallback = true;
+  
+  //in case we're on ipv6, make sure the socket is dual stacked
+  if (!v4_fallback)
+    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)); 
+  
+  if (v4_fallback)
+    sock = socket(PF_INET, SOCK_STREAM, 0);
+
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+  
+  if (sock == INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "%s Server: Failed to create serversocket", callerName);
+    return INVALID_SOCKET;
+  }
+  
+  if (v4_fallback)
+  {
+    addr.ss_family = AF_INET;
+    s4 = (struct sockaddr_in *) &addr;
+    s4->sin_port = htons(port);
+
+    if (bindLocal)
+      s4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    else
+      s4->sin_addr.s_addr = htonl(INADDR_ANY);
+  }
+  else
+  {
+    addr.ss_family = AF_INET6;
+    s6 = (struct sockaddr_in6 *) &addr;
+    s6->sin6_port = htons(port);
+
+    if (bindLocal)
+      s6->sin6_addr = in6addr_loopback;
+    else
+      s6->sin6_addr = in6addr_any;
+  }
+
+  if (::bind( sock, (struct sockaddr *) &addr,
+            (addr.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) :
+                                           sizeof(struct sockaddr_in)  ) < 0)
+  {
+    closesocket(sock);
+    CLog::Log(LOGERROR, "%s Server: Failed to bind serversocket", callerName);
+    return INVALID_SOCKET;
+  }
+
+  if (listen(sock, backlog) < 0)
+  {
+    closesocket(sock);
+    CLog::Log(LOGERROR, "%s Server: Failed to set listen", callerName);
+    return INVALID_SOCKET;
+  }
+
+  return sock;
+}
+

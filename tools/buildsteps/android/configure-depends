@@ -5,11 +5,11 @@ XBMC_PLATFORM_DIR=android
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-tarballs=/opt/xbmc-tarballs \
+    --with-tarballs=$TARBALLS \
     --host=arm-linux-androideabi \
     --with-sdk-path=$SDK_PATH \
     --with-ndk=$NDK_PATH \
-    --with-sdk=android-$SDK_VERSION \
+    $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT
 fi

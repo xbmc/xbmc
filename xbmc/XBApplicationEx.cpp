@@ -38,7 +38,6 @@ CXBApplicationEx::CXBApplicationEx()
 {
   // Variables to perform app timing
   m_bStop = false;
-  m_AppActive = true;
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
   m_renderGUI = false;
@@ -53,7 +52,6 @@ bool CXBApplicationEx::Create()
 {
   // Variables to perform app timing
   m_bStop = false;
-  m_AppActive = true;
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
 

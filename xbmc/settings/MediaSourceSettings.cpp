@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "network/WakeOnAccess.h"
 
 #define SOURCES_FILE  "sources.xml"
 #define XML_SOURCES   "sources"
@@ -115,9 +116,6 @@ bool CMediaSourceSettings::Save()
 
 bool CMediaSourceSettings::Save(const std::string &file) const
 {
-  if (!CFile::Exists(file))
-    return false;
-
   // TODO: Should we be specifying utf8 here??
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_SOURCES);
@@ -131,6 +129,8 @@ bool CMediaSourceSettings::Save(const std::string &file) const
   SetSources(pRoot, "music", m_musicSources, m_defaultMusicSource);
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
+
+  CWakeOnAccess::Get().QueueMACDiscoveryForAllRemotes();
 
   return doc.SaveFile(file);
 }

@@ -18,6 +18,8 @@
  *
  */
 
+#include <limits.h>
+
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "SystemInfo.h"
@@ -31,7 +33,6 @@
 #include "network/Network.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
@@ -45,6 +46,7 @@
 #endif
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 
 CSysInfo g_sysinfo;
 
@@ -145,7 +147,7 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(XbmcThreads::SystemClockMillis() / 60000));
+    iInputMinutes = g_sysinfo.GetTotalUptime() + ((int)(XbmcThreads::SystemClockMillis() / 60000));
   }
   else
   {
@@ -213,10 +215,41 @@ void CSysInfo::Reset()
 CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
 {
   memset(MD5_Sign, 0, sizeof(MD5_Sign));
+  m_iSystemTimeTotalUp = 0;
 }
 
 CSysInfo::~CSysInfo()
 {
+}
+
+bool CSysInfo::Load(const TiXmlNode *settings)
+{
+  if (settings == NULL)
+    return false;
+  
+  const TiXmlElement *pElement = settings->FirstChildElement("general");
+  if (pElement)
+    XMLUtils::GetInt(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, INT_MAX);
+
+  return true;
+}
+
+bool CSysInfo::Save(TiXmlNode *settings) const
+{
+  if (settings == NULL)
+    return false;
+
+  TiXmlNode *generalNode = settings->FirstChild("general");
+  if (generalNode == NULL)
+  {
+    TiXmlElement generalNodeNew("general");
+    generalNode = settings->InsertEndChild(generalNodeNew);
+    if (generalNode == NULL)
+      return false;
+  }
+  XMLUtils::SetInt(generalNode, "systemtotaluptime", m_iSystemTimeTotalUp);
+
+  return true;
 }
 
 bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
@@ -342,6 +375,15 @@ bool CSysInfo::IsVistaOrHigher()
 {
 #ifdef TARGET_WINDOWS
   return IsWindowsVersionAtLeast(WindowsVersionVista);
+#else // TARGET_WINDOWS
+  return false;
+#endif // TARGET_WINDOWS
+}
+
+bool CSysInfo::IsWindows8OrHigher()
+{
+#ifdef TARGET_WINDOWS
+  return IsWindowsVersionAtLeast(WindowsVersionWin8);
 #else // TARGET_WINDOWS
   return false;
 #endif // TARGET_WINDOWS

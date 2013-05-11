@@ -25,11 +25,10 @@
 #include "video/VideoInfoDownloader.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
-#include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "music/Album.h"
 #include "music/Artist.h"
-#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 
 #include <vector>
@@ -71,6 +70,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
+      m_headofdoc = strstr(m_headofdoc,"<episodedetails");
+      bNfo = GetDetails(details);
       while (m_headofdoc && details.m_iEpisode != episode)
       {
         m_headofdoc = strstr(m_headofdoc+1,"<episodedetails");

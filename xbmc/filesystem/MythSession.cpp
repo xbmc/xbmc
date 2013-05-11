@@ -358,7 +358,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   return;
 }
 
-CMythSession::CMythSession(const CURL& url) : CThread("CMythSession")
+CMythSession::CMythSession(const CURL& url) : CThread("MythSession")
 {
   m_control   = NULL;
   m_event     = NULL;
@@ -373,7 +373,7 @@ CMythSession::CMythSession(const CURL& url) : CThread("CMythSession")
   if (m_dll->IsLoaded())
   {
     m_dll->set_dbg_msgcallback(&CMythSession::LogCMyth);
-    if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    if (g_advancedSettings.m_extraLogLevels & LOGCMYTH)
       m_dll->dbg_level(CMYTH_DBG_ALL);
     else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
       m_dll->dbg_level(CMYTH_DBG_DETAIL);

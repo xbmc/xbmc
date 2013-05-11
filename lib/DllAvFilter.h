@@ -58,6 +58,13 @@ extern "C" {
 #endif
 }
 
+#if LIBAVFILTER_VERSION_MICRO >= 100
+  #define LIBAVFILTER_FROM_FFMPEG
+#else
+  #define LIBAVFILTER_FROM_LIBAV
+#endif
+
+
 #include "threads/SingleLock.h"
 
 class DllAvFilterInterface
@@ -74,10 +81,13 @@ public:
   virtual void avfilter_inout_free(AVFilterInOut **inout)=0;
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
-#else
+#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
+    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame)=0;
+#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
+#else
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
 #endif
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
@@ -134,10 +144,13 @@ public:
   {
     return ::avfilter_graph_config(graphctx, log_ctx);
   }
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
-#else
+#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
+    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame) { return ::av_buffersrc_add_frame(buffer_filter, frame); }
+#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame, int flags) { return ::av_buffersrc_add_frame(buffer_filter, frame, flags); }
+#else
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
 #endif
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
@@ -172,10 +185,13 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD1(void, avfilter_inout_free_dont_call, (AVFilterInOut **p1))
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-  DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
-#else
+#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
+    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+  DEFINE_METHOD2(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2))
+#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
   DEFINE_METHOD3(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
+#else
+  DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
 #endif
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))

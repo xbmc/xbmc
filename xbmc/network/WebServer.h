@@ -29,9 +29,19 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <vector>
+
 #include "interfaces/json-rpc/ITransportLayer.h"
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
-#include "httprequesthandler/IHTTPRequestHandler.h"
+
+namespace XFILE
+{
+  class CFile;
+}
+class CDateTime;
+
+typedef std::pair<int64_t, int64_t> HttpRange;
+typedef std::vector<HttpRange> HttpRanges;
 
 class CWebServer : public JSONRPC::ITransportLayer
 {
@@ -54,6 +64,7 @@ public:
   static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);
+
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);
@@ -101,9 +112,15 @@ private:
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
-  static const char *CreateMimeTypeFromExtension(const char *ext);
+  static std::string CreateMimeTypeFromExtension(const char *ext);
 
-  struct MHD_Daemon *m_daemon;
+  static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
+  static int64_t ParseRangeHeader(const std::string &rangeHeaderValue, int64_t totalLength, HttpRanges &ranges, int64_t &firstPosition, int64_t &lastPosition);
+  static std::string GenerateMultipartBoundary();
+  static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
+
+  struct MHD_Daemon *m_daemon_ip6;
+  struct MHD_Daemon *m_daemon_ip4;
   bool m_running, m_needcredentials;
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;

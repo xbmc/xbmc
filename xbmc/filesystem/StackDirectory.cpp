@@ -48,7 +48,6 @@ namespace XFILE
     {
       CStdString file = files[i];
       CFileItemPtr item(new CFileItem(file));
-      //URIUtils::AddFileToFolder(folder, file, item->GetPath());
       item->SetPath(file);
       item->m_bIsFolder = false;
       items.Add(item);
@@ -159,7 +158,7 @@ namespace XFILE
   {
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
-    CStdString path, file, folder;
+    CStdString file, folder;
     int pos = strPath.Find(" , ");
     if (pos > 0)
       URIUtils::Split(strPath.Left(pos), folder, file);
@@ -169,9 +168,8 @@ namespace XFILE
     // remove "stack://" from the folder
     folder = folder.Mid(8);
     file.Replace(",,", ",");
-    URIUtils::AddFileToFolder(folder, file, path);
 
-    return path;
+    return URIUtils::AddFileToFolder(folder, file);
   }
 
   bool CStackDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)

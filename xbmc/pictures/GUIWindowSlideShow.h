@@ -43,6 +43,8 @@ public:
   void Create(CGUIWindowSlideShow *pCallback);
   void LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight);
   bool IsLoading() { return m_isLoading;};
+  int SlideNumber() const { return m_iSlideNumber; }
+  int Pic() const { return m_iPic; }
 
 private:
   void Process();
@@ -75,9 +77,9 @@ public:
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
+                    const CStdString &beginSlidePath="", bool startSlideShow = true,
                     SORT_METHOD method = SORT_METHOD_LABEL,
-                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="",
-                    const CStdString &beginSlidePath="", bool startSlideShow = true);
+                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
   void AddFromPath(const CStdString &strPath, bool bRecursive,
                    SORT_METHOD method=SORT_METHOD_LABEL, 
                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
@@ -89,18 +91,21 @@ public:
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
   virtual void OnDeinitWindow(int nextWindowID);
-  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, bool bFullSize);
+  void OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
   bool IsPaused() const { return m_bPause; }
   bool IsShuffled() const { return m_bShuffled; }
   int GetDirection() const { return m_iDirection; }
+  void SetDirection(int direction); // -1: rewind, 1: forward
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
                 SORT_METHOD method = SORT_METHOD_LABEL,
                 SortOrder order = SortOrderAscending);
+  bool PlayVideo();
+  CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
   void Rotate(float fAngle, bool immediate = false);
@@ -108,6 +113,7 @@ private:
   void ZoomRelative(float fZoom, bool immediate = false);
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
+  CStdString GetPicturePath(CFileItem *item);
   int  GetNextSlide();
 
   void AnnouncePlayerPlay(const CFileItemPtr& item);
@@ -140,9 +146,8 @@ private:
   int m_iCurrentPic;
   // background loader
   CBackgroundPicLoader* m_pBackgroundLoader;
-  bool m_bWaitForNextPic;
+  int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
-  bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;

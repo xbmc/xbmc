@@ -71,7 +71,7 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
+XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPython")
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter   = pExecuter;
@@ -159,7 +159,7 @@ static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
-       iter != acs.end(); iter++)
+       iter != acs.end(); ++iter)
   {
     if (!firstTime) message += ",";
     else firstTime = false;
@@ -341,14 +341,21 @@ void XBPyThread::Process()
       if (pDlgToast)
       {
         CStdString desc;
-        CStdString path;
         CStdString script;
-        URIUtils::Split(m_source, path, script);
-        if (script.Equals("default.py"))
+        if (addon.get() != NULL)
         {
-          CStdString path2;
-          URIUtils::RemoveSlashAtEnd(path);
-          URIUtils::Split(path, path2, script);
+          script = addon->Name();
+        }
+        else
+        {
+          CStdString path;
+          URIUtils::Split(m_source, path, script);
+          if (script.Equals("default.py"))
+          {
+            CStdString path2;
+            URIUtils::RemoveSlashAtEnd(path);
+            URIUtils::Split(path, path2, script);
+          }
         }
 
         desc.Format(g_localizeStrings.Get(2100), script);

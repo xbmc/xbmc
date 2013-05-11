@@ -21,7 +21,7 @@
 #include "GUIDialogPeripheralSettings.h"
 #include "addons/Skin.h"
 #include "peripherals/Peripherals.h"
-#include "settings/GUISettings.h"
+#include "settings/Setting.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoSettings.h"
 
@@ -33,7 +33,8 @@ using namespace PERIPHERALS;
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings(void) :
     CGUIDialogSettings(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogPeripheralSettings.xml"),
     m_item(NULL),
-    m_bIsInitialising(true)
+    m_bIsInitialising(true),
+    m_settingId(0)
 {
 }
 
@@ -81,58 +82,58 @@ void CGUIDialogPeripheralSettings::CreateSettings()
 
         switch(setting->GetType())
         {
-        case SETTINGS_TYPE_BOOL:
+        case SettingTypeBool:
           {
             CSettingBool *boolSetting = (CSettingBool *) setting;
             if (boolSetting)
             {
-              m_boolSettings.insert(make_pair(CStdString(boolSetting->GetSetting()), boolSetting->GetData()));
-              AddBool(boolSetting->GetOrder(), boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetSetting()], true);
+              m_boolSettings.insert(make_pair(CStdString(boolSetting->GetId()), boolSetting->GetValue()));
+              AddBool(m_settingId++, boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetId()], true);
             }
           }
           break;
-        case SETTINGS_TYPE_INT:
+        case SettingTypeInteger:
           {
             CSettingInt *intSetting = (CSettingInt *) setting;
             if (intSetting)
             {
-              if (intSetting->GetControlType() == SPIN_CONTROL_INT)
+              if (intSetting->GetControl().GetFormat() == SettingControlFormatInteger)
               {
-                m_intSettings.insert(make_pair(CStdString(intSetting->GetSetting()), (float) intSetting->GetData()));
-                AddSlider(intSetting->GetOrder(), intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
+                m_intSettings.insert(make_pair(CStdString(intSetting->GetId()), (float) intSetting->GetValue()));
+                AddSlider(m_settingId++, intSetting->GetLabel(), &m_intSettings[intSetting->GetId()], (float)intSetting->GetMinimum(), (float)intSetting->GetStep(), (float)intSetting->GetMaximum(), CGUIDialogVideoSettings::FormatInteger, false);
               }
-              else if (intSetting->GetControlType() == SPIN_CONTROL_TEXT)
+              else if (intSetting->GetControl().GetFormat() == SettingControlFormatString)
               {
-                m_intTextSettings.insert(make_pair(CStdString(intSetting->GetSetting()), intSetting->GetData()));
+                m_intTextSettings.insert(make_pair(CStdString(intSetting->GetId()), intSetting->GetValue()));
                 vector<pair<int, int> > entries;
-                map<int, int>::iterator entriesItr = intSetting->m_entries.begin();
-                while (entriesItr != intSetting->m_entries.end())
+                SettingOptions::const_iterator entriesItr = intSetting->GetOptions().begin();
+                while (entriesItr != intSetting->GetOptions().end())
                 {
                   entries.push_back(make_pair(entriesItr->first, entriesItr->second));
                   ++entriesItr;
                 }
-                AddSpin(intSetting->GetOrder(), intSetting->GetLabel(), &m_intTextSettings[intSetting->GetSetting()], entries);
+                AddSpin(m_settingId++, intSetting->GetLabel(), &m_intTextSettings[intSetting->GetId()], entries);
               }
             }
           }
           break;
-        case SETTINGS_TYPE_FLOAT:
+        case SettingTypeNumber:
           {
-            CSettingFloat *floatSetting = (CSettingFloat *) setting;
+            CSettingNumber *floatSetting = (CSettingNumber *) setting;
             if (floatSetting)
             {
-              m_floatSettings.insert(make_pair(CStdString(floatSetting->GetSetting()), floatSetting->GetData()));
-              AddSlider(floatSetting->GetOrder(), floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetSetting()], floatSetting->m_fMin, floatSetting->m_fStep, floatSetting->m_fMax, CGUIDialogVideoSettings::FormatFloat, false);
+              m_floatSettings.insert(make_pair(CStdString(floatSetting->GetId()), (float)floatSetting->GetValue()));
+              AddSlider(m_settingId++, floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetId()], (float)floatSetting->GetMinimum(), (float)floatSetting->GetStep(), (float)floatSetting->GetMaximum(), CGUIDialogVideoSettings::FormatFloat, false);
             }
           }
           break;
-        case SETTINGS_TYPE_STRING:
+        case SettingTypeString:
           {
             CSettingString *stringSetting = (CSettingString *) setting;
             if (stringSetting)
             {
-              m_stringSettings.insert(make_pair(CStdString(stringSetting->GetSetting()), stringSetting->GetData()));
-              AddString(stringSetting->GetOrder(), stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetSetting()]);
+              m_stringSettings.insert(make_pair(CStdString(stringSetting->GetId()), stringSetting->GetValue()));
+              AddString(m_settingId++, stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetId()]);
             }
           }
           break;

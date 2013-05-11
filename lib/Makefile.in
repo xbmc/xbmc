@@ -12,10 +12,10 @@ else
 AVPREFIX=
 endif
 
-AVFORMAT_SO=$(AVPREFIX)avformat-53-$(ARCH).so
-AVCODEC_SO=$(AVPREFIX)avcodec-53-$(ARCH).so
-AVUTIL_SO=$(AVPREFIX)avutil-51-$(ARCH).so
-AVFILTER_SO=$(AVPREFIX)avfilter-2-$(ARCH).so
+AVFORMAT_SO=$(AVPREFIX)avformat-54-$(ARCH).so
+AVCODEC_SO=$(AVPREFIX)avcodec-54-$(ARCH).so
+AVUTIL_SO=$(AVPREFIX)avutil-52-$(ARCH).so
+AVFILTER_SO=$(AVPREFIX)avfilter-3-$(ARCH).so
 SWSCALE_SO=$(AVPREFIX)swscale-2-$(ARCH).so
 POSTPROC_SO=$(AVPREFIX)postproc-52-$(ARCH).so
 SWRESAMPLE_SO=$(AVPREFIX)swresample-0-$(ARCH).so
@@ -75,7 +75,9 @@ endif
 ffmpeg:
 	$(MAKE) -C $@
 ifeq ($(findstring osx,$(ARCH)), osx)
-	-$(AR) d ffmpeg/libavcodec/libavcodec.a inverse.o
+	-$(AR) d ffmpeg/libavcodec/libavcodec.a log2_tab.o
+	-$(AR) d ffmpeg/libavformat/libavformat.a log2_tab.o
+	-$(AR) d ffmpeg/libswresample/libswresample.a log2_tab.o
 endif
 
 clean:

@@ -19,6 +19,11 @@
  *
  */
 
+/*!
+ \ingroup settings
+ \brief Interface defining methods being called by the settings system if an
+ action is performed on multiple/all settings
+ */
 class ISettingsHandler
 {
 public:
@@ -51,8 +56,8 @@ public:
   /*!
    \brief Settings have been cleared.
 
-   This callback can be used to trigger clearing any state variables
-   (e.g. before re-loading the settings).
+   This callback can be used to trigger clearing any state variables (e.g.
+   before re-loading the settings).
    */
   virtual void OnSettingsCleared() { }
 };

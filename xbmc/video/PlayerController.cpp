@@ -21,15 +21,16 @@
 #include "PlayerController.h"
 #include "utils/StdString.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
-#include "settings/MediaSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "cores/IPlayer.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUISliderControl.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#include "video/windows/GUIWindowFullScreen.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -103,7 +104,7 @@ bool CPlayerController::OnAction(const CAction &action)
       if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
       {
         SPlayerSubtitleStreamInfo info;
-        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
         sub = info.name;
         if (sub != info.language)
           sub.Format("%s [%s]", sub.c_str(), info.language.c_str());
@@ -275,7 +276,7 @@ bool CPlayerController::OnAction(const CAction &action)
     case ACTION_SUBTITLE_VSHIFT_UP:
     {
       RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-      int subalign = g_guiSettings.GetInt("subtitles.align");
+      int subalign = CSettings::Get().GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
         res_info.iSubtitles ++;
@@ -301,7 +302,7 @@ bool CPlayerController::OnAction(const CAction &action)
     case ACTION_SUBTITLE_VSHIFT_DOWN:
     {
       RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-      int subalign = g_guiSettings.GetInt("subtitles.align");
+      int subalign = CSettings::Get().GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
         res_info.iSubtitles--;
@@ -327,7 +328,7 @@ bool CPlayerController::OnAction(const CAction &action)
     case ACTION_SUBTITLE_ALIGN:
     {
       RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-      int subalign = g_guiSettings.GetInt("subtitles.align");
+      int subalign = CSettings::Get().GetInt("subtitles.align");
 
       subalign++;
       if (subalign > SUBTITLE_ALIGN_TOP_OUTSIDE)
@@ -335,7 +336,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
       res_info.iSubtitles = res_info.iHeight - 1;
 
-      g_guiSettings.SetInt("subtitles.align", subalign);
+      CSettings::Get().SetInt("subtitles.align", subalign);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                             g_localizeStrings.Get(21460),
                                             g_localizeStrings.Get(21461 + subalign), 

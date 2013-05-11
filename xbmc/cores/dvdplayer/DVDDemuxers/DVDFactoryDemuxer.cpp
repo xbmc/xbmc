@@ -31,6 +31,7 @@
 #include "DVDDemuxHTSP.h"
 #endif
 #include "DVDDemuxBXA.h"
+#include "DVDDemuxCDDA.h"
 #include "DVDDemuxPVRClient.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -40,6 +41,9 @@ using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
+  if (!pInputStream)
+    return NULL;
+
   // Try to open the AirTunes demuxer
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && pInputStream->GetContent().compare("audio/x-xbmc-pcm") == 0 )
   {
@@ -50,6 +54,22 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
       return demuxer.release();
     else
       return NULL;
+  }
+  
+  // Try to open CDDA demuxer
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && pInputStream->GetContent().compare("application/octet-stream") == 0)
+  {
+    std::string filename = pInputStream->GetFileName();
+    if (filename.substr(0, 7) == "cdda://")
+    {
+      CLog::Log(LOGDEBUG, "DVDFactoryDemuxer: Stream is probably CD audio. Creating CDDA demuxer.");
+
+      auto_ptr<CDVDDemuxCDDA> demuxer(new CDVDDemuxCDDA());
+      if (demuxer->Open(pInputStream))
+      {
+        return demuxer.release();
+      }
+    }
   }
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))

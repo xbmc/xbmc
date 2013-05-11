@@ -174,8 +174,129 @@ int CBitstreamConverter::nal_bs_read_ue(nal_bitstream *bs)
   return ((1 << i) - 1 + nal_bs_read(bs, i));
 }
 
-void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size,
-  bool *interlaced, int32_t *max_ref_frames)
+bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence)
+{
+  // parse nal's until a sequence_header_code is found
+  // and return the width, height, aspect ratio and frame rate if changed.
+  bool changed = false;
+
+  if (!data)
+    return changed;
+
+  const uint8_t *p = data;
+  const uint8_t *end = p + size;
+  const uint8_t *nal_start, *nal_end;
+
+  nal_start = avc_find_startcode(p, end);
+  while (nal_start < end)
+  {
+    while (!*(nal_start++));
+    nal_end = avc_find_startcode(nal_start, end);
+    if (*nal_start == 0xB3)
+    {
+      nal_bitstream bs;
+      nal_bs_init(&bs, nal_start, end - nal_start);
+
+      // sequence_header_code
+      nal_bs_read(&bs, 8);
+
+      // width
+      // nal_start + 12 bits == horizontal_size_value
+      uint32_t width = nal_bs_read(&bs, 12);
+      if (width != sequence->width)
+      {
+        changed = true;
+        sequence->width = width;
+      }
+      // height
+      // nal_start + 24 bits == vertical_size_value
+      uint32_t height = nal_bs_read(&bs, 12);
+      if (height != sequence->height)
+      {
+        changed = true;
+        sequence->height = height;
+      }
+
+      // aspect ratio
+      // nal_start + 28 bits == aspect_ratio_information
+      float ratio = sequence->ratio;
+      uint32_t ratio_info = nal_bs_read(&bs, 4);
+      switch(ratio_info)
+      {
+        case 0x01:
+          ratio = 1.0;
+          break;
+        default:
+        case 0x02:
+          ratio = 4.0/3.0;
+          break;
+        case 0x03:
+          ratio = 16.0/9.0;
+          break;
+        case 0x04:
+          ratio = 2.21;
+          break;
+      }
+      if (ratio_info != sequence->ratio_info)
+      {
+        changed = true;
+        sequence->ratio = ratio;
+        sequence->ratio_info = ratio_info;
+      }
+
+      // frame rate
+      // nal_start + 32 bits == frame_rate_code
+      float rate = sequence->rate;
+      uint32_t rate_info = nal_bs_read(&bs, 4);
+      switch(rate_info)
+      {
+        default:
+        case 0x01:
+          rate = 24000.0 / 1001.0;
+          break;
+        case 0x02:
+          rate = 24000.0 / 1000.0;
+          break;
+        case 0x03:
+          rate = 25000.0 / 1000.0;
+          break;
+        case 0x04:
+          rate = 30000.0 / 1001.0;
+          break;
+        case 0x05:
+          rate = 30000.0 / 1000.0;
+          break;
+        case 0x06:
+          rate = 50000.0 / 1000.0;
+          break;
+        case 0x07:
+          rate = 60000.0 / 1001.0;
+          break;
+        case 0x08:
+          rate = 60000.0 / 1000.0;
+          break;
+      }
+      if (rate_info != sequence->rate_info)
+      {
+        changed = true;
+        sequence->rate = rate;
+        sequence->rate_info = rate_info;
+      }
+      /*
+      if (changed)
+      {
+        CLog::Log(LOGDEBUG, "CBitstreamConverter::mpeg2_sequence_header: "
+          "width(%d), height(%d), ratio(%f), rate(%f)", width, height, ratio, rate);
+      }
+      */
+    }
+    nal_start = nal_end;
+  }
+
+  return changed;
+}
+
+void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
 {
   nal_bitstream bs;
   sps_info_struct sps_info;

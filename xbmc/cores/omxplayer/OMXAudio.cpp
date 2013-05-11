@@ -25,6 +25,7 @@
 #endif
 
 #include "OMXAudio.h"
+#include "Application.h"
 #include "utils/log.h"
 
 #define CLASSNAME "COMXAudio"
@@ -32,7 +33,7 @@
 #include "linux/XMemUtils.h"
 
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
@@ -329,6 +330,8 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
 
   if(!m_omx_render->Initialize((const std::string)componentName, OMX_IndexParamAudioInit))
     return false;
+
+  m_omx_render->ResetEos();
 
   OMX_CONFIG_BRCMAUDIODESTINATIONTYPE audioDest;
   OMX_INIT_STRUCTURE(audioDest);
@@ -708,7 +711,7 @@ bool COMXAudio::SetCurrentVolume(float fVolume)
     const float* coeff = downmixing_coefficients_8;
 
     // normally we normalalise the levels, can be skipped (boosted) at risk of distortion
-    if(!g_guiSettings.GetBool("audiooutput.normalizelevels"))
+    if(!CSettings::Get().GetBool("audiooutput.normalizelevels"))
     {
       double sum_L = 0;
       double sum_R = 0;
@@ -1135,6 +1138,8 @@ void COMXAudio::UnRegisterAudioCallback()
 
 unsigned int COMXAudio::GetAudioRenderingLatency()
 {
+  CSingleLock lock (m_critSection);
+
   if(!m_Initialized)
     return 0;
 
@@ -1155,7 +1160,7 @@ unsigned int COMXAudio::GetAudioRenderingLatency()
   return param.nU32;
 }
 
-void COMXAudio::WaitCompletion()
+void COMXAudio::SubmitEOS()
 {
   CSingleLock lock (m_critSection);
 
@@ -1183,43 +1188,15 @@ void COMXAudio::WaitCompletion()
     CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
     return;
   }
+}
 
-  unsigned int nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
-  while(nTimeOut)
-  {
-    if(m_omx_render->IsEOS())
-    {
-      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
-      break;
-    }
-
-    if(nTimeOut == 0)
-    {
-      CLog::Log(LOGERROR, "%s::%s - wait for eos timed out\n", CLASSNAME, __func__);
-      break;
-    }
-    Sleep(50);
-    nTimeOut -= 50;
-  }
-
-  nTimeOut = AUDIO_BUFFER_SECONDS * 1000;
-  while(nTimeOut)
-  {
-    if(!GetAudioRenderingLatency())
-      break;
-
-    if(nTimeOut == 0)
-    {
-      CLog::Log(LOGERROR, "%s::%s - wait for GetAudioRenderingLatency timed out\n", CLASSNAME, __func__);
-      break;
-    }
-    Sleep(50);
-    nTimeOut -= 50;
-  }
-
-  m_omx_render->ResetEos();
-
-  return;
+bool COMXAudio::IsEOS()
+{
+  if(!m_Initialized || m_Pause)
+    return true;
+  unsigned int latency = GetAudioRenderingLatency();
+  CSingleLock lock (m_critSection);
+  return m_omx_decoder.IsEOS() && latency <= 0;
 }
 
 void COMXAudio::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)

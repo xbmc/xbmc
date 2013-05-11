@@ -217,8 +217,8 @@ static int rv10_write_header(AVFormatContext *ctx,
                 coded_frame_size--;
             avio_wb32(s, coded_frame_size); /* frame length */
             avio_wb32(s, 0x51540); /* unknown */
-            avio_wb32(s, 0x249f0); /* unknown */
-            avio_wb32(s, 0x249f0); /* unknown */
+            avio_wb32(s, stream->enc->bit_rate / 8 * 60); /* bytes per minute */
+            avio_wb32(s, stream->enc->bit_rate / 8 * 60); /* bytes per minute */
             avio_wb16(s, 0x01);
             /* frame length : seems to be very important */
             avio_wb16(s, coded_frame_size);
@@ -242,7 +242,7 @@ static int rv10_write_header(AVFormatContext *ctx,
             /* video codec info */
             avio_wb32(s,34); /* size */
             ffio_wfourcc(s, "VIDO");
-            if(stream->enc->codec_id == CODEC_ID_RV10)
+            if(stream->enc->codec_id == AV_CODEC_ID_RV10)
                 ffio_wfourcc(s,"RV10");
             else
                 ffio_wfourcc(s,"RV20");
@@ -256,7 +256,7 @@ static int rv10_write_header(AVFormatContext *ctx,
             /* Seems to be the codec version: only use basic H263. The next
                versions seems to add a diffential DC coding as in
                MPEG... nothing new under the sun */
-            if(stream->enc->codec_id == CODEC_ID_RV10)
+            if(stream->enc->codec_id == AV_CODEC_ID_RV10)
                 avio_wb32(s,0x10000000);
             else
                 avio_wb32(s,0x20103001);
@@ -309,6 +309,11 @@ static int rm_write_header(AVFormatContext *s)
     int n;
     AVCodecContext *codec;
 
+    if (s->nb_streams > 2) {
+        av_log(s, AV_LOG_ERROR, "At most 2 streams are currently supported for muxing in RM\n");
+        return AVERROR_PATCHWELCOME;
+    }
+
     for(n=0;n<s->nb_streams;n++) {
         s->streams[n]->id = n;
         codec = s->streams[n]->codec;
@@ -359,7 +364,7 @@ static int rm_write_audio(AVFormatContext *s, const uint8_t *buf, int size, int 
 
     write_packet_header(s, stream, size, !!(flags & AV_PKT_FLAG_KEY));
 
-    if (stream->enc->codec_id == CODEC_ID_AC3) {
+    if (stream->enc->codec_id == AV_CODEC_ID_AC3) {
         /* for AC-3, the words seem to be reversed */
         for(i=0;i<size;i+=2) {
             buf1[i] = buf[i+1];
@@ -455,21 +460,21 @@ static int rm_write_trailer(AVFormatContext *s)
         avio_wb32(pb, 0);
         avio_wb32(pb, 0);
     }
-    avio_flush(pb);
+
     return 0;
 }
 
 
 AVOutputFormat ff_rm_muxer = {
     .name              = "rm",
-    .long_name         = NULL_IF_CONFIG_SMALL("RealMedia format"),
+    .long_name         = NULL_IF_CONFIG_SMALL("RealMedia"),
     .mime_type         = "application/vnd.rn-realmedia",
     .extensions        = "rm,ra",
     .priv_data_size    = sizeof(RMMuxContext),
-    .audio_codec       = CODEC_ID_AC3,
-    .video_codec       = CODEC_ID_RV10,
+    .audio_codec       = AV_CODEC_ID_AC3,
+    .video_codec       = AV_CODEC_ID_RV10,
     .write_header      = rm_write_header,
     .write_packet      = rm_write_packet,
     .write_trailer     = rm_write_trailer,
-    .codec_tag= (const AVCodecTag* const []){ff_rm_codec_tags, 0},
+    .codec_tag         = (const AVCodecTag* const []){ ff_rm_codec_tags, 0 },
 };

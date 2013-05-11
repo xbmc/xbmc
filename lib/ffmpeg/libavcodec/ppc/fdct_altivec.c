@@ -23,7 +23,6 @@
 #include <altivec.h>
 #endif
 #include "libavutil/common.h"
-#include "libavcodec/dsputil.h"
 #include "dsputil_altivec.h"
 
 #define vs16(v) ((vector signed short)(v))
@@ -195,7 +194,7 @@ static vector float fdctconsts[3] = {
 
 /* two dimensional discrete cosine transform */
 
-void fdct_altivec(int16_t *block)
+void ff_fdct_altivec(int16_t *block)
 {
     vector signed short *bp;
     vector float *cp;

@@ -248,7 +248,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
-    if (function != "NfoUrl")
+    if (function != "NfoUrl" && function != "ResolveIDToUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
     throw CScraperError();
   }
@@ -487,6 +487,68 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
   return scurlRet;
 }
 
+CScraperUrl CScraper::ResolveIDToUrl(const CStdString& externalID)
+{
+  CScraperUrl scurlRet;
+  
+  // scraper function takes an external ID, returns XML (see below)
+  vector<CStdString> vcsIn;
+  vcsIn.push_back(externalID);
+  CScraperUrl scurl;
+  CCurlFile fcurl;
+  vector<CStdString> vcsOut = Run("ResolveIDToUrl", scurl, fcurl, &vcsIn);
+  if (vcsOut.empty() || vcsOut[0].empty())
+    return scurlRet;
+  if (vcsOut.size() > 1)
+    CLog::Log(LOGWARNING, "%s: scraper returned multiple results; using first", __FUNCTION__);
+
+  // parse returned XML: either <error> element on error, blank on failure,
+  // or <url>...</url> or <url>...</url><id>...</id> on success
+  for (unsigned int i=0; i < vcsOut.size(); ++i)
+  {
+    CXBMCTinyXML doc;
+    doc.Parse(vcsOut[i], 0, TIXML_ENCODING_UTF8);
+    CheckScraperError(doc.RootElement());
+
+    if (doc.RootElement())
+    {
+      /*
+       NOTE: Scrapers might return invalid xml with some loose
+       elements (eg. '<url>http://some.url</url><id>123</id>').
+       Since XMLUtils::GetString() is assuming well formed xml
+       with start and end-tags we're not able to use it.
+       Check for the desired Elements instead.
+       */
+      TiXmlElement* pxeUrl=NULL;
+      TiXmlElement* pId=NULL;
+      if (!strcmp(doc.RootElement()->Value(),"details"))
+      {
+        pxeUrl = doc.RootElement()->FirstChildElement("url");
+        pId = doc.RootElement()->FirstChildElement("id");
+      }
+      else
+      {
+        pId = doc.FirstChildElement("id");
+        pxeUrl = doc.FirstChildElement("url");
+      }
+      if (pId && pId->FirstChild())
+        scurlRet.strId = pId->FirstChild()->Value();
+
+      if (pxeUrl && pxeUrl->Attribute("function"))
+        continue;
+
+      if (pxeUrl)
+        scurlRet.ParseElement(pxeUrl);
+      else if (!strcmp(doc.RootElement()->Value(), "url"))
+        scurlRet.ParseElement(doc.RootElement());
+      else
+        continue;
+      break;
+    }
+  }
+  return scurlRet;
+}
+
 static bool RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
 {
   return left.relevance > right.relevance;
@@ -510,7 +572,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   if (IsNoop())
     return vcscurl;
 
-  if (!fFirst || Content() == CONTENT_MUSICVIDEOS)
+  if (!fFirst)
     sTitle.Replace("-"," ");
 
   sTitle.ToLower();

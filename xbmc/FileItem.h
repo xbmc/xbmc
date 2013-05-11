@@ -66,6 +66,19 @@ class CURL;
 
 class CMediaSource;
 
+enum EFileFolderType {
+  EFILEFOLDER_TYPE_ALWAYS     = 1<<0,
+  EFILEFOLDER_TYPE_ONCLICK    = 1<<1,
+  EFILEFOLDER_TYPE_ONBROWSE   = 1<<2,
+
+  EFILEFOLDER_MASK_ALL        = 0xff,
+  EFILEFOLDER_MASK_ONCLICK    = EFILEFOLDER_TYPE_ALWAYS
+                              | EFILEFOLDER_TYPE_ONCLICK,
+  EFILEFOLDER_MASK_ONBROWSE   = EFILEFOLDER_TYPE_ALWAYS
+                              | EFILEFOLDER_TYPE_ONCLICK
+                              | EFILEFOLDER_TYPE_ONBROWSE,
+};
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
@@ -104,11 +117,31 @@ public:
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;
+  
+  /*!
+   \brief Check whether an item is a video item. Note that this returns true for
+    anything with a video info tag, so that may include eg. folders.
+   \return true if item is video, false otherwise. 
+   */
   bool IsVideo() const;
+
   bool IsDiscStub() const;
+
+  /*!
+   \brief Check whether an item is a picture item. Note that this returns true for
+    anything with a picture info tag, so that may include eg. folders.
+   \return true if item is picture, false otherwise. 
+   */
   bool IsPicture() const;
   bool IsLyrics() const;
+
+  /*!
+   \brief Check whether an item is an audio item. Note that this returns true for
+    anything with a music info tag, so that may include eg. folders.
+   \return true if item is audio, false otherwise. 
+   */
   bool IsAudio() const;
+
   bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
@@ -155,7 +188,7 @@ public:
   bool CanQueue() const;
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
-  bool IsFileFolder() const;
+  bool IsFileFolder(EFileFolderType types = EFILEFOLDER_MASK_ALL) const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;

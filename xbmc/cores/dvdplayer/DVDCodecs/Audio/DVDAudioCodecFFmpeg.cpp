@@ -24,7 +24,11 @@
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
-#include "settings/GUISettings.h"
+
+#if defined(TARGET_DARWIN)
+#include "settings/Settings.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#endif
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -72,9 +76,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
 #if defined(TARGET_DARWIN)
-  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+  int audioMode = CSettings::Get().GetInt("audiooutput.mode");
   if (audioMode == AUDIO_HDMI)
-    m_bLpcmMode = g_guiSettings.GetBool("audiooutput.multichannellpcm");
+    m_bLpcmMode = CSettings::Get().GetBool("audiooutput.multichannellpcm");
 #endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
@@ -97,9 +101,12 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if( hints.extradata && hints.extrasize > 0 )
   {
-    m_pCodecContext->extradata_size = hints.extrasize;
     m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+    if(m_pCodecContext->extradata)
+    {
+      m_pCodecContext->extradata_size = hints.extrasize;
+      memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+    }
   }
 
   if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)

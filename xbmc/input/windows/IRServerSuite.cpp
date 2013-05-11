@@ -31,7 +31,7 @@
 
 CRemoteControl g_RemoteControl;
 
-CRemoteControl::CRemoteControl() : CThread("CRemoteControl")
+CRemoteControl::CRemoteControl() : CThread("RemoteControl")
 {
   m_socket = INVALID_SOCKET;
   m_bInitialized = false;

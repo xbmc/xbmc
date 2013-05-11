@@ -28,7 +28,7 @@
 #include "utils/log.h"
 
 CAESinkNULL::CAESinkNULL()
-  : CThread("nullsink"),
+  : CThread("AESinkNull"),
     m_draining(false),
     m_sink_frameSize(0),
     m_sinkbuffer_size(0),

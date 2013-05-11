@@ -142,6 +142,27 @@ public:
 
   int GetCurrentProfileId() const { return GetCurrentProfile().getId(); }
 
+  /*! \brief Retrieve the autologin profile id
+    Retrieves the autologin profile id. When set to -1, then the last
+    used profile will be loaded
+    \return the id to the autologin profile
+    */
+  int GetAutoLoginProfileId() const { return m_autoLoginProfile; }
+
+  /*! \brief Retrieve the autologin profile id
+    Retrieves the autologin profile id. When set to -1, then the last
+    used profile will be loaded
+    \return the id to the autologin profile
+    */
+  void SetAutoLoginProfileId(const int profileId) { m_autoLoginProfile = profileId; }
+
+  /*! \brief Retrieve the name of a particular profile by index
+    \param profileId profile index for which to retrieve the name
+    \param name will hold the name of the profile when a valid profile index has been provided
+    \return false if profileId is an invalid index, true if the name parameter is set
+    */
+  bool GetProfileName(const size_t profileId, std::string& name) const;
+
   std::string GetUserDataFolder() const;
   std::string GetProfileUserDataFolder() const;
   std::string GetDatabaseFolder() const;
