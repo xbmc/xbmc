@@ -373,7 +373,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
-    bool m_loaded;
 
     void SetDebugMode(bool debug);
     void SetExtraLogsFromAddon(ADDON::IAddon* addon);
