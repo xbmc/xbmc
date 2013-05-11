@@ -1651,11 +1651,7 @@
             <step>1</step>
             <maximum>65535</maximum>
           </constraints>
-          <control type="edit" format="integer">
-            <dependencies>
-              <dependency type="enable" setting="services.webserver">true</dependency>
-            </dependencies>
-          </control>
+          <control type="edit" format="integer" />
         </setting>
         <setting id="services.webserverusername" type="string" label="1048" help="">
           <level>2</level>
