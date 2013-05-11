@@ -6537,7 +6537,7 @@ msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr ""
 
-#empty strings from id 14072 to 14073
+#empty strings from id 14073 to 14073
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -6669,7 +6669,12 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr ""
 
-#empty strings from id 14101 to 15011
+#: xbmc/settings/settings.xml
+msgctxt "#14101"
+msgid "Swtich off other Monitor"
+msgstr ""
+
+#empty strings from id 14102 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"

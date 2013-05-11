@@ -62,5 +62,6 @@ protected:
   bool m_structureChanged;
   int m_RREventBase;
   XbmcThreads::EndTime m_xrrFailSafeTimer;
+  XbmcThreads::EndTime m_xrrPollTimer;
   bool m_xrrEventPending;
 };

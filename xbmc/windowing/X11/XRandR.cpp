@@ -149,10 +149,14 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
 
 bool CXRandR::TurnOffOutput(CStdString name)
 {
+  XOutput *output = GetOutput(name);
+  if (!output)
+    return false;
+
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
-  cmd.AppendFormat(" --output %s --off", name.c_str());
+  cmd.AppendFormat(" --screen %d --output %s --off", output->screen, name.c_str());
 
   int status = system(cmd.c_str());
   if (status == -1)
