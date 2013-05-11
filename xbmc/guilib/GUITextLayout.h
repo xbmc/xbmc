@@ -100,7 +100,6 @@ public:
   static void Filter(CStdString &text);
 
 protected:
-  void ParseText(const CStdStringW &text, vecText &parsedText);
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);

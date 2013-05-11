@@ -230,7 +230,7 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
   m_colors.clear();
 
   // parse the text into our string objects
-  ParseText(text, parsedText);
+  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, m_colors, parsedText);
 
   // if we need to wrap the text, then do so
   if (m_wrap && maxWidth > 0)
@@ -317,13 +317,6 @@ void CGUITextLayout::Filter(CStdString &text)
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
-}
-
-void CGUITextLayout::ParseText(const CStdStringW &text, vecText &parsedText)
-{
-  if (!m_font)
-    return;
-  ParseText(text, m_font->GetStyle(), m_textColor, m_colors, parsedText);
 }
 
 void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText)
