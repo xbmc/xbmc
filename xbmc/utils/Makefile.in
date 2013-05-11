@@ -16,6 +16,7 @@ SRCS += DownloadQueue.cpp
 SRCS += DownloadQueueManager.cpp
 SRCS += EndianSwap.cpp
 SRCS += EdenVideoArtUpdater.cpp
+SRCS += Environment.cpp
 SRCS += Fanart.cpp
 SRCS += fastmemcpy.c
 SRCS += fastmemcpy-arm.S
