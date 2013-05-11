@@ -228,7 +228,6 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
   // empty out our previous string
   m_lines.clear();
   m_colors.clear();
-  m_colors.push_back(m_textColor);
 
   // parse the text into our string objects
   ParseText(text, parsedText);
@@ -316,7 +315,7 @@ void CGUITextLayout::Filter(CStdString &text)
   utf8ToW(text, utf16);
   vecColors colors;
   vecText parsedText;
-  ParseText(utf16, 0, colors, parsedText);
+  ParseText(utf16, 0, 0xffffffff, colors, parsedText);
   utf16.Empty();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
@@ -327,10 +326,10 @@ void CGUITextLayout::ParseText(const CStdStringW &text, vecText &parsedText)
 {
   if (!m_font)
     return;
-  ParseText(text, m_font->GetStyle(), m_colors, parsedText);
+  ParseText(text, m_font->GetStyle(), m_textColor, m_colors, parsedText);
 }
 
-void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText)
+void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText)
 {
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
@@ -341,6 +340,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
   uint32_t currentStyle = defaultStyle; // start with the default font's style
   color_t currentColor = 0;
 
+  colors.push_back(defaultColor);
   stack<color_t> colorStack;
   colorStack.push(0);
 
