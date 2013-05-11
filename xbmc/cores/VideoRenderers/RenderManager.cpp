@@ -299,6 +299,19 @@ void CXBMCRenderManager::Update(bool bPauseDrawing)
   m_presentevent.Set();
 }
 
+bool CXBMCRenderManager::FrameWait(int ms)
+{
+  XbmcThreads::EndTime timeout(ms);
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
+  {
+    lock.Leave();
+    m_presentevent.WaitMSec(timeout.MillisLeft());
+    lock.Enter();
+  }
+  return m_presentstep != PRESENT_IDLE;
+}
+
 void CXBMCRenderManager::FrameMove()
 {
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
@@ -327,10 +340,7 @@ void CXBMCRenderManager::FrameFinish()
     {
       if( m_presentmethod == PRESENT_METHOD_BOB
       ||  m_presentmethod == PRESENT_METHOD_WEAVE)
-      {
         m_presentstep = PRESENT_FRAME2;
-        g_application.NewFrame();
-      }
       else
         m_presentstep = PRESENT_IDLE;
     }
@@ -634,7 +644,6 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
   }
 
-  g_application.NewFrame();
   /* wait untill render thread have flipped buffers */
   timeout = m_presenttime + 1.0;
   while(m_presentstep == PRESENT_FLIP && !bStop)
