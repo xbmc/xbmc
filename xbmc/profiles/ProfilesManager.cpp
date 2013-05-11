@@ -82,8 +82,6 @@ CProfilesManager& CProfilesManager::Get()
 
 bool CProfilesManager::OnSettingsLoading()
 {
-  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
-
   return true;
 }
 
@@ -177,18 +175,18 @@ bool CProfilesManager::Load(const std::string &file)
   if (m_lastUsedProfile >= m_profiles.size())
     m_lastUsedProfile = 0;
 
-  m_currentProfile = m_lastUsedProfile;
+  SetCurrentProfileId(m_lastUsedProfile);
 
   // check the validity of the auto login profile index
   if (m_autoLoginProfile < -1 || m_autoLoginProfile >= (int)m_profiles.size())
     m_autoLoginProfile = -1;
   else if (m_autoLoginProfile >= 0)
-    m_currentProfile = m_autoLoginProfile;
+    SetCurrentProfileId(m_autoLoginProfile);
 
   // the login screen runs as the master profile, so if we're using this, we need to ensure
   // we switch to the master profile
   if (m_usingLoginScreen)
-    m_currentProfile = 0;
+    SetCurrentProfileId(0);
 
   return ret;
 }
@@ -226,8 +224,8 @@ void CProfilesManager::Clear()
   m_profiles.clear();
   m_usingLoginScreen = false;
   m_lastUsedProfile = 0;
-  m_currentProfile = 0;
   m_nextProfileId = 0;
+  SetCurrentProfileId(0);
 }
 
 bool CProfilesManager::LoadProfile(size_t index)
@@ -241,11 +239,12 @@ bool CProfilesManager::LoadProfile(size_t index)
   if (m_currentProfile == index)
     return true;
 
-  m_currentProfile = index;
-
-  // first unload any old settings
+  // unload any old settings
   CSettings::Get().Unload();
-  // then load the new settings
+
+  SetCurrentProfileId(index);
+
+  // load the new settings
   if (!CSettings::Get().Load())
   {
     CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
@@ -530,4 +529,11 @@ std::string CProfilesManager::GetUserDataItem(const std::string& strFile) const
     path = "special://masterprofile/" + strFile;
 
   return path;
+}
+
+void CProfilesManager::SetCurrentProfileId(size_t profileId)
+{
+  CSingleLock lock(m_critical);
+  m_currentProfile = profileId;
+  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
 }
