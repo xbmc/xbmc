@@ -133,3 +133,9 @@ public:
 #else
 #include "windows/NetworkWin32.h"
 #endif
+
+//creates, binds and listens a tcp socket on the desired port. Set bindLocal to
+//true to bind to localhost only. The socket will listen over ipv6 if possible
+//and fall back to ipv4 if ipv6 is not available on the platform.
+int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlog, const char *callerName);
+
