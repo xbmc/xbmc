@@ -205,12 +205,18 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       if (m_delayedSetting != NULL)
       {
+        // first get the delayed setting and reset its member variable
+        // to avoid handling the delayed setting twice in case the OnClick()
+        // performed later causes the window to be deinitialized (e.g. when
+        // changing the language)
+        BaseSettingControlPtr delayedSetting = m_delayedSetting;
+        m_delayedSetting.reset();
+
         // if updating the setting fails and param1 has been specifically set
         // we need to call OnSettingChanged() to restore a valid value in the
         // setting control
-        if (!m_delayedSetting->OnClick() && message.GetParam1() != 0)
-          OnSettingChanged(m_delayedSetting->GetSetting());
-        m_delayedSetting.reset();
+        if (!delayedSetting->OnClick() && message.GetParam1() != 0)
+          OnSettingChanged(delayedSetting->GetSetting());
         return true;
       }
       break;
