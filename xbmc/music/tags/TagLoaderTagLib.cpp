@@ -36,7 +36,6 @@
 #include <taglib/unsynchronizedlyricsframe.h>
 #include <taglib/attachedpictureframe.h>
 
-#undef byte
 #include <taglib/tstring.h>
 #include <taglib/tpropertymap.h>
 
