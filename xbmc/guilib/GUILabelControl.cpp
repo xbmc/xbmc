@@ -132,87 +132,47 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
   CStdString label(m_infoLabel.GetLabel(m_parentID));
 
-  if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection)
+  bool changed = false;
+  if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection || m_bShowCursor)
   {
     CStdStringW utf16;
     g_charsetConverter.utf8ToW(label, utf16);
-
-    std::vector<InsertPointInfo> insertPoints;
-    if (m_bShowCursor)
+    vecText text; text.reserve(utf16.size()+1);
+    vecColors colors;
+    colors.push_back(m_label.GetLabelInfo().textColor);
+    colors.push_back(m_label.GetLabelInfo().disabledColor);
+    color_t select = m_label.GetLabelInfo().selectedColor;
+    if (!select)
+      select = 0xFFFF0000;
+    colors.push_back(select);
+    colors.push_back(0xFF000000);
+    for (unsigned int i = 0; i < utf16.size(); i++)
     {
-      CStdStringW col;
-      if ((++m_dwCounter % 50) > 25)
-        col.Format(L"[COLOR %x]|[/COLOR]", (color_t)m_label.GetLabelInfo().textColor);
-      else
-        col = L"[COLOR 00FFFFFF]|[/COLOR]";
-      InsertPointInfo info = {m_iCursorPos, InsertPointInfo::HEAD_AND_TAIL, 0, 0, col};
-      insertPoints.push_back(info);
+      unsigned int ch = utf16[i];
+      if ((m_startSelection < m_endSelection) && (m_startSelection <= i && i < m_endSelection))
+        ch |= (2 << 16);
+      else if ((m_startHighlight < m_endHighlight) && (i < m_startHighlight || i >= m_endHighlight))
+        ch |= (1 << 16);
+      text.push_back(ch);
     }
-    CStdStringW tmp;
-    if (m_startHighlight < m_endHighlight)
+    if (m_bShowCursor && m_iCursorPos >= 0 && (unsigned int)m_iCursorPos <= utf16.size())
     {
-      if (m_startHighlight > 0 && m_startHighlight <= utf16.size())
-      {
-        tmp.Format(L"[COLOR %x]", (color_t)m_label.GetLabelInfo().disabledColor);
-        InsertPointInfo infoH = {0, InsertPointInfo::HEAD, m_startHighlight, 0, tmp};
-        InsertPointInfo infoT = {m_startHighlight, InsertPointInfo::TAIL, m_startHighlight, 0, L"[/COLOR]"};
-        insertPoints.push_back(infoH);
-        insertPoints.push_back(infoT);
-      }
-      if (m_endHighlight < utf16.size())
-      {
-        tmp.Format(L"[COLOR %x]", (color_t)m_label.GetLabelInfo().disabledColor);
-        InsertPointInfo infoH = {m_endHighlight, InsertPointInfo::HEAD, utf16.size() - m_endHighlight, 0, tmp};
-        InsertPointInfo infoT = {utf16.size(), InsertPointInfo::TAIL, utf16.size() - m_endHighlight, 0, L"[/COLOR]"};
-        insertPoints.push_back(infoH);
-        insertPoints.push_back(infoT);
-      }
+      unsigned int ch = L'|';
+      if ((++m_dwCounter % 50) <= 25)
+        ch |= (3 << 16);
+      text.insert(text.begin() + m_iCursorPos, ch);
     }
-    if (m_startSelection < m_endSelection && m_endSelection <= utf16.size())
-    {
-      color_t selectedColor = m_label.GetLabelInfo().selectedColor;
-      if (!selectedColor)
-        selectedColor = 0xFFFFFF00;
-      tmp.Format(L"[COLOR %x]", selectedColor);
-      // we set selection insert point higher priority than the highlight disable block, so it is still show the selection
-      InsertPointInfo infoH = {m_startSelection, InsertPointInfo::HEAD, m_startSelection - m_endSelection, 1, tmp};
-      InsertPointInfo infoT = {m_endSelection, InsertPointInfo::TAIL, m_startSelection - m_endSelection, 1, L"[/COLOR]"};
-      insertPoints.push_back(infoH);
-      insertPoints.push_back(infoT);
-    }
-
-    // we sort the insert points to make sure small color block is nested in larger block
-    std::sort(insertPoints.begin(), insertPoints.end());
-
-    // insert the styles from back to front, so we can use the correct insert points.
-    for (int i = insertPoints.size() - 1; i >= 0; --i)
-    {
-      const InsertPointInfo &insertPointInfo = insertPoints[i];
-      utf16.Insert(insertPointInfo.pos, insertPointInfo.text);
-    }
-    g_charsetConverter.wToUTF8(utf16, label);
+    changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
+    changed |= m_label.SetStyledText(text, colors);
   }
-  else if (m_bShowCursor)
-  { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
-    // virtual keyboard only)
-    CStdStringW utf16;
-    g_charsetConverter.utf8ToW(label, utf16);
-    CStdStringW col;
-    if ((++m_dwCounter % 50) > 25)
-      col = L"|";
-    else
-      col = L"[COLOR 00FFFFFF]|[/COLOR]";
-    utf16.Insert(m_iCursorPos, col);
-    g_charsetConverter.wToUTF8(utf16, label);
+  else
+  {
+    if (m_bHasPath)
+      label = ShortenPath(label);
+
+    changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
+    changed |= m_label.SetText(label);
   }
-  else if (m_bHasPath)
-    label = ShortenPath(label);
-
-  bool changed = false;
-
-  changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
-  changed |= m_label.SetText(label);
-
   if (changed)
     MarkDirtyRegion();
 }
