@@ -247,7 +247,6 @@ static int UDFFileEntry( uint8_t *data, struct FileAD *fad )
 {
   uint32_t L_EA, L_AD;
   unsigned int p;
-  unsigned int curr_ad;
 
   UDFICB( &data[ 16 ], &fad->Type, &fad->Flags );
 
@@ -1110,7 +1109,7 @@ long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
 
     pos -= 32 * DVD_VIDEO_LB_LEN; /* why? */
 
-    if(lSize < len)
+    if((uint32_t)lSize < len)
       len = lSize;
 
     ret = ReadAt(pos, len, pBuffer);
