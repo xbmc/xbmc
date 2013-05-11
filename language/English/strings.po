@@ -2727,7 +2727,7 @@ msgstr ""
 
 #: xbmc/settings/settings.xml
 msgctxt "#666"
-msgid "Verbose logging..."
+msgid "- Verbose logging..."
 msgstr ""
 
 #empty strings from id 667 to 699
