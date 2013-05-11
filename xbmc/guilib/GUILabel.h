@@ -115,17 +115,25 @@ public:
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
    \param text CStdString to set as this labels text
-   \sa SetTextW
+   \sa SetTextW, SetStyledText
    */
   bool SetText(const CStdString &label);
 
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
    \param text CStdStringW to set as this labels text
-   \sa SetText
+   \sa SetText, SetStyledText
    */
   bool SetTextW(const CStdStringW &label);
-  
+
+  /*! \brief Set styled text to be displayed in the label
+   Updates the label control and recomputes final position and size
+   \param text styled text to set.
+   \param colors colors referenced in the styled text.
+   \sa SetText, SetTextW
+   */
+  bool SetStyledText(const vecText &text, const vecColors &colors);
+
   /*! \brief Set the color to use for the label
    Sets the color to be used for this label.  Takes effect at the next render
    \param color color to be used for the label
