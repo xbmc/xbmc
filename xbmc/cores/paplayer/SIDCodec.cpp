@@ -47,8 +47,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   CStdString strFileToLoad = strFile;
   m_iTrack = 0;
-  CStdString strExtension;
-  URIUtils::GetExtension(strFile,strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFile);
   strExtension.MakeLower();
   if (strExtension==".sidstream")
   {
@@ -154,3 +153,4 @@ CAEChannelInfo SIDCodec::GetChannelInfo()
 
   return CAEChannelInfo(map[m_Channels - 1]);
 }
+

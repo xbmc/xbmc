@@ -45,13 +45,13 @@ IDirectory::~IDirectory(void)
  */
 bool IDirectory::IsAllowed(const CStdString& strFile) const
 {
-  CStdString strExtension;
   if ( !m_strFileMask.size() ) return true;
   if ( !strFile.size() ) return true;
 
-  URIUtils::GetExtension(strFile, strExtension);
+  CStdString strExtension = URIUtils::GetExtension(strFile);
 
-  if (!strExtension.size()) return false;
+  if (strExtension.empty())
+    return false;
 
   strExtension.ToLower();
   strExtension += '|'; // ensures that we have a | at the end of it

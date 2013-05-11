@@ -1494,8 +1494,7 @@ namespace VIDEO
     if (!item->m_bIsFolder)
     {
       // file
-      CStdString strExtension;
-      URIUtils::GetExtension(item->GetPath(), strExtension);
+      CStdString strExtension = URIUtils::GetExtension(item->GetPath());
 
       if (URIUtils::IsInRAR(item->GetPath())) // we have a rarred item - we want to check outside the rars
       {

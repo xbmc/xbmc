@@ -33,9 +33,9 @@
 // A helper function to have all the checks in a single place
 bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricptr )
 {
-  CStdString ext, filename = songName;
+  CStdString filename = songName;
   URIUtils::RemoveExtension( filename );
-  URIUtils::GetExtension( songName, ext );
+  CStdString ext = URIUtils::GetExtension(songName);
 
   // LRC lyrics have .lrc extension
   if ( XFILE::CFile::Exists( filename + ".lrc" ) )
