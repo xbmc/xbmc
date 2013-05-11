@@ -648,7 +648,6 @@ bool CApplication::Create()
   init_emu_environ();
 
   CProfilesManager::Get().Load();
-  CSpecialProtocol::SetProfilePath(CProfilesManager::Get().GetProfileUserDataFolder());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(TARGET_DARWIN_OSX)
