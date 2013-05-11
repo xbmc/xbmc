@@ -25,6 +25,7 @@
 
 #define BOOL XBMC_BOOL
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "utils/log.h"
 #undef BOOL
 

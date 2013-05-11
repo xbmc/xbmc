@@ -1546,7 +1546,7 @@ void CWinSystemOSX::StartTextInput()
 
   if (![[g_textInputResponder superview] isEqual: parentView])
   {
-    DLOG(@"add fieldEdit to window contentView");
+//    DLOG(@"add fieldEdit to window contentView");
     [g_textInputResponder removeFromSuperview];
     [parentView addSubview: g_textInputResponder];
     [[NSApp keyWindow] makeFirstResponder: g_textInputResponder];
