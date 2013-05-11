@@ -1049,11 +1049,6 @@ int CAMLPlayer::AddSubtitle(const CStdString& strSubPath)
   return AddSubtitleFile(strSubPath);
 }
 
-void CAMLPlayer::Update(bool bPauseDrawing)
-{
-  g_renderManager.Update(bPauseDrawing);
-}
-
 void CAMLPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
 {
   g_renderManager.GetVideoRect(SrcRect, DestRect);

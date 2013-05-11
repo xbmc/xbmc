@@ -1763,13 +1763,10 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     if (bPreviousPlayingState)
       g_application.m_pPlayer->Pause();
 #ifdef HAS_VIDEO_PLAYBACK
-    if (!g_renderManager.Paused())
+    if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
-      if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-     {
-        g_windowManager.ActivateWindow(WINDOW_HOME);
-        bPreviousRenderingState = true;
-      }
+      g_windowManager.ActivateWindow(WINDOW_HOME);
+      bPreviousRenderingState = true;
     }
 #endif
   }

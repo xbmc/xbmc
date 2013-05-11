@@ -145,7 +145,6 @@ public:
   virtual void GetAudioInfo( CStdString& strAudioInfo) = 0;
   virtual void GetVideoInfo( CStdString& strVideoInfo) = 0;
   virtual void GetGeneralInfo( CStdString& strVideoInfo) = 0;
-  virtual void Update(bool bPauseDrawing = false) = 0;
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};

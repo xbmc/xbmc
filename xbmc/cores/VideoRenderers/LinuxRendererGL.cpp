@@ -620,7 +620,7 @@ void CLinuxRendererGL::Flush()
   m_fbo.fbo.Cleanup();
 }
 
-void CLinuxRendererGL::Update(bool bPauseDrawing)
+void CLinuxRendererGL::Update()
 {
   if (!m_bConfigured) return;
   ManageDisplay();
