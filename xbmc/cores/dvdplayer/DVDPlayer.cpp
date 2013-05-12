@@ -772,8 +772,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   // check if we should read from subtitle demuxer
   if( m_pSubtitleDemuxer && m_dvdPlayerSubtitle.AcceptsData() )
   {
-    if(m_pSubtitleDemuxer)
-      packet = m_pSubtitleDemuxer->Read();
+    packet = m_pSubtitleDemuxer->Read();
 
     if(packet)
     {
