@@ -99,6 +99,8 @@ protected:
   CDisplaySettings const& operator=(CDisplaySettings const&);
   virtual ~CDisplaySettings();
 
+  DisplayMode GetCurrentDisplayMode() const;
+
   static RESOLUTION GetResolutionFromString(const std::string &strResolution);
   static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
   static RESOLUTION GetResolutionForScreen();
