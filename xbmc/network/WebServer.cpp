@@ -521,11 +521,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
                                                      &CWebServer::ContentReaderFreeCallback);
       }
 
+      delete context;
+      
       if (response == NULL)
       {
         file->Close();
         delete file;
-        delete context;
         return MHD_NO;
       }
 
