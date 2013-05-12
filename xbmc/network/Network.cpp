@@ -416,14 +416,14 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   
   if (v4_fallback)
     sock = socket(PF_INET, SOCK_STREAM, 0);
-
-  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
   
   if (sock == INVALID_SOCKET)
   {
     CLog::Log(LOGERROR, "%s Server: Failed to create serversocket", callerName);
     return INVALID_SOCKET;
   }
+  
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
   
   if (v4_fallback)
   {
