@@ -266,7 +266,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     // add a <song> tag
     TiXmlElement cast("track");
     TiXmlNode *node = album->InsertEndChild(cast);
-    for( VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+    for( VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
     {
       // add an <albumArtistCredits> tag
       TiXmlElement songArtistCreditsElement("songArtistCredits");
