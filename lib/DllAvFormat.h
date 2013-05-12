@@ -65,6 +65,8 @@ class DllAvFormatInterface
 public:
   virtual ~DllAvFormatInterface() {}
   virtual void av_register_all_dont_call(void)=0;
+  virtual void avformat_network_init_dont_call(void)=0;
+  virtual void avformat_network_deinit_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual void avformat_close_input(AVFormatContext **s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
@@ -116,6 +118,8 @@ public:
     return ::av_register_all();
   } 
   virtual void av_register_all_dont_call() { *(volatile int* )0x0 = 0; } 
+  virtual void avformat_network_init_dont_call() { *(volatile int* )0x0 = 0; } 
+  virtual void avformat_network_deinit_dont_call() { *(volatile int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual void avformat_close_input(AVFormatContext **s) { ::avformat_close_input(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
@@ -162,9 +166,19 @@ public:
 #if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libavformat system library");
 #endif
+    CSingleLock lock(DllAvCodec::m_critSection);
+    if (++m_avformat_refcnt == 1)
+      ::avformat_network_init();
     return true;
   }
-  virtual void Unload() {}
+  virtual void Unload() {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    if (--m_avformat_refcnt == 0)
+      ::avformat_network_deinit();
+  }
+
+protected:
+  static int m_avformat_refcnt;
 };
 
 #else
@@ -176,6 +190,8 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   LOAD_SYMBOLS()
 
   DEFINE_METHOD0(void, av_register_all_dont_call)
+  DEFINE_METHOD0(void, avformat_network_init_dont_call)
+  DEFINE_METHOD0(void, avformat_network_deinit_dont_call)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(void, avformat_close_input, (AVFormatContext **p1))
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
@@ -212,6 +228,8 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
+    RESOLVE_METHOD_RENAME(avformat_network_init,   avformat_network_init_dont_call)
+    RESOLVE_METHOD_RENAME(avformat_network_deinit, avformat_network_deinit_dont_call)
     RESOLVE_METHOD(av_find_input_format)
     RESOLVE_METHOD(avformat_close_input)
     RESOLVE_METHOD(av_read_frame)
@@ -263,10 +281,26 @@ public:
 
   virtual bool Load()
   {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    if (++m_avformat_refcnt == 1)
+      avformat_network_init_dont_call();
+
     if (!m_dllAvCodec.Load())
       return false;
     return DllDynamic::Load();
   }
+
+  virtual void Unload()
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    if (--m_avformat_refcnt == 0)
+      avformat_network_deinit_dont_call();
+
+    DllDynamic::Unload();
+  }
+
+protected:
+  static int m_avformat_refcnt;
 };
 
 #endif
