@@ -684,8 +684,8 @@ CStdString CSysInfo::GetUnameVersion()
   FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    char buffer[256];
+    if (fgets(buffer, sizeof(buffer), pipe))
     {
       result = buffer;
 #if defined(TARGET_DARWIN)
