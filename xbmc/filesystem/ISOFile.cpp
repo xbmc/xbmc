@@ -87,7 +87,7 @@ unsigned int CISOFile::Read(void *lpBuf, int64_t uiBufSize)
 
       if (m_cache.getMaxWriteSize() > 5000)
       {
-        byte buffer[5000];
+        uint8_t buffer[5000];
         long lBytesRead = m_isoReader.ReadFile( m_hFile, buffer, sizeof(buffer));
         if (lBytesRead > 0)
           m_cache.WriteData((char*)buffer, lBytesRead);
@@ -97,7 +97,7 @@ unsigned int CISOFile::Read(void *lpBuf, int64_t uiBufSize)
     }
     return lTotalBytesRead;
   }
-  int iResult = m_isoReader.ReadFile( m_hFile, (byte*)pData, (long)uiBufSize);
+  int iResult = m_isoReader.ReadFile( m_hFile, (uint8_t*)pData, (long)uiBufSize);
   if (iResult == -1)
     return 0;
   return iResult;

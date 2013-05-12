@@ -20,7 +20,6 @@
  *
  */
 
-#undef byte
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
 #include <taglib/asffile.h>
