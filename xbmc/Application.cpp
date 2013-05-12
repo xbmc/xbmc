@@ -2090,6 +2090,9 @@ void CApplication::Render()
   else if (vsync_mode != VSYNC_DRIVER)
     g_Windowing.SetVSync(false);
 
+  if (m_bPresentFrame && IsPlaying() && !IsPaused())
+    ResetScreenSaver();
+
   if(!g_Windowing.BeginRender())
     return;
 
