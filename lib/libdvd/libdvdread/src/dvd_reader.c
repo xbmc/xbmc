@@ -425,8 +425,9 @@ dvd_reader_t *DVDOpen( const char *ppath )
     if( !(path_copy = strdup( path ) ) )
       goto DVDOpen_error;
 
-#ifndef WIN32 /* don't have fchdir, and getcwd( NULL, ... ) is strange */
+#if !defined(WIN32) && !defined(_XBMC) /* don't have fchdir, and getcwd( NULL, ... ) is strange */
               /* Also WIN32 does not have symlinks, so we don't need this bit of code. */
+			  /* XBMC also doesn't need symlink resolution */
 
     /* Resolve any symlinks and get the absolute dir name. */
 	{
