@@ -371,24 +371,6 @@ bool CSysInfo::IsAeroDisabled()
   return false;
 }
 
-bool CSysInfo::IsVistaOrHigher()
-{
-#ifdef TARGET_WINDOWS
-  return IsWindowsVersionAtLeast(WindowsVersionVista);
-#else // TARGET_WINDOWS
-  return false;
-#endif // TARGET_WINDOWS
-}
-
-bool CSysInfo::IsWindows8OrHigher()
-{
-#ifdef TARGET_WINDOWS
-  return IsWindowsVersionAtLeast(WindowsVersionWin8);
-#else // TARGET_WINDOWS
-  return false;
-#endif // TARGET_WINDOWS
-}
-
 CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
 
 bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
