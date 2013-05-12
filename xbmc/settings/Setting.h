@@ -95,6 +95,7 @@ protected:
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
+  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName);
 
   void Copy(const CSetting &setting);
 

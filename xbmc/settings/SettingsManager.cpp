@@ -710,6 +710,26 @@ bool CSettingsManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   return ret;
 }
 
+void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const char *propertyName)
+{
+  CSingleLock lock(m_critical);
+  if (!m_loaded || setting == NULL)
+    return;
+
+  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  if (settingIt == m_settings.end())
+    return;
+
+  Setting settingData = settingIt->second;
+  // now that we have a copy of the setting's data, we can leave the lock
+  lock.Leave();
+
+  for (CallbackSet::iterator callback = settingData.callbacks.begin();
+        callback != settingData.callbacks.end();
+        callback++)
+    (*callback)->OnSettingPropertyChanged(setting, propertyName);
+}
+
 CSetting* CSettingsManager::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
 {
   if (StringUtils::EqualsNoCase(settingType, "boolean"))

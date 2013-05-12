@@ -169,6 +169,14 @@ bool CSetting::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, con
   return m_callback->OnSettingUpdate(setting, oldSettingId, oldSettingNode);
 }
 
+void CSetting::OnSettingPropertyChanged(const CSetting *setting, const char *propertyName)
+{
+  if (m_callback == NULL)
+    return;
+
+  m_callback->OnSettingPropertyChanged(setting, propertyName);
+}
+
 void CSetting::Copy(const CSetting &setting)
 {
   SetVisible(setting.IsVisible());
