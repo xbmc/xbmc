@@ -19,6 +19,7 @@
 
 #include "XBMCTinyXML.h"
 #include "filesystem/File.h"
+#include "utils/FileUtils.h"
 #include "RegExp.h"
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
@@ -62,8 +63,9 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
   CStdString filename(_filename);
   value = filename;
 
-  XFILE::CFileStream file;
-  if (!file.Open(value))
+  void * buffPtr;
+  unsigned int buffSize = CFileUtils::LoadFile(value, buffPtr);
+  if (buffSize == 0)
   {
     SetError(TIXML_ERROR_OPENING_FILE, NULL, NULL, TIXML_ENCODING_UNKNOWN);
     return false;
@@ -73,10 +75,8 @@ bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
   Clear();
   location.Clear();
 
-  CStdString data;
-  data.reserve(8 * 1000);
-  StreamIn(&file, &data);
-  file.Close();
+  CStdString data ((char*) buffPtr, (size_t) buffSize);
+  free(buffPtr);
 
   Parse(data, NULL, encoding);
 
