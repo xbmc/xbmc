@@ -522,7 +522,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         CArtistCredit mbartist(tag.GetArtist().empty() ? "" : tag.GetArtist()[0], *it, strJoinPhrase);
         song.artistCredits.push_back(mbartist);
       }
-      song.artist = tag.GetArtist();
+      song.artist = tag.GetMusicBrainzArtistID();
     }
     else
     {
@@ -556,7 +556,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
           CArtistCredit mbartist(tag.GetAlbumArtist().empty() ? "" : tag.GetAlbumArtist()[0], *it, strJoinPhrase);
           album.artistCredits.push_back(mbartist);
         }
-        album.artist = tag.GetAlbumArtist();
+        album.artist = tag.GetMusicBrainzAlbumArtistID();
       }
       else
       {
