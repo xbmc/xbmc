@@ -32,6 +32,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
