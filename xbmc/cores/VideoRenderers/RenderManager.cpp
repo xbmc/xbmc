@@ -577,21 +577,23 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   if(!g_graphicsContext.IsFullScreenVideo())
     WaitPresentTime(timestamp);
 
-  /* make sure any queued frame was fully presented */
-  double timeout = m_presenttime + 1.0;
-  while(m_presentstep != PRESENT_IDLE && !bStop)
-  {
-    if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
-    {
-      CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for previous frame");
-      return;
-    }
-  };
-
-  if(bStop)
-    return;
-
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+    /* make sure any queued frame was fully presented */
+    double timeout = m_presenttime + 1.0;
+    while(m_presentstep != PRESENT_IDLE && !bStop)
+    {
+      lock.Leave();
+      if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
+      {
+        CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for previous frame");
+        return;
+      }
+      lock.Enter();
+    };
+
+    if(bStop)
+      return;
+
     if(!m_pRenderer) return;
 
     m_presenttime  = timestamp;
@@ -637,16 +639,20 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       }
     }
 
-  }
+    /* signal to any waiters to check state */
+    m_presentevent.Set();
 
-  /* wait untill render thread have flipped buffers */
-  timeout = m_presenttime + 1.0;
-  while(m_presentstep == PRESENT_FLIP && !bStop)
-  {
-    if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
+    /* wait untill render thread have flipped buffers */
+    timeout = m_presenttime + 1.0;
+    while(m_presentstep == PRESENT_FLIP && !bStop)
     {
-      CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for flip to complete");
-      return;
+      lock.Leave();
+      if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
+      {
+        CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for flip to complete");
+        return;
+      }
+      lock.Enter();
     }
   }
 }
