@@ -127,7 +127,7 @@
 /* PLEX */
 #include "Client/MyPlex/MyPlexManager.h"
 #include "PlexUtils.h"
-#include "plex/GUI/GUIDialogMyPlexPin.h"
+#include "plex/GUI/GUIDialogMyPlex.h"
 #include "PlexApplication.h"
 #include "BackgroundMusicPlayer.h"
 #include "Client/PlexServerManager.h"
@@ -1080,40 +1080,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(false);
     }
-    else if (strSetting.Equals("myplex.pinsignin"))
+    else if (strSetting.Equals("myplex.signin"))
     {
-      int label = g_guiSettings.GetString("myplex.token").empty() ? 44002 : 44003;
+      int label = g_myplexManager.IsSignedIn() ? 44002 : 44003;
 
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pControl)
       {
         pControl->SetLabel(g_localizeStrings.Get(label));
-        pControl->SetEnabled(!g_guiSettings.GetBool("myplex.manualsignin"));
-      }
-
-      //pSettingString->SetLabel(44003);
-    }
-    else if (strSetting.Equals("myplex.email"))
-    {
-      CGUIControl* tControl = (CGUIControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
-    }
-    else if (strSetting.Equals("myplex.password"))
-    {
-      CGUIControl* tControl = (CGUIControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
-    }
-    else if (strSetting.Equals("myplex.dosignin"))
-    {
-      int label = g_guiSettings.GetString("myplex.token").empty() ? 44004 : 44003;
-
-      CGUIButtonControl* tControl = (CGUIButtonControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-      {
-        tControl->SetLabel(g_localizeStrings.Get(label));
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
       }
     }
     else if (strSetting.Equals("plexmediaserver.address"))
@@ -2161,23 +2135,18 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     if (pControl)
       pControl->SetEnabled(false);
   }
-  else if (strSetting.Equals("myplex.pinsignin"))
+  else if (strSetting.Equals("myplex.signin"))
   {
     CGUIButtonControl* pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
     CSettingString*    pSettingString = (CSettingString* )pSettingControl->GetSetting();
 
-    if (g_guiSettings.GetString("myplex.token").empty())
+    if (!g_myplexManager.IsSignedIn())
     {
-      CGUIDialogMyPlexPin::ShowAndGetInput();
+      CGUIDialogMyPlex::ShowAndGetInput();
     }
     else
     {
-      /*
-      // We're signing out.
-      MyPlexManager::Get().signOut();
-       */
-
-      // Change the button to "sign in".
+      g_myplexManager.Logout();
       pControl->SetLabel(g_localizeStrings.Get(44002));
       pSettingString->SetLabel(44002);
     }

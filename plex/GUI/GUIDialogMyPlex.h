@@ -13,21 +13,15 @@
 #include "PlexTypes.h"
 #include "Client/MyPlex/MyPlexManager.h"
 
-class CGUIDialogMyPlexPin : public CGUIDialogBoxBase
+class CGUIDialogMyPlex : public CGUIDialog
 {
   public:
-    CGUIDialogMyPlexPin() : CGUIDialogBoxBase(WINDOW_DIALOG_MYPLEX_PIN, "DialogOK.xml"), m_done(false) {};
+    CGUIDialogMyPlex() : CGUIDialog(WINDOW_DIALOG_MYPLEX_PIN, "DialogMyPlexLogin.xml") {};
 
     virtual bool OnMessage(CGUIMessage &message);
-    void SetButtonText(const CStdString& text);
-    int GetDefaultLabelID(int controlId) const;
-
     static void ShowAndGetInput();
-    //MyPlexPinLogin m_pinLogin;
 
-
-  private:
-    bool m_done;
+    void DoModal();
 };
 
 #endif // GUIDIALOGMYPLEXPIN_H

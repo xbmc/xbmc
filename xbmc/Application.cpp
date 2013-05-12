@@ -351,7 +351,7 @@
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
 #include "plex/GUI/GUIPlexMusicWindow.h"
-#include "plex/GUI/GUIDialogMyPlexPin.h"
+#include "plex/GUI/GUIDialogMyPlex.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "plex/GUI/GUIWindowPlexPreplayVideo.h"
 #include "settings/GUISettings.h"
@@ -1489,7 +1489,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIPlexMusicWindow);
     g_windowManager.Add(new CGUIWindowPlexPreplayVideo);
 #endif
-    g_windowManager.Add(new CGUIDialogMyPlexPin);
+    g_windowManager.Add(new CGUIDialogMyPlex);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);
     /* END PLEX */
 

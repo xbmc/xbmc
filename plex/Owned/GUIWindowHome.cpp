@@ -667,6 +667,18 @@ void CGUIWindowHome::UpdateSections()
     AddSection("plexserver://channels", SECTION_TYPE_CHANNELS);
   }
 
+  CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
+
+  if (sharedSections->Size() > 0)
+  {
+    CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
+    item->SetLabel(g_localizeStrings.Get(44020));
+    item->SetProperty("sectionPath", "plexserver://shared");
+    item->SetPath("XBMC.ActivateWindow(MyVideoFiles,plexserver://shared,return)");
+    item->SetClickActions(CGUIAction("", ""));
+    newList.push_back(item);
+  }
+
   control->SetStaticContent(newList);
 
 }
