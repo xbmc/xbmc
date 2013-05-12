@@ -94,8 +94,8 @@ class CXRandR
 {
 public:
   CXRandR(bool query=false);
-  bool Query(bool force=false);
-  bool Query(bool force, int screennum);
+  bool Query(bool force=false, bool ignoreoff=true);
+  bool Query(bool force, int screennum, bool ignoreoff=true);
   std::vector<XOutput> GetModes(void);
   XMode   GetCurrentMode(CStdString outputName);
   XOutput *GetOutput(CStdString outputName);
@@ -104,6 +104,8 @@ public:
   void SaveState();
   void SetNumScreens(unsigned int num);
   bool IsOutputConnected(CStdString name);
+  bool TurnOffOutput(CStdString name);
+  bool TurnOnOutput(CStdString name);
   //bool Has1080i();
   //bool Has1080p();
   //bool Has720p();

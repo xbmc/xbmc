@@ -28,6 +28,7 @@
 #include "PlatformInclude.h"
 #include "utils/XBMCTinyXML.h"
 #include "../xbmc/utils/log.h"
+#include "threads/SystemClock.h"
 
 #if defined(TARGET_FREEBSD)
 #include <sys/types.h>
@@ -44,7 +45,7 @@ CXRandR::CXRandR(bool query)
     Query();
 }
 
-bool CXRandR::Query(bool force)
+bool CXRandR::Query(bool force, bool ignoreoff)
 {
   if (!force)
     if (m_bInit)
@@ -61,13 +62,13 @@ bool CXRandR::Query(bool force)
   bool success = false;
   for(unsigned int screennum=0; screennum<m_numScreens; ++screennum)
   {
-    if(Query(force, screennum))
+    if(Query(force, screennum, ignoreoff))
       success = true;
   }
   return success;
 }
 
-bool CXRandR::Query(bool force, int screennum)
+bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
 {
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
@@ -136,16 +137,79 @@ bool CXRandR::Query(bool force, int screennum)
       xmode.isCurrent = (strcasecmp(mode->Attribute("current"), "true") == 0);
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
-      {
         hascurrent = true;
-      }
     }
-    if (hascurrent)
+    if (hascurrent || !ignoreoff)
       m_outputs.push_back(xoutput);
     else
       CLog::Log(LOGWARNING, "CXRandR::Query - output %s has no current mode, assuming disconnected", xoutput.name.c_str());
   }
   return m_outputs.size() > 0;
+}
+
+bool CXRandR::TurnOffOutput(CStdString name)
+{
+  CStdString cmd;
+  cmd  = getenv("XBMC_BIN_HOME");
+  cmd += "/xbmc-xrandr";
+  cmd.AppendFormat(" --output %s --off", name.c_str());
+
+  int status = system(cmd.c_str());
+  if (status == -1)
+    return false;
+
+  if (WEXITSTATUS(status) != 0)
+    return false;
+
+  return true;
+}
+
+bool CXRandR::TurnOnOutput(CStdString name)
+{
+  XOutput *output = GetOutput(name);
+  if (!output)
+    return false;
+
+  XMode mode = GetCurrentMode(output->name);
+  if (mode.isCurrent)
+    return true;
+
+  // get preferred mode
+  for (unsigned int j = 0; j < m_outputs.size(); j++)
+  {
+    if (m_outputs[j].name == output->name)
+    {
+      for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
+      {
+        if (m_outputs[j].modes[i].isPreferred)
+        {
+          mode = m_outputs[j].modes[i];
+          break;
+        }
+      }
+    }
+  }
+
+  if (!mode.isPreferred)
+    return false;
+
+  if (!SetMode(*output, mode))
+    return false;
+
+  XbmcThreads::EndTime timeout(5000);
+  while (!timeout.IsTimePast())
+  {
+    if (!Query(true))
+      return false;
+
+    output = GetOutput(name);
+    if (output && output->h > 0)
+      return true;
+
+    Sleep(200);
+  }
+
+  return false;
 }
 
 std::vector<XOutput> CXRandR::GetModes(void)
@@ -161,7 +225,7 @@ void CXRandR::SaveState()
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
-  if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
+  if ((output.name == "" && mode.id == ""))
     return true;
 
   Query();
