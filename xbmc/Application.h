@@ -339,8 +339,6 @@ public:
     return m_bTestMode;
   }
 
-  bool IsPresentFrame();
-
   void Minimize();
   bool ToggleDPMS(bool manual);
 
