@@ -22,8 +22,6 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-/* undefine byte from PlatformDefs.h since it's used in mad.h */
-#undef byte
 #if defined(_LINUX) || defined(TARGET_DARWIN)
   #include <mad.h>
 #else
