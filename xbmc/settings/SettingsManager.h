@@ -38,12 +38,8 @@ class CSettingUpdate;
 class TiXmlElement;
 class TiXmlNode;
 
-typedef std::pair<std::string, int> IntegerSettingOption;
-typedef std::pair<std::string, std::string> StringSettingOption;
-typedef std::vector<IntegerSettingOption> IntegerSettingOptions;
-typedef std::vector<StringSettingOption> StringSettingOptions;
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, IntegerSettingOptions &list, int &current);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, StringSettingOptions &list, std::string &current);
+typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 /*!
  \ingroup settings
@@ -371,6 +367,7 @@ private:
   bool LoadSetting(const TiXmlNode *node, CSetting *setting);
   bool UpdateSettings(const TiXmlNode *root);
   bool UpdateSetting(const TiXmlNode *node, CSetting *setting, const CSettingUpdate& update);
+  void UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency);
 
   typedef enum {
     SettingOptionsFillerTypeNone = 0,

@@ -132,7 +132,19 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
         if (setting == m_settings.end())
           continue;
 
-        setting->second.dependencies[itSettingDep->first].push_back(*depIt);
+        bool newDep = true;
+        SettingDependencies &settingDeps = setting->second.dependencies[itSettingDep->first];
+        for (SettingDependencies::const_iterator itDeps = settingDeps.begin(); itDeps != settingDeps.end(); ++itDeps)
+        {
+          if (itDeps->GetType() == depIt->GetType())
+          {
+            newDep = false;
+            break;
+          }
+        }
+
+        if (newDep)
+          settingDeps.push_back(*depIt);
       }
     }
   }
@@ -665,6 +677,14 @@ void CSettingsManager::OnSettingChanged(const CSetting *setting)
         callback != settingData.callbacks.end();
         callback++)
     (*callback)->OnSettingChanged(setting);
+
+  // now handle any settings which depend on the changed setting
+  const SettingDependencyMap& deps = GetDependencies(setting);
+  for (SettingDependencyMap::const_iterator depsIt = deps.begin(); depsIt != deps.end(); depsIt++)
+  {
+    for (SettingDependencies::const_iterator depIt = depsIt->second.begin(); depIt != depsIt->second.end(); depIt++)
+      UpdateSettingByDependency(depsIt->first, *depIt);
+  }
 }
 
 void CSettingsManager::OnSettingAction(const CSetting *setting)
@@ -889,6 +909,45 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, c
 
   updated |= OnSettingUpdate(setting, oldSetting, oldSettingNode);
   return updated;
+}
+
+void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency)
+{
+  CSetting *setting = GetSetting(settingId);
+  if (setting == NULL)
+    return;
+
+  switch (dependency.GetType())
+  {
+    case SettingDependencyTypeEnable:
+      // just trigger the property changed callback and a call to
+      // CSetting::IsEnabled() will automatically determine the new
+      // enabled state
+      OnSettingPropertyChanged(setting, "enabled");
+      break;
+
+    case SettingDependencyTypeUpdate:
+    {
+      SettingType type = (SettingType)setting->GetType();
+      if (type == SettingTypeInteger)
+      {
+        CSettingInt *settingInt = ((CSettingInt*)setting);
+        if (settingInt->GetOptionsType() == SettingOptionsTypeDynamic)
+          settingInt->UpdateDynamicOptions();
+      }
+      else if (type == SettingTypeString)
+      {
+        CSettingString *settingString = ((CSettingString*)setting);
+        if (settingString->GetOptionsType() == SettingOptionsTypeDynamic)
+          settingString->UpdateDynamicOptions();
+      }
+      break;
+    }
+
+    case SettingDependencyTypeNone:
+    default:
+      break;
+  }
 }
 
 void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, void *filler, SettingOptionsFillerType type)

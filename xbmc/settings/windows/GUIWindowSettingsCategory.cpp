@@ -514,68 +514,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(const CSetting *setting)
   if (pControl == NULL)
     return;
 
-  const SettingDependencyMap& deps = m_settings.GetDependencies(setting->GetId());
-  for (SettingDependencyMap::const_iterator depsIt = deps.begin(); depsIt != deps.end(); depsIt++)
-  {
-    for (SettingDependencies::const_iterator depIt = depsIt->second.begin(); depIt != depsIt->second.end(); depIt++)
-      UpdateControl(depsIt->first, *depIt);
-  }
-  
-  // update GUI of the changed setting as the change could have been triggered by something else
   pControl->Update();
 }
 
-void CGUIWindowSettingsCategory::UpdateControl(const std::string &dependingSetting, const CSettingDependency &dependency)
+void CGUIWindowSettingsCategory::OnSettingPropertyChanged(const CSetting *setting, const char *propertyName)
 {
-  if (dependingSetting.empty())
+  if (setting == NULL || propertyName == NULL)
     return;
 
-  BaseSettingControlPtr pControl = GetSettingControl(dependingSetting);
-  if (pControl == NULL)
+  BaseSettingControlPtr settingControl = GetSettingControl(setting->GetId());
+  if (settingControl == NULL)
     return;
 
-  CSetting *pSetting = pControl->GetSetting();
-  if (pSetting == NULL)
-    return;
-
-  CheckDependency(pControl, dependency);
-
-  const SettingDependencyMap& deps = m_settings.GetDependencies(pSetting->GetId());
-  for (SettingDependencyMap::const_iterator depsIt = deps.begin(); depsIt != deps.end(); depsIt++)
-  {
-    for (SettingDependencies::const_iterator depIt = depsIt->second.begin(); depIt != depsIt->second.end(); depIt++)
-      UpdateControl(depsIt->first, *depIt);
-  }
-
-  // update GUI of the changed setting as the change could have been triggered by something else
-  pControl->Update();
-}
-
-void CGUIWindowSettingsCategory::CheckDependency(BaseSettingControlPtr pSettingControl, const CSettingDependency &dependency)
-{
-  if (pSettingControl == NULL || pSettingControl->GetControl() == NULL)
-    return;
-
-  CSetting *pSetting = pSettingControl->GetSetting();
-  if (pSetting == NULL)
-    return;
-
-  switch (dependency.GetType())
-  {
-    case SettingDependencyTypeEnable:
-      pSettingControl->SetEnabled(dependency.Check());
-      break;
-
-    case SettingDependencyTypeUpdate:
-    {
-      FillControl(pSetting, pSettingControl->GetControl());
-      break;
-    }
-
-    case SettingDependencyTypeNone:
-    default:
-      break;
-  }
+  settingControl->Update();
 }
 
 void CGUIWindowSettingsCategory::CreateSettings()
@@ -619,9 +570,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSetting *pSetting = *settingIt;
       settingMap.insert(pSetting->GetId());
-      CGUIControl* pControl = AddSetting(pSetting, group->GetWidth(), iControlID);
-
-      FillControl(pSetting, pControl);
+      AddSetting(pSetting, group->GetWidth(), iControlID);
     }
   }
 
@@ -641,18 +590,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CGUIControl *pControl = pSettingControl->GetControl();
     if (pSetting == NULL || pControl == NULL)
       continue;
-
-    // update the setting's control's state (enabled/disabled etc)
-    const SettingDependencies &deps = pSetting->GetDependencies();
-    for (SettingDependencies::const_iterator dep = deps.begin(); dep != deps.end(); dep++)
-    {
-      // don't check "update" dependencies here as all the controls are already
-      // setup properly based on the existing values
-      if (dep->GetType() == SettingDependencyTypeUpdate)
-        continue;
-
-      CheckDependency(pSettingControl, *dep);
-    }
 
     pSettingControl->Update();
   }
@@ -810,60 +747,4 @@ BaseSettingControlPtr CGUIWindowSettingsCategory::GetSettingControl(int controlI
     return BaseSettingControlPtr();
 
   return m_settingControls[controlId - CONTROL_START_CONTROL];
-}
-
-void CGUIWindowSettingsCategory::FillControl(CSetting *pSetting, CGUIControl *pSettingControl)
-{
-  void *filler = CSettings::Get().GetSettingOptionsFiller(pSetting);
-  if (filler == NULL)
-    return;
-
-  if (pSetting->GetType() == SettingTypeInteger)
-  {
-    CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-
-    // get the list of options and the current option
-    IntegerSettingOptions options;
-    int currentOption = pSettingInt->GetValue();
-    ((IntegerSettingOptionsFiller)filler)(pSetting, options, currentOption);
-
-    // clear the spinner control
-    CGUISpinControlEx *pSpinControl = (CGUISpinControlEx *)pSettingControl;
-    pSpinControl->Clear();
-
-    // fill the spinner control
-    for (IntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); option++)
-      pSpinControl->AddLabel(option->first, option->second);
-
-    // set the current option
-    pSpinControl->SetValue(currentOption);
-
-    // check if the current setting has changed
-    if (currentOption != pSettingInt->GetValue())
-      pSettingInt->SetValue(currentOption);
-  }
-  else if (pSetting->GetType() == SettingTypeString)
-  {
-    CSettingString *pSettingString = (CSettingString*)pSetting;
-
-    // get the list of options and the current option
-    StringSettingOptions options;
-    std::string currentOption = pSettingString->GetValue();
-    ((StringSettingOptionsFiller)filler)(pSetting, options, currentOption);
-
-    // clear the spinner control
-    CGUISpinControlEx *pSpinControl = (CGUISpinControlEx *)pSettingControl;
-    pSpinControl->Clear();
-
-    // fill the spinner control
-    for (StringSettingOptions::const_iterator option = options.begin(); option != options.end(); option++)
-      pSpinControl->AddLabel(option->first, option->second);
-
-    // set the current option
-    pSpinControl->SetStringValue(currentOption);
-
-    // check if the current setting has changed
-    if (currentOption.compare(pSettingString->GetValue()) != 0)
-      pSettingString->SetValue(currentOption);
-  }
 }

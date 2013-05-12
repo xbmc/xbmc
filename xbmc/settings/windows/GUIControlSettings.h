@@ -58,17 +58,6 @@ public:
   bool IsDelayed() const { return m_delayed; }
 
   /*!
-   \brief Specifies that this setting is enabled or disabled
-   This is used for settings which are enabled/disabled based
-   on conditions involving other settings and their values.
-   It must not be confused with a setting spin control being
-   disabled because it contains less than two items.
-   \param enabled Whether the setting is enabled or disabled
-   \sa IsEnabled()
-   */
-  void SetEnabled(bool enabled) { m_enabled = enabled; }
-
-  /*!
    \brief Returns whether this setting is enabled or disabled
    This state is independent of the real enabled state of a
    setting control but represents the enabled state of the
@@ -76,7 +65,7 @@ public:
    \return true if the setting is enabled otherwise false
    \sa SetEnabled()
    */
-  bool IsEnabled() const { return m_enabled; }
+  bool IsEnabled() const;
 
   virtual CGUIControl* GetControl() { return NULL; }
   virtual bool OnClick() { return false; }
@@ -86,7 +75,6 @@ protected:
   int m_id;
   CSetting* m_pSetting;
   bool m_delayed;
-  bool m_enabled;
 };
 
 class CGUIControlRadioButtonSetting : public CGUIControlBaseSetting
@@ -116,6 +104,8 @@ public:
   virtual void Update();
   virtual void Clear() { m_pSpin = NULL; }
 private:
+  void FillControl();
+  void FillIntegerSettingControl();
   CGUISpinControlEx *m_pSpin;
 };
 

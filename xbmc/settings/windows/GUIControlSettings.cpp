@@ -44,7 +44,11 @@ CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting)
   m_id = id;
   m_pSetting = pSetting;
   m_delayed = false;
-  m_enabled = true;
+}
+
+bool CGUIControlBaseSetting::IsEnabled() const
+{
+  return m_pSetting != NULL && m_pSetting->IsEnabled();
 }
 
 void CGUIControlBaseSetting::Update()
@@ -86,60 +90,7 @@ CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int
   m_pSpin = pSpin;
   m_pSpin->SetID(id);
   
-  switch (pSetting->GetControl().GetFormat())
-  {
-    case SettingControlFormatNumber:
-    {
-      CSettingNumber *pSettingNumber = (CSettingNumber *)pSetting;
-      m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
-      m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
-      m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
-      break;
-    }
-
-    case SettingControlFormatInteger:
-    case SettingControlFormatString:
-    {
-      m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
-      m_pSpin->Clear();
-
-      if (pSetting->GetType() == SettingTypeInteger)
-      {
-        CSettingInt *pSettingInt = (CSettingInt *)pSetting;
-
-        const SettingOptions& options = pSettingInt->GetOptions();
-        if (!options.empty())
-        {
-          for (SettingOptions::const_iterator it = options.begin(); it != options.end(); it++)
-            m_pSpin->AddLabel(g_localizeStrings.Get(it->first), it->second);
-          m_pSpin->SetValue(pSettingInt->GetValue());
-        }
-        else
-        {
-          std::string strLabel;
-          int i = pSettingInt->GetMinimum();
-          if (pSettingInt->GetMinimumLabel() > -1)
-          {
-            strLabel = g_localizeStrings.Get(pSettingInt->GetMinimumLabel());
-            m_pSpin->AddLabel(strLabel, pSettingInt->GetMinimum());
-            i += pSettingInt->GetStep();
-          }
-          for (; i <= pSettingInt->GetMaximum(); i += pSettingInt->GetStep())
-          {
-            if (pSettingInt->GetFormat() > -1)
-              strLabel = StringUtils::Format(g_localizeStrings.Get(pSettingInt->GetFormat()).c_str(), i);
-            else
-              strLabel = StringUtils::Format(pSettingInt->GetFormatString().c_str(), i);
-            m_pSpin->AddLabel(strLabel, i);
-          }
-        }
-      }
-      break;
-    }
-
-    default:
-      break;
-  }
+  FillControl();
 }
 
 CGUIControlSpinExSetting::~CGUIControlSpinExSetting()
@@ -176,27 +127,111 @@ void CGUIControlSpinExSetting::Update()
 
   CGUIControlBaseSetting::Update();
 
-  switch (m_pSetting->GetType())
-  {
-    case SettingTypeInteger:
-      m_pSpin->SetValue(((CSettingInt *)m_pSetting)->GetValue());
-      break;
-
-    case SettingTypeNumber:
-      m_pSpin->SetFloatValue((float)((CSettingNumber *)m_pSetting)->GetValue());
-      break;
-      
-    case SettingTypeString:
-      m_pSpin->SetStringValue(((CSettingString *)m_pSetting)->GetValue());
-      break;
-      
-    default:
-      break;
-  }
+  FillControl();
 
   // disable the spinner if it has less than two items
   if (!m_pSpin->IsDisabled() && (m_pSpin->GetMaximum() - m_pSpin->GetMinimum()) == 0)
     m_pSpin->SetEnabled(false);
+}
+
+void CGUIControlSpinExSetting::FillControl()
+{
+  m_pSpin->Clear();
+
+  switch (m_pSetting->GetControl().GetFormat())
+  {
+    case SettingControlFormatNumber:
+    {
+      CSettingNumber *pSettingNumber = (CSettingNumber *)m_pSetting;
+      m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
+      m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
+      m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
+
+      m_pSpin->SetFloatValue((float)pSettingNumber->GetValue());
+      break;
+    }
+
+    case SettingControlFormatInteger:
+    {
+      m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+      FillIntegerSettingControl();
+      break;
+    }
+
+    case SettingControlFormatString:
+    {
+      m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+
+      if (m_pSetting->GetType() == SettingTypeInteger)
+        FillIntegerSettingControl();
+      else if (m_pSetting->GetType() == SettingTypeString)
+      {
+        CSettingString *pSettingString = (CSettingString *)m_pSetting;
+        if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+        {
+          DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
+          for (std::vector< std::pair<std::string, std::string> >::const_iterator option = options.begin(); option != options.end(); option++)
+            m_pSpin->AddLabel(option->first, option->second);
+
+          m_pSpin->SetStringValue(pSettingString->GetValue());
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
+void CGUIControlSpinExSetting::FillIntegerSettingControl()
+{
+  CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
+  switch (pSettingInt->GetOptionsType())
+  {
+    case SettingOptionsTypeStatic:
+    {
+      const StaticIntegerSettingOptions& options = pSettingInt->GetOptions();
+      for (StaticIntegerSettingOptions::const_iterator it = options.begin(); it != options.end(); it++)
+        m_pSpin->AddLabel(g_localizeStrings.Get(it->first), it->second);
+
+      break;
+    }
+
+    case SettingOptionsTypeDynamic:
+    {
+      DynamicIntegerSettingOptions options = pSettingInt->UpdateDynamicOptions();
+      for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); option++)
+        m_pSpin->AddLabel(option->first, option->second);
+
+      break;
+    }
+
+    case SettingOptionsTypeNone:
+    default:
+    {
+      std::string strLabel;
+      int i = pSettingInt->GetMinimum();
+      if (pSettingInt->GetMinimumLabel() > -1)
+      {
+        strLabel = g_localizeStrings.Get(pSettingInt->GetMinimumLabel());
+        m_pSpin->AddLabel(strLabel, pSettingInt->GetMinimum());
+        i += pSettingInt->GetStep();
+      }
+      for (; i <= pSettingInt->GetMaximum(); i += pSettingInt->GetStep())
+      {
+        if (pSettingInt->GetFormat() > -1)
+          strLabel = StringUtils::Format(g_localizeStrings.Get(pSettingInt->GetFormat()).c_str(), i);
+        else
+          strLabel = StringUtils::Format(pSettingInt->GetFormatString().c_str(), i);
+        m_pSpin->AddLabel(strLabel, i);
+      }
+
+      break;
+    }
+  }
+
+  m_pSpin->SetValue(pSettingInt->GetValue());
 }
 
 CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)

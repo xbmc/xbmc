@@ -343,7 +343,7 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
         firstDevice = sink->second;
 
 #if defined(TARGET_DARWIN)
-      list.push_back(StringSettingOption(sink->first, sink->first));
+      list.push_back(std::make_pair(sink->first, sink->first));
 #else
       list.push_back(std::make_pair(sink->first, sink->second));
 #endif

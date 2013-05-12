@@ -56,9 +56,7 @@ protected:
 
   virtual void OnTimeout();
   virtual void OnSettingChanged(const CSetting *setting);
-  
-  void UpdateControl(const std::string &dependingSetting, const CSettingDependency &dependency);
-  void CheckDependency(BaseSettingControlPtr pSettingControl, const CSettingDependency &dependency);
+  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName);
   
   void CreateSettings();
   void UpdateSettings();
@@ -82,8 +80,6 @@ protected:
   CSettingSection* GetSection(int windowID) const;
   BaseSettingControlPtr GetSettingControl(const std::string &setting);
   BaseSettingControlPtr GetSettingControl(int controlId);
-
-  void FillControl(CSetting *pSetting, CGUIControl *pSettingControl);
   
   CSettings& m_settings;
   SettingCategoryList m_categories;
