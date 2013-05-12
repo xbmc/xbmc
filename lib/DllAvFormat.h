@@ -281,19 +281,20 @@ public:
 
   virtual bool Load()
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
-    if (++m_avformat_refcnt == 1)
-      avformat_network_init_dont_call();
-
     if (!m_dllAvCodec.Load())
       return false;
-    return DllDynamic::Load();
+    bool loaded = DllDynamic::Load();
+
+    CSingleLock lock(DllAvCodec::m_critSection);
+    if (++m_avformat_refcnt == 1 && loaded)
+      avformat_network_init_dont_call();
+    return loaded;
   }
 
   virtual void Unload()
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-    if (--m_avformat_refcnt == 0)
+    if (--m_avformat_refcnt == 0 && DllDynamic::IsLoaded())
       avformat_network_deinit_dont_call();
 
     DllDynamic::Unload();
