@@ -282,7 +282,7 @@ bool CWIN32Util::PowerManagement(PowerState State)
     break;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
-    if (g_sysinfo.IsWindows8OrHigher())
+    if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
       uExitFlags = 0x00400000; /* EWX_HYBRID_SHUTDOWN */
     return ExitWindowsEx(uExitFlags | EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED) == TRUE;
     break;
