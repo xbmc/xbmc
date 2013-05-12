@@ -53,15 +53,7 @@ bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
 
 bool CXBMCTinyXML::LoadFile(const CStdString &_filename, TiXmlEncoding encoding)
 {
-  // There was a really terrifying little bug here. The code:
-  //    value = filename
-  // in the STL case, cause the assignment method of the std::string to
-  // be called. What is strange, is that the std::string had the same
-  // address as it's c_str() method, and so bad things happen. Looks
-  // like a bug in the Microsoft STL implementation.
-  // Add an extra string to avoid the crash.
-  CStdString filename(_filename);
-  value = filename;
+  value = _filename.c_str();
 
   void * buffPtr;
   unsigned int buffSize = CFileUtils::LoadFile(value, buffPtr);
