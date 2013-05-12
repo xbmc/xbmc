@@ -709,7 +709,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       m_musicDatabase.AddAlbumArtist(cachedArtist->second.idArtist,
                                      cachedAlbum->second.idAlbum,
                                      artistCredit->GetJoinPhrase(),
-                                     artistCredit == album->artistCredits.begin() ? false : true,
+                                     artistCredit == cachedAlbum->second.artistCredits.begin() ? false : true,
                                      std::distance(cachedAlbum->second.artistCredits.begin(), artistCredit));
     }
 
