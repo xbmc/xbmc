@@ -711,7 +711,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         }
 
         // we need to get duration slightly different for matroska embedded text subtitels
-        if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && m_pkt.pkt.convergence_duration != 0)
+        if(m_bMatroska && stream->codec && stream->codec->codec_id == CODEC_ID_TEXT && m_pkt.pkt.convergence_duration != 0)
           m_pkt.pkt.duration = m_pkt.pkt.convergence_duration;
 
         if(m_bAVI && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
@@ -1171,68 +1171,71 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     }
 
-    // set ffmpeg type
-    stream->orig_type = pStream->codec->codec_type;
-
-    // generic stuff
-    if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
-      stream->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
-
-    stream->codec = pStream->codec->codec_id;
-    stream->codec_fourcc = pStream->codec->codec_tag;
-    stream->profile = pStream->codec->profile;
-    stream->level   = pStream->codec->level;
-
-    stream->source = STREAM_SOURCE_DEMUX;
-    stream->pPrivate = pStream;
-    stream->flags = (CDemuxStream::EFlags)pStream->disposition;
-
-    AVDictionaryEntry *langTag = m_dllAvUtil.av_dict_get(pStream->metadata, "language", NULL, 0);
-    if (langTag)
-      strncpy(stream->language, langTag->value, 3);
-
-    if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
+    if (stream)
     {
-      stream->ExtraSize = pStream->codec->extradata_size;
-      stream->ExtraData = new BYTE[pStream->codec->extradata_size];
-      memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
-    }
+      // set ffmpeg type
+      stream->orig_type = pStream->codec->codec_type;
+
+      // generic stuff
+      if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
+        stream->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
+
+      stream->codec = pStream->codec->codec_id;
+      stream->codec_fourcc = pStream->codec->codec_tag;
+      stream->profile = pStream->codec->profile;
+      stream->level   = pStream->codec->level;
+
+      stream->source = STREAM_SOURCE_DEMUX;
+      stream->pPrivate = pStream;
+      stream->flags = (CDemuxStream::EFlags)pStream->disposition;
+
+      AVDictionaryEntry *langTag = m_dllAvUtil.av_dict_get(pStream->metadata, "language", NULL, 0);
+      if (langTag)
+        strncpy(stream->language, langTag->value, 3);
+
+      if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
+      {
+        stream->ExtraSize = pStream->codec->extradata_size;
+        stream->ExtraData = new BYTE[pStream->codec->extradata_size];
+        memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
+      }
 
 #ifdef HAVE_LIBBLURAY
-    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
-      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
+      if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
+        static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
 #endif
-    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    {
-      // this stuff is really only valid for dvd's.
-      // this is so that the physicalid matches the
-      // id's reported from libdvdnav
-      switch(stream->codec)
+      if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
       {
-        case CODEC_ID_AC3:
-          stream->iPhysicalId = pStream->id - 128;
-          break;
-        case CODEC_ID_DTS:
-          stream->iPhysicalId = pStream->id - 136;
-          break;
-        case CODEC_ID_MP2:
-          stream->iPhysicalId = pStream->id - 448;
-          break;
-        case CODEC_ID_PCM_S16BE:
-          stream->iPhysicalId = pStream->id - 160;
-          break;
-        case CODEC_ID_DVD_SUBTITLE:
-          stream->iPhysicalId = pStream->id - 0x20;
-          break;
-        default:
-          stream->iPhysicalId = pStream->id & 0x1f;
-          break;
+        // this stuff is really only valid for dvd's.
+        // this is so that the physicalid matches the
+        // id's reported from libdvdnav
+        switch(stream->codec)
+        {
+          case CODEC_ID_AC3:
+            stream->iPhysicalId = pStream->id - 128;
+            break;
+          case CODEC_ID_DTS:
+            stream->iPhysicalId = pStream->id - 136;
+            break;
+          case CODEC_ID_MP2:
+            stream->iPhysicalId = pStream->id - 448;
+            break;
+          case CODEC_ID_PCM_S16BE:
+            stream->iPhysicalId = pStream->id - 160;
+            break;
+          case CODEC_ID_DVD_SUBTITLE:
+            stream->iPhysicalId = pStream->id - 0x20;
+            break;
+          default:
+            stream->iPhysicalId = pStream->id & 0x1f;
+            break;
+        }
       }
-    }
-    else
-      stream->iPhysicalId = pStream->id;
+      else
+        stream->iPhysicalId = pStream->id;
 
-    AddStream(iId, stream);
+      AddStream(iId, stream);
+    }
     return stream;
   }
   else
