@@ -581,11 +581,13 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       // Genres will still require 2 lookups, and queuing the entire Genre folder
       // will require 3 lookups (genre, artist, album)
       CMusicDbUrl musicUrl;
-      musicUrl.FromString(pItem->GetPath());
-      musicUrl.AppendPath("-1/");
-      CFileItemPtr item(new CFileItem(musicUrl.ToString(), true));
-      item->SetCanQueue(true); // workaround for CanQueue() check above
-      AddItemToPlayList(item, queuedItems);
+      if (musicUrl.FromString(pItem->GetPath()))
+      {
+        musicUrl.AppendPath("-1/");
+        CFileItemPtr item(new CFileItem(musicUrl.ToString(), true));
+        item->SetCanQueue(true); // workaround for CanQueue() check above
+        AddItemToPlayList(item, queuedItems);
+      }
       return;
     }
   }
