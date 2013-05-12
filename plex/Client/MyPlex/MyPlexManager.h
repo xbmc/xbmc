@@ -33,8 +33,11 @@ class CMyPlexManager : public CThread
 
     CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH) {}
 
+    bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
+
     void StartPinLogin();
     void Login(const CStdString& username, const CStdString& password);
+    void Logout();
 
     const CMyPlexUserInfo& GetCurrentUserInfo() const { return m_currentUserInfo; }
     const CMyPlexPinInfo& GetCurrentPinInfo() const { return m_currentPinInfo; }
@@ -52,6 +55,7 @@ class CMyPlexManager : public CThread
     int DoFetchWaitPin();
     int DoScanMyPlex();
     int DoRefreshUserInfo();
+    int DoRemoveAllServers();
 
     void BroadcastState();
     TiXmlElement* GetXml(const CURL &url, bool POST=false);

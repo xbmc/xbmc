@@ -17,6 +17,8 @@
 
 #include "FileSystem/PlexFile.h"
 
+#include "LocalizeStrings.h"
+
 
 #define FAILURE_TMOUT 3600
 #define SUCCESS_TMOUT 60
@@ -39,8 +41,8 @@ CMyPlexManager::Process()
         m_secToSleep = DoRefreshUserInfo();
         break;
       case STATE_NOT_LOGGEDIN:
-        m_secToSleep = FAILURE_TMOUT;
-        continue;
+        m_secToSleep = DoRemoveAllServers();
+        break;
       case STATE_TRY_LOGIN:
         m_secToSleep = DoLogin();
         break;
@@ -66,6 +68,18 @@ void CMyPlexManager::BroadcastState()
 {
   CGUIMessage msg(GUI_MSG_MYPLEX_STATE_CHANGE, PLEX_MYPLEX_MANAGER, 0, m_state, m_lastError);
   m_lastError = ERROR_NOERROR;
+
+  switch(m_state)
+  {
+    case STATE_LOGGEDIN:
+      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
+      break;
+    case STATE_NOT_LOGGEDIN:
+      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
+      break;
+    default:
+      break;
+  }
 
   g_windowManager.SendThreadMessage(msg);
 }
@@ -241,6 +255,14 @@ int CMyPlexManager::DoRefreshUserInfo()
   return 0;
 }
 
+int CMyPlexManager::DoRemoveAllServers()
+{
+  PlexServerList list;
+  g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MYPLEX);
+
+  return FAILURE_TMOUT;
+}
+
 /////// Public Interface
 void CMyPlexManager::StartPinLogin()
 {
@@ -259,6 +281,17 @@ void CMyPlexManager::Login(const CStdString &username, const CStdString &passwor
   m_password = password;
 
   m_wakeEvent.Set();
+}
+
+void CMyPlexManager::Logout()
+{
+  m_state = STATE_NOT_LOGGEDIN;
+  m_currentUserInfo = CMyPlexUserInfo();
+  g_guiSettings.SetString("myplex.token", "");
+
+  m_wakeEvent.Set();
+
+  BroadcastState();
 }
 
 CStdString CMyPlexManager::GetAuthToken() const
