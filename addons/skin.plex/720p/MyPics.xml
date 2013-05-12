@@ -20,7 +20,7 @@
 		<!-- LibraryPhoto ID 51 -->
 		<include>LibraryPhoto</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenuPhotos</include>
+		<include>LeftSideMenu</include>
 		<include>TopBar</include>
 		<include>debugInfos</include>
 		<include>Grid</include>
