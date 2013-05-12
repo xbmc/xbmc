@@ -302,7 +302,7 @@ bool CXBMCRenderManager::FrameWait(int ms)
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
   {
     lock.Leave();
-    m_presentevent.WaitMSec(100);
+    m_presentevent.WaitMSec(timeout.MillisLeft());
     lock.Enter();
   }
   return m_presentstep != PRESENT_IDLE;
