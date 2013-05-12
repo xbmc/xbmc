@@ -83,6 +83,7 @@ public:
 
   int GetLabel() const { return m_label; }
   int GetHelp() const { return m_help; }
+  bool IsEnabled() const;
   SettingLevel GetLevel() const { return m_level; }
   const CSettingControl& GetControl() const { return m_control; }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }

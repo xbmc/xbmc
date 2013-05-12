@@ -137,6 +137,24 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   return true;
 }
   
+bool CSetting::IsEnabled() const
+{
+  bool enabled = true;
+  for (SettingDependencies::const_iterator depIt = m_dependencies.begin(); depIt != m_dependencies.end(); ++depIt)
+  {
+    if (depIt->GetType() != SettingDependencyTypeEnable)
+      continue;
+
+    if (!depIt->Check())
+    {
+      enabled = false;
+      break;
+    }
+  }
+
+  return enabled;
+}
+
 bool CSetting::OnSettingChanging(const CSetting *setting)
 {
   if (m_callback == NULL)
