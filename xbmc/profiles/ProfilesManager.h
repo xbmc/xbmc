@@ -34,7 +34,7 @@ public:
 
   virtual bool OnSettingsLoading();
   virtual void OnSettingsLoaded();
-  virtual void OnSettingsSaved();
+  virtual bool OnSettingsSaved();
   virtual void OnSettingsCleared();
 
   bool Load();
