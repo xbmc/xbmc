@@ -66,9 +66,21 @@ struct jcast_helper<std::string, jstring>
 };
 
 template <>
+struct jcast_helper<std::vector<std::string>, jobjectArray>
+{
+    static std::vector<std::string> cast(jobjectArray const &v);
+};
+
+template <>
 struct jcast_helper<jhstring, std::string>
 {
     static jhstring cast(const std::string &v);
+};
+
+template <>
+struct jcast_helper<jhobjectArray, std::vector<std::string> >
+{
+    static jhobjectArray cast(const std::vector<std::string> &v);
 };
 
 template <>
@@ -77,6 +89,15 @@ struct jcast_helper<std::string, jhstring>
     static std::string cast(jhstring const &v)
     {
         return jcast_helper<std::string, jstring>::cast(v);
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<std::string>, jhobjectArray>
+{
+    static std::vector<std::string> cast(jhobjectArray const &v)
+    {
+        return jcast_helper<std::vector<std::string>, jobjectArray>::cast(v);
     }
 };
 

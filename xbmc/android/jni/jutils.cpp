@@ -76,6 +76,43 @@ jhstring jcast_helper<jhstring, std::string>::cast(const std::string &s)
     return jhstring(obj);
 }
 
+jhobjectArray jcast_helper<jhobjectArray, std::vector<std::string> >::cast(const std::vector<std::string> &s)
+{
+  JNIEnv *env = xbmc_jnienv();
+  jobjectArray ret = NULL;
+  if (!s.empty())
+  {
+    ret = env->NewObjectArray(s.size(), env->FindClass("java/lang/String"), NULL);
+    for (unsigned int i = 0; i < s.size(); i++)
+    env->SetObjectArrayElement(ret, i, env->NewStringUTF(s[i].c_str()));
+  }
+  return jhobjectArray(ret);
+}
+
+std::vector<std::string> jcast_helper<std::vector<std::string>, jobjectArray >::cast(const jobjectArray &s)
+{
+  JNIEnv *env = xbmc_jnienv();
+  std::vector<std::string> ret;
+  jstring element;
+  const char* newString = NULL;
+  if (!s)
+    return ret;
+
+  unsigned int arraySize = env->GetArrayLength(s);
+  ret.reserve(arraySize);
+  for (unsigned int i = 0; i < arraySize; ++i)
+  {
+    element = (jstring) env->GetObjectArrayElement(s, i);
+    newString = env->GetStringUTFChars(element, JNI_FALSE);
+    if (newString)
+    {
+      ret.push_back(newString);
+      env->ReleaseStringUTFChars(element, newString);
+    }
+  }
+  return ret;
+}
+
 #define CRYSTAX_PP_CAT(a, b, c) CRYSTAX_PP_CAT_IMPL(a, b, c)
 #define CRYSTAX_PP_CAT_IMPL(a, b, c) a ## b ## c
 
