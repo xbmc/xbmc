@@ -92,6 +92,7 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 
 // these need to be put somewhere that are compiled, we should have some better place for it
 
+int DllAvFormat::m_avformat_refcnt = 0;
 CCriticalSection DllAvCodec::m_critSection;
 static CCriticalSection m_logSection;
 std::map<uintptr_t, CStdString> g_logbuffer;
