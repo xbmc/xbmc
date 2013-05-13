@@ -142,8 +142,9 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   unsigned int inputBuffSize = 0;
 
   XFILE::CFile file;
-  if (file.Open(filename.c_str(), READ_TRUNCATED))
-  {
+  if (!file.Open(filename.c_str(), READ_TRUNCATED))
+    return 0;
+
     /*
      GetLength() will typically return values that fall into three cases:
      1. The real filesize. This is the typical case.
@@ -197,8 +198,5 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
 
     outputBuffer = (void *) inputBuff;
     return inputBuffSize;
-  }
-
-  return 0;
 }
 
