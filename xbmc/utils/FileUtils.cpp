@@ -142,7 +142,7 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   unsigned int inputBuffSize = 0;
 
   XFILE::CFile file;
-  if (!file.Open(filename.c_str(), READ_TRUNCATED))
+  if (!file.Open(filename, READ_TRUNCATED))
     return 0;
 
   /*
