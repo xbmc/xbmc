@@ -204,7 +204,10 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   file.Close();
 
   if (total_read == 0)
+  {
+    free(inputBuff);
     return 0;
+  }
 
   outputBuffer = (void *) inputBuff;
   return total_read;
