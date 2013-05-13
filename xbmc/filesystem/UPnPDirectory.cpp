@@ -29,6 +29,7 @@
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -414,6 +415,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             CStdString id = (char*) (*entry)->m_ObjectID;
             CURL::Encode(id);
+            URIUtils::AddSlashAtEnd(id);
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));
 
             // if it's a container, format a string as upnp://uuid/object_id
@@ -436,28 +438,24 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             } else {
 
                 // set a general content type
-                audio = image = video = false;
-                const char* content = NULL;
+                std::string content;
                 if (ObjectClass.StartsWith("object.item.videoitem")) {
                     pItem->SetMimeType("video/octet-stream");
                     content = "video";
-                    video = true;
                 }
                 else if(ObjectClass.StartsWith("object.item.audioitem")) {
                     pItem->SetMimeType("audio/octet-stream");
                     content = "audio";
-                    audio = true;
                 }
                 else if(ObjectClass.StartsWith("object.item.imageitem")) {
                     pItem->SetMimeType("image/octet-stream");
                     content = "image";
-                    image = true;
                 }
 
                 // attempt to find a valid resource (may be multiple)
                 PLT_MediaItemResource resource;
                 if(NPT_SUCCEEDED(NPT_ContainerFind((*entry)->m_Resources,
-                                  CResourceFinder("http-get", content), resource))) {
+                                  CResourceFinder("http-get", content.c_str()), resource))) {
 
                     // set metadata
                     if (resource.m_Size != (NPT_LargeSize)-1) {
@@ -465,15 +463,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
 
                     // look for metadata
-                    if(video) {
+                    if(content.compare("video") == 0) {
                         pItem->SetLabelPreformated(false);
                         UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
 
-                    } else if(audio) {
+                    } else if(content.compare("audio") == 0) {
                         pItem->SetLabelPreformated(false);
                         UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
 
-                    } else if(image) {
+                    } else if(content.compare("image") == 0) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
                     }
@@ -539,7 +537,12 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         std::string content = GetContentMapping(max_string);
         items.SetContent(content);
         if (content == "unknown")
-          items.AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%L", "%I", "%L", ""));
+        {
+          items.AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%L", "%I", "%L", ""));
+          items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS, 551, LABEL_MASKS("%L", "%I", "%L", ""));
+          items.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));
+          items.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));
+        }
     }
 
 cleanup:

@@ -4,6 +4,8 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">DVD Sıralama Kullan</string>
+    <string id="30001">Mutlak Sıralama Kullan (Tek Sezon)</string>
     <string id="30002">Fanart'ı Etkinleştir</string>
     <string id="30003">Posterleri Tercih Et</string>
     <string id="30004">Dil</string>

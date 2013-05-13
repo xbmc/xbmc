@@ -19,7 +19,7 @@ msgstr "Programi"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "Fotke"
+msgstr "Slike"
 
 msgctxt "#2"
 msgid "Music"
@@ -31,7 +31,7 @@ msgstr "Filmovi"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "TV"
+msgstr "TV-Vodič"
 
 msgctxt "#5"
 msgid "Settings"
@@ -205,6 +205,70 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "dec"
 
+msgctxt "#71"
+msgid "N"
+msgstr "S"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "SSI"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "SI"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "ISI"
+
+msgctxt "#75"
+msgid "E"
+msgstr "I"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "IJI"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "JI"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "JJI"
+
+msgctxt "#79"
+msgid "S"
+msgstr "J"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "JJZ"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "JZ"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "ZJZ"
+
+msgctxt "#83"
+msgid "W"
+msgstr "Z"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "ZSZ"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "SZ"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "SSZ"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Prikaz: Autom."
@@ -264,6 +328,14 @@ msgstr "Prečice"
 msgctxt "#112"
 msgid "Paused"
 msgstr "Pauzirano"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Ažuriranje nije uspjelo"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Instalacija nije uspjela"
 
 msgctxt "#115"
 msgid "Copy"
@@ -577,6 +649,10 @@ msgctxt "#198"
 msgid "Loading movie details"
 msgstr "Učitavanje podataka o filmu"
 
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Web interfejs"
+
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Tagline"
@@ -708,6 +784,26 @@ msgstr "Uveličanje"
 msgctxt "#239"
 msgid "Clear playlist on finish"
 msgstr "Poništi spisak po završetku"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "Način prikazivanja"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Puni ekran #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "Prozorski"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Učestalost osvježavanja"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Puni ekran"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -861,6 +957,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Bez rezultata"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Preferirani audio jezik"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Preferirani jezik titla"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Titlovi"
@@ -936,6 +1040,14 @@ msgstr "Omogućeno"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Nestandardni"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Originalni jezik strimova"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Korisnički interfejs jezik"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1076,6 +1188,18 @@ msgstr "Godina"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Pojačaj nivo zvuka pri prebacivanju u manji br. kanala"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD sposoban prijemnik"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Više kanalni LPCM sposoban prijemnik"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- Pravi HD sposoban prijemnik"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1349,6 +1473,10 @@ msgctxt "#419"
 msgid "High"
 msgstr "Maks."
 
+msgctxt "#420"
+msgid "HDMI"
+msgstr "HDMI"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Izbriši podatke o albumu"
@@ -1396,6 +1524,10 @@ msgstr "Ukloni film iz biblioteke"
 msgctxt "#433"
 msgid "Really remove '%s'?"
 msgstr "Zaista želite da uklonite „%s“?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "Od %s do %i %s"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1901,6 +2033,14 @@ msgctxt "#574"
 msgid "Country"
 msgstr "Država"
 
+msgctxt "#575"
+msgid "In progress"
+msgstr "u toku"
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "Reprodukovan"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Smer slaganja"
@@ -2184,6 +2324,10 @@ msgstr "Želite li ovo da uklonite iz biblioteke?"
 msgctxt "#664"
 msgid "Browse for Script"
 msgstr "Potraži skriptu"
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "Nivo kompresije"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2484,6 +2628,10 @@ msgstr "Uspješno je onemogućen mrežni interfejs."
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
 msgstr "Ime bežične mreže (ESSID)"
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "Daljinsko upravljanje"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2861,9 +3009,29 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programi, slike i filmovi"
 
+msgctxt "#1259"
+msgid "Zeroconf"
+msgstr "Zeroconf"
+
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Oglasi ove usluge ostalim sistemima putem Zeroconf"
+
+msgctxt "#1270"
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Dopusti XBMC da primi AirPlay sadržaj"
+
+msgctxt "#1271"
+msgid "Device name"
+msgstr "Ime uređaja"
+
+msgctxt "#1272"
+msgid "- Use password protection"
+msgstr "- Koristi zaštitu lozinkom"
+
+msgctxt "#1273"
+msgid "AirPlay"
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -2957,6 +3125,26 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "grmljavina"
 
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "Umjeren"
+
+msgctxt "#1421"
+msgid "Very High"
+msgstr "Veoma Visok"
+
+msgctxt "#1422"
+msgid "Windy"
+msgstr "Vjetrovito"
+
+msgctxt "#1423"
+msgid "Mist"
+msgstr "Magla"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "i"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "od"
@@ -2980,6 +3168,10 @@ msgstr "Trajanje"
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Skripta je „pukla“! : %s"
+
+msgctxt "#2101"
+msgid "Newer version needed - See log"
+msgstr "Potrebna novija verzija - Pogledaj log"
 
 msgctxt "#4501"
 msgid "Enable LCD/VFD"
@@ -3088,6 +3280,10 @@ msgstr "Ekran za prijavu"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Postavke - Profili"
+
+msgctxt "#10040"
+msgid "Addon browser"
+msgstr "Pretraživač Dodataka"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3465,6 +3661,10 @@ msgctxt "#12394"
 msgid "Total uptime"
 msgstr "Ukupno vrijeme"
 
+msgctxt "#12395"
+msgid "Battery level"
+msgstr "Nivo baterije"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Vremenska prognoza"
@@ -3532,6 +3732,10 @@ msgstr "Umanji"
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Akcija dugmeta za uključivanje"
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "Isključivanje sistema"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4233,6 +4437,10 @@ msgctxt "#13411"
 msgid "Minimum fan speed"
 msgstr "Minimalna brzina ventilatora"
 
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "Reprodukuj odavde"
+
 msgctxt "#13413"
 msgid "Downloading"
 msgstr "Preuzimanje"
@@ -4285,6 +4493,34 @@ msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
 msgstr "Broadcom Crystal HD"
 
+msgctxt "#13426"
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Dopustite hardversko ubrzanje (VAAPI)"
+
+msgctxt "#13427"
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Dopustite hardversko ubrzanje (DXVA2)"
+
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Dopustite hardversko ubrzanje (CrystalHD)"
+
+msgctxt "#13429"
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Dopustite hardversko ubrzanje  (VDADecoder)"
+
+msgctxt "#13430"
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Dopustite hardversko ubrzanje (OpenMax)"
+
+msgctxt "#13431"
+msgid "Pixel Shaders"
+msgstr "Pixel Shaders"
+
+msgctxt "#13432"
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Dopustite hardversko ubrzanje  (VideoToolbox)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V način sinhron."
@@ -4329,9 +4565,21 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sinhronizuj reprodukciju prema prikazu"
 
+msgctxt "#13550"
+msgid "Pause during refresh rate change"
+msgstr "Pauziraj kod promjena učestalosti osvježavanja"
+
 msgctxt "#13551"
 msgid "Off"
 msgstr "Isklj."
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f Sekundi"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f Sekundi"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -4713,9 +4961,21 @@ msgctxt "#14095"
 msgid "Power saving"
 msgstr "Ušteda energije"
 
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Rip"
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr "Audio CD Umetni Akcija"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Reprodukuj"
+
+msgctxt "#14099"
+msgid "Eject disc when CD ripping is complete"
+msgstr "Izbaci disk kada CD rip-ovanje završi"
 
 msgctxt "#15015"
 msgid "Remove"

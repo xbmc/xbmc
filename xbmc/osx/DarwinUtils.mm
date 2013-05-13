@@ -393,20 +393,23 @@ void DarwinSetScheduling(int message)
   result = pthread_setschedparam(this_pthread_self, policy, &param );
 }
 
-bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
+bool DarwinCFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
 {
-  const char *cstr = CFStringGetCStringPtr(source, CFStringGetSystemEncoding());
+  const char *cstr = CFStringGetCStringPtr(source, encoding);
   if (!cstr)
   {
-    CFIndex strLen = CFStringGetMaximumSizeForEncoding(CFStringGetLength(source),
-                                                       kCFStringEncodingUTF8);
-    char *allocStr = (char*)malloc(strLen + 1);
+    CFIndex strLen = CFStringGetMaximumSizeForEncoding(CFStringGetLength(source) + 1,
+                                                       encoding);
+    char *allocStr = (char*)malloc(strLen);
 
     if(!allocStr)
       return false;
 
-    if(!CFStringGetCString(source, allocStr, strLen, CFStringGetSystemEncoding()))
+    if(!CFStringGetCString(source, allocStr, strLen, encoding))
+    {
+      free((void*)allocStr);
       return false;
+    }
 
     destination = allocStr;
     free((void*)allocStr);
@@ -416,6 +419,16 @@ bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
 
   destination = cstr;
   return true;
+}
+
+bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
+{
+  return DarwinCFStringRefToStringWithEncoding(source, destination, CFStringGetSystemEncoding());
+}
+
+bool DarwinCFStringRefToUTF8String(CFStringRef source, std::string &destination)
+{
+  return DarwinCFStringRefToStringWithEncoding(source, destination, kCFStringEncodingUTF8);
 }
 
 #endif

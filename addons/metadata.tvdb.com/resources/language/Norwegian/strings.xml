@@ -4,5 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Bruk DVD sortering</string>
+    <string id="30001">Bruk Absolutt sortering (Enkel Sesong)</string>
+    <string id="30002">Vis Fanart</string>
+    <string id="30003">Foretrekke Postere</string>
     <string id="30004">Språk</string>
 </strings>

@@ -44,7 +44,6 @@
 #include "osx/DarwinUtils.h"
 
 /* PLEX */
-#undef BOOL
 static BOOL displaysBlanked = NO;
 /* END PLEX */
 
@@ -1387,7 +1386,7 @@ bool CWinSystemOSX::IsObscured(void)
         if (!obscureLogged)
         {
           std::string appName;
-          if (DarwinCFStringRefToString(ownerName, appName))
+          if (DarwinCFStringRefToUTF8String(ownerName, appName))
             CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
           obscureLogged = true;
         }

@@ -5,4 +5,10 @@
 
 <strings>
     <string id="30000">啟用 Fanart</string>
+    <string id="30001">偏好從HD-Trailers.net取得預告片</string>
+    <string id="30002">偏好的語言</string>
+    <string id="30003">從...取得評價</string>
+    <string id="30004">啟用預告片 (YouTube)</string>
+    <string id="30005">保留原始標題</string>
+    <string id="30006">偏好的認證國家</string>
 </strings>

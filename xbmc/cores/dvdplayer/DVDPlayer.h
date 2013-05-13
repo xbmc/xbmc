@@ -581,4 +581,6 @@ protected:
   void UpdateReadRate();
   /* END PLEX */
 
+  bool m_HasVideo;
+  bool m_HasAudio;
 };

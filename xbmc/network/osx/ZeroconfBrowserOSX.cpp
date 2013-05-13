@@ -32,7 +32,7 @@
 #include <netinet/in.h>
 
 namespace
-{  
+{
   //helper for getting a the txt-records list
   //returns true on success, false if nothing found or error
   CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)  
@@ -59,7 +59,7 @@ namespace
           for(idx = 0; idx < numValues; idx++)
           {
             std::string key;
-            if (DarwinCFStringRefToString(keys[idx], key))
+            if (DarwinCFStringRefToUTF8String(keys[idx], key))
             {
               recordMap.insert(
                 std::make_pair(
@@ -148,9 +148,9 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
 
     //store the service
     std::string name, type, domain;
-    if (!DarwinCFStringRefToString(CFNetServiceGetName(service), name) ||
-        !DarwinCFStringRefToString(CFNetServiceGetType(service), type) ||
-        !DarwinCFStringRefToString(CFNetServiceGetDomain(service), domain))
+    if (!DarwinCFStringRefToUTF8String(CFNetServiceGetName(service), name) ||
+        !DarwinCFStringRefToUTF8String(CFNetServiceGetType(service), type) ||
+        !DarwinCFStringRefToUTF8String(CFNetServiceGetDomain(service), domain))
     {
       CLog::Log(LOGWARNING, "CZeroconfBrowserOSX::BrowserCallback failed to convert service strings.");
       return;

@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Finnish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fi/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
 <strings>
     <string id="30000">Fanitaide käytössä</string>
-    <string id="30004">Trailerit käytössä</string>
-    <string id="30001">Valitse ensisijaisesti trailerit HD-Trailers.net -sivustolta</string>
-    <string id="30002">Ensisijainen kieli</string>
-    <string id="30003">Hae arvosana IMDb:stä</string>
-    <string id="30005">Näytä alkuperäinen nimi</string>
 </strings>

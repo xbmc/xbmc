@@ -45,7 +45,7 @@ fi
 
 PACKAGE=org.xbmc.xbmc-ios
 
-VERSION=12.1
+VERSION=12.2
 REVISION=0
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 

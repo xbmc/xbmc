@@ -2541,8 +2541,6 @@ void CApplication::Render()
     g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
@@ -5257,11 +5255,22 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 #endif
 
-      // ok - send the file to the player if it wants it
-      if (m_pPlayer && m_pPlayer->QueueNextFile(file))
-      { // player wants the next file
-        m_nextPlaylistItem = iNext;
+      // ok - send the file to the player, if it accepts it
+      if (m_pPlayer)
+      {
+        if (m_pPlayer->QueueNextFile(file))
+        {
+          // player accepted the next file
+          m_nextPlaylistItem = iNext;
+        }
+        else
+        {
+          /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
+             queue the next (if it wants to) and it doesn't keep looping on this song */
+          g_playlistPlayer.SetCurrentSong(iNext);
+        }
       }
+
       return true;
     }
     break;
@@ -5548,6 +5557,8 @@ void CApplication::ProcessSlow()
 
   if (!IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();
+
+  g_TextureManager.FreeUnusedTextures();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)

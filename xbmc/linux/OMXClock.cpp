@@ -745,6 +745,84 @@ double OMXClock::OMXMediaTime(bool fixPreroll /* true */ , bool lock /* = true *
   return pts;
 }
 
+// Set the media time, so calls to get media time use the updated value,
+// useful after a seek so mediatime is updated immediately (rather than waiting for first decoded packet)
+bool OMXClock::OMXMediaTime(double pts, bool fixPreroll /* = true*/, bool lock /* = true*/)
+{
+  if(m_omx_clock.GetComponent() == NULL)
+    return false;
+
+  if(lock)
+    Lock();
+
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+  OMX_INDEXTYPE index;
+  OMX_TIME_CONFIG_TIMESTAMPTYPE timeStamp;
+  OMX_INIT_STRUCTURE(timeStamp);
+  timeStamp.nPortIndex = m_omx_clock.GetInputPort();
+
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && m_has_video)
+    index = OMX_IndexConfigTimeCurrentVideoReference;
+  else if(m_has_audio)
+    index = OMX_IndexConfigTimeCurrentAudioReference;
+  else
+    index = OMX_IndexConfigTimeCurrentVideoReference;
+
+  if(fixPreroll)
+    pts -= (OMX_PRE_ROLL * 1000);
+  timeStamp.nTimestamp = ToOMXTime(pts);
+
+  omx_err = m_omx_clock.SetConfig(index, &timeStamp);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "OMXClock::OMXMediaTime error setting %s", index == OMX_IndexConfigTimeCurrentAudioReference ?
+       "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference");
+    if(lock)
+      UnLock();
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "OMXClock::OMXMediaTime set config %s = %.2f", index == OMX_IndexConfigTimeCurrentAudioReference ?
+       "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference", pts);
+
+  if(lock)
+    UnLock();
+
+  return true;
+}
+
+// gets count of late frames, indicating underrun has occurred
+int OMXClock::OMXLateCount(int port /* true */ , bool lock /* = true */)
+{
+  if(m_omx_clock.GetComponent() == NULL)
+    return 0;
+
+  if(lock)
+    Lock();
+
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+  OMX_PARAM_U32TYPE late;
+  OMX_INIT_STRUCTURE(late);
+  late.nPortIndex = m_omx_clock.GetInputPort()+port;
+
+  omx_err = m_omx_clock.GetConfig(OMX_IndexConfigBrcmClockMissCount, &late);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "OMXClock::OMXLateCount error getting OMX_IndexConfigBrcmClockMissCount(%d)\n", port);
+    if(lock)
+      UnLock();
+    return 0;
+  }
+
+  //CLog::Log(LOGINFO, "OMXClock::OMXLateCount(%d)=%d", port, late.nU32);
+
+  if(lock)
+    UnLock();
+
+  return late.nU32;
+}
+
 bool OMXClock::OMXPause(bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)

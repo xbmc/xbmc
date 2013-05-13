@@ -3269,6 +3269,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "낮음"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "및"
+
 msgctxt "#1440"
 msgid "Sleet"
 msgstr "진눈깨비"

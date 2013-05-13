@@ -4,5 +4,15 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Hangi albumi pisipildid fanart.tv-st</string>
+    <string id="30001">Hangi albumi pisipildid Last.fm-st</string>
+    <string id="30002">Hangi albumi arvustused</string>
+    <string id="30003">Eelistatud keel</string>
+    <string id="30004">Hangi albumi hinnang</string>
+    <string id="30005">Hangi albumi stiil</string>
+    <string id="30006">Hangi albumi meeleolu</string>
+    <string id="30007">Hangi albumi teema</string>
+    <string id="30008">Hangi albumi pisipildid allmusic.com-st</string>
     <string id="30009">Kunst</string>
+    <string id="30010">Hangi albumi pisipildid theaudiodb.com-st</string>
 </strings>

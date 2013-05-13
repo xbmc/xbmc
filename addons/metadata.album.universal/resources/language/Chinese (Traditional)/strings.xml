@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Chinese (Traditional) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">啟用fanart.tv專輯縮圖</string>
+    <string id="30001">啟用 Last.fm專輯縮圖</string>
+    <string id="30002">專輯評論取得於</string>
+    <string id="30003">偏好的語言</string>
+    <string id="30004">專輯評分取得於</string>
+    <string id="30005">專輯風格取得於</string>
+    <string id="30006">專輯意境取得於</string>
+    <string id="30007">專輯主題取得於</string>
+    <string id="30008">從allmusic.com取得專輯縮圖</string>
+    <string id="30009">圖片</string>
+    <string id="30010">從 theaudiodb.com取得專輯縮圖</string>
+</strings>

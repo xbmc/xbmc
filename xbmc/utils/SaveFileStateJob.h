@@ -37,7 +37,7 @@ bool CSaveFileStateJob::DoWork()
   if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->m_strFileNameAndPath.Find("removable://") == 0)
     progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (m_item.HasProperty("original_listitem_url") && 
-      URIUtils::IsPlugin(m_item.GetProperty("original_listitem_url").asString()))
+      (URIUtils::IsPlugin(m_item.GetProperty("original_listitem_url").asString()) || URIUtils::IsBluray(m_item.GetPath()) ) )
     progressTrackingFile = m_item.GetProperty("original_listitem_url").asString();
 
   if (progressTrackingFile != "")
@@ -127,9 +127,8 @@ bool CSaveFileStateJob::DoWork()
         {
           CFileItem dbItem(m_item);
           videodatabase.GetStreamDetails(dbItem); // Fetch stream details from the db (if any)
-          
           // Check whether the item's db streamdetails need updating
-          if (!dbItem.GetVideoInfoTag()->HasStreamDetails() || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
+          if (!videodatabase.GetStreamDetails(dbItem) || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
           {
             videodatabase.SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
             updateListing = true;

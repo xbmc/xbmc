@@ -22,6 +22,8 @@
 
 #include <string>
 
+// We forward declare CFStringRef in order to avoid
+// pulling in tons of Objective-C headers.
 struct __CFString;
 typedef const struct __CFString * CFStringRef;
 
@@ -40,6 +42,7 @@ extern "C"
   int         DarwinBatteryLevel(void);
   void        DarwinSetScheduling(int message);
   bool        DarwinCFStringRefToString(CFStringRef source, std::string& destination);
+  bool        DarwinCFStringRefToUTF8String(CFStringRef source, std::string& destination);
 #ifdef __cplusplus
 }
 #endif

@@ -4,5 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Kasuta DVD järjestust</string>
+    <string id="30001">Kasuta absoluutset järjestust (Üks hooaeg)</string>
+    <string id="30002">Võimalda fännikunst</string>
+    <string id="30003">Eelista postreid</string>
     <string id="30004">Keel</string>
 </strings>

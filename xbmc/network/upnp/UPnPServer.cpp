@@ -13,6 +13,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/Key.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
@@ -307,6 +308,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                     if (params.GetMovieId() >= 0 )
                         db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
+                    else if (params.GetMVideoId() >= 0 )
+                        db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
                     else if (params.GetEpisodeId() >= 0 )
                         db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
                     else if (params.GetTvShowId() >= 0 )
@@ -498,6 +501,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
             object = Build(item, true, context, thumb_loader);
+            object->m_ParentID = "-1";
         } else {
             return NPT_FAILURE;
         }
@@ -600,7 +604,14 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 
             items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
         } else {
-            CDirectory::GetDirectory((const char*)parent_id, items);
+            // this is the only way to hide unplayable items in the 'files'
+            // view as we cannot tell what context (eg music vs video) the
+            // request came from
+            string supported = g_settings.m_pictureExtensions + "|"
+                             + g_settings.m_videoExtensions + "|"
+                             + g_settings.m_musicExtensions + "|"
+                             + g_settings.m_discStubExtensions;
+            CDirectory::GetDirectory((const char*)parent_id, items, supported);
             DefaultSortItems(items);
         }
 
@@ -608,6 +619,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             NPT_AutoLock lock(m_CacheMutex);
             items.Save();
         }
+    }
+
+    // as there's no library://music support, manually add playlists and music
+    // video nodes
+    if (items.GetPath() == "musicdb://") {
+      CFileItemPtr playlists(new CFileItem("special://musicplaylists/", true));
+      playlists->SetLabel(g_localizeStrings.Get(136));
+      items.Add(playlists);
+
+      CVideoDatabase database;
+      database.Open();
+      if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
+          CFileItemPtr mvideos(new CFileItem("videodb://3/", true));
+          mvideos->SetLabel(g_localizeStrings.Get(20389));
+          items.Add(mvideos);
+      }
     }
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
@@ -648,10 +675,15 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     // we will reuse this ThumbLoader for all items
     NPT_Reference<CThumbLoader> thumb_loader;
 
-    if (URIUtils::IsVideoDb(items.GetPath()) || items.GetPath().Left(15) == "library://video") {
+    if (URIUtils::IsVideoDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "library://video") ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/video/")) {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
-    else if (URIUtils::IsMusicDb(items.GetPath())) {
+    else if (URIUtils::IsMusicDb(items.GetPath()) ||
+        StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/music/")) {
+
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
     if (!thumb_loader.IsNull()) {
