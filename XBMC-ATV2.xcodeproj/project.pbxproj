@@ -139,6 +139,7 @@
 		DF527783151BAFD600B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52777D151BAFD600B5B63B /* WebSocketV8.cpp */; };
 		DF527788151BAFEE00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527784151BAFEE00B5B63B /* Base64.cpp */; };
 		DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527786151BAFEE00B5B63B /* HttpResponse.cpp */; };
+		DF529BCB174169C900523FB4 /* Environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF529BC9174169C900523FB4 /* Environment.cpp */; };
 		DF64FE6C16C07B2C00D028FB /* GUIViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE6416C07B2C00D028FB /* GUIViewControl.cpp */; };
 		DF64FE6D16C07B2C00D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE6616C07B2C00D028FB /* GUIViewState.cpp */; };
 		DF64FE6F16C07B2C00D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE6916C07B2C00D028FB /* ViewDatabase.cpp */; };
@@ -1359,6 +1360,8 @@
 		DF527785151BAFEE00B5B63B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		DF527786151BAFEE00B5B63B /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpResponse.cpp; sourceTree = "<group>"; };
 		DF527787151BAFEE00B5B63B /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResponse.h; sourceTree = "<group>"; };
+		DF529BC9174169C900523FB4 /* Environment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Environment.cpp; sourceTree = "<group>"; };
+		DF529BCA174169C900523FB4 /* Environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Environment.h; sourceTree = "<group>"; };
 		DF64FE6416C07B2C00D028FB /* GUIViewControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewControl.cpp; sourceTree = "<group>"; };
 		DF64FE6516C07B2C00D028FB /* GUIViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewControl.h; sourceTree = "<group>"; };
 		DF64FE6616C07B2C00D028FB /* GUIViewState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewState.cpp; sourceTree = "<group>"; };
@@ -5838,6 +5841,8 @@
 				7CC3105B162AAF9B003E7579 /* EdenVideoArtUpdater.cpp */,
 				7CC3105C162AAF9B003E7579 /* EdenVideoArtUpdater.h */,
 				F56C7731131EC154000AD0F6 /* EndianSwap.h */,
+				DF529BC9174169C900523FB4 /* Environment.cpp */,
+				DF529BCA174169C900523FB4 /* Environment.h */,
 				F56C7732131EC154000AD0F6 /* Fanart.cpp */,
 				F56C7733131EC154000AD0F6 /* Fanart.h */,
 				F56C7BF3131EC4E8000AD0F6 /* fastmemcpy-arm.S */,
@@ -7773,6 +7778,7 @@
 				F5DB701317322DF700D4DF21 /* FavouritesOperations.cpp in Sources */,
 				DF52568B1732C4620094A464 /* DVDDemuxCDDA.cpp in Sources */,
 				DFA815A216713BC400E4E597 /* WakeOnAccess.cpp in Sources */,
+				DF529BCB174169C900523FB4 /* Environment.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
