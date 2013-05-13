@@ -145,6 +145,7 @@
 		DF52775A151BAF8200B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527754151BAF8200B5B63B /* WebSocketV8.cpp */; };
 		DF527760151BAFA000B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52775C151BAFA000B5B63B /* Base64.cpp */; };
 		DF527761151BAFA000B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52775E151BAFA000B5B63B /* HttpResponse.cpp */; };
+		DF529BBC174169A900523FB4 /* Environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF529BBA174169A900523FB4 /* Environment.cpp */; };
 		DF64FE5616C07AF700D028FB /* GUIViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE4E16C07AF700D028FB /* GUIViewControl.cpp */; };
 		DF64FE5716C07AF700D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE5016C07AF700D028FB /* GUIViewState.cpp */; };
 		DF64FE5916C07AF700D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE5316C07AF700D028FB /* ViewDatabase.cpp */; };
@@ -1381,6 +1382,8 @@
 		DF52775D151BAFA000B5B63B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		DF52775E151BAFA000B5B63B /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpResponse.cpp; sourceTree = "<group>"; };
 		DF52775F151BAFA000B5B63B /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResponse.h; sourceTree = "<group>"; };
+		DF529BBA174169A900523FB4 /* Environment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Environment.cpp; sourceTree = "<group>"; };
+		DF529BBB174169A900523FB4 /* Environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Environment.h; sourceTree = "<group>"; };
 		DF64FE4E16C07AF700D028FB /* GUIViewControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewControl.cpp; sourceTree = "<group>"; };
 		DF64FE4F16C07AF700D028FB /* GUIViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewControl.h; sourceTree = "<group>"; };
 		DF64FE5016C07AF700D028FB /* GUIViewState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewState.cpp; sourceTree = "<group>"; };
@@ -6249,6 +6252,8 @@
 				7CC3106D162AAFE3003E7579 /* EdenVideoArtUpdater.cpp */,
 				7CC3106E162AAFE3003E7579 /* EdenVideoArtUpdater.h */,
 				F56C8720131F42EC000AD0F6 /* EndianSwap.h */,
+				DF529BBA174169A900523FB4 /* Environment.cpp */,
+				DF529BBB174169A900523FB4 /* Environment.h */,
 				F56C8721131F42EC000AD0F6 /* Fanart.cpp */,
 				F56C8722131F42EC000AD0F6 /* Fanart.h */,
 				F56C8723131F42EC000AD0F6 /* fastmemcpy-arm.S */,
@@ -7844,6 +7849,7 @@
 				F5DB701A17322E0C00D4DF21 /* FavouritesOperations.cpp in Sources */,
 				DF52567A1732C43E0094A464 /* DVDDemuxCDDA.cpp in Sources */,
 				DFA8158E16713BA100E4E597 /* WakeOnAccess.cpp in Sources */,
+				DF529BBC174169A900523FB4 /* Environment.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
