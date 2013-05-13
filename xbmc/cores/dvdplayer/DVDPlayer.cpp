@@ -3729,8 +3729,11 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   double pts = m_clock.GetClock();
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return false;
+  //if (m_pInputStream && (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+  //                     ||m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)))
+  //{
+  //  pts = DVD_MSEC_TO_TIME(GetTime());
+  //}
 
   m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
 
