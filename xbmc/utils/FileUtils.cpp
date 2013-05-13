@@ -133,6 +133,8 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
 
 unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuffer)
 {
+  static const unsigned int max_file_size = 0x7FFFFFFF;
+
   outputBuffer = NULL;
   if (filename.empty())
     return 0;
@@ -157,8 +159,13 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
 
    To minimize reallocation, we double the chunksize each time up to a maxchunksize of 2MB.
    */
-  unsigned int filesize = (unsigned int)file.GetLength();
-  unsigned int chunksize = filesize ? (filesize + 1) : std::max(65536U, (unsigned int)file.GetChunkSize());
+  int64_t filesize = file.GetLength();
+  if (filesize > max_file_size)
+  { /* file is too large for this function */
+    file.Close();
+    return 0;
+  }
+  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : std::max(65536U, (unsigned int)file.GetChunkSize());
   unsigned int maxchunksize = 2048*1024U; /* max 2MB chunksize */
   unsigned char *tempinputBuff = NULL;
   unsigned char *inputBuff = NULL;
