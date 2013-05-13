@@ -209,6 +209,20 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
     return 0;
   }
 
+  if (total_read + 1 < inputBuffSize)
+  {
+    /* free extra memory if more than 1 byte (cases 1 and 3) */
+    unsigned char *tempinputBuff = (unsigned char *)realloc(inputBuff, total_read);
+    if (!tempinputBuff)
+    {
+      /* just a precaution, shouldn't really happen */
+      CLog::Log(LOGERROR, "%s unable to reallocate buffer for file \"%s\"", __FUNCTION__, filename.c_str());
+      free(inputBuff);
+      return 0;
+    }
+    inputBuff = tempinputBuff;
+  }
+
   outputBuffer = (void *) inputBuff;
   return total_read;
 }
