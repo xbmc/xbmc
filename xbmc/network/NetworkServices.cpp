@@ -90,8 +90,8 @@ using namespace UPNP;
 #endif // HAS_UPNP
 
 CNetworkServices::CNetworkServices()
-  :
 #ifdef HAS_WEB_SERVER
+  :
   m_webserver(*new CWebServer),
   m_httpImageHandler(*new CHTTPImageHandler),
   m_httpVfsHandler(*new CHTTPVfsHandler)
