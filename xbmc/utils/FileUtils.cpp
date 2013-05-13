@@ -170,7 +170,6 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
     return 0;
   }
   unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : CFile::GetChunkSize(file.GetChunkSize(), min_chunk_size);
-  unsigned char *tempinputBuff = NULL;
   unsigned char *inputBuff = NULL;
   unsigned int inputBuffSize = 0;
 
@@ -180,7 +179,9 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
     if (!free_space)
     { // (re)alloc
       inputBuffSize += chunksize;
-      tempinputBuff = (unsigned char *)realloc(inputBuff, inputBuffSize);
+      unsigned char *tempinputBuff = NULL;
+      if (inputBuffSize <= max_file_size)
+        tempinputBuff = (unsigned char *)realloc(inputBuff, inputBuffSize);
       if (!tempinputBuff)
       {
         CLog::Log(LOGERROR, "%s unable to allocate buffer of size %u", __FUNCTION__, inputBuffSize);
