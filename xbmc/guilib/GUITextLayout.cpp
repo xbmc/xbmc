@@ -354,6 +354,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
   {
     uint32_t newStyle = 0;
     color_t newColor = currentColor;
+    bool colorTagChange = false;
     bool newLine = false;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
@@ -418,17 +419,19 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
           // reuse existing color
           newColor = it - colors.begin();
         colorStack.push(newColor);
+        colorTagChange = true;
       }
       else if (!on && finish == pos + 5 && colorStack.size() > 1)
       { // revert to previous color
         colorStack.pop();
         newColor = colorStack.top();
+        colorTagChange = true;
       }
       if (finish != CStdString::npos)
         pos = finish + 1;
     }
 
-    if (newStyle || newColor != currentColor || newLine)
+    if (newStyle || colorTagChange || newLine)
     { // we have a new style or a new color, so format up the previous segment
       CStdStringW subText = text.Mid(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)
