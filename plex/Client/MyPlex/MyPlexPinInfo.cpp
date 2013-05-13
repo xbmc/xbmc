@@ -18,12 +18,15 @@ bool CMyPlexPinInfo::SetFromXmlElement(TiXmlElement *root)
 {
   if (root->ValueStr() != "pin")
   {
-    CLog::Log(LOGERROR, "CMyPlexPinInfo::ParsePin return didn't contain a <pin> element.");
+    CLog::Log(LOGERROR, "CMyPlexPinInfo::SetFromXmlElement return didn't contain a <pin> element.");
     return false;
   }
 
   for (TiXmlElement *elem = root->FirstChildElement(); elem; elem = elem->NextSiblingElement())
   {
+    if (elem->GetText() == NULL)
+      continue;
+
     if (elem->ValueStr() == "client-identifier")
       clientid = elem->GetText();
     else if (elem->ValueStr() == "auth_token")
@@ -33,13 +36,13 @@ bool CMyPlexPinInfo::SetFromXmlElement(TiXmlElement *root)
     else if (elem->ValueStr() == "expires-at")
     {
       std::string date = elem->GetText();
-      boost::algorithm::replace_first(date, "T", "");
+      boost::algorithm::replace_first(date, "T", " ");
       boost::algorithm::replace_first(date, "Z", "");
 
       expiresAt.SetFromDBDateTime(date);
       if (!expiresAt.IsValid())
       {
-        CLog::Log(LOGERROR, "CMyPlexManager::ParsePin failed to parse datetime '%s'", date.c_str());
+        CLog::Log(LOGERROR, "CMyPlexPinInfo::SetFromXmlElement failed to parse datetime '%s'", date.c_str());
       }
     }
     else if (elem->ValueStr() == "id")
@@ -50,7 +53,7 @@ bool CMyPlexPinInfo::SetFromXmlElement(TiXmlElement *root)
       }
       catch(boost::bad_lexical_cast &e)
       {
-        CLog::Log(LOGERROR, "CMyPlexManager::ParsePin failed to parse code element %s", elem->GetText());
+        CLog::Log(LOGERROR, "CMyPlexPinInfo::SetFromXmlElement failed to parse code element %s", elem->GetText());
         id = -1;
       }
     }

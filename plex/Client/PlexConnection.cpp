@@ -28,7 +28,7 @@ CPlexConnection::BuildURL(const CStdString &path) const
 
   ret.SetFileName(p);
 
-  if (!m_token.empty())
+  if (!GetAccessToken().empty())
     ret.SetOption(GetAccessTokenParameter(), GetAccessToken());
 
   return ret;
@@ -95,7 +95,7 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 bool CPlexConnection::operator ==(const CPlexConnection &other)
 {
   bool uriMatches = m_url.Get().Equals(other.GetAddress().Get());
-  bool tokenMatches = m_token.Equals(other.m_token);
+  bool tokenMatches = GetAccessToken().Equals(other.GetAccessToken());
 
   return (uriMatches && tokenMatches);
 }

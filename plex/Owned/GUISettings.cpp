@@ -61,6 +61,7 @@
 #include "Util.h"
 #include "GUIInfoManager.h"
 #include "PlexUtils.h"
+#include "Client/MyPlex/MyPlexManager.h"
 
 
 using namespace std;
@@ -419,8 +420,8 @@ void CGUISettings::Initialize()
 
   AddString(0, "myplex.token", 99999, "", EDIT_CONTROL_INPUT);
   AddString(myPlex, "myplex.status", 15000, "", EDIT_CONTROL_INPUT, true);
-  SetString("myplex.status", g_localizeStrings.Get(GetString("myplex.token").empty() ? 44010 : 44011));
-  AddString(myPlex, "myplex.signin", GetString("myplex.token").empty() ? 44002 : 44003, "", BUTTON_CONTROL_STANDARD);
+  SetString("myplex.status", g_localizeStrings.Get(g_myplexManager.IsSignedIn() ? 44011 : 44010));
+  AddString(myPlex, "myplex.signin", g_myplexManager.IsSignedIn() ? 44002 : 44100, "", BUTTON_CONTROL_STANDARD);
 
   //   -> Remote myPlex library quality.
   map<int,int> transcodeQualityMap;

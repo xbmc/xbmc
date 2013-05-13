@@ -21,7 +21,25 @@ class CGUIDialogMyPlex : public CGUIDialog
     virtual bool OnMessage(CGUIMessage &message);
     static void ShowAndGetInput();
 
-    void DoModal();
+    void Setup();
+    void ShowManualInput();
+    void ShowPinInput();
+
+    void ShowSuccess();
+    void ShowFailure(int reason);
+
+    void ToggleInput()
+    {
+      if (m_manual)
+        ShowPinInput();
+      else
+        ShowManualInput();
+    }
+
+    void HandleMyPlexState(int state, int errorCode);
+
+  private:
+    bool m_manual;
 };
 
 #endif // GUIDIALOGMYPLEXPIN_H

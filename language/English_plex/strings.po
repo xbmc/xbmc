@@ -778,8 +778,8 @@ msgid "Password"
 msgstr "Password"
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Sign in with PIN code"
+msgid "Use PIN"
+msgstr "Use PIN"
 
 msgctxt "#44003"
 msgid "Sign out"

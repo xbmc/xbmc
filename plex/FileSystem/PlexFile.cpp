@@ -33,6 +33,12 @@ CPlexFile::BuildHTTPURL(CURL& url)
   CLog::Log(LOGDEBUG, "Passing %s to BuildURL", url.GetFileName().c_str());
 
   newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
+
+  if (!url.GetUserName().empty())
+    newUrl.SetUserName(url.GetUserName());
+  if (!url.GetPassWord().empty())
+    newUrl.SetPassword(url.GetPassWord());
+
   CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTPURL translated '%s' to '%s'", url.Get().c_str(), newUrl.Get().c_str());
   url = newUrl;
 

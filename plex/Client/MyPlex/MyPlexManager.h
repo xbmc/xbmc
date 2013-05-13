@@ -36,6 +36,7 @@ class CMyPlexManager : public CThread
     bool IsSignedIn() const { return m_state == STATE_LOGGEDIN; }
 
     void StartPinLogin();
+    void StopPinLogin();
     void Login(const CStdString& username, const CStdString& password);
     void Logout();
 

@@ -72,7 +72,7 @@ void CMyPlexManager::BroadcastState()
   switch(m_state)
   {
     case STATE_LOGGEDIN:
-      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
+      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011) + " (" + CStdString(m_currentUserInfo.username) + ")");
       break;
     case STATE_NOT_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
@@ -143,7 +143,7 @@ int CMyPlexManager::DoLogin()
     return FAILURE_TMOUT;
   }
 
-  m_state = STATE_LOGGEDIN;
+  m_state = STATE_REFRESH;
   BroadcastState();
 
   return 0;
@@ -192,10 +192,10 @@ int CMyPlexManager::DoFetchWaitPin()
   CMyPlexPinInfo pinInfo;
   pinInfo.SetFromXmlElement(root);
 
-  if (!pinInfo.authToken.empty())
+  if (pinInfo.authToken.empty())
     return 2;
 
-  CLog::Log(LOGDEBUG, "CMyPlexManager::DoFetchWaitPin got auth_token now!");
+  CLog::Log(LOGDEBUG, "CMyPlexManager::DoFetchWaitPin got auth_token now %s!", pinInfo.authToken.c_str());
   m_currentPinInfo = pinInfo;
 
   /* we now have to fetch user info */
@@ -269,6 +269,15 @@ void CMyPlexManager::StartPinLogin()
   CSingleLock lk(m_stateLock);
 
   m_state = STATE_FETCH_PIN;
+  BroadcastState();
+  m_wakeEvent.Set();
+}
+
+void CMyPlexManager::StopPinLogin()
+{
+  CSingleLock lk(m_stateLock);
+  m_state = STATE_NOT_LOGGEDIN;
+  m_currentPinInfo = CMyPlexPinInfo();
   m_wakeEvent.Set();
 }
 
@@ -296,6 +305,7 @@ void CMyPlexManager::Logout()
 
 CStdString CMyPlexManager::GetAuthToken() const
 {
+  CLog::Log(LOGDEBUG, "CMyPlexManager::GetAuthToken PIN: %s CurrentUser: %s Settings: %s", m_currentPinInfo.authToken.empty() ? "NO" : "YES", m_currentUserInfo.authToken.empty() ? "NO" : "YES", g_guiSettings.GetString("myplex.token").c_str());
   /* First, if we have a authToken in the Pin info, we use that */
   if (!m_currentPinInfo.authToken.empty())
     return m_currentPinInfo.authToken;
