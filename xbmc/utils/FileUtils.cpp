@@ -184,7 +184,7 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
         tempinputBuff = (unsigned char *)realloc(inputBuff, inputBuffSize);
       if (!tempinputBuff)
       {
-        CLog::Log(LOGERROR, "%s unable to allocate buffer of size %u", __FUNCTION__, inputBuffSize);
+        CLog::Log(LOGERROR, "%s unable to (re)allocate buffer of size %u for file \"%s\"", __FUNCTION__, inputBuffSize, filename.c_str());
         free(inputBuff);
         file.Close();
         return 0;
