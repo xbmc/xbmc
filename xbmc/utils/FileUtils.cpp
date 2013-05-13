@@ -137,10 +137,6 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   if (filename.empty())
     return 0;
 
-  // Read image into memory to use our vfs
-  unsigned char *inputBuff = NULL;
-  unsigned int inputBuffSize = 0;
-
   XFILE::CFile file;
   if (!file.Open(filename, READ_TRUNCATED))
     return 0;
@@ -165,6 +161,8 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   unsigned int chunksize = filesize ? (filesize + 1) : std::max(65536U, (unsigned int)file.GetChunkSize());
   unsigned int maxchunksize = 2048*1024U; /* max 2MB chunksize */
   unsigned char *tempinputBuff = NULL;
+  unsigned char *inputBuff = NULL;
+  unsigned int inputBuffSize = 0;
 
   unsigned int total_read = 0, free_space = 0;
   while (true)
