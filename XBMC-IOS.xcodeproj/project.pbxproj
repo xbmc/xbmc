@@ -267,6 +267,7 @@
 		DFDB00271516403A005079A4 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00221516403A005079A4 /* MemBufferCache.cpp */; };
 		DFDD077316C0B58B000A1F73 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */; };
 		DFE3505B1532535500F84CAA /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */; };
+		DFE409681741800200473BD9 /* LegacyPathTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFE409661741800200473BD9 /* LegacyPathTranslation.cpp */; };
 		DFECFAEB172D9C7B00A43CF7 /* GUIControlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFAE9172D9C7B00A43CF7 /* GUIControlSettings.cpp */; };
 		DFECFB39172D9D2800A43CF7 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB1F172D9D2800A43CF7 /* ISetting.cpp */; };
 		DFECFB3A172D9D2800A43CF7 /* Setting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB23172D9D2800A43CF7 /* Setting.cpp */; };
@@ -1592,6 +1593,8 @@
 		DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		DFE350591532535500F84CAA /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
 		DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
+		DFE409661741800200473BD9 /* LegacyPathTranslation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LegacyPathTranslation.cpp; sourceTree = "<group>"; };
+		DFE409671741800200473BD9 /* LegacyPathTranslation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LegacyPathTranslation.h; sourceTree = "<group>"; };
 		DFECFAE9172D9C7B00A43CF7 /* GUIControlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIControlSettings.cpp; path = windows/GUIControlSettings.cpp; sourceTree = "<group>"; };
 		DFECFAEA172D9C7B00A43CF7 /* GUIControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIControlSettings.h; path = windows/GUIControlSettings.h; sourceTree = "<group>"; };
 		DFECFB1F172D9D2800A43CF7 /* ISetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISetting.cpp; sourceTree = "<group>"; };
@@ -6296,6 +6299,8 @@
 				F56C8733131F42EC000AD0F6 /* LabelFormatter.h */,
 				F56C870C131F42EB000AD0F6 /* LangCodeExpander.cpp */,
 				F56C870D131F42EB000AD0F6 /* LangCodeExpander.h */,
+				DFE409661741800200473BD9 /* LegacyPathTranslation.cpp */,
+				DFE409671741800200473BD9 /* LegacyPathTranslation.h */,
 				F56C8739131F42EC000AD0F6 /* log.cpp */,
 				F56C873A131F42EC000AD0F6 /* log.h */,
 				F56C86FE131F42EB000AD0F6 /* MathUtils.h */,
@@ -7850,6 +7855,7 @@
 				DF52567A1732C43E0094A464 /* DVDDemuxCDDA.cpp in Sources */,
 				DFA8158E16713BA100E4E597 /* WakeOnAccess.cpp in Sources */,
 				DF529BBC174169A900523FB4 /* Environment.cpp in Sources */,
+				DFE409681741800200473BD9 /* LegacyPathTranslation.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
