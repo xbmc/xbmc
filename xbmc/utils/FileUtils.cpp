@@ -134,6 +134,8 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
 unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuffer)
 {
   static const unsigned int max_file_size = 0x7FFFFFFF;
+  static const unsigned int min_chunk_size = 64*1024U;
+  static const unsigned int max_chunk_size = 2048*1024U;
 
   outputBuffer = NULL;
   if (filename.empty())
@@ -152,12 +154,14 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
    In order to handle all three cases, we read the file in chunks, relying on Read()
    returning 0 at EOF.  To minimize (re)allocation of the buffer, the chunksize in
    cases 1 and 3 is set to one byte larger than the value returned by GetLength().
-   The chunksize in case 2 is set to the larger of 64k and GetChunkSize().
+   The chunksize in case 2 is set to the lowest value larger than min_chunk_size aligned
+   to GetChunkSize().
 
    We fill the buffer entirely before reallocation.  Thus, reallocation never occurs in case 1
    as the buffer is larger than the file, so we hit EOF before we hit the end of buffer.
 
-   To minimize reallocation, we double the chunksize each time up to a maxchunksize of 2MB.
+   To minimize reallocation, we double the chunksize each read while chunksize is lower
+   than max_chunk_size.
    */
   int64_t filesize = file.GetLength();
   if (filesize > max_file_size)
@@ -165,8 +169,7 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
     file.Close();
     return 0;
   }
-  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : std::max(65536U, (unsigned int)file.GetChunkSize());
-  unsigned int maxchunksize = 2048*1024U; /* max 2MB chunksize */
+  unsigned int chunksize = (filesize > 0) ? (unsigned int)(filesize + 1) : CFile::GetChunkSize(file.GetChunkSize(), min_chunk_size);
   unsigned char *tempinputBuff = NULL;
   unsigned char *inputBuff = NULL;
   unsigned int inputBuffSize = 0;
@@ -187,7 +190,8 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
       }
       inputBuff = tempinputBuff;
       free_space = chunksize;
-      chunksize = std::min(chunksize*2, maxchunksize);
+      if (chunksize < max_chunk_size)
+        chunksize *= 2;
     }
     unsigned int read = file.Read(inputBuff + total_read, free_space);
     free_space -= read;
