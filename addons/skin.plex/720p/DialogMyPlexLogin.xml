@@ -62,6 +62,7 @@
 					<posy>232</posy>
 					<posx>270</posx>
 					<control type="group">
+            <visible>Control.IsVisible(10082)</visible>
 						<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
 						<control type="image">
 							<description>PIN # bg</description>
@@ -258,7 +259,7 @@
 							<posx>260</posx>
 							<width>200</width>
 							<onleft>10085</onleft>
-							<onright condition="Control.IsVisible(10087)">10087</onright>
+							<onright>10087</onright>
 							<onup>Control.SetFocus(10084)</onup>
 							<include>DialogPressButton</include>
 							<animation effect="slide" start="0" end="-60" time="500" condition="Control.IsVisible(10083)">Conditional</animation>
