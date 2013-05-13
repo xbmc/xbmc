@@ -107,25 +107,26 @@
 					<!-- user field -->
 					<control type="group">
 						<visible>Control.IsVisible(10083)</visible>
-					<control type="label">
-						<description>USER ID label</description>
-						<posy>23</posy>
-						<width>140</width>
-						<height>50</height>
-						<align>left</align>
-						<font>Condensed-22</font>
-						<textcolor>white</textcolor>
-						<label>31068</label>
+						<control type="label">
+							<description>USER ID label</description>
+							<posy>23</posy>
+							<width>140</width>
+							<height>50</height>
+							<align>left</align>
+							<font>Condensed-22</font>
+							<textcolor>white</textcolor>
+							<label>31068</label>
+						</control>
+						<control type="image">
+							<posx>140</posx>
+							<posy>23</posy>
+							<width>340</width>
+							<height>53</height>
+							<include>BaseRounded</include>
+						</control>
 					</control>
-					<control type="image">
-						<posx>140</posx>
-						<posy>23</posy>
-						<width>340</width>
-						<height>53</height>
-						<include>BaseRounded</include>
-					</control>
-					</control>
-					<control type="label" id="10083">
+					<control type="edit" id="10083">
+						<description>User ID</description>
 						<posx>140</posx>
 						<posy>23</posy>
 						<width>310</width>
@@ -134,38 +135,38 @@
 						<onright>-</onright>
 						<onup>-</onup>
 						<ondown>10084</ondown>
-						<font>Condensed-26</font>
-						<textcolor>FF222222</textcolor>
-						<focusedcolor>FF222222</focusedcolor>
-						<emptylabel>User</emptylabel>
-						<emptycolor>FF555555</emptycolor>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textoffsetx>16</textoffsetx>
+						<label/>
+						<hinttext/>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
 					</control>
 					<!-- password field -->
 					<control type="group">
 						<visible>Control.IsVisible(10084)</visible>
-					<control type="label">
-						<description>PASSWORD label</description>
-						<posy>100</posy>
-						<width>140</width>
-						<height>50</height>
-						<align>left</align>
-						<font>Condensed-22</font>
-						<textcolor>white</textcolor>
-						<label>31069</label>
+						<control type="label">
+							<description>PASSWORD label</description>
+							<posy>100</posy>
+							<width>140</width>
+							<height>50</height>
+							<align>left</align>
+							<font>Condensed-22</font>
+							<textcolor>white</textcolor>
+							<label>31069</label>
+						</control>
+						<control type="image">
+							<posx>140</posx>
+							<posy>100</posy>
+							<width>340</width>
+							<height>53</height>
+							<include>BaseRounded</include>
+						</control>
 					</control>
-					<control type="image">
+					<control type="edit" id="10084">
+						<description>Password</description>
 						<posx>140</posx>
-						<posy>100</posy>
-						<width>340</width>
-						<height>53</height>
-						<include>BaseRounded</include>
-					</control>
-					</control>
-					<control type="label" id="10084">
-						<posx>155</posx>
 						<posy>100</posy>
 						<width>310</width>
 						<height>50</height>
@@ -173,14 +174,13 @@
 						<onright>-</onright>
 						<onup>10083</onup>
 						<ondown>111</ondown>
-						<font>Condensed-26</font>
-						<textcolor>FF222222</textcolor>
-						<focusedcolor>FF222222</focusedcolor>
-						<emptylabel>Password</emptylabel>
-						<emptycolor>FF555555</emptycolor>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textoffsetx>16</textoffsetx>
+						<label/>
+						<hinttext/>
+						<font>Condensed-26</font>
+						<textcolor>FF222222</textcolor>
 					</control>
 				</control>
 				<!-- results message area -->
