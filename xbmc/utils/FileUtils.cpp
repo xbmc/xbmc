@@ -200,13 +200,13 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
     if (!read)
       break;
   }
-  inputBuffSize = total_read;
+
   file.Close();
 
-  if (inputBuffSize == 0)
+  if (total_read == 0)
     return 0;
 
   outputBuffer = (void *) inputBuff;
-  return inputBuffSize;
+  return total_read;
 }
 
