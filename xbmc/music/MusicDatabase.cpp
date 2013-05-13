@@ -55,6 +55,7 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "TextureCache.h"
@@ -3755,6 +3756,27 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     CSettings::Get().Save();
   }
 
+  if (version < 36)
+  {
+    // translate legacy musicdb:// paths
+    if (m_pDS->query("SELECT strPath FROM content"))
+    {
+      vector<string> contentPaths;
+      while (!m_pDS->eof())
+      {
+        contentPaths.push_back(m_pDS->fv(0).get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (vector<string>::const_iterator it = contentPaths.begin(); it != contentPaths.end(); it++)
+      {
+        std::string originalPath = *it;
+        std::string path = CLegacyPathTranslation::TranslateMusicDbPath(originalPath);
+        m_pDS->exec(PrepareSQL("UPDATE content SET strPath='%s' WHERE strPath='%s'", path.c_str(), originalPath.c_str()).c_str());
+      }
+    }
+  }
   // always recreate the views after any table change
   CreateViews();
 
@@ -3763,7 +3785,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 35;
+  return 36;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)

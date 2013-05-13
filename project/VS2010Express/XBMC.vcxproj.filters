@@ -3036,6 +3036,9 @@
     <ClCompile Include="..\..\xbmc\utils\Environment.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5943,6 +5946,9 @@
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Environment.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>

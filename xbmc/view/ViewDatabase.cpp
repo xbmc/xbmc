@@ -21,7 +21,9 @@
 #include "ViewDatabase.h"
 #include "utils/URIUtils.h"
 #include "view/ViewState.h"
+#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #ifdef _LINUX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
@@ -72,6 +74,31 @@ bool CViewDatabase::UpdateOldVersion(int version)
 {
   if (version < 4)
     m_pDS->exec("alter table view add skin text");
+  if (version < 5)
+  {
+    // translate legacy videodb:// and musicdb:// paths
+    std::vector< std::pair<int, std::string> > paths;
+    if (m_pDS->query("SELECT idView, path FROM view"))
+    {
+      while (!m_pDS->eof())
+      {
+        std::string originalPath = m_pDS->fv(1).get_asString();
+        std::string path = originalPath;
+        if (StringUtils::StartsWith(path, "musicdb://"))
+          path = CLegacyPathTranslation::TranslateMusicDbPath(path);
+        else if (StringUtils::StartsWith(path, "videodb://"))
+          path = CLegacyPathTranslation::TranslateVideoDbPath(path);
+
+        if (!StringUtils::EqualsNoCase(path, originalPath))
+          paths.push_back(std::make_pair(m_pDS->fv(0).get_asInt(), path));
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (std::vector< std::pair<int, std::string> >::const_iterator it = paths.begin(); it != paths.end(); it++)
+        m_pDS->exec(PrepareSQL("UPDATE view SET path='%s' WHERE idView=%d", it->second.c_str(), it->first).c_str());
+    }
+  }
   return true;
 }
 
