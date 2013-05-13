@@ -961,6 +961,9 @@ static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* lang
 
 void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 {
+  if (!m_navmode && m_clip == (uint32_t)-1)
+    m_clip = 0;
+
   if(!m_title || m_clip >= m_title->clip_count)
     return;
 
