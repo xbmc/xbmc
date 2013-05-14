@@ -154,9 +154,6 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
     return false;
   }
 
-  avcodec_register_all();
-  av_register_all();
-
   // Open the video file
   if ( avformat_open_input( &m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0 )
   {

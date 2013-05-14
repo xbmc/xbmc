@@ -116,9 +116,6 @@ bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
 
   Abort();
 
-  // register codecs
-  avcodec_register_all();
-
   m_pInput = pInput;
   if (!g_PVRClients->GetPlayingClient(m_pvrClient))
     return false;

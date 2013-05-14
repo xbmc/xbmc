@@ -251,9 +251,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     return false;
   }
 
-  // register codecs
-  av_register_all();
-
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 

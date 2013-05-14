@@ -105,8 +105,6 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
 
-  avcodec_register_all();
-
   bool ac3 = CSettings::Get().GetBool("audiooutput.ac3passthrough");
 
   AVCodec *codec = NULL;

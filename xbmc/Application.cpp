@@ -349,6 +349,9 @@
 #include "utils/Environment.h"
 #endif
 
+#include "DllAvFormat.h"
+#include "DllAvCodec.h"
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -703,6 +706,10 @@ bool CApplication::Create()
 #elif defined(_WIN32)
   CEnvironment::setenv("OS", "win32");
 #endif
+
+  // register ffmpeg libs
+  avcodec_register_all();
+  av_register_all();
 
   g_powerManager.Initialize();
 
