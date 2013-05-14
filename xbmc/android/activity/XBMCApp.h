@@ -108,6 +108,7 @@ protected:
 private:
   static bool HasLaunchIntent(const std::string &package);
   bool getWakeLock();
+  std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
   void stop();
   void SetupEnv();

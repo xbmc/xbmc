@@ -44,6 +44,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
+#include "utils/StringUtils.h"
+#include "AppParamParser.h"
 #include <android/bitmap.h>
 #include "android/jni/JNIThreading.h"
 #include "android/jni/BroadcastReceiver.h"
@@ -64,6 +66,10 @@
 #include "android/jni/BitmapDrawable.h"
 #include "android/jni/Bitmap.h"
 #include "android/jni/CharSequence.h"
+#include "android/jni/URI.h"
+#include "android/jni/Cursor.h"
+#include "android/jni/ContentResolver.h"
+#include "android/jni/MediaStore.h"
 
 #define GIGABYTES       1073741824
 
@@ -535,4 +541,33 @@ void CXBMCApp::SetupEnv()
     setenv("HOME", externalDir.c_str(), 0);
   else
     setenv("HOME", getenv("XBMC_TEMP"), 0);
+}
+
+std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
+{
+    std::string ret;
+    if (!intent)
+      return ret;
+    CJNIURI data = intent.getData();
+    if (!data)
+      return ret;
+    std::string scheme = data.getScheme();
+    StringUtils::ToLower(scheme);
+    if (scheme == "content")
+    {
+      std::vector<std::string> filePathColumn;
+      filePathColumn.push_back(CJNIMediaStoreMediaColumns::DATA);
+      CJNICursor cursor = getContentResolver().query(data, filePathColumn, std::string(), std::vector<std::string>(), std::string());
+      if(cursor.moveToFirst())
+      {
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        ret = cursor.getString(columnIndex);
+      }
+      cursor.close();
+    }
+    else if(scheme == "file")
+      ret = data.getPath();
+    else
+      ret = data.toString();
+  return ret;
 }
