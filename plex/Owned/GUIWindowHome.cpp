@@ -673,6 +673,7 @@ void CGUIWindowHome::UpdateSections()
   {
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(44020));
+    item->SetProperty("plex", 1);
     item->SetProperty("sectionPath", "plexserver://shared");
     item->SetPath("XBMC.ActivateWindow(MyVideoFiles,plexserver://shared,return)");
     item->SetClickActions(CGUIAction("", ""));
