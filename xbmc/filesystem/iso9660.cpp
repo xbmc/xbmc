@@ -185,7 +185,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   if (!bResult || lpNumberOfBytesRead != wSectorSize)
   {
     OutputDebugString("unable to read\n");
-
+    free(pCurr_dir_cache);
     return NULL;
   }
   memcpy( &isodir, pCurr_dir_cache, sizeof(isodir) );
@@ -206,6 +206,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     if (!bResult || lpNumberOfBytesRead != curr_dirSize)
     {
       OutputDebugString("unable to read\n");
+      free(pCurr_dir_cache);
       return NULL;
     }
   }

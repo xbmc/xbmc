@@ -521,11 +521,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
                                                      &CWebServer::ContentReaderFreeCallback);
       }
 
+      delete context;
+      
       if (response == NULL)
       {
         file->Close();
         delete file;
-        delete context;
         return MHD_NO;
       }
 
@@ -786,11 +787,12 @@ bool CWebServer::Start(int port, const string &username, const string &password)
   if (!m_running)
   {
     int v6testSock;
-    if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) > 0)
+    if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) >= 0)
     {
-      closesocket(v6testSock);
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
+      closesocket(v6testSock);
     }
+    closesocket(v6testSock);
     
     m_daemon_ip4 = StartMHD(0 , port);
     

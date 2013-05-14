@@ -1268,9 +1268,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     }
   }
 
-  if (render == NULL)
-    return -1;
-
   pic->data[1] = pic->data[2] = NULL;
   pic->data[0] = (uint8_t*)render;
   pic->data[3] = (uint8_t*)(uintptr_t)render->surface;
