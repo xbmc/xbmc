@@ -16,6 +16,7 @@
 #include "SystemInfo.h"
 
 #include "utils/StringUtils.h"
+#include "addons/Skin.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include <CoreServices/CoreServices.h>
@@ -319,3 +320,9 @@ int usleep(useconds_t useconds)
 }
 
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::CurrentSkinHasPreplay()
+{
+  return g_SkinInfo->HasSkinFile("PlexPreplayVideo.xml");
+}

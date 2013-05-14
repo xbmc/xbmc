@@ -27,6 +27,8 @@ namespace PlexUtils
 
   CFileItemPtr GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType);
   void SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id);
+
+  bool CurrentSkinHasPreplay();
 }
 
 #ifdef _WIN32

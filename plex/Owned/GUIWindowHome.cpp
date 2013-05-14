@@ -577,7 +577,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         if (container)
         {
           CGUIListItemPtr item = container->GetListItem(0);
-          if (iAction == ACTION_SELECT_ITEM &&
+          if (PlexUtils::CurrentSkinHasPreplay() &&
+              iAction == ACTION_SELECT_ITEM &&
               item &&
               (item->GetProperty("type").asString() == "movie" ||
                item->GetProperty("type").asString() == "episode"))

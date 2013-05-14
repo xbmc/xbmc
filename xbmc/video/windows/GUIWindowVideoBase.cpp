@@ -953,7 +953,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   
   /* PLEX */
   string type = item->GetProperty("type").asString();
-  if (item->IsPlexMediaServer() &&
+  if (PlexUtils::CurrentSkinHasPreplay() &&
+      item->IsPlexMediaServer() &&
       (type == "movie" || type == "episode"))
   {
     CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return)");
