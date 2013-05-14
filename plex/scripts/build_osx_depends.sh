@@ -95,11 +95,16 @@ make || exit 1
 ar d libavcodec/libavcodec.a inverse.o
 make install || exit 1
 
-cd $ROOT/plex/Dependencies/xbmc-depends
-rm -f $ROOT/plex/Dependencies/*tar.xz
+DEPDIR=$ROOT/plex/Dependencies
+
+cd $DEPDIR/xbmc-depends
+rm -f $DEPDIR/output
+mkdir -p $DEPDIR/built-depends
 
 echo "Packing xbmc-depends"
-gtar --xz -cf --ignore-failed-read $ROOT/plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
+echo gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
+gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
 
 echo "Packing ffmpeg"
-gtar --xz -cf --ignore-failed-read $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
+echo gtar --xz -cf $DEPDIR/built-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
+gtar --xz -cf $DEPDIR/built-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
