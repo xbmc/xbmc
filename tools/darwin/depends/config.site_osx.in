@@ -43,11 +43,11 @@ export NM=${platform_path}/usr/bin/nm
 export CPP=${platform_path}/usr/bin/${platform_cpp}
 export CXXCPP=${CPP}
 export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
-export CC=/usr/bin/${platform_cc}
+export CC="ccache /usr/bin/${platform_cc}"
 export CFLAGS="${CFLAGS} -std=${platform_gnu} -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export LD=${platform_path}/usr/bin/ld
 export LDFLAGS="${LDFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${prefix}/lib"
-export CXX=/usr/bin/${platform_cxx}
+export CXX="ccache /usr/bin/${platform_cxx}"
 export CXXFLAGS="${CXXFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export AR=${platform_path}/usr/bin/ar
 export AS=${platform_path}/usr/bin/as
