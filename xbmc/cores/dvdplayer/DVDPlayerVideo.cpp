@@ -1018,7 +1018,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || m_output.height != pPicture->iHeight
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
-   || m_output.framerate != config_framerate
+   || (!m_bFpsInvalid && fmod(m_output.framerate, config_framerate) != 0.0 )
    || m_output.color_format != (unsigned int)pPicture->format
    || m_output.extended_format != pPicture->extended_format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
@@ -1163,7 +1163,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.height = pPicture->iHeight;
     m_output.dwidth = pPicture->iDisplayWidth;
     m_output.dheight = pPicture->iDisplayHeight;
-    m_output.framerate = config_framerate;
+    m_output.framerate = config_framerate == 0.0 ? g_graphicsContext.GetFPS() : config_framerate;
     m_output.color_format = pPicture->format;
     m_output.extended_format = pPicture->extended_format;
     m_output.color_matrix = pPicture->color_matrix;
