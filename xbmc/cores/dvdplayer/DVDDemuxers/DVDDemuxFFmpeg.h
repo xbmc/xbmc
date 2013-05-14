@@ -137,7 +137,6 @@ protected:
 
   AVIOContext* m_ioContext;
 
-  DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
 

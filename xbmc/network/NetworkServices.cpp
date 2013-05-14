@@ -78,6 +78,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
+#include "DllAvFormat.h"
 
 using namespace std;
 #ifdef HAS_JSONRPC
@@ -394,6 +395,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
 
 void CNetworkServices::Start()
 {
+  avformat_network_init();
   StartZeroconf();
   if (CSettings::Get().GetBool("services.webserver") && !StartWebserver())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
@@ -421,6 +423,7 @@ void CNetworkServices::Stop(bool bWait)
   StopJSONRPCServer(bWait);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
+  avformat_network_deinit();
 }
 
 bool CNetworkServices::StartWebserver()

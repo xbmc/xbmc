@@ -26,7 +26,6 @@
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
 #include "DllAvCodec.h"
-#include "DllAvFormat.h"
 #include "DllSwResample.h"
 
 class CAEEncoderFFmpeg: public IAEEncoder
@@ -48,7 +47,6 @@ public:
   virtual double GetDelay(unsigned int bufferSize);
 private:
   DllAvCodec  m_dllAvCodec;
-  DllAvFormat m_dllAvFormat;
   DllAvUtil   m_dllAvUtil;
   DllSwResample m_dllSwResample;
 

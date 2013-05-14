@@ -39,7 +39,6 @@ public:
 private:
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
-  DllAvFormat m_dllAvFormat;
 
   AVFormatContext  *m_Format;
   AVCodecContext   *m_CodecCtx;

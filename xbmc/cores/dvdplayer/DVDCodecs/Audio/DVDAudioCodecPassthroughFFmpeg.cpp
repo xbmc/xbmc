@@ -80,7 +80,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   /* get the muxer */
   AVOutputFormat *fOut = NULL;
 
-  fOut = m_dllAvFormat.av_guess_format(muxerName.c_str(), NULL, NULL);
+  fOut = av_guess_format(muxerName.c_str(), NULL, NULL);
   if (!fOut)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to get the FFmpeg %s muxer", muxerName.c_str());
@@ -89,7 +89,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   }
 
   /* allocate a the format context */
-  muxer.m_pFormat = m_dllAvFormat.avformat_alloc_context();
+  muxer.m_pFormat = avformat_alloc_context();
   if (!muxer.m_pFormat)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to allocate AVFormat context");
@@ -100,7 +100,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_pFormat->oformat = fOut;
 
   /* allocate a put_byte struct so we can grab the output */
-  muxer.m_pFormat->pb = m_dllAvFormat.avio_alloc_context(muxer.m_BCBuffer, sizeof(muxer.m_BCBuffer), AVIO_FLAG_READ, &muxer,  NULL, MuxerReadPacket, NULL);
+  muxer.m_pFormat->pb = avio_alloc_context(muxer.m_BCBuffer, sizeof(muxer.m_BCBuffer), AVIO_FLAG_READ, &muxer,  NULL, MuxerReadPacket, NULL);
   if (!muxer.m_pFormat->pb)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to allocate ByteIOContext");
@@ -134,7 +134,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   }
 
   /* add a stream to it */
-  muxer.m_pStream = m_dllAvFormat.avformat_new_stream(muxer.m_pFormat, NULL);
+  muxer.m_pStream = avformat_new_stream(muxer.m_pFormat, NULL);
   if (!muxer.m_pStream)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to allocate AVStream context");
@@ -159,7 +159,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   codec->extradata_size = hints.extrasize;
   memcpy(codec->extradata, hints.extradata, hints.extrasize);
 
-  muxer.m_WroteHeader = m_dllAvFormat.avformat_write_header(muxer.m_pFormat, NULL) == 0;
+  muxer.m_WroteHeader = avformat_write_header(muxer.m_pFormat, NULL) == 0;
   if (!muxer.m_WroteHeader)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to write the frame header");
@@ -194,7 +194,7 @@ void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(Muxer &muxer, uint8_t *pData, i
   pkt.size = iSize;
 
   muxer.m_Consumed += iSize;
-  if (m_dllAvFormat.av_write_frame(muxer.m_pFormat, &pkt) < 0)
+  if (av_write_frame(muxer.m_pFormat, &pkt) < 0)
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::WriteFrame - Failed to write the frame data");
 }
 
@@ -268,7 +268,7 @@ void CDVDAudioCodecPassthroughFFmpeg::DisposeMuxer(Muxer &muxer)
   if (muxer.m_pFormat)
   {
     if (muxer.m_WroteHeader)
-      m_dllAvFormat.av_write_trailer(muxer.m_pFormat);
+      av_write_trailer(muxer.m_pFormat);
     muxer.m_WroteHeader = false;
     if (muxer.m_pStream)
       delete[] muxer.m_pStream->codec->extradata;
@@ -319,10 +319,10 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     return false;
   }
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
 
-  m_dllAvFormat.av_register_all();
+  av_register_all();
 
   /* see if the muxer supports our codec (see spdif.c for supported formats) */
   if (!SupportsFormat(hints))

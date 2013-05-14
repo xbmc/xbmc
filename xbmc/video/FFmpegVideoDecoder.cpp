@@ -37,7 +37,6 @@ FFmpegVideoDecoder::FFmpegVideoDecoder()
   m_pFrame = 0;
   m_pFrameRGB = 0;
   
-  m_dllAvFormat = new DllAvFormat();
   m_dllAvCodec = new DllAvCodec();
   m_dllAvUtil = new DllAvUtil();
   m_dllSwScale = new DllSwScale();
@@ -47,7 +46,6 @@ FFmpegVideoDecoder::~FFmpegVideoDecoder()
 {
   close();
   
-  delete m_dllAvFormat;
   delete m_dllAvCodec;
   delete m_dllAvUtil;
   delete m_dllSwScale;
@@ -72,7 +70,7 @@ void FFmpegVideoDecoder::close()
 
   // Close the video file
   if ( m_pFormatCtx )
-	m_dllAvFormat->avformat_close_input( &m_pFormatCtx );
+	avformat_close_input( &m_pFormatCtx );
 
   m_pFormatCtx = 0;
   m_pCodecCtx = 0;
@@ -88,9 +86,6 @@ void FFmpegVideoDecoder::close()
   
   if ( m_dllSwScale->IsLoaded() )
     m_dllSwScale->Unload();
-  
-  if ( m_dllAvFormat->IsLoaded() )
-    m_dllAvFormat->Unload();
 }
 
 bool FFmpegVideoDecoder::isOpened() const
@@ -158,17 +153,17 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   // See http://dranger.com/ffmpeg/tutorial01.html
   close();
   
-  if ( !m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load() || !m_dllAvFormat->Load() )
+  if ( !m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
   {
     m_errorMsg = "Failed to load FFMpeg libraries";
     return false;
   }
 
   m_dllAvCodec->avcodec_register_all();
-  m_dllAvFormat->av_register_all();
+  av_register_all();
 
   // Open the video file
-  if ( m_dllAvFormat->avformat_open_input( &m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0 )
+  if ( avformat_open_input( &m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0 )
   {
     m_errorMsg = "Could not open the video file";
    close();
@@ -176,7 +171,7 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   }
 
   // Retrieve the stream information
-  if ( m_dllAvFormat->avformat_find_stream_info( m_pFormatCtx, 0 ) < 0 )
+  if ( avformat_find_stream_info( m_pFormatCtx, 0 ) < 0 )
   {
     m_errorMsg = "Could not find the stream information";
     close();
@@ -242,7 +237,7 @@ bool FFmpegVideoDecoder::seek( double time )
   // Convert the frame number into time stamp
   int64_t timestamp = (int64_t) (time * AV_TIME_BASE * av_q2d( m_pFormatCtx->streams[ m_videoStream ]->time_base ));
 
-  if ( m_dllAvFormat->av_seek_frame( m_pFormatCtx, m_videoStream, timestamp, AVSEEK_FLAG_ANY ) < 0 )
+  if ( av_seek_frame( m_pFormatCtx, m_videoStream, timestamp, AVSEEK_FLAG_ANY ) < 0 )
 	return false;
 
   m_dllAvCodec->avcodec_flush_buffers( m_pCodecCtx );
@@ -284,7 +279,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
   while ( true )
   {
     // Read a frame
-    if ( m_dllAvFormat->av_read_frame( m_pFormatCtx, &packet ) < 0 )
+    if ( av_read_frame( m_pFormatCtx, &packet ) < 0 )
       return false;  // Frame read failed (e.g. end of stream)
 
     if ( packet.stream_index == m_videoStream )

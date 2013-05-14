@@ -49,7 +49,6 @@ public:
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
   virtual int GetBufferSize();
 private:
-  DllAvFormat m_dllAvFormat;
   DllAvUtil   m_dllAvUtil;
   DllAvCodec  m_dllAvCodec;
 
