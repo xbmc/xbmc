@@ -61,6 +61,51 @@ CStdString URIUtils::GetExtension(const CStdString& strFileName)
   return strFileName.substr(period);
 }
 
+bool URIUtils::HasExtension(const CStdString& strFileName)
+{
+  if (IsURL(strFileName))
+  {
+    CURL url(strFileName);
+    return HasExtension(url.GetFileName());
+  }
+
+  size_t iPeriod = strFileName.find_last_of("./\\");
+  return iPeriod != string::npos && strFileName[iPeriod] == '.';
+}
+
+bool URIUtils::HasExtension(const CStdString& strFileName, const CStdString& strExtensions)
+{
+  if (IsURL(strFileName))
+  {
+    CURL url(strFileName);
+    return HasExtension(url.GetFileName(), strExtensions);
+  }
+
+  // Search backwards so that '.' can be used as a search terminator.
+  CStdString::const_reverse_iterator itExtensions = strExtensions.rbegin();
+  while (itExtensions != strExtensions.rend())
+  {
+    // Iterate backwards over strFileName untill we hit a '.' or a mismatch
+    for (CStdString::const_reverse_iterator itFileName = strFileName.rbegin();
+         itFileName != strFileName.rend(), itExtensions != strExtensions.rend(),
+         tolower(*itFileName) == *itExtensions;
+         ++itFileName, ++itExtensions)
+    {
+      if (*itExtensions == '.')
+        return true; // Match
+    }
+
+    // No match. Look for more extensions to try.
+    while (itExtensions != strExtensions.rend() && *itExtensions != '|')
+      ++itExtensions;
+
+    while (itExtensions != strExtensions.rend() && *itExtensions == '|')
+      ++itExtensions;
+  }
+
+  return false;
+}
+
 void URIUtils::RemoveExtension(CStdString& strFileName)
 {
   if(IsURL(strFileName))

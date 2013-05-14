@@ -55,6 +55,25 @@ TEST_F(TestURIUtils, GetExtension)
                URIUtils::GetExtension("/path/to/movie.avi").c_str());
 }
 
+TEST_F(TestURIUtils, HasExtension)
+{
+  EXPECT_TRUE (URIUtils::HasExtension("/path/to/movie.AvI"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.to/movie"));
+  EXPECT_FALSE(URIUtils::HasExtension(""));
+
+  EXPECT_TRUE (URIUtils::HasExtension("/path/to/movie.AvI", ".avi"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", ".mkv"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie", ".avi"));
+  EXPECT_FALSE(URIUtils::HasExtension("", ".avi"));
+
+  EXPECT_TRUE (URIUtils::HasExtension("/path/movie.AvI", ".avi|.mkv|.mp4"));
+  EXPECT_TRUE (URIUtils::HasExtension("/path/movie.AvI", ".mkv|.avi|.mp4"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/movie.AvI", ".mpg|.mkv|.mp4"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path.mkv/movie.AvI", ".mpg|.mkv|.mp4"));
+  EXPECT_FALSE(URIUtils::HasExtension("", ".avi|.mkv|.mp4"));
+}
+
 TEST_F(TestURIUtils, GetFileName)
 {
   EXPECT_STREQ("movie.avi",
