@@ -412,10 +412,16 @@ Ret get_field(const char *clsname, const char *name)
 */
 // Get static field
 
-template <typename Ret, typename T>
-Ret get_static_field(JNIEnv *env, jholder<T> const &obj, const char *name, const char *signature)
+template <typename Ret>
+Ret get_static_field(JNIEnv *env, jhobject const &obj, const char *name, const char *signature)
 {
     return details::jni_helper<Ret>::get_static_field(env, get_class(env, obj), get_static_field_id(env, obj, name, signature));
+}
+
+template <typename Ret>
+Ret get_static_field(JNIEnv *env, jhclass const &cls, const char *name, const char *signature)
+{
+    return details::jni_helper<Ret>::get_static_field(env, cls, get_static_field_id(env, cls, name, signature));
 }
 
 template <typename Ret, typename T>
