@@ -88,40 +88,18 @@ bool CRSSDirectory::ContainsFiles(const CStdString& strPath)
 
 static bool IsPathToMedia(const CStdString& strPath )
 {
-  CStdString extension = URIUtils::GetExtension(strPath);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-
-  if (g_advancedSettings.m_videoExtensions.Find(extension) != -1)
-    return true;
-
-  if (g_advancedSettings.m_musicExtensions.Find(extension) != -1)
-    return true;
-
-  if (g_advancedSettings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  return false;
+  return URIUtils::HasExtension(strPath,
+                              g_advancedSettings.m_videoExtensions + '|' +
+                              g_advancedSettings.m_musicExtensions + '|' +
+                              g_advancedSettings.m_pictureExtensions);
 }
 
 static bool IsPathToThumbnail(const CStdString& strPath )
 {
   // Currently just check if this is an image, maybe we will add some
   // other checks later
-  CStdString extension = URIUtils::GetExtension(strPath);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-
-  if (g_advancedSettings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  return false;
+  return URIUtils::HasExtension(strPath,
+                                    g_advancedSettings.m_pictureExtensions);
 }
 
 static time_t ParseDate(const CStdString & strDate)

@@ -51,7 +51,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   if (libNode.IsEmpty())
     return false;
 
-  if (URIUtils::GetExtension(libNode).Equals(".xml"))
+  if (URIUtils::HasExtension(libNode, ".xml"))
   { // a filter node
     TiXmlElement *node = LoadXML(libNode);
     if (node)

@@ -618,31 +618,17 @@ bool URIUtils::IsInRAR(const CStdString& strFile)
 
 bool URIUtils::IsAPK(const CStdString& strFile)
 {
-  return GetExtension(strFile).CompareNoCase(".apk") == 0;
+  return HasExtension(strFile, ".apk");
 }
 
 bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
-  CStdString strExtension = GetExtension(strFile);
-
-  if (strExtension.CompareNoCase(".zip") == 0)
-    return true;
-
-  if (strExtension.CompareNoCase(".cbz") == 0)
-    return true;
-
-  return false;
+  return HasExtension(strFile, ".zip|.cbz");
 }
 
 bool URIUtils::IsArchive(const CStdString& strFile)
 {
-  CStdString extension = GetExtension(strFile);
-
-  return (extension.CompareNoCase(".zip") == 0 ||
-          extension.CompareNoCase(".rar") == 0 ||
-          extension.CompareNoCase(".apk") == 0 ||
-          extension.CompareNoCase(".cbz") == 0 ||
-          extension.CompareNoCase(".cbr") == 0);
+  return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
 }
 
 bool URIUtils::IsSpecial(const CStdString& strFile)

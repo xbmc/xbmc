@@ -643,7 +643,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
       vector<int> stack;
       for (int i = 0; i < items.Size(); ++i)
       {
-        if (URIUtils::GetExtension(items[i]->GetPath()) == ext)
+        if (URIUtils::HasExtension(items[i]->GetPath(), ext))
           stack.push_back(i);
       }
 

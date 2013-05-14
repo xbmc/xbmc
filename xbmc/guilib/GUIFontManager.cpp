@@ -596,11 +596,9 @@ void GUIFontManager::SettingOptionsFontsFiller(const CSetting *setting, std::vec
     {
       CFileItemPtr pItem = items[i];
 
-      if (!pItem->m_bIsFolder)
+      if (!pItem->m_bIsFolder
+          && URIUtils::HasExtension(pItem->GetLabel(), ".ttf"))
       {
-        if (!URIUtils::GetExtension(pItem->GetLabel()).Equals(".ttf"))
-          continue;
-
         list.push_back(make_pair(pItem->GetLabel(), pItem->GetLabel()));
       }
     }

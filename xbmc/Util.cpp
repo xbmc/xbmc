@@ -243,7 +243,6 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   CRegExp reTags(true);
   CRegExp reYear;
-  CStdString strExtension = URIUtils::GetExtension(strFileName);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -304,7 +303,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   // restore extension if needed
   if (!bRemoveExtension)
-    strTitleAndYear += strExtension;
+    strTitleAndYear += URIUtils::GetExtension(strFileName);
 }
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
@@ -497,19 +496,8 @@ bool CUtil::IsTVRecording(const CStdString& strFile)
 
 bool CUtil::IsPicture(const CStdString& strFile)
 {
-  CStdString extension = URIUtils::GetExtension(strFile);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-  if (g_advancedSettings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  if (extension == ".tbn" || extension == ".dds")
-    return true;
-
-  return false;
+  return URIUtils::HasExtension(strFile,
+                  g_advancedSettings.m_pictureExtensions + "|.tbn|.dds");
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1022,7 +1010,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
 
 bool CUtil::IsUsingTTFSubtitles()
 {
-  return URIUtils::GetExtension(CSettings::Get().GetString("subtitles.font")).Equals(".ttf");
+  return URIUtils::HasExtension(CSettings::Get().GetString("subtitles.font"), ".ttf");
 }
 
 #ifdef UNIT_TESTING
@@ -2023,7 +2011,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
             for (int i = 0; sub_exts[i]; i++)
             {
               //Cache subtitle with same name as movie
-              if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]))
+              if (URIUtils::HasExtension(strItem, sub_exts[i]))
               {
                 vecSubtitles.push_back( items[j]->GetPath() ); 
                 CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
@@ -2047,7 +2035,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   iSize = vecSubtitles.size();
   for (int i = 0; i < iSize; i++)
   {
-    if (URIUtils::GetExtension(vecSubtitles[i]).Equals(".smi"))
+    if (URIUtils::HasExtension(vecSubtitles[i], ".smi"))
     {
       //Cache multi-language sami subtitle
       CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
@@ -2080,7 +2068,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   CFileItemList ItemList;
  
   // zip only gets the root dir
-  if (URIUtils::GetExtension(strArchivePath).Equals(".zip"))
+  if (URIUtils::HasExtension(strArchivePath, ".zip"))
   {
    CStdString strZipPath;
    URIUtils::CreateArchivePath(strZipPath,"zip",strArchivePath,"");
@@ -2109,7 +2097,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
    if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
    {
     CStdString strRarInRar;
-    if (URIUtils::GetExtension(strPathInRar).Equals(".rar"))
+    if (strExt == ".rar")
       URIUtils::CreateArchivePath(strRarInRar, "rar", strArchivePath, strPathInRar);
     else
       URIUtils::CreateArchivePath(strRarInRar, "zip", strArchivePath, strPathInRar);
@@ -2128,7 +2116,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
      if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
      {
       CStdString strSourceUrl;
-      if (URIUtils::GetExtension(strArchivePath).Equals(".rar"))
+      if (URIUtils::HasExtension(strArchivePath, ".rar"))
        URIUtils::CreateArchivePath(strSourceUrl, "rar", strArchivePath, strPathInRar);
       else
        strSourceUrl = strPathInRar;
@@ -2149,7 +2137,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
  */
 bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath )
 {
-  if (URIUtils::GetExtension(strIdxPath) == ".idx")
+  if (URIUtils::HasExtension(strIdxPath, ".idx"))
   {
     CStdString strIdxFile;
     CStdString strIdxDirectory;
@@ -2161,7 +2149,7 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
       URIUtils::Split(vecSubtitles[j], strSubDirectory, strSubFile);
       if (URIUtils::IsInArchive(vecSubtitles[j]))
         CURL::Decode(strSubDirectory);
-      if (URIUtils::GetExtension(strSubFile) == ".sub" &&
+      if (URIUtils::HasExtension(strSubFile, ".sub") &&
           (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
            strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(strIdxPath,""))))
       {
@@ -2177,7 +2165,7 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
  */
 bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath )
 {
-  if (URIUtils::GetExtension(strSubPath) == ".sub")
+  if (URIUtils::HasExtension(strSubPath, ".sub"))
   {
     CStdString strSubFile;
     CStdString strSubDirectory;
@@ -2189,7 +2177,7 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
       CStdString strIdxFile;
       CStdString strIdxDirectory;
       URIUtils::Split(vecSubtitles[j], strIdxDirectory, strIdxFile);
-      if (URIUtils::GetExtension(strIdxFile) == ".idx" &&
+      if (URIUtils::HasExtension(strIdxFile, ".idx") &&
           (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
            strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(vecSubtitles[j],""))))
         return true;

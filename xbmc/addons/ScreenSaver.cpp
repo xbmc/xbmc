@@ -42,7 +42,7 @@ namespace ADDON
 bool CScreenSaver::CreateScreenSaver()
 {
 #ifdef HAS_PYTHON
-  if (URIUtils::GetExtension(LibPath()).Equals(".py", false))
+  if (URIUtils::HasExtension(LibPath(), ".py"))
   {
     // Don't allow a previously-scheduled alarm to kill our new screensaver
     g_alarmClock.Stop(PYTHON_ALARM, true);
@@ -99,7 +99,7 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
 void CScreenSaver::Destroy()
 {
 #ifdef HAS_PYTHON
-  if (URIUtils::GetExtension(LibPath()).Equals(".py", false))
+  if (URIUtils::HasExtension(LibPath(), ".py"))
   {
     g_alarmClock.Start(PYTHON_ALARM, PYTHON_SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
     return;

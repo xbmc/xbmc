@@ -172,7 +172,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     }
     else
       return;
-    if (URIUtils::GetExtension(path) != ".xsp")
+    if (!URIUtils::HasExtension(path, ".xsp"))
       path += ".xsp";
 
     // should we check whether we should overwrite?

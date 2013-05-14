@@ -392,8 +392,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
             "/thumb",
             query.ToString()).ToString();
         // Set DLNA profileID by extension, defaulting to JPEG.
-        NPT_String ext = URIUtils::GetExtension(item.GetArt("thumb")).c_str();
-        if (strcmp(ext, ".png") == 0) {
+        if (URIUtils::HasExtension(item.GetArt("thumb"), ".png")) {
             art.dlna_profile = "PNG_TN";
         } else {
             art.dlna_profile = "JPEG_TN";

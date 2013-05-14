@@ -34,7 +34,7 @@ bool IsAliasShortcut(CStdString &path)
 #if defined(TARGET_DARWIN_OSX)
   // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
-  if (URIUtils::GetExtension(path) != ".alias")
+  if (!URIUtils::HasExtension(path, ".alias"))
   {
     FSRef fileRef;
     Boolean targetIsFolder, wasAliased;

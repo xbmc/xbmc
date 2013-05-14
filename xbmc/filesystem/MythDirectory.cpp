@@ -647,7 +647,7 @@ bool CMythDirectory::SupportsWriteFileOperations(const CStdString& strPath)
    */
   return filename.Left(11) == "recordings/" ||
          filename.Left(7)  == "movies/" ||
-        (filename.Left(8)  == "tvshows/" && URIUtils::GetExtension(filename) != "");
+        (filename.Left(8)  == "tvshows/" && URIUtils::HasExtension(filename));
 }
 
 bool CMythDirectory::IsLiveTV(const CStdString& strPath)

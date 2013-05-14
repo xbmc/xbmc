@@ -71,7 +71,7 @@ CCDDARipper::~CCDDARipper()
 bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
   // don't rip non cdda items
-  if (URIUtils::GetExtension(pItem->GetPath()).CompareNoCase(".cdda") != 0)
+  if (!URIUtils::HasExtension(pItem->GetPath(), ".cdda"))
   {
     CLog::Log(LOGDEBUG, "cddaripper: file is not a cdda track");
     return false;
