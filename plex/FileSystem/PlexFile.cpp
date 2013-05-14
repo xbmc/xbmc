@@ -2,6 +2,7 @@
 #include "Client/PlexServerManager.h"
 #include "utils/log.h"
 #include "settings/GUISettings.h"
+#include "boost/lexical_cast.hpp"
 
 using namespace XFILE;
 
@@ -13,6 +14,12 @@ CPlexFile::CPlexFile(void) : CCurlFile()
   SetRequestHeader("X-Plex-Platform", PlexUtils::GetMachinePlatform());
   SetRequestHeader("X-Plex-Provides", "player");
   SetRequestHeader("X-Plex-Product", "Plex for Home Theater");
+
+  if (g_myplexManager.IsSignedIn())
+  {
+    SetRequestHeader("X-Plex-Account", boost::lexical_cast<std::string>(g_myplexManager.GetCurrentUserInfo().id));
+    SetRequestHeader("X-Plex-Username", g_myplexManager.GetCurrentUserInfo().username);
+  }
 }
 
 bool
