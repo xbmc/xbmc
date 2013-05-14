@@ -61,15 +61,6 @@ enum SectionTypes
   SECTION_TYPE_CHANNELS
 };
 
-class CAuxFanLoadThread : public CThread
-{
-  public:
-    CAuxFanLoadThread() : CThread("Aux Fan Load Thread"), m_numSeconds(5) {}
-    void Process();
-
-    int m_numSeconds;
-};
-
 typedef std::pair<int, CFileItemListPtr> contentListPair;
 
 class CPlexSectionLoadJob : public CJob
@@ -165,7 +156,6 @@ private:
 
   std::map<CStdString, CPlexSectionFanout*> m_sections;
   
-  CAuxFanLoadThread*         m_auxLoadingThread;
   CStdString                 m_lastSelectedItem;
 };
 

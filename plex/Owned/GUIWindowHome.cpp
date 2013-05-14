@@ -277,11 +277,6 @@ bool CPlexSectionFanout::NeedsRefresh()
 //////////////////////////////////////////////////////////////////////////////
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
-  if (g_advancedSettings.m_iShowFirstRun != 77)
-  {
-    m_auxLoadingThread = new CAuxFanLoadThread();
-    m_auxLoadingThread->Create();
-  }
   AddSection("global://art", SECTION_TYPE_GLOBAL_FANART);
 }
 
@@ -879,6 +874,7 @@ void CGUIWindowHome::RestoreSection()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////
 SectionTypes
 CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
 {
@@ -896,41 +892,6 @@ CGUIWindowHome::GetSectionTypeFromDirectoryType(EPlexDirectoryType dirType)
   {
     CLog::Log(LOGINFO, "CGUIWindowHome::GetSectionTypeFromDirectoryType not handling DirectoryType %d", (int)dirType);
     return SECTION_TYPE_MOVIE;
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-void CAuxFanLoadThread::Process()
-{
-  while (!m_bStop)
-  {
-    CLog::Log(LOGDEBUG, "CAFL: sleeping %d seconds", m_numSeconds);
-    boost::this_thread::sleep(boost::posix_time::seconds(m_numSeconds));
-
-    if (g_windowManager.GetActiveWindow() == 10016)
-      continue;
-
-    /*
-    if (g_guiSettings.GetString("myplex.token").empty() == true)
-    {
-      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(44200), g_localizeStrings.Get(44201), g_localizeStrings.Get(44202), "");
-      CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindow(16)");
-    }
-    else
-    {
-      MyPlexManager::Get().GetUserInfo();
-      if (!MyPlexManager::Get().UserHaveSubscribed())
-      {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(44203), g_localizeStrings.Get(44201), g_localizeStrings.Get(44202), "");
-        CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindow(16)");
-      }
-      else
-      {
-        // Since we had a successful login we can sleep longer
-        m_numSeconds = 30 * 60;
-      }
-    }
-     */
   }
 }
 
