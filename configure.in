@@ -657,8 +657,6 @@ case $host in
      use_joystick=no
      use_neon=yes
      use_gles=yes
-     use_sdl=no
-     use_x11=no
      ;;
   arm*-*linux-android*)
      target_platform=target_android

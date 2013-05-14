@@ -28,6 +28,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
+#include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "windowing/X11/XRandR.h"
 #include <vector>
@@ -142,11 +143,8 @@ bool CWinSystemX11GLES::DestroyWindowSystem()
     m_eglDisplay = 0;
   }
 
-  if (m_dpy)
-  {
-    XCloseDisplay(m_dpy);
-    m_dpy = NULL;
-  }
+  //we don't call XCloseDisplay() here, since ati keeps a pointer to our m_dpy
+  //so instead we just let m_dpy die on exit
 
   return true;
 }
@@ -156,11 +154,12 @@ bool CWinSystemX11GLES::CreateNewWindow(const CStdString& name, bool fullScreen,
   if(!SetFullScreen(fullScreen, res, false))
 	return false;
 
-  CTexture iconTexture;
-  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  CBaseTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon.png");
 
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), BPP, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+  if (iconTexture)
+    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture->GetPixels(), iconTexture->GetWidth(), iconTexture->GetHeight(), 32, iconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
+  delete iconTexture;
 
   m_bWindowCreated = true;
 
