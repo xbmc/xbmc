@@ -242,6 +242,22 @@ void CXBMCApp::run()
   CJNIIntent startIntent = getIntent();
   android_printf("XBMC Started with action: %s\n",startIntent.getAction().c_str());
 
+  std::string filenameToPlay = GetFilenameFromIntent(startIntent);
+  if (!filenameToPlay.empty())
+  {
+    int argc = 2;
+    const char** argv = (const char**) malloc(argc*sizeof(char*));
+
+    std::string exe_name("XBMC");
+    argv[0] = exe_name.c_str();
+    argv[1] = filenameToPlay.c_str();
+
+    CAppParamParser appParamParser;
+    appParamParser.Parse((const char **)argv, argc);
+
+    free(argv);
+  }
+
   CJNIIntentFilter batteryFilter;
   batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
   registerReceiver(*this, batteryFilter);
