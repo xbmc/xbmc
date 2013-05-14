@@ -398,18 +398,32 @@ bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* 
   std::string sType;
   std::string mountedState;
   bool mounted = false;
-  if (type == "music")
-    sType = "Music"; // Environment.DIRECTORY_MUSIC
-  else if (type == "videos")
-    sType = "Movies"; // Environment.DIRECTORY_MOVIES
-  else if (type == "pictures")
-    sType = "Pictures"; // Environment.DIRECTORY_PICTURES
-  else if (type == "photos")
-    sType = "DCIM"; // Environment.DIRECTORY_DCIM
-  else if (type == "downloads")
-    sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
 
-  path = CJNIEnvironment::getExternalStoragePublicDirectory(sType).getAbsolutePath();
+  if(type == "files" || type.empty())
+  {
+    CJNIFile external = CJNIEnvironment::getExternalStorageDirectory();
+    if (external)
+      path = external.getAbsolutePath();
+  }
+  else
+  {
+    if (type == "music")
+      sType = "Music"; // Environment.DIRECTORY_MUSIC
+    else if (type == "videos")
+      sType = "Movies"; // Environment.DIRECTORY_MOVIES
+    else if (type == "pictures")
+      sType = "Pictures"; // Environment.DIRECTORY_PICTURES
+    else if (type == "photos")
+      sType = "DCIM"; // Environment.DIRECTORY_DCIM
+    else if (type == "downloads")
+      sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
+    if (!sType.empty())
+    {
+      CJNIFile external = CJNIEnvironment::getExternalStoragePublicDirectory(sType);
+      if (external)
+        path = external.getAbsolutePath();
+    }
+  }
   mountedState = CJNIEnvironment::getExternalStorageState();
   mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
   return mounted && !path.empty();
@@ -509,11 +523,15 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
   setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
 
-  std::string externalDir = getExternalFilesDir("").getAbsolutePath();
-  if (!externalDir.size())
-    externalDir = getDir("org.xbmc.xbmc", 1).getAbsolutePath();
+  std::string externalDir;
+  CJNIFile androidPath = getExternalFilesDir("");
+  if (!androidPath)
+    androidPath = getDir("org.xbmc.xbmc", 1);
 
-  if (externalDir.size())
+  if (androidPath)
+    externalDir = androidPath.getAbsolutePath();
+
+  if (!externalDir.empty())
     setenv("HOME", externalDir.c_str(), 0);
   else
     setenv("HOME", getenv("XBMC_TEMP"), 0);
