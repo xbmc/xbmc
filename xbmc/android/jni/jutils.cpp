@@ -72,8 +72,12 @@ std::string jcast_helper<std::string, jstring>::cast(jstring const &v)
 jhstring jcast_helper<jhstring, std::string>::cast(const std::string &s)
 {
     JNIEnv *env = xbmc_jnienv();
-    jstring obj = env->NewStringUTF(s.c_str());
-    return jhstring(obj);
+    jstring ret = NULL;
+    if (!s.empty())
+    {
+      ret = env->NewStringUTF(s.c_str());
+    }
+    return jhstring(ret);
 }
 
 jhobjectArray jcast_helper<jhobjectArray, std::vector<std::string> >::cast(const std::vector<std::string> &s)
