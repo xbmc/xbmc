@@ -124,8 +124,6 @@ protected:
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
   boost::shared_ptr<PVR::CPVRClient> m_pvrClient;
 
-  DllAvCodec  m_dllAvCodec;
-
 private:
   void RequestStreams();
   void ParsePacket(DemuxPacket* pPacket);

@@ -189,7 +189,7 @@ int CDVDAudioCodecPassthroughFFmpeg::MuxerReadPacket(void *opaque, uint8_t *buf,
 void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(Muxer &muxer, uint8_t *pData, int iSize)
 {
   AVPacket pkt;
-  m_dllAvCodec.av_init_packet(&pkt);
+  av_init_packet(&pkt);
   pkt.data = pData;
   pkt.size = iSize;
 
@@ -319,7 +319,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     return false;
   }
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+  if (!m_dllAvUtil.Load())
     return false;
 
   av_register_all();

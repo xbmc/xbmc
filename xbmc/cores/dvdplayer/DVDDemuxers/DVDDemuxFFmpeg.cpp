@@ -52,7 +52,7 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
   char temp[128];
-  m_parent->m_dllAvCodec.avcodec_string(temp, 128, m_stream->codec, 0);
+  avcodec_string(temp, 128, m_stream->codec, 0);
   strInfo = temp;
 }
 
@@ -78,7 +78,7 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
   char temp[128];
-  m_parent->m_dllAvCodec.avcodec_string(temp, 128, m_stream->codec, 0);
+  avcodec_string(temp, 128, m_stream->codec, 0);
   strInfo = temp;
 }
 
@@ -86,13 +86,12 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
   char temp[128];
-  m_parent->m_dllAvCodec.avcodec_string(temp, 128, m_stream->codec, 0);
+  avcodec_string(temp, 128, m_stream->codec, 0);
   strInfo = temp;
 }
 
 // these need to be put somewhere that are compiled, we should have some better place for it
 
-CCriticalSection DllAvCodec::m_critSection;
 static CCriticalSection m_logSection;
 std::map<uintptr_t, CStdString> g_logbuffer;
 
@@ -144,7 +143,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
 static void ff_flush_avutil_log_buffers(void)
 {
-  CSingleLock lock(DllAvCodec::m_critSection);
+  CSingleLock lock(m_AvCodeccs);
 
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
@@ -246,7 +245,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())  
+  if (!m_dllAvUtil.Load())  
   {
     CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
     return false;
@@ -487,7 +486,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 void CDVDDemuxFFmpeg::Dispose()
 {
   m_pkt.result = -1;
-  m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+  av_free_packet(&m_pkt.pkt);
 
   if (m_pFormatContext)
   {
@@ -513,7 +512,6 @@ void CDVDDemuxFFmpeg::Dispose()
 
   m_pInput = NULL;
 
-  m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
 }
 
@@ -533,7 +531,7 @@ void CDVDDemuxFFmpeg::Flush()
   m_iCurrentPts = DVD_NOPTS_VALUE;
 
   m_pkt.result = -1;
-  m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+  av_free_packet(&m_pkt.pkt);
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -662,7 +660,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
 
       m_pkt.result = -1;
-      m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+      av_free_packet(&m_pkt.pkt);
     }
     else
     {
@@ -759,7 +757,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->iStreamId = m_pkt.pkt.stream_index;
       }
       m_pkt.result = -1;
-      m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+      av_free_packet(&m_pkt.pkt);
     }
   }
   } // end of lock scope
@@ -816,7 +814,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     time = 0;
 
   m_pkt.result = -1;
-  m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+  av_free_packet(&m_pkt.pkt);
 
   CDVDInputStream::ISeekTime* ist = dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInput);
   if (ist)
@@ -880,7 +878,7 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
     UpdateCurrentPTS();
 
   m_pkt.result = -1;
-  m_dllAvCodec.av_free_packet(&m_pkt.pkt);
+  av_free_packet(&m_pkt.pkt);
 
   return (ret >= 0);
 }
@@ -1398,7 +1396,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
     }
 #endif
 
-    AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
+    AVCodec *codec = avcodec_find_decoder(stream->codec);
     if (codec)
       strName = codec->name;
   }

@@ -66,7 +66,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
   if(!ctx->IsHardwareAllowed())
-    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
+    return avcodec_default_get_format(avctx, fmt);
 
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
@@ -120,7 +120,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
     cur++;
   }
-  return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
+  return avcodec_default_get_format(avctx, fmt);
 }
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
@@ -158,13 +158,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
 
   if(!m_dllAvUtil.Load()
-  || !m_dllAvCodec.Load()
   || !m_dllSwScale.Load()
   || !m_dllPostProc.Load()
   || !m_dllAvFilter.Load()
   ) return false;
 
-  m_dllAvCodec.avcodec_register_all();
+  avcodec_register_all();
   m_dllAvFilter.avfilter_register_all();
 
   m_bSoftware     = hints.software;
@@ -201,7 +200,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   if(pCodec == NULL)
-    pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+    pCodec = avcodec_find_decoder(hints.codec);
 
   if(pCodec == NULL)
   {
@@ -212,7 +211,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   if(m_pCodecContext == NULL)
-    m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
+    m_pCodecContext = avcodec_alloc_context3(pCodec);
 
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->debug_mv = 0;
@@ -279,13 +278,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     || pCodec->id == CODEC_ID_MPEG4 ))
     m_pCodecContext->thread_count = num_threads;
 
-  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
+  if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
   }
 
-  m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
+  m_pFrame = avcodec_alloc_frame();
   if (!m_pFrame) return false;
 
   UpdateName();
@@ -299,7 +298,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
 
   if (m_pCodecContext)
   {
-    if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
     if (m_pCodecContext->extradata)
     {
       m_dllAvUtil.av_free(m_pCodecContext->extradata);
@@ -313,7 +312,6 @@ void CDVDVideoCodecFFmpeg::Dispose()
 
   FilterClose();
 
-  m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
   m_dllAvFilter.Unload();
   m_dllPostProc.Unload();
@@ -444,13 +442,13 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
 
   AVPacket avpkt;
-  m_dllAvCodec.av_init_packet(&avpkt);
+  av_init_packet(&avpkt);
   avpkt.data = pData;
   avpkt.size = iSize;
   /* We lie, but this flag is only used by pngdec.c.
    * Setting it correctly would allow CorePNG decoding. */
   avpkt.flags = AV_PKT_FLAG_KEY;
-  len = m_dllAvCodec.avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
+  len = avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
 
   if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 2)
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
@@ -525,7 +523,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 {
   m_started = false;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
-  m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+  avcodec_flush_buffers(m_pCodecContext);
 
   if (m_pHardware)
     m_pHardware->Reset();

@@ -63,12 +63,12 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwResample.Load())
+  if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
 
-  m_dllAvCodec.avcodec_register_all();
+  avcodec_register_all();
 
-  pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+  pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
@@ -81,7 +81,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_bLpcmMode = CSettings::Get().GetBool("audiooutput.multichannellpcm");
 #endif
 
-  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
+  m_pCodecContext = avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
@@ -109,14 +109,14 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
   }
 
-  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
+  if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to open codec");
     Dispose();
     return false;
   }
 
-  m_pFrame1 = m_dllAvCodec.avcodec_alloc_frame();
+  m_pFrame1 = avcodec_alloc_frame();
   m_bOpenedCodec = true;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   return true;
@@ -132,13 +132,12 @@ void CDVDAudioCodecFFmpeg::Dispose()
 
   if (m_pCodecContext)
   {
-    if (m_bOpenedCodec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_bOpenedCodec) avcodec_close(m_pCodecContext);
     m_bOpenedCodec = false;
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
 
-  m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
   m_dllSwResample.Unload();
 
@@ -156,10 +155,10 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
   m_iBufferSize2 = 0;
 
   AVPacket avpkt;
-  m_dllAvCodec.av_init_packet(&avpkt);
+  av_init_packet(&avpkt);
   avpkt.data = pData;
   avpkt.size = iSize;
-  iBytesUsed = m_dllAvCodec.avcodec_decode_audio4( m_pCodecContext
+  iBytesUsed = avcodec_decode_audio4( m_pCodecContext
                                                  , m_pFrame1
                                                  , &got_frame
                                                  , &avpkt);
@@ -245,7 +244,7 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
 
 void CDVDAudioCodecFFmpeg::Reset()
 {
-  if (m_pCodecContext) m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+  if (m_pCodecContext) avcodec_flush_buffers(m_pCodecContext);
   m_iBufferSize1 = 0;
   m_iBufferSize2 = 0;
   m_iBuffered = 0;

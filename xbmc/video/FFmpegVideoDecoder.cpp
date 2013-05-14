@@ -37,7 +37,6 @@ FFmpegVideoDecoder::FFmpegVideoDecoder()
   m_pFrame = 0;
   m_pFrameRGB = 0;
   
-  m_dllAvCodec = new DllAvCodec();
   m_dllAvUtil = new DllAvUtil();
   m_dllSwScale = new DllSwScale();
 }
@@ -46,7 +45,6 @@ FFmpegVideoDecoder::~FFmpegVideoDecoder()
 {
   close();
   
-  delete m_dllAvCodec;
   delete m_dllAvUtil;
   delete m_dllSwScale;
 }
@@ -60,13 +58,13 @@ void FFmpegVideoDecoder::close()
   // Free the RGB frame
   if ( m_pFrameRGB )
   {
-	m_dllAvCodec->avpicture_free( m_pFrameRGB );
+	avpicture_free( m_pFrameRGB );
 	m_dllAvUtil->av_free( m_pFrameRGB );
   }
 
   // Close the codec
   if ( m_pCodecCtx )
-	m_dllAvCodec->avcodec_close( m_pCodecCtx );
+	avcodec_close( m_pCodecCtx );
 
   // Close the video file
   if ( m_pFormatCtx )
@@ -77,9 +75,6 @@ void FFmpegVideoDecoder::close()
   m_pCodec = 0;
   m_pFrame = 0;
   m_pFrameRGB = 0;
-  
-  if ( m_dllAvCodec->IsLoaded() )
-    m_dllAvCodec->Unload();
   
   if ( m_dllAvUtil->IsLoaded() )
     m_dllAvUtil->Unload();
@@ -153,13 +148,13 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   // See http://dranger.com/ffmpeg/tutorial01.html
   close();
   
-  if ( !m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+  if ( !m_dllAvUtil->Load() || !m_dllSwScale->Load())
   {
     m_errorMsg = "Failed to load FFMpeg libraries";
     return false;
   }
 
-  m_dllAvCodec->avcodec_register_all();
+  avcodec_register_all();
   av_register_all();
 
   // Open the video file
@@ -201,7 +196,7 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   m_pCodecCtx = m_pFormatCtx->streams[ m_videoStream ]->codec;
 
   // Find the decoder for the video stream
-  m_pCodec = m_dllAvCodec->avcodec_find_decoder( m_pCodecCtx->codec_id );
+  m_pCodec = avcodec_find_decoder( m_pCodecCtx->codec_id );
 
   if ( m_pCodec == NULL )
   {
@@ -211,7 +206,7 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   }
     
   // Open the codec
-  if ( m_dllAvCodec->avcodec_open2( m_pCodecCtx, m_pCodec, 0 ) < 0 )
+  if ( avcodec_open2( m_pCodecCtx, m_pCodec, 0 ) < 0 )
   {
     m_errorMsg = "Could not open the video decoder";
     close();
@@ -219,7 +214,7 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   }
   
   // Allocate video frames
-  m_pFrame = m_dllAvCodec->avcodec_alloc_frame();
+  m_pFrame = avcodec_alloc_frame();
 
   if ( !m_pFrame )
   {
@@ -240,7 +235,7 @@ bool FFmpegVideoDecoder::seek( double time )
   if ( av_seek_frame( m_pFormatCtx, m_videoStream, timestamp, AVSEEK_FLAG_ANY ) < 0 )
 	return false;
 
-  m_dllAvCodec->avcodec_flush_buffers( m_pCodecCtx );
+  avcodec_flush_buffers( m_pCodecCtx );
   return true;
 }
 
@@ -255,7 +250,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
   {
     if ( m_pFrameRGB )
     {
-      m_dllAvCodec->avpicture_free( m_pFrameRGB );
+      avpicture_free( m_pFrameRGB );
       m_dllAvUtil->av_free( m_pFrameRGB );
     }
 
@@ -269,7 +264,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
       return false;
 
     // Due to a bug in swsscale we need to allocate one extra line of data
-    if ( m_dllAvCodec->avpicture_alloc( m_pFrameRGB, PIX_FMT_RGB32, m_frameRGBwidth, m_frameRGBheight + 1 ) < 0 )
+    if ( avpicture_alloc( m_pFrameRGB, PIX_FMT_RGB32, m_frameRGBwidth, m_frameRGBheight + 1 ) < 0 )
       return false;
   }
 
@@ -285,7 +280,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
     if ( packet.stream_index == m_videoStream )
     {
       // Is this a packet from the video stream -> decode video frame
-      m_dllAvCodec->avcodec_decode_video2( m_pCodecCtx, m_pFrame, &frameFinished, &packet );
+      avcodec_decode_video2( m_pCodecCtx, m_pFrame, &frameFinished, &packet );
 
       // Did we get a video frame?
       if ( frameFinished )
@@ -299,7 +294,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
       }
     }
 
-    m_dllAvCodec->av_free_packet( &packet );
+    av_free_packet( &packet );
   }
 
   // We got the video frame, render it into the picture buffer
@@ -309,7 +304,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
   m_dllSwScale->sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, 
                                                                      m_pFrameRGB->data, m_pFrameRGB->linesize );
   m_dllSwScale->sws_freeContext( context );
-  m_dllAvCodec->av_free_packet( &packet );
+  av_free_packet( &packet );
 
   // And into the texture
   texture->Update( m_frameRGBwidth, m_frameRGBheight, m_frameRGBwidth * 4, XB_FMT_A8R8G8B8, m_pFrameRGB->data[0], false );

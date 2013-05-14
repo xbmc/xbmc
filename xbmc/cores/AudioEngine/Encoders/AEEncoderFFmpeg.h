@@ -46,7 +46,6 @@ public:
   virtual int GetData(uint8_t **data);
   virtual double GetDelay(unsigned int bufferSize);
 private:
-  DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
   DllSwResample m_dllSwResample;
 

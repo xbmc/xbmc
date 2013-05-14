@@ -50,7 +50,6 @@ public:
   virtual int GetBufferSize();
 private:
   DllAvUtil   m_dllAvUtil;
-  DllAvCodec  m_dllAvCodec;
 
   typedef struct
   {

@@ -87,7 +87,6 @@ CWinRenderer::CWinRenderer()
   m_destWidth = 0;
   m_destHeight = 0;
   m_dllAvUtil = NULL;
-  m_dllAvCodec = NULL;
   m_bConfigured = false;
   m_clearColour = 0;
   m_format = RENDER_FMT_NONE;

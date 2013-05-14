@@ -230,42 +230,42 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 public:
   int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     return avfilter_open_dont_call(filter_ctx, filter, inst_name);
   }
   void avfilter_free(AVFilterContext *filter)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     avfilter_free_dont_call(filter);
   }
   void avfilter_graph_free(AVFilterGraph **graph)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     avfilter_graph_free_dont_call(graph);
   }
   void avfilter_register_all()
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     avfilter_register_all_dont_call();
   }
   AVFilterInOut* avfilter_inout_alloc()
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     return avfilter_inout_alloc_dont_call();
   }
   int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     return avfilter_graph_parse_dont_call(graph, filters, inputs, outputs, log_ctx);
   }
   void avfilter_inout_free(AVFilterInOut **inout)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     avfilter_inout_free_dont_call(inout);
   }
   int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)
   {
-    CSingleLock lock(DllAvCodec::m_critSection);
+    CSingleLock lock(m_AvCodeccs);
     return avfilter_graph_config_dont_call(graphctx, log_ctx);
   }
   virtual bool Load()

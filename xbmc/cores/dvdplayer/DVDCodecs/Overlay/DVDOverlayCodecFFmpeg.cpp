@@ -45,18 +45,18 @@ CDVDOverlayCodecFFmpeg::~CDVDOverlayCodecFFmpeg()
 
 bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
+  if (!m_dllAvUtil.Load()) return false;
 
-  m_dllAvCodec.avcodec_register_all();
+  avcodec_register_all();
 
-  AVCodec* pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+  AVCodec* pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"%s - Unable to find codec %d", __FUNCTION__, hints.codec);
     return false;
   }
 
-  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
+  m_pCodecContext = avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
@@ -108,7 +108,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     delete[] parse_extra;
   }
 
-  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
+  if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
@@ -121,13 +121,12 @@ void CDVDOverlayCodecFFmpeg::Dispose()
 {
   if (m_pCodecContext)
   {
-    if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
   FreeSubtitle(m_Subtitle);
 
-  m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
 }
 
@@ -159,13 +158,13 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   FreeSubtitle(m_Subtitle);
 
   AVPacket avpkt;
-  m_dllAvCodec.av_init_packet(&avpkt);
+  av_init_packet(&avpkt);
   avpkt.data = pPacket->pData;
   avpkt.size = pPacket->iSize;
   avpkt.pts = pPacket->pts == DVD_NOPTS_VALUE ? AV_NOPTS_VALUE : (int64_t)pPacket->pts;
   avpkt.dts = pPacket->dts == DVD_NOPTS_VALUE ? AV_NOPTS_VALUE : (int64_t)pPacket->dts;
 
-  len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
+  len = avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
 
   if (len < 0)
   {
@@ -214,7 +213,7 @@ void CDVDOverlayCodecFFmpeg::Flush()
   FreeSubtitle(m_Subtitle);
   m_SubtitleIndex = -1;
 
-  m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+  avcodec_flush_buffers(m_pCodecContext);
 }
 
 CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()

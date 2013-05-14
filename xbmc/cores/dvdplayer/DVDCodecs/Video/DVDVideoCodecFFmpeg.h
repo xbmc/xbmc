@@ -29,7 +29,6 @@
 #include "DllPostProc.h"
 
 class CVDPAU;
-class CCriticalSection;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -109,7 +108,6 @@ protected:
 
   unsigned int m_uSurfacesCount;
 
-  DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   DllAvFilter m_dllAvFilter;
