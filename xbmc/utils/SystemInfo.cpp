@@ -356,7 +356,7 @@ CStdString CSysInfo::GetCPUSerial()
 bool CSysInfo::IsAeroDisabled()
 {
 #ifdef _WIN32
-  if (IsVistaOrHigher())
+  if (IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
   {
     BOOL aeroEnabled = FALSE;
     HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
@@ -369,24 +369,6 @@ bool CSysInfo::IsAeroDisabled()
   }
 #endif
   return false;
-}
-
-bool CSysInfo::IsVistaOrHigher()
-{
-#ifdef TARGET_WINDOWS
-  return IsWindowsVersionAtLeast(WindowsVersionVista);
-#else // TARGET_WINDOWS
-  return false;
-#endif // TARGET_WINDOWS
-}
-
-bool CSysInfo::IsWindows8OrHigher()
-{
-#ifdef TARGET_WINDOWS
-  return IsWindowsVersionAtLeast(WindowsVersionWin8);
-#else // TARGET_WINDOWS
-  return false;
-#endif // TARGET_WINDOWS
 }
 
 CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
