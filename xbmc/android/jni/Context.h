@@ -28,6 +28,7 @@ class CJNIIntentFilter;
 class CJNIClassLoader;
 class CJNIApplicationInfo;
 class CJNIFile;
+class CJNIContentResolver;
 class CJNIContext : public CJNIBroadcastReceiver
 {
 public:
@@ -45,6 +46,7 @@ public:
   static CJNIFile getCacheDir();
   static CJNIFile getDir(const std::string &path, int mode);
   static CJNIFile getExternalFilesDir(const std::string &path);
+  static CJNIContentResolver getContentResolver();
   virtual void onReceive(CJNIIntent intent)=0;
 protected:
   CJNIContext(const ANativeActivity *nativeActivity);

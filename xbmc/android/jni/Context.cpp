@@ -28,6 +28,7 @@
 #include "JNIThreading.h"
 #include "ApplicationInfo.h"
 #include "File.h"
+#include "ContentResolver.h"
 #include <android/native_activity.h>
 
 using namespace jni;
@@ -117,4 +118,9 @@ CJNIFile CJNIContext::getDir(const std::string &path, int mode)
 CJNIFile CJNIContext::getExternalFilesDir(const std::string &path)
 {
   return (CJNIFile)call_method<jhobject>(m_context, "getExternalFilesDir", "(Ljava/lang/String;)Ljava/io/File;", jcast<jhstring>(path));
+}
+
+CJNIContentResolver CJNIContext::getContentResolver()
+{
+  return (CJNIContentResolver)call_method<jhobject>(m_context, "getContentResolver", "()Landroid/content/ContentResolver;");
 }
