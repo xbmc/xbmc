@@ -31,6 +31,8 @@ SRCS      += BitmapDrawable.cpp
 SRCS      += CharSequence.cpp
 SRCS      += ContentResolver.cpp
 SRCS      += Cursor.cpp
+SRCS      += BaseColumns.cpp
+SRCS      += MediaStore.cpp
 
 LIB        = jni.a
 
