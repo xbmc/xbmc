@@ -29,13 +29,14 @@ int CJNICursor::FIELD_TYPE_FLOAT(0);
 int CJNICursor::FIELD_TYPE_STRING(0);
 int CJNICursor::FIELD_TYPE_BLOB(0);
 
-CJNICursor::CJNICursor(const jni::jhobject &object) : CJNIBase(object)
+void CJNICursor::PopulateStaticFields()
 {
-  FIELD_TYPE_NULL = (get_static_field<int>(m_object, "FIELD_TYPE_NULL"));
-  FIELD_TYPE_INTEGER = (get_static_field<int>(m_object, "FIELD_TYPE_INTEGER"));
-  FIELD_TYPE_FLOAT = (get_static_field<int>(m_object, "FIELD_TYPE_FLOAT"));
-  FIELD_TYPE_STRING = (get_static_field<int>(m_object, "FIELD_TYPE_STRING"));
-  FIELD_TYPE_BLOB = (get_static_field<int>(m_object, "FIELD_TYPE_BLOB"));
+  jhclass clazz = find_class("android/database/Cursor");
+  FIELD_TYPE_NULL = (get_static_field<int>(clazz, "FIELD_TYPE_NULL"));
+  FIELD_TYPE_INTEGER = (get_static_field<int>(clazz, "FIELD_TYPE_INTEGER"));
+  FIELD_TYPE_FLOAT = (get_static_field<int>(clazz, "FIELD_TYPE_FLOAT"));
+  FIELD_TYPE_STRING = (get_static_field<int>(clazz, "FIELD_TYPE_STRING"));
+  FIELD_TYPE_BLOB = (get_static_field<int>(clazz, "FIELD_TYPE_BLOB"));
 }
 
 int CJNICursor::getCount()

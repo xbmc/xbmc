@@ -24,7 +24,7 @@ class CJNIBaseColumns
 public:
   static std::string _ID;
   static std::string _COUNT;
-  void static PopulateStaticFields();
+  static void PopulateStaticFields();
 private:
   CJNIBaseColumns();
 };

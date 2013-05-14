@@ -31,6 +31,10 @@
 #include "ContentResolver.h"
 #include "BaseColumns.h"
 #include "MediaStore.h"
+#include "PowerManager.h"
+#include "Cursor.h"
+#include "ConnectivityManager.h"
+#include "AudioManager.h"
 #include <android/native_activity.h>
 
 using namespace jni;
@@ -55,6 +59,14 @@ void CJNIContext::PopulateStaticFields()
 {
   CJNIBaseColumns::PopulateStaticFields();
   CJNIMediaStoreMediaColumns::PopulateStaticFields();
+  CJNIPowerManager::PopulateStaticFields();
+  CJNIPackageManager::PopulateStaticFields();
+  CJNIMediaStoreMediaColumns::PopulateStaticFields();
+  CJNICursor::PopulateStaticFields();
+  CJNIContentResolver::PopulateStaticFields();
+  CJNIConnectivityManager::PopulateStaticFields();
+  CJNIAudioManager::PopulateStaticFields();
+
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()

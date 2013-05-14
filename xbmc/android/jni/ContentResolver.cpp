@@ -28,13 +28,14 @@ std::string CJNIContentResolver::CURSOR_ITEM_BASE_TYPE;
 std::string CJNIContentResolver::CURSOR_DIR_BASE_TYPE;
 
 using namespace jni;
-CJNIContentResolver::CJNIContentResolver(const jhobject &object) : CJNIBase(object)
+void CJNIContentResolver::PopulateStaticFields()
 {
-  SCHEME_CONTENT = jcast<std::string>(get_static_field<jhstring>(m_object,"SCHEME_CONTENT"));
-  SCHEME_ANDROID_RESOURCE = jcast<std::string>(get_static_field<jhstring>(m_object,"SCHEME_ANDROID_RESOURCE"));
-  SCHEME_FILE = jcast<std::string>(get_static_field<jhstring>(m_object,"SCHEME_FILE"));
-  CURSOR_ITEM_BASE_TYPE = jcast<std::string>(get_static_field<jhstring>(m_object,"CURSOR_ITEM_BASE_TYPE"));
-  CURSOR_DIR_BASE_TYPE = jcast<std::string>(get_static_field<jhstring>(m_object,"CURSOR_DIR_BASE_TYPE"));
+  jhclass clazz = find_class("android/content/ContentResolver");
+  SCHEME_CONTENT = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_CONTENT"));
+  SCHEME_ANDROID_RESOURCE = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_ANDROID_RESOURCE"));
+  SCHEME_FILE = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_FILE"));
+  CURSOR_ITEM_BASE_TYPE = jcast<std::string>(get_static_field<jhstring>(clazz,"CURSOR_ITEM_BASE_TYPE"));
+  CURSOR_DIR_BASE_TYPE = jcast<std::string>(get_static_field<jhstring>(clazz,"CURSOR_DIR_BASE_TYPE"));
 }
 
 CJNICursor CJNIContentResolver::query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder)

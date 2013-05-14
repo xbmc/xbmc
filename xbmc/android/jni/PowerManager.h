@@ -28,7 +28,8 @@ public:
   void reboot(const std::string &reason);
   void goToSleep(int64_t timestamp);
 
-  CJNIPowerManager(const jni::jhobject &object);
+  static void PopulateStaticFields();
+  CJNIPowerManager(const jni::jhobject &object) : CJNIBase(object){};
   ~CJNIPowerManager(){};
 
 private:

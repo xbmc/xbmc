@@ -25,7 +25,7 @@ class CJNICursor : public CJNIBase
 {
 public:
   ~CJNICursor(){};
-  CJNICursor(const jni::jhobject &object);
+  CJNICursor(const jni::jhobject &object) : CJNIBase(object){};
   int getCount();
   int getPosition();
   bool move(int offset);
@@ -61,6 +61,7 @@ public:
   static int FIELD_TYPE_STRING;
   static int FIELD_TYPE_BLOB;
 
+  static void PopulateStaticFields();
 private:
   CJNICursor();
 };

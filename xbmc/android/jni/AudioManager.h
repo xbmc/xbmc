@@ -26,8 +26,10 @@ public:
   // Note removal of streamType param.
   int getStreamMaxVolume();
   void setStreamVolume(int index = 0, int flags = 0);
+
+  static void PopulateStaticFields();
   ~CJNIAudioManager(){};
-  CJNIAudioManager(const jni::jhobject &object);
+  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object){};
 
 private:
   CJNIAudioManager();

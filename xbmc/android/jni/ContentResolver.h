@@ -25,7 +25,7 @@ class CJNIURI;
 class CJNIContentResolver : public CJNIBase
 {
 public:
-  CJNIContentResolver(const jni::jhobject &object);
+  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object){};
 
   static std::string SCHEME_CONTENT;
   static std::string SCHEME_ANDROID_RESOURCE;
@@ -35,6 +35,7 @@ public:
 
   CJNICursor query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder);
 
+  static void PopulateStaticFields();
 private:
   CJNIContentResolver();
 };
