@@ -29,6 +29,8 @@ SRCS      += System.cpp
 SRCS      += ApplicationInfo.cpp
 SRCS      += BitmapDrawable.cpp
 SRCS      += CharSequence.cpp
+SRCS      += ContentResolver.cpp
+SRCS      += Cursor.cpp
 
 LIB        = jni.a
 
