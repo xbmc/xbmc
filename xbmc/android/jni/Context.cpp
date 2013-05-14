@@ -29,6 +29,8 @@
 #include "ApplicationInfo.h"
 #include "File.h"
 #include "ContentResolver.h"
+#include "BaseColumns.h"
+#include "MediaStore.h"
 #include <android/native_activity.h>
 
 using namespace jni;
@@ -38,6 +40,7 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity) : CJNIBroadcastR
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
+  PopulateStaticFields();
   InitializeBroadcastReceiver();
 }
 
@@ -46,6 +49,12 @@ CJNIContext::~CJNIContext()
   m_context.release();
   DestroyBroadcastReceiver();
   xbmc_jni_on_unload();
+}
+
+void CJNIContext::PopulateStaticFields()
+{
+  CJNIBaseColumns::PopulateStaticFields();
+  CJNIMediaStoreMediaColumns::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()

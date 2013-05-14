@@ -54,6 +54,7 @@ protected:
 
 private:
   CJNIContext();
+  void PopulateStaticFields();
   void operator=(CJNIContext const&){};
   static jni::jhobject m_context;
 };
