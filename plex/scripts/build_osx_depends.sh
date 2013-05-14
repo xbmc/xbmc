@@ -99,7 +99,7 @@ cd $ROOT/plex/Dependencies/xbmc-depends
 rm -f $ROOT/plex/Dependencies/*tar.xz
 
 echo "Packing xbmc-depends"
-gtar --xz -cf $ROOT/plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
+gtar --xz -cf --ignore-failed-read $ROOT/plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
 
 echo "Packing ffmpeg"
-gtar --xz -cf $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
+gtar --xz -cf --ignore-failed-read $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
