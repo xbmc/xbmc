@@ -67,7 +67,7 @@
 				</control>
 				<!-- PIN area -->
 				<control type="group">
-					<visible>!Control.IsVisible(10083)</visible>
+					<visible>!Control.IsVisible(10083) + !Control.IsVisible(10088) + !Control.IsVisible(10089)</visible>
 					<posy>232</posy>
 					<posx>270</posx>
 					<control type="group">
