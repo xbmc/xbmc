@@ -155,15 +155,16 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       CGUIWindow::OnMessage(message);
       if (!m_returningFromSkinLoad)
       {
-        // cancel any delayed changes
-        if (m_delayedSetting != NULL)
+        int focusedControl = GetFocusedControlID();
+
+        // cancel any delayed changes if the focused control has changed
+        if (m_delayedSetting != NULL && m_delayedSetting->GetID() != focusedControl)
         {
           m_delayedTimer.Stop();
           CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), GetID(), 1); // param1 = 1 for "reset the control if it's invalid"
           OnMessage(message);
         }
 
-        int focusedControl = GetFocusedControlID();
         // check if we have changed the category and need to create new setting controls
         if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_categories.size()) &&
             focusedControl - CONTROL_START_BUTTONS != m_iCategory)
