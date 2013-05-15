@@ -64,6 +64,7 @@ protected:
   AUTOPTR::CAutoPtrHandle m_hFile;
   int64_t m_i64FilePos;
   int64_t m_i64FileLen;
+  int64_t m_i64LastDropPos;
 };
 
 }
