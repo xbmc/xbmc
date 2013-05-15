@@ -173,7 +173,7 @@
 						<onleft>-</onleft>
 						<onright>-</onright>
 						<onup>10083</onup>
-						<ondown>111</ondown>
+						<ondown>10087</ondown>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textoffsetx>16</textoffsetx>
@@ -258,7 +258,7 @@
 							<posx>260</posx>
 							<width>200</width>
 							<onleft>10085</onleft>
-							<onright condition="Control.IsVisible(10087)">10087</onright>
+							<onright>10087</onright>
 							<onup>Control.SetFocus(10084)</onup>
 							<include>DialogPressButton</include>
 							<animation effect="slide" start="0" end="-60" time="500" condition="Control.IsVisible(10083)">Conditional</animation>
