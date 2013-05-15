@@ -122,7 +122,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     case GUI_MSG_WINDOW_INIT:
     {
       m_delayedSetting.reset();
-      m_currentSetting.reset();
       if (message.GetParam1() != WINDOW_INVALID && !m_returningFromSkinLoad)
       { // coming to this window first time (ie not returning back from some other window)
         // so we reset our section and control states
@@ -179,8 +178,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           m_iCategory = focusedControl - CONTROL_START_BUTTONS;
           CreateSettings();
         }
-        else if (focusedControl >= CONTROL_START_CONTROL && focusedControl < (int)(CONTROL_START_CONTROL + m_settingControls.size()))
-          m_currentSetting = GetSettingControl(focusedControl);
       }
       return true;
     }
@@ -480,8 +477,6 @@ void CGUIWindowSettingsCategory::FreeControls()
 
 void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
-  m_currentSetting.reset();
-
   // clear the settings group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
   if (control)
