@@ -1,34 +1,15 @@
 diff --git a/lib/libdvd/libdvdread/src/dvd_reader.c b/lib/libdvd/libdvdread/src/dvd_reader.c
-index d9544b3..f5ee550 100644
+index d9544b3..57dd2d0 100644
 --- a/lib/libdvd/libdvdread/src/dvd_reader.c
 +++ b/lib/libdvd/libdvdread/src/dvd_reader.c
-@@ -429,10 +429,17 @@ dvd_reader_t *DVDOpen( const char *ppath )
+@@ -425,8 +425,9 @@ dvd_reader_t *DVDOpen( const char *ppath )
+     if( !(path_copy = strdup( path ) ) )
+       goto DVDOpen_error;
+ 
+-#ifndef WIN32 /* don't have fchdir, and getcwd( NULL, ... ) is strange */
++#if !defined(WIN32) && !defined(_XBMC) /* don't have fchdir, and getcwd( NULL, ... ) is strange */
                /* Also WIN32 does not have symlinks, so we don't need this bit of code. */
++			  /* XBMC also doesn't need symlink resolution */
  
      /* Resolve any symlinks and get the absolute dir name. */
-+#if defined(_XBMC) /* for XBMC, only do symlink resolution for (real) non-xbmc-VFS paths */
-+	if ( path[0] == '/' )
-+#endif // _XBMC
  	{
-       if( ( cdir  = open( ".", O_RDONLY ) ) >= 0 ) {
-         if( chdir( path_copy ) == -1 ) {
-+#if defined(_XBMC)
-+          fprintf( stderr, "libdvdread: failed to change working directory to \"%s\": %s\n", path_copy, strerror(errno)); /* but ignore error */
-+#else
-           goto DVDOpen_error;
-+#endif // _XBMC
-         }
- 		new_path = malloc(PATH_MAX+1);
- 		if(!new_path) {
-@@ -445,7 +452,11 @@ dvd_reader_t *DVDOpen( const char *ppath )
- 		close( cdir );
-         cdir = -1;
-         if( retval == -1 ) {
-+#if defined(_XBMC)
-+          fprintf( stderr, "libdvdread: failed to reset working directory to \".\": %s\n", strerror(errno)); /* but ignore error */
-+#else
-           goto DVDOpen_error;
-+#endif // _XBMC
-         }
- 		    path_copy = new_path;
-         new_path = NULL;
