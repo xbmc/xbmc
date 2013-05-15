@@ -88,7 +88,6 @@ private:
   std::vector<std::string> m_transcoderBitrates;
   std::vector<std::string> m_transcoderResolutions;
 
-  CCriticalSection m_connLock;
   std::vector<CPlexConnectionPtr> m_connections;
   CPlexConnectionPtr m_activeConnection;
   CPlexConnectionPtr m_bestConnection;
@@ -97,6 +96,8 @@ private:
   bool m_complete;
 
   boost::timer m_connTestTimer;
+
+  CCriticalSection m_serverLock;
 
   CCriticalSection m_testingLock;
   CEvent m_testEvent;

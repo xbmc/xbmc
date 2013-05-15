@@ -43,7 +43,7 @@ public:
 
   CPlexServerPtr GetBestServer() const
   {
-    CSingleLock lk(m_bestServerLock);
+    CSingleLock lk(m_serverManagerLock);
     return m_bestServer;
   }
 
@@ -70,10 +70,8 @@ private:
 
   void NotifyAboutServer(CPlexServerPtr server, bool added = true);
 
-  CCriticalSection m_bestServerLock;
+  CCriticalSection m_serverManagerLock;
   CPlexServerPtr m_bestServer;
-
-  CCriticalSection m_serverMapLock;
   PlexServerMap m_serverMap;
 };
 

@@ -41,6 +41,8 @@ CPlexServerConnTestThread::Process()
 bool
 CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
+  CSingleLock lk(m_serverLock);
+
   CXBMCTinyXML doc;
   doc.Parse(xmlData);
   if (doc.RootElement() != 0)
@@ -95,15 +97,14 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 bool
 CPlexServer::HasActiveLocalConnection() const
 {
-  CSingleLock lk(m_connLock);
-
+  CSingleLock lk(m_serverLock);
   return (m_activeConnection != NULL && m_activeConnection->IsLocal());
 }
 
 void
 CPlexServer::MarkAsRefreshing()
 {
-  CSingleLock lk(m_connLock);
+  CSingleLock lk(m_serverLock);
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
     conn->SetRefreshed(false);
 }
@@ -113,7 +114,6 @@ CPlexServer::MarkUpdateFinished(int connType)
 {
   vector<CPlexConnectionPtr> connsToRemove;
 
-  CSingleLock lk(m_connLock);
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
   {
     if (conn->GetRefreshed() == false)
@@ -144,8 +144,6 @@ ConnectionSortFunction(CPlexConnectionPtr c1, CPlexConnectionPtr c2)
 bool
 CPlexServer::UpdateReachability()
 {
-  CSingleLock lk(m_connLock);
-
   if (m_connections.size() == 0)
     return false;
 
@@ -201,6 +199,8 @@ void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
 bool
 CPlexServer::Merge(CPlexServerPtr otherServer)
 {
+  CSingleLock lk(m_serverLock);
+
   bool changed = false;
 
   if (m_name != otherServer->m_name)
@@ -226,7 +226,6 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
     changed = true;
   }
 
-  CSingleLock lk(m_connLock);
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
   {
     vector<CPlexConnectionPtr>::iterator it;
@@ -249,28 +248,24 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
 void
 CPlexServer::GetConnections(std::vector<CPlexConnectionPtr> &conns)
 {
-  CSingleLock lk(m_connLock);
   conns = m_connections;
 }
 
 int
 CPlexServer::GetNumConnections() const
 {
-  CSingleLock lk(m_connLock);
   return m_connections.size();
 }
 
 CPlexConnectionPtr
 CPlexServer::GetActiveConnection() const
 {
-  CSingleLock lk(m_connLock);
   return m_activeConnection;
 }
 
 CURL
 CPlexServer::GetActiveConnectionURL() const
 {
-  CSingleLock lk(m_connLock);
   return m_activeConnection->GetAddress();
 }
 
@@ -287,7 +282,6 @@ CPlexServer::BuildPlexURL(const CStdString& path) const
 CURL
 CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
 {
-  CSingleLock lk(m_connLock);
   CPlexConnectionPtr connection = m_activeConnection;
 
   if (!connection && m_connections.size() > 0)
@@ -324,7 +318,6 @@ CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
 void
 CPlexServer::AddConnection(CPlexConnectionPtr connection)
 {
-  CSingleLock lk(m_connLock);
   m_connections.push_back(connection);
 }
 

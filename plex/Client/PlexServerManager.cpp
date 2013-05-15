@@ -9,6 +9,8 @@
 #include "Client/PlexConnection.h"
 #include "PlexServerDataLoader.h"
 
+#include "Stopwatch.h"
+
 using namespace std;
 
 void
@@ -37,7 +39,8 @@ CPlexServerManager::CPlexServerManager()
 CPlexServerPtr
 CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
 {
-  CSingleLock lk(m_serverMapLock);
+  CSingleLock lk(m_serverManagerLock);
+
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
   {
     vector<CPlexConnectionPtr> connections;
@@ -55,13 +58,14 @@ CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
 CPlexServerPtr
 CPlexServerManager::FindByUUID(const CStdString &uuid)
 {
+  CSingleLock lk(m_serverManagerLock);
+
   if (uuid.Equals("myplex"))
     return _myPlexServer;
 
   if (uuid.Equals("local"))
     return _localServer;
 
-  CSingleLock lk(m_serverMapLock);
   if (m_serverMap.find(uuid) != m_serverMap.end())
   {
     return m_serverMap.find(uuid)->second;
@@ -72,9 +76,10 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
 PlexServerList
 CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier) const
 {
+  CSingleLock lk(m_serverManagerLock);
+
   PlexServerList ret;
 
-  CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
   {
     if (modifier == SERVER_OWNED && p.second->GetOwned())
@@ -91,7 +96,6 @@ CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier) const
 void
 CPlexServerManager::MarkServersAsRefreshing()
 {
-  CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
     p.second->MarkAsRefreshing();
 }
@@ -99,6 +103,8 @@ CPlexServerManager::MarkServersAsRefreshing()
 void
 CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connectionType)
 {
+  CSingleLock lk(m_serverManagerLock);
+
   MarkServersAsRefreshing();
   BOOST_FOREACH(CPlexServerPtr p, servers)
     MergeServer(p);
@@ -110,6 +116,8 @@ CPlexServerManager::UpdateFromConnectionType(PlexServerList servers, int connect
 void
 CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 {
+  CSingleLock lk(m_serverManagerLock);
+
   MergeServer(server);
   NotifyAboutServer(server);
   SetBestServer(server, false);
@@ -118,7 +126,8 @@ CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
 void
 CPlexServerManager::MergeServer(CPlexServerPtr server)
 {
-  CSingleLock lk(m_serverMapLock);
+  CSingleLock lk(m_serverManagerLock);
+
   if (m_serverMap.find(server->GetUUID()) != m_serverMap.end())
   {
     CPlexServerPtr existingServer = m_serverMap.find(server->GetUUID())->second;
@@ -139,7 +148,6 @@ CPlexServerManager::ServerRefreshComplete(int connectionType)
 {
   vector<CStdString> serversToRemove;
 
-  CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
   {
     if (!p.second->MarkUpdateFinished(connectionType))
@@ -156,9 +164,10 @@ CPlexServerManager::ServerRefreshComplete(int connectionType)
 void
 CPlexServerManager::UpdateReachability(bool force)
 {
+  CSingleLock lk(m_serverManagerLock);
+
   CLog::Log(LOGDEBUG, "CPlexServerManager::UpdateReachability Updating reachability (force=%s)", force ? "YES" : "NO");
 
-  CSingleLock lk(m_serverMapLock);
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
     new CPlexServerReachabilityThread(p.second, false);
 }
@@ -166,7 +175,7 @@ CPlexServerManager::UpdateReachability(bool force)
 void
 CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
 {
-  CSingleLock lk(m_bestServerLock);
+  CSingleLock lk(m_serverManagerLock);
   if (!m_bestServer || force || m_bestServer == server)
   {
     m_bestServer = server;
@@ -180,7 +189,6 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
 void
 CPlexServerManager::ClearBestServer()
 {
-  CSingleLock lk(m_bestServerLock);
   m_bestServer.reset();
 }
 
@@ -188,8 +196,6 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
 {
   if (success)
   {
-    CSingleLock lk(m_bestServerLock);
-
     if (server->GetOwned() &&
         (server->GetServerClass().empty() || !server->GetServerClass().Equals(PLEX_SERVER_CLASS_SECONDARY)))
     {
