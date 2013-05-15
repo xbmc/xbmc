@@ -405,6 +405,11 @@ int __wrap__stat(const char *path, struct _stat *buffer)
   return dll_stat(path, buffer);
 }
 
+int __wrap_stat(const char *path, struct _stat *buffer)
+{
+  return dll_stat(path, buffer);
+}
+
 int __wrap___xstat64(int __ver, const char *__filename, struct stat64 *__stat_buf)
 {
   return dll_stat64(__filename, __stat_buf);
