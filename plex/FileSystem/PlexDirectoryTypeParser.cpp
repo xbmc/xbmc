@@ -25,5 +25,8 @@ CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(EPlexDirectoryType type)
   else if (type == PLEX_DIR_TYPE_ALBUM)
     return new CPlexDirectoryTypeParserAlbum;
 
+  else if (type == PLEX_DIR_TYPE_DIRECTORY)
+    return new CPlexDirectoryTypeParserDirectory;
+
   return new CPlexDirectoryTypeParserBase;
 }
