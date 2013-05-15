@@ -28,8 +28,6 @@ class URIUtils
 public:
   URIUtils(void);
   virtual ~URIUtils(void);
-  static CStdString GetParentFolderURI(const CStdString& uri,
-                                       bool preserveFileNameInPath);
   static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
 
   static void GetDirectory(const CStdString& strFilePath,

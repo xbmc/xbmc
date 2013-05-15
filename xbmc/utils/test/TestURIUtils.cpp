@@ -34,19 +34,6 @@ protected:
   }
 };
 
-TEST_F(TestURIUtils, GetParentFolderURI)
-{
-  CStdString ref, var;
-
-  ref = "/path/to/";
-  var = URIUtils::GetParentFolderURI("/path/to/movie.avi", false);
-  EXPECT_STREQ(ref.c_str(), var.c_str());
-
-  ref = "/path/to/movie.avi";
-  var = URIUtils::GetParentFolderURI("/path/to/movie.avi", true);
-  EXPECT_STREQ(ref.c_str(), var.c_str());
-}
-
 TEST_F(TestURIUtils, IsInPath)
 {
   EXPECT_TRUE(URIUtils::IsInPath("/path/to/movie.avi", "/path/to/"));

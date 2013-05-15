@@ -8445,7 +8445,9 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
           if (item.IsOpticalMediaFile())
           {
-            nfoFile = URIUtils::GetParentFolderURI(nfoFile, true);
+            nfoFile = URIUtils::AddFileToFolder(
+                                    URIUtils::GetParentPath(nfoFile),
+                                    URIUtils::GetFileName(nfoFile));
           }
 
           if (overwrite || !CFile::Exists(nfoFile, false))

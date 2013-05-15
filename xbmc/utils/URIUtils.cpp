@@ -38,14 +38,6 @@
 using namespace std;
 using namespace XFILE;
 
-CStdString URIUtils::GetParentFolderURI(const CStdString& uri, bool preserveFileNameInPath)
-{
-  if (preserveFileNameInPath)
-    return AddFileToFolder(GetParentPath(uri), GetFileName(uri));
-  else
-    return GetParentPath(uri);
-}
-
 bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
 {
   CStdString uriPath = CSpecialProtocol::TranslatePath(uri);
