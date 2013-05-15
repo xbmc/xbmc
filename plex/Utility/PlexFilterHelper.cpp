@@ -41,6 +41,17 @@ bool CPlexFilterHelper::ApplySort(int ctrlId)
   return false;
 }
 
+bool CPlexFilterHelper::SkinHasFilters() const
+{
+  CGUIControlGroupList *filterGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(FILTER_LIST);
+  CGUIControlGroupList *sortGroup = (CGUIControlGroupList*)m_mediaWindow->GetControl(SORT_LIST);
+
+  if (!filterGroup || !sortGroup)
+    return false;
+
+  return true;
+}
+
 void CPlexFilterHelper::ApplyFilterFromDialog(CPlexFilterPtr filter)
 {
   if (m_appliedFilters.find(filter->GetFilterName()) != m_appliedFilters.end())
@@ -206,6 +217,9 @@ CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& 
   CFileItemList tmpItems;
   CPlexDirectory dir;
   CStdString strDirectory(url_);
+
+  if (!SkinHasFilters())
+    return url_;
 
   secondary = false;
 

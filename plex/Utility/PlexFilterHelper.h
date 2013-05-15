@@ -41,6 +41,7 @@ class CPlexFilterHelper
 
     bool ApplyFilter(int ctrlId);
     bool ApplySort(int ctrlId);
+    bool SkinHasFilters() const;
 
     void ApplyFilterFromDialog(CPlexFilterPtr filter);
 
