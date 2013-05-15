@@ -23,6 +23,8 @@
 #include <boost/foreach.hpp>
 #include <map>
 
+#include "Stopwatch.h"
+
 using namespace XFILE;
 
 /* IDirectory Interface */
@@ -30,6 +32,9 @@ bool
 CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 {
   m_url = url;
+
+  CStopWatch timer;
+  timer.StartZero();
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
 
@@ -75,7 +80,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   if (m_isAugmented)
     DoAugmentation(fileItems);
 
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory with %d items with content %s", fileItems.Size(), fileItems.GetContent().c_str());
+  float elapsed = timer.GetElapsedSeconds();
+
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
 
   return true;
 }
