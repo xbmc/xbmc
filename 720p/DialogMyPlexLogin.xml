@@ -49,6 +49,14 @@
 					<width>1000</width>
 					<include>DialogHeading</include>
 				</control>
+				<!-- hardcoded dialog title, delete when control 1 has a dynamic one -->
+				<control type="label">
+					<posy>33</posy>
+					<description>Heading</description>
+					<width>1000</width>
+					<include>DialogHeading</include>
+					<label>myPlex Log In</label>
+				</control>
 				<!-- description text -->
 				<control type="textbox" id="10081">
 					<posy>110</posy>
