@@ -350,7 +350,7 @@
 					<onup>19020</onup>
 					<ondown>19020</ondown>
 					<onleft>19000</onleft>
-					<onright>-</onright>
+					<onright>Dialog.Close(10202)</onright>
 					<itemgap>5</itemgap>
 					<pagecontrol>61</pagecontrol>
 					<scrolltime>200</scrolltime>
