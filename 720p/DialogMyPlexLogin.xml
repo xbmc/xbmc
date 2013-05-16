@@ -256,12 +256,13 @@
 						<posy>15</posy>
 						<posx>270</posx>
 						<control type="button" id="10085">
-							<description>CANCEL Button</description>
+							<description>CANCEL/OK Button</description>
 							<width>120</width>
 							<onleft>-</onleft>
 							<onright>10086</onright>
 							<onup>Control.SetFocus(10084)</onup>
 							<include>DialogPressButton</include>
+							<animation effect="slide" start="0" end="170" time="400" condition="!Control.IsVisible(10086)">Conditional</animation>
 						</control>
 						<control type="button" id="10086">
 							<description>MANUAL/PIN Button</description>
