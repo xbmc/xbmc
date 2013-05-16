@@ -101,6 +101,8 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
 void
 CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *element)
 {
+  int thumbIdx = 0;
+
   for (TiXmlElement* media = element->FirstChildElement(); media ; media = media->NextSiblingElement())
   {
     CFileItemPtr mediaItem = CPlexDirectory::NewPlexElement(media, item, item.GetPath());
@@ -124,6 +126,10 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
       ParseMediaParts(*mediaItem, media);
 
       item.m_mediaItems.push_back(mediaItem);
+    }
+    else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_THUMB)
+    {
+      item.SetArt(PLEX_ART_THUMB, thumbIdx ++, mediaItem->GetPath());
     }
   }
 

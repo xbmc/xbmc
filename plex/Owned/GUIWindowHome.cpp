@@ -627,7 +627,7 @@ void CGUIWindowHome::UpdateSections()
     CFileItemPtr sectionItem = sections->Get(i);
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(sectionItem->GetLabel());
-    item->SetProperty("plex", 1);
+    item->SetProperty("plex", true);
     item->SetProperty("sectionPath", sectionItem->GetPath());
 
     AddSection(sectionItem->GetPath(),
@@ -669,10 +669,10 @@ void CGUIWindowHome::UpdateSections()
   {
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(44020));
-    item->SetProperty("plex", 1);
+    item->SetProperty("plex", true);
     item->SetProperty("sectionPath", "plexserver://shared");
-    item->SetPath("XBMC.ActivateWindow(MyVideoFiles,plexserver://shared,return)");
-    item->SetClickActions(CGUIAction("", ""));
+    item->SetPath("XBMC.ActivateWindow(MySharedContent,plexserver://shared,return)");
+    item->SetClickActions(CGUIAction("", item->GetPath()));
     newList.push_back(item);
   }
 

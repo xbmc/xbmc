@@ -48,6 +48,9 @@ bool CMyPlexScanner::DoScan()
 
       CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, owned));
 
+      if (serverItem->HasProperty("sourceTitle"))
+        server->SetOwner(serverItem->GetProperty("sourceTitle").asString());
+
       CStdString address = serverItem->GetProperty("address").asString();
       CStdString token = serverItem->GetProperty("accessToken").asString();
       CStdString localAddresses = serverItem->GetProperty("localAddresses").asString();
@@ -75,6 +78,37 @@ bool CMyPlexScanner::DoScan()
   }
 
   g_plexServerManager.UpdateFromConnectionType(serverList, CPlexConnection::CONNECTION_MYPLEX);
+
+  /* now we need to store away the thumbnails */
+  CURL sectionsURL = myplex->BuildPlexURL("pms/system/library/sections");
+
+  CFileItemList sectionList;
+  if (!dir.GetDirectory(sectionsURL.Get(), sectionList))
+  {
+    return true;
+  }
+
+  CMyPlexSectionMap sectionMap;
+
+  for (int i = 0; i < sectionList.Size(); i ++)
+  {
+    CFileItemPtr section = sectionList.Get(i);
+    CStdString serverUUID = section->GetProperty("machineIdentifier").asString();
+
+    CLog::Log(LOGDEBUG, "CMyPlexScanner::DoScan found section %s for server %s", section->GetProperty("path").asString().c_str(), serverUUID.c_str());
+
+    if (sectionMap.find(serverUUID) != sectionMap.end())
+    {
+      sectionMap[serverUUID]->Add(section);
+    }
+    else
+    {
+      sectionMap[serverUUID] = CFileItemListPtr(new CFileItemList);
+      sectionMap[serverUUID]->Add(section);
+    }
+  }
+
+  g_myplexManager.SetSectionMap(sectionMap);
 
   return true;
 }

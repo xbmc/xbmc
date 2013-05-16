@@ -21,13 +21,5 @@ class CPlexDirectoryTypeParserBase
     static CPlexDirectoryTypeParserBase* GetDirectoryTypeParser(EPlexDirectoryType type);
 };
 
-class CPlexDirectoryTypeParserDirectory : public CPlexDirectoryTypeParserBase
-{
-  public:
-    virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement)
-    {
-      item.m_bIsFolder = true;
-    }
-};
 
 #endif // PLEXDIRECTORYTYPEPARSER_H

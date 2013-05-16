@@ -25,6 +25,9 @@
 
 #include "Stopwatch.h"
 
+#include "Client/PlexServerDataLoader.h"
+#include "Client/MyPlex/MyPlexManager.h"
+
 using namespace XFILE;
 
 /* IDirectory Interface */
@@ -37,6 +40,16 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   timer.StartZero();
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
+
+  /* Some hardcoded paths here */
+  if (url.GetHostName() == "shared")
+  {
+    return GetSharedServerDirectory(fileItems);
+  }
+  else if (url.GetHostName() == "channels")
+  {
+    return GetChannelDirectory(fileItems);
+  }
 
   if (boost::ends_with(m_url.GetFileName(), "/children/"))
   {
@@ -132,6 +145,7 @@ static DirectoryTypeMap g_typeMap = boost::assign::list_of<DirectoryTypeMap::rel
                                     (PLEX_DIR_TYPE_PRODUCER, "producer")
                                     (PLEX_DIR_TYPE_COUNTRY, "country")
                                     (PLEX_DIR_TYPE_DIRECTOR, "director")
+                                    (PLEX_DIR_TYPE_THUMB, "thumb")
                                     ;
 
 
@@ -283,6 +297,9 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
     }
 
     directoryParser->Process(*item, container, element);
+
+    if (element->ValueStr() == "Directory")
+      item->m_bIsFolder = true;
 
     container.Add(item);
   }
@@ -473,4 +490,51 @@ bool CPlexDirectory::CPlexDirectoryFetchJob::DoWork()
 
   m_items = CFileItemListPtr(new CFileItemList);
   return dir.GetDirectory(m_url.Get(), *m_items);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
+{
+  CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
+  CMyPlexSectionMap sectionMap = g_myplexManager.GetSectionMap();
+
+  for (int i = 0 ; i < sharedSections->Size(); i++)
+  {
+    CFileItemPtr sectionItem = sharedSections->Get(i);
+    CFileItemPtr item = CFileItemPtr(new CFileItem());
+    item->m_bIsFolder = true;
+
+    CPlexServerPtr server = g_plexServerManager.FindByUUID(sectionItem->GetProperty("serverUUID").asString());
+
+    item->SetPath(sectionItem->GetPath());
+    item->SetLabel(sectionItem->GetLabel());
+
+    item->SetLabel2(server->GetOwner());
+    item->SetProperty("machineIdentifier", server->GetUUID());
+    item->SetProperty("sourceTitle", server->GetOwner());
+    item->SetProperty("serverName", server->GetName());
+    item->SetPlexDirectoryType(sectionItem->GetPlexDirectoryType());
+
+    if (sectionMap.find(server->GetUUID()) != sectionMap.end())
+    {
+      CFileItemListPtr sections = sectionMap[server->GetUUID()];
+      for (int y = 0; y < sections->Size(); y ++)
+      {
+        CFileItemPtr s = sections->Get(y);
+        if (s->GetProperty("path").asString() ==
+            ("/library/sections/" + sectionItem->GetProperty("unprocessed_key").asString()))
+          item->SetArt(s->GetArt());
+      }
+    }
+
+    items.Add(item);
+  }
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
+{
+  return true;
 }

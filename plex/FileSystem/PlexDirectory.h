@@ -56,6 +56,13 @@ namespace XFILE
       CPlexDirectory() : m_isAugmented(false) {}
 
       bool GetDirectory(const CURL& url, CFileItemList& items);
+
+      /* plexserver://shared */
+      bool GetSharedServerDirectory(CFileItemList& items);
+
+      /* plexserver://channels */
+      bool GetChannelDirectory(CFileItemList& items);
+
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items)
       {
         return GetDirectory(CURL(strPath), items);

@@ -72,6 +72,8 @@ public:
   CURL BuildPlexURL(const CStdString& path) const;
   void AddConnection(CPlexConnectionPtr connection);
 
+  void SetOwner(const CStdString &owner) { m_owner = owner; }
+
 private:
   bool m_owned;
   CStdString m_uuid;

@@ -39,9 +39,28 @@ class CGUIWindowSharedContent : public CGUIWindowVideoBase
       return true;
     
     CFileItemPtr pItem = m_vecItems->Get(iItem);
-    string type = pItem->GetProperty("type").asString();
+
+    CStdString strWindow;
+
+    switch(pItem->GetPlexDirectoryType())
+    {
+      case PLEX_DIR_TYPE_ARTIST:
+        strWindow = "MyMusicFiles";
+        break;
+      case PLEX_DIR_TYPE_MOVIE:
+      case PLEX_DIR_TYPE_SHOW:
+        strWindow = "MyVideoFiles";
+        break;
+      case PLEX_DIR_TYPE_PHOTOALBUM:
+      case PLEX_DIR_TYPE_PHOTO:
+        strWindow = "MyPictures";
+      default:
+        break;
+    }
     
-    CStdString strWindow = (type == "movie" || type == "show") ? "MyVideoFiles" : (type == "artist") ? "MyMusicFiles" : "MyPictures";
+    if (strWindow.empty())
+      return false;
+
     CStdString cmd = "XBMC.ActivateWindow(" + strWindow + "," + pItem->GetPath() + ",return)";
     g_application.ExecuteXBMCAction(cmd);
 

@@ -33,7 +33,11 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
     if (j->m_sectionList && j->m_server->GetOwned())
       m_sectionMap[j->m_server->GetUUID()] = j->m_sectionList;
     else if (j->m_sectionList && !j->m_server->GetOwned())
-      m_sharedSectionsMap[j->m_server->GetUUID()] = j->m_sectionList;
+    {
+      CFileItemListPtr sectionList = j->m_sectionList;
+      sectionList->SetProperty("serverUUID", j->m_server->GetUUID());
+      m_sharedSectionsMap[j->m_server->GetUUID()] = sectionList;
+    }
     else if (j->m_channelList)
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
 
@@ -103,7 +107,11 @@ CPlexServerDataLoader::GetAllSharedSections() const
   BOOST_FOREACH(ServerDataPair pair, m_sharedSectionsMap)
   {
     for (int i = 0; i < pair.second->Size(); i++)
-      list->Add(pair.second->Get(i));
+    {
+      CFileItemPtr item = pair.second->Get(i);
+      item->SetProperty("serverUUID", pair.second->GetProperty("serverUUID"));
+      list->Add(item);
+    }
   }
 
   return CFileItemListPtr(list);
