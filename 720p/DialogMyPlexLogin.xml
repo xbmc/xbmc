@@ -290,6 +290,34 @@
 				</control>
 			</control>
 		</control>
+		<!-- busy spinner -->
+		<control type="group">
+			<posx>15</posx>
+			<posy>-95</posy>
+			<control type="image">
+				<description>Background</description>
+				<posx>125</posx>
+				<posy>225</posy>
+				<width>1000</width>
+				<height>389</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
+				<visible>Control.IsVisible(2)</visible>
+			</control>
+			<control type="image" id="2">
+				<posx>594</posx>
+				<posy>434</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>spinner.png</texture>
+				<aspectratio>keep</aspectratio>
+				<colordiffuse>FF888888</colordiffuse>
+				<animation effect="rotate" start="0" end="-360" center="624,464" time="1500" loop="true" condition="true">conditional</animation>
+				<animation type="WindowOpen">
+					<effect type="fade" start="0" end="100" time="700"/>
+				</animation>
+			</control>
+		</control>
 		<include>debugInfos</include>
 		<include>Grid</include>
 	</controls>
