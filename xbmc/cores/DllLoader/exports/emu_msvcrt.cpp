@@ -78,13 +78,6 @@
 using namespace std;
 using namespace XFILE;
 
-#if defined(_MSC_VER) && _MSC_VER < 1500
-extern "C" {
-  __int64 __cdecl _ftelli64(FILE *);
-  int __cdecl _fseeki64(FILE *, __int64, int);
-}
-#endif
-
 struct SDirData
 {
   CFileItemList items;
@@ -2225,12 +2218,6 @@ extern "C"
     return _flsbuf(data, fp);
 #endif
   }
-#if _MSC_VER <= 1310
-  long __cdecl _ftol2_sse(double d)
-  {
-    return (long)d;
-  }
-#endif
 
   // this needs to be wrapped, since dll's have their own file
   // descriptor list, but we always use app's list with our wrappers

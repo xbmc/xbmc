@@ -28,9 +28,7 @@
 #include <shlobj.h>
 #include "filesystem/SpecialProtocol.h"
 #include "my_ntddscsi.h"
-#if _MSC_VER > 1400
 #include "Setupapi.h"
-#endif
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
@@ -244,8 +242,6 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 
 bool CWIN32Util::PowerManagement(PowerState State)
 {
-// SetSuspendState not available in vs2003
-#if _MSC_VER > 1400
   HANDLE hToken;
   TOKEN_PRIVILEGES tkp;
   // Get a token for this process.
@@ -295,9 +291,6 @@ bool CWIN32Util::PowerManagement(PowerState State)
     return false;
     break;
   }
-#else
-  return false;
-#endif
 }
 
 int CWIN32Util::BatteryLevel()
@@ -604,7 +597,6 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
 // http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
 // http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
 
-#if _MSC_VER > 1400
 DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 {
 
@@ -680,11 +672,9 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
   SetupDiDestroyDeviceInfoList(hDevInfo);
   return 0;
 }
-#endif
 
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
-#if _MSC_VER > 1400
   if( !cDriveLetter )
     return false;
 
@@ -729,9 +719,6 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   }
 
   return bSuccess;
-#else
-  return false;
-#endif
 }
 
 #ifdef HAS_GL

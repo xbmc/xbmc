@@ -27,9 +27,7 @@
 
 #include "system.h" // for Win32 types
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #define MODE1_DATA_SIZE    2048 // Mode1 sector has 2048 bytes of data
 

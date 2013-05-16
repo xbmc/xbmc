@@ -438,7 +438,7 @@ bool CPlayList::LoadData(std::istream &stream)
 {
   // try to read as a string
   CStdString data;
-#if _MSC_VER > 1500
+#if TARGET_WINDOWS
   std::stringstream _stream(data);
   _stream << stream;
 #else

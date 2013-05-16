@@ -21,7 +21,7 @@
  *
  */
 
-#if !defined(_DEBUG) && _MSC_VER >= 1500 && !defined(_LIB)
+#if !defined(_DEBUG) && defined(TARGET_WINDOWS) && !defined(_LIB)
 #include "git_rev.h" //generated file
 #endif
 #include <errno.h> // for ENOENT and EINVAL
