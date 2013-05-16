@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 public class Main extends NativeActivity 
 {
+  native void _onNewIntent(Intent intent);
   public Main() 
   {
     super();
@@ -16,4 +17,12 @@ public class Main extends NativeActivity
   {
     super.onCreate(savedInstanceState);
   }
+
+  @Override
+  protected void onNewIntent(Intent intent)
+  {
+    super.onNewIntent(intent);
+    _onNewIntent(intent);
+  }
+
 }
