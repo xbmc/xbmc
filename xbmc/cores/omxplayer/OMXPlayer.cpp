@@ -1178,7 +1178,13 @@ void COMXPlayer::Process()
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       continue;
     }
-
+    if (pPacket)
+    {
+      // reset eos state when we get a packet (e.g. for case of seek after eos)
+      bOmxWaitVideo = false;
+      bOmxWaitAudio = false;
+      bOmxSentEOFs = false;
+    }
     if (!pPacket)
     {
       // when paused, demuxer could be be returning empty
