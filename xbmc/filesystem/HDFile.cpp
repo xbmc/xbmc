@@ -211,7 +211,7 @@ unsigned int CHDFile::Read(void *lpBuf, int64_t uiBufSize)
   if ( ReadFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesRead, NULL) )
   {
     m_i64FilePos += nBytesRead;
-#if defined(TARGET_LINUX)
+#if defined(HAVE_POSIX_FADVISE)
     // Drop the cache between where we last seeked and 16 MB behind where
     // we are now, to make sure the file doesn't displace everything else.
     // However, we never throw out the first 16 MB of the file, as we might
