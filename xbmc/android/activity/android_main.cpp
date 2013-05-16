@@ -47,3 +47,26 @@ extern void android_main(struct android_app* state)
   }
   exit(0);
 }
+
+extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
+{
+  jint version = JNI_VERSION_1_6;
+  JNIEnv* env;
+  if (vm->GetEnv(reinterpret_cast<void**>(&env), version) != JNI_OK)
+    return -1;
+
+  jclass cMain = env->FindClass("org/xbmc/xbmc/XBMCBroadcastReceiver");
+  if(cMain)
+  {
+    JNINativeMethod mOnReceive =   { "_onReceive",     "(Landroid/content/Intent;)V", (void*)&CJNIBroadcastReceiver::_onReceive};
+    env->RegisterNatives(cMain, &mOnReceive, 1);
+  }
+
+  jclass cBroadcastReceiver = env->FindClass("org/xbmc/xbmc/Main");
+  if(cBroadcastReceiver)
+  {
+    JNINativeMethod mOnNewIntent = { "_onNewIntent",   "(Landroid/content/Intent;)V", (void*)&CJNIContext::_onNewIntent};
+    env->RegisterNatives(cBroadcastReceiver, &mOnNewIntent, 1);
+  }
+  return version;
+}
