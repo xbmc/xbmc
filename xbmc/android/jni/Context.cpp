@@ -40,16 +40,19 @@
 using namespace jni;
 
 jhobject CJNIContext::m_context(0);
-CJNIContext::CJNIContext(const ANativeActivity *nativeActivity) : CJNIBroadcastReceiver(this)
+CJNIContext* CJNIContext::m_appInstance(NULL);
+CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
   PopulateStaticFields();
   InitializeBroadcastReceiver();
+  m_appInstance = this;
 }
 
 CJNIContext::~CJNIContext()
 {
+  m_appInstance = NULL;
   m_context.release();
   DestroyBroadcastReceiver();
   xbmc_jni_on_unload();

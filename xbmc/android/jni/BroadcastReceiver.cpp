@@ -24,24 +24,22 @@
 #include "ClassLoader.h"
 #include "jutils/jutils-details.hpp"
 
-CJNIContext * CJNIBroadcastReceiver::jni_app_context=NULL;
-
 using namespace jni;
-CJNIBroadcastReceiver::CJNIBroadcastReceiver(CJNIContext *context) : CJNIBase("org/xbmc/xbmc/XBMCBroadcastReceiver")
+
+CJNIBroadcastReceiver::CJNIBroadcastReceiver() : CJNIBase("org/xbmc/xbmc/XBMCBroadcastReceiver")
 {
-  jni_app_context = context;
 }
 
 void CJNIBroadcastReceiver::InitializeBroadcastReceiver()
 {
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
-  std::string className = GetClassName();
-  for (std::string::iterator it = className.begin(); it != className.end(); ++it)
+  std::string dotClassName = GetClassName();
+  for (std::string::iterator it = dotClassName.begin(); it != dotClassName.end(); ++it)
   {
     if (*it == '/')
       *it = '.';
   }
-  m_object = new_object(jni_app_context->getClassLoader().loadClass(className));
+  m_object = new_object(CJNIContext::GetAppInstance()->getClassLoader().loadClass(dotClassName));
   m_object.setGlobal();
 }
 

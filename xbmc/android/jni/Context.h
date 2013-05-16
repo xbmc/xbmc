@@ -47,6 +47,7 @@ public:
   static CJNIFile getDir(const std::string &path, int mode);
   static CJNIFile getExternalFilesDir(const std::string &path);
   static CJNIContentResolver getContentResolver();
+  static CJNIContext* GetAppInstance() { return m_appInstance; };
   virtual void onReceive(CJNIIntent intent)=0;
 protected:
   CJNIContext(const ANativeActivity *nativeActivity);
@@ -57,5 +58,6 @@ private:
   void PopulateStaticFields();
   void operator=(CJNIContext const&){};
   static jni::jhobject m_context;
+  static CJNIContext *m_appInstance;
 };
 

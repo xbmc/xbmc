@@ -23,10 +23,9 @@ class CJNIContext;
 class CJNIBroadcastReceiver : public CJNIBase
 {
 public:
-  static CJNIContext *jni_app_context;
 protected:
   void DestroyBroadcastReceiver();
-  CJNIBroadcastReceiver(CJNIContext *context);
+  CJNIBroadcastReceiver();
   ~CJNIBroadcastReceiver(){};
   void InitializeBroadcastReceiver();
 private:
