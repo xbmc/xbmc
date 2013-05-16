@@ -11,27 +11,30 @@
 			<control type="group">
 				<control type="image">
 					<description>Background</description>
+					<posy>30</posy>
 					<width>1000</width>
-					<height>600</height>
+					<height>570</height>
 					<include>BlackRounded</include>
 					<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
 					<description>Title bg</description>
+					<posy>30</posy>
 					<width>1000</width>
 					<height>70</height>
 					<include>DialogHeaderBGOrange</include>
 				</control>
 				<control type="image">
 					<description>Title bg bottom border</description>
-					<posy>20</posy>
+					<posy>50</posy>
 					<width>1000</width>
 					<include>DialogHeaderBorder</include>
 				</control>
 				<control type="image">
 					<description>Background border</description>
+					<posy>30</posy>
 					<width>1002</width>
-					<height>602</height>
+					<height>572</height>
 					<include>DialogBorder</include>
 				</control>
 				<control type="image">
@@ -43,6 +46,7 @@
 			</control>
 			<!-- controls -->
 			<control type="group">
+				<posy>30</posy>
 				<control type="label" id="1">
 					<posy>33</posy>
 					<description>Heading</description>
@@ -112,7 +116,7 @@
 				</control>
 				<!-- manual login area -->
 				<control type="group">
-					<posy>225</posy>
+					<posy>205</posy>
 					<posx>270</posx>
 					<!-- user field -->
 					<control type="group">
@@ -240,7 +244,7 @@
 				</control>
 				<!-- buttons area -->
 				<control type="group">
-					<posy>460</posy>
+					<posy>450</posy>
 					<posx>0</posx>
 					<control type="group">
 						<control type="image">
@@ -305,6 +309,7 @@
 				<visible>Control.IsVisible(2)</visible>
 			</control>
 			<control type="image" id="2">
+				<visible>false</visible>
 				<posx>594</posx>
 				<posy>434</posy>
 				<width>60</width>
