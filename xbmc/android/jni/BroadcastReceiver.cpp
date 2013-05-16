@@ -47,11 +47,3 @@ void CJNIBroadcastReceiver::DestroyBroadcastReceiver()
 {
   m_object.reset();
 }
-
-extern "C"
-JNIEXPORT void JNICALL Java_org_xbmc_xbmc_XBMCBroadcastReceiver__1onReceive
-  (JNIEnv *env, jobject context, jobject intent)
-{
-  if(CJNIBroadcastReceiver::jni_app_context)
-    CJNIBroadcastReceiver::jni_app_context->onReceive(CJNIIntent(jhobject(intent)));
-}
