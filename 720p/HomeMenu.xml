@@ -130,24 +130,6 @@
 				</focusedlayout>
 				<!-- additional menu items -->
 				<content>
-					<!--><item id="5">
-						<description>DEV</description>
-						<label>DEV: osd</label>
-						<visible>true</visible>
-						<onclick>XBMC.ActivateWindow(41)</onclick>
-					</item>-->
-					<item id="10">
-						<description>DVD Button</description>
-						<label>DVD</label>
-						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
-						<onclick>XBMC.PlayDVD</onclick>
-					</item>
-					<item id="4">
-						<description>Applications</description>
-						<label>$LOCALIZE[31004]</label>
-						<visible>!Skin.HasSetting(HidePrograms)</visible>
-						<onclick>XBMC.ActivateWindow(1)</onclick>
-					</item>
 					<item id="12">
 						<description>Channel Directory</description>
 						<label> $LOCALIZE[31952]</label>
@@ -182,18 +164,6 @@
 						<label>$LOCALIZE[31961]</label>
 						<onclick>Plex.Powerdown</onclick>
 						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
-					</item>
-					<!--
-					<item id="13">
-						<description>Help</description>
-						<label>$LOCALIZE[31954]</label>
-						<visible>!Skin.HasSetting(HideHelp)</visible>
-						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
-					</item>
-					-->
-					<item id="114">
-						<label>myPlex Login Demo</label>
-						<onclick>Plex.ActivateWindow(10079)</onclick>
 					</item>
 				</content>
 			</control>
