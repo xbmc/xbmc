@@ -493,18 +493,6 @@
 					</control>
 				</focusedlayout>
 				<content>
-					<item id="10">
-						<description>DVD Button</description>
-						<label>DVD</label>
-						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
-						<onclick>XBMC.PlayDVD</onclick>
-					</item>
-					<item id="4">
-						<description>Applications</description>
-						<label>$LOCALIZE[31004]</label>
-						<visible>!Skin.HasSetting(HidePrograms)</visible>
-						<onclick>XBMC.ActivateWindow(1)</onclick>
-					</item>
 					<item id="12">
 						<description>Channel Directory</description>
 						<label> $LOCALIZE[31952]</label>
@@ -540,36 +528,6 @@
 						<onclick>Plex.Powerdown</onclick>
 						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
 					</item>
-					<!--
-					<item id="13">
-						<description>Help</description>
-						<label>$LOCALIZE[31954]</label>
-						<visible>!Skin.HasSetting(HideHelp)</visible>
-						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
-					</item>
-					-->
-					<item id="2">
-						<description>Music Plug-ins</description>
-						<label>$LOCALIZE[31972]</label>
-						<visible>[!Skin.HasSetting(HideMusic)]</visible>
-						<onclick>XBMC.ActivateWindow(5, Root)</onclick>
-					</item>
-					<item id="1">
-						<description>Video Plug-ins</description>
-						<label>$LOCALIZE[31971]</label>
-						<visible>[!Skin.HasSetting(HideVideos)]</visible>
-						<onclick>XBMC.ActivateWindow(24, Root)</onclick>
-					</item>
-					<item id="3">
-						<description>Picture Plug-ins</description>
-						<label>$LOCALIZE[31973]</label>
-						<visible>[!Skin.HasSetting(HidePictures)]</visible>
-						<onclick>XBMC.ActivateWindow(2, Root)</onclick>
-					</item>
-					<!--><item id="14">
-						<label>KB TEST</label>
-						<onclick>ActivateWindow(103)</onclick>
-					</item>-->
 				</content>
 			</control>
 			<control type="group">

@@ -99,6 +99,18 @@
 			<size>20</size>
 		</font>
 		<font>
+			<name>PIN</name>
+			<filename>Helvetica</filename>
+			<variant>Bold</variant>
+			<size>144</size>
+		</font>
+		<font>
+			<name>Login</name>
+			<filename>HelveticaNeue</filename>
+			<variant>Regular</variant>
+			<size>24</size>
+		</font>
+		<font>
 			<name>NPNextFont</name>
 			<filename>Helvetica</filename>
 			<variant>Regular</variant>
