@@ -191,24 +191,6 @@
 						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
 					</item>
 					-->
-					<item id="2">
-						<description>Music Plug-ins</description>
-						<label>$LOCALIZE[31972]</label>
-						<visible>[!Skin.HasSetting(HideMusic)]</visible>
-						<onclick>XBMC.ActivateWindow(5)</onclick>
-					</item>
-					<item id="1">
-						<description>Video Plug-ins</description>
-						<label>$LOCALIZE[31971]</label>
-						<visible>[!Skin.HasSetting(HideVideos)]</visible>
-						<onclick>XBMC.ActivateWindow(24)</onclick>
-					</item>
-					<item id="3">
-						<description>Picture Plug-ins</description>
-						<label>$LOCALIZE[31973]</label>
-						<visible>[!Skin.HasSetting(HidePictures)]</visible>
-						<onclick>XBMC.ActivateWindow(2)</onclick>
-					</item>
 					<item id="114">
 						<label>myPlex Login Demo</label>
 						<onclick>Plex.ActivateWindow(10079)</onclick>
