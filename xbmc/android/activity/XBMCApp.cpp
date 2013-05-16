@@ -533,6 +533,16 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     m_batteryLevel = intent.getIntExtra("level",-1);
 }
 
+void CXBMCApp::onNewIntent(CJNIIntent intent)
+{
+  std::string action = intent.getAction();
+  if (action == "android.intent.action.VIEW")
+  {
+    std::string playFile = GetFilenameFromIntent(intent);
+    CApplicationMessenger::Get().MediaPlay(playFile);
+  }
+}
+
 void CXBMCApp::SetupEnv()
 {
   setenv("XBMC_ANDROID_SYSTEM_LIBS", CJNISystem::getProperty("java.library.path").c_str(), 0);

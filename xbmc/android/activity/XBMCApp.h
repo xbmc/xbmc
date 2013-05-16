@@ -57,6 +57,7 @@ public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
   virtual void onReceive(CJNIIntent intent);
+  virtual void onNewIntent(CJNIIntent intent);
 
   bool isValid() { return m_activity != NULL; }
 
