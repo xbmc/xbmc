@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="leftMenuInitSlide">
-		<animation effect="slide" start="-100" end="0" time="400">Visible</animation>
+		<animation effect="slide" start="-100" end="0" time="400">WindowOpen</animation>
 	</include>
 	<include name="leftMenuSlide">
 		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
@@ -137,7 +137,7 @@
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
 		<textureradiofocus>arrow-big-up-orange.png</textureradiofocus>
-		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>		
+		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>
 		<textureradioon>arrow-big-up-orange.png</textureradioon>
 		<align>right</align>
 		<aligny>center</aligny>
@@ -160,13 +160,14 @@
 	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
+		<!-- MyVideoNav.xml -->
 		<control type="group">
 			<visible>!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
-			<include>GlobalSearch</include>			
+			<include>GlobalSearch</include>
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
@@ -225,8 +226,9 @@
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>			
+			</control>
 		</control>
+		<!-- SettingsCategory.xml -->
 	</include>
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
@@ -236,7 +238,7 @@
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
 			<!-- global search-->
-			<include>GlobalSearch</include>			
+			<include>GlobalSearch</include>
 			<!-- sidebar buttons -->
 			<control type="grouplist" id="998">
 				<posy>80</posy>
@@ -253,7 +255,7 @@
 				</control>
 				<control type="button" id="102">
 					<texturefocus>b-pp-play.png</texturefocus>
-					<texturenofocus>b-pp-play.png</texturenofocus>					
+					<texturenofocus>b-pp-play.png</texturenofocus>
 					<onup>107</onup>
 					<ondown>19101</ondown>
 					<visible>Control.HasFocus(102)</visible>
@@ -267,7 +269,7 @@
 				</control>
 				<control type="button" id="19101">
 					<texturefocus>b-pp-audio.png</texturefocus>
-					<texturenofocus>b-pp-audio.png</texturenofocus>					
+					<texturenofocus>b-pp-audio.png</texturenofocus>
 					<onup>102</onup>
 					<ondown>19102</ondown>
 					<visible>Control.HasFocus(19101)</visible>
@@ -281,12 +283,12 @@
 				</control>
 				<control type="button" id="19102">
 					<texturefocus>b-pp-subtitles.png</texturefocus>
-					<texturenofocus>b-pp-subtitles.png</texturenofocus>					
+					<texturenofocus>b-pp-subtitles.png</texturenofocus>
 					<onup>19101</onup>
 					<ondown>103</ondown>
 					<visible>Control.HasFocus(19102)</visible>
 					<include>leftMenuPreplayButton</include>
-				</control>				
+				</control>
 				<!-- Rate -->
 				<control type="image">
 					<texture>b-pp-rate.png</texture>
@@ -295,7 +297,7 @@
 				</control>
 				<control type="button" id="103">
 					<texturefocus>b-pp-rate.png</texturefocus>
-					<texturenofocus>b-pp-rate.png</texturenofocus>					
+					<texturenofocus>b-pp-rate.png</texturenofocus>
 					<onup>19102</onup>
 					<ondown>104</ondown>
 					<visible>Control.HasFocus(103)</visible>
@@ -309,7 +311,7 @@
 				</control>
 				<control type="button" id="104">
 					<texturefocus>b-pp-recommend.png</texturefocus>
-					<texturenofocus>b-pp-recommed.png</texturenofocus>					
+					<texturenofocus>b-pp-recommed.png</texturenofocus>
 					<onup>103</onup>
 					<ondown>105</ondown>
 					<visible>Control.HasFocus(104)</visible>
@@ -323,7 +325,7 @@
 				</control>
 				<control type="button" id="105">
 					<texturefocus>b-pp-share.png</texturefocus>
-					<texturenofocus>b-pp-share.png</texturenofocus>					
+					<texturenofocus>b-pp-share.png</texturenofocus>
 					<onup>104</onup>
 					<ondown>106</ondown>
 					<visible>Control.HasFocus(105)</visible>
@@ -337,7 +339,7 @@
 				</control>
 				<control type="button" id="106">
 					<texturefocus>b-pp-watched.png</texturefocus>
-					<texturenofocus>b-pp-watched.png</texturenofocus>					
+					<texturenofocus>b-pp-watched.png</texturenofocus>
 					<onup>105</onup>
 					<ondown>107</ondown>
 					<visible>Control.HasFocus(106)</visible>
@@ -351,7 +353,7 @@
 				</control>
 				<control type="button" id="107">
 					<texturefocus>b-pp-unwatched.png</texturefocus>
-					<texturenofocus>b-pp-unwatched.png</texturenofocus>					
+					<texturenofocus>b-pp-unwatched.png</texturenofocus>
 					<onup>106</onup>
 					<ondown>101</ondown>
 					<visible>Control.HasFocus(107)</visible>
@@ -465,7 +467,120 @@
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>			
+			</control>
+		</control>
+	</include>
+	<!-- Settings menu -->
+	<include name="LeftSideMenuSettings">
+		<control type="group">
+			<include>leftMenuInitSlide</include>
+			<include>leftMenuBg</include>
+			<!-- page title -->
+			<control type="group">
+				<posx>100</posx>
+				<posy>118</posy>
+				<!--><control type="image">
+					<texture>arrow-big.png</texture>
+					<colordiffuse>orange</colordiffuse>
+					<visible>Control.HasFocus(997)</visible>
+				</control>
+				<control type="image">
+					<texture>arrow-big.png</texture>
+					<animation effect="fade" time="300" start="0" end="30" condition="true">Conditional</animation>
+					<visible>!Control.HasFocus(997)</visible>
+				</control>-->
+				<control type="group">
+					<posy>13</posy>
+					<posx>45</posx>
+					<!-- menu label -->
+					<control type="label">
+						<width>1400</width>
+						<height>0</height>
+						<label>$LOCALIZE[31606] $INFO[Container(997).ListItem(0).Label]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>ff111111</shadowcolor>
+						<animation effect="fade" time="300" start="0" end="100">Focus</animation>
+						<visible>Control.HasFocus(997)</visible>
+					</control>
+					<control type="label">
+						<width>1400</width>
+						<height>0</height>
+						<label>$VAR[TopBarSelectedItemStrings]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff111111</shadowcolor>
+						<animation effect="fade" time="300" start="0" end="30" condition="true">Conditional</animation>
+						<visible>!Control.HasFocus(997)</visible>
+					</control>
+				</control>
+			</control>
+			<control type="list" id="997">
+				<posx>0</posx>
+				<posy>100</posy>
+				<width>1000</width>
+				<height>700</height>
+				<onup>997</onup>
+				<ondown>997</ondown>
+				<onleft>-</onleft>
+				<onright>302</onright>
+				<focusposition>1</focusposition>
+				<scrolltime>0</scrolltime>
+				<orientation>vertical</orientation>
+				<itemlayout width="1400" height="50">
+					<control type="image">
+						<posx>0</posx>
+						<posy>18</posy>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.Art(thumb)</info>
+						<include>leftMenuPreplayIcon</include>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1400" height="50">
+					<control type="image">
+						<posx>0</posx>
+						<posy>18</posy>
+						<info>ListItem.Art(thumb)</info>
+						<include>leftMenuPreplayButton</include>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<description>Video Settings Button</description>
+						<label>$LOCALIZE[31001]</label>
+						<thumb>b-s-video.png</thumb>
+						<onclick>XBMC.ReplaceWindow(17)</onclick>
+					</item>
+					<item id="2">
+						<description>Appearance Settings Button</description>
+						<label>$LOCALIZE[31601]</label>
+						<thumb>b-pp-subtitles.png</thumb>
+						<onclick>XBMC.ReplaceWindow(19)</onclick>
+					</item>
+					<item id="3">
+						<description>Music Settings Button</description>
+						<label>$LOCALIZE[31002]</label>
+						<thumb>b-pp-audio.png</thumb>
+						<onclick>XBMC.ReplaceWindow(15)</onclick>
+					</item>
+					<item id="4">
+						<description>Pictures Settings Button</description>
+						<label>$LOCALIZE[31003]</label>
+						<thumb>b-s-photos.png</thumb>
+						<onclick>XBMC.ReplaceWindow(12)</onclick>
+					</item>
+					<item id="5">
+						<description>System Settings Button</description>
+						<label>$LOCALIZE[31006]</label>
+						<thumb>b-s-system.png</thumb>
+						<onclick>XBMC.ReplaceWindow(16)</onclick>
+					</item>
+				</content>
+			</control>
 		</control>
 	</include>
 </includes>

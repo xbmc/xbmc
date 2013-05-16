@@ -202,6 +202,11 @@
 		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
 	</variable>
 	<variable name="TopBarSelectedItemStrings">
+		<value condition="Window.IsActive(videossettings)">$LOCALIZE[31606] $LOCALIZE[31001]</value>
+		<value condition="Window.IsActive(appearancesettings)">$LOCALIZE[31606] $LOCALIZE[31601]</value>
+		<value condition="Window.IsActive(musicsettings)">$LOCALIZE[31606] $LOCALIZE[31002]</value>
+		<value condition="Window.IsActive(picturessettings)">$LOCALIZE[31606] $LOCALIZE[31003]</value>
+		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[31606] $LOCALIZE[31006]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<include name="TopBar">

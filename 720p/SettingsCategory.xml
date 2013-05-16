@@ -6,15 +6,18 @@
 	<controls>
 		<!-- bg's -->
 		<include>SlideshowDimmed</include>
-		<include>SettingsBG</include>
-		<!-- categories menu (top) -->
-		<include>SettingsCategoryMenu</include>
-		<!-- settings menu (left) -->
-		<include>SettingsMenu</include>		
-		<!-- setting options (right) -->
-		<include>SettingOptions</include>
-		<!-- Widgets -->
-		<include>Clock</include>
+		<control type="group">
+			<posx>45</posx>
+			<include>SettingsBG</include>
+			<!-- settings menu (left) -->
+			<include>SettingsMenu</include>		
+			<!-- setting options (right) -->
+			<include>SettingOptions</include>
+		</control>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenuSettings</include>
+		<include>TopBar</include>
+		<include>debugInfos</include>
 		<include>Grid</include>
 		<include>WindowFade</include>
 	</controls>
