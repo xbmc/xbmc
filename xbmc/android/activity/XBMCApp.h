@@ -31,6 +31,7 @@
 
 #include "xbmc.h"
 #include "android/jni/Context.h"
+#include "android/jni/BroadcastReceiver.h"
 
 // forward delares
 class CJNIWakeLock;
@@ -51,7 +52,7 @@ struct androidPackage
 };
 
 
-class CXBMCApp : public IActivityHandler, public CJNIContext
+class CXBMCApp : public IActivityHandler, public CJNIContext, public CJNIBroadcastReceiver
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);

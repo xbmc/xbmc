@@ -87,7 +87,9 @@ ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
-  : CJNIContext(nativeActivity), m_wakeLock(NULL)
+  : CJNIContext(nativeActivity)
+  , CJNIBroadcastReceiver("org/xbmc/xbmc/XBMCBroadcastReceiver")
+  , m_wakeLock(NULL)
 {
   m_activity = nativeActivity;
   m_firstrun = true;
