@@ -46,7 +46,6 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
   PopulateStaticFields();
-  InitializeBroadcastReceiver();
   m_appInstance = this;
 }
 
@@ -54,7 +53,6 @@ CJNIContext::~CJNIContext()
 {
   m_appInstance = NULL;
   m_context.release();
-  DestroyBroadcastReceiver();
   xbmc_jni_on_unload();
 }
 
@@ -147,12 +145,6 @@ CJNIFile CJNIContext::getExternalFilesDir(const std::string &path)
 CJNIContentResolver CJNIContext::getContentResolver()
 {
   return (CJNIContentResolver)call_method<jhobject>(m_context, "getContentResolver", "()Landroid/content/ContentResolver;");
-}
-
-void CJNIContext::_onReceive(JNIEnv *env, jobject context, jobject intent)
-{
-  if(m_appInstance)
-    m_appInstance->onReceive(CJNIIntent(jhobject(intent)));
 }
 
 void CJNIContext::_onNewIntent(JNIEnv *env, jobject context, jobject intent)

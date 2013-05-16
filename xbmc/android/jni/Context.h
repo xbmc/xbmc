@@ -29,7 +29,7 @@ class CJNIClassLoader;
 class CJNIApplicationInfo;
 class CJNIFile;
 class CJNIContentResolver;
-class CJNIContext : public CJNIBroadcastReceiver
+class CJNIContext
 {
 public:
   static CJNIPackageManager GetPackageManager();
@@ -48,10 +48,8 @@ public:
   static CJNIFile getExternalFilesDir(const std::string &path);
   static CJNIContentResolver getContentResolver();
   static CJNIContext* GetAppInstance() { return m_appInstance; };
-  static void _onReceive(JNIEnv *env, jobject context, jobject intent);
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
 protected:
-  virtual void onReceive(CJNIIntent intent)=0;
   virtual void onNewIntent(CJNIIntent intent)=0;
   CJNIContext(const ANativeActivity *nativeActivity);
   ~CJNIContext();

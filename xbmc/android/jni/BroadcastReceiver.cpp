@@ -26,12 +26,13 @@
 
 using namespace jni;
 
-CJNIBroadcastReceiver::CJNIBroadcastReceiver() : CJNIBase("org/xbmc/xbmc/XBMCBroadcastReceiver")
+CJNIBroadcastReceiver *CJNIBroadcastReceiver::m_receiverInstance(NULL);
+CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJNIBase(className)
 {
-}
+  CJNIContext *appInstance = CJNIContext::GetAppInstance();
+  if (!appInstance || className.empty())
+    return;
 
-void CJNIBroadcastReceiver::InitializeBroadcastReceiver()
-{
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
   std::string dotClassName = GetClassName();
   for (std::string::iterator it = dotClassName.begin(); it != dotClassName.end(); ++it)
@@ -39,11 +40,13 @@ void CJNIBroadcastReceiver::InitializeBroadcastReceiver()
     if (*it == '/')
       *it = '.';
   }
-  m_object = new_object(CJNIContext::GetAppInstance()->getClassLoader().loadClass(dotClassName));
+  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_receiverInstance = this;
   m_object.setGlobal();
 }
 
-void CJNIBroadcastReceiver::DestroyBroadcastReceiver()
+void CJNIBroadcastReceiver::_onReceive(JNIEnv *env, jobject context, jobject intent)
 {
-  m_object.reset();
+  if(m_receiverInstance)
+    m_receiverInstance->onReceive(CJNIIntent(jhobject(intent)));
 }

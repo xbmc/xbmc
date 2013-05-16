@@ -19,15 +19,17 @@
  *
  */
 #include "JNIBase.h"
-class CJNIContext;
+class CJNIIntent;
 class CJNIBroadcastReceiver : public CJNIBase
 {
 public:
+  static void _onReceive(JNIEnv *env, jobject context, jobject intent);
+
 protected:
-  void DestroyBroadcastReceiver();
-  CJNIBroadcastReceiver();
+  virtual void onReceive(CJNIIntent intent)=0;
   ~CJNIBroadcastReceiver(){};
-  void InitializeBroadcastReceiver();
+  CJNIBroadcastReceiver(const std::string &className);
+
 private:
-  explicit CJNIBroadcastReceiver(jni::jhobject const& object);
+  static CJNIBroadcastReceiver* m_receiverInstance;
 };
