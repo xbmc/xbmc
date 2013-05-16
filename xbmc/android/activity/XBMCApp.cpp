@@ -124,11 +124,15 @@ void CXBMCApp::onStart()
 void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+  CJNIIntentFilter batteryFilter;
+  batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
+  registerReceiver(*this, batteryFilter);
 }
 
 void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+  unregisterReceiver(*this);
 }
 
 void CXBMCApp::onStop()
@@ -259,10 +263,6 @@ void CXBMCApp::run()
 
     free(argv);
   }
-
-  CJNIIntentFilter batteryFilter;
-  batteryFilter.addAction("android.intent.action.BATTERY_CHANGED");
-  registerReceiver(*this, batteryFilter);
 
   android_printf(" => waiting for a window");
   // Hack!
