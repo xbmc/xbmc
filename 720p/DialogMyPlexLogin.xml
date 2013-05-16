@@ -309,7 +309,6 @@
 				<visible>Control.IsVisible(2)</visible>
 			</control>
 			<control type="image" id="2">
-				<visible>false</visible>
 				<posx>594</posx>
 				<posy>434</posy>
 				<width>60</width>
