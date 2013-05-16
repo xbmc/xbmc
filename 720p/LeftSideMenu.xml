@@ -170,6 +170,7 @@
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
+				<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>
 				<posx>-253</posx>
 				<posy>30</posy>
 				<width>253</width>

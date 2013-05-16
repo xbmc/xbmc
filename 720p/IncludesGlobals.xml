@@ -251,6 +251,7 @@
 			<height>32</height>
 			<aspectratio>keep</aspectratio>
 			<texture>left-menu-search-field-bg.png</texture>
+			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>
 		</control>
 	</include>
 	<!-- plot formatting -->
