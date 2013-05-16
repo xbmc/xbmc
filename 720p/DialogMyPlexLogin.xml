@@ -297,13 +297,13 @@
 		<!-- busy spinner -->
 		<control type="group">
 			<posx>15</posx>
-			<posy>-95</posy>
+			<posy>-65</posy>
 			<control type="image">
 				<description>Background</description>
 				<posx>125</posx>
 				<posy>225</posy>
 				<width>1000</width>
-				<height>389</height>
+				<height>359</height>
 				<include>Black</include>
 				<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
 				<visible>Control.IsVisible(2)</visible>
