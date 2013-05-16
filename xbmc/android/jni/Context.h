@@ -38,6 +38,7 @@ public:
   static int checkCallingOrSelfPermission(const std::string &permission);
   static CJNIIntent registerReceiver(const CJNIBroadcastReceiver &receiver, const CJNIIntentFilter &filter);
   static CJNIIntent registerReceiver(const CJNIIntentFilter &filter);
+  static void unregisterReceiver(const CJNIBroadcastReceiver &receiver);
   static CJNIIntent sendBroadcast(const CJNIIntent &intent);
   static CJNIIntent getIntent();
   static CJNIClassLoader getClassLoader();
