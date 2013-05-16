@@ -148,3 +148,9 @@ CJNIContentResolver CJNIContext::getContentResolver()
 {
   return (CJNIContentResolver)call_method<jhobject>(m_context, "getContentResolver", "()Landroid/content/ContentResolver;");
 }
+
+void CJNIContext::_onReceive(JNIEnv *env, jobject context, jobject intent)
+{
+  if(m_appInstance)
+    m_appInstance->onReceive(CJNIIntent(jhobject(intent)));
+}
