@@ -4585,16 +4585,9 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 {
   bool usingLocalPath = false;
 
-  // See if we can find the file locally.
-  if (m_item.IsRemotePlexMediaServerLibrary() == false)
-  {
-    string localPath = m_item.GetProperty("localPath").asString();
-    if (localPath.size() > 0 && CFile::Exists(localPath))
-    {
-      m_item.SetPath(localPath);
-      usingLocalPath = true;
-    }
-  }
+  int64_t mediaItemIdx = 0;
+  if (m_item.HasProperty("selectedMediaItem"))
+    mediaItemIdx = m_item.GetProperty("selectedMediaItem").asInteger();
 
   CFileItem item = m_item;
   if (item.GetProperty("IsSynthesized").asBoolean() == false)
@@ -4649,6 +4642,22 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     //
     if (isIndirect)
       item = resolver->GetFinalItem();
+  }
+
+  CFileItemPtr mediaPart = item.m_mediaItems[mediaItemIdx]->m_mediaParts[0];
+
+  if (!item.IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
+  {
+    CStdString localPath = mediaPart->GetProperty("file").asString();
+    if (CFile::Exists(localPath))
+    {
+      item.SetPath(localPath);
+      usingLocalPath = true;
+    }
+  }
+  else
+  {
+    item.SetPath(mediaPart->GetPath());
   }
 
   m_mimetype = item.GetMimeType();

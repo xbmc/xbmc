@@ -175,7 +175,6 @@ class PlexContentPlayerMixin
   
   static bool ProcessMediaChoice(CFileItem* file)
   {
-#if 0
     // If there is more than one media item, allow picking which one.
      if (file->m_mediaItems.size() > 1)
      {
@@ -217,15 +216,9 @@ class PlexContentPlayerMixin
          
          int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
          if (choice >= 0)
-         {
-           file->SetPath(file->m_mediaItems[choice]->GetPath());
-           file->SetProperty("localPath", file->m_mediaItems[choice]->GetProperty("localPath"));
-           file->SetProperty("selectedQuality", choices[choice].second);
-         }
+           file->SetProperty("selectedMediaItem", choice);
          else
-         {
            return false;
-         }
        }
        else
        {
@@ -262,17 +255,16 @@ class PlexContentPlayerMixin
              if (q <= onlineQuality)
              {
                pickedIndex = qualityMap[q];
-               file->SetPath(file->m_mediaItems[pickedIndex]->GetPath());
-               file->SetProperty("localPath", file->m_mediaItems[pickedIndex]->GetProperty("localPath"));
-               file->SetProperty("selectedQuality", file->m_mediaItems[pickedIndex]->GetProperty("mediaTag-videoResolution").asString());
+               file->SetProperty("selectedMediaItem", pickedIndex);
                break;
              }
            }
          }
        }
      }
+     else
+       file->SetProperty("selectedMediaItem", 0);
      
-#endif
      return true;
   }
   

@@ -118,6 +118,7 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
     {
       /* these items are not folders */
       mediaItem->m_bIsFolder = false;
+      mediaItem->SetPath(item.GetPath());
 
       /* Parse children */
       ParseMediaParts(*mediaItem, media);
