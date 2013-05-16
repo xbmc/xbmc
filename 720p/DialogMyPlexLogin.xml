@@ -63,6 +63,7 @@
 					<posx>270</posx>
 					<width>460</width>
 					<height>195</height>
+					<align>center</align>
 					<font>PINdescription</font>
 				</control>
 				<!-- PIN area -->
