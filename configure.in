@@ -1618,7 +1618,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   SAVE_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
-  # Possible places the ffmpeg headers may be
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])
 
