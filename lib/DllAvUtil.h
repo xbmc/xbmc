@@ -56,11 +56,7 @@ extern "C" {
     #include <ffmpeg/avcodec.h>
   #endif
   #include <libavutil/opt.h>
-  #if defined(HAVE_LIBAVUTIL_MEM_H)
-    #include <libavutil/mem.h>
-  #else
-    #include <ffmpeg/mem.h>
-  #endif
+  #include <libavutil/mem.h>
   #include <libavutil/mathematics.h>
 #else
   #include "libavutil/avutil.h"
