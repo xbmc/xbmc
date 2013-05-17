@@ -162,7 +162,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         {
           m_delayedTimer.Stop();
           CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), GetID(), 1); // param1 = 1 for "reset the control if it's invalid"
-          OnMessage(message);
+          g_windowManager.SendThreadMessage(message, GetID());
+          return true;
         }
 
         // check if we have changed the category and need to create new setting controls
