@@ -1623,9 +1623,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avfilter.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
-  # optional
-  AC_CHECK_HEADERS([libavutil/samplefmt.h])
-
   # Check for libswresample or libavresample headers.
   AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
