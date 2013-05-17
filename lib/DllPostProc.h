@@ -39,16 +39,8 @@ extern "C" {
 #endif
   
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
-    #include <libavutil/avutil.h>
-  #elif (defined HAVE_FFMPEG_AVUTIL_H)
-    #include <ffmpeg/avutil.h>
-  #endif
-  #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
-    #include <libpostproc/postprocess.h>
-  #elif (defined HAVE_POSTPROC_POSTPROCESS_H)
-    #include <postproc/postprocess.h>
-  #endif
+  #include <libavutil/avutil.h>
+  #include <libpostproc/postprocess.h>
 #else
   #include "libavutil/avutil.h"
   #include "libpostproc/postprocess.h"

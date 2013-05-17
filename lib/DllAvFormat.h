@@ -37,11 +37,7 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
-    #include <libavformat/avformat.h>
-  #else
-    #include <ffmpeg/avformat.h>
-  #endif
+  #include <libavformat/avformat.h>
   /* xbmc_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
   void xbmc_read_frame_flush(AVFormatContext *s);
 #else
