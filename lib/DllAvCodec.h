@@ -48,15 +48,9 @@ extern "C" {
     #if (defined HAVE_LIBAVCODEC_OPT_H)
       #include <libavcodec/opt.h>
     #endif
-    #if (defined AVPACKET_IN_AVFORMAT)
-      #include <libavformat/avformat.h>
-    #endif
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
     #include <ffmpeg/avcodec.h>
     #include <ffmpeg/opt.h>
-    #if (defined AVPACKET_IN_AVFORMAT)
-      #include <ffmpeg/avformat.h>
-    #endif
   #endif
 #else
   #include "libavcodec/avcodec.h"

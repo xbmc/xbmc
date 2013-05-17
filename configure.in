@@ -1614,13 +1614,6 @@ if test "$use_external_ffmpeg" = "yes"; then
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
                     AC_MSG_ERROR($missing_library))
 
-  # Determine whether AVPacket and relevant functions are defined in libavformat
-  # or libavcodec
-  AC_CHECK_LIB([avcodec], [av_free_packet],
-  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavcodec. ==)],
-  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavformat. ==)
-   AC_DEFINE([AVPACKET_IN_AVFORMAT], [1], [Whether AVPacket is in libavformat.])])
-
   # in case the headers are in a custom directory
   SAVE_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
