@@ -1629,10 +1629,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   # new FFmpeg have math headers
   AC_CHECK_HEADERS([libavutil/mathematics.h],,)
 
-  # We'll support the use of rgb2rgb.h if it exists.
-  AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
-  AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
-
   # Check for libswresample or libavresample headers.
   AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
