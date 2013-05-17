@@ -61,9 +61,7 @@ extern "C" {
   #else
     #include <ffmpeg/mem.h>
   #endif
-  #if (defined HAVE_LIBAVUTIL_MATHEMATICS_H)
-    #include <libavutil/mathematics.h>
-  #endif
+  #include <libavutil/mathematics.h>
 #else
   #include "libavutil/avutil.h"
   //for av_get_default_channel_layout

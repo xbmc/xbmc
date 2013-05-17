@@ -1626,9 +1626,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   # optional
   AC_CHECK_HEADERS([libavutil/mem.h libavutil/samplefmt.h])
 
-  # new FFmpeg have math headers
-  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
-
   # Check for libswresample or libavresample headers.
   AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
