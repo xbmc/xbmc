@@ -277,7 +277,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   /* dependencies of libavcodec */
   DllAvUtil m_dllAvUtil;
-  // DllAvUtil loaded implicitely by m_dllAvCore
 
 public:
     static CCriticalSection m_critSection;
