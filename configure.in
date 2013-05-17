@@ -1624,20 +1624,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   # Check for libswresample or libavresample headers.
   AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
-  # Check if AVFilterBufferRefVideoProps AVRational member is named
-  # 'pixel_aspect' or 'sample_aspect_ratio'.
-  AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
-    [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
-    [1],
-    [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
-      [AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
-      [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
-      [1],
-      [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
-      ,
-      [[#include <ffmpeg/avfilter.h>]])],
-    [[#include <libavfilter/avfilter.h>]])
-
   AC_MSG_NOTICE($external_ffmpeg_enabled)
   USE_EXTERNAL_FFMPEG=1
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
