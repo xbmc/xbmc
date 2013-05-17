@@ -1652,21 +1652,10 @@ if test "$use_external_ffmpeg" = "yes"; then
       AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
     fi])
 
-  # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
-  if test "x$use_vdpau" != "xno"; then
-    AC_LANG_PUSH([C++])
-    AC_LINK_IFELSE(
-      [AC_LANG_SOURCE([ #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }])],
-      [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
-      [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
-    AC_LANG_POP([C++])
-  fi
   CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
-  AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
 echo "Checking for SWIG installation"

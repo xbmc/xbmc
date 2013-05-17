@@ -952,8 +952,7 @@ void CVDPAU::ReadFormatOf( AVCodecID codec
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL) && \
-    (defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
+#if (defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
     case AV_CODEC_ID_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
