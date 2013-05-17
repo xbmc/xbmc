@@ -55,13 +55,7 @@ extern "C" {
     // for LIBAVCODEC_VERSION_INT:
     #include <ffmpeg/avcodec.h>
   #endif
-  #if defined(HAVE_LIBAVUTIL_OPT_H)
-    #include <libavutil/opt.h>
-  #elif defined(HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/opt.h>
-  #else
-    #include <ffmpeg/opt.h>
-  #endif
+  #include <libavutil/opt.h>
   #if defined(HAVE_LIBAVUTIL_MEM_H)
     #include <libavutil/mem.h>
   #else

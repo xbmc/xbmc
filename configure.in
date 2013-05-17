@@ -1626,9 +1626,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   # optional
   AC_CHECK_HEADERS([libavutil/mem.h libavutil/samplefmt.h])
 
-  # old FFmpeg have this in libavcodec/opt.h instead:
-  AC_CHECK_HEADERS([libavutil/opt.h])
-
   # new FFmpeg have math headers
   AC_CHECK_HEADERS([libavutil/mathematics.h],,)
 
