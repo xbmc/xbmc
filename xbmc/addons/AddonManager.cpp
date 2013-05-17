@@ -355,7 +355,7 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  if (m_cpluff)
+  if (m_cpluff && m_cpluff->IsLoaded())
     m_cpluff->destroy();
   delete m_cpluff;
   m_cpluff = NULL;
