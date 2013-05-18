@@ -6,7 +6,9 @@
         <setting id="lookandfeel.skin" type="addon" label="166" help="">
           <level>0</level>
           <default>skin.confluence</default>
-          <addontype>xbmc.gui.skin</addontype>
+          <constraints>
+            <addontype>xbmc.gui.skin</addontype>
+          </constraints>
         </setting>
         <setting id="lookandfeel.skinsettings" type="action" label="21417" help="">
           <level>0</level>
@@ -206,8 +208,8 @@
         <setting id="screensaver.mode" type="addon" label="356" help="">
           <level>0</level>
           <default>screensaver.xbmc.builtin.dim</default>
-          <addontype>xbmc.ui.screensaver</addontype>
           <constraints>
+            <addontype>xbmc.ui.screensaver</addontype>
             <allowempty>true</allowempty>
           </constraints>
           <updates>
@@ -718,17 +720,23 @@
         <setting id="scrapers.moviesdefault" type="addon" label="21413" help="">
           <level>4</level>
           <default>metadata.themoviedb.org</default>
-          <addontype>xbmc.metadata.scraper.movies</addontype>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.movies</addontype>
+          </constraints>
         </setting>
         <setting id="scrapers.tvshowsdefault" type="addon" label="21414" help="">
           <level>4</level>
           <default>metadata.tvdb.com</default>
-          <addontype>xbmc.metadata.scraper.tvshows</addontype>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.tvshows</addontype>
+          </constraints>
         </setting>
         <setting id="scrapers.musicvideosdefault" type="addon" label="21415" help="">
           <level>4</level>
           <default>metadata.musicvideos.theaudiodb.com</default>
-          <addontype>xbmc.metadata.scraper.musicvideos</addontype>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.musicvideos</addontype>
+          </constraints>
           <updates>
             <update type="change" />
           </updates>
@@ -1111,12 +1119,16 @@
         <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="">
           <level>1</level>
           <default>metadata.album.universal</default>
-          <addontype>xbmc.metadata.scraper.albums</addontype>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.albums</addontype>
+          </constraints>
         </setting>
         <setting id="musiclibrary.artistsscraper" type="addon" label="20194" help="">
           <level>1</level>
           <default>metadata.artists.universal</default>
-          <addontype>xbmc.metadata.scraper.artists</addontype>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.artists</addontype>
+          </constraints>
         </setting>
         <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="">
           <level>1</level>
@@ -1218,8 +1230,8 @@
         <setting id="musicplayer.visualisation" type="addon" label="250" help="">
           <level>0</level>
           <default>visualization.glspectrum</default>
-          <addontype>xbmc.player.musicviz</addontype>
           <constraints>
+            <addontype>xbmc.player.musicviz</addontype>
             <allowempty>true</allowempty>
           </constraints>
         </setting>
@@ -1553,8 +1565,8 @@
         <setting id="weather.addon" type="addon" label="24029" help="">
           <level>0</level>
           <default>weather.wunderground</default>
-          <addontype>xbmc.python.weather</addontype>
           <constraints>
+            <addontype>xbmc.python.weather</addontype>
             <allowempty>true</allowempty>
           </constraints>
         </setting>
@@ -1642,7 +1654,9 @@
         <setting id="services.webskin" type="addon" label="199" help="">
           <level>1</level>
           <default>webinterface.default</default>
-          <addontype>xbmc.gui.webinterface</addontype>
+          <constraints>
+            <addontype>xbmc.gui.webinterface</addontype>
+          </constraints>
         </setting>
       </group>
     </category>
