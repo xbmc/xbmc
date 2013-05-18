@@ -1640,7 +1640,6 @@
         <setting id="services.webserverport" type="integer" label="730" help="">
           <level>2</level>
           <default>8080</default>
-          <heading>730</heading>
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
@@ -1662,7 +1661,6 @@
           <level>2</level>
           <default></default>
           <allowempty>true</allowempty>
-          <heading>730</heading>
           <control type="edit" format="string" attributes="hidden">
             <dependencies>
               <dependency type="enable" setting="services.webserver">true</dependency>
@@ -1803,7 +1801,6 @@
           <level>1</level>
           <default></default>
           <allowempty>true</allowempty>
-          <heading>733</heading>
           <control type="edit" format="string" attributes="hidden">
             <dependencies>
               <dependency type="enable" setting="services.useairplaypassword">true</dependency>
@@ -1822,7 +1819,6 @@
         <setting id="smb.workgroup" type="string" label="1202" help="">
           <level>2</level>
           <default>WORKGROUP</default>
-          <heading>1202</heading>
           <control type="edit" format="string" />
         </setting>
       </group>
@@ -2141,7 +2137,7 @@
         <setting id="network.httpproxyport" type="integer" label="730" help="">
           <level>1</level>
           <default>8080</default>
-          <heading>707</heading>
+          <heading>730</heading>
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
