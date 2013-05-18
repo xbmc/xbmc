@@ -13,7 +13,6 @@
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="button" format="action" />
         </setting>
         <setting id="lookandfeel.skintheme" type="string" label="15111" help="">
           <level>1</level>
@@ -1540,7 +1539,6 @@
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
           </dependencies>
-          <control type="button" format="action" />
         </setting>
       </group>
     </category>
