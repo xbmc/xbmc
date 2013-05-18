@@ -10,13 +10,13 @@
             <addontype>xbmc.gui.skin</addontype>
           </constraints>
         </setting>
-        <setting id="lookandfeel.skinsettings" type="action" label="21417" help="36104">
+        <setting id="lookandfeel.skinsettings" type="action" parent="lookandfeel.skin" label="21417" help="36104">
           <level>0</level>
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="lookandfeel.skin" />
           </dependencies>
         </setting>
-        <setting id="lookandfeel.skintheme" type="string" label="15111" help="36105">
+        <setting id="lookandfeel.skintheme" type="string" parent="lookandfeel.skin" label="15111" help="36105">
           <level>1</level>
           <default>SKINDEFAULT</default>
           <constraints>
@@ -24,7 +24,7 @@
           </constraints>
           <control type="spinner" format="string" delayed="true" />
         </setting>
-        <setting id="lookandfeel.skincolors" type="string" label="14078" help="36106">
+        <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
           <level>1</level>
           <default>SKINDEFAULT</default>
           <constraints>
@@ -32,7 +32,7 @@
           </constraints>
           <control type="spinner" format="string" delayed="true" />
         </setting>
-        <setting id="lookandfeel.font" type="string" label="13303" help="36107">
+        <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
           <level>1</level>
           <default>Default</default>
           <constraints>
@@ -40,7 +40,7 @@
           </constraints>
           <control type="spinner" format="string" delayed="true" />
         </setting>
-        <setting id="lookandfeel.skinzoom" type="integer" label="20109" help="36108">
+        <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
           <level>2</level>
           <default>0</default>
           <constraints>
@@ -74,7 +74,7 @@
           <level>1</level>
           <default>true</default>
         </setting>
-        <setting id="lookandfeel.rssedit" type="string" label="21450" help="36112">
+        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
           <level>1</level>
           <default></default>
           <constraints>
@@ -217,7 +217,7 @@
             <update type="change" />
           </updates>
         </setting>
-        <setting id="screensaver.settings" type="action" label="21417" help="36130">
+        <setting id="screensaver.settings" parent="screensaver.mode" type="action" label="21417" help="36130">
           <level>0</level>
           <dependencies>
             <dependency type="enable">
@@ -228,7 +228,7 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="screensaver.preview" type="action" label="1000" help="36131">
+        <setting id="screensaver.preview" type="action" parent="screensaver.mode" label="1000" help="36131">
           <level>0</level>
           <dependencies>
             <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
@@ -601,7 +601,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="subtitles.height" type="integer" label="289" help="36186">
+        <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
           <level>1</level>
           <default>28</default>
           <constraints>
@@ -614,7 +614,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="subtitles.style" type="integer" label="736" help="36187">
+        <setting id="subtitles.style" type="integer" parent="subtitles.font" label="736" help="36187">
           <level>1</level>
           <default>1</default> <!-- FONT_STYLE_BOLD -->
           <constraints>
@@ -630,7 +630,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="subtitles.color" type="integer" label="737" help="36188">
+        <setting id="subtitles.color" type="integer" parent="subtitles.font" label="737" help="36188">
           <level>1</level>
           <default>1</default> <!-- White -->
           <constraints>
@@ -650,7 +650,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="subtitles.charset" type="string" label="735" help="36189">
+        <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
           <level>1</level>
           <default>DEFAULT</default>
           <constraints>
@@ -1453,7 +1453,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="karaoke.fontheight" type="integer" label="22031" help="36296">
+        <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
           <level>2</level>
           <default>36</default>
           <constraints>
@@ -1467,7 +1467,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="karaoke.fontcolors" type="integer" label="22032" help="36297">
+        <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
           <level>2</level>
           <default>0</default> <!-- white/green -->
           <constraints>
@@ -1483,7 +1483,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="karaoke.charset" type="string" label="22033" help="36298">
+        <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
           <level>2</level>
           <default>DEFAULT</default>
           <constraints>
@@ -1601,7 +1601,7 @@
             <allowempty>true</allowempty>
           </constraints>
         </setting>
-        <setting id="weather.addonsettings" type="action" label="21417" help="36103">
+        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36103">
           <level>0</level>
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
@@ -1650,7 +1650,7 @@
           <level>1</level>
           <default>false</default>
         </setting>
-        <setting id="services.webserverport" type="integer" label="730" help="36329">
+        <setting id="services.webserverport" type="integer" parent="services.webserver" label="730" help="36329">
           <level>2</level>
           <default>8080</default>
           <constraints>
@@ -1660,7 +1660,7 @@
           </constraints>
           <control type="edit" format="integer" />
         </setting>
-        <setting id="services.webserverusername" type="string" label="1048" help="36330">
+        <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
           <level>2</level>
           <default>xbmc</default>
           <constraints>
@@ -1671,7 +1671,7 @@
           </dependencies>
           <control type="edit" format="string" />
         </setting>
-        <setting id="services.webserverpassword" type="string" label="733" help="36331">
+        <setting id="services.webserverpassword" type="string" parent="services.webserver" label="733" help="36331">
           <level>2</level>
           <default></default>
           <constraints>
@@ -1798,14 +1798,14 @@
           <level>1</level>
           <default>false</default>
         </setting>
-        <setting id="services.useairplaypassword" type="boolean" label="1272" help="36344">
+        <setting id="services.useairplaypassword" type="boolean" parent="services.airplay" label="1272" help="36344">
           <level>1</level>
           <default>false</default>
           <dependencies>
             <dependency type="enable" setting="services.airplay">true</dependency>
           </dependencies>
         </setting>
-        <setting id="services.airplaypassword" type="string" label="733" help="36345">
+        <setting id="services.airplaypassword" type="string" parent="services.useairplaypassword" label="733" help="36345">
           <level>1</level>
           <default></default>
           <constraints>
@@ -1962,7 +1962,7 @@
           <level>2</level>
           <default>false</default>
         </setting>
-        <setting id="audiooutput.ac3passthrough" type="boolean" label="364" help="36365">
+        <setting id="audiooutput.ac3passthrough" type="boolean" parent="audiooutput.mode" label="364" help="36365">
           <level>2</level>
           <default>true</default>
           <dependencies>
@@ -1974,7 +1974,7 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="audiooutput.dtspassthrough" type="boolean" label="254" help="36366">
+        <setting id="audiooutput.dtspassthrough" type="boolean" parent="audiooutput.mode" label="254" help="36366">
           <level>2</level>
           <default>true</default>
           <dependencies>
@@ -1986,7 +1986,7 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="audiooutput.passthroughaac" type="boolean" label="299" help="36367">
+        <setting id="audiooutput.passthroughaac" type="boolean" parent="audiooutput.mode" label="299" help="36367">
           <level>2</level>
           <default>false</default>
           <dependencies>
@@ -1998,21 +1998,21 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="audiooutput.multichannellpcm" type="boolean" label="348" help="36368">
+        <setting id="audiooutput.multichannellpcm" type="boolean" parent="audiooutput.mode" label="348" help="36368">
           <level>2</level>
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
           </dependencies>
         </setting>
-        <setting id="audiooutput.truehdpassthrough" type="boolean" label="349" help="36369">
+        <setting id="audiooutput.truehdpassthrough" type="boolean" parent="audiooutput.mode" label="349" help="36369">
           <level>2</level>
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.mode">2</dependency> <!-- AUDIO_HDMI -->
           </dependencies>
         </setting>
-        <setting id="audiooutput.dtshdpassthrough" type="boolean" label="347" help="36370">
+        <setting id="audiooutput.dtshdpassthrough" type="boolean" parent="audiooutput.mode" label="347" help="36370">
           <level>2</level>
           <default>true</default>
           <dependencies>
@@ -2097,7 +2097,7 @@
           <level>1</level>
           <default>false</default>
         </setting>
-        <setting id="network.httpproxytype" type="integer" label="1180" help="36381">
+        <setting id="network.httpproxytype" type="integer" parent="network.usehttpproxy" label="1180" help="36381">
           <level>1</level>
           <default>0</default>
           <constraints>
@@ -2114,7 +2114,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="network.httpproxyserver" type="string" label="706" help="36382">
+        <setting id="network.httpproxyserver" type="string" parent="network.usehttpproxy" label="706" help="36382">
           <level>1</level>
           <default></default>
           <constraints>
@@ -2125,7 +2125,7 @@
           </dependencies>
           <control type="edit" format="string" />
         </setting>
-        <setting id="network.httpproxyport" type="integer" label="730" help="36383">
+        <setting id="network.httpproxyport" type="integer" parent="network.usehttpproxy" label="730" help="36383">
           <level>1</level>
           <default>8080</default>
           <constraints>
@@ -2138,7 +2138,7 @@
           </dependencies>
           <control type="edit" format="integer" />
         </setting>
-        <setting id="network.httpproxyusername" type="string" label="1048" help="36384">
+        <setting id="network.httpproxyusername" type="string" parent="network.usehttpproxy" label="1048" help="36384">
           <level>1</level>
           <default></default>
           <constraints>
@@ -2149,7 +2149,7 @@
           </dependencies>
           <control type="edit" format="string" />
         </setting>
-        <setting id="network.httpproxypassword" type="string" label="733" help="36385">
+        <setting id="network.httpproxypassword" type="string" parent="network.usehttpproxy" label="733" help="36385">
           <level>1</level>
           <default></default>
           <constraints>
@@ -2224,7 +2224,7 @@
           <level>1</level>
           <default>false</default>
         </setting>
-        <setting id="debug.setextraloglevel" type="action" label="666" help="36394">
+        <setting id="debug.setextraloglevel" type="action" parent="debug.showloginfo" label="666" help="36394">
           <level>1</level>
           <dependencies>
             <dependency type="enable" setting="debug.showloginfo">true</dependency>

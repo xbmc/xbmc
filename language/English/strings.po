@@ -676,7 +676,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr ""
 
-#empty string with id 168
+#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+msgctxt "#168"
+msgid "%s- %s"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#169"
@@ -1033,7 +1036,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#254"
-msgid "- DTS capable receiver"
+msgid "DTS capable receiver"
 msgstr ""
 
 msgctxt "#255"
@@ -1182,7 +1185,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#289"
-msgid "- Size"
+msgid "Size"
 msgstr ""
 
 msgctxt "#290"
@@ -1222,19 +1225,19 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#299"
-msgid "- AAC capable receiver"
+msgid "AAC capable receiver"
 msgstr ""
 
 msgctxt "#300"
-msgid "- MP1 capable receiver"
+msgid "MP1 capable receiver"
 msgstr ""
 
 msgctxt "#301"
-msgid "- MP2 capable receiver"
+msgid "MP2 capable receiver"
 msgstr ""
 
 msgctxt "#302"
-msgid "- MP3 capable receiver"
+msgid "MP3 capable receiver"
 msgstr ""
 
 msgctxt "#303"
@@ -1419,17 +1422,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#347"
-msgid "- DTS-HD capable receiver"
+msgid "DTS-HD capable receiver"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
+msgid "Multichannel LPCM capable receiver"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#349"
-msgid "- TrueHD capable receiver"
+msgid "TrueHD capable receiver"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -1497,7 +1500,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
+msgid "Dolby Digital (AC3) capable receiver"
 msgstr ""
 
 msgctxt "#365"
@@ -2727,7 +2730,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#666"
-msgid "- Verbose logging..."
+msgid "Verbose logging..."
 msgstr ""
 
 #empty strings from id 667 to 699
@@ -2752,7 +2755,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#706"
-msgid "- Server"
+msgid "Server"
 msgstr ""
 
 #empty string with id 707
@@ -2780,7 +2783,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#715"
-msgid "- Assignment"
+msgid "Assignment"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2797,22 +2800,22 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#719"
-msgid "- IP address"
+msgid "IP address"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#720"
-msgid "- Netmask"
+msgid "Netmask"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#721"
-msgid "- Default gateway"
+msgid "Default gateway"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#722"
-msgid "- DNS server"
+msgid "DNS server"
 msgstr ""
 
 msgctxt "#723"
@@ -2843,7 +2846,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#730"
-msgid "- Port"
+msgid "Port"
 msgstr ""
 
 #empty string with id 731
@@ -2854,7 +2857,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#733"
-msgid "- Password"
+msgid "Password"
 msgstr ""
 
 msgctxt "#734"
@@ -2863,17 +2866,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#735"
-msgid "- Character set"
+msgid "Character set"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#736"
-msgid "- Style"
+msgid "Style"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#737"
-msgid "- Colour"
+msgid "Colour"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3024,17 +3027,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
+msgid "Wireless network name (ESSID)"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#777"
-msgid "- Wireless password"
+msgid "Wireless password"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#778"
-msgid "- Wireless security"
+msgid "Wireless security"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3179,7 +3182,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1000"
-msgid "- Preview"
+msgid "Preview"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -3403,7 +3406,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1048"
-msgid "- Username"
+msgid "Username"
 msgstr ""
 
 msgctxt "#1049"
@@ -3614,7 +3617,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1272"
-msgid "- Use password protection"
+msgid "Use password protection"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -5255,7 +5258,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13303"
-msgid "- Fonts"
+msgid "Fonts"
 msgstr ""
 
 msgctxt "#13304"
@@ -6035,12 +6038,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14027"
-msgid "- Local Network"
+msgid "Local Network"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14028"
-msgid "- Internet"
+msgid "Internet"
 msgstr ""
 
 #empty string with id 14029
@@ -6052,12 +6055,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14031"
-msgid "- Local Network"
+msgid "Local Network"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14032"
-msgid "- Internet"
+msgid "Internet"
 msgstr ""
 
 #empty string with id 14033
@@ -6069,7 +6072,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14035"
-msgid "- Local Network"
+msgid "Local Network"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6246,7 +6249,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14078"
-msgid "- Colours"
+msgid "Colours"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6432,7 +6435,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#15111"
-msgid "- Theme"
+msgid "Theme"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8921,7 +8924,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20109"
-msgid "- Zoom"
+msgid "Zoom"
 msgstr ""
 
 msgctxt "#20110"
@@ -10402,7 +10405,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21417"
-msgid "- Settings"
+msgid "Settings"
 msgstr ""
 
 msgctxt "#21418"
@@ -10542,7 +10545,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21450"
-msgid "- Edit"
+msgid "Edit"
 msgstr ""
 
 msgctxt "#21451"
@@ -10968,7 +10971,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22002"
-msgid "- DNS suffix"
+msgid "DNS suffix"
 msgstr ""
 
 msgctxt "#22003"
@@ -11079,17 +11082,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22031"
-msgid "- Size"
+msgid "Size"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22032"
-msgid "- Colours"
+msgid "Colours"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22033"
-msgid "- Charset"
+msgid "Charset"
 msgstr ""
 
 msgctxt "#22034"
