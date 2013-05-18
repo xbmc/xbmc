@@ -87,7 +87,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_iVideoDelay           = 0;
-  m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
@@ -338,21 +337,7 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-
-      if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
-        pts = pMsgGeneralResync->m_timestamp;
-
-      double delay = 0;
-
-      if(pMsgGeneralResync->m_clock)
-      {
-        CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
-        m_av_clock->Discontinuity(pts - delay);
-        //m_av_clock->OMXUpdateClock(pts - delay);
-      }
-      else
-        CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
-
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %d)", pts, pMsgGeneralResync->m_clock);
       pMsgGeneralResync->Release();
       continue;
     }

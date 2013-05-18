@@ -61,7 +61,6 @@ protected:
   bool                      m_started;
   bool                      m_flush;
   std::string               m_codecname;
-  unsigned int              m_autosync;
   double                    m_iSubtitleDelay;
   bool                      m_bRenderSubs;
   bool                      m_bAllowFullscreen;
