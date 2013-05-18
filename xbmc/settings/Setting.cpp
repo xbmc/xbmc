@@ -792,12 +792,22 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     CLog::Log(LOGERROR, "CSettingString: invalid <control> of \"%s\"", m_id.c_str());
     return false;
   }
-    
-  // get allowempty (needs to be parsed before parsing the default value)
-  XMLUtils::GetBoolean(node, "allowempty", m_allowEmpty);
   // get heading
   XMLUtils::GetInt(node, "heading", m_heading);
-    
+
+  const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
+  if (constraints != NULL)
+  {
+    // get allowempty (needs to be parsed before parsing the default value)
+    XMLUtils::GetBoolean(constraints, "allowempty", m_allowEmpty);
+
+    // get the entries
+    const TiXmlNode *options = constraints->FirstChild(XML_ELM_OPTIONS);
+    if (options != NULL && options->FirstChild() != NULL &&
+        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+      m_optionsFiller = options->FirstChild()->ValueStr();
+  }
+
   // get the default value
   CStdString value;
   if (XMLUtils::GetString(node, XML_ELM_DEFAULT, value))
@@ -806,16 +816,6 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
   {
     CLog::Log(LOGERROR, "CSettingString: error reading the default value of \"%s\"", m_id.c_str());
     return false;
-  }
-
-  const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
-  if (constraints != NULL)
-  {
-    // get the entries
-    const TiXmlNode *options = constraints->FirstChild(XML_ELM_OPTIONS);
-    if (options != NULL && options->FirstChild() != NULL &&
-        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
-      m_optionsFiller = options->FirstChild()->ValueStr();
   }
 
   return true;

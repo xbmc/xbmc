@@ -74,7 +74,9 @@
         <setting id="lookandfeel.rssedit" type="string" label="21450" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
           </dependencies>
@@ -205,7 +207,9 @@
           <level>0</level>
           <default>screensaver.xbmc.builtin.dim</default>
           <addontype>xbmc.ui.screensaver</addontype>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <updates>
             <update type="change" />
           </updates>
@@ -660,9 +664,9 @@
         <setting id="subtitles.custompath" type="path" label="21366" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>657</heading>
           <constraints>
+            <allowempty>true</allowempty>
             <writable>false</writable>
             <sources>
               <source>videos</source>
@@ -808,9 +812,9 @@
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>657</heading>
           <constraints>
+            <allowempty>true</allowempty>
             <writable>false</writable>
           </constraints>
           <control type="button" format="path" />
@@ -1014,7 +1018,9 @@
         <setting id="pvrpowermanagement.setwakeupcmd" type="string" label="19245" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string" />
         </setting>
         <setting id="pvrpowermanagement.prewakeup" type="integer" label="19246" help="">
@@ -1053,7 +1059,9 @@
         <setting id="pvrparental.pin" type="string" label="19261" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="pvrparental.enabled">true</dependency>
           </dependencies>
@@ -1211,7 +1219,9 @@
           <level>0</level>
           <default>visualization.glspectrum</default>
           <addontype>xbmc.player.musicviz</addontype>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
         </setting>
       </group>
     </category>
@@ -1236,29 +1246,37 @@
         <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>16016</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string" />
         </setting>
         <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>16016</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string" />
         </setting>
         <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>16016</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string" />
         </setting>
         <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>16016</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string" />
         </setting>
         <setting id="musicfiles.findremotethumbs" type="boolean" label="14059" help="">
@@ -1286,8 +1304,10 @@
         <setting id="audiocds.recordingpath" type="path" label="20000" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>657</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="button" format="path" />
         </setting>
         <setting id="audiocds.trackpathformat" type="string" label="13307" help="">
@@ -1461,7 +1481,9 @@
         <setting id="mymusic.defaultlibview" type="string" label="0" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
         </setting>
       </group>
     </category>
@@ -1532,7 +1554,9 @@
           <level>0</level>
           <default>weather.wunderground</default>
           <addontype>xbmc.python.weather</addontype>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
         </setting>
         <setting id="weather.addonsettings" type="action" label="21417" help="">
           <level>0</level>
@@ -1596,7 +1620,9 @@
         <setting id="services.webserverusername" type="string" label="1048" help="">
           <level>2</level>
           <default>xbmc</default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="services.webserver">true</dependency>
           </dependencies>
@@ -1605,7 +1631,9 @@
         <setting id="services.webserverpassword" type="string" label="733" help="">
           <level>2</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="services.webserver">true</dependency>
           </dependencies>
@@ -1735,7 +1763,9 @@
         <setting id="services.airplaypassword" type="string" label="733" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="services.useairplaypassword">true</dependency>
           </dependencies>
@@ -2039,7 +2069,9 @@
         <setting id="network.httpproxyserver" type="string" label="706" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="network.usehttpproxy">true</dependency>
           </dependencies>
@@ -2061,7 +2093,9 @@
         <setting id="network.httpproxyusername" type="string" label="1048" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="network.usehttpproxy">true</dependency>
           </dependencies>
@@ -2070,7 +2104,9 @@
         <setting id="network.httpproxypassword" type="string" label="733" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <dependencies>
             <dependency type="enable" setting="network.usehttpproxy">true</dependency>
           </dependencies>
@@ -2146,8 +2182,10 @@
         <setting id="debug.screenshotpath" type="path" label="20004" help="">
           <level>1</level>
           <default></default>
-          <allowempty>true</allowempty>
           <heading>657</heading>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="button" format="path" />
         </setting>
       </group>
@@ -2307,7 +2345,9 @@
         <setting id="system.playlistspath" type="path" label="20006" help="">
           <level>4</level>
           <default></default>
-          <allowempty>true</allowempty>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
         </setting>
       </group>
     </category>
