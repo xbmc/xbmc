@@ -90,7 +90,7 @@ public:
   bool OMXMediaTime(double pts, bool fixPreroll = true, bool lock = true);
   bool OMXPause(bool lock = true);
   bool OMXResume(bool lock = true);
-  bool OMXSetSpeed(int speed, bool lock = true);
+  bool OMXSetSpeed(int speed, bool lock = true, bool pause_resume = false);
   int  OMXPlaySpeed() { return m_omx_speed; };
   COMXCoreComponent *GetOMXClock();
   bool OMXStateExecute(bool lock = true);
