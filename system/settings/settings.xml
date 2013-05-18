@@ -47,9 +47,10 @@
             <minimum>-20</minimum>
             <step>2</step>
             <maximum>20</maximum>
-            <formatlabel>14047</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14047</formatlabel>
+          </control>
         </setting>
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="">
           <level>0</level>
@@ -240,12 +241,13 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>60</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
           <dependencies>
             <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="2">
@@ -363,9 +365,10 @@
             <minimum>0</minimum>
             <step>10</step>
             <maximum>100</maximum>
-            <formatlabel>14047</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14047</formatlabel>
+          </control>
         </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="">
           <visible>HAVE_LIBVDPAU</visible>
@@ -495,9 +498,10 @@
             <minimum label="231">0</minimum>
             <step>1</step>
             <maximum>20</maximum>
-            <formatlabel>14047</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14047</formatlabel>
+          </control>
         </setting>
         <setting id="videoplayer.stretch43" type="integer" label="173" help="">
           <level>1</level>
@@ -812,9 +816,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>10</maximum>
-            <formatlabel>14045</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="2">
@@ -857,9 +862,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>14</maximum>
-            <formatlabel>17999</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>17999</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="2">
@@ -870,9 +876,10 @@
             <minimum>15</minimum>
             <step>15</step>
             <maximum>2880</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="epg.preventupdateswhileplayingtv" type="boolean" label="19230" help="">
           <level>1</level>
@@ -921,9 +928,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>60</maximum>
-            <formatlabel>14045</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
         </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="">
           <level>1</level>
@@ -936,9 +944,10 @@
             <minimum>0</minimum>
             <step>250</step>
             <maximum>10000</maximum>
-            <formatlabel>14046</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
         </setting>
       </group>
     </category>
@@ -951,9 +960,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>720</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="pvrrecord.defaultpriority" type="integer" label="19173" help="">
           <level>1</level>
@@ -972,9 +982,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>365</maximum>
-            <formatlabel>17999</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>17999</formatlabel>
+          </control>
         </setting>
         <setting id="pvrrecord.marginstart" type="integer" label="19175" help="">
           <level>1</level>
@@ -983,9 +994,10 @@
             <minimum>0</minimum>
             <step>1</step>
             <maximum>60</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="pvrrecord.marginend" type="integer" label="19176" help="">
           <level>1</level>
@@ -994,9 +1006,10 @@
             <minimum>0</minimum>
             <step>1</step>
             <maximum>60</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="2">
@@ -1021,9 +1034,10 @@
             <minimum label="351">0</minimum>
             <step>5</step>
             <maximum>360</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="pvrpowermanagement.setwakeupcmd" type="string" label="19245" help="">
           <level>1</level>
@@ -1040,9 +1054,10 @@
             <minimum label="351">0</minimum>
             <step>1</step>
             <maximum>60</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="3">
@@ -1084,12 +1099,13 @@
             <minimum>5</minimum>
             <step>5</step>
             <maximum>1200</maximum>
-            <formatlabel>14045</formatlabel>
           </constraints>
           <dependencies>
             <dependency type="enable" setting="pvrparental.enabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
         </setting>
       </group>
     </category>
@@ -1184,9 +1200,10 @@
             <minimum>77</minimum>
             <step>1</step>
             <maximum>101</maximum>
-            <formatlabel>14050</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
         </setting>
         <setting id="musicplayer.replaygainnogainpreamp" type="integer" label="642" help="">
           <level>2</level>
@@ -1195,9 +1212,10 @@
             <minimum>77</minimum>
             <step>1</step>
             <maximum>101</maximum>
-            <formatlabel>14050</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
         </setting>
         <setting id="musicplayer.replaygainavoidclipping" type="boolean" label="643" help="">
           <level>2</level>
@@ -1212,9 +1230,10 @@
             <minimum label="351">0</minimum>
             <step>1</step>
             <maximum>15</maximum>
-            <formatlabel>14045</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
         </setting>
         <setting id="musicplayer.crossfadealbumtracks" type="boolean" label="13400" help="">
           <level>1</level>
@@ -1374,7 +1393,6 @@
             <minimum>128</minimum>
             <step>32</step>
             <maximum>320</maximum>
-            <formatlabel>14048</formatlabel>
           </constraints>
           <dependencies>
             <dependency type="enable">
@@ -1385,7 +1403,9 @@
               </and>
             </dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14048</formatlabel>
+          </control>
         </setting>
         <setting id="audiocds.compressionlevel" type="integer" label="665" help="">
           <level>2</level>
@@ -1549,9 +1569,10 @@
             <minimum>1</minimum>
             <step>1</step>
             <maximum>100</maximum>
-            <formatlabel>14045</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
         </setting>
         <setting id="slideshow.displayeffects" type="boolean" label="12379" help="">
           <level>0</level>
@@ -2145,9 +2166,10 @@
             <minimum label="351">0</minimum>
             <step>512</step>
             <maximum>102400</maximum>
-            <formatlabel>14048</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14048</formatlabel>
+          </control>
         </setting>
       </group>
     </category>
@@ -2160,9 +2182,10 @@
             <minimum label="351">0</minimum>
             <step>5</step>
             <maximum>120</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="powermanagement.shutdowntime" type="integer" label="357" help="">
           <level>2</level>
@@ -2171,9 +2194,10 @@
             <minimum label="351">0</minimum>
             <step>5</step>
             <maximum>120</maximum>
-            <formatlabel>14044</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
         </setting>
         <setting id="powermanagement.shutdownstate" type="integer" label="13008" help="">
           <level>2</level>
@@ -2252,9 +2276,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>4096</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="2">
@@ -2265,9 +2290,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
         <setting id="cachevideo.lan" type="integer" label="14027" help="">
           <level>4</level>
@@ -2276,9 +2302,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
         <setting id="cachevideo.internet" type="integer" label="14028" help="">
           <level>4</level>
@@ -2287,9 +2314,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="3">
@@ -2300,9 +2328,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>4096</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
         <setting id="cacheaudio.lan" type="integer" label="14031" help="">
           <level>4</level>
@@ -2311,9 +2340,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>4096</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
         <setting id="cacheaudio.internet" type="integer" label="14032" help="">
           <level>4</level>
@@ -2322,9 +2352,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>4096</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="4">
@@ -2335,9 +2366,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
         <setting id="cachedvd.lan" type="integer" label="14060" help="">
           <level>4</level>
@@ -2346,9 +2378,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
       </group>
       <group id="5">
@@ -2359,9 +2392,10 @@
             <minimum label="351">0</minimum>
             <step>256</step>
             <maximum>16384</maximum>
-            <formatlabel>14049</formatlabel>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="spinner" format="string">
+            <formatlabel>14049</formatlabel>
+          </control>
         </setting>
       </group>
     </category>

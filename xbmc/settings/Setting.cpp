@@ -409,6 +409,13 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
+  if (m_control.GetFormat() == SettingControlFormatString)
+  {
+    const TiXmlNode *control = node->FirstChild("control");
+    if (control != NULL)
+      XMLUtils::GetInt(control, "formatlabel", m_format);
+  }
+
   const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
   if (constraints != NULL)
   {
@@ -449,16 +456,11 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     // get maximum
     XMLUtils::GetInt(constraints, XML_ELM_MAXIMUM, m_max);
 
-    if (m_control.GetFormat() == SettingControlFormatString)
+    if (m_control.GetFormat() == SettingControlFormatString && m_labelMin < 0)
     {
-      XMLUtils::GetInt(constraints, "formatlabel", m_format);
-
-      if (m_labelMin < 0)
-      {
-        CStdString strFormat;
-        if (XMLUtils::GetString(constraints, "format", strFormat) && !strFormat.empty())
-          m_strFormat = strFormat;
-      }
+      CStdString strFormat;
+      if (XMLUtils::GetString(constraints, "format", strFormat) && !strFormat.empty())
+        m_strFormat = strFormat;
     }
   }
 
