@@ -230,29 +230,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
 
   if (!m_Passthrough)
   {
-    /* setup output channel map */
-    /*
-    int ch = 0, map;
-    int chan = 0;
-    m_OutputChannels = 0;
-
-    for (unsigned int ch = 0; ch < m_format.m_channelLayout.Count(); ++ch)
-    {
-      for(map = 0; map < OMX_MAX_CHANNELS; ++map)
-      {
-        if (m_output_channels[ch] == OMXChannelMap[map])
-        {
-          printf("output %d\n", chan);
-          m_output_channels[chan] = OMXChannels[map]; 
-          chan++;
-          break;
-        }
-      }
-    }
-
-    m_OutputChannels = chan;
-    */
-
     /* setup input channel map */
     int map = 0;
     int chan = 0;
@@ -388,7 +365,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
     return false;
   }
 
-  //if(m_HWDecode)
   {
     OMX_AUDIO_PARAM_PORTFORMATTYPE formatType;
     OMX_INIT_STRUCTURE(formatType);
@@ -620,7 +596,6 @@ void COMXAudio::Flush()
   
   m_last_pts      = DVD_NOPTS_VALUE;
   m_LostSync      = true;
-  //m_first_frame   = true;
 }
 
 //***********************************************************************************************
@@ -914,7 +889,6 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     if(m_first_frame)
     {
       m_first_frame = false;
-      //m_omx_render.WaitForEvent(OMX_EventPortSettingsChanged);
 
       m_omx_render.DisablePort(m_omx_render.GetInputPort(), false);
       if(!m_Passthrough)
@@ -1421,7 +1395,6 @@ unsigned int COMXAudio::SyncDTS(BYTE* pData, unsigned int iSize)
 unsigned int COMXAudio::SyncAC3(BYTE* pData, unsigned int iSize)
 {
   unsigned int skip = 0;
-  //unsigned int fSize = 0;
 
   for(skip = 0; iSize - skip > 6; ++skip, ++pData)
   {
@@ -1450,7 +1423,6 @@ unsigned int COMXAudio::SyncAC3(BYTE* pData, unsigned int iSize)
       case 2: framesize = bitrate * 4; break;
     }
 
-    //fSize = framesize * 2;
     m_SampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */

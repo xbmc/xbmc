@@ -111,11 +111,6 @@ OMXPlayerVideo::~OMXPlayerVideo()
 
 bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
 {
-  /*
-  if(IsRunning())
-    CloseStream(false);
-  */
-
   m_hints       = hints;
   m_Deinterlace = ( CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_hdmi_clock_sync = (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
@@ -145,15 +140,6 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
     m_messageQueue.Init();
     Create();
   }
-
-  /*
-  if(!OpenStream(hints, NULL))
-    return false;
-
-  CLog::Log(LOGNOTICE, "Creating video thread");
-  m_messageQueue.Init();
-  Create();
-  */
 
   m_open        = true;
 

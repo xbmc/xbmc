@@ -42,20 +42,6 @@
 #endif
 #define CLASSNAME "COMXVideo"
 
-#if 0
-// TODO: These are Nvidia Tegra2 dependent, need to dynamiclly find the
-// right codec matched to video format.
-#define OMX_H264BASE_DECODER    "OMX.Nvidia.h264.decode"
-// OMX.Nvidia.h264ext.decode segfaults, not sure why.
-//#define OMX_H264MAIN_DECODER  "OMX.Nvidia.h264ext.decode"
-#define OMX_H264MAIN_DECODER    "OMX.Nvidia.h264.decode"
-#define OMX_H264HIGH_DECODER    "OMX.Nvidia.h264ext.decode"
-#define OMX_MPEG4_DECODER       "OMX.Nvidia.mp4.decode"
-#define OMX_MPEG4EXT_DECODER    "OMX.Nvidia.mp4ext.decode"
-#define OMX_MPEG2V_DECODER      "OMX.Nvidia.mpeg2v.decode"
-#define OMX_VC1_DECODER         "OMX.Nvidia.vc1.decode"
-#endif
-
 #define OMX_VIDEO_DECODER       "OMX.broadcom.video_decode"
 #define OMX_H264BASE_DECODER    OMX_VIDEO_DECODER
 #define OMX_H264MAIN_DECODER    OMX_VIDEO_DECODER
@@ -339,32 +325,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
   }
 
   OMX_VIDEO_PARAM_PORTFORMATTYPE formatType;
-  /*
-  OMX_INIT_STRUCTURE(formatType);
-  formatType.nPortIndex = m_omx_decoder.GetInputPort();
-  OMX_U32 nIndex = 1;
-  bool bFound = false;
-
-  omx_err = OMX_ErrorNone;
-  do
-  {
-    formatType.nIndex = nIndex;
-    omx_err = m_omx_decoder.GetParameter(OMX_IndexParamVideoPortFormat, &formatType);
-    if(formatType.eCompressionFormat == m_codingType)
-    {
-      bFound = true;
-      break;
-    }
-    nIndex++;
-  }
-  while(omx_err == OMX_ErrorNone);
-
-  if(!bFound)
-  {
-    CLog::Log(LOGINFO, "COMXVideo::Open coding : %s not supported\n", m_video_codec_name.c_str());
-    return false;
-  }
-  */
 
   if(clock == NULL)
     return false;
@@ -643,61 +603,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     CLog::Log(LOGWARNING, "COMXVideo::Open could not set orientation : %d\n", hints.orientation);
   }
 
-  /*
-  configDisplay.set     = OMX_DISPLAY_SET_LAYER;
-  configDisplay.layer   = 2;
-
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_DEST_RECT;
-  configDisplay.dest_rect.x_offset  = 100;
-  configDisplay.dest_rect.y_offset  = 100;
-  configDisplay.dest_rect.width     = 640;
-  configDisplay.dest_rect.height    = 480;
-    
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_TRANSFORM;
-  configDisplay.transform = OMX_DISPLAY_ROT180;
-    
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_FULLSCREEN;
-  configDisplay.fullscreen = OMX_FALSE;
-    
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_MODE;
-  configDisplay.mode    = OMX_DISPLAY_MODE_FILL; //OMX_DISPLAY_MODE_LETTERBOX;
-    
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_LAYER;
-  configDisplay.layer   = 1;
-
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  configDisplay.set     = OMX_DISPLAY_SET_ALPHA;
-  configDisplay.alpha   = OMX_FALSE;
-    
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-    return false;
-
-  */
-
   if(m_omx_decoder.BadState())
     return false;
 
@@ -794,16 +699,6 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
         CLog::Log(LOGERROR, "OMXVideo::Decode timeout\n");
         return false;
       }
-
-      /*
-      CLog::Log(DEBUG, "COMXVideo::Video VDec : pts %lld omx_buffer 0x%08x buffer 0x%08x number %d\n", 
-          pts, omx_buffer, omx_buffer->pBuffer, (int)omx_buffer->pAppPrivate);
-      if(pts == DVD_NOPTS_VALUE)
-      {
-        CLog::Log(LOGDEBUG, "VDec : pts %f omx_buffer 0x%08x buffer 0x%08x number %d\n", 
-          (float)pts / AV_TIME_BASE, (int)omx_buffer, (int)omx_buffer->pBuffer, (int)omx_buffer->pAppPrivate);
-      }
-      */
 
       omx_buffer->nFlags = 0;
       omx_buffer->nOffset = 0;
@@ -942,20 +837,6 @@ void COMXVideo::Reset(void)
 
   m_omx_decoder.FlushInput();
   m_omx_tunnel_decoder.Flush();
-
-  /*
-  OMX_ERRORTYPE omx_err;
-  OMX_CONFIG_BOOLEANTYPE configBool;
-  OMX_INIT_STRUCTURE(configBool);
-  configBool.bEnabled = OMX_TRUE;
-
-  omx_err = m_omx_decoder.SetConfig(OMX_IndexConfigRefreshCodec, &configBool);
-  if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s::%s - error reopen codec omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
-
-  SendDecoderConfig();
-
-  */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
