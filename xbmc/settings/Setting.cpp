@@ -81,6 +81,22 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (m_level < (int)SettingLevelBasic || m_level > (int)SettingLevelInternal)
     m_level = SettingLevelStandard;
 
+  const TiXmlNode *dependencies = node->FirstChild("dependencies");
+  if (dependencies != NULL)
+  {
+    const TiXmlNode *dependencyNode = dependencies->FirstChild("dependency");
+    while (dependencyNode != NULL)
+    {
+      CSettingDependency dependency(m_settingsManager);
+      if (dependency.Deserialize(dependencyNode))
+        m_dependencies.push_back(dependency);
+      else
+        CLog::Log(LOGWARNING, "CSetting: error reading <dependency> tag of \"%s\"", m_id.c_str());
+
+      dependencyNode = dependencyNode->NextSibling("dependency");
+    }
+  }
+
   const TiXmlElement *control = node->FirstChildElement("control");
   if (control != NULL)
   {
@@ -89,22 +105,6 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     {
       CLog::Log(LOGERROR, "CSetting: error reading <control> tag of \"%s\"", m_id.c_str());
       return false;
-    }
-
-    const TiXmlNode *dependencies = control->FirstChild("dependencies");
-    if (dependencies != NULL)
-    {
-      const TiXmlNode *dependencyNode = dependencies->FirstChild("dependency");
-      while (dependencyNode != NULL)
-      {
-        CSettingDependency dependency(m_settingsManager);
-        if (dependency.Deserialize(dependencyNode))
-          m_dependencies.push_back(dependency);
-        else
-          CLog::Log(LOGWARNING, "CSetting: error reading <dependency> tag of \"%s\"", m_id.c_str());
-
-        dependencyNode = dependencyNode->NextSibling("dependency");
-      }
     }
   }
 
