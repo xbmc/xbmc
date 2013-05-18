@@ -2137,7 +2137,6 @@
         <setting id="network.httpproxyport" type="integer" label="730" help="">
           <level>1</level>
           <default>8080</default>
-          <heading>730</heading>
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
