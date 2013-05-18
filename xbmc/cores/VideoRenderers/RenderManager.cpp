@@ -95,7 +95,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presenttime = 0;
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
-  m_presentsource = 0;
+  m_presentsource = -1;
   m_presentmethod = PRESENT_METHOD_SINGLE;
   m_bReconfigured = false;
   m_hasCaptures = false;
@@ -105,8 +105,6 @@ CXBMCRenderManager::CXBMCRenderManager()
   memset(&m_errorbuff, 0, ERRORBUFFSIZE);
   m_errorindex = 0;
   m_QueueSize   = 2;
-  m_QueueRender = 0;
-  m_QueueOutput = 0;
   m_QueueSkip   = 0;
 }
 
@@ -287,8 +285,13 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
 
     m_pRenderer->SetBufferSize(m_QueueSize);
     m_pRenderer->Update();
-    m_QueueRender = 0;
-    m_QueueOutput = 0;
+
+    m_queued.clear();
+    m_discard.clear();
+    m_free.clear();
+    m_presentsource = -1;
+    for (int i=0; i<m_QueueSize; i++)
+      m_free.push_back(i);
 
     m_bIsStarted = true;
     m_bReconfigured = true;
@@ -357,22 +360,21 @@ void CXBMCRenderManager::FrameMove()
 
     if(m_presentstep == PRESENT_FLIP)
     {
-      /* release all previous */
-      int count = 0;
-      while(m_QueueRender != m_presentsource)
-      {
-        m_pRenderer->ReleaseBuffer(m_QueueRender);
-        m_overlays.Release(m_QueueRender);
-        m_QueueRender = (m_QueueRender + 1) % m_QueueSize;
-        count++;
-      }
-
-      if(count > 1)
-        m_QueueSkip += count - 1;
-
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
+    }
+
+    /* release all previous */
+    std::deque<int>::iterator it = m_discard.begin();
+    while(it != m_discard.end())
+    {
+      // TODO check for fence
+      int idx = *it;
+      it = m_discard.erase(it);
+      m_free.push_back(idx);
+      m_pRenderer->ReleaseBuffer(idx);
+      m_overlays.Release(idx);
     }
   }
 }
@@ -433,8 +435,6 @@ unsigned int CXBMCRenderManager::PreInit()
   UpdateDisplayLatency();
 
   m_QueueSize   = 2;
-  m_QueueRender = 0;
-  m_QueueOutput = 0;
   m_QueueSkip   = 0;
 
   return m_pRenderer->PreInit();
@@ -696,7 +696,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_Queue[source].timestamp     = timestamp;
     m_Queue[source].presentfield  = sync;
     m_Queue[source].presentmethod = presentmethod;
-    m_QueueOutput = source;
+    m_free.pop_front();
+    m_queued.push_back(source);
 
     /* signal to any waiters to check state */
     if(m_presentstep == PRESENT_IDLE)
@@ -763,7 +764,8 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   else
     PresentSingle(clear, flags, alpha);
 
-  m_overlays.Render(m_presentsource);
+  if (m_presentsource >= 0)
+    m_overlays.Render(m_presentsource);
 }
 
 /* simple present method */
@@ -993,23 +995,23 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   m_overlays.Release(GetNextDecode());
 
   // return buffer level
-  return (m_QueueOutput - m_QueueRender + m_QueueSize) % m_QueueSize;
+  return m_queued.size() + m_discard.size();;
 }
 
 int CXBMCRenderManager::GetNextRender()
 {
-  if (m_QueueOutput == m_QueueRender)
+  if (m_queued.empty())
     return -1;
-  return (m_QueueRender + 1) % m_QueueSize;
+  else
+    return m_queued.front();
 }
 
 int CXBMCRenderManager::GetNextDecode()
 {
-  int outputPlus1 = (m_QueueOutput + 1) % m_QueueSize;
-  if (outputPlus1 == m_QueueRender)
+  if (m_free.empty())
     return -1;
   else
-    return outputPlus1;
+    return m_free.front();
 }
 
 void CXBMCRenderManager::PrepareNextRender()
@@ -1029,16 +1031,19 @@ void CXBMCRenderManager::PrepareNextRender()
   double frametime = 1.0 / GetMaximumFPS();
 
   /* see if any future queued frames are already due */
-  int prv;
-  int idx = m_QueueOutput;
-  while(idx != nxt)
+  std::deque<int>::reverse_iterator curr, prev;
+  int idx;
+  curr = prev = m_queued.rbegin();
+  ++prev;
+  while (prev != m_queued.rend())
   {
-    prv = (idx + m_QueueSize - 1) % m_QueueSize;
-    if(clocktime > m_Queue[prv].timestamp              /* previous frame is late */
-    && clocktime > m_Queue[idx].timestamp - frametime) /* selected frame is close to it's display time */
+    if(clocktime > m_Queue[*prev].timestamp                 /* previous frame is late */
+    && clocktime > m_Queue[*curr].timestamp - frametime)    /* selected frame is close to it's display time */
       break;
-    idx = prv;
+    ++curr;
+    ++prev;
   }
+  idx = *curr;
 
   /* in fullscreen we will block after render, but only for MAXPRESENTDELAY */
   bool next;
@@ -1049,11 +1054,23 @@ void CXBMCRenderManager::PrepareNextRender()
 
   if (next)
   {
+    /* skip late frames */
+    int skip;
+    while((skip = m_queued.front()) != idx)
+    {
+      m_queued.pop_front();
+      m_discard.push_back(skip);
+      m_QueueSkip++;
+    }
+
     m_presenttime   = m_Queue[idx].timestamp;
     m_presentmethod = m_Queue[idx].presentmethod;
     m_presentfield  = m_Queue[idx].presentfield;
     m_presentstep   = PRESENT_FLIP;
+    if(m_presentsource >=  0)
+      m_discard.push_back(m_presentsource);
     m_presentsource = idx;
+    m_queued.pop_front();
     m_presentevent.notifyAll();
   }
 }
@@ -1062,11 +1079,17 @@ void CXBMCRenderManager::DiscardBuffer()
 {
   CSharedLock lock(m_sharedSection);
   CSingleLock lock2(m_presentlock);
-  while(m_QueueOutput != m_QueueRender)
+
+  while(!m_queued.empty())
   {
-    m_pRenderer->ReleaseBuffer(m_QueueOutput);
-    m_overlays.Release(m_QueueOutput);
-    m_QueueOutput = (m_QueueOutput + m_QueueSize - 1) % m_QueueSize;
+    int idx = m_queued.front();
+    m_queued.pop_front();
+    m_discard.push_back(idx);
+  }
+  if (m_presentsource >= 0)
+  {
+    m_discard.push_back(m_presentsource);
+    m_presentsource = -1;
   }
   if(m_presentstep == PRESENT_READY)
     m_presentstep   = PRESENT_IDLE;

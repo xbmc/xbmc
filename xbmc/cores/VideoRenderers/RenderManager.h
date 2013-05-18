@@ -29,6 +29,7 @@
 #include "threads/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
+#include <deque>
 
 class CRenderCapture;
 
@@ -107,7 +108,7 @@ public:
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o, pts, (m_QueueOutput + 1) % m_QueueSize);
+    m_overlays.AddOverlay(o, pts, m_free.front());
   }
 
   void AddCleanup(OVERLAY::COverlay* o)
@@ -218,16 +219,6 @@ protected:
   double m_displayLatency;
   void UpdateDisplayLatency();
 
-  // Render Buffer State Description:
-  //
-  // Output:      is the buffer about to or having its texture prepared for render (ie from output thread).
-  //              Cannot go past the "Displayed" buffer (otherwise we will probably overwrite buffers not yet
-  //              displayed or even rendered).
-  // Render:      is the current buffer being or having been submitted for render to back buffer.
-  //              Cannot go past "Output" buffer (else it would be rendering old output).
-
-  int m_QueueRender;
-  int m_QueueOutput;
   int m_QueueSize;
   int m_QueueSkip;
 
@@ -237,6 +228,10 @@ protected:
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
   } m_Queue[NUM_BUFFERS];
+
+  std::deque<int> m_free;
+  std::deque<int> m_queued;
+  std::deque<int> m_discard;
 
   double     m_presenttime;
   double     m_presentcorr;
