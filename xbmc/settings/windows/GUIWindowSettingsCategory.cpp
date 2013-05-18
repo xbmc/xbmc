@@ -39,6 +39,11 @@
 
 using namespace std;
 
+#if defined(TARGET_WINDOWS) // disable 4355: 'this' used in base member initializer list
+#pragma warning(push)
+#pragma warning(disable: 4355)
+#endif // defined(TARGET_WINDOWS)
+
 #define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
 #define SETTINGS_PROGRAMS               WINDOW_SETTINGS_MYPROGRAMS - WINDOW_SETTINGS_START
 #define SETTINGS_WEATHER                WINDOW_SETTINGS_MYWEATHER - WINDOW_SETTINGS_START
