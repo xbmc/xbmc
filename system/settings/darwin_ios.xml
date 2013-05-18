@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <visible>
+    <and>
+      <condition>TARGET_DARWIN</condition>
+      <condition>TARGET_DARWIN_IOS</condition>
+    </and>
+  </visible>
   <section id="videos">
     <category id="videoplayer">
       <group id="2">

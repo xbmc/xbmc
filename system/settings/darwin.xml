@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <visible>TARGET_DARWIN</visible>
   <section id="system">
     <category id="videoscreen" label="21373" help="">
       <group id="1">

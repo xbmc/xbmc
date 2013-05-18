@@ -34,6 +34,7 @@
 #endif // defined(HAVE_LIBCRYSTALHD)
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"
@@ -522,63 +523,77 @@ bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
   return m_settingsManager->LoadSetting(node, settingId);
 }
 
-bool CSettings::Initialize(const std::string &file)
+bool CSettings::Initialize(const std::string &file, CSettingsManager *visibilityManager, bool &hidden)
 {
+  hidden = false;
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file.c_str()))
   {
     CLog::Log(LOGERROR, "CSettings: error loading settings definition from %s, Line %d\n%s", file.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
   
   TiXmlElement *root = xmlDoc.RootElement();
   if (root == NULL)
     return false;
 
+  if (visibilityManager != NULL)
+  {
+    const TiXmlNode *visible = root->FirstChild("visible");
+    if (visible != NULL)
+    {
+      CSettingVisibility visibility(visibilityManager);
+      if (!visibility.Deserialize(visible))
+      {
+        CLog::Log(LOGWARNING, "CSettings: unable to read <visible> condition from %s", file.c_str());
+        hidden = true;
+        return false;
+      }
+
+      if (!visibility.Check())
+      {
+        hidden = true;
+        return false;
+      }
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
   return m_settingsManager->Initialize(root);
 }
 
 bool CSettings::InitializeDefinitions()
 {
-  if (!Initialize(SETTINGS_XML_FOLDER "settings.xml"))
+  bool hidden;
+  if (!Initialize(SETTINGS_XML_FOLDER "settings.xml", NULL, hidden))
   {
     CLog::Log(LOGFATAL, "Unable to load settings definitions");
     return false;
   }
-#if defined(TARGET_WINDOWS)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "win32.xml") && !Initialize(SETTINGS_XML_FOLDER "win32.xml"))
-    CLog::Log(LOGFATAL, "Unable to load win32-specific settings definitions");
-#elif defined(TARGET_LINUX)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "linux.xml") && !Initialize(SETTINGS_XML_FOLDER "linux.xml"))
-    CLog::Log(LOGFATAL, "Unable to load linux-specific settings definitions");
-#elif defined(TARGET_ANDROID)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
-    CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
-#elif defined(TARGET_RASPBERRY_PI)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
-    CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
-#elif defined(TARGET_FREEBSD)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "freebsd.xml") && !Initialize(SETTINGS_XML_FOLDER "freebsd.xml"))
-    CLog::Log(LOGFATAL, "Unable to load freebsd-specific settings definitions");
-#elif defined(TARGET_DARWIN)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin.xml"))
-    CLog::Log(LOGFATAL, "Unable to load darwin-specific settings definitions");
-#if defined(TARGET_DARWIN_OSX)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_osx.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_osx.xml"))
-    CLog::Log(LOGFATAL, "Unable to load osx-specific settings definitions");
-#elif defined(TARGET_DARWIN_IOS)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
-    CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
-#if defined(TARGET_DARWIN_IOS_ATV2)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios_atv2.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios_atv2.xml"))
-    CLog::Log(LOGFATAL, "Unable to load atv2-specific settings definitions");
-#endif
-#endif
-#endif
-  if (CFile::Exists(SETTINGS_XML_FOLDER "appliance.xml") && !Initialize(SETTINGS_XML_FOLDER "appliance.xml"))
-    CLog::Log(LOGFATAL, "Unable to load appliance-specific settings definitions");
+
+  CFileItemList settingDefinitions;
+  if (!CDirectory::GetDirectory(SETTINGS_XML_FOLDER, settingDefinitions, ".xml"))
+  {
+    CLog::Log(LOGFATAL, "Unable to retrieve setting definitions from " SETTINGS_XML_FOLDER);
+    return true;
+  }
+
+  // initialize a temporary settings manager to be able to interprete the
+  // <visible> conditions at the beginning of a settings definition file
+  CSettingsManager tempManager;
+  InitializeConditions(&tempManager, true, false, true);
+
+  for (int index = 0; index < settingDefinitions.Size(); index++)
+  {
+    std::string file = settingDefinitions[index]->GetPath();
+    // ignore the default settings.xml file
+    if (StringUtils::EqualsNoCase(file, SETTINGS_XML_FOLDER "settings.xml"))
+      continue;
+
+    bool hidden;
+    if (!Initialize(file, &tempManager, hidden) && !hidden)
+      CLog::Log(LOGFATAL, "Unable to load settings definitions from %s", file.c_str());
+  }
 
   return true;
 }
@@ -692,101 +707,136 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
 }
 
-void CSettings::InitializeConditions()
+void CSettings::InitializeConditions(CSettingsManager *settingsManager /* = NULL */, bool staticConditions /* = true */, bool dynamicConditions /* = true */, bool platformConditions /* = false */)
 {
+  if (settingsManager == NULL)
+    settingsManager = m_settingsManager;
+
   // add basic conditions
-  m_settingsManager->AddCondition("true");
+  if (staticConditions)
+  {
+    settingsManager->AddCondition("true");
 #ifdef HAS_AIRPLAY
-  m_settingsManager->AddCondition("has_airplay");
+    settingsManager->AddCondition("has_airplay");
 #endif
 #ifdef HAS_EVENT_SERVER
-  m_settingsManager->AddCondition("has_event_server");
+    settingsManager->AddCondition("has_event_server");
 #endif
 #ifdef HAS_GL
-  m_settingsManager->AddCondition("has_gl");
+    settingsManager->AddCondition("has_gl");
 #endif
 #ifdef HAS_GLES
-  m_settingsManager->AddCondition("has_gles");
+    settingsManager->AddCondition("has_gles");
 #endif
 #if HAS_GLES == 2
-  m_settingsManager->AddCondition("has_glesv2");
+    settingsManager->AddCondition("has_glesv2");
 #endif
 #ifdef HAS_KARAOKE
-  m_settingsManager->AddCondition("has_karaoke");
+    settingsManager->AddCondition("has_karaoke");
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  m_settingsManager->AddCondition("has_sdl_joystick");
+    settingsManager->AddCondition("has_sdl_joystick");
 #endif
 #ifdef HAS_SKIN_TOUCHED
-  m_settingsManager->AddCondition("has_skin_touched");
+    settingsManager->AddCondition("has_skin_touched");
 #endif
 #ifdef HAS_TIME_SERVER
-  m_settingsManager->AddCondition("has_time_server");
+    settingsManager->AddCondition("has_time_server");
 #endif
 #ifdef HAS_WEB_SERVER
-  m_settingsManager->AddCondition("has_web_server");
+    settingsManager->AddCondition("has_web_server");
 #endif
 #ifdef HAS_ZEROCONF
-  m_settingsManager->AddCondition("has_zeroconf");
+    settingsManager->AddCondition("has_zeroconf");
 #endif
 #ifdef HAVE_LIBCRYSTALHD
-  m_settingsManager->AddCondition("have_libcrystalhd");
-  if (CCrystalHD::GetInstance()->DevicePresent())
-    m_settingsManager->AddCondition("hascrystalhddevice");
+    settingsManager->AddCondition("have_libcrystalhd");
+    if (CCrystalHD::GetInstance()->DevicePresent())
+      settingsManager->AddCondition("hascrystalhddevice");
 #endif
 #ifdef HAVE_LIBOPENMAX
-  m_settingsManager->AddCondition("have_libopenmax");
+    settingsManager->AddCondition("have_libopenmax");
 #endif
 #ifdef HAVE_LIBVA
-  m_settingsManager->AddCondition("have_libva");
+    settingsManager->AddCondition("have_libva");
 #endif
 #ifdef HAVE_LIBVDADECODER
-  m_settingsManager->AddCondition("have_libvdadecoder");
-  if (g_sysinfo.HasVDADecoder())
-    m_settingsManager->AddCondition("hasvdadecoder");
+    settingsManager->AddCondition("have_libvdadecoder");
+    if (g_sysinfo.HasVDADecoder())
+      settingsManager->AddCondition("hasvdadecoder");
 #endif
 #ifdef HAVE_LIBVDPAU
-  m_settingsManager->AddCondition("have_libvdpau");
+    settingsManager->AddCondition("have_libvdpau");
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  m_settingsManager->AddCondition("have_videotoolboxdecoder");
-  if (g_sysinfo.HasVideoToolBoxDecoder())
-    m_settingsManager->AddCondition("hasvideotoolboxdecoder");
+    settingsManager->AddCondition("have_videotoolboxdecoder");
+    if (g_sysinfo.HasVideoToolBoxDecoder())
+      settingsManager->AddCondition("hasvideotoolboxdecoder");
 #endif
 #ifdef TARGET_DARWIN_IOS_ATV2
-  if (g_sysinfo.IsAppleTV2())
-    m_settingsManager->AddCondition("isappletv2");
+    if (g_sysinfo.IsAppleTV2())
+      settingsManager->AddCondition("isappletv2");
 #endif
 #if defined(TARGET_WINDOWS) && defined(HAS_DX)
-  m_settingsManager->AddCondition("has_dx");
-  if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
-    m_settingsManager->AddCondition("hasdxva2");
+    settingsManager->AddCondition("has_dx");
+    if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
+      settingsManager->AddCondition("hasdxva2");
 #endif
 
-  if (g_application.IsStandAlone())
-    m_settingsManager->AddCondition("isstandalone");
+    if (g_application.IsStandAlone())
+      settingsManager->AddCondition("isstandalone");
+  }
+
+  // add platform conditions
+  if (platformConditions)
+  {
+#if defined(TARGET_WINDOWS)
+    settingsManager->AddCondition("target_windows");
+#elif defined(TARGET_FREEBSD)
+    settingsManager->AddCondition("target_freebsd");
+#elif defined(TARGET_RASPBERRY_PI)
+    settingsManager->AddCondition("target_raspberry_pi");
+#elif defined(TARGET_ANDROID)
+    settingsManager->AddCondition("target_android");
+#elif defined(TARGET_LINUX)
+    settingsManager->AddCondition("target_linux");
+#elif defined(TARGET_DARWIN)
+    settingsManager->AddCondition("target_darwin");
+#if defined(TARGET_DARWIN_OSX)
+    settingsManager->AddCondition("target_darwin_osx");
+#elif defined(TARGET_DARWIN_IOS)
+    settingsManager->AddCondition("target_darwin_ios");
+#if defined(TARGET_DARWIN_IOS_ATV2)
+    settingsManager->AddCondition("target_darwin_ios_atv2");
+#endif // defined(TARGET_DARWIN_IOS_ATV2)
+#endif // defined(TARGET_DARWIN_IOS)
+#endif // defined(TARGET_DARWIN)
+  }
 
   // add more complex conditions
-  m_settingsManager->AddCondition("addonhassettings", AddonHasSettings);
-  m_settingsManager->AddCondition("checkmasterlock", CheckMasterLock);
-  m_settingsManager->AddCondition("checkpvrparentalpin", CheckPVRParentalPin);
-  m_settingsManager->AddCondition("hasperipherals", HasPeripherals);
-  m_settingsManager->AddCondition("isfullscreen", IsFullscreen);
-  m_settingsManager->AddCondition("ismasteruser", IsMasterUser);
-  m_settingsManager->AddCondition("isusingttfsubtitles", IsUsingTTFSubtitles);
-  m_settingsManager->AddCondition("profilecanwritedatabase", ProfileCanWriteDatabase);
-  m_settingsManager->AddCondition("profilecanwritesources", ProfileCanWriteSources);
-  m_settingsManager->AddCondition("profilehasaddons", ProfileHasAddons);
-  m_settingsManager->AddCondition("profilehasdatabase", ProfileHasDatabase);
-  m_settingsManager->AddCondition("profilehassources", ProfileHasSources);
-  m_settingsManager->AddCondition("profilehasaddonmanagerlocked", ProfileHasAddonManagerLocked);
-  m_settingsManager->AddCondition("profilehasfileslocked", ProfileHasFilesLocked);
-  m_settingsManager->AddCondition("profilehasmusiclocked", ProfileHasMusicLocked);
-  m_settingsManager->AddCondition("profilehaspictureslocked", ProfileHasPicturesLocked);
-  m_settingsManager->AddCondition("profilehasprogramslocked", ProfileHasProgramsLocked);
-  m_settingsManager->AddCondition("profilehassettingslocked", ProfileHasSettingsLocked);
-  m_settingsManager->AddCondition("profilehasvideoslocked", ProfileHasVideosLocked);
-  m_settingsManager->AddCondition("profilelockmode", ProfileLockMode);
+  if (dynamicConditions)
+  {
+    settingsManager->AddCondition("addonhassettings", AddonHasSettings);
+    settingsManager->AddCondition("checkmasterlock", CheckMasterLock);
+    settingsManager->AddCondition("checkpvrparentalpin", CheckPVRParentalPin);
+    settingsManager->AddCondition("hasperipherals", HasPeripherals);
+    settingsManager->AddCondition("isfullscreen", IsFullscreen);
+    settingsManager->AddCondition("ismasteruser", IsMasterUser);
+    settingsManager->AddCondition("isusingttfsubtitles", IsUsingTTFSubtitles);
+    settingsManager->AddCondition("profilecanwritedatabase", ProfileCanWriteDatabase);
+    settingsManager->AddCondition("profilecanwritesources", ProfileCanWriteSources);
+    settingsManager->AddCondition("profilehasaddons", ProfileHasAddons);
+    settingsManager->AddCondition("profilehasdatabase", ProfileHasDatabase);
+    settingsManager->AddCondition("profilehassources", ProfileHasSources);
+    settingsManager->AddCondition("profilehasaddonmanagerlocked", ProfileHasAddonManagerLocked);
+    settingsManager->AddCondition("profilehasfileslocked", ProfileHasFilesLocked);
+    settingsManager->AddCondition("profilehasmusiclocked", ProfileHasMusicLocked);
+    settingsManager->AddCondition("profilehaspictureslocked", ProfileHasPicturesLocked);
+    settingsManager->AddCondition("profilehasprogramslocked", ProfileHasProgramsLocked);
+    settingsManager->AddCondition("profilehassettingslocked", ProfileHasSettingsLocked);
+    settingsManager->AddCondition("profilehasvideoslocked", ProfileHasVideosLocked);
+    settingsManager->AddCondition("profilelockmode", ProfileLockMode);
+  }
 }
 
 void CSettings::InitializeISettingsHandlers()

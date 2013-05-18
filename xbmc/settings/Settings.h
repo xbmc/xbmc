@@ -269,13 +269,13 @@ private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);
 
-  bool Initialize(const std::string &file);
+  bool Initialize(const std::string &file, CSettingsManager *visibilityManager, bool &hidden);
   bool InitializeDefinitions();
   void InitializeSettingTypes();
   void InitializeVisibility();
   void InitializeDefaults();
   void InitializeOptionFillers();
-  void InitializeConditions();
+  void InitializeConditions(CSettingsManager *settingsManager = NULL, bool staticConditions = true, bool dynamicConditions = true, bool platformConditions = false);
   void InitializeISettingsHandlers();
   void InitializeISubSettings();
   void InitializeISettingCallbacks();

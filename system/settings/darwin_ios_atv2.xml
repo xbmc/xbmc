@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <visible>
+    <and>
+      <condition>TARGET_DARWIN</condition>
+      <condition>TARGET_DARWIN_IOS</condition>
+      <condition>TARGET_DARWIN_IOS_ATV2</condition>
+    </and>
+  </visible>
   <section id="system">
     <category id="videoscreen">
       <group id="1">

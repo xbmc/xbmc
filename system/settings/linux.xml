@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
+  <visible>TARGET_LINUX</visible>
   <section id="system">
     <category id="videoscreen">
       <group id="1">
