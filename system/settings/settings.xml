@@ -666,7 +666,6 @@
         <setting id="subtitles.custompath" type="path" label="21366" help="">
           <level>1</level>
           <default></default>
-          <heading>657</heading>
           <constraints>
             <allowempty>true</allowempty>
             <writable>false</writable>
@@ -674,7 +673,9 @@
               <source>videos</source>
             </sources>
           </constraints>
-          <control type="button" format="path" />
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
         </setting>
         <setting id="subtitles.align" type="integer" label="21460" help="">
           <level>1</level>
@@ -820,12 +821,13 @@
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="">
           <level>1</level>
           <default></default>
-          <heading>657</heading>
           <constraints>
             <allowempty>true</allowempty>
             <writable>false</writable>
           </constraints>
-          <control type="button" format="path" />
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
         </setting>
         <setting id="pvrmenu.searchicons" type="action" label="19167" help="">
           <level>1</level>
@@ -1246,50 +1248,56 @@
         <setting id="musicfiles.trackformat" type="string" label="13307" help="">
           <level>2</level>
           <default>[%N. ]%A - %T</default>
-          <heading>16016</heading>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.trackformatright" type="string" label="13387" help="">
           <level>2</level>
           <default>%D</default>
-          <heading>16016</heading>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="">
           <level>4</level>
           <default></default>
-          <heading>16016</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="">
           <level>4</level>
           <default></default>
-          <heading>16016</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="">
           <level>4</level>
           <default></default>
-          <heading>16016</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="">
           <level>4</level>
           <default></default>
-          <heading>16016</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="musicfiles.findremotethumbs" type="boolean" label="14059" help="">
           <level>0</level>
@@ -1316,17 +1324,19 @@
         <setting id="audiocds.recordingpath" type="path" label="20000" help="">
           <level>1</level>
           <default></default>
-          <heading>657</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="button" format="path" />
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
         </setting>
         <setting id="audiocds.trackpathformat" type="string" label="13307" help="">
           <level>2</level>
           <default>%A/%A - %B/[%N. ][%A - ]%T</default>
-          <heading>16016</heading>
-          <control type="edit" format="string" />
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
         </setting>
         <setting id="audiocds.encoder" type="integer" label="621" help="">
           <level>2</level>
@@ -2196,11 +2206,12 @@
         <setting id="debug.screenshotpath" type="path" label="20004" help="">
           <level>1</level>
           <default></default>
-          <heading>657</heading>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <control type="button" format="path" />
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
         </setting>
       </group>
     </category>

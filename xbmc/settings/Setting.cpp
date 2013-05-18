@@ -792,8 +792,13 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     CLog::Log(LOGERROR, "CSettingString: invalid <control> of \"%s\"", m_id.c_str());
     return false;
   }
-  // get heading
-  XMLUtils::GetInt(node, "heading", m_heading);
+
+  const TiXmlNode *control = node->FirstChild("control");
+  if (control != NULL)
+  {
+    // get heading
+    XMLUtils::GetInt(control, "heading", m_heading);
+  }
 
   const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
   if (constraints != NULL)
