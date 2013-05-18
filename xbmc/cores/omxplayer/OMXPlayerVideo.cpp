@@ -74,7 +74,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
 {
   m_av_clock              = av_clock;
   m_pOverlayContainer     = pOverlayContainer;
-  m_pTempOverlayPicture   = NULL;
   m_open                  = false;
   m_stream_id             = -1;
   m_fFrameRate            = 25.0f;
@@ -163,12 +162,6 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
   m_stream_id     = -1;
   m_speed         = DVD_PLAYSPEED_NORMAL;
   m_started       = false;
-
-  if (m_pTempOverlayPicture)
-  {
-    CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
-    m_pTempOverlayPicture = NULL;
-  }
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
