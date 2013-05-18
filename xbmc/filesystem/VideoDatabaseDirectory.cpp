@@ -46,6 +46,7 @@ CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void)
 bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
+  items.SetPath(path);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())

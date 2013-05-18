@@ -45,6 +45,7 @@ CMusicDatabaseDirectory::~CMusicDatabaseDirectory(void)
 bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  items.SetPath(path);
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
