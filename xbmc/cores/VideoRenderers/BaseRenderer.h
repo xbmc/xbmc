@@ -35,7 +35,7 @@ class CSetting;
 
 typedef struct YV12Image
 {
-  BYTE *   plane[MAX_PLANES];
+  uint8_t* plane[MAX_PLANES];
   int      planesize[MAX_PLANES];
   unsigned stride[MAX_PLANES];
   unsigned width;
