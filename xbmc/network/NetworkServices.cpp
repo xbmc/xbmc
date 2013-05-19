@@ -215,13 +215,6 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         return false;
       }
 
-      if (!CAirPlayServer::SetCredentials(CSettings::Get().GetBool("services.useairplaypassword"),
-                                          CSettings::Get().GetString("services.airplaypassword")))
-      {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), "", g_localizeStrings.Get(33100), "");
-        return false;
-      }
-
       if (!StartAirTunesServer())
       {
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1274), "", g_localizeStrings.Get(33100), "");
