@@ -596,10 +596,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     if(!m_pRenderer) return;
 
-    m_presenttime  = timestamp;
-    m_presentfield = sync;
-    m_presentstep  = PRESENT_FLIP;
-    m_presentsource = source;
+    EPRESENTMETHOD presentmethod;
+
     EDEINTERLACEMODE deinterlacemode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
     EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
 
@@ -607,37 +605,42 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       deinterlacemode = VS_DEINTERLACEMODE_OFF;
 
     if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
-      m_presentmethod = PRESENT_METHOD_SINGLE;
+      presentmethod = PRESENT_METHOD_SINGLE;
     else
     {
-      if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && m_presentfield == FS_NONE)
-        m_presentmethod = PRESENT_METHOD_SINGLE;
+      if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && sync == FS_NONE)
+        presentmethod = PRESENT_METHOD_SINGLE;
       else
       {
         bool invert = false;
-        if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            m_presentmethod = PRESENT_METHOD_BLEND;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            m_presentmethod = PRESENT_METHOD_WEAVE;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { m_presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              m_presentmethod = PRESENT_METHOD_BOB;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { m_presentmethod = PRESENT_METHOD_BOB; invert = true; }
-        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BOB)                m_presentmethod = PRESENT_METHOD_BOB;
-        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BEST)               m_presentmethod = PRESENT_METHOD_BOB;
-        else                                                                    m_presentmethod = PRESENT_METHOD_SINGLE;
+        if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            presentmethod = PRESENT_METHOD_BLEND;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            presentmethod = PRESENT_METHOD_WEAVE;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              presentmethod = PRESENT_METHOD_BOB;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { presentmethod = PRESENT_METHOD_BOB; invert = true; }
+        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BOB)                presentmethod = PRESENT_METHOD_BOB;
+        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BEST)               presentmethod = PRESENT_METHOD_BOB;
+        else                                                                    presentmethod = PRESENT_METHOD_SINGLE;
 
         /* default to odd field if we want to deinterlace and don't know better */
-        if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && m_presentfield == FS_NONE)
-          m_presentfield = FS_TOP;
+        if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && sync == FS_NONE)
+          sync = FS_TOP;
 
         /* invert present field */
         if(invert)
         {
-          if( m_presentfield == FS_BOT )
-            m_presentfield = FS_TOP;
+          if( sync == FS_BOT )
+            sync = FS_TOP;
           else
-            m_presentfield = FS_BOT;
+            sync = FS_BOT;
         }
       }
     }
+
+    m_presenttime   = timestamp;
+    m_presentfield  = sync;
+    m_presentstep   = PRESENT_FLIP;
+    m_presentsource = source;
 
     /* signal to any waiters to check state */
     m_presentevent.Set();
