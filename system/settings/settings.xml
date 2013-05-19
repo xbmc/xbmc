@@ -1329,7 +1329,7 @@
         </setting>
         <setting id="audiocds.trackpathformat" type="string" label="13307" help="">
           <level>2</level>
-          <default>%A - %B/[%N. ][%A - ]%T</default>
+          <default>%A/%A - %B/[%N. ][%A - ]%T</default>
           <heading>16016</heading>
           <control type="edit" format="string" />
         </setting>
