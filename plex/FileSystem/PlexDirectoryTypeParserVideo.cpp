@@ -51,8 +51,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   CVideoInfoTag videoTag;
   EPlexDirectoryType dirType = item.GetPlexDirectoryType();
 
-  item.m_bIsFolder = false;
-
+  videoTag.m_strFileNameAndPath = item.GetPath();
   videoTag.m_strTitle = item.GetProperty("title").asString();
   videoTag.m_strOriginalTitle = item.GetProperty("originalTitle").asString();
   videoTag.m_strPlot = videoTag.m_strPlotOutline = item.GetProperty("summary").asString();
@@ -72,12 +71,10 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   {
     videoTag.m_strShowTitle = item.GetProperty("parentTitle").asString();
     videoTag.m_iSeason = item.GetProperty("index").asInteger();
-    item.m_bIsFolder = true;
   }
   else if (dirType == PLEX_DIR_TYPE_SHOW)
   {
     videoTag.m_strShowTitle = videoTag.m_strTitle;
-    item.m_bIsFolder = true;
   }
 
   item.SetFromVideoInfoTag(videoTag);
@@ -118,8 +115,6 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
     }
     else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MEDIA)
     {
-      /* these items are not folders */
-      mediaItem->m_bIsFolder = false;
       mediaItem->SetPath(item.GetPath());
 
       /* Parse children */

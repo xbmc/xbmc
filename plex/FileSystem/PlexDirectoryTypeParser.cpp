@@ -13,6 +13,10 @@
 #include "PlexDirectoryTypeParserVideo.h"
 #include "PlexDirectoryTypeParserMusic.h"
 
+static CPlexDirectoryTypeParserBase* videoParser = new CPlexDirectoryTypeParserVideo;
+static CPlexDirectoryTypeParserBase* albumParser = new CPlexDirectoryTypeParserAlbum;
+static CPlexDirectoryTypeParserBase* baseParser = new CPlexDirectoryTypeParserBase;
+
 CPlexDirectoryTypeParserBase*
 CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(EPlexDirectoryType type)
 {
@@ -20,10 +24,10 @@ CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(EPlexDirectoryType type)
       type == PLEX_DIR_TYPE_SHOW ||
       type == PLEX_DIR_TYPE_EPISODE ||
       type == PLEX_DIR_TYPE_SEASON)
-    return new CPlexDirectoryTypeParserVideo;
+    return videoParser;
 
   else if (type == PLEX_DIR_TYPE_ALBUM)
-    return new CPlexDirectoryTypeParserAlbum;
+    return albumParser;
 
-  return new CPlexDirectoryTypeParserBase;
+  return baseParser;
 }

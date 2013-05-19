@@ -83,6 +83,8 @@ namespace XFILE
       static void CopyAttributes(TiXmlElement* element, CFileItem& fileItem, const CURL &url);
       static CFileItemPtr NewPlexElement(TiXmlElement *element, CFileItem &parentItem, const CURL &url = CURL());
 
+      static bool IsFolder(CFileItem& item, TiXmlElement* element);
+
       virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
       long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }

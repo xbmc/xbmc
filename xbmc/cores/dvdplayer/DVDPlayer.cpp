@@ -4646,7 +4646,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 
   CFileItemPtr mediaPart = item.m_mediaItems[mediaItemIdx]->m_mediaParts[0];
 
-  if (!item.IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
+  if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
   {
     CStdString localPath = mediaPart->GetProperty("file").asString();
     if (CFile::Exists(localPath))
@@ -4654,6 +4654,8 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       item.SetPath(localPath);
       usingLocalPath = true;
     }
+    else
+      item.SetPath(mediaPart->GetPath());
   }
   else
   {

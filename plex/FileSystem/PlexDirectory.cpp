@@ -274,32 +274,25 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, con
   newItem->SetProperty("plex", true);
   newItem->SetProperty("plexserver", baseUrl.GetHostName());
 
+  newItem->m_bIsFolder = IsFolder(*newItem, element);
+
+#if 0
+  CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
+            newItem->GetPath().c_str(),
+            GetDirectoryTypeString(newItem->GetPlexDirectoryType()).c_str(),
+            newItem->m_bIsFolder ? "yes" : "no");
+#endif
+
   return newItem;
 }
 
 void
 CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
 {
-
-  CPlexDirectoryTypeParserBase *directoryParser = NULL;
-  EPlexDirectoryType lastType = PLEX_DIR_TYPE_UNKNOWN;
-
   for (TiXmlElement *element = root->FirstChildElement(); element; element = element->NextSiblingElement())
   {
     CFileItemPtr item = CPlexDirectory::NewPlexElement(element, container, m_url);
-
-    EPlexDirectoryType currentType = item->GetPlexDirectoryType();
-
-    if (currentType != lastType || !directoryParser)
-    {
-      directoryParser = CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(currentType);
-      lastType = currentType;
-    }
-
-    directoryParser->Process(*item, container, element);
-
-    if (element->ValueStr() == "Directory")
-      item->m_bIsFolder = true;
+    CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(item->GetPlexDirectoryType())->Process(*item, container, element);
 
     container.Add(item);
   }
@@ -482,6 +475,34 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_augmentationEvent.Set();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::IsFolder(CFileItem& item, TiXmlElement* element)
+{
+  if (element->ValueStr() == "Directory")
+    return true;
+
+  switch(item.GetPlexDirectoryType())
+  {
+    case PLEX_DIR_TYPE_VIDEO:
+    case PLEX_DIR_TYPE_SHOW:
+    case PLEX_DIR_TYPE_MOVIE:
+    case PLEX_DIR_TYPE_PHOTO:
+    case PLEX_DIR_TYPE_PART:
+    case PLEX_DIR_TYPE_STREAM:
+    case PLEX_DIR_TYPE_GENRE:
+    case PLEX_DIR_TYPE_ROLE:
+    case PLEX_DIR_TYPE_COUNTRY:
+    case PLEX_DIR_TYPE_WRITER:
+    case PLEX_DIR_TYPE_DIRECTOR:
+    case PLEX_DIR_TYPE_MEDIA:
+      return false;
+      break;
+    default:
+      break;
+  }
+
+  return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::CPlexDirectoryFetchJob::DoWork()
@@ -538,3 +559,4 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
 {
   return true;
 }
+
