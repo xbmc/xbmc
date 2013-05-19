@@ -417,7 +417,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
 #else
       CStdString sock_err = strerror(errno);
 #endif
-      CLog::Log(LOGWARNING, "%s Server: Only IPv6 supported (%s)", sock_err.c_str());
+      CLog::Log(LOGWARNING, "%s Server: Only IPv6 supported (%s)", callerName, sock_err.c_str());
     }
   }
   else
