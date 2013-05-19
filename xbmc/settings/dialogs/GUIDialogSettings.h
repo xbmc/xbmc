@@ -21,7 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "dialogs/GUIDialogSlider.h"
+#include "guilib/ISliderCallback.h"
 
 class CGUISpinControlEx;
 class CGUIButtonControl;

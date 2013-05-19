@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSettings.h"
+#include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"
