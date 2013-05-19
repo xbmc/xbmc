@@ -19,6 +19,7 @@
  *
  */
 
+#include <map>
 #include <set>
 #include <vector>
 
@@ -104,6 +105,8 @@ protected:
   static RESOLUTION GetResolutionFromString(const std::string &strResolution);
   static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
   static RESOLUTION GetResolutionForScreen();
+
+  static RESOLUTION FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, bool interlaced);
 
 private:
   // holds the real gui resolution
