@@ -97,7 +97,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
 
   m_dst_rect.SetRect(0, 0, 0, 0);
   m_iSleepEndTime = 0.0;
-  m_Deinterlace = false;
   m_audio_count = 0;
   m_started = false;
   m_flush = false;
@@ -112,7 +111,6 @@ OMXPlayerVideo::~OMXPlayerVideo()
 bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
 {
   m_hints       = hints;
-  m_Deinterlace = ( CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF ) ? false : true;
   m_hdmi_clock_sync = (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF);
   m_started     = false;
   m_flush       = false;
@@ -610,7 +608,7 @@ bool OMXPlayerVideo::OpenDecoder()
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
 
-  bool bVideoDecoderOpen = m_omxVideo.Open(m_hints, m_av_clock, m_Deinterlace, m_hdmi_clock_sync);
+  bool bVideoDecoderOpen = m_omxVideo.Open(m_hints, m_av_clock, CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode, m_hdmi_clock_sync);
   m_omxVideo.RegisterResolutionUpdateCallBack((void *)this, ResolutionUpdateCallBack);
 
   if(!bVideoDecoderOpen)

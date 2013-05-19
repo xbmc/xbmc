@@ -69,7 +69,7 @@ COMXVideo::COMXVideo() : m_video_codec_name("")
   m_extrasize         = 0;
   m_video_convert     = false;
   m_deinterlace       = false;
-  m_deinterlace_request = false;
+  m_deinterlace_request = VS_DEINTERLACEMODE_OFF;
   m_hdmi_clock_sync   = false;
   m_drop_state        = false;
   m_decoded_width     = 0;
@@ -172,21 +172,21 @@ bool COMXVideo::PortSettingsChanged()
   interlace.nPortIndex = m_omx_decoder.GetOutputPort();
   omx_err = m_omx_decoder.GetConfig(OMX_IndexConfigCommonInterlace, &interlace);
 
-  /* enable deintelace on SD and 1080i */
-  bool deinterlace = m_deinterlace_request != 0;
-  if(m_decoded_width <= 720 && m_decoded_height <=576 && deinterlace)
-    m_deinterlace = deinterlace;
-  else if(m_decoded_width >= 1920 && m_decoded_height >= 540 && deinterlace)
-    m_deinterlace = deinterlace;
+  if(m_deinterlace_request == VS_DEINTERLACEMODE_FORCE)
+    m_deinterlace = true;
+  else if(m_deinterlace_request == VS_DEINTERLACEMODE_OFF)
+    m_deinterlace = false;
+  else
+    m_deinterlace = interlace.eMode != OMX_InterlaceProgressive;
 
   if(!m_omx_render.Initialize("OMX.broadcom.video_render", OMX_IndexParamVideoInit))
     return false;
 
   m_omx_render.ResetEos();
 
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d@%.2f %s", CLASSNAME, __func__,
+  CLog::Log(LOGDEBUG, "%s::%s - %dx%d@%.2f interlace:%d deinterlace:%d", CLASSNAME, __func__,
       port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight,
-      port_image.format.video.xFramerate / (float)(1<<16), m_deinterlace ? "interlaced":"progressive");
+      port_image.format.video.xFramerate / (float)(1<<16), interlace.eMode, m_deinterlace);
 
   if(!m_omx_sched.Initialize("OMX.broadcom.video_scheduler", OMX_IndexParamVideoInit))
     return false;
@@ -318,7 +318,7 @@ bool COMXVideo::PortSettingsChanged()
   return true;
 }
 
-bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, bool hdmi_clock_sync)
+bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE deinterlace, bool hdmi_clock_sync)
 {
   bool vflip = false;
   Close();
@@ -385,24 +385,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
           m_codingType = OMX_VIDEO_CodingAVC;
           m_video_codec_name = "omx-h264";
           break;
-      }
-
-      /* check interlaced */
-      if(m_extrasize > 9 && m_extradata[0] == 1)
-      {
-        CBitstreamConverter converter;
-        converter.Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
-
-        int32_t  max_ref_frames = 0;
-        uint8_t  *spc = m_extradata + 6;
-        uint32_t sps_size = BS_RB16(spc);
-        bool     interlaced = true;
-        if (sps_size)
-          converter.parseh264_sps(spc+3, sps_size-1, &interlaced, &max_ref_frames);
-        if(!interlaced && deinterlace)
-          deinterlace = false;
-
-        converter.Close();
       }
     }
     break;
@@ -556,7 +538,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     return false;
   }
 
-  if (m_deinterlace_request != 0)
+  if (m_deinterlace_request != VS_DEINTERLACEMODE_OFF)
   {
     // the deinterlace component requires 3 additional video buffers in addition to the DPB (this is normally 2).
     OMX_PARAM_U32TYPE extra_buffers;

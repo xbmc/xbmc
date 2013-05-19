@@ -30,6 +30,7 @@
 
 #include "guilib/Geometry.h"
 #include "DVDDemuxers/DVDDemux.h"
+#include "xbmc/settings/VideoSettings.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60
@@ -46,7 +47,7 @@ public:
 
   // Required overrides
   bool SendDecoderConfig();
-  bool Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace = false, bool hdmi_clock_sync = false);
+  bool Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE deinterlace = VS_DEINTERLACEMODE_OFF, bool hdmi_clock_sync = false);
   bool PortSettingsChanged();
   void RegisterResolutionUpdateCallBack(void *ctx, ResolutionUpdateCallBackFn callback) { m_res_ctx = ctx; m_res_callback = callback; }
   void Close(void);
@@ -94,7 +95,7 @@ protected:
   std::string       m_video_codec_name;
 
   bool              m_deinterlace;
-  bool              m_deinterlace_request;
+  EDEINTERLACEMODE  m_deinterlace_request;
   bool              m_hdmi_clock_sync;
   uint32_t          m_history_valid_pts;
   ResolutionUpdateCallBackFn m_res_callback;
