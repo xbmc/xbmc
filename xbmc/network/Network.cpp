@@ -407,23 +407,32 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   
   memset(&addr, 0, sizeof(addr));
   
-  if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0)
+  if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
+  {
+    // in case we're on ipv6, make sure the socket is dual stacked
+    if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)) < 0)
+    {
+#ifdef _MSC_VER
+      CStdString sock_err = WUSysMsg(WSAGetLastError());
+#else
+      CStdString sock_err = strerror(errno);
+#endif
+      CLog::Log(LOGWARNING, "%s Server: Only IPv6 supported (%s)", sock_err.c_str());
+    }
+  }
+  else
+  {
     v4_fallback = true;
-  
-  //in case we're on ipv6, make sure the socket is dual stacked
-  if (!v4_fallback)
-    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)); 
-  
-  if (v4_fallback)
     sock = socket(PF_INET, SOCK_STREAM, 0);
-
-  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+  }
   
   if (sock == INVALID_SOCKET)
   {
     CLog::Log(LOGERROR, "%s Server: Failed to create serversocket", callerName);
     return INVALID_SOCKET;
   }
+
+  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
   
   if (v4_fallback)
   {
