@@ -2711,15 +2711,13 @@ bool COMXPlayer::CanSeek()
 
 void COMXPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-#if 0
-  // sadly this doesn't work for now, audio player must
-  // drop packets at the same rate as we play frames
+  // Single step
   if( m_playSpeed == DVD_PLAYSPEED_PAUSE && bPlus && !bLargeStep)
   {
-    m_omxPlayerVideo.StepFrame();
+    m_av_clock.OMXStep();
     return;
   }
-#endif
+
   if (!m_State.canseek)
     return;
 
