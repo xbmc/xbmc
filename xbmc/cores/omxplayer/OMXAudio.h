@@ -134,7 +134,7 @@ private:
   WAVEFORMATEXTENSIBLE        m_wave_header;
   AEAudioFormat m_format;
 protected:
-  COMXCoreComponent *m_omx_render;
+  COMXCoreComponent m_omx_render;
   COMXCoreComponent m_omx_mixer;
   COMXCoreComponent m_omx_decoder;
   COMXCoreTunel     m_omx_tunnel_clock;
