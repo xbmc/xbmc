@@ -347,6 +347,29 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
   return result;
 }
 
+XMode CXRandR::GetPreferredMode(CStdString outputName)
+{
+  Query();
+  XMode result;
+
+  for (unsigned int j = 0; j < m_outputs.size(); j++)
+  {
+    if (m_outputs[j].name == outputName || outputName == "")
+    {
+      for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
+      {
+        if (m_outputs[j].modes[i].isPreferred)
+        {
+          result = m_outputs[j].modes[i];
+          break;
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
 void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 {
   Query();
