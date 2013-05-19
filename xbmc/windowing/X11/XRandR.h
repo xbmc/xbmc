@@ -98,6 +98,7 @@ public:
   bool Query(bool force, int screennum, bool ignoreoff=true);
   std::vector<XOutput> GetModes(void);
   XMode   GetCurrentMode(CStdString outputName);
+  XMode   GetPreferredMode(CStdString outputName);
   XOutput *GetOutput(CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
