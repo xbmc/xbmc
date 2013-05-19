@@ -3138,7 +3138,7 @@ msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
+msgid "Music library needs to rescan tags from files."
 msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
