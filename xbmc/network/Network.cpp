@@ -26,6 +26,9 @@
 #include "ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
+#ifdef TARGET_WINDOWS
+#include "utils/SystemInfo.h"
+#endif
 
 using namespace std;
 
@@ -396,6 +399,12 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   struct sockaddr_in  *s4;
   int    sock;
   bool   v4_fallback = false;
+#ifdef TARGET_WINDOWS
+  // Windows XP and earlier don't support the IPV6_V6ONLY socket option
+  // so always fall back to IPv4 directly to keep old functionality
+  if (CSysInfo::GetWindowsVersion() <= CSysInfo::WindowsVersionWinXP)
+    v4_fallback = true;
+#endif
 
 #ifdef WINSOCK_VERSION
   int yes = 1;
@@ -407,7 +416,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   
   memset(&addr, 0, sizeof(addr));
   
-  if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
+  if (!v4_fallback &&
+     (sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
   {
     // in case we're on ipv6, make sure the socket is dual stacked
     if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&no, sizeof(no)) < 0)
