@@ -57,7 +57,7 @@ public:
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
   static CStdString GetSpecialFolder(int csidl);
-  static CStdString CWIN32Util::GetSystemPath();
+  static CStdString GetSystemPath();
   static CStdString GetProfilePath();
   static CStdString UncToSmb(const CStdString &strPath);
   static CStdString SmbToUnc(const CStdString &strPath);
