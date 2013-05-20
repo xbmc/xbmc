@@ -494,6 +494,19 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
     return false;
 
   CStdString host = url.GetHostName();
+
+  return IsHostOnLAN(host);
+}
+
+static bool addr_match(uint32_t addr, const char* target, const char* submask)
+{
+  uint32_t addr2 = ntohl(inet_addr(target));
+  uint32_t mask = ntohl(inet_addr(submask));
+  return (addr & mask) == (addr2 & mask);
+}
+
+bool URIUtils::IsHostOnLAN(const CStdString& host, bool offLineCheck)
+{
   if(host.length() == 0)
     return false;
 
@@ -502,7 +515,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
   if(host.find('.') == string::npos)
     return true;
 
-  unsigned long address = ntohl(inet_addr(host.c_str()));
+  uint32_t address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
   {
     CStdString ip;
@@ -512,6 +525,15 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
 
   if(address != INADDR_NONE)
   {
+    if (offLineCheck) // check if in private range, ref https://en.wikipedia.org/wiki/Private_network
+    {
+      if (
+        addr_match(address, "192.168.0.0", "255.255.0.0") ||
+        addr_match(address, "10.0.0.0", "255.0.0.0") ||
+        addr_match(address, "172.16.0.0", "255.240.0.0")
+        )
+        return true;
+    }
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
