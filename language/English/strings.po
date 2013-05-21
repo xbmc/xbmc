@@ -10179,8 +10179,6 @@ msgctxt "#21363"
 msgid "Episode Bookmark created"
 msgstr ""
 
-
-
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21364"
 msgid "Edit media share"
@@ -12026,17 +12024,17 @@ msgstr ""
 #empty strings from id 33201 to 33999
 #translators: no need to add these to your language files
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34000"
 msgid "Lame"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34001"
 msgid "Vorbis"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34002"
 msgid "Wav"
 msgstr ""
@@ -12051,64 +12049,64 @@ msgctxt "#34004"
 msgid "VAAPI"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34005"
 msgid "Flac"
 msgstr ""
 
 #empty strings from id 34006 to 34099
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34101"
 msgid "2.0"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34102"
 msgid "2.1"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34103"
 msgid "3.0"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34104"
 msgid "3.1"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34105"
 msgid "4.0"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34106"
 msgid "4.1"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34107"
 msgid "5.0"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34108"
 msgid "5.1"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34109"
 msgid "7.0"
 msgstr ""
 
-#: xbmc\settings\guisettings.cpp
+#: system/settings/settings.xml
 msgctxt "#34110"
 msgid "7.1"
 msgstr ""
@@ -12228,7 +12226,7 @@ msgstr ""
 #empty strings from id 34409 to 34999
 
 #: addons/skin.confluence/720p/DialogPeripheralManager.xml
-#: xbmc/settings/GUIDialogSettings.cpp
+#: system/settings/settings.xml
 msgctxt "#35000"
 msgid "Peripherals"
 msgstr ""
@@ -12532,6 +12530,1600 @@ msgstr ""
 msgctxt "#36042"
 msgid "Use limited color range (16-235)"
 msgstr ""
+
+#empty strings from id 36043 to 36099
+
+#strings from 36100 to 36999 are reserved for settings descriptions
+
+#: system/settings/settings.xml
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36117"
+msgid "Select country location."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance.
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36141"
+msgid ""Show plot information for unwatched media in the Video Library.
+msgstr ""
+
+
+#: system/settings/settings.xml
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36154"
+msgid ""
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36224"
+msgid "Hide "no information available" labels when no EPG data can be retrieved for a channel."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36241"
+msgid "Execute the "wakeup command" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr ""
+
+#empty strings from id 36260 to 36261
+
+#: system/settings/settings.xml
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36309"
+msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36323"
+msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36333"
+msgid ""
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr ""
+
+#empty string id 36350
+
+#: system/settings/settings.xml
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Limits the used color range."
+
+#: system/settings/settings.xml
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36364"
+msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36371"
+msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36372"
+msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36395"
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr ""
+
+#empty string 36419
+
+#: system/settings/settings.xml
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr ""
+
+#empty strings from id 36421 to 36999
+#end reservation
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
