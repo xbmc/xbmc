@@ -31,11 +31,17 @@
 #define XML_ELM_DEFAULT     "default"
 #define XML_ELM_VALUE       "value"
 
-#define XML_ELM_CONSTRAINTS "constraints"
-#define XML_ELM_OPTIONS     "options"
-#define XML_ELM_MINIMUM     "minimum"
-#define XML_ELM_STEP        "step"
-#define XML_ELM_MAXIMUM     "maximum"
+#define XML_ELM_CONTROL       "control"
+#define XML_ELM_CONSTRAINTS   "constraints"
+#define XML_ELM_OPTIONS       "options"
+#define XML_ELM_OPTION        "option"
+#define XML_ELM_MINIMUM       "minimum"
+#define XML_ELM_STEP          "step"
+#define XML_ELM_MAXIMUM       "maximum"
+#define XML_ELM_DEPENDENCIES  "dependencies"
+#define XML_ELM_DEPENDENCY    "dependency"
+#define XML_ELM_UPDATES       "updates"
+#define XML_ELM_UPDATE        "update"
 
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),
@@ -81,7 +87,23 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (m_level < (int)SettingLevelBasic || m_level > (int)SettingLevelInternal)
     m_level = SettingLevelStandard;
 
-  const TiXmlElement *control = node->FirstChildElement("control");
+  const TiXmlNode *dependencies = node->FirstChild(XML_ELM_DEPENDENCIES);
+  if (dependencies != NULL)
+  {
+    const TiXmlNode *dependencyNode = dependencies->FirstChild(XML_ELM_DEPENDENCY);
+    while (dependencyNode != NULL)
+    {
+      CSettingDependency dependency(m_settingsManager);
+      if (dependency.Deserialize(dependencyNode))
+        m_dependencies.push_back(dependency);
+      else
+        CLog::Log(LOGWARNING, "CSetting: error reading <dependency> tag of \"%s\"", m_id.c_str());
+
+      dependencyNode = dependencyNode->NextSibling(XML_ELM_DEPENDENCY);
+    }
+  }
+
+  const TiXmlElement *control = node->FirstChildElement(XML_ELM_CONTROL);
   if (control != NULL)
   {
     if (!m_control.Deserialize(control, update) ||
@@ -90,28 +112,12 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       CLog::Log(LOGERROR, "CSetting: error reading <control> tag of \"%s\"", m_id.c_str());
       return false;
     }
-
-    const TiXmlNode *dependencies = control->FirstChild("dependencies");
-    if (dependencies != NULL)
-    {
-      const TiXmlNode *dependencyNode = dependencies->FirstChild("dependency");
-      while (dependencyNode != NULL)
-      {
-        CSettingDependency dependency(m_settingsManager);
-        if (dependency.Deserialize(dependencyNode))
-          m_dependencies.push_back(dependency);
-        else
-          CLog::Log(LOGWARNING, "CSetting: error reading <dependency> tag of \"%s\"", m_id.c_str());
-
-        dependencyNode = dependencyNode->NextSibling("dependency");
-      }
-    }
   }
 
-  const TiXmlNode *updates = node->FirstChild("updates");
+  const TiXmlNode *updates = node->FirstChild(XML_ELM_UPDATES);
   if (updates != NULL)
   {
-    const TiXmlElement *updateElem = updates->FirstChildElement("update");
+    const TiXmlElement *updateElem = updates->FirstChildElement(XML_ELM_UPDATE);
     while (updateElem != NULL)
     {
       CSettingUpdate update;
@@ -123,7 +129,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       else
         CLog::Log(LOGWARNING, "CSetting: error reading <update> tag of \"%s\"", m_id.c_str());
 
-      updateElem = updateElem->NextSiblingElement("update");
+      updateElem = updateElem->NextSiblingElement(XML_ELM_UPDATE);
     }
   }
 
@@ -409,6 +415,13 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
+  if (m_control.GetFormat() == SettingControlFormatString)
+  {
+    const TiXmlNode *control = node->FirstChild(XML_ELM_CONTROL);
+    if (control != NULL)
+      XMLUtils::GetInt(control, "formatlabel", m_format);
+  }
+
   const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
   if (constraints != NULL)
   {
@@ -421,7 +434,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
       else
       {
         m_options.clear();
-        const TiXmlElement *optionElement = options->FirstChildElement("option");
+        const TiXmlElement *optionElement = options->FirstChildElement(XML_ELM_OPTION);
         while (optionElement != NULL)
         {
           std::pair<int, int> entry;
@@ -431,7 +444,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
             m_options.push_back(entry);
           }
 
-          optionElement = optionElement->NextSiblingElement("option");
+          optionElement = optionElement->NextSiblingElement(XML_ELM_OPTION);
         }
       }
     }
@@ -449,16 +462,11 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     // get maximum
     XMLUtils::GetInt(constraints, XML_ELM_MAXIMUM, m_max);
 
-    if (m_control.GetFormat() == SettingControlFormatString)
+    if (m_control.GetFormat() == SettingControlFormatString && m_labelMin < 0)
     {
-      XMLUtils::GetInt(constraints, "formatlabel", m_format);
-
-      if (m_labelMin < 0)
-      {
-        CStdString strFormat;
-        if (XMLUtils::GetString(constraints, "format", strFormat) && !strFormat.empty())
-          m_strFormat = strFormat;
-      }
+      CStdString strFormat;
+      if (XMLUtils::GetString(constraints, "format", strFormat) && !strFormat.empty())
+        m_strFormat = strFormat;
     }
   }
 
@@ -792,12 +800,27 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     CLog::Log(LOGERROR, "CSettingString: invalid <control> of \"%s\"", m_id.c_str());
     return false;
   }
-    
-  // get allowempty (needs to be parsed before parsing the default value)
-  XMLUtils::GetBoolean(node, "allowempty", m_allowEmpty);
-  // get heading
-  XMLUtils::GetInt(node, "heading", m_heading);
-    
+
+  const TiXmlNode *control = node->FirstChild(XML_ELM_CONTROL);
+  if (control != NULL)
+  {
+    // get heading
+    XMLUtils::GetInt(control, "heading", m_heading);
+  }
+
+  const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
+  if (constraints != NULL)
+  {
+    // get allowempty (needs to be parsed before parsing the default value)
+    XMLUtils::GetBoolean(constraints, "allowempty", m_allowEmpty);
+
+    // get the entries
+    const TiXmlNode *options = constraints->FirstChild(XML_ELM_OPTIONS);
+    if (options != NULL && options->FirstChild() != NULL &&
+        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+      m_optionsFiller = options->FirstChild()->ValueStr();
+  }
+
   // get the default value
   CStdString value;
   if (XMLUtils::GetString(node, XML_ELM_DEFAULT, value))
@@ -806,16 +829,6 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
   {
     CLog::Log(LOGERROR, "CSettingString: error reading the default value of \"%s\"", m_id.c_str());
     return false;
-  }
-
-  const TiXmlNode *constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
-  if (constraints != NULL)
-  {
-    // get the entries
-    const TiXmlNode *options = constraints->FirstChild(XML_ELM_OPTIONS);
-    if (options != NULL && options->FirstChild() != NULL &&
-        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
-      m_optionsFiller = options->FirstChild()->ValueStr();
   }
 
   return true;
