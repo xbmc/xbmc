@@ -29,10 +29,13 @@
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#include "filesystem/File.h"
+#include "utils/Base64.h"
 
 using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
+using namespace XFILE;
 
 JSONRPC_STATUS CGUIOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -81,8 +84,26 @@ JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITrans
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, title, message, displaytime);
   else if (image.compare("error") == 0)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, title, message, displaytime);
-  else
-    CGUIDialogKaiToast::QueueNotification(image, title, message, displaytime);
+  else 
+  {
+    string iconfile = "special://temp/notification.png";
+    if (CFile::Exists(image, false))
+      iconfile = image;
+    else
+    {
+      CFile file;
+      if (file.OpenForWrite(iconfile, true))
+      {
+        string decoded_image;
+        Base64::Decode(image, decoded_image);
+        file.Write(decoded_image.c_str(), decoded_image.length());
+        file.Close();
+      }
+      else
+        iconfile = "";
+    }
+    CGUIDialogKaiToast::QueueNotification(iconfile, title, message, displaytime);
+  }
 
   return ACK;
 }
