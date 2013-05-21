@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<settings><section id="system">
+<settings>
+  <section id="videos">
+    <category id="videoplayer">
+      <group id="2">
+        <setting id="videoplayer.rendermethod">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoplayer.hqscalers">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoplayer.synctype">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+
+  <section id="system">
     <category id="videoscreen">
       <group id="1">
         <setting id="videoscreen.screen">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
         </setting>
       </group>
@@ -11,6 +34,12 @@
       <group id="1">
         <setting id="audiooutput.mode">
           <default>2</default> <!-- AUDIO_HDMI -->
+        </setting>
+        <setting id="audiooutput.channels">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.stereoupmix">
+          <visible>false</visible>
         </setting>
         <setting id="audiooutput.passthroughaac">
           <visible>false</visible>
