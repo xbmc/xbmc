@@ -545,7 +545,8 @@
       { "name": "media", "$ref": "Files.Media", "default": "files" },
       { "name": "properties", "$ref": "List.Fields.Files" },
       { "name": "sort", "$ref": "List.Sort" },
-      { "name": "limits", "$ref": "List.Limits", "description": "Limits are applied after getting the directory content thus retrieval is not faster when they are applied." }
+      { "name": "limits", "$ref": "List.Limits", "description": "Limits are applied after getting the directory content thus retrieval is not faster when they are applied." },
+      { "name": "recursive", "type": "boolean", "default": false }
     ],
     "returns": {
       "type": "object",

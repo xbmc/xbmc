@@ -78,8 +78,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
-
-  CFileItemList items;
+  bool recursive = parameterObject["recursive"].asBoolean();
   CStdString strPath = parameterObject["directory"].asString();
 
   // Check if this directory is part of a source and whether it's locked
@@ -110,42 +109,55 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
     extensions = g_advancedSettings.m_pictureExtensions;
   }
 
-  if (CDirectory::GetDirectory(strPath, items, extensions))
+  CFileItemList filteredFiles;
+  std::vector<CStdString> directoriesToScan;
+  CStdString currentDirectory = "";
+  do
   {
-    CFileItemList filteredFiles;
-    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+    if (currentDirectory.IsEmpty())
+      currentDirectory = strPath;
+    else
     {
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
-        continue;
+      currentDirectory = directoriesToScan.back();
+      directoriesToScan.pop_back();
+    }
+    CFileItemList items;
+    if (CDirectory::GetDirectory(currentDirectory, items, extensions))
+    {
+      for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+      {
+        if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
+          continue;
 
-      if (items[i]->IsSmb())
-      {
-        CURL url(items[i]->GetPath());
-        items[i]->SetPath(url.GetWithoutUserDetails());
-      }
-
-      if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-          (media == "music" && items[i]->HasMusicInfoTag()) ||
-          (media == "picture" && items[i]->HasPictureInfoTag()) ||
-           media == "files" ||
-           URIUtils::IsUPnP(items.GetPath()))
-      {
-          filteredFiles.Add(items[i]);
-      }
-      else
-      {
-        CFileItemPtr fileItem(new CFileItem());
-        if (FillFileItem(items[i], fileItem, media, parameterObject))
+        if (items[i]->IsSmb())
         {
-            filteredFiles.Add(fileItem);
+          CURL url(items[i]->GetPath());
+          items[i]->SetPath(url.GetWithoutUserDetails());
         }
+        
+        if (recursive && items[i]->m_bIsFolder && !filteredFiles.Contains(items[i]->GetPath()))
+          directoriesToScan.push_back(items[i]->GetPath());
+
+        if ((media == "video" && items[i]->HasVideoInfoTag()) ||
+            (media == "music" && items[i]->HasMusicInfoTag()) ||
+            (media == "picture" && items[i]->HasPictureInfoTag()) ||
+             media == "files" ||
+             URIUtils::IsUPnP(items.GetPath()))
+          filteredFiles.Add(items[i]);
         else
         {
+          CFileItemPtr fileItem(new CFileItem());
+          if (FillFileItem(items[i], fileItem, media, parameterObject))
+            filteredFiles.Add(fileItem);
+          else
             filteredFiles.Add(items[i]);
         }
       }
     }
+  } while (recursive && !directoriesToScan.empty());
 
+  if (!filteredFiles.IsEmpty()) 
+  {
     // Check if the "properties" list exists
     // and make sure it contains the "file"
     // field
