@@ -209,7 +209,7 @@ std::string CEnvironment::getenv(const std::string &name)
 
   // Not found in Environment of runtime library 
   // Try Environment of process as fallback
-  int varSize = GetEnvironmentVariableW(Wname.c_str(), NULL, 0);
+  unsigned int varSize = GetEnvironmentVariableW(Wname.c_str(), NULL, 0);
   if (varSize == 0)
     return ""; // Not found
   wchar_t * valBuf = new wchar_t[varSize];
