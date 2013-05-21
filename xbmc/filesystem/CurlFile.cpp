@@ -759,10 +759,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       for(std::map<CStdString, CStdString>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
         const CStdString &name = it->first;
-        CStdString value = it->second;
-
-        // url decode value
-        CURL::Decode(value);
+        const CStdString &value = it->second;
 
         if(name.Equals("auth"))
         {
