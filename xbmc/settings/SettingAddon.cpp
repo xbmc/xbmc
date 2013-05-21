@@ -68,15 +68,19 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
     CLog::Log(LOGERROR, "CSettingAddon: error reading the default value of \"%s\"", m_id.c_str());
     return false;
   }
-    
-  // get the addon type
+
+  bool ok = false;
   CStdString strAddonType;
-  bool ok = XMLUtils::GetString(node, "addontype", strAddonType);
-  if (ok)
+  const TiXmlNode *constraints = node->FirstChild("constraints");
+  if (constraints != NULL)
   {
-    m_addonType = ADDON::TranslateType(strAddonType);
-    if (m_addonType == ADDON::ADDON_UNKNOWN)
-      ok = false;
+    // get the addon type
+    if (XMLUtils::GetString(constraints, "addontype", strAddonType))
+    {
+      m_addonType = ADDON::TranslateType(strAddonType);
+      if (m_addonType != ADDON::ADDON_UNKNOWN)
+        ok = true;
+    }
   }
 
   if (!ok && !update)
