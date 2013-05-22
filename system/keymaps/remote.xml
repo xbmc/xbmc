@@ -51,32 +51,33 @@
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>Back</back>
-      <menu>PreviousMenu</menu>
-      <title>ContextMenu</title>
+      <menu>ContextMenu</menu>
+      <title>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</title>
       <info>Info</info>
       <skipplus>SkipNext</skipplus>
       <skipminus>SkipPrevious</skipminus>
       <display>FullScreen</display>
-      <start>PreviousMenu</start>
+      <start>XBMC.ActivateWindow(Home)</start>
       <record>Screenshot</record>
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
       <power>XBMC.ShutDown()</power>
+      <eject>XBMC.EjectTray()</eject>
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(MyPVR)</mytv>
+      <mytv>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</mytv>
       <guide>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</guide>
       <livetv>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</livetv>
       <liveradio>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</liveradio>
       <recordedtv>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</recordedtv>
       <epgsearch>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</epgsearch>
-      <red>XBMC.ActivateWindow(MyPVR)</red>
-      <green>XBMC.ActivateWindow(MyVideos)</green>
-      <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
-      <blue>XBMC.ActivateWindow(MyPictures)</blue>
-      <zero>Number0</zero>
+      <red>FullScreen</red>
+      <green>AudioNextLanguage</green>
+      <yellow>NextSubtitle</yellow>
+      <blue>AspectRatio</blue>
+      <zero>Delete</zero>
       <one>Number1</one>
       <two>JumpSMS2</two>
       <three>JumpSMS3</three>
@@ -86,51 +87,30 @@
       <seven>JumpSMS7</seven>
       <eight>JumpSMS8</eight>
       <nine>JumpSMS9</nine>
+      <clear>Delete</clear>
+      <star>Queue</star>
     </remote>
   </global>
   <Home>
     <remote>
       <info>XBMC.ActivateWindow(SystemInfo)</info>
       <clear>XBMC.ActivateWindow(Weather)</clear>
-      <hash>XBMC.ActivateWindow(Settings)</hash>
+      <menu>XBMC.ActivateWindow(Settings)</menu>
+      <start>FullScreen</start>
     </remote>
   </Home>
   <MyTV>
     <remote>
-      <clear>Delete</clear>
+      <title>FullScreen</title>
     </remote>
   </MyTV>
   <MyFiles>
     <remote>
-      <clear>Delete</clear>
-      <zero>Highlight</zero>
-      <star>Move</star>
+      <enter>Move</enter>
+      <star>Highlight</star>
       <hash>Rename</hash>
     </remote>
   </MyFiles>
-  <MyMusicPlaylist>
-    <remote>
-      <clear>Delete</clear>
-      <zero>Delete</zero>
-    </remote>
-  </MyMusicPlaylist>
-  <MyMusicPlaylistEditor>
-    <remote>
-      <zero>Queue</zero>
-    </remote>
-  </MyMusicPlaylistEditor>
-  <MyMusicFiles>
-    <remote>
-      <zero>Queue</zero>
-      <star>Queue</star>
-    </remote>
-  </MyMusicFiles>
-  <MyMusicLibrary>
-    <remote>
-      <zero>Queue</zero>
-      <star>Queue</star>
-    </remote>
-  </MyMusicLibrary>
   <FullscreenVideo>
     <remote>
       <zero>Number0</zero>
@@ -147,21 +127,19 @@
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
-      <back>SmallStepBack</back>
       <menu>OSD</menu>
-      <start>OSD</start>
-      <select>OSD</select>
-      <title>CodecInfo</title>
-      <info>Info</info>
+      <play>PlayerControl(Play)</play>
+      <record>PlayerControl(Record)</record>
+      <select>XBMC.ActivateWindow(PVROSDChannels)</select>
+      <title>XBMC.ActivateWindow(PVROSDGuide)</title>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>NextSubtitle</subtitle>
-      <star>NextSubtitle</star>
+      <star>CodecInfo</star>
       <language>AudioNextLanguage</language>
       <playlist>Playlist</playlist>
+      <language>Language</language>
       <hash>AudioNextLanguage</hash>
-      <pageplus>SkipNext</pageplus>
-      <pageminus>SkipPrevious</pageminus>
     </remote>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -172,28 +150,19 @@
   </VideoTimeSeek>
   <FullscreenInfo>
     <remote>
-      <title>CodecInfo</title>
-      <info>Back</info>
+      <star>CodecInfo</star>
       <menu>OSD</menu>
     </remote>
   </FullscreenInfo>
-  <PlayerControls>
-    <remote>
-      <menu>Back</menu>
-    </remote>
-  </PlayerControls>
   <Visualisation>
     <remote>
-      <left>PreviousPreset</left>
-      <right>NextPreset</right>
+      <left>SkipPrevious</left>
+      <right>SkipNext</right>
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
-      <back>LockPreset</back>
-      <title>CodecInfo</title>
+      <star>CodecInfo</star>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
-      <menu>OSD</menu>
-      <start>OSD</start>
-      <info>Info</info>
+      <menu>XBMC.ActivateWindow(MusicOSD)</menu>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <playlist>XBMC.ActivateWindow(PVROSDChannels)</playlist>
     </remote>
@@ -201,20 +170,9 @@
   <MusicOSD>
     <remote>
       <menu>Back</menu>
-      <title>Info</title>
-      <info>CodecInfo</info>
+      <star>CodecInfo</star>
     </remote>
   </MusicOSD>
-  <VisualisationSettings>
-    <remote>
-      <menu>Back</menu>
-    </remote>
-  </VisualisationSettings>
-  <VisualisationPresetList>
-    <remote>
-      <menu>Back</menu>
-    </remote>
-  </VisualisationPresetList>
   <SlideShow>
     <remote>
       <zero>ZoomNormal</zero>
@@ -230,7 +188,6 @@
       <info>CodecInfo</info>
       <skipplus>NextPicture</skipplus>
       <skipminus>PreviousPicture</skipminus>
-      <title>Info</title>
       <select>Rotate</select>
     </remote>
   </SlideShow>
@@ -251,14 +208,13 @@
   <VideoOSD>
     <remote>
       <menu>Back</menu>
-      <start>Back</start>
+      <star>CodecInfo</star>
     </remote>
   </VideoOSD>
   <VideoMenu>
     <remote>
       <menu>OSD</menu>
-      <info>Info</info>
-      <title>CodecInfo</title>
+      <star>CodecInfo</star>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
@@ -270,47 +226,8 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <play>Select</play>
-      <pageplus>SkipNext</pageplus>
-      <pageminus>SkipPrevious</pageminus>
     </remote>
   </VideoMenu>
-  <OSDVideoSettings>
-    <remote>
-      <menu>Back</menu>
-      <start>Back</start>
-    </remote>
-  </OSDVideoSettings>
-  <OSDAudioSettings>
-    <remote>
-      <menu>Back</menu>
-      <start>Back</start>
-    </remote>
-  </OSDAudioSettings>
-  <VideoBookmarks>
-    <remote>
-      <menu>Back</menu>
-      <start>Back</start>
-      <zero>Delete</zero>
-    </remote>
-  </VideoBookmarks>
-  <MyVideoLibrary>
-    <remote>
-      <zero>Queue</zero>
-      <clear>Delete</clear>
-    </remote>
-  </MyVideoLibrary>
-  <MyVideoFiles>
-    <remote>
-      <zero>Queue</zero>
-      <star>Queue</star>
-    </remote>
-  </MyVideoFiles>
-  <MyVideoPlaylist>
-    <remote>
-      <clear>Delete</clear>
-      <zero>Delete</zero>
-    </remote>
-  </MyVideoPlaylist>
   <VirtualKeyboard>
     <remote>
       <back>BackSpace</back>
@@ -329,18 +246,10 @@
       <enter>Enter</enter>
       <pageminus>CursorLeft</pageminus>
       <pageplus>CursorRight</pageplus>
+      <info>Back</info>
+      <menu>Back</menu>
     </remote>
   </VirtualKeyboard>
-  <ContextMenu>
-    <remote>
-      <title>Back</title>
-    </remote>
-  </ContextMenu>
-  <Scripts>
-    <remote>
-      <info>info</info>
-    </remote>
-  </Scripts>
   <NumericInput>
     <remote>
       <zero>Number0</zero>
@@ -357,103 +266,6 @@
       <back>BackSpace</back>
     </remote>
   </NumericInput>
-  <Weather>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Weather>
-  <TV>
-    <remote>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </remote>
-  </TV>
-  <Settings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Settings>
-  <AddonBrowser>
-    <remote>
-    </remote>
-  </AddonBrowser>
-  <AddonInformation>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </AddonInformation>
-  <AddonSettings>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </AddonSettings>
-  <TextViewer>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </TextViewer>
-  <MyPicturesSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyMusicSettings>
-  <SystemSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </SystemSettings>
-  <MyVideosSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </AppearanceSettings>
-  <Profiles>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Profiles>
-  <systeminfo>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </systeminfo>
-  <shutdownmenu>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </shutdownmenu>
-  <submenu>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </submenu>
   <MusicInformation>
     <remote>
       <info>Back</info>
@@ -464,16 +276,6 @@
       <info>Back</info>
     </remote>
   </MovieInformation>
-  <LockSettings>
-    <remote>
-      <menu>Back</menu>
-    </remote>
-  </LockSettings>
-  <ProfileSettings>
-    <remote>
-      <menu>Back</menu>
-    </remote>
-  </ProfileSettings>
   <PictureInfo>
     <remote>
       <skipplus>NextPicture</skipplus>
@@ -497,61 +299,7 @@
       <green>Green</green>
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
-      <info>Info</info>
-      <menu>Back</menu>
-      <start>Back</start>
       <teletext>Back</teletext>
     </remote>
   </Teletext>
-  <Favourites>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </Favourites>
-  <FullscreenLiveTV>
-    <remote>
-      <left>PreviousChannelGroup</left>
-      <right>NextChannelGroup</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
-    </remote>
-  </FullscreenLiveTV>
-  <PVROSDChannels>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <playlist>Close</playlist>
-    </remote>
-  </PVROSDChannels>
-  <PVROSDGuide>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <guide>Close</guide>
-    </remote>
-  </PVROSDGuide>
-  <PVROSDDirector>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-    </remote>
-  </PVROSDDirector>
-  <PVROSDCutter>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-    </remote>
-  </PVROSDCutter>
-  <MyTVSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyTVSettings>
-  <AddonSettings>
-    <remote>
-      <clear>Delete</clear>
-    </remote>
-  </AddonSettings>
 </keymap>
