@@ -47,7 +47,6 @@ public:
   virtual void GetAudioInfo( CStdString& strAudioInfo) {};
   virtual void GetVideoInfo( CStdString& strVideoInfo) {};
   virtual void GetGeneralInfo( CStdString& strVideoInfo) {};
-  virtual void Update(bool bPauseDrawing = false)  {};
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};

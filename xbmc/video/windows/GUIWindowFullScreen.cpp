@@ -393,7 +393,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 #ifdef HAS_VIDEO_PLAYBACK
       // make sure renderer is uptospeed
-      g_renderManager.Update(false);
+      g_renderManager.Update();
 #endif
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
@@ -450,7 +450,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 #ifdef HAS_VIDEO_PLAYBACK
       // make sure renderer is uptospeed
-      g_renderManager.Update(false);
+      g_renderManager.Update();
 #endif
 
       CSingleLock lockFont(m_fontLock);

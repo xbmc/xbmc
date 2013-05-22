@@ -316,7 +316,7 @@ void CWinRenderer::Reset()
 {
 }
 
-void CWinRenderer::Update(bool bPauseDrawing)
+void CWinRenderer::Update()
 {
   if (!m_bConfigured) return;
   ManageDisplay();

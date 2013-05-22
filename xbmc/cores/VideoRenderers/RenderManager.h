@@ -53,8 +53,11 @@ public:
   // Functions called from the GUI
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio();
-  void Update(bool bPauseDrawing);
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void Update();
+  void FrameMove();
+  void FrameFinish();
+  bool FrameWait(int ms);
+  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
   CRenderCapture* AllocRenderCapture();
@@ -92,7 +95,6 @@ public:
   RESOLUTION GetResolution();
 
   float GetMaximumFPS();
-  inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
 
@@ -127,7 +129,6 @@ public:
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats();
 
-  void Present();
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
@@ -136,15 +137,12 @@ public:
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
 protected:
-  void Render(bool clear, DWORD flags, DWORD alpha);
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
-
-  bool m_bPauseDrawing;   // true if we should pause rendering
 
   bool m_bIsStarted;
   CSharedSection m_sharedSection;

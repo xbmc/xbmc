@@ -59,7 +59,6 @@ public:
   virtual void GetAudioInfo( CStdString& strAudioInfo) {}
   virtual void GetVideoInfo( CStdString& strVideoInfo) {}
   virtual void GetGeneralInfo( CStdString& strVideoInfo) {}
-  virtual void Update(bool bPauseDrawing = false) {}
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();

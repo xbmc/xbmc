@@ -412,7 +412,7 @@ void CLinuxRendererGLES::Reset()
   }
 }
 
-void CLinuxRendererGLES::Update(bool bPauseDrawing)
+void CLinuxRendererGLES::Update()
 {
   if (!m_bConfigured) return;
   ManageDisplay();
