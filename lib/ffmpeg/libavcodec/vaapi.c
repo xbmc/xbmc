@@ -46,8 +46,10 @@ int ff_vaapi_render_picture(struct vaapi_context *vactx, VASurfaceID surface)
     VABufferID va_buffers[3];
     unsigned int n_va_buffers = 0;
 
+    if (vactx->pic_param_buf_id)
     vaUnmapBuffer(vactx->display, vactx->pic_param_buf_id);
     va_buffers[n_va_buffers++] = vactx->pic_param_buf_id;
+    }
 
     if (vactx->iq_matrix_buf_id) {
         vaUnmapBuffer(vactx->display, vactx->iq_matrix_buf_id);
