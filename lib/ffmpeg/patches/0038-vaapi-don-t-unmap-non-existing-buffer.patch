@@ -1,0 +1,30 @@
+From 28f92dfbd59197955f95a583a61a24428048f166 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Wed, 22 May 2013 22:24:07 +0200
+Subject: [PATCH 1/2] vaapi: don't unmap non-existing buffer
+
+Some h264's can end up calling ff_vaapi_render_picture after a seek
+with no buffer allocated and vaUnmapBuffer will assert on a invalid
+buffer.
+---
+ libavcodec/vaapi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libavcodec/vaapi.c b/libavcodec/vaapi.c
+index a220a9d..b991cde 100644
+--- a/libavcodec/vaapi.c
++++ b/libavcodec/vaapi.c
+@@ -46,8 +46,10 @@ int ff_vaapi_render_picture(struct vaapi_context *vactx, VASurfaceID surface)
+     VABufferID va_buffers[3];
+     unsigned int n_va_buffers = 0;
+ 
++    if (vactx->pic_param_buf_id)
+     vaUnmapBuffer(vactx->display, vactx->pic_param_buf_id);
+     va_buffers[n_va_buffers++] = vactx->pic_param_buf_id;
++    }
+ 
+     if (vactx->iq_matrix_buf_id) {
+         vaUnmapBuffer(vactx->display, vactx->iq_matrix_buf_id);
+-- 
+1.8.2
+
