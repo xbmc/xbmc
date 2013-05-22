@@ -215,15 +215,13 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         return false;
       }
 
-      if (!StartAirTunesServer())
-      {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1274), "", g_localizeStrings.Get(33100), "");
-        return false;
-      }
+      StartAirTunesServer();
     }
     else
     {
-      if (!StopAirPlayServer(true) || !StopAirTunesServer(true))
+      bool ret = StopAirPlayServer(true);
+      StopAirTunesServer(true);
+      if (!ret)
         return false;
     }
   }
