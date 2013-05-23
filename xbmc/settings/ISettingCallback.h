@@ -73,4 +73,15 @@ public:
    \return True if the setting has been successfully updated otherwise false
    */
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) { return false; }
+
+  /*!
+   \brief The given property of the given setting has changed
+
+   This callback is triggered when a property (e.g. enabled or the list of
+   dynamic options) has changed.
+
+   \param setting The setting which has a changed property
+   \param propertyName The string representation of the changed property
+   */
+  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) { }
 };

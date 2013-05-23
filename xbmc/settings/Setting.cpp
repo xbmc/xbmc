@@ -21,6 +21,7 @@
 #include <sstream>
 
 #include "Setting.h"
+#include "SettingsManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -143,6 +144,24 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   return true;
 }
   
+bool CSetting::IsEnabled() const
+{
+  bool enabled = true;
+  for (SettingDependencies::const_iterator depIt = m_dependencies.begin(); depIt != m_dependencies.end(); ++depIt)
+  {
+    if (depIt->GetType() != SettingDependencyTypeEnable)
+      continue;
+
+    if (!depIt->Check())
+    {
+      enabled = false;
+      break;
+    }
+  }
+
+  return enabled;
+}
+
 bool CSetting::OnSettingChanging(const CSetting *setting)
 {
   if (m_callback == NULL)
@@ -173,6 +192,14 @@ bool CSetting::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, con
     return false;
 
   return m_callback->OnSettingUpdate(setting, oldSettingId, oldSettingNode);
+}
+
+void CSetting::OnSettingPropertyChanged(const CSetting *setting, const char *propertyName)
+{
+  if (m_callback == NULL)
+    return;
+
+  m_callback->OnSettingPropertyChanged(setting, propertyName);
 }
 
 void CSetting::Copy(const CSetting &setting)
@@ -378,7 +405,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimu
   m_control.SetAttributes(SettingControlAttributeNone);
 }
 
-CSettingInt::CSettingInt(const std::string &id, int label, int value, const SettingOptions &options, CSettingsManager *settingsManager /* = NULL */)
+CSettingInt::CSettingInt(const std::string &id, int label, int value, const StaticIntegerSettingOptions &options, CSettingsManager *settingsManager /* = NULL */)
   : CSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(0), m_step(1), m_max(0),
@@ -511,7 +538,7 @@ bool CSettingInt::CheckValidity(int value) const
   {
     //if the setting is an std::map, check if we got a valid value before assigning it
     bool ok = false;
-    for (SettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); it++)
+    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); it++)
     {
       if (it->second == value)
       {
@@ -567,6 +594,55 @@ void CSettingInt::SetDefault(int value)
   m_default = value;
   if (!m_changed)
     m_value = m_default;
+}
+
+SettingOptionsType CSettingInt::GetOptionsType() const
+{
+  if (!m_options.empty())
+    return SettingOptionsTypeStatic;
+  if (!m_optionsFiller.empty())
+    return SettingOptionsTypeDynamic;
+
+  return SettingOptionsTypeNone;
+}
+
+DynamicIntegerSettingOptions CSettingInt::UpdateDynamicOptions()
+{
+  DynamicIntegerSettingOptions options;
+  if (m_optionsFiller.empty() || m_settingsManager == NULL)
+    return options;
+
+  IntegerSettingOptionsFiller filler = (IntegerSettingOptionsFiller)m_settingsManager->GetSettingOptionsFiller(this);
+  if (filler == NULL)
+    return options;
+
+  int bestMatchingValue = m_value;
+  filler(this, options, bestMatchingValue);
+
+  if (bestMatchingValue != m_value)
+    SetValue(bestMatchingValue);
+
+  bool changed = m_dynamicOptions.size() != options.size();
+  if (!changed)
+  {
+    for (size_t index = 0; index < options.size(); index++)
+    {
+      if (options[index].first.compare(m_dynamicOptions[index].first) != 0 ||
+          options[index].second != m_dynamicOptions[index].second)
+      {
+        changed = true;
+        break;
+      }
+    }
+  }
+
+  if (changed)
+  {
+    m_dynamicOptions = options;
+    OnSettingPropertyChanged(this, "options");
+  }
+
+  return options;
 }
 
 void CSettingInt::copy(const CSettingInt &setting)
@@ -879,6 +955,55 @@ void CSettingString::SetDefault(const std::string &value)
   m_default = value;
   if (!m_changed)
     m_value = m_default;
+}
+
+SettingOptionsType CSettingString::GetOptionsType() const
+{
+  if (!m_optionsFiller.empty())
+    return SettingOptionsTypeDynamic;
+
+  return SettingOptionsTypeNone;
+}
+
+DynamicStringSettingOptions CSettingString::UpdateDynamicOptions()
+{
+  DynamicStringSettingOptions options;
+  if (m_optionsFiller.empty() || m_settingsManager == NULL)
+    return options;
+
+  StringSettingOptionsFiller filler = (StringSettingOptionsFiller)m_settingsManager->GetSettingOptionsFiller(this);
+  if (filler == NULL)
+    return options;
+
+  std::string bestMatchingValue = m_value;
+  filler(this, options, bestMatchingValue);
+
+  bool updated = false;
+  if (bestMatchingValue != m_value)
+    updated = SetValue(bestMatchingValue);
+
+  // check if the list of items has changed
+  bool changed = m_dynamicOptions.size() != options.size();
+  if (!changed)
+  {
+    for (size_t index = 0; index < options.size(); index++)
+    {
+      if (options[index].first.compare(m_dynamicOptions[index].first) != 0 ||
+          options[index].second.compare(m_dynamicOptions[index].second) != 0)
+      {
+        changed = true;
+        break;
+      }
+    }
+  }
+
+  if (changed)
+  {
+    m_dynamicOptions = options;
+    OnSettingPropertyChanged(this, "options");
+  }
+
+  return options;
 }
 
 void CSettingString::copy(const CSettingString &setting)

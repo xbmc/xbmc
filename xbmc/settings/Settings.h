@@ -24,9 +24,9 @@
 
 #include "settings/ISettingCallback.h"
 #include "settings/ISettingCreator.h"
-#include "settings/Setting.h"
 #include "threads/CriticalSection.h"
 
+class CSetting;
 class CSettingSection;
 class CSettingsManager;
 class TiXmlElement;
@@ -152,39 +152,6 @@ public:
    \return Setting section with the given identifier or NULL if the identifier is unknown
    */
   CSettingSection* GetSection(const std::string &section) const;
-  /*!
-   \brief Gets a map of settings (and their dependencies) which depend on
-   the setting with the given identifier.
-
-   It is important to note that the returned dependencies are not the
-   dependencies of the setting with the given identifier but the settings
-   (and their dependencies) which depend on the setting with the given
-   identifier.
-
-   \param id Setting identifier
-   \return Map of settings (and their dependencies) which depend on the setting with the given identifier
-   */
-  SettingDependencyMap GetDependencies(const std::string &id) const;
-  /*!
-   \brief Gets a map of settings (and their dependencies) which depend on
-   the given setting.
-
-   It is important to note that the returned dependencies are not the
-   dependencies of the given setting but the settings (and their dependencies)
-   which depend on the given setting.
-
-   \param setting Setting object
-   \return Map of settings (and their dependencies) which depend on the given setting
-   */
-  SettingDependencyMap GetDependencies(const CSetting *setting) const;
-  /*!
-   \brief Gets the implementation of the setting options filler used by the
-   given setting.
-
-   \param setting Setting object
-   \return Implementation of the setting options filler (either IntegerSettingOptionsFiller or StringSettingOptionsFiller)
-   */
-  void* GetSettingOptionsFiller(const CSetting *setting);
 
   /*!
    \brief Gets the boolean value of the setting with the given identifier.

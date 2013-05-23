@@ -457,21 +457,6 @@ CSettingSection* CSettings::GetSection(const std::string &section) const
   return m_settingsManager->GetSection(section);
 }
 
-SettingDependencyMap CSettings::GetDependencies(const std::string &id) const
-{
-  return m_settingsManager->GetDependencies(id);
-}
-
-SettingDependencyMap CSettings::GetDependencies(const CSetting *setting) const
-{
-  return m_settingsManager->GetDependencies(setting);
-}
-
-void* CSettings::GetSettingOptionsFiller(const CSetting *setting)
-{
-  return m_settingsManager->GetSettingOptionsFiller(setting);
-}
-
 bool CSettings::GetBool(const std::string &id) const
 {
   return m_settingsManager->GetBool(id);
