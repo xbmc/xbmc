@@ -705,7 +705,8 @@ bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false *
   if (!CSetting::Deserialize(node, update))
     return false;
     
-  if (m_control.GetType() == SettingControlTypeCheckmark)
+  if (m_control.GetType() == SettingControlTypeCheckmark ||
+      m_control.GetType() == SettingControlTypeList)
   {
     CLog::Log(LOGERROR, "CSettingInt: invalid <control> of \"%s\"", m_id.c_str());
     return false;
