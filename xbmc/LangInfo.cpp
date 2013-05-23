@@ -613,8 +613,21 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
   g_langInfo.GetRegionNames(regions);
   sort(regions.begin(), regions.end(), sortstringbyname());
 
+  bool match = false;
   for (unsigned int i = 0; i < regions.size(); ++i)
-    list.push_back(make_pair(regions[i], regions[i]));
+  {
+    CStdString region = regions[i];
+    list.push_back(make_pair(region, region));
+
+    if (!match && region.Equals(((CSettingString*)setting)->GetValue().c_str()))
+    {
+      match = true;
+      current = region;
+    }
+  }
+
+  if (!match && regions.size() > 0)
+    current = regions[0];
 }
 
 void CLangInfo::SettingOptionsLanguagesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current,
