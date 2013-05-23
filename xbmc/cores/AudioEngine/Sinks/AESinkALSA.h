@@ -64,7 +64,6 @@ private:
   unsigned int      m_bufferSize;
   double            m_formatSampleRateMul;
   bool              m_passthrough;
-  CAEChannelInfo    m_channelLayout;
   std::string       m_device;
   snd_pcm_t        *m_pcm;
   int               m_timeout;

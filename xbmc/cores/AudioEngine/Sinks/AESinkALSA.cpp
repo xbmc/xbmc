@@ -131,19 +131,20 @@ void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
 
 bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 {
+  CAEChannelInfo channelLayout;
   m_initDevice = device;
   m_initFormat = format;
 
   /* if we are raw, correct the data format */
   if (AE_IS_RAW(format.m_dataFormat))
   {
-    m_channelLayout     = GetChannelLayout(format);
+    channelLayout     = GetChannelLayout(format);
     format.m_dataFormat = AE_FMT_S16NE;
     m_passthrough       = true;
   }
   else
   {
-    m_channelLayout = GetChannelLayout(format);
+    channelLayout = GetChannelLayout(format);
     m_passthrough   = false;
   }
 #if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
@@ -154,13 +155,13 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   }
 #endif
 
-  if (m_channelLayout.Count() == 0)
+  if (channelLayout.Count() == 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
     return false;
   }
 
-  format.m_channelLayout = m_channelLayout;
+  format.m_channelLayout = channelLayout;
 
   AEDeviceType devType = AEDeviceTypeFromName(device);
 
@@ -176,7 +177,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   snd_config_t *config;
   snd_config_copy(&config, snd_config);
 
-  if (!OpenPCMDevice(device, AESParams, m_channelLayout.Count(), &m_pcm, config))
+  if (!OpenPCMDevice(device, AESParams, channelLayout.Count(), &m_pcm, config))
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"%s\"", device.c_str());
     snd_config_delete(config);
