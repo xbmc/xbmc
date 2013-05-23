@@ -1467,7 +1467,7 @@
       { "name": "message", "type": "string", "required": true },
       { "name": "image", "type": [
           { "type": "string", "required": true, "enum": [ "info", "warning", "error" ] },
-          { "type": "string", "required": true }
+          { "type": "string", "required": true, "description": "Can be either an accessible filepath or a base64 encoded image" }
         ], "default": ""
       },
       { "name": "displaytime", "type": "integer", "minimum": 1500, "default": 5000, "description": "The time in milliseconds the notification will be visible" }

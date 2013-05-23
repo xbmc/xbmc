@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://www.xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.5.1";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.6.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -2737,7 +2737,7 @@ namespace JSONRPC
         "{ \"name\": \"message\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"image\", \"type\": ["
             "{ \"type\": \"string\", \"required\": true, \"enum\": [ \"info\", \"warning\", \"error\" ] },"
-            "{ \"type\": \"string\", \"required\": true }"
+            "{ \"type\": \"string\", \"required\": true, \"description\": \"Can be either an accessible filepath or a base64 encoded image\" }"
           "], \"default\": \"\""
         "},"
         "{ \"name\": \"displaytime\", \"type\": \"integer\", \"minimum\": 1500, \"default\": 5000, \"description\": \"The time in milliseconds the notification will be visible\" }"
