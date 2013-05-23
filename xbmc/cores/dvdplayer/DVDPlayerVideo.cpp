@@ -159,8 +159,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
   m_bAllowFullscreen = false;
-  m_droptime = 0.0;
-  m_dropbase = 0.0;
   m_autosync = 1;
   memset(&m_output, 0, sizeof(m_output));
 }
@@ -1264,14 +1262,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
         result |= EOS_VERYLATE;
         m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
       }
-
-      //if we requested 5 drops in a row and we're still late, drop on output
-      //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
-      if (m_iDroppedRequest > 5)
-      {
-        m_iDroppedRequest--; //decrease so we only drop half the frames
-        return result | EOS_DROPPED;
-      }
       m_iDroppedRequest++;
     }
   }
@@ -1280,41 +1270,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_iDroppedRequest = 0;
   }
 
-  if( m_speed < 0 )
-  {
-    if( iClockSleep < -DVD_MSEC_TO_TIME(200)
-    && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      return result | EOS_DROPPED;
-  }
-
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) )
     return result | EOS_DROPPED;
-
-  if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
-  {
-    m_droptime += iFrameDuration;
-#ifndef PROFILE
-    // calculate frame dropping pattern to render at this speed
-    // we do that by deciding if this or next frame is closest
-    // to the flip timestamp
-    double current   = fabs(m_dropbase -  m_droptime);
-    double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
-
-    if( next < current && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      return result | EOS_DROPPED;
-#endif
-    
-    double frametime = (double)DVD_TIME_BASE / maxfps;
-    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
-
-    m_pullupCorrection.Flush();
-  }
-  else
-  {
-    m_droptime = 0.0;
-    m_dropbase = 0.0;
-  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;

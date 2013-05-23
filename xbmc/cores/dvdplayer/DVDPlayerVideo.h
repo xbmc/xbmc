@@ -165,9 +165,6 @@ protected:
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
 
-  double m_droptime;
-  double m_dropbase;
-
   bool m_stalled;
   bool m_started;
   std::string m_codecname;
