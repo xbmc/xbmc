@@ -23,7 +23,7 @@ index a220a9d..b991cde 100644
      va_buffers[n_va_buffers++] = vactx->pic_param_buf_id;
 +    }
  
-     if (vactx->iq_matrix_buf_id) {
+     if (vactx->iq_matrix_buf_id)
          vaUnmapBuffer(vactx->display, vactx->iq_matrix_buf_id);
 -- 
 1.8.2
