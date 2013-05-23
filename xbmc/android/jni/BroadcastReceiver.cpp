@@ -34,7 +34,14 @@ CJNIBroadcastReceiver::CJNIBroadcastReceiver(CJNIContext *context) : CJNIBase("o
 
 void CJNIBroadcastReceiver::InitializeBroadcastReceiver()
 {
-  m_object = new_object(jni_app_context->getClassLoader().loadClass(GetClassName()));
+  // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
+  std::string className = GetClassName();
+  for (std::string::iterator it = className.begin(); it != className.end(); ++it)
+  {
+    if (*it == '/')
+      *it = '.';
+  }
+  m_object = new_object(jni_app_context->getClassLoader().loadClass(className));
   m_object.setGlobal();
 }
 
