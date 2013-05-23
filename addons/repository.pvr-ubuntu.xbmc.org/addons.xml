@@ -10,7 +10,5 @@
     <description>Demo PVR Client</description>
     <disclaimer>Just contains stubs</disclaimer>
     <platform>linux</platform>
-    <systempackage version="1.0.0~git20130129.2244-96774c4-0quantal"
-                   name="xbmc-pvr-demo"/>
   <noicon>true</noicon><nofanart>true</nofanart><nochangelog>true</nochangelog></extension>
 </addon></addons>

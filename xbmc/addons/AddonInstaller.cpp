@@ -608,77 +608,69 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
   {
     CFileItemList dummy;
     CStdString s;
-    ADDON::InfoMap::const_iterator it = m_addon->ExtraInfo().find("systempackage");
-    if (it == m_addon->ExtraInfo().end())
-    {
-      CLog::Log(LOGERROR, "System package installation requested,"
-                          "but no system package specified for %s", m_addon->ID().c_str());
-      return false;
-    }
-    ADDON::InfoMap::const_iterator it2 = m_addon->ExtraInfo().find("systempackage_version");
     s.Format("plugin://%s/?action=install"
              "&package=%s&version=%s", repo->ID().c_str(),
-                                       it->second.c_str(),
-                                       it2->second.c_str());
+                                       m_addon->ID().c_str(),
+                                       m_addon->Version().c_str());
     CDirectory::GetDirectory(s, dummy);
   }
   else
   {
-  CStdString addonFolder(installFrom);
-  URIUtils::RemoveSlashAtEnd(addonFolder);
-  addonFolder = URIUtils::AddFileToFolder("special://home/addons/",
-                                       URIUtils::GetFileName(addonFolder));
+    CStdString addonFolder(installFrom);
+    URIUtils::RemoveSlashAtEnd(addonFolder);
+    addonFolder = URIUtils::AddFileToFolder("special://home/addons/",
+                                         URIUtils::GetFileName(addonFolder));
 
-  CFileItemList install;
-  install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
-  install[0]->Select(true);
-  CFileOperationJob job(CFileOperationJob::ActionReplace, install, "special://home/addons/");
+    CFileItemList install;
+    install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
+    install[0]->Select(true);
+    CFileOperationJob job(CFileOperationJob::ActionReplace, install, "special://home/addons/");
 
-  AddonPtr addon;
-  if (!job.DoWork() || !CAddonMgr::Get().LoadAddonDescription(addonFolder, addon))
-  { // failed extraction or failed to load addon description
-    CStdString addonID = URIUtils::GetFileName(addonFolder);
-    ReportInstallError(addonID, addonID);
-    CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
-    DeleteAddon(addonFolder);
-    return false;
-  }
+    AddonPtr addon;
+    if (!job.DoWork() || !CAddonMgr::Get().LoadAddonDescription(addonFolder, addon))
+    { // failed extraction or failed to load addon description
+      CStdString addonID = URIUtils::GetFileName(addonFolder);
+      ReportInstallError(addonID, addonID);
+      CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
+      DeleteAddon(addonFolder);
+      return false;
+    }
 
-  // resolve dependencies
-  CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
-  ADDONDEPS deps = addon->GetDeps();
-  CStdString referer;
-  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
-  for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
-  {
-    if (it->first.Equals("xbmc.metadata"))
-      continue;
+    // resolve dependencies
+    CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
+    ADDONDEPS deps = addon->GetDeps();
+    CStdString referer;
+    referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+    for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
+    {
+      if (it->first.Equals("xbmc.metadata"))
+        continue;
 
-    const CStdString &addonID = it->first;
-    const AddonVersion &version = it->second.first;
-    bool optional = it->second.second;
-    AddonPtr dependency;
-    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
-    if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
-    { // we have it but our version isn't good enough, or we don't have it and we need it
-      bool force=(dependency != NULL);
-      // dependency is already queued up for install - ::Install will fail
-      // instead we wait until the Job has finished. note that we
-      // recall install on purpose in case prior installation failed
-      if (CAddonInstaller::Get().HasJob(addonID))
-      {
-        while (CAddonInstaller::Get().HasJob(addonID))
-          Sleep(50);
-        force = false;
-      }
-      // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
-      {
-        DeleteAddon(addonFolder);
-        return false;
+      const CStdString &addonID = it->first;
+      const AddonVersion &version = it->second.first;
+      bool optional = it->second.second;
+      AddonPtr dependency;
+      bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
+      if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
+      { // we have it but our version isn't good enough, or we don't have it and we need it
+        bool force=(dependency != NULL);
+        // dependency is already queued up for install - ::Install will fail
+        // instead we wait until the Job has finished. note that we
+        // recall install on purpose in case prior installation failed
+        if (CAddonInstaller::Get().HasJob(addonID))
+        {
+          while (CAddonInstaller::Get().HasJob(addonID))
+            Sleep(50);
+          force = false;
+        }
+        // don't have the addon or the addon isn't new enough - grab it (no new job for these)
+        if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
+        {
+          DeleteAddon(addonFolder);
+          return false;
+        }
       }
     }
-  }
   }
   return true;
 }
@@ -802,23 +794,26 @@ bool CAddonUnInstallJob::DoWork()
     if (service)
       service->Stop();
   }
-  if (m_addon->ExtraInfo().find("systempackage") == m_addon->ExtraInfo().end())
+
+  CAddonDatabase database;
+  database.Open();
+  CStdString repo;
+  database.GetRepoForAddon(m_addon->ID(), repo);
+  AddonPtr repoPtr;
+  CAddonMgr::Get().GetAddon(repo, repoPtr);
+  RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
+  if (therepo && !therepo->Props().libname.IsEmpty())
   {
-    if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
-      return false;
+    CFileItemList dummy;
+    CStdString s;
+    s.Format("plugin://%s/?action=uninstall"
+             "&package=%s", repo.c_str(), m_addon->ID().c_str());
+    CDirectory::GetDirectory(s, dummy);
   }
   else
   {
-    CAddonDatabase database;
-    database.Open();
-    CStdString repo;
-    database.GetRepoForAddon(m_addon->ID(), repo);
-    CFileItemList dummy;
-    CStdString s;
-    ADDON::InfoMap::const_iterator it = m_addon->ExtraInfo().find("systempackage");
-    s.Format("plugin://%s/?action=uninstall"
-             "&package=%s", repo.c_str(), it->second.c_str());
-    CDirectory::GetDirectory(s, dummy);
+    if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
+      return false;
   }
 
   OnPostUnInstall();

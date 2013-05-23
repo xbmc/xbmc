@@ -158,13 +158,6 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
     if (!language.IsEmpty())
       extrainfo.insert(make_pair("language",language));
-    language = CAddonMgr::Get().GetExtValue(metadata->configuration, "systempackage@name");
-    if (!language.IsEmpty())
-    {
-      extrainfo.insert(make_pair("systempackage",language));
-      language = CAddonMgr::Get().GetExtValue(metadata->configuration, "systempackage@version");
-      extrainfo.insert(make_pair("systempackage_version",language));
-    }
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
