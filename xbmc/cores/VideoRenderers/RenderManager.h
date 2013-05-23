@@ -123,6 +123,7 @@ public:
   float GetMaximumFPS();
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
+  int    GetSkippedFrames()  { return m_QueueSkip; }
 
   bool Supports(ERENDERFEATURE feature);
   bool Supports(EDEINTERLACEMODE method);
@@ -228,6 +229,7 @@ protected:
   int m_QueueRender;
   int m_QueueOutput;
   int m_QueueSize;
+  int m_QueueSkip;
 
   struct
   {

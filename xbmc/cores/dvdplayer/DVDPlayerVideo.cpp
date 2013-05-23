@@ -1539,6 +1539,7 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
+  s << ", skip:" << g_renderManager.GetSkippedFrames();
 
   int pc = m_pullupCorrection.GetPatternLength();
   if (pc > 0)

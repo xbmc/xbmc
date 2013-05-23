@@ -111,6 +111,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_QueueSize   = 2;
   m_QueueRender = 0;
   m_QueueOutput = 0;
+  m_QueueSkip   = 0;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -361,12 +362,17 @@ void CXBMCRenderManager::FrameMove()
     if(m_presentstep == PRESENT_FLIP)
     {
       /* release all previous */
+      int count = 0;
       while(m_QueueRender != m_presentsource)
       {
         m_pRenderer->ReleaseBuffer(m_QueueRender);
         m_overlays.Release(m_QueueRender);
         m_QueueRender = (m_QueueRender + 1) % m_QueueSize;
+        count++;
       }
+
+      if(count > 1)
+        m_QueueSkip += count - 1;
 
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
@@ -433,6 +439,7 @@ unsigned int CXBMCRenderManager::PreInit()
   m_QueueSize   = 2;
   m_QueueRender = 0;
   m_QueueOutput = 0;
+  m_QueueSkip   = 0;
 
   return m_pRenderer->PreInit();
 }
