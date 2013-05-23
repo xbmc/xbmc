@@ -27,6 +27,7 @@
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -204,6 +205,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     if (m_ignoreSettingChanging.find(make_pair(settingId, true)) == m_ignoreSettingChanging.end())
     {
       RESOLUTION newRes = RES_DESKTOP;
+      DisplayMode oldDisplayMode = GetCurrentDisplayMode();
       if (settingId == "videoscreen.resolution")
         newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
       else if (settingId == "videoscreen.screen")
@@ -221,28 +223,30 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
       SetCurrentResolution(newRes, save);
       g_graphicsContext.SetVideoResolution(newRes);
 
-      // check if this setting is temporarily blocked from showing the dialog
-      if (m_ignoreSettingChanging.find(make_pair(settingId, false)) == m_ignoreSettingChanging.end())
+      // check if the old or the new resolution was/is windowed
+      // in which case we don't show any prompt to the user
+      if (newRes != RES_WINDOW && oldDisplayMode != DM_WINDOWED)
       {
-        bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+        // check if this setting is temporarily blocked from showing the dialog
+        if (newRes != RES_WINDOW &&
+            m_ignoreSettingChanging.find(make_pair(settingId, false)) == m_ignoreSettingChanging.end())
         {
-          // we need to ignore the next OnSettingChanging() call for
-          // the same setting which is executed to broadcast that
-          // changing the setting has failed
-          m_ignoreSettingChanging.insert(make_pair(settingId, false));
-          return false;
+          bool cancelled = false;
+          if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+          {
+            // we need to ignore the next OnSettingChanging() call for
+            // the same setting which is executed to broadcast that
+            // changing the setting has failed
+            m_ignoreSettingChanging.insert(make_pair(settingId, false));
+            return false;
+          }
         }
+        else
+          m_ignoreSettingChanging.erase(make_pair(settingId, false));
       }
-      else
-        m_ignoreSettingChanging.erase(make_pair(settingId, false));
 
       if (settingId == "videoscreen.screen")
-      {
         m_ignoreSettingChanging.insert(make_pair("videoscreen.resolution", true));
-        if (CSettings::Get().GetSetting("videoscreen.screenmode")->IsVisible())
-          m_ignoreSettingChanging.insert(make_pair("videoscreen.screenmode", true));
-      }
     }
     else
       m_ignoreSettingChanging.erase(make_pair(settingId, true));
@@ -412,6 +416,14 @@ void CDisplaySettings::UpdateCalibrations()
   }
 }
 
+DisplayMode CDisplaySettings::GetCurrentDisplayMode() const
+{
+  if (GetCurrentResolution() == RES_WINDOW)
+    return DM_WINDOWED;
+
+  return GetCurrentResolutionInfo().iScreen;
+}
+
 RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResolution)
 {
   if (strResolution == "DESKTOP")
@@ -569,6 +581,16 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
   {
     int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
     list.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(241), screen + 1), screen));
+  }
+
+  RESOLUTION res = CDisplaySettings::Get().GetDisplayResolution();
+
+  if (res == RES_WINDOW)
+    current = DM_WINDOWED;
+  else
+  {
+    RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
+    current = resInfo.iScreen;
   }
 }
 

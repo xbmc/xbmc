@@ -28,6 +28,7 @@
 #include "Temperature.h"
 #include "network/Network.h"
 #include "Application.h"
+#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"

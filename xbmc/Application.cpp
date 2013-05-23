@@ -505,10 +505,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
         RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
         if (newRes != g_graphicsContext.GetVideoResolution())
-        {
           CDisplaySettings::Get().SetCurrentResolution(newRes, true);
-          g_graphicsContext.SetVideoResolution(newRes);
-        }
       }
       else
 #endif

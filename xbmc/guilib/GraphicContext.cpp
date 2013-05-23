@@ -25,6 +25,7 @@
 #include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"
@@ -857,7 +858,6 @@ bool CGraphicContext::ToggleFullScreenRoot ()
 #endif
   }
 
-  SetVideoResolution(newRes);
   CDisplaySettings::Get().SetCurrentResolution(uiRes, true);
 
   return m_bFullScreenRoot;

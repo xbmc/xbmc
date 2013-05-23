@@ -473,7 +473,6 @@ int CBuiltins::Execute(const CStdString& execString)
     if (g_graphicsContext.IsValidResolution(res))
     {
       CDisplaySettings::Get().SetCurrentResolution(res, true);
-      g_graphicsContext.SetVideoResolution(res);
       g_application.ReloadSkin();
     }
   }

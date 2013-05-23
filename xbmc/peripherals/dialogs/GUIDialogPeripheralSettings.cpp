@@ -106,7 +106,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
               {
                 m_intTextSettings.insert(make_pair(CStdString(intSetting->GetId()), intSetting->GetValue()));
                 vector<pair<int, int> > entries;
-                SettingOptions::const_iterator entriesItr = intSetting->GetOptions().begin();
+                StaticIntegerSettingOptions::const_iterator entriesItr = intSetting->GetOptions().begin();
                 while (entriesItr != intSetting->GetOptions().end())
                 {
                   entries.push_back(make_pair(entriesItr->first, entriesItr->second));

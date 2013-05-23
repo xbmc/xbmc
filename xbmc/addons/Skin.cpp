@@ -25,6 +25,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/WindowIDs.h"
+#include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
