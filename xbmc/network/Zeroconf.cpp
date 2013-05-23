@@ -18,6 +18,7 @@
  *
  */
 #include "system.h" //HAS_ZEROCONF define
+#include <assert.h>
 #include "Zeroconf.h"
 #include "settings/Settings.h"
 
