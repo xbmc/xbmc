@@ -612,7 +612,8 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
              "&package=%s&version=%s", repo->ID().c_str(),
                                        m_addon->ID().c_str(),
                                        m_addon->Version().c_str());
-    CDirectory::GetDirectory(s, dummy);
+    if (!CDirectory::GetDirectory(s, dummy))
+      return false;
   }
   else
   {
@@ -808,7 +809,8 @@ bool CAddonUnInstallJob::DoWork()
     CStdString s;
     s.Format("plugin://%s/?action=uninstall"
              "&package=%s", repo.c_str(), m_addon->ID().c_str());
-    CDirectory::GetDirectory(s, dummy);
+    if (!CDirectory::GetDirectory(s, dummy))
+      return false;
   }
   else
   {

@@ -275,14 +275,19 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
       reposum = checksum; // don't update the checksum
     }
-    if (!repo->Props().libname.empty())
+    else
     {
-      CFileItemList dummy;
-      CStdString s;
-      s.Format("plugin://%s/?action=update", repo->ID());
-      CDirectory::GetDirectory(s, dummy);
+      bool add=true;
+      if (!repo->Props().libname.empty())
+      {
+        CFileItemList dummy;
+        CStdString s;
+        s.Format("plugin://%s/?action=update", repo->ID());
+        add = CDirectory::GetDirectory(s, dummy);
+      }
+      if (add)
+        database.AddRepository(repo->ID(),addons,reposum);
     }
-    database.AddRepository(repo->ID(),addons,reposum);
   }
   else
     database.GetRepository(repo->ID(),addons);
