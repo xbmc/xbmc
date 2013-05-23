@@ -209,17 +209,21 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       }
 #endif //HAS_ZEROCONF
 
+#ifdef HAS_AIRPLAY
       if (!StartAirPlayServer())
       {
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), "", g_localizeStrings.Get(33100), "");
         return false;
       }
+#endif //HAS_AIRPLAY
 
+#ifdef HAS_AIRTUNES
       if (!StartAirTunesServer())
       {
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1274), "", g_localizeStrings.Get(33100), "");
         return false;
       }
+#endif //HAS_AIRTUNES
     }
     else
     {
