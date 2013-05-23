@@ -13,7 +13,7 @@
 
   <regions>
     <region name="Sweden" locale="SE">
-      <dateshort>D.M.YYYY</dateshort>
+      <dateshort>YYYY-MM-DD</dateshort>
       <datelong>'den 'D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
