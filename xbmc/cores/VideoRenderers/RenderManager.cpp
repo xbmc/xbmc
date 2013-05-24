@@ -329,7 +329,7 @@ void CXBMCRenderManager::Update()
 bool CXBMCRenderManager::FrameWait(int ms)
 {
   XbmcThreads::EndTime timeout(ms);
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
   {
     lock.Leave();
@@ -341,7 +341,9 @@ bool CXBMCRenderManager::FrameWait(int ms)
 
 void CXBMCRenderManager::FrameMove()
 {
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  { CSharedLock lock(m_sharedSection);
+    CSingleLock lock2(m_presentlock);
+
     if (!m_pRenderer)
       return;
 
@@ -387,7 +389,7 @@ void CXBMCRenderManager::FrameFinish()
   if(g_graphicsContext.IsFullScreenVideo())
     WaitPresentTime(m_presenttime);
 
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  { CSingleLock lock(m_presentlock);
 
     if(m_presentstep == PRESENT_FRAME)
     {
@@ -640,7 +642,7 @@ void CXBMCRenderManager::SetViewMode(int iViewMode)
 
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  { CSharedLock lock(m_sharedSection);
 
     if(bStop)
       return;
@@ -691,6 +693,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     /* failsafe for invalid timestamps, to make sure queue always empties */
     if(timestamp > GetPresentTime() + 5.0)
       timestamp = GetPresentTime() + 5.0;
+
+    CSingleLock lock2(m_presentlock);
 
     if(source < 0)
       source = GetNextDecode();
@@ -978,12 +982,14 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
 int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 {
   CSharedLock lock(m_sharedSection);
+  CSingleLock lock2(m_presentlock);
   if (!m_pRenderer)
     return -1;
 
   XbmcThreads::EndTime endtime(timeout);
   while(GetNextDecode() < 0)
   {
+    lock2.Leave();
     lock.Leave();
     m_presentevent.WaitMSec(std::min(50, timeout));
     if(endtime.IsTimePast() || bStop)
@@ -993,6 +999,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
       return -1;
     }
     lock.Enter();
+    lock2.Enter();
   }
 
   // make sure overlay buffer is released, this won't happen on AddOverlay
@@ -1020,6 +1027,8 @@ int CXBMCRenderManager::GetNextDecode()
 
 void CXBMCRenderManager::PrepareNextRender()
 {
+  CSingleLock lock(m_presentlock);
+
   int nxt = GetNextRender();
   if (nxt < 0)
     return;
@@ -1058,7 +1067,8 @@ void CXBMCRenderManager::PrepareNextRender()
 
 void CXBMCRenderManager::DiscardBuffer()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  CSharedLock lock(m_sharedSection);
+  CSingleLock lock2(m_presentlock);
   while(m_QueueOutput != m_QueueRender)
   {
     m_pRenderer->ReleaseBuffer(m_QueueOutput);

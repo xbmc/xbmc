@@ -248,6 +248,7 @@ protected:
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
+  CCriticalSection m_presentlock;
   CEvent     m_flushEvent;
 
 
