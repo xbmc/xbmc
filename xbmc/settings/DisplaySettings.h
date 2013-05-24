@@ -121,13 +121,6 @@ private:
   float m_verticalShift;      // current vertical shift
   bool  m_nonLinearStretched;   // current non-linear stretch
 
-  /*!
-   \brief A set of pairs consisting of a setting identifier
-   and a boolean value which should be ignored in specific
-   situations. If the boolean value is "true" the whole
-   OnSettingChanging() logic must be skipped once. If it
-   is "false" only showing the GUI dialog must be skipped.
-   */
-  std::set< std::pair<std::string, bool> > m_ignoreSettingChanging;
+  bool m_resolutionChangeAborted;
   CCriticalSection m_critical;
 };

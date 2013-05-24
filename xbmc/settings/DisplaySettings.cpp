@@ -58,6 +58,7 @@ CDisplaySettings::CDisplaySettings()
   m_pixelRatio = 1.0f;
   m_verticalShift = 0.0f;
   m_nonLinearStretched = false;
+  m_resolutionChangeAborted = false;
 }
 
 CDisplaySettings::~CDisplaySettings()
@@ -197,59 +198,41 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == "videoscreen.resolution" ||
-      settingId == "videoscreen.screen" ||
-      settingId == "videoscreen.screenmode")
+      settingId == "videoscreen.screen")
   {
-    // check if this is the revert call for a failed OnSettingChanging
-    // in which case we don't want to ask the user again
-    if (m_ignoreSettingChanging.find(make_pair(settingId, true)) == m_ignoreSettingChanging.end())
+    RESOLUTION newRes = RES_DESKTOP;
+    if (settingId == "videoscreen.resolution")
+      newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
+    else if (settingId == "videoscreen.screen")
+      newRes = GetResolutionForScreen();
+
+    string screenmode = GetStringFromResolution(newRes);
+    CSettings::Get().SetString("videoscreen.screenmode", screenmode);
+  }
+  if (settingId == "videoscreen.screenmode")
+  {
+    RESOLUTION oldRes = GetCurrentResolution();
+    RESOLUTION newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
+
+    SetCurrentResolution(newRes, false);
+    g_graphicsContext.SetVideoResolution(newRes);
+
+    // check if the old or the new resolution was/is windowed
+    // in which case we don't show any prompt to the user
+    if (oldRes != RES_WINDOW && newRes != RES_WINDOW)
     {
-      RESOLUTION newRes = RES_DESKTOP;
-      DisplayMode oldDisplayMode = GetCurrentDisplayMode();
-      if (settingId == "videoscreen.resolution")
-        newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
-      else if (settingId == "videoscreen.screen")
-        newRes = GetResolutionForScreen();
-      else if (settingId == "videoscreen.screenmode")
-        newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
-
-      // We need to change and save videoscreen.screenmode which will
-      // trigger another call to this OnSettingChanging() which should not
-      // trigger a user-input dialog which is already triggered by the callback
-      // of the changed setting
-      bool save = settingId != "videoscreen.screenmode";
-      if (save)
-        m_ignoreSettingChanging.insert(make_pair("videoscreen.screenmode", true));
-      SetCurrentResolution(newRes, save);
-      g_graphicsContext.SetVideoResolution(newRes);
-
-      // check if the old or the new resolution was/is windowed
-      // in which case we don't show any prompt to the user
-      if (newRes != RES_WINDOW && oldDisplayMode != DM_WINDOWED)
+      if (!m_resolutionChangeAborted)
       {
-        // check if this setting is temporarily blocked from showing the dialog
-        if (newRes != RES_WINDOW &&
-            m_ignoreSettingChanging.find(make_pair(settingId, false)) == m_ignoreSettingChanging.end())
+        bool cancelled = false;
+        if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
         {
-          bool cancelled = false;
-          if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
-          {
-            // we need to ignore the next OnSettingChanging() call for
-            // the same setting which is executed to broadcast that
-            // changing the setting has failed
-            m_ignoreSettingChanging.insert(make_pair(settingId, false));
-            return false;
-          }
+          m_resolutionChangeAborted = true;
+          return false;
         }
-        else
-          m_ignoreSettingChanging.erase(make_pair(settingId, false));
       }
-
-      if (settingId == "videoscreen.screen")
-        m_ignoreSettingChanging.insert(make_pair("videoscreen.resolution", true));
+      else
+        m_resolutionChangeAborted = false;
     }
-    else
-      m_ignoreSettingChanging.erase(make_pair(settingId, true));
   }
 
   return true;

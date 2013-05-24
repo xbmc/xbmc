@@ -1856,6 +1856,7 @@
           <dependencies>
             <dependency type="enable" setting="videoscreen.screen" operator="!is">-1</dependency> <!-- DM_WINDOWED -->
             <dependency type="update" setting="videoscreen.screen" />
+            <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
