@@ -228,7 +228,18 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     }
     else
     {
-      if (!StopAirPlayServer(true) || !StopAirTunesServer(true))
+      bool ret = true;
+#ifdef HAS_AIRTUNES
+      if (!StopAirTunesServer(true))
+        ret = false;
+#endif //HAS_AIRTUNES
+      
+#ifdef HAS_AIRPLAY
+      if (!StopAirPlayServer(true))
+        ret = false;
+#endif //HAS_AIRPLAY
+
+      if (!ret)
         return false;
     }
   }
