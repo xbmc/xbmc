@@ -151,7 +151,7 @@ public:
   virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual bool         AddVideoPicture(DVDVideoPicture* picture);
+  virtual bool         AddVideoPicture(DVDVideoPicture* picture, int index);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -169,7 +169,9 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
-  virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
+  virtual unsigned int GetProcessorSize();
+  virtual void         SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
+  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
 
 protected:
   virtual void Render(DWORD flags);
@@ -239,6 +241,8 @@ protected:
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
   unsigned int         m_destWidth;
   unsigned int         m_destHeight;
+
+  int                  m_neededBuffers;
 };
 
 #else

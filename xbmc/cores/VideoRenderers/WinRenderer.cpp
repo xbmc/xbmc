@@ -111,21 +111,19 @@ static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
 
 void CWinRenderer::ManageTextures()
 {
-  int neededbuffers = 2;
-
-  if( m_NumYV12Buffers < neededbuffers )
+  if( m_NumYV12Buffers < m_neededBuffers )
   {
-    for(int i = m_NumYV12Buffers; i<neededbuffers;i++)
+    for(int i = m_NumYV12Buffers; i<m_neededBuffers;i++)
       CreateYV12Texture(i);
 
-    m_NumYV12Buffers = neededbuffers;
+    m_NumYV12Buffers = m_neededBuffers;
   }
-  else if( m_NumYV12Buffers > neededbuffers )
+  else if( m_NumYV12Buffers > m_neededBuffers )
   {
-    m_NumYV12Buffers = neededbuffers;
+    m_NumYV12Buffers = m_neededBuffers;
     m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;
 
-    for(int i = m_NumYV12Buffers-1; i>=neededbuffers;i--)
+    for(int i = m_NumYV12Buffers-1; i>=m_neededBuffers;i--)
       DeleteYV12Texture(i);
   }
 }
@@ -261,12 +259,12 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture)
+bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
-    int source = NextYV12Texture();
-    if(source < 0)
+    int source = index;
+    if(source < 0 || NextYV12Texture() < 0)
       return false;
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
@@ -282,7 +280,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
     source = NextYV12Texture();
 
-  if( source < 0 )
+  if( source < 0 || NextYV12Texture() < 0)
     return -1;
 
   YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
@@ -1112,6 +1110,14 @@ EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
     return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
+unsigned int CWinRenderer::GetProcessorSize()
+{
+  if (m_renderMethod == RENDER_DXVA)
+    return m_processor.Size();
+  else
+    return 0;
+}
+
 //============================================
 
 YUVBuffer::~YUVBuffer()
@@ -1261,6 +1267,7 @@ void YUVBuffer::Clear()
 
   }
 }
+
 
 //==================================
 

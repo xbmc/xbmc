@@ -68,7 +68,7 @@ public:
   void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation, int buffers = 0);
   bool IsConfigured() const;
 
   int AddVideoPicture(DVDVideoPicture& picture);
@@ -81,7 +81,7 @@ public:
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o, pts);
+    m_overlays.AddOverlay(o, pts, (m_QueueOutput + 1) % m_QueueSize);
   }
 
   void AddCleanup(OVERLAY::COverlay* o)
@@ -136,11 +136,19 @@ public:
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
+  int WaitForBuffer(volatile bool& bStop, int timeout = 100);
+
+  void DiscardBuffer();
+
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
+
+  int  GetNextRender();
+  int  GetNextDecode();
+  void PrepareNextRender();
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
 
@@ -157,6 +165,7 @@ protected:
   , PRESENT_FLIP
   , PRESENT_FRAME
   , PRESENT_FRAME2
+  , PRESENT_READY
   };
 
   enum EPRESENTMETHOD
@@ -170,6 +179,17 @@ protected:
 
   double m_displayLatency;
   void UpdateDisplayLatency();
+
+  int m_QueueRender;
+  int m_QueueOutput;
+  int m_QueueSize;
+
+  struct
+  {
+    double         timestamp;
+    EFIELDSYNC     presentfield;
+    EPRESENTMETHOD presentmethod;
+  } m_Queue[NUM_BUFFERS];
 
   double     m_presenttime;
   double     m_presentcorr;

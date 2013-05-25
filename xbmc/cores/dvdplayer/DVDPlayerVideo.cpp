@@ -600,6 +600,8 @@ void CDVDPlayerVideo::Process()
 
           m_pVideoCodec->Reset();
           m_packets.clear();
+          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+          g_renderManager.DiscardBuffer();
           break;
         }
 
@@ -1139,7 +1141,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
                                 , flags
                                 , pPicture->format
                                 , pPicture->extended_format
-                                , m_hints.orientation))
+                                , m_hints.orientation
+                                , m_pVideoCodec->GetAllowedReferences()))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1322,6 +1325,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     else
       mDisplayField = FS_BOT;
   }
+
+  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 0));
+  if (buffer < 0)
+    return EOS_DROPPED;
 
   ProcessOverlays(pPicture, pts);
   AutoCrop(pPicture);

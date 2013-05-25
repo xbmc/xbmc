@@ -137,15 +137,19 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
+  virtual void         ReleaseBuffer(int idx);
+  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
+  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
+  virtual unsigned int GetProcessorSize();
 
 #ifdef HAVE_LIBVDPAU
-  virtual void         AddProcessor(CVDPAU* vdpau);
+  virtual void         AddProcessor(CVDPAU* vdpau, int index);
 #endif
 #ifdef HAVE_LIBVA
-  virtual void         AddProcessor(VAAPI::CHolder& holder);
+  virtual void         AddProcessor(VAAPI::CHolder& holder, int index);
 #endif
 #ifdef TARGET_DARWIN
-  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
 #endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
@@ -167,7 +171,6 @@ protected:
   void         DrawBlackBars();
 
   bool ValidateRenderer();
-  virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
