@@ -178,10 +178,6 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         strFileName = CUtil::MakeLegalFileName(strFileName);
       }
 
-      CStdString strnewDestFile;
-      if(!strDestFile.IsEmpty()) // only do this if we have a destination
-        strnewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
-
       if (pItem->m_bIsFolder)
       {
         // in ActionReplace mode all subdirectories will be removed by the below
@@ -190,16 +186,22 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
         // create folder on dest. drive
         if (action != ActionDelete && action != ActionDeleteFolder)
-          DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
-        if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
-          DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
-        if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
+          DoProcessFile(ActionCreateFolder, strDestFile, "", fileOperations, totalTime);
+        if (action == ActionReplace && CDirectory::Exists(strDestFile))
+          DoProcessFolder(ActionDelete, strDestFile, "", fileOperations, totalTime);
+        if (!DoProcessFolder(subdirAction, pItem->GetPath(), strDestFile, fileOperations, totalTime))
           return false;
         if (action == ActionDelete || action == ActionDeleteFolder)
           DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
       }
       else
-        DoProcessFile(action, pItem->GetPath(), strnewDestFile, fileOperations, totalTime);
+      {
+        CStdString strNewDestFile;
+        if (!strDestFile.IsEmpty())
+          strNewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
+
+        DoProcessFile(action, pItem->GetPath(), strNewDestFile, fileOperations, totalTime);
+      }
     }
   }
   return true;
