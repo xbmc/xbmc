@@ -344,6 +344,17 @@ void CXBMCRenderManager::FrameMove()
     if (!m_pRenderer)
       return;
 
+    if (m_presentstep == PRESENT_FRAME2)
+    {
+      int idx = GetNextRender();
+      if(idx >= 0)
+      {
+        double timestamp = GetPresentTime();
+        if(timestamp > m_presenttime + (m_Queue[idx].timestamp - m_presenttime) * 0.5)
+          m_presentstep = PRESENT_READY;
+      }
+    }
+
     if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
 
