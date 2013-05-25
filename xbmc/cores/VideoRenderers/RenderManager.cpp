@@ -1002,9 +1002,24 @@ int CXBMCRenderManager::GetNextDecode()
 
 void CXBMCRenderManager::PrepareNextRender()
 {
-  int idx = GetNextRender();
-  if (idx < 0)
+  int nxt = GetNextRender();
+  if (nxt < 0)
     return;
+
+  double clocktime = GetPresentTime();
+  double frametime = 1.0 / GetMaximumFPS();
+
+  /* see if any future queued frames are already due */
+  int prv;
+  int idx = m_QueueOutput;
+  while(idx != nxt)
+  {
+    prv = (idx + m_QueueSize - 1) % m_QueueSize;
+    if(clocktime > m_Queue[prv].timestamp              /* previous frame is late */
+    && clocktime > m_Queue[idx].timestamp - frametime) /* selected frame is close to it's display time */
+      break;
+    idx = prv;
+  }
 
   /* in fullscreen we will block after render, but only for MAXPRESENTDELAY */
   bool next;
