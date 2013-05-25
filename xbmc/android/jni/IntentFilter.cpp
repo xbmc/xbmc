@@ -34,10 +34,10 @@ CJNIIntentFilter::CJNIIntentFilter(const std::string &action) : CJNIBase("androi
 
 void CJNIIntentFilter::addAction(std::string action)
 {
-  call_method<jhobject>(m_object, "addAction", "(Ljava/lang/String;)V", jcast<jhstring>(action));
+  call_method<void>(m_object, "addAction", "(Ljava/lang/String;)V", jcast<jhstring>(action));
 }
 
 void CJNIIntentFilter::addDataScheme(std::string scheme)
 {
-  call_method<jhobject>(m_object, "addDataScheme", "(Ljava/lang/String;)V", jcast<jhstring>(scheme));
+  call_method<void>(m_object, "addDataScheme", "(Ljava/lang/String;)V", jcast<jhstring>(scheme));
 }
