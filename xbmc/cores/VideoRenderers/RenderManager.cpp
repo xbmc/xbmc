@@ -239,12 +239,7 @@ CStdString CXBMCRenderManager::GetVSyncState()
 bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation, int buffers)
 {
 
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection, false);
-  if(!m_pRenderer)
-  {
-    CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
-    return false;
-  }
+  CSingleLock    lock2(m_presentlock);
 
   /* make sure any queued frame was fully presented */
   XbmcThreads::EndTime endtime(5000);
@@ -255,11 +250,15 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
       CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
       return false;
     }
-
-    lock.Leave();
-    m_presentevent.WaitMSec(endtime.MillisLeft());
-    lock.Enter();
+    m_presentevent.wait(lock2, endtime.MillisLeft());
   };
+
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection, true, m_presentlock);
+  if(!m_pRenderer)
+  {
+    CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
+    return false;
+  }
 
 
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
@@ -296,7 +295,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_bIsStarted = true;
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
-    m_presentevent.Set();
+    m_presentevent.notifyAll();
 
     CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - %d", m_QueueSize);
   }
@@ -322,8 +321,6 @@ void CXBMCRenderManager::Update()
 
   if (m_pRenderer)
     m_pRenderer->Update();
-
-  m_presentevent.Set();
 }
 
 bool CXBMCRenderManager::FrameWait(int ms)
@@ -331,11 +328,7 @@ bool CXBMCRenderManager::FrameWait(int ms)
   XbmcThreads::EndTime timeout(ms);
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
-  {
-    lock.Leave();
-    m_presentevent.WaitMSec(timeout.MillisLeft());
-    lock.Enter();
-  }
+    m_presentevent.wait(lock, timeout.MillisLeft());
   return m_presentstep != PRESENT_IDLE;
 }
 
@@ -378,7 +371,7 @@ void CXBMCRenderManager::FrameMove()
 
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
-      m_presentevent.Set();
+      m_presentevent.notifyAll();
     }
   }
 }
@@ -409,7 +402,7 @@ void CXBMCRenderManager::FrameFinish()
         m_presentstep = PRESENT_READY;
     }
 
-    m_presentevent.Set();
+    m_presentevent.notifyAll();
   }
 }
 
@@ -708,7 +701,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     if(m_presentstep == PRESENT_IDLE)
     {
       m_presentstep = PRESENT_READY;
-      m_presentevent.Set();
+      m_presentevent.notifyAll();
     }
   }
 }
@@ -981,25 +974,18 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
 
 int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 {
-  CSharedLock lock(m_sharedSection);
   CSingleLock lock2(m_presentlock);
-  if (!m_pRenderer)
-    return -1;
 
   XbmcThreads::EndTime endtime(timeout);
   while(GetNextDecode() < 0)
   {
-    lock2.Leave();
-    lock.Leave();
-    m_presentevent.WaitMSec(std::min(50, timeout));
+    m_presentevent.wait(lock2, std::min(50, timeout));
     if(endtime.IsTimePast() || bStop)
     {
       if (timeout != 0 && !bStop)
         CLog::Log(LOGWARNING, "CRenderManager::WaitForBuffer - timeout waiting for buffer");
       return -1;
     }
-    lock.Enter();
-    lock2.Enter();
   }
 
   // make sure overlay buffer is released, this won't happen on AddOverlay
