@@ -3040,7 +3040,17 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
-    if (!m_player_video.OpenStream(hint))
+
+    // for music file, don't open artwork as video
+    bool disabled = false;
+    CStdString extension = URIUtils::GetExtension(m_filename);
+    if (!extension.IsEmpty() && g_advancedSettings.m_musicExtensions.Find(extension.ToLower()) != -1)
+    {
+      CLog::Log(LOGWARNING, "%s - Ignoring video in audio filetype:%s", __FUNCTION__, m_filename.c_str());
+      disabled = true;
+    }
+
+    if (disabled || !m_player_video.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts */
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
