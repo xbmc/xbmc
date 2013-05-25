@@ -4956,8 +4956,6 @@
 		E38E1D550D25F9FC00618676 /* unpack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unpack.hpp; sourceTree = "<group>"; };
 		E38E1D580D25F9FC00618676 /* unrar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unrar.h; sourceTree = "<group>"; };
 		E38E1D590D25F9FC00618676 /* UnrarX.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UnrarX.hpp; sourceTree = "<group>"; };
-		E38E1D5A0D25F9FC00618676 /* UnrarXLib.sln */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UnrarXLib.sln; sourceTree = "<group>"; };
-		E38E1D5B0D25F9FC00618676 /* UnrarXLib.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = UnrarXLib.vcproj; sourceTree = "<group>"; };
 		E38E1D5D0D25F9FC00618676 /* version.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = version.hpp; sourceTree = "<group>"; };
 		E38E1D5E0D25F9FC00618676 /* volume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = volume.cpp; sourceTree = "<group>"; };
 		E38E1D5F0D25F9FC00618676 /* volume.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = volume.hpp; sourceTree = "<group>"; };
@@ -8383,8 +8381,6 @@
 				E38E1D550D25F9FC00618676 /* unpack.hpp */,
 				E38E1D580D25F9FC00618676 /* unrar.h */,
 				E38E1D590D25F9FC00618676 /* UnrarX.hpp */,
-				E38E1D5A0D25F9FC00618676 /* UnrarXLib.sln */,
-				E38E1D5B0D25F9FC00618676 /* UnrarXLib.vcproj */,
 				E38E1D5D0D25F9FC00618676 /* version.hpp */,
 				E38E1D5E0D25F9FC00618676 /* volume.cpp */,
 				E38E1D5F0D25F9FC00618676 /* volume.hpp */,
