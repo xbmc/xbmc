@@ -503,6 +503,24 @@ void CDVDPlayerAudio::OnStartup()
 #endif
 }
 
+void CDVDPlayerAudio::UpdatePlayerInfo()
+{
+  std::ostringstream s;
+  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
+  s << ", Kb/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+
+  //print the inverse of the resample ratio, since that makes more sense
+  //if the resample ratio is 0.5, then we're playing twice as fast
+  if (m_synctype == SYNC_RESAMPLE)
+    s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
+
+  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
+
+  { CSingleLock lock(m_info_section);
+    m_info = s.str();
+  }
+}
+
 void CDVDPlayerAudio::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
@@ -518,6 +536,8 @@ void CDVDPlayerAudio::Process()
     //Don't let anybody mess with our global variables
     result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0 ||
                          CAEFactory::IsSuspended()); // blocks if no audio is available, but leaves critical section before doing so
+
+    UpdatePlayerInfo();
 
     if( result & DECODE_FLAG_ERROR )
     {
@@ -858,18 +878,8 @@ bool CDVDPlayerAudio::SwitchCodecIfNeeded()
 
 string CDVDPlayerAudio::GetPlayerInfo()
 {
-  std::ostringstream s;
-  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
-  s << ", Kb/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
-
-  //print the inverse of the resample ratio, since that makes more sense
-  //if the resample ratio is 0.5, then we're playing twice as fast
-  if (m_synctype == SYNC_RESAMPLE)
-    s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
-
-  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
-
-  return s.str();
+  CSingleLock lock(m_info_section);
+  return m_info;
 }
 
 int CDVDPlayerAudio::GetAudioBitrate()

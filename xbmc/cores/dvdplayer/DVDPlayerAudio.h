@@ -126,6 +126,8 @@ protected:
 
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
+  void UpdatePlayerInfo();
+
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
 
@@ -206,5 +208,9 @@ protected:
   bool   m_prevskipped;
   double m_maxspeedadjust;
   double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
+
+
+  CCriticalSection m_info_section;
+  std::string      m_info;
 };
 
