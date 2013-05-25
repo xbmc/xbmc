@@ -91,10 +91,11 @@ TEST_F(TestSystemInfo, IsAeroDisabled)
     testing::PrintToString(g_sysinfo.IsAeroDisabled()) << std::endl;
 }
 
-TEST_F(TestSystemInfo, IsVistaOrHigher)
+TEST_F(TestSystemInfo, IsWindowsVersionAtLeast_Vista)
 {
-  std::cout << "IsVistaOrHigher(): " <<
-    testing::PrintToString(g_sysinfo.IsVistaOrHigher()) << std::endl;
+  std::cout << "IsWindowsVersionAtLeast(WindowsVersionVista): " <<
+    testing::PrintToString(g_sysinfo.IsWindowsVersionAtLeast(
+                                  CSysInfo::WindowsVersionVista)) << std::endl;
 }
 
 TEST_F(TestSystemInfo, GetKernelVersion)
