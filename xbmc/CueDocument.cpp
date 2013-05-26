@@ -106,7 +106,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (bCurrentFileChanged)
       {
-        OutputDebugString("Track split over multiple files, unsupported");
+        OutputDebugString("Track split over multiple files, unsupported ('" + strFile + "')\n");
         return false;
       }
 
@@ -377,7 +377,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
         return true;
       }
     }
-    CLog::Log(LOGERROR,"Could not find FILE referenced in cue, case sensitivity issue?");
+    CLog::Log(LOGERROR,"Could not find '%s' referenced in cue, case sensitivity issue?", strPath);
     return false;
   }
 
