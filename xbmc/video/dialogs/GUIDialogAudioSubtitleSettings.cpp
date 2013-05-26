@@ -178,7 +178,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
     else
       strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
-    strItem.Format("%s (%i/%i)", strItem.c_str(), i + 1, (int)setting.max + 1);
+    strItem.AppendFormat(" (%i/%i)", i + 1, (int)setting.max + 1);
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
 
@@ -224,7 +224,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     else
       strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
-    strItem.Format("%s (%i/%i)", strItem.c_str(), i + 1, (int)setting.max + 1);
+    strItem.AppendFormat(" (%i/%i)", i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
