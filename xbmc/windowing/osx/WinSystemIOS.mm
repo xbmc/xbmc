@@ -124,7 +124,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return true;
 }
 
-UIScreenMode *getModeForResolution(int width, int height, int screenIdx)
+UIScreenMode *getModeForResolution(int width, int height, unsigned int screenIdx)
 {
   if( screenIdx >= [[UIScreen screens] count])
     return NULL;

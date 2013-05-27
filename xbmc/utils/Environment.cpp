@@ -234,7 +234,7 @@ int CEnvironment::putenv(const std::string &envstring)
 {
   if (envstring.empty())
     return 0;
-  int pos = envstring.find('=');
+  unsigned int pos = envstring.find('=');
   if (pos == 0) // '=' is the first character
     return -1;
   if (pos == std::string::npos)

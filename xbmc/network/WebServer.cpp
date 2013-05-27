@@ -662,7 +662,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   {
     // put together the end-boundary
     string endBoundary = "\r\n--" + context->boundary + "--";
-    if (max != endBoundary.size())
+    if ((unsigned int)max != endBoundary.size())
       return -1;
 
     // copy the boundary into the buffer
