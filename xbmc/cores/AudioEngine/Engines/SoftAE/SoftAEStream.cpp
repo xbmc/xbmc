@@ -38,7 +38,8 @@
 
 using namespace std;
 
-CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options) :
+CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options, CCriticalSection& lock) :
+  m_lock            (lock ),
   m_resampleRatio   (1.0  ),
   m_internalRatio   (1.0  ),
   m_convertBuffer   (NULL ),
@@ -78,7 +79,8 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
 
 void CSoftAEStream::InitializeRemap()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
+
   if (!AE_IS_RAW(m_initDataFormat))
   {
     /* re-init the remappers */
@@ -100,7 +102,8 @@ void CSoftAEStream::InitializeRemap()
 
 void CSoftAEStream::Initialize()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
+
   if (m_valid)
   {
     InternalFlush();
@@ -217,14 +220,15 @@ void CSoftAEStream::Initialize()
 
 void CSoftAEStream::Destroy()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
+
   m_valid       = false;
   m_delete      = true;
 }
 
 CSoftAEStream::~CSoftAEStream()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
 
   InternalFlush();
   if (m_convert)
@@ -245,6 +249,8 @@ CSoftAEStream::~CSoftAEStream()
 
 unsigned int CSoftAEStream::GetSpace()
 {
+  CSingleLock lock(m_lock);
+
   if (!m_valid || m_draining)
     return 0;
 
@@ -256,7 +262,8 @@ unsigned int CSoftAEStream::GetSpace()
 
 unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
+
   if (!m_valid || size == 0 || data == NULL)
     return 0;
 
@@ -419,7 +426,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
 
 uint8_t* CSoftAEStream::GetFrame()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
 
   /* if we are fading, this runs even if we have underrun as it is time based */
   if (m_fadeRunning)
@@ -490,6 +497,8 @@ uint8_t* CSoftAEStream::GetFrame()
 
 double CSoftAEStream::GetDelay()
 {
+  CSingleLock lock(m_lock);
+
   if (m_delete)
     return 0.0;
 
@@ -501,6 +510,8 @@ double CSoftAEStream::GetDelay()
 
 double CSoftAEStream::GetCacheTime()
 {
+  CSingleLock lock(m_lock);
+
   if (m_delete)
     return 0.0;
 
@@ -512,6 +523,8 @@ double CSoftAEStream::GetCacheTime()
 
 double CSoftAEStream::GetCacheTotal()
 {
+  CSingleLock lock(m_lock);
+
   if (m_delete)
     return 0.0;
 
@@ -523,6 +536,8 @@ double CSoftAEStream::GetCacheTotal()
 
 void CSoftAEStream::Pause()
 {
+  CSingleLock lock(m_lock);
+
   if (m_paused)
     return;
   m_paused = true;
@@ -531,6 +546,8 @@ void CSoftAEStream::Pause()
 
 void CSoftAEStream::Resume()
 {
+  CSingleLock lock(m_lock);
+
   if (!m_paused)
     return;
   m_paused    = false;
@@ -540,20 +557,20 @@ void CSoftAEStream::Resume()
 
 void CSoftAEStream::Drain()
 {
-  CSharedLock lock(m_lock);
+  CSingleLock lock(m_lock);
   m_draining = true;
 }
 
 bool CSoftAEStream::IsDrained()
 {
-  CSharedLock lock(m_lock);
+  CSingleLock lock(m_lock);
   return (m_draining && !m_packet && m_outBuffer.empty());
 }
 
 void CSoftAEStream::Flush()
 {
   CLog::Log(LOGDEBUG, "CSoftAEStream::Flush");
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
   InternalFlush();
 
   /* internal flush does not do this as these samples are still valid if we are re-initializing */
@@ -595,10 +612,10 @@ void CSoftAEStream::InternalFlush()
 
 double CSoftAEStream::GetResampleRatio()
 {
+  CSingleLock lock(m_lock);
   if (!m_resample)
     return 1.0f;
 
-  CSharedLock lock(m_lock);
   return m_ssrcData.src_ratio;
 }
 
@@ -607,7 +624,7 @@ bool CSoftAEStream::SetResampleRatio(double ratio)
   if (!m_resample)
     return false;
 
-  CSharedLock lock(m_lock);
+  CSingleLock lock(m_lock);
 
   int oldRatioInt = (int)std::ceil(m_ssrcData.src_ratio);
 
@@ -628,7 +645,7 @@ bool CSoftAEStream::SetResampleRatio(double ratio)
 
 void CSoftAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
   m_vizBufferSamples = 0;
   m_audioCallback = pCallback;
   if (m_audioCallback)
@@ -637,7 +654,7 @@ void CSoftAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 
 void CSoftAEStream::UnRegisterAudioCallback()
 {
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
   m_audioCallback = NULL;
   m_vizBufferSamples = 0;
 }
@@ -648,7 +665,7 @@ void CSoftAEStream::FadeVolume(float from, float target, unsigned int time)
   if (AE_IS_RAW(m_initDataFormat))
     return;
 
-  CExclusiveLock lock(m_lock);
+  CSingleLock lock(m_lock);
   float delta   = target - from;
   m_fadeDirUp   = target > from;
   m_fadeTarget  = target;
@@ -658,13 +675,13 @@ void CSoftAEStream::FadeVolume(float from, float target, unsigned int time)
 
 bool CSoftAEStream::IsFading()
 {
-  CSharedLock lock(m_lock);
+  CSingleLock lock(m_lock);
   return m_fadeRunning;
 }
 
 void CSoftAEStream::RegisterSlave(IAEStream *slave)
 {
-  CSharedLock lock(m_lock);
+  CSingleLock lock(m_lock);
   m_slave = (CSoftAEStream*)slave;
 }
 
