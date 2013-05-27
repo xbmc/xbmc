@@ -32,12 +32,12 @@
 
 @interface IOSScreenManager : NSObject {
 
-  int  _screenIdx;
+  unsigned int  _screenIdx;
   bool _externalScreen;
   IOSEAGLView *_glView;
   IOSExternalTouchController *_externalTouchController;
 }
-@property int  _screenIdx;
+@property unsigned int  _screenIdx;
 @property (readonly, getter=isExternalScreen)bool _externalScreen;
 @property (assign, setter=setView:) IOSEAGLView *_glView;
 
