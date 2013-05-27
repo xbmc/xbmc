@@ -45,4 +45,5 @@
 - (void) deactivate;
 - (void) textChanged:(NSNotification*)aNotification;
 - (void) setCancelFlag:(bool *)cancelFlag;
+- (void) doDeactivate:(NSDictionary *)dict;
 @end
