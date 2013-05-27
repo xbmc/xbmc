@@ -47,6 +47,7 @@ public:
   // Required overrides
   bool SendDecoderConfig();
   bool Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace = false, bool hdmi_clock_sync = false);
+  bool PortSettingsChanged();
   void RegisterResolutionUpdateCallBack(void *ctx, ResolutionUpdateCallBackFn callback) { m_res_ctx = ctx; m_res_callback = callback; }
   void Close(void);
   unsigned int GetFreeSpace();
@@ -93,11 +94,14 @@ protected:
   std::string       m_video_codec_name;
 
   bool              m_deinterlace;
+  bool              m_deinterlace_request;
   bool              m_hdmi_clock_sync;
   uint32_t          m_history_valid_pts;
   ResolutionUpdateCallBackFn m_res_callback;
   void              *m_res_ctx;
   bool              m_submitted_eos;
+  OMX_DISPLAYTRANSFORMTYPE m_transform;
+  bool              m_settings_changed;
   bool NaluFormatStartCodes(enum CodecID codec, uint8_t *in_extradata, int in_extrasize);
 };
 
