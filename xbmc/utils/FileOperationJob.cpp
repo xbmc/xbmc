@@ -151,59 +151,61 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
   for (int iItem = 0; iItem < items.Size(); ++iItem)
   {
     CFileItemPtr pItem = items[iItem];
-    if (pItem->IsSelected())
+    if (!pItem->IsSelected())
+      continue;
+
+    if (pItem->m_bIsFolder)
     {
-      CStdString strNoSlash = pItem->GetPath();
-      URIUtils::RemoveSlashAtEnd(strNoSlash);
-      CStdString strFileName = URIUtils::GetFileName(strNoSlash);
+      // In ActionReplace mode all subdirectories will be removed by the below
+      // DoProcessFolder(ActionDelete) call as well, so ActionCopy is enough when
+      // processing those
+      FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
+      // Create folder on destination drive
+      if (action != ActionDelete && action != ActionDeleteFolder)
+        DoProcessFile(ActionCreateFolder, strDestFile, "", fileOperations, totalTime);
+      if (action == ActionReplace && CDirectory::Exists(strDestFile))
+        DoProcessFolder(ActionDelete, strDestFile, "", fileOperations, totalTime);
+      if (!DoProcessFolder(subdirAction, pItem->GetPath(), strDestFile, fileOperations, totalTime))
+        return false;
+      if (action == ActionDelete || action == ActionDeleteFolder)
+        DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
+    }
+    else if (strDestFile.IsEmpty())
+    {
+      DoProcessFile(action, pItem->GetPath(), "", fileOperations, totalTime);
+    }
+    else if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
+    {
+      // Get filename from label instead of path when it is UPnP
+      CStdString strNewDest = pItem->GetLabel();
 
-      // URL Decode for cases where source uses URL encoding and target does not 
-      if ( URIUtils::ProtocolHasEncodedFilename(CURL(pItem->GetPath()).GetProtocol() )
-       && !URIUtils::ProtocolHasEncodedFilename(CURL(strDestFile).GetProtocol() ) )
-        CURL::Decode(strFileName);
-
-      // special case for upnp
-      if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
+      if (URIUtils::GetExtension(strNewDest).IsEmpty())
       {
-        // get filename from label instead of path
-        strFileName = pItem->GetLabel();
-
-        if(!pItem->m_bIsFolder && URIUtils::GetExtension(strFileName).length() == 0)
-        {
-          // FIXME: for now we only work well if the url has the extension
-          // we should map the content type to the extension otherwise
-          strFileName += URIUtils::GetExtension(pItem->GetPath());
-        }
-
-        strFileName = CUtil::MakeLegalFileName(strFileName);
+        // FIXME: for now we only work well if the url has the extension
+        // we should map the content type to the extension otherwise
+        strNewDest += URIUtils::GetExtension(pItem->GetPath());
       }
 
-      if (pItem->m_bIsFolder)
-      {
-        // in ActionReplace mode all subdirectories will be removed by the below
-        // DoProcessFolder(ActionDelete) call as well, so ActionCopy is enough when
-        // processing those
-        FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
-        // create folder on dest. drive
-        if (action != ActionDelete && action != ActionDeleteFolder)
-          DoProcessFile(ActionCreateFolder, strDestFile, "", fileOperations, totalTime);
-        if (action == ActionReplace && CDirectory::Exists(strDestFile))
-          DoProcessFolder(ActionDelete, strDestFile, "", fileOperations, totalTime);
-        if (!DoProcessFolder(subdirAction, pItem->GetPath(), strDestFile, fileOperations, totalTime))
-          return false;
-        if (action == ActionDelete || action == ActionDeleteFolder)
-          DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
-      }
-      else
-      {
-        CStdString strNewDestFile;
-        if (!strDestFile.IsEmpty())
-          strNewDestFile = URIUtils::AddFileToFolder(strDestFile, strFileName);
+      strNewDest = CUtil::MakeLegalFileName(strNewDest);
+      strNewDest = URIUtils::AddFileToFolder(strDestFile, strNewDest);
+      DoProcessFile(action, pItem->GetPath(), strNewDest, fileOperations, totalTime);
+    }
+    else // Non UPnP item with a destination
+    {
+      CStdString strNewDest = pItem->GetPath();
+      URIUtils::RemoveSlashAtEnd(strNewDest);
+      strNewDest = URIUtils::GetFileName(strNewDest);
 
-        DoProcessFile(action, pItem->GetPath(), strNewDestFile, fileOperations, totalTime);
-      }
+      // URL decode for cases where source uses URL encoding and target does not
+      if (URIUtils::ProtocolHasEncodedFilename(CURL(pItem->GetPath()).GetProtocol()) &&
+          !URIUtils::ProtocolHasEncodedFilename(CURL(strNewDest).GetProtocol()))
+        CURL::Decode(strNewDest);
+
+      strNewDest = URIUtils::AddFileToFolder(strDestFile, strNewDest);
+      DoProcessFile(action, pItem->GetPath(), strNewDest, fileOperations, totalTime);
     }
   }
+
   return true;
 }
 
