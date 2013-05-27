@@ -110,9 +110,6 @@ unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool ha
     m_sinkbuffer_level += frames * m_sink_frameSize;
     m_wake.Set();
   }
-  // AddPackets runs under a non-idled AE thread we must block or sleep.
-  // Trying to calc the optimal sleep is tricky so just a minimal sleep.
-  Sleep(10);
 
   return frames;
 }

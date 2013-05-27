@@ -1212,6 +1212,34 @@ bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio
   return true;
 }
 
+unsigned int CSoftAE::WriteSink(CAEBuffer& src, uint8_t *data, bool hasAudio)
+{
+  CExclusiveLock lock(m_sinkLock); /* lock to maintain delay consistency */
+  while(m_sink)
+  {
+    int frames = m_sink->AddPackets(data, m_sinkFormat.m_frames, hasAudio);
+
+    /* Return value of INT_MAX signals error in sink - restart */
+    if (frames == INT_MAX)
+    {
+      CLog::Log(LOGERROR, "CSoftAE::WriteSink - sink error - reinit flagged");
+      m_reOpen = true;
+      break;
+    }
+
+    if (frames)
+    {
+      m_buffer.Shift(NULL, frames * m_sinkFormat.m_frameSize);
+      return frames;
+    }
+
+    lock.Leave();
+    Sleep((500 * m_sinkFormat.m_frames) / m_sinkFormat.m_sampleRate);
+    lock.Enter();
+  }
+  return 0;
+}
+
 int CSoftAE::RunOutputStage(bool hasAudio)
 {
   const unsigned int needSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
@@ -1222,7 +1250,6 @@ int CSoftAE::RunOutputStage(bool hasAudio)
   void *data = m_buffer.Raw(needBytes);
   hasAudio = FinalizeSamples((float*)data, needSamples, hasAudio);
 
-  int wroteFrames = 0;
   if (m_convertFn)
   {
     const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
@@ -1232,22 +1259,7 @@ int CSoftAE::RunOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  /* Output frames to sink */
-  if (m_sink)
-    wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames, hasAudio);
-
-  /* Return value of INT_MAX signals error in sink - restart */
-  if (wroteFrames == INT_MAX)
-  {
-    CLog::Log(LOGERROR, "CSoftAE::RunOutputStage - sink error - reinit flagged");
-    wroteFrames = 0;
-    m_reOpen = true;
-  }
-
-  if (wroteFrames)
-    m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
-
-  return wroteFrames;
+  return WriteSink(m_buffer, (uint8_t*)data, hasAudio);
 }
 
 int CSoftAE::RunRawOutputStage(bool hasAudio)
@@ -1275,20 +1287,7 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  int wroteFrames = 0;
-  if (m_sink)
-    wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames, hasAudio);
-
-  /* Return value of INT_MAX signals error in sink - restart */
-  if (wroteFrames == INT_MAX)
-  {
-    CLog::Log(LOGERROR, "CSoftAE::RunRawOutputStage - sink error - reinit flagged");
-    wroteFrames = 0;
-    m_reOpen = true;
-  }
-
-  m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
-  return wroteFrames;
+  return WriteSink(m_buffer, (uint8_t*)data, hasAudio);
 }
 
 int CSoftAE::RunTranscodeStage(bool hasAudio)
@@ -1318,33 +1317,24 @@ int CSoftAE::RunTranscodeStage(bool hasAudio)
       buffer = m_buffer.Raw(block);
 
     encodedFrames = m_encoder->Encode((float*)buffer, m_encoderFormat.m_frames);
-    m_buffer.Shift(NULL, encodedFrames * m_encoderFormat.m_frameSize);
 
     uint8_t *packet;
     unsigned int size = m_encoder->GetData(&packet);
+
+    CExclusiveLock sinkLock(m_sinkLock); /* lock to maintain delay consistency */
 
     /* if there is not enough space for another encoded packet enlarge the buffer */
     if (m_encodedBuffer.Free() < size)
       m_encodedBuffer.ReAlloc(m_encodedBuffer.Used() + size);
 
+    m_buffer.Shift(NULL, encodedFrames * m_encoderFormat.m_frameSize);
     m_encodedBuffer.Push(packet, size);
   }
 
   /* if we have enough data to write */
   if (m_encodedBuffer.Used() >= sinkBlock)
-  {
-    int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames, hasAudio);
-    
-    /* Return value of INT_MAX signals error in sink - restart */
-    if (wroteFrames == INT_MAX)
-    {
-      CLog::Log(LOGERROR, "CSoftAE::RunTranscodeStage - sink error - reinit flagged");
-      wroteFrames = 0;
-      m_reOpen = true;
-    }
+    WriteSink(m_encodedBuffer, (uint8_t*)m_encodedBuffer.Raw(sinkBlock), hasAudio);
 
-    m_encodedBuffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
-  }
   return encodedFrames;
 }
 

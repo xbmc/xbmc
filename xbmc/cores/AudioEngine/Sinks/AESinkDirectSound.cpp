@@ -388,7 +388,8 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames, 
   {
     if (m_isDirtyDS)
       return INT_MAX;
-    Sleep(total * 1000 / m_AvgBytesPerSec);
+    else
+      return 0;
   }
 
   while (len)

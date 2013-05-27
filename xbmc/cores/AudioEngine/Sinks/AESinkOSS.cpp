@@ -29,6 +29,7 @@
 #include <sstream>
 
 #include <sys/ioctl.h>
+#include <sys/fcntl.h>
 
 #if defined(OSS4) || defined(TARGET_FREEBSD)
   #include <sys/soundcard.h>
@@ -320,6 +321,13 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
+  if (fcntl(m_fd, F_SETFL,  fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) == -1)
+  {
+    close(m_fd);
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set non blocking writes");
+    return false;
+  }
+
   format.m_sampleRate    = oss_sr;
   format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count();
   format.m_frames        = bi.fragsize / format.m_frameSize;
@@ -412,6 +420,9 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
   int wrote = write(m_fd, data, size);
   if (wrote < 0)
   {
+    if(errno == EAGAIN || errno == EWOULDBLOCK)
+      return 0;
+
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
     return INT_MAX;
   }
