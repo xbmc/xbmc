@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<settings><section id="system">
+<settings>
+  <visible>TARGET_RASPBERRY_PI</visible>
+  <section id="system">
     <category id="videoscreen">
       <group id="1">
         <setting id="videoscreen.screen">
