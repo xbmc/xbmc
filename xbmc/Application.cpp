@@ -341,10 +341,6 @@
 #include "android/activity/XBMCApp.h"
 #endif
 
-#ifdef TARGET_LINUX
-#include "linux/LinuxTimezone.h"
-#endif
-
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
