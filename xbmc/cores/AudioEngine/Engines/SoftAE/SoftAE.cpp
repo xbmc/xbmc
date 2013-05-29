@@ -64,6 +64,7 @@ CSoftAE::CSoftAE():
   m_softSuspendTimer   (0           ),
   m_volume             (1.0         ),
   m_sink               (NULL        ),
+  m_sinkBlockTime      (0           ),
   m_transcode          (false       ),
   m_rawPassthrough     (false       ),
   m_soundMode          (AE_SOUND_OFF),
@@ -350,6 +351,7 @@ void CSoftAE::InternalOpenSink()
     m_sinkFormatSampleRateMul = 1.0 / (double)newFormat.m_sampleRate;
     m_sinkFormatFrameSizeMul  = 1.0 / (double)newFormat.m_frameSize;
     m_sinkBlockSize           = newFormat.m_frames * newFormat.m_frameSize;
+    m_sinkBlockTime           = 1000 * newFormat.m_frames / newFormat.m_sampleRate;
     // check if sink controls volume, if so, init the volume.
     m_sinkHandlesVolume       = m_sink->HasVolume();
     if (m_sinkHandlesVolume)
@@ -1215,6 +1217,8 @@ bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio
 unsigned int CSoftAE::WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool hasAudio)
 {
   CExclusiveLock lock(m_sinkLock); /* lock to maintain delay consistency */
+
+  XbmcThreads::EndTime timeout(m_sinkBlockTime * 2);
   while(m_sink)
   {
     int frames = m_sink->AddPackets(data, m_sinkFormat.m_frames, hasAudio);
@@ -1233,8 +1237,15 @@ unsigned int CSoftAE::WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool
       return frames;
     }
 
+    if(timeout.IsTimePast())
+    {
+      CLog::Log(LOGERROR, "CSoftAE::WriteSink - sink blocked- reinit flagged");
+      m_reOpen = true;
+      break;
+    }
+
     lock.Leave();
-    Sleep((500 * m_sinkFormat.m_frames) / m_sinkFormat.m_sampleRate);
+    Sleep(m_sinkBlockTime / 4);
     lock.Enter();
   }
   return 0;

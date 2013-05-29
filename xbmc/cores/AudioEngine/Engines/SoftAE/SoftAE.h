@@ -165,6 +165,7 @@ private:
   double                    m_sinkFormatSampleRateMul;
   double                    m_sinkFormatFrameSizeMul;
   unsigned int              m_sinkBlockSize;
+  unsigned int              m_sinkBlockTime;
   bool                      m_sinkHandlesVolume;
   AEAudioFormat             m_encoderFormat;
   double                    m_encoderFrameSizeMul;
