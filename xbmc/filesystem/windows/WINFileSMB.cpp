@@ -56,7 +56,7 @@ CStdString CWINFileSMB::GetLocal(const CURL &url)
 
     if(host.size() > 0)
     {
-      path = "//" + host + "/" + path;
+      path = "\\\\?\\UNC\\" + host + "\\" + path;
     }
   }
 
