@@ -684,22 +684,7 @@ void CDVDPlayerVideo::Process()
             if (picture.iRepeatPicture)
               picture.iDuration *= picture.iRepeatPicture + 1;
 
-#if 1
             int iResult = OutputPicture(&picture, pts);
-#elif 0
-            // testing NV12 rendering functions
-            DVDVideoPicture* pTempNV12Picture = CDVDCodecUtils::ConvertToNV12Picture(&picture);
-            int iResult = OutputPicture(pTempNV12Picture, pts);
-            CDVDCodecUtils::FreePicture(pTempNV12Picture);
-#elif 0
-            // testing YUY2 or UYVY rendering functions
-            // WARNING: since this scales a full YV12 frame, weaving artifacts will show on interlaced content
-            // even with the deinterlacer on
-            DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, RENDER_FMT_UYVY422);
-            //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, RENDER_FMT_YUYV422);
-            int iResult = OutputPicture(pTempYUVPackedPicture, pts);
-            CDVDCodecUtils::FreePicture(pTempYUVPackedPicture);
-#endif
 
             if(m_started == false)
             {
