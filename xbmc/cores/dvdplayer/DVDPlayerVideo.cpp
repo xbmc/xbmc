@@ -1245,12 +1245,13 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
+  AutoCrop(pPicture);
+
   int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 0));
   if (buffer < 0)
     return EOS_DROPPED;
 
   ProcessOverlays(pPicture, pts);
-  AutoCrop(pPicture);
 
   int index = g_renderManager.AddVideoPicture(*pPicture);
 
