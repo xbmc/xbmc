@@ -77,7 +77,8 @@ CStdString CHDFile::GetLocal(const CURL &url)
     }
   }
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
+  path.Insert(0, "\\\\?\\");
   path.Replace('/', '\\');
 #endif
 
@@ -117,7 +118,10 @@ bool CHDFile::Exists(const CURL& url)
   CStdStringW strWFile;
   URIUtils::RemoveSlashAtEnd(strFile);
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  return (_wstat64(strWFile.c_str(), &buffer)==0);
+  DWORD attributes = GetFileAttributesW(strWFile);
+  if(attributes == INVALID_FILE_ATTRIBUTES)
+    return false;
+  return true;
 #else
   return (_stat64(strFile.c_str(), &buffer)==0);
 #endif

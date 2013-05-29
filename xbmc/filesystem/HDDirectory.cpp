@@ -81,6 +81,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 #ifdef _WIN32
   CStdStringW strSearchMask;
   g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
+  strSearchMask.Insert(0, L"\\\\?\\");
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
@@ -152,7 +153,9 @@ bool CHDDirectory::Create(const char* strPath)
   if (strPath1.size() == 3 && strPath1[1] == ':')
     return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
+  strPath1.Replace("/", "\\");
   g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
+  strWPath1.Insert(0, L"\\\\?\\");
   if(::CreateDirectoryW(strWPath1, NULL))
 #else
   if(::CreateDirectory(strPath1.c_str(), NULL))
@@ -169,6 +172,8 @@ bool CHDDirectory::Remove(const char* strPath)
 #ifdef _WIN32
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
+  strWPath.Replace(L"/", L"\\");
+  strWPath.Insert(0, L"\\\\?\\");
   return (::RemoveDirectoryW(strWPath) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
 #else
   return ::RemoveDirectory(strPath) ? true : false;
@@ -185,6 +190,7 @@ bool CHDDirectory::Exists(const char* strPath)
   strReplaced.Replace("/","\\");
   URIUtils::AddSlashAtEnd(strReplaced);
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
+  strWReplaced.Insert(0, L"\\\\?\\");
   DWORD attributes = GetFileAttributesW(strWReplaced);
 #else
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
