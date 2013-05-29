@@ -250,8 +250,6 @@ bool CSettings::Initialize()
   if (!InitializeDefinitions())
     return false;
 
-  InitializeVisibility();
-  InitializeDefaults();
   m_settingsManager->SetInitialized();
 
   InitializeISettingsHandlers();  
@@ -562,6 +560,12 @@ bool CSettings::InitializeDefinitions()
 #endif
 #endif
 #endif
+
+  // load any custom visibility and default values before loading the special
+  // appliance.xml so that appliances are able to overwrite even those values
+  InitializeVisibility();
+  InitializeDefaults();
+
   if (CFile::Exists(SETTINGS_XML_FOLDER "appliance.xml") && !Initialize(SETTINGS_XML_FOLDER "appliance.xml"))
     CLog::Log(LOGFATAL, "Unable to load appliance-specific settings definitions");
 
