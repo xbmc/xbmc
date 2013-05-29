@@ -169,11 +169,6 @@ protected:
   bool m_started;
   std::string m_codecname;
 
-  /* autosync decides on how much of clock we should use when deciding sleep time */
-  /* the value is the same as 63% timeconstant, ie that the step response of */
-  /* iSleepTime will be at 63% of iClockSleep after autosync frames */
-  unsigned int m_autosync;
-
   BitstreamStats m_videoStats;
 
   // classes
