@@ -200,7 +200,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
   setting.type = SettingInfo::SPIN;
   setting.min = 0;
   setting.data = &m_subtitleStream;
-  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
+  m_subtitleStream = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
 
   if(m_subtitleStream < 0) m_subtitleStream = 0;
 
