@@ -436,11 +436,9 @@ endif
 
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
-MAINOBJS=xbmc/xbmc.o
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/android/activity/android_main.o
-endif
-ifneq (@USE_LIBXBMC@,1)
+else
 MAINOBJS+=xbmc/main/main.o
 endif
 
@@ -463,11 +461,14 @@ BINDINGS+=addons/library.xbmc.pvr/libXBMC_pvr.h
 BINDINGS+=addons/library.xbmc.codec/libXBMC_codec.h
 BINDINGS+=xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h
 
-libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
+xbmc/main/main.o: force
+	@$(MAKE) $(if $(V),,-s) -C xbmc/main main.o
+
+libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(MAINOBJS) -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
 xbmc/main/main.a:
