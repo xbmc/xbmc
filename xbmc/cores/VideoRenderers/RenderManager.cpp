@@ -347,7 +347,10 @@ void CXBMCRenderManager::FrameMove()
       {
         double timestamp = GetPresentTime();
         if(timestamp > m_presenttime + (m_Queue[idx].timestamp - m_presenttime) * 0.5)
+        {
           m_presentstep = PRESENT_READY;
+          m_presentevent.notifyAll();
+        }
       }
     }
 
@@ -1017,7 +1020,12 @@ void CXBMCRenderManager::PrepareNextRender()
 
   int nxt = GetNextRender();
   if (nxt < 0)
+  {
+    CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
+    m_presentstep = PRESENT_IDLE;
+    m_presentevent.notifyAll();
     return;
+  }
 
   double clocktime = GetPresentTime();
   double frametime = 1.0 / GetMaximumFPS();
@@ -1048,6 +1056,7 @@ void CXBMCRenderManager::PrepareNextRender()
     m_presentfield  = m_Queue[idx].presentfield;
     m_presentstep   = PRESENT_FLIP;
     m_presentsource = idx;
+    m_presentevent.notifyAll();
   }
 }
 
@@ -1061,4 +1070,7 @@ void CXBMCRenderManager::DiscardBuffer()
     m_overlays.Release(m_QueueOutput);
     m_QueueOutput = (m_QueueOutput + m_QueueSize - 1) % m_QueueSize;
   }
+  if(m_presentstep == PRESENT_READY)
+    m_presentstep   = PRESENT_IDLE;
+  m_presentevent.notifyAll();
 }
