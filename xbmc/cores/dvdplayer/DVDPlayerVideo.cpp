@@ -509,9 +509,6 @@ void CDVDPlayerVideo::Process()
         m_iNrOfPicturesNotToSkip = 1;
       }
 
-#ifdef PROFILE
-      bRequestDrop = false;
-#else
       if (m_messageQueue.GetDataSize() == 0
       ||  m_speed < 0)
       {
@@ -519,7 +516,6 @@ void CDVDPlayerVideo::Process()
         m_iDroppedRequest = 0;
         m_iLateFrames     = 0;
       }
-#endif
 
       // if player want's us to drop this packet, do so nomatter what
       if(bPacketDrop)
@@ -1220,10 +1216,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
-
-#ifdef PROFILE /* during profiling, try to play as fast as possible */
-  iSleepTime = 0;
-#endif
 
   // present the current pts of this frame to user, and include the actual
   // presentation delay, to allow him to adjust for it
