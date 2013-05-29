@@ -159,6 +159,8 @@ int CHDFile::Stat(const CURL& url, struct __stat64* buffer)
 
 #ifdef _WIN32
   CStdStringW strWFile;
+  /* _wstat64 can't handle long paths therefore we remove the \\?\ */
+  strFile.Replace("\\\\?\\", "");
   // win32 can only stat root drives with a slash at the end
   if(strFile.length() == 2 && strFile[1] ==':')
     URIUtils::AddSlashAtEnd(strFile);
