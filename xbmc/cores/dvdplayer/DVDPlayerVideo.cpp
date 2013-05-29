@@ -1133,19 +1133,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.color_range     = pPicture->color_range;
   }
 
-  double maxfps  = 60.0;
-  bool   limited = false;
   int    result  = 0;
 
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
-  maxfps = g_renderManager.GetMaximumFPS();
-
-  // check if our output will limit speed
-  if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
-    limited = true;
 
   //correct any pattern in the timestamps
   if (m_output.color_format != RENDER_FMT_BYPASS)
