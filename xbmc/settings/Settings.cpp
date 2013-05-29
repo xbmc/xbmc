@@ -45,9 +45,9 @@
 #elif defined(HAS_SDL_JOYSTICK)
 #include "input/SDLJoystick.h"
 #endif // defined(HAS_SDL_JOYSTICK)
-#if defined(TARGET_LINUX)
+#if defined(_LINUX)
 #include "linux/LinuxTimezone.h"
-#endif // defined(TARGET_LINUX)
+#endif // defined(_LINUX)
 #include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
@@ -578,24 +578,15 @@ void CSettings::InitializeSettingTypes()
 void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
-#if defined(TARGET_LINUX) || defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
 
-#if defined(TARGET_DARWIN)
   if (!g_sysinfo.IsAppleTV2() || GetIOSVersion() >= 4.3)
   {
     timezonecountry->SetVisible(false);
     timezone->SetVisible(false);
   }
-#endif
- 
-#if defined(TARGET_LINUX)
-  if (timezonecountry->IsVisible())
-    timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
-  if (timezone->IsVisible())
-    timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
-#endif
 #endif
 }
 
@@ -605,6 +596,16 @@ void CSettings::InitializeDefaults()
 #if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
   ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.touched");
 #endif
+
+#if defined(_LINUX)
+  CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
+  CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
+
+  if (timezonecountry->IsVisible())
+    timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
+  if (timezone->IsVisible())
+    timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
+#endif // defined(_LINUX)
 
 #if defined(TARGET_WINDOWS)
   #if defined(HAS_DX)
