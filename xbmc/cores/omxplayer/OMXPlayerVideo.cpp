@@ -210,7 +210,7 @@ void OMXPlayerVideo::OnExit()
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
 
-void OMXPlayerVideo::ProcessOverlays(int iGroupId, double pts)
+void OMXPlayerVideo::ProcessOverlays(double pts)
 {
   // remove any overlays that are out of time
   if (m_started)
@@ -229,9 +229,6 @@ void OMXPlayerVideo::ProcessOverlays(int iGroupId, double pts)
   {
     CDVDOverlay* pOverlay = *it++;
     if(!pOverlay->bForced && !m_bRenderSubs)
-      continue;
-
-    if(pOverlay->iGroupId != iGroupId)
       continue;
 
     double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
@@ -253,7 +250,7 @@ void OMXPlayerVideo::ProcessOverlays(int iGroupId, double pts)
   }
 }
 
-void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
+void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 {
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
@@ -327,7 +324,7 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
     return;
 
   double pts_media = m_av_clock->OMXMediaTime(false);
-  ProcessOverlays(iGroupId, pts_media);
+  ProcessOverlays(pts_media);
 
   g_renderManager.FlipPage(CThread::m_bStop, m_iSleepEndTime / DVD_TIME_BASE, -1, FS_NONE);
 
@@ -543,7 +540,7 @@ void OMXPlayerVideo::Process()
 
         m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
-        Output(pPacket->iGroupId, output_pts, bRequestDrop);
+        Output(output_pts, bRequestDrop);
 
         if(m_started == false)
         {

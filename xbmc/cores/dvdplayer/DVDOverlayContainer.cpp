@@ -184,7 +184,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
 
       // make sure its a forced (menu) overlay
       // set menu spu color and alpha data if there is a valid menu overlay
-      if (pOverlaySpu->bForced && pStream->GetCurrentGroupId() == pOverlaySpu->iGroupId)
+      if (pOverlaySpu->bForced)
       {
         if(pOverlaySpu->Acquire()->Release() > 1)
         {

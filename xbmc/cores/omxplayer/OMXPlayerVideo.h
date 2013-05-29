@@ -84,7 +84,7 @@ protected:
 
   DVDVideoPicture* m_pTempOverlayPicture;
 
-  void ProcessOverlays(int iGroupId, double pts);
+  void ProcessOverlays(double pts);
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -104,7 +104,7 @@ public:
   bool IsStalled()                                  { return m_stalled;  }
   bool IsEOS();
   bool CloseStream(bool bWaitForBuffers);
-  void Output(int iGroupId, double pts, bool bDropPacket);
+  void Output(double pts, bool bDropPacket);
   void Flush();
   bool OpenDecoder();
   int  GetDecoderBufferSize();

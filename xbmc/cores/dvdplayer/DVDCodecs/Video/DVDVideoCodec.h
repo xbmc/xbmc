@@ -82,7 +82,6 @@ struct DVDVideoPicture
   unsigned int color_primaries;
   unsigned int color_transfer;
   unsigned int extended_format;
-  int iGroupId;
 
   int8_t* qscale_table; // Quantization parameters, primarily used by filters
   int qscale_stride;

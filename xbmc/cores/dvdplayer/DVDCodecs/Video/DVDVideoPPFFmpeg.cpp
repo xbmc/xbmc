@@ -154,7 +154,6 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   m_pTarget->iDisplayHeight = m_pSource->iDisplayHeight;
   m_pTarget->iDisplayWidth = m_pSource->iDisplayWidth;
   m_pTarget->pts = m_pSource->pts;
-  m_pTarget->iGroupId = m_pSource->iGroupId;
   m_pTarget->format = RENDER_FMT_YUV420P;
   return true;
 }
