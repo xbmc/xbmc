@@ -262,7 +262,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'E':
     if (movie && movie->m_iEpisode > 0)
     { // episode number
-      if (movie->m_iSpecialSortEpisode > 0)
+      if (movie->m_iSeason == 0)
         value.Format("S%02.2i", movie->m_iEpisode);
       else
         value.Format("%02.2i", movie->m_iEpisode);
@@ -275,8 +275,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'H':
     if (movie && movie->m_iEpisode > 0)
     { // season*100+episode number
-      if (movie->m_iSpecialSortSeason > 0)
-        value.Format("Sx%02.2i", movie->m_iEpisode);
+      if (movie->m_iSeason == 0)
+        value.Format("S%02.2i", movie->m_iEpisode);
       else
         value.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
     }

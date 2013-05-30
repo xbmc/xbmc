@@ -400,7 +400,7 @@
 					<posy>265</posy>
 					<height>25</height>
 					<width>1000</width>
-					<label>$INFO[VideoPlayer.TVShowTitle] ($LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode])</label>
+					<label>$INFO[VideoPlayer.TVShowTitle] ($INFO[VideoPlayer.Season,$LOCALIZE[20373] , - ]$INFO[VideoPlayer.episode,$LOCALIZE[20359] ,])</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>

@@ -146,7 +146,7 @@
 					<height>25</height>
 					<align>left</align>
 					<font>font12</font>
-					<label>$INFO[VideoPlayer.TVShowTitle] ($INFO[VideoPlayer.Season]x$INFO[VideoPlayer.Episode])</label>
+					<label>$INFO[VideoPlayer.TVShowTitle] ($INFO[VideoPlayer.Season,,x]$INFO[VideoPlayer.Episode])</label>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>VideoPlayer.Content(Episodes)</visible>
