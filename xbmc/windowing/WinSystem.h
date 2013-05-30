@@ -100,7 +100,7 @@ public:
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
   int DesktopResolution(int screen);
-  std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
+  std::vector<RESOLUTION_WHR> ScreenResolutions(int screen, float refreshrate);
   std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height, uint32_t dwFlags);
   REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
 
