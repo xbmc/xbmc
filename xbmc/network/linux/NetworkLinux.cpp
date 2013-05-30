@@ -48,10 +48,13 @@
   #include <ifaddrs.h>
 #elif defined(TARGET_FREEBSD)
   #include <sys/sockio.h>
+  #include <sys/wait.h>
   #include <net/if.h>
+  #include <net/if_arp.h>
   #include <net/if_dl.h>
   #include <ifaddrs.h>
   #include <net/route.h>
+  #include <netinet/if_ether.h>
 #else
   #include <net/if_arp.h>
 #endif
@@ -556,7 +559,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   return result == 0;
 }
 
-#if defined TARGET_DARWIN
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, CStdString& mac)
 {
   bool ret = false;
