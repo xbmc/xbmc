@@ -650,7 +650,9 @@ void CSoftAE::Deinitialize()
     delete m_thread;
     m_thread = NULL;
   }
+  lock.Leave();
 
+  CExclusiveLock sinkLock(m_sinkLock);
   if (m_sink)
   {
     /* shutdown the sink */
