@@ -38,7 +38,7 @@ class CSharedSection
 public:
   inline CSharedSection() : cond(actualCv,XbmcThreads::InversePredicate<unsigned int&>(sharedCount)), sharedCount(0)  {}
 
-  inline void lock() { CSingleLock l(sec); if (sharedCount) cond.wait(l); sec.lock(); }
+  inline void lock() { CSingleLock l(sec); while (sharedCount) cond.wait(l); sec.lock(); }
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
   inline void unlock() { sec.unlock(); }
 
