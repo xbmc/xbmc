@@ -161,7 +161,7 @@ public:
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
-  bool Install(const CStdString &installFrom);
+  bool Install(const CStdString &installFrom, const ADDON::AddonPtr& repo=ADDON::AddonPtr());
   bool DownloadPackage(const CStdString &path, const CStdString &dest);
 
   /*! \brief Queue a notification for addon installation/update failure

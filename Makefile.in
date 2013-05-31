@@ -562,6 +562,19 @@ endif
 	@install -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
+	@echo "Copying bindings to $(DESTDIR)$(includedir)/xbmc"
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	@find -E xbmc/addons/include -type f \
+		-iregex ".*\.h" \
+		-exec sh -c "install -d \"$(DESTDIR)$(includedir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install -m 0644 "{}" -t $(DESTDIR)$(includedir)/xbmc \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
+	@install -d $(DESTDIR)$(includedir)/xbmc
+	@find xbmc/addons/include/*.h -regextype posix-extended -type f -iregex ".*\.h" -exec install -D -m 0644 "{}" -t $(DESTDIR)$(includedir)/xbmc \; -printf " -- %-75.75f\r"
+endif
+
 uninstall:
 	@echo "Removing XBMC..."
 	@rm -rf $(DESTDIR)$(libdir)/xbmc

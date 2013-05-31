@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons><addon id="pvr.demo" name="PVR Demo Client" provider-name="Pulse-Eight Ltd." version="1.6.0">
+  <requires>
+    <c-pluff version="0.1" />
+    <import addon="xbmc.pvr" version="1.6.0" />
+  </requires>
+  <extension library_android="libXBMC_Demo.so" library_linux="XBMC_Demo.pvr" library_osx="XBMC_Demo.pvr" library_windx="XBMC_Demo_win32.dll" library_wingl="XBMC_Demo_win32.dll" point="xbmc.pvrclient" />
+  <extension point="xbmc.addon.metadata">
+    <summary>Demo PVR Client</summary>
+    <description>Demo PVR Client</description>
+    <disclaimer>Just contains stubs</disclaimer>
+    <platform>linux</platform>
+  <noicon>true</noicon><nofanart>true</nofanart><nochangelog>true</nochangelog></extension>
+</addon></addons>
