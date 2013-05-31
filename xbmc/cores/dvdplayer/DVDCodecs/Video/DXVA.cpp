@@ -955,6 +955,12 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   return 0;
 }
 
+unsigned CDecoder::GetAllowedReferences()
+{
+  return m_shared;
+}
+
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //------------------------ PROCESSING SERVICE -------------------------------

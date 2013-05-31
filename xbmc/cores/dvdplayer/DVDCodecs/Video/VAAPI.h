@@ -112,6 +112,7 @@ public:
   virtual void Close();
   virtual const std::string Name() { return "vaapi"; }
   virtual CCriticalSection* Section() { if(m_display) return m_display.get(); else return NULL; }
+  virtual unsigned GetAllowedReferences();
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
@@ -122,6 +123,7 @@ protected:
   static const unsigned  m_surfaces_max = 32;
   unsigned               m_surfaces_count;
   VASurfaceID            m_surfaces[m_surfaces_max];
+  unsigned               m_renderbuffers_count;
 
   int                    m_refs;
   std::list<CSurfacePtr> m_surfaces_used;

@@ -61,12 +61,6 @@ public:
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 
-#ifdef HAS_VIDEO_PLAYBACK
-  void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
-#else
-  void Update(bool bPauseDrawing)                   { }
-#endif
-
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
 
@@ -170,9 +164,6 @@ protected:
 
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
-
-  double m_droptime;
-  double m_dropbase;
 
   bool m_stalled;
   bool m_started;

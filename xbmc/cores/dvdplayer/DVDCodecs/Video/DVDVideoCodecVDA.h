@@ -42,7 +42,7 @@ public:
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
-  
+  virtual unsigned GetAllowedReferences();
 protected:
   void DisplayQueuePop(void);
   void UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture);

@@ -243,4 +243,11 @@ public:
   {
     return 0;
   }
+
+
+  /**
+   * Number of references to old pictures that are allowed to
+   * be retained when calling decode on the next demux packet
+   */
+  virtual unsigned GetAllowedReferences() { return 0; }
 };
