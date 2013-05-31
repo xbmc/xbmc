@@ -1219,7 +1219,7 @@ unsigned int CSoftAE::WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool
   CExclusiveLock lock(m_sinkLock); /* lock to maintain delay consistency */
 
   XbmcThreads::EndTime timeout(m_sinkBlockTime * 2);
-  while(m_sink)
+  while(m_sink && src.Used() >= src_len)
   {
     int frames = m_sink->AddPackets(data, m_sinkFormat.m_frames, hasAudio);
 
