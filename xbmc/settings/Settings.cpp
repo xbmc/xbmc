@@ -843,8 +843,18 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
 
   settingSet.clear();
+  settingSet.insert("audiooutput.mode");
   settingSet.insert("audiooutput.channels");
   settingSet.insert("audiooutput.guisoundmode");
+  settingSet.insert("audiooutput.stereoupmix");
+  settingSet.insert("audiooutput.ac3passthrough");
+  settingSet.insert("audiooutput.dtspassthrough");
+  settingSet.insert("audiooutput.passthroughaac");
+  settingSet.insert("audiooutput.truehdpassthrough");
+  settingSet.insert("audiooutput.dtshdpassthrough");
+  settingSet.insert("audiooutput.multichannellpcm");
+  settingSet.insert("audiooutput.audiodevice");
+  settingSet.insert("audiooutput.passthroughdevice");
   settingSet.insert("lookandfeel.skin");
   settingSet.insert("lookandfeel.skinsettings");
   settingSet.insert("lookandfeel.font");
