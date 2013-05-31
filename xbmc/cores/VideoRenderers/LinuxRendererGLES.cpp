@@ -1996,8 +1996,8 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 
 unsigned int CLinuxRendererGLES::GetProcessorSize()
 {
-  if((m_renderMethod & RENDER_OMXEGL)
-  || (m_renderMethod & RENDER_CVREF))
+  if(m_format == RENDER_FMT_OMXEGL
+  || m_format == RENDER_FMT_CVBREF)
     return 1;
   else
     return 0;

@@ -1112,7 +1112,7 @@ EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
 
 unsigned int CWinRenderer::GetProcessorSize()
 {
-  if (m_renderMethod == RENDER_DXVA)
+  if (m_format == RENDER_FMT_DXVA)
     return m_processor.Size();
   else
     return 0;

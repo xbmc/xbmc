@@ -3442,9 +3442,9 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
 
 unsigned int CLinuxRendererGL::GetProcessorSize()
 {
-  if((m_renderMethod & RENDER_VDPAU)
-  || (m_renderMethod & RENDER_VAAPI)
-  || (m_renderMethod & RENDER_CVREF))
+  if(m_format == RENDER_FMT_VDPAU
+  || m_format == RENDER_FMT_VAAPI
+  || m_format == RENDER_FMT_CVBREF)
     return 1;
   else
     return 0;
