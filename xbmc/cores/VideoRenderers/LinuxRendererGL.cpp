@@ -150,8 +150,6 @@ CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
 CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
-  for (int i = 0; i < NUM_BUFFERS; i++)
-    m_eventTexturesDone[i] = new CEvent(false,true);
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
@@ -196,8 +194,6 @@ CLinuxRendererGL::CLinuxRendererGL()
 CLinuxRendererGL::~CLinuxRendererGL()
 {
   UnInit();
-  for (int i = 0; i < NUM_BUFFERS; i++)
-    delete m_eventTexturesDone[i];
 
   if (m_rgbPbo)
   {
@@ -350,12 +346,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   if( readonly )
     im.flags |= IMAGE_FLAG_READING;
   else
-  {
-    if( ! m_eventTexturesDone[source]->WaitMSec(500))
-      CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
-
     im.flags |= IMAGE_FLAG_WRITING;
-  }
 
   // copy the image - should be operator of YV12Image
   for (int p=0;p<MAX_PLANES;p++)
@@ -378,9 +369,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
   YV12Image &im = m_buffers[source].image;
-
-  if( im.flags & IMAGE_FLAG_WRITING )
-    m_eventTexturesDone[source]->Set();
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -515,11 +503,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags&IMAGE_FLAG_READY))
-  {
-    m_eventTexturesDone[source]->Set();
     return;
-  }
-
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -579,8 +563,6 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
              , im->stride[2], im->bpp, im->plane[2] );
   }
 
-  m_eventTexturesDone[source]->Set();
-
   VerifyGLState();
 
   CalculateTextureSourceRects(source, 3);
@@ -594,8 +576,6 @@ void CLinuxRendererGL::Reset()
   {
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
-    /* reset texture locks, a bit ugly, could result in tearing */
-    m_eventTexturesDone[i]->Set();
   }
 }
 
@@ -653,18 +633,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   ManageDisplay();
 
   g_graphicsContext.BeginPaint();
-
-  if( !m_eventTexturesDone[index]->WaitMSec(500))
-  {
-    CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
-
-    // render the previous frame if this one isn't ready yet
-    if (m_iLastRenderBuffer > -1)
-    {
-      m_iYV12RenderBuffer = m_iLastRenderBuffer;
-      index = m_iYV12RenderBuffer;
-    }
-  }
 
   if (clear)
   {
@@ -2023,7 +1991,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  m_eventTexturesDone[index]->Set();
   return true;
 }
 
@@ -2037,11 +2004,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-  {
-    m_eventTexturesDone[source]->Set();
     return;
-  }
-
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -2088,8 +2051,6 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
              , im->width >> im->cshift_x, im->height >> im->cshift_y
              , im->stride[1], im->bpp, im->plane[1] );
   }
-
-  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2254,7 +2215,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -2345,7 +2305,6 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 
   glGenTextures(1, &plane.id);
 
-  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2353,7 +2312,6 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 void CLinuxRendererGL::UploadVDPAUTexture(int index)
 {
 #ifdef HAVE_LIBVDPAU
-  m_eventTexturesDone[index]->Set();
   glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
 #endif
 }
@@ -2415,7 +2373,6 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
-  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2500,7 +2457,6 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   if(status != VA_STATUS_SUCCESS)
     CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
 
-  m_eventTexturesDone[index]->Set();
 #endif
 }
 
@@ -2564,7 +2520,6 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     plane.flipindex = m_buffers[index].flipindex;
   }
 
-  m_eventTexturesDone[index]->Set();
 
   CalculateTextureSourceRects(index, 3);
   glDisable(m_textureTarget);
@@ -2627,7 +2582,6 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   }
   glDisable(m_textureTarget);
 
-  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2639,10 +2593,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-  {
-    m_eventTexturesDone[source]->Set();
     return;
-  }
 
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
@@ -2673,8 +2624,6 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
              , im->width / 2, im->height
              , im->stride[0], im->bpp, im->plane[0] );
   }
-
-  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2872,7 +2821,6 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
     VerifyGLState();
   }
   glDisable(m_textureTarget);
-  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -3075,10 +3023,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags&IMAGE_FLAG_READY))
-  {
-    m_eventTexturesDone[source]->Set();
     return;
-  }
 
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
@@ -3093,8 +3038,6 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
     ToRGBFields(im, fields[FIELD_TOP][0].flipindex, fields[FIELD_BOT][0].flipindex, buf.flipindex);
   else
     ToRGBFrame(im, fields[FIELD_FULL][0].flipindex, buf.flipindex);
-
-  m_eventTexturesDone[source]->Set();
 
   static int imaging = -1;
   if (imaging==-1)

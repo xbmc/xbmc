@@ -316,8 +316,6 @@ protected:
   GLuint             m_rgbPbo;
   struct SwsContext *m_context;
 
-  CEvent* m_eventTexturesDone[NUM_BUFFERS];
-
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
   bool m_pboSupported;
