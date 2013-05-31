@@ -88,8 +88,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_iVideoDelay           = 0;
-  m_droptime              = 0.0;
-  m_dropbase              = 0.0;
   m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
@@ -313,35 +311,6 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   if(bDropPacket)
     return;
 
-#if 0
-  if( m_speed != DVD_PLAYSPEED_NORMAL)
-  {
-    // calculate frame dropping pattern to render at this speed
-    // we do that by deciding if this or next frame is closest
-    // to the flip timestamp
-    double current   = fabs(m_dropbase -  m_droptime);
-    double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
-    double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
-
-    m_droptime += iFrameDuration;
-#ifndef PROFILE
-    if( next < current /*&& !(pPicture->iFlags & DVP_FLAG_NOSKIP) */)
-      return /*result | EOS_DROPPED*/;
-#endif
-
-    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
-  }
-  else
-  {
-    m_droptime = 0.0f;
-    m_dropbase = 0.0f;
-  }
-#else
-  m_droptime = 0.0f;
-  m_dropbase = 0.0f;
-#endif
-
   // DVDPlayer sleeps until m_iSleepEndTime here before calling FlipPage.
   // Video playback in asynchronous in OMXPlayer, so we don't want to do that here, as it prevents the video fifo from being kept full.
   // So, we keep track of when FlipPage would have been called on DVDPlayer and return early if it is not time.
@@ -351,6 +320,10 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   }
 
   if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
+    return;
+
+  int buffer = g_renderManager.WaitForBuffer(CThread::m_bStop, iSleepTime + DVD_MSEC_TO_TIME(500));
+  if (buffer < 0)
     return;
 
   double pts_media = m_av_clock->OMXMediaTime(false);
@@ -812,7 +785,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height)
 
   if(!g_renderManager.Configure(width, height,
         iDisplayWidth, iDisplayHeight, m_fFrameRate, flags, format, 0,
-        m_hints.orientation))
+        m_hints.orientation, 0))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return;

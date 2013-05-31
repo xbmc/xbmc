@@ -759,4 +759,12 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   pthread_mutex_unlock(&ctx->m_queue_mutex);	
 }
 
+unsigned CDVDVideoCodecVDA::GetAllowedReferences()
+{
+  if (m_use_cvBufferRef)
+    return 2; /* TODO can this be increased? */
+  else
+    return 0;
+}
+
 #endif

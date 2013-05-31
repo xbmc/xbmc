@@ -78,6 +78,8 @@ public:
 
   virtual const std::string Name() { return "vdpau"; }
 
+  virtual unsigned GetAllowedReferences() { return 2; /* this is a lie, we can only do one, but we block on decode to get the surface */ }
+
   bool MakePixmap(int width, int height);
   bool MakePixmapGL();
 

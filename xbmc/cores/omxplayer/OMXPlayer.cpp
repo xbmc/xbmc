@@ -4311,11 +4311,6 @@ bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
   return false;
 }
 
-void COMXPlayer::Update(bool bPauseDrawing)
-{
-  g_renderManager.Update(bPauseDrawing);
-}
-
 void COMXPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
 {
   renderFeatures.push_back(RENDERFEATURE_STRETCH);

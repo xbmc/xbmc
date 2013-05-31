@@ -58,6 +58,7 @@ public:
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "dxva2"; }
+  virtual unsigned GetAllowedReferences();
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();

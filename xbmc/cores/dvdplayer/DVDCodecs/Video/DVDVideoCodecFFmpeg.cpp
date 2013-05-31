@@ -109,7 +109,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
 
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
-      if(dec->Open(avctx, *cur))
+      if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
       {
         ctx->SetHardware(dec);
         return *cur;
@@ -848,6 +848,14 @@ unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
 {
   if(m_pHardware)
     return m_iLastKeyframe;
+  else
+    return 0;
+}
+
+unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()
+{
+  if(m_pHardware)
+    return m_pHardware->GetAllowedReferences();
   else
     return 0;
 }

@@ -159,8 +159,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
   m_bAllowFullscreen = false;
-  m_droptime = 0.0;
-  m_dropbase = 0.0;
   m_autosync = 1;
   memset(&m_output, 0, sizeof(m_output));
 }
@@ -600,6 +598,8 @@ void CDVDPlayerVideo::Process()
 
           m_pVideoCodec->Reset();
           m_packets.clear();
+          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+          g_renderManager.DiscardBuffer();
           break;
         }
 
@@ -1004,6 +1004,85 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 }
 #endif
 
+static std::string GetRenderFormatName(ERenderFormat format)
+{
+  switch(format)
+  {
+    case RENDER_FMT_YUV420P:   return "YV12";
+    case RENDER_FMT_YUV420P16: return "YV12P16";
+    case RENDER_FMT_YUV420P10: return "YV12P10";
+    case RENDER_FMT_NV12:      return "NV12";
+    case RENDER_FMT_UYVY422:   return "UYVY";
+    case RENDER_FMT_YUYV422:   return "YUY2";
+    case RENDER_FMT_VDPAU:     return "VDPAU";
+    case RENDER_FMT_DXVA:      return "DXVA";
+    case RENDER_FMT_VAAPI:     return "VAAPI";
+    case RENDER_FMT_OMXEGL:    return "OMXEGL";
+    case RENDER_FMT_CVBREF:    return "BGRA";
+    case RENDER_FMT_BYPASS:    return "BYPASS";
+    case RENDER_FMT_NONE:      return "NONE";
+  }
+  return "UNKNOWN";
+}
+
+static unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
+{
+  switch(color_matrix)
+  {
+    case 7: // SMPTE 240M (1987)
+      return CONF_FLAGS_YUVCOEF_240M;
+    case 6: // SMPTE 170M
+    case 5: // ITU-R BT.470-2
+    case 4: // FCC
+      return CONF_FLAGS_YUVCOEF_BT601;
+    case 1: // ITU-R Rec.709 (1990) -- BT.709
+      return CONF_FLAGS_YUVCOEF_BT709;
+    case 3: // RESERVED
+    case 2: // UNSPECIFIED
+    default:
+      if(width > 1024 || height >= 600)
+        return CONF_FLAGS_YUVCOEF_BT709;
+      else
+        return CONF_FLAGS_YUVCOEF_BT601;
+      break;
+  }
+}
+
+static unsigned int GetFlagsChromaPosition(unsigned int chroma_position)
+{
+  switch(chroma_position)
+  {
+    case 1: return CONF_FLAGS_CHROMA_LEFT;
+    case 2: return CONF_FLAGS_CHROMA_CENTER;
+    case 3: return CONF_FLAGS_CHROMA_TOPLEFT;
+  }
+  return 0;
+}
+
+static unsigned int GetFlagsColorPrimaries(unsigned int color_primaries)
+{
+  switch(color_primaries)
+  {
+    case 1: return CONF_FLAGS_COLPRI_BT709;
+    case 4: return CONF_FLAGS_COLPRI_BT470M;
+    case 5: return CONF_FLAGS_COLPRI_BT470BG;
+    case 6: return CONF_FLAGS_COLPRI_170M;
+    case 7: return CONF_FLAGS_COLPRI_240M;
+  }
+  return 0;
+}
+
+static unsigned int GetFlagsColorTransfer(unsigned int color_transfer)
+{
+  switch(color_transfer)
+  {
+    case 1: return CONF_FLAGS_TRC_BT709;
+    case 4: return CONF_FLAGS_TRC_GAMMA22;
+    case 5: return CONF_FLAGS_TRC_GAMMA28;
+  }
+  return 0;
+}
+
 int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
   /* picture buffer is not allowed to be modified in this call */
@@ -1014,137 +1093,36 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
-   || m_output.width != pPicture->iWidth
-   || m_output.height != pPicture->iHeight
-   || m_output.dwidth != pPicture->iDisplayWidth
-   || m_output.dheight != pPicture->iDisplayHeight
-   || m_output.framerate != config_framerate
-   || m_output.color_format != (unsigned int)pPicture->format
-   || m_output.extended_format != pPicture->extended_format
-   || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
+   || ( m_output.width           != pPicture->iWidth )
+   || ( m_output.height          != pPicture->iHeight )
+   || ( m_output.dwidth          != pPicture->iDisplayWidth )
+   || ( m_output.dheight         != pPicture->iDisplayHeight )
+   || ( m_output.framerate       != config_framerate )
+   || ( m_output.color_format    != (unsigned int)pPicture->format )
+   || ( m_output.extended_format != pPicture->extended_format )
+   || ( m_output.color_matrix    != pPicture->color_matrix    && pPicture->color_matrix    != 0 ) // don't reconfigure on unspecified
    || ( m_output.chroma_position != pPicture->chroma_position && pPicture->chroma_position != 0 )
    || ( m_output.color_primaries != pPicture->color_primaries && pPicture->color_primaries != 0 )
-   || ( m_output.color_transfer != pPicture->color_transfer && pPicture->color_transfer != 0 )
-   || m_output.color_range != pPicture->color_range)
+   || ( m_output.color_transfer  != pPicture->color_transfer  && pPicture->color_transfer  != 0 )
+   || ( m_output.color_range     != pPicture->color_range ))
   {
-    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-      config_framerate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i"
+                       , config_framerate
+                       , pPicture->iWidth
+                       , pPicture->iHeight
+                       , pPicture->iDisplayWidth
+                       , pPicture->iDisplayHeight);
+
     unsigned flags = 0;
     if(pPicture->color_range == 1)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
 
-    switch(pPicture->color_matrix)
-    {
-      case 7: // SMPTE 240M (1987)
-        flags |= CONF_FLAGS_YUVCOEF_240M;
-        break;
-      case 6: // SMPTE 170M
-      case 5: // ITU-R BT.470-2
-      case 4: // FCC
-        flags |= CONF_FLAGS_YUVCOEF_BT601;
-        break;
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
-        flags |= CONF_FLAGS_YUVCOEF_BT709;
-        break;
-      case 3: // RESERVED
-      case 2: // UNSPECIFIED
-      default:
-        if(pPicture->iWidth > 1024 || pPicture->iHeight >= 600)
-          flags |= CONF_FLAGS_YUVCOEF_BT709;
-        else
-          flags |= CONF_FLAGS_YUVCOEF_BT601;
-        break;
-    }
+    flags |= GetFlagsChromaPosition(pPicture->chroma_position)
+          |  GetFlagsColorMatrix(pPicture->color_matrix, pPicture->iWidth, pPicture->iHeight)
+          |  GetFlagsColorPrimaries(pPicture->color_primaries)
+          |  GetFlagsColorTransfer(pPicture->color_transfer);
 
-    switch(pPicture->chroma_position)
-    {
-      case 1:
-        flags |= CONF_FLAGS_CHROMA_LEFT;
-        break;
-      case 2:
-        flags |= CONF_FLAGS_CHROMA_CENTER;
-        break;
-      case 3:
-        flags |= CONF_FLAGS_CHROMA_TOPLEFT;
-        break;
-    }
-
-    switch(pPicture->color_primaries)
-    {
-      case 1:
-        flags |= CONF_FLAGS_COLPRI_BT709;
-        break;
-      case 4:
-        flags |= CONF_FLAGS_COLPRI_BT470M;
-        break;
-      case 5:
-        flags |= CONF_FLAGS_COLPRI_BT470BG;
-        break;
-      case 6:
-        flags |= CONF_FLAGS_COLPRI_170M;
-        break;
-      case 7:
-        flags |= CONF_FLAGS_COLPRI_240M;
-        break;
-    }
-
-    switch(pPicture->color_transfer)
-    {
-      case 1:
-        flags |= CONF_FLAGS_TRC_BT709;
-        break;
-      case 4:
-        flags |= CONF_FLAGS_TRC_GAMMA22;
-        break;
-      case 5:
-        flags |= CONF_FLAGS_TRC_GAMMA28;
-        break;
-    }
-
-    CStdString formatstr;
-
-    switch(pPicture->format)
-    {
-      case RENDER_FMT_YUV420P:
-        formatstr = "YV12";
-        break;
-      case RENDER_FMT_YUV420P16:
-        formatstr = "YV12P16";
-        break;
-      case RENDER_FMT_YUV420P10:
-        formatstr = "YV12P10";
-        break;
-      case RENDER_FMT_NV12:
-        formatstr = "NV12";
-        break;
-      case RENDER_FMT_UYVY422:
-        formatstr = "UYVY";
-        break;
-      case RENDER_FMT_YUYV422:
-        formatstr = "YUY2";
-        break;
-      case RENDER_FMT_VDPAU:
-        formatstr = "VDPAU";
-        break;
-      case RENDER_FMT_DXVA:
-        formatstr = "DXVA";
-        break;
-      case RENDER_FMT_VAAPI:
-        formatstr = "VAAPI";
-        break;
-      case RENDER_FMT_OMXEGL:
-        formatstr = "OMXEGL";
-        break;
-      case RENDER_FMT_CVBREF:
-        formatstr = "BGRA";
-        break;
-      case RENDER_FMT_BYPASS:
-        formatstr = "BYPASS";
-        break;
-      case RENDER_FMT_NONE:
-        formatstr = "NONE";
-        break;
-    }
+    CStdString formatstr = GetRenderFormatName(pPicture->format);
 
     if(m_bAllowFullscreen)
     {
@@ -1153,24 +1131,33 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation))
+    if(!g_renderManager.Configure(pPicture->iWidth
+                                , pPicture->iHeight
+                                , pPicture->iDisplayWidth
+                                , pPicture->iDisplayHeight
+                                , config_framerate
+                                , flags
+                                , pPicture->format
+                                , pPicture->extended_format
+                                , m_hints.orientation
+                                , m_pVideoCodec->GetAllowedReferences()))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
 
-    m_output.width = pPicture->iWidth;
-    m_output.height = pPicture->iHeight;
-    m_output.dwidth = pPicture->iDisplayWidth;
-    m_output.dheight = pPicture->iDisplayHeight;
-    m_output.framerate = config_framerate;
-    m_output.color_format = pPicture->format;
+    m_output.width           = pPicture->iWidth;
+    m_output.height          = pPicture->iHeight;
+    m_output.dwidth          = pPicture->iDisplayWidth;
+    m_output.dheight         = pPicture->iDisplayHeight;
+    m_output.framerate       = config_framerate;
+    m_output.color_format    = pPicture->format;
     m_output.extended_format = pPicture->extended_format;
-    m_output.color_matrix = pPicture->color_matrix;
+    m_output.color_matrix    = pPicture->color_matrix;
     m_output.chroma_position = pPicture->chroma_position;
     m_output.color_primaries = pPicture->color_primaries;
-    m_output.color_transfer = pPicture->color_transfer;
-    m_output.color_range = pPicture->color_range;
+    m_output.color_transfer  = pPicture->color_transfer;
+    m_output.color_range     = pPicture->color_range;
   }
 
   double maxfps  = 60.0;
@@ -1275,14 +1262,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
         result |= EOS_VERYLATE;
         m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
       }
-
-      //if we requested 5 drops in a row and we're still late, drop on output
-      //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
-      if (m_iDroppedRequest > 5)
-      {
-        m_iDroppedRequest--; //decrease so we only drop half the frames
-        return result | EOS_DROPPED;
-      }
       m_iDroppedRequest++;
     }
   }
@@ -1291,41 +1270,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_iDroppedRequest = 0;
   }
 
-  if( m_speed < 0 )
-  {
-    if( iClockSleep < -DVD_MSEC_TO_TIME(200)
-    && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      return result | EOS_DROPPED;
-  }
-
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) )
     return result | EOS_DROPPED;
-
-  if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
-  {
-    m_droptime += iFrameDuration;
-#ifndef PROFILE
-    // calculate frame dropping pattern to render at this speed
-    // we do that by deciding if this or next frame is closest
-    // to the flip timestamp
-    double current   = fabs(m_dropbase -  m_droptime);
-    double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
-
-    if( next < current && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      return result | EOS_DROPPED;
-#endif
-    
-    double frametime = (double)DVD_TIME_BASE / maxfps;
-    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
-
-    m_pullupCorrection.Flush();
-  }
-  else
-  {
-    m_droptime = 0.0;
-    m_dropbase = 0.0;
-  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;
@@ -1336,6 +1282,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     else
       mDisplayField = FS_BOT;
   }
+
+  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 0));
+  if (buffer < 0)
+    return EOS_DROPPED;
 
   ProcessOverlays(pPicture, pts);
   AutoCrop(pPicture);
@@ -1546,6 +1496,7 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
+  s << ", skip:" << g_renderManager.GetSkippedFrames();
 
   int pc = m_pullupCorrection.GetPatternLength();
   if (pc > 0)

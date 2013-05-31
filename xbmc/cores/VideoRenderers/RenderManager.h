@@ -53,8 +53,11 @@ public:
   // Functions called from the GUI
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio();
-  void Update(bool bPauseDrawing);
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void Update();
+  void FrameMove();
+  void FrameFinish();
+  bool FrameWait(int ms);
+  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
   CRenderCapture* AllocRenderCapture();
@@ -65,11 +68,37 @@ public:
   void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
+  /**
+   * Called by video player to configure renderer
+   * @param width width of decoded frame
+   * @param height height of decoded frame
+   * @param d_width displayed width of frame (aspect ratio)
+   * @param d_height displayed height of frame
+   * @param fps frames per second of video
+   * @param flags see RenderFlags.h
+   * @param format see RenderFormats.h
+   * @param extended_format used by DXVA
+   * @param orientation
+   * @param numbers of kept buffer references
+   */
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation, int buffers = 0);
   bool IsConfigured() const;
 
   int AddVideoPicture(DVDVideoPicture& picture);
 
+  /**
+   * Called by video player to flip render buffers
+   * If buffering is enabled this method does not block. In case of disabled buffering
+   * this method blocks waiting for the render thread to pass by.
+   * When buffering is used there might be no free buffer available after the call to
+   * this method. Player has to call WaitForBuffer. A free buffer will become
+   * available after the main thread has flipped front / back buffers.
+   *
+   * @param bStop reference to stop flag of calling thread
+   * @param timestamp of frame delivered with AddVideoPicture
+   * @param source depreciated
+   * @param sync signals frame, top, or bottom field
+   */
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
@@ -78,7 +107,7 @@ public:
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o, pts);
+    m_overlays.AddOverlay(o, pts, (m_QueueOutput + 1) % m_QueueSize);
   }
 
   void AddCleanup(OVERLAY::COverlay* o)
@@ -92,9 +121,9 @@ public:
   RESOLUTION GetResolution();
 
   float GetMaximumFPS();
-  inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
+  int    GetSkippedFrames()  { return m_QueueSkip; }
 
   bool Supports(ERENDERFEATURE feature);
   bool Supports(EDEINTERLACEMODE method);
@@ -127,7 +156,6 @@ public:
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats();
 
-  void Present();
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
@@ -135,16 +163,32 @@ public:
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
+  /**
+   * If player uses buffering it has to wait for a buffer before it calls
+   * AddVideoPicture and AddOverlay. It waits for max 50 ms before it returns -1
+   * in case no buffer is available. Player may call this in a loop and decides
+   * by itself when it wants to drop a frame.
+   * If no buffering is requested in Configure, player does not need to call this,
+   * because FlipPage will block.
+   */
+  int WaitForBuffer(volatile bool& bStop, int timeout = 100);
+
+  /**
+   * Video player call this on flush in oder to discard any queued frames
+   */
+  void DiscardBuffer();
+
 protected:
-  void Render(bool clear, DWORD flags, DWORD alpha);
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
-  EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
+  int  GetNextRender();
+  int  GetNextDecode();
+  void PrepareNextRender();
 
-  bool m_bPauseDrawing;   // true if we should pause rendering
+  EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
 
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
@@ -159,6 +203,7 @@ protected:
   , PRESENT_FLIP
   , PRESENT_FRAME
   , PRESENT_FRAME2
+  , PRESENT_READY
   };
 
   enum EPRESENTMETHOD
@@ -173,6 +218,26 @@ protected:
   double m_displayLatency;
   void UpdateDisplayLatency();
 
+  // Render Buffer State Description:
+  //
+  // Output:      is the buffer about to or having its texture prepared for render (ie from output thread).
+  //              Cannot go past the "Displayed" buffer (otherwise we will probably overwrite buffers not yet
+  //              displayed or even rendered).
+  // Render:      is the current buffer being or having been submitted for render to back buffer.
+  //              Cannot go past "Output" buffer (else it would be rendering old output).
+
+  int m_QueueRender;
+  int m_QueueOutput;
+  int m_QueueSize;
+  int m_QueueSkip;
+
+  struct
+  {
+    double         timestamp;
+    EFIELDSYNC     presentfield;
+    EPRESENTMETHOD presentmethod;
+  } m_Queue[NUM_BUFFERS];
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
@@ -182,7 +247,8 @@ protected:
   EPRESENTMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
-  CEvent     m_presentevent;
+  XbmcThreads::ConditionVariable  m_presentevent;
+  CCriticalSection m_presentlock;
   CEvent     m_flushEvent;
 
 

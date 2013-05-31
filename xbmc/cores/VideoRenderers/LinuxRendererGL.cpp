@@ -250,14 +250,6 @@ bool CLinuxRendererGL::ValidateRenderer()
   return true;
 }
 
-
-void CLinuxRendererGL::ManageTextures()
-{
-  m_NumYV12Buffers = 2;
-  //m_iYV12RenderBuffer = 0;
-  return;
-}
-
 bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
@@ -274,7 +266,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     // function pointer for texture might change in
     // call to LoadShaders
     glFinish();
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    for (int i = 0 ; i < NUM_BUFFERS ; i++)
       (this->*m_textureDelete)(i);
 
     // trigger update of video filters
@@ -618,13 +610,29 @@ void CLinuxRendererGL::Flush()
   glFinish();
   m_bValidated = false;
   m_fbo.fbo.Cleanup();
+  m_iYV12RenderBuffer = 0;
 }
 
-void CLinuxRendererGL::Update(bool bPauseDrawing)
+void CLinuxRendererGL::ReleaseBuffer(int idx)
+{
+  YUVBUFFER &buf = m_buffers[idx];
+#ifdef HAVE_LIBVDPAU
+  SAFE_RELEASE(buf.vdpau);
+#endif
+#ifdef HAVE_LIBVA
+  buf.vaapi.surface.reset();
+#endif
+#ifdef TARGET_DARWIN
+  if (buf.cvBufferRef)
+    CVBufferRelease(buf.cvBufferRef);
+  buf.cvBufferRef = NULL;
+#endif
+}
+
+void CLinuxRendererGL::Update()
 {
   if (!m_bConfigured) return;
   ManageDisplay();
-  ManageTextures();
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 }
 
@@ -641,7 +649,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
 
   ManageDisplay();
-  ManageTextures();
 
   g_graphicsContext.BeginPaint();
 
@@ -798,7 +805,6 @@ unsigned int CLinuxRendererGL::PreInit()
     m_resolution = RES_DESKTOP;
 
   m_iYV12RenderBuffer = 0;
-  m_NumYV12Buffers = 2;
 
   m_formats.push_back(RENDER_FMT_YUV420P);
   GLint size;
@@ -2481,7 +2487,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   || status == VA_STATUS_ERROR_INVALID_DISPLAY)
   {
     va.display->lost(true);
-    for(int i = 0; i < NUM_BUFFERS; i++)
+    for(int i = 0; i < m_NumYV12Buffers; i++)
     {
       m_buffers[i].vaapi.display.reset();
       m_buffers[i].vaapi.surface.reset();
@@ -3434,27 +3440,37 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
-#ifdef HAVE_LIBVDPAU
-void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
+unsigned int CLinuxRendererGL::GetProcessorSize()
 {
-  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  if((m_renderMethod & RENDER_VDPAU)
+  || (m_renderMethod & RENDER_VAAPI)
+  || (m_renderMethod & RENDER_CVREF))
+    return 1;
+  else
+    return 0;
+}
+
+#ifdef HAVE_LIBVDPAU
+void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau, int index)
+{
+  YUVBUFFER &buf = m_buffers[index];
   SAFE_RELEASE(buf.vdpau);
   buf.vdpau = (CVDPAU*)vdpau->Acquire();
 }
 #endif
 
 #ifdef HAVE_LIBVA
-void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder)
+void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder, int index)
 {
-  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  YUVBUFFER &buf = m_buffers[index];
   buf.vaapi.surface = holder.surface;
 }
 #endif
 
 #ifdef TARGET_DARWIN
-void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef)
+void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
 {
-  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  YUVBUFFER &buf = m_buffers[index];
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
   buf.cvBufferRef = cvBufferRef;
