@@ -69,6 +69,12 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
   flipindex = 0;
+#ifdef HAVE_LIBOPENMAX
+  openMaxBuffer = NULL;
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  cvBufferRef = NULL;
+#endif
 }
 
 CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
@@ -79,15 +85,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
-  {
     m_eventTexturesDone[i] = new CEvent(false,true);
-#if defined(HAVE_LIBOPENMAX)
-    m_buffers[i].openMaxBuffer = 0;
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-    m_buffers[i].cvBufferRef = NULL;
-#endif
-  }
 
   m_renderMethod = RENDER_GLSL;
   m_oldRenderMethod = m_renderMethod;

@@ -131,6 +131,9 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
 #ifdef HAVE_LIBVDPAU
   vdpau = NULL;
 #endif
+#ifdef TARGET_DARWIN_OSX
+  cvBufferRef = NULL;
+#endif
 }
 
 CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
@@ -138,18 +141,17 @@ CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
 #ifdef HAVE_LIBVA
   delete &vaapi;
 #endif
+#ifdef TARGET_DARWIN_OSX
+  if (cvBufferRef)
+    CVBufferRelease(cvBufferRef);
+#endif
 }
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
-  {
     m_eventTexturesDone[i] = new CEvent(false,true);
-#ifdef TARGET_DARWIN
-    m_buffers[i].cvBufferRef = NULL;
-#endif
-  }
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
