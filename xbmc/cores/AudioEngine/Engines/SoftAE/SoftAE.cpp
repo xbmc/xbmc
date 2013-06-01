@@ -1216,7 +1216,7 @@ bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio
   return true;
 }
 
-unsigned int CSoftAE::WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool hasAudio)
+unsigned int CSoftAE::WriteSink(CAEBuffer& src, unsigned int src_len, uint8_t *data, bool hasAudio)
 {
   CExclusiveLock lock(m_sinkLock); /* lock to maintain delay consistency */
 
