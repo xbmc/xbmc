@@ -193,7 +193,7 @@
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <DelayLoadDLLs>avutil-52.dll;avfilter-3.dll;avcodec-54.dll;avformat-54.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>swresample-0.dll;avutil-52.dll;avfilter-3.dll;avcodec-54.dll;avformat-54.dll;dnssd.dll;dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

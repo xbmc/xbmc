@@ -49,7 +49,7 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
   av_freep(&m_CodecCtx);
   av_freep(&m_ResampBuffer);
   if (m_SwrCtx)
-    m_dllSwResample.swr_free(&m_SwrCtx);
+    swr_free(&m_SwrCtx);
 }
 
 bool CAEEncoderFFmpeg::IsCompatible(AEAudioFormat format)
@@ -101,9 +101,6 @@ unsigned int CAEEncoderFFmpeg::BuildChannelLayout(const int64_t ffmap, CAEChanne
 bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 {
   Reset();
-
-  if (!m_dllSwResample.Load())
-    return false;
 
   bool ac3 = CSettings::Get().GetBool("audiooutput.ac3passthrough");
 
@@ -226,11 +223,11 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 
   if (m_NeedConversion)
   {
-    m_SwrCtx = m_dllSwResample.swr_alloc_set_opts(NULL,
+    m_SwrCtx = swr_alloc_set_opts(NULL,
                       m_CodecCtx->channel_layout, m_CodecCtx->sample_fmt, m_CodecCtx->sample_rate,
                       m_CodecCtx->channel_layout, AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate,
                       0, NULL);
-    if (!m_SwrCtx || m_dllSwResample.swr_init(m_SwrCtx) < 0)
+    if (!m_SwrCtx || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");
       return false;
@@ -306,7 +303,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
      * format (ie, interleaved). If it were to be used to convert from planar
      * formats (ie, non-interleaved, which is not currently supported by AE),
      * we would need to adapt it or it would segfault. */
-    if (m_dllSwResample.swr_convert(m_SwrCtx, frame->extended_data, frames, &input, frames) < 0)
+    if (swr_convert(m_SwrCtx, frame->extended_data, frames, &input, frames) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Resampling failed");
       avcodec_free_frame(&frame);

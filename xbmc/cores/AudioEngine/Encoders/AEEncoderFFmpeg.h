@@ -46,8 +46,6 @@ public:
   virtual int GetData(uint8_t **data);
   virtual double GetDelay(unsigned int bufferSize);
 private:
-  DllSwResample m_dllSwResample;
-
   std::string                m_CodecName;
   CodecID                   m_CodecID;
   unsigned int              m_BitRate;

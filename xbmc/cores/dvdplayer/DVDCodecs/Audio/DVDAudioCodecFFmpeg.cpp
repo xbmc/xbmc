@@ -63,9 +63,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllSwResample.Load())
-    return false;
-
   pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
@@ -126,7 +123,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
   m_pFrame1 = NULL;
 
   if (m_pConvert)
-    m_dllSwResample.swr_free(&m_pConvert);
+    swr_free(&m_pConvert);
 
   if (m_pCodecContext)
   {
@@ -135,8 +132,6 @@ void CDVDAudioCodecFFmpeg::Dispose()
     av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
-
-  m_dllSwResample.Unload();
 
   m_iBufferSize1 = 0;
   m_iBufferSize2 = 0;
@@ -189,18 +184,18 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
   if(m_pCodecContext->sample_fmt != AV_SAMPLE_FMT_FLT && m_iBufferSize1 > 0)
   {
     if(m_pConvert && (m_pCodecContext->sample_fmt != m_iSampleFormat || m_channels != m_pCodecContext->channels))
-      m_dllSwResample.swr_free(&m_pConvert);
+      swr_free(&m_pConvert);
 
     if(!m_pConvert)
     {
       m_iSampleFormat = m_pCodecContext->sample_fmt;
-      m_pConvert = m_dllSwResample.swr_alloc_set_opts(NULL,
+      m_pConvert = swr_alloc_set_opts(NULL,
                       av_get_default_channel_layout(m_pCodecContext->channels), AV_SAMPLE_FMT_FLT, m_pCodecContext->sample_rate,
                       av_get_default_channel_layout(m_pCodecContext->channels), m_pCodecContext->sample_fmt, m_pCodecContext->sample_rate,
                       0, NULL);
     }
 
-    if(!m_pConvert || m_dllSwResample.swr_init(m_pConvert) < 0)
+    if(!m_pConvert || swr_init(m_pConvert) < 0)
     {
       CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to AV_SAMPLE_FMT_FLT", m_pCodecContext->sample_fmt);
       m_iBufferSize1 = 0;
@@ -209,7 +204,7 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
     }
 
     int len = m_iBufferSize1 / av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
-    if(m_dllSwResample.swr_convert(m_pConvert, &m_pBuffer2, len, (const uint8_t**)m_pFrame1->data, m_pFrame1->nb_samples) < 0)
+    if(swr_convert(m_pConvert, &m_pBuffer2, len, (const uint8_t**)m_pFrame1->data, m_pFrame1->nb_samples) < 0)
     {
       CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to AV_SAMPLE_FMT_FLT", (int)m_pCodecContext->sample_fmt);
       m_iBufferSize1 = 0;

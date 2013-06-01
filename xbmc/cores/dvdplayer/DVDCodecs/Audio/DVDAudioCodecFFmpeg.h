@@ -63,8 +63,6 @@ protected:
   int      m_channels;
   uint64_t m_layout;
 
-  DllSwResample m_dllSwResample;
-
   void BuildChannelMap();
   void ConvertToFloat();  
 };
