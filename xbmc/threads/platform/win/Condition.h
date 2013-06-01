@@ -225,11 +225,28 @@ namespace XbmcThreads
       else
         xpimpl.Init();
     }
-    inline void wait(CCriticalSection& lock) { XBMC_CV(wait(lock)); }
-    inline bool wait(CCriticalSection& lock, unsigned long milliseconds) { return XBMC_RCV(wait(lock, milliseconds)); }
 
-    inline void wait(CSingleLock& lock) { XBMC_CV(wait(lock)); }
-    inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return XBMC_RCV(wait(lock, milliseconds)); }
+    inline void wait(CCriticalSection& lock)
+    {
+      int  count = lock.count;
+      lock.count = 0;
+      XBMC_CV(wait(lock));
+      lock.count = count;
+    }
+
+    inline bool wait(CCriticalSection& lock, unsigned long milliseconds)
+    {
+      int  count = lock.count;
+      lock.count = 0;
+      bool res   = XBMC_RCV(wait(lock, milliseconds));
+      lock.count = count;
+      return res;
+    }
+
+    inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
+    inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return wait(lock.get_underlying(), milliseconds); }
+
+
     inline void notifyAll() { XBMC_CV(notifyAll()); }
     inline void notify() { XBMC_CV(notify()); }
   };
