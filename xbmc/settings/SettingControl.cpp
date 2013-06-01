@@ -79,6 +79,8 @@ bool CSettingControl::setType(const std::string &strType)
     m_type = SettingControlTypeEdit;
     m_delayed = true;
   }
+  else if (StringUtils::EqualsNoCase(strType, "list"))
+    m_type = SettingControlTypeList;
   else if (StringUtils::EqualsNoCase(strType, "button"))
     m_type = SettingControlTypeButton;
   else

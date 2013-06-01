@@ -29,7 +29,11 @@ class CGUIButtonControl;
 class CGUIRadioButtonControl;
 
 class CSetting;
+class CSettingString;
 class CSettingPath;
+
+class CFileItemList;
+class CVariant;
 
 class CGUIControlBaseSetting
 {
@@ -107,6 +111,23 @@ private:
   void FillControl();
   void FillIntegerSettingControl();
   CGUISpinControlEx *m_pSpin;
+};
+
+class CGUIControlListSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlListSetting(CGUIButtonControl* pButton, int id, CSetting *pSetting);
+  virtual ~CGUIControlListSetting();
+
+  virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
+  virtual bool OnClick();
+  virtual void Update();
+  virtual void Clear() { m_pButton = NULL; }
+private:
+  static bool GetItems(CSetting *setting, CFileItemList &items);
+  static bool GetIntegerItems(CSetting *setting, CFileItemList &items);
+
+  CGUIButtonControl *m_pButton;
 };
 
 class CGUIControlButtonSetting : public CGUIControlBaseSetting

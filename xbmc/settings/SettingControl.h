@@ -28,6 +28,7 @@ typedef enum {
   SettingControlTypeCheckmark,
   SettingControlTypeSpinner,
   SettingControlTypeEdit,
+  SettingControlTypeList,
   SettingControlTypeButton
 } SettingControlType;
 
