@@ -36,7 +36,7 @@ class CSoftAEStream : public IAEStream
 {
 protected:
   friend class CSoftAE;
-  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options);
+  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options, CCriticalSection& lock);
   virtual ~CSoftAEStream();
 
   void Initialize();
@@ -91,7 +91,7 @@ private:
   void InternalFlush();
   void CheckResampleBuffers();
 
-  CSharedSection    m_lock;
+  CCriticalSection& m_lock;
   enum AEDataFormat m_initDataFormat;
   unsigned int      m_initSampleRate;
   unsigned int      m_initEncodedSampleRate;
