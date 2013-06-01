@@ -52,6 +52,7 @@ public:
   virtual const char* GetType() const { return "cdrip"; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
+  CStdString GetOutput() const { return m_output; }
 protected:
   //! \brief Setup the audio encoder
   CEncoder* SetupEncoder(XFILE::CFile& reader);

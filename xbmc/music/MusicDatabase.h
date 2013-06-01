@@ -171,6 +171,10 @@ public:
   bool GetAlbum(int idAlbum, CAlbum& album);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   bool DeleteAlbum(int idAlbum);
+  /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
+   \param path the path we want to check
+   */
+  bool InsideScannedPath(const CStdString& path);
 
   //// Misc Album
   int  GetAlbumIdByPath(const CStdString& path);

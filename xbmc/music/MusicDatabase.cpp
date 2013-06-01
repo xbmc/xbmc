@@ -2193,6 +2193,12 @@ bool CMusicDatabase::CleanupPaths()
   return false;
 }
 
+bool CMusicDatabase::InsideScannedPath(const CStdString& path)
+{
+  CStdString sql = PrepareSQL("select idPath from path where SUBSTR(strPath,1,%i)='%s' LIMIT 1", path.size(), path.c_str());
+  return !GetSingleValue(sql).empty();
+}
+
 bool CMusicDatabase::CleanupArtists()
 {
   try
