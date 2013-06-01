@@ -95,7 +95,7 @@
           <constraints>
             <options>languages</options>
           </constraints>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="locale.country" type="string" label="20026" help="36115">
           <level>0</level>
@@ -106,7 +106,7 @@
           <dependencies>
             <dependency type="update" setting="locale.language" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="locale.charset" type="string" label="14091" help="36116">
           <level>1</level>
@@ -117,7 +117,7 @@
           <dependencies>
             <dependency type="update" setting="locale.language" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -127,7 +127,7 @@
           <constraints>
             <options>timezonecountries</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="locale.timezone" type="string" label="14080" help="36118">
           <level>2</level>
@@ -138,7 +138,7 @@
           <dependencies>
             <dependency type="update" setting="locale.timezonecountry" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="4">
@@ -148,7 +148,7 @@
           <constraints>
             <options>streamlanguages</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="locale.subtitlelanguage" type="string" label="286" help="36120">
           <level>1</level>
@@ -156,7 +156,7 @@
           <constraints>
             <options>streamlanguages</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>
@@ -659,7 +659,7 @@
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.overrideassfonts" type="boolean" label="21368" help="36190">
           <level>1</level>
@@ -1492,7 +1492,7 @@
           <dependencies>
             <dependency type="enable" setting="karaoke.enabled">true</dependency>
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="3">
@@ -1858,7 +1858,7 @@
             <dependency type="update" setting="videoscreen.screen" />
             <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoscreen.screenmode" type="string" label="243" help="36353">
           <visible>IsStandAlone</visible>

@@ -19,15 +19,18 @@
  */
 
 #include "GUIControlSettings.h"
+#include "FileItem.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingPath.h"
@@ -232,6 +235,174 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
   }
 
   m_pSpin->SetValue(pSettingInt->GetValue());
+}
+
+CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
+  : CGUIControlBaseSetting(id, pSetting)
+{
+  m_pButton = pButton;
+  m_pButton->SetID(id);
+  Update();
+}
+
+CGUIControlListSetting::~CGUIControlListSetting()
+{ }
+
+bool CGUIControlListSetting::OnClick()
+{
+  if (m_pButton == NULL)
+    return false;
+
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog == NULL)
+    return false;
+
+  CFileItemList options;
+  if (!GetItems(m_pSetting, options) || options.Size() <= 1)
+    return false;
+  
+  dialog->Reset();
+  dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
+  dialog->SetItems(&options);
+  dialog->SetMultiSelection(false);
+  dialog->DoModal();
+
+  if (!dialog->IsConfirmed())
+    return false;
+
+  const CFileItemPtr item = dialog->GetSelectedItem();
+  if (item == NULL || !item->HasProperty("value"))
+    return false;
+  
+  CVariant value = item->GetProperty("value");
+  switch (m_pSetting->GetType())
+  {
+    case SettingTypeInteger:
+      return ((CSettingInt *)m_pSetting)->SetValue((int)value.asInteger());
+    
+    case SettingTypeString:
+      return ((CSettingString *)m_pSetting)->SetValue(value.asString());
+    
+    default:
+      break;
+  }
+
+  return true;
+}
+
+void CGUIControlListSetting::Update()
+{
+  if (m_pButton == NULL)
+    return;
+
+  CGUIControlBaseSetting::Update();
+  
+  CFileItemList options;
+  if (GetItems(m_pSetting, options))
+  {
+    for (int index = 0; index < options.Size(); index++)
+    {
+      const CFileItemPtr pItem = options.Get(index);
+      if (pItem->IsSelected())
+      {
+        m_pButton->SetLabel2(pItem->GetLabel());
+        break;
+      }
+    }
+  }
+
+  // disable the control if it has less than two items
+  if (!m_pButton->IsDisabled() && options.Size() <= 1)
+    m_pButton->SetEnabled(false);
+}
+
+static CFileItemPtr GetItem(const std::string &label, const CVariant &value)
+{
+  CFileItemPtr pItem(new CFileItem(label));
+  pItem->SetProperty("value", value);
+
+  return pItem;
+}
+
+bool CGUIControlListSetting::GetItems(CSetting *setting, CFileItemList &items)
+{
+  switch (setting->GetControl().GetFormat())
+  {
+    case SettingControlFormatInteger:
+      return GetIntegerItems(setting, items);
+
+    case SettingControlFormatString:
+    {
+      if (setting->GetType() == SettingTypeInteger)
+        return GetIntegerItems(setting, items);
+      else if (setting->GetType() == SettingTypeString)
+      {
+        CSettingString *pSettingString = (CSettingString *)setting;
+        if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+        {
+          DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
+          for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); option++)
+          {
+            CFileItemPtr pItem = GetItem(option->first, option->second);
+
+            if (StringUtils::EqualsNoCase(option->second, pSettingString->GetValue()))
+              pItem->Select(true);
+
+            items.Add(pItem);
+          }
+        }
+      }
+      break;
+    }
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+bool CGUIControlListSetting::GetIntegerItems(CSetting *setting, CFileItemList &items)
+{
+  CSettingInt *pSettingInt = (CSettingInt *)setting;
+  switch (pSettingInt->GetOptionsType())
+  {
+    case SettingOptionsTypeStatic:
+    {
+      const StaticIntegerSettingOptions& options = pSettingInt->GetOptions();
+      for (StaticIntegerSettingOptions::const_iterator it = options.begin(); it != options.end(); it++)
+      {
+        CFileItemPtr pItem = GetItem(g_localizeStrings.Get(it->first), it->second);
+
+        if (it->second == pSettingInt->GetValue())
+          pItem->Select(true);
+
+        items.Add(pItem);
+      }
+      break;
+    }
+
+    case SettingOptionsTypeDynamic:
+    {
+      DynamicIntegerSettingOptions options = pSettingInt->UpdateDynamicOptions();
+      for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); option++)
+      {
+        CFileItemPtr pItem = GetItem(option->first, option->second);
+
+        if (option->second == pSettingInt->GetValue())
+          pItem->Select(true);
+
+        items.Add(pItem);
+      }
+      break;
+    }
+
+    case SettingOptionsTypeNone:
+    default:
+      return false;
+  }
+
+  return true;
 }
 
 CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
