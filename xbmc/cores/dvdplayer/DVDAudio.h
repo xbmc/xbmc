@@ -54,9 +54,9 @@ private:
 
 public:
   CPTSOutputQueue();
-  void Add(double pts, double delay, double duration);
+  void Add(double pts, double delay, double duration, double timestamp);
   void Flush();
-  double Current();
+  double Current(double timestamp);
 };
 
 class CSingleLock;
@@ -81,7 +81,7 @@ public:
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
-  double GetPlayingPts() { return m_time.Current(); }
+  double GetPlayingPts();
   void   SetPlayingPts(double pts);
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
