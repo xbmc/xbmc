@@ -69,10 +69,6 @@ extern "C" {
   #define LIBAVCODEC_FROM_LIBAV
 #endif
 
-#include "threads/SingleLock.h"
-
-static CCriticalSection m_AvCodeccs;
-
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avcodec.lib")
 #endif

@@ -110,7 +110,6 @@ protected:
 
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
-  DllAvFilter m_dllAvFilter;
   DllPostProc m_dllPostProc;
 
   std::string m_name;
