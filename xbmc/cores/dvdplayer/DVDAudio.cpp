@@ -184,10 +184,6 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   if(!m_pAudioStream)
     return 0;
 
-  DWORD bps = m_channelLayout.Count() * m_iBitrate * (m_iBitsPerSample>>3);
-  if(!bps)
-    return 0;
-
   //Calculate a timeout when this definitely should be done
   double timeout;
   timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay() + len * m_SecondsPerByte);
