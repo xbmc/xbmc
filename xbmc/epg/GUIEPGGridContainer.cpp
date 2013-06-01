@@ -462,7 +462,6 @@ void CGUIEPGGridContainer::RenderProgrammeGrid()
 
   float focusedPosX = 0;
   float focusedPosY = 0;
-  float focusedsize = 0;
   CGUIListItemPtr focusedItem;
   while (posB < endB && m_channelItems.size())
   {
@@ -507,7 +506,6 @@ void CGUIEPGGridContainer::RenderProgrammeGrid()
           focusedPosY = posA2;
         }
         focusedItem = item;
-        focusedsize = (m_orientation == VERTICAL ?  m_gridIndex[channel][block].width : m_gridIndex[channel][block].height);
       }
       else
       {
