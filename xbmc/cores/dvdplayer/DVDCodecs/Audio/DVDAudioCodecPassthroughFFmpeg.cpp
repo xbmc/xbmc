@@ -124,7 +124,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
 #endif
 
   /* request output of wanted endianness */
-  if (!fOut->priv_class || m_dllAvUtil.av_opt_set(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0) != 0)
+  if (!fOut->priv_class || av_opt_set(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0) != 0)
   {
 #if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Unable to set big-endian stream mode (FFmpeg too old?), disabling passthrough");
@@ -272,9 +272,9 @@ void CDVDAudioCodecPassthroughFFmpeg::DisposeMuxer(Muxer &muxer)
     muxer.m_WroteHeader = false;
     if (muxer.m_pStream)
       delete[] muxer.m_pStream->codec->extradata;
-    m_dllAvUtil.av_freep(&muxer.m_pFormat->pb);
-    m_dllAvUtil.av_freep(&muxer.m_pFormat);
-    m_dllAvUtil.av_freep(&muxer.m_pStream);
+    av_freep(&muxer.m_pFormat->pb);
+    av_freep(&muxer.m_pFormat);
+    av_freep(&muxer.m_pStream);
   }
 }
 /*===================== END MUXER FUNCTIONS ========================*/
@@ -318,9 +318,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - disabled passthrough due to sample rate not being 48000");
     return false;
   }
-
-  if (!m_dllAvUtil.Load())
-    return false;
 
   /* see if the muxer supports our codec (see spdif.c for supported formats) */
   if (!SupportsFormat(hints))
@@ -551,7 +548,7 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(uint8_t* pData, unsigned i
     else crc_size = (framesize >> 1) + (framesize >> 3) - 1;
 
     if (crc_size <= iSize - skip)
-      if(m_dllAvUtil.av_crc(m_dllAvUtil.av_crc_get_table(AV_CRC_16_ANSI), 0, &pData[2], crc_size * 2))
+      if(av_crc(av_crc_get_table(AV_CRC_16_ANSI), 0, &pData[2], crc_size * 2))
         continue;
 
     /* if we get here, we can sync */

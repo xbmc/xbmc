@@ -25,7 +25,6 @@
 #include "utils/StdString.h"
 
 class CBaseTexture;
-class m_dllAvUtil;
 class m_dllSwScale;
 
 struct AVFormatContext;
@@ -140,7 +139,6 @@ public:
 private:
   bool readFrame( int frame );
   
-  DllAvUtil       *m_dllAvUtil;
   DllSwScale      *m_dllSwScale;
   AVFormatContext *m_pFormatCtx;
   AVCodecContext  *m_pCodecCtx;

@@ -37,8 +37,6 @@ public:
   void AddTag(int key, const char* value);
 
 private:
-  DllAvUtil   m_dllAvUtil;
-
   AVFormatContext  *m_Format;
   AVCodecContext   *m_CodecCtx;
   AVStream         *m_Stream;

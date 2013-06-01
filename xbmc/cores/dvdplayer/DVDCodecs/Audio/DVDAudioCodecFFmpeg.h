@@ -63,7 +63,6 @@ protected:
   int      m_channels;
   uint64_t m_layout;
 
-  DllAvUtil m_dllAvUtil;
   DllSwResample m_dllSwResample;
 
   void BuildChannelMap();

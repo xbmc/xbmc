@@ -49,7 +49,6 @@ public:
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
   virtual int GetBufferSize();
 private:
-  DllAvUtil   m_dllAvUtil;
 
   typedef struct
   {

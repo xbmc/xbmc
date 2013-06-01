@@ -108,7 +108,6 @@ protected:
 
   unsigned int m_uSurfacesCount;
 
-  DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   DllPostProc m_dllPostProc;
 

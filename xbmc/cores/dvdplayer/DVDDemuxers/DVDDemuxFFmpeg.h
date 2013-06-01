@@ -136,7 +136,6 @@ protected:
   std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
-  DllAvUtil   m_dllAvUtil;
 
   double   m_iCurrentPts; // used for stream length estimation
   bool     m_bMatroska;

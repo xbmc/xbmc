@@ -37,7 +37,6 @@ FFmpegVideoDecoder::FFmpegVideoDecoder()
   m_pFrame = 0;
   m_pFrameRGB = 0;
   
-  m_dllAvUtil = new DllAvUtil();
   m_dllSwScale = new DllSwScale();
 }
 
@@ -45,7 +44,6 @@ FFmpegVideoDecoder::~FFmpegVideoDecoder()
 {
   close();
   
-  delete m_dllAvUtil;
   delete m_dllSwScale;
 }
 
@@ -53,13 +51,13 @@ void FFmpegVideoDecoder::close()
 {
   // Free the YUV frame
   if ( m_pFrame )
-	m_dllAvUtil->av_free( m_pFrame );
+	  av_free( m_pFrame );
 
   // Free the RGB frame
   if ( m_pFrameRGB )
   {
-	avpicture_free( m_pFrameRGB );
-	m_dllAvUtil->av_free( m_pFrameRGB );
+	  avpicture_free( m_pFrameRGB );
+	  av_free( m_pFrameRGB );
   }
 
   // Close the codec
@@ -75,9 +73,6 @@ void FFmpegVideoDecoder::close()
   m_pCodec = 0;
   m_pFrame = 0;
   m_pFrameRGB = 0;
-  
-  if ( m_dllAvUtil->IsLoaded() )
-    m_dllAvUtil->Unload();
   
   if ( m_dllSwScale->IsLoaded() )
     m_dllSwScale->Unload();
@@ -148,7 +143,7 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
   // See http://dranger.com/ffmpeg/tutorial01.html
   close();
   
-  if ( !m_dllAvUtil->Load() || !m_dllSwScale->Load())
+  if (!m_dllSwScale->Load())
   {
     m_errorMsg = "Failed to load FFMpeg libraries";
     return false;
@@ -248,14 +243,14 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
     if ( m_pFrameRGB )
     {
       avpicture_free( m_pFrameRGB );
-      m_dllAvUtil->av_free( m_pFrameRGB );
+      av_free( m_pFrameRGB );
     }
 
     m_frameRGBwidth = texture->GetWidth();
     m_frameRGBheight = texture->GetHeight();
 
     // Allocate the conversion frame and relevant picture
-    m_pFrameRGB = (AVPicture*)m_dllAvUtil->av_mallocz(sizeof(AVPicture));
+    m_pFrameRGB = (AVPicture*)av_mallocz(sizeof(AVPicture));
 
     if ( !m_pFrameRGB )
       return false;

@@ -352,6 +352,7 @@
 #include "lib/DllAvFormat.h"
 #include "lib/DllAvCodec.h"
 #include "lib/DllAvFilter.h"
+#include "lib/DllAvUtil.h"
 
 using namespace std;
 using namespace ADDON;
@@ -714,6 +715,8 @@ bool CApplication::Create()
   av_register_all();
   // register avfilter
   avfilter_register_all();
+  // set avutil callback
+  av_log_set_callback(ff_avutil_log);
 
   g_powerManager.Initialize();
 

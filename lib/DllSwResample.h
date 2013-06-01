@@ -138,14 +138,11 @@ class DllSwResample : public DllDynamic, DllSwResampleInterface
   END_METHOD_RESOLVE()
 
   /* dependencies of libavformat */
-  DllAvUtil m_dllAvUtil;
 
 public:
 
   virtual bool Load()
   {
-    if (!m_dllAvUtil.Load())
-      return false;
     return DllDynamic::Load();
   }
 };

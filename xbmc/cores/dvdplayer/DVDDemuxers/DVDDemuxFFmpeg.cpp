@@ -243,12 +243,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
-  if (!m_dllAvUtil.Load())  
-  {
-    CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
-    return false;
-  }
-
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
@@ -302,7 +296,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
   else
   {
-    unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+    unsigned char* buffer = (unsigned char*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, this, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
     if(m_ioContext->max_packet_size)
@@ -495,8 +489,8 @@ void CDVDDemuxFFmpeg::Dispose()
 
   if(m_ioContext)
   {
-    m_dllAvUtil.av_free(m_ioContext->buffer);
-    m_dllAvUtil.av_free(m_ioContext);
+    av_free(m_ioContext->buffer);
+    av_free(m_ioContext);
   }
 
   m_ioContext = NULL;
@@ -506,8 +500,6 @@ void CDVDDemuxFFmpeg::Dispose()
   DisposeStreams();
 
   m_pInput = NULL;
-
-  m_dllAvUtil.Unload();
 }
 
 void CDVDDemuxFFmpeg::Reset()
@@ -740,7 +732,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(duration > stream->duration)
           {
             stream->duration = duration;
-            duration = m_dllAvUtil.av_rescale_rnd(stream->duration, (int64_t)stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
+            duration = av_rescale_rnd(stream->duration, (int64_t)stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
             if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE)
                 ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
               m_pFormatContext->duration = duration;
@@ -1020,8 +1012,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
 	
-        if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
-          st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+        if(av_dict_get(pStream->metadata, "title", NULL, 0))
+          st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 
         break;
       }
@@ -1082,7 +1074,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
-        AVDictionaryEntry *rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "rotate", NULL, 0);
+        AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
           st->iOrientation = atoi(rtag->value);
         
@@ -1122,8 +1114,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           stream = st;
 	    
-          if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
-            st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+          if(av_dict_get(pStream->metadata, "title", NULL, 0))
+            st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 	
           break;
         }
@@ -1138,7 +1130,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
-          AVDictionaryEntry *nameTag = m_dllAvUtil.av_dict_get(pStream->metadata, "filename", NULL, 0);
+          AVDictionaryEntry *nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
           if (!nameTag) {
             CLog::Log(LOGERROR, "%s: TTF attachment has no name", __FUNCTION__);
             break;
@@ -1179,7 +1171,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     stream->pPrivate = pStream;
     stream->flags = (CDemuxStream::EFlags)pStream->disposition;
 
-    AVDictionaryEntry *langTag = m_dllAvUtil.av_dict_get(pStream->metadata, "language", NULL, 0);
+    AVDictionaryEntry *langTag = av_dict_get(pStream->metadata, "language", NULL, 0);
     if (langTag)
       strncpy(stream->language, langTag->value, 3);
 
@@ -1310,7 +1302,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
     if(chapterIdx <= 0)
       return;
 
-    AVDictionaryEntry *titleTag = m_dllAvUtil.av_dict_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
+    AVDictionaryEntry *titleTag = av_dict_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
                                                           "title", NULL, 0);
     if (titleTag)
       strChapterName = titleTag->value;

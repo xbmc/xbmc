@@ -46,8 +46,8 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-  m_dllAvUtil.av_freep(&m_CodecCtx);
-  m_dllAvUtil.av_freep(&m_ResampBuffer);
+  av_freep(&m_CodecCtx);
+  av_freep(&m_ResampBuffer);
   if (m_SwrCtx)
     m_dllSwResample.swr_free(&m_SwrCtx);
 }
@@ -102,7 +102,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 {
   Reset();
 
-  if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
+  if (!m_dllSwResample.Load())
     return false;
 
   bool ac3 = CSettings::Get().GetBool("audiooutput.ac3passthrough");
@@ -208,7 +208,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   /* open the codec */
   if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
-    m_dllAvUtil.av_freep(&m_CodecCtx);
+    av_freep(&m_CodecCtx);
     return false;
   }
 
@@ -271,7 +271,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
 
   /* size of the buffer sent to the encoder: either from the input data or after
    * conversion, in all cases it is in the m_CodecCtx->sample_fmt format */
-  int buf_size = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_CodecCtx->channels, frames, m_CodecCtx->sample_fmt, 0);
+  int buf_size = av_samples_get_buffer_size(NULL, m_CodecCtx->channels, frames, m_CodecCtx->sample_fmt, 0);
   assert(buf_size>0);
 
   /* allocate the input frame
@@ -290,7 +290,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   {
     if (!m_ResampBuffer || buf_size > m_ResampBufferSize)
     {
-      m_ResampBuffer = (uint8_t*)m_dllAvUtil.av_realloc(m_ResampBuffer, buf_size);
+      m_ResampBuffer = (uint8_t*)av_realloc(m_ResampBuffer, buf_size);
       if (!m_ResampBuffer)
       {
         CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Failed to allocate %i bytes buffer for resampling", buf_size);

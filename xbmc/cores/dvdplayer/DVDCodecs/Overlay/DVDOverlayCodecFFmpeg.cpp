@@ -45,8 +45,6 @@ CDVDOverlayCodecFFmpeg::~CDVDOverlayCodecFFmpeg()
 
 bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!m_dllAvUtil.Load()) return false;
-
   AVCodec* pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
@@ -65,7 +63,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
 
     // start parsing of extra data - create a copy to be safe and make it zero-terminating to avoid access violations!
@@ -120,12 +118,10 @@ void CDVDOverlayCodecFFmpeg::Dispose()
   if (m_pCodecContext)
   {
     if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
-    m_dllAvUtil.av_free(m_pCodecContext);
+    av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
   FreeSubtitle(m_Subtitle);
-
-  m_dllAvUtil.Unload();
 }
 
 void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
@@ -134,13 +130,13 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   {
     if(sub.rects[i])
     {
-      m_dllAvUtil.av_free(sub.rects[i]->pict.data[0]);
-      m_dllAvUtil.av_free(sub.rects[i]->pict.data[1]);
-      m_dllAvUtil.av_freep(&sub.rects[i]);
+      av_free(sub.rects[i]->pict.data[0]);
+      av_free(sub.rects[i]->pict.data[1]);
+      av_freep(&sub.rects[i]);
     }
   }
   if(sub.rects)
-    m_dllAvUtil.av_freep(&sub.rects);
+    av_freep(&sub.rects);
   sub.num_rects = 0;
   sub.start_display_time = 0;
   sub.end_display_time = 0;
@@ -312,9 +308,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     for(int i=0;i<rect.nb_colors;i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.pict.data[1])[i]);
 
-    m_dllAvUtil.av_free(rect.pict.data[0]);
-    m_dllAvUtil.av_free(rect.pict.data[1]);
-    m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
+    av_free(rect.pict.data[0]);
+    av_free(rect.pict.data[1]);
+    av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
     m_SubtitleIndex++;
 
     return overlay;

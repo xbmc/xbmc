@@ -157,8 +157,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
-  if(!m_dllAvUtil.Load()
-  || !m_dllSwScale.Load()
+  if(!m_dllSwScale.Load()
   || !m_dllPostProc.Load()
   ) return false;
 
@@ -248,7 +247,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
@@ -265,7 +264,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     if (it->m_name == "surfaces")
       m_uSurfacesCount = std::atoi(it->m_value.c_str());
     else
-      m_dllAvUtil.av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
+      av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
 
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
@@ -289,7 +288,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-  if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
+  if (m_pFrame) av_free(m_pFrame);
   m_pFrame = NULL;
 
   if (m_pCodecContext)
@@ -297,18 +296,17 @@ void CDVDVideoCodecFFmpeg::Dispose()
     if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
     if (m_pCodecContext->extradata)
     {
-      m_dllAvUtil.av_free(m_pCodecContext->extradata);
+      av_free(m_pCodecContext->extradata);
       m_pCodecContext->extradata = NULL;
       m_pCodecContext->extradata_size = 0;
     }
-    m_dllAvUtil.av_free(m_pCodecContext);
+    av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
   SAFE_RELEASE(m_pHardware);
 
   FilterClose();
 
-  m_dllAvUtil.Unload();
   m_dllPostProc.Unload();
 }
 
@@ -700,23 +698,23 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   if ((result = avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, buffersink_params, m_pFilterGraph)) < 0)
 #endif
   {
-    m_dllAvUtil.av_freep(&buffersink_params);
+    av_freep(&buffersink_params);
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: out");
     return result;
   }
-  m_dllAvUtil.av_freep(&buffersink_params);
+  av_freep(&buffersink_params);
 
   if (!filters.empty())
   {
     AVFilterInOut* outputs = avfilter_inout_alloc();
     AVFilterInOut* inputs  = avfilter_inout_alloc();
 
-    outputs->name    = m_dllAvUtil.av_strdup("in");
+    outputs->name    = av_strdup("in");
     outputs->filter_ctx = m_pFilterIn;
     outputs->pad_idx = 0;
     outputs->next    = NULL;
 
-    inputs->name    = m_dllAvUtil.av_strdup("out");
+    inputs->name    = av_strdup("out");
     inputs->filter_ctx = m_pFilterOut;
     inputs->pad_idx = 0;
     inputs->next    = NULL;
