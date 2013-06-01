@@ -188,7 +188,7 @@ void CDVDInputStreamRTMP::Close()
   m_bPaused = false;
 }
 
-int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamRTMP::Read(uint8_t* buf, int buf_size)
 {
   int i = m_libRTMP.Read(m_rtmp, (char *)buf, buf_size);
   if (i < 0)

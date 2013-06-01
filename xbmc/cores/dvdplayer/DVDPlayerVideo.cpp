@@ -771,7 +771,7 @@ void CDVDPlayerVideo::OnExit()
 void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts)
 {
   // check userdata type
-  BYTE* data = pVideoUserData->data;
+  uint8_t* data = pVideoUserData->data;
   int size = pVideoUserData->size;
 
   if (size >= 2)
@@ -1331,7 +1331,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   int black  = 16; // what is black in the image
   int level  = 8;  // how high above this should we detect
   int multi  = 4;  // what multiple of last line should failing line be to accept
-  BYTE *s;
+  uint8_t *s;
   int last, detect, black2;
 
   // top and bottom levels

@@ -57,7 +57,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
   delete m_p;
 }
 
-bool CDVDMsgGeneralSynchronize::Wait(unsigned long milliseconds, unsigned int source)
+bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int source)
 {
   if(source == 0)
     source = SYNCSOURCE_OWNER;

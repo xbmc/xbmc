@@ -79,7 +79,7 @@ public:
   bool Create(const DVDAudioFrame &audioframe, CodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
-  DWORD AddPackets(const DVDAudioFrame &audioframe);
+  unsigned int AddPackets(const DVDAudioFrame &audioframe);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetPlayingPts();
   void   SetPlayingPts(double pts);
@@ -95,10 +95,10 @@ public:
   IAEStream *m_pAudioStream;
 protected:
   CPTSOutputQueue m_time;
-  DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
-  BYTE* m_pBuffer; // should be [m_dwPacketSize]
-  DWORD m_iBufferSize;
-  DWORD m_dwPacketSize;
+  unsigned int AddPacketsRenderer(unsigned char* data, unsigned int len, CSingleLock &lock);
+  uint8_t*     m_pBuffer; // should be [m_dwPacketSize]
+  unsigned int m_iBufferSize;
+  unsigned int m_dwPacketSize;
   CCriticalSection m_critSection;
 
   int m_iBitrate;

@@ -32,13 +32,13 @@ public:
   CDVDAudioCodecLPcm();
   virtual ~CDVDAudioCodecLPcm() {}
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int Decode(BYTE* pData, int iSize);
+  virtual int Decode(uint8_t* pData, int iSize);
   virtual const char* GetName()  { return "lpcm"; }
 
 protected:
 
   int m_bufferSize;
-  BYTE m_buffer[LPCM_BUFFER_SIZE];
+  uint8_t m_buffer[LPCM_BUFFER_SIZE];
 
   CodecID m_codecID;
 };

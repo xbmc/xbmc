@@ -143,7 +143,7 @@ void CDVDVideoCodecOpenMax::SetDropState(bool bDrop)
   m_omx_decoder->SetDropState(bDrop);
 }
 
-int CDVDVideoCodecOpenMax::Decode(BYTE* pData, int iSize, double dts, double pts)
+int CDVDVideoCodecOpenMax::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   if (pData)
   {
@@ -259,7 +259,7 @@ bool CDVDVideoCodecOpenMax::bitstream_convert_init(void *in_extradata, int in_ex
   return true;
 }
 
-bool CDVDVideoCodecOpenMax::bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
+bool CDVDVideoCodecOpenMax::bitstream_convert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>

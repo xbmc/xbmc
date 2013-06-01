@@ -222,7 +222,7 @@ void CDVDInputStreamNavigator::Close()
   m_bEOF = true;
 }
 
-int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
 {
   if (!m_dvdnav || m_bEOF) return 0;
   if (buf_size < DVD_VIDEO_BLOCKSIZE)
@@ -253,7 +253,7 @@ int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
     return -1;
 }
 
-int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
+int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 {
   if (!m_dvdnav) return -1;
 
@@ -1259,7 +1259,7 @@ bool CDVDInputStreamNavigator::SetState(const std::string &xmlstate)
     CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to set state (%s), retrying after read", m_dll.dvdnav_err_to_string(m_dvdnav));
 
     /* vm won't be started until after first read, this should really be handled internally */
-    BYTE buffer[DVD_VIDEO_BLOCKSIZE];
+    uint8_t buffer[DVD_VIDEO_BLOCKSIZE];
     Read(buffer,DVD_VIDEO_BLOCKSIZE);
 
     if( DVDNAV_STATUS_ERR == m_dll.dvdnav_set_state(m_dvdnav, &save_state) )

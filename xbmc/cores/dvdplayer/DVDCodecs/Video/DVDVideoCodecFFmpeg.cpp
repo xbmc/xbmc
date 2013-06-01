@@ -404,7 +404,7 @@ static double pts_itod(int64_t pts)
   return u.pts_d;
 }
 
-int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
+int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   int iGotPicture = 0, len = 0;
 

@@ -280,7 +280,7 @@ void COpenMaxVideo::SetDropState(bool bDrop)
   }
 }
 
-int COpenMaxVideo::Decode(BYTE* pData, int iSize, double dts, double pts)
+int COpenMaxVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   if (pData)
   {

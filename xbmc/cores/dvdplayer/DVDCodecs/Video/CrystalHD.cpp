@@ -1647,10 +1647,10 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
     default:
     case RENDER_FMT_NV12:
       // Y plane
-      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->data[0] = (uint8_t*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
       // UV packed plane
-      pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_uv_buffer_ptr;
+      pDvdVideoPicture->data[1] = (uint8_t*)pBuffer->m_uv_buffer_ptr;
       pDvdVideoPicture->iLineSize[1] = pBuffer->m_width;
       // unused
       pDvdVideoPicture->data[2] = NULL;
@@ -1658,7 +1658,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
     break;
     case RENDER_FMT_YUYV422:
       // YUV packed plane
-      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->data[0] = (uint8_t*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width * 2;
       // unused
       pDvdVideoPicture->data[1] = NULL;
@@ -1669,13 +1669,13 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
     break;
     case RENDER_FMT_YUV420P:
       // Y plane
-      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->data[0] = (uint8_t*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
       // U plane
-      pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_u_buffer_ptr;
+      pDvdVideoPicture->data[1] = (uint8_t*)pBuffer->m_u_buffer_ptr;
       pDvdVideoPicture->iLineSize[1] = pBuffer->m_width / 2;
       // V plane
-      pDvdVideoPicture->data[2] = (BYTE*)pBuffer->m_v_buffer_ptr;
+      pDvdVideoPicture->data[2] = (uint8_t*)pBuffer->m_v_buffer_ptr;
       pDvdVideoPicture->iLineSize[2] = pBuffer->m_width / 2;
     break;
   }
@@ -1896,7 +1896,7 @@ bool CCrystalHD::bitstream_convert_init(void *in_extradata, int in_extrasize)
   return true;
 }
 
-bool CCrystalHD::bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
+bool CCrystalHD::bitstream_convert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>

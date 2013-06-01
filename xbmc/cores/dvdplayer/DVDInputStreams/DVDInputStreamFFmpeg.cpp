@@ -74,7 +74,7 @@ void CDVDInputStreamFFmpeg::Close()
   CDVDInputStream::Close();
 }
 
-int CDVDInputStreamFFmpeg::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamFFmpeg::Read(uint8_t* buf, int buf_size)
 {
   return -1;
 }

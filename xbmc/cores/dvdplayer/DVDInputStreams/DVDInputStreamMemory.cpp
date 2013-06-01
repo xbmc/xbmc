@@ -58,7 +58,7 @@ void CDVDInputStreamMemory::Close()
   CDVDInputStream::Close();
 }
 
-int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamMemory::Read(uint8_t* buf, int buf_size)
 {
   int iBytesToCopy = buf_size;
   int iBytesLeft = m_iDataSize - m_iDataPos;

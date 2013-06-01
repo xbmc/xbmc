@@ -85,7 +85,7 @@ void CDVDInputStreamFile::Close()
   m_eof = true;
 }
 
-int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
 {
   if(!m_pFile) return -1;
 

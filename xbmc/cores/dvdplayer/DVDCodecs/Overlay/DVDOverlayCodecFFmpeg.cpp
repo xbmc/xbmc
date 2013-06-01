@@ -248,7 +248,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->iPTSStopTime  = m_StopTime;
     overlay->replace  = true;
     overlay->linesize = rect.w;
-    overlay->data     = (BYTE*)malloc(rect.w * rect.h);
+    overlay->data     = (uint8_t*)malloc(rect.w * rect.h);
     overlay->palette  = (uint32_t*)malloc(rect.nb_colors*4);
     overlay->palette_colors = rect.nb_colors;
     overlay->x        = rect.x;
@@ -303,8 +303,8 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->source_width  = m_width;
     overlay->source_height = m_height;
 
-    BYTE* s = rect.pict.data[0];
-    BYTE* t = overlay->data;
+    uint8_t* s = rect.pict.data[0];
+    uint8_t* t = overlay->data;
     for(int i=0;i<rect.h;i++)
     {
       memcpy(t, s, rect.w);

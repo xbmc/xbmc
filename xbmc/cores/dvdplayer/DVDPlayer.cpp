@@ -3314,10 +3314,10 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
 
           /* adjust for the output delay in the video queue */
-          DWORD time = 0;
+          unsigned int time = 0;
           if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
           {
-            time = (DWORD)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
+            time = (unsigned int)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
             if( time < 10000 && time > 0 )
               m_dvd.iDVDStillTime += time;
           }
@@ -3331,7 +3331,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_SPU_CLUT_CHANGE:
       {
-        m_dvdPlayerSubtitle.SendMessage(new CDVDMsgSubtitleClutChange((BYTE*)pData));
+        m_dvdPlayerSubtitle.SendMessage(new CDVDMsgSubtitleClutChange((uint8_t*)pData));
       }
       break;
     case DVDNAV_SPU_STREAM_CHANGE:

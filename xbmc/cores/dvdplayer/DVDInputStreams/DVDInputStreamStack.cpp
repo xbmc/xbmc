@@ -106,7 +106,7 @@ void CDVDInputStreamStack::Close()
   m_eof = true;
 }
 
-int CDVDInputStreamStack::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamStack::Read(uint8_t* buf, int buf_size)
 {
   if(m_file == NULL || m_eof)
     return 0;

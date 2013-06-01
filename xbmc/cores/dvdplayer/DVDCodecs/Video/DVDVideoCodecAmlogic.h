@@ -36,7 +36,7 @@ public:
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
-  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
+  virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void SetSpeed(int iSpeed);
@@ -48,7 +48,7 @@ public:
 protected:
   void            FrameQueuePop(void);
   void            FrameQueuePush(double dts, double pts);
-  void            FrameRateTracking(BYTE *pData, int iSize, double dts, double pts);
+  void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
 
   CAMLCodec      *m_Codec;
   const char     *m_pFormatName;

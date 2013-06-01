@@ -46,7 +46,7 @@ class CDVDAudioCodec;
 
 typedef struct stDVDAudioFrame
 {
-  BYTE* data;
+  uint8_t* data;
   double pts;
   double duration;
   unsigned int size;
@@ -148,7 +148,7 @@ protected:
     }
 
     CDVDMsgDemuxerPacket*  msg;
-    BYTE*                  data;
+    uint8_t*               data;
     int                    size;
     double                 dts;
 

@@ -295,9 +295,9 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       m_videobuffer.iLineSize[2] = width/2; //V
       m_videobuffer.iLineSize[3] = 0;
 
-      m_videobuffer.data[0] = (BYTE*)malloc(16 + iPixels);
-      m_videobuffer.data[1] = (BYTE*)malloc(16 + iChromaPixels);
-      m_videobuffer.data[2] = (BYTE*)malloc(16 + iChromaPixels);
+      m_videobuffer.data[0] = (uint8_t*)malloc(16 + iPixels);
+      m_videobuffer.data[1] = (uint8_t*)malloc(16 + iChromaPixels);
+      m_videobuffer.data[2] = (uint8_t*)malloc(16 + iChromaPixels);
       m_videobuffer.data[3] = NULL;
 
       // set all data to 0 for less artifacts.. hmm.. what is black in YUV??
@@ -404,7 +404,7 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
   m_DropPictures = bDrop;
 }
 
-int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
+int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   CCocoaAutoPool pool;
   //

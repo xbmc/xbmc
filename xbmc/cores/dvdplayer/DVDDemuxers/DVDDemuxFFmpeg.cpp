@@ -184,7 +184,7 @@ static int dvd_file_read(void *h, uint8_t* buf, int size)
   return pInputStream->Read(buf, size);
 }
 /*
-static int dvd_file_write(URLContext *h, BYTE* buf, int size)
+static int dvd_file_write(URLContext *h, uint8_t* buf, int size)
 {
   return -1;
 }
@@ -334,7 +334,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
       {
         AVProbeData pd;
-        BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
+        uint8_t probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
         // init probe data
         pd.buf = probe_buffer;
@@ -1194,7 +1194,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
       stream->ExtraSize = pStream->codec->extradata_size;
-      stream->ExtraData = new BYTE[pStream->codec->extradata_size];
+      stream->ExtraData = new uint8_t[pStream->codec->extradata_size];
       memcpy(stream->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
     }
 

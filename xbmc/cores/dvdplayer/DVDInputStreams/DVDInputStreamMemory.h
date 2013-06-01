@@ -29,13 +29,13 @@ public:
   virtual ~CDVDInputStreamMemory();
   virtual bool Open(const char* strFile, const std::string& content);
   virtual void Close();
-  virtual int Read(BYTE* buf, int buf_size);
+  virtual int Read(uint8_t* buf, int buf_size);
   virtual int64_t Seek(int64_t offset, int whence);
   virtual bool IsEOF();
   virtual int64_t GetLength();
 
 protected:
-  BYTE* m_pData;
+  uint8_t* m_pData;
   int   m_iDataSize;
   int   m_iDataPos;
 };

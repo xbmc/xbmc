@@ -162,7 +162,7 @@ public:
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  bool Wait(unsigned long  ms   , unsigned int source);
+  bool Wait(unsigned int   ms   , unsigned int source);
   void Wait(volatile bool *abort, unsigned int source);
 private:
   class CDVDMsgGeneralSynchronizePriv* m_p;
@@ -301,7 +301,7 @@ public:
 class CDVDMsgSubtitleClutChange : public CDVDMsg
 {
 public:
-  CDVDMsgSubtitleClutChange(BYTE* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
-  BYTE m_data[16][4];
+  CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+  uint8_t m_data[16][4];
 private:
 };

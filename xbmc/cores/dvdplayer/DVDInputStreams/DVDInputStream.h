@@ -144,7 +144,7 @@ public:
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
   virtual void Close() = 0;
-  virtual int Read(BYTE* buf, int buf_size) = 0;
+  virtual int Read(uint8_t* buf, int buf_size) = 0;
   virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual bool Pause(double dTime) = 0;
   virtual int64_t GetLength() = 0;

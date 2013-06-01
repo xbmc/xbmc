@@ -33,8 +33,8 @@ public:
   virtual ~CDVDAudioCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int Decode(uint8_t* pData, int iSize);
+  virtual int GetData(uint8_t** dst);
   virtual void Reset();
   virtual int GetChannels();
   virtual CAEChannelInfo GetChannelMap();
@@ -55,7 +55,7 @@ protected:
 
   AVFrame* m_pFrame1;
   int      m_iBufferSize1;
-  BYTE*    m_pBuffer2;
+  uint8_t*    m_pBuffer2;
   int      m_iBufferSize2;
 
   bool m_bOpenedCodec;

@@ -41,7 +41,7 @@ public:
 
   CDVDMsg* m_pMsg;
   bool m_debug_logged;
-  DWORD m_time_created;
+  unsigned int m_time_created;
 
 };
 

@@ -233,7 +233,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
             DllSwScale dllSwScale;
             dllSwScale.Load();
 
-            BYTE *pOutBuf = new BYTE[nWidth * nHeight * 4];
+            uint8_t *pOutBuf = new uint8_t[nWidth * nHeight * 4];
             struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight,
                   PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 

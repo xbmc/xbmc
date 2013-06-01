@@ -179,7 +179,7 @@ void CDVDAudio::Destroy()
   m_time.Flush();
 }
 
-DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
+unsigned int CDVDAudio::AddPacketsRenderer(unsigned char* data, unsigned int len, CSingleLock &lock)
 {
   if(!m_pAudioStream)
     return 0;
@@ -190,8 +190,8 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += CDVDClock::GetAbsoluteClock();
 
-  DWORD  total = len;
-  DWORD  copied;
+  unsigned int  total = len;
+  unsigned int  copied;
   do
   {
     copied = m_pAudioStream->AddData(data, len);
@@ -214,22 +214,22 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   return total - len;
 }
 
-DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
+unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 {
   CSingleLock lock (m_critSection);
 
   unsigned char* data = audioframe.data;
-  DWORD len = audioframe.size;
+  unsigned int len = audioframe.size;
 
-  DWORD total = len;
-  DWORD copied;
+  unsigned int total = len;
+  unsigned int copied;
 
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
     copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
     if(copied)
     {
-      m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
+      m_pBuffer = (uint8_t*)realloc(m_pBuffer, m_iBufferSize + copied);
       memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
       data += copied; // Move forward in caller's data
       len -= copied; // Decrease amount of data available from caller
@@ -258,7 +258,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   // if we have more data left, save it for the next call to this funtion
   if (len > 0 && !m_bStop)
   {
-    m_pBuffer     = (BYTE*)realloc(m_pBuffer, len);
+    m_pBuffer     = (uint8_t*)realloc(m_pBuffer, len);
     m_iBufferSize = len;
     memcpy(m_pBuffer, data, len);
   }
@@ -277,12 +277,12 @@ void CDVDAudio::Finish()
   if (!m_pAudioStream)
     return;
 
-  DWORD silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
+  unsigned int silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
 
   if(silence > 0 && m_iBufferSize > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + silence);
+    m_pBuffer = (uint8_t*)realloc(m_pBuffer, m_iBufferSize + silence);
     memset(m_pBuffer+m_iBufferSize, 0, silence);
     m_iBufferSize += silence;
   }

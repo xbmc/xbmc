@@ -33,8 +33,8 @@ public:
   virtual ~CDVDAudioCodecLibMad();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int Decode(uint8_t* pData, int iSize);
+  virtual int GetData(uint8_t** dst);
   virtual void Reset();
   virtual CAEChannelInfo GetChannelMap();
   virtual int GetChannels()                 { return m_iSourceChannels;   }
@@ -55,11 +55,11 @@ private:
   struct mad_stream m_stream;
   struct mad_frame m_frame;
 
-  BYTE m_decodedData[MAD_DECODED_SIZE];
-  int  m_iDecodedDataSize;
+  uint8_t m_decodedData[MAD_DECODED_SIZE];
+  int     m_iDecodedDataSize;
 
-  BYTE m_inputBuffer[MAD_INPUT_SIZE];
-  int m_iInputBufferSize;
+  uint8_t m_inputBuffer[MAD_INPUT_SIZE];
+  int     m_iInputBufferSize;
 
   DllLibMad m_dll;
 };

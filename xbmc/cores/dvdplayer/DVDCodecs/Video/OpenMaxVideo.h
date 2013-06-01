@@ -46,7 +46,7 @@ public:
   // Required overrides
   bool Open(CDVDStreamInfo &hints);
   void Close(void);
-  int  Decode(BYTE *pData, int iSize, double dts, double pts);
+  int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   void Reset(void);
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   void SetDropState(bool bDrop);

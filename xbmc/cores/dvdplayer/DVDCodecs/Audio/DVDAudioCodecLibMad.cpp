@@ -84,9 +84,9 @@ void CDVDAudioCodecLibMad::Dispose()
   }
 }
 
-int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
+int CDVDAudioCodecLibMad::Decode(uint8_t* pData, int iSize)
 {
-  BYTE* pBuffer = m_inputBuffer;
+  uint8_t* pBuffer = m_inputBuffer;
   //int iBufferSize = iSize;
 
   m_iDecodedDataSize = 0;
@@ -129,7 +129,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
         if (m_stream.next_frame)
         {
           m_iInputBufferSize = m_stream.bufend - m_stream.next_frame;
-          pBuffer = (BYTE*)m_stream.next_frame;
+          pBuffer = (uint8_t*)m_stream.next_frame;
         }
 
         if (m_iInputBufferSize <= 0)
@@ -187,7 +187,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   return 0;
 }
 
-int CDVDAudioCodecLibMad::GetData(BYTE** dst)
+int CDVDAudioCodecLibMad::GetData(uint8_t** dst)
 {
   *dst = m_decodedData;
   return m_iDecodedDataSize;

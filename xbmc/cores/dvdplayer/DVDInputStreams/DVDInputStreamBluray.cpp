@@ -586,7 +586,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
   m_event.event = BD_EVENT_NONE;
 }
 
-int CDVDInputStreamBluray::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 {
   if(m_navmode)
   {

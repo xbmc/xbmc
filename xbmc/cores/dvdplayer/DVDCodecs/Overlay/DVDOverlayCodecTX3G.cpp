@@ -91,7 +91,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   if (m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
-  BYTE *data = pPacket->pData;
+  uint8_t *data = pPacket->pData;
   int size = pPacket->iSize;
 
   m_pOverlay = new CDVDOverlayText();

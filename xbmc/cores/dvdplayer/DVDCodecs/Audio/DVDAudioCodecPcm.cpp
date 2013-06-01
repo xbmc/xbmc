@@ -76,7 +76,7 @@ static int ulaw2linear(unsigned char	u_val)
  * \param samples output samples
  * \param src_len number of bytes in src
  */
-static inline void decode_to16(int bps, int le, int us, BYTE **src, short **samples, int src_len)
+static inline void decode_to16(int bps, int le, int us, uint8_t **src, short **samples, int src_len)
 {
     register int n = src_len / bps;
     if (le) *src += bps - 2;
@@ -87,7 +87,7 @@ static inline void decode_to16(int bps, int le, int us, BYTE **src, short **samp
     if (le) *src -= bps - 2;
 }
 
-const BYTE ff_reverse[256] =
+const uint8_t ff_reverse[256] =
     {
       0x00,0x80,0x40,0xC0,0x20,0xA0,0x60,0xE0,0x10,0x90,0x50,0xD0,0x30,0xB0,0x70,0xF0,
       0x08,0x88,0x48,0xC8,0x28,0xA8,0x68,0xE8,0x18,0x98,0x58,0xD8,0x38,0xB8,0x78,0xF8,
@@ -162,11 +162,11 @@ void CDVDAudioCodecPcm::Dispose()
 {
 }
 
-int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
+int CDVDAudioCodecPcm::Decode(uint8_t* pData, int iSize)
 {
     int n;
     short *samples;
-    BYTE *src;
+    uint8_t *src;
 
     samples = (short*)m_decodedData;
     src = pData;
@@ -265,13 +265,13 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
         return -1;
     }
 
-    m_decodedDataSize = (BYTE*)samples - (BYTE*)m_decodedData;
+    m_decodedDataSize = (uint8_t*)samples - (uint8_t*)m_decodedData;
     return iSize;
 }
 
-int CDVDAudioCodecPcm::GetData(BYTE** dst)
+int CDVDAudioCodecPcm::GetData(uint8_t** dst)
 {
-  *dst = (BYTE*)m_decodedData;
+  *dst = (uint8_t*)m_decodedData;
   return m_decodedDataSize;
 }
 

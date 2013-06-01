@@ -69,7 +69,7 @@ bool CDVDDemuxBXA::Open(CDVDInputStream* pInput)
   if(!pInput || !pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
     return false;
 
-  if(pInput->Read((BYTE *)&m_header, sizeof(Demux_BXA_FmtHeader)) < 1)
+  if(pInput->Read((uint8_t *)&m_header, sizeof(Demux_BXA_FmtHeader)) < 1)
     return false;
 
   // file valid?

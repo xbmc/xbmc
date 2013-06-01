@@ -149,7 +149,7 @@ DemuxPacket* CDVDDemuxShoutcast::Read()
   {
     // we already have read m_iMetaStreamInterval bytes of streaming data
     // metadata follows
-    BYTE l;
+    uint8_t l;
     int iRead = m_pInput->Read(&l, 1);
     if (iRead > 0)
     {
@@ -158,7 +158,7 @@ DemuxPacket* CDVDDemuxShoutcast::Read()
       if (iMetaLength > 0)
       {
         // iMetaLength cannot be larger then 16 * 255
-        BYTE buffer[16 * 255];
+        uint8_t buffer[16 * 255];
 
         // skip meta data for now
         m_pInput->Read(buffer, iMetaLength);

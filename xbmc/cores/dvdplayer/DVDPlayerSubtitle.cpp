@@ -102,8 +102,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     CDVDMsgSubtitleClutChange* pData = (CDVDMsgSubtitleClutChange*)pMsg;
     for (int i = 0; i < 16; i++)
     {
-      BYTE* color = m_dvdspus.m_clut[i];
-      BYTE* t = (BYTE*)pData->m_data[i];
+      uint8_t* color = m_dvdspus.m_clut[i];
+      uint8_t* t = (uint8_t*)pData->m_data[i];
 
 // pData->m_data[i] points to an uint32_t
 // Byte swapping is needed between big and little endian systems

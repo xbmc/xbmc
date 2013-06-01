@@ -32,7 +32,7 @@ class CDVDOverlaySSA;
 
 typedef struct stDVDPictureRenderer
 {
-  BYTE* data[4];
+  uint8_t* data[4];
   int stride[4];
 
   int width;

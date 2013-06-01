@@ -54,7 +54,7 @@ public:
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize, double dts, double pts);
+  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts);
   virtual void Reset();
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);

@@ -43,10 +43,10 @@ bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   return false;
 }
 
-int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
+int CDVDAudioCodecLPcm::Decode(uint8_t* pData, int iSize)
 {
-  BYTE* d = m_buffer;
-  BYTE* s = pData;
+  uint8_t* d = m_buffer;
+  uint8_t* s = pData;
 
   if (iSize > m_bufferSize) iSize = m_bufferSize;
 

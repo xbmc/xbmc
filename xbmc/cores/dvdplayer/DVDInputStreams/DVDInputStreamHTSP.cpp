@@ -122,7 +122,7 @@ void CDVDInputStreamHTSP::Close()
   m_read.Clear();
 }
 
-int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamHTSP::Read(uint8_t* buf, int buf_size)
 {
   size_t count = m_read.Size();
   if(count == 0)

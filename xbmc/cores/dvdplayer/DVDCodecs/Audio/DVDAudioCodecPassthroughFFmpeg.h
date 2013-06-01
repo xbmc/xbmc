@@ -36,8 +36,8 @@ public:
 
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int Decode(uint8_t* pData, int iSize);
+  virtual int GetData(uint8_t** dst);
   virtual void Reset();
   virtual int GetChannels();
   virtual CAEChannelInfo GetChannelMap();
@@ -85,7 +85,7 @@ private:
   bool m_bSupportsAACOut;
 
   CDVDAudioCodec   *m_Codec;
-  BYTE             *m_DecodeBuffer;
+  uint8_t          *m_DecodeBuffer;
   unsigned int      m_DecodeSize;
   bool SupportsFormat(CDVDStreamInfo &hints);
 
@@ -96,9 +96,9 @@ private:
   int          m_SampleRate;
   CodecID      m_codec;
 
-  unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, unsigned int iSize, unsigned int *fSize);
-  unsigned int SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize);
-  unsigned int SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize);
-  unsigned int SyncAAC(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(uint8_t* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncAC3(uint8_t* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncDTS(uint8_t* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncAAC(uint8_t* pData, unsigned int iSize, unsigned int *fSize);
 };
 

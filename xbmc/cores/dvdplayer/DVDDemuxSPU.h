@@ -26,7 +26,7 @@ struct AVPicture;
 
 typedef struct SPUData
 {
-  BYTE* data;
+  uint8_t* data;
   unsigned int iSize; // current data size
   unsigned int iNeededSize; // wanted packet size
   unsigned int iAllocatedSize;
@@ -43,9 +43,9 @@ public:
   CDVDDemuxSPU();
   virtual ~CDVDDemuxSPU();
 
-  CDVDOverlaySpu* AddData(BYTE* data, int iSize, double pts); // returns a packet from ParsePacket if possible
+  CDVDOverlaySpu* AddData(uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 
-  CDVDOverlaySpu* ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData);
+  CDVDOverlaySpu* ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedData);
   static void FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu* pSPU);
   static bool CanDisplayWithAlphas(int a[4], int stats[4]);
 
@@ -55,7 +55,7 @@ public:
   // m_clut set by libdvdnav once in a time
   // color lokup table is representing 16 different yuv colors
   // [][0] = Y, [][1] = Cr, [][2] = Cb
-  BYTE m_clut[16][3];
+  uint8_t m_clut[16][3];
   bool m_bHasClut;
 
 protected:

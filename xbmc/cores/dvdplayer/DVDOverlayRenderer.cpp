@@ -74,8 +74,8 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
 
   while(img)
   {
-    DWORD color = img->color;
-    BYTE alpha = (BYTE)(color &0xff);
+    unsigned int color = img->color;
+    uint8_t alpha = (uint8_t)(color &0xff);
 
     // fully transparent or width or height is 0 -> not displayed
     if(alpha == 255 || img->w == 0 || img->h == 0)
@@ -89,9 +89,9 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
     double g = ((color >> 16) & 0xff) / 255.0;
     double b = ((color >> 8 ) & 0xff) / 255.0;
 
-    BYTE luma  = (BYTE)(        255 * CLAMP( 0.299 * r + 0.587 * g + 0.114 * b,  0.0, 1.0));
-    BYTE v     = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
-    BYTE u     = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
+    uint8_t luma  = (uint8_t)(        255 * CLAMP( 0.299 * r + 0.587 * g + 0.114 * b,  0.0, 1.0));
+    uint8_t v     = (uint8_t)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
+    uint8_t u     = (uint8_t)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
 
     int y = std::max(0,std::min(img->dst_y, pPicture->height-img->h));
     int x = std::max(0,std::min(img->dst_x, pPicture->width-img->w));
@@ -101,9 +101,9 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
       if(y + i >= pPicture->height)
         break;
 
-      BYTE* line = img->bitmap + img->stride*i;
+      uint8_t* line = img->bitmap + img->stride*i;
 
-      BYTE* target[3];
+      uint8_t* target[3];
       target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;
       target[1] = pPicture->data[1] + pPicture->stride[1]*((i + y)>>1) + (x>>1);
       target[2] = pPicture->data[2] + pPicture->stride[2]*((i + y)>>1) + (x>>1);
@@ -131,23 +131,23 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay)
 {
-  BYTE* palette[4];
+  uint8_t* palette[4];
   for(int i=0;i<4;i++)
-    palette[i] = (BYTE*)calloc(1, pOverlay->palette_colors);
+    palette[i] = (uint8_t*)calloc(1, pOverlay->palette_colors);
 
   for(int i=0;i<pOverlay->palette_colors;i++)
   {
     uint32_t color = pOverlay->palette[i];
 
-    palette[3][i] = (BYTE)((color >> 24) & 0xff);
+    palette[3][i] = (uint8_t)((color >> 24) & 0xff);
 
     double r = ((color >> 16) & 0xff) / 255.0;
     double g = ((color >> 8 ) & 0xff) / 255.0;
     double b = ((color >> 0 ) & 0xff) / 255.0;
 
-    palette[0][i] = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
-    palette[1][i] = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
-    palette[2][i] = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
+    palette[0][i] = (uint8_t)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
+    palette[1][i] = (uint8_t)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
+    palette[2][i] = (uint8_t)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
   }
 
   // we try o fit it in if it's outside the image
@@ -159,9 +159,9 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
     if(y + i >= pPicture->height)
       break;
 
-    BYTE* line = pOverlay->data + pOverlay->linesize*i;
+    uint8_t* line = pOverlay->data + pOverlay->linesize*i;
 
-    BYTE* target[3];
+    uint8_t* target[3];
     target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;
     target[1] = pPicture->data[1] + pPicture->stride[1]*((i + y)>>1) + (x>>1);
     target[2] = pPicture->data[2] + pPicture->stride[2]*((i + y)>>1) + (x>>1);

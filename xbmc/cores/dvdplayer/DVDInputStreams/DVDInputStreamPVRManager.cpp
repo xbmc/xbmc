@@ -165,7 +165,7 @@ void CDVDInputStreamPVRManager::Close()
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Close - stream closed");
 }
 
-int CDVDInputStreamPVRManager::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamPVRManager::Read(uint8_t* buf, int buf_size)
 {
   if(!m_pFile) return -1;
 

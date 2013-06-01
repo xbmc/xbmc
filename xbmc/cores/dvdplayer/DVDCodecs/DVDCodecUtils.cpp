@@ -38,7 +38,7 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
     int h = iHeight / 2;
     int size = w * h;
     int totalsize = (iWidth * iHeight) + size * 2;
-    BYTE* data = new BYTE[totalsize];
+    uint8_t* data = new uint8_t[totalsize];
     if (data)
     {
       pPicture->data[0] = data;
@@ -68,7 +68,7 @@ void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 
 bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 {
-  BYTE *s, *d;
+  uint8_t *s, *d;
   int w = pSrc->iWidth;
   int h = pSrc->iHeight;
 
@@ -107,8 +107,8 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 
 bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
-  BYTE *s = pSrc->data[0];
-  BYTE *d = pImage->plane[0];
+  uint8_t *s = pSrc->data[0];
+  uint8_t *d = pImage->plane[0];
   int w = pImage->width * pImage->bpp;
   int h = pImage->height;
   if ((w == pSrc->iLineSize[0]) && ((unsigned int) pSrc->iLineSize[0] == pImage->stride[0]))
@@ -171,7 +171,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
     int h = pPicture->iHeight / 2;
     int size = w * h;
     int totalsize = (pPicture->iWidth * pPicture->iHeight) + size * 2;
-    BYTE* data = new BYTE[totalsize];
+    uint8_t* data = new uint8_t[totalsize];
     if (data)
     {
       pPicture->data[0] = data;
@@ -226,7 +226,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
     *pPicture = *pSrc;
 
     int totalsize = pPicture->iWidth * pPicture->iHeight * 2;
-    BYTE* data = new BYTE[totalsize];
+    uint8_t* data = new uint8_t[totalsize];
 
     if (data)
     {
@@ -280,8 +280,8 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
 
 bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
-  BYTE *s = pSrc->data[0];
-  BYTE *d = pImage->plane[0];
+  uint8_t *s = pSrc->data[0];
+  uint8_t *d = pImage->plane[0];
   int w = pSrc->iWidth;
   int h = pSrc->iHeight;
   // Copy Y
@@ -323,8 +323,8 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
 
 bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
-  BYTE *s = pSrc->data[0];
-  BYTE *d = pImage->plane[0];
+  uint8_t *s = pSrc->data[0];
+  uint8_t *d = pImage->plane[0];
   int w = pSrc->iWidth;
   int h = pSrc->iHeight;
 

@@ -32,7 +32,7 @@ public:
   virtual ~CDVDInputStreamHTSP();
   virtual bool    Open(const char* file, const std::string &content);
   virtual void    Close();
-  virtual int     Read(BYTE* buf, int buf_size);
+  virtual int     Read(uint8_t* buf, int buf_size);
   virtual int64_t Seek(int64_t offset, int whence) { return -1; }
   virtual bool Pause(double dTime) { return false; };
   virtual bool    IsEOF();

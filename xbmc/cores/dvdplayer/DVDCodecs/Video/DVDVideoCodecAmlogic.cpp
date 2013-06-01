@@ -170,7 +170,7 @@ void CDVDVideoCodecAmlogic::Dispose(void)
     FrameQueuePop();
 }
 
-int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts)
+int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double pts)
 {
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
@@ -313,7 +313,7 @@ void CDVDVideoCodecAmlogic::FrameQueuePush(double dts, double pts)
   pthread_mutex_unlock(&m_queue_mutex);	
 }
 
-void CDVDVideoCodecAmlogic::FrameRateTracking(BYTE *pData, int iSize, double dts, double pts)
+void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts)
 {
   // mpeg2 handling
   if (m_mpeg2_sequence)
