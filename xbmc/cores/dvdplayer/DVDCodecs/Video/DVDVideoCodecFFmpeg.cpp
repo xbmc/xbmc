@@ -157,9 +157,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
-  if(!m_dllSwScale.Load()
-  || !m_dllPostProc.Load()
-  ) return false;
+  if(!m_dllSwScale.Load()) 
+    return false;
 
   m_bSoftware     = hints.software;
   m_iOrientation  = hints.orientation;
@@ -306,8 +305,6 @@ void CDVDVideoCodecFFmpeg::Dispose()
   SAFE_RELEASE(m_pHardware);
 
   FilterClose();
-
-  m_dllPostProc.Unload();
 }
 
 void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)

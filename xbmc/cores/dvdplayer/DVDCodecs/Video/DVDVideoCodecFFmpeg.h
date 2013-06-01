@@ -109,7 +109,6 @@ protected:
   unsigned int m_uSurfacesCount;
 
   DllSwScale m_dllSwScale;
-  DllPostProc m_dllPostProc;
 
   std::string m_name;
   bool              m_bSoftware;
