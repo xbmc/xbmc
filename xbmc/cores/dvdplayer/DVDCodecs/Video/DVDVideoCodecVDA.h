@@ -23,7 +23,6 @@
 #include <CoreVideo/CoreVideo.h>
 
 class DllSwScale;
-class DllLibVDADecoder;
 class CBitstreamConverter;
 struct frame_queue;
 
@@ -52,7 +51,6 @@ protected:
     void *decompressionOutputRefCon, CFDictionaryRef frameInfo,
     OSStatus status, uint32_t infoFlags, CVImageBufferRef imageBuffer);
 
-  DllLibVDADecoder  *m_dll;
   void              *m_vda_decoder;   // opaque vdadecoder reference
   int32_t           m_format;
   const char        *m_pFormatName;

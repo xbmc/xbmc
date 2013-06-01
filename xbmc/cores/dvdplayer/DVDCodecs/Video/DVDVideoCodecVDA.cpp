@@ -20,7 +20,7 @@
 
 #include "config.h"
 
-#if defined(HAVE_LIBVDADECODER)
+#if defined(TARGET_DARWIN_OSX)
 #include "system_gl.h"
 #include "DVDVideoCodecVDA.h"
 
@@ -36,6 +36,13 @@
 #include "settings/Settings.h"
 
 #include <CoreFoundation/CoreFoundation.h>
+#include <VideoDecodeAcceleration/VDADecoder.h>
+
+// extra flags not defined in VDADecoder.h
+enum {
+  kVDADecodeInfo_Asynchronous = 1UL << 0,
+  kVDADecodeInfo_FrameDropped = 1UL << 1
+};
 
 /*
  how to detect the interlacing used on an existing stream:
@@ -64,82 +71,6 @@ typedef struct frame_queue {
   CVBufferRef         pixel_buffer_ref;
   struct frame_queue  *nextframe;
 } frame_queue;
-
-////////////////////////////////////////////////////////////////////////////////////////////
-// http://developer.apple.com/mac/library/technotes/tn2010/tn2267.html
-// VDADecoder API (keep this until VDADecoder.h is public).
-// #include <VideoDecodeAcceleration/VDADecoder.h>
-enum {
-  kVDADecoderNoErr = 0,
-  kVDADecoderHardwareNotSupportedErr = -12470,
-  kVDADecoderFormatNotSupportedErr = -12471,
-  kVDADecoderConfigurationError = -12472,
-  kVDADecoderDecoderFailedErr = -12473,
-};
-enum {
-  kVDADecodeInfo_Asynchronous = 1UL << 0,
-  kVDADecodeInfo_FrameDropped = 1UL << 1
-};
-enum {
-  // tells the decoder not to bother returning a CVPixelBuffer
-  // in the outputCallback. The output callback will still be called.
-  kVDADecoderDecodeFlags_DontEmitFrame = 1 << 0
-};
-enum {
-  // decode and return buffers for all frames currently in flight.
-  kVDADecoderFlush_EmitFrames = 1 << 0		
-};
-
-typedef struct OpaqueVDADecoder* VDADecoder;
-
-typedef void (*VDADecoderOutputCallback)(
-  void *decompressionOutputRefCon,
-  CFDictionaryRef frameInfo,
-  OSStatus status,
-  uint32_t infoFlags,
-  CVImageBufferRef imageBuffer);
-
-////////////////////////////////////////////////////////////////////////////////////////////
-class DllLibVDADecoderInterface
-{
-public:
-  virtual ~DllLibVDADecoderInterface() {}
-  virtual OSStatus VDADecoderCreate(
-    CFDictionaryRef decoderConfiguration, CFDictionaryRef destinationImageBufferAttributes,
-    VDADecoderOutputCallback *outputCallback, void *decoderOutputCallbackRefcon, VDADecoder *decoderOut) = 0;
-  virtual OSStatus VDADecoderDecode(
-    VDADecoder decoder, uint32_t decodeFlags, CFTypeRef compressedBuffer, CFDictionaryRef frameInfo) = 0;
-  virtual OSStatus VDADecoderFlush(VDADecoder decoder, uint32_t flushFlags) = 0;
-  virtual OSStatus VDADecoderDestroy(VDADecoder decoder) = 0;
-  virtual CFStringRef Get_kVDADecoderConfiguration_Height() = 0;
-  virtual CFStringRef Get_kVDADecoderConfiguration_Width() = 0;
-  virtual CFStringRef Get_kVDADecoderConfiguration_SourceFormat() = 0;
-  virtual CFStringRef Get_kVDADecoderConfiguration_avcCData() = 0;
-};
-
-class DllLibVDADecoder : public DllDynamic, DllLibVDADecoderInterface
-{
-  DECLARE_DLL_WRAPPER(DllLibVDADecoder, DLL_PATH_LIBVDADECODER)
-
-  DEFINE_METHOD5(OSStatus, VDADecoderCreate, (CFDictionaryRef p1, CFDictionaryRef p2, VDADecoderOutputCallback* p3, void* p4, VDADecoder* p5))
-  DEFINE_METHOD4(OSStatus, VDADecoderDecode, (VDADecoder p1, uint32_t p2, CFTypeRef p3, CFDictionaryRef p4))
-  DEFINE_METHOD2(OSStatus, VDADecoderFlush, (VDADecoder p1, uint32_t p2))
-  DEFINE_METHOD1(OSStatus, VDADecoderDestroy, (VDADecoder p1))
-  DEFINE_GLOBAL(CFStringRef, kVDADecoderConfiguration_Height)
-  DEFINE_GLOBAL(CFStringRef, kVDADecoderConfiguration_Width)
-  DEFINE_GLOBAL(CFStringRef, kVDADecoderConfiguration_SourceFormat)
-  DEFINE_GLOBAL(CFStringRef, kVDADecoderConfiguration_avcCData)
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD(VDADecoderCreate)
-    RESOLVE_METHOD(VDADecoderDecode)
-    RESOLVE_METHOD(VDADecoderFlush)
-    RESOLVE_METHOD(VDADecoderDestroy)
-    RESOLVE_METHOD(kVDADecoderConfiguration_Height)
-    RESOLVE_METHOD(kVDADecoderConfiguration_Width)
-    RESOLVE_METHOD(kVDADecoderConfiguration_SourceFormat)
-    RESOLVE_METHOD(kVDADecoderConfiguration_avcCData)
-  END_METHOD_RESOLVE()
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // helper function that wraps dts/pts into a dictionary
@@ -193,7 +124,6 @@ static void GetFrameDisplayTimeFromDictionary(
   return;
 }
 
-static DllLibVDADecoder *g_DllLibVDADecoder = (DllLibVDADecoder*)-1;
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
@@ -208,7 +138,6 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_bitstream = NULL;
   m_dllSwScale = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
-  m_dll = NULL;
   m_DropPictures = false;
   m_decode_async = false;
   m_sort_time_offset = 0.0;
@@ -223,19 +152,6 @@ CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (g_DllLibVDADecoder == (DllLibVDADecoder*)-1)
-  {
-    m_dll = new DllLibVDADecoder;
-    if (!m_dll->Load())
-    {
-      CLog::Log(LOGNOTICE, "%s - DllLibVDADecoder load failed", __FUNCTION__, hints.profile);
-      return false;
-    }
-    g_DllLibVDADecoder = m_dll;
-  }
-  else
-    m_dll = g_DllLibVDADecoder;
-
   if (CSettings::Get().GetBool("videoplayer.usevda") && !hints.software)
   {
     CCocoaAutoPool pool;
@@ -398,10 +314,10 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFNumberRef avcHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
     CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &m_format);
 
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Height(), avcHeight);
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(),  avcWidth);
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_SourceFormat(), avcFormat);
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
+    CFDictionarySetValue(decoderConfiguration, kVDADecoderConfiguration_Height, avcHeight);
+    CFDictionarySetValue(decoderConfiguration, kVDADecoderConfiguration_Width,  avcWidth);
+    CFDictionarySetValue(decoderConfiguration, kVDADecoderConfiguration_SourceFormat, avcFormat);
+    CFDictionarySetValue(decoderConfiguration, kVDADecoderConfiguration_avcCData, avcCData);
 
     // release the retained object refs, decoderConfiguration owns them now
     CFRelease(avcWidth);
@@ -431,7 +347,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     OSStatus status;
     try
     {
-      status = m_dll->VDADecoderCreate(decoderConfiguration, destinationImageBufferAttributes,
+      status = VDADecoderCreate(decoderConfiguration, destinationImageBufferAttributes,
         (VDADecoderOutputCallback*)VDADecoderCallback, this, (VDADecoder*)&m_vda_decoder);
     }
     catch (...)
@@ -466,7 +382,7 @@ void CDVDVideoCodecVDA::Dispose()
 {
   CCocoaAutoPool pool;
   if (m_vda_decoder)
-    m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder), m_vda_decoder = NULL;
+    VDADecoderDestroy((VDADecoder)m_vda_decoder), m_vda_decoder = NULL;
 
   if (!m_use_cvBufferRef && m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
@@ -505,7 +421,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     if (m_DropPictures)
       avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
 
-    OSStatus status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
+    OSStatus status = VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
     CFRelease(avc_time);
     CFRelease(avc_demux);
     if (status != kVDADecoderNoErr)
@@ -519,7 +435,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
   {
     // force synchronous decode to fix issues with ATI GPUs,
     // we still have to sort returned frames by pts to handle out-of-order demuxer packets. 
-    m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, kVDADecoderFlush_EmitFrames);
+    VDADecoderFlush((VDADecoder)m_vda_decoder, kVDADecoderFlush_EmitFrames);
   }
 
   if (m_queue_depth < m_max_ref_frames)
@@ -531,7 +447,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 void CDVDVideoCodecVDA::Reset(void)
 {
   CCocoaAutoPool pool;
-  m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, 0);
+  VDADecoderFlush((VDADecoder)m_vda_decoder, 0);
 
   while (m_queue_depth)
     DisplayQueuePop();

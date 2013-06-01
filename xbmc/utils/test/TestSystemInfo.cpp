@@ -79,12 +79,6 @@ TEST_F(TestSystemInfo, IsAppleTV2)
     testing::PrintToString(g_sysinfo.IsAppleTV2()) << std::endl;
 }
 
-TEST_F(TestSystemInfo, HasVDADecoder)
-{
-  std::cout << "HasVDADecoder(): " <<
-    testing::PrintToString(g_sysinfo.HasVDADecoder()) << std::endl;
-}
-
 TEST_F(TestSystemInfo, HasVideoToolBoxDecoder)
 {
   std::cout << "HasVideoToolBoxDecoder(): " <<

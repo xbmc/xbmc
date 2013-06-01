@@ -14,7 +14,7 @@ ifeq (@USE_CRYSTALHD@,1)
 SRCS += CrystalHD.cpp
 SRCS += DVDVideoCodecCrystalHD.cpp
 endif
-ifeq (@USE_VDA@,1)
+ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += DVDVideoCodecVDA.cpp
 endif
 ifeq (@USE_OPENMAX@,1)

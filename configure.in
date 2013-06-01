@@ -141,8 +141,6 @@ vaapi_not_found="== Could not find libva. VAAPI support disabled. =="
 vaapi_disabled="== VAAPI support manually disabled. =="
 crystalhd_not_found="== Could not find libcrystalhd. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
-vdadecoder_enabled="== VDADecoder support enabled. =="
-vdadecoder_disabled="== VDADecoder support manually disabled. =="
 vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
@@ -262,12 +260,6 @@ AC_ARG_ENABLE([crystalhd],
   [enable CrystalHD decoding (default is auto)])],
   [use_crystalhd=$enableval],
   [use_crystalhd=auto])
-
-AC_ARG_ENABLE([vdadecoder],
-  [AS_HELP_STRING([--enable-vdadecoder],
-  [enable VDADecoder decoding (default is auto)])],
-  [use_vdadecoder=$enableval],
-  [use_vdadecoder=auto])
 
 AC_ARG_ENABLE([vtbdecoder],
   [AS_HELP_STRING([--enable-vtbdecoder],
@@ -608,7 +600,6 @@ case $host in
      use_neon=yes
      use_libcec=no
      use_crystalhd=no
-     use_vdadecoder=no
      use_vtbdecoder=yes
      use_optical_drive=no
      use_dvdcss=no
@@ -633,7 +624,6 @@ case $host in
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
-     use_vdadecoder=no
      use_vtbdecoder=no
      use_crystalhd=no
      ARCH="powerpc-osx"
@@ -1821,26 +1811,6 @@ else
   USE_CRYSTALHD=0
 fi
 
-# VDADecoder
-if test "x$use_vdadecoder" != "xno"; then
-  if test "$host_vendor" = "apple" ; then
-    HAVE_LIBVDADECODER=1
-    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
-    AC_MSG_NOTICE($vdadecoder_enabled)
-    USE_VDA=1
-  else
-    if test "x$use_vdadecoder" = "xyes"; then
-      AC_MSG_ERROR([VDA Decoder not supported on this platform])
-    else
-      use_vdadecoder="no"
-      AC_MSG_NOTICE($vdadecoder_disabled)
-    fi
-    USE_VDA=0
-  fi
-else
-  AC_MSG_NOTICE($vdadecoder_disabled)
-fi
-
 # VTBDecoder
 if test "x$use_vtbdecoder" != "xno"; then
   if test "$host_vendor" = "apple" ; then
@@ -2036,12 +2006,6 @@ if test "x$use_crystalhd" != "xno"; then
   final_message="$final_message\n  CrystalHD:\tYes"
 else
   final_message="$final_message\n  CrystalHD:\tNo"
-fi
-
-if test "x$use_vdadecoder" != "xno"; then
-  final_message="$final_message\n  VDADecoder:\tYes"
-else
-  final_message="$final_message\n  VDADecoder:\tNo"
 fi
 
 if test "x$use_vtbdecoder" != "xno"; then
@@ -2511,7 +2475,6 @@ AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_LIBAFPCLIENT)
 AC_SUBST(USE_AIRPLAY)
-AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)

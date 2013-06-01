@@ -26,7 +26,7 @@
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 
-#if defined(HAVE_LIBVDADECODER)
+#if defined(TARGET_DARWIN_OSX)
 #include "Video/DVDVideoCodecVDA.h"
 #endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
@@ -139,10 +139,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
   CStdString hwSupport;
-#if defined(HAVE_LIBVDADECODER) && defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
   hwSupport += "VDADecoder:yes ";
-#elif defined(TARGET_DARWIN)
-  hwSupport += "VDADecoder:no ";
 #endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(TARGET_DARWIN)
   hwSupport += "VideoToolBoxDecoder:yes ";
@@ -189,15 +187,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   }
 #endif
 
-#if defined(HAVE_LIBVDADECODER)
+#if defined(TARGET_DARWIN_OSX)
   if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda"))
   {
-    if (g_sysinfo.HasVDADecoder())
+    if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
     {
-      if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
-      {
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
-      }
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
     }
   }
 #endif

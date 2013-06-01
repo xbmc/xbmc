@@ -57,7 +57,6 @@ extern "C"
 
   // Version.
   //
-  bool Cocoa_HasVDADecoder();
   bool Cocoa_GPUForDisplayIsNvidiaPureVideo3();
   int Cocoa_GetOSVersion();
 

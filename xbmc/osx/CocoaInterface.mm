@@ -373,21 +373,6 @@ void Cocoa_ShowMouse()
 }
 
 //---------------------------------------------------------------------------------
-bool Cocoa_HasVDADecoder()
-{
-  static int result = -1;
-
-  if (result == -1)
-  {
-    if (Cocoa_GetOSVersion() >= 0x1063)
-      result = (access(DLL_PATH_LIBVDADECODER, 0) == 0) ? 1:0;
-    else
-      result = 0;
-  }
-
-  return (result == 1);
-}
-
 bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
 {
   bool result = false;

@@ -725,10 +725,9 @@ void CSettings::InitializeConditions()
 #ifdef HAVE_LIBVA
   m_settingsManager->AddCondition("have_libva");
 #endif
-#ifdef HAVE_LIBVDADECODER
+#ifdef TARGET_DARWIN_OSX
   m_settingsManager->AddCondition("have_libvdadecoder");
-  if (g_sysinfo.HasVDADecoder())
-    m_settingsManager->AddCondition("hasvdadecoder");
+  m_settingsManager->AddCondition("hasvdadecoder");
 #endif
 #ifdef HAVE_LIBVDPAU
   m_settingsManager->AddCondition("have_libvdpau");

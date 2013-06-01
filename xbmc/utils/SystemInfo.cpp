@@ -768,16 +768,6 @@ bool CSysInfo::HasVideoToolBoxDecoder()
   return result;
 }
 
-bool CSysInfo::HasVDADecoder()
-{
-  bool        result = false;
-
-#if defined(TARGET_DARWIN_OSX)
-  result = Cocoa_HasVDADecoder();
-#endif
-  return result;
-}
-
 CJob *CSysInfo::GetJob() const
 {
   return new CSysInfoJob();

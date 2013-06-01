@@ -3000,6 +3000,7 @@
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
+		F5071906175A26AD004C87D1 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */; };
 		F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */; };
@@ -5234,6 +5235,7 @@
 		F502BFF1160F36AD00C96C76 /* swig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = swig.h; path = python/swig.h; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
+		F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
 		F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFlac.cpp; sourceTree = "<group>"; };
@@ -5535,6 +5537,7 @@
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
 				DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */,
+				F5071906175A26AD004C87D1 /* VideoDecodeAcceleration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8758,6 +8761,7 @@
 				E38E23910D2626E600618676 /* OpenGL.framework */,
 				F59879070FBAA0C3008EF4FB /* QuartzCore.framework */,
 				DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */,
+				F5071905175A26AD004C87D1 /* VideoDecodeAcceleration.framework */,
 			);
 			name = OSX;
 			sourceTree = "<group>";

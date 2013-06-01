@@ -115,7 +115,6 @@ public:
   CStdString GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
-  bool HasVDADecoder();
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   static bool IsWindowsVersion(WindowsVersion ver);
