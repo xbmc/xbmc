@@ -244,7 +244,8 @@ double CDVDClock::SystemToPlaying(int64_t system)
   {
     m_startClock = system;
     m_systemUsed = m_systemFrequency;
-    m_pauseClock = 0;
+    if(m_pauseClock)
+      m_pauseClock = m_startClock;
     m_iDisc = 0;
     m_bReset = false;
   }
