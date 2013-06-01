@@ -12826,6 +12826,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = XBMC.app;
+				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 			};
@@ -12840,6 +12841,7 @@
 				);
 				COPY_PHASE_STRIP = YES;
 				PRODUCT_NAME = XBMC.app;
+				SDKROOT = macosx;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				XBMC_DEPENDS_ROOT = "/Users/Shared/xbmc-depends";
 				ZERO_LINK = NO;
