@@ -252,8 +252,9 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     }
     m_presentevent.wait(lock2, endtime.MillisLeft());
   };
+  lock2.Leave();
 
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection, true, m_presentlock);
+  CExclusiveLock lock(m_sharedSection);
   if(!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
@@ -270,6 +271,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
       CApplicationMessenger::Get().SwitchToFullscreen();
       lock.Enter();
     }
+    lock2.Enter();
     if( format & RENDER_FMT_BYPASS )
       m_presentmethod = PRESENT_METHOD_BYPASS;
 
