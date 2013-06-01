@@ -437,6 +437,20 @@ ifneq (@USE_LIBXBMC@,1)
 MAINOBJS+=xbmc/main/main.o
 endif
 
+BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_addon_types.h
+BINDINGS+=xbmc/addons/include/xbmc_epg_types.h
+BINDINGS+=xbmc/addons/include/xbmc_pvr_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_pvr_types.h
+BINDINGS+=xbmc/addons/include/xbmc_scr_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_scr_types.h
+BINDINGS+=xbmc/addons/include/xbmc_vis_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_vis_types.h
+BINDINGS+=addons/library.xbmc.addon/libXBMC_addon.h
+BINDINGS+=addons/library.xbmc.gui/libXBMC_gui.h
+BINDINGS+=addons/library.xbmc.pvr/libXBMC_pvr.h
+
 libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS)
@@ -561,6 +575,12 @@ endif
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
 	@install -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
+
+	@echo "Copying bindings to $(DESTDIR)$(includedir)/xbmc"
+	@install -d $(DESTDIR)$(includedir)/xbmc
+	@for f in $(BINDINGS); do \
+	  install -m 0644 $$f $(DESTDIR)$(includedir)/xbmc ; \
+	done
 
 uninstall:
 	@echo "Removing XBMC..."
