@@ -16,7 +16,7 @@
     </category>
   </section>
   <section id="music">
-    <category id="audiocds" label="620" help="36282">
+    <category id="audiocds">
       <visible>false</visible>
     </category>
   </section>
