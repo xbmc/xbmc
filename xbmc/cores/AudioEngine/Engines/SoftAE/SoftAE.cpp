@@ -64,6 +64,7 @@ CSoftAE::CSoftAE():
   m_softSuspendTimer   (0           ),
   m_volume             (1.0         ),
   m_sink               (NULL        ),
+  m_sinkBlockTime      (0           ),
   m_transcode          (false       ),
   m_rawPassthrough     (false       ),
   m_soundMode          (AE_SOUND_OFF),
@@ -350,6 +351,7 @@ void CSoftAE::InternalOpenSink()
     m_sinkFormatSampleRateMul = 1.0 / (double)newFormat.m_sampleRate;
     m_sinkFormatFrameSizeMul  = 1.0 / (double)newFormat.m_frameSize;
     m_sinkBlockSize           = newFormat.m_frames * newFormat.m_frameSize;
+    m_sinkBlockTime           = 1000 * newFormat.m_frames / newFormat.m_sampleRate;
     // check if sink controls volume, if so, init the volume.
     m_sinkHandlesVolume       = m_sink->HasVolume();
     if (m_sinkHandlesVolume)
@@ -648,7 +650,9 @@ void CSoftAE::Deinitialize()
     delete m_thread;
     m_thread = NULL;
   }
+  lock.Leave();
 
+  CExclusiveLock sinkLock(m_sinkLock);
   if (m_sink)
   {
     /* shutdown the sink */
@@ -774,7 +778,7 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
     ASSERT(encodedSampleRate);
 
   CSingleLock streamLock(m_streamLock);
-  CSoftAEStream *stream = new CSoftAEStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
+  CSoftAEStream *stream = new CSoftAEStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options, m_streamLock);
   m_newStreams.push_back(stream);
   streamLock.Leave();
   // this is really needed here
@@ -1212,6 +1216,43 @@ bool CSoftAE::FinalizeSamples(float *buffer, unsigned int samples, bool hasAudio
   return true;
 }
 
+unsigned int CSoftAE::WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool hasAudio)
+{
+  CExclusiveLock lock(m_sinkLock); /* lock to maintain delay consistency */
+
+  XbmcThreads::EndTime timeout(m_sinkBlockTime * 2);
+  while(m_sink && src.Used() >= src_len)
+  {
+    int frames = m_sink->AddPackets(data, m_sinkFormat.m_frames, hasAudio);
+
+    /* Return value of INT_MAX signals error in sink - restart */
+    if (frames == INT_MAX)
+    {
+      CLog::Log(LOGERROR, "CSoftAE::WriteSink - sink error - reinit flagged");
+      m_reOpen = true;
+      break;
+    }
+
+    if (frames)
+    {
+      m_buffer.Shift(NULL, src_len);
+      return frames;
+    }
+
+    if(timeout.IsTimePast())
+    {
+      CLog::Log(LOGERROR, "CSoftAE::WriteSink - sink blocked- reinit flagged");
+      m_reOpen = true;
+      break;
+    }
+
+    lock.Leave();
+    Sleep(m_sinkBlockTime / 4);
+    lock.Enter();
+  }
+  return 0;
+}
+
 int CSoftAE::RunOutputStage(bool hasAudio)
 {
   const unsigned int needSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
@@ -1222,7 +1263,6 @@ int CSoftAE::RunOutputStage(bool hasAudio)
   void *data = m_buffer.Raw(needBytes);
   hasAudio = FinalizeSamples((float*)data, needSamples, hasAudio);
 
-  int wroteFrames = 0;
   if (m_convertFn)
   {
     const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
@@ -1232,22 +1272,7 @@ int CSoftAE::RunOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  /* Output frames to sink */
-  if (m_sink)
-    wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames, hasAudio);
-
-  /* Return value of INT_MAX signals error in sink - restart */
-  if (wroteFrames == INT_MAX)
-  {
-    CLog::Log(LOGERROR, "CSoftAE::RunOutputStage - sink error - reinit flagged");
-    wroteFrames = 0;
-    m_reOpen = true;
-  }
-
-  if (wroteFrames)
-    m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
-
-  return wroteFrames;
+  return WriteSink(m_buffer, needBytes, (uint8_t*)data, hasAudio);
 }
 
 int CSoftAE::RunRawOutputStage(bool hasAudio)
@@ -1275,20 +1300,7 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
     data = m_converted;
   }
 
-  int wroteFrames = 0;
-  if (m_sink)
-    wroteFrames = m_sink->AddPackets((uint8_t *)data, m_sinkFormat.m_frames, hasAudio);
-
-  /* Return value of INT_MAX signals error in sink - restart */
-  if (wroteFrames == INT_MAX)
-  {
-    CLog::Log(LOGERROR, "CSoftAE::RunRawOutputStage - sink error - reinit flagged");
-    wroteFrames = 0;
-    m_reOpen = true;
-  }
-
-  m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
-  return wroteFrames;
+  return WriteSink(m_buffer, m_sinkBlockSize, (uint8_t*)data, hasAudio);
 }
 
 int CSoftAE::RunTranscodeStage(bool hasAudio)
@@ -1318,33 +1330,24 @@ int CSoftAE::RunTranscodeStage(bool hasAudio)
       buffer = m_buffer.Raw(block);
 
     encodedFrames = m_encoder->Encode((float*)buffer, m_encoderFormat.m_frames);
-    m_buffer.Shift(NULL, encodedFrames * m_encoderFormat.m_frameSize);
 
     uint8_t *packet;
     unsigned int size = m_encoder->GetData(&packet);
+
+    CExclusiveLock sinkLock(m_sinkLock); /* lock to maintain delay consistency */
 
     /* if there is not enough space for another encoded packet enlarge the buffer */
     if (m_encodedBuffer.Free() < size)
       m_encodedBuffer.ReAlloc(m_encodedBuffer.Used() + size);
 
+    m_buffer.Shift(NULL, encodedFrames * m_encoderFormat.m_frameSize);
     m_encodedBuffer.Push(packet, size);
   }
 
   /* if we have enough data to write */
   if (m_encodedBuffer.Used() >= sinkBlock)
-  {
-    int wroteFrames = m_sink->AddPackets((uint8_t*)m_encodedBuffer.Raw(sinkBlock), m_sinkFormat.m_frames, hasAudio);
-    
-    /* Return value of INT_MAX signals error in sink - restart */
-    if (wroteFrames == INT_MAX)
-    {
-      CLog::Log(LOGERROR, "CSoftAE::RunTranscodeStage - sink error - reinit flagged");
-      wroteFrames = 0;
-      m_reOpen = true;
-    }
+    WriteSink(m_encodedBuffer, sinkBlock, (uint8_t*)m_encodedBuffer.Raw(sinkBlock), hasAudio);
 
-    m_encodedBuffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
-  }
   return encodedFrames;
 }
 

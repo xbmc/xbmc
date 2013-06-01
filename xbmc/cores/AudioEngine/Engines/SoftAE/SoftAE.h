@@ -165,6 +165,7 @@ private:
   double                    m_sinkFormatSampleRateMul;
   double                    m_sinkFormatFrameSizeMul;
   unsigned int              m_sinkBlockSize;
+  unsigned int              m_sinkBlockTime;
   bool                      m_sinkHandlesVolume;
   AEAudioFormat             m_encoderFormat;
   double                    m_encoderFrameSizeMul;
@@ -246,5 +247,7 @@ private:
 
   void         RemoveStream(StreamList &streams, CSoftAEStream *stream);
   void         PrintSinks();
+
+  unsigned int WriteSink(CAEBuffer& src, int src_len, uint8_t *data, bool hasAudio);
 };
 
