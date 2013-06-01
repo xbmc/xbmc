@@ -94,6 +94,7 @@ public:
   int GetLabel() const { return m_label; }
   int GetHelp() const { return m_help; }
   bool IsEnabled() const;
+  const std::string& GetParent() const { return m_parentSetting; }
   SettingLevel GetLevel() const { return m_level; }
   const CSettingControl& GetControl() const { return m_control; }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
@@ -113,6 +114,7 @@ protected:
   ISettingCallback *m_callback;
   int m_label;
   int m_help;
+  std::string m_parentSetting;
   SettingLevel m_level;
   CSettingControl m_control;
   SettingDependencies m_dependencies;
