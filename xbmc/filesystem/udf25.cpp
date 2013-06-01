@@ -282,7 +282,7 @@ uint32_t UDFFilePos(struct FileAD *File, uint64_t pos, uint64_t *res)
     return 0;
 
   *res = (uint64_t)(File->Partition_Start + File->AD_chain[i].Location) * DVD_VIDEO_LB_LEN + pos;
-  return File->AD_chain[i].Length - pos;
+  return File->AD_chain[i].Length - (uint32_t)pos;
 }
 
 uint32_t UDFFileBlockPos(struct FileAD *File, uint32_t lb)
@@ -291,7 +291,7 @@ uint32_t UDFFileBlockPos(struct FileAD *File, uint32_t lb)
   uint32_t rem;
   rem = UDFFilePos(File, lb * DVD_VIDEO_LB_LEN, &res);
   if(rem > 0)
-    return res / DVD_VIDEO_LB_LEN;
+    return (uint32_t)(res / DVD_VIDEO_LB_LEN);
   else
     return 0;
 }

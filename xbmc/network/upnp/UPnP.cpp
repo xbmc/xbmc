@@ -216,7 +216,7 @@ public:
 
         if (item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != bookmark.timeInSeconds) {
             CLog::Log(LOGDEBUG, "UPNP: Updating resume point for item %s", path.c_str());
-            long time = bookmark.timeInSeconds;
+            long time = (long)bookmark.timeInSeconds;
             if (time < 0) time = 0;
             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
                                                  (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));

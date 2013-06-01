@@ -144,7 +144,7 @@ void CGenericTouchActionHandler::OnRotate(float centerX, float centerY, float an
 
 int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 {
-  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, x, y);
+  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, (int)x, (int)y);
   if (!g_windowManager.SendMessage(msg))
     return 0;
 
@@ -190,8 +190,8 @@ void CGenericTouchActionHandler::focusControl(float x, float y)
 
   newEvent.type = XBMC_MOUSEMOTION;
   newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.x = x;
-  newEvent.motion.y = y;
+  newEvent.motion.x = (uint16_t)x;
+  newEvent.motion.y = (uint16_t)y;
 
   CWinEvents::MessagePush(&newEvent);
 }

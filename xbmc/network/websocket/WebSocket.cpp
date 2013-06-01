@@ -320,7 +320,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
         }
 
         // adjust the length and the buffer values
-        length -= frame->GetFrameLength();
+        length -= (size_t)frame->GetFrameLength();
         buffer += frame->GetFrameLength();
 
         if (frame->IsControlFrame())
@@ -395,7 +395,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
         if (frame->IsValid())
         {
           // adjust the length and the buffer values
-          length -= frame->GetFrameLength();
+          length -= (size_t)frame->GetFrameLength();
           buffer += frame->GetFrameLength();
         }
 

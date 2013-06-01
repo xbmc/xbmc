@@ -387,7 +387,7 @@ void CUPnPPlayer::SeekTime(__int64 ms)
 {
   NPT_CHECK_LABEL(m_control->Seek(m_delegate->m_device
                                 , m_delegate->m_instance
-                                , "REL_TIME", PLT_Didl::FormatTimeStamp(ms / 1000)
+                                , "REL_TIME", PLT_Didl::FormatTimeStamp((NPT_UInt32)(ms / 1000))
                                 , m_delegate), failed);
 
   g_infoManager.SetDisplayAfterSeek();
