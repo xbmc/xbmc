@@ -12816,6 +12816,10 @@
 		6E2FACBB0E26DF7A00DF79EA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					i386,
+					x86_64,
+				);
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -12828,6 +12832,10 @@
 		6E2FACBD0E26DF7A00DF79EA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					i386,
+					x86_64,
+				);
 				COPY_PHASE_STRIP = YES;
 				PRODUCT_NAME = XBMC.app;
 				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
