@@ -1077,6 +1077,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E30286C1759FCC200D93596 /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
@@ -6188,6 +6189,7 @@
 				DFECFB00172D9CAB00A43CF7 /* SettingSection.cpp */,
 				DFECFB01172D9CAB00A43CF7 /* SettingSection.h */,
 				DFECFB02172D9CAB00A43CF7 /* SettingsManager.cpp */,
+				0E30286C1759FCC200D93596 /* SettingsManager.h */,
 				DFECFB03172D9CAB00A43CF7 /* SettingUpdate.cpp */,
 				DFECFB04172D9CAB00A43CF7 /* SettingUpdate.h */,
 				DFECFB05172D9CAB00A43CF7 /* SettingVisibility.cpp */,
