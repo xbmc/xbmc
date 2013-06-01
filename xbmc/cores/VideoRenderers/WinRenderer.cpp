@@ -83,7 +83,6 @@ CWinRenderer::CWinRenderer()
     m_VideoBuffers[i] = NULL;
 
   m_sw_scale_ctx = NULL;
-  m_dllSwScale = NULL;
   m_destWidth = 0;
   m_destHeight = 0;
   m_dllAvUtil = NULL;
@@ -201,11 +200,6 @@ bool CWinRenderer::UpdateRenderMethod()
 
   if (m_renderMethod == RENDER_SW)
   {
-    m_dllSwScale = new DllSwScale();
-
-    if (!m_dllSwScale->Load())
-      CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
-
     if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
@@ -420,10 +414,9 @@ void CWinRenderer::UnInit()
 
   if (m_sw_scale_ctx)
   {
-    m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
+    sws_freeContext(m_sw_scale_ctx);
     m_sw_scale_ctx = NULL;
   }
-  SAFE_DELETE(m_dllSwScale);
 
   m_processor.UnInit();
 }
@@ -660,7 +653,7 @@ void CWinRenderer::RenderSW()
   enum PixelFormat format = PixelFormatFromFormat(m_format);
 
   // 1. convert yuv to rgb
-  m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
+  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
                                                       m_sourceWidth, m_sourceHeight, format,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
                                                       SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
@@ -689,7 +682,7 @@ void CWinRenderer::RenderSW()
   uint8_t *dst[]  = { (uint8_t*) destlr.pBits, 0, 0, 0 };
   int dstStride[] = { destlr.Pitch, 0, 0, 0 };
 
-  m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
+  sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
   for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
     if(!(buf->planes[idx].texture.UnlockRect(0)))

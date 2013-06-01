@@ -157,9 +157,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
-  if(!m_dllSwScale.Load()) 
-    return false;
-
   m_bSoftware     = hints.software;
   m_iOrientation  = hints.orientation;
 

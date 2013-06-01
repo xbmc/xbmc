@@ -36,15 +36,11 @@ FFmpegVideoDecoder::FFmpegVideoDecoder()
   m_pCodec = 0;
   m_pFrame = 0;
   m_pFrameRGB = 0;
-  
-  m_dllSwScale = new DllSwScale();
 }
 
 FFmpegVideoDecoder::~FFmpegVideoDecoder()
 {
   close();
-  
-  delete m_dllSwScale;
 }
 
 void FFmpegVideoDecoder::close()
@@ -73,9 +69,6 @@ void FFmpegVideoDecoder::close()
   m_pCodec = 0;
   m_pFrame = 0;
   m_pFrameRGB = 0;
-  
-  if ( m_dllSwScale->IsLoaded() )
-    m_dllSwScale->Unload();
 }
 
 bool FFmpegVideoDecoder::isOpened() const
@@ -142,12 +135,6 @@ bool FFmpegVideoDecoder::open( const CStdString& filename )
 {
   // See http://dranger.com/ffmpeg/tutorial01.html
   close();
-  
-  if (!m_dllSwScale->Load())
-  {
-    m_errorMsg = "Failed to load FFMpeg libraries";
-    return false;
-  }
 
   // Open the video file
   if ( avformat_open_input( &m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0 )
@@ -290,12 +277,12 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
   }
 
   // We got the video frame, render it into the picture buffer
-  struct SwsContext * context = m_dllSwScale->sws_getContext( m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt,
+  struct SwsContext * context = sws_getContext( m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt,
                            m_frameRGBwidth, m_frameRGBheight, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
 
-  m_dllSwScale->sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, 
+  sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, 
                                                                      m_pFrameRGB->data, m_pFrameRGB->linesize );
-  m_dllSwScale->sws_freeContext( context );
+  sws_freeContext( context );
   av_free_packet( &packet );
 
   // And into the texture

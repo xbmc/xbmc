@@ -187,8 +187,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_nonLinStretch = false;
   m_nonLinStretchGui = false;
   m_pixelRatio = 0.0f;
-
-  m_dllSwScale = new DllSwScale;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -209,7 +207,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_context)
   {
-    m_dllSwScale->sws_freeContext(m_context);
+    sws_freeContext(m_context);
     m_context = NULL;
   }
 
@@ -219,8 +217,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
-
-  delete m_dllSwScale;
 }
 
 bool CLinuxRendererGL::ValidateRenderer()
@@ -796,9 +792,6 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
-  if (!m_dllSwScale->Load())
-    CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
-
   return true;
 }
 
@@ -1134,7 +1127,7 @@ void CLinuxRendererGL::UnInit()
 
   if (m_context)
   {
-    m_dllSwScale->sws_freeContext(m_context);
+    sws_freeContext(m_context);
     m_context = NULL;
   }
 
@@ -2878,14 +2871,14 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
     m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
   }
 
-  m_context = m_dllSwScale->sws_getCachedContext(m_context,
+  m_context = sws_getCachedContext(m_context,
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { (int)m_sourceWidth * 4, 0, 0, 0 };
-  m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
+  sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
 
   if (m_rgbPbo)
   {
@@ -2958,7 +2951,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
   }
 
-  m_context = m_dllSwScale->sws_getCachedContext(m_context,
+  m_context = sws_getCachedContext(m_context,
                                                  im->width, im->height >> 1, srcFormat,
                                                  im->width, im->height >> 1, PIX_FMT_BGRA,
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
@@ -2968,8 +2961,8 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
 
   //convert each YUV field to an RGB field, the top field is placed at the top of the rgb buffer
   //the bottom field is placed at the bottom of the rgb buffer
-  m_dllSwScale->sws_scale(m_context, srcTop, srcStrideTop, 0, im->height >> 1, dstTop, dstStride);
-  m_dllSwScale->sws_scale(m_context, srcBot, srcStrideBot, 0, im->height >> 1, dstBot, dstStride);
+  sws_scale(m_context, srcTop, srcStrideTop, 0, im->height >> 1, dstTop, dstStride);
+  sws_scale(m_context, srcBot, srcStrideBot, 0, im->height >> 1, dstBot, dstStride);
 
   if (m_rgbPbo)
   {

@@ -51,7 +51,6 @@ class CConvolutionShader;
 
 class DllAvUtil;
 class DllAvCodec;
-class DllSwScale;
 
 struct DVDVideoPicture;
 
@@ -208,7 +207,6 @@ protected:
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;
-  DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
 
   // Software rendering

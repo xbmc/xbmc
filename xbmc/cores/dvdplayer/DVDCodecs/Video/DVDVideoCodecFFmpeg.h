@@ -108,8 +108,6 @@ protected:
 
   unsigned int m_uSurfacesCount;
 
-  DllSwScale m_dllSwScale;
-
   std::string m_name;
   bool              m_bSoftware;
   bool  m_isHi10p;
