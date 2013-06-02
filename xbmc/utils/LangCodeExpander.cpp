@@ -401,7 +401,7 @@ bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
   return false;
 }
 
-bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
+bool CLangCodeExpander::LookupInDb(std::string& desc, const std::string& code)
 {
   long longcode;
   CStdString sCode(code);

@@ -73,6 +73,7 @@ public:
   void Clear();
 
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1) const;
+  static bool LookupInDb(std::string& desc, const std::string& code);
 protected:
 
   /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
@@ -85,7 +86,6 @@ protected:
   typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
 
-  bool LookupInDb(CStdString& desc, const CStdString& code);
   bool LookupInMap(CStdString& desc, const CStdString& code);
 
   /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,
