@@ -45,6 +45,7 @@
 #include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderFlags.h"
+#include "guilib/GraphicContext.h"
 
 #include "OMXPlayer.h"
 
@@ -296,7 +297,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
     return;
 
-  int buffer = g_renderManager.WaitForBuffer(CThread::m_bStop, iSleepTime + DVD_MSEC_TO_TIME(500));
+  int buffer = g_renderManager.WaitForBuffer(CThread::m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 0));
   if (buffer < 0)
     return;
 
