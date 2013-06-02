@@ -60,6 +60,7 @@ using namespace std;
 #define CONTROL_SETTINGS_LABEL          2
 #define CATEGORY_GROUP_ID               3
 #define SETTINGS_GROUP_ID               5
+#define CONTROL_DESCRIPTION             6
 #define CONTROL_DEFAULT_BUTTON          7
 #define CONTROL_DEFAULT_RADIOBUTTON     8
 #define CONTROL_DEFAULT_SPIN            9
@@ -172,18 +173,27 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         }
 
         // check if we have changed the category and need to create new setting controls
-        if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_categories.size()) &&
-            focusedControl - CONTROL_START_BUTTONS != m_iCategory)
+        if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_categories.size()))
         {
-          if (!m_categories[focusedControl - CONTROL_START_BUTTONS]->CanAccess())
+          int categoryIndex = focusedControl - CONTROL_START_BUTTONS;
+          if (categoryIndex != m_iCategory)
           {
-            // unable to go to this category - focus the previous one
-            SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iCategory, 0);
-            return false;
-          }
+            if (!m_categories[categoryIndex]->CanAccess())
+            {
+              // unable to go to this category - focus the previous one
+              SET_CONTROL_FOCUS(CONTROL_START_BUTTONS + m_iCategory, 0);
+              return false;
+            }
 
-          m_iCategory = focusedControl - CONTROL_START_BUTTONS;
-          CreateSettings();
+            m_iCategory = categoryIndex;
+            CreateSettings();
+          }
+        }
+        else if (focusedControl >= CONTROL_START_CONTROL && focusedControl < (int)(CONTROL_START_CONTROL + m_settingControls.size()))
+        {
+          CSetting *setting = GetSettingControl(focusedControl)->GetSetting();
+          if (setting != NULL)
+            SetDescription(setting->GetHelp());
         }
       }
       return true;
@@ -301,47 +311,6 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       }
 
       CreateSettings();
-      return true;
-    }
-
-    case ACTION_SHOW_INFO:
-    {
-      int label = -1;
-      int help = -1;
-      int focusedControl = GetFocusedControlID();
-      // check if we are focusing a category
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_categories.size()))
-      {
-        CSettingCategory *category = m_categories[focusedControl - CONTROL_START_BUTTONS];
-        label = category->GetLabel();
-        help = category->GetHelp();
-      }
-      else if (focusedControl >= CONTROL_START_CONTROL && focusedControl < (int)(CONTROL_START_CONTROL + m_settingControls.size()))
-      {
-        CSetting *setting = GetSettingControl(focusedControl)->GetSetting();
-        if (setting != NULL)
-        {
-          label = setting->GetLabel();
-          help = setting->GetHelp();
-        }
-      }
-      else
-        break;
-
-      if (help >= 0)
-      {
-        CGUIDialogTextViewer *dialog = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-        if (dialog != NULL)
-        {
-          if (label < 0)
-            label = 10043; // "Help"
-          dialog->SetHeading(g_localizeStrings.Get(label));
-          dialog->SetText(g_localizeStrings.Get(help));
-          dialog->DoModal();
-        }
-      }
-      else
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(10043), g_localizeStrings.Get(10044), 2000U);
       return true;
     }
 
@@ -553,6 +522,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
   if (category == NULL)
     return;
 
+  // set the description of the current category
+  SetDescription(category->GetHelp());
+
   std::set<std::string> settingMap;
 
   const SettingGroupList& groups = category->GetGroups(CViewStateSettings::Get().GetSettingLevel());
@@ -599,6 +571,19 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
     pSettingControl->Update();
   }
+}
+
+void CGUIWindowSettingsCategory::SetDescription(const CVariant &label)
+{
+  if (GetControl(CONTROL_DESCRIPTION) == NULL)
+    return;
+
+  if (label.isString())
+    SET_CONTROL_LABEL(CONTROL_DESCRIPTION, label.asString());
+  else if (label.isInteger() && label.asInteger() >= 0)
+    SET_CONTROL_LABEL(CONTROL_DESCRIPTION, label.asInteger());
+  else
+    SET_CONTROL_LABEL(CONTROL_DESCRIPTION, "");
 }
 
 CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
