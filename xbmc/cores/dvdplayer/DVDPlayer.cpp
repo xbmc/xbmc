@@ -3672,28 +3672,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  switch (action.GetID())
-  {
-    case ACTION_NEXT_ITEM:
-      if(GetChapterCount() > 0)
-      {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
-        g_infoManager.SetDisplayAfterSeek();
-        return true;
-      }
-      else
-        break;
-    case ACTION_PREV_ITEM:
-      if(GetChapterCount() > 0)
-      {
-        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
-        g_infoManager.SetDisplayAfterSeek();
-        return true;
-      }
-      else
-        break;
-  }
-
   // return false to inform the caller we didn't handle the message
   return false;
 }
