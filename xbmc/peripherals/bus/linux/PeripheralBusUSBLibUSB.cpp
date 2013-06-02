@@ -26,7 +26,7 @@
 using namespace PERIPHERALS;
 
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
-    CPeripheralBus(manager, PERIPHERAL_BUS_USB)
+    CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
   usb_init();
   usb_find_busses();
