@@ -82,7 +82,6 @@ typedef long          __off_t;
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);
 extern "C" char * strcasestr(const char* haystack, const char* needle);
-extern int pgwin32_putenv(const char *envval);
 
 #endif // _WIN32
 

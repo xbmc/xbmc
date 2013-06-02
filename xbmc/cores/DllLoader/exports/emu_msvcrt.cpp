@@ -75,6 +75,8 @@
 #elif !defined(_WIN32)
 #include <dlfcn.h>
 #endif
+#include "utils/Environment.h"
+
 using namespace std;
 using namespace XFILE;
 
@@ -216,13 +218,8 @@ extern "C" void __stdcall update_emu_environ()
     strProxy += CSettings::Get().GetString("network.httpproxyserver");
     strProxy += ":" + CSettings::Get().GetString("network.httpproxyport");
 
-#ifdef _WIN32
-    pgwin32_putenv(("HTTP_PROXY=http://" +strProxy).c_str());
-    pgwin32_putenv(("HTTPS_PROXY=http://" +strProxy).c_str());
-#else
-    setenv( "HTTP_PROXY", "http://" + strProxy, true );
-    setenv( "HTTPS_PROXY", "http://" + strProxy, true );
-#endif
+    CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
+    CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );
   }
   else
   {

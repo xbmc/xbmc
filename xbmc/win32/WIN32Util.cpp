@@ -42,6 +42,7 @@
 #include "utils/URIUtils.h"
 #include "powermanagement\PowerManager.h"
 #include "utils/SystemInfo.h"
+#include "utils/Environment.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -500,23 +501,20 @@ CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
 
 void CWIN32Util::ExtendDllPath()
 {
-  CStdStringW strEnvW;
+  CStdString strEnv;
   CStdStringArray vecEnv;
-  WCHAR wctemp[32768];
-  if(GetEnvironmentVariableW(L"PATH",wctemp,32767) != 0)
-    strEnvW = wctemp;
+  strEnv = CEnvironment::getenv("PATH");
+  if (strEnv.IsEmpty())
+    CLog::Log(LOGWARNING, "Can get system env PATH or PATH is empty");
 
   StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
   for (int i=0; i<(int)vecEnv.size(); ++i)
-  {
-    CStdStringW strFileW;
-    g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(vecEnv[i]), strFileW, false);
-    strEnvW.append(L";" + strFileW);
-  }
-  if(SetEnvironmentVariableW(L"PATH",strEnvW.c_str())!=0)
-    CLog::Log(LOGDEBUG,"Setting system env PATH to %S",strEnvW.c_str());
+    strEnv.append(";" + CSpecialProtocol::TranslatePath(vecEnv[i]));
+
+  if (CEnvironment::setenv("PATH", strEnv) == 0)
+    CLog::Log(LOGDEBUG,"Setting system env PATH to %S",strEnv.c_str());
   else
-    CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnvW.c_str());
+    CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnv.c_str());
 
 }
 

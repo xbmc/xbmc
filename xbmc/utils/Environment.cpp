@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #ifdef TARGET_WINDOWS
 #include <Windows.h>
+#include "utils\SystemInfo.h"
 #endif
 
 // --------------------- Helper Functions ---------------------
@@ -76,11 +77,13 @@ std::string CEnvironment::win32ConvertWToUtf8(const std::wstring &text, bool *re
   if (resultSuccessful != NULL)
     *resultSuccessful = false;
 
-  int bufSize = WideCharToMultiByte(CP_UTF8, MB_ERR_INVALID_CHARS, text.c_str(), -1, NULL, 0, NULL, NULL);
+  static const DWORD convFlags = (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista)) ?
+    /*WC_ERR_INVALID_CHARS*/ 0x80 : 0;
+  int bufSize = WideCharToMultiByte(CP_UTF8,  convFlags, text.c_str(), -1, NULL, 0, NULL, NULL);
   if (bufSize == 0)
     return "";
   char * converted = new char[bufSize];
-  if (WideCharToMultiByte(CP_UTF8, MB_ERR_INVALID_CHARS, text.c_str(), -1, converted, bufSize, NULL, NULL) != bufSize)
+  if (WideCharToMultiByte(CP_UTF8, convFlags, text.c_str(), -1, converted, bufSize, NULL, NULL) != bufSize)
   {
     delete[] converted;
     return "";
@@ -91,7 +94,7 @@ std::string CEnvironment::win32ConvertWToUtf8(const std::wstring &text, bool *re
   
   if (resultSuccessful != NULL)
     *resultSuccessful = true;
-  return converted;
+  return ret;
 }
 
 // --------------------- Internal Function ---------------------
@@ -148,6 +151,9 @@ int CEnvironment::win32_setenv(const std::string &name, const std::string &value
     { L"msvcr100d.dll" },// Visual Studio 2010 (debug)
 #endif
     { L"msvcr110.dll" }, // Visual Studio 2012
+#ifdef _DEBUG
+    { L"msvcr110d.dll" },// Visual Studio 2012 (debug)
+#endif
     { NULL }             // Terminating NULL for list
   };
   
@@ -197,13 +203,13 @@ std::string CEnvironment::getenv(const std::string &name)
   if (Wname.empty())
     return "";
 
-  std::wstring Wvalue (::_wgetenv(Wname.c_str()));
-  if (!Wvalue.empty())
-    return win32ConvertWToUtf8(Wvalue);
+  wchar_t * wStr = ::_wgetenv(Wname.c_str());
+  if (wStr != NULL)
+    return win32ConvertWToUtf8(wStr);
 
   // Not found in Environment of runtime library 
   // Try Environment of process as fallback
-  int varSize = GetEnvironmentVariableW(Wname.c_str(), NULL, 0);
+  unsigned int varSize = GetEnvironmentVariableW(Wname.c_str(), NULL, 0);
   if (varSize == 0)
     return ""; // Not found
   wchar_t * valBuf = new wchar_t[varSize];
@@ -212,12 +218,15 @@ std::string CEnvironment::getenv(const std::string &name)
     delete[] valBuf;
     return "";
   }
-  Wvalue = valBuf;
+  std::wstring Wvalue (valBuf);
   delete[] valBuf;
 
   return win32ConvertWToUtf8(Wvalue);
 #else
-  return ::getenv(name.c_str());
+  char * str = ::getenv(name.c_str());
+  if (str == NULL)
+    return "";
+  return str;
 #endif
 }
 
