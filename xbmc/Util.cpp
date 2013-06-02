@@ -86,6 +86,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "utils/Environment.h"
 
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
@@ -391,16 +392,9 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   CStdString strHomePath;
   strHomePath = ResolveExecutablePath();
-#ifdef _WIN32
-  CStdStringW strPathW, strTargetW;
-  g_charsetConverter.utf8ToW(strTarget, strTargetW);
-  strPathW = _wgetenv(strTargetW);
-  g_charsetConverter.wToUTF8(strPathW,strPath);
-#else
-  strPath = getenv(strTarget);
-#endif
+  strPath = CEnvironment::getenv(strTarget);
 
-  if (strPath != NULL && !strPath.IsEmpty())
+  if (!strPath.IsEmpty())
   {
 #ifdef _WIN32
     char tmp[1024];

@@ -25,6 +25,7 @@
 #include "cdioSupport.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Environment.h"
 #include <cdio/logging.h>
 #include <cdio/util.h>
 #include <cdio/mmc.h>
@@ -211,8 +212,9 @@ char* CLibcdio::GetDeviceFileName()
 
   if (s_defaultDevice == NULL)
   {
-    if (getenv("XBMC_DVD_DEVICE") != NULL)
-      s_defaultDevice = strdup(getenv("XBMC_DVD_DEVICE"));
+    std::string strEnvDvd = CEnvironment::getenv("XBMC_DVD_DEVICE");
+    if (!strEnvDvd.empty())
+      s_defaultDevice = strdup(strEnvDvd.c_str());
     else
     {
       CdIo_t *p_cdio = ::cdio_open(NULL, DRIVER_UNKNOWN);

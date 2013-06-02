@@ -41,6 +41,9 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "guilib/GraphicContext.h"
+#ifdef TARGET_WINDOWS
+#include "utils/Environment.h"
+#endif
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"
@@ -507,17 +510,15 @@ void XBPython::Initialize()
 #elif defined(_WIN32)
       // because the third party build of python is compiled with vs2008 we need
       // a hack to set the PYTHONPATH
-      // buf is corrupted after putenv and might need a strdup but it seems to
-      // work this way
       CStdString buf;
       buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
-      pgwin32_putenv(buf.c_str());
+      CEnvironment::putenv(buf);
       buf = "PYTHONOPTIMIZE=1";
-      pgwin32_putenv(buf.c_str());
+      CEnvironment::putenv(buf);
       buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
-      pgwin32_putenv(buf.c_str());
+      CEnvironment::putenv(buf);
       buf = "OS=win32";
-      pgwin32_putenv(buf.c_str());
+      CEnvironment::putenv(buf);
 
 #elif defined(TARGET_ANDROID)
       CStdString apkPath = getenv("XBMC_ANDROID_APK");

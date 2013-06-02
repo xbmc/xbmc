@@ -1743,7 +1743,6 @@
     <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp" />
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\win32env.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp" />
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
