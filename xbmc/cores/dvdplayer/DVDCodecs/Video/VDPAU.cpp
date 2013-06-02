@@ -173,6 +173,7 @@ CVDPAU::CVDPAU()
   vdp_video_mixer_query_feature_support = NULL;
   vdp_video_mixer_destroy = NULL;
   vdp_video_mixer_render = NULL;
+  m_hwContext.bitstream_buffers_allocated = 0;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
