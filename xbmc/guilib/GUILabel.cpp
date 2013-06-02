@@ -153,6 +153,13 @@ bool CGUILabel::SetAlign(uint32_t align)
   return changed;
 }
 
+bool CGUILabel::SetStyledText(const vecText &text, const vecColors &colors)
+{
+  m_textLayout.UpdateStyled(text, colors, m_maxRect.Width());
+  m_invalid = false;
+  return true;
+}
+
 bool CGUILabel::SetText(const CStdString &label)
 {
   if (m_textLayout.Update(label, m_maxRect.Width(), m_invalid))

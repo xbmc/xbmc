@@ -88,6 +88,15 @@ public:
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
+  /*! \brief Update text from a pre-styled vecText/vecColors combination
+   Allows styled text to be passed directly to the text layout.
+   \param text the styled text to set.
+   \param colors the colors used on the text.
+   \param maxWidth the maximum width for wrapping text, defaults to 0 (no max width).
+   \param forceLTRReadingOrder whether to force left to right reading order, defaults to false.
+   */
+  void UpdateStyled(const vecText &text, const vecColors &colors, float maxWidth = 0, bool forceLTRReadingOrder = false);
+
   unsigned int GetTextLength() const;
   void GetFirstText(vecText &text) const;
   void Reset();
@@ -100,7 +109,6 @@ public:
   static void Filter(CStdString &text);
 
 protected:
-  void ParseText(const CStdStringW &text, vecText &parsedText);
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
@@ -136,7 +144,7 @@ private:
   };
   static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
-  static void ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText);
+  static void ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
 
   static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
 };

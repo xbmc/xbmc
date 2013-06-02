@@ -223,24 +223,28 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
   if (text.Equals(m_lastText) && !forceUpdate)
     return false;
 
+  // parse the text for style information
   vecText parsedText;
+  vecColors colors;
+  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, colors, parsedText);
 
+  // and update
+  UpdateStyled(parsedText, colors, maxWidth, forceLTRReadingOrder);
+  m_lastText = text;
+  return true;
+}
+
+void CGUITextLayout::UpdateStyled(const vecText &text, const vecColors &colors, float maxWidth, bool forceLTRReadingOrder)
+{
   // empty out our previous string
   m_lines.clear();
-  m_colors.clear();
-  m_colors.push_back(m_textColor);
-
-  // parse the text into our string objects
-  ParseText(text, parsedText);
-
-  // add \n to the end of the string
-  parsedText.push_back(L'\n');
+  m_colors = colors;
 
   // if we need to wrap the text, then do so
   if (m_wrap && maxWidth > 0)
-    WrapText(parsedText, maxWidth);
+    WrapText(text, maxWidth);
   else
-    LineBreakText(parsedText, m_lines);
+    LineBreakText(text, m_lines);
 
   // remove any trailing blank lines
   while (!m_lines.empty() && m_lines.back().m_text.empty())
@@ -250,9 +254,6 @@ bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bo
 
   // and cache the width and height for later reading
   CalcTextExtent();
-
-  m_lastText = text;
-  return true;
 }
 
 // BidiTransform is used to handle RTL text flipping in the string
@@ -316,21 +317,14 @@ void CGUITextLayout::Filter(CStdString &text)
   utf8ToW(text, utf16);
   vecColors colors;
   vecText parsedText;
-  ParseText(utf16, 0, colors, parsedText);
+  ParseText(utf16, 0, 0xffffffff, colors, parsedText);
   utf16.Empty();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
 }
 
-void CGUITextLayout::ParseText(const CStdStringW &text, vecText &parsedText)
-{
-  if (!m_font)
-    return;
-  ParseText(text, m_font->GetStyle(), m_colors, parsedText);
-}
-
-void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText)
+void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText)
 {
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
@@ -341,6 +335,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
   uint32_t currentStyle = defaultStyle; // start with the default font's style
   color_t currentColor = 0;
 
+  colors.push_back(defaultColor);
   stack<color_t> colorStack;
   colorStack.push(0);
 
@@ -561,6 +556,12 @@ void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &line
       lineStart = pos + 1;
     }
     pos++;
+  }
+  // handle the last line if non-empty
+  if (lineStart < text.end() && (nMaxLines <= 0 || lines.size() < (size_t)nMaxLines))
+  {
+    CGUIString string(lineStart, text.end(), true);
+    lines.push_back(string);
   }
 }
 
