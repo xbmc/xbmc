@@ -32,8 +32,6 @@
 class COMXAudioCodecOMX
 {
 public:
-  static void Upmix(void *input, unsigned int channelsInput,  void *output,
-    unsigned int channelsOutput, unsigned int frames, AEDataFormat dataFormat);
   COMXAudioCodecOMX();
   virtual ~COMXAudioCodecOMX();
   bool Open(CDVDStreamInfo &hints);
@@ -44,7 +42,7 @@ public:
   int GetChannels();
   virtual CAEChannelInfo GetChannelMap();
   int GetSampleRate();
-  static int GetBitsPerSample();
+  int GetBitsPerSample();
   static const char* GetName() { return "FFmpeg"; }
   int GetBufferSize() { return m_iBuffered; }
   int GetBitRate();
@@ -53,6 +51,7 @@ protected:
   AVCodecContext* m_pCodecContext;
   SwrContext*     m_pConvert;
   enum AVSampleFormat m_iSampleFormat;
+  enum AVSampleFormat m_desiredSampleFormat;
   CAEChannelInfo      m_channelLayout;
 
   AVFrame* m_pFrame1;
@@ -70,6 +69,7 @@ protected:
   int     m_channels;
   uint64_t m_layout;
 
+  bool m_bFirstFrame;
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
   DllSwResample m_dllSwResample;
