@@ -43,7 +43,7 @@ typedef struct USBDevicePrivateData {
 #endif
 
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
-    CPeripheralBus(manager, PERIPHERAL_BUS_USB)
+    CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
   m_bNeedsPolling = false;
 
