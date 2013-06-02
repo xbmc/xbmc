@@ -118,7 +118,7 @@ public:
   void CloseDecoder();
   double GetDelay();
   double GetCacheTime();
-  double GetCurrentPTS() { return m_audioClock; };
+  double GetCurrentPts() { return m_audioClock; };
   void WaitCompletion();
   void SubmitEOS();
   void  RegisterAudioCallback(IAudioCallback* pCallback);

@@ -106,7 +106,7 @@ public:
   bool OpenDecoder();
   int  GetDecoderBufferSize();
   int  GetDecoderFreeSpace();
-  double GetCurrentPTS() { return m_iCurrentPts; };
+  double GetCurrentPts() { return m_iCurrentPts; };
   double GetFPS() { return m_fFrameRate; };
   void  SubmitEOS();
   bool SubmittedEOS();
