@@ -46,6 +46,7 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   diffuse = right.diffuse;
   filename = right.filename;
   useLarge = right.useLarge;
+  diffuseColor = right.diffuseColor;
 
   return *this;
 }
@@ -174,8 +175,12 @@ void CGUITextureBase::Render()
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
-  color_t color = m_diffuseColor;
-  if (m_alpha != 0xFF) color = MIX_ALPHA(m_alpha, m_diffuseColor);
+
+  // diffuse color
+  color_t color = (m_info.diffuseColor) ? m_info.diffuseColor : m_diffuseColor;
+  if (m_alpha != 0xFF)
+	  color = MIX_ALPHA(m_alpha, color);
+
   color = g_graphicsContext.MergeAlpha(color);
 
   // setup our renderer
@@ -542,6 +547,7 @@ bool CGUITextureBase::SetDiffuseColor(color_t color)
 {
   bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
+  changed |= m_info.diffuseColor.Update();
   return changed;
 }
 
