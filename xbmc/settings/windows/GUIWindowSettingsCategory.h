@@ -60,6 +60,7 @@ protected:
   
   void CreateSettings();
   void UpdateSettings();
+  void SetDescription(const CVariant &label);
   CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
   CGUIControl* AddSeparator(float width, int &iControlID);
   CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
