@@ -97,7 +97,4 @@
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 
-/* apple vdadecoder */
-#define DLL_PATH_LIBVDADECODER "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
-
 #endif

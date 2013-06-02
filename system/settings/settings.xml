@@ -390,11 +390,6 @@
           <level>2</level>
           <default>true</default>
         </setting>
-        <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
-          <visible>HasVDADecoder</visible>
-          <level>2</level>
-          <default>true</default>
-        </setting>
         <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
           <visible>HAVE_LIBOPENMAX</visible>
           <level>2</level>
