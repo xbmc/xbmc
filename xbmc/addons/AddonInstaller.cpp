@@ -492,55 +492,55 @@ bool CAddonInstallJob::DoWork()
   CStdString installFrom;
   if (!repoPtr || repoPtr->Props().libname.IsEmpty())
   {
-  // Addons are installed by downloading the .zip package on the server to the local
-  // packages folder, then extracting from the local .zip package into the addons folder
-  // Both these functions are achieved by "copying" using the vfs.
+    // Addons are installed by downloading the .zip package on the server to the local
+    // packages folder, then extracting from the local .zip package into the addons folder
+    // Both these functions are achieved by "copying" using the vfs.
 
-  CStdString dest="special://home/addons/packages/";
-  CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
-                                              URIUtils::GetFileName(m_addon->Path()));
+    CStdString dest="special://home/addons/packages/";
+    CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
+                                                URIUtils::GetFileName(m_addon->Path()));
 
-  if (URIUtils::HasSlashAtEnd(m_addon->Path()))
-  { // passed in a folder - all we need do is copy it across
-    installFrom = m_addon->Path();
-  }
-  else
-  {
-    // zip passed in - download + extract
-    CStdString path(m_addon->Path());
-    if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+    if (URIUtils::HasSlashAtEnd(m_addon->Path()))
+    { // passed in a folder - all we need do is copy it across
+      installFrom = m_addon->Path();
+    }
+    else
     {
-      CURL url(path);
-      url.SetProtocolOptions(m_referer);
-      path = url.Get();
-    }
-    if (!CFile::Exists(package) && !DownloadPackage(path, dest))
-    {
-      CFile::Delete(package);
-      return false;
-    }
+      // zip passed in - download + extract
+      CStdString path(m_addon->Path());
+      if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+      {
+        CURL url(path);
+        url.SetProtocolOptions(m_referer);
+        path = url.Get();
+      }
+      if (!CFile::Exists(package) && !DownloadPackage(path, dest))
+      {
+        CFile::Delete(package);
+        return false;
+      }
 
-    // at this point we have the package - check that it is valid
-    if (!CFile::Exists(package) || !CheckHash(package))
-    {
-      CFile::Delete(package);
-      return false;
+      // at this point we have the package - check that it is valid
+      if (!CFile::Exists(package) || !CheckHash(package))
+      {
+        CFile::Delete(package);
+        return false;
+      }
+
+      // check the archive as well - should have just a single folder in the root
+      CStdString archive;
+      URIUtils::CreateArchivePath(archive,"zip",package,"");
+
+      CFileItemList archivedFiles;
+      CDirectory::GetDirectory(archive, archivedFiles);
+
+      if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+      { // invalid package
+        CFile::Delete(package);
+        return false;
+      }
+      installFrom = archivedFiles[0]->GetPath();
     }
-
-    // check the archive as well - should have just a single folder in the root
-    CStdString archive;
-    URIUtils::CreateArchivePath(archive,"zip",package,"");
-
-    CFileItemList archivedFiles;
-    CDirectory::GetDirectory(archive, archivedFiles);
-
-    if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
-    { // invalid package
-      CFile::Delete(package);
-      return false;
-    }
-    installFrom = archivedFiles[0]->GetPath();
-  }
     repoPtr.reset();
   }
 
@@ -624,61 +624,61 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
   }
   else
   {
-  CStdString addonFolder(installFrom);
-  URIUtils::RemoveSlashAtEnd(addonFolder);
-  addonFolder = URIUtils::AddFileToFolder("special://home/addons/",
-                                       URIUtils::GetFileName(addonFolder));
+    CStdString addonFolder(installFrom);
+    URIUtils::RemoveSlashAtEnd(addonFolder);
+    addonFolder = URIUtils::AddFileToFolder("special://home/addons/",
+                                         URIUtils::GetFileName(addonFolder));
 
-  CFileItemList install;
-  install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
-  install[0]->Select(true);
-  CFileOperationJob job(CFileOperationJob::ActionReplace, install, "special://home/addons/");
+    CFileItemList install;
+    install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
+    install[0]->Select(true);
+    CFileOperationJob job(CFileOperationJob::ActionReplace, install, "special://home/addons/");
 
-  AddonPtr addon;
-  if (!job.DoWork() || !CAddonMgr::Get().LoadAddonDescription(addonFolder, addon))
-  { // failed extraction or failed to load addon description
-    CStdString addonID = URIUtils::GetFileName(addonFolder);
-    ReportInstallError(addonID, addonID);
-    CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
-    DeleteAddon(addonFolder);
-    return false;
-  }
+    AddonPtr addon;
+    if (!job.DoWork() || !CAddonMgr::Get().LoadAddonDescription(addonFolder, addon))
+    { // failed extraction or failed to load addon description
+      CStdString addonID = URIUtils::GetFileName(addonFolder);
+      ReportInstallError(addonID, addonID);
+      CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
+      DeleteAddon(addonFolder);
+      return false;
+    }
 
-  // resolve dependencies
-  CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
-  ADDONDEPS deps = addon->GetDeps();
-  CStdString referer;
-  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
-  for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
-  {
-    if (it->first.Equals("xbmc.metadata"))
-      continue;
+    // resolve dependencies
+    CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
+    ADDONDEPS deps = addon->GetDeps();
+    CStdString referer;
+    referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+    for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
+    {
+      if (it->first.Equals("xbmc.metadata"))
+        continue;
 
-    const CStdString &addonID = it->first;
-    const AddonVersion &version = it->second.first;
-    bool optional = it->second.second;
-    AddonPtr dependency;
-    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
-    if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
-    { // we have it but our version isn't good enough, or we don't have it and we need it
-      bool force=(dependency != NULL);
-      // dependency is already queued up for install - ::Install will fail
-      // instead we wait until the Job has finished. note that we
-      // recall install on purpose in case prior installation failed
-      if (CAddonInstaller::Get().HasJob(addonID))
-      {
-        while (CAddonInstaller::Get().HasJob(addonID))
-          Sleep(50);
-        force = false;
-      }
-      // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
-      {
-        DeleteAddon(addonFolder);
-        return false;
+      const CStdString &addonID = it->first;
+      const AddonVersion &version = it->second.first;
+      bool optional = it->second.second;
+      AddonPtr dependency;
+      bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
+      if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
+      { // we have it but our version isn't good enough, or we don't have it and we need it
+        bool force=(dependency != NULL);
+        // dependency is already queued up for install - ::Install will fail
+        // instead we wait until the Job has finished. note that we
+        // recall install on purpose in case prior installation failed
+        if (CAddonInstaller::Get().HasJob(addonID))
+        {
+          while (CAddonInstaller::Get().HasJob(addonID))
+            Sleep(50);
+          force = false;
+        }
+        // don't have the addon or the addon isn't new enough - grab it (no new job for these)
+        if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
+        {
+          DeleteAddon(addonFolder);
+          return false;
+        }
       }
     }
-  }
   }
   return true;
 }
@@ -816,8 +816,8 @@ bool CAddonUnInstallJob::DoWork()
   }
   else
   {
-  if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
-    return false;
+    if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
+      return false;
   }
 
   OnPostUnInstall();
