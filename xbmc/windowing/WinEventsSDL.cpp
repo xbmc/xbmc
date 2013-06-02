@@ -25,6 +25,7 @@
 #include "WinEventsSDL.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #ifdef HAS_SDL_JOYSTICK
@@ -416,6 +417,19 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
       CApplicationMessenger::Get().Minimize();
+      return true;
+
+    case SDLK_v: // CMD-v to paste clipboard text
+      if (g_Windowing.IsTextInputEnabled())
+      {
+        const char *szStr = Cocoa_Paste();
+        if (szStr)
+        {
+          CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
+          msg.SetLabel(szStr);
+          g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
+        }
+      }
       return true;
 
     default:
