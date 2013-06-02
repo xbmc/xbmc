@@ -237,14 +237,13 @@ private:
 class NetworkStartWaiter : public WaitCondition
 {
 public:
-  NetworkStartWaiter (unsigned settle_time_ms) : m_settle_time_ms (settle_time_ms)
+  NetworkStartWaiter (unsigned settle_time_ms, const CStdString& host) : m_settle_time_ms (settle_time_ms), m_host(host)
   {
   }
   virtual bool SuccessWaiting () const
   {
-    CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-
-    bool online = iface && iface->IsEnabled();
+    unsigned long address = ntohl(HostToIP(m_host));
+    bool online = g_application.getNetwork().HasInterfaceForIP(address);
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
       m_end.Set (m_settle_time_ms);
@@ -254,6 +253,7 @@ public:
 private:
   mutable XbmcThreads::EndTime m_end;
   unsigned m_settle_time_ms;
+  const CStdString m_host;
 };
 
 class PingResponseWaiter : public WaitCondition, private IJobCallback
@@ -369,7 +369,7 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   ProgressDialogHelper dlg (heading);
 
   {
-    NetworkStartWaiter waitObj (m_netsettle_ms); // wait until network connected before sending wake-on-lan
+    NetworkStartWaiter waitObj (m_netsettle_ms, server.host); // wait until network connected before sending wake-on-lan
 
     if (dlg.ShowAndWait (waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
     {
