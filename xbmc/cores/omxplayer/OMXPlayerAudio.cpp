@@ -683,7 +683,6 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
     hdmi_passthrough_ac3 = true;
   if (m_DllBcmHost.vc_tv_hdmi_audio_supported(EDID_AudioFormat_eDTS, 2, EDID_AudioSampleRate_e44KHz, EDID_AudioSampleSize_16bit ) == 0)
     hdmi_passthrough_dts = true;
-  //printf("Audio support AC3=%d, DTS=%d\n", hdmi_passthrough_ac3, hdmi_passthrough_dts);
 
   m_passthrough = false;
   m_hw_decode   = false;
@@ -723,10 +722,10 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
   /* software path */
   if(!m_passthrough && !m_hw_decode)
   {
-    /* 6 channel have to be mapped to 8 for PCM */
-    if(m_nChannels > 4)
-      m_nChannels = 8;
-    dataFormat = AE_FMT_S16NE;
+    if (m_pAudioCodec && m_pAudioCodec->GetBitsPerSample() == 16)
+      dataFormat = AE_FMT_S16NE;
+    else
+      dataFormat = AE_FMT_FLOAT;
   }
 
   return dataFormat;
