@@ -156,8 +156,9 @@ namespace PVR
     /*!
      * @brief Call one of the menu hooks of this client.
      * @param hook The hook to call.
+     * @param item The selected file item for which the hook was called.
      */
-    void CallMenuHook(const PVR_MENUHOOK &hook);
+    void CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item);
 
     //@}
     /** @name PVR EPG methods */

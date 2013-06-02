@@ -682,7 +682,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOK
   return bReturn;
 }
 
-void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
+void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CFileItem *item)
 {
   PVR_MENUHOOKS *hooks = NULL;
 
@@ -739,7 +739,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
 
     int selection = pDialog->GetSelectedLabel();
     if (selection >= 0)
-      client->CallMenuHook(hooks->at(selection));
+      client->CallMenuHook(hooks->at(selection), item);
   }
 }
 
