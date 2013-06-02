@@ -37,6 +37,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "guilib/IGUIContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"

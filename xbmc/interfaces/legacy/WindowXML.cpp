@@ -23,6 +23,7 @@
 
 #include "WindowInterceptor.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/TextureManager.h"
 #include "settings/Settings.h"
 #include "addons/Skin.h"
 #include "filesystem/File.h"

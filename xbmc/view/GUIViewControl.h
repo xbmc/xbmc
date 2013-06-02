@@ -20,9 +20,12 @@
  *
  */
 
-#include "view/GUIViewState.h"
+#include <vector>
+#include "utils/StdString.h"
+#include "guilib/GraphicContext.h" // for VIEW_TYPE
 
-#include "guilib/GUIBaseContainer.h"
+class CGUIControl;
+class CFileItemList;
 
 class CGUIViewControl
 {

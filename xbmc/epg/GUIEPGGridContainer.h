@@ -24,7 +24,7 @@
 #include "FileItem.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
-#include "guilib/GUIBaseContainer.h"
+#include "guilib/IGUIContainer.h"
 
 namespace PVR
 {

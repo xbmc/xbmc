@@ -24,6 +24,7 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "view/GUIViewControl.h"
+#include "view/GUIViewState.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "playlists/SmartPlayList.h"
 
