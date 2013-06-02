@@ -27,7 +27,7 @@
 using namespace std;
 using namespace PERIPHERALS;
 
-#define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 1000
+#define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
 
 CPeripheralBus::CPeripheralBus(const CStdString &threadname, CPeripherals *manager, PeripheralBusType type) :
     CThread(threadname),
