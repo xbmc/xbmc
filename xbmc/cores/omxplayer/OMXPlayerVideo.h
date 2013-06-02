@@ -81,8 +81,6 @@ protected:
 
   BitstreamStats m_videoStats;
 
-  DVDVideoPicture* m_pTempOverlayPicture;
-
   void ProcessOverlays(double pts);
 
   virtual void OnStartup();

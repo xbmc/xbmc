@@ -64,7 +64,6 @@
 COMXVideo::COMXVideo() : m_video_codec_name("")
 {
   m_is_open           = false;
-  m_Pause             = false;
   m_extradata         = NULL;
   m_extrasize         = 0;
   m_video_convert     = false;
@@ -800,36 +799,6 @@ void COMXVideo::Reset(void)
 
   m_omx_decoder.FlushInput();
   m_omx_tunnel_decoder.Flush();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-bool COMXVideo::Pause()
-{
-  if(m_omx_render.GetComponent() == NULL)
-    return false;
-
-  if(m_Pause) return true;
-  m_Pause = true;
-
-  m_omx_sched.SetStateForComponent(OMX_StatePause);
-  m_omx_render.SetStateForComponent(OMX_StatePause);
-
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-bool COMXVideo::Resume()
-{
-  if(m_omx_render.GetComponent() == NULL)
-    return false;
-
-  if(!m_Pause) return true;
-  m_Pause = false;
-
-  m_omx_sched.SetStateForComponent(OMX_StateExecuting);
-  m_omx_render.SetStateForComponent(OMX_StateExecuting);
-
-  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

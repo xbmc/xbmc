@@ -68,9 +68,6 @@ public:
   unsigned int AddPackets(const void* data, unsigned int len, double dts, double pts);
   unsigned int GetSpace();
   bool Deinitialize();
-  bool Pause();
-  bool Stop();
-  bool Resume();
 
   long GetCurrentVolume() const;
   void Mute(bool bMute);
@@ -101,8 +98,6 @@ public:
 private:
   IAudioCallback* m_pCallback;
   bool          m_Initialized;
-  bool          m_Pause;
-  bool          m_CanPause;
   float         m_CurrentVolume;
   long          m_drc;
   bool          m_Passthrough;

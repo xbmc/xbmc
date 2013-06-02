@@ -114,23 +114,15 @@ public:
   bool OMXStop(bool lock = true);
   bool OMXStart(bool lock = true);
   bool OMXReset(bool lock = true);
-  double OMXWallTime(bool lock = true);
   double OMXMediaTime(bool fixPreroll = true, bool lock = true);
   bool OMXMediaTime(double pts, bool fixPreroll = true, bool lock = true);
-  int OMXLateCount(int port, bool lock = true);
   bool OMXPause(bool lock = true);
   bool OMXResume(bool lock = true);
-  bool OMXUpdateClock(double pts, bool lock = true);
-  bool OMXWaitStart(double pts, bool lock = true);
-  void OMXHandleBackward(bool lock = true);
   bool OMXSetSpeed(int speed, bool lock = true);
   int  OMXPlaySpeed() { return m_omx_speed; };
-  int  OMXGetPlaySpeed() { return m_omx_speed; };
   COMXCoreComponent *GetOMXClock();
-  bool OMXStatePause(bool lock = true);
   bool OMXStateExecute(bool lock = true);
   void OMXStateIdle(bool lock = true);
-  static void AddTimespecs(struct timespec &time, long millisecs);
   bool HDMIClockSync(bool lock = true);
   static int64_t CurrentHostCounter(void);
   static int64_t CurrentHostFrequency(void);
@@ -142,8 +134,6 @@ public:
   bool AudioStart() { return m_audio_start; };
   void VideoStart(bool video_start);
   void AudioStart(bool audio_start);
-  static void AddTimeSpecNano(struct timespec &time, uint64_t nanoseconds);
-
   void OMXAudioBufferStart();
   void OMXAudioBufferStop();
   bool OMXAudioBuffer() { return m_audio_buffer; };
