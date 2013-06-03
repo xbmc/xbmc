@@ -1,0 +1,27 @@
+From fa17bd34ac29f0f325c4f6ef02a60181e0f48ddc Mon Sep 17 00:00:00 2001
+From: Wolfgang Haupt <w.haupt@at-visions.com>
+Date: Mon, 22 Apr 2013 10:12:21 +0200
+Subject: [PATCH] [xbmc] [ffmpeg] avoid h264 decoder starting on wrong field
+
+---
+ lib/ffmpeg/libavcodec/h264.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+index 937ad7a..177c36f 100644
+--- a/lib/ffmpeg/libavcodec/h264.c
++++ b/lib/ffmpeg/libavcodec/h264.c
+@@ -3489,7 +3489,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0)
+             }
+         } else {
+             /* Frame or first field in a potentially complementary pair */
+-            h0->first_field = FIELD_PICTURE;
++            assert(!h0->current_picture_ptr);
++            if (h->picture_structure == PICT_TOP_FIELD)
++              h0->first_field = FIELD_PICTURE;
+         }
+ 
+         if (!FIELD_PICTURE || h0->first_field) {
+-- 
+1.7.11.7
+

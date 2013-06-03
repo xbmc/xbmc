@@ -3489,7 +3489,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0)
             }
         } else {
             /* Frame or first field in a potentially complementary pair */
-            h0->first_field = FIELD_PICTURE;
+            assert(!h0->current_picture_ptr);
+            if (h->picture_structure == PICT_TOP_FIELD)
+              h0->first_field = FIELD_PICTURE;
         }
 
         if (!FIELD_PICTURE || h0->first_field) {
