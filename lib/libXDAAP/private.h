@@ -61,11 +61,6 @@ struct DAAP_SClientTAG
 #endif
 
     HTTP_ConnectionWatch *update_watch;
-
-#if !defined(WIN32) && !defined(_LINUX)
-  // why is this here?
-	SDiscover *discover;
-#endif
 };
 
 typedef struct
@@ -133,14 +128,14 @@ struct SDiscoverTAG
                                      and tests it for death */
     ts_mutex mtWorkerLock;
 
-#ifndef _LINUX
+#ifdef _WIN32
     fnDiscUpdated pfnUpdateCallback;
 #endif
     void *pvCallbackArg;
 
     struct CP_SThreadPool *tp;
 
-#ifndef _LINUX
+#ifdef _WIN32
     mdnsd mdnsd_info;
 #endif
     int socket;
@@ -149,7 +144,7 @@ struct SDiscoverTAG
     // answers
     /* answers */
     int pending_hosts;
-#ifndef _LINUX
+#ifdef _WIN32
     SDiscover_HostList *prenamed;
     SDiscover_HostList *pending;
     SDiscover_HostList *have;
