@@ -207,14 +207,24 @@ bool CSettingsManager::Save(TiXmlNode *root) const
 void CSettingsManager::Unload()
 {
   CSingleLock lock(m_critical);
+  if (!m_loaded)
+    return;
+
+  // needs to be set before calling CSetting::Reset() to avoid calls to
+  // OnSettingChanging() and OnSettingChanged()
   m_loaded = false;
+
   for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); setting++)
     setting->second.setting->Reset();
+
+  OnSettingsUnloaded();
 }
 
 void CSettingsManager::Clear()
 {
   CSingleLock lock(m_critical);
+  Unload();
+
   m_settings.clear();
   for (SettingSectionMap::iterator section = m_sections.begin(); section != m_sections.end(); section++)
     delete section->second;
@@ -225,7 +235,6 @@ void CSettingsManager::Clear()
   for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
     (*it)->Clear();
 
-  m_loaded = false;
   m_initialized = false;
 }
 

@@ -45,7 +45,7 @@ public:
   static CRssManager& Get();
 
   virtual void OnSettingsLoaded();
-  virtual void OnSettingsCleared();
+  virtual void OnSettingsUnloaded();
 
   virtual void OnSettingAction(const CSetting *setting);
 
