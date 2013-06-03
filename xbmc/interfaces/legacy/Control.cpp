@@ -38,6 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIControlFactory.h"
+#include "listproviders/StaticProvider.h"
 
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
@@ -1400,22 +1401,21 @@ namespace XBMCAddon
     {
       const ListItemList& vecItems = *pitems;
 
-      std::vector<CGUIListItemPtr> items;
+      std::vector<CGUIStaticItemPtr> items;
 
       for (unsigned int item = 0; item < vecItems.size(); item++)
       {
         ListItem* pItem = vecItems[item];
 
-        // object is a listitem, and we set m_idpeth to 0 as this
-        // is used as the visibility condition for the item in the list
-        ListItem *listItem = (ListItem*)pItem;
-        listItem->item->m_idepth = 0;
-
-        items.push_back((CFileItemPtr &)listItem->item);
+        // NOTE: This code has likely not worked fully correctly for some time
+        //       In particular, the click behaviour won't be working.
+        CGUIStaticItemPtr newItem(new CGUIStaticItem(*pItem->item));
+        items.push_back(newItem);
       }
 
       // set static list
-      ((CGUIBaseContainer *)pGUIControl)->SetStaticContent(items);
+      IListProvider *provider = new CStaticListProvider(items);
+      ((CGUIBaseContainer *)pGUIControl)->SetListProvider(provider);
     }
 
     // ============================================================

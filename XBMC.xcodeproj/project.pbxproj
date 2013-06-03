@@ -271,6 +271,12 @@
 		7C779E3F104A57E500F444C4 /* WinSystemOSXGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2D104A57E500F444C4 /* WinSystemOSXGL.mm */; };
 		7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
 		7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
+		7C7BCDC517727951004842FB /* IListProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDBF17727951004842FB /* IListProvider.cpp */; };
+		7C7BCDC717727951004842FB /* StaticProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDC317727951004842FB /* StaticProvider.cpp */; };
+		7C7BCDC817727951004842FB /* IListProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDBF17727951004842FB /* IListProvider.cpp */; };
+		7C7BCDCA17727951004842FB /* StaticProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDC317727951004842FB /* StaticProvider.cpp */; };
+		7C7BCDCB17727951004842FB /* IListProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDBF17727951004842FB /* IListProvider.cpp */; };
+		7C7BCDCD17727952004842FB /* StaticProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7BCDC317727951004842FB /* StaticProvider.cpp */; };
 		7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEAEF165629530059C9EB /* AELimiter.cpp */; };
 		7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C87B2CC162CE39600EF897D /* PlayerController.cpp */; };
@@ -3724,6 +3730,10 @@
 		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
 		7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mysqldataset.cpp; sourceTree = "<group>"; };
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
+		7C7BCDBF17727951004842FB /* IListProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IListProvider.cpp; path = xbmc/listproviders/IListProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7C7BCDC217727951004842FB /* StaticProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StaticProvider.h; path = xbmc/listproviders/StaticProvider.h; sourceTree = SOURCE_ROOT; };
+		7C7BCDC317727951004842FB /* StaticProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StaticProvider.cpp; path = xbmc/listproviders/StaticProvider.cpp; sourceTree = SOURCE_ROOT; };
+		7C7BCDC417727951004842FB /* IListProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IListProvider.h; path = xbmc/listproviders/IListProvider.h; sourceTree = SOURCE_ROOT; };
 		7C7CEAEF165629530059C9EB /* AELimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AELimiter.cpp; sourceTree = "<group>"; };
 		7C7CEAF0165629530059C9EB /* AELimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELimiter.h; sourceTree = "<group>"; };
 		7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourcesDirectory.cpp; path = xbmc/filesystem/SourcesDirectory.cpp; sourceTree = SOURCE_ROOT; };
@@ -6618,6 +6628,18 @@
 			name = main;
 			sourceTree = "<group>";
 		};
+		7C430161175C41FE009B82E5 /* listproviders */ = {
+			isa = PBXGroup;
+			children = (
+				7C7BCDBF17727951004842FB /* IListProvider.cpp */,
+				7C7BCDC417727951004842FB /* IListProvider.h */,
+				7C7BCDC317727951004842FB /* StaticProvider.cpp */,
+				7C7BCDC217727951004842FB /* StaticProvider.h */,
+			);
+			name = listproviders;
+			path = linux;
+			sourceTree = "<group>";
+		};
 		7C5608C30F1754930056433A /* ExternalPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -7173,6 +7195,7 @@
 				18B7C8C61294252E009E7A26 /* input */,
 				4367217312D6640E002508E6 /* interfaces */,
 				E38E1D690D25F9FD00618676 /* linux */,
+				7C430161175C41FE009B82E5 /* listproviders */,
 				552A226615F7E11B0015C0D0 /* main */,
 				18B7C853129423A7009E7A26 /* music */,
 				431376F212D6449100680C15 /* network */,
@@ -10624,6 +10647,8 @@
 				DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */,
+				7C7BCDC517727951004842FB /* IListProvider.cpp in Sources */,
+				7C7BCDC717727951004842FB /* StaticProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11654,6 +11679,8 @@
 				DFD882F617DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E717DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35817F3412C004FC217 /* WinEvents.cpp in Sources */,
+				7C7BCDCB17727951004842FB /* IListProvider.cpp in Sources */,
+				7C7BCDCD17727952004842FB /* StaticProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12686,6 +12713,8 @@
 				DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */,
+				7C7BCDC817727951004842FB /* IListProvider.cpp in Sources */,
+				7C7BCDCA17727951004842FB /* StaticProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

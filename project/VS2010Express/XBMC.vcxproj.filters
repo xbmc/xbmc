@@ -307,6 +307,9 @@
     <Filter Include="cores\AudioEngine\Engines\ActiveAE">
       <UniqueIdentifier>{27f2c647-7b5f-4c49-b2e7-22bf360e58ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="listproviders">
+      <UniqueIdentifier>{1dfaf73b-2e8d-49d2-87c1-07b1ac203ba0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3075,6 +3078,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windowing\WinEvents.cpp">
       <Filter>windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp">
+      <Filter>listproviders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp">
+      <Filter>listproviders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6036,9 +6045,14 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h">
       <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\uXstrings.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\listproviders\IListProvider.h">
+      <Filter>listproviders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\listproviders\StaticProvider.h">
+      <Filter>listproviders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
