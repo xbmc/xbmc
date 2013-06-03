@@ -168,6 +168,7 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_videoDefaultLatency = 0.0;
   m_videoDisableHi10pMultithreading = false;
+  m_maxPlayerForwardRate = 32;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -830,6 +831,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
+
+  XMLUtils::GetInt(pRootElement, "maxplayerforwardrate", m_maxPlayerForwardRate, 1, 32);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
