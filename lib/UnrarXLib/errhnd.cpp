@@ -265,7 +265,7 @@ extern "C"
 void _stdfunction ProcessSignal(int SigType)
 #endif
 {
-#if defined(_WIN_32) && !defined(_LINUX)
+#if defined(_WIN_32) && !defined(TARGET_POSIX)
   if (SigType==CTRL_LOGOFF_EVENT)
     return(TRUE);
 #endif
@@ -280,7 +280,7 @@ void _stdfunction ProcessSignal(int SigType)
 #if defined(USE_RC) && !defined(SFX_MODULE) && !defined(_WIN_CE)
   ExtRes.UnloadDLL();
 #endif
-#if !defined(_LINUX)
+#if !defined(TARGET_POSIX)
   exit(USER_BREAK);
 #endif
 #ifdef _WIN_32
@@ -313,7 +313,7 @@ void ErrorHandler::Throw(int Code)
   throw Code;
 #else
   File::RemoveCreated();
-#if !defined(_XBMC) && !defined(_LINUX)
+#if !defined(_XBMC) && !defined(TARGET_POSIX)
   exit(Code);
 #endif
 #endif

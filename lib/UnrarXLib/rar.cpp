@@ -13,7 +13,7 @@ extern "C" char **__crt0_glob_function (char *arg) { return 0; }
 extern "C" void   __crt0_load_environment_file (char *progname) { }
 #endif
 
-#if !defined(GUI) && !defined(RARDLL) && !defined(_LINUX) && !defined(_XBMC)
+#if !defined(GUI) && !defined(RARDLL) && !defined(TARGET_POSIX) && !defined(_XBMC)
 int main(int argc, char *argv[])
 {
 #ifdef _UNIX
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 #endif
 
 
-#if defined(_LINUX) || defined(_XBMC)
+#if defined(TARGET_POSIX) || defined(_XBMC)
 /*-------------------------------------------------------------------------*\
                                XBOX interface
 \*-------------------------------------------------------------------------*/
