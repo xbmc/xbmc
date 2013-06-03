@@ -158,10 +158,16 @@ public:
    \param addonFolder - the folder to delete
    */
   static bool DeleteAddon(const CStdString &addonFolder);
+
+  /*! \brief Find which repository hosts an add-on
+   *  \param addon The add-on to find the repository for
+   *  \return The hosting repository
+   */
+  static ADDON::AddonPtr GetRepoForAddon(const ADDON::AddonPtr& addon);
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
-  bool Install(const CStdString &installFrom);
+  bool Install(const CStdString &installFrom, const ADDON::AddonPtr& repo=ADDON::AddonPtr());
   bool DownloadPackage(const CStdString &path, const CStdString &dest);
 
   /*! \brief Queue a notification for addon installation/update failure
