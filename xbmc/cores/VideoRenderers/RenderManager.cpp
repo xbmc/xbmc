@@ -1049,7 +1049,7 @@ void CXBMCRenderManager::PrepareNextRender()
   if(g_graphicsContext.IsFullScreenVideo())
     next = (m_Queue[idx].timestamp <= clocktime + MAXPRESENTDELAY);
   else
-    next = (m_Queue[idx].timestamp <= clocktime);
+    next = (m_Queue[idx].timestamp <= clocktime + frametime);
 
   if (next)
   {
