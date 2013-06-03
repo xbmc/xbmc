@@ -87,7 +87,14 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     m_iprogramCount = id ? atoi(id) : 0;
   }
 }
-    
+
+CGUIStaticItem::CGUIStaticItem(const CFileItem &item)
+: CFileItem(item)
+{
+  m_visCondition = 0;
+  m_visState = false;
+}
+
 void CGUIStaticItem::UpdateProperties(int contextWindow)
 {
   for (InfoVector::const_iterator i = m_info.begin(); i != m_info.end(); ++i)
