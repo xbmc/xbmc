@@ -251,6 +251,7 @@ CAddon::CAddon(const cp_extension_t *ext)
   , m_parent(AddonPtr())
 {
   BuildLibName(ext);
+  Props().libname = m_strLibName;
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_enabled = true;
@@ -391,6 +392,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_PVRDLL:
       case ADDON_PLUGIN:
       case ADDON_SERVICE:
+      case ADDON_REPOSITORY:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;
