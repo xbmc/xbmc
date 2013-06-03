@@ -26,7 +26,7 @@
 #include <vector>
 
 namespace PCRE {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #define PCRE_STATIC
 #include "lib/win32/pcre/pcre.h"
 #else

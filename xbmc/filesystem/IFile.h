@@ -28,7 +28,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
 #endif
 

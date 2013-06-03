@@ -21,7 +21,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include <CoreServices/CoreServices.h>
 #include "utils/URIUtils.h"
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
 #else
 #endif
 
@@ -52,9 +52,9 @@ bool IsAliasShortcut(CStdString &path)
       }
     }
   }
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
 /* Needs testing under Windows platform so ignore shortcuts for now
     if (CUtil::GetExtension(path) == ".lnk")
     {
@@ -85,10 +85,10 @@ void TranslateAliasShortcut(CStdString &path)
       }
     }
   }
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
 /* Needs testing under Windows platform so ignore shortcuts for now
   CComPtr<IShellLink> ipShellLink;
 

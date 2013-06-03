@@ -29,7 +29,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "../xbmc/utils/log.h"
 
-#if defined(__FreeBSD__)
+#if defined(TARGET_FREEBSD)
 #include <sys/types.h>
 #include <sys/wait.h>
 #endif

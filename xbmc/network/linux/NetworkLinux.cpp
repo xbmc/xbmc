@@ -514,7 +514,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 
 void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 {
-#if !defined(__ANDROID__)
+#if !defined(TARGET_ANDROID)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {

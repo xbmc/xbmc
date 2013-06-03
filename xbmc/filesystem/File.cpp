@@ -100,7 +100,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       {
         CURL url(strDirectory);
         CStdString pathsep;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
         pathsep = "\\";
 #else
         pathsep = "/";

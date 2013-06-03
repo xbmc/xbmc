@@ -24,11 +24,11 @@
 #include "XTimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__) && !defined(__ANDROID__)
+#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
 #include <sys/vfs.h>
 #else
 #include <sys/param.h>
@@ -37,7 +37,7 @@
 #include <dirent.h>
 #include <errno.h>
 
-#if defined(__ANDROID__)
+#if defined(TARGET_ANDROID)
 #include <sys/file.h>
 #include <sys/statfs.h>
 
@@ -67,7 +67,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strPath.Replace("\\","/");
 
   // if the file name is a directory then we add a * to look for all files in this directory
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
   DIR *testDir = opendir(strPath.c_str());
 #else
   DIR *testDir = opendir(szPath);
@@ -104,7 +104,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
     return(INVALID_HANDLE_VALUE);
 
   struct dirent **namelist = NULL;
-#if defined(__ANDROID__)
+#if defined(TARGET_ANDROID)
   // android is more strict with the sort function. Let's hope it is implemented correctly.
   typedef int (*sortFunc)(const struct dirent ** a, const struct dirent **b);
   int n = scandir(strDir, &namelist, 0, (sortFunc)alphasort);
@@ -574,7 +574,7 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     nMode = SEEK_END;
 
   off64_t currOff;
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   currOff = lseek(hFile->fd, offset, nMode);
 #else
   currOff = lseek64(hFile->fd, offset, nMode);
@@ -597,7 +597,7 @@ BOOL GetDiskFreeSpaceEx(
   )
 
 {
-#if defined(__ANDROID__)
+#if defined(TARGET_ANDROID)
   struct statfs fsInfo;
   // is 64-bit on android
   if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
@@ -644,7 +644,7 @@ BOOL SetEndOfFile(HANDLE hFile)
     return false;
 
   // get the current offset
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   off64_t currOff = lseek(hFile->fd, 0, SEEK_CUR);
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
@@ -675,7 +675,7 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 
   off64_t toMove = liDistanceToMove.QuadPart;
 
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   off64_t currOff = lseek(hFile->fd, toMove, nMode);
 #else
   off64_t currOff = lseek64(hFile->fd, toMove, nMode);

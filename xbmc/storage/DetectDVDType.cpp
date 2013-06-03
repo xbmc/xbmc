@@ -29,11 +29,11 @@
 #include "cdioSupport.h"
 #include "filesystem/iso9660.h"
 #include "threads/SingleLock.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <linux/cdrom.h>
 #endif
 #endif
@@ -314,7 +314,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
 DWORD CDetectDVDMedia::GetTrayState()
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
   char* dvdDevice = m_cdio->GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
@@ -400,7 +400,7 @@ DWORD CDetectDVDMedia::GetTrayState()
     return DRIVE_NOT_READY;
 
 #endif // USING_CDIO78
-#endif // _LINUX
+#endif // TARGET_POSIX
 
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {

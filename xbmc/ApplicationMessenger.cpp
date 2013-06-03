@@ -49,7 +49,7 @@
 
 #include "powermanagement/PowerManager.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined(TARGET_DARWIN)
@@ -546,9 +546,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program",__FUNCTION__);
       }
-#if defined( _LINUX) && !defined(TARGET_DARWIN)
+#if defined( TARGET_POSIX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #endif
       /* Resume AE processing of XBMC native audio */

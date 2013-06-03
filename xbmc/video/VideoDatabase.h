@@ -41,7 +41,7 @@ namespace dbiplus
 }
 
 #ifndef my_offsetof
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #define my_offsetof(TYPE, MEMBER) offsetof(TYPE, MEMBER)
 #else
 /*

@@ -21,7 +21,7 @@
  *
  */
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #ifndef __cdecl

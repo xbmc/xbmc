@@ -45,7 +45,7 @@
 #define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)
 #define NT_STATUS_ACCESS_DENIED long(0xC0000000 | 0x0022)
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define NT_STATUS_INVALID_COMPUTER_NAME long(0xC0000000 | 0x0122)
 #endif
 
@@ -61,7 +61,7 @@ public:
   void Deinit();
   void Purge();
   void PurgeEx(const CURL& url);
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   void CheckIfIdle();
   void SetActivityTime();
   void AddActiveConnection();
@@ -75,7 +75,7 @@ private:
   SMBCCTX *m_context;
   CStdString m_strLastHost;
   CStdString m_strLastShare;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
 #endif

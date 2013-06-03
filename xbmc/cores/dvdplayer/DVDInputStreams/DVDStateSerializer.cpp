@@ -18,10 +18,10 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "system.h"
 #endif
 

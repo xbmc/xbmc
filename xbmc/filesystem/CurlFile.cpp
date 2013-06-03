@@ -29,7 +29,7 @@
 #include <vector>
 #include <climits>
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <errno.h>
 #include <inttypes.h>
 #include "../linux/XFileUtils.h"

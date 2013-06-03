@@ -27,7 +27,7 @@
 #include "system.h"
 #include "threads/CriticalSection.h"
 
-#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__) && !defined(__ANDROID__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
 #define _file _fileno
 #endif
 

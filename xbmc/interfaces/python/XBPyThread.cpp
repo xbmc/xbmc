@@ -19,7 +19,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 
@@ -54,7 +54,7 @@
 #include "utils/CharsetConverter.h"
 #include "PyContext.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen

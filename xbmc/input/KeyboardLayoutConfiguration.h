@@ -24,9 +24,9 @@
 // Comment OUT, if not really debugging!!!
 // #define DEBUG_KEYBOARD_GETCHAR
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/PlatformDefs.h"
-#elif defined (WIN32)
+#elif defined (TARGET_WINDOWS)
 #include "windows.h"
 #else
 #include "xtl.h"

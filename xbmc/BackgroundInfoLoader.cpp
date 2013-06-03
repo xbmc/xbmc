@@ -136,7 +136,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   {
     CThread *pThread = new CThread(this, "BackgroundLoader");
     pThread->Create();
-#ifndef _LINUX
+#ifndef TARGET_POSIX
     pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 #endif
     m_workers.push_back(pThread);

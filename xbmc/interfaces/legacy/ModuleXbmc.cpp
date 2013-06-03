@@ -21,7 +21,7 @@
 
 // TODO: Need a uniform way of returning an error status
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 #include "network/Network.h"

@@ -22,7 +22,7 @@
 #ifndef __PVRCLIENT_TYPES_H__
 #define __PVRCLIENT_TYPES_H__
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #ifndef __cdecl

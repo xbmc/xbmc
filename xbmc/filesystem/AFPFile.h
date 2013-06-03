@@ -23,7 +23,7 @@
 #define FILEAFP_H_
 
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
 #include "IFile.h"
 #include "URL.h"
@@ -132,5 +132,5 @@ protected:
   struct afp_volume    *m_pAfpVol;  
 };
 }
-#endif // _LINUX
+#endif // TARGET_POSIX
 #endif // FILEAFP_H_

@@ -82,7 +82,7 @@ static bool CheckFont(CStdString& strPath, const CStdString& newPath,
   if (!XFILE::CFile::Exists(strPath))
   {
     strPath = URIUtils::AddFileToFolder(newPath,filename);
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
     return false;
@@ -116,7 +116,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
 

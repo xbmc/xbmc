@@ -24,7 +24,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define dll_open open
 #define dll_fopen fopen
 #define dll_close close

@@ -75,7 +75,7 @@ private:
   static std::map<CStdString, CStdString> m_pathMap;
 };
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR_STRING "\\"
 #else

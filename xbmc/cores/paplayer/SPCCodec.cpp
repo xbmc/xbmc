@@ -27,7 +27,7 @@
 #include "DynamicDll.h"
 #include "Util.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "cores/DllLoader/Win32DllLoader.h"
 #endif
 
@@ -44,7 +44,7 @@ SPCCodec::SPCCodec()
   m_dll.EmuAPU = NULL;
   m_dll.LoadSPCFile = NULL;
   m_dll.SeekAPU = NULL;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_dll.ResetAPU = NULL;
   m_dll.InitAPU = NULL;
 #endif
@@ -63,7 +63,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   // coping DLL_PATH_SPC_CODEC into special://temp and using a unique name. Then
   // loading this unique named SNESAPU as the library.
   // This forces the shared lib loader to load a per-instance copy of SNESAPU.
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
   XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
 
@@ -91,7 +91,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_loader->ResolveExport("LoadSPCFile",(void**)&m_dll.LoadSPCFile);
   m_loader->ResolveExport("EmuAPU",(void**)&m_dll.EmuAPU);
   m_loader->ResolveExport("SeekAPU",(void**)&m_dll.SeekAPU);
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_loader->ResolveExport("InitAPU",(void**)&m_dll.InitAPU);
   m_loader->ResolveExport("ResetAPU",(void**)&m_dll.ResetAPU);
 #endif
@@ -114,7 +114,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   file.Close();
 
   m_pApuRAM = new u8[65536];
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_dll.InitAPU();
   m_dll.ResetAPU();
 #endif

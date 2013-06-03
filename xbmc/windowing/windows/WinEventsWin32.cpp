@@ -50,7 +50,7 @@
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 
 using namespace PERIPHERALS;
 

@@ -105,7 +105,7 @@
 #include <SDL/SDL.h>
 #endif
 
-#if defined(FILESYSTEM) && !defined(_LINUX)
+#if defined(FILESYSTEM) && !defined(TARGET_POSIX)
 #include "filesystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
@@ -113,7 +113,7 @@
 #include "network/upnp/UPnPSettings.h"
 #include "filesystem/UPnPDirectory.h"
 #endif
-#if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
 #include "filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
@@ -136,7 +136,7 @@
 #endif
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
 #endif
 #ifdef HAS_EVENT_SERVER
@@ -320,7 +320,7 @@
 #include "settings/SkinSettings.h"
 #include "view/ViewStateSettings.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "XHandle.h"
 #endif
 
@@ -598,14 +598,14 @@ bool CApplication::Create()
     g_graphicsContext.ResetOverscan((RESOLUTION)i, CDisplaySettings::Get().GetResolutionInfo(i).Overscan);
   }
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   tzset();   // Initialize timezone information variables
 #endif
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
 
@@ -645,11 +645,11 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Darwin OSX (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
 #elif defined(TARGET_DARWIN_IOS)
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Darwin iOS (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: FreeBSD (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Linux (%s, %s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: %s. Built on %s (compiler %i)", g_infoManager.GetVersion().c_str(), g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
@@ -694,9 +694,9 @@ bool CApplication::Create()
   // for python scripts that check the OS
 #if defined(TARGET_DARWIN)
   setenv("OS","OS X",true);
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   setenv("OS","Linux",true);
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   CEnvironment::setenv("OS", "win32");
 #endif
 
@@ -839,13 +839,13 @@ bool CApplication::CreateGUI()
   //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
   //this might bring the monitor out of standby, so we have to disable it explicitly
   //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
 #endif
 
 #endif // HAS_SDL
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   // for nvidia cards - vsync currently ALWAYS enabled.
   // the reason is that after screen has been setup changing this env var will make no difference.
   setenv("__GL_SYNC_TO_VBLANK", "1", 0);
@@ -990,7 +990,7 @@ bool CApplication::InitDirectoriesLinux()
          might be mixed case.
 */
 
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -1164,7 +1164,7 @@ bool CApplication::InitDirectoriesOSX()
 
 bool CApplication::InitDirectoriesWin32()
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdString xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
@@ -1207,12 +1207,12 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#if defined(HAS_DVD_DRIVE) && !defined(_WIN32) // somehow this throws an "unresolved external symbol" on win32
+#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
 
-#ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we
+#ifdef TARGET_POSIX // TODO: Win32 has no special://home/ mapping by default, so we
               //       must create these here. Ideally this should be using special://home/ and
               //       be platform agnostic (i.e. unify the InitDirectories*() functions)
   if (!m_bPlatformDirectories)
@@ -1511,7 +1511,7 @@ void CApplication::StopPVRManager()
 
 void CApplication::StartServices()
 {
-#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
@@ -1529,7 +1529,7 @@ void CApplication::StopServices()
 {
   m_network->NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
-#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
@@ -3260,7 +3260,7 @@ bool CApplication::Cleanup()
     CSettings::Get().Uninitialize();
     g_advancedSettings.Clear();
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     CXHandle::DumpObjectTracker();
 
 #ifdef HAS_DVD_DRIVE
@@ -3971,7 +3971,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     }
 
-#if !defined(TARGET_DARWIN) && !defined(_LINUX)
+#if !defined(TARGET_POSIX)
     g_audioManager.Enable(false);
 #endif
 
@@ -5021,7 +5021,7 @@ void CApplication::ProcessSlow()
     UPNP::CUPnP::GetInstance()->UpdateState();
 #endif
 
-#if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
 #endif
 

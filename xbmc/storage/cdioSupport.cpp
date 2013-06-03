@@ -31,7 +31,7 @@
 #include <cdio/mmc.h>
 #include <cdio/cd_types.h>
 
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
 #pragma comment(lib, "libcdio.dll.lib")
 #endif
 

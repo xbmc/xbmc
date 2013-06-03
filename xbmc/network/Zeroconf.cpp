@@ -22,7 +22,7 @@
 #include "Zeroconf.h"
 #include "settings/Settings.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #if !defined(TARGET_DARWIN)
 #include "linux/ZeroconfAvahi.h"
 #else
@@ -137,7 +137,7 @@ CZeroconf*  CZeroconf::GetInstance()
 #else
 #if defined(TARGET_DARWIN)
     smp_instance = new CZeroconfOSX;
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
     smp_instance  = new CZeroconfAvahi;
 #elif defined(TARGET_WINDOWS)
     smp_instance  = new CZeroconfWIN;

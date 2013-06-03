@@ -28,7 +28,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <dirent.h>
 #endif
 
@@ -98,7 +98,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   // check for special-protocol, if not, return
   if (!url.GetProtocol().Equals("special"))
   {
-#if defined(_LINUX) && defined(_DEBUG)
+#if defined(TARGET_POSIX) && defined(_DEBUG)
     CStdString path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
@@ -181,7 +181,7 @@ CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)
 {
   CStdString translatedPath = TranslatePath(path);
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   if (translatedPath.Find("://") > 0)
     return translatedPath;
 

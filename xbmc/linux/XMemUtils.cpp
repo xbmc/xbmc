@@ -52,9 +52,9 @@ void _aligned_free(void *p) {
   free(pFull);
 }
 
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 
-#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 static FILE* procMeminfoFP = NULL;
 #endif
 
@@ -104,7 +104,7 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
           lpBuffer->ullAvailVirtual  = lpBuffer->ullAvailPhys; // FIXME.
       }
   }
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   /* sysctl hw.physmem */
   size_t physmem = 0, mem_free = 0, pagesize = 0, swap_free = 0;
   size_t mem_avail = 0, mem_inactive = 0, mem_cache = 0, len = 0;

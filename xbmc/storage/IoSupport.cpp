@@ -25,12 +25,12 @@
 #include "system.h"
 #include "IoSupport.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
-#if defined (_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if defined(TARGET_LINUX)
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -54,13 +54,13 @@
 #include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 #endif
 #endif
-#ifdef __FreeBSD__
+#ifdef TARGET_FREEBSD
 #include <sys/syslimits.h>
 #endif
 #include "cdioSupport.h"
 #include "filesystem/iso9660.h"
 #include "MediaManager.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "XHandle.h"
 #endif
 
@@ -72,12 +72,12 @@ HANDLE CIoSupport::OpenCDROM()
   HANDLE hDevice = 0;
 
 #ifdef HAS_DVD_DRIVE
-#if defined(_LINUX)
+#if defined(TARGET_POSIX)
   int fd = open(CLibcdio::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
   hDevice = new CXHandle(CXHandle::HND_FILE);
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   hDevice = CreateFile(g_mediaManager.TranslateDevicePath("",true), GENERIC_READ, FILE_SHARE_READ,
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
@@ -94,14 +94,14 @@ HANDLE CIoSupport::OpenCDROM()
 
 void CIoSupport::AllocReadBuffer()
 {
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   m_rawXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
 #endif
 }
 
 void CIoSupport::FreeReadBuffer()
 {
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   GlobalFree(m_rawXferBuffer);
 #endif
 }
@@ -129,7 +129,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
     return -1;
   }
   return 2048;
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   if (hDevice->m_bCDROM)
   {
     int fd = hDevice->fd;
@@ -202,9 +202,9 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     return -1;
   }
   return MODE2_DATA_SIZE;
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   // NYI
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   if (hDevice->m_bCDROM)
   {
     int fd = hDevice->fd;

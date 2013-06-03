@@ -104,7 +104,7 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
   if (mediaPath.IsEmpty())
     mediaPath = path;
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
     mediaPath = g_mediaManager.TranslateDevicePath("");
 #endif
@@ -455,7 +455,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
 void CAutorun::HandleAutorun()
 {
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
   if (!m_bEnable)
   {
     CDetectDVDMedia::m_evAutorun.Reset();

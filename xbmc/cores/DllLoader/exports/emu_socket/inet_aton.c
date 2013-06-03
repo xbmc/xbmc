@@ -24,14 +24,14 @@
  * SUCH DAMAGE.
  */
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 typedef unsigned long in_addr_t;
 #endif
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 #include <netinet/in.h>
 #endif
 

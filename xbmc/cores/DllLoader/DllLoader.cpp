@@ -26,7 +26,7 @@
 #include <limits>
 #include "utils/log.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen
@@ -49,7 +49,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 /*
  * This is a dirty hack.
  * The win32 DLLs contain an alloca routine, that first probes the soon
@@ -667,7 +667,7 @@ bool DllLoader::Load()
     /* since we are handing execution over to unknown code, safeguard here */
     try
     {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 	extend_stack_for_dll_alloca();
 #endif
       initdll((HINSTANCE)hModule, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH

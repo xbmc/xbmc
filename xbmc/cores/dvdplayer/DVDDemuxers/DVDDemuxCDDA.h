@@ -21,7 +21,7 @@
 
 #include "DVDDemux.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)
 #else
 #include <config.h>

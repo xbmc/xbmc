@@ -21,7 +21,7 @@
  *
  */
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
 #define LINE_ENDING "\n"
 
@@ -51,7 +51,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include <libkern/OSTypes.h>
 #endif
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
 #include <stdio.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
@@ -128,7 +128,7 @@
 #define PRIuS "zu"
 #endif
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
 #define XXLog(a,b) printf("%s", (b))
 
@@ -172,7 +172,7 @@
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
-#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #define APIENTRY    WINAPI
 #else
 #define APIENTRY

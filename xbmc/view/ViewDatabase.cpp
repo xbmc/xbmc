@@ -24,7 +24,7 @@
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
 #include "dbwrappers/dataset.h"

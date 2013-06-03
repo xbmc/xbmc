@@ -21,7 +21,7 @@
  *
  */
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/PlatformDefs.h"
 #include <sys/time.h>
 #include <sys/times.h>
@@ -55,7 +55,7 @@ protected:
   std::string m_statName;
   bool m_bCheckWhenDone;
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   struct rusage m_usage;
 #endif
 

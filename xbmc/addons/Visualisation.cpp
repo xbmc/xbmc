@@ -33,7 +33,7 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"
 #endif

@@ -22,7 +22,7 @@
 #include "XBTFReader.h"
 #include "utils/EndianSwap.h"
 #include "utils/CharsetConverter.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "FileSystem/SpecialProtocol.h"
 #endif
 
@@ -57,7 +57,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
 {
   m_fileName = fileName;
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdStringW strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_fileName), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");
@@ -188,7 +188,7 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
   {
     return false;
   }
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
     if (fseeko(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
 #else
     if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)

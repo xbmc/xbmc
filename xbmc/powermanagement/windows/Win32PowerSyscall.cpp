@@ -20,7 +20,7 @@
 
 #include "Win32PowerSyscall.h"
 #include "powermanagement/PowerManager.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 
 bool CWin32PowerSyscall::m_OnResume = false;

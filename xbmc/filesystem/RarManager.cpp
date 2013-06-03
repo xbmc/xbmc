@@ -132,7 +132,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   }
 
   CStdString strPath = strPathInRar;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   strPath.Replace('/', '\\');
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);

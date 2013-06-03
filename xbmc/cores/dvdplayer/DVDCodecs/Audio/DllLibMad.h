@@ -19,10 +19,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
-#if defined(_LINUX) || defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) || defined(TARGET_DARWIN)
   #include <mad.h>
 #else
   #include "libmad/mad.h"

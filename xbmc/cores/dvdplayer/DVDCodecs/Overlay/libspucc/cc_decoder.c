@@ -44,7 +44,7 @@ extern "C" {
 /* number of text colors specified by EIA-608 standard */
 #define NUM_FG_COL 7
 
-#ifndef WIN32
+#ifndef TARGET_WINDOWS
 /* colors specified by the EIA 608 standard */
 enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK, TRANSPARENT };
 #else

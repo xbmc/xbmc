@@ -26,7 +26,7 @@
   #undef LoadImage
  #endif
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 typedef struct tagRGBQUAD {
    BYTE rgbBlue;
    BYTE rgbGreen;

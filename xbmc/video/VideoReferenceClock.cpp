@@ -36,7 +36,7 @@
   #include "osx/CocoaInterface.h"
 #elif defined(TARGET_DARWIN_IOS)
   #include "windowing/WindowingFactory.h"
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
   #pragma comment (lib,"d3d9.lib")
   #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
     #include <Dxerr.h>
@@ -53,7 +53,7 @@
 
 using namespace std;
 
-#if defined(_WIN32) && defined(HAS_DX)
+#if defined(TARGET_WINDOWS) && defined(HAS_DX)
 
   void CD3DCallback::Reset()
   {
@@ -146,7 +146,7 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   int64_t Now;
 
-#if defined(_WIN32) && defined(HAS_DX)
+#if defined(TARGET_WINDOWS) && defined(HAS_DX)
   //register callback
   m_D3dCallback.Reset();
   g_Windowing.Register(&m_D3dCallback);
@@ -157,13 +157,13 @@ void CVideoReferenceClock::Process()
     //set up the vblank clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     SetupSuccess = SetupGLX();
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
     SetupSuccess = SetupD3D();
 #elif defined(TARGET_DARWIN)
     SetupSuccess = SetupCocoa();
 #elif defined(HAS_GLX)
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: compiled without RandR support");
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: only available on directx build");
 #else
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: no implementation available");
@@ -189,7 +189,7 @@ void CVideoReferenceClock::Process()
       //run the clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
       RunGLX();
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
       RunD3D();
 #elif defined(TARGET_DARWIN)
       RunCocoa();
@@ -211,7 +211,7 @@ void CVideoReferenceClock::Process()
     //clean up the vblank clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     CleanupGLX();
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
     CleanupD3D();
 #elif defined(TARGET_DARWIN)
     CleanupCocoa();
@@ -219,7 +219,7 @@ void CVideoReferenceClock::Process()
     if (!SetupSuccess) break;
   }
 
-#if defined(_WIN32) && defined(HAS_DX)
+#if defined(TARGET_WINDOWS) && defined(HAS_DX)
   g_Windowing.Unregister(&m_D3dCallback);
 #endif
 }
@@ -693,7 +693,7 @@ void CVideoReferenceClock::RunGLX()
   }
 }
 
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
 
 void CVideoReferenceClock::RunD3D()
 {
@@ -1228,7 +1228,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
   return true;
 
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
 
   D3DDISPLAYMODE DisplayMode;
   m_D3dDev->GetDisplayMode(0, &DisplayMode);

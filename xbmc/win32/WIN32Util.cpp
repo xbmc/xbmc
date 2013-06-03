@@ -990,7 +990,7 @@ extern "C" {
    * POSSIBILITY OF SUCH DAMAGE.
    */
 
-  #if !defined(_WIN32)
+  #if !defined(TARGET_WINDOWS)
   #include <sys/cdefs.h>
   #endif
 
@@ -998,7 +998,7 @@ extern "C" {
   __RCSID("$NetBSD: strptime.c,v 1.25 2005/11/29 03:12:00 christos Exp $");
   #endif
 
-  #if !defined(_WIN32)
+  #if !defined(TARGET_WINDOWS)
   #include "namespace.h"
   #include <sys/localedef.h>
   #else
@@ -1009,7 +1009,7 @@ extern "C" {
   #include <locale.h>
   #include <string.h>
   #include <time.h>
-  #if !defined(_WIN32)
+  #if !defined(TARGET_WINDOWS)
   #include <tzfile.h>
   #endif
 
@@ -1017,7 +1017,7 @@ extern "C" {
   __weak_alias(strptime,_strptime)
   #endif
 
-  #if !defined(_WIN32)
+  #if !defined(TARGET_WINDOWS)
   #define  _ctloc(x)    (_CurrentTimeLocale->x)
   #else
   #define _ctloc(x)   (x)

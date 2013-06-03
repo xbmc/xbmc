@@ -32,7 +32,7 @@
 #include "XBTF.h"
 #include <lzo/lzo1x.h>
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
 #endif
 

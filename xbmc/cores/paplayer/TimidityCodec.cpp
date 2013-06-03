@@ -26,7 +26,7 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 
@@ -60,7 +60,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   // This forces the shared lib loader to load a per-instance copy of MID_CODEC.
   if ( !m_loader )
   {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.so", 999);
     XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 

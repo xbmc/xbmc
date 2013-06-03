@@ -34,16 +34,16 @@
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
-   (defined(__APPLE__) && defined(__arm__) && defined(__llvm__)) || \
-   (defined(__ANDROID__) && defined(__arm__)) || \
+   (defined(TARGET_DARWIN_IOS) && defined(__llvm__)) || \
+   (defined(TARGET_ANDROID) && defined(__arm__)) || \
     defined(TARGET_RASPBERRY_PI)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
 #if defined(__ppc__) || \
     defined(__powerpc__) || \
-   (defined(__APPLE__) && defined(__llvm__)) || \
-   (defined(__ANDROID__) && defined(__arm__)) || \
+   (defined(TARGET_DARWIN) && defined(__llvm__)) || \
+   (defined(TARGET_ANDROID) && defined(__arm__)) || \
     defined(TARGET_RASPBERRY_PI)
   #define DISABLE_MATHUTILS_ASM_TRUNCATE_INT
 #endif
@@ -130,7 +130,7 @@ namespace MathUtils
     const float round_dn_to_nearest = 0.4999999f;
     i = (x > 0) ? _mm_cvttsd_si32(_mm_set_sd(x + round_to_nearest)) : _mm_cvttsd_si32(_mm_set_sd(x - round_dn_to_nearest));
 
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
     __asm
     {
       fld x
@@ -178,7 +178,7 @@ namespace MathUtils
     );
     return i;
 
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
     const float round_towards_m_i = -0.5f;
     __asm
     {
