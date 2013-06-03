@@ -416,6 +416,8 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   if (pThumbnailNode && pThumbnailNode->FirstChild())
     share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
 
+  XMLUtils::GetBoolean(source, "allowsharing", share.m_allowSharing);
+
   return true;
 }
 
@@ -485,8 +487,11 @@ bool CMediaSourceSettings::SetSources(TiXmlNode *root, const char *section, cons
       XMLUtils::SetString(&source, "lockcode", share.m_strLockCode);
       XMLUtils::SetInt(&source, "badpwdcount", share.m_iBadPwdCount);
     }
+
     if (!share.m_strThumbnailImage.empty())
       XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
+
+    XMLUtils::SetBoolean(&source, "allowsharing", share.m_allowSharing);
 
     sectionNode->InsertEndChild(source);
   }

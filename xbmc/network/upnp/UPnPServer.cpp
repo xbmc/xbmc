@@ -24,6 +24,7 @@
 #include "video/VideoDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "xbmc/GUIUserMessages.h"
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -475,23 +476,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
 NPT_Result
 ObjectIDValidate(const NPT_String& id)
 {
-    if(id.Find("..") != -1)
-        return NPT_ERROR_NO_SUCH_FILE;
-    if(id.StartsWith("virtualpath://upnproot/"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("musicdb://"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("videodb://"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("library://video"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("sources://video"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("special://musicplaylists"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("special://profile/playlists"))
-        return NPT_SUCCESS;
-    else if(id.StartsWith("special://videoplaylists"))
+    if (CFileUtils::RemoteAccessAllowed(id.GetChars()))
         return NPT_SUCCESS;
     return NPT_ERROR_NO_SUCH_FILE;
 }
