@@ -1357,8 +1357,6 @@
 		DFF0F3C517528350002DA3A4 /* Crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8E712942603009E7A26 /* Crc32.cpp */; };
 		DFF0F3C617528350002DA3A4 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		DFF0F3C717528350002DA3A4 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
-		DFF0F3C817528350002DA3A4 /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
-		DFF0F3C917528350002DA3A4 /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		DFF0F3CA17528350002DA3A4 /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */; };
 		DFF0F3CB17528350002DA3A4 /* Environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF529BAC1741697B00523FB4 /* Environment.cpp */; };
 		DFF0F3CC17528350002DA3A4 /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E90DA72486001F0C9D /* Fanart.cpp */; };
@@ -1898,8 +1896,6 @@
 		E38E22C60D25F9FE00618676 /* BitstreamStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */; };
 		E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */; };
 		E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */; };
-		E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
-		E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
@@ -2791,8 +2787,6 @@
 		E4991449174E605900741B6D /* Crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8E712942603009E7A26 /* Crc32.cpp */; };
 		E499144A174E605900741B6D /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		E499144B174E605900741B6D /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
-		E499144C174E605900741B6D /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
-		E499144D174E605900741B6D /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		E499144E174E605900741B6D /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */; };
 		E499144F174E605900741B6D /* Environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF529BAC1741697B00523FB4 /* Environment.cpp */; };
 		E4991450174E605900741B6D /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E90DA72486001F0C9D /* Fanart.cpp */; };
@@ -5028,10 +5022,6 @@
 		E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPUInfo.cpp; sourceTree = "<group>"; };
 		E38E1E2C0D25F9FD00618676 /* CPUInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUInfo.h; sourceTree = "<group>"; };
 		E38E1E2E0D25F9FD00618676 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DownloadQueue.cpp; sourceTree = "<group>"; };
-		E38E1E320D25F9FD00618676 /* DownloadQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadQueue.h; sourceTree = "<group>"; };
-		E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DownloadQueueManager.cpp; sourceTree = "<group>"; };
-		E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadQueueManager.h; sourceTree = "<group>"; };
 		E38E1E350D25F9FD00618676 /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		E38E1E360D25F9FD00618676 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		E38E1E3D0D25F9FD00618676 /* fstrcmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fstrcmp.h; sourceTree = "<group>"; };
@@ -8506,10 +8496,6 @@
 				F5BD02F5148D3A7E001B5583 /* CryptThreading.h */,
 				36A9443B15821E2800727135 /* DatabaseUtils.cpp */,
 				36A9443C15821E2800727135 /* DatabaseUtils.h */,
-				E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */,
-				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
-				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
-				E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */,
 				7CC30E8816296078003E7579 /* EdenVideoArtUpdater.cpp */,
 				7CC30E8916296078003E7579 /* EdenVideoArtUpdater.h */,
 				436B38F3106628850049AB3B /* EndianSwap.h */,
@@ -9838,8 +9824,6 @@
 				E38E22C60D25F9FE00618676 /* BitstreamStats.cpp in Sources */,
 				E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */,
 				E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */,
-				E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */,
-				E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */,
 				E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */,
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
@@ -11349,8 +11333,6 @@
 				DFF0F3C517528350002DA3A4 /* Crc32.cpp in Sources */,
 				DFF0F3C617528350002DA3A4 /* CryptThreading.cpp in Sources */,
 				DFF0F3C717528350002DA3A4 /* DatabaseUtils.cpp in Sources */,
-				DFF0F3C817528350002DA3A4 /* DownloadQueue.cpp in Sources */,
-				DFF0F3C917528350002DA3A4 /* DownloadQueueManager.cpp in Sources */,
 				DFF0F3CA17528350002DA3A4 /* EdenVideoArtUpdater.cpp in Sources */,
 				DFF0F3CB17528350002DA3A4 /* Environment.cpp in Sources */,
 				DFF0F3CC17528350002DA3A4 /* Fanart.cpp in Sources */,
@@ -12377,8 +12359,6 @@
 				E4991449174E605900741B6D /* Crc32.cpp in Sources */,
 				E499144A174E605900741B6D /* CryptThreading.cpp in Sources */,
 				E499144B174E605900741B6D /* DatabaseUtils.cpp in Sources */,
-				E499144C174E605900741B6D /* DownloadQueue.cpp in Sources */,
-				E499144D174E605900741B6D /* DownloadQueueManager.cpp in Sources */,
 				E499144E174E605900741B6D /* EdenVideoArtUpdater.cpp in Sources */,
 				E499144F174E605900741B6D /* Environment.cpp in Sources */,
 				E4991450174E605900741B6D /* Fanart.cpp in Sources */,
