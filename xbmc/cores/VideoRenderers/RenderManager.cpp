@@ -64,30 +64,26 @@ template<class T>
 class CRetakeLock
 {
 public:
-  CRetakeLock(CSharedSection &section, bool immidiate = true, CCriticalSection &owned = g_graphicsContext)
-    : m_lock (NULL  ),
-      m_owned(owned )
+  CRetakeLock(CSharedSection &section, CCriticalSection &owned = g_graphicsContext)
+    : m_count(owned.exit())
+    , m_lock (section),
+      m_owned(owned)
   {
-    m_count = m_owned.exit();
-    m_lock  = new T(section);
-    if(immidiate)
-    {
-      m_owned.restore(m_count);
-      m_count = 0;
-    }
-  }
-  ~CRetakeLock()
-  {
-    delete m_lock;
     m_owned.restore(m_count);
   }
-  void Leave() { m_lock->Leave(); }
-  void Enter() { m_lock->Enter(); }
+
+  void Leave() { m_lock.Leave(); }
+  void Enter()
+  {
+    m_count = m_owned.exit();
+    m_lock.Enter();
+    m_owned.restore(m_count);
+  }
 
 private:
-  T*                m_lock;
-  CCriticalSection &m_owned;
   DWORD             m_count;
+  T                 m_lock;
+  CCriticalSection &m_owned;
 };
 
 CXBMCRenderManager::CXBMCRenderManager()
