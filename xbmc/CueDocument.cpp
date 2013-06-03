@@ -77,6 +77,7 @@ CCueDocument::CCueDocument(void)
   m_replayGainAlbumGain = 0.0f;
   m_iTotalTracks = 0;
   m_iTrack = 0;
+  m_iDiscNumber = 0;
 }
 
 CCueDocument::~CCueDocument(void)
@@ -163,6 +164,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
       bCurrentFileChanged = false;
     }
+    else if (StringUtils::StartsWith(strLine,"REM DISCNUMBER"))
+    {
+      int iDiscNumber = ExtractNumericInfo(strLine.Mid(14));
+      if (iDiscNumber > 0)
+        m_iDiscNumber = iDiscNumber;
+    }
     else if (strLine.Left(4) == "FILE")
     {
       // already a file name? then the time computation will be changed
@@ -236,6 +243,8 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
     song.iYear = m_iYear;
     song.iTrack = m_Track[i].iTrackNumber;
+    if ( m_iDiscNumber > 0 )  
+      song.iTrack |= (m_iDiscNumber << 16); // see CMusicInfoTag::GetDiscNumber()
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!
       song.strTitle.Format("Track %2d", i + 1);
     else

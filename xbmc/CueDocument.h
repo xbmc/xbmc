@@ -71,6 +71,7 @@ private:
   int m_iYear;            //album year
   int m_iTrack;   // current track
   int m_iTotalTracks;  // total tracks
+  int m_iDiscNumber;  // Disc number
   float m_replayGainAlbumGain;
   float m_replayGainAlbumPeak;
 
