@@ -581,7 +581,7 @@ void CGUIWindowSettingsCategory::SetDescription(const CVariant &label)
   if (label.isString())
     SET_CONTROL_LABEL(CONTROL_DESCRIPTION, label.asString());
   else if (label.isInteger() && label.asInteger() >= 0)
-    SET_CONTROL_LABEL(CONTROL_DESCRIPTION, label.asInteger());
+    SET_CONTROL_LABEL(CONTROL_DESCRIPTION, (int)label.asInteger());
   else
     SET_CONTROL_LABEL(CONTROL_DESCRIPTION, "");
 }
