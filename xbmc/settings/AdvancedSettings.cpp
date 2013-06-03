@@ -73,6 +73,11 @@ void CAdvancedSettings::OnSettingsLoaded()
   CLog::SetLogLevel(m_logLevel);
 }
 
+void CAdvancedSettings::OnSettingsUnloaded()
+{
+  m_initialized = false;
+}
+
 void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -100,6 +105,9 @@ void CAdvancedSettings::OnSettingAction(const CSetting *setting)
 
 void CAdvancedSettings::Initialize()
 {
+  if (m_initialized)
+    return;
+
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
