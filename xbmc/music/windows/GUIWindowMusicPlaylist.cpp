@@ -31,7 +31,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
 #include "GUIUserMessages.h"
-#include "Favourites.h"
+#include "filesystem/FavouritesDirectory.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -521,7 +521,7 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-      if (CFavourites::IsFavourite(item.get(), GetID()))
+      if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
       else
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
@@ -590,7 +590,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
-      CFavourites::AddOrRemove(item.get(), GetID());
+      XFILE::CFavouritesDirectory::AddOrRemove(item.get(), GetID());
       return true;
     }
 
