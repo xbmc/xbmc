@@ -24,7 +24,6 @@
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
 #include "utils/AlarmClock.h"
-#include "utils/DownloadQueueManager.h"
 #include "GUIInfoManager.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/DirectoryCache.h"
@@ -71,7 +70,6 @@
   CGUIInfoManager    g_infoManager;
 
   XCURL::DllLibCurlGlobal g_curlInterface;
-  CDownloadQueueManager g_DownloadManager;
   CPartyModeManager     g_partyModeManager;
 
 #ifdef HAS_PYTHON

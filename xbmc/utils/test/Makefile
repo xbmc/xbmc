@@ -10,8 +10,6 @@ SRCS=	\
 	TestCrc32.cpp \
 	TestCryptThreading.cpp \
 	TestDatabaseUtils.cpp \
-	TestDownloadQueue.cpp \
-	TestDownloadQueueManager.cpp \
 	TestEndianSwap.cpp \
 	Testfastmemcpy.cpp \
 	Testfft.cpp \
