@@ -55,7 +55,7 @@ void CRssManager::OnSettingsLoaded()
   Load();
 }
 
-void CRssManager::OnSettingsCleared()
+void CRssManager::OnSettingsUnloaded()
 {
   Clear();
 }

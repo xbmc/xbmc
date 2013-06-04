@@ -52,7 +52,7 @@ CUPnPSettings& CUPnPSettings::Get()
   return sUPnPSettings;
 }
 
-void CUPnPSettings::OnSettingsCleared()
+void CUPnPSettings::OnSettingsUnloaded()
 {
   Clear();
 }

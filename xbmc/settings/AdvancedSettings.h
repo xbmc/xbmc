@@ -95,6 +95,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     static CAdvancedSettings* getInstance();
 
     virtual void OnSettingsLoaded();
+    virtual void OnSettingsUnloaded();
 
     virtual void OnSettingChanged(const CSetting *setting);
 
