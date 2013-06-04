@@ -237,18 +237,17 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
 }
 
 #ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode)
+bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode)
 {
-  if (strTwoCharCode.length() != 2)
+  std::string strLower( strTwoCharCode );
+  StringUtils::ToLower(strLower);
+  StringUtils::Trim(strLower);
+  if (strLower.length() != 2)
     return false;
 
-  CStdString strLower( strTwoCharCode );
-  strLower.MakeLower();
-  strLower.TrimLeft();
-  strLower.TrimRight();
   for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
   {
-    if (strLower.Equals(RegionCode2To3[index].old))
+    if (strLower == RegionCode2To3[index].old)
     {
       strThreeCharCode = RegionCode2To3[index].id;
       return true;

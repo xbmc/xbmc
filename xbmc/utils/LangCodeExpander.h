@@ -58,7 +58,7 @@ public:
 #endif
 
 #ifdef TARGET_WINDOWS
-  bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
+  static bool ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode);
   bool ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode);
 
   /** \brief Convert win32 LCID to RFC 5646 language tag.
