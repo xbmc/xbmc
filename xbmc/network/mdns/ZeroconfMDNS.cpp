@@ -184,7 +184,8 @@ void CZeroconfMDNS::doStop()
     WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_service ), g_hWnd, BONJOUR_EVENT, 0 );
 #endif //TARGET_WINDOWS
 
-    DNSServiceRefDeallocate(m_service);
+    if (m_service)
+      DNSServiceRefDeallocate(m_service);
     m_service = NULL;
   }
 }

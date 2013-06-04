@@ -49,7 +49,9 @@ CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
 #if defined(TARGET_WINDOWS)
   WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, 0 );
 #endif //TARGET_WINDOWS
-  DNSServiceRefDeallocate(m_browser);
+
+  if (m_browser)
+    DNSServiceRefDeallocate(m_browser);
   m_browser = NULL;
 }
 
@@ -263,7 +265,8 @@ bool CZeroconfBrowserMDNS::doRemoveServiceType(const CStdString& fcr_service_typ
       m_discovered_services.erase(it);
   }
 
-  DNSServiceRefDeallocate(browser);
+  if (browser)
+    DNSServiceRefDeallocate(browser);
 
   return true;
 }
