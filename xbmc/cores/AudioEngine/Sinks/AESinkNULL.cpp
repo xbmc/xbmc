@@ -160,7 +160,7 @@ void CAESinkNULL::Process()
       // an approximate sleep time.
       int frames_written = read_bytes / m_sink_frameSize;
       double empty_ms = 1000.0 * (double)frames_written / m_format.m_sampleRate;
-      #if defined(_LINUX)
+      #if defined(TARGET_POSIX)
         usleep(empty_ms * 1000.0);
       #else
         Sleep((int)empty_ms);

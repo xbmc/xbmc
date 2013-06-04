@@ -22,7 +22,7 @@
 #include <stdexcept>
 #include "utils/log.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #if !defined(TARGET_DARWIN)
 #include "linux/ZeroconfBrowserAvahi.h"
 #else
@@ -158,7 +158,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 #else
 #if defined(TARGET_DARWIN)
       smp_instance = new CZeroconfBrowserOSX;
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
       smp_instance  = new CZeroconfBrowserAvahi;
 #elif defined(TARGET_WINDOWS)
       smp_instance  = new CZeroconfBrowserWIN;

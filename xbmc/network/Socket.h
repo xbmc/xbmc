@@ -30,10 +30,10 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef __FreeBSD__
+#ifdef TARGET_FREEBSD
 #include <netinet/in.h>
 #endif
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 typedef int SOCKET;
 #endif
 

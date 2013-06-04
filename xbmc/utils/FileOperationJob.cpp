@@ -316,7 +316,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
 
 inline bool CFileOperationJob::CanBeRenamed(const CStdString &strFileA, const CStdString &strFileB)
 {
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   if (strFileA[1] == ':' && strFileA[0] == strFileB[0])
     return true;
 #else

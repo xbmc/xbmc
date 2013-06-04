@@ -32,7 +32,7 @@
 #include "utils/log.h"
 #include "UnrarXLib/rar.hpp"
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <process.h>
 #endif
 

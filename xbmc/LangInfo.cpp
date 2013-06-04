@@ -156,7 +156,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   if (m_strRegionLocaleName.length() > 0)
   {
     strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     strLocale += ".UTF-8";
 #endif
   }
@@ -167,7 +167,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
   // others similar functions.
-#if defined(__FreeBSD__) || defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_OSX)
   // on FreeBSD and darwin libstdc++ is compiled with "generic" locale support
   if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL
   || setlocale(LC_CTYPE, strLocale.c_str()) == NULL)
@@ -250,7 +250,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   // Windows need 3 chars isolang code
   if (m_defaultRegion.m_strLangLocaleName.length() == 2)
   {
@@ -319,7 +319,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
       if (pRegion->Attribute("locale"))
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
       // Windows need 3 chars regions code
       if (region.m_strRegionLocaleName.length() == 2)
       {

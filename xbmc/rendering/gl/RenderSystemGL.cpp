@@ -47,7 +47,7 @@ CRenderSystemGL::~CRenderSystemGL()
 void CRenderSystemGL::CheckOpenGLQuirks()
 
 {
-#ifdef __APPLE__	
+#ifdef TARGET_DARWIN_OSX
   if (m_RenderVendor.Find("NVIDIA") > -1)
   {             
     // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
@@ -546,7 +546,7 @@ void CRenderSystemGL::CalculateMaxTexturesize()
     }
   }
 
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
   // Max Texture size reported on some apple machines seems incorrect
   // Displaying a picture with that resolution results in a corrupted output
   // So force it to a lower value

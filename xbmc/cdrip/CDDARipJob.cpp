@@ -234,7 +234,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 CStdString CCDDARipJob::SetupTempFile()
 {
   char tmp[MAX_PATH];
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"), "riptrack", 0, tmp);
 #else
   int fd;

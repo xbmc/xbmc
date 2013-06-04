@@ -26,7 +26,7 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #else
 #define HAVE_OPENSSL

@@ -18,7 +18,7 @@
  *
  */
 
-#if _WIN32
+#if TARGET_WINDOWS
 #define PCRE_STATIC
 #endif
 #include <pcrecpp.h>

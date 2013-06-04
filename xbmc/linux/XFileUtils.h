@@ -24,7 +24,7 @@
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define XBMC_FILE_SEP '/'
 #else
 #define XBMC_FILE_SEP '\\'

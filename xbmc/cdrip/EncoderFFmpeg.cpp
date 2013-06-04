@@ -24,7 +24,7 @@
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "stdint.h"
 #else
 #define INT64_C __int64

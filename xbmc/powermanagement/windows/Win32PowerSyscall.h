@@ -22,7 +22,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #ifndef _WIN32_POWER_SYSCALL_H_
 #define _WIN32_POWER_SYSCALL_H_
 #include "powermanagement/IPowerSyscall.h"

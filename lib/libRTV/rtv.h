@@ -39,7 +39,7 @@ typedef unsigned __int64   u64;
 typedef          __int64   s64;
 #define U64F "I64"
 #endif
-#ifdef _LINUX
+#ifndef _WIN32
 typedef unsigned long long u64;
 typedef signed long long s64;
 #define U64F "l"

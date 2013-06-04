@@ -27,7 +27,7 @@
 #endif
 #include <sys/resource.h>
 #include <string.h>
-#ifdef __FreeBSD__
+#ifdef TARGET_FREEBSD
 #include <sys/param.h>
 #if __FreeBSD_version < 900031
 #include <sys/thr.h>
@@ -58,7 +58,7 @@ void CThread::TermHandler() { }
 
 void CThread::SetThreadInfo()
 {
-#ifdef __FreeBSD__
+#ifdef TARGET_FREEBSD
 #if __FreeBSD_version < 900031
   long lwpid;
   thr_self(&lwpid);

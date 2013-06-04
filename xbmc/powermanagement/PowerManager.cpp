@@ -40,7 +40,7 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(TARGET_ANDROID)
 #include "android/AndroidPowerSyscall.h"
-#elif defined(_LINUX) && defined(HAS_DBUS)
+#elif defined(TARGET_POSIX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
 #include "linux/SystemdUPowerSyscall.h"
@@ -48,7 +48,7 @@
 #ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
 #endif
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
 #include "powermanagement/windows/Win32PowerSyscall.h"
 extern HWND g_hWnd;
 #endif
@@ -73,7 +73,7 @@ void CPowerManager::Initialize()
   m_instance = new CCocoaPowerSyscall();
 #elif defined(TARGET_ANDROID)
   m_instance = new CAndroidPowerSyscall();
-#elif defined(_LINUX) && defined(HAS_DBUS)
+#elif defined(TARGET_POSIX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
     m_instance = new CConsoleUPowerSyscall();
   else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
@@ -86,7 +86,7 @@ void CPowerManager::Initialize()
   else
     m_instance = new CHALPowerSyscall();
 #endif
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   m_instance = new CWin32PowerSyscall();
 #endif
 
@@ -257,7 +257,7 @@ void CPowerManager::OnWake()
 #if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   if (g_Windowing.IsFullScreen())
   {
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
     ShowWindow(g_hWnd,SW_RESTORE);
     SetForegroundWindow(g_hWnd);
 #elif !defined(TARGET_DARWIN_OSX)

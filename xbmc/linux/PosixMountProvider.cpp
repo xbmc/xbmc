@@ -96,7 +96,7 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
 
 #if defined(TARGET_DARWIN)
   FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   FILE* pipe = popen("df -h -t ufs,cd9660,hfs,udf,zfs", "r");
 #else
   FILE* pipe = popen("df -h", "r");

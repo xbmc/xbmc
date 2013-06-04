@@ -11,13 +11,13 @@ const int N1=4, N2=4, N3=4, N4=(128+3-1*N1-2*N2-3*N3)/4;
 const int N_INDEXES=N1+N2+N3+N4;
 
 // FIXME, this is probably broken on OS X.
-#if (defined(__GNUC__) || defined(_LINUX)) && !defined(__APPLE__)
+#if (defined(__GNUC__) || defined(TARGET_POSIX)) && !defined(TARGET_DARWIN)
 #define _PACK_ATTR __attribute__ ((__packed__))
 #else
 #define _PACK_ATTR
 #endif /* defined(__GNUC__) */
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #pragma pack(1)
 #endif
 struct RAR_MEM_BLK 

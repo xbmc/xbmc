@@ -29,7 +29,7 @@
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #pragma comment(lib, "mysqlclient.lib")
 #endif
 

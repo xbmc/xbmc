@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   #define _USE_MATH_DEFINES
 #endif
 

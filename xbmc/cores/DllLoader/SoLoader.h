@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include "system.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #endif
 #include "DllLoader.h"

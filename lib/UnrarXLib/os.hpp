@@ -1,7 +1,7 @@
 #ifndef _RAR_OS_
 #define _RAR_OS_
 
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #endif
 
@@ -38,7 +38,7 @@
 
 #include "system.h"
 #include <prsht.h>
-#if defined(_LINUX)
+#if defined(TARGET_POSIX)
 #include "PlatformDefs.h"
 #endif
 

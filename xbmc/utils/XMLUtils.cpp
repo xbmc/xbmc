@@ -21,7 +21,7 @@
 #include "XMLUtils.h"
 #include "URL.h"
 #include "StringUtils.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for strcasecmp
 #endif
 

@@ -136,7 +136,7 @@ bool IsPalettedFormat(XB_D3DFORMAT format);
 void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset);
 bool IsSwizzledFormat(XB_D3DFORMAT format);
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;

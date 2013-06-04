@@ -20,7 +20,7 @@
 
 #include "GUIDialogAccessPoints.h"
 #include "guilib/GUIKeyboardFactory.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/NetworkLinux.h"
 #endif
 #include "Application.h"

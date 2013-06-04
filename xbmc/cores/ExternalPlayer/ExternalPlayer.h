@@ -78,12 +78,12 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
   
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
   virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
   //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #elif defined(TARGET_ANDROID)
   virtual BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   virtual BOOL ExecuteAppLinux(const char* strSwitches);
 #endif
 
@@ -100,7 +100,7 @@ private:
   int m_time;
   CStdString m_launchFilename;
   HWND m_hwndXbmc; 
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
   POINT m_ptCursorpos;
   PROCESS_INFORMATION m_processInfo;
 #endif 

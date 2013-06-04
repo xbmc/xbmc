@@ -26,7 +26,7 @@
 #include <sstream>
 #include <iostream>
 #include <map>
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <strstream>
 #endif
 #include "storage/cdioSupport.h"

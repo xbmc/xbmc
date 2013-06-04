@@ -343,7 +343,7 @@ bool EnumConfigPaths(char *Path,int Number)
 #elif defined(_WIN_32)
   if (Number!=0)
     return(false);
-#if !defined(_LINUX)
+#if !defined(TARGET_POSIX)
   GetModuleFileName(NULL,Path,NM);
   RemoveNameFromPath(Path);
 #endif

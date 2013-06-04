@@ -23,13 +23,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
 #include "filesystem/iso9660.h"
@@ -58,11 +58,11 @@
 #include "android/AndroidStorageProvider.h"
 #elif defined(TARGET_FREEBSD)
 #include "linux/LinuxStorageProvider.h"
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
 #include "linux/LinuxStorageProvider.h"
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
-#elif _WIN32
+#elif TARGET_WINDOWS
 #include "windows/Win32StorageProvider.h"
 #endif
 
@@ -95,9 +95,9 @@ void CMediaManager::Initialize()
       m_platformStorage = new CDarwinStorageProvider();
     #elif defined(TARGET_ANDROID)
       m_platformStorage = new CAndroidStorageProvider();
-    #elif defined(_LINUX)
+    #elif defined(TARGET_POSIX)
       m_platformStorage = new CLinuxStorageProvider();
-    #elif _WIN32
+    #elif TARGET_WINDOWS
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
@@ -317,7 +317,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
     strDevice = m_strFirstAvailDrive;
 #endif
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return "";
 
@@ -334,7 +334,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return false;
 
@@ -360,7 +360,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return false;
 
@@ -391,7 +391,7 @@ bool CMediaManager::HasOpticalDrive()
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
 
@@ -426,7 +426,7 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 #ifdef HAS_DVD_DRIVE
 CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return NULL;
   
@@ -477,7 +477,7 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
 
 CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
     return "";
 
@@ -501,7 +501,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
   if (strDevice.IsEmpty()) // if no value passed, use the current default disc path.
     strDevice = GetDiscPath();    // in case of non-Windows we must obtain the disc path
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (!m_bhasoptical)
     return "";
   strDevice = TranslateDevicePath(strDevice);
@@ -510,7 +510,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 
   CStdString strDrive = g_mediaManager.TranslateDevicePath(strDevice);
 
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
   {
     CSingleLock waitLock(m_muAutoSource);
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
@@ -601,7 +601,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
 
 CStdString CMediaManager::GetDiscPath()
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   return g_mediaManager.TranslateDevicePath("");
 #else
 
@@ -662,9 +662,9 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 #ifdef HAS_DVD_DRIVE
 #if defined(TARGET_DARWIN)
   // FIXME...
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   // NYI
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {

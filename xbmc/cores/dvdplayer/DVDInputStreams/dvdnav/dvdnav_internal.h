@@ -31,10 +31,10 @@
 #include <limits.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
 
 /* pthread_mutex_* wrapper for win32 */
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <windows.h>
 #include <process.h>
 typedef CRITICAL_SECTION pthread_mutex_t;
@@ -42,7 +42,7 @@ typedef CRITICAL_SECTION pthread_mutex_t;
 #define pthread_mutex_lock(a)    EnterCriticalSection(a)
 #define pthread_mutex_unlock(a)  LeaveCriticalSection(a)
 #define pthread_mutex_destroy(a) DeleteCriticalSection(a)
-#endif // !_LINUX
+#endif // !TARGET_POSIX
 
 #ifndef HAVE_GETTIMEOFDAY
 /* replacement gettimeofday implementation */
@@ -58,16 +58,16 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 #define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
 #endif
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <io.h> /* read() */
 #define lseek64 _lseeki64
-#endif // !_LINUX
+#endif // !TARGET_POSIX
 
 #else
 
 #include <pthread.h>
 
-#endif /* WIN32 */
+#endif /* TARGET_WINDOWS */
 
 /* Uncomment for VM command tracing */
 /* #define TRACE */
@@ -217,7 +217,7 @@ dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state);
 #else
 #define printerrf(...) \
 	do { if (this) snprintf(this->err_str, MAX_ERR_LEN, __VA_ARGS__); } while (0)
-#endif /* WIN32 */
+#endif /* TARGET_WINDOWS */
 #endif
 #define printerr(str) \
 	do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)

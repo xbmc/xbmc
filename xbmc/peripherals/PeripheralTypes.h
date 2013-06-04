@@ -21,7 +21,7 @@
 
 #include <map>
 #include <stdio.h>
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "PlatformDefs.h"
 #endif
 #include "utils/StdString.h"

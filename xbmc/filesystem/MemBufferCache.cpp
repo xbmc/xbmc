@@ -18,7 +18,7 @@
  *
  */
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "threads/SystemClock.h"
 #include "linux/PlatformDefs.h"
 #endif

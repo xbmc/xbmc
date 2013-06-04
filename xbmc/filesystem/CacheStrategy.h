@@ -23,7 +23,7 @@
 #define XFILECACHESTRATEGY_H
 
 #include <stdint.h>
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 #include "XFileUtils.h"

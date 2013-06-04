@@ -19,7 +19,7 @@
  */
 
 #include "DVDAudioCodecFFmpeg.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "XMemUtils.h"
 #endif
 #include "../../DVDStreamInfo.h"

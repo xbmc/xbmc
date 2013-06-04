@@ -158,7 +158,7 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
     {
       if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
       {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
         if (localeHack && CharCode2To3[index].win_id)
         {
           strThreeCharCode = CharCode2To3[index].win_id;

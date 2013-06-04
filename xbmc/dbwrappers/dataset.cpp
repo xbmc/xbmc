@@ -128,7 +128,7 @@ void Dataset::setSqlParams(const char *sqlFrmt, sqlType t, ...) {
   char sqlCmd[DB_BUFF_MAX+1];
 
   va_start(ap, t);
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   _vsnprintf(sqlCmd, DB_BUFF_MAX-1, sqlFrmt, ap);
 #else
   vsnprintf(sqlCmd, DB_BUFF_MAX-1, sqlFrmt, ap);
@@ -517,7 +517,7 @@ DbErrors::DbErrors(const char *msg, ...) {
   va_list vl;
   va_start(vl, msg);
   char buf[DB_BUFF_MAX]="";
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   _vsnprintf(buf, DB_BUFF_MAX-1, msg, vl);
 #else
   vsnprintf(buf, DB_BUFF_MAX-1, msg, vl);

@@ -25,7 +25,7 @@
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #include "xbmc.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
 #endif
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 #endif
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #if defined(DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
 
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
   CAppParamParser appParamParser;
   appParamParser.Parse((const char **)argv, argc);
 #endif

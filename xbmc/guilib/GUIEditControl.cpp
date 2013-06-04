@@ -38,7 +38,7 @@ const unsigned int CGUIEditControl::smsDelay = 1000;
 
 using namespace std;
 
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
 extern HWND g_hWnd;
 #endif
 
@@ -584,7 +584,7 @@ void CGUIEditControl::OnPasteClipboard()
     m_cursorPos+=strlen(szStr);
     UpdateText();
   }
-#elif defined _WIN32
+#elif defined TARGET_WINDOWS
   if (OpenClipboard(g_hWnd))
   {
     HGLOBAL hglb = GetClipboardData(CF_TEXT);

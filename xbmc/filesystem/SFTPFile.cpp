@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <sstream>
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #pragma comment(lib, "ssh.lib")
 #endif
 

@@ -27,7 +27,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <tpcshrd.h>
 
 CWinSystemWin32::CWinSystemWin32()

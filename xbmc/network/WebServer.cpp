@@ -35,7 +35,7 @@
 
 //#define WEBSERVER_DEBUG
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
 

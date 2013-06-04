@@ -25,12 +25,12 @@
 #include <mach-o/dyld.h>
 #endif
 
-#if defined(__FreeBSD__)
+#if defined(TARGET_FREEBSD)
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #endif
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -63,7 +63,7 @@
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
 #include <shlobj.h>
 #include "WIN32Util.h"
@@ -316,7 +316,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 
   // If the filename starts "x:", "\\" or "/" it's already fully qualified so return
   if (strFilename.size() > 1)
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
     if ( strFilename[1] == ':' || (strFilename[0] == '\\' && strFilename[1] == '\\'))
@@ -365,7 +365,7 @@ bool CUtil::TestGetQualifiedFilename()
 bool CUtil::TestMakeLegalPath()
 {
   CStdString path;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   path = "C:\\foo\\bar"; path = MakeLegalPath(path);
   if (path != "C:\\foo\\bar") return false;
   path = "C:\\foo:\\bar\\"; path = MakeLegalPath(path);
@@ -396,7 +396,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 
   if (!strPath.IsEmpty())
   {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     char tmp[1024];
     //expand potential relative path to full path
     if(GetFullPathName(strPath, 1024, tmp, 0) != 0)
@@ -442,7 +442,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       strPath = strHomePath;
   }
 
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
@@ -773,7 +773,7 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_rdev = stat->st_rdev;
   result->st_size = (int64_t)stat->st_size;
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
@@ -794,7 +794,7 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
@@ -815,7 +815,7 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   result->st_atime = stat->st_atime;
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
@@ -835,7 +835,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   if (stat->st_size <= LONG_MAX)
     result->st_size = (_off_t)stat->st_size;
 #else
@@ -852,7 +852,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
@@ -862,7 +862,7 @@ void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   if (stat->st_size <= LONG_MAX)
     result->st_size = (_off_t)stat->st_size;
 #else
@@ -874,7 +874,7 @@ void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   result->st_atime = stat->st_atime;
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
@@ -981,7 +981,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
     return result;
 
   // check the path for incorrect slashes
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
     result.Replace('/', '\\');
@@ -1585,7 +1585,7 @@ void CUtil::InitRandomSeed()
   srand(seed);
 }
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
   CStdStringArray args;
@@ -1808,7 +1808,7 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
 CStdString CUtil::ResolveExecutablePath()
 {
   CStdString strExecutablePath;
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
   wchar_t szAppPathW[MAX_PATH] = L"";
   ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
@@ -1819,7 +1819,7 @@ CStdString CUtil::ResolveExecutablePath()
 
   GetDarwinExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
-#elif defined(__FreeBSD__)                                                                                                                                                                   
+#elif defined(TARGET_FREEBSD)                                                                                                                                                                   
   char buf[PATH_MAX];
   size_t buflen;
   int mib[4];
@@ -2200,7 +2200,7 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
 
 bool CUtil::CanBindPrivileged()
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
   if (geteuid() == 0)
     return true; //root user can always bind to privileged ports
@@ -2227,17 +2227,17 @@ bool CUtil::CanBindPrivileged()
 
 #endif //HAVE_LIBCAP
 
-#else //_LINUX
+#else //TARGET_POSIX
 
   return true;
 
-#endif //_LINUX
+#endif //TARGET_POSIX
 }
 
 bool CUtil::ValidatePort(int port)
 {
   // check that it's a valid port
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   if (!CUtil::CanBindPrivileged() && (port < 1024 || port > 65535))
     return false;
   else

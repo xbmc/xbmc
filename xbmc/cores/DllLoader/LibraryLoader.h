@@ -22,7 +22,7 @@
 #define LIBRARY_LOADER
 
 #include "system.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #endif
 

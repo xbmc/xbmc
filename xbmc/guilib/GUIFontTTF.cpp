@@ -39,7 +39,7 @@
 
 #define USE_RELEASE_LIBS
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #pragma comment(lib, "freetype246MT.lib")
 #endif
 

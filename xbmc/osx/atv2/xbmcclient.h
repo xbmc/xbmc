@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -131,14 +131,14 @@ public:
 
   static void Clean()
   {
-  #ifdef _WIN32
+  #ifdef TARGET_WINDOWS
     WSACleanup();
   #endif
   }
 
   static bool Initialize()
   {
-  #ifdef _WIN32
+  #ifdef TARGET_WINDOWS
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(1, 1), &wsaData))
       return false;

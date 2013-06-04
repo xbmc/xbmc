@@ -25,7 +25,7 @@
 #include "utils/SystemInfo.h"
 #include <assert.h>
 #include <string>
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "guilib/GraphicContext.h"
 #endif
 
@@ -187,7 +187,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 /////  Add other platforms here.
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
 void DPMSSupport::PlatformSpecificInit()
 {
   // Assume we support DPMS. Is there a way to test it?

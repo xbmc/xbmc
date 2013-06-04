@@ -1,4 +1,4 @@
-#if !defined(_LINUX) && !defined(_XBMC)
+#if !defined(TARGET_POSIX) && !defined(_XBMC)
 #include "rar.hpp"
 
 #ifndef GUI

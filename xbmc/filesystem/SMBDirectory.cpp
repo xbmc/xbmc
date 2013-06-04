@@ -62,14 +62,14 @@ using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.AddActiveConnection();
 #endif
 }
 
 CSMBDirectory::~CSMBDirectory(void)
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.AddIdleConnection();
 #endif
 }
@@ -401,7 +401,7 @@ bool CSMBDirectory::Exists(const char* strPath)
 CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName,
     const CStdString &strUser, const CStdString &strPass)
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   UnMountShare(strType, strName);
 
   CStdString strMountPoint = GetMountPoint(strType, strName);
@@ -468,7 +468,7 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
 
   // Execute command.
   CUtil::Command(args);
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   CStdString strCmd = "umount " + GetMountPoint(strType, strName);
   CUtil::SudoCommand(strCmd);
 #endif

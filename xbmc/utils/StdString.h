@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <vector>
 
-#if defined(_WIN32) && !defined(va_copy)
+#if defined(TARGET_WINDOWS) && !defined(va_copy)
 #define va_copy(dst, src) ((dst) = (src))
 #endif
 
@@ -864,7 +864,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PWSTR pNextDstW      = pDstW;
       SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
       SSCodeCvt::state_type st= { { 0 } };
 #else
       SSCodeCvt::state_type st= { 0 };
@@ -872,7 +872,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       res            = conv.in(st,
                     pSrcA, pSrcA + nSrc, pNextSrcA,
                     pDstW, pDstW + nDst, pNextDstW);
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);}
 #else
 #define ASSERT2 ASSERT
@@ -911,7 +911,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PCWSTR pNextSrcW    = pSrcW;
       SSCodeCvt::result res  = SSCodeCvt::ok;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
       SSCodeCvt::state_type st= { { 0 } };
 #else
       SSCodeCvt::state_type st= { 0 };
@@ -919,7 +919,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       res            = conv.out(st,
                     pSrcW, pSrcW + nSrc, pNextSrcW,
                     pDstA, pDstA + nDst, pNextDstA);
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);}
 #else
 #define ASSERT2 ASSERT

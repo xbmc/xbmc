@@ -20,7 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "UdpClient.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include <sys/ioctl.h>
 #endif
 #include "Network.h"
@@ -175,7 +175,7 @@ void CUdpClient::Process()
     {
       // read data
       int messageLength = sizeof(messageBuffer) - 1 ;
-#ifndef _LINUX
+#ifndef TARGET_POSIX
       int remoteAddressSize;
 #else
       socklen_t remoteAddressSize;

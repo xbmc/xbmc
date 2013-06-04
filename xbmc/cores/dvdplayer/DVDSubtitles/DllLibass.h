@@ -20,11 +20,11 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 extern "C" {
-#if defined(WIN32)
+#if defined(TARGET_WINDOWS)
   #include "lib/libass/libass/ass.h"
 #else
   #include <ass/ass.h>

@@ -21,7 +21,7 @@
  *
  */
 
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 
 #include <list>
 
@@ -50,7 +50,7 @@ public:
 
   // simulate mutex and critical section
   CCriticalSection *m_hMutex;
-  int       RecursionCount;  // for mutex - for compatibility with WIN32 critical section
+  int       RecursionCount;  // for mutex - for compatibility with TARGET_WINDOWS critical section
   int       fd;
   bool      m_bManualEvent;
   time_t    m_tmCreation;

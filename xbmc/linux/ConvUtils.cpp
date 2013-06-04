@@ -20,7 +20,7 @@
 
 #include "PlatformDefs.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 
 #include <stdio.h>
 #include <ctype.h>

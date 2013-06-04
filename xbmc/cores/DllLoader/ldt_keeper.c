@@ -48,7 +48,7 @@ extern "C" {
 #if defined(__GLIBC__) &&  (__GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ == 0))
 _syscall3( int, modify_ldt, int, func, void *, ptr, unsigned long, bytecount );
 #else
-#if defined(__ANDROID__) && defined(__i386__) && !defined(modify_ldt)
+#if defined(TARGET_ANDROID) && defined(__i386__) && !defined(modify_ldt)
 #define modify_ldt(a,b,c) syscall( __NR_modify_ldt,  a, b, c);
 #else
 int modify_ldt(int func, void *ptr, unsigned long bytecount);
@@ -58,7 +58,7 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 }
 #endif
 #else
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if defined(__NetBSD__) || defined(TARGET_FREEBSD) || defined(__OpenBSD__) || defined(__DragonFly__)
 #include <machine/segments.h>
 #include <machine/sysarch.h>
 #endif
@@ -112,7 +112,7 @@ struct modify_ldt_ldt_s {
 #define       LDT_SEL(idx) ((idx) << 3 | 1 << 2 | 3)
 
 /* i got this value from wine sources, it's the first free LDT entry */
-#if (defined(TARGET_DARWIN) || defined(__FreeBSD__)) && defined(LDT_AUTO_ALLOC)
+#if (defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)) && defined(LDT_AUTO_ALLOC)
 #define TEB_SEL_IDX LDT_AUTO_ALLOC
 #define USE_LDT_AA
 #endif
@@ -142,7 +142,7 @@ void Setup_FS_Segment(void)
   );
 }
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
+#if defined(__NetBSD__) || defined(TARGET_FREEBSD) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
 static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt_s *content )
 {
   *buffer++ = ((content->base_addr & 0x0000ffff) << 16) |
@@ -210,7 +210,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
   }
 #endif /*linux*/
 
-#if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
+#if defined(__NetBSD__) || defined(TARGET_FREEBSD) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
   {
     unsigned long d[2];
 
@@ -232,7 +232,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 #endif
     }
   }
-#endif  // __NetBSD__ || __FreeBSD__ || __OpenBSD__ || __DragonFly__ || TARGET_DARWIN
+#endif  // __NetBSD__ || TARGET_FREEBSD || __OpenBSD__ || __DragonFly__ || TARGET_DARWIN
 
 #if defined(__svr4__)
   {

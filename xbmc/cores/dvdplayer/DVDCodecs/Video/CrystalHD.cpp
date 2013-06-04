@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
 #include "WIN32Util.h"
 #include "util.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -42,7 +42,7 @@
 
 namespace BCM
 {
-  #if defined(WIN32)
+  #if defined(TARGET_WINDOWS)
     typedef void		*HANDLE;
   #else
     #ifndef __LINUX_USER__
@@ -1118,7 +1118,7 @@ CCrystalHD::CCrystalHD() :
   memset(&m_sps_pps_context, 0, sizeof(m_sps_pps_context));
 
   m_dll = new DllLibCrystalHD;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdString  strDll;
   if(CWIN32Util::GetCrystalHDLibraryPath(strDll) && m_dll->SetFile(strDll) && m_dll->Load() && m_dll->IsLoaded() )
 #else
