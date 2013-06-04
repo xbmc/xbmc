@@ -29,6 +29,7 @@
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
+#include "GUIDragAndDropManager.h"
 
 #include "addons/Skin.h"
 #include "GUIInfoManager.h"
@@ -451,7 +452,7 @@ EVENT_RESULT CGUIWindow::OnMouseAction(const CAction &action)
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   // create the mouse event
-  CMouseEvent event(action.GetID(), action.GetHoldTime(), action.GetAmount(2), action.GetAmount(3));
+  CMouseEvent event(action.GetID(), action.GetHoldTime(), action.GetAmount(2), action.GetAmount(3), g_dragAndDropManager.GetMessageInfo());
   if (m_exclusiveMouseControl)
   {
     CGUIControl *child = (CGUIControl *)GetControl(m_exclusiveMouseControl);
@@ -472,6 +473,27 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
     return OnAction(CAction(ACTION_PREVIOUS_MENU)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
+  }
+  if (event.m_id == ACTION_MOUSE_DRAG)
+  { // if no one feels responsible for the drag events, 
+    // we should notify the info handler and the current hovered element about that
+    if (event.m_state == 2)
+    {
+      if (event.m_dndInfo != NULL && !m_dropTarget) // We no longer have a drop target
+      {
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_HOVER);
+        // We notify that no one is the drag target right now, via a NULL pointer in msg 
+        g_windowManager.SendMessage(msg);
+        m_dropTarget = true;
+      }
+      return EVENT_RESULT_HANDLED;
+    }
+    if (event.m_state == 3)
+    {
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_STOP);
+      g_windowManager.SendMessage(msg);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   return EVENT_RESULT_UNHANDLED;
 }

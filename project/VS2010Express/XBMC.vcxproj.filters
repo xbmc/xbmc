@@ -828,6 +828,9 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIDialog.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIDragAndDropManager.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
@@ -3735,6 +3738,9 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIDialog.h">
       <Filter>guilib</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\xbmc\guilib\GUIDragAndDropManager.h">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\xbmc\music\karaoke\cdgdata.h">
       <Filter>music\karaoke</Filter>
     </ClInclude>

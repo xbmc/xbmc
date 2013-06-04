@@ -60,6 +60,7 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
+  m_bDragStart = false;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -447,6 +448,9 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       return true;
     }
   }
+  if (message.GetMessage() == GUI_MSG_NOTIFY_ALL && message.GetParam1() == GUI_DND_STOP && m_bDragStart)
+    DragStop();
+  
   return CGUIControl::OnMessage(message);
 }
 
@@ -648,7 +652,8 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
+  if (!m_bDragStart) //only if we are not where the dragging started
+    SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
 
@@ -709,7 +714,31 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     ScrollToOffset(toOffset);
     return EVENT_RESULT_HANDLED;
   }
+  else if (event.m_id == ACTION_MOUSE_DRAG) 
+  {
+    if (event.m_state == 1 && HitTest(point))
+    {
+      int selected = GetItemPositionFromPoint(point - CPoint(GetXPosition(), GetYPosition()));
+      if (selected >= 0 && selected < (int)m_items.size())
+      {
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetParentID(), 0, GUI_DND_ITEM_START, 0, m_items[selected]);
+        g_windowManager.SendMessage(msg);
+        m_bDragStart = true;
+      }
+      
+      return EVENT_RESULT_HANDLED;
+    }
+  }
   return EVENT_RESULT_UNHANDLED;
+}
+
+void CGUIBaseContainer::DragStop()
+{
+  m_bDragStart = false;
+}
+
+void CGUIBaseContainer::DraggedAway()
+{  
 }
 
 bool CGUIBaseContainer::OnClick(int actionID)
@@ -1227,13 +1256,20 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter)
 
 void CGUIBaseContainer::SetCursor(int cursor)
 {
+  if (m_bDragStart)
+    return; 
   m_cursor = cursor;
 }
 
 void CGUIBaseContainer::SetOffset(int offset)
 {
   if (m_offset != offset)
+  {
     MarkDirtyRegion();
+    if (m_bDragStart)
+      //We want to keep the dragged item selected, so adjust the cursor
+      m_cursor = (m_cursor + m_offset) - offset;
+  }  
   m_offset = offset;
 }
 

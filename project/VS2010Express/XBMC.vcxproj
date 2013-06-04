@@ -621,6 +621,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIControlGroupList.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlProfiler.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIDialog.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIDragAndDropManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIEditControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFadeLabelControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFixedListContainer.cpp" />
@@ -2138,6 +2139,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIControlGroupList.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControlProfiler.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIDialog.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIDragAndDropManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIEditControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFadeLabelControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFixedListContainer.h" />

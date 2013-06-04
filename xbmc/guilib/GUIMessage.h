@@ -133,6 +133,13 @@
 
 #define GUI_MSG_WINDOW_LOAD 43
 
+/*
+ Drag&Drop Messages
+ */
+#define GUI_DND_HOVER      44 //Used to notify that a new GUIElement is now the drag&drop target
+#define GUI_DND_ITEM_START 45
+#define GUI_DND_STOP       46
+
 #define GUI_MSG_USER         1000
 
 /*!

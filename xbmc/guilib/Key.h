@@ -29,6 +29,7 @@
  */
 
 #include "utils/StdString.h"
+#include <boost/shared_ptr.hpp>
 
 // Reserved 0 - 255
 //  XBIRRemote.h
@@ -435,6 +436,16 @@ private:
   wchar_t      m_unicode;
 };
 
+  //forwards for DragAndDropInfo
+class CGUIControl;
+class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
+
+struct DragAndDropInfo
+{
+  int             m_dragStartWindowID;
+  CGUIListItemPtr m_draggedFileItem;
+};
+
 /*!
   \ingroup actionkeys, mouse
   \brief Simple class for mouse events
@@ -442,7 +453,8 @@ private:
 class CMouseEvent
 {
 public:
-  CMouseEvent(int actionID, int state = 0, float offsetX = 0, float offsetY = 0)
+  CMouseEvent(int actionID, int state = 0, float offsetX = 0, float offsetY = 0, boost::shared_ptr<DragAndDropInfo> dndInfo = boost::shared_ptr<DragAndDropInfo>())
+  : m_dndInfo(dndInfo)
   {
     m_id = actionID;
     m_state = state;
@@ -454,6 +466,7 @@ public:
   int    m_state;
   float  m_offsetX;
   float  m_offsetY;
+  boost::shared_ptr<DragAndDropInfo> m_dndInfo;
 };
 
 /*!
