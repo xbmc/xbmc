@@ -301,6 +301,9 @@
     <Filter Include="input\touch\generic">
       <UniqueIdentifier>{d062c356-66f2-49e7-9510-b216701d2298}</UniqueIdentifier>
     </Filter>
+    <Filter Include="listproviders">
+      <UniqueIdentifier>{0abba167-4e8e-46ed-a6f2-63bf2f13c2f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3035,6 +3038,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp">
+      <Filter>listproviders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp">
+      <Filter>listproviders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5947,6 +5956,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\listproviders\IListProvider.h">
+      <Filter>listproviders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\listproviders\StaticProvider.h">
+      <Filter>listproviders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
