@@ -28,11 +28,11 @@
 #include <dns_sd.h>
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs
-class CZeroconfBrowserWIN : public CZeroconfBrowser
+class CZeroconfBrowserMDNS : public CZeroconfBrowser
 {
 public:
-  CZeroconfBrowserWIN();
-  ~CZeroconfBrowserWIN();
+  CZeroconfBrowserMDNS();
+  ~CZeroconfBrowserMDNS();
 
 private:
   ///implementation if CZeroconfBrowser interface
