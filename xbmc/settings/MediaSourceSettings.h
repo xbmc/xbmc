@@ -34,7 +34,7 @@ public:
   static std::string GetSourcesFile();
   
   virtual void OnSettingsLoaded();
-  virtual void OnSettingsCleared();
+  virtual void OnSettingsUnloaded();
 
   bool Load();
   bool Load(const std::string &file);
