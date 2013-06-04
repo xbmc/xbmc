@@ -25,11 +25,9 @@
 
 TEST(TestMime, GetMimeType_string)
 {
-  std::string refstr, varstr;
-
-  refstr = "video/x-msvideo";
-  varstr = CMime::GetMimeType("avi");
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  EXPECT_STREQ("video/avi",       CMime::GetMimeType("avi").c_str());
+  EXPECT_STRNE("video/x-msvideo", CMime::GetMimeType("avi").c_str());
+  EXPECT_STRNE("video/avi",       CMime::GetMimeType("xvid").c_str());
 }
 
 TEST(TestMime, GetMimeType_CFileItem)

@@ -54,9 +54,6 @@ public:
   /* Function to get path of a tempfile */
   CStdString TempFilePath(XFILE::CFile const* const tempfile);
 
-  /* Functions to get variables used in the TestDownloadQueue tests. */
-  std::vector<CStdString> &getTestDownloadQueueUrls();
-
   /* Functions to get variables used in the TestFileFactory tests. */
   std::vector<CStdString> &getTestFileFactoryReadUrls();
 
@@ -94,7 +91,6 @@ private:
   CXBMCTestUtils(CXBMCTestUtils const&);
   void operator=(CXBMCTestUtils const&);
 
-  std::vector<CStdString> TestDownloadQueueUrls;
   std::vector<CStdString> TestFileFactoryReadUrls;
   std::vector<CStdString> TestFileFactoryWriteUrls;
   CStdString TestFileFactoryWriteInputFile;

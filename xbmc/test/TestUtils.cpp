@@ -186,11 +186,6 @@ XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(CStdString const& strFileName,
 }
 
 
-std::vector<CStdString> &CXBMCTestUtils::getTestDownloadQueueUrls()
-{
-  return TestDownloadQueueUrls;
-}
-
 std::vector<CStdString> &CXBMCTestUtils::getTestFileFactoryReadUrls()
 {
   return TestFileFactoryReadUrls;
@@ -226,13 +221,6 @@ static const char usage[] =
 "Usage: xbmc-test [options]\n"
 "\n"
 "The following options are recognized by the xbmc-test program.\n"
-"\n"
-"  --add-testdownloadqueue-url [URL]\n"
-"    Add a url to be used in the TestDownloadQueue tests.\n"
-"\n"
-"  --add-testdownloadqueue-urls [URLS]\n"
-"    Add multiple urls from a ',' delimited string of urls. to be used\n"
-"    in the TestDownloadQueue tests.\n"
 "\n"
 "  --add-testfilefactory-readurl [URL]\n"
 "    Add a url to be used int the TestFileFactory read tests.\n"
@@ -279,19 +267,7 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
   for (i = 1; i < argc; i++)
   {
     arg = argv[i];
-    if (arg == "--add-testdownloadqueue-url")
-    {
-      TestDownloadQueueUrls.push_back(argv[++i]);
-    }
-    else if (arg == "--add-testdownloadqueue-urls")
-    {
-      arg = argv[++i];
-      std::vector<std::string> urls = StringUtils::Split(arg, ",");
-      std::vector<std::string>::iterator it;
-      for (it = urls.begin(); it < urls.end(); it++)
-        TestDownloadQueueUrls.push_back(*it);
-    }
-    else if (arg == "--add-testfilefactory-readurl")
+    if (arg == "--add-testfilefactory-readurl")
     {
       TestFileFactoryReadUrls.push_back(argv[++i]);
     }
