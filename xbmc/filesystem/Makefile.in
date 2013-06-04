@@ -17,6 +17,7 @@ SRCS += DirectoryCache.cpp
 SRCS += DirectoryFactory.cpp
 SRCS += DirectoryHistory.cpp
 SRCS += DllLibCurl.cpp
+SRCS += FavouritesDirectory.cpp
 SRCS += File.cpp
 SRCS += FileCache.cpp
 SRCS += FileDirectoryFactory.cpp

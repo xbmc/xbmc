@@ -21,18 +21,27 @@
  */
 
 #include "utils/StdString.h"
+#include "IDirectory.h"
 
 class CFileItemList;
 class CFileItem;
 
-class CFavourites
+namespace XFILE
 {
-public:
-  static bool Load(CFileItemList& items);
-  static bool LoadFavourites(CStdString& strPath, CFileItemList& items);
-  static bool AddOrRemove(CFileItem *item, int contextWindow);
-  static bool Save(const CFileItemList& items);
-  static bool IsFavourite(CFileItem *item, int contextWindow);
-private:
-  static CStdString GetExecutePath(const CFileItem *item, int contextWindow);
-};
+
+  class CFavouritesDirectory : public IDirectory
+  {
+  public:
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool Exists(const char* strPath);
+    static bool Load(CFileItemList &items);
+    static bool LoadFavourites(const CStdString& strPath, CFileItemList& items);
+
+    static bool AddOrRemove(CFileItem *item, int contextWindow);
+    static bool Save(const CFileItemList& items);
+    static bool IsFavourite(CFileItem *item, int contextWindow);
+  private:
+    static CStdString GetExecutePath(const CFileItem *item, int contextWindow);
+  };
+  
+}

@@ -20,7 +20,7 @@
  */
 
 #include "FavouritesOperations.h"
-#include "Favourites.h"
+#include "filesystem/FavouritesDirectory.h"
 #include "input/ButtonTranslator.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -31,11 +31,12 @@
 
 using namespace std;
 using namespace JSONRPC;
+using namespace XFILE;
 
 JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList favourites;
-  CFavourites::Load(favourites);
+  CFavouritesDirectory::Load(favourites);
   
   string type = !parameterObject["type"].isNull() ? parameterObject["type"].asString() : "";
 
@@ -158,7 +159,7 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const CStdString &method, ITr
   if (ParameterNotNull(parameterObject,"thumbnail"))
     item.SetArt("thumb", parameterObject["thumbnail"].asString());
 
-  if (CFavourites::AddOrRemove(&item, contextWindow))
+  if (CFavouritesDirectory::AddOrRemove(&item, contextWindow))
     return ACK;
   else
     return FailedToExecute;

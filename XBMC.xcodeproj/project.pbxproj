@@ -25,6 +25,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0E2D4644170F246600AEFF7A /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E2D4642170F246600AEFF7A /* FavouritesDirectory.cpp */; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
@@ -1470,7 +1471,6 @@
 		DFF0F43817528350002DA3A4 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
 		DFF0F43917528350002DA3A4 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466115CF1FA600727135 /* DbUrl.cpp */; };
 		DFF0F43A17528350002DA3A4 /* DynamicDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E168C0D25F9FA00618676 /* DynamicDll.cpp */; };
-		DFF0F43B17528350002DA3A4 /* Favourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16900D25F9FA00618676 /* Favourites.cpp */; };
 		DFF0F43C17528350002DA3A4 /* FileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16920D25F9FA00618676 /* FileItem.cpp */; };
 		DFF0F43D17528350002DA3A4 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		DFF0F43E17528350002DA3A4 /* GUILargeTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */; };
@@ -1659,7 +1659,6 @@
 		E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16840D25F9FA00618676 /* DetectDVDType.cpp */; };
 		E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16890D25F9FA00618676 /* DNSNameCache.cpp */; };
 		E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E168C0D25F9FA00618676 /* DynamicDll.cpp */; };
-		E38E1FFE0D25F9FD00618676 /* Favourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16900D25F9FA00618676 /* Favourites.cpp */; };
 		E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16920D25F9FA00618676 /* FileItem.cpp */; };
 		E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16970D25F9FA00618676 /* MemBufferCache.cpp */; };
 		E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16990D25F9FA00618676 /* CacheStrategy.cpp */; };
@@ -2900,7 +2899,6 @@
 		E4991533174E642900741B6D /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
 		E4991534174E642900741B6D /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466115CF1FA600727135 /* DbUrl.cpp */; };
 		E4991535174E642900741B6D /* DynamicDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E168C0D25F9FA00618676 /* DynamicDll.cpp */; };
-		E4991536174E642900741B6D /* Favourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16900D25F9FA00618676 /* Favourites.cpp */; };
 		E4991537174E642900741B6D /* FileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16920D25F9FA00618676 /* FileItem.cpp */; };
 		E4991538174E642900741B6D /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E4991539174E642900741B6D /* GUILargeTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */; };
@@ -3146,6 +3144,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E2D4642170F246600AEFF7A /* FavouritesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavouritesDirectory.cpp; sourceTree = "<group>"; };
+		0E2D4643170F246600AEFF7A /* FavouritesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavouritesDirectory.h; sourceTree = "<group>"; };
 		0E30286C1759FCC200D93596 /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
@@ -4485,8 +4485,6 @@
 		E38E168A0D25F9FA00618676 /* DNSNameCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNSNameCache.h; sourceTree = "<group>"; };
 		E38E168C0D25F9FA00618676 /* DynamicDll.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynamicDll.cpp; sourceTree = "<group>"; };
 		E38E168D0D25F9FA00618676 /* DynamicDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicDll.h; sourceTree = "<group>"; };
-		E38E16900D25F9FA00618676 /* Favourites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Favourites.cpp; sourceTree = "<group>"; };
-		E38E16910D25F9FA00618676 /* Favourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Favourites.h; sourceTree = "<group>"; };
 		E38E16920D25F9FA00618676 /* FileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItem.cpp; sourceTree = "<group>"; };
 		E38E16930D25F9FA00618676 /* FileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
 		E38E16970D25F9FA00618676 /* MemBufferCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemBufferCache.cpp; sourceTree = "<group>"; };
@@ -7127,8 +7125,6 @@
 				36A9466215CF1FA600727135 /* DbUrl.h */,
 				E38E168C0D25F9FA00618676 /* DynamicDll.cpp */,
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
-				E38E16900D25F9FA00618676 /* Favourites.cpp */,
-				E38E16910D25F9FA00618676 /* Favourites.h */,
 				E38E16920D25F9FA00618676 /* FileItem.cpp */,
 				E38E16930D25F9FA00618676 /* FileItem.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -7686,6 +7682,8 @@
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
+				0E2D4642170F246600AEFF7A /* FavouritesDirectory.cpp */,
+				0E2D4643170F246600AEFF7A /* FavouritesDirectory.h */,
 				E38E16BA0D25F9FA00618676 /* File.cpp */,
 				E38E16BB0D25F9FA00618676 /* File.h */,
 				DF93D6671444A8B0007C6459 /* FileCache.cpp */,
@@ -9587,7 +9585,6 @@
 				E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */,
 				E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */,
 				E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */,
-				E38E1FFE0D25F9FD00618676 /* Favourites.cpp in Sources */,
 				E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */,
 				E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */,
 				E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */,
@@ -10512,6 +10509,7 @@
 				820023DB171A28A300667D1C /* OSXTextInputResponder.mm in Sources */,
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
+				0E2D4644170F246600AEFF7A /* FavouritesDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11446,7 +11444,6 @@
 				DFF0F43817528350002DA3A4 /* DatabaseManager.cpp in Sources */,
 				DFF0F43917528350002DA3A4 /* DbUrl.cpp in Sources */,
 				DFF0F43A17528350002DA3A4 /* DynamicDll.cpp in Sources */,
-				DFF0F43B17528350002DA3A4 /* Favourites.cpp in Sources */,
 				DFF0F43C17528350002DA3A4 /* FileItem.cpp in Sources */,
 				DFF0F43D17528350002DA3A4 /* GUIInfoManager.cpp in Sources */,
 				DFF0F43E17528350002DA3A4 /* GUILargeTextureManager.cpp in Sources */,
@@ -12472,7 +12469,6 @@
 				E4991533174E642900741B6D /* DatabaseManager.cpp in Sources */,
 				E4991534174E642900741B6D /* DbUrl.cpp in Sources */,
 				E4991535174E642900741B6D /* DynamicDll.cpp in Sources */,
-				E4991536174E642900741B6D /* Favourites.cpp in Sources */,
 				E4991537174E642900741B6D /* FileItem.cpp in Sources */,
 				E4991538174E642900741B6D /* GUIInfoManager.cpp in Sources */,
 				E4991539174E642900741B6D /* GUILargeTextureManager.cpp in Sources */,
