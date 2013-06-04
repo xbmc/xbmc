@@ -531,12 +531,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
         CStdString parent;
         if (!URIUtils::GetParentPath((const char*)id, parent)) parent = "0";
 
-//#ifdef WMP_ID_MAPPING
-//        if (!id.StartsWith("musicdb://") && !id.StartsWith("videodb://")) {
-//            parent = "";
-//        }
-//#endif
-
         if (item->IsVideoDb()) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
         }
