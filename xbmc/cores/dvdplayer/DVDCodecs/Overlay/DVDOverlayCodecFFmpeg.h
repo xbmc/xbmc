@@ -50,8 +50,4 @@ private:
 
   int             m_width;
   int             m_height;
-
-  DllAvCodec      m_dllAvCodec;
-  DllAvUtil       m_dllAvUtil;
-
 };

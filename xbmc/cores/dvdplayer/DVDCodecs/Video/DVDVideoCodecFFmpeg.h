@@ -23,14 +23,12 @@
 #include "DVDVideoCodec.h"
 #include "DVDResource.h"
 #include "DllAvCodec.h"
-#include "DllAvFormat.h"
 #include "DllAvUtil.h"
 #include "DllSwScale.h"
 #include "DllAvFilter.h"
 #include "DllPostProc.h"
 
 class CVDPAU;
-class CCriticalSection;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -109,12 +107,6 @@ protected:
   int m_iOrientation;// orientation of the video in degress counter clockwise
 
   unsigned int m_uSurfacesCount;
-
-  DllAvCodec m_dllAvCodec;
-  DllAvUtil  m_dllAvUtil;
-  DllSwScale m_dllSwScale;
-  DllAvFilter m_dllAvFilter;
-  DllPostProc m_dllPostProc;
 
   std::string m_name;
   bool              m_bSoftware;

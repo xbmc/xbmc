@@ -345,6 +345,11 @@
 #include "utils/Environment.h"
 #endif
 
+#include "lib/DllAvFormat.h"
+#include "lib/DllAvCodec.h"
+#include "lib/DllAvFilter.h"
+#include "lib/DllAvUtil.h"
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -699,6 +704,15 @@ bool CApplication::Create()
 #elif defined(_WIN32)
   CEnvironment::setenv("OS", "win32");
 #endif
+
+  // register avcodec
+  avcodec_register_all();
+  // register avformat
+  av_register_all();
+  // register avfilter
+  avfilter_register_all();
+  // set avutil callback
+  av_log_set_callback(ff_avutil_log);
 
   g_powerManager.Initialize();
 

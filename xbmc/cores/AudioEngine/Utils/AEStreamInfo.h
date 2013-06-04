@@ -27,7 +27,6 @@
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
 #include "DllAvCodec.h"
-#include "DllAvFormat.h"
 
 class CAEStreamInfo
 {
@@ -66,7 +65,6 @@ public:
   CAEPackIEC61937::PackFunc GetPackFunc      () { return m_packFunc      ; }
   unsigned int              GetBufferSize    () { return m_bufferSize    ; }
 private:
-  DllAvUtil m_dllAvUtil;
 
   uint8_t      m_buffer[MAX_IEC61937_PACKET];
   unsigned int m_bufferSize;
