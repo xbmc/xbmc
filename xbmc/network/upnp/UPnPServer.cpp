@@ -500,7 +500,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     NPT_String                     didl;
     NPT_Reference<PLT_MediaObject> object;
     NPT_String                     id = TranslateWMPObjectId(object_id);
-    vector<CStdString>             paths;
     CFileItemPtr                   item;
     NPT_Reference<CThumbLoader>    thumb_loader;
 
