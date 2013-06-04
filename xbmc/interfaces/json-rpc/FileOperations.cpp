@@ -30,12 +30,10 @@
 #include "Util.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
+#include "utils/FileUtils.h"
 
 using namespace XFILE;
 using namespace JSONRPC;
-
-static const unsigned int SourcesSize = 5;
-static CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
 
 JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -82,15 +80,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
 
-  // Check if this directory is part of a source and whether it's locked
-  bool isSource;
-  for (unsigned int index = 0; index < SourcesSize; index++)
-  {
-    VECSOURCES* sources = CMediaSourceSettings::Get().GetSources(SourceNames[index]);
-    int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
-    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
-      return InvalidParams;
-  }
+  if (!CFileUtils::RemoteAccessAllowed(strPath))
+    return InvalidParams;
 
   CStdStringArray regexps;
   CStdString extensions = "";
@@ -178,6 +169,9 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const CStdString &method, ITransp
 {
   CStdString file = parameterObject["file"].asString();
   if (!CFile::Exists(file))
+    return InvalidParams;
+
+  if (!CFileUtils::RemoteAccessAllowed(file))
     return InvalidParams;
 
   CStdString path;

@@ -9,6 +9,10 @@
 #include "URIUtils.h"
 #include "filesystem/MultiPathDirectory.h"
 #include <vector>
+#include "settings/MediaSourceSettings.h"
+#include "Util.h"
+#include "StringUtils.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace std;
@@ -78,6 +82,45 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
       return success;
     }
     return CFile::Rename(strFileAndPath, strPath);
+  }
+  return false;
+}
+
+bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
+{
+  const unsigned int SourcesSize = 5;
+  CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+
+  string realPath = URIUtils::GetRealPath(strPath);
+  // for rar:// and zip:// paths we need to extract the path to the archive
+  // instead of using the VFS path
+  while (URIUtils::IsInArchive(realPath))
+    realPath = CURL(realPath).GetHostName();
+
+  if (StringUtils::StartsWith(realPath, "virtualpath://upnproot/"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "musicdb://"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "videodb://"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "library://video"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "sources://video"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "special://musicplaylists"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "special://profile/playlists"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "special://videoplaylists"))
+    return true;
+
+  bool isSource;
+  for (unsigned int index = 0; index < SourcesSize; index++)
+  {
+    VECSOURCES* sources = CMediaSourceSettings::Get().GetSources(SourceNames[index]);
+    int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
+    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock != 2 && sources->at(sourceIndex).m_allowSharing)
+      return true;
   }
   return false;
 }

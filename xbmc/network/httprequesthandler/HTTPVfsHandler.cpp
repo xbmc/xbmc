@@ -64,8 +64,8 @@ int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
 
           for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end() && !accessible; source++)
           {
-            // don't allow access to locked sources
-            if (source->m_iHasLock == 2)
+            // don't allow access to locked / disabled sharing sources
+            if (source->m_iHasLock == 2 || !source->m_allowSharing)
               continue;
 
             for (vector<CStdString>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); path++)
