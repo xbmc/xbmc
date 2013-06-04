@@ -28,6 +28,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../prefix.patch
 	cd $(PLATFORM); patch -p1 < ../librtmp-60-second-fix.patch
+	cd $(PLATFORM)/librtmp; patch -p0 < ../../libm.patch
 	sed -i -e 's|CC=|#CC=|' $(PLATFORM)/librtmp/Makefile
 	sed -i -e 's|LD=|#LD=|' $(PLATFORM)/librtmp/Makefile
 	sed -i -e 's|AR=|#AR=|' $(PLATFORM)/librtmp/Makefile
