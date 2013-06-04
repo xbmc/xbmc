@@ -18,9 +18,9 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
 #include "system.h"
 #endif
 
@@ -33,7 +33,7 @@
 
 #include "OMXClock.h"
 
-#ifdef _LINUX
+#ifdef TARGET_LINUX
 #include "XMemUtils.h"
 #endif
 

@@ -103,7 +103,7 @@ public:
   {
     GUIEvent<Cookie>::m_pInstance = (GUIEvent<Cookie>*) ((LPVOID) pInstance);
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
     // Its dirty but it works!
     memcpy(&m_pMethod, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
 #else

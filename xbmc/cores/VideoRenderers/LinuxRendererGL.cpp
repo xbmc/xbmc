@@ -21,7 +21,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 
@@ -973,7 +973,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
        //with render method set to auto, don't try glsl on ati if we're on linux
        //it seems to be broken in a random way with every new driver release
        tryGlsl = g_Windowing.GetRenderVendor().Left(3).CompareNoCase("ati") != 0;

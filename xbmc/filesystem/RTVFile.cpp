@@ -27,7 +27,7 @@
 #include "utils/log.h"
 #include <errno.h>
 #include <sys/stat.h>
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for PRIdS
 #endif
 extern "C"

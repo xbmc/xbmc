@@ -326,7 +326,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
 
   int iPos = strFile.ReverseFind('/');
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   if (iPos < 0)
   {
     iPos = strFile.ReverseFind('\\');
@@ -398,7 +398,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 
 bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
 #endif
@@ -506,7 +506,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
   if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
     return true;
 
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
   if (strFile.Left(6).Equals("dvd://"))
     return true;
 

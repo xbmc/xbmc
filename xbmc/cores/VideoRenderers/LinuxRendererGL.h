@@ -328,9 +328,9 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__)
+#if defined(TARGET_POSIX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__)
   // If there are any issues compiling this, just append a ' && 0'
-  // to the above to make it '#if defined(_LINUX) && 0'
+  // to the above to make it '#if defined(TARGET_POSIX) && 0'
 
   // Linux assembly is AT&T Unix style, not Intel style
   unsigned y;

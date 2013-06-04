@@ -589,7 +589,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
 
 void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   list.push_back(make_pair(g_localizeStrings.Get(13101), VSYNC_DRIVER));
 #endif
   list.push_back(make_pair(g_localizeStrings.Get(13106), VSYNC_DISABLED));

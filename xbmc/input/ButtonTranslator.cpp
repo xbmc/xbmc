@@ -405,7 +405,7 @@ static const WindowMapping fallbackWindows[] =
   { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
 };
 
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
 static const ActionMapping appcommands[] =
 {
   { "browser_back",        APPCOMMAND_BROWSER_BACKWARD },
@@ -559,7 +559,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   }
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define REMOTEMAP "Lircmap.xml"
 #else
 #define REMOTEMAP "IRSSmap.xml"
@@ -635,7 +635,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define REMOTEMAPTAG "lircmap"
 #else
 #define REMOTEMAPTAG "irssmap"
@@ -1015,7 +1015,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &st
     strAction = (*it2).second.strID;
     it2 = (*it).second.end();
   }
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   // Some buttoncodes changed in Hardy
   if (action == 0 && (code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
   {
@@ -1409,7 +1409,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 
 uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
 {
-#ifdef WIN32
+#ifdef TARGET_WINDOWS
   CStdString strAppCommand = szButton;
   strAppCommand.ToLower();
 

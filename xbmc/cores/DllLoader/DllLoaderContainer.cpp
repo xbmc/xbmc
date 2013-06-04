@@ -19,10 +19,10 @@
  */
 
 #include "DllLoaderContainer.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "SoLoader.h"
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "Win32DllLoader.h"
 #endif
 #include "DllLoader.h"
@@ -142,7 +142,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   else if (strcmp(sName, "xbmc.so") == 0)
     return LoadDll(sName, bLoadSymbols);
 #endif
@@ -238,12 +238,12 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 #endif
 
   LibraryLoader* pLoader;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
       || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL || strstr(sName, ".framework") != NULL || strstr(sName, ".pvr") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   if (1)
     pLoader = new Win32DllLoader(sName);
   else

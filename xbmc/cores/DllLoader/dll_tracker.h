@@ -23,7 +23,7 @@
 
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "system.h" // for SOCKET
 #endif
 
@@ -128,7 +128,7 @@ DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller);
 
 void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr);
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #define _ReturnAddress() __builtin_return_address(0)
 #endif
 
@@ -136,7 +136,7 @@ void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr);
 }
 #endif
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 extern "C" void * _ReturnAddress(void);
 #pragma intrinsic(_ReturnAddress)
 #endif

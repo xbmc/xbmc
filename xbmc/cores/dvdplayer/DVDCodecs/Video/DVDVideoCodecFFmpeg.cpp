@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 #include "DVDVideoCodecFFmpeg.h"
@@ -29,7 +29,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDVideoPPFFmpeg.h"
-#if defined(_LINUX) || defined(_WIN32)
+#if defined(TARGET_POSIX) || defined(TARGET_WINDOWS)
 #include "utils/CPUInfo.h"
 #endif
 #include "settings/AdvancedSettings.h"
@@ -38,7 +38,7 @@
 #include "boost/shared_ptr.hpp"
 #include "threads/Atomics.h"
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #else
 #include <math.h>

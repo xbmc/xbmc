@@ -330,7 +330,7 @@ void CAdvancedSettings::Initialize()
   m_bVirtualShares = true;
 
 //caused lots of jerks
-//#ifdef _WIN32
+//#ifdef TARGET_WINDOWS
 //  m_ForcedSwapTime = 2.0;
 //#else
   m_ForcedSwapTime = 0.0;

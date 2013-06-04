@@ -47,7 +47,7 @@ ISO9660
 #include "threads/SingleLock.h"
 #include "IFile.h"
 
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 #endif
 #include <cdio/bytesex.h>

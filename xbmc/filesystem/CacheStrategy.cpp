@@ -20,7 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "CacheStrategy.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformInclude.h"
 #endif
 #include "Util.h"
@@ -28,7 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "SpecialProtocol.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
 

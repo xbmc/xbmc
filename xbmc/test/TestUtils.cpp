@@ -24,7 +24,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #include <cstdlib>
@@ -55,7 +55,7 @@ public:
     }
     strcpy(tmp, m_ptempFilePath.c_str());
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     if (!GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"),
                          "xbmctempfile", 0, tmp))
     {

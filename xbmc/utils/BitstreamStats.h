@@ -22,7 +22,7 @@
  */
 
 #include <string>
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/PlatformDefs.h"
 #endif
 

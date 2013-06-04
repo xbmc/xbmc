@@ -45,9 +45,9 @@
 #elif defined(HAS_SDL_JOYSTICK)
 #include "input/SDLJoystick.h"
 #endif // defined(HAS_SDL_JOYSTICK)
-#if defined(_LINUX)
+#if defined(TARGET_POSIX)
 #include "linux/LinuxTimezone.h"
-#endif // defined(_LINUX)
+#endif // defined(TARGET_POSIX)
 #include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
@@ -601,7 +601,7 @@ void CSettings::InitializeDefaults()
   ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.touched");
 #endif
 
-#if defined(_LINUX)
+#if defined(TARGET_POSIX)
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
 
@@ -609,7 +609,7 @@ void CSettings::InitializeDefaults()
     timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
   if (timezone->IsVisible())
     timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
-#endif // defined(_LINUX)
+#endif // defined(TARGET_POSIX)
 
 #if defined(TARGET_WINDOWS)
   #if defined(HAS_DX)

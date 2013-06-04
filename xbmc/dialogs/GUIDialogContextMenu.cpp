@@ -45,7 +45,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
 

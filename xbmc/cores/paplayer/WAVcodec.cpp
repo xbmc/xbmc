@@ -24,7 +24,7 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
-#if defined(WIN32)
+#if defined(TARGET_WINDOWS)
 #include <mmreg.h>
 #include <ks.h>
 #include <ksmedia.h>

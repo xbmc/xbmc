@@ -57,7 +57,7 @@ protected:
     size_t            m_size_back; /**< guaranteed size of back buffer (actual size can be smaller, or larger if front buffer doesn't need it) */
     CCriticalSection  m_sync;
     CEvent            m_written;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     HANDLE            m_handle;
 #endif
 };

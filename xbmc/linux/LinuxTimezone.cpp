@@ -29,7 +29,7 @@
 #if defined(TARGET_DARWIN)
 #include "osx/OSXGNUReplacements.h"
 #endif
-#ifdef __FreeBSD__
+#ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 

@@ -24,7 +24,7 @@
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <libavformat/avformat.h>
 #else
 extern "C" {

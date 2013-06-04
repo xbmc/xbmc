@@ -30,7 +30,7 @@
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
   #include <d3d9.h>
   #include "guilib/D3DResource.h"
 
@@ -126,7 +126,7 @@ class CVideoReferenceClock : public CThread
     bool         m_UseNvSettings;
     bool         m_bIsATI;
 
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
     bool   SetupD3D();
     double MeasureRefreshrate(int MSecs);
     void   RunD3D();

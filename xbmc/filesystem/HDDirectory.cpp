@@ -27,7 +27,7 @@
 #include "utils/AliasShortcutUtils.h"
 #include "utils/URIUtils.h"
 
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include "utils/CharsetConverter.h"
 #endif
 
@@ -35,7 +35,7 @@
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
 #endif
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
 #define LocalFindFirstFile FindFirstFileW
 #define LocalFindNextFile FindNextFileW
@@ -68,7 +68,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   memset(&wfd, 0, sizeof(wfd));
   URIUtils::AddSlashAtEnd(strRoot);
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   strRoot.Replace("/", "\\");
 #endif
   if (URIUtils::IsDVD(strRoot) && m_isoReader.IsScanned())
@@ -78,7 +78,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     m_isoReader.Reset();
   }
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdStringW strSearchMask;
   g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
   strSearchMask.Insert(0, L"\\\\?\\");
@@ -101,7 +101,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
       if (wfd.cFileName[0] != 0)
       {
         CStdString strLabel;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
         g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
 #else
         strLabel = wfd.cFileName;
@@ -149,7 +149,7 @@ bool CHDDirectory::Create(const char* strPath)
   CStdString strPath1 = strPath;
   URIUtils::AddSlashAtEnd(strPath1);
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (strPath1.size() == 3 && strPath1[1] == ':')
     return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
@@ -169,7 +169,7 @@ bool CHDDirectory::Create(const char* strPath)
 
 bool CHDDirectory::Remove(const char* strPath)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
   strWPath.Replace(L"/", L"\\");
@@ -185,7 +185,7 @@ bool CHDDirectory::Exists(const char* strPath)
   if (!strPath || !*strPath)
     return false;
   CStdString strReplaced=strPath;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   CStdStringW strWReplaced;
   strReplaced.Replace("/","\\");
   URIUtils::AddSlashAtEnd(strReplaced);

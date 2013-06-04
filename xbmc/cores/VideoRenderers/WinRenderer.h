@@ -20,7 +20,7 @@
  *
  */
 
-#if !defined(_LINUX) && !defined(HAS_GL)
+#if !defined(TARGET_POSIX) && !defined(HAS_GL)
 
 #include "guilib/GraphicContext.h"
 #include "RenderFlags.h"

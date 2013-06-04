@@ -33,9 +33,9 @@ public:
   static bool MessagePump();
 
 protected:
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN
   static bool ProcessOSXShortcuts(SDL_Event& event);
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   static bool ProcessLinuxShortcuts(SDL_Event& event);
 #endif
 };

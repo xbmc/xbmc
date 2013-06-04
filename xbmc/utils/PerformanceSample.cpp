@@ -21,7 +21,7 @@
 #include "system.h"
 #include "PerformanceSample.h"
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/PlatformInclude.h"
 #endif
 
@@ -52,7 +52,7 @@ CPerformanceSample::~CPerformanceSample()
 void CPerformanceSample::Reset()
 {
   m_tmStart = CurrentHostCounter();
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   if (getrusage(RUSAGE_SELF, &m_usage) == -1)
     CLog::Log(LOGERROR,"error %d in getrusage", errno);
 #endif
@@ -66,7 +66,7 @@ void CPerformanceSample::CheckPoint()
   double elapsed = (double)(tmNow - m_tmStart) / (double)m_tmFreq.QuadPart;
 
   double dUser=0.0, dSys=0.0;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   struct rusage usage;
   if (getrusage(RUSAGE_SELF, &usage) == -1)
     CLog::Log(LOGERROR,"error %d in getrusage", errno);

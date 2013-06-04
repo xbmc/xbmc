@@ -23,7 +23,7 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "SystemInfo.h"
-#ifndef _LINUX
+#ifndef TARGET_POSIX
 #include <conio.h>
 #else
 #include <sys/utsname.h>
@@ -37,7 +37,7 @@
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "dwmapi.h"
 #endif
 #if defined(TARGET_DARWIN)
@@ -115,7 +115,7 @@ CStdString CSysInfoJob::GetBatteryLevel()
 
 double CSysInfoJob::GetCPUFrequency()
 {
-#if defined (_LINUX) || defined(_WIN32)
+#if defined (TARGET_POSIX) || defined(TARGET_WINDOWS)
   return double (g_cpuInfo.getCPUFrequency());
 #else
   return 0;
@@ -260,7 +260,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
   if( !drive.IsEmpty() && !drive.Equals("*") )
   {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
@@ -270,7 +270,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   {
     ULARGE_INTEGER ULTotalTmp= { { 0 } };
     ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
     if( dwStrLength != 0 )
@@ -355,7 +355,7 @@ CStdString CSysInfo::GetCPUSerial()
 
 bool CSysInfo::IsAeroDisabled()
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   if (IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
   {
     BOOL aeroEnabled = FALSE;
@@ -439,7 +439,7 @@ bool CSysInfo::IsOS64bit()
 
 CStdString CSysInfo::GetKernelVersion()
 {
-#if defined (_LINUX)
+#if defined (TARGET_POSIX)
   struct utsname un;
   if (uname(&un)==0)
   {
@@ -595,7 +595,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   return strRet;
 }
 
-#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if defined(TARGET_LINUX)
 CStdString CSysInfo::GetLinuxDistro()
 {
 #if defined(TARGET_ANDROID)
@@ -646,7 +646,7 @@ CStdString CSysInfo::GetLinuxDistro()
 }
 #endif
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
@@ -726,7 +726,7 @@ CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
-#if defined(_WIN32)
+#if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
@@ -735,10 +735,10 @@ CStdString CSysInfo::GetUserAgent()
   result += "Mac OS X; ";
 #endif
   result += GetUnameVersion();
-#elif defined(__FreeBSD__)
+#elif defined(TARGET_FREEBSD)
   result += "FreeBSD; ";
   result += GetUnameVersion();
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
   result += "Linux; ";
   result += GetLinuxDistro();
   result += "; ";

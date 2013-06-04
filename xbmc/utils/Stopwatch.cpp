@@ -20,7 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "Stopwatch.h"
-#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <sys/sysinfo.h>
 #endif
 #include "utils/TimeUtils.h"
@@ -39,7 +39,7 @@ CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
   else
   {
   // Get the timer frequency (ticks per second)
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   m_timerPeriod = 1.0f / (float)CurrentHostFrequency();
 #else
   m_timerPeriod = 1.0f / 1000.0f; // we want seconds
@@ -99,7 +99,7 @@ int64_t CStopWatch::GetTicks() const
 {
   if (m_useFrameTime)
     return CTimeUtils::GetFrameTime();
-#ifndef _LINUX
+#ifndef TARGET_POSIX
   return CurrentHostCounter();
 #else
   return XbmcThreads::SystemClockMillis();

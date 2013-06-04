@@ -56,9 +56,9 @@ bool CFileCDDA::Open(const CURL& url)
     return false;
 
   // Open the dvd drive
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL), DRIVER_UNKNOWN);
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true));
 #else
   m_pCdIo = m_cdio->cdio_open_win32("D:");

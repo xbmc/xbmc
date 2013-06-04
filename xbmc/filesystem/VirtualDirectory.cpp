@@ -30,7 +30,7 @@
 #include "storage/MediaManager.h"
 #include "File.h"
 #include "FileItem.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
 

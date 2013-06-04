@@ -21,7 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "linux/LinuxResourceCounter.h"
 #endif
 
@@ -40,7 +40,7 @@ protected:
   virtual void UpdateVisibility();
 private:
   CGUITextLayout *m_layout;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   CLinuxResourceCounter m_resourceCounter;
 #endif
 };

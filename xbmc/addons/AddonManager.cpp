@@ -131,13 +131,13 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #if defined(TARGET_ANDROID)                                                                                                                                                      
           if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
             break;                                                                                                                                                                 
- #elif defined(_LINUX) && !defined(TARGET_DARWIN)
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;
-#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+#elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
           break;
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
           break;
 #elif defined(TARGET_DARWIN)
@@ -651,11 +651,11 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
         return true;
 #if defined(TARGET_ANDROID)
       if (platforms[i] == "android")
-#elif defined(_LINUX) && !defined(TARGET_DARWIN)
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
       if (platforms[i] == "linux")
-#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+#elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
       if (platforms[i] == "wingl")
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
       if (platforms[i] == "windx")
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter

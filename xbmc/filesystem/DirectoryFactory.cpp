@@ -18,7 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
 #include "network/Network.h"
@@ -46,7 +46,7 @@
 #include "network/WakeOnAccess.h"
 
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "windows/WINSMBDirectory.h"
 #else
 #include "SMBDirectory.h"
@@ -178,7 +178,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
     if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPDirectory();
 #endif
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     if (strProtocol == "smb") return new CWINSMBDirectory();
 #else
     if (strProtocol == "smb") return new CSMBDirectory();

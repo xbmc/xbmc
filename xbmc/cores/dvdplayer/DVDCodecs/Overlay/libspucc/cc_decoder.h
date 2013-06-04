@@ -27,11 +27,11 @@
  * available at http://sourceforge.net/projects/ccdecoder/.
  */
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #undef EMULATE_INTTYPES
 #else
 #define EMULATE_INTTYPES
-#endif /* _LINUX */
+#endif /* TARGET_POSIX */
 
 #ifndef EMULATE_INTTYPES
 #   include <stdint.h>

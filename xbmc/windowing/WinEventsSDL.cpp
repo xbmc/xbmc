@@ -33,18 +33,18 @@
 #endif
 #include "input/MouseStat.h"
 #include "WindowingFactory.h"
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
 
-#if defined(_LINUX) && !defined(__APPLE__) && !defined(__ANDROID__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID)
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include "input/XBMC_keysym.h"
 #include "utils/log.h"
 #endif
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
 // The following chunk of code is Linux specific. For keys that have
 // with keysym.sym set to zero it checks the scan code, and sets the sym
 // for some known scan codes. This is mostly the multimedia keys.
@@ -254,7 +254,7 @@ bool CWinEventsSDL::MessagePump()
       case SDL_KEYDOWN:
       {
         // process any platform specific shortcuts before handing off to XBMC
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
         if (ProcessOSXShortcuts(event))
         {
           ret = true;
@@ -278,7 +278,7 @@ bool CWinEventsSDL::MessagePump()
           mod |= XBMCKMOD_LSUPER;
         newEvent.key.keysym.mod = (XBMCMod) mod;
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
         // If the keysym.sym is zero try to get it from the scan code
         if (newEvent.key.keysym.sym == 0)
           newEvent.key.keysym.sym = (XBMCKey) SymFromScancode(newEvent.key.keysym.scancode);
@@ -341,7 +341,7 @@ bool CWinEventsSDL::MessagePump()
         if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
         {
           g_Mouse.SetActive(false);
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN_OSX)
           // See CApplication::ProcessSlow() for a description as to why we call Cocoa_HideMouse.
           // this is here to restore the pointer when toggling back to window mode from fullscreen.
           Cocoa_ShowMouse();
@@ -389,7 +389,7 @@ bool CWinEventsSDL::MessagePump()
   return ret;
 }
 
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
 bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 {
   static bool shift = false, cmd = false;
@@ -440,7 +440,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
   return false;
 }
 
-#elif defined(_LINUX)
+#elif defined(TARGET_POSIX)
 
 bool CWinEventsSDL::ProcessLinuxShortcuts(SDL_Event& event)
 {

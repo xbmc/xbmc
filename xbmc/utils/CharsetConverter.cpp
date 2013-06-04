@@ -37,7 +37,7 @@
   #define WCHAR_CHARSET "UTF-32LE"
 #endif
   #define UTF8_SOURCE "UTF-8-MAC"
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
   #pragma comment(lib, "libfribidi.lib")

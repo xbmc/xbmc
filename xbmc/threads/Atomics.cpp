@@ -68,7 +68,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
   #error atomic cas undefined for mips
   return prev;
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   long prev;
   __asm
   {
@@ -108,7 +108,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // Hack to allow compilation
   throw "cas2 is not implemented";
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   long long prev;
   __asm
   {
@@ -188,7 +188,7 @@ long AtomicIncrement(volatile long* pAddr)
   #error AtomicIncrement undefined for mips
   return val;
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   long val;
   __asm
   {
@@ -266,7 +266,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   #error AtomicAdd undefined for mips
   return val;
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   __asm
   {
     mov eax, amount;
@@ -344,7 +344,7 @@ long AtomicDecrement(volatile long* pAddr)
   #error AtomicDecrement undefined for mips
   return val;
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   long val;
   __asm
   {
@@ -422,7 +422,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   #error AtomicSubtract undefined for mips
   return val;
 
-#elif defined(WIN32)
+#elif defined(TARGET_WINDOWS)
   amount *= -1;
   __asm
   {
