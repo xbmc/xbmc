@@ -30,11 +30,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Key.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/ISettingCallback.h"
 #include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
 
 
@@ -82,6 +84,38 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
       break;
    } while (mode != currentMode);
   return mode;
+}
+
+std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &needle)
+{
+  std::string stereoMode;
+  CStdString searchString(needle);
+  CStdStringArray tags;
+  StringUtils::ToUpper(searchString);
+
+  CStdString tag( g_advancedSettings.m_stereoscopicflags_sbs );
+  if (stereoMode.empty() && !tag.IsEmpty())
+  {
+    StringUtils::ToUpper(tag);
+    StringUtils::SplitString(tag, "|", tags);
+    if (StringUtils::ContainsKeyword(searchString, tags))
+      stereoMode = "left_right";
+  }
+
+  tag = g_advancedSettings.m_stereoscopicflags_tab;
+  if (stereoMode.empty() && !tag.IsEmpty())
+  {
+    StringUtils::ToUpper(tag);
+    StringUtils::SplitString(tag, "|", tags);
+    if (StringUtils::ContainsKeyword(searchString, tags))
+      stereoMode = "top_bottom";
+  }
+
+  if (stereoMode.empty())
+    stereoMode = "mono";
+
+  CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", needle.c_str(), stereoMode.c_str());
+  return stereoMode;
 }
 
 CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)

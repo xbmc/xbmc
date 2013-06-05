@@ -712,6 +712,16 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
   return best;
 }
 
+bool StringUtils::ContainsKeyword(const CStdString &str, const CStdStringArray &keywords)
+{
+  for (CStdStringArray::const_iterator it = keywords.begin(); it != keywords.end(); it++)
+  {
+    if (str.find(*it) != str.npos)
+      return true;
+  }
+  return false;
+}
+
 size_t StringUtils::utf8_strlen(const char *s)
 {
   size_t length = 0;

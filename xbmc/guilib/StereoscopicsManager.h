@@ -46,6 +46,7 @@ public:
   void SetStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetStereoMode(void);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
+  std::string DetectStereoModeByString(const std::string &needle);
   CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
 
   virtual void OnSettingChanged(const CSetting *setting);

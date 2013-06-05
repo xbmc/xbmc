@@ -37,6 +37,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -3098,9 +3099,10 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     m_omxPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
   unsigned flags = 0;
-  if(m_filename.find("3DSBS") != string::npos || m_filename.find("HSBS") != string::npos)
+  std::string mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
+  if (mode == "left_right")
     flags = CONF_FLAGS_STEREO_MODE_SBS;
-  else if(m_filename.find("3DTAB") != string::npos || m_filename.find("HTAB") != string::npos)
+  else if (mode == "top_bottom")
     flags = CONF_FLAGS_STEREO_MODE_TAB;
   m_omxPlayerVideo.SetFlags(flags);
 
