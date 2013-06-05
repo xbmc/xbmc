@@ -79,8 +79,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_bad_state     = false;
   m_hints_current.Clear();
 
-  m_av_clock->SetMasterClock(false);
-
   m_messageQueue.SetMaxDataSize(3 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
   m_use_passthrough = false;
