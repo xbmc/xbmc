@@ -21,20 +21,23 @@
  *
  */
 
-#include "XBPyThread.h"
 #include "cores/IPlayerCallback.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
 #include "interfaces/IAnnouncer.h"
 #include "addons/IAddon.h"
 
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
+class CLanguageInvokerThread;
+
 typedef struct {
   int id;
   bool bDone;
   std::string strFile;
-  boost::shared_ptr<XBPyThread> pyThread;
+  boost::shared_ptr<CLanguageInvokerThread> pyThread;
 }PyElem;
 
 class LibraryLoader;
@@ -84,7 +87,7 @@ public:
   void OnDatabaseUpdated(const std::string &database);
   void OnDatabaseScanStarted(const std::string &database);
   void OnAbortRequested(const CStdString &ID="");
-  void Initialize();
+  bool Initialize();
   void FinalizeScript();
   void FreeResources();
   void Process();
@@ -96,7 +99,6 @@ public:
   int GetPythonScriptId(int scriptPosition);
   int evalFile(const CStdString &src, ADDON::AddonPtr addon);
   int evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon);
-  int evalString(const CStdString &src, const std::vector<CStdString> &argv);
 
   bool isRunning(int scriptId);
   bool isStopping(int scriptId);
