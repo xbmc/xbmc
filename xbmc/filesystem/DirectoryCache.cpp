@@ -190,7 +190,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 #ifdef _DEBUG
     m_cacheHits++;
 #endif
-    return dir->m_Items->Contains(strFile);
+    return (strPath.Equals(storedPath) || dir->m_Items->Contains(strFile));
   }
 #ifdef _DEBUG
   m_cacheMisses++;
