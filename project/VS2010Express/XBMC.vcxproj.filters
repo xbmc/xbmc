@@ -304,6 +304,9 @@
     <Filter Include="network\mdns">
       <UniqueIdentifier>{4deb3d70-7772-42be-8884-4a550c1ff666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\generic">
+      <UniqueIdentifier>{4286258a-45d7-45e8-9e56-ebf18fea53ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2806,9 +2809,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\python\XBPyThread.cpp">
-      <Filter>interfaces\python</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\generated\AddonModuleXbmc.cpp">
       <Filter>interfaces\python\generated</Filter>
     </ClCompile>
@@ -3028,6 +3028,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\generic\LanguageInvokerThread.cpp">
+      <Filter>interfaces\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\generic\ScriptInvocationManager.cpp">
+      <Filter>interfaces\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp">
+      <Filter>interfaces\python</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5699,9 +5708,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h">
       <Filter>interfaces\python</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h">
-      <Filter>interfaces\python</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\TagLibVFSStream.h">
       <Filter>music\tags</Filter>
     </ClInclude>
@@ -5936,6 +5942,21 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvoker.h">
+      <Filter>interfaces\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\generic\LanguageInvokerThread.h">
+      <Filter>interfaces\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\generic\ScriptInvocationManager.h">
+      <Filter>interfaces\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\PythonInvoker.h">
+      <Filter>interfaces\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvocationHandler.h">
+      <Filter>interfaces\generic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
