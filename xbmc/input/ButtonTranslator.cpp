@@ -223,6 +223,11 @@ static const ActionMapping actions[] =
         {"settingsreset"      , ACTION_SETTINGS_RESET},
         {"settingslevelchange", ACTION_SETTINGS_LEVEL_CHANGE},
 
+        // 3D movie playback/GUI
+        {"nextstereomode"            , ACTION_STEREOMODE_NEXT},
+        {"previousstereomode"        , ACTION_STEREOMODE_PREVIOUS},
+        {"togglestereomode"          , ACTION_STEREOMODE_TOGGLE},
+
         // PVR actions
         {"channelup"             , ACTION_CHANNEL_UP},
         {"channeldown"           , ACTION_CHANNEL_DOWN},

@@ -44,6 +44,7 @@
 #include "playlists/PlayListFactory.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIColorManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "guilib/GUITextLayout.h"
 #include "addons/Skin.h"
 #ifdef HAS_PYTHON
@@ -2527,6 +2528,10 @@ bool CApplication::OnAction(const CAction &action)
 
   // forward action to g_PVRManager and break if it was able to handle it
   if (g_PVRManager.OnAction(action))
+    return true;
+
+  // forward action to graphic context and see if it can handle it
+  if (CStereoscopicsManager::Get().OnAction(action))
     return true;
 
   if (IsPlaying())

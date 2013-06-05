@@ -29,6 +29,8 @@
 #include "settings/ISettingCallback.h"
 #include "rendering/RenderSystem.h"
 
+class CAction;
+
 class CStereoscopicsManager : public ISettingCallback
 {
 public:
@@ -43,9 +45,19 @@ public:
   bool HasStereoscopicSupport(void);
   void SetStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetStereoMode(void);
+  RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
+
   virtual void OnSettingChanged(const CSetting *setting);
+  /*!
+   * @brief Handle 3D specific cActions
+   * @param action The action to process
+   * @return True if action could be handled, false otherwise.
+   */
+  bool OnAction(const CAction &action);
 
 private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
+
+  RENDER_STEREO_MODE m_lastStereoMode;
 };
