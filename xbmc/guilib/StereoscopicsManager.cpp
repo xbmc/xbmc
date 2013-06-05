@@ -61,6 +61,13 @@ CStereoscopicsManager& CStereoscopicsManager::Get(void)
   return sStereoscopicsManager;
 }
 
+void CStereoscopicsManager::Initialize(void)
+{
+  m_lastStereoMode = GetStereoMode();
+  // turn off stereo mode on XBMC startup
+  SetStereoMode(RENDER_STEREO_MODE_OFF);
+}
+
 bool CStereoscopicsManager::HasStereoscopicSupport(void)
 {
   return (bool) CSettings::Get().GetBool("videoscreen.hasstereoscopicsupport");

@@ -1415,6 +1415,8 @@ bool CApplication::Initialize()
         StartPVRManager(false);
         g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
       }
+
+      CStereoscopicsManager::Get().Initialize();
     }
 
   }
