@@ -28,6 +28,7 @@
 
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/ISettingCallback.h"
 #include "settings/Setting.h"
@@ -66,7 +67,21 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 {
   RENDER_STEREO_MODE currentMode = GetStereoMode();
   if (mode != currentMode)
+  {
+    m_lastStereoMode = currentMode;
     CSettings::Get().SetInt("videoscreen.stereoscopicmode", mode);
+  }
+}
+
+RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step)
+{
+  RENDER_STEREO_MODE mode = currentMode;
+  do {
+    mode = (RENDER_STEREO_MODE) ((mode + step) % RENDER_STEREO_MODE_COUNT);
+    if(g_Windowing.SupportsStereo(mode))
+      break;
+   } while (mode != currentMode);
+  return mode;
 }
 
 CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)
@@ -100,6 +115,52 @@ void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
     if(HasStereoscopicSupport())
       ApplyStereoMode(mode);
   }
+}
+
+bool CStereoscopicsManager::OnAction(const CAction &action)
+{
+  if (!HasStereoscopicSupport())
+    return false;
+
+  RENDER_STEREO_MODE mode = GetStereoMode();
+
+  if (action.GetID() == ACTION_STEREOMODE_NEXT)
+  {
+    mode = GetNextSupportedStereoMode(mode);
+    // when cycling mode, skip "OFF"
+    if (mode == RENDER_STEREO_MODE_OFF)
+      mode = GetNextSupportedStereoMode(mode);
+
+    SetStereoMode(mode);
+    return true;
+  }
+  else if (action.GetID() == ACTION_STEREOMODE_PREVIOUS)
+  {
+    mode = GetNextSupportedStereoMode(mode, RENDER_STEREO_MODE_COUNT - 1);
+    // when cycling mode, skip "OFF"
+    if (mode == RENDER_STEREO_MODE_OFF)
+      mode = GetNextSupportedStereoMode(mode, RENDER_STEREO_MODE_COUNT - 1);
+
+    SetStereoMode(mode);
+    return true;
+  }
+  else if (action.GetID() == ACTION_STEREOMODE_TOGGLE)
+  {
+    if (mode == RENDER_STEREO_MODE_OFF)
+    {
+      RENDER_STEREO_MODE targetMode = m_lastStereoMode;
+      if (targetMode == RENDER_STEREO_MODE_OFF)
+        targetMode = GetNextSupportedStereoMode(RENDER_STEREO_MODE_OFF);
+      SetStereoMode(targetMode);
+    }
+    else
+    {
+      SetStereoMode(RENDER_STEREO_MODE_OFF);
+    }
+    return true;
+  }
+
+  return false;
 }
 
 void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
