@@ -59,26 +59,12 @@ protected:
   bool              m_has_audio;
   int               m_play_speed;
   pthread_mutex_t   m_lock;
-  double            SystemToAbsolute(int64_t system);
-  double            SystemToPlaying(int64_t system);
-  int64_t           m_systemUsed;
-  int64_t           m_startClock;
-  int64_t           m_pauseClock;
-  double            m_iDisc;
-  bool              m_bReset;
-  static int64_t    m_systemFrequency;
-  static int64_t    m_systemOffset;
-  int64_t           m_ClockOffset;
-  double            m_maxspeedadjust;
-  bool              m_speedadjust;
-  static bool       m_ismasterclock;
   double            m_fps;
   int               m_omx_speed;
   bool              m_video_start;
   bool              m_audio_start;
   bool              m_audio_buffer;
-  CDVDClock         m_clock;
-  OMX_TIME_CONFIG_CLOCKSTATETYPE m_clock_state;
+  CDVDClock         *m_clock;
 private:
   COMXCoreComponent m_omx_clock;
 public:
@@ -86,31 +72,15 @@ public:
   ~OMXClock();
   void Lock();
   void UnLock();
-  double  GetAbsoluteClock(bool interpolated = true);
-  double  GetFrequency() { return (double)m_systemFrequency ; }
-  double  WaitAbsoluteClock(double target);
-  double GetClock(bool interpolated = true);
-  double GetClock(double& absolute, bool interpolated = true);
-  void CheckSystemClock();
-  void SetSpeed(int iSpeed);
-  void SetMasterClock(bool ismasterclock) { m_ismasterclock = ismasterclock; }
-  bool IsMasterClock()                    { return m_ismasterclock;          }
-  void Discontinuity(double currentPts = 0LL);
-
-  void Reset() { m_bReset = true; }
-  void Pause();
-  void Resume();
-
-  int UpdateFramerate(double fps, double* interval = NULL);
-  bool   SetMaxSpeedAdjust(double speed);
-
+  double GetAbsoluteClock(bool interpolated = true) { return m_clock ? m_clock->GetAbsoluteClock(interpolated):0; }
+  double GetClock(bool interpolated = true) { return m_clock ? m_clock->GetClock(interpolated):0; }
+  double GetClock(double& absolute, bool interpolated = true) { return m_clock ? m_clock->GetClock(absolute, interpolated):0; }
+  void Discontinuity(double currentPts = 0LL) { if (m_clock) m_clock->Discontinuity(currentPts); }
   void OMXSetClockPorts(OMX_TIME_CONFIG_CLOCKSTATETYPE *clock);
   bool OMXSetReferenceClock(bool lock = true);
-  bool OMXInitialize(bool has_video, bool has_audio);
+  bool OMXInitialize(CDVDClock *clock, bool has_video, bool has_audio);
   void OMXDeinitialize();
   bool OMXIsPaused() { return m_pause; };
-  void OMXSaveState(bool lock = true);
-  void OMXRestoreState(bool lock = true);
   bool OMXStop(bool lock = true);
   bool OMXStart(bool lock = true);
   bool OMXReset(bool lock = true);

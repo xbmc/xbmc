@@ -372,7 +372,8 @@ protected:
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
   CDVDTeletextData m_dvdPlayerTeletext; // teletext part
 
-  OMXClock m_av_clock;                // master clock
+  CDVDClock m_clock;                // master clock
+  OMXClock m_av_clock;
 
   float m_current_volume;
   bool m_current_mute;
