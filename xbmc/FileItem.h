@@ -33,6 +33,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
+#include "guilib/GUIDropPolicy.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -487,6 +488,7 @@ public:
 
   CFileItemList();
   CFileItemList(const CStdString& strPath);
+  CFileItemList(const CFileItemList& rhs);
   virtual ~CFileItemList();
   virtual void Archive(CArchive& ar);
   CFileItemPtr operator[] (int iItem);
@@ -499,11 +501,19 @@ public:
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
+  void RemoveRange(int iRangeBegin, int iRangeEnd);
   CFileItemPtr Get(int iItem);
   const CFileItemPtr Get(int iItem) const;
   const VECFILEITEMS GetList() const { return m_items; }
   CFileItemPtr Get(const CStdString& strPath);
   const CFileItemPtr Get(const CStdString& strPath) const;
+  /*! \brief Finds the item with the given path and returns it's position in the list
+   NOTE: this never uses the fast lookup, so Get() should be preferred if you don't
+   need to know the position of the item
+   \param strPath The item path, we are looking for
+   \retun the position of the found object or -1 if not found
+   */
+  int Find(const CStdString& strPath) const;
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
@@ -578,6 +588,7 @@ public:
   void RemoveDiscCache(int windowID = 0) const;
   bool AlwaysCache() const;
 
+  void Move(int position, int move);
   void Swap(unsigned int item1, unsigned int item2);
 
   /*! \brief Update an item in the item list
@@ -603,6 +614,14 @@ public:
   const CStdString &GetContent() const { return m_content; };
 
   void ClearSortState();
+  
+  bool IsReorderable() const { return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsReorderable() : false; }
+  void SetDropPolicy(IGUIDropPolicy* dropPolicy) { m_dropPolicy = std::auto_ptr<IGUIDropPolicy>(dropPolicy); }
+  bool IsDropable(const CFileItemPtr& item) const;
+  bool OnDropAdd(CFileItemPtr item, int position);
+  bool OnDropMove(int posBefore, int posAfter);
+  CFileItemPtr CreateDropDummy(const CFileItemPtr orig) { return m_dropPolicy->CreateDummy(orig); }
+  bool IsDropDuplicate(const CFileItemPtr& item) { return m_dropPolicy->IsDuplicate(item, *this); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
@@ -629,8 +648,8 @@ private:
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;
+  boost::shared_ptr<IGUIDropPolicy> m_dropPolicy;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
-
   CCriticalSection m_lock;
 };

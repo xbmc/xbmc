@@ -887,6 +887,18 @@
 			<textureradionofocus>GoFullscreen.png</textureradionofocus>
 			<visible>Player.HasMedia</visible>
 		</control>
+		<control type="button">
+		    <description>Opens the current playlist, also items can be dragged here, to add them to the favourites</description>
+		    <!-- No idea how i find out if an item is an audio file... -->
+		    <ondrop>Notification(Playlist, $INFO[dragndrop.item.label] added)</ondrop>
+		    <width>250</width>
+		    <height>35</height>
+		    <include>VisibleFadeEffect</include>
+		    
+		    <onclick>XBMC.ActivateWindow(musicplaylist)</onclick>
+		    <label>Playlist ($INFO[musicplayer.playlistlength])</label>
+		    <visible>integergreaterthan(musicplayer.playlistlength, 0)</visible>
+		</control>
 	</include>
 	<include name="ScrollOffsetLabel">
 		<control type="group">

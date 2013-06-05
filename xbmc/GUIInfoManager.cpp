@@ -50,6 +50,7 @@
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIBaseContainer.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
@@ -57,6 +58,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "input/MouseStat.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -117,6 +119,9 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_fps = 0.0f;
   m_AVInfoValid = false;
   ResetLibraryBools();
+  m_dragStartControl = NULL;
+  m_dragHoveredControl = NULL;
+  m_dragStartWindowID = -1;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -568,7 +573,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "progress",         LISTITEM_PROGRESS },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
                                   { "dbtype",           LISTITEM_DBTYPE },
-                                  { "dbid",             LISTITEM_DBID }};
+                                  { "dbid",             LISTITEM_DBID },
+                                  { "isdragged",        LISTITEM_ISDRAGGED },
+                                  { "isdropped",        LISTITEM_ISDROPPED }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -655,6 +662,10 @@ const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "isvideo",          SLIDESHOW_ISVIDEO },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
+
+
+  //Available as: dragndrop.hovered.{X}
+const infomap dragndropHovered[] = {{ "id", DRAGNDROP_HOVERED_ID}};
 
 const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
                                   /* LISTITEM_PICTURE_LONGDATE   => */ SLIDE_EXIF_LONG_DATE,
@@ -824,6 +835,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
     }
+    else if (cat.name == "dragging")
+      return DRAGNDROP_DRAGGING;
   }
   else if (info.size() == 2)
   {
@@ -1168,6 +1181,33 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (info.size() == 3)
   {
+    if (info[0].name == "dragndrop")
+    {
+      if (info[1].name == "item")
+      {
+        int ret = TranslateListItem(info[2]);
+      
+        if (ret == 0)
+          return 0;
+      
+        ret = (ret - LISTITEM_START);
+        ret += DRAGGING_ITEM_BEGIN;
+        return ret;
+      }
+      if (info[1].name == "hovered")
+      {
+        for (size_t i = 0; i < sizeof(dragndropHovered) / sizeof(infomap); ++i)
+        {
+          if (info[2].name == dragndropHovered[i].str)
+          {
+            if (info[2].num_params()==0)
+              return dragndropHovered[i].val;
+            if (info[2].num_params()==1)
+              return AddMultiInfo(GUIInfo(dragndropHovered[i].val, 0, atoi(info[2].param().c_str())));
+          }
+        }
+      }
+    }
     if (info[0].name == "system" && info[1].name == "platform")
     { // TODO: replace with a single system.platform
       CStdString platform = info[2].name;
@@ -1282,10 +1322,21 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
     if (window)
     {
-      CFileItemPtr item = window->GetCurrentListItem();
+      CFileItemPtr item = GetCurrentListItem(window);
       strLabel = GetItemLabel(item.get(), info, fallback);
     }
 
+    return strLabel;
+  }
+
+  if (info >= DRAGGING_ITEM_BEGIN && info <= DRAGGING_ITEM_END)
+  {
+    int listitemInfo = info - DRAGGING_ITEM_BEGIN + LISTITEM_START;
+    if (m_draggedFileItem)
+    {
+      CFileItem item(*m_draggedFileItem);
+      strLabel = GetItemLabel(&item, listitemInfo, fallback);
+    }
     return strLabel;
   }
 
@@ -1910,6 +1961,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_RENDER_VERSION:
     strLabel = g_Windowing.GetRenderVersionString();
     break;
+  case DRAGNDROP_HOVERED_ID:
+    if (m_dragHoveredControl)
+    {
+      int id = m_dragHoveredControl->GetID();
+      if (id != 0) //id of 0 means no id, so leave the string empty then
+        strLabel.Format("%i", id);
+    }
+    break;
   }
 
   return strLabel;
@@ -2006,6 +2065,12 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
       return true;
+    case DRAGNDROP_HOVERED_ID:
+      if (m_dragHoveredControl)
+      {
+        value = m_dragHoveredControl->GetID();
+        return true;
+      }
   }
   return false;
 }
@@ -2320,6 +2385,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
+  }
+  else if (condition == DRAGNDROP_DRAGGING)
+  {
+    bReturn = (m_dragStartControl != NULL);
   }
   else if (g_application.IsPlaying())
   {
@@ -2898,6 +2967,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             index += g_playlistPlayer.GetCurrentSong();
           }
           bReturn = (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size());
+        }
+        break;
+      case DRAGNDROP_HOVERED_ID:
+        {
+          if (!m_dragHoveredControl)
+          {
+            bReturn = false; //we have no valid hovered element
+            break;
+          }
+          
+          int id1 = info.GetData2();
+          int id2 = m_dragHoveredControl->GetID();
+          bReturn = (id1==id2);
         }
         break;
     }
@@ -4970,6 +5052,16 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         return pItem->HasEPGInfoTag();
       }
     }
+    else if (condition == LISTITEM_ISDRAGGED)
+    {
+      CVariant isDragged = pItem->HasProperty(ITEM_IS_DRAGGED_FLAG);
+      return isDragged.asBoolean();
+    }
+    else if (condition == LISTITEM_ISDROPPED)
+    {
+      CVariant isDropped = pItem->HasProperty(ITEM_IS_DROPPED_FLAG);
+      return isDropped.asBoolean();
+    }
     else if (condition == LISTITEM_ISENCRYPTED)
     {
       if (pItem->HasPVRChannelInfoTag())
@@ -5338,4 +5430,48 @@ bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
     }
   }
   return false;
+}
+
+CFileItemPtr CGUIInfoManager::GetCurrentListItem(CGUIWindow *window) 
+{ 
+  CFileItemPtr ptr = GetDraggedFileItem();
+  if (ptr) 
+    return ptr;
+  if (window)
+    return window->GetCurrentListItem();
+  return CFileItemPtr();
+}
+
+void CGUIInfoManager::DraggingStart(CFileItemPtr draggedFileItem, CGUIControl* startControl, int windowID) 
+{ 
+  m_draggedFileItem = draggedFileItem;
+  if (m_draggedFileItem)
+    m_draggedFileItem->SetProperty(ITEM_IS_DRAGGED_FLAG, CVariant(true));
+  m_dragStartControl = startControl;
+  g_Mouse.SetState(MOUSE_STATE_DRAG);
+  m_dragStartWindowID = windowID;
+}
+
+void CGUIInfoManager::DraggingStop() 
+{ 
+  if (m_dragStartControl)
+     m_dragStartControl->DragStop();
+  if (m_draggedFileItem)
+  {
+    m_draggedFileItem->ClearProperty(ITEM_IS_DRAGGED_FLAG);
+    m_draggedFileItem->ClearProperty(ITEM_IS_DROPPED_FLAG);
+  }
+  m_dragStartControl = NULL;
+  m_draggedFileItem = CFileItemPtr(); 
+  m_dragHoveredControl = NULL; 
+  g_Mouse.SetState(MOUSE_STATE_NORMAL);
+}
+
+void CGUIInfoManager::DragHover(CGUIControl* hoveredObject) 
+{
+  if (m_dragHoveredControl!=hoveredObject && m_dragHoveredControl!=NULL)
+  {
+    m_dragHoveredControl->DraggedAway();
+  }
+  m_dragHoveredControl = hoveredObject;
 }

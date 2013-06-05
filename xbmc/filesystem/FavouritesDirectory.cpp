@@ -34,7 +34,6 @@
 namespace XFILE
 {
 
-
 bool CFavouritesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   items.Clear();
@@ -62,6 +61,7 @@ bool CFavouritesDirectory::Exists(const char* strPath)
 bool CFavouritesDirectory::Load(CFileItemList &items)
 {
   items.Clear();
+  items.SetDropPolicy(new CFavouritesDropPolicy());
   CStdString favourites;
 
   favourites = "special://xbmc/system/favourites.xml";

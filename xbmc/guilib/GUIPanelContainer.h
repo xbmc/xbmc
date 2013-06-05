@@ -47,7 +47,11 @@ public:
   virtual void OnUp();
   virtual void OnDown();
   virtual bool GetCondition(int condition, int data) const;
+  
+  virtual int GetRealOffset() { return GetOffset()*m_itemsPerRow; }
 protected:
+  virtual DragHintInfo GetDragHintInfo(int position);
+  virtual bool OverEmptySpace(const CPoint& point);
   virtual bool MoveUp(bool wrapAround);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveLeft(bool wrapAround);
@@ -64,7 +68,8 @@ protected:
   virtual void SelectItem(int item);
   virtual bool HasPreviousPage() const;
   virtual bool HasNextPage() const;
-
+  virtual CRect GetItemBox(int position);
+  
   int m_itemsPerRow;
 };
 

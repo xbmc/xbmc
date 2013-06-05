@@ -40,7 +40,11 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetSelectedItem() const;
-
+  virtual int GetDropPositionFromPoint(const CPoint& point);
+  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const;
+  virtual bool OverEmptySpace(const CPoint& point) { return false; }
+  virtual DragHintInfo GetDragHintInfo(int position);
+  virtual CRect GetItemBox(int position);
 protected:
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
@@ -51,7 +55,7 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);
   virtual void Reset();
-  virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };
+  virtual unsigned int GetNumItems() const { return m_items.Size() - m_extraItems; };
   virtual int GetCurrentPage() const;
   virtual void SetPageControlRange();
   virtual void UpdatePageControl(int offset);

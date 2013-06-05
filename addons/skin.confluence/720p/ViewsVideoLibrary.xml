@@ -9,8 +9,8 @@
 			<onup>9000</onup>
 			<ondown>61</ondown>
 			<usecontrolcoords>true</usecontrolcoords>
-			<include>VisibleFadeEffect</include>
-			<control type="fixedlist" id="501">
+			<include>VisibleFadeEffect</include>		
+			<control type="wraplist" id="501">
 				<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)</visible>
 				<visible>!Container.Content(LiveTV)</visible>
 				<posx>-183</posx>
@@ -27,6 +27,16 @@
 				<focusposition>3</focusposition>
 				<orientation>horizontal</orientation>
 				<preloaditems>4</preloaditems>
+                <!--><draghint>
+				    <control type="image">
+				        <posx>0</posx>
+				        <posy>0</posy>
+				        <width>16</width>
+				        <height>250</height>
+				        <texture>dragHintVertical.png</texture>
+				        <aspectratio>stretch</aspectratio>
+				    </control>
+				</draghint>-->
 				<itemlayout height="310" width="218">
 					<control type="image">
 						<posx>2</posx>
@@ -39,7 +49,7 @@
 						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="310" width="218">
+				<focusedlayout height="310" width="222">
 					<control type="image">
 						<posx>-2</posx>
 						<posy>36</posy>
@@ -97,181 +107,6 @@
 				<visible>Control.IsVisible(501)</visible>
 			</control>
 		</control>
-		<control type="group">
-			<visible>Control.IsVisible(501)</visible>
-			<control type="image">
-				<posx>56</posx>
-				<posy>120</posy>
-				<width>128</width>
-				<height>310</height>
-				<texture>SideFade.png</texture>
-			</control>
-			<control type="image">
-				<posx>1094</posx>
-				<posy>120</posy>
-				<width>128</width>
-				<height>310</height>
-				<texture flipx="true">SideFade.png</texture>
-			</control>
-		</control>
-		<control type="group">
-			<visible>Control.IsVisible(501) + [Container.Content(Movies) | Container.Content(Sets)]</visible>
-			<control type="label">
-				<posx>30</posx>
-				<posy>500</posy>
-				<width>1220</width>
-				<height>35</height>
-				<font>font28_title</font>
-				<textcolor>blue</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>540</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font30</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Year]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>580</posy>
-				<width>1280</width>
-				<height>20</height>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] , $LOCALIZE[12391]]</label>
-			</control>
-			<control type="grouplist">
-				<description>Media Codec Flagging Images</description>
-				<posx>0</posx>
-				<posy>610</posy>
-				<width>1280</width>
-				<align>center</align>
-				<itemgap>2</itemgap>
-				<orientation>horizontal</orientation>
-				<include>VideoCodecFlaggingConditions</include>
-				<include>AudioCodecFlaggingConditions</include>
-				<include>AudioChannelsFlaggingConditions</include>
-				<include>AspectCodecFlaggingConditions</include>
-				<include>VideoTypeHackFlaggingConditions</include>
-			</control>
-		</control>
-		<control type="group">
-			<visible>Control.IsVisible(501) + Container.Content(Seasons)</visible>
-			<control type="label">
-				<posx>30</posx>
-				<posy>500</posy>
-				<width>1220</width>
-				<height>35</height>
-				<font>font28_title</font>
-				<textcolor>blue</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>540</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font30</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.TVShowTitle]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>575</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Episode,, $LOCALIZE[20453]]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>605</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>($INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]] - $INFO[ListItem.Property(UnWatchedEpisodes), , $LOCALIZE[16101]])</label>
-			</control>
-		</control>
-		<control type="group">
-			<visible>Control.IsVisible(501) + Container.Content(TVShows)</visible>
-			<control type="label">
-				<posx>30</posx>
-				<posy>500</posy>
-				<width>1220</width>
-				<height>35</height>
-				<font>font28_title</font>
-				<textcolor>blue</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>540</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font30</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Genre]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>575</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Episode,, $LOCALIZE[20453]]</label>
-			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>605</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>($INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]] - $INFO[ListItem.Property(UnWatchedEpisodes), , $LOCALIZE[16101]])</label>
-			</control>
-		</control>
 	</include>
 	<include name="PosterWrapView2_Fanart">
 		<control type="group">
@@ -324,6 +159,16 @@
 				<movement>3</movement>
 				<orientation>horizontal</orientation>
 				<preloaditems>4</preloaditems>
+				<draghint>
+				    <control type="image">
+				        <posx>0</posx>
+				        <posy>0</posy>
+				        <width>16</width>
+				        <height>250</height>
+				        <texture>dragHintVertical.png</texture>
+				        <aspectratio>stretch</aspectratio>
+				    </control>
+				</draghint>
 				<itemlayout height="200" width="120">
 					<control type="image">
 						<posx>2</posx>
@@ -753,6 +598,27 @@
 		</control>
 	</include>
 	<include name="MediaListView3">
+	    <control type="button" id="3003">
+		    <description>Opens the favourites dialog, also items can be dragged here, to add them to the favourites</description>
+		    <posx>800</posx>
+		    <posy>80</posy>
+		    <width>130</width>
+		    <height>30</height>
+		    <onclick>XBMC.ActivateWindow(Favourites)</onclick>
+		    <ondrop>Notification(Favourites, $INFO[dragndrop.item.label] added)</ondrop>
+		    <label>Favourites</label>
+		</control>
+		<control type="button">
+		    <description>Opens the current playlist, also items can be dragged here, to add them to the favourites</description>
+		    <dropable>playlist</dropable>
+		    <posx>940</posx>
+		    <posy>80</posy>
+		    <width>130</width>
+		    <height>30</height>
+		    <onclick>XBMC.ActivateWindow(videoplaylist)</onclick>
+		    <label>Playlist ($INFO[videoplayer.playlistlength])</label>
+		    <visible>integergreaterthan(videoplayer.playlistlength, 0)</visible>
+		</control>
 		<control type="group">
 			<visible>Control.IsVisible(503)</visible>
 			<include>VisibleFadeEffect</include>
@@ -1181,6 +1047,7 @@
 		</control>
 	</include>
 	<include name="MediaListView2">
+        
 		<control type="group">
 			<visible>Control.IsVisible(504)</visible>
 			<include>VisibleFadeEffect</include>
@@ -1257,6 +1124,8 @@
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
+				    <dragable>favourites</dragable>
+    			    <dragable>playlist</dragable>
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>

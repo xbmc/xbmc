@@ -217,6 +217,16 @@
 					<ondown>451</ondown>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
+					<draghint
+					    <control type="image">
+    					    <posx>0</posx>
+    					    <posy>-15</posy>
+    					    <width>640</width>
+    					    <height>16</height>
+    					    <texture>CalibrateSubtitles.png</texture>
+    					    <aspectratio>stretch</aspectratio>
+    				      </control>
+					</draghint>
 					<itemlayout height="40" width="640">
 						<control type="image">
 							<posx>0</posx>
@@ -277,7 +287,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<selectedcolor>green</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label] bla</label>
 						</control>
 					</focusedlayout>
 				</control>

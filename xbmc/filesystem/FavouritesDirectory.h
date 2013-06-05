@@ -40,7 +40,7 @@ namespace XFILE
     static bool AddOrRemove(CFileItem *item, int contextWindow);
     static bool Save(const CFileItemList& items);
     static bool IsFavourite(CFileItem *item, int contextWindow);
-  private:
+
     static CStdString GetExecutePath(const CFileItem *item, int contextWindow);
   };
   

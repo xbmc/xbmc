@@ -93,7 +93,7 @@ EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEve
       g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return EVENT_RESULT_HANDLED;
   }
-  return EVENT_RESULT_UNHANDLED;
+  return CGUIControl::OnMouseEvent(point, event);;
 }
 
 bool CGUIVideoControl::CanFocus() const

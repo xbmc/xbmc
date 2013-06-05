@@ -74,3 +74,5 @@ protected:
   CGUIInfoBool m_isPlaying;
 };
 
+typedef boost::shared_ptr<CGUIListItemLayout> ListItemLayoutPtr;
+

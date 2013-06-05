@@ -399,6 +399,27 @@ bool CPlayList::Swap(int position1, int position2)
   return true;
 }
 
+void CPlayList::Move(int position, int move)
+{
+    //TODO: this is a copy of CFileItemList.Move()...
+    //once CPlayList uses a CFileItemList, this can be just a simple forward ;)
+  int newPosition = position + move;
+  if (newPosition < 0 ||
+     (unsigned)newPosition >= m_vecItems.size() ||
+     position < 0 ||
+     (unsigned)position >= m_vecItems.size() ||
+     move == 0)
+    return;
+  int direction = (move>0) ? 1 : -1;
+  
+  for (; move!=0; move-=direction) 
+  {
+    std::swap(m_vecItems[position], m_vecItems[position+direction]);
+    position+=direction;
+  }
+}
+
+
 void CPlayList::SetUnPlayable(int iItem)
 {
   if (iItem < 0 || iItem >= size())

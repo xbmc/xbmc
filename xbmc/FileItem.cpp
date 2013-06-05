@@ -1558,6 +1558,24 @@ CFileItemList::CFileItemList()
   m_replaceListing = false;
 }
 
+CFileItemList::CFileItemList(const CFileItemList& rhs) 
+  : CFileItem(rhs), 
+    m_items(rhs.m_items), 
+    m_map(rhs.m_map), 
+    m_sortDetails(rhs.m_sortDetails)
+{
+  m_fastLookup = rhs.m_fastLookup;
+  m_bIsFolder = rhs.m_bIsFolder;
+  m_cacheToDisc = rhs.m_cacheToDisc;
+  m_sortMethod = rhs.m_sortMethod;
+  m_sortOrder = rhs.m_sortOrder;
+  m_sortIgnoreFolders = rhs.m_sortIgnoreFolders;
+  m_replaceListing = rhs.m_replaceListing;
+  m_cacheToDisc = rhs.m_cacheToDisc;
+  m_content = rhs.m_content;
+  m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>(rhs.m_dropPolicy->Copy());
+}
+
 CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, true)
 {
   m_fastLookup = false;
@@ -1640,6 +1658,7 @@ void CFileItemList::Clear()
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
+  m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>();
 }
 
 void CFileItemList::ClearItems()
@@ -1718,6 +1737,17 @@ void CFileItemList::Remove(int iItem)
   }
 }
 
+void CFileItemList::RemoveRange(int iRangeBegin, int iRangeEnd)
+{
+  CSingleLock lock(m_lock);
+  if (m_fastLookup)
+  {
+    for (int i = iRangeBegin; i<iRangeEnd; ++i)
+      m_map.erase(m_items[i]->GetPath());
+  }
+  m_items.erase(m_items.begin() + iRangeBegin, m_items.begin() + iRangeEnd);
+}
+
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
   CSingleLock lock(m_lock);
@@ -1735,10 +1765,17 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   SetPath(itemlist.GetPath());
   SetLabel(itemlist.GetLabel());
   m_sortDetails = itemlist.m_sortDetails;
+  m_sortMethod = itemlist.m_sortMethod;
+  m_sortOrder = itemlist.m_sortOrder;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
   m_cacheToDisc = itemlist.m_cacheToDisc;
+  if (itemlist.m_dropPolicy.get()!=NULL)
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>(itemlist.m_dropPolicy->Copy());
+  else
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>();
+  
 }
 
 bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */)
@@ -1755,7 +1792,12 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   m_sortMethod     = items.m_sortMethod;
   m_sortOrder      = items.m_sortOrder;
   m_sortIgnoreFolders = items.m_sortIgnoreFolders;
+  if (items.m_dropPolicy.get()!=NULL)
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>(items.m_dropPolicy->Copy());
+  else
+    m_dropPolicy     = boost::shared_ptr<IGUIDropPolicy>();
 
+  
   if (copyItems)
   {
     // make a copy of each item
@@ -1835,6 +1877,20 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
   return CFileItemPtr();
 }
 
+int CFileItemList::Find(const CStdString& strPath) const
+{
+  CSingleLock lock(m_lock);
+  
+    // slow method...
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr pItem = m_items[i];
+    if (pItem->GetPath().Equals(strPath))
+      return i;
+  }
+  return -1;
+}
+
 int CFileItemList::Size() const
 {
   CSingleLock lock(m_lock);
@@ -1851,6 +1907,28 @@ void CFileItemList::Reserve(int iCount)
 {
   CSingleLock lock(m_lock);
   m_items.reserve(iCount);
+}
+
+bool CFileItemList::IsDropable(const CFileItemPtr& item) const
+{
+  return (m_dropPolicy.get()!=NULL) ? m_dropPolicy->IsDropable(item) : false;
+}
+
+
+bool CFileItemList::OnDropAdd(CFileItemPtr item, int position) 
+{ 
+  if (m_dropPolicy.get()==NULL)
+    return false;
+  
+  return m_dropPolicy->OnDropAdd(*this, item, position);
+}
+
+bool CFileItemList::OnDropMove(int posBefore, int posAfter) 
+{ 
+  if (m_dropPolicy.get()==NULL)
+    return false;
+  
+  return m_dropPolicy->OnDropMove(*this, posBefore, posAfter);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
@@ -1949,7 +2027,8 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_sortOrder;
     ar << m_sortIgnoreFolders;
     ar << (int)m_cacheToDisc;
-
+    (*m_dropPolicy) >> ar;
+    
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
@@ -2010,6 +2089,8 @@ void CFileItemList::Archive(CArchive& ar)
     ar >> m_sortIgnoreFolders;
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
+    
+    m_dropPolicy = boost::shared_ptr<IGUIDropPolicy>(IGUIDropPolicy::Create(ar));
 
     unsigned int detailSize = 0;
     ar >> detailSize;
@@ -3063,6 +3144,25 @@ bool CFileItem::LoadMusicTag()
     }
   }
   return false;
+}
+
+void CFileItemList::Move(int position, int move)
+{
+  int newPosition = position + move;
+  if (newPosition < 0 ||
+      (unsigned)newPosition >= m_items.size() ||
+      position < 0 ||
+      (unsigned)position >= m_items.size() ||
+      move == 0)
+    return;
+  
+  int direction = (move>0) ? 1 : -1;
+  
+  for (; move!=0; move-=direction) 
+  {
+    std::swap(m_items[position], m_items[position+direction]);
+    position+=direction;
+  }
 }
 
 void CFileItemList::Swap(unsigned int item1, unsigned int item2)

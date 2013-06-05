@@ -22,13 +22,42 @@
 			<height>32</height>
 			<texture>pointer-focus.png</texture>
 		</control>
-		<control type="image" id="3">
-			<description>Pointer Drag Image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>32</width>
-			<height>32</height>
-			<texture>pointer-focus-drag.png</texture>
+		<control type="group" id="3">
+		    <control type="image">
+			    <description>Pointer Drag Image</description>
+			    <posx>0</posx>
+			    <posy>0</posy>
+			    <width>32</width>
+			    <height>32</height>
+			    <texture>pointer-focus-drag.png</texture>
+		    </control>
+		    <control type="image">
+		        <visible>!isempty(dragndrop.item.icon)</visible>
+    	        <posx>20</posx>
+    		    <posy>20</posy>
+    		    <width>64</width>
+    		    <height>64</height>
+    		    <aspectratio align="center">keep</aspectratio>
+				<fadetime>IconCrossfadeTime</fadetime>
+				<texture>$INFO[dragndrop.item.icon]</texture>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
+    	    </control>
+    	    <control type="label">
+		        <visible>isempty(dragndrop.item.icon)</visible>
+    	        <posx>20</posx>
+    		    <posy>20</posy>
+				<fadetime>IconCrossfadeTime</fadetime>
+				<label>$INFO[dragndrop.item.label]</label>
+    	    </control>
+    	    <control type="image">
+    	        <visible>dragndrop.hovered.id(3003)</visible>
+    	        <posx>60</posx>
+    	        <posy>60</posy>
+    	        <width>16</width>
+    	        <height>16</height>
+    	        <texture>add-icon.png</texture>
+    	    </control>
 		</control>
 		<control type="image" id="4">
 			<description>Pointer Click Image</description>
@@ -38,5 +67,6 @@
 			<height>32</height>
 			<texture>pointer-focus-click.png</texture>
 		</control>
+	    
 	</controls>
 </window>

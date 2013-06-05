@@ -48,6 +48,7 @@ public:
   void Remove(const CStdString& strFileName);
   void Remove(int position);
   bool Swap(int position1, int position2);
+  void Move(int position, int move);
   bool Expand(int position); // expands any playlist at position into this playlist
   void Clear();
   int size() const;

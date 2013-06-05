@@ -473,6 +473,19 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
   { // no control found to absorb this click - go to previous menu
     return OnAction(CAction(ACTION_PREVIOUS_MENU)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
+  if (event.m_id == ACTION_MOUSE_DRAG)
+  { //if no one feels responsible for the drag events, we should notifie the info handler and the currenct hovered element about that
+    if(event.m_state == 2)
+    {
+      g_infoManager.DragHover(NULL);
+      return EVENT_RESULT_HANDLED;
+    }
+    if(event.m_state == 3)
+    {
+      g_infoManager.DraggingStop();
+      return EVENT_RESULT_HANDLED;
+    }
+  }
   return EVENT_RESULT_UNHANDLED;
 }
 

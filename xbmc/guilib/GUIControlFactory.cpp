@@ -581,7 +581,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minHeight = 0, minWidth = 0;
 
-  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
+  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions, dropActions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -777,7 +777,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "onunfocus", unfocusActions);
   focusActions.m_sendThreadMessages = unfocusActions.m_sendThreadMessages = true;
   GetActions(pControlNode, "altclick", altclickActions);
-
+  GetActions(pControlNode, "ondrop", dropActions);
+  
   CStdString infoString;
   if (XMLUtils::GetString(pControlNode, "info", infoString))
     singleInfo = g_infoManager.TranslateString(infoString);
@@ -1340,6 +1341,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
     control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
+    control->SetDropAction(dropActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

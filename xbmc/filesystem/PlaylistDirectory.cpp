@@ -22,6 +22,7 @@
 #include "PlayListPlayer.h"
 #include "URL.h"
 #include "playlists/PlayList.h"
+#include "guilib/GUIDropPolicy.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -42,9 +43,15 @@ bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
 
   int playlistTyp=PLAYLIST_NONE;
   if (url.GetProtocol()=="playlistmusic")
+  {
+    items.SetDropPolicy(new MusicPlaylistDropPolicy());
     playlistTyp=PLAYLIST_MUSIC;
+  }
   else if (url.GetProtocol()=="playlistvideo")
+  {
+    items.SetDropPolicy(new VideoPlaylistDropPolicy());
     playlistTyp=PLAYLIST_VIDEO;
+  }
 
   if (playlistTyp==PLAYLIST_NONE)
     return false;

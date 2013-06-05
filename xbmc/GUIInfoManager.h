@@ -34,6 +34,9 @@
 #include "utils/Observer.h"
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
+#include "FileItem.h"
+#include "guilib/GUIControl.h"
+#include "utils/log.h"
 
 #include <list>
 #include <map>
@@ -421,6 +424,9 @@ namespace INFO
 
 #define SYSTEM_PROFILEAUTOLOGIN     1004
 
+#define DRAGNDROP_HOVERED_ID        1500
+#define DRAGNDROP_DRAGGING          1501
+
 #define PVR_CONDITIONS_START        1100
 #define PVR_IS_RECORDING            (PVR_CONDITIONS_START)
 #define PVR_HAS_TIMER               (PVR_CONDITIONS_START + 1)
@@ -634,9 +640,12 @@ namespace INFO
 #define LISTITEM_PROGRESS           (LISTITEM_START + 137)
 #define LISTITEM_HAS_EPG            (LISTITEM_START + 138)
 #define LISTITEM_VOTES              (LISTITEM_START + 139)
+#define LISTITEM_ISDRAGGED          (LISTITEM_START + 140)
+#define LISTITEM_ISDROPPED          (LISTITEM_START + 141)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
-#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
+#define LISTITEM__PROPERTY_SIZE     1000
+#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + LISTITEM__PROPERTY_SIZE)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
 #define MUSICPLAYER_PROPERTY_OFFSET 800 // 100 id's reserved for musicplayer props.
@@ -644,6 +653,9 @@ namespace INFO
 
 #define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
 #define CONDITIONAL_LABEL_END         37000
+
+#define DRAGGING_ITEM_BEGIN         (CONDITIONAL_LABEL_END + 1) //37001
+#define DRAGGING_ITEM_END           (DRAGGING_ITEM_BEGIN + LISTITEM__PROPERTY_SIZE)
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -790,6 +802,49 @@ public:
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool m_performingSeek;
+  
+  /*! \brief Should be called as soon as dragging starts
+   This function is responsible of setting all the values, so they can be exposed to skiners
+   \param draggedFileItem the file item the user started to drag (can be NULL)
+   \param controlStart the control where the dragging began (can be NULL)
+   \param windowID the window (or dialog) ID of the active window when dragging started
+   \sa DraggingStop
+   \sa DragHover
+   */
+  void DraggingStart(CFileItemPtr draggedFileItem, CGUIControl* controlStart, int windowID);
+  /*! \brief Should be called as soon as dragging stops
+   Will call the draggedAway() function of the CGUIControl* given during DraggingStart
+   Will also clean up all the values set during DraggingStart
+   \sa DraggingStart
+   \sa DragHover
+   */
+  void DraggingStop();
+  /*! \brief Should be called whenever the user hovers an item during drag&drop, that has an appropriate ondrop action
+   If called with hoveredObject==NULL, it means the user currently does not hovere an control with an appropriate ondrop action
+   \param hoveredObject the control the user is currently hovering (can be NULL)
+   \sa DraggingStart
+   \sa DraggingStop()
+   */
+  void DragHover(CGUIControl* hoveredObject);
+  /*! \brief Returns the value that was given for draggedFileItem at DraggingStart.
+   Can be NULL (when NULL was given during DraggingStart, or we are currently not dragging)
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  const CFileItemPtr GetDraggedFileItem() const { return m_draggedFileItem; }
+  /*! \brief Returns the value that was given for controlStart at DraggingStart.
+   Can be NULL (when NULL was given during DraggingStart, or we are currently not dragging)
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  CGUIControl* GetDragStartControl() const { return m_dragStartControl; }
+  /*! \brief Returns the value that was given for windowID at DraggingStart.
+   \return Returns the value that was set at DraggingStart.
+   \sa DraggingStart
+   */
+  int GetDragStartWindow() const { return m_dragStartWindowID; }
+
+  CFileItemPtr GetCurrentListItem(CGUIWindow *window);
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();
@@ -938,6 +993,12 @@ protected:
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
   int m_libraryHasMovieSets;
+  
+    //Drag&Drop stuff
+  CGUIControl* m_dragStartControl;
+  int m_dragStartWindowID;
+  CFileItemPtr m_draggedFileItem;
+  CGUIControl* m_dragHoveredControl;
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;
