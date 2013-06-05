@@ -85,7 +85,7 @@
 #include <stdint.h>
 
 #ifndef PRId64
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
 #define PRId64 "I64d"
 #else
 #if __WORDSIZE == 64
@@ -97,7 +97,7 @@
 #endif
 
 #ifndef PRIu64
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
 #define PRIu64 "I64u"
 #else
 #if __WORDSIZE == 64
@@ -109,7 +109,7 @@
 #endif
 	
 #ifndef PRIx64
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
 #define PRIx64 "I64x"
 #else
 #if __WORDSIZE == 64
