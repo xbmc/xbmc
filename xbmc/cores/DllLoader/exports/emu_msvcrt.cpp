@@ -1185,7 +1185,7 @@ extern "C"
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
     if (strcmp(filename, MOUNTED) == 0
     ||  strcmp(filename, MNTTAB) == 0)
     {
