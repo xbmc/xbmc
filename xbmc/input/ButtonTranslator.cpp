@@ -224,6 +224,7 @@ static const ActionMapping actions[] =
         {"settingslevelchange", ACTION_SETTINGS_LEVEL_CHANGE},
 
         // 3D movie playback/GUI
+        {"stereomode"                , ACTION_STEREOMODE_SELECT}, // cycle 3D modes, for now an alias for next
         {"nextstereomode"            , ACTION_STEREOMODE_NEXT},
         {"previousstereomode"        , ACTION_STEREOMODE_PREVIOUS},
         {"togglestereomode"          , ACTION_STEREOMODE_TOGGLE},
