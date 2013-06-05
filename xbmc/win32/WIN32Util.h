@@ -21,9 +21,7 @@
  */
 
 #include "URL.h"
-#if _MSC_VER > 1400
 #include "Cfgmgr32.h"
-#endif
 #include "MediaSource.h"
 #include "guilib/Geometry.h"
 #include "powermanagement/PowerManager.h"
@@ -89,9 +87,7 @@ public:
   static bool IsUsbDevice(const CStdStringW &strWdrive);
 
 private:
-#if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
-#endif
 };
 
 

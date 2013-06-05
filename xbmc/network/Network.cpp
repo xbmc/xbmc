@@ -276,7 +276,7 @@ bool CNetwork::WakeOnLan(const char* mac)
 static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, struct timeval& timeOut, bool tryRead)
 {
   // set non-blocking
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
   u_long nonblocking = 1;
   int result = ioctlsocket(soc, FIONBIO, &nonblocking);
 #else
@@ -290,7 +290,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 
   if (result < 0)
   {
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
     if (WSAGetLastError() != WSAEWOULDBLOCK)
 #else
     if (errno != EINPROGRESS)
@@ -377,7 +377,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
 
   if (err_msg && *err_msg)
   {
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
     CStdString sock_err = WUSysMsg(WSAGetLastError());
 #else
     CStdString sock_err = strerror(errno);

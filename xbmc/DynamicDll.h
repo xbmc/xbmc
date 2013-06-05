@@ -218,7 +218,7 @@ public: \
 #define DEFINE_METHOD10(result, name, args) DEFINE_METHOD_LINKAGE10(result, __cdecl, name, args)
 #define DEFINE_METHOD11(result, name, args) DEFINE_METHOD_LINKAGE11(result, __cdecl, name, args)
 
-#ifdef _MSC_VER
+#ifdef TARGET_WINDOWS
 ///////////////////////////////////////////////////////////
 //
 //  DEFINE_FUNC_ALIGNED 0-X
