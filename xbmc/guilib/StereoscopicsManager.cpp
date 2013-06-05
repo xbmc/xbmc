@@ -23,16 +23,18 @@
  * @brief This class acts as container for stereoscopic related functions
  */
 
-#pragma once
-
 #include <stdlib.h>
 #include "StereoscopicsManager.h"
 
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/ISettingCallback.h"
 #include "settings/Setting.h"
 #include "settings/Settings.h"
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
+#include "windowing/WindowingFactory.h"
 
 
 CStereoscopicsManager::CStereoscopicsManager(void)
@@ -67,6 +69,10 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
     CSettings::Get().SetInt("videoscreen.stereoscopicmode", mode);
 }
 
+CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)
+{
+  return g_localizeStrings.Get(36502 + mode);
+}
 void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -78,6 +84,33 @@ void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
   {
     // turn off 3D mode if global toggle has been disabled
     if (((CSettingBool*)setting)->GetValue() == false)
+    {
       SetStereoMode(RENDER_STEREO_MODE_OFF);
+      ApplyStereoMode(RENDER_STEREO_MODE_OFF);
+    }
+    else
+    {
+      ApplyStereoMode(GetStereoMode());
+    }
+  }
+  else if (settingId == "videoscreen.stereoscopicmode")
+  {
+    RENDER_STEREO_MODE mode = GetStereoMode();
+    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode setting changed to %s", GetLabelForStereoMode(mode).c_str());
+    if(HasStereoscopicSupport())
+      ApplyStereoMode(mode);
+  }
+}
+
+void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
+{
+  RENDER_STEREO_MODE currentMode = g_graphicsContext.GetStereoMode();
+  CLog::Log(LOGDEBUG, "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: %s | Target: %s", GetLabelForStereoMode(currentMode).c_str(), GetLabelForStereoMode(mode).c_str());
+  if (currentMode != mode)
+  {
+    g_graphicsContext.SetStereoMode(mode);
+    CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to %s", GetLabelForStereoMode(mode).c_str());
+    if (notify)
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36501), GetLabelForStereoMode(mode));
   }
 }
