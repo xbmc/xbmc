@@ -600,20 +600,10 @@ void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(36502),RENDER_STEREO_MODE_OFF));
-  list.push_back(make_pair(g_localizeStrings.Get(36503),RENDER_STEREO_MODE_SPLIT_HORIZONTAL));
-  list.push_back(make_pair(g_localizeStrings.Get(36504),RENDER_STEREO_MODE_SPLIT_VERTICAL));
-  list.push_back(make_pair(g_localizeStrings.Get(36505),RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN));
-  list.push_back(make_pair(g_localizeStrings.Get(36506),RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA));
-  list.push_back(make_pair(g_localizeStrings.Get(36507),RENDER_STEREO_MODE_INTERLACED));
-  list.push_back(make_pair(g_localizeStrings.Get(36508),RENDER_STEREO_MODE_HARDWAREBASED));
-
-  // Remove any mode not supported by render system
-  for(std::vector< std::pair<std::string, int> >::iterator it = list.begin(); it != list.end();)
+  for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
-    if(!g_Windowing.SupportsStereo((RENDER_STEREO_MODE)it->second))
-      it = list.erase(it);
-    else
-      ++it;
+    RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
+    if (g_Windowing.SupportsStereo(mode))
+      list.push_back(make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(mode), mode));
   }
 }

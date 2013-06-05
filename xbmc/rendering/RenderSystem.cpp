@@ -72,6 +72,7 @@ bool CRenderSystemBase::SupportsStereo(RENDER_STEREO_MODE mode) const
     case RENDER_STEREO_MODE_OFF:
     case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+    case RENDER_STEREO_MODE_MONO:
       return true;
     default:
       return false;
