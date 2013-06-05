@@ -836,6 +836,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert("videoscreen.hasstereoscopicsupport");
+  settingSet.insert("videoscreen.stereoscopicmode");
   m_settingsManager->RegisterCallback(&CStereoscopicsManager::Get(), settingSet);
 
   settingSet.clear();

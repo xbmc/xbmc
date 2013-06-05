@@ -43,4 +43,9 @@ public:
   bool HasStereoscopicSupport(void);
   void SetStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetStereoMode(void);
+  CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
+  virtual void OnSettingChanged(const CSetting *setting);
+
+private:
+  void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
 };

@@ -146,6 +146,7 @@ public:
   void SetCameraPosition(const CPoint &camera);
   void SetStereoView(RENDER_STEREO_VIEW view);
   RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
+  void SetStereoMode(RENDER_STEREO_MODE mode) { m_nextStereoMode = mode; }
   RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
   /*! \brief Set a region in which to clip all rendering
@@ -249,6 +250,7 @@ private:
   std::stack<TransformMatrix> m_groupTransform;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
+  RENDER_STEREO_MODE m_nextStereoMode;
 
   CRect m_scissors;
 };
