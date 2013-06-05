@@ -547,6 +547,41 @@
           <default>true</default>
         </setting>
       </group>
+      <group id="5">
+        <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="">
+          <level>0</level>
+          <default>0</default>
+          <dependencies> 
+            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency> 
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="36521">0</option> <!-- ASK     -->
+              <option label="36522">1</option> <!-- Preferred mode -->
+              <option label="36523">2</option> <!-- ignore  -->
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting>
+        <setting id="videoplayer.stereoscopicviewmode" type="integer" label="36524" help="">
+          <level>0</level>
+          <default>0</default>
+          <dependencies> 
+             <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency> 
+          </dependencies>
+          <constraints>
+            <options>preferedstereoscopicviewmodes</options>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting> 
+        <setting id="videoplayer.quitstereomodeonstop" type="boolean" label="36526" help="">
+          <level>0</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
     </category>
     <category id="myvideos" label="14081" help="36176">
       <group id="1">

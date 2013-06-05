@@ -27,11 +27,13 @@
 
 #include <stdlib.h>
 #include "settings/ISettingCallback.h"
+#include "guilib/IMsgTargetCallback.h"
 #include "rendering/RenderSystem.h"
 
 class CAction;
 
-class CStereoscopicsManager : public ISettingCallback
+class CStereoscopicsManager : public ISettingCallback,
+                              public IMsgTargetCallback
 {
 public:
   CStereoscopicsManager(void);
@@ -47,9 +49,14 @@ public:
   RENDER_STEREO_MODE GetStereoMode(void);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   std::string DetectStereoModeByString(const std::string &needle);
+  RENDER_STEREO_MODE ConvertVideoToGuiStereoMode(const std::string &mode);
+  RENDER_STEREO_MODE GetStereoModeByUserChoice(const CStdString& heading = "");
+  RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void);
   CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
+  RENDER_STEREO_MODE GetPreferredPlaybackMode(void);
 
   virtual void OnSettingChanged(const CSetting *setting);
+  virtual bool OnMessage(CGUIMessage &message);
   /*!
    * @brief Handle 3D specific cActions
    * @param action The action to process
@@ -59,6 +66,8 @@ public:
 
 private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
+  void OnPlaybackStarted(void);
+  void OnPlaybackStopped(void);
 
   RENDER_STEREO_MODE m_lastStereoMode;
 };
