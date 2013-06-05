@@ -391,7 +391,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "channelnumber",    VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
-                                  { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
+                                  { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
+                                  { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
+                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
+};
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
@@ -1539,6 +1542,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       strLabel.Format("%i", m_audioInfo.channels);
     }
     break;
+  case VIDEOPLAYER_STEREOSCOPIC_MODE:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    {
+      UpdateAVInfo();
+      strLabel = m_videoInfo.stereoMode;
+    }
+    break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
   case PLAYLIST_RANDOM:
@@ -2490,6 +2500,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
       }
     break;
+    case VIDEOPLAYER_IS_STEREOSCOPIC:
+      if(g_application.IsPlaying() && g_application.m_pPlayer)
+      {
+        UpdateAVInfo();
+        bReturn = !m_videoInfo.stereoMode.empty();
+      }
+      break;
     default: // default, use integer value different from 0 as true
       {
         int val;

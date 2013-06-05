@@ -3802,6 +3802,10 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   info.videoCodecName = retVal;
   info.videoAspectRatio = m_dvdPlayerVideo.GetAspectRatio();
   m_dvdPlayerVideo.GetVideoRect(info.SrcRect, info.DestRect);
+  if (m_CurrentVideo.hint.stereo_mode == "mono")
+    info.stereoMode = "";
+  else
+    info.stereoMode = m_CurrentVideo.hint.stereo_mode;
 }
 
 int CDVDPlayer::GetSourceBitrate()
