@@ -228,6 +228,7 @@ static const ActionMapping actions[] =
         {"nextstereomode"            , ACTION_STEREOMODE_NEXT},
         {"previousstereomode"        , ACTION_STEREOMODE_PREVIOUS},
         {"togglestereomode"          , ACTION_STEREOMODE_TOGGLE},
+        {"stereomodetomono"          , ACTION_STEREOMODE_TOMONO},
 
         // PVR actions
         {"channelup"             , ACTION_CHANNEL_UP},
