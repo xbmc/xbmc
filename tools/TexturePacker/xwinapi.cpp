@@ -26,7 +26,7 @@
 #include <string.h>
 #include <errno.h>
 #include "xwinapi.h"
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN
 #include "OSXGNUReplacements.h"
 #endif
 

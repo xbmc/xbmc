@@ -1,4 +1,4 @@
-DEFINES += -D_LINUX -DUSE_LZO_PACKING
+DEFINES += -DTARGET_POSIX -DUSE_LZO_PACKING
 ifneq ($(or $(findstring powerpc,@ARCH@),$(findstring ppc, @ARCH@)),)
 DEFINES += -DHOST_BIGENDIAN
 endif

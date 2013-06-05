@@ -22,7 +22,7 @@
  *
  */
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #include "xwinapi.h"
 typedef LPSTR PSZ;
@@ -47,7 +47,7 @@ public:
             strcpy (m_cmdline, cmdline);
             ParseCmdLine(); 
         } else {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
           delete[] cmdline;
 #endif
         }
@@ -56,7 +56,7 @@ public:
     CmdLineArgs (const int argc, const char **argv)
     {
       std::string cmdline;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
       cmdline = "\"";
 #endif
       for (int i = 0 ; i<argc ; i++)
@@ -64,14 +64,14 @@ public:
         cmdline += std::string(argv[i]);
         if ( i != (argc-1) )
         {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
           cmdline += "\" \"";
 #else
           cmdline += " ";
 #endif
         }
       }
-#ifdef _LINUX
+#ifdef TARGET_POSIX
       cmdline += "\"";
 #endif
       m_cmdline = new char [cmdline.length() + 1];

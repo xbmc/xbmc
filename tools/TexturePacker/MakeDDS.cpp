@@ -25,7 +25,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "cmdlineargs.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #define strncasecmp strnicmp
 #endif
 #include "DDSImage.h"

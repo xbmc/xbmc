@@ -24,9 +24,9 @@
 #include <inttypes.h>
 #include "guilib/XBTF.h"
 #include "utils/EndianSwap.h"
-#if defined(__FreeBSD__)
+#if defined(TARGET_FREEBSD)
 #include <stdlib.h>
-#elif !defined(__APPLE__)
+#elif !defined(TARGET_DARWIN)
 #include <malloc.h>
 #endif
 #include <memory.h>

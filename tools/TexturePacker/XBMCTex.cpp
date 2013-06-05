@@ -19,7 +19,7 @@
  *
  */
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <sys/types.h>
 #include <sys/stat.h>
 #define __STDC_FORMAT_MACROS
@@ -42,12 +42,12 @@
 #include "cmdlineargs.h"
 #include "libsquish/squish.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #define strncasecmp strnicmp
 #endif
 
 #ifdef USE_LZO_PACKING
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "../../lib/win32/liblzo/LZO1X.H"
 #else
 #include <lzo/lzo1x.h>
@@ -576,7 +576,7 @@ int main(int argc, char* argv[])
     {
       OutputFilename = args[++i];
       valid = true;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
       char *c = NULL;
       while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
 #endif
