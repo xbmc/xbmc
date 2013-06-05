@@ -48,6 +48,7 @@
 #include "utils/log.h"
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
+#include "utils/CharsetConverter.h"
 #include "PartyModeManager.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/DisplaySettings.h"
@@ -153,6 +154,7 @@ const BUILT_IN commands[] = {
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
+  { "Paste",                      false,  "Paste text into the active window" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
@@ -1512,6 +1514,25 @@ int CBuiltins::Execute(const CStdString& execString)
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindow());
       g_windowManager.SendMessage(message);
     }
+  }
+  else if (execute.Equals("paste"))
+  {
+#ifdef WIN32
+    if(OpenClipboard(NULL))
+    {
+      HANDLE htext = GetClipboardData(CF_TEXT);
+      CStdString stext = (char*)htext;
+      g_charsetConverter.unknownToUTF8(stext);
+      if(!stext.empty())
+      {
+        CLog::Log(LOGDEBUG, "Pasting text: %s", stext.c_str());
+        CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
+        msg.SetLabel(stext);
+        g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
+      }
+      CloseClipboard();
+    }
+#endif
   }
   else if (execute.Equals("action") && params.size())
   {
