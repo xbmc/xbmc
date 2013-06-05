@@ -14173,6 +14173,11 @@ msgctxt "#36508"
 msgid "Hardware Based"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#36509"
+msgid "Mono (2D)"
+msgstr ""
+
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
