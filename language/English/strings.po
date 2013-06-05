@@ -14178,6 +14178,68 @@ msgctxt "#36509"
 msgid "Mono (2D)"
 msgstr ""
 
+#reserved strings for 3d modes 36509 - 36520
+
+#: system/settings/settings.xml
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic movies"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36521"
+msgid "Ask me"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36523"
+msgid "don't do anything"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36524"
+msgid "Preferred stereoscopic mode"
+msgstr ""
+
+#: settings/DisplaySettings.cpp
+msgctxt "#36525"
+msgid "Sames as movie (autodetect)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback stopped"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36527"
+msgid "This movie is stereoscopic. Select playback mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr ""
+
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
