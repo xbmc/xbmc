@@ -315,6 +315,13 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
     }
     return true;
   }
+  else if (action.GetID() == ACTION_STEREOMODE_SELECT)
+  {
+    RENDER_STEREO_MODE selectedMode = GetStereoModeByUserChoice();
+    if (selectedMode > -1 && selectedMode != mode)
+      SetStereoMode(selectedMode);
+    return true;
+  }
 
   return false;
 }
