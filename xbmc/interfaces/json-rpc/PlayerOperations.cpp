@@ -43,6 +43,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "cores/IPlayer.h"
+#include "settings/MediaSettings.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -1438,7 +1439,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         if (g_application.m_pPlayer)
         {
           result = CVariant(CVariant::VariantTypeObject);
-          int index = g_application.m_pPlayer->GetSubtitle();
+          int index = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
           if (index >= 0)
           {
             SPlayerSubtitleStreamInfo info;
