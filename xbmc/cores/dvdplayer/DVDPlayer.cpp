@@ -86,6 +86,7 @@
 #include "Util.h"
 #include "LangInfo.h"
 #include "URL.h"
+#include "utils/LangCodeExpander.h"
 
 using namespace std;
 using namespace PVR;
@@ -145,8 +146,8 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.audiolanguage"), "original"))
   {
     CStdString audio_language = g_langInfo.GetAudioLanguage();
-    PREDICATE_RETURN(audio_language.Equals(lh.language.c_str())
-                   , audio_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
+                   , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
@@ -174,8 +175,8 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
   CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
   {
-    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(lh.language.c_str())
-                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
@@ -186,8 +187,8 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
 
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
   {
-    PREDICATE_RETURN(subtitle_language.Equals(lh.language.c_str())
-                   , subtitle_language.Equals(rh.language.c_str()));
+    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                   , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
   }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
