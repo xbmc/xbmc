@@ -92,12 +92,12 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 
 // these need to be put somewhere that are compiled, we should have some better place for it
 
-static CCriticalSection m_logSection;
+static CCriticalSection m_ffSection;
 std::map<uintptr_t, CStdString> g_logbuffer;
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  CSingleLock lock(m_logSection);
+  CSingleLock lock(m_ffSection);
   uintptr_t threadId = (uintptr_t)CThread::GetCurrentThreadId();
   CStdString &buffer = g_logbuffer[threadId];
 
@@ -146,6 +146,7 @@ static void ff_flush_avutil_log_buffers(void)
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
      add a new buffer next time it writes to the log */
+  CSingleLock lock(m_ffSection);
   std::map<uintptr_t, CStdString>::iterator it;
   for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
     if ((*it).second.IsEmpty())
@@ -165,32 +166,37 @@ static int interrupt_cb(void* ctx)
 /* callback for the ffmpeg lock manager */
 int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation)
 {
-  CSharedSection **lock = (CSharedSection **)mutex;
+  CSingleLock **lock = (CSingleLock **)mutex;
 
   switch (operation) 
   {
   case AV_LOCK_CREATE:
+    *lock = NULL;
+    break;
+
+  case AV_LOCK_OBTAIN:
     {
-      *lock = NULL;
-      *lock = new CSharedSection();
-      if (*lock == NULL)
-        return 1;
+      if(*lock == NULL)
+      {
+        *lock = new CSingleLock(m_ffSection);
+        if (*lock == NULL)
+          return 1;
+      }
+      else
+        (*lock)->lock();
+
       break;
     }
-  case AV_LOCK_OBTAIN:
-    (*lock)->lock();
-    break;
-
   case AV_LOCK_RELEASE:
-    (*lock)->unlock();
-    break;
-
   case AV_LOCK_DESTROY:
+    if(*lock != NULL)
     {
+      (*lock)->unlock();
       delete *lock;
       *lock = NULL;
-      break;
     }
+    break;
+
   default:
     return 1;
   }
