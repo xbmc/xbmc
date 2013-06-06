@@ -86,6 +86,8 @@ public:
 
   static bool IsUsbDevice(const CStdStringW &strWdrive);
 
+  static CStdString CWIN32Util::GetClipboardString();
+
 private:
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 };
