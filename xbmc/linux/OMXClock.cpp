@@ -323,7 +323,6 @@ bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
 
   return true;
 }
->>>>>>> 23cb1e2... [rbp/omxplayer] Add calls for stepping and retreiving the clock adjustment
 
 bool OMXClock::OMXReset(bool lock /* = true */)
 {
