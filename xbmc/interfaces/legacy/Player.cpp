@@ -30,6 +30,7 @@
 #include "AddonUtils.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
+#include "settings/MediaSettings.h"
 
 namespace XBMCAddon
 {
@@ -396,7 +397,7 @@ namespace XBMCAddon
       if (g_application.m_pPlayer)
       {
         SPlayerSubtitleStreamInfo info;
-        g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
+        g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
 
         if (info.language.length() > 0)
           return info.language;
