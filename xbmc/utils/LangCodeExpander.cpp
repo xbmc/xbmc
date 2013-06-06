@@ -441,6 +441,22 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format 
   return languages;
 }
 
+bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdString& code2)
+{
+  if (code1.Equals(code2))
+    return true;
+
+  CStdString expandedLang1, expandedLang2;
+
+  if (!Lookup(expandedLang1, code1))
+    return false;
+
+  if (!Lookup(expandedLang2, code2))
+    return false;
+
+  return expandedLang1.Equals(expandedLang2);
+}
+
 extern const LCENTRY g_iso639_1[144] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },

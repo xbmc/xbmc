@@ -41,6 +41,14 @@ public:
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
 
+  /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
+  *   \param[in] code1 The first language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
+  *   \param[in] code2 The second language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
+  *   \return true if the two language codes represent the same language, false otherwise.
+  *   For example "ger", "deu" and "de" represent the same language.
+  */ 
+  bool CompareLangCodes(const CStdString& code1, const CStdString& code2);
+
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
   *          or full english name string to a 2-Char (ISO 639-1) code.  
