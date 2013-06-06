@@ -83,12 +83,14 @@ public:
   bool OMXIsPaused() { return m_pause; };
   bool OMXStop(bool lock = true);
   bool OMXStart(bool lock = true);
+  bool OMXStep(int steps = 1, bool lock = true);
   bool OMXReset(bool lock = true);
   double OMXMediaTime(bool fixPreroll = true, bool lock = true);
+  double OMXClockAdjustment(bool lock = true);
   bool OMXMediaTime(double pts, bool fixPreroll = true, bool lock = true);
   bool OMXPause(bool lock = true);
   bool OMXResume(bool lock = true);
-  bool OMXSetSpeed(int speed, bool lock = true);
+  bool OMXSetSpeed(int speed, bool lock = true, bool pause_resume = false);
   int  OMXPlaySpeed() { return m_omx_speed; };
   COMXCoreComponent *GetOMXClock();
   bool OMXStateExecute(bool lock = true);

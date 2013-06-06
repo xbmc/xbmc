@@ -428,9 +428,6 @@ void COMXCoreComponent::TransitionToStateLoaded()
   if(!m_handle)
     return;
 
-  if(GetState() == OMX_StateExecuting)
-    SetStateForComponent(OMX_StatePause);
-
   if(GetState() != OMX_StateIdle)
     SetStateForComponent(OMX_StateIdle);
 

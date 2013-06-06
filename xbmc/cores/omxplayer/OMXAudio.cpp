@@ -570,15 +570,7 @@ bool COMXAudio::Deinitialize()
 
   m_omx_tunnel_clock.Deestablish();
   if(!m_Passthrough)
-  {
-    // workaround for the strange BCM mixer component
-    if(m_omx_mixer.GetState() == OMX_StateExecuting)
-      m_omx_mixer.SetStateForComponent(OMX_StatePause);
-    if(m_omx_mixer.GetState() != OMX_StateIdle)
-      m_omx_mixer.SetStateForComponent(OMX_StateIdle);
-    m_omx_mixer.DisableAllPorts();
-    m_omx_tunnel_mixer.Deestablish(true);
-  }
+    m_omx_tunnel_mixer.Deestablish();
   m_omx_tunnel_decoder.Deestablish();
 
   m_omx_decoder.FlushInput();
