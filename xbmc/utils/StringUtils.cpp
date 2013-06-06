@@ -520,6 +520,48 @@ bool StringUtils::IsInteger(const CStdString& str)
   return i == str.size() && n > 0;
 }
 
+bool StringUtils::IsDigits(const std::string& str)
+{
+  if (str.empty())
+    return false;
+
+  for(std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+  {
+    if (!isdigit((unsigned char)*it))
+      return false;
+  }
+
+  return true;
+}
+
+bool StringUtils::IsAlphas(const std::string& str)
+{
+  if (str.empty())
+    return false;
+
+  for(std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+  {
+    if (!isalpha((unsigned char)*it))
+      return false;
+  }
+
+  return true;
+}
+
+bool StringUtils::IsAlphanums(const std::string& str)
+{
+  if (str.empty())
+    return false;
+
+  for(std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+  {
+    if (!isalnum((unsigned char)*it))
+      return false;
+  }
+
+  return true;
+}
+
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
