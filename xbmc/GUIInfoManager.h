@@ -172,6 +172,7 @@ namespace INFO
 #define SYSTEM_HAS_SHUTDOWN         185
 #define SYSTEM_HAS_PVR              186
 #define SYSTEM_STARTUP_WINDOW       187
+#define SYSTEM_STEREOSCOPIC_MODE    188
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
