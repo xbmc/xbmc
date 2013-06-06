@@ -118,14 +118,15 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
   DNSServiceErrorType err;
   CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap; 
   CStdString strIP;
-  CZeroconfBrowser::ZeroconfService* service = (CZeroconfBrowser::ZeroconfService*) context;
+  CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
 
   if(!CDNSNameCache::Lookup(hosttarget, strIP))
   {
     CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: Could not resolve hostname %s",hosttarget);
+    p_instance->m_resolved_event.Set();
     return;
   }
-  service->SetIP(strIP);
+  p_instance->m_resolving_service.SetIP(strIP);
 
   for(uint16_t i = 0; i < TXTRecordGetCount(txtLen, txtRecord); ++i)
   {
@@ -142,8 +143,9 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
 
     recordMap.insert(std::make_pair(key, strvalue));
   }
-  service->SetTxtRecords(recordMap);
-  service->SetPort(ntohs(port));
+  p_instance->m_resolving_service.SetTxtRecords(recordMap);
+  p_instance->m_resolving_service.SetPort(ntohs(port));
+  p_instance->m_resolved_event.Set();
 }
 
 /// adds the service to list of found services
@@ -291,8 +293,12 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
 {
   DNSServiceErrorType err;
   DNSServiceRef sdRef = NULL;
+  
+  //start resolving
+  m_resolving_service = fr_service;
+  m_resolved_event.Reset();
 
-  err = DNSServiceResolve(&sdRef, 0, kDNSServiceInterfaceIndexAny, fr_service.GetName(), fr_service.GetType(), fr_service.GetDomain(), ResolveCallback, &fr_service);
+  err = DNSServiceResolve(&sdRef, 0, kDNSServiceInterfaceIndexAny, fr_service.GetName(), fr_service.GetType(), fr_service.GetDomain(), ResolveCallback, this);
 
   if( err != kDNSServiceErr_NoError )
   {
@@ -311,7 +317,14 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   if (sdRef)
     DNSServiceRefDeallocate(sdRef);
 
-  return true;
+#if defined(HAS_MDNS_EMBEDDED)
+  // when using the embedded mdns service the call to DNSServiceProcessResult
+  // above will not block until the resolving was finished - instead we have to
+  // wait for resolve to return or timeout  
+  m_resolved_event.WaitMSec(f_timeout * 1000);
+#endif //HAS_MDNS_EMBEDDED
+  fr_service = m_resolving_service;
+  return (!fr_service.GetIP().empty());
 }
 
 void CZeroconfBrowserMDNS::ProcessResults()

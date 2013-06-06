@@ -83,4 +83,6 @@ private:
   typedef std::map<DNSServiceRef, std::vector<std::pair<ZeroconfService, unsigned int> > > tDiscoveredServicesMap;
   tDiscoveredServicesMap m_discovered_services;
   DNSServiceRef m_browser;
+  CZeroconfBrowser::ZeroconfService m_resolving_service;
+  CEvent m_resolved_event;
 };
