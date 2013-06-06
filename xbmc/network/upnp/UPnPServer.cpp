@@ -299,7 +299,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
             }
         } else if (file_path.StartsWith("library://") || file_path.StartsWith("videodb://")) {
-            if (path == "library://video" ) {
+            if (path == "library://video/" ) {
                 item->SetLabel("Video Library");
                 item->SetLabelPreformated(true);
             } else {
@@ -455,7 +455,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "library://video";
+        id = "library://video/";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
@@ -613,7 +613,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             items.Add(item);
 
             // video library
-            item.reset(new CFileItem("library://video", true));
+            item.reset(new CFileItem("library://video/", true));
             item->SetLabel("Video Library");
             item->SetLabelPreformated(true);
             items.Add(item);
@@ -692,7 +692,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_Reference<CThumbLoader> thumb_loader;
 
     if (URIUtils::IsVideoDb(items.GetPath()) ||
-        StringUtils::StartsWith(items.GetPath(), "library://video") ||
+        StringUtils::StartsWith(items.GetPath(), "library://video/") ||
         StringUtils::StartsWith(items.GetPath(), "special://profile/playlists/video/")) {
 
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
