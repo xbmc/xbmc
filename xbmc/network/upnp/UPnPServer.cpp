@@ -526,10 +526,28 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
         // determine if it's a container by calling CDirectory::Exists
         item.reset(new CFileItem((const char*)id, CDirectory::Exists((const char*)id)));
 
-        // determine parent id for shared paths only
-        // otherwise let db find out
+        // attempt to determine the parent of this item
         CStdString parent;
-        if (!URIUtils::GetParentPath((const char*)id, parent)) parent = "0";
+        if (URIUtils::IsVideoDb((const char*)id) || URIUtils::IsMusicDb((const char*)id) || StringUtils::StartsWith((const char*)id, "library://video/")) {
+            if (!URIUtils::GetParentPath((const char*)id, parent)) {
+                parent = "0";
+            }
+        }
+        else {
+            // non-library objects - playlists / sources
+            //
+            // we could instead store the parents in a hash during every browse
+            // or could handle this in URIUtils::GetParentPath() possibly,
+            // however this is quicker to implement and subsequently purge when a
+            // better solution presents itself
+            CStdString child_id((const char*)id);
+            if      (StringUtils::StartsWith(child_id, "special://musicplaylists/"))          parent = "musicdb://";
+            else if (StringUtils::StartsWith(child_id, "special://videoplaylists/"))          parent = "library://video/";
+            else if (StringUtils::StartsWith(child_id, "sources://video/"))                   parent = "library://video/";
+            else if (StringUtils::StartsWith(child_id, "special://profile/playlists/music/")) parent = "special://musicplaylists/";
+            else if (StringUtils::StartsWith(child_id, "special://profile/playlists/video/")) parent = "special://videoplaylists/";
+            else parent = "sources://video/"; // this can only match video sources
+        }
 
         if (item->IsVideoDb()) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
