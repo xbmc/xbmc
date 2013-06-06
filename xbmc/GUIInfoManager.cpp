@@ -279,7 +279,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "isinhibit",        SYSTEM_ISINHIBIT },
                                   { "hasshutdown",      SYSTEM_HAS_SHUTDOWN },
                                   { "haspvr",           SYSTEM_HAS_PVR },
-                                  { "startupwindow",    SYSTEM_STARTUP_WINDOW }};
+                                  { "startupwindow",    SYSTEM_STARTUP_WINDOW },
+                                  { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE } };
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
@@ -1792,6 +1793,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         strLabel.Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
       else
         strLabel = friendlyName;
+    }
+    break;
+  case SYSTEM_STEREOSCOPIC_MODE:
+    {
+      int stereoMode = CSettings::Get().GetInt("videoscreen.stereoscopicmode");
+      strLabel.Format("%i", stereoMode);
     }
     break;
 
