@@ -138,7 +138,7 @@
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
 				<onleft>204</onleft>
-				<onright>250</onright>
+				<onright>255</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(Next)</onclick>
@@ -280,7 +280,7 @@
 				<texturefocus>OSDepgFO.png</texturefocus>
 				<texturenofocus>OSDepgNF.png</texturenofocus>
 				<onleft>306</onleft>
-				<onright>350</onright>
+				<onright>354</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
@@ -290,13 +290,28 @@
 
 		<!-- !LiveTV -->
 		<control type="group">
-			<posx>300r</posx>
+			<posx>355r</posx>
 			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
-			<control type="button" id="250">
+			<control type="button" id="255">
+				<visible>System.GetBool(videoscreen.hasstereoscopicsupport)</visible>
 				<posx>0</posx>
+				<posy>0</posy>
+				<width>55</width>
+				<height>55</height>
+				<label>36501</label>
+				<font>-</font>
+				<texturefocus>OSDStereoscopicFO.png</texturefocus>
+				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
+				<onleft>205</onleft>
+				<onright>250</onright>
+				<onup>501</onup>
+				<ondown>1000</ondown>
+			</control>
+			<control type="button" id="250">
+				<posx>55</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -304,13 +319,13 @@
 				<font>-</font>
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
-				<onleft>205</onleft>
+				<onleft>255</onleft>
 				<onright>251</onright>
 				<onup>404</onup>
 				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="251">
-				<posx>55</posx>
+				<posx>110</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -325,7 +340,7 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="252">
-				<posx>110</posx>
+				<posx>165</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -340,7 +355,7 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="button" id="253">
-				<posx>165</posx>
+				<posx>220</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -355,7 +370,7 @@
 				<onclick>ActivateWindow(VideoBookmarks)</onclick>
 			</control>
 			<control type="button" id="254">
-				<posx>220</posx>
+				<posx>275</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -380,8 +395,23 @@
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
-			<control type="button" id="350">
+			<control type="button" id="354">
+				<visible>System.GetBool(videoscreen.hasstereoscopicsupport)</visible>
 				<posx>0</posx>
+				<posy>0</posy>
+				<width>55</width>
+				<height>55</height>
+				<label>36501</label>
+				<font>-</font>
+				<texturefocus>OSDStereoscopicFO.png</texturefocus>
+				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
+				<onleft>307</onleft>
+				<onright>350</onright>
+				<onup>551</onup>
+				<ondown>1000</ondown>
+			</control>
+			<control type="button" id="350">
+				<posx>55</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -389,14 +419,14 @@
 				<font>-</font>
 				<texturefocus>OSDTeleTextFO.png</texturefocus>
 				<texturenofocus>OSDTeleTextNF.png</texturenofocus>
-				<onleft>307</onleft>
+				<onleft>354</onleft>
 				<onright>351</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>ActivateWindow(Teletext)</onclick>
 			</control>
 			<control type="button" id="351">
-				<posx>55</posx>
+				<posx>110</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -411,7 +441,7 @@
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="button" id="352">
-				<posx>110</posx>
+				<posx>165</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -426,7 +456,7 @@
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="togglebutton" id="353">
-				<posx>165</posx>
+				<posx>220</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
@@ -568,5 +598,207 @@
 				<texture border="20,0,20,50">SubMenuBack-Footer.png</texture>
 			</control>
 		</control>
+		<!-- STEREOSCOPIC 3D !LiveTV -->
+		<control type="button" id="520">
+			<description>Fake button for mouse control</description>
+			<posx>455r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<label>-</label>
+			<font>-</font>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<visible>Control.HasFocus(520) | Control.HasFocus(255) | ControlGroup(500).HasFocus</visible>
+		</control>
+		<control type="grouplist" id="500">
+			<visible>System.GetBool(videoscreen.hasstereoscopicsupport) + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<posx>455r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<align>bottom</align>
+			<itemgap>0</itemgap>
+			<onleft>500</onleft>
+			<onright>500</onright>
+			<onup>255</onup>
+			<ondown>255</ondown>
+			<orientation>vertical</orientation>
+			<visible>Control.HasFocus(255) | ControlGroup(500).HasFocus | Control.HasFocus(520)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="group">
+				<description>Header</description>
+				<width>256</width>
+				<height>40</height>
+				<control type="image">
+					<description>Header</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>256</width>
+					<height>40</height>
+					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
+				</control>
+				<control type="label" id="">
+					<posx>30</posx>
+					<posy>20</posy>
+					<width>196</width>
+					<height>15</height>
+					<font>font12</font>
+					<label>36501</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="radiobutton" id="503">
+				<height>40</height>
+				<width>256</width>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>31362</label>
+				<radioposx>200</radioposx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<onclick>ToggleStereoMode</onclick>
+				<selected>IntegerGreaterThan(System.StereoscopicMode,0)</selected>
+				<pulseonselect>false</pulseonselect>
+			</control>
+			<control type="button" id="502">
+				<height>40</height>
+				<width>256</width>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>30</textoffsetx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>31361</label>
+				<onclick>StereoMode</onclick>
+			</control>
+			<control type="radiobutton" id="501">
+				<height>40</height>
+				<width>256</width>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>31360</label>
+				<radioposx>200</radioposx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<onclick>StereoModeToMono</onclick>
+				<selected>StringCompare(System.StereoscopicMode,7)</selected>
+				<pulseonselect>false</pulseonselect>
+				<visible>VideoPlayer.IsStereoscopic</visible>
+			</control>
+			<control type="image" id="549">
+				<description>Footer</description>
+				<width>256</width>
+				<height>52</height>
+				<texture border="20,0,20,50">SubMenuBack-Footer.png</texture>
+			</control>
+		</control>
+		<!-- STEREOSCOPIC 3D LiveTV -->
+		<control type="button" id="570">
+			<description>Fake button for mouse control</description>
+			<posx>340r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<label>-</label>
+			<font>-</font>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<visible>Control.HasFocus(570) | Control.HasFocus(354) | ControlGroup(550).HasFocus</visible>
+		</control>
+		<control type="grouplist" id="550">
+			<visible>System.GetBool(videoscreen.hasstereoscopicsupport) + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<posx>340r</posx>
+			<posy>350r</posy>
+			<width>256</width>
+			<height>300</height>
+			<align>bottom</align>
+			<itemgap>0</itemgap>
+			<onleft>550</onleft>
+			<onright>550</onright>
+			<onup>354</onup>
+			<ondown>354</ondown>
+			<orientation>vertical</orientation>
+			<visible>Control.HasFocus(354) | ControlGroup(550).HasFocus | Control.HasFocus(570)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="group">
+				<description>Header</description>
+				<width>256</width>
+				<height>40</height>
+				<control type="image">
+					<description>Header</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>256</width>
+					<height>40</height>
+					<texture border="20,18,20,0">SubMenuBack-Header.png</texture>
+				</control>
+				<control type="label" id="">
+					<posx>30</posx>
+					<posy>20</posy>
+					<width>196</width>
+					<height>15</height>
+					<font>font12</font>
+					<label>36501</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="radiobutton" id="553">
+				<height>40</height>
+				<width>256</width>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>31362</label>
+				<radioposx>200</radioposx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<onclick>ToggleStereoMode</onclick>
+				<selected>IntegerGreaterThan(System.StereoscopicMode,0)</selected>
+				<pulseonselect>false</pulseonselect>
+			</control>
+			<control type="button" id="552">
+				<height>40</height>
+				<width>256</width>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>30</textoffsetx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>31361</label>
+				<onclick>StereoMode</onclick>
+			</control>
+			<control type="radiobutton" id="551">
+				<height>40</height>
+				<width>256</width>
+				<textoffsetx>30</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>31360</label>
+				<radioposx>200</radioposx>
+				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
+				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
+				<onclick>StereoModeToMono</onclick>
+				<selected>StringCompare(System.StereoscopicMode,7)</selected>
+				<pulseonselect>false</pulseonselect>
+				<visible>VideoPlayer.IsStereoscopic</visible>
+			</control>
+			<control type="image" id="599">
+				<description>Footer</description>
+				<width>256</width>
+				<height>52</height>
+				<texture border="20,0,20,50">SubMenuBack-Footer.png</texture>
+			</control>
+		</control>
 	</controls>
- </window>
+</window>
