@@ -118,6 +118,7 @@ public:
   void CloseDecoder();
   double GetDelay();
   double GetCacheTime();
+  double GetCacheTotal();
   double GetCurrentPts() { return m_audioClock; };
   void WaitCompletion();
   void SubmitEOS();

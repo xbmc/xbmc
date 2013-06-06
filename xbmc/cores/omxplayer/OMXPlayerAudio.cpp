@@ -815,6 +815,11 @@ double OMXPlayerAudio::GetCacheTime()
   return m_omxAudio.GetCacheTime();
 }
 
+double OMXPlayerAudio::GetCacheTotal()
+{
+  return m_omxAudio.GetCacheTotal();
+}
+
 void OMXPlayerAudio::SubmitEOS()
 {
   if(!m_bad_state)
