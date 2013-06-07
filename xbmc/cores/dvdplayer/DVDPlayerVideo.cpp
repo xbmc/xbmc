@@ -429,7 +429,10 @@ void CDVDPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       if(m_pVideoCodec)
+      {
         m_pVideoCodec->Reset();
+        memset(&picture, 0, sizeof(DVDVideoPicture));
+      }
       picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
       m_started = false;
@@ -437,7 +440,10 @@ void CDVDPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
       if(m_pVideoCodec)
+      {
         m_pVideoCodec->Reset();
+        memset(&picture, 0, sizeof(DVDVideoPicture));
+      }
       picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
 
@@ -591,6 +597,7 @@ void CDVDPlayerVideo::Process()
           }
 
           m_pVideoCodec->Reset();
+          memset(&picture, 0, sizeof(DVDVideoPicture));
           m_packets.clear();
           picture.iFlags &= ~DVP_FLAG_ALLOCATED;
           g_renderManager.DiscardBuffer();
@@ -721,6 +728,7 @@ void CDVDPlayerVideo::Process()
           {
             CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
             m_pVideoCodec->Reset();
+            memset(&picture, 0, sizeof(DVDVideoPicture));
           }
         }
 
