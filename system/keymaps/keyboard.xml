@@ -92,6 +92,7 @@
       <numpadseven>Number7</numpadseven>
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
+      <v mod="ctrl">Paste</v>
       <backslash>ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>

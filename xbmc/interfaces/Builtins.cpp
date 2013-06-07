@@ -152,6 +152,7 @@ const BUILT_IN commands[] = {
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
+  { "Paste",                      false,  "Paste text from the clipboard" },
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
@@ -1511,6 +1512,24 @@ int CBuiltins::Execute(const CStdString& execString)
     { // single param - assume you meant the active window
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindow());
       g_windowManager.SendMessage(message);
+    }
+  }
+  else if (execute.Equals("paste"))
+  {
+    CStdString strtext;
+
+    if (params.size())
+      strtext = params[0];
+    else
+#ifdef TARGET_WINDOWS
+      strtext = CWIN32Util::GetClipboardString();
+#endif
+
+    if (!strtext.empty())
+    {
+      CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
+      msg.SetLabel(strtext);
+      g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
     }
   }
   else if (execute.Equals("action") && params.size())

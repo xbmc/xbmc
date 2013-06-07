@@ -2233,18 +2233,24 @@ bool CApplication::OnKey(const CKey& key)
     // just use corresponding section from keymap.xml
     // to map key->action
 
-    // first determine if we should use keyboard input directly
-    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+    // If we are in a dialog and this isn't a ctrl/alt/win key we need to
+    // use the keyboard input directly i.e. not through the keymap.
+    bool useKeyboard = false;
+    if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC))
+      if (!(key.GetModifiers() & ~CKey::MODIFIER_SHIFT))
+        useKeyboard = true;
+
     CGUIWindow *window = g_windowManager.GetWindow(iWin);
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
       if (control)
       {
-        // If this is an edit control set usekeyboard to true. This causes the
-        // keypress to be processed directly not through the key mappings.
+        // If this is an edit control and this isn't a ctrl/alt/win key we need to
+        // use the keyboard input directly i.e. not through the keymap.
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-          useKeyboard = true;
+          if (!(key.GetModifiers() & ~CKey::MODIFIER_SHIFT))
+            useKeyboard = true;
 
         // If the key pressed is shift-A to shift-Z set usekeyboard to true.
         // This causes the keypress to be used for list navigation.

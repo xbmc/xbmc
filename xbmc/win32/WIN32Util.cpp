@@ -1589,3 +1589,22 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 
   return BusTypeUsb == busType;
  }
+
+// Get the contents of the Windows clipboard.
+// Return an empty string if there is no text in the clipboard.
+
+CStdString CWIN32Util::GetClipboardString()
+{
+  CStdString strtext;
+  strtext.clear();
+
+  if (OpenClipboard(NULL))
+  {
+    HANDLE htext = GetClipboardData(CF_UNICODETEXT);
+    CStdStringW strwtext = (WCHAR*) htext;
+    g_charsetConverter.wToUTF8(strwtext, strtext);
+    CloseClipboard();
+  }
+
+  return strtext;
+}
