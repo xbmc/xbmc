@@ -236,7 +236,7 @@ namespace XBMCAddon
       return value;
     }
 
-    void Dialog::notification(const String& heading, const String& message, const String& icon, int time)
+    void Dialog::notification(const String& heading, const String& message, const String& icon, int time, bool sound)
     {
       DelayedCallGuard dcguard(languageHook);
 
@@ -249,13 +249,13 @@ namespace XBMCAddon
         strIcon = icon;
       
       if (strIcon.Equals(getNOTIFICATION_INFO()))
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime, sound);
       else if (strIcon.Equals(getNOTIFICATION_WARNING()))
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime, sound);
       else if (strIcon.Equals(getNOTIFICATION_ERROR()))
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime, sound);
       else
-        CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime);
+        CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
     }
     
     DialogProgress::~DialogProgress() { TRACE; deallocating(); }
