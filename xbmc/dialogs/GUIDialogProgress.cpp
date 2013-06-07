@@ -62,6 +62,10 @@ void CGUIDialogProgress::StartModal()
 {
   CSingleLock lock(g_graphicsContext);
 
+  // Don't show if we are already active
+  if (m_active)
+    return;
+
   CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_active ? "(already running)!" : "");
   m_bCanceled = false;
 
