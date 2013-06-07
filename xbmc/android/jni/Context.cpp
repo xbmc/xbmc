@@ -28,23 +28,46 @@
 #include "JNIThreading.h"
 #include "ApplicationInfo.h"
 #include "File.h"
+#include "ContentResolver.h"
+#include "BaseColumns.h"
+#include "MediaStore.h"
+#include "PowerManager.h"
+#include "Cursor.h"
+#include "ConnectivityManager.h"
+#include "AudioManager.h"
 #include <android/native_activity.h>
 
 using namespace jni;
 
 jhobject CJNIContext::m_context(0);
-CJNIContext::CJNIContext(const ANativeActivity *nativeActivity) : CJNIBroadcastReceiver(this)
+CJNIContext* CJNIContext::m_appInstance(NULL);
+CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
   m_context.reset(nativeActivity->clazz);
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
-  InitializeBroadcastReceiver();
+  PopulateStaticFields();
+  m_appInstance = this;
 }
 
 CJNIContext::~CJNIContext()
 {
+  m_appInstance = NULL;
   m_context.release();
-  DestroyBroadcastReceiver();
   xbmc_jni_on_unload();
+}
+
+void CJNIContext::PopulateStaticFields()
+{
+  CJNIBaseColumns::PopulateStaticFields();
+  CJNIMediaStoreMediaColumns::PopulateStaticFields();
+  CJNIPowerManager::PopulateStaticFields();
+  CJNIPackageManager::PopulateStaticFields();
+  CJNIMediaStoreMediaColumns::PopulateStaticFields();
+  CJNICursor::PopulateStaticFields();
+  CJNIContentResolver::PopulateStaticFields();
+  CJNIConnectivityManager::PopulateStaticFields();
+  CJNIAudioManager::PopulateStaticFields();
+
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()
@@ -77,6 +100,11 @@ CJNIIntent CJNIContext::registerReceiver(const CJNIIntentFilter &filter)
 {
   return (CJNIIntent)call_method<jhobject>(m_context, "registerReceiver", \
                              "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;", (jobject)NULL, filter.get());
+}
+
+void CJNIContext::unregisterReceiver(const CJNIBroadcastReceiver &receiver)
+{
+  call_method<void>(m_context, "unregisterReceiver", "(Landroid/content/BroadcastReceiver;)V", receiver.get());
 }
 
 CJNIIntent CJNIContext::sendBroadcast(const CJNIIntent &intent)
@@ -117,4 +145,15 @@ CJNIFile CJNIContext::getDir(const std::string &path, int mode)
 CJNIFile CJNIContext::getExternalFilesDir(const std::string &path)
 {
   return (CJNIFile)call_method<jhobject>(m_context, "getExternalFilesDir", "(Ljava/lang/String;)Ljava/io/File;", jcast<jhstring>(path));
+}
+
+CJNIContentResolver CJNIContext::getContentResolver()
+{
+  return (CJNIContentResolver)call_method<jhobject>(m_context, "getContentResolver", "()Landroid/content/ContentResolver;");
+}
+
+void CJNIContext::_onNewIntent(JNIEnv *env, jobject context, jobject intent)
+{
+  if(m_appInstance)
+    m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }

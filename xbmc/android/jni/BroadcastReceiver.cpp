@@ -24,36 +24,29 @@
 #include "ClassLoader.h"
 #include "jutils/jutils-details.hpp"
 
-CJNIContext * CJNIBroadcastReceiver::jni_app_context=NULL;
-
 using namespace jni;
-CJNIBroadcastReceiver::CJNIBroadcastReceiver(CJNIContext *context) : CJNIBase("org/xbmc/xbmc/XBMCBroadcastReceiver")
-{
-  jni_app_context = context;
-}
 
-void CJNIBroadcastReceiver::InitializeBroadcastReceiver()
+CJNIBroadcastReceiver *CJNIBroadcastReceiver::m_receiverInstance(NULL);
+CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJNIBase(className)
 {
+  CJNIContext *appInstance = CJNIContext::GetAppInstance();
+  if (!appInstance || className.empty())
+    return;
+
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
-  std::string className = GetClassName();
-  for (std::string::iterator it = className.begin(); it != className.end(); ++it)
+  std::string dotClassName = GetClassName();
+  for (std::string::iterator it = dotClassName.begin(); it != dotClassName.end(); ++it)
   {
     if (*it == '/')
       *it = '.';
   }
-  m_object = new_object(jni_app_context->getClassLoader().loadClass(className));
+  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_receiverInstance = this;
   m_object.setGlobal();
 }
 
-void CJNIBroadcastReceiver::DestroyBroadcastReceiver()
+void CJNIBroadcastReceiver::_onReceive(JNIEnv *env, jobject context, jobject intent)
 {
-  m_object.reset();
-}
-
-extern "C"
-JNIEXPORT void JNICALL Java_org_xbmc_xbmc_XBMCBroadcastReceiver__1onReceive
-  (JNIEnv *env, jobject context, jobject intent)
-{
-  if(CJNIBroadcastReceiver::jni_app_context)
-    CJNIBroadcastReceiver::jni_app_context->onReceive(CJNIIntent(jhobject(intent)));
+  if(m_receiverInstance)
+    m_receiverInstance->onReceive(CJNIIntent(jhobject(intent)));
 }

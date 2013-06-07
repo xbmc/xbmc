@@ -26,3 +26,23 @@ CJNIURI CJNIURI::parse(std::string uriString)
 {
   return (CJNIURI)call_static_method<jhobject>("android/net/Uri", "parse", "(Ljava/lang/String;)Landroid/net/Uri;", jcast<jhstring>(uriString));
 }
+
+std::string CJNIURI::getScheme() const
+{
+  return jcast<std::string>(call_method<jhstring>(m_object, "getScheme", "()Ljava/lang/String;"));
+}
+
+std::string CJNIURI::toString() const
+{
+  return jcast<std::string>(call_method<jhstring>(m_object, "toString", "()Ljava/lang/String;"));
+}
+
+std::string CJNIURI::getLastPathSegment() const
+{
+  return jcast<std::string>(call_method<jhstring>(m_object, "getLastPathSegment", "()Ljava/lang/String;"));
+}
+
+std::string CJNIURI::getPath() const
+{
+  return jcast<std::string>(call_method<jhstring>(m_object, "getPath", "()Ljava/lang/String;"));
+}

@@ -28,7 +28,8 @@ class CJNIIntentFilter;
 class CJNIClassLoader;
 class CJNIApplicationInfo;
 class CJNIFile;
-class CJNIContext : public CJNIBroadcastReceiver
+class CJNIContentResolver;
+class CJNIContext
 {
 public:
   static CJNIPackageManager GetPackageManager();
@@ -37,6 +38,7 @@ public:
   static int checkCallingOrSelfPermission(const std::string &permission);
   static CJNIIntent registerReceiver(const CJNIBroadcastReceiver &receiver, const CJNIIntentFilter &filter);
   static CJNIIntent registerReceiver(const CJNIIntentFilter &filter);
+  static void unregisterReceiver(const CJNIBroadcastReceiver &receiver);
   static CJNIIntent sendBroadcast(const CJNIIntent &intent);
   static CJNIIntent getIntent();
   static CJNIClassLoader getClassLoader();
@@ -45,14 +47,19 @@ public:
   static CJNIFile getCacheDir();
   static CJNIFile getDir(const std::string &path, int mode);
   static CJNIFile getExternalFilesDir(const std::string &path);
-  virtual void onReceive(CJNIIntent intent)=0;
+  static CJNIContentResolver getContentResolver();
+  static CJNIContext* GetAppInstance() { return m_appInstance; };
+  static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
 protected:
+  virtual void onNewIntent(CJNIIntent intent)=0;
   CJNIContext(const ANativeActivity *nativeActivity);
   ~CJNIContext();
 
 private:
   CJNIContext();
+  void PopulateStaticFields();
   void operator=(CJNIContext const&){};
   static jni::jhobject m_context;
+  static CJNIContext *m_appInstance;
 };
 

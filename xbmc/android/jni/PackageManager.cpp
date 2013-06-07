@@ -28,9 +28,10 @@
 using namespace jni;
 int CJNIPackageManager::GET_ACTIVITIES(0);
 
-CJNIPackageManager::CJNIPackageManager(const jni::jhobject &object) : CJNIBase(object)
+void CJNIPackageManager::PopulateStaticFields()
 {
-  GET_ACTIVITIES = (get_static_field<int>(m_object, "GET_ACTIVITIES"));
+  jhclass clazz = find_class("android/content/pm/PackageManager");
+  GET_ACTIVITIES = (get_static_field<int>(clazz, "GET_ACTIVITIES"));
 }
 
 CJNIIntent CJNIPackageManager::getLaunchIntentForPackage(const std::string &package)

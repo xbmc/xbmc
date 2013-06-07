@@ -23,9 +23,11 @@
 using namespace jni;
 
 int CJNIAudioManager::STREAM_MUSIC(0);
-CJNIAudioManager::CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object)
+
+void CJNIAudioManager::PopulateStaticFields()
 {
-  STREAM_MUSIC = (get_static_field<int>(m_object, "STREAM_MUSIC"));
+  jhclass clazz = find_class("android/media/AudioManager");
+  STREAM_MUSIC = (get_static_field<int>(clazz, "STREAM_MUSIC"));
 }
 
 int CJNIAudioManager::getStreamMaxVolume()

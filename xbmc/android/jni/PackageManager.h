@@ -28,7 +28,7 @@ class CJNICharSequence;
 class CJNIPackageManager : public CJNIBase
 {
 public:
-  CJNIPackageManager(const jni::jhobject &object);
+  CJNIPackageManager(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIPackageManager(){};
 
   CJNIIntent getLaunchIntentForPackage(const std::string &package);
@@ -36,6 +36,7 @@ public:
   CJNIList<CJNIApplicationInfo> getInstalledApplications(int flags);
   CJNICharSequence getApplicationLabel(const CJNIApplicationInfo &info);
 
+  static void PopulateStaticFields();
   static int GET_ACTIVITIES;
 private:
   CJNIPackageManager();

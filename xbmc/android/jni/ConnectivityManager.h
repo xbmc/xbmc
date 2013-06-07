@@ -24,7 +24,7 @@ class CJNINetworkInfo;
 class CJNIConnectivityManager : public CJNIBase
 {
 public:
-  CJNIConnectivityManager(const jni::jhobject &object);
+  CJNIConnectivityManager(const jni::jhobject &object) : CJNIBase(object){};
   bool isNetworkTypeValid(int);
   void setNetworkPreference(int);
   int getNetworkPreference();
@@ -47,6 +47,8 @@ public:
   static int TYPE_DUMMY;
   static int TYPE_ETHERNET;
   static int DEFAULT_NETWORK_PREFERENCE;
+
+  static void PopulateStaticFields();
 private:
   CJNIConnectivityManager();
 };
