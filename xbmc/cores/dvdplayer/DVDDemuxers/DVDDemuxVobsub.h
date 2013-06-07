@@ -41,7 +41,7 @@ public:
   virtual DemuxPacket*  Read();
   virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
   virtual void          SetSpeed(int speed) {}
-  virtual CDemuxStream* GetStream(int index) { return m_Streams[index]; }
+  virtual CDemuxStream* GetStream(int index) { return (index >= 0 && (size_t)index < m_Streams.size()) ? m_Streams[index] : NULL; }
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
