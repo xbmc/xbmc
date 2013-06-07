@@ -82,7 +82,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
   if (strPath.IsEmpty())
+  {
     items.Clear();
+    g_directoryCache.ClearSubPaths("");
+  }
 
   // return the root listing
   items.SetPath(strPath);
