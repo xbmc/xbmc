@@ -7,8 +7,8 @@ SET(CMAKE_SYSTEM_VERSION 1)
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   @CC@)
 SET(CMAKE_CXX_COMPILER @CXX@)
-SET(CMAKE_AR @AR@)
-SET(CMAKE_LD @LD@)
+SET(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
+SET(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 
 # where is the target environment 
 SET(CMAKE_FIND_ROOT_PATH  @prefix@/@deps_dir@ @use_toolchain@ @use_toolchain@/usr @use_sdk_path@ @use_sdk_path@/usr @use_toolchain@/sysroot/usr)
