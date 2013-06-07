@@ -708,6 +708,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+#ifdef HAS_PYTHON
     case TMSG_GUI_PYTHON_DIALOG:
       {
         // This hack is not much better but at least I don't need to make ApplicationMessenger
@@ -716,6 +717,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         ((CGUIWindow*)pMsg->lpVoid)->OnAction(caction);
       }
       break;
+#endif
 
     case TMSG_GUI_ACTION:
       {
