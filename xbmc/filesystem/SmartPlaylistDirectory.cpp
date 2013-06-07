@@ -314,7 +314,7 @@ namespace XFILE
   {
     CFileItemList list;
     bool filesExist = false;
-    if (playlistType == "songs" || playlistType == "albums")
+    if (playlistType == "songs" || playlistType == "albums" || playlistType == "artists")
       filesExist = CDirectory::GetDirectory("special://musicplaylists/", list, ".xsp", false);
     else // all others are video
       filesExist = CDirectory::GetDirectory("special://videoplaylists/", list, ".xsp", false);
