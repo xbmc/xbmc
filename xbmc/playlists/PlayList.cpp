@@ -24,6 +24,8 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
+#include "filesystem/IFile.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -456,7 +458,20 @@ bool CPlayList::LoadData(const CStdString& strData)
 bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
-  std::auto_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
+  std::auto_ptr<CPlayList> playlist;
+  try
+  {
+    playlist = std::auto_ptr<CPlayList>(CPlayListFactory::Create(*item.get()));
+  }
+  catch (CRedirectException* ex)
+  {
+    // We just redirected to something completely not handled by CURL, so let's
+    // use that URL instead. Usually MMS or RTMP.
+    m_vecItems[position] = CFileItemPtr(new CFileItem(ex->m_pNewUrl->Get(), false));
+    delete ex;
+    return true;
+  }
+
   if ( NULL == playlist.get())
     return false;
 
