@@ -917,7 +917,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
-        g_windowManager.PreviousWindow();
+        CApplicationMessenger::Get().MediaStop();
       }
     }
   }
