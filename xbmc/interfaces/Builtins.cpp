@@ -1523,17 +1523,10 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #ifdef TARGET_WINDOWS
       strtext = CWIN32Util::GetClipboardString();
-#else
-      strtext.clear();
 #endif
 
-    if (strtext.empty())
+    if (!strtext.empty())
     {
-      CLog::Log(LOGDEBUG, "%s: Paste: no text in the clipboard", __FUNCTION__, strtext.c_str());
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s: Paste: %s", __FUNCTION__, strtext.c_str());
       CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
       msg.SetLabel(strtext);
       g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
