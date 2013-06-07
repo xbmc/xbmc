@@ -282,22 +282,12 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_STEREOMODE_NEXT)
   {
-    mode = GetNextSupportedStereoMode(mode);
-    // when cycling mode, skip "OFF"
-    if (mode == RENDER_STEREO_MODE_OFF)
-      mode = GetNextSupportedStereoMode(mode);
-
-    SetStereoMode(mode);
+    SetStereoMode(GetNextSupportedStereoMode(mode));
     return true;
   }
   else if (action.GetID() == ACTION_STEREOMODE_PREVIOUS)
   {
-    mode = GetNextSupportedStereoMode(mode, RENDER_STEREO_MODE_COUNT - 1);
-    // when cycling mode, skip "OFF"
-    if (mode == RENDER_STEREO_MODE_OFF)
-      mode = GetNextSupportedStereoMode(mode, RENDER_STEREO_MODE_COUNT - 1);
-
-    SetStereoMode(mode);
+    SetStereoMode(GetNextSupportedStereoMode(mode, RENDER_STEREO_MODE_COUNT - 1));
     return true;
   }
   else if (action.GetID() == ACTION_STEREOMODE_TOGGLE)
