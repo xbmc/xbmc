@@ -252,6 +252,11 @@ bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch)
   return true;
 }
 
+int CRegExp::GetNamedSubPatternNumber(const char* strName)
+{
+  return pcre_get_stringnumber(m_re, strName);
+}
+
 void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
 {
   if (iLog < LOGDEBUG || iLog > LOGNONE)
