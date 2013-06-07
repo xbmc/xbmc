@@ -64,6 +64,7 @@ public:
   std::string GetMatch(int iSub = 0);
   const std::string& GetPattern() { return m_pattern; }
   bool GetNamedSubPattern(const char* strName, std::string& strMatch);
+  int GetNamedSubPatternNumber(const char* strName);
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
