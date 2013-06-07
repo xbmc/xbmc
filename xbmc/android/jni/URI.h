@@ -23,9 +23,13 @@
 class CJNIURI : public CJNIBase
 {
   public:
+  CJNIURI(const jni::jhobject &uri) : CJNIBase(uri){};
+  std::string getScheme() const;
+  std::string toString() const;
+  std::string getLastPathSegment() const;
+  std::string getPath() const;
   static CJNIURI parse(std::string uriString);
   ~CJNIURI(){};
 private:
-  CJNIURI(const jni::jhobject &uri) : CJNIBase(uri){};
   CJNIURI();
 };

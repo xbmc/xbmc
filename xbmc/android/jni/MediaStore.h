@@ -19,17 +19,25 @@
  *
  */
 #include "JNIBase.h"
-class CJNIIntent;
-class CJNIBroadcastReceiver : public CJNIBase
+#include "BaseColumns.h"
+class CJNIMediaStoreMediaColumns : public CJNIBaseColumns
 {
 public:
-  static void _onReceive(JNIEnv *env, jobject context, jobject intent);
-
-protected:
-  virtual void onReceive(CJNIIntent intent)=0;
-  ~CJNIBroadcastReceiver(){};
-  CJNIBroadcastReceiver(const std::string &className);
-
+  static std::string DATA; 
+  static std::string SIZE; 
+  static std::string DISPLAY_NAME;
+  static std::string TITLE;
+  static std::string DATE_ADDED;
+  static std::string DATE_MODIFIED;
+  static std::string MIME_TYPE;
+  static void PopulateStaticFields();
 private:
-  static CJNIBroadcastReceiver* m_receiverInstance;
+  CJNIMediaStoreMediaColumns();
+};
+
+class CJNIMediaStore : public CJNIBase
+{
+public:
+  ~CJNIMediaStore(){};
+  CJNIMediaStore(const jni::jhobject &object) : CJNIBase(object){};
 };

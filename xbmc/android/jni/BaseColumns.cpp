@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,18 +17,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "JNIBase.h"
-class CJNIIntent;
-class CJNIBroadcastReceiver : public CJNIBase
+#include "BaseColumns.h"
+#include "jutils/jutils-details.hpp"
+
+using namespace jni;
+
+std::string CJNIBaseColumns::_ID;
+std::string CJNIBaseColumns::_COUNT;
+
+void CJNIBaseColumns::PopulateStaticFields()
 {
-public:
-  static void _onReceive(JNIEnv *env, jobject context, jobject intent);
-
-protected:
-  virtual void onReceive(CJNIIntent intent)=0;
-  ~CJNIBroadcastReceiver(){};
-  CJNIBroadcastReceiver(const std::string &className);
-
-private:
-  static CJNIBroadcastReceiver* m_receiverInstance;
-};
+  jhclass clazz = find_class("android/provider/BaseColumns");
+  _ID = (jcast<std::string>(get_static_field<jhstring>(clazz, "_ID")));
+  _COUNT = (jcast<std::string>(get_static_field<jhstring>(clazz, "_COUNT")));
+}

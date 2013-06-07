@@ -24,9 +24,11 @@
 using namespace jni;
 
 int CJNIPowerManager::FULL_WAKE_LOCK(0);
-CJNIPowerManager::CJNIPowerManager(const jni::jhobject &object) : CJNIBase(object)
+
+void CJNIPowerManager::PopulateStaticFields()
 {
-  FULL_WAKE_LOCK = (get_static_field<int>(m_object, "FULL_WAKE_LOCK"));  
+  jhclass clazz = find_class("android/os/PowerManager");
+  FULL_WAKE_LOCK = (get_static_field<int>(clazz, "FULL_WAKE_LOCK"));
 }
 
 CJNIWakeLock CJNIPowerManager::newWakeLock(const std::string &name)

@@ -33,19 +33,21 @@ int CJNIConnectivityManager::TYPE_DUMMY(0);
 int CJNIConnectivityManager::TYPE_ETHERNET(0);
 int CJNIConnectivityManager::DEFAULT_NETWORK_PREFERENCE(0);
 using namespace jni;
-CJNIConnectivityManager::CJNIConnectivityManager(const jhobject &object) : CJNIBase(object)
+
+void CJNIConnectivityManager::PopulateStaticFields()
 {
-  TYPE_MOBILE = (get_static_field<int>(m_object, "TYPE_MOBILE"));
-  TYPE_WIFI = (get_static_field<int>(m_object, "TYPE_WIFI"));
-  TYPE_MOBILE_MMS = (get_static_field<int>(m_object, "TYPE_MOBILE_MMS"));
-  TYPE_MOBILE_SUPL = (get_static_field<int>(m_object, "TYPE_MOBILE_SUPL"));
-  TYPE_MOBILE_DUN = (get_static_field<int>(m_object, "TYPE_MOBILE_DUN"));
-  TYPE_MOBILE_HIPRI = (get_static_field<int>(m_object, "TYPE_MOBILE_HIPRI"));
-  TYPE_WIMAX = (get_static_field<int>(m_object, "TYPE_WIMAX"));
-  TYPE_BLUETOOTH = (get_static_field<int>(m_object, "TYPE_BLUETOOTH"));
-  TYPE_DUMMY = (get_static_field<int>(m_object, "TYPE_DUMMY"));
-  TYPE_ETHERNET = (get_static_field<int>(m_object, "TYPE_ETHERNET"));
-  DEFAULT_NETWORK_PREFERENCE = (get_static_field<int>(m_object, "DEFAULT_NETWORK_PREFERENCE"));
+  jhclass clazz = find_class("android.net.ConnectivityManager");
+  TYPE_MOBILE = (get_static_field<int>(clazz, "TYPE_MOBILE"));
+  TYPE_WIFI = (get_static_field<int>(clazz, "TYPE_WIFI"));
+  TYPE_MOBILE_MMS = (get_static_field<int>(clazz, "TYPE_MOBILE_MMS"));
+  TYPE_MOBILE_SUPL = (get_static_field<int>(clazz, "TYPE_MOBILE_SUPL"));
+  TYPE_MOBILE_DUN = (get_static_field<int>(clazz, "TYPE_MOBILE_DUN"));
+  TYPE_MOBILE_HIPRI = (get_static_field<int>(clazz, "TYPE_MOBILE_HIPRI"));
+  TYPE_WIMAX = (get_static_field<int>(clazz, "TYPE_WIMAX"));
+  TYPE_BLUETOOTH = (get_static_field<int>(clazz, "TYPE_BLUETOOTH"));
+  TYPE_DUMMY = (get_static_field<int>(clazz, "TYPE_DUMMY"));
+  TYPE_ETHERNET = (get_static_field<int>(clazz, "TYPE_ETHERNET"));
+  DEFAULT_NETWORK_PREFERENCE = (get_static_field<int>(clazz, "DEFAULT_NETWORK_PREFERENCE"));
 }
 
 bool CJNIConnectivityManager::isNetworkTypeValid(int networkType)

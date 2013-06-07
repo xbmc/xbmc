@@ -50,4 +50,5 @@ public:
 
   void setPackage(const std::string &packageName);
   void setType(const std::string &type);
+  CJNIURI getData() const;
 };

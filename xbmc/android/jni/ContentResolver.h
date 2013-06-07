@@ -19,17 +19,23 @@
  *
  */
 #include "JNIBase.h"
-class CJNIIntent;
-class CJNIBroadcastReceiver : public CJNIBase
+
+class CJNICursor;
+class CJNIURI;
+class CJNIContentResolver : public CJNIBase
 {
 public:
-  static void _onReceive(JNIEnv *env, jobject context, jobject intent);
+  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object){};
 
-protected:
-  virtual void onReceive(CJNIIntent intent)=0;
-  ~CJNIBroadcastReceiver(){};
-  CJNIBroadcastReceiver(const std::string &className);
+  static std::string SCHEME_CONTENT;
+  static std::string SCHEME_ANDROID_RESOURCE;
+  static std::string SCHEME_FILE;
+  static std::string CURSOR_ITEM_BASE_TYPE;
+  static std::string CURSOR_DIR_BASE_TYPE;
 
+  CJNICursor query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder);
+
+  static void PopulateStaticFields();
 private:
-  static CJNIBroadcastReceiver* m_receiverInstance;
+  CJNIContentResolver();
 };

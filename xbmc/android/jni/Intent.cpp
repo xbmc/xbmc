@@ -108,3 +108,7 @@ void CJNIIntent::setType(const std::string &type)
   call_method<jhobject>(m_object, "setType", "(Ljava/lang/String;)Landroid/content/Intent;", jcast<jhstring>(type));
 }
 
+CJNIURI CJNIIntent::getData() const
+{
+  return (CJNIURI)call_method<jhobject>(m_object, "getData","()Landroid/net/Uri;");
+}
