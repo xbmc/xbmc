@@ -121,6 +121,7 @@ extern "C" {
    */
   typedef enum
   {
+    PVR_MENUHOOK_UNKNOWN         =-1, /*!< @brief unknown menu hook */
     PVR_MENUHOOK_ALL             = 0, /*!< @brief all categories */
     PVR_MENUHOOK_CHANNEL         = 1, /*!< @brief for channels */
     PVR_MENUHOOK_TIMER           = 2, /*!< @brief for timers */
@@ -310,6 +311,20 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
 
   /*!
+   * @brief PVR menu hook data
+   */
+  typedef struct PVR_MENUHOOK_DATA
+  {
+    PVR_MENUHOOK_CAT cat;
+    union data {
+      int iEpgUid;
+      PVR_CHANNEL channel;
+      PVR_TIMER timer;
+      PVR_RECORDING recording;
+    } data;
+  } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
+
+  /*!
    * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
    */
   typedef struct PVRClient
@@ -324,7 +339,7 @@ extern "C" {
     const char*  (__cdecl* GetBackendVersion)(void);
     const char*  (__cdecl* GetConnectionString)(void);
     PVR_ERROR    (__cdecl* GetDriveSpace)(long long*, long long*);
-    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&);
+    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
     PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
     int          (__cdecl* GetChannelGroupsAmount)(void);
     PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
