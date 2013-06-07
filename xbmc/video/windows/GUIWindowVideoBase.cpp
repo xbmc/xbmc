@@ -924,6 +924,9 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
 bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
 {
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   // Reset the current start offset. The actual resume
