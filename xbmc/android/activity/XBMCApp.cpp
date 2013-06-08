@@ -368,7 +368,7 @@ bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
   AndroidBitmapInfo info;
   CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
   CJNIBitmap icon(drawable.getBitmap());
-  AndroidBitmap_getInfo(env, icon.get(), &info);
+  AndroidBitmap_getInfo(env, icon.get_raw(), &info);
   *width = info.width;
   *height = info.height;
   return true;
@@ -380,11 +380,11 @@ bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int buf
   JNIEnv* env = xbmc_jnienv();
   CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
   CJNIBitmap bitmap(drawable.getBitmap());
-  AndroidBitmap_lockPixels(env, bitmap.get(), &bitmapBuf);
+  AndroidBitmap_lockPixels(env, bitmap.get_raw(), &bitmapBuf);
   if (bitmapBuf)
   {
     memcpy(buffer, bitmapBuf, bufSize);
-    AndroidBitmap_unlockPixels(env, bitmap.get());
+    AndroidBitmap_unlockPixels(env, bitmap.get_raw());
     return true;
   }
   return false;
