@@ -119,9 +119,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
       CGUIListItemPtr item = m_items[itemNo];
       // render our item
       if (m_orientation == VERTICAL)
-        ProcessItem(origin.x, pos, item, focused, currentTime, dirtyregions);
+        ProcessItem(origin.x, pos, item, focused && HasFocus(), currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y, item, focused, currentTime, dirtyregions);
+        ProcessItem(pos, origin.y, item, focused && HasFocus(), currentTime, dirtyregions);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
@@ -244,9 +244,9 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        RenderItem(origin.x, focusedPos, focusedItem.get(), true);
+        RenderItem(origin.x, focusedPos, focusedItem.get(), HasFocus());
       else
-        RenderItem(focusedPos, origin.y, focusedItem.get(), true);
+        RenderItem(focusedPos, origin.y, focusedItem.get(), HasFocus());
     }
 
     g_graphicsContext.RestoreClipRegion();
@@ -445,6 +445,23 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         count--;
       }
       return true;
+    }
+  }
+  else if (message.GetMessage() == GUI_MSG_SETFOCUS)
+  {
+    // subfocus item is specified, so set the offset appropriately
+    if (message.GetParam1())
+    {
+      int newItem = message.GetParam1() - 1;
+      if (newItem != GetSelectedItem())
+      {
+        SelectItem(newItem);
+        // Send another SETFOCUS message to ensure focused items are displayed
+        // correctly. A bit of a hack, but seems to work.
+        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), 0, 0);
+        SendWindowMessage(msg);
+        return true;
+      }
     }
   }
   return CGUIControl::OnMessage(message);
