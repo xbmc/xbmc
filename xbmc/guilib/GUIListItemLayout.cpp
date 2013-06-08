@@ -157,6 +157,8 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
                                                                 // different label control + defaults.
   if (control)
   {
+    control->SetInitialVisibility();
+
     group->AddControl(control);
     if (control->IsGroup())
     {
