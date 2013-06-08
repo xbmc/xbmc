@@ -34,7 +34,6 @@
 #include "XBPython.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/GraphicContext.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "pythreadstate.h"
@@ -49,7 +48,6 @@
 #include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
 
-#include "interfaces/generic/LanguageInvokerThread.h"
 #include "interfaces/legacy/Monitor.h"
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/PythonInvoker.h"
@@ -69,8 +67,6 @@ using namespace PythonBindings;
 XBPython::XBPython()
 {
   m_bInitialized      = false;
-  m_bLogin            = false;
-  m_nextid            = 0;
   m_mainThreadState   = NULL;
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
@@ -488,7 +484,7 @@ void XBPython::DeInitializeInterpreter()
 /**
 * Should be called before executing a script
 */
-bool XBPython::Initialize()
+bool XBPython::InitializeEngine()
 {
   TRACE;
   CLog::Log(LOGINFO, "initializing python engine.");
@@ -597,7 +593,6 @@ void XBPython::FinalizeScript()
   m_endtime = XbmcThreads::SystemClockMillis();
 }
 
-
 // Always called with the lock held on m_critSection
 void XBPython::Finalize()
 {
@@ -637,7 +632,7 @@ void XBPython::Finalize()
   }
 }
 
-void XBPython::FreeResources()
+void XBPython::Uninitialize()
 {
   LOCK_AND_COPY(std::vector<PyElem>,tmpvec,m_vecPyList);
   m_vecPyList.clear();
@@ -651,19 +646,6 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  if (m_bLogin)
-  {
-    m_bLogin = false;
-
-    // autoexec.py - profile
-    CStdString strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
-
-    if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy,ADDON::AddonPtr());
-    else
-      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
-  }
-
   if (m_bInitialized)
   {
     PyList tmpvec;
@@ -692,78 +674,29 @@ void XBPython::Process()
   }
 }
 
-bool XBPython::StopScript(const CStdString &path)
+void XBPython::OnScriptStarted(ILanguageInvoker *invoker)
 {
-  TRACE;
-  int id = getScriptId(path);
-  if (id != -1)
-  {
-    /* if we are here we already know that this script is running.
-     * But we will check it again to be sure :)
-     */
-    if (isRunning(id))
-    {
-      stopScript(id);
-      return true;
-    }
-  }
-  return false;
-}
+  if (invoker == NULL)
+    return;
 
-int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
-{
-  std::vector<CStdString> argv;
-  return evalFile(src, argv, addon);
-}
+  if (!m_bInitialized)
+    return;
 
-// execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
-{
-  CSingleExit ex(g_graphicsContext);
-  // return if file doesn't exist
-  if (!XFILE::CFile::Exists(src))
-  {
-    CLog::Log(LOGERROR, "Python script \"%s\" does not exist", CSpecialProtocol::TranslatePath(src).c_str());
-    return -1;
-  }
-
-  // check if locked
-  if (CProfilesManager::Get().GetCurrentProfile().programsLocked() && !g_passwordManager.IsMasterLockUnlocked(true))
-    return -1;
-
-  CSingleLock lock(m_vecPyList);
-  Initialize();
-
-  if (!m_bInitialized) return -1;
-
-  m_nextid++;
-  CPythonInvoker *invoker = new CPythonInvoker();
-  boost::shared_ptr<CLanguageInvokerThread> pyThread = boost::shared_ptr<CLanguageInvokerThread>(new CLanguageInvokerThread(invoker));
-  pyThread->SetId(m_nextid);
-  pyThread->SetAddon(addon);
   PyElem inf;
-  inf.id        = m_nextid;
+  inf.id        = invoker->GetId();
   inf.bDone     = false;
-  inf.strFile   = src;
-  inf.pyThread  = pyThread;
-
-  std::vector<std::string> args;
-  for (unsigned int i = 0; i < argv.size(); i++)
-    args.push_back(argv.at(i));
-  inf.pyThread->Execute(src, args);
-
+  inf.pyThread  = static_cast<CPythonInvoker*>(invoker);
+  CSingleLock lock(m_vecPyList);
   m_vecPyList.push_back(inf);
-
-  return m_nextid;
 }
 
-void XBPython::setDone(int id)
+void XBPython::OnScriptEnded(ILanguageInvoker *invoker)
 {
   CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
-    if (it->id == id)
+    if (it->id == invoker->GetId())
     {
       if (it->pyThread->IsStopping())
         CLog::Log(LOGINFO, "Python script interrupted by user");
@@ -775,99 +708,9 @@ void XBPython::setDone(int id)
   }
 }
 
-void XBPython::stopScript(int id)
+ILanguageInvoker* XBPython::CreateInvoker()
 {
-  CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_vecPyList);
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
-  {
-    if (it->id == id) {
-      CLog::Log(LOGINFO, "Stopping script with id: %i", id);
-      it->pyThread->Stop();
-      return;
-    }
-    ++it;
-  }
-}
-
-void* XBPython::getMainThreadState()
-{
-  CSingleLock lock(m_critSection);
-  return m_mainThreadState;
-}
-
-int XBPython::ScriptsSize()
-{
-  CSingleLock lock(m_vecPyList);
-  return m_vecPyList.size();
-}
-
-const char* XBPython::getFileName(int scriptId)
-{
-  const char* cFileName = NULL;
-
-  CSingleLock lock(m_vecPyList);
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
-  {
-    if (it->id == scriptId)
-      cFileName = it->strFile.c_str();
-    ++it;
-  }
-
-  return cFileName;
-}
-
-int XBPython::getScriptId(const CStdString &strFile)
-{
-  int iId = -1;
-
-  CSingleLock lock(m_vecPyList);
-
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
-  {
-    if (it->strFile == strFile)
-      iId = it->id;
-    ++it;
-  }
-
-  return iId;
-}
-
-bool XBPython::isRunning(int scriptId)
-{
-  CSingleLock lock(m_vecPyList);
-
-  for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); ++it)
-  {
-    if (it->id == scriptId)
-      return !it->bDone;
-  }
-  return false;
-}
-
-bool XBPython::isStopping(int scriptId)
-{
-  bool bStopping = false;
-
-  CSingleLock lock(m_vecPyList);
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
-  {
-    if (it->id == scriptId)
-      bStopping = it->pyThread->IsStopping();
-    ++it;
-  }
-
-  return bStopping;
-}
-
-int XBPython::GetPythonScriptId(int scriptPosition)
-{
-  CSingleLock lock(m_vecPyList);
-  return (int)m_vecPyList[scriptPosition].id;
+  return new CPythonInvoker(this);
 }
 
 void XBPython::PulseGlobalEvent()
