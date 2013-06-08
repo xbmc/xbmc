@@ -724,6 +724,13 @@ bool CApplication::Create()
   }
   CSettings::Get().SetLoaded();
 
+#ifdef _WIN32
+  // This is Plex's workaround for what appears to be a bug in the Windows heap
+  if (!g_curlInterface.IsLoaded())
+    g_curlInterface.Load();
+  g_curlInterface.global_init(CURL_GLOBAL_ALL);
+#endif
+
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", CProfilesManager::Get().GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder: %s", CSettings::Get().GetString("audiocds.recordingpath").c_str());
