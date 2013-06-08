@@ -306,6 +306,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_ACTIVATESCREENSAVER:
+      {
+        g_application.ActivateScreenSaver();
+      }
+      break;
+
     case TMSG_MEDIA_PLAY:
       {
         // first check if we were called from the PlayFile() function
@@ -1150,6 +1156,12 @@ void CApplicationMessenger::RestartApp()
 void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
 {
   ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (unsigned int)inhibit};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::ActivateScreensaver()
+{
+  ThreadMessage tMsg = {TMSG_ACTIVATESCREENSAVER};
   SendMessage(tMsg);
 }
 

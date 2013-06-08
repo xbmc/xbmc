@@ -123,6 +123,7 @@ const BUILT_IN commands[] = {
   { "Suspend",                    false,  "Suspends the system" },
   { "InhibitIdleShutdown",        false,  "Inhibit idle shutdown" },
   { "AllowIdleShutdown",          false,  "Allow idle shutdown" },
+  { "ActivateScreensaver",        false,  "Activate Screensaver" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
   { "Reset",                      false,  "Reset the system (same as reboot)" },
@@ -291,6 +292,10 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     bool inhibit = (params.size() == 1 && params[0].Equals("true"));
     CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
+  }
+  else if (execute.Equals("activatescreensaver"))
+  {
+    CApplicationMessenger::Get().ActivateScreensaver();
   }
   else if (execute.Equals("minimize"))
   {
