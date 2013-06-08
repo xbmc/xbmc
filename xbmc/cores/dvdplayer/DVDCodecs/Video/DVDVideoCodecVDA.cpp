@@ -659,7 +659,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
 unsigned CDVDVideoCodecVDA::GetAllowedReferences()
 {
   if (m_use_cvBufferRef)
-    return 2; /* TODO can this be increased? */
+    return 3;
   else
     return 0;
 }
