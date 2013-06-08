@@ -539,6 +539,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       g_application.Minimize();
       break;
 
+    case TMSG_HIDE:
+      g_application.Hide();
+      break;
+
     case TMSG_EXECUTE_OS:
       /* Suspend AE temporarily so exclusive or hog-mode sinks */
       /* don't block external player's access to audio device  */
@@ -1172,6 +1176,12 @@ void CApplicationMessenger::Minimize(bool wait)
 {
   ThreadMessage tMsg = {TMSG_MINIMIZE};
   SendMessage(tMsg, wait);
+}
+
+void CApplicationMessenger::Hide()
+{
+  ThreadMessage tMsg = {TMSG_HIDE};
+  SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)

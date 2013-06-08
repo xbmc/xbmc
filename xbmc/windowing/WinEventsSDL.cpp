@@ -414,7 +414,10 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       g_application.OnAction(CAction(ACTION_TAKE_SCREENSHOT));
       return true;
 
-    case SDLK_h: // CMD-h to hide (but we minimize for now)
+    case SDLK_h: // CMD-h to hide
+      CApplicationMessenger::Get().Hide();
+      return true;
+
     case SDLK_m: // CMD-m to minimize
       CApplicationMessenger::Get().Minimize();
       return true;

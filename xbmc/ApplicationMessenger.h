@@ -89,6 +89,7 @@ namespace MUSIC_INFO
 #define TMSG_RENDERER_FLUSH       312
 #define TMSG_INHIBITIDLESHUTDOWN  313
 #define TMSG_LOADPROFILE          314
+#define TMSG_HIDE                 315
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -204,6 +205,7 @@ public:
   void InhibitIdleShutdown(bool inhibit);
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
+  void Hide();
   void ExecOS(const CStdString command, bool waitExit = false);
   void UserEvent(int code);
   //! \brief Set the tag for the currently playing song

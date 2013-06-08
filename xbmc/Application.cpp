@@ -5483,6 +5483,11 @@ void CApplication::Minimize()
   g_Windowing.Minimize();
 }
 
+void CApplication::Hide()
+{
+  g_Windowing.Hide();
+}
+
 PLAYERCOREID CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
