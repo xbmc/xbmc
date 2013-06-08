@@ -39,44 +39,45 @@ IDirectory::~IDirectory(void)
 {}
 
 /*!
- \brief Test a file for an extension specified with SetMask().
+ \brief Test if file have an allowed extension, as specified with SetMask()
  \param strFile File to test
- \return Returns \e true, if file is allowed.
+ \return \e true if file is allowed
+ \note If extension is ".ifo", filename format must be "vide_ts.ifo" or
+       "vts_##_0.ifo". If extension is ".dat", filename format must be
+       "AVSEQ##(#).DAT", "ITEM###(#).DAT" or "MUSIC##(#).DAT".
  */
 bool IDirectory::IsAllowed(const CStdString& strFile) const
 {
-  if ( !m_strFileMask.size() ) return true;
-  if ( !strFile.size() ) return true;
+  if (m_strFileMask.empty() || strFile.empty())
+    return true;
 
-  CStdString strExtension = URIUtils::GetExtension(strFile);
-
-  if (strExtension.empty())
+  // Check if strFile have an allowed extension
+  if (!URIUtils::HasExtension(strFile, m_strFileMask))
     return false;
 
-  strExtension.ToLower();
-  strExtension += '|'; // ensures that we have a | at the end of it
-  if (m_strFileMask.Find(strExtension) != -1)
-  { // it's allowed, but we should also ignore all non dvd related ifo files.
-    if (strExtension.Equals(".ifo|"))
-    {
-      CStdString fileName = URIUtils::GetFileName(strFile);
-      if (fileName.Equals("video_ts.ifo")) return true;
-      if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
-      return false;
-    }
-    if (strExtension.Equals(".dat|"))
-    {
-      CStdString fileName = URIUtils::GetFileName(strFile);
-      /* VCD filenames are of the form AVSEQ##(#).DAT, ITEM###(#).DAT, MUSIC##(#).DAT - i.e. all 11 or 12 characters long
-         starting with AVSEQ, MUSIC or ITEM */
-      if ((fileName.length() == 11 || fileName.length() == 12) &&
-          (fileName.Left(5).Equals("AVSEQ") || fileName.Left(5).Equals("MUSIC") || fileName.Left(4).Equals("ITEM")))
-        return true;
-      return false;
-    }
-    return true;
+  // We should ignore all non dvd/vcd related ifo and dat files.
+  if (URIUtils::HasExtension(strFile, ".ifo"))
+  {
+    CStdString fileName = URIUtils::GetFileName(strFile);
+
+    // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
+    return fileName == "video_ts.ifo" ||
+          (fileName.length() == 12 && fileName.Left(4) == "vts_" &&
+           fileName.Right(6) == "_0.ifo");
   }
-  return false;
+  
+  if (URIUtils::HasExtension(strFile, ".dat"))
+  {
+    CStdString fileName = URIUtils::GetFileName(strFile);
+
+    // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
+    // and MUSIC##(#).DAT
+    return (fileName.length() == 11 || fileName.length() == 12) &&
+           (fileName.Left(5) == "AVSEQ" || fileName.Left(5) == "MUSIC" ||
+            fileName.Left(4) == "ITEM");
+  }
+
+  return true;
 }
 
 /*!

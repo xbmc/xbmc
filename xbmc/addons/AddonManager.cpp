@@ -125,7 +125,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         if (type == ADDON_SCREENSAVER)
         { // Python screensaver
           CStdString library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
-          if (URIUtils::GetExtension(library).Equals(".py", false))
+          if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
 #if defined(TARGET_ANDROID)                                                                                                                                                      

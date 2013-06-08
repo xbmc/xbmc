@@ -339,7 +339,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     }
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
     {
-      if (URIUtils::GetExtension(strPath) == ".sub")
+      if (URIUtils::HasExtension(strPath, ".sub"))
         if (CFile::Exists(URIUtils::ReplaceExtension(strPath, ".idx")))
           strPath = URIUtils::ReplaceExtension(strPath, ".idx");
       

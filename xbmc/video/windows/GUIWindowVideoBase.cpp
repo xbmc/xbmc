@@ -286,7 +286,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     return;
 
   if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add") ||
-     (pItem->IsPlayList() && !URIUtils::GetExtension(pItem->GetPath()).Equals(".strm")))
+     (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
     return;
 
   // ShowIMDB can kill the item as this window can be closed while we do it,
@@ -993,7 +993,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   if (item->GetPath().Equals("add") || item->IsParentFolder() ||
-     (item->IsPlayList() && !URIUtils::GetExtension(item->GetPath()).Equals(".strm")))
+     (item->IsPlayList() && !URIUtils::HasExtension(item->GetPath(), ".strm")))
     return false;
 
   if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
@@ -1094,9 +1094,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
     }
   }
 
-  CStdString ext = URIUtils::GetExtension(item->GetPath());
-  ext.ToLower();
-  if (ext == ".iso" ||  ext == ".img")
+  if (URIUtils::HasExtension(item->GetPath(), ".iso|.img"))
   {
     CURL url2("udf://");
     url2.SetHostName(item->GetPath());
@@ -1554,7 +1552,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
           vector<int> stack;
           for (int i = 0; i < items.Size(); ++i)
           {
-            if (URIUtils::GetExtension(items[i]->GetPath()) == ext)
+            if (URIUtils::HasExtension(items[i]->GetPath(), ext))
               stack.push_back(i);
           }
 

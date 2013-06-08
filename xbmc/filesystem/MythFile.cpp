@@ -194,7 +194,7 @@ bool CMythFile::SetupLiveTV(const CURL& url)
     return false;
 
   CStdString channel = url.GetFileNameWithoutPath();
-  if(!URIUtils::GetExtension(channel).Equals(".ts"))
+  if(!URIUtils::HasExtension(channel, ".ts"))
   {
     CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
     return false;
@@ -396,8 +396,7 @@ bool CMythFile::Exists(const CURL& url)
   if ((path.Left(11) == "recordings/"
     || path.Left(7)  == "movies/"
     || path.Left(8)  == "tvshows/")
-    && (URIUtils::GetExtension(path).Equals(".mpg")
-    ||  URIUtils::GetExtension(path).Equals(".nuv")))
+    && (URIUtils::HasExtension(path, ".mpg|.nuv")))
   {
     if(!SetupConnection(url, true, false, false))
       return false;
