@@ -543,7 +543,8 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
   do
   {
     CGUIListItemPtr item = m_items[i];
-    if (0 == strnicmp(SortUtils::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
+    CStdString label = SortUtils::RemoveArticles(item->GetLabel());
+    if (label.Equals(m_match))
     {
       SelectItem(i);
       return;
