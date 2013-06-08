@@ -437,7 +437,7 @@ int CDVDVideoCodecVDA::Decode(uint8_t* pData, int iSize, double dts, double pts)
   if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
-  return VC_PICTURE | VC_BUFFER;
+  return VC_PICTURE;
 }
 
 void CDVDVideoCodecVDA::Reset(void)
