@@ -1385,13 +1385,28 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://"))
     {
-      CCurlFile::GetMimeType(GetAsUrl(), m_ref);
+      CStdString extension = URIUtils::GetExtension(m_strPath);
 
-      // try to get mime-type again but with an NSPlayer User-Agent
-      // in order for server to provide correct mime-type.  Allows us
-      // to properly detect an MMS stream
-      if (m_ref.Left(11).Equals("video/x-ms-"))
-        CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+      if (extension.Equals(".m3u") || extension.Equals(".strm"))
+        m_ref = "audio/mpegurl";
+      else if (extension.Equals(".pls"))
+        m_ref = "audio/scpls";
+      else if (extension.Equals(".wpl"))
+        m_ref = "application/vnd.ms-wpl";
+      else if (extension.Equals(".asx"))
+        m_ref = "video/x-ms-asf";
+      else if (extension.Equals(".ram"))
+        m_ref = "audio/x-pn-realaudio";
+      else
+      {
+        CCurlFile::GetMimeType(GetAsUrl(), m_ref);
+
+        // try to get mime-type again but with an NSPlayer User-Agent
+        // in order for server to provide correct mime-type.  Allows us
+        // to properly detect an MMS stream
+        if (m_ref.Left(11).Equals("video/x-ms-"))
+          CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+      }
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
