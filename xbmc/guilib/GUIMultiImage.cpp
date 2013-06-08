@@ -115,6 +115,8 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 
 void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  CSingleLock lock(m_section);
+
   // Set a viewport so that we don't render outside the defined area
   if (m_directoryStatus == READY && !m_files.empty())
   {
@@ -189,7 +191,12 @@ void CGUIMultiImage::FreeResources(bool immediately)
   m_image.FreeResources(immediately);
   m_currentImage = 0;
   CancelLoading();
-  m_files.clear();
+
+  {
+    CSingleLock lock(m_section);
+    m_files.clear();
+  }
+
   CGUIControl::FreeResources(immediately);
 }
 
@@ -217,6 +224,8 @@ void CGUIMultiImage::SetAspectRatio(const CAspectRatio &ratio)
 
 void CGUIMultiImage::LoadDirectory()
 {
+  CSingleLock lock(m_section);
+  
   // clear current stuff out
   m_files.clear();
 
@@ -239,13 +248,14 @@ void CGUIMultiImage::LoadDirectory()
     return;
   }
   // slow(er) checks necessary - do them in the background
-  CSingleLock lock(m_section);
   m_directoryStatus = LOADING;
   m_jobID = CJobManager::GetInstance().AddJob(new CMultiImageJob(m_currentPath), this, CJob::PRIORITY_NORMAL);
 }
 
 void CGUIMultiImage::OnDirectoryLoaded()
 {
+  CSingleLock lock(m_section);
+
   // Randomize or sort our images if necessary
   if (m_randomized)
   {
