@@ -231,8 +231,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         CFRelease(avcCData);
         return false;
       }
-      if (m_max_ref_frames == 0)
-        m_max_ref_frames = 2;
     }
 
     if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
@@ -369,8 +367,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
 
     m_DropPictures = false;
-    m_max_ref_frames = std::min(m_max_ref_frames, 5);
-
+    m_max_ref_frames = std::max(m_max_ref_frames + 1, 5);
     m_sort_time = 0;
     return true;
   }
