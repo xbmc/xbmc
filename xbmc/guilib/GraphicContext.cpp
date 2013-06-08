@@ -592,6 +592,10 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
     CDisplaySettings::Get().GetResolutionInfo(res).strMode = "PAL60 16:9";
     break;
+  case RES_WINDOW:
+    CDisplaySettings::Get().GetResolutionInfo(res).iSubtitles = (int)(0.965 * CDisplaySettings::Get().GetResolutionInfo(res).iHeight);
+    CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio = 1.0;
+    break;
   default:
     break;
   }
