@@ -515,7 +515,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   //CLog::Log(LOGNOTICE, "%s - VDADecoderDecode dts(%f), pts(%f)", __FUNCTION__,
   //  pDvdVideoPicture->dts, pDvdVideoPicture->pts);
 
-  return VC_PICTURE | VC_BUFFER;
+  return true;
 }
 
 bool CDVDVideoCodecVDA::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
