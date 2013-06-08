@@ -1767,6 +1767,22 @@
     "params": [],
     "returns": "string"
   },
+  "Input.PageUp": {
+    "type": "method",
+    "description": "Navigate page up in GUI",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
+  "Input.PageDown": {
+    "type": "method",
+    "description": "Navigate page down in GUI",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
   "Input.Select": {
     "type": "method",
     "description": "Select current item in GUI",

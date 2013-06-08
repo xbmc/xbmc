@@ -104,6 +104,16 @@ JSONRPC_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *t
   return SendAction(ACTION_MOVE_UP);
 }
 
+JSONRPC_STATUS CInputOperations::PageUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PAGE_UP);
+}
+
+JSONRPC_STATUS CInputOperations::PageDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PAGE_DOWN);
+}
+
 JSONRPC_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return SendAction(ACTION_SELECT_ITEM);
