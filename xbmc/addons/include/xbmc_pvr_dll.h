@@ -108,10 +108,11 @@ extern "C"
    * Call one of the menu hooks (if supported).
    * Supported PVR_MENUHOOK instances have to be added in ADDON_Create(), by calling AddMenuHook() on the callback.
    * @param menuhook The hook to call.
+   * @param item The selected item for which the hook was called.
    * @return PVR_ERROR_NO_ERROR if the hook was called successfully.
    * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR CallMenuHook(const PVR_MENUHOOK& menuhook);
+  PVR_ERROR CallMenuHook(const PVR_MENUHOOK& menuhook, const PVR_MENUHOOK_DATA &item);
   //@}
 
   /*! @name PVR EPG methods
