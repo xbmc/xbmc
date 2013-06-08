@@ -77,6 +77,7 @@ CCueDocument::CCueDocument(void)
   m_replayGainAlbumGain = 0.0f;
   m_iTotalTracks = 0;
   m_iTrack = 0;
+  m_iDiscNumber = 0;
 }
 
 CCueDocument::~CCueDocument(void)
@@ -102,7 +103,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
   {
     if (!ReadNextLine(strLine))
       break;
-    if (strLine.Left(8) == "INDEX 01")
+    if (StringUtils::StartsWith(strLine,"INDEX 01"))
     {
       if (bCurrentFileChanged)
       {
@@ -123,7 +124,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (m_iTotalTracks >= 0)
         m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
     }
-    else if (strLine.Left(5) == "TITLE")
+    else if (StringUtils::StartsWith(strLine,"TITLE"))
     {
       if (m_iTotalTracks == -1) // No tracks yet
         ExtractQuoteInfo(strLine, m_strAlbum);
@@ -139,16 +140,16 @@ bool CCueDocument::Parse(const CStdString &strFile)
         }
       }
     }
-    else if (strLine.Left(9) == "PERFORMER")
+    else if (StringUtils::StartsWith(strLine,"PERFORMER"))
     {
       if (m_iTotalTracks == -1) // No tracks yet
         ExtractQuoteInfo(strLine, m_strArtist);
       else // New Artist for this track
         ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strArtist);
     }
-    else if (strLine.Left(5) == "TRACK")
+    else if (StringUtils::StartsWith(strLine,"TRACK"))
     {
-      int iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
+      int iTrackNumber = ExtractNumericInfo(strLine.Mid(5));
 
       m_iTotalTracks++;
 
@@ -163,7 +164,13 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
       bCurrentFileChanged = false;
     }
-    else if (strLine.Left(4) == "FILE")
+    else if (StringUtils::StartsWith(strLine,"REM DISCNUMBER"))
+    {
+      int iDiscNumber = ExtractNumericInfo(strLine.Mid(14));
+      if (iDiscNumber > 0)
+        m_iDiscNumber = iDiscNumber;
+    }
+    else if (StringUtils::StartsWith(strLine,"FILE"))
     {
       // already a file name? then the time computation will be changed
       if(strCurrentFile.size() > 0)
@@ -175,13 +182,13 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (strCurrentFile.length() > 0)
         ResolvePath(strCurrentFile, strFile);
     }
-    else if (strLine.Left(8) == "REM DATE")
+    else if (StringUtils::StartsWith(strLine,"REM DATE"))
     {
-      int iYear = ExtractNumericInfo(strLine.c_str() + 8);
+      int iYear = ExtractNumericInfo(strLine.Mid(8));
       if (iYear > 0)
         m_iYear = iYear;
     }
-    else if (strLine.Left(9) == "REM GENRE")
+    else if (StringUtils::StartsWith(strLine,"REM GENRE"))
     {
       if (!ExtractQuoteInfo(strLine, m_strGenre))
       {
@@ -194,13 +201,13 @@ bool CCueDocument::Parse(const CStdString &strFile)
         }
       }
     }
-    else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_GAIN")
+    else if (StringUtils::StartsWith(strLine,"REM REPLAYGAIN_ALBUM_GAIN"))
       m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
-    else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_PEAK")
+    else if (StringUtils::StartsWith(strLine,"REM REPLAYGAIN_ALBUM_PEAK"))
       m_replayGainAlbumPeak = (float)atof(strLine.Mid(26));
-    else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_GAIN" && m_iTotalTracks >= 0)
+    else if (StringUtils::StartsWith(strLine,"REM REPLAYGAIN_TRACK_GAIN") && m_iTotalTracks >= 0)
       m_Track[m_iTotalTracks].replayGainTrackGain = (float)atof(strLine.Mid(26));
-    else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_PEAK" && m_iTotalTracks >= 0)
+    else if (StringUtils::StartsWith(strLine,"REM REPLAYGAIN_TRACK_PEAK") && m_iTotalTracks >= 0)
       m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.Mid(26));
   }
 
@@ -236,6 +243,8 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
     song.iYear = m_iYear;
     song.iTrack = m_Track[i].iTrackNumber;
+    if ( m_iDiscNumber > 0 )  
+      song.iTrack |= (m_iDiscNumber << 16); // see CMusicInfoTag::GetDiscNumber()
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!
       song.strTitle.Format("Track %2d", i + 1);
     else
