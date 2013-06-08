@@ -53,6 +53,7 @@ JavaVM *jvm()
 
 static void jnienv_detach_thread(void *arg)
 {
+  (void)arg;
   if (!jvm())
     return;
   __android_log_print(ANDROID_LOG_VERBOSE, "XBMC","detaching thread");

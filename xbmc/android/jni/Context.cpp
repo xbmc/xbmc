@@ -154,6 +154,8 @@ CJNIContentResolver CJNIContext::getContentResolver()
 
 void CJNIContext::_onNewIntent(JNIEnv *env, jobject context, jobject intent)
 {
+  (void)env;
+  (void)context;
   if(m_appInstance)
     m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }

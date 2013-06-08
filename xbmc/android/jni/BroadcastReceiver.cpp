@@ -47,6 +47,8 @@ CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJN
 
 void CJNIBroadcastReceiver::_onReceive(JNIEnv *env, jobject context, jobject intent)
 {
+  (void)env;
+  (void)context;
   if(m_receiverInstance)
     m_receiverInstance->onReceive(CJNIIntent(jhobject(intent)));
 }

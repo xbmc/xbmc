@@ -190,7 +190,7 @@ jhobject new_object(JNIEnv *env, jclass cls, jmethodID mid, ...)
 template <typename T>
 struct result_helper
 {
-    static T make_result(JNIEnv *env, T obj) {return obj;}
+    static T make_result(JNIEnv *env, T obj) {(void)env; return obj;}
 };
 
 template <typename T>
