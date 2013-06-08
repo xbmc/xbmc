@@ -201,6 +201,10 @@ bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
 {
+  // Shortcut, instead of stat'ing an internet stream let's just hash the URL
+  if (URIUtils::IsInternetStream(url))
+    return url;
+
   struct __stat64 st;
   if (XFILE::CFile::Stat(url, &st) == 0)
   {
