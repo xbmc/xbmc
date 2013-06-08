@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "GUIInfoManager.h"
 #include "system.h"
+#include "GitRevision.h"
 
 using namespace JSONRPC;
 

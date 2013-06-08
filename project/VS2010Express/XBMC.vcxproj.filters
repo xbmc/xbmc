@@ -5934,6 +5934,7 @@
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\GitRevision.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

@@ -1063,6 +1063,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
+    <ClInclude Include="..\..\xbmc\GitRevision.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />

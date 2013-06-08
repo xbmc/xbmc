@@ -1,8 +1,7 @@
-#ifndef __PLATFORM_INCLUDE__H__
-#define __PLATFORM_INCLUDE__H__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2012-2013 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,8 +20,14 @@
  *
  */
 
-#include <errno.h> // for ENOENT and EINVAL
-#include "PlatformDefs.h"
-
+#if defined(TARGET_DARWIN)
+#include "../git_revision.h"
 #endif
 
+#if !defined(_DEBUG) && defined(TARGET_WINDOWS) && !defined(_LIB)
+#include "git_rev.h" //generated file
+#endif
+
+#ifndef GIT_REV
+#define GIT_REV "Unknown"
+#endif

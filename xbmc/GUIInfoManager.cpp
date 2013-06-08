@@ -20,6 +20,7 @@
 
 #include "network/Network.h"
 #include "system.h"
+#include "GitRevision.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
