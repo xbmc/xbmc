@@ -620,10 +620,8 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   }
   else if (strCharCode.size() > 3)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strCharCode.c_str());
     CLangInfo langInfo;
-    if (!langInfo.Load(strLangInfoPath))
+    if (!langInfo.SetLanguage(strCharCode, true))
       return false;
 
     strThreeCharCode = langInfo.GetLanguageCode();
