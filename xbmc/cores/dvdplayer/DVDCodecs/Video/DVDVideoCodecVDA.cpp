@@ -631,45 +631,30 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   newFrame->pixel_buffer_ref = CVBufferRetain(imageBuffer);
   GetFrameDisplayTimeFromDictionary(frameInfo, newFrame);
 
-  // if both dts or pts are good we use those, else use decoder insert time for frame sort
-  if ((newFrame->pts != DVD_NOPTS_VALUE) || (newFrame->dts != DVD_NOPTS_VALUE))
-  {
-    // if pts is borked (stupid avi's), use dts for frame sort
-    if (newFrame->pts == DVD_NOPTS_VALUE)
-      newFrame->sort_time = newFrame->dts;
-    else
-      newFrame->sort_time = newFrame->pts;
-  }
-
   // since the frames we get may be in decode order rather than presentation order
   // our hypothetical callback places them in a queue of frames which will
   // hold them in display order for display on another thread
   pthread_mutex_lock(&ctx->m_queue_mutex);
-  //
-  frame_queue *queueWalker = ctx->m_display_queue;
-  if (!queueWalker || (newFrame->sort_time < queueWalker->sort_time))
+
+  frame_queue base;
+  base.nextframe = ctx->m_display_queue;
+  frame_queue *ptr = &base;
+  for(; ptr->nextframe; ptr = ptr->nextframe)
   {
-    // we have an empty queue, or this frame earlier than the current queue head.
-    newFrame->nextframe = queueWalker;
-    ctx->m_display_queue = newFrame;
-  } else {
-    // walk the queue and insert this frame where it belongs in display order.
-    bool frameInserted = false;
-    frame_queue *nextFrame = NULL;
-    //
-    while (!frameInserted)
-    {
-      nextFrame = queueWalker->nextframe;
-      if (!nextFrame || (newFrame->sort_time < nextFrame->sort_time))
-      {
-        // if the next frame is the tail of the queue, or our new frame is earlier.
-        newFrame->nextframe = nextFrame;
-        queueWalker->nextframe = newFrame;
-        frameInserted = true;
-      }
-      queueWalker = nextFrame;
-    }
+    if(ptr->nextframe->pts == DVD_NOPTS_VALUE
+    || newFrame->pts       == DVD_NOPTS_VALUE)
+      continue;
+    if(ptr->nextframe->pts > newFrame->pts)
+      break;
   }
+  /* insert after ptr */
+  newFrame->nextframe = ptr->nextframe;
+  ptr->nextframe = newFrame;
+
+  /* update anchor if needed */
+  if(newFrame->nextframe == ctx->m_display_queue)
+    ctx->m_display_queue = newFrame;
+
   ctx->m_queue_depth++;
   //
   pthread_mutex_unlock(&ctx->m_queue_mutex);	
