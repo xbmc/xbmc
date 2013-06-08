@@ -51,12 +51,13 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   return *this;
 }
 
-CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture)
+CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth)
 {
   m_posX = posX;
   m_posY = posY;
   m_width = width;
   m_height = height;
+  m_minWidth = minWidth;
   m_info = texture;
 
   // defaults
@@ -92,6 +93,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_posY = right.m_posY;
   m_width = right.m_width;
   m_height = right.m_height;
+  m_minWidth = right.m_minWidth;
   m_info = right.m_info;
 
   m_visible = right.m_visible;
@@ -408,9 +410,9 @@ bool CGUITextureBase::CalculateSize()
     if (m_aspect.align & ASPECT_ALIGN_LEFT)
       newPosX = m_posX;
     else if (m_aspect.align & ASPECT_ALIGN_RIGHT)
-      newPosX = m_posX + m_width - newWidth;
+      newPosX = m_posX + GetWidth() - newWidth;
     else
-      newPosX = m_posX + (m_width - newWidth) * 0.5f;
+      newPosX = m_posX + (GetWidth() - newWidth) * 0.5f;
     if (m_aspect.align & ASPECT_ALIGNY_TOP)
       newPosY = m_posY;
     else if (m_aspect.align & ASPECT_ALIGNY_BOTTOM)
@@ -655,6 +657,52 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
   m_info.filename = filename;
   // Don't allocate resources here as this is done at render time
   return true;
+}
+
+#ifndef CLAMP
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#endif
+
+float CGUITextureBase::GetWidth() const
+{
+  float ret = m_width;
+
+  if (m_minWidth)
+  {
+    float newWidth = m_width;
+    float newHeight = m_height;
+
+    if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
+    {
+      // to get the pixel ratio, we must use the SCALED output sizes
+      float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
+
+      float fSourceFrameRatio = m_frameWidth / m_frameHeight;
+      if (GetOrientation() & 4)
+        fSourceFrameRatio = m_frameHeight / m_frameWidth;
+      float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
+
+      // maximize the width
+      newHeight = m_width / fOutputFrameRatio;
+      if ((m_aspect.ratio == CAspectRatio::AR_SCALE && newHeight < m_height) ||
+          (m_aspect.ratio == CAspectRatio::AR_KEEP && newHeight > m_height))
+      {
+        newHeight = m_height;
+        newWidth = newHeight * fOutputFrameRatio;
+      }
+      if (m_aspect.ratio == CAspectRatio::AR_CENTER)
+      {
+        // keep original size + center
+        newWidth = m_frameWidth;
+        newHeight = m_frameHeight;
+      }
+    }
+
+    if (m_minWidth != m_width)
+      ret = CLAMP(newWidth, m_minWidth, m_width);
+  }
+
+  return ret;
 }
 
 int CGUITextureBase::GetOrientation() const

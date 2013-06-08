@@ -30,8 +30,8 @@
 
 #if defined(HAS_GL)
 
-CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture, float minWidth)
+: CGUITextureBase(posX, posY, width, height, texture, minWidth)
 {
   memset(m_col, 0, sizeof(m_col));
 }

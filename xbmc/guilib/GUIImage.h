@@ -61,7 +61,7 @@ public:
     bool         m_fading;   ///< whether we're fading out
   };
 
-  CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth = 0.0f);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
   virtual CGUIImage *Clone() const { return new CGUIImage(*this); };

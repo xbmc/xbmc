@@ -85,7 +85,7 @@ public:
 class CGUITextureBase
 {
 public:
-  CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth = 0.0f);
   CGUITextureBase(const CGUITextureBase &left);
   virtual ~CGUITextureBase(void);
 
@@ -109,7 +109,7 @@ public:
   const CStdString& GetFileName() const { return m_info.filename; };
   float GetTextureWidth() const { return m_frameWidth; };
   float GetTextureHeight() const { return m_frameHeight; };
-  float GetWidth() const { return m_width; };
+  float GetWidth() const;
   float GetHeight() const { return m_height; };
   float GetXPosition() const { return m_posX; };
   float GetYPosition() const { return m_posY; };
@@ -143,6 +143,7 @@ protected:
   float m_posY;
   float m_width;
   float m_height;
+  float m_minWidth;
 
   CRect m_vertex;       // vertex coords to render
   bool m_invalid;       // if true, we need to recalculate

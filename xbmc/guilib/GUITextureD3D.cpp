@@ -24,8 +24,8 @@
 
 #ifdef HAS_DX
 
-CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture, float minWidth)
+: CGUITextureBase(posX, posY, width, height, texture, minWidth)
 {
 }
 
