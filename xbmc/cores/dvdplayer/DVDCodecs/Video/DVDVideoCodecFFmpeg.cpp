@@ -57,6 +57,9 @@
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #endif
+#ifdef TARGET_DARWIN_OSX
+#include "VDA.h"
+#endif
 
 using namespace boost;
 
@@ -109,6 +112,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
 
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
+      if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
+      {
+        ctx->SetHardware(dec);
+        return *cur;
+      }
+      else
+        dec->Release();
+    }
+#endif
+
+#ifdef TARGET_DARWIN_OSX
+    if (*cur == AV_PIX_FMT_VDA_VLD && CSettings::Get().GetBool("videoplayer.usevda"))
+    {
+      VDA::CDecoder* dec = new VDA::CDecoder();
       if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
       {
         ctx->SetHardware(dec);
