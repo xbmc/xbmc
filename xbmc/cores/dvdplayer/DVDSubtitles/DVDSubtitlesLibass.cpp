@@ -20,8 +20,10 @@
 
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
+#include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
+#include "utils/Environment.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
@@ -37,8 +39,17 @@ static void libass_log(int level, const char *fmt, va_list args, void *data)
   CLog::Log(LOGDEBUG, "CDVDSubtitlesLibass: [ass] %s", log.c_str());
 }
 
+static void setFontConfigPath(const CStdString &path)
+{
+  // Only overwrite if the previous path is nonexistent
+  bool overwrite = !XFILE::CDirectory::Exists(CEnvironment::getenv("FONTCONFIG_PATH"));
+  CEnvironment::setenv("FONTCONFIG_PATH", path, overwrite);
+}
+
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
+  // Make sure we set up the environment for SSA+fontconfig
+  setFontConfigPath(CSpecialProtocol::TranslatePath(CStdString("special://xbmc/fontconfig")));
 
   m_track = NULL;
   m_library = NULL;
