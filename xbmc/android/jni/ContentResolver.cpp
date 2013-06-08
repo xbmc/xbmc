@@ -43,5 +43,5 @@ CJNICursor CJNIContentResolver::query(const CJNIURI &uri, const std::vector<std:
 
   return (CJNICursor)(call_method<jhobject>(m_object, \
          "query","(Landroid/net/Uri;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;", \
-         uri.get_raw(), jcast<jhstring>(selection), jcast<jhobjectArray>(selectionArgs), jcast<jhstring>(sortOrder)));
+         uri.get_raw(), jcast<jhobjectArray>(projection), jcast<jhstring>(selection), jcast<jhobjectArray>(selectionArgs), jcast<jhstring>(sortOrder)));
 }

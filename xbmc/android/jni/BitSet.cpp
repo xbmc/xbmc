@@ -49,7 +49,7 @@ void CJNIBitSet::set(int index)
 
 void CJNIBitSet::set(int fromIndex, bool state)
 {
-  call_method<void>(m_object, "fromIndex", "(IZ)V", (jint)index, state);
+  call_method<void>(m_object, "fromIndex", "(IZ)V", fromIndex, state);
 }
 
 void CJNIBitSet::set(int fromIndex, int toIndex)
@@ -109,7 +109,7 @@ bool CJNIBitSet::isEmpty()
 
 bool CJNIBitSet::intersects(const CJNIBitSet &bs)
 {
-  return call_method<jboolean>(m_object, "intersects", "(Ljava/util/BitSet;)Z");
+  return call_method<jboolean>(m_object, "intersects", "(Ljava/util/BitSet;)Z", bs.get_raw());
 }
 
 int CJNIBitSet::cardinality()
@@ -119,22 +119,22 @@ int CJNIBitSet::cardinality()
 
 void CJNIBitSet::jand(const CJNIBitSet &bs)
 {
-  call_method<void>(m_object, "jand", "(Ljava/util/BitSet;)V");
+  call_method<void>(m_object, "jand", "(Ljava/util/BitSet;)V", bs.get_raw());
 }
 
 void CJNIBitSet::jor(const CJNIBitSet &bs)
 {
-  call_method<void>(m_object, "jor", "(Ljava/util/BitSet;)V");
+  call_method<void>(m_object, "jor", "(Ljava/util/BitSet;)V", bs.get_raw());
 }
 
 void CJNIBitSet::jxor(const CJNIBitSet &bs)
 {
-  call_method<void>(m_object, "jxor", "(Ljava/util/BitSet;)V");
+  call_method<void>(m_object, "jxor", "(Ljava/util/BitSet;)V", bs.get_raw());
 }
 
 void CJNIBitSet::jandNot(const CJNIBitSet &bs)
 {
-  call_method<void>(m_object, "jandNot", "(Ljava/util/BitSet;)V");
+  call_method<void>(m_object, "jandNot", "(Ljava/util/BitSet;)V", bs.get_raw());
 }
 
 int CJNIBitSet::hashCode()

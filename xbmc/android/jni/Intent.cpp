@@ -25,7 +25,10 @@ using namespace jni;
 
 CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("android/content/Intent")
 {
-  m_object = new_object(GetClassName());
+  if(action.empty())
+    m_object = new_object(GetClassName());
+  else
+    m_object = new_object(GetClassName(), "<init>", "(Ljava/lang/String;)V", jcast<jhstring>(action));
 }
 
 std::string CJNIIntent::getAction()
