@@ -916,7 +916,7 @@ unsigned int COMXAudio::GetSpace()
 float COMXAudio::GetDelay()
 {
   unsigned int free = m_omx_decoder.GetInputBufferSize() - m_omx_decoder.GetInputBufferSpace();
-  return (float)free / (float)m_BytesPerSec;
+  return m_BytesPerSec ? (float)free / (float)m_BytesPerSec : 0.0f;
 }
 
 float COMXAudio::GetCacheTime()
@@ -924,13 +924,13 @@ float COMXAudio::GetCacheTime()
   float fBufferLenFull = (float)m_BufferLen - (float)GetSpace();
   if(fBufferLenFull < 0)
     fBufferLenFull = 0;
-  float ret = fBufferLenFull / (float)m_BytesPerSec;
+  float ret = m_BytesPerSec ? fBufferLenFull / (float)m_BytesPerSec : 0.0f;
   return ret;
 }
 
 float COMXAudio::GetCacheTotal()
 {
-  return (float)m_BufferLen / (float)m_BytesPerSec;
+  return m_BytesPerSec ? (float)m_BufferLen / (float)m_BytesPerSec : 0.0f;
 }
 
 //***********************************************************************************************
