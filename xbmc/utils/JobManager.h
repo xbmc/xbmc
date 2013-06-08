@@ -135,6 +135,13 @@ public:
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+protected:
+  /*!
+   \brief Returns if we still have jobs waiting to be processed
+   NOTE: This function does not take into account the jobs that are currently processing 
+   */
+  bool QueueEmpty() const;
+  
 private:
   void QueueNextJob();
 

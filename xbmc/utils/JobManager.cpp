@@ -158,6 +158,13 @@ void CJobQueue::CancelJobs()
   m_processing.clear();
 }
 
+
+bool CJobQueue::QueueEmpty() const
+{
+  CSingleLock lock(m_section);
+  return m_jobQueue.empty();
+}
+
 CJobManager &CJobManager::GetInstance()
 {
   static CJobManager sJobManager;
