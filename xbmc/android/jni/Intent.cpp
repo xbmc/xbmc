@@ -90,7 +90,7 @@ void CJNIIntent::setData(const std::string &uri)
 
 void CJNIIntent::setDataAndType(const CJNIURI &uri, const std::string &type)
 {
-  call_method<jhobject>(m_object, "setDataAndType", "(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;", uri.get(), jcast<jhstring>(type));
+  call_method<jhobject>(m_object, "setDataAndType", "(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;", uri.get_raw(), jcast<jhstring>(type));
 }
 
 void CJNIIntent::setFlags(int flags)

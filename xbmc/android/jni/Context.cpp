@@ -77,7 +77,7 @@ CJNIPackageManager CJNIContext::GetPackageManager()
 
 void CJNIContext::startActivity(const CJNIIntent &intent)
 {
-  call_method<void>(jhobject(m_context), "startActivity", "(Landroid/content/Intent;)V", intent.get());
+  call_method<void>(jhobject(m_context), "startActivity", "(Landroid/content/Intent;)V", intent.get_raw());
 }
 
 int CJNIContext::checkCallingOrSelfPermission(const std::string &permission)
@@ -93,23 +93,23 @@ jhobject CJNIContext::getSystemService(const std::string &service)
 CJNIIntent CJNIContext::registerReceiver(const CJNIBroadcastReceiver &receiver, const CJNIIntentFilter &filter)
 {
   return (CJNIIntent)call_method<jhobject>(m_context, "registerReceiver", \
-                             "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;", receiver.get(), filter.get());
+                             "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;", receiver.get_raw(), filter.get_raw());
 }
 
 CJNIIntent CJNIContext::registerReceiver(const CJNIIntentFilter &filter)
 {
   return (CJNIIntent)call_method<jhobject>(m_context, "registerReceiver", \
-                             "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;", (jobject)NULL, filter.get());
+                             "(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;", (jobject)NULL, filter.get_raw());
 }
 
 void CJNIContext::unregisterReceiver(const CJNIBroadcastReceiver &receiver)
 {
-  call_method<void>(m_context, "unregisterReceiver", "(Landroid/content/BroadcastReceiver;)V", receiver.get());
+  call_method<void>(m_context, "unregisterReceiver", "(Landroid/content/BroadcastReceiver;)V", receiver.get_raw());
 }
 
 CJNIIntent CJNIContext::sendBroadcast(const CJNIIntent &intent)
 {
-  return (CJNIIntent)call_method<jhobject>(m_context, "sendBroadcast", "(Landroid/content/Intent;)V", intent.get());
+  return (CJNIIntent)call_method<jhobject>(m_context, "sendBroadcast", "(Landroid/content/Intent;)V", intent.get_raw());
 }
 
 CJNIIntent CJNIContext::getIntent()

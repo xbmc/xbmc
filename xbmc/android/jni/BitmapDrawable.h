@@ -25,7 +25,7 @@ class CJNIBitmapDrawable : public CJNIDrawable
 public:
   CJNIBitmapDrawable();
   CJNIBitmapDrawable(const jni::jhobject &object) : CJNIDrawable(object){};
-  CJNIBitmapDrawable(const CJNIDrawable &drawable) : CJNIDrawable(drawable.get()){};
+  CJNIBitmapDrawable(const CJNIDrawable &drawable) : CJNIDrawable(drawable.get_raw()){};
   CJNIBitmap getBitmap();
   ~CJNIBitmapDrawable(){};
 };

@@ -46,7 +46,7 @@ CJNIDrawable CJNIPackageManager::getApplicationIcon(const std::string &package)
 
 CJNICharSequence CJNIPackageManager::getApplicationLabel(const CJNIApplicationInfo &info)
 {
-  return (CJNICharSequence)call_method<jhobject>(m_object, "getApplicationLabel", "(Landroid/content/pm/ApplicationInfo;)Ljava/lang/CharSequence;", info.get());
+  return (CJNICharSequence)call_method<jhobject>(m_object, "getApplicationLabel", "(Landroid/content/pm/ApplicationInfo;)Ljava/lang/CharSequence;", info.get_raw());
 }
 
 CJNIList<CJNIApplicationInfo> CJNIPackageManager::getInstalledApplications(int flags)

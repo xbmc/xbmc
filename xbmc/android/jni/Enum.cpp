@@ -33,5 +33,5 @@ std::string CJNIEnum::toString()
 }
 bool CJNIEnum::equals(const CJNIEnum &object)
 {
-  return call_method<jboolean>(m_object, "equals", "(Ljava/lang/Object;)Z", object.get());
+  return call_method<jboolean>(m_object, "equals", "(Ljava/lang/Object;)Z", object.get_raw());
 }
