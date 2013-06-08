@@ -81,7 +81,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoMode(void)
 void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 {
   RENDER_STEREO_MODE currentMode = GetStereoMode();
-  if (mode != currentMode)
+  if (mode != currentMode && mode >= RENDER_STEREO_MODE_OFF)
   {
     m_lastStereoMode = currentMode;
     CSettings::Get().SetInt("videoscreen.stereoscopicmode", mode);
@@ -314,9 +314,7 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
   }
   else if (action.GetID() == ACTION_STEREOMODE_SELECT)
   {
-    RENDER_STEREO_MODE selectedMode = GetStereoModeByUserChoice();
-    if (selectedMode > -1 && selectedMode != mode)
-      SetStereoMode(selectedMode);
+    SetStereoMode(GetStereoModeByUserChoice());
     return true;
   }
   else if (action.GetID() == ACTION_STEREOMODE_TOMONO)
