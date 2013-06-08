@@ -41,9 +41,7 @@
 #include "URIUtils.h"
 #include "log.h"
 #include "addons/AddonManager.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "CharsetConverter.h"
 #include "addons/GUIDialogAddonSettings.h"
 
@@ -87,22 +85,22 @@ bool CWeatherJob::DoWork()
     return false;
 
   // initialize our sys.argv variables
-  std::vector<CStdString> argv;
+  std::vector<std::string> argv;
   argv.push_back(addon->LibPath());
 
   CStdString strSetting;
   strSetting.Format("%i", m_location);
   argv.push_back(strSetting);
 
-#ifdef HAS_PYTHON
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
   // call our script, passing the areacode
-  if (g_pythonParser.evalFile(argv[0], argv,addon))
+  int scriptId = -1;
+  if ((scriptId = CScriptInvocationManager::Get().Execute(argv[0], addon, argv)) >= 0)
   {
     while (true)
     {
-      if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(addon->LibPath().c_str())))
+      if (!CScriptInvocationManager::Get().IsRunning(scriptId))
         break;
       Sleep(100);
     }
@@ -120,7 +118,6 @@ bool CWeatherJob::DoWork()
     g_windowManager.SendThreadMessage(msg);
   }
   else
-#endif
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 
   return true;

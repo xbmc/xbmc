@@ -25,11 +25,9 @@
 #include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/Network.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -565,9 +563,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_EXECUTE_SCRIPT:
-#ifdef HAS_PYTHON
-      g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
-#endif
+      CScriptInvocationManager::Get().Execute(pMsg->strParam);
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
