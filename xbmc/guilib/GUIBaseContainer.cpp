@@ -464,6 +464,20 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
     }
   }
+  else if (message.GetMessage() == GUI_MSG_REMOVE_LIST_ITEM)
+  {
+    if (message.GetParam1())
+    {
+      int removeItem = message.GetParam1() - 1;
+      m_items.erase(m_items.begin() + removeItem);
+
+      if (removeItem == GetSelectedItem())
+        SelectItem(0);
+
+      SetInvalid();
+      return true;
+    }
+  }
   return CGUIControl::OnMessage(message);
 }
 

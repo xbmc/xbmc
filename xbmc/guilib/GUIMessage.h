@@ -133,6 +133,11 @@
 
 #define GUI_MSG_WINDOW_LOAD 43
 
+/*!
+ \brief A request to remove an item from a CGUIBaseContainer
+ */
+#define GUI_MSG_REMOVE_LIST_ITEM  44
+
 #define GUI_MSG_USER         1000
 
 /*!
