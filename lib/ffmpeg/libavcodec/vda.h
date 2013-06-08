@@ -58,7 +58,7 @@
  *
  * @deprecated Use synchronous decoding mode.
  */
-typedef struct {
+typedef struct vda_frame {
     /**
      * The PTS of the frame.
      *
