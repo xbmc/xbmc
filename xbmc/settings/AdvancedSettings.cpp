@@ -1200,7 +1200,6 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
           }
         }
         CStdString regExp = pRegExp->FirstChild()->Value();
-        regExp.MakeLower();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
         else
