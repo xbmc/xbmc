@@ -236,7 +236,7 @@ bool CTextureDDSJob::operator==(const CJob* job) const
 
 bool CTextureDDSJob::DoWork()
 {
-  if (URIUtils::GetExtension(m_original).Equals(".dds"))
+  if (URIUtils::HasExtension(m_original, ".dds"))
     return false;
   CBaseTexture *texture = CBaseTexture::LoadFromFile(m_original);
   if (texture)

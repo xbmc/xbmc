@@ -56,9 +56,7 @@ CStdString CMusicDatabaseFile::TranslateUrl(const CURL& url)
   if (!musicDatabase.GetSong(idSong, song))
     return "";
 
-  CStdString strExtensionFromDb = URIUtils::GetExtension(song.strFileName);
-
-  if (!strExtensionFromDb.Equals(strExtension))
+  if (!URIUtils::HasExtension(song.strFileName, strExtension))
     return "";
 
   return song.strFileName;

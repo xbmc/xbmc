@@ -215,9 +215,8 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
 bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
 {
 #if defined(HAS_OMXPLAYER)
-  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
-      URIUtils::GetExtension(texturePath).Equals(".tbn") 
-      /*|| URIUtils::GetExtension(texturePath).Equals(".png")*/)
+  if (URIUtils::HasExtension(texturePath, ".jpg|.tbn")
+      /*|| URIUtils::HasExtension(texturePath, ".png")*/)
   {
     COMXImage omx_image;
 
@@ -281,7 +280,7 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
     omx_image.ClampLimits(maxWidth, maxHeight);
   }
 #endif
-  if (URIUtils::GetExtension(texturePath).Equals(".dds"))
+  if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
     CDDSImage image;
     if (image.ReadFile(texturePath))

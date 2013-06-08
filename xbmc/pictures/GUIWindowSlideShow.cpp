@@ -1142,7 +1142,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
     {
       CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
       CStdString strHostName = url.GetHostName();
-      if (URIUtils::GetExtension(strHostName).Equals(".cbr", false) || URIUtils::GetExtension(strHostName).Equals(".cbz", false))
+      if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
       {
         m_Image[iPic].m_bIsComic = true;
         m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());

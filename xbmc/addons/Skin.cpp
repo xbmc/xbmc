@@ -309,7 +309,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
 
   CStdString settingValue = ((const CSettingString*)setting)->GetValue();
   // Remove the .xml extension from the Themes
-  if (URIUtils::GetExtension(settingValue) == ".xml")
+  if (URIUtils::HasExtension(settingValue, ".xml"))
     URIUtils::RemoveExtension(settingValue);
   
   // Set the choosen theme

@@ -129,18 +129,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 
 bool CPlayListFactory::IsPlaylist(const CStdString& filename)
 {
-  CStdString extension = URIUtils::GetExtension(filename);
-  extension.ToLower();
-
-  if (extension == ".m3u") return true;
-  if (extension == ".b4s") return true;
-  if (extension == ".pls") return true;
-  if (extension == ".strm") return true;
-  if (extension == ".wpl") return true;
-  if (extension == ".asx") return true;
-  if (extension == ".ram") return true;
-  if (extension == ".url") return true;
-  if (extension == ".pxml") return true;
-  return false;
+  return URIUtils::HasExtension(filename,
+                     ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");
 }
 

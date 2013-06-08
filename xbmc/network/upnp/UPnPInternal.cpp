@@ -561,8 +561,7 @@ BuildObject(CFileItem&                    item,
             CTextureCache::GetWrappedImageURL(thumb).c_str());
 
         // Set DLNA profileID by extension, defaulting to JPEG.
-        NPT_String ext = URIUtils::GetExtension(thumb).c_str();
-        if (strcmp(ext, ".png") == 0) {
+        if (URIUtils::HasExtension(thumb, ".png")) {
             art.dlna_profile = "PNG_TN";
         } else {
             art.dlna_profile = "JPEG_TN";

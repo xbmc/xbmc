@@ -1323,7 +1323,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CStdString &path)
   if (m_playlistName.empty())
   {
     m_playlistName = CUtil::GetTitleFromPath(path);
-    if (URIUtils::GetExtension(m_playlistName) == ".xsp")
+    if (URIUtils::HasExtension(m_playlistName, ".xsp"))
       URIUtils::RemoveExtension(m_playlistName);
   }
 

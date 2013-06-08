@@ -168,7 +168,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // get filename from label instead of path
         strFileName = pItem->GetLabel();
 
-        if(!pItem->m_bIsFolder && URIUtils::GetExtension(strFileName).length() == 0)
+        if(!pItem->m_bIsFolder && !URIUtils::HasExtension(strFileName))
         {
           // FIXME: for now we only work well if the url has the extension
           // we should map the content type to the extension otherwise

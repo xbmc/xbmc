@@ -61,6 +61,51 @@ CStdString URIUtils::GetExtension(const CStdString& strFileName)
   return strFileName.substr(period);
 }
 
+bool URIUtils::HasExtension(const CStdString& strFileName)
+{
+  if (IsURL(strFileName))
+  {
+    CURL url(strFileName);
+    return HasExtension(url.GetFileName());
+  }
+
+  size_t iPeriod = strFileName.find_last_of("./\\");
+  return iPeriod != string::npos && strFileName[iPeriod] == '.';
+}
+
+bool URIUtils::HasExtension(const CStdString& strFileName, const CStdString& strExtensions)
+{
+  if (IsURL(strFileName))
+  {
+    CURL url(strFileName);
+    return HasExtension(url.GetFileName(), strExtensions);
+  }
+
+  // Search backwards so that '.' can be used as a search terminator.
+  CStdString::const_reverse_iterator itExtensions = strExtensions.rbegin();
+  while (itExtensions != strExtensions.rend())
+  {
+    // Iterate backwards over strFileName untill we hit a '.' or a mismatch
+    for (CStdString::const_reverse_iterator itFileName = strFileName.rbegin();
+         itFileName != strFileName.rend(), itExtensions != strExtensions.rend(),
+         tolower(*itFileName) == *itExtensions;
+         ++itFileName, ++itExtensions)
+    {
+      if (*itExtensions == '.')
+        return true; // Match
+    }
+
+    // No match. Look for more extensions to try.
+    while (itExtensions != strExtensions.rend() && *itExtensions != '|')
+      ++itExtensions;
+
+    while (itExtensions != strExtensions.rend() && *itExtensions == '|')
+      ++itExtensions;
+  }
+
+  return false;
+}
+
 void URIUtils::RemoveExtension(CStdString& strFileName)
 {
   if(IsURL(strFileName))
@@ -573,31 +618,17 @@ bool URIUtils::IsInRAR(const CStdString& strFile)
 
 bool URIUtils::IsAPK(const CStdString& strFile)
 {
-  return GetExtension(strFile).CompareNoCase(".apk") == 0;
+  return HasExtension(strFile, ".apk");
 }
 
 bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
-  CStdString strExtension = GetExtension(strFile);
-
-  if (strExtension.CompareNoCase(".zip") == 0)
-    return true;
-
-  if (strExtension.CompareNoCase(".cbz") == 0)
-    return true;
-
-  return false;
+  return HasExtension(strFile, ".zip|.cbz");
 }
 
 bool URIUtils::IsArchive(const CStdString& strFile)
 {
-  CStdString extension = GetExtension(strFile);
-
-  return (extension.CompareNoCase(".zip") == 0 ||
-          extension.CompareNoCase(".rar") == 0 ||
-          extension.CompareNoCase(".apk") == 0 ||
-          extension.CompareNoCase(".cbz") == 0 ||
-          extension.CompareNoCase(".cbr") == 0);
+  return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
 }
 
 bool URIUtils::IsSpecial(const CStdString& strFile)
