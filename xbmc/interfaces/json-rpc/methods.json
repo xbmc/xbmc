@@ -1783,6 +1783,22 @@
     "params": [],
     "returns": "string"
   },
+  "Input.NextLetter": {
+    "type": "method",
+    "description": "Navigate to the next letter in GUI",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
+  "Input.PreviousLetter": {
+    "type": "method",
+    "description": "Navigate to the previous letter in GUI",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
   "Input.Select": {
     "type": "method",
     "description": "Select current item in GUI",

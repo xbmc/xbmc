@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://www.xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.5.2";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.5.3";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -3048,6 +3048,22 @@ namespace JSONRPC
     "\"Input.PageDown\": {"
       "\"type\": \"method\","
       "\"description\": \"Navigate page down in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.NextLetter\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate to the next letter in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.PreviousLetter\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate to the previous letter in GUI\","
       "\"transport\": \"Response\","
       "\"permission\": \"Navigate\","
       "\"params\": [],"

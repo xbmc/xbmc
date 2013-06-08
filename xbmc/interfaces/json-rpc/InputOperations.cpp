@@ -114,6 +114,16 @@ JSONRPC_STATUS CInputOperations::PageDown(const CStdString &method, ITransportLa
   return SendAction(ACTION_PAGE_DOWN);
 }
 
+JSONRPC_STATUS CInputOperations::NextLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_NEXT_LETTER);
+}
+
+JSONRPC_STATUS CInputOperations::PreviousLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PREV_LETTER);
+}
+
 JSONRPC_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return SendAction(ACTION_SELECT_ITEM);
