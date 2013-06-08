@@ -63,9 +63,13 @@ bool DllDynamic::Load()
 
 void DllDynamic::Unload()
 {
-  if(m_dll)
+  if (m_dll)
+  {
+    // We want to make sure that m_dll is NULL before we unload it
+    m_dll = NULL;
+
     CSectionLoader::UnloadDLL(m_strDllName);
-  m_dll=NULL;
+  }
 }
 
 bool DllDynamic::CanLoad()
