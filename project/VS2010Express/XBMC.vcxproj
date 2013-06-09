@@ -837,6 +837,8 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.cpp" />
+    <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfMDNS.cpp" />
     <ClCompile Include="..\..\xbmc\network\Network.cpp" />
     <ClCompile Include="..\..\xbmc\network\NetworkServices.cpp" />
     <ClCompile Include="..\..\xbmc\network\Socket.cpp" />
@@ -855,8 +857,6 @@
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp" />
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp" />
     <ClCompile Include="..\..\xbmc\network\windows\NetworkWin32.cpp" />
-    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.cpp" />
-    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp" />
     <ClCompile Include="..\..\xbmc\network\Zeroconf.cpp" />
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\NfoFile.cpp" />
@@ -1289,7 +1289,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZipManager.h" />
-    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.h" />
+    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h" />
     <ClInclude Include="..\..\xbmc\system_gl.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
@@ -2277,13 +2277,13 @@
     <ClInclude Include="..\..\xbmc\network\EventServer.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogAccessPoints.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogNetworkSetup.h" />
+    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfMDNS.h" />    
     <ClInclude Include="..\..\xbmc\network\Network.h" />
     <ClInclude Include="..\..\xbmc\network\Socket.h" />
     <ClInclude Include="..\..\xbmc\network\TCPServer.h" />
     <ClInclude Include="..\..\xbmc\network\UdpClient.h" />
     <ClInclude Include="..\..\xbmc\network\WebServer.h" />
     <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h" />
-    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfWIN.h" />
     <ClInclude Include="..\..\xbmc\network\Zeroconf.h" />
     <ClInclude Include="..\..\xbmc\network\ZeroconfBrowser.h" />
     <ClInclude Include="..\..\xbmc\NfoFile.h" />

@@ -301,6 +301,9 @@
     <Filter Include="input\touch\generic">
       <UniqueIdentifier>{d062c356-66f2-49e7-9510-b216701d2298}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\mdns">
+      <UniqueIdentifier>{4deb3d70-7772-42be-8884-4a550c1ff666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1912,8 +1915,8 @@
     <ClCompile Include="..\..\xbmc\utils\HttpParser.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp">
-      <Filter>network\windows</Filter>
+    <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfMDNS.cpp">
+      <Filter>network\mdns</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\Peripherals.cpp">
       <Filter>peripherals</Filter>
@@ -2301,8 +2304,8 @@
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.cpp">
-      <Filter>network\windows</Filter>
+    <ClCompile Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.cpp">
+      <Filter>network\mdns</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.cpp">
       <Filter>cores\AudioEngine\Encoders</Filter>
@@ -4900,8 +4903,8 @@
     <ClInclude Include="..\..\xbmc\utils\HttpParser.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfWIN.h">
-      <Filter>network\windows</Filter>
+    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfMDNS.h">
+      <Filter>network\mdns</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\DllLibPlist.h">
       <Filter>network</Filter>
@@ -5309,8 +5312,8 @@
     <ClInclude Include="..\..\xbmc\network\ZeroconfBrowser.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.h">
-      <Filter>network\windows</Filter>
+    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.h">
+      <Filter>network\mdns</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h">
       <Filter>cores\AudioEngine\Encoders</Filter>

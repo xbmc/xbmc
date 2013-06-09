@@ -22,22 +22,21 @@
 #include <stdexcept>
 #include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#if !defined(TARGET_DARWIN)
+#if defined (HAS_AVAHI)
 #include "linux/ZeroconfBrowserAvahi.h"
-#else
+#elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "osx/ZeroconfBrowserOSX.h"
-#endif
-#elif defined(TARGET_WINDOWS)
-#include "windows/ZeroconfBrowserWIN.h"
+#elif defined(HAS_MDNS)
+#include "mdns/ZeroconfBrowserMDNS.h"
 #endif
 
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 
-#if !defined(HAS_ZEROCONF)
+// FIXME - once zeroconf browser with mdnsembedded is fixed -remove that condition here
+#if !defined(HAS_ZEROCONF) || defined(HAS_MDNS_EMBEDDED)
 //dummy implementation used if no zeroconf is present
 //should be optimized away
 class CZeroconfBrowserDummy : public CZeroconfBrowser
@@ -153,15 +152,16 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
     CAtomicSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
-#if !defined(HAS_ZEROCONF)
+// FIXME - once zeroconf browser with mdnsembedded is fixed -remove that condition here
+#if !defined(HAS_ZEROCONF) || defined(HAS_MDNS_EMBEDDED)
       smp_instance = new CZeroconfBrowserDummy;
 #else
 #if defined(TARGET_DARWIN)
       smp_instance = new CZeroconfBrowserOSX;
-#elif defined(TARGET_POSIX)
+#elif defined(HAS_AVAHI)
       smp_instance  = new CZeroconfBrowserAvahi;
-#elif defined(TARGET_WINDOWS)
-      smp_instance  = new CZeroconfBrowserWIN;
+#elif defined(HAS_MDNS)
+      smp_instance  = new CZeroconfBrowserMDNS;
 #endif
 #endif
     }

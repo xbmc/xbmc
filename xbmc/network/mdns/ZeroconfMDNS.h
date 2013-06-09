@@ -24,13 +24,19 @@
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
 #include <dns_sd.h>
+#include "threads/Thread.h"
 
-class CZeroconfWIN : public CZeroconf
+class CZeroconfMDNS : public CZeroconf,public CThread
 {
 public:
-  CZeroconfWIN();
-  ~CZeroconfWIN();
+  CZeroconfMDNS();
+  ~CZeroconfMDNS();
+
 protected:
+
+  //CThread interface
+  void Process();
+
   //implement base CZeroConf interface
   bool doPublishService(const std::string& fcr_identifier,
                         const std::string& fcr_type,
