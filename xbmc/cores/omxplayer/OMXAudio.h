@@ -85,7 +85,7 @@ public:
   void SetCodingType(AEDataFormat dataFormat);
   static bool CanHWDecode(CodecID codec);
 
-  void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
+  static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
   void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
   void PrintDDP(OMX_AUDIO_PARAM_DDPTYPE *ddparm);
   void PrintDTS(OMX_AUDIO_PARAM_DTSTYPE *dtsparam);
@@ -143,9 +143,9 @@ protected:
 
   CAEChannelInfo    m_channelLayout;
 
-  CAEChannelInfo    GetChannelLayout(AEAudioFormat format);
+  static CAEChannelInfo    GetChannelLayout(AEAudioFormat format);
 
-  void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
+  static void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
   CCriticalSection m_critSection;
 };
 #endif
