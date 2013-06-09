@@ -1,0 +1,18 @@
+<keymap device="mouse" name="reference">
+  <global>
+    <leftclick>leftclick</leftclick>
+    <middleclick>middleclick</middleclick>
+    <rightclick>rightclick</rightclick>
+    <doubleclick>doubleclick</doubleclick>
+    <wheeldown>wheeldown</wheeldown>
+    <wheelup>wheelup</wheelup>
+    <mousedrag>mousedrag</mousedrag>
+    <mousemove>mousemove</mousemove>
+  </global>
+  <SlideShow>
+    <leftclick>Pause</leftclick>
+    <rightclick>PreviousMenu</rightclick>
+    <wheelup>PreviousPicture</wheelup>
+    <wheeldown>NextPicture</wheeldown>
+  </SlideShow>
+</keymap>

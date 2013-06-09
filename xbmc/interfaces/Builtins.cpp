@@ -148,6 +148,7 @@ const BUILT_IN commands[] = {
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "UnloadSkin",                 false,  "Unload XBMC's skin" },
   { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
+  { "ReloadKeymaps",              false,  "Reload XBMC's keymaps" },
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "Playlist.Clear",             false,  "Clear the current playlist" },
@@ -714,6 +715,10 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("refreshrss"))
   {
     CRssManager::Get().Reload();
+  }
+  else if (execute.Equals("reloadkeymaps"))
+  {
+    CButtonTranslator::GetInstance().Load();
   }
   else if (execute.Equals("playercontrol"))
   {

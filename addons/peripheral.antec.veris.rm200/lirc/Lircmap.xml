@@ -1,0 +1,57 @@
+<!-- This file contains the mapping of LIRC keys to XBMC keys used in Keymap.xml  -->
+<!--                                                                              -->
+<!-- How to add remotes                                                           -->
+<!-- <remote device="name_Lirc_calls_the_remote">                                 -->
+<!--                                                                              -->
+<!-- For the commands the layout following layout is used                         -->
+<!-- <XBMC_COMMAND>LircButtonName</XBMC_COMMAND>                                  -->
+<!--                                                                              -->
+<!-- For a list of XBMC_COMMAND's check out the <remote> sections of keymap.xml   -->
+
+<lircmap>
+	<remote device="Antec_Veris_RM200">
+		<stop>KEY_STOP</stop>
+		<pause>KEY_PAUSE</pause>
+		<forward>KEY_FASTFORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
+		<left>KEY_LEFT</left>
+		<right>KEY_RIGHT</right>
+		<up>KEY_UP</up>
+		<down>KEY_DOWN</down>
+		<select>KEY_ENTER</select>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
+		<back>KEY_BACKSPACE</back>
+		<menu>KEY_MENU</menu>
+		<play>KEY_PLAY</play>
+		<info>Go</info>
+		<skipplus>next</skipplus>
+		<skipminus>prev</skipminus>
+		<display>FullScreen</display>
+		<start>applauncher</start>
+		<record>KEY_RECORD</record>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<myvideo>KEY_VIDEO</myvideo>
+		<mymusic>KEY_AUDIO</mymusic>
+		<mypictures>KEY_PHOTO</mypictures>
+		<mytv>KEY_TV</mytv>
+		<one>KEY_1</one>
+		<two>KEY_2</two>
+		<three>KEY_3</three>
+		<four>KEY_4</four>
+		<five>KEY_5</five>
+		<six>KEY_6</six>
+		<seven>KEY_7</seven>
+		<eight>KEY_8</eight>
+		<nine>KEY_9</nine>
+		<zero>KEY_0</zero>
+		<star>Star</star>
+		<hash>Hash</hash>
+		<playlist>KEY_BOOKMARKS</playlist>
+		<teletext>Thumbnail</teletext>
+		<title>TaskSwitcher</title>		
+	</remote>
+</lircmap>

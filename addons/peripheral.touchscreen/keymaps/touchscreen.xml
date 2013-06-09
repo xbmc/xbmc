@@ -1,0 +1,17 @@
+<keymap device="touchscreen" name="reference">
+  <global>
+    <tap>LeftClick</tap>
+    <longpress>RightClick</longpress>
+    <tap pointers="2">RightClick</tap>
+    <pan>PanGesture</pan>
+    <swipe direction="left">SwipeLeft</swipe>
+    <swipe direction="left" pointers="2">Back</swipe>
+    <swipe direction="right">SwipeRight</swipe>
+    <swipe direction="up">SwipeUp</swipe>
+    <swipe direction="down">SwipeDown</swipe>
+  </global>
+  <SlideShow>
+    <zoom>ZoomGesture</zoom>
+    <rotate>RotateGesture</rotate>
+  </SlideShow>
+</keymap>

@@ -42,6 +42,7 @@
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
+#include "Peripheral.h"
 #include "PluginSource.h"
 #include "Repository.h"
 #include "Skin.h"
@@ -165,6 +166,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
+    case ADDON_PERIPHERAL:
+      return AddonPtr(new CPeripheral(props));
     default:
       break;
   }
@@ -624,6 +627,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CPVRClient(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
+    case ADDON_PERIPHERAL:
+      return AddonPtr(new CPeripheral(addonProps));
     default:
       break;
   }

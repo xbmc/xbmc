@@ -1,0 +1,42 @@
+<!-- This file contains the mapping of LIRC keys to XBMC keys used in Keymap.xml  -->
+<!--                                                                              -->
+<!-- How to add remotes                                                           -->
+<!-- <remote device="name_Lirc_calls_the_remote">                                 -->
+<!--                                                                              -->
+<!-- For the commands the layout following layout is used                         -->
+<!-- <XBMC_COMMAND>LircButtonName</XBMC_COMMAND>                                  -->
+<!--                                                                              -->
+<!-- For a list of XBMC_COMMAND's check out the <remote> sections of keymap.xml   -->
+
+<lircmap>
+	<remote device="TwinHanRemote">
+		<display>fullscreen</display>
+		<power>power</power>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<record>rec</record>
+		<zero>0</zero>
+		<myvideo>favorite</myvideo>
+		<volumeminus>rewind</volumeminus>
+		<volumeplus>forward</volumeplus>
+		<up>ch+</up>
+		<left>vol-</left>
+		<select>play</select>
+		<right>vol+</right>
+		<down>ch-</down>
+		<menu>recall</menu>
+		<stop>stop</stop>
+		<pause>pause</pause>
+		<mute>mute</mute>
+		<info>epg</info>
+		<recordedtv>recordlist</recordedtv>
+		<title>teletext</title>
+	</remote>
+</lircmap>

@@ -84,6 +84,7 @@ static const TypeMapping types[] =
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
    {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
+   {"xbmc.peripheral",                   ADDON_PERIPHERAL,          35000, "DefaultAddonPeripheral.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)

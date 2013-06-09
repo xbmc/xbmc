@@ -1,0 +1,104 @@
+<!-- This file contains the mapping of LIRC keys to XBMC keys used in Keymap.xml  -->
+<!--                                                                              -->
+<!-- How to add remotes                                                           -->
+<!-- <remote device="name_Lirc_calls_the_remote">                                 -->
+<!--                                                                              -->
+<!-- For the commands the layout following layout is used                         -->
+<!-- <XBMC_COMMAND>LircButtonName</XBMC_COMMAND>                                  -->
+<!--                                                                              -->
+<!-- For a list of XBMC_COMMAND's check out the <remote> sections of keymap.xml   -->
+
+<lircmap>
+	<remote device="iMON-PAD">
+		<power>Power</power>
+		<record>Record</record>
+		<play>Play</play>
+		<reverse>Rewind</reverse>
+		<pause>Pause</pause>
+		<stop>Stop</stop>
+		<forward>FastForward</forward>
+		<left>Left</left>
+		<right>Right</right>
+		<up>Up</up>
+		<down>Down</down>
+		<select>Enter</select>
+		<pageplus>Ch+</pageplus>
+		<pageminus>Ch-</pageminus>
+		<back>Esc</back>
+		<back>Backspace</back>
+		<menu>Multimon</menu>
+		<title>MouseMenu</title>
+		<info>SelectSpace</info>
+		<skipplus>NextChapter</skipplus>
+		<skipminus>PrevChapter</skipminus>
+		<display>FullScreen</display>
+		<start>MultiMon</start>
+		<volumeplus>Vol+</volumeplus>
+		<volumeminus>Vol-</volumeminus>
+		<mute>Mute</mute>
+		<myvideo>MyMovie</myvideo>
+		<mymusic>MyMusic</mymusic>
+		<mypictures>MyPhoto</mypictures>
+		<mytv>MyTV</mytv>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<zero>0</zero>
+		<subtitle>Language</subtitle>
+	</remote>
+	<remote	device="MCE_via_iMON">
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+		<forward>KEY_FASTFORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
+		<left>KEY_LEFT</left>
+		<right>KEY_RIGHT</right>
+		<up>KEY_UP</up>
+		<down>KEY_DOWN</down>
+		<select>KEY_OK</select>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
+		<back>KEY_BACKSPACE</back>
+		<menu>PreviousMenu</menu>
+		<title>Guide</title>
+		<info>KEY_INFO</info>
+		<skipplus>KEY_SKIP</skipplus>
+		<skipminus>KEY_REPLAY</skipminus>
+		<display>Teletext</display>
+		<start>WindowsMCE</start>
+		<record>KEY_RECORD</record>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<myvideo>KEY_VIDEO</myvideo>
+		<mymusic>KEY_AUDIO</mymusic>
+		<mypictures>KEY_PHOTO</mypictures>
+		<mytv>KEY_TV</mytv>
+		<one>KEY_ONE</one>
+		<two>KEY_TWO</two>
+		<three>KEY_THREE</three>
+		<four>KEY_FOUR</four>
+		<five>KEY_FIVE</five>
+		<six>KEY_SIX</six>
+		<seven>KEY_SEVEN</seven>
+		<eight>KEY_EIGHT</eight>
+		<nine>KEY_NINE</nine>
+		<zero>KEY_ZERO</zero>
+		<star>Star</star>
+		<hash>Hash</hash>
+		<clear>KEY_DELETE</clear>
+		<enter>KEY_ENTER</enter>
+		<red>Red</red>
+		<green>Green</green>
+		<yellow>Yellow</yellow>
+		<blue>Blue</blue>
+	</remote>
+</lircmap>

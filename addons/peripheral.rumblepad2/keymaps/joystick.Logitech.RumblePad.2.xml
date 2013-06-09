@@ -1,0 +1,110 @@
+<keymap device="joystick" name="rumblepad2">
+  <alias>Logitech Logitech Cordless RumblePad 2</alias>
+  <alias>Logitech Cordless RumblePad 2</alias>
+  <global>
+    <button id="1">FullScreen</button>
+    <button id="2">Select</button>
+    <button id="3">Back</button>
+    <button id="7">FullScreen</button>
+    <button id="8">ContextMenu</button>
+    <button id="10">XBMC.ActivateWindow(Home)</button>
+    <button id="11">ActivateWindow(shutdownmenu)</button>
+    <button id="12">Screenshot</button>
+
+    <hat    id="1" position="left">Left</hat>
+    <hat    id="1" position="right">Right</hat>
+    <hat    id="1" position="up">Up</hat>
+    <hat    id="1" position="down">Down</hat>
+
+    <axis limit="+1" id="4">VolumeDown</axis>
+    <axis limit="-1" id="4">VolumeUp</axis>
+    <axis limit="+1" id="3">AnalogSeekForward</axis>
+    <axis limit="-1" id="3">AnalogSeekBack</axis>
+    <axis limit="-1" id="2">ScrollUp</axis>
+    <axis limit="+1" id="2">ScrollDown</axis>
+  </global>
+
+  <Home>
+    <button id="3">XBMC.ActivateWindow(Favourites)</button>
+  </Home>
+
+  <MyMusicFiles>
+    <button id="4">Queue</button>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+    <button id="4">Queue</button>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+    <button id="2">Pause</button>
+    <button id="3">Stop</button>
+    <button id="4">AspectRatio</button>
+    <button id="5">Rewind</button>
+    <button id="6">FastForward</button>
+    <button id="10">OSD</button>
+
+    <hat    id="1" position="left">StepBack</hat>
+    <hat    id="1" position="right">StepForward</hat>
+    <hat    id="1" position="up">BigStepForward</hat>
+    <hat    id="1" position="down">BigStepBack</hat>
+  </FullscreenVideo>
+
+  <FullscreenLiveTV>
+    <hat    id="1" position="left">PreviousChannelGroup</hat>
+    <hat    id="1" position="right">NextChannelGroup</hat>
+    <hat    id="1" position="up">ChannelUp</hat>
+    <hat    id="1" position="down">ChannelDown</hat>
+  </FullscreenLiveTV>
+
+  <Visualisation>
+    <button id="2">Pause</button>
+    <button id="3">Stop</button>
+    <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>
+    <button id="5">Rewind</button>
+    <button id="6">FastForward</button>
+    <button id="10">OSD</button>
+
+    <hat    id="1" position="left">SkipPrevious</hat>
+    <hat    id="1" position="right">SkipNext</hat>
+    <hat    id="1" position="up">NextPreset</hat>
+    <hat    id="1" position="left">PreviousPreset</hat>
+  </Visualisation>
+
+  <SlideShow>
+    <button id="1">ZoomNormal</button>
+    <button id="2">Pause</button>
+    <button id="3">Stop</button>
+    <button id="4">Rotate</button>
+
+    <hat    id="1" position="left">PreviousPicture</hat>
+    <hat    id="1" position="right">NextPicture</hat>
+    <hat    id="1" position="up">ZoomIn</hat>
+    <hat    id="1" position="down">ZoomOut</hat>
+  </SlideShow>
+
+  <ScreenCalibration>
+    <button id="2">NextCalibration</button>
+  </ScreenCalibration>
+
+  <MyVideoLibrary>
+    <button id="4">Queue</button>
+    <button id="5">Info</button>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <button id="4">Queue</button>
+    <button id="5">Info</button>
+  </MyVideoFiles>
+
+  <VirtualKeyboard>
+    <button id="1">Symbols</button>
+    <button id="3">BackSpace</button>
+    <button id="4">Shift</button>
+    <button id="5">CursorLeft</button>
+    <button id="6">CursorRight</button>
+    <button id="9">Back</button>
+    <button id="10">Enter</button>
+  </VirtualKeyboard>
+
+</keymap>
