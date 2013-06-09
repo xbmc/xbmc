@@ -34,7 +34,7 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const CStdString& strFileName);
+  bool Load(const CStdString& strFileName, bool onlyCheckLanguage = false);
 
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
@@ -42,7 +42,7 @@ public:
   // three char language code (not win32 specific)
   const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
 
-  bool SetLanguage(const std::string &strLanguage);
+  bool SetLanguage(const std::string &strLanguage, bool onlyCheckLanguage = false);
 
   const CStdString& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639

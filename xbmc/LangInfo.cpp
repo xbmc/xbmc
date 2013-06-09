@@ -228,14 +228,14 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CLangInfo::Load(const CStdString& strFileName)
+bool CLangInfo::Load(const CStdString& strFileName, bool onlyCheckLanguage /* = false */)
 {
   SetDefaults();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
@@ -361,11 +361,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=CSettings::Get().GetString("locale.country");
-    SetCurrentRegion(strName);
+    if (!onlyCheckLanguage)
+    {
+      const CStdString& strName = CSettings::Get().GetString("locale.country");
+      SetCurrentRegion(strName);
+    }
   }
 
-  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
+  if (!onlyCheckLanguage)
+    LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
 
   return true;
 }
@@ -425,11 +429,14 @@ CStdString CLangInfo::GetSubtitleCharSet() const
   return strCharSet;
 }
 
-bool CLangInfo::SetLanguage(const std::string &strLanguage)
+bool CLangInfo::SetLanguage(const std::string &strLanguage, bool onlyCheckLanguage /* = false */)
 {
   string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-  if (!Load(strLangInfoPath))
+  if (!Load(strLangInfoPath, onlyCheckLanguage))
     return false;
+
+  if (onlyCheckLanguage)
+    return true;
 
   if (ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
   {
