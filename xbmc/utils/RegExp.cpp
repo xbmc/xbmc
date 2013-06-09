@@ -259,6 +259,9 @@ std::string CRegExp::GetMatch(int iSub /* = 0 */)
 
   int pos = m_iOvector[(iSub*2)];
   int len = m_iOvector[(iSub*2)+1] - pos;
+  if (pos < 0 || len <= 0)
+    return "";
+
   return m_subject.substr(pos, len);
 }
 
