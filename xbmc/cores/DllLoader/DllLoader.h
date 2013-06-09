@@ -106,5 +106,5 @@ protected:
   char* ResolveReferencedDll(char* dll);
   int LoadExports();
   void LoadSymbols();
-  void UnloadSymbols();
+  static void UnloadSymbols();
 };

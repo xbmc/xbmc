@@ -49,8 +49,8 @@ public:
 private:
   void OverrideImports(const CStdString &dll);
   void RestoreImports();
-  bool ResolveImport(const char *dllName, const char *functionName, void **fixup);
-  bool ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup);
+  static bool ResolveImport(const char *dllName, const char *functionName, void **fixup);
+  static bool ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup);
   bool NeedsHooking(const char *dllName);
 
   HMODULE m_dllHandle;

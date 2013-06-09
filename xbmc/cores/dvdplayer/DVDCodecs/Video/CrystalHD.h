@@ -213,7 +213,7 @@ private:
   // bitstream to bytestream (Annex B) conversion support.
   bool bitstream_convert_init(void *in_extradata, int in_extrasize);
   bool bitstream_convert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
-  void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
+  static void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
     const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
 
   typedef struct chd_bitstream_ctx {
