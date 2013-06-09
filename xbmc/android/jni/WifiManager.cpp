@@ -23,6 +23,7 @@
 #include "WifiInfo.h"
 #include "WifiConfiguration.h"
 #include "ScanResult.h"
+#include "WifiManagerMulticastLock.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
@@ -116,4 +117,9 @@ int CJNIWifiManager::calculateSignalLevel(int rssi, int numLevels)
 int CJNIWifiManager::compareSignalLevel(int rssiA, int rssiB)
 {
   return call_static_method<jint>("android/net/wifi/WifiManager", "compareSignalLevel", "(II)I", rssiA, rssiB);
+}
+
+CJNIWifiManagerMulticastLock CJNIWifiManager::createMulticastLock(const std::string &tag)
+{
+  return (CJNIWifiManagerMulticastLock)call_method<jhobject>(m_object, "createMulticastLock", "(Ljava/lang/String;)Landroid/net/wifi/WifiManager$MulticastLock;", jcast<jhstring>(tag));
 }

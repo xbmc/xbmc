@@ -24,6 +24,7 @@ class CJNIDhcpInfo;
 class CJNIWifiInfo;
 class CJNIScanResult;
 class CJNIWifiConfiguration;
+class CJNIWifiManagerMulticastLock;
 class CJNIWifiManager : public CJNIBase
 {
 friend class CJNIContext;
@@ -47,6 +48,7 @@ public:
   bool isWifiEnabled();
   static int calculateSignalLevel(int, int);
   static int compareSignalLevel(int, int);
+  CJNIWifiManagerMulticastLock createMulticastLock(const std::string &tag);
 private:
   CJNIWifiManager();
 };
