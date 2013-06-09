@@ -15,6 +15,7 @@ SRCS      += jutils.cpp
 SRCS      += URI.cpp
 SRCS      += WifiInfo.cpp
 SRCS      += WifiManager.cpp
+SRCS      += WifiManagerMulticastLock.cpp
 SRCS      += ScanResult.cpp
 SRCS      += List.cpp
 SRCS      += DhcpInfo.cpp
