@@ -75,7 +75,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_buffer_empty  = false;
   m_nChannels     = 0;
   m_DecoderOpen   = false;
-  m_freq          = CurrentHostFrequency();
   m_bad_state     = false;
   m_hints_current.Clear();
 
@@ -86,16 +85,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_use_hw_decode = false;
   m_hw_decode = false;
   m_silence = false;
-  m_error = 0.0;
-  m_errorbuff = 0.0;
-  m_errorcount = 0;
-  m_syncclock = false;
-  m_integral = 0.0;
-  m_skipdupcount = 0;
-  m_prevskipped = false;
   m_flush = false;  
-  m_synctype = 0;
-
 }
 
 
@@ -147,20 +137,11 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
 
   m_speed           = DVD_PLAYSPEED_NORMAL;
   m_audioClock      = 0;
-  m_error           = 0;
-  m_errorbuff       = 0;
-  m_errorcount      = 0;
-  m_integral        = 0;
-  m_skipdupcount    = 0;
-  m_prevskipped     = false;
-  m_syncclock       = true;
   m_hw_decode       = false;
-  m_errortime       = CurrentHostCounter();
   m_silence         = false;
   m_started         = false;
   m_flush           = false;
   m_nChannels       = 0;
-  m_synctype        = SYNC_DISCON;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_use_passthrough = (CSettings::Get().GetInt("audiooutput.mode") == AUDIO_HDMI) ? true : false ;
   m_use_hw_decode   = g_advancedSettings.m_omxHWAudioDecode;
@@ -200,110 +181,6 @@ void OMXPlayerAudio::OnStartup()
 void OMXPlayerAudio::OnExit()
 {
   CLog::Log(LOGNOTICE, "thread end: OMXPlayerAudio::OnExit()");
-}
-
-
-
-void OMXPlayerAudio::HandleSyncError(double duration)
-{
-  double clock = m_av_clock->GetClock();
-  double error = m_audioClock - clock;
-  int64_t now;
-
-  if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
-  {
-    m_av_clock->Discontinuity(clock+error);
-    /*
-    if(m_speed == DVD_PLAYSPEED_NORMAL)
-    CLog::Log(LOGDEBUG, "OMXPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f\n", clock, clock+error, error);
-    */
-
-    m_errorbuff = 0;
-    m_errorcount = 0;
-    m_skipdupcount = 0;
-    m_error = 0;
-    m_syncclock = false;
-    m_errortime = CurrentHostCounter();
-
-    return;
-  }
-
-  if (m_speed != DVD_PLAYSPEED_NORMAL)
-  {
-    m_errorbuff = 0;
-    m_errorcount = 0;
-    m_integral = 0;
-    m_skipdupcount = 0;
-    m_error = 0;
-    m_errortime = CurrentHostCounter();
-    return;
-  }
-
-  //check if measured error for 1 second
-  now = CurrentHostCounter();
-  if ((now - m_errortime) >= m_freq)
-  {
-    m_errortime = now;
-    m_error = m_errorbuff / m_errorcount;
-
-    m_errorbuff = 0;
-    m_errorcount = 0;
-
-    if (m_synctype == SYNC_DISCON)
-    {
-      double limit, error;
-
-      if (m_av_clock->GetRefreshRate(&limit) > 0)
-      {
-        //when the videoreferenceclock is running, the discontinuity limit is one vblank period
-        limit *= DVD_TIME_BASE;
-
-        //make error a multiple of limit, rounded towards zero,
-        //so it won't interfere with the sync methods in CXBMCRenderManager::WaitPresentTime
-        if (m_error > 0.0)
-          error = limit * floor(m_error / limit);
-        else
-          error = limit * ceil(m_error / limit);
-      }
-      else
-      {
-        limit = DVD_MSEC_TO_TIME(10);
-        error = m_error;
-      }
-
-      /*
-      limit = DVD_MSEC_TO_TIME(10);
-      error = m_error;
-      */
-
-      if (fabs(error) > limit - 0.001)
-      {
-        m_av_clock->Discontinuity(clock+error);
-        /*
-        if(m_speed == DVD_PLAYSPEED_NORMAL)
-          CLog::Log(LOGDEBUG, "COMXPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
-        */
-      }
-    }
-    /*
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
-    if (m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
-    {
-      //check how many packets to skip/duplicate
-      m_skipdupcount = (int)(m_error / duration);
-      //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync
-      if (m_skipdupcount == 0 && fabs(m_error) > duration / 3 * 2)
-        m_skipdupcount = (int)(m_error / (duration / 3 * 2));
-
-      if (m_skipdupcount > 0)
-        CLog::Log(LOGDEBUG, "OMXPlayerAudio:: Duplicating %i packet(s) of %.2f ms duration",
-                  m_skipdupcount, duration / DVD_TIME_BASE * 1000.0);
-      else if (m_skipdupcount < 0)
-        CLog::Log(LOGDEBUG, "OMXPlayerAudio:: Skipping %i packet(s) of %.2f ms duration ",
-                  m_skipdupcount * -1,  duration / DVD_TIME_BASE * 1000.0);
-    }
-    */
-  }
 }
 
 bool OMXPlayerAudio::CodecChange()
@@ -406,9 +283,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
         int n = (m_nChannels * m_hints.bitspersample * m_hints.samplerate)>>3;
         if (n > 0)
           m_audioClock += ((double)decoded_size * DVD_TIME_BASE) / n;
-
-        if(m_speed == DVD_PLAYSPEED_NORMAL)
-          HandleSyncError((((double)decoded_size * DVD_TIME_BASE) / n));
         break;
 
       }
@@ -441,9 +315,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
         m_omxAudio.AddPackets(pkt->pData, pkt->iSize, m_audioClock, m_audioClock);
       }
-
-      if(m_speed == DVD_PLAYSPEED_NORMAL)
-        HandleSyncError(0);
 
       m_audioStats.AddSampleBytes(pkt->iSize);
 
@@ -537,18 +408,7 @@ void OMXPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-
-      if (pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
-        m_audioClock = pMsgGeneralResync->m_timestamp;
-
-      if (pMsgGeneralResync->m_clock)
-      {
-        CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 1)", m_audioClock);
-        m_av_clock->Discontinuity(m_audioClock);
-        //m_av_clock->OMXUpdateClock(m_audioClock);
-      }
-      else
-        CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
+      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, %d)", m_audioClock, pMsgGeneralResync->m_clock);
       m_flush = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
@@ -571,7 +431,6 @@ void OMXPlayerAudio::Process()
       m_omxAudio.Flush();
       m_av_clock->OMXReset(false);
       m_av_clock->UnLock();
-      m_syncclock = true;
       m_stalled   = true;
       m_started   = false;
 
@@ -622,10 +481,6 @@ void OMXPlayerAudio::Process()
       {
         m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
         CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
-      }
-      if (m_speed != DVD_PLAYSPEED_NORMAL)
-      {
-        m_syncclock = true;
       }
     }
     else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
