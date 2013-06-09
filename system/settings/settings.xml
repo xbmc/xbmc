@@ -1886,16 +1886,25 @@
             <dependency type="enable" on="property" name="IsFullscreen" />
           </dependencies>
         </setting>
-        <setting id="videoscreen.mode3d" type="integer" label="36501" help="">
+      </group>
+      <group id="2">
+        <setting id="videoscreen.hasstereoscopicsupport" type="boolean" label="36500" help="">
+          <level>0</level>
+          <default>false</default>
+        </setting>
+        <setting id="videoscreen.stereoscopicmode" type="integer" label="36501" help="">
           <level>0</level>
           <default>0</default>
+          <dependencies>
+            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency>
+          </dependencies>
           <constraints>
-            <options>mode3d</options>
+            <options>stereoscopicmodes</options>
           </constraints>
           <control type="spinner" format="integer" delayed="true"/>
         </setting>
       </group>
-      <group id="2">
+      <group id="3">
         <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">
           <level>2</level>
           <default>3</default> <!-- VSYNC_DRIVER -->

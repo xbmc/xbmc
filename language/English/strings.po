@@ -14129,8 +14129,13 @@ msgstr ""
 #end reservation
 
 #: system/settings/settings.xml
+msgctxt "#36500"
+msgid "Enable stereoscopic support"
+msgstr ""
+
+#: system/settings/settings.xml
 msgctxt "#36501"
-msgid "Stereoscopic 3d Mode"
+msgid "Stereoscopic Mode"
 msgstr ""
 
 #: system/settings/settings.xml
