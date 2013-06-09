@@ -26,6 +26,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Setting.h"
 #include "settings/Settings.h"
@@ -597,7 +598,7 @@ void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting
   list.push_back(make_pair(g_localizeStrings.Get(13108), VSYNC_ALWAYS));
 }
 
-void CDisplaySettings::SettingOptionsMode3dFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
   list.push_back(make_pair(g_localizeStrings.Get(36502),RENDER_STEREO_MODE_OFF));
   list.push_back(make_pair(g_localizeStrings.Get(36503),RENDER_STEREO_MODE_SPLIT_HORIZONTAL));

@@ -35,6 +35,7 @@
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/IPlayer.h"
+#include "guilib/StereoscopicsManager.h"
 
 using namespace std;
 
@@ -971,7 +972,7 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 void CGraphicContext::Flip(const CDirtyRegionList& dirty)
 {
   g_Windowing.PresentRender(dirty);
-  RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE)CSettings::Get().GetInt("videoscreen.mode3d");
+  RENDER_STEREO_MODE mode = CStereoscopicsManager::Get().GetStereoMode();
   if(m_stereoMode != mode)
   {
     m_stereoMode = mode;
