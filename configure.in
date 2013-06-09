@@ -135,6 +135,8 @@ halstorage_not_found="== Could not find hal-storage. HAL support disabled. =="
 hal_disabled="== HAL support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
+mdnsembedded_not_found="== Could not find mDNSEmbedded. Might prevent zeroconf support. =="
+mdnsembedded_disabled="== mDNSEmbedded support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 vaapi_not_found="== Could not find libva. VAAPI support disabled. =="
@@ -422,6 +424,12 @@ AC_ARG_ENABLE([avahi],
   [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
   [use_avahi=$enableval],
   [use_avahi=yes])
+  
+  AC_ARG_ENABLE([mdnsembedded],
+  [AS_HELP_STRING([--disable-mdnsembedded],
+  [disable mDNSEmbedded support (default is auto)])],
+  [use_mdnsembedded=$enableval],
+  [use_mdnsembedded=auto])
 
 AC_ARG_ENABLE([non-free],
   [AS_HELP_STRING([--disable-non-free],
@@ -1250,6 +1258,27 @@ else
     AC_MSG_RESULT($avahi_disabled)
   fi
 fi
+
+# mdnsembedded
+if test "$use_mdnsembedded" != "no"; then
+  AC_CHECK_LIB([mDNSEmbedded], [embedded_mDNSInit],,
+    [if test "$use_mdnsembedded" = "yes"; then
+      AC_MSG_ERROR($mdnsembedded_not_found)
+      USE_MDNSEMBEDDED=0
+    elif test "$use_mdnsembedded" != "no"; then
+      AC_MSG_NOTICE($mdnsembedded_not_found)
+      use_mdnsembedded="no"
+      USE_MDNSEMBEDDED=0
+    fi
+   ])
+  if test $use_mdnsembedded != "no"; then
+    USE_MDNSEMBEDDED=1
+  fi
+else
+  AC_MSG_RESULT($mdnsembedded_disabled)
+  USE_MDNSEMBEDDED=0
+fi
+AC_SUBST(USE_MDNSEMBEDDED)
 
 # X11
 if test "$use_x11" = "yes" && test "$host_vendor" != "apple"; then
@@ -2174,6 +2203,12 @@ if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
 else
   final_message="$final_message\n  Avahi:\tNo"
+fi
+
+if test "$use_mdnsembedded" != "no"; then
+  final_message="$final_message\n  mDNSEmbedded:\tYes"
+else
+  final_message="$final_message\n  mDNSEmbedded:\tNo"
 fi
 
 if test "$use_nonfree" = "yes"; then

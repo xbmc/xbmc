@@ -33,6 +33,10 @@ ifeq ($(OS),osx)
   EXCLUDED_DEPENDS = libusb
 endif
 
+ifeq ($(OS),android)
+  DEPENDS += mdnsresponder
+endif
+
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
 ZLIB=
