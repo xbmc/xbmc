@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=mDNSResponder
-VERSION=333.10
+VERSION=379.37
 OUTPUTNAME=libmDNSEmbedded
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
