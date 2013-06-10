@@ -6116,6 +6116,7 @@ msgid "%i sec"
 msgstr ""
 
 #: system/settings/darwin.xml
+#: system/settings/settings.xml
 msgctxt "#14046"
 msgid "%i ms"
 msgstr ""
