@@ -28,6 +28,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
@@ -590,6 +591,15 @@ void CBaseRenderer::ManageDisplay()
     else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
   }
 
+  /* use GUI stereo mode in case we couldn't detect it by stream meta or filename */
+  if (stereo_mode == 0 && stereo_view != RENDER_STEREO_VIEW_OFF)
+  {
+    if (CStereoscopicsManager::Get().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+      stereo_mode = CONF_FLAGS_STEREO_MODE_TAB;
+    else
+      stereo_mode = CONF_FLAGS_STEREO_MODE_SBS;
+  }
+
   switch(stereo_mode)
   {
     case CONF_FLAGS_STEREO_MODE_TAB:
@@ -606,12 +616,7 @@ void CBaseRenderer::ManageDisplay()
         m_sourceRect.x1 += m_sourceRect.x2*0.5f;
       break;
 
-    default:
-      /* assume SBS if nothing reported and we are doing 3d rendering */
-      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
-        m_sourceRect.x2 *= 0.5f;
-      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
-        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+    default: // do nothing
       break;
   }
 
