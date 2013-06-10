@@ -999,30 +999,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
-static unsigned int GetStereoModeFlags(const std::string mode)
-{
-  static std::map<std::string, unsigned int> convert;
-  if(convert.empty())
-  {
-    convert["mono"]                   = 0u;
-    convert["left_right"]             = CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT;
-    convert["bottom_top"]             = CONF_FLAGS_STEREO_MODE_TAB | CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT;
-    convert["top_bottom"]             = CONF_FLAGS_STEREO_MODE_TAB | CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT;
-    convert["checkerboard_rl"]        = 0u;
-    convert["checkerboard_lr"]        = 0u;
-    convert["row_interleaved_rl"]     = 0u;
-    convert["row_interleaved_lr"]     = 0u;
-    convert["col_interleaved_rl"]     = 0u;
-    convert["col_interleaved_lr"]     = 0u;
-    convert["anaglyph_cyan_red"]      = 0u;
-    convert["right_left"]             = CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT;
-    convert["anaglyph_green_magenta"] = 0u;
-    convert["block_lr"]               = 0u;
-    convert["block_rl"]               = 0u;
-  }
-  return convert[mode];
-}
-
 int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
   /* picture buffer is not allowed to be modified in this call */
