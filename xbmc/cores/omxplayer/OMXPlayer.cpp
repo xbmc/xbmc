@@ -37,7 +37,6 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/StereoscopicsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -82,6 +81,7 @@
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "DVDPerformanceCounter.h"
@@ -3074,6 +3074,9 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(pMenus && pMenus->IsInMenu())
     hint.stills = true;
 
+  if (hint.stereo_mode.empty())
+    hint.stereo_mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
+
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
@@ -3097,14 +3100,6 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   }
   else if (reset)
     m_omxPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-
-  unsigned flags = 0;
-  std::string mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
-  if (mode == "left_right")
-    flags = CONF_FLAGS_STEREO_MODE_SBS;
-  else if (mode == "top_bottom")
-    flags = CONF_FLAGS_STEREO_MODE_TAB;
-  m_omxPlayerVideo.SetFlags(flags);
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
