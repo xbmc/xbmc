@@ -47,6 +47,7 @@
 #include "utils/log.h"
 
 using namespace std;
+using namespace RenderManager;
 
 class CPulldownCorrection
 {
@@ -996,64 +997,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_NONE:      return "NONE";
   }
   return "UNKNOWN";
-}
-
-static unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
-{
-  switch(color_matrix)
-  {
-    case 7: // SMPTE 240M (1987)
-      return CONF_FLAGS_YUVCOEF_240M;
-    case 6: // SMPTE 170M
-    case 5: // ITU-R BT.470-2
-    case 4: // FCC
-      return CONF_FLAGS_YUVCOEF_BT601;
-    case 1: // ITU-R Rec.709 (1990) -- BT.709
-      return CONF_FLAGS_YUVCOEF_BT709;
-    case 3: // RESERVED
-    case 2: // UNSPECIFIED
-    default:
-      if(width > 1024 || height >= 600)
-        return CONF_FLAGS_YUVCOEF_BT709;
-      else
-        return CONF_FLAGS_YUVCOEF_BT601;
-      break;
-  }
-}
-
-static unsigned int GetFlagsChromaPosition(unsigned int chroma_position)
-{
-  switch(chroma_position)
-  {
-    case 1: return CONF_FLAGS_CHROMA_LEFT;
-    case 2: return CONF_FLAGS_CHROMA_CENTER;
-    case 3: return CONF_FLAGS_CHROMA_TOPLEFT;
-  }
-  return 0;
-}
-
-static unsigned int GetFlagsColorPrimaries(unsigned int color_primaries)
-{
-  switch(color_primaries)
-  {
-    case 1: return CONF_FLAGS_COLPRI_BT709;
-    case 4: return CONF_FLAGS_COLPRI_BT470M;
-    case 5: return CONF_FLAGS_COLPRI_BT470BG;
-    case 6: return CONF_FLAGS_COLPRI_170M;
-    case 7: return CONF_FLAGS_COLPRI_240M;
-  }
-  return 0;
-}
-
-static unsigned int GetFlagsColorTransfer(unsigned int color_transfer)
-{
-  switch(color_transfer)
-  {
-    case 1: return CONF_FLAGS_TRC_BT709;
-    case 4: return CONF_FLAGS_TRC_GAMMA22;
-    case 5: return CONF_FLAGS_TRC_GAMMA28;
-  }
-  return 0;
 }
 
 static unsigned int GetStereoModeFlags(const std::string mode)

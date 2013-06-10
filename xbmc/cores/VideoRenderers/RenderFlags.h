@@ -21,6 +21,8 @@
  *
  */
 
+#include <string>
+
 #define RENDER_FLAG_BOT         0x01
 #define RENDER_FLAG_TOP         0x02
 #define RENDER_FLAG_BOTH (RENDER_FLAG_BOT | RENDER_FLAG_TOP)
@@ -77,5 +79,16 @@
 #define CONF_FLAGS_STEREO_CADENCE(a) ((a) & 0x008000)
 #define CONF_FLAGS_STEREO_CADANCE_LEFT_RIGHT 0x000000
 #define CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT 0x008000
+
+
+
+namespace RenderManager {
+
+  unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height);
+  unsigned int GetFlagsChromaPosition(unsigned int chroma_position);
+  unsigned int GetFlagsColorPrimaries(unsigned int color_primaries);
+  unsigned int GetFlagsColorTransfer(unsigned int color_transfer);
+
+}
 
 #endif
