@@ -43,21 +43,7 @@ extern "C" {
 #endif
 
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/avcodec.h>
-    #if (defined HAVE_LIBAVCODEC_OPT_H)
-      #include <libavcodec/opt.h>
-    #endif
-    #if (defined AVPACKET_IN_AVFORMAT)
-      #include <libavformat/avformat.h>
-    #endif
-  #elif (defined HAVE_FFMPEG_AVCODEC_H)
-    #include <ffmpeg/avcodec.h>
-    #include <ffmpeg/opt.h>
-    #if (defined AVPACKET_IN_AVFORMAT)
-      #include <ffmpeg/avformat.h>
-    #endif
-  #endif
+  #include <libavcodec/avcodec.h>
 #else
   #include "libavcodec/avcodec.h"
 #endif
@@ -277,7 +263,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   /* dependencies of libavcodec */
   DllAvUtil m_dllAvUtil;
-  // DllAvUtil loaded implicitely by m_dllAvCore
 
 public:
     static CCriticalSection m_critSection;

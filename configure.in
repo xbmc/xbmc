@@ -1621,9 +1621,6 @@ fi
 if test "$use_external_ffmpeg" = "yes"; then
   FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
 
-  # libavcore is optional
-  PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
-
   # one of libswresample or libavresample is needed
   PKG_CHECK_EXISTS([libswresample], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libswresample",
                    [PKG_CHECK_EXISTS([libavresample],
@@ -1635,51 +1632,15 @@ if test "$use_external_ffmpeg" = "yes"; then
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
                     AC_MSG_ERROR($missing_library))
 
-  # Determine whether AVPacket and relevant functions are defined in libavformat
-  # or libavcodec
-  AC_CHECK_LIB([avcodec], [av_free_packet],
-  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavcodec. ==)],
-  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavformat. ==)
-   AC_DEFINE([AVPACKET_IN_AVFORMAT], [1], [Whether AVPacket is in libavformat.])])
-
   # in case the headers are in a custom directory
   SAVE_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
-  # Possible places the ffmpeg headers may be
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avfilter.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
-  [AC_MSG_ERROR($missing_headers)])])
-
-  # optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/mem.h libavutil/samplefmt.h])
-
-  # old FFmpeg have this in libavcodec/opt.h instead:
-  AC_CHECK_HEADERS([libavutil/opt.h])
-
-  # new FFmpeg have math headers
-  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
-
-  # We'll support the use of rgb2rgb.h if it exists.
-  AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
-  AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
+  [AC_MSG_ERROR($missing_headers)])
 
   # Check for libswresample or libavresample headers.
   AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
-
-  # Check if AVFilterBufferRefVideoProps AVRational member is named
-  # 'pixel_aspect' or 'sample_aspect_ratio'.
-  AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
-    [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
-    [1],
-    [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
-      [AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
-      [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
-      [1],
-      [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
-      ,
-      [[#include <ffmpeg/avfilter.h>]])],
-    [[#include <libavfilter/avfilter.h>]])
 
   AC_MSG_NOTICE($external_ffmpeg_enabled)
   USE_EXTERNAL_FFMPEG=1
@@ -1694,21 +1655,10 @@ if test "$use_external_ffmpeg" = "yes"; then
       AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
     fi])
 
-  # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
-  if test "x$use_vdpau" != "xno"; then
-    AC_LANG_PUSH([C++])
-    AC_LINK_IFELSE(
-      [AC_LANG_SOURCE([ #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }])],
-      [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
-      [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
-    AC_LANG_POP([C++])
-  fi
   CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
-  AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
 echo "Checking for SWIG installation"
