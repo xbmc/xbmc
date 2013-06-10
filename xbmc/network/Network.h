@@ -32,21 +32,41 @@ enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2,
 class NetworkAccessPoint
 {
 public:
-   NetworkAccessPoint(CStdString& essId, int quality, EncMode encryption)
+   NetworkAccessPoint(const CStdString &essId, const CStdString &macAddress, int signalStrength, EncMode encryption, int channel = 0)
    {
-      m_essId = essId;
-      m_quality = quality;
+      m_essId          = essId;
+      m_macAddress     = macAddress;
+      m_dBm            = signalStrength;
       m_encryptionMode = encryption;
+      m_channel        = channel;
    }
 
-   CStdString getEssId() { return m_essId; }
-   int getQuality() { return m_quality; }
-   EncMode getEncryptionMode() { return m_encryptionMode; }
+   const CStdString &getEssId() const { return m_essId; }
+   const CStdString &getMacAddress() const { return m_macAddress; }
+   int getSignalStrength() const { return m_dBm; }
+   EncMode getEncryptionMode() const { return m_encryptionMode; }
+   int getChannel() const { return m_channel; }
+
+   /*!
+    \brief  Returns the quality, normalized as a percentage, of the network access point
+    \return The quality as an integer between 0 and 100
+    */
+   int getQuality() const;
+
+   /*!
+    \brief  Translates a 802.11a+g frequency into the corresponding channel
+    \param  frequency  The frequency of the channel in units of Hz
+    \return The channel as an integer between 1 and 14 (802.11b+g) or
+            between 36 and 165 (802.11a), or 0 if unknown.
+    */
+   static int FreqToChannel(float frequency);
 
 private:
-   CStdString   m_essId;
-   int          m_quality;
-   EncMode      m_encryptionMode;
+   CStdString  m_essId;
+   CStdString  m_macAddress;
+   int         m_dBm;
+   EncMode     m_encryptionMode;
+   int         m_channel;
 };
 
 class CNetworkInterface
