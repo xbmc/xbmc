@@ -14182,7 +14182,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic movies"
+msgid "Playback mode of stereoscopic videos"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14217,7 +14217,7 @@ msgstr ""
 
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36527"
-msgid "This movie is stereoscopic. Select playback mode"
+msgid "This video is stereoscopic. Select playback mode"
 msgstr ""
 
 #: system/settings/settings.xml
