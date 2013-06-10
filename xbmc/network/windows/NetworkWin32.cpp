@@ -275,7 +275,7 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
                                 NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();
-  if (lastErr != ERROR_SUCCESS)
+  if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
     CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
