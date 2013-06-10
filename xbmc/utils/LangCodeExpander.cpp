@@ -420,6 +420,28 @@ void CLangCodeExpander::CodeToString(long code, CStdString& ret)
   }
 }
 
+bool CLangCodeExpander::CompareFullLangNames(const CStdString& lang1, const CStdString& lang2)
+{
+  if (lang1.Equals(lang2))
+    return true;
+
+  CStdString expandedLang1, expandedLang2, code1, code2;
+
+  if (!ReverseLookup(lang1, code1))
+    return false;
+  else
+    code1 = lang1;
+
+  if (!ReverseLookup(lang2, code2))
+    return false;
+  else
+    code2 = lang2;
+
+  Lookup(expandedLang1, code1);
+  Lookup(expandedLang2, code2);
+  return expandedLang1.Equals(expandedLang2);
+}
+
 std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */) const
 {
   std::vector<std::string> languages;

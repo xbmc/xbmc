@@ -41,6 +41,14 @@ public:
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
 
+  /** \brief Determines if two english language names represent the same language.
+  *   \param[in] lang1 The first language string to compare given as english language name.
+  *   \param[in] lang2 The second language string to compare given as english language name.
+  *   \return true if the two language strings represent the same language, false otherwise.
+  *   For example "Abkhaz" and "Abkhazian" represent the same language.
+  */ 
+  bool CompareFullLangNames(const CStdString& lang1, const CStdString& lang2);
+
   /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
   *   \param[in] code1 The first language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
   *   \param[in] code2 The second language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
