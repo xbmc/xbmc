@@ -35,8 +35,7 @@
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 
-// FIXME - once zeroconf browser with mdnsembedded is fixed -remove that condition here
-#if !defined(HAS_ZEROCONF) || defined(HAS_MDNS_EMBEDDED)
+#if !defined(HAS_ZEROCONF)
 //dummy implementation used if no zeroconf is present
 //should be optimized away
 class CZeroconfBrowserDummy : public CZeroconfBrowser
@@ -152,8 +151,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
     CAtomicSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
-// FIXME - once zeroconf browser with mdnsembedded is fixed -remove that condition here
-#if !defined(HAS_ZEROCONF) || defined(HAS_MDNS_EMBEDDED)
+#if !defined(HAS_ZEROCONF)
       smp_instance = new CZeroconfBrowserDummy;
 #else
 #if defined(TARGET_DARWIN)
