@@ -1,0 +1,16 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-debian
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE
+
+RELEASEV=$VERSION \
+TAG=$TAG \
+DISTS=${DISTS:-"stable"} \
+ARCHS=${ARCHS:-"i386 amd64"} \
+BUILDER=${BUILDER:-"pdebuild"} \
+PDEBUILD_OPTS=${PDEBUILD_OPTS:-"--debbuildopts \"-j$BUILDTHREADS\""} \
+PBUILDER_BASE=${PBUILDER_BASE:-"/home/$USER/xbmc-packaging/pbuilder"} \
+DPUT_TARGET=${DPUT_TARGET:-"local"} \
+Configuration="$Configuration" \
+tools/Linux/packaging/mk-debian-package.sh
