@@ -262,12 +262,6 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   return false;
 }
 
-bool CPVRManager::WaitUntilInitialised(void)
-{
-  return m_initialisedEvent.Wait() &&
-      IsStarted();
-}
-
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
@@ -291,7 +285,6 @@ void CPVRManager::Cleanup(void)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
 
-  m_initialisedEvent.Reset();
   SetState(ManagerStateStopped);
 }
 
@@ -354,8 +347,6 @@ void CPVRManager::Start(bool bAsync /* = false */, bool bOpenPVRWindow /* = fals
     m_database = new CPVRDatabase;
   m_database->Open();
 
-  g_EpgContainer.Start();
-
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
 }
@@ -370,7 +361,6 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateStopping);
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  m_initialisedEvent.Set();
   g_EpgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
@@ -410,6 +400,8 @@ void CPVRManager::SetState(ManagerState state)
 
 void CPVRManager::Process(void)
 {
+  g_EpgContainer.Stop();
+
   /* load the pvr data from the db and clients if it's not already loaded */
   while (!Load() && GetState() == ManagerStateStarting)
   {
@@ -427,7 +419,7 @@ void CPVRManager::Process(void)
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
-  m_initialisedEvent.Set();
+  g_EpgContainer.Start();
 
   if (m_bOpenPVRWindow)
   {

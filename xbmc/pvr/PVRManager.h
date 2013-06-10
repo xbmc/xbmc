@@ -636,7 +636,6 @@ namespace PVR
     CStopWatch                     *m_parentalTimer;
     bool                            m_bOpenPVRWindow;
     std::map<std::string, std::string> m_outdatedAddons;
-    CEvent                             m_initialisedEvent;         /*!< triggered when the pvr manager initialised */
   };
 
   class CPVREpgsCreateJob : public CJob
