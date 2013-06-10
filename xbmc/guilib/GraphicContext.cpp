@@ -257,19 +257,31 @@ CPoint CGraphicContext::StereoCorrection(const CPoint &point, bool scale) const
 {
   CPoint res(point);
 
+  int blanking = 0;
+
   if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
   {
+    if(IsFullScreenRoot())
+    {
+      if(m_iScreenWidth  == 1920
+      && m_iScreenHeight == 2205)
+        blanking = 45;
+      if(m_iScreenWidth  == 1280
+      && m_iScreenHeight == 1470)
+        blanking = 30;
+    }
+
     if(scale)
-      res.y *= 0.5f;
+      res.y *= 0.5f * (m_iScreenHeight - blanking) / m_iScreenHeight;
     if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      res.y += 0.5f * m_iScreenHeight;
+      res.y += 0.5f * (m_iScreenHeight + blanking);
   }
   if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     if(scale)
-      res.x *= 0.5f;
+      res.x *= 0.5f * (m_iScreenWidth - blanking)  / m_iScreenWidth;
     if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      res.x += 0.5f * m_iScreenWidth;
+      res.x += 0.5f * (m_iScreenWidth + blanking);
   }
   return res;
 }
