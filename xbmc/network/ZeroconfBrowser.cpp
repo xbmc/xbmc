@@ -208,6 +208,11 @@ void CZeroconfBrowser::ZeroconfService::SetDomain(const CStdString& fcr_domain)
   m_domain = fcr_domain;
 }
 
+void CZeroconfBrowser::ZeroconfService::SetHostname(const CStdString& fcr_hostname)
+{
+  m_hostname = fcr_hostname;
+}
+
 void CZeroconfBrowser::ZeroconfService::SetIP(const CStdString& fcr_ip)
 {
   m_ip = fcr_ip;

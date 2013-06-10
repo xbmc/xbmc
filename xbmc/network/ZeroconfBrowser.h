@@ -69,6 +69,9 @@ public:
       void SetIP(const CStdString& fcr_ip);
       const CStdString& GetIP() const {return m_ip;}
 
+      void SetHostname(const CStdString& fcr_hostname);
+      const CStdString& GetHostname() const {return m_hostname;}
+
       void SetPort(int f_port);
       int GetPort() const {return m_port;}
     
@@ -84,6 +87,10 @@ public:
       //2 entries below store 1 ip:port pair for this service
       CStdString m_ip;
       int        m_port;
+
+      //used for mdns in case dns resolution fails
+      //we store the hostname and resolve with mdns functions again
+      CStdString m_hostname;
       
       //1 entry below stores the txt-record as a key value map for this service
       tTxtRecordMap m_txtrecords_map;    
