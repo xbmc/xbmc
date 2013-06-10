@@ -53,6 +53,17 @@ private:
                                         const char *regtype,
                                         const char *replyDomain,
                                         void *context);
+  /// GetAddrInfo callback
+  static void DNSSD_API GetAddrInfoCallback(DNSServiceRef                    sdRef,
+                                            DNSServiceFlags                  flags,
+                                            uint32_t                         interfaceIndex,
+                                            DNSServiceErrorType              errorCode,
+                                            const char                       *hostname,
+                                            const struct sockaddr            *address,
+                                            uint32_t                         ttl,
+                                            void                             *context
+                                            );
+
   /// resolve callback
   static void DNSSD_API ResolveCallback(DNSServiceRef                       sdRef,
                                         DNSServiceFlags                     flags,
@@ -85,4 +96,5 @@ private:
   DNSServiceRef m_browser;
   CZeroconfBrowser::ZeroconfService m_resolving_service;
   CEvent m_resolved_event;
+  CEvent m_addrinfo_event;
 };
