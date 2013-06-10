@@ -453,24 +453,6 @@ bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
     int searchWidth = curr.iScreenWidth;
     int searchHeight = curr.iScreenHeight;
 
-    // work out current non-3D resolution (in case we are currently in 3D mode)
-    if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-    {
-      searchWidth *= 2;
-    }
-    else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-    {
-      searchHeight *= 2;
-    }
-    // work out resolution if we switch to 3D mode
-    if (mode & D3DPRESENTFLAG_MODE3DSBS)
-    {
-      searchWidth /= 2;
-    }
-    else if (mode & D3DPRESENTFLAG_MODE3DTB)
-    {
-      searchHeight /= 2;
-    }
     // only search the custom resolutions
     for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
     {

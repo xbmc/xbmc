@@ -57,7 +57,6 @@ private:
   DllBcmHost                    *m_DllBcmHost;
   DISPMANX_ELEMENT_HANDLE_T     m_dispman_display;
   DISPMANX_ELEMENT_HANDLE_T     m_dispman_element;
-  DISPMANX_ELEMENT_HANDLE_T     m_dispman_element2;
   TV_GET_STATE_RESP_T           m_tv_state;
   sem_t                         m_tv_synced;
   bool                          m_fixedMode;

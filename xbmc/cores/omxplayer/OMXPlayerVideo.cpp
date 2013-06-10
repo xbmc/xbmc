@@ -49,6 +49,8 @@
 
 #include "OMXPlayer.h"
 
+using namespace RenderManager;
+
 class COMXMsgVideoCodecChange : public CDVDMsg
 {
 public:
@@ -644,6 +646,11 @@ int OMXPlayerVideo::GetFreeSpace()
 
 void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
+  // in 3d modes skip this - we get called as the gui switches from left eye to right eye
+  unsigned flags = GetStereoModeFlags(m_hints.stereo_mode);
+  if (CONF_FLAGS_STEREO_MODE_MASK(flags))
+    return;
+
   // check if destination rect or video view mode has changed
   if ((m_dst_rect != DestRect) || (m_view_mode != CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode))
   {
@@ -667,9 +674,6 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   {
     float xscale = display.Width()  / gui.Width();
     float yscale = display.Height() / gui.Height();
-    // video is displayed in absolute coordinates (bypassing half width or height GUI mode)
-    if (m_flags & CONF_FLAGS_STEREO_MODE_SBS) xscale *= 2.0f;
-    if (m_flags & CONF_FLAGS_STEREO_MODE_TAB) yscale *= 2.0f;
     dst_rect.x1 *= xscale;
     dst_rect.x2 *= xscale;
     dst_rect.y1 *= yscale;
@@ -699,22 +703,30 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height)
     m_bAllowFullscreen = false; // only allow on first configure
   }
 
-  if(m_flags & CONF_FLAGS_STEREO_MODE_SBS)
+  flags |= GetStereoModeFlags(m_hints.stereo_mode);
+
+  if(flags & CONF_FLAGS_STEREO_MODE_SBS)
   {
     if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DSBS))
-    {
       CLog::Log(LOGNOTICE, "3DSBS movie found");
-      flags |= CONF_FLAGS_STEREO_MODE_SBS;
+    else
+    {
+      flags &= ~CONF_FLAGS_STEREO_MODE_MASK(~0);
+      CLog::Log(LOGNOTICE, "3DSBS movie found but not supported");
     }
   }
-  else if(m_flags & CONF_FLAGS_STEREO_MODE_TAB)
+  else if(flags & CONF_FLAGS_STEREO_MODE_TAB)
   {
     if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DTB))
-    {
       CLog::Log(LOGNOTICE, "3DTB movie found");
-      flags |= CONF_FLAGS_STEREO_MODE_TAB;
+    else
+    {
+      flags &= ~CONF_FLAGS_STEREO_MODE_MASK(~0);
+      CLog::Log(LOGNOTICE, "3DTB movie found but not supported");
     }
   }
+  else
+    CLog::Log(LOGNOTICE, "not a 3D movie");
 
   unsigned int iDisplayWidth  = width;
   unsigned int iDisplayHeight = height;

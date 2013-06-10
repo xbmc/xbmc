@@ -209,38 +209,6 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   int iScreenHeight = curr.iScreenHeight;
   float fRefreshRate = fps;
 
-  /*
-   * For 3D modes the following is assumed :
-   *
-   * side-by-side :
-   *
-   * width is width / 2 : 1920 -> 960
-   *
-   * tob-bottom :
-   *
-   * height is height / 2 : 1080 -> 540
-   *
-   */
-
-  // work out current non-3D resolution (in case we are currently in 3D mode)
-  if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-  {
-    iScreenWidth *= 2;
-  }
-  else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-  {
-    iScreenHeight *= 2;
-  }
-  // work out resolution if we switch to 3D mode
-  if(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS)
-  {
-    iScreenWidth /= 2;
-  }
-  else if(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB)
-  {
-    iScreenHeight /= 2;
-  }
-
   float last_diff = fRefreshRate;
 
   // Find closest refresh rate
