@@ -58,6 +58,7 @@ public:
   int m_iHeight;
   float m_fAspect;
   int m_iDuration;
+  float m_avg_frame_rate;
   CStdString m_strCodec;
 };
 

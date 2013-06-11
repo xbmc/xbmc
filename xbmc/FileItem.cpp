@@ -59,6 +59,7 @@
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"
 #endif
+#include "DVDFileInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -797,6 +798,26 @@ bool CFileItem::IsVideo() const
 
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_videoExtensions);
 }
+
+bool CFileItem::IsAnimatedGif() const
+{
+  bool isAnimated = false;
+  if (URIUtils::HasExtension(m_strPath, ".gif"))
+  {
+    CFileItem copy(m_strPath, false);
+    CDVDFileInfo::GetFileStreamDetails(&copy);
+    CVideoInfoTag* tag = copy.GetVideoInfoTag();
+    if (tag)
+    {
+      const CStreamDetailVideo* d = (CStreamDetailVideo*)tag->m_streamDetails.GetNthStream(CStreamDetail::VIDEO, 0);
+      if (d)
+        if (d->m_avg_frame_rate > 0)
+          isAnimated =  true;
+    }
+  }
+  return isAnimated;
+}
+
 
 bool CFileItem::IsEPG() const
 {

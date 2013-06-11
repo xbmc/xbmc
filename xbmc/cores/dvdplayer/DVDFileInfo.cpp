@@ -345,7 +345,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
       p->m_iDuration = pDemux->GetStreamLength();
-
+      if (((CDemuxStreamVideo *)stream)->iFpsScale > 0)
+        p->m_avg_frame_rate = (float)((CDemuxStreamVideo *)stream)->iFpsRate / (float)((CDemuxStreamVideo *)stream)->iFpsScale;
+      else
+        p->m_avg_frame_rate = 0.0;
       // stack handling
       if (URIUtils::IsStack(path))
       {

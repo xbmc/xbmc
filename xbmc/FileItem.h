@@ -125,6 +125,8 @@ public:
    */
   bool IsVideo() const;
 
+  bool IsAnimatedGif() const;
+
   bool IsDiscStub() const;
 
   /*!

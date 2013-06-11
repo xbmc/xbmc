@@ -315,7 +315,7 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
-  if (m_vecItems->Get(iItem)->IsVideo())
+  if (m_vecItems->Get(iItem)->IsVideo() || m_vecItems->Get(iItem)->IsAnimatedGif())
     return CGUIMediaWindow::OnPlayMedia(iItem);
 
   return ShowPicture(iItem, false);
