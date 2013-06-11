@@ -100,6 +100,17 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const CStdString &method, ITranspor
   return GetPropertyValue("fullscreen", result);
 }
 
+JSONRPC_STATUS CGUIOperations::SetStereoMode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!parameterObject["mode"].isString() || parameterObject["mode"].asString().empty())
+    return InvalidParams;
+
+  std::string cmd = "Stereomode(" + parameterObject["mode"].asString() + ")";
+  CBuiltins::Execute(cmd);
+
+  return ACK;
+}
+
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
   if (property.Equals("currentwindow"))
