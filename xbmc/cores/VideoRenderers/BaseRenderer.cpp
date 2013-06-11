@@ -28,6 +28,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
@@ -208,38 +209,6 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   int iScreenHeight = curr.iScreenHeight;
   float fRefreshRate = fps;
 
-  /*
-   * For 3D modes the following is assumed :
-   *
-   * side-by-side :
-   *
-   * width is width / 2 : 1920 -> 960
-   *
-   * tob-bottom :
-   *
-   * height is height / 2 : 1080 -> 540
-   *
-   */
-
-  // work out current non-3D resolution (in case we are currently in 3D mode)
-  if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-  {
-    iScreenWidth *= 2;
-  }
-  else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-  {
-    iScreenHeight *= 2;
-  }
-  // work out resolution if we switch to 3D mode
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
-  {
-    iScreenWidth /= 2;
-  }
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
-  {
-    iScreenHeight /= 2;
-  }
-
   float last_diff = fRefreshRate;
 
   // Find closest refresh rate
@@ -257,7 +226,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       continue;
 
     // For 3D choose the closest refresh rate 
-    if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+    if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     {
       float diff = (info.fRefreshRate - fRefreshRate);
       if(diff < 0)
@@ -282,7 +251,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
   }
 
   // For 3D overwrite weight
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+  if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     weight = 0;
   else
     weight = RefreshWeight(CDisplaySettings::Get().GetResolutionInfo(current).fRefreshRate, fRefreshRate * multiplier);
@@ -314,6 +283,8 @@ float CBaseRenderer::GetAspectRatio() const
 {
   float width = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
   float height = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  //if(g_graphicsContext.GetStereoView())
+  //  width *= 0.5;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
@@ -430,7 +401,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float outputFrameRatio = inputFrameRatio / CDisplaySettings::Get().GetResolutionInfo(GetResolution()).fPixelRatio;
+  float outputFrameRatio = inputFrameRatio / g_graphicsContext.GetPixelRatio(GetResolution());
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
@@ -574,10 +545,53 @@ void CBaseRenderer::ManageDisplay()
 {
   const CRect view = g_graphicsContext.GetViewWindow();
 
-  m_sourceRect.x1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  m_sourceRect.y1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  m_sourceRect.x2 = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  m_sourceRect.y2 = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  m_sourceRect.x1 = 0.0f;
+  m_sourceRect.y1 = 0.0f;
+  m_sourceRect.x2 = (float)m_sourceWidth;
+  m_sourceRect.y2 = (float)m_sourceHeight;
+
+  unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
+  int          stereo_view  = g_graphicsContext.GetStereoView();
+
+  if(CONF_FLAGS_STEREO_CADENCE(stereo_mode) == CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT)
+  {
+    if     (stereo_view == RENDER_STEREO_VIEW_LEFT)  stereo_view = RENDER_STEREO_VIEW_RIGHT;
+    else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
+  }
+
+  /* use GUI stereo mode in case we couldn't detect it by stream meta or filename */
+  if (stereo_mode == 0 && stereo_view != RENDER_STEREO_VIEW_OFF)
+  {
+    if (CStereoscopicsManager::Get().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+      stereo_mode = CONF_FLAGS_STEREO_MODE_TAB;
+    else
+      stereo_mode = CONF_FLAGS_STEREO_MODE_SBS;
+  }
+
+  switch(stereo_mode)
+  {
+    case CONF_FLAGS_STEREO_MODE_TAB:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.y2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      break;
+
+    case CONF_FLAGS_STEREO_MODE_SBS:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.x2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+      break;
+
+    default: // do nothing
+      break;
+  }
+
+  m_sourceRect.x1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
+  m_sourceRect.y1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
+  m_sourceRect.x2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
+  m_sourceRect.y2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
@@ -587,9 +601,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  if (m_iFlags & (CONF_FLAGS_FORMAT_SBS | CONF_FLAGS_FORMAT_TB))
-    viewMode = ViewModeNormal;
-
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution
@@ -597,9 +608,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float screenWidth = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left);
   float screenHeight = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top);
 
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
+  if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     screenWidth /= 2;
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
+  else if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
     screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
@@ -622,7 +633,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // zoom image so no black bars
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / g_graphicsContext.GetPixelRatio(res);
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
@@ -640,7 +651,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio);
     }
     else
     {
@@ -652,7 +663,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
            (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeWideZoom))
   { // super zoom
-    float stretchAmount = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
+    float stretchAmount = (screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio;
     CDisplaySettings::Get().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
     CDisplaySettings::Get().SetZoomAmount(pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0)));
     CDisplaySettings::Get().SetNonLinearStretched(true);
@@ -669,7 +680,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * g_graphicsContext.GetPixelRatio(res) / sourceFrameRatio);
     }
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
@@ -677,7 +688,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // get the size of the media file
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / g_graphicsContext.GetPixelRatio(res);
     // now calculate the correct zoom amount.  First zoom to full width.
     float newHeight = screenWidth / outputFrameRatio;
     if (newHeight > screenHeight)

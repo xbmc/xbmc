@@ -2764,6 +2764,16 @@ namespace JSONRPC
       "],"
       "\"returns\": { \"type\": \"boolean\", \"description\": \"Fullscreen state\" }"
     "}",
+    "\"GUI.SetStereoMode\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Sets the stereoscopic mode of the GUI to the given mode\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlGUI\","
+      "\"params\": ["
+        "{ \"name\": \"mode\", \"required\": true, \"description\": \"Value can be: off, toggle, next, previous, select, 2d, sbs, tab or any of the MKV stereo modes\" }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"Addons.GetAddons\": {"
       "\"type\": \"method\","
       "\"description\": \"Gets all available addons\","

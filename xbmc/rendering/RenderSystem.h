@@ -60,6 +60,27 @@ enum
   RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY       = 1 << 2,
 };
 
+enum RENDER_STEREO_VIEW
+{
+  RENDER_STEREO_VIEW_OFF,
+  RENDER_STEREO_VIEW_LEFT,
+  RENDER_STEREO_VIEW_RIGHT,
+};
+
+enum RENDER_STEREO_MODE
+{
+  RENDER_STEREO_MODE_OFF,
+  RENDER_STEREO_MODE_SPLIT_HORIZONTAL,
+  RENDER_STEREO_MODE_SPLIT_VERTICAL,
+  RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN,
+  RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA,
+  RENDER_STEREO_MODE_INTERLACED,
+  RENDER_STEREO_MODE_HARDWAREBASED,
+  RENDER_STEREO_MODE_MONO,
+  RENDER_STEREO_MODE_COUNT,
+};
+
+
 class CRenderSystemBase
 {
 public:
@@ -94,6 +115,11 @@ public:
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight) = 0;
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
+  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+  {
+    m_stereoMode = mode;
+    m_stereoView = view;
+  }
 
   virtual bool TestRender() = 0;
 
@@ -110,6 +136,7 @@ public:
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
   bool SupportsNPOT(bool dxt) const;
+  bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
@@ -128,6 +155,8 @@ protected:
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;
   unsigned int m_renderQuirks;
+  RENDER_STEREO_VIEW m_stereoView;
+  RENDER_STEREO_MODE m_stereoMode;
 };
 
 #endif // RENDER_SYSTEM_H

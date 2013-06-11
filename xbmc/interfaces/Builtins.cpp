@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
+#include "guilib/StereoscopicsManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -223,6 +224,7 @@ const BUILT_IN commands[] = {
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
+  { "StereoMode",                 true,   "Changes the stereo mode of the GUI. Params can be: off, toggle, next, previous, select, 2d, sbs, tab or any of the MKV stereo modes"
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1662,6 +1664,19 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("StartAndroidActivity") && params.size() > 0)
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
+  }
+  else if (execute.Equals("StereoMode") && !parameter.IsEmpty())
+  {
+    if (parameter.Equals("next"))
+      CStereoscopicsManager::Get().OnAction(CAction(ACTION_STEREOMODE_NEXT));
+    else if (parameter.Equals("previous"))
+      CStereoscopicsManager::Get().OnAction(CAction(ACTION_STEREOMODE_PREVIOUS));
+    else if (parameter.Equals("toggle"))
+      CStereoscopicsManager::Get().OnAction(CAction(ACTION_STEREOMODE_TOGGLE));
+    else if (parameter.Equals("select"))
+      CStereoscopicsManager::Get().OnAction(CAction(ACTION_STEREOMODE_SELECT));
+    else
+      CStereoscopicsManager::Get().SetStereoMode(parameter);
   }
   else
     return -1;

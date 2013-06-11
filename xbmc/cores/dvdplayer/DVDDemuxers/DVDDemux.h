@@ -186,6 +186,7 @@ public:
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degress counter clockwise
   int iBitsPerPixel;
+  std::string stereo_mode; // expected stereo mode
 };
 
 class CDemuxStreamAudio : public CDemuxStream
