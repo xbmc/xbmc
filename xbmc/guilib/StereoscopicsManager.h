@@ -47,6 +47,7 @@ public:
   void Initialize(void);
   bool HasStereoscopicSupport(void);
   void SetStereoMode(const RENDER_STEREO_MODE &mode);
+  void SetStereoMode(const std::string &mode);
   RENDER_STEREO_MODE GetStereoMode(void);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   std::string DetectStereoModeByString(const std::string &needle);
