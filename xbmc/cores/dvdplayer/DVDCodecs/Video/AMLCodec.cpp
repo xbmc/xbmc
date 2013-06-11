@@ -550,6 +550,10 @@ static int write_header(am_private_t *para, am_packet_t *pkt)
         }
         while (1) {
             write_bytes = para->m_dll->codec_write(pkt->codec, pkt->hdr->data + len, pkt->hdr->size - len);
+
+            CLog::Log(LOGDEBUG, "[write_header] write_bytes: %d, len: %d, pkt->hdr->size: %d",
+              write_bytes, len, pkt->hdr->size);
+
             if (write_bytes < 0 || write_bytes > (pkt->hdr->size - len)) {
                 if (-errno != AVERROR(EAGAIN)) {
                     CLog::Log(LOGDEBUG, "ERROR:write header failed!");
@@ -1696,8 +1700,12 @@ void CAMLCodec::CloseDecoder()
   g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
 
-  // never leave vcodec paused and closed.
-  SetSpeed(DVD_PLAYSPEED_NORMAL);
+  // never leave vcodec ff/rw or paused.
+  if (m_speed != DVD_PLAYSPEED_NORMAL)
+  {
+    m_dll->codec_resume(&am_private->vcodec);
+    m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+  }
   m_dll->codec_close(&am_private->vcodec);
   m_opened = false;
 
@@ -1819,9 +1827,9 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
     return VC_BUFFER;
 
-  // wait until we get a new frame or 100ms,
+  // wait until we get a new frame or 25ms,
   if (m_old_pictcnt == m_cur_pictcnt)
-    m_ready_event.WaitMSec(100);
+    m_ready_event.WaitMSec(25);
 
   // we must return VC_BUFFER or VC_PICTURE,
   // default to VC_BUFFER.
