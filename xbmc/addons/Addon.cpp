@@ -23,7 +23,9 @@
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
+#endif
 #if defined(TARGET_DARWIN)
 #include "../osx/OSXGNUReplacements.h"
 #endif
@@ -516,7 +518,9 @@ void CAddon::SaveSettings(void)
   m_userSettingsLoaded = true;
   
   CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
+#ifdef HAS_PYTHON
   g_pythonParser.OnSettingsChanged(ID());
+#endif
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)

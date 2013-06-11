@@ -41,7 +41,9 @@
 #include "URIUtils.h"
 #include "log.h"
 #include "addons/AddonManager.h"
+#ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
+#endif
 #include "CharsetConverter.h"
 #include "addons/GUIDialogAddonSettings.h"
 
@@ -92,6 +94,7 @@ bool CWeatherJob::DoWork()
   strSetting.Format("%i", m_location);
   argv.push_back(strSetting);
 
+#ifdef HAS_PYTHON
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
   // call our script, passing the areacode
@@ -117,6 +120,7 @@ bool CWeatherJob::DoWork()
     g_windowManager.SendThreadMessage(msg);
   }
   else
+#endif
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 
   return true;
