@@ -35,7 +35,7 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
 	IF %%b==noclean SET buildmode=noclean
 	IF %%b==noprompt SET promptlevel=noprompt
 	IF %%b==nomingwlibs SET buildmingwlibs=false
-    IF %%b==sh SET useshell=sh
+	IF %%b==sh SET useshell=sh
 )
 
 SET buildconfig=Release (DirectX)
