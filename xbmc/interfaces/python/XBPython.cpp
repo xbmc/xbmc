@@ -113,7 +113,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   else if (flag & GUI)
   {
    if (strcmp(message, "OnScreensaverDeactivated") == 0)
-     OnScreensaverDeactivated();   
+     OnScreensaverDeactivated();
    else if (strcmp(message, "OnScreensaverActivated") == 0)
      OnScreensaverActivated();
   }
@@ -284,7 +284,7 @@ void XBPython::OnSettingsChanged(const CStdString &ID)
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)) && ((*it)->GetId() == ID))
       (*it)->OnSettingsChanged();
   }
-}  
+}
 
 void XBPython::OnScreensaverActivated()
 {
@@ -295,7 +295,7 @@ void XBPython::OnScreensaverActivated()
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
       (*it)->OnScreensaverActivated();
   }
-} 
+}
 
 void XBPython::OnScreensaverDeactivated()
 {
@@ -306,7 +306,7 @@ void XBPython::OnScreensaverDeactivated()
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
       (*it)->OnScreensaverDeactivated();
   }
-} 
+}
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
 {
@@ -317,7 +317,7 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
       (*it)->OnDatabaseUpdated(database);
   }
-} 
+}
 
 void XBPython::OnDatabaseScanStarted(const std::string &database)
 {
@@ -343,8 +343,8 @@ void XBPython::OnAbortRequested(const CStdString &ID)
       else if ((*it)->GetId() == ID)
         (*it)->OnAbortRequested();
     }
-  }  
-} 
+  }
+}
 
 /**
 * Check for file and print an error if needed
@@ -444,7 +444,7 @@ void XBPython::UnloadExtensionLibs()
         "os.chdir_orignal   = os.chdir\n" \
         "os.chdir           = chdir_xbmc\n" \
         ""
- 
+
 #define RUNSCRIPT_POSTSCRIPT \
         "print '-->Python Interpreter Initialized<--'\n" \
         ""
