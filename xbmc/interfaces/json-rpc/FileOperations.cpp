@@ -132,8 +132,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
     }
 
     // Check if the "properties" list exists
-    // and make sure it contains the "file"
-    // field
+    // and make sure it contains the "file" and "filetype"
+    // fields
     CVariant param = parameterObject;
     if (!param.isMember("properties"))
       param["properties"] = CVariant(CVariant::VariantTypeArray);
@@ -150,22 +150,9 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
 
     if (!hasFileField)
       param["properties"].append("file");
+    param["properties"].append("filetype");
 
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
-    for (CVariant::iterator_array item = result["files"].begin_array(); item != result["files"].end_array(); ++item)
-    {
-      if (!item->isMember("file"))
-        continue;
-
-      CFileItemPtr pItem = filteredFiles.Get((*item)["file"].asString());
-      if (pItem == NULL)
-        continue;
-
-      if (pItem->m_bIsFolder)
-        (*item)["filetype"] = "directory";
-      else
-        (*item)["filetype"] = "file";
-    }
 
     return OK;
   }
@@ -212,6 +199,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const CStdString &method, ITransp
 
   if (!hasFileField)
     param["properties"].append("file");
+  param["properties"].append("filetype");
 
   HandleFileItem("id", true, "filedetails", item, parameterObject, param["properties"], result, false);
   return OK;
