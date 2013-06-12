@@ -1340,8 +1340,7 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 {
   if( m_mimetype.IsEmpty() && lookup)
   {
-    // discard const qualifyier
-    CStdString& m_ref = (CStdString&)m_mimetype;
+    CStdString& m_ref = const_cast<CStdString&>(m_mimetype);
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
@@ -1377,7 +1376,7 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
   // change protocol to mms for the following mome-type.  Allows us to create proper FileMMS.
   if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
   {
-    CStdString& m_path = (CStdString&)m_strPath;
+    CStdString& m_path = const_cast<CStdString&>(m_strPath);
     m_path.Replace("http:", "mms:");
   }
 
