@@ -8,7 +8,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 
 /* PLEX */
-#include "PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 #include <boost/make_shared.hpp>
 /* END PLEX */
 
@@ -76,7 +76,7 @@ bool CSaveFileStateJob::DoWork()
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
             /* PLEX */
-            PlexMediaServerQueue::Get().onViewed(boost::make_shared<CFileItem>(m_item), true);
+            g_plexMediaServerClient.SetItemWatched(boost::make_shared<CFileItem>(m_item));
             /* END PLEX */
           }
 #ifndef __PLEX__
@@ -93,10 +93,10 @@ bool CSaveFileStateJob::DoWork()
               videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
 #else
             if (m_bookmark.timeInSeconds < 0.0f)
-              PlexMediaServerQueue::Get().onClearPlayingProgress(boost::make_shared<CFileItem>(m_item));
+              g_plexMediaServerClient.ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED);
             else if (m_bookmark.timeInSeconds > 0.0f)
             {
-              PlexMediaServerQueue::Get().onPlayingProgress(boost::make_shared<CFileItem>(m_item), m_bookmark.timeInSeconds*1000, "stopped");
+              g_plexMediaServerClient.ReportItemProgress(boost::make_shared<CFileItem>(m_item), CPlexMediaServerClient::MEDIA_STATE_STOPPED, m_bookmark.timeInSeconds*1000);
               m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
             }
 #endif

@@ -73,5 +73,4 @@ class CPlexAttributeParserDateTime : public CPlexAttributeParserBase
     virtual void Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item);
 };
 
-
 #endif // PLEXATTRIBUTEPARSER_H

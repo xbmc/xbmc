@@ -338,8 +338,7 @@
 /* PLEX */
 #include "plex/PlexApplication.h"
 #include "plex/Players/PlexMediaServerPlayer.h"
-#include "plex/PlexMediaServerQueue.h"
-//#include "plex/Client/MyPlexManager.h"
+#include "Client/PlexMediaServerClient.h"
 #include "plex/Client/PlexServerManager.h"
 #include "plex/Helper/PlexHTHelper.h"
 #include "plex/GUI/GUIDialogRating.h"
@@ -3841,10 +3840,6 @@ void CApplication::Stop(int exitCode)
 #endif
 #endif
 
-    /* PLEX */
-    PlexMediaServerQueue::Get().StopThread();
-    /* END PLEX */
-
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::RemoveInstance();
 #endif
@@ -4264,7 +4259,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   PLAYERCOREID eNewCore = EPC_NONE;
   /* PLEX */
-  if (bestServer && bestServer->GetActiveConnection()->IsLocal() == false && item.IsPlexWebkit())
+  if (bestServer &&
+      bestServer->GetActiveConnection() &&
+      bestServer->GetActiveConnection()->IsLocal() == false &&
+      item.IsPlexWebkit())
   {
     eNewCore = EPC_DVDPLAYER;
   }
@@ -6356,12 +6354,12 @@ void CApplication::UpdateFileState(const string& aState)
           m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(t*1000)));
           m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
         }
-
-        PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, int(t*1000), state);
+        
+        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
       else
       {
-        PlexMediaServerQueue::Get().onPlayTimeline(m_itemCurrentFile, int(t*1000), state);
+        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
     }
 
@@ -6374,7 +6372,7 @@ void CApplication::UpdateFileState(const string& aState)
       m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
       m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
       m_itemCurrentFile->ClearProperty("viewOffset");
-      PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+      g_plexMediaServerClient.SetItemWatched(m_itemCurrentFile);
     }
 
     // Update the item in place.

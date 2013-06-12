@@ -76,7 +76,7 @@
 
 /* PLEX */
 #include "BackgroundMusicPlayer.h"
-#include "PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 #include "PlexContentPlayerMixin.h"
 #include "interfaces/Builtins.h"
 /* END PLEX */

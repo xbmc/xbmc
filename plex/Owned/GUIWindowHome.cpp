@@ -55,7 +55,7 @@
 #include "dialogs/GUIDialogVideoInfo.h"
 #include "dialogs/GUIDialogOK.h"
 
-#include "plex/PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -183,6 +183,7 @@ void CPlexSectionFanout::Refresh()
 #endif
       
       trueUrl.SetOption("unwatched", "1");
+      //trueUrl.SetOption("stack", "1");
       PlexUtils::AppendPathToURL(trueUrl, "recentlyAdded");
       
       m_outstandingJobs.push_back(LoadSection(trueUrl.Get(), CONTENT_LIST_RECENTLY_ADDED));

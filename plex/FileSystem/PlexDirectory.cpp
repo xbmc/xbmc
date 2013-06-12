@@ -274,9 +274,7 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, con
   newItem->SetProperty("plex", true);
   newItem->SetProperty("plexserver", baseUrl.GetHostName());
 
-  newItem->m_bIsFolder = IsFolder(*newItem, element);
-
-#if 0
+#if 1
   CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
             newItem->GetPath().c_str(),
             GetDirectoryTypeString(newItem->GetPlexDirectoryType()).c_str(),
@@ -293,6 +291,17 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
   {
     CFileItemPtr item = CPlexDirectory::NewPlexElement(element, container, m_url);
     CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(item->GetPlexDirectoryType())->Process(*item, container, element);
+    
+    /* forward some mediaContainer properties */
+    item->SetProperty("containerKey", container.GetProperty("unprocessed_key"));
+    
+    if (!item->HasProperty("identifier") && container.HasProperty("identifier"))
+      item->SetProperty("identifier", container.GetProperty("identifier"));
+    
+    if (!item->HasArt(PLEX_ART_FANART) && container.HasArt(PLEX_ART_FANART))
+      item->SetArt(PLEX_ART_FANART, container.GetArt(PLEX_ART_FANART));
+    
+    item->m_bIsFolder = IsFolder(*item, element);
 
     container.Add(item);
   }
@@ -313,6 +322,8 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   mediaContainer.SetProperty("plexserver", m_url.GetHostName());
 
   CPlexDirectory::CopyAttributes(root, mediaContainer, m_url);
+  g_parserKey->Process(m_url, "key", m_url.GetFileName(), mediaContainer);
+  
   ReadChildren(root, mediaContainer);
 
   /* We just use the first item Type, it might be wrong and we should maybe have a look... */
@@ -334,6 +345,8 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     CLog::Log(LOGDEBUG, "CPlexDirectory::ReadMediaContainer setting content = %s", content.c_str());
     mediaContainer.SetContent(content);
   }
+  
+  mediaContainer.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
 
   return true;
 }
@@ -484,7 +497,7 @@ bool CPlexDirectory::IsFolder(CFileItem& item, TiXmlElement* element)
   switch(item.GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_VIDEO:
-    case PLEX_DIR_TYPE_SHOW:
+    case PLEX_DIR_TYPE_EPISODE:
     case PLEX_DIR_TYPE_MOVIE:
     case PLEX_DIR_TYPE_PHOTO:
     case PLEX_DIR_TYPE_PART:

@@ -31,7 +31,7 @@
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
 #include "PlexMediaRefresher.h"
-#include "PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 
 #define CONTENT_LIST_FILTERS 13000
 #define DEFAULT_MODE_FOR_DISABLED_VIEWS 65586

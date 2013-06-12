@@ -58,6 +58,11 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   videoTag.m_iYear = item.GetProperty("year").asInteger();
   videoTag.m_strPath = item.GetPath();
   videoTag.m_duration = item.GetProperty("duration").asInteger() > 0 ? item.GetProperty("duration").asInteger() / 1000 : 0;
+  
+  if (item.HasProperty("viewCount"))
+    videoTag.m_playCount = item.GetProperty("viewCount").asInteger();
+  else
+    videoTag.m_playCount = 0;
 
   if (item.HasProperty("grandparentTitle"))
     videoTag.m_strShowTitle = item.GetProperty("grandparentTitle").asString();
@@ -78,6 +83,11 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   }
 
   item.SetFromVideoInfoTag(videoTag);
+  
+  if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").asInteger() > 0)
+    item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+  else
+    item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, videoTag.m_playCount > 0);
 
   ParseMediaNodes(item, itemElement);
 

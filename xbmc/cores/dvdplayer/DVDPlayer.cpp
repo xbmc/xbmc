@@ -104,7 +104,7 @@
 #include "Utility/Base64.h"
 #include "PlexAsyncUrlResolver.h"
 
-#include "PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 #include "ApplicationMessenger.h"
 
 #include "Network/NetworkInterface.h"
@@ -2892,7 +2892,7 @@ void CDVDPlayer::SetSubtitle(int iStream)
 
   // Send the change to the Media Server.
   CFileItemPtr item = g_application.CurrentFileItemPtr();
-  PlexMediaServerQueue::Get().onStreamSelected(item, GetPlexMediaPartID(), g_settings.m_currentVideoSettings.m_SubtitleOn ? s.plexID : 0, -1);
+  g_plexMediaServerClient.SelectStream(item, GetPlexMediaPartID(), g_settings.m_currentVideoSettings.m_SubtitleOn ? s.plexID : 0, -1);
   /* END PLEX */
 }
 
@@ -2923,7 +2923,7 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 
   // Don't send the message over if we're just hiding the initial sub.
   if (m_hidingSub == false)
-    PlexMediaServerQueue::Get().onStreamSelected(item, partID, g_settings.m_currentVideoSettings.m_SubtitleOn ? subtitleStreamID : 0, -1);
+    g_plexMediaServerClient.SelectStream(item, partID, g_settings.m_currentVideoSettings.m_SubtitleOn ? subtitleStreamID : 0, -1);
   /* END PLEX */
 }
 
@@ -2962,7 +2962,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
 
   // Notify the Plex Media Server.
   CFileItemPtr item = g_application.CurrentFileItemPtr();
-  PlexMediaServerQueue::Get().onStreamSelected(item, GetPlexMediaPartID(), -1, GetAudioStreamPlexID());
+  g_plexMediaServerClient.SelectStream(item, GetPlexMediaPartID(), -1, GetAudioStreamPlexID());
   /* END PLEX */
 }
 
@@ -4644,7 +4644,11 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       item = resolver->GetFinalItem();
   }
 
-  CFileItemPtr mediaPart = item.m_mediaItems[mediaItemIdx]->m_mediaParts[0];
+  CFileItemPtr mediaPart;
+  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
+    mediaPart = item.m_mediaItems[mediaItemIdx]->m_mediaParts[0];
+  else
+    return false;
 
   if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
   {

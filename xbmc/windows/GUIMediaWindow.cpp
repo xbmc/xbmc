@@ -529,10 +529,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
+      /*
       PlexMediaServerQueue::Get().onViewModeChanged(m_vecItems->GetProperty("identifier").asString(),
                                                     m_vecItems->GetPath(),
                                                     m_vecItems->GetProperty("viewGroup").asString(),
-                                                    viewMode, -1, -1);
+                                                    viewMode, -1, -1);*/
       m_vecItems->SetDefaultViewMode(viewMode);
       /* END PLEX */
 
@@ -1988,7 +1989,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     if (newRating >= 0 && newRating <= 10)
     {
-      PlexMediaServerQueue::Get().onRate(item, float(newRating));
+      g_plexMediaServerClient.SetItemRating(item, float(newRating));
       item->SetProperty("userRating", newRating);
     }
 

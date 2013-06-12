@@ -71,6 +71,9 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
 {
   CURL mediaUrl(url);
   CURL imageURL;
+  
+  /* reset the options to not bust cache stuff */
+  mediaUrl.SetOptions("");
 
   if (boost::starts_with(value, "http://"))
   {

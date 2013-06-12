@@ -14,6 +14,7 @@ CPlexFile::CPlexFile(void) : CCurlFile()
   SetRequestHeader("X-Plex-Platform", PlexUtils::GetMachinePlatform());
   SetRequestHeader("X-Plex-Provides", "player");
   SetRequestHeader("X-Plex-Product", "Plex for Home Theater");
+  SetRequestHeader("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename"));
 
   if (g_myplexManager.IsSignedIn())
   {

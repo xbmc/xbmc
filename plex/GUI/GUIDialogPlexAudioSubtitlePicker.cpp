@@ -5,11 +5,13 @@
 #include "PlexMediaPart.h"
 #include "PlexMediaStream.h"
 #include "FileItem.h"
-#include "PlexMediaServerQueue.h"
+#include "client/PlexMediaServerClient.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <string>
+
+#include "PlexUtils.h"
 
 CGUIDialogPlexAudioSubtitlePicker::CGUIDialogPlexAudioSubtitlePicker()
   : CGUIDialogSelect()
@@ -26,7 +28,7 @@ CGUIDialogPlexAudioSubtitlePicker::SetFileItem(CFileItemPtr& fileItem, bool audi
     
     noneItem->SetLabel(g_localizeStrings.Get(231));
     noneItem->SetProperty("streamId", "-1");
-    noneItem->SetProperty("streamType", boost::lexical_cast<string>(PLEX_STREAM_SUBTITLE));
+    noneItem->SetProperty("streamType", boost::lexical_cast<std::string>(PLEX_STREAM_SUBTITLE));
     
     Add(noneItem);
     
@@ -116,10 +118,7 @@ CGUIDialogPlexAudioSubtitlePicker::UpdateStreamSelection(CFileItemPtr &fileItem)
   
   for (int i = 0; i < fileItem->m_mediaParts.size(); i ++)
   {
-    PlexMediaServerQueue::Get().onStreamSelected(fileItem,
-                                                 fileItem->m_mediaParts[i]->GetProperty("id").asInteger(),
-                                                 subtitleId,
-                                                 audioId);
+    g_plexMediaServerClient.SelectStream(fileItem, fileItem->m_mediaParts[i]->GetProperty("id").asInteger(), subtitleId, audioId);
 
     PlexUtils::SetSelectedStream(fileItem->m_mediaParts[i], streamType, streamId);
   }
