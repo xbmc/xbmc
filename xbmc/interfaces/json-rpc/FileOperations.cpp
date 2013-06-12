@@ -120,20 +120,14 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
           (media == "picture" && items[i]->HasPictureInfoTag()) ||
            media == "files" ||
            URIUtils::IsUPnP(items.GetPath()))
-      {
           filteredFiles.Add(items[i]);
-      }
       else
       {
         CFileItemPtr fileItem(new CFileItem());
         if (FillFileItem(items[i], fileItem, media, parameterObject))
-        {
             filteredFiles.Add(fileItem);
-        }
         else
-        {
             filteredFiles.Add(items[i]);
-        }
       }
     }
 
