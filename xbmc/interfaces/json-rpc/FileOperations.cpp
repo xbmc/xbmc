@@ -152,6 +152,20 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
       param["properties"].append("file");
 
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
+    for (CVariant::iterator_array item = result["files"].begin_array(); item != result["files"].end_array(); ++item)
+    {
+      if (!item->isMember("file"))
+        continue;
+
+      CFileItemPtr pItem = filteredFiles.Get((*item)["file"].asString());
+      if (pItem == NULL)
+        continue;
+
+      if (pItem->m_bIsFolder)
+        (*item)["filetype"] = "directory";
+      else
+        (*item)["filetype"] = "file";
+    }
 
     return OK;
   }
