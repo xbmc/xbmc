@@ -111,33 +111,30 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
     case Audio:
     {
       fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
-      if (fileItem->GetLabel().empty())
+      if (IsPVRChannel())
       {
-        if (IsPVRChannel())
+        CPVRChannelPtr currentChannel;
+        if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.get() != NULL)
+          fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
+      }
+      else if (player == Video)
+      {
+        if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
         {
-          CPVRChannelPtr currentChannel;
-          if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.get() != NULL)
-            fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
+          const CVideoInfoTag *currentVideoTag = g_infoManager.GetCurrentMovieTag();
+          if (currentVideoTag != NULL)
+            fileItem = CFileItemPtr(new CFileItem(*currentVideoTag));
+          fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
-        else if (player == Video)
+      }
+      else
+      {
+        if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
         {
-          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
-          {
-            const CVideoInfoTag *currentVideoTag = g_infoManager.GetCurrentMovieTag();
-            if (currentVideoTag != NULL)
-              fileItem = CFileItemPtr(new CFileItem(*currentVideoTag));
-            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
-          }
-        }
-        else
-        {
-          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
-          {
-            const MUSIC_INFO::CMusicInfoTag *currentMusicTag = g_infoManager.GetCurrentSongTag();
-            if (currentMusicTag != NULL)
-              fileItem = CFileItemPtr(new CFileItem(*currentMusicTag));
-            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
-          }
+          const MUSIC_INFO::CMusicInfoTag *currentMusicTag = g_infoManager.GetCurrentSongTag();
+          if (currentMusicTag != NULL)
+            fileItem = CFileItemPtr(new CFileItem(*currentMusicTag));
+          fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
       }
 
