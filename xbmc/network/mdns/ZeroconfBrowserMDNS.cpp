@@ -28,6 +28,8 @@
 #include "win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
 #include "network/DNSNameCache.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #pragma comment(lib, "dnssd.lib")
 
@@ -96,6 +98,33 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
   }
 }
 
+void DNSSD_API CZeroconfBrowserMDNS::GetAddrInfoCallback(DNSServiceRef                    sdRef,
+                                                         DNSServiceFlags                  flags,
+                                                         uint32_t                         interfaceIndex,
+                                                         DNSServiceErrorType              errorCode,
+                                                         const char                       *hostname,
+                                                         const struct sockaddr            *address,
+                                                         uint32_t                         ttl,
+                                                         void                             *context
+                                                         )
+{
+
+  if (errorCode)
+  {
+    CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: GetAddrInfoCallback failed with error = %ld", (int) errorCode);
+    return;
+  }
+
+  CStdString strIP;
+  CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
+
+  if (address->sa_family == AF_INET)
+    strIP = inet_ntoa(((const struct sockaddr_in *)address)->sin_addr);
+
+  p_instance->m_resolving_service.SetIP(strIP);
+  p_instance->m_addrinfo_event.Set();
+}
+
 void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef                       sdRef,
                                                     DNSServiceFlags                     flags,
                                                     uint32_t                            interfaceIndex,
@@ -120,13 +149,7 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
   CStdString strIP;
   CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
 
-  if(!CDNSNameCache::Lookup(hosttarget, strIP))
-  {
-    CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: Could not resolve hostname %s",hosttarget);
-    p_instance->m_resolved_event.Set();
-    return;
-  }
-  p_instance->m_resolving_service.SetIP(strIP);
+  p_instance->m_resolving_service.SetHostname(hosttarget);
 
   for(uint16_t i = 0; i < TXTRecordGetCount(txtLen, txtRecord); ++i)
   {
@@ -314,9 +337,6 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   if (err != kDNSServiceErr_NoError)
       CLog::Log(LOGERROR, "ZeroconfBrowserMDNS::doResolveService DNSServiceProcessResult returned (error = %ld)", (int) err);
 
-  if (sdRef)
-    DNSServiceRefDeallocate(sdRef);
-
 #if defined(HAS_MDNS_EMBEDDED)
   // when using the embedded mdns service the call to DNSServiceProcessResult
   // above will not block until the resolving was finished - instead we have to
@@ -324,6 +344,53 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   m_resolved_event.WaitMSec(f_timeout * 1000);
 #endif //HAS_MDNS_EMBEDDED
   fr_service = m_resolving_service;
+
+  if (sdRef)
+    DNSServiceRefDeallocate(sdRef);
+
+  // resolve the hostname
+  if (!fr_service.GetHostname().empty())
+  {
+    CStdString strIP;
+
+    // use mdns resolving
+    m_addrinfo_event.Reset();
+    sdRef = NULL;
+
+    err = DNSServiceGetAddrInfo(&sdRef, 0, kDNSServiceInterfaceIndexAny, kDNSServiceProtocol_IPv4, fr_service.GetHostname(), GetAddrInfoCallback, this);
+
+    if (err != kDNSServiceErr_NoError)
+      CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: DNSServiceGetAddrInfo returned (error = %ld)", (int) err);
+
+    err = DNSServiceProcessResult(sdRef);
+
+    if (err != kDNSServiceErr_NoError)
+      CLog::Log(LOGERROR, "ZeroconfBrowserMDNS::doResolveService DNSServiceProcessResult returned (error = %ld)", (int) err);
+
+#if defined(HAS_MDNS_EMBEDDED)
+    // when using the embedded mdns service the call to DNSServiceProcessResult
+    // above will not block until the resolving was finished - instead we have to
+    // wait for resolve to return or timeout
+    // give it 2 secs for resolving (resolving in mdns is cached and queued
+    // in timeslices off 1 sec
+    m_addrinfo_event.WaitMSec(2000);
+#endif //HAS_MDNS_EMBEDDED
+    fr_service = m_resolving_service;
+
+    if (sdRef)
+      DNSServiceRefDeallocate(sdRef);
+
+    // fall back to our resolver
+    if (fr_service.GetIP().empty())
+    {
+      CLog::Log(LOGWARNING, "ZeroconfBrowserMDNS: Could not resolve hostname %s falling back to CDNSNameCache", fr_service.GetHostname().c_str());
+      if (CDNSNameCache::Lookup(fr_service.GetHostname(), strIP))
+        fr_service.SetIP(strIP);
+      else
+        CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: Could not resolve hostname %s", fr_service.GetHostname().c_str());
+    }
+  }
+
   return (!fr_service.GetIP().empty());
 }
 
