@@ -162,6 +162,7 @@ endmacro()
 
 macro(plex_find_headers) 
   set(args HEADERS HINTS)
+  include(CMakeParseArguments)
   cmake_parse_arguments(FIND_HEADERS "" "" "${args}" ${ARGN})
   foreach(h ${FIND_HEADERS_HEADERS})
     plex_find_header(${h} "${FIND_HEADERS_HINTS}")
