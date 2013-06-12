@@ -113,7 +113,12 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
     return true;
   else if (StringUtils::StartsWith(realPath, "special://videoplaylists"))
     return true;
-
+  else if (StringUtils::StartsWith(realPath, "addons://sources"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "upnp://"))
+    return true;
+  else if (StringUtils::StartsWith(realPath, "plugin://"))
+    return true;
   bool isSource;
   for (unsigned int index = 0; index < SourcesSize; index++)
   {
