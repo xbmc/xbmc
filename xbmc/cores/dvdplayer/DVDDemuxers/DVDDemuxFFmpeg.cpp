@@ -642,7 +642,8 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 
   if(timestamp > starttime)
     timestamp -= starttime;
-  else if( timestamp + 0.1f > starttime )
+  // allow for largest possible difference in pts and dts for a single packet
+  else if( timestamp + 0.5f > starttime )
     timestamp = 0;
 
   return timestamp*DVD_TIME_BASE;
