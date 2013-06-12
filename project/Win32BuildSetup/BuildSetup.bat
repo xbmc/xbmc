@@ -1,4 +1,5 @@
 @ECHO OFF
+SETLOCAL ENABLEDELAYEDEXPANSION
 rem ----Usage----
 rem BuildSetup [gl|dx] [clean|noclean]
 rem vs2010 for compiling with visual studio 2010
@@ -34,19 +35,36 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
 	IF %%b==noclean SET buildmode=noclean
 	IF %%b==noprompt SET promptlevel=noprompt
 	IF %%b==nomingwlibs SET buildmingwlibs=false
-    IF %%b==sh SET useshell=sh
+	IF %%b==sh SET useshell=sh
 )
 
 SET buildconfig=Release (DirectX)
 IF %target%==gl SET buildconfig=Release (OpenGL)
 
 IF %comp%==vs2010 (
-  IF "%VS100COMNTOOLS%"=="" (
-		set NET="%ProgramFiles%\Microsoft Visual Studio 10.0\Common7\IDE\VCExpress.exe"
-	) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\VCExpress.exe" (
-		set NET="%VS100COMNTOOLS%\..\IDE\VCExpress.exe"
-	) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
-		set NET="%VS100COMNTOOLS%\..\IDE\devenv.exe"
+	REM look for MSBuild.exe in .NET Framework 4.x
+	FOR /F "tokens=3* delims=	" %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0 /v MSBuildToolsPath') DO SET NET=%%AMSBuild.exe
+	IF NOT EXIST "!NET!" (
+		FOR /F "tokens=3* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0 /v MSBuildToolsPath') DO SET NET=%%AMSBuild.exe
+	)
+
+	IF EXIST "!NET!" (
+		set msbuildemitsolution=1
+		set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%"
+		set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%"
+	) ELSE (
+		IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.com" (
+			set NET="%VS100COMNTOOLS%\..\IDE\devenv.com"
+		) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
+			set NET="%VS100COMNTOOLS%\..\IDE\devenv.exe"
+		) ELSE IF "%VS100COMNTOOLS%"=="" (
+			set NET="%ProgramFiles%\Microsoft Visual Studio 10.0\Common7\IDE\VCExpress.exe"
+		) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\VCExpress.exe" (
+			set NET="%VS100COMNTOOLS%\..\IDE\VCExpress.exe"
+		)
+
+		set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /build "%buildconfig%"
+		set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /clean "%buildconfig%"
 	)
 )
 
@@ -55,8 +73,6 @@ IF %comp%==vs2010 (
 	 goto DIE
   )
   
-  set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /build "%buildconfig%"
-  set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /clean "%buildconfig%"
   set EXE= "..\VS2010Express\XBMC\%buildconfig%\XBMC.exe"
   set PDB= "..\VS2010Express\XBMC\%buildconfig%\XBMC.pdb"
   

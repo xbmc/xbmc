@@ -2,6 +2,7 @@
 
 MAKECLEAN=0
 MAKEFLAGS=""
+BGPROCESSFILE=$2
 
 if [ "$1" = "clean" ]
 then
@@ -80,3 +81,5 @@ strip -S obj/libdvdnav.dll
 cd ..
 cp libdvdnav/obj/libdvdnav.dll /xbmc/system/players/dvdplayer/
 echo "***** Done *****"
+#remove the bgprocessfile for signaling the process end
+rm $BGPROCESSFILE
