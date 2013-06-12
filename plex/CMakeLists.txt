@@ -204,21 +204,6 @@ elseif(TARGET_WIN32)
   install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 endif()
 
-if(TARGET_OSX)
-  set(DSYM_FNAME "${EXECUTABLE_NAME}-${PLEX_VERSION_STRING}-${OSX_ARCH}.dSYM")
-  add_custom_command(
-    OUTPUT "${DSYM_FNAME}"
-    COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
-    DEPENDS ${PLEX_TARGET_NAME}
-  )
-  add_custom_command(
-    OUTPUT "${DSYM_FNAME}.zip"
-    COMMAND ditto -c -k "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}.zip"
-    DEPENDS "${DSYM_FNAME}"
-  )
-  add_custom_target(Symbols DEPENDS "${DSYM_FNAME}.zip")
-endif()
-
 if(CREATE_BUNDLE)
   if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
     install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
