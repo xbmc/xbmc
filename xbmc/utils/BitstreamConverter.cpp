@@ -171,7 +171,6 @@ static const uint8_t* avc_find_startcode(const uint8_t *p, const uint8_t *end)
   const uint8_t *out = avc_find_startcode_internal(p, end);
   if (p<out && out<end && !out[-1])
     out--;
-  CLog::Log(LOGDEBUG, "avc_find_startcode: p(%p), end(%p), out(%p)", p, end, out);
   return out;
 }
 
