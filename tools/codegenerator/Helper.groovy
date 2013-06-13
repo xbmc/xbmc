@@ -85,7 +85,7 @@ public class Helper
     Node doc = null
     def ret = ''
 
-    // make the class name or namespave
+    // make the class name or namespace
     String doxygenId = findFullClassName(methodOrClass,'_1_1')
     boolean isInClass = doxygenId != null
     if (!doxygenId)
