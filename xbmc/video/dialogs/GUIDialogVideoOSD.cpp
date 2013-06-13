@@ -62,12 +62,6 @@ void CGUIDialogVideoOSD::FrameMove()
 
 bool CGUIDialogVideoOSD::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)
-  {
-    // these could indicate next chapter if video supports it
-    if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
-      return true;
-  }
   if (action.GetID() == ACTION_SHOW_OSD)
   {
     Close();

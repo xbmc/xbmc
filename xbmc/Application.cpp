@@ -2390,14 +2390,6 @@ bool CApplication::OnAction(const CAction &action)
       return OnAction(CAction(ACTION_PLAYER_PLAY));
   }
 
-  // Now check with the playlist player if action can be handled.
-  // In case of the action PREV_ITEM, we only allow the playlist player to take it if we're less than 3 seconds into playback.
-  if (!(action.GetID() == ACTION_PREV_ITEM && m_pPlayer && m_pPlayer->CanSeek() && GetTime() > 3) )
-  {
-    if (g_playlistPlayer.OnAction(action))
-      return true;
-  }
-
   //if the action would start or stop inertial scrolling
   //by gesture - bypass the normal OnAction handler of current window
   if( !m_pInertialScrollingHandler->CheckForInertialScrolling(&action) )
@@ -2481,6 +2473,18 @@ bool CApplication::OnAction(const CAction &action)
     }
     return true;
   }
+
+  // Now check with the playlist player if action can be handled.
+  // In case of the action PREV_ITEM, we only allow the playlist player to take it if we're less than 3 seconds into playback.
+  if (!(action.GetID() == ACTION_PREV_ITEM && m_pPlayer && m_pPlayer->CanSeek() && GetTime() > 3) )
+  {
+    if (g_playlistPlayer.OnAction(action))
+      return true;
+  }
+
+  // Now check with the player if action can be handled.
+  if (m_pPlayer != NULL && m_pPlayer->OnAction(action))
+    return true;
 
   // stop : stops playing current audio song
   if (action.GetID() == ACTION_STOP)
