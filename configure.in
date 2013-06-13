@@ -1646,15 +1646,6 @@ if test "$use_external_ffmpeg" = "yes"; then
   USE_EXTERNAL_FFMPEG=1
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
 
-  # Disable vdpau support if external libavcodec doesn't have it
-  AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
-    [if test "x$use_vdpau" = "xyes"; then
-      AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
-    else
-      use_vdpau=no
-      AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
-    fi])
-
   CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
