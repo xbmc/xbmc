@@ -7,6 +7,7 @@
 //
 
 
+#define ID_SPINNER        2
 #define ID_DESC_TEXT      10081
 #define ID_PIN_NR         10082
 #define ID_USERNAME       10083
@@ -40,6 +41,7 @@ void CGUIDialogMyPlex::Setup()
 {
   SET_CONTROL_HIDDEN(ID_ICON_ERROR);
   SET_CONTROL_HIDDEN(ID_ICON_SUCCESS);
+  SET_CONTROL_HIDDEN(ID_SPINNER);
 
   SET_CONTROL_LABEL(ID_BUTTON_CANCEL, g_localizeStrings.Get(222));
   SET_CONTROL_LABEL(ID_BUTTON_SUBMIT, g_localizeStrings.Get(44004));
@@ -123,6 +125,7 @@ void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
     {
       if (!m_manual)
       {
+        SET_CONTROL_VISIBLE(ID_SPINNER);
         SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(44102));
       }
       break;
@@ -132,6 +135,7 @@ void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
     {
       if (!m_manual)
       {
+        SET_CONTROL_HIDDEN(ID_SPINNER);
         SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(44101) + " " + g_localizeStrings.Get(44103));
         const CMyPlexPinInfo pinInfo = g_myplexManager.GetCurrentPinInfo();
 
@@ -148,18 +152,21 @@ void CGUIDialogMyPlex::HandleMyPlexState(int state, int errorCode)
 
     case CMyPlexManager::STATE_LOGGEDIN:
     {
+      SET_CONTROL_HIDDEN(ID_SPINNER);
       ShowSuccess();
       break;
     }
 
     case CMyPlexManager::STATE_TRY_LOGIN:
     {
+      SET_CONTROL_VISIBLE(ID_SPINNER);
       SET_CONTROL_LABEL(ID_DESC_TEXT, g_localizeStrings.Get(20186));
       break;
     }
 
     case CMyPlexManager::STATE_NOT_LOGGEDIN:
     {
+      SET_CONTROL_HIDDEN(ID_SPINNER);
       ShowFailure(15206);
       break;
     }
@@ -205,6 +212,7 @@ CGUIDialogMyPlex::OnMessage(CGUIMessage &message)
           return true;
         }
 
+        SET_CONTROL_VISIBLE(ID_SPINNER);
         g_myplexManager.Login(ustr, pstr);
 
       }
