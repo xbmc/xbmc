@@ -346,6 +346,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     mediaContainer.SetContent(content);
   }
   
+  /* set the sort method to none, this means that we respect the order from the server */
   mediaContainer.AddSortMethod(SORT_METHOD_NONE, 553, LABEL_MASKS());
 
   return true;

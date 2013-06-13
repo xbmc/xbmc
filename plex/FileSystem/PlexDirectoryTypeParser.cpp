@@ -21,9 +21,10 @@ CPlexDirectoryTypeParserBase*
 CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(EPlexDirectoryType type)
 {
   if (type == PLEX_DIR_TYPE_MOVIE ||
-      type == PLEX_DIR_TYPE_SHOW ||
       type == PLEX_DIR_TYPE_EPISODE ||
-      type == PLEX_DIR_TYPE_SEASON)
+      type == PLEX_DIR_TYPE_SHOW ||
+      type == PLEX_DIR_TYPE_SEASON ||
+      type == PLEX_DIR_TYPE_VIDEO)
     return videoParser;
 
   else if (type == PLEX_DIR_TYPE_ALBUM)

@@ -89,6 +89,21 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   else
     item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, videoTag.m_playCount > 0);
 
+  /* for directories with leafCount and viewLeafCount */
+  if (item.HasProperty("leafCount") && item.HasProperty("viewedLeafCount"))
+  {
+    int numeps = item.GetProperty("leafCount").asInteger();
+    int watchedeps = item.GetProperty("viewedLeafCount").asInteger();
+    
+    item.SetEpisodeData(numeps, watchedeps);
+    item.GetVideoInfoTag()->m_iEpisode = numeps;
+    item.GetVideoInfoTag()->m_playCount = watchedeps;
+    if (numeps == watchedeps)
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+    else if (watchedeps > 0)
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS, true);
+  }
+  
   ParseMediaNodes(item, itemElement);
 
   /* Now we have the Media nodes, we need to "borrow" some properties from it */
