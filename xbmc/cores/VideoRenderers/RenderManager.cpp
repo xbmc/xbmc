@@ -86,6 +86,12 @@ private:
   CCriticalSection &m_owned;
 };
 
+static void requeue(std::deque<int> &trg, std::deque<int> &src)
+{
+  trg.push_back(src.front());
+  src.pop_front();
+}
+
 CXBMCRenderManager::CXBMCRenderManager()
 {
   m_pRenderer = NULL;
@@ -95,7 +101,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presenttime = 0;
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
-  m_presentsource = -1;
+  m_presentsource = 0;
   m_presentmethod = PRESENT_METHOD_SINGLE;
   m_bReconfigured = false;
   m_hasCaptures = false;
@@ -289,8 +295,8 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_queued.clear();
     m_discard.clear();
     m_free.clear();
-    m_presentsource = -1;
-    for (int i=0; i<m_QueueSize; i++)
+    m_presentsource = 0;
+    for (int i=1; i < m_QueueSize; i++)
       m_free.push_back(i);
 
     m_bIsStarted = true;
@@ -366,15 +372,13 @@ void CXBMCRenderManager::FrameMove()
     }
 
     /* release all previous */
-    std::deque<int>::iterator it = m_discard.begin();
-    while(it != m_discard.end())
+    for(std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
     {
       // TODO check for fence
-      int idx = *it;
+      m_pRenderer->ReleaseBuffer(*it);
+      m_overlays.Release(*it);
+      m_free.push_back(*it);
       it = m_discard.erase(it);
-      m_free.push_back(idx);
-      m_pRenderer->ReleaseBuffer(idx);
-      m_overlays.Release(idx);
     }
   }
 }
@@ -696,8 +700,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_Queue[source].timestamp     = timestamp;
     m_Queue[source].presentfield  = sync;
     m_Queue[source].presentmethod = presentmethod;
-    m_free.pop_front();
-    m_queued.push_back(source);
+    requeue(m_queued, m_free);
 
     /* signal to any waiters to check state */
     if(m_presentstep == PRESENT_IDLE)
@@ -764,8 +767,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
   else
     PresentSingle(clear, flags, alpha);
 
-  if (m_presentsource >= 0)
-    m_overlays.Render(m_presentsource);
+  m_overlays.Render(m_presentsource);
 }
 
 /* simple present method */
@@ -1055,11 +1057,9 @@ void CXBMCRenderManager::PrepareNextRender()
   if (next)
   {
     /* skip late frames */
-    int skip;
-    while((skip = m_queued.front()) != idx)
+    while(m_queued.front() != idx)
     {
-      m_queued.pop_front();
-      m_discard.push_back(skip);
+      requeue(m_discard, m_queued);
       m_QueueSkip++;
     }
 
@@ -1067,8 +1067,7 @@ void CXBMCRenderManager::PrepareNextRender()
     m_presentmethod = m_Queue[idx].presentmethod;
     m_presentfield  = m_Queue[idx].presentfield;
     m_presentstep   = PRESENT_FLIP;
-    if(m_presentsource >=  0)
-      m_discard.push_back(m_presentsource);
+    m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
     m_presentevent.notifyAll();
@@ -1081,16 +1080,8 @@ void CXBMCRenderManager::DiscardBuffer()
   CSingleLock lock2(m_presentlock);
 
   while(!m_queued.empty())
-  {
-    int idx = m_queued.front();
-    m_queued.pop_front();
-    m_discard.push_back(idx);
-  }
-  if (m_presentsource >= 0)
-  {
-    m_discard.push_back(m_presentsource);
-    m_presentsource = -1;
-  }
+    requeue(m_discard, m_queued);
+
   if(m_presentstep == PRESENT_READY)
     m_presentstep   = PRESENT_IDLE;
   m_presentevent.notifyAll();
