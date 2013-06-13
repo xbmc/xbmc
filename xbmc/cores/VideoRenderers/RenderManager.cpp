@@ -699,9 +699,10 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     if(source < 0)
       source = m_free.front();
 
-    m_Queue[source].timestamp     = timestamp;
-    m_Queue[source].presentfield  = sync;
-    m_Queue[source].presentmethod = presentmethod;
+    SPresent& m = m_Queue[source];
+    m.timestamp     = timestamp;
+    m.presentfield  = sync;
+    m.presentmethod = presentmethod;
     requeue(m_queued, m_free);
 
     /* signal to any waiters to check state */

@@ -220,7 +220,7 @@ protected:
   int m_QueueSize;
   int m_QueueSkip;
 
-  struct
+  struct SPresent
   {
     double         timestamp;
     EFIELDSYNC     presentfield;
