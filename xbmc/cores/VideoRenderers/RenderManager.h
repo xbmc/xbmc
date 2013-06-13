@@ -211,7 +211,6 @@ protected:
     PRESENT_METHOD_BLEND,
     PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
-    PRESENT_METHOD_BYPASS,
   };
 
   double m_displayLatency;
@@ -231,6 +230,7 @@ protected:
   std::deque<int> m_queued;
   std::deque<int> m_discard;
 
+  ERenderFormat   m_format;
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;

@@ -272,8 +272,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
       lock.Enter();
     }
     lock2.Enter();
-    if( format & RENDER_FMT_BYPASS )
-      m_presentmethod = PRESENT_METHOD_BYPASS;
+    m_format = format;
 
     int processor = m_pRenderer->GetProcessorSize();
     if(processor)
@@ -312,7 +311,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
 
 bool CXBMCRenderManager::RendererHandlesPresent() const
 {
-  return IsConfigured() && m_presentmethod != PRESENT_METHOD_BYPASS;
+  return IsConfigured() && m_format != RENDER_FMT_BYPASS;
 }
 
 bool CXBMCRenderManager::IsConfigured() const
