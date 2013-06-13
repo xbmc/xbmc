@@ -231,13 +231,11 @@ protected:
   std::deque<int> m_discard;
 
   ERenderFormat   m_format;
-  double     m_presenttime;
+
   double     m_presentcorr;
   double     m_presenterr;
   double     m_errorbuff[ERRORBUFFSIZE];
   int        m_errorindex;
-  EFIELDSYNC m_presentfield;
-  EPRESENTMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;

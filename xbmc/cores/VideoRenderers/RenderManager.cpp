@@ -97,12 +97,9 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_pRenderer = NULL;
   m_bIsStarted = false;
 
-  m_presentfield = FS_NONE;
-  m_presenttime = 0;
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
   m_presentsource = 0;
-  m_presentmethod = PRESENT_METHOD_SINGLE;
   m_bReconfigured = false;
   m_hasCaptures = false;
   m_displayLatency = 0.0f;
@@ -112,6 +109,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_errorindex = 0;
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
+  m_format      = RENDER_FMT_NONE;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -351,7 +349,9 @@ void CXBMCRenderManager::FrameMove()
       if(!m_queued.empty())
       {
         double timestamp = GetPresentTime();
-        if(timestamp > m_presenttime + (m_Queue[m_queued.front()].timestamp - m_presenttime) * 0.5)
+        SPresent& m = m_Queue[m_presentsource];
+        SPresent& q = m_Queue[m_queued.front()];
+        if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
         {
           m_presentstep = PRESENT_READY;
           m_presentevent.notifyAll();
@@ -384,15 +384,17 @@ void CXBMCRenderManager::FrameMove()
 void CXBMCRenderManager::FrameFinish()
 {
   /* wait for this present to be valid */
+  SPresent& m = m_Queue[m_presentsource];
+
   if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
+    WaitPresentTime(m.timestamp);
 
   { CSingleLock lock(m_presentlock);
 
     if(m_presentstep == PRESENT_FRAME)
     {
-      if( m_presentmethod == PRESENT_METHOD_BOB
-      ||  m_presentmethod == PRESENT_METHOD_WEAVE)
+      if( m.presentmethod == PRESENT_METHOD_BOB
+      ||  m.presentmethod == PRESENT_METHOD_WEAVE)
         m_presentstep = PRESENT_FRAME2;
       else
         m_presentstep = PRESENT_IDLE;
@@ -760,11 +762,13 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);
 
-  if( m_presentmethod == PRESENT_METHOD_BOB )
+  SPresent& m = m_Queue[m_presentsource];
+
+  if( m.presentmethod == PRESENT_METHOD_BOB )
     PresentFields(clear, flags, alpha);
-  else if( m_presentmethod == PRESENT_METHOD_WEAVE )
+  else if( m.presentmethod == PRESENT_METHOD_WEAVE )
     PresentFields(clear, flags | RENDER_FLAG_WEAVE, alpha);
-  else if( m_presentmethod == PRESENT_METHOD_BLEND )
+  else if( m.presentmethod == PRESENT_METHOD_BLEND )
     PresentBlend(clear, flags, alpha);
   else
     PresentSingle(clear, flags, alpha);
@@ -785,17 +789,18 @@ void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
+  SPresent& m = m_Queue[m_presentsource];
 
   if(m_presentstep == PRESENT_FRAME)
   {
-    if( m_presentfield == FS_BOT)
+    if( m.presentfield == FS_BOT)
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
   }
   else
   {
-    if( m_presentfield == FS_TOP)
+    if( m.presentfield == FS_TOP)
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
       m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
@@ -805,8 +810,9 @@ void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
+  SPresent& m = m_Queue[m_presentsource];
 
-  if( m_presentfield == FS_BOT )
+  if( m.presentfield == FS_BOT )
   {
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
     m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_TOP, alpha / 2);
@@ -1048,9 +1054,6 @@ void CXBMCRenderManager::PrepareNextRender()
       m_QueueSkip++;
     }
 
-    m_presenttime   = m_Queue[idx].timestamp;
-    m_presentmethod = m_Queue[idx].presentmethod;
-    m_presentfield  = m_Queue[idx].presentfield;
     m_presentstep   = PRESENT_FLIP;
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
