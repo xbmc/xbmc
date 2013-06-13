@@ -185,8 +185,6 @@ protected:
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
-  int  GetNextRender();
-  int  GetNextDecode();
   void PrepareNextRender();
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);

@@ -349,11 +349,10 @@ void CXBMCRenderManager::FrameMove()
 
     if (m_presentstep == PRESENT_FRAME2)
     {
-      int idx = GetNextRender();
-      if(idx >= 0)
+      if(!m_queued.empty())
       {
         double timestamp = GetPresentTime();
-        if(timestamp > m_presenttime + (m_Queue[idx].timestamp - m_presenttime) * 0.5)
+        if(timestamp > m_presenttime + (m_Queue[m_queued.front()].timestamp - m_presenttime) * 0.5)
         {
           m_presentstep = PRESENT_READY;
           m_presentevent.notifyAll();
@@ -405,7 +404,7 @@ void CXBMCRenderManager::FrameFinish()
 
     if(m_presentstep == PRESENT_IDLE)
     {
-      if(GetNextRender() >= 0)
+      if(!m_queued.empty())
         m_presentstep = PRESENT_READY;
     }
 
@@ -694,8 +693,11 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     CSingleLock lock2(m_presentlock);
 
+    if(m_free.empty())
+      return;
+
     if(source < 0)
-      source = GetNextDecode();
+      source = m_free.front();
 
     m_Queue[source].timestamp     = timestamp;
     m_Queue[source].presentfield  = sync;
@@ -870,9 +872,9 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  int index = GetNextDecode();
-  if(index < 0)
+  if(m_free.empty())
     return -1;
+  int index = m_free.front();
 
   if(m_pRenderer->AddVideoPicture(&pic, index))
     return 1;
@@ -982,7 +984,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   CSingleLock lock2(m_presentlock);
 
   XbmcThreads::EndTime endtime(timeout);
-  while(GetNextDecode() < 0)
+  while(m_free.empty())
   {
     m_presentevent.wait(lock2, std::min(50, timeout));
     if(endtime.IsTimePast() || bStop)
@@ -994,34 +996,17 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   }
 
   // make sure overlay buffer is released, this won't happen on AddOverlay
-  m_overlays.Release(GetNextDecode());
+  m_overlays.Release(m_free.front());
 
   // return buffer level
   return m_queued.size() + m_discard.size();;
-}
-
-int CXBMCRenderManager::GetNextRender()
-{
-  if (m_queued.empty())
-    return -1;
-  else
-    return m_queued.front();
-}
-
-int CXBMCRenderManager::GetNextDecode()
-{
-  if (m_free.empty())
-    return -1;
-  else
-    return m_free.front();
 }
 
 void CXBMCRenderManager::PrepareNextRender()
 {
   CSingleLock lock(m_presentlock);
 
-  int nxt = GetNextRender();
-  if (nxt < 0)
+  if (m_queued.empty())
   {
     CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
     m_presentstep = PRESENT_IDLE;
