@@ -307,6 +307,14 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
         if (!object.isMember("type"))
           object["type"] = "unknown";
+
+        if (fields.find("filetype") != fields.end())
+        {
+          if (item->m_bIsFolder)
+            object["filetype"] = "directory";
+          else 
+            object["filetype"] = "file";
+        }
       }
     }
 
