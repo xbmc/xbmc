@@ -244,6 +244,7 @@ static const ActionMapping actions[] =
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
         /* PLEX */
+        {"channels"                 , WINDOW_PLEX_MYCHANNELS},
         {"sharedcontent"            , WINDOW_SHARED_CONTENT},
         {"nowplaying"               , WINDOW_NOW_PLAYING},
         {"plexsearch"               , WINDOW_PLEX_SEARCH},

@@ -55,12 +55,19 @@ void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, co
   CURL keyUrl(url);
 
   if (boost::starts_with(value, "/"))
+  {
     /* cut of the first / and set it */
     keyUrl.SetFileName(value.substr(1, std::string::npos));
+    keyUrl.SetOptions("");
+  }
   else if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
+  {
     keyUrl = value;
+  }
   else
+  {
     PlexUtils::AppendPathToURL(keyUrl, value);
+  }
 
   item.SetProperty(key, keyUrl.Get());
   item.SetProperty("unprocessed_" + key, value);

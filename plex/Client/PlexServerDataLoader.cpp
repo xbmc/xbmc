@@ -38,7 +38,8 @@ CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job
       sectionList->SetProperty("serverUUID", j->m_server->GetUUID());
       m_sharedSectionsMap[j->m_server->GetUUID()] = sectionList;
     }
-    else if (j->m_channelList)
+    
+    if (j->m_channelList)
       m_channelMap[j->m_server->GetUUID()] = j->m_channelList;
 
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);

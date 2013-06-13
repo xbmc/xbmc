@@ -4608,18 +4608,26 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 
     if (resolver->Success() == true)
     {
-      item = resolver->GetFinalItem();
+      item = *resolver->GetFinalItemPtr().get();
       m_itemWithDetails = resolver->GetFinalItemPtr();
     }
   }
 
+  CFileItemPtr mediaItem;
+  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
+    mediaItem = item.m_mediaItems[mediaItemIdx];
+  else
+    return false;
+  
   // See if we need to resolve an indirect item.
-  bool isIndirect = (item.GetProperty("indirect").asInteger() == 1);
+  bool isIndirect = mediaItem->GetProperty("indirect").asBoolean();
 
   while (isIndirect)
   {
+    CLog::Log(LOG_LEVEL_DEBUG, "DVDPlayer::PlexProcess item is indirect, going one level deeper...");
+    
     // Spin up async thread.
-    PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::Resolve(item);
+    PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::Resolve(*mediaItem.get());
 
     // Wait for it to complete.
     for (bool done = false; done == false && m_bAbortRequest == false; )
@@ -4632,23 +4640,24 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       m_bAbortRequest = true;
       return false;
     }
+    
+    CFileItemPtr resolvedItem = resolver->GetFinalItemPtr();
+    
+    /* in the indirected item we should only have one media part */
+    if (resolvedItem->m_mediaItems.size() > 0)
+    {
+      mediaItem = resolvedItem->m_mediaItems[0];
+      isIndirect = mediaItem->GetProperty("indirect").asBoolean();
+    }
+    else
+    {
+      return false;
+    }
 
-    // Suck the data out of the resolver and see if it's indirect as well.
-    item.SetPath(resolver->GetFinalPath());
-    isIndirect = resolver->IsIndirect();
-
-    // If we ran into an indirect, copy the full item, since it might have
-    // POST URL and other goodies.
-    //
-    if (isIndirect)
-      item = resolver->GetFinalItem();
   }
 
-  CFileItemPtr mediaPart;
-  if (item.m_mediaItems.size() > 0 && item.m_mediaItems.size() > mediaItemIdx)
-    mediaPart = item.m_mediaItems[mediaItemIdx]->m_mediaParts[0];
-  else
-    return false;
+  /* FIXME: we really need to handle multiple parts */
+  CFileItemPtr mediaPart = mediaItem->m_mediaParts[0];
 
   if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
   {

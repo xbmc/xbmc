@@ -353,6 +353,7 @@
 #include "plex/GUI/GUIDialogMyPlex.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
 #include "plex/GUI/GUIWindowPlexPreplayVideo.h"
+#include "plex/GUI/GUIWindowPlexMyChannels.h"
 #include "settings/GUISettings.h"
 /* END PLEX */
 
@@ -1369,7 +1370,7 @@ bool CApplication::Initialize()
 #endif
     g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);
     g_windowManager.Add(new CGUIWindowSettingsCategory);
-#ifndef PLEX_NEW_SKIN
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowVideoNav);
 #endif
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
@@ -1437,7 +1438,7 @@ bool CApplication::Initialize()
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);
     g_windowManager.Add(new CGUIWindowMusicSongs);
-#ifndef PLEX_NEW_SKIN
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicNav);
 #endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
@@ -1483,13 +1484,12 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
     g_windowManager.Add(new CGUIDialogFilterSort);
-#ifdef PLEX_NEW_SKIN
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
     g_windowManager.Add(new CGUIWindowPlexPreplayVideo);
-#endif
     g_windowManager.Add(new CGUIDialogMyPlex);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);
+    g_windowManager.Add(new CGUIWindowPlexMyChannels);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -3518,6 +3518,7 @@ bool CApplication::Cleanup()
   try
   {
     /* PLEX */
+    g_windowManager.Delete(WINDOW_PLEX_MYCHANNELS);
     g_windowManager.Delete(WINDOW_SHARED_CONTENT);
     g_windowManager.Delete(WINDOW_NOW_PLAYING);
     g_windowManager.Delete(WINDOW_PLEX_SEARCH);

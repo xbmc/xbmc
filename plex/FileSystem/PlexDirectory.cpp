@@ -185,6 +185,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("secondary", g_parserBool)
                                      ("search", g_parserBool)
                                      ("selected", g_parserBool)
+                                     ("indirect", g_parserBool)
 
                                      ("key", g_parserKey)
                                      ("theme", g_parserKey)
@@ -509,6 +510,8 @@ bool CPlexDirectory::IsFolder(CFileItem& item, TiXmlElement* element)
     case PLEX_DIR_TYPE_WRITER:
     case PLEX_DIR_TYPE_DIRECTOR:
     case PLEX_DIR_TYPE_MEDIA:
+    case PLEX_DIR_TYPE_CLIP:
+    case PLEX_DIR_TYPE_TRACK:
       return false;
       break;
     default:
@@ -571,6 +574,26 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
 {
+  CFileItemListPtr channels = g_plexServerDataLoader.GetAllChannels();
+  for (int i = 0; i < channels->Size(); i ++)
+  {
+    CFileItemPtr channel = channels->Get(i);
+    
+    CStdString window;
+    CURL p(channel->GetPath());
+    /* figure out what type of plugin this is so we can open it correctly */
+    if (boost::starts_with(p.GetFileName(), "video"))
+      window = "MyVideoFiles";
+    else if (boost::starts_with(p.GetFileName(), "music"))
+      window = "MyMusicFiles";
+    else if (boost::starts_with(p.GetFileName(), "photos"))
+      window = "MyPictures";
+    
+    channel->SetProperty("mediaWindow", window);
+    
+    items.Add(channel);
+  }
+  
   return true;
 }
 

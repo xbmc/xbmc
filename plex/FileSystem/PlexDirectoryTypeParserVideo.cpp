@@ -144,6 +144,10 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
 
       /* Parse children */
       ParseMediaParts(*mediaItem, media);
+      
+      /* we want to make sure that the main <video> tag knows about indirect */
+      if (mediaItem->HasProperty("indirect"))
+        item.SetProperty("indirect", mediaItem->GetProperty("indirect"));
 
       item.m_mediaItems.push_back(mediaItem);
     }

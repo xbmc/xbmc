@@ -608,19 +608,12 @@ void CGUIWindowHome::UpdateSections()
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
   vector<CGUIListItemPtr> newList;
-  bool haveChannelItem = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
     CGUIListItemPtr item = oldList[i];
     if (!item->HasProperty("plex"))
       newList.push_back(item);
-
-    if (item->HasProperty("plex_channel_item") && g_plexServerDataLoader.HasChannels())
-    {
-      haveChannelItem = true;
-      newList.push_back(item);
-    }
   }
 
   for (int i = 0; i < sections->Size(); i ++)
@@ -648,17 +641,16 @@ void CGUIWindowHome::UpdateSections()
 
   }
 
-  if (!haveChannelItem && g_plexServerDataLoader.HasChannels())
+  if (g_plexServerDataLoader.HasChannels())
   {
     /* We need the channel button as well */
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(52102));
-    item->SetProperty("plex_channel_item", true);
     item->SetProperty("plex", true);
     item->SetProperty("sectionPath", "plexserver://channels");
 
-    item->SetPath("");
-    item->SetClickActions(CGUIAction("", ""));
+    item->SetPath("XBMC.ActivateWindow(MyChannels,plexserver://channels,return)");
+    item->SetClickActions(CGUIAction("", item->GetPath()));
     newList.push_back(item);
 
     AddSection("plexserver://channels", SECTION_TYPE_CHANNELS);

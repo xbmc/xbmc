@@ -54,11 +54,6 @@ class PlexAsyncUrlResolver
     return m_finalPath;
   }
 
-  CFileItem& GetFinalItem()
-  {
-    return *(m_finalItem.get());
-  }
-
   CFileItemPtr GetFinalItemPtr()
   {
     return m_finalItem;
@@ -109,7 +104,7 @@ class PlexAsyncUrlResolver
   void Process(PlexAsyncUrlResolverPtr me)
   {
     CStdString body;
-    CStdString url = m_item.GetPath();
+    CStdString url = m_item.m_mediaParts[0]->GetPath();
     CLog::Log(LOGNOTICE, "Resolving indirect URL: %s", url.c_str());
 
     // See if we need to send data to resolve the indirect.
@@ -153,6 +148,7 @@ class PlexAsyncUrlResolver
           {
             CFileItemPtr finalFile = fileItems.Get(0);
 
+#if 0
             // See if we ran smack into another indirect item.
             if (finalFile->GetProperty("indirect").asInteger() == 1)
             {
@@ -166,6 +162,8 @@ class PlexAsyncUrlResolver
 
             // Set the final path, by reference.
             m_finalPath = finalFile->GetPath();
+#endif
+            m_finalItem = finalFile;
             m_bSuccess = true;
           }
         }
