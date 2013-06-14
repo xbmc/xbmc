@@ -314,6 +314,8 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 
   List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
   List operators =  clazz.function.findAll { it.@name.startsWith("operator ") }
+  List properties = clazz.variable.findAll { it.@access != null && it.@access == "public" }
+  List properties_set = properties.findAll { it.@feature_immutable == null || it.@feature_immutable == 0 }
 
   operators.each {
     // we have an operator. The only one we can handle is ==
@@ -404,6 +406,119 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
     {NULL, NULL, 0, NULL}
   };
 
+<%
+  if (properties.size() > 0) {
+%>  static PyObject* ${classNameAsVariable}_getMember(PyHolder *self, void *name)
+  {
+    if (self == NULL)
+      return NULL;
+<%
+    String clazzName = Helper.findFullClassName(properties[0])
+%>
+    try
+    {
+      ${clazzName}* theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Py${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
+
+      PyObject* result = NULL;
+   <%
+  properties.each {
+%>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
+      {
+        ${SwigTypeParser.SwigType_lstr(it.@type)} apiResult = (${SwigTypeParser.SwigType_lstr(it.@type)})theObj->${it.@sym_name};
+        ${Helper.getOutConversion(it.@type, 'result', it)}
+      }
+      else<%
+  } %>
+      {
+        Py_INCREF(Py_None);
+        return Py_None;
+      }
+
+      return result;
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
+      return NULL;
+    }
+
+    return NULL;
+  }
+
+<%
+    if (properties_set.size() > 0) {
+%>  int ${classNameAsVariable}_setMember(PyHolder *self, PyObject *value, void *name)
+  {
+    if (self == NULL)
+      return -1;
+
+    ${clazzName}* theObj = NULL;
+    try
+    {
+      theObj = (${clazzName}*)retrieveApiInstance((PyObject*)self, &Py${classNameAsVariable}_Type, "${classNameAsVariable}_getMember()", "${clazzName}");
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      return NULL;
+    }
+    catch (const XbmcCommons::Exception& e)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      return NULL;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call \"${classNameAsVariable}_getMember()\"");
+      return NULL;
+    }
+
+<%
+  properties_set.each {
+%>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
+      {
+        ${SwigTypeParser.SwigType_lstr(it.@type)} tmp;
+        ${Helper.getInConversion(it.@type, 'tmp', 'value', it)}
+        if (PyErr_Occurred())
+          throw PythonBindings::PythonToCppException();
+        
+        theObj->${it.@sym_name} = tmp;
+      }
+      else<%
+  } %>
+        return -1;
+
+    return 0;
+  } <%
+    }
+%>
+
+  // All of the methods on this class
+  static PyGetSetDef ${classNameAsVariable}_getsets[] = { <%
+    properties.each {  %>
+    {(char*)"${it.@sym_name}", (getter)${classNameAsVariable}_getMember, ${(it.@feature_immutable == null || it.@feature_immutable == 0) ? '(setter)' + classNameAsVariable + '_setMember' : 'NULL'}, (char*)${Helper.hasDoc(it) ? PythonTools.makeDocString(it.doc[0]) : 'NULL'}, (char*)"${it.@sym_name}" }, <% }
+%>
+    {NULL}
+  };
+<%
+  } %>
+
   // This method initializes the above mentioned Python Type structure
   static void ${initTypeCall}()
   {
@@ -429,11 +544,13 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 
     Py${classNameAsVariable}_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
     Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
-    Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods;
+    Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods; <%
+ if (properties.size() > 0) { %>
+    Py${classNameAsVariable}_Type.tp_getset = ${classNameAsVariable}_getsets;
 <%
-    if (doAsMapping)
-    {
-%>    Py${classNameAsVariable}_Type.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
+ }
+ if (doAsMapping) { %>
+    Py${classNameAsVariable}_Type.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
 <%  }
     Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 
