@@ -26,16 +26,21 @@
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
     const CLabelInfo& labelInfo,
-    const CTextureInfo& radioOn, const CTextureInfo& radioOff)
+    const CTextureInfo& radioOnFocus, const CTextureInfo& radioOnNoFocus,
+    const CTextureInfo& radioOffFocus, const CTextureInfo& radioOffNoFocus)
     : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
-    , m_imgRadioOn(posX, posY, 16, 16, radioOn)
-    , m_imgRadioOff(posX, posY, 16, 16, radioOff)
+    , m_imgRadioOnFocus(posX, posY, 16, 16, radioOnFocus)
+    , m_imgRadioOnNoFocus(posX, posY, 16, 16, radioOnNoFocus)
+    , m_imgRadioOffFocus(posX, posY, 16, 16, radioOffFocus)
+    , m_imgRadioOffNoFocus(posX, posY, 16, 16, radioOffNoFocus)
 {
   m_radioPosX = 0;
   m_radioPosY = 0;
   m_toggleSelect = 0;
-  m_imgRadioOn.SetAspectRatio(CAspectRatio::AR_KEEP);\
-  m_imgRadioOff.SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_imgRadioOnFocus.SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_imgRadioOnNoFocus.SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_imgRadioOffFocus.SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_imgRadioOffNoFocus.SetAspectRatio(CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -47,9 +52,19 @@ void CGUIRadioButtonControl::Render()
   CGUIButtonControl::Render();
 
   if ( IsSelected() && !IsDisabled() )
-    m_imgRadioOn.Render();
+  {
+    if (HasFocus())
+      m_imgRadioOnFocus.Render();
+    else
+      m_imgRadioOnNoFocus.Render();
+  }
   else
-    m_imgRadioOff.Render();
+  {
+    if (HasFocus())
+      m_imgRadioOffFocus.Render();
+    else
+      m_imgRadioOffNoFocus.Render();
+  }
 }
 
 void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -65,9 +80,11 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
       m_bSelected = selected;
     }
   }
-
-  m_imgRadioOn.Process(currentTime);
-  m_imgRadioOff.Process(currentTime);
+  
+  m_imgRadioOnFocus.Process(currentTime);
+  m_imgRadioOnNoFocus.Process(currentTime);
+  m_imgRadioOffFocus.Process(currentTime);
+  m_imgRadioOffNoFocus.Process(currentTime);
 
   CGUIButtonControl::Process(currentTime, dirtyregions);
 }
@@ -90,40 +107,49 @@ bool CGUIRadioButtonControl::OnMessage(CGUIMessage& message)
 void CGUIRadioButtonControl::AllocResources()
 {
   CGUIButtonControl::AllocResources();
-  m_imgRadioOn.AllocResources();
-  m_imgRadioOff.AllocResources();
-
+  m_imgRadioOnFocus.AllocResources();
+  m_imgRadioOnNoFocus.AllocResources();
+  m_imgRadioOffFocus.AllocResources();
+  m_imgRadioOffNoFocus.AllocResources();
   SetPosition(m_posX, m_posY);
 }
 
 void CGUIRadioButtonControl::FreeResources(bool immediately)
 {
   CGUIButtonControl::FreeResources(immediately);
-  m_imgRadioOn.FreeResources(immediately);
-  m_imgRadioOff.FreeResources(immediately);
+  m_imgRadioOnFocus.FreeResources(immediately);
+  m_imgRadioOnNoFocus.FreeResources(immediately);
+  m_imgRadioOffFocus.FreeResources(immediately);
+  m_imgRadioOffNoFocus.FreeResources(immediately);
 }
 
 void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)
 {
   CGUIControl::DynamicResourceAlloc(bOnOff);
-  m_imgRadioOn.DynamicResourceAlloc(bOnOff);
-  m_imgRadioOff.DynamicResourceAlloc(bOnOff);
+  m_imgRadioOnFocus.DynamicResourceAlloc(bOnOff);
+  m_imgRadioOnNoFocus.DynamicResourceAlloc(bOnOff);
+  m_imgRadioOffFocus.DynamicResourceAlloc(bOnOff);
+  m_imgRadioOffNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
 void CGUIRadioButtonControl::SetInvalid()
 {
   CGUIButtonControl::SetInvalid();
-  m_imgRadioOn.SetInvalid();
-  m_imgRadioOff.SetInvalid();
+  m_imgRadioOnFocus.SetInvalid();
+  m_imgRadioOnNoFocus.SetInvalid();
+  m_imgRadioOffFocus.SetInvalid();
+  m_imgRadioOffNoFocus.SetInvalid();
 }
 
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);
-  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - 8) - m_imgRadioOn.GetWidth();
-  float radioPosY = m_radioPosY ? m_posY + m_radioPosY : m_posY + (m_height - m_imgRadioOn.GetHeight()) / 2;
-  m_imgRadioOn.SetPosition(radioPosX, radioPosY);
-  m_imgRadioOff.SetPosition(radioPosX, radioPosY);
+  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - 8) - m_imgRadioOnFocus.GetWidth();
+  float radioPosY = m_radioPosY ? m_posY + m_radioPosY : m_posY + (m_height - m_imgRadioOnFocus.GetHeight()) / 2;
+  m_imgRadioOnFocus.SetPosition(radioPosX, radioPosY);
+  m_imgRadioOnNoFocus.SetPosition(radioPosX, radioPosY);
+  m_imgRadioOffFocus.SetPosition(radioPosX, radioPosY);
+  m_imgRadioOffNoFocus.SetPosition(radioPosX, radioPosY);
 }
 
 void CGUIRadioButtonControl::SetRadioDimensions(float posX, float posY, float width, float height)
@@ -132,13 +158,17 @@ void CGUIRadioButtonControl::SetRadioDimensions(float posX, float posY, float wi
   m_radioPosY = posY;
   if (width)
   {
-    m_imgRadioOn.SetWidth(width);
-    m_imgRadioOff.SetWidth(width);
+    m_imgRadioOnFocus.SetWidth(width);
+    m_imgRadioOnNoFocus.SetWidth(width);
+    m_imgRadioOffFocus.SetWidth(width);
+    m_imgRadioOffNoFocus.SetWidth(width);
   }
   if (height)
   {
-    m_imgRadioOn.SetHeight(height);
-    m_imgRadioOff.SetHeight(height);
+    m_imgRadioOnFocus.SetHeight(height);
+    m_imgRadioOnNoFocus.SetHeight(height);
+    m_imgRadioOffFocus.SetHeight(height);
+    m_imgRadioOffNoFocus.SetHeight(height);
   }
   SetPosition(GetXPosition(), GetYPosition());
 }
@@ -168,9 +198,10 @@ CStdString CGUIRadioButtonControl::GetDescription() const
 bool CGUIRadioButtonControl::UpdateColors()
 {
   bool changed = CGUIButtonControl::UpdateColors();
-  changed |= m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
-
+  changed |= m_imgRadioOnFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgRadioOnNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgRadioOffFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgRadioOffNoFocus.SetDiffuseColor(m_diffuseColor);
   return changed;
 }
 
