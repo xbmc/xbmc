@@ -82,7 +82,13 @@ Helper.setup(this,classes,
       (Pattern.compile('''(r.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.intm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
       'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
-      'long' : '${api} = PyInt_AsLong(${slarg});'
+      'long' : '${api} = PyInt_AsLong(${slarg});',
+      'unsigned long' : '${api} = PyLong_AsUnsignedLong(${slarg});',
+      'long long' : '${api} = PyLong_AsLongLong(${slarg});',
+      'unsigned long long' : '${api} = PyLong_AsUnsignedLongLong(${slarg});',
+      'int' : '${api} = (int)PyInt_AsLong(${slarg});',
+      'double' : '${api} = PyFloat_AsDouble(${slarg});',
+      'float' : '${api} = (float)PyFloat_AsDouble(${slarg});'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 
 //println 'this: ' + this.binding.getVariables()
