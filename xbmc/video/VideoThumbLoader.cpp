@@ -116,7 +116,7 @@ bool CThumbExtractor::DoWork()
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
+  CThumbLoader(), CJobQueue(true), m_pStreamDetailsObs(NULL)
 {
   m_database = new CVideoDatabase();
 }

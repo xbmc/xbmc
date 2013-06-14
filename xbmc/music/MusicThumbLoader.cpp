@@ -30,7 +30,7 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader(1)
+CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader()
 {
   m_database = new CMusicDatabase;
 }

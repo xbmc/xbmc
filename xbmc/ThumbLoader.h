@@ -25,7 +25,7 @@
 class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CThumbLoader(int nThreads=-1);
+  CThumbLoader();
   virtual ~CThumbLoader();
 
   virtual void Initialize() { };

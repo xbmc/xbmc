@@ -26,8 +26,8 @@
 using namespace std;
 using namespace XFILE;
 
-CThumbLoader::CThumbLoader(int nThreads) :
-  CBackgroundInfoLoader(nThreads)
+CThumbLoader::CThumbLoader() :
+  CBackgroundInfoLoader()
 {
 }
 

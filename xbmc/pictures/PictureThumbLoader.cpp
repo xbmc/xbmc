@@ -35,7 +35,7 @@
 using namespace XFILE;
 using namespace std;
 
-CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(1), CJobQueue(true)
+CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true)
 {
   m_regenerateThumbs = false;
 }

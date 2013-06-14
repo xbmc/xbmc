@@ -42,7 +42,6 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {
   m_strSelectedPath = "pvr://recordings/";
-  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 void CGUIWindowPVRRecordings::UnregisterObservers(void)
