@@ -878,9 +878,13 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  if(m_free.empty())
-    return -1;
-  int index = m_free.front();
+  int index;
+  {
+    CSingleLock lock(m_presentlock);
+    if (m_free.empty())
+      return -1;
+    index = m_free.front();
+  }
 
   if(m_pRenderer->AddVideoPicture(&pic, index))
     return 1;
