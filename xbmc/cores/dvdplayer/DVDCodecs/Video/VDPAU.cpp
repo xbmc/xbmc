@@ -2321,7 +2321,15 @@ void CMixer::ProcessPicture()
       futu_surfaces[0] = m_mixerInput[1].render->surface;
       futu_surfaces[1] = m_mixerInput[1].render->surface;
 
-      m_processPicture.DVDPic.pts = DVD_NOPTS_VALUE;
+      if (m_mixerInput[0].DVDPic.pts != DVD_NOPTS_VALUE &&
+          m_mixerInput[1].DVDPic.pts != DVD_NOPTS_VALUE)
+      {
+        m_processPicture.DVDPic.pts = m_mixerInput[1].DVDPic.pts +
+                                     (m_mixerInput[0].DVDPic.pts -
+                                      m_mixerInput[1].DVDPic.pts) / 2;
+      }
+      else
+        m_processPicture.DVDPic.pts = DVD_NOPTS_VALUE;
       m_processPicture.DVDPic.dts = DVD_NOPTS_VALUE;
     }
     m_processPicture.DVDPic.iRepeatPicture = 0.0;
