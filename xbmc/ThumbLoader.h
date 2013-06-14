@@ -57,6 +57,8 @@ public:
   CProgramThumbLoader();
   virtual ~CProgramThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+  virtual bool LoadItemCached(CFileItem* pItem);
+  virtual bool LoadItemLookup(CFileItem* pItem);
 
   /*! \brief Fill the thumb of a programs item
    First uses a cached thumb from a previous run, then checks for a local thumb

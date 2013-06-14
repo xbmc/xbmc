@@ -47,18 +47,10 @@ void CBackgroundInfoLoader::Run()
     {
       OnLoaderStart();
 
-      while (!m_bStop)
+      // Stage 1: All "fast" stuff we have already cached
+      for (vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
       {
-        CFileItemPtr pItem;
-        vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
-        if (iter != m_vecItems.end())
-        {
-          pItem = *iter;
-          m_vecItems.erase(iter);
-        }
-
-        if (pItem == NULL)
-          break;
+        CFileItemPtr pItem = *iter;
 
         // Ask the callback if we should abort
         if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
@@ -66,12 +58,32 @@ void CBackgroundInfoLoader::Run()
 
         try
         {
-          if (LoadItem(pItem.get()) && m_pObserver)
+          if (LoadItemCached(pItem.get()) && m_pObserver)
             m_pObserver->OnItemLoaded(pItem.get());
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->GetPath().c_str());
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", pItem->GetPath().c_str());
+        }
+      }
+
+      // Stage 2: All "slow" stuff that we need to lookup
+      for (vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+      {
+        CFileItemPtr pItem = *iter;
+
+        // Ask the callback if we should abort
+        if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
+          break;
+
+        try
+        {
+          if (LoadItemLookup(pItem.get()) && m_pObserver)
+            m_pObserver->OnItemLoaded(pItem.get());
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s", pItem->GetPath().c_str());
         }
       }
     }

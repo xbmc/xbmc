@@ -49,6 +49,8 @@ public:
   void SetObserver(IBackgroundLoaderObserver* pObserver);
   void SetProgressCallback(IProgressCallback* pCallback);
   virtual bool LoadItem(CFileItem* pItem) { return false; };
+  virtual bool LoadItemCached(CFileItem* pItem) { return false; };
+  virtual bool LoadItemLookup(CFileItem* pItem) { return false; };
 
   void StopThread(); // will actually stop the loader thread.
   void StopAsync();  // will ask loader to stop as soon as possible, but not block

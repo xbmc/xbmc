@@ -125,6 +125,25 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
+{
+  if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+    return false;
+
+  // Get thumb for item
+  m_thumbLoader->LoadItem(pItem);
+
+  return true;
+}
+
+bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
+{
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
@@ -187,9 +206,6 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       m_strPrevPath = strPath;
     }
   }
-
-  // Get thumb for item
-  m_thumbLoader->LoadItem(pItem);
 
   return true;
 }

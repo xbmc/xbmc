@@ -60,8 +60,23 @@ CProgramThumbLoader::~CProgramThumbLoader()
 
 bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 {
-  if (pItem->IsParentFolder()) return true;
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CProgramThumbLoader::LoadItemCached(CFileItem *pItem)
+{
+  if (pItem->IsParentFolder())
+    return false;
+
   return FillThumb(*pItem);
+}
+
+bool CProgramThumbLoader::LoadItemLookup(CFileItem *pItem)
+{
+  return false;
 }
 
 bool CProgramThumbLoader::FillThumb(CFileItem &item)

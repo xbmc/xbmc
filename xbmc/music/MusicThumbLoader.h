@@ -40,7 +40,9 @@ public:
   virtual void Deinitialize();
 
   virtual bool LoadItem(CFileItem* pItem);
-  
+  virtual bool LoadItemCached(CFileItem* pItem);
+  virtual bool LoadItemLookup(CFileItem* pItem);
+
   /*! \brief helper function to fill the art for a video library item
    \param item a video CFileItem
    \return true if we fill art, false otherwise

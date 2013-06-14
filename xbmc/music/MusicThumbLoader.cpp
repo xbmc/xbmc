@@ -64,21 +64,30 @@ void CMusicThumbLoader::OnLoaderFinish()
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
+{
   if (pItem->m_bIsShareOrDrive)
-    return true;
+    return false;
 
   if (pItem->HasMusicInfoTag() && pItem->GetArt().empty())
   {
     if (FillLibraryArt(*pItem))
       return true;
+      
     if (pItem->GetMusicInfoTag()->GetType() == "artist")
-      return true; // no fallback
+      return false; // No fallback
   }
 
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   { // music video
     CVideoThumbLoader loader;
-    if (loader.LoadItem(pItem))
+    if (loader.LoadItemCached(pItem))
       return true;
   }
 
@@ -100,6 +109,24 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       }
       m_database->Close();
     }
+  }
+
+  return false;
+}
+
+bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+    return false;
+
+  if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetType() == "artist") // No fallback for artist
+    return false;
+
+  if (pItem->HasVideoInfoTag())
+  { // music video
+    CVideoThumbLoader loader;
+    if (loader.LoadItemLookup(pItem))
+      return true;
   }
 
   if (!pItem->HasArt("thumb"))

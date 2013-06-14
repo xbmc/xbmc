@@ -199,6 +199,14 @@ vector<string> CVideoThumbLoader::GetArtTypes(const string &type)
  */
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
+{
   if (pItem->m_bIsShareOrDrive
   ||  pItem->IsParentFolder())
     return false;
@@ -242,20 +250,51 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     {
       std::string type = *i;
       std::string art = GetCachedImage(*pItem, type);
-      if (art.empty())
-      {
-        art = GetLocalArt(*pItem, type, type=="fanart");
-        if (!art.empty()) // cache it
-          SetCachedImage(*pItem, type, art);
-      }
       if (!art.empty())
+        artwork.insert(make_pair(type, art));
+    }
+    SetArt(*pItem, artwork);
+  }
+
+  m_database->Close();
+
+  return true;
+}
+
+bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive
+  ||  pItem->IsParentFolder())
+    return false;
+
+  if (pItem->HasVideoInfoTag()                         &&
+     !pItem->GetVideoInfoTag()->m_type.empty()         &&
+      pItem->GetVideoInfoTag()->m_type != "movie"      &&
+      pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
+      pItem->GetVideoInfoTag()->m_type != "episode"    &&
+      pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    return false; // Nothing to do here
+
+  m_database->Open();
+  map<string, string> artwork = pItem->GetArt();
+  vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+  if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
+    artTypes.push_back("thumb"); // always look for "thumb" art for files
+  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  {
+    std::string type = *i;
+    if (!pItem->HasArt(type))
+    {
+      std::string art = GetLocalArt(*pItem, type, type=="fanart");
+      if (!art.empty()) // cache it
       {
+        SetCachedImage(*pItem, type, art);
         CTextureCache::Get().BackgroundCacheImage(art);
         artwork.insert(make_pair(type, art));
       }
     }
-    SetArt(*pItem, artwork);
   }
+  SetArt(*pItem, artwork);
 
   // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
