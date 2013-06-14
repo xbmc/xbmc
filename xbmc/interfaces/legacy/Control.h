@@ -1493,10 +1493,45 @@ namespace XBMCAddon
 #endif
     };
 
+    // ControlRadioButton class
+    /**
+     * ControlRadioButton class.
+     * 
+     * ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,
+     *                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,
+     *                   textOffsetX, textOffsetY, alignment, font, textColor, disabledColor])
+     * 
+     * x                 : integer - x coordinate of control.
+     * y                 : integer - y coordinate of control.
+     * width             : integer - width of control.
+     * height            : integer - height of control.
+     * label             : string or unicode - text string.
+     * focusOnTexture    : [opt] string - filename for radio ON focused texture.
+     * noFocusOnTexture  : [opt] string - filename for radio ON not focused texture.
+     * focusOfTexture    : [opt] string - filename for radio OFF focused texture.
+     * noFocusOffTexture : [opt] string - filename for radio OFF not focused texture.
+     * focusTexture      : [opt] string - filename for radio ON texture (deprecated, use focusOnTexture and noFocusOnTexture).
+     * noFocusTexture    : [opt] string - filename for radio OFF texture (deprecated, use focusOffTexture and noFocusOffTexture).
+     * textOffsetX       : [opt] integer - horizontal text offset
+     * textOffsetY       : [opt] integer - vertical text offset
+     * alignment         : [opt] integer - alignment of label - *Note, see xbfont.h
+     * font              : [opt] string - font used for label text. (e.g. 'font13')
+     * textColor         : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')
+     * disabledColor     : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
+     * 
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
+     *        Once you use a keyword, all following arguments require the keyword.
+     *        After you create the control, you need to add it to the window with addControl().
+     * 
+     * example:
+     *   - self.radiobutton = xbmcgui.ControlRadioButton(100, 250, 200, 50, 'Enable', font='font14')
+     */
     class ControlRadioButton : public Control
     {
     public:
       ControlRadioButton(long x, long y, long width, long height, const String& label,
+                         const char* focusOnTexture = NULL, const char* noFocusOnTexture = NULL,
+                         const char* focusOffTexture = NULL, const char* noFocusOffTexture = NULL,
                          const char* focusTexture = NULL, const char* noFocusTexture = NULL, 
                          long textOffsetX = CONTROL_TEXT_OFFSET_X, 
                          long textOffsetY = CONTROL_TEXT_OFFSET_Y, 
@@ -1579,8 +1614,10 @@ namespace XBMCAddon
       std::string strText;
       std::string strTextureFocus;
       std::string strTextureNoFocus;
-      std::string strTextureRadioFocus;
-      std::string strTextureRadioNoFocus;
+      std::string strTextureRadioOnFocus;
+      std::string strTextureRadioOnNoFocus;
+      std::string strTextureRadioOffFocus;
+      std::string strTextureRadioOffNoFocus;
       color_t textColor;
       color_t disabledColor;
       int textOffsetX;
