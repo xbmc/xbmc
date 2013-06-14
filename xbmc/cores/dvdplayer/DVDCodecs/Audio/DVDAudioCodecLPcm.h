@@ -40,5 +40,5 @@ protected:
   int m_bufferSize;
   uint8_t m_buffer[LPCM_BUFFER_SIZE];
 
-  CodecID m_codecID;
+  AVCodecID m_codecID;
 };

@@ -538,7 +538,7 @@ quicktime_esds_t* quicktime_set_esds(DllAvFormat *av_format_ctx, const uint8_t *
   esds->esid            = 0;
   esds->stream_priority = 0;      // 16 ? 0x1f
   
-  esds->objectTypeId    = 32;     // 32 = CODEC_ID_MPEG4, 33 = CODEC_ID_H264
+  esds->objectTypeId    = 32;     // 32 = AV_CODEC_ID_MPEG4, 33 = AV_CODEC_ID_H264
   // the following fields is made of 6 bits to identify the streamtype (4 for video, 5 for audio)
   // plus 1 bit to indicate upstream and 1 bit set to 1 (reserved)
   esds->streamType      = 0x11;
@@ -1097,7 +1097,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     
     switch (hints.codec)
     {
-      case CODEC_ID_MPEG4:
+      case AV_CODEC_ID_MPEG4:
         if (extrasize)
         {
           AVIOContext *pb;
@@ -1129,12 +1129,12 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         m_pFormatName = "vtb-mpeg4";
       break;
 
-      case CODEC_ID_MPEG2VIDEO:
+      case AV_CODEC_ID_MPEG2VIDEO:
         m_fmt_desc = CreateFormatDescription(kVTFormatMPEG2Video, width, height);
         m_pFormatName = "vtb-mpeg2";
       break;
 
-      case CODEC_ID_H264:
+      case AV_CODEC_ID_H264:
         if (extrasize < 7 || extradata == NULL)
         {
           //m_fmt_desc = CreateFormatDescription(kVTFormatH264, width, height);

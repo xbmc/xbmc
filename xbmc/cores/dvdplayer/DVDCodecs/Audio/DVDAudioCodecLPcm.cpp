@@ -23,7 +23,7 @@
 
 CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {
-  m_codecID = CODEC_ID_NONE;
+  m_codecID = AV_CODEC_ID_NONE;
   m_bufferSize = LPCM_BUFFER_SIZE;
   memset(m_buffer, 0, sizeof(m_buffer));
 }
@@ -33,11 +33,11 @@ bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_codecID = hints.codec;
 
   CDVDStreamInfo hints2(hints, true);
-  hints2.codec = CODEC_ID_NONE;
+  hints2.codec = AV_CODEC_ID_NONE;
 #if 0
-  if (hints.codecID = CODEC_ID_LPCM_S24BE) hints2.codec = CODEC_ID_PCM_S24BE;
+  if (hints.codecID = AV_CODEC_ID_LPCM_S24BE) hints2.codec = AV_CODEC_ID_PCM_S24BE;
 #endif
-  if (hints2.codec != CODEC_ID_NONE)
+  if (hints2.codec != AV_CODEC_ID_NONE)
     return CDVDAudioCodecPcm::Open(hints2, options);
 
   return false;
@@ -54,7 +54,7 @@ int CDVDAudioCodecLPcm::Decode(uint8_t* pData, int iSize)
   {
     int iDecoded = 0;
 #if 0
-    if (m_codecID == CODEC_ID_LPCM_S24BE)
+    if (m_codecID == AV_CODEC_ID_LPCM_S24BE)
 #endif
     {
       for (iDecoded = 0; iDecoded <= (iSize - 12); iDecoded += 12)

@@ -97,19 +97,19 @@ typedef struct {
 
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
-    { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     CODEC_ID_MPEG2VIDEO },
-    { "MPEG1/2 VLD",  &DXVA_ModeMPEG2and1_VLD,  CODEC_ID_MPEG2VIDEO },
+    { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     AV_CODEC_ID_MPEG2VIDEO },
+    { "MPEG1/2 VLD",  &DXVA_ModeMPEG2and1_VLD,  AV_CODEC_ID_MPEG2VIDEO },
     { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
     { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
 
     // Intel drivers return standard modes in addition to the Intel specific ones. Try the Intel specific first, they work better for Sandy Bridges.
-    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
     { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
     { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 
-    { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F, CODEC_ID_H264 },
-    { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E, CODEC_ID_H264 },
+    { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F, AV_CODEC_ID_H264 },
+    { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E, AV_CODEC_ID_H264 },
     { "H.264 IDCT, FGT",                                        &DXVA2_ModeH264_D, 0,            },
     { "H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVA2_ModeH264_C, 0,            },
     { "H.264 MoComp, FGT",                                      &DXVA2_ModeH264_B, 0,            },
@@ -122,10 +122,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Windows Media Video 9 MoComp",           &DXVA2_ModeWMV9_B, 0 },
     { "Windows Media Video 9 post processing",  &DXVA2_ModeWMV9_A, 0 },
 
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    CODEC_ID_VC1 },
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    CODEC_ID_WMV3 },
-    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, CODEC_ID_VC1 },
-    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, CODEC_ID_WMV3 },
+    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    AV_CODEC_ID_VC1 },
+    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    AV_CODEC_ID_WMV3 },
+    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, AV_CODEC_ID_VC1 },
+    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, AV_CODEC_ID_WMV3 },
     { "VC-1 IDCT",            &DXVA2_ModeVC1_C,    0 },
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B,    0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A,    0 },
@@ -437,7 +437,7 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
   // The incompatibilities are all for H264
-  if(avctx->codec_id != CODEC_ID_H264)
+  if(avctx->codec_id != AV_CODEC_ID_H264)
     return true;
 
   // Macroblock width incompatibility
@@ -628,7 +628,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   if(m_refs == 0)
   {
-    if(avctx->codec_id == CODEC_ID_H264)
+    if(avctx->codec_id == AV_CODEC_ID_H264)
       m_refs = 16;
     else
       m_refs = 2;
@@ -773,9 +773,9 @@ int CDecoder::Check(AVCodecContext* avctx)
   }
 
   // Status reports are available only for the DXVA2_ModeH264 and DXVA2_ModeVC1 modes
-  if(avctx->codec_id != CODEC_ID_H264
-  && avctx->codec_id != CODEC_ID_VC1
-  && avctx->codec_id != CODEC_ID_WMV3)
+  if(avctx->codec_id != AV_CODEC_ID_H264
+  && avctx->codec_id != AV_CODEC_ID_VC1
+  && avctx->codec_id != AV_CODEC_ID_WMV3)
     return 0;
 
   DXVA2_DecodeExecuteParams params = {};
@@ -788,7 +788,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   params.pExtensionData = &data;
   data.Function = DXVA_STATUS_REPORTING_FUNCTION;
   data.pPrivateOutputData    = &status;
-  data.PrivateOutputDataSize = avctx->codec_id == CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
+  data.PrivateOutputDataSize = avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
   HRESULT hr;
   if(FAILED( hr = m_decoder->Execute(&params)))
   {
@@ -796,7 +796,7 @@ int CDecoder::Check(AVCodecContext* avctx)
     return VC_ERROR;
   }
 
-  if(avctx->codec_id == CODEC_ID_H264)
+  if(avctx->codec_id == AV_CODEC_ID_H264)
   {
     if(status.h264.bStatus)
       CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.h264.bBufType);

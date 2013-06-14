@@ -85,7 +85,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         }
       }
     }
-    else if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
+    else if (m_streaminfo.codec == AV_CODEC_ID_DVD_SUBTITLE)
     {
       CDVDOverlaySpu* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
       if (pSPUInfo)
@@ -169,7 +169,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   }
 
   // dvd's use special subtitle decoder
-  if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
+  if(hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
   m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);

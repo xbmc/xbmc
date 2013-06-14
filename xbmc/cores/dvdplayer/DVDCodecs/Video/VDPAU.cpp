@@ -185,7 +185,7 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     return false;
   }
 
-  if ((avctx->codec_id == CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+  if ((avctx->codec_id == AV_CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
     return false;
 
   if (!dl_handle)
@@ -214,10 +214,10 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     SpewHardwareAvailable();
 
     VdpDecoderProfile profile = 0;
-    if(avctx->codec_id == CODEC_ID_H264)
+    if(avctx->codec_id == AV_CODEC_ID_H264)
       profile = VDP_DECODER_PROFILE_H264_HIGH;
 #ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
-    else if(avctx->codec_id == CODEC_ID_MPEG4)
+    else if(avctx->codec_id == AV_CODEC_ID_MPEG4)
       profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
 #endif
     if(profile)

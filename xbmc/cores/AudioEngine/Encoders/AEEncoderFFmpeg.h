@@ -40,7 +40,7 @@ public:
   virtual void Reset();
 
   virtual unsigned int GetBitRate    ();
-  virtual CodecID      GetCodecID    ();
+  virtual AVCodecID    GetCodecID    ();
   virtual unsigned int GetFrames     ();
 
   virtual int Encode (float *data, unsigned int frames);
@@ -53,7 +53,7 @@ private:
   DllSwResample m_dllSwResample;
 
   std::string                m_CodecName;
-  CodecID                   m_CodecID;
+  AVCodecID                  m_CodecID;
   unsigned int              m_BitRate;
   CAEPackIEC61937::PackFunc m_PackFunc;
 
