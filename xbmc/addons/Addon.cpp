@@ -309,9 +309,9 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_checkedStrings  = false;
 }
 
-AddonPtr CAddon::Clone(const AddonPtr &self) const
+AddonPtr CAddon::Clone(const AddonPtr &parent) const
 {
-  return AddonPtr(new CAddon(*this, self));
+  return AddonPtr(new CAddon(*this, parent));
 }
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
