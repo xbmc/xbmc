@@ -200,14 +200,14 @@ int COMXAudioCodecOMX::Decode(BYTE* pData, int iSize)
                       m_dllAvUtil.av_get_default_channel_layout(m_pCodecContext->channels), 
                       m_pCodecContext->sample_fmt, m_pCodecContext->sample_rate,
                       0, NULL);
-    }
 
-    if(!m_pConvert || m_dllSwResample.swr_init(m_pConvert) < 0)
-    {
-      CLog::Log(LOGERROR, "COMXAudioCodecOMX::Decode - Unable to initialise convert format %d to %d", m_pCodecContext->sample_fmt, m_desiredSampleFormat);
-      m_iBufferSize1 = 0;
-      m_iBufferSize2 = 0;
-      return iBytesUsed;
+      if(!m_pConvert || m_dllSwResample.swr_init(m_pConvert) < 0)
+      {
+        CLog::Log(LOGERROR, "COMXAudioCodecOMX::Decode - Unable to initialise convert format %d to %d", m_pCodecContext->sample_fmt, m_desiredSampleFormat);
+        m_iBufferSize1 = 0;
+        m_iBufferSize2 = 0;
+        return iBytesUsed;
+      }
     }
     m_iBufferSize1 = 0;
 
