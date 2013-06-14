@@ -1,8 +1,5 @@
-#ifndef __PLATFORM_INCLUDE__H__
-#define __PLATFORM_INCLUDE__H__
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2011-2013 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,8 +18,17 @@
  *
  */
 
-#include <errno.h> // for ENOENT and EINVAL
-#include "PlatformDefs.h"
+#include "GitRevision.h"
 
+#if defined(TARGET_DARWIN) || (defined(TARGET_WINDOWS) && !defined(_DEBUG) && !defined(_LIB))
+#include "../git_revision.h" // generated file
 #endif
 
+const char *GetXbmcGitRevision()
+{
+#ifdef GIT_REV
+  return GIT_REV;
+#else
+  return NULL;
+#endif
+}

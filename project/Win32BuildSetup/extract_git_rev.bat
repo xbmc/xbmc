@@ -2,7 +2,7 @@
 
 REM Batch file output: %GIT_REV% variable, containing the git revision
 
-SET GIT_REV=unknown
+SET GIT_REV=
 
 
 REM Try wrapped msysgit - must be in the path

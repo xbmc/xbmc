@@ -1,24 +1,11 @@
 @echo off
 
-SET TEMPLATE=..\..\xbmc\win32\git_rev.tmpl
-SET TEMP=..\..\xbmc\win32\git_rev.tmp
-SET REV_FILE=..\..\xbmc\win32\git_rev.h
-IF EXIST "%TEMP%" (
-  del "%TEMP%" > nul
-)
+SET REV_FILE=..\..\git_revision.h
 
 CALL ..\Win32BuildSetup\extract_git_rev.bat
 
-copy "%TEMPLATE%" "%TEMP%" > nul
-
-echo #define GIT_REV "%GIT_REV%" >> "%TEMP%"
-
-fc /B "%TEMP%" "%REV_FILE%" > nul
-IF ERRORLEVEL 1 (
-  IF EXIST "%REV_FILE%" (
-    del "%REV_FILE%" > nul
-  )
-  COPY "%TEMP%" "%REV_FILE%" > nul
+IF NOT [%GIT_REV%]==[] (
+  echo #define GIT_REV "%GIT_REV%" > "%REV_FILE%"
+) ELSE (
+  echo. > "%REV_FILE%"
 )
-
-DEL %TEMP%
