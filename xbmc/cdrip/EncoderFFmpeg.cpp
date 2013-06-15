@@ -52,13 +52,9 @@ CEncoderFFmpeg::CEncoderFFmpeg():
 
 bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load()) return false;
-  m_dllAvFormat.av_register_all();
-  m_dllAvCodec.avcodec_register_all();
-
   CStdString filename = URIUtils::GetFileName(strFile);
   AVOutputFormat *fmt = NULL;
-  fmt = m_dllAvFormat.av_guess_format(NULL, filename.c_str(), NULL);
+  fmt = av_guess_format(NULL, filename.c_str(), NULL);
   if (!fmt)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());
@@ -66,7 +62,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   AVCodec *codec;
-  codec = m_dllAvCodec.avcodec_find_encoder(
+  codec = avcodec_find_encoder(
     strcmp(fmt->name, "ogg") == 0 ? CODEC_ID_VORBIS : fmt->audio_codec
   );
 
@@ -76,11 +72,11 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     return false;
   }
 
-  m_Format     = m_dllAvFormat.avformat_alloc_context();
-  m_Format->pb = m_dllAvFormat.avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_READ, this,  NULL, MuxerReadPacket, NULL);
+  m_Format     = avformat_alloc_context();
+  m_Format->pb = avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_READ, this,  NULL, MuxerReadPacket, NULL);
   if (!m_Format->pb)
   {
-    m_dllAvUtil.av_freep(&m_Format);
+    av_freep(&m_Format);
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to allocate ByteIOContext");
     return false;
   }
@@ -89,11 +85,11 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_Format->bit_rate = CSettings::Get().GetInt("audiocds.bitrate") * 1000;
 
   /* add a stream to it */
-  m_Stream = m_dllAvFormat.avformat_new_stream(m_Format, codec);
+  m_Stream = avformat_new_stream(m_Format, codec);
   if (!m_Stream)
   {
-    m_dllAvUtil.av_freep(&m_Format->pb);
-    m_dllAvUtil.av_freep(&m_Format);
+    av_freep(&m_Format->pb);
+    av_freep(&m_Format);
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to allocate AVStream context");
     return false;
   }
@@ -105,7 +101,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;
-  m_CodecCtx->channel_layout = m_dllAvUtil.av_get_default_channel_layout(iInChannels);
+  m_CodecCtx->channel_layout = av_get_default_channel_layout(iInChannels);
   m_CodecCtx->time_base      = (AVRational){1, iInRate};
 
   if(fmt->flags & AVFMT_GLOBALHEADER)
@@ -114,7 +110,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     m_Format->flags   |= CODEC_FLAG_GLOBAL_HEADER;
   }
 
-  m_dllAvCodec.av_init_packet(&m_Pkt);
+  av_init_packet(&m_Pkt);
   m_Pkt.stream_index = m_Stream->index;
   m_Pkt.flags       |= AV_PKT_FLAG_KEY;
 
@@ -124,18 +120,18 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     case 16: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S16; break;
     case 32: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S32; break;
     default:
-      m_dllAvUtil.av_freep(&m_Stream);
-      m_dllAvUtil.av_freep(&m_Format->pb);
-      m_dllAvUtil.av_freep(&m_Format);
+      av_freep(&m_Stream);
+      av_freep(&m_Format->pb);
+      av_freep(&m_Format);
       return false;
   }
 
-  if (m_dllAvCodec.avcodec_open2(m_CodecCtx, codec, NULL))
+  if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to open the codec");
-    m_dllAvUtil.av_freep(&m_Stream);
-    m_dllAvUtil.av_freep(&m_Format->pb);
-    m_dllAvUtil.av_freep(&m_Format);
+    av_freep(&m_Stream);
+    av_freep(&m_Format->pb);
+    av_freep(&m_Format);
     return false;
   }
 
@@ -150,9 +146,9 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to call CEncoder::Init");
     delete[] m_Buffer;
-    m_dllAvUtil.av_freep(&m_Stream);
-    m_dllAvUtil.av_freep(&m_Format->pb);
-    m_dllAvUtil.av_freep(&m_Format);
+    av_freep(&m_Stream);
+    av_freep(&m_Format->pb);
+    av_freep(&m_Format);
     return false;
   }
 
@@ -165,13 +161,13 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   SetTag("encoder"     , "XBMC FFmpeg Encoder");
 
   /* write the header */
-  if (m_dllAvFormat.avformat_write_header(m_Format, NULL) != 0)
+  if (avformat_write_header(m_Format, NULL) != 0)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to write the header");
     delete[] m_Buffer;
-    m_dllAvUtil.av_freep(&m_Stream);
-    m_dllAvUtil.av_freep(&m_Format->pb);
-    m_dllAvUtil.av_freep(&m_Format);
+    av_freep(&m_Stream);
+    av_freep(&m_Format->pb);
+    av_freep(&m_Format);
     return false;
   }
 
@@ -180,7 +176,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
 void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
 {
-  m_dllAvUtil.av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
+  av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
 }
 
 int CEncoderFFmpeg::MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size)
@@ -219,7 +215,7 @@ bool CEncoderFFmpeg::WriteFrame()
   uint8_t outbuf[FF_MIN_BUFFER_SIZE];
   int encoded;
 
-  encoded = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, outbuf, FF_MIN_BUFFER_SIZE, (short*)m_Buffer);
+  encoded = avcodec_encode_audio(m_CodecCtx, outbuf, FF_MIN_BUFFER_SIZE, (short*)m_Buffer);
   m_BufferSize = 0;
   if (encoded < 0) {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error encoding audio");
@@ -230,9 +226,9 @@ bool CEncoderFFmpeg::WriteFrame()
   m_Pkt.size = encoded;
 
   if (m_CodecCtx->coded_frame && m_CodecCtx->coded_frame->pts != AV_NOPTS_VALUE)
-    m_Pkt.pts = m_dllAvUtil.av_rescale_q(m_CodecCtx->coded_frame->pts, m_Stream->time_base, m_CodecCtx->time_base);
+    m_Pkt.pts = av_rescale_q(m_CodecCtx->coded_frame->pts, m_Stream->time_base, m_CodecCtx->time_base);
 
-  if (m_dllAvFormat.av_write_frame(m_Format, &m_Pkt) < 0) {
+  if (av_write_frame(m_Format, &m_Pkt) < 0) {
     CLog::Log(LOGERROR, "CEncoderFFMmpeg::WriteFrame - Failed to write the frame data");
     return false;
   }
@@ -257,22 +253,19 @@ bool CEncoderFFmpeg::Close()
     WriteFrame();
 
     /* write the trailer */
-    m_dllAvFormat.av_write_trailer(m_Format);
+    av_write_trailer(m_Format);
     FlushStream();
     FileClose();
 
     /* cleanup */
-    m_dllAvCodec.avcodec_close(m_CodecCtx);
-    m_dllAvUtil.av_freep(&m_Stream    );
-    m_dllAvUtil.av_freep(&m_Format->pb);
-    m_dllAvUtil.av_freep(&m_Format    );
+    avcodec_close(m_CodecCtx);
+    av_freep(&m_Stream    );
+    av_freep(&m_Format->pb);
+    av_freep(&m_Format    );
   }
 
   m_BufferSize = 0;
 
-  m_dllAvFormat.Unload();
-  m_dllAvUtil  .Unload();
-  m_dllAvCodec .Unload();
   return true;
 }
 
