@@ -39,6 +39,10 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 {
   if( item.IsInternetStream() )
   {
+    // Ensure the MIME type has been retrieved for http:// and shout:// streams
+    if (item.GetMimeType().empty())
+      const_cast<CFileItem&>(item).FillInMimeType();
+
     CStdString strMimeType = item.GetMimeType();
     strMimeType.MakeLower();
 

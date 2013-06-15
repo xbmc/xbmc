@@ -112,6 +112,7 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
   m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
@@ -149,6 +150,8 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
 
   if (!tag.Icon().IsEmpty())
     SetIconImage(tag.Icon());
+
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CPVRChannel& channel)
@@ -198,6 +201,8 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   SetProperty("channelid", channel.ChannelID());
   SetProperty("path", channel.Path());
   SetArt("thumb", channel.IconPath());
+
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CPVRRecording& record)
@@ -217,6 +222,8 @@ CFileItem::CFileItem(const CPVRRecording& record)
   *GetPVRRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
   m_strLabel2 = record.m_strPlot;
+
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
@@ -240,6 +247,8 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
 
   if (!timer.ChannelIcon().IsEmpty())
     SetIconImage(timer.ChannelIcon());
+
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -257,6 +266,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CGenre& genre)
@@ -274,6 +284,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
@@ -301,6 +312,8 @@ CFileItem::CFileItem(const CGUIListItem& item)
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
   *((CGUIListItem *)this) = item;
+
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(void)
@@ -344,6 +357,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !URIUtils::IsTuxBox(m_strPath))
     URIUtils::AddSlashAtEnd(m_strPath);
+  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CMediaSource& share)
@@ -374,6 +388,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   SetLabelPreformated(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
+  FillInMimeType(false);
 }
 
 CFileItem::~CFileItem(void)
@@ -670,7 +685,7 @@ void CFileItem::Serialize(CVariant& value) const
   value["size"] = (int) m_dwSize / 1000;
   value["DVDLabel"] = m_strDVDLabel;
   value["title"] = m_strTitle;
-  value["mimetype"] = GetMimeType();
+  value["mimetype"] = m_mimetype;
   value["extrainfo"] = m_extrainfo;
 
   if (m_musicInfoTag)
@@ -1010,7 +1025,7 @@ bool CFileItem::IsCBR() const
 bool CFileItem::IsRSS() const
 {
   return m_strPath.Left(6).Equals("rss://") || URIUtils::HasExtension(m_strPath, ".rss")
-      || GetMimeType() == "application/rss+xml";
+      || m_mimetype == "application/rss+xml";
 }
 
 bool CFileItem::IsAndroidApp() const
@@ -1336,51 +1351,48 @@ bool CFileItem::IsParentFolder() const
   return m_bIsParentFolder;
 }
 
-const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
+void CFileItem::FillInMimeType(bool lookup /*= true*/)
 {
-  if( m_mimetype.IsEmpty() && lookup)
+  if (m_mimetype.IsEmpty())
   {
-    CStdString& m_ref = const_cast<CStdString&>(m_mimetype);
-
     if( m_bIsFolder )
-      m_ref = "x-directory/normal";
+      m_mimetype = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
-      m_ref = m_pvrChannelInfoTag->InputFormat();
+      m_mimetype = m_pvrChannelInfoTag->InputFormat();
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://"))
     {
-      CCurlFile::GetMimeType(GetAsUrl(), m_ref);
+      // If lookup is false, bail out early to leave mime type empty
+      if (!lookup)
+        return;
+
+      CCurlFile::GetMimeType(GetAsUrl(), m_mimetype);
 
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
-      if (m_ref.Left(11).Equals("video/x-ms-"))
-        CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+      if (m_mimetype.Left(11).Equals("video/x-ms-"))
+        CCurlFile::GetMimeType(GetAsUrl(), m_mimetype, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
-      int i = m_ref.Find(';');
+      int i = m_mimetype.Find(';');
       if(i>=0)
-        m_ref.Delete(i,m_ref.length()-i);
-      m_ref.Trim();
+        m_mimetype.Delete(i, m_mimetype.length() - i);
+      m_mimetype.Trim();
     }
     else
-      m_ref = CMime::GetMimeType(*this);
+      m_mimetype = CMime::GetMimeType(*this);
 
     // if it's still empty set to an unknown type
-    if( m_ref.IsEmpty() )
-      m_ref = "application/octet-stream";
+    if (m_mimetype.IsEmpty())
+      m_mimetype = "application/octet-stream";
   }
 
-  // change protocol to mms for the following mome-type.  Allows us to create proper FileMMS.
+  // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
   if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
-  {
-    CStdString& m_path = const_cast<CStdString&>(m_strPath);
-    m_path.Replace("http:", "mms:");
-  }
-
-  return m_mimetype;
+    m_strPath.Replace("http:", "mms:");
 }
 
 bool CFileItem::IsSamePath(const CFileItem *item) const
@@ -1478,6 +1490,7 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
   FillInDefaultIcon();
+  FillInMimeType(false);
 }
 
 void CFileItem::SetFromAlbum(const CAlbum &album)
@@ -1489,6 +1502,7 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
   GetMusicInfoTag()->SetAlbum(album);
   m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
+  FillInMimeType(false);
 }
 
 void CFileItem::SetFromSong(const CSong &song)
@@ -1504,6 +1518,7 @@ void CFileItem::SetFromSong(const CSong &song)
   m_lEndOffset = song.iEndOffset;
   if (!song.strThumb.empty())
     SetArt("thumb", song.strThumb);
+  FillInMimeType(false);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
