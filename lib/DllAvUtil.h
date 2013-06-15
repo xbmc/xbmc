@@ -90,9 +90,6 @@ extern "C" {
 // calback used for logging
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va);
 
-// callback used for locking
-int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation);
-
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avutil.lib")
 #endif
