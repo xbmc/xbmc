@@ -69,6 +69,9 @@ extern "C" {
   #define LIBAVCODEC_FROM_LIBAV
 #endif
 
+// callback used for locking
+int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation);
+
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avcodec.lib")
 #endif
