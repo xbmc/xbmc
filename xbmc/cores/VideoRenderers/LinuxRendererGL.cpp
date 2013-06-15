@@ -2827,7 +2827,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
 
   uint8_t *src[4]       = {};
   int      srcStride[4] = {};
-  int      srcFormat    = -1;
+  AVPixelFormat srcFormat    = PIX_FMT_NONE;
 
   if (m_format == RENDER_FMT_YUV420P)
   {
@@ -2899,7 +2899,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   int      srcStrideTop[4] = {};
   uint8_t *srcBot[4]       = {};
   int      srcStrideBot[4] = {};
-  int      srcFormat       = -1;
+  AVPixelFormat srcFormat  = PIX_FMT_NONE;
 
   if (m_format == RENDER_FMT_YUV420P)
   {
