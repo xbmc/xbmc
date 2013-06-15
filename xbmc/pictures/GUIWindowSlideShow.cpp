@@ -294,7 +294,7 @@ void CGUIWindowSlideShow::Add(const CFileItem *picture)
   if (!item->HasVideoInfoTag() && !item->HasPictureInfoTag())
   {
     // item without tag; get mimetype then we can tell whether it's video item
-    item->GetMimeType();
+    item->FillInMimeType();
 
     if (!item->IsVideo())
       // then it is a picture and force tag generation

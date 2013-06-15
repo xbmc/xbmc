@@ -160,7 +160,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
     resultItem.SetPath(newDir->m_fileResult->GetPath());
-    resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
+    resultItem.SetMimeType(newDir->m_fileResult->GetMimeType());
     resultItem.UpdateInfo(*newDir->m_fileResult);
     if (newDir->m_fileResult->HasVideoInfoTag() && newDir->m_fileResult->GetVideoInfoTag()->m_resumePoint.IsSet())
       resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
