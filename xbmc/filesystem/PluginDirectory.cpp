@@ -123,16 +123,15 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   CStdString strHandle;
   strHandle.Format("%i", handle);
   vector<CStdString> argv;
-  argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);
 
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), basePath.c_str(), argv[0].c_str(), argv[1].c_str());
   bool success = false;
 #ifdef HAS_PYTHON
   CStdString file = m_addon->LibPath();
-  int id = g_pythonParser.evalFile(file, argv,m_addon);
+  int id = g_pythonParser.evalFile(file, argv, m_addon, true);
   if (id >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
@@ -471,14 +470,13 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CStdString strHandle;
   strHandle.Format("%i", -1);
   vector<CStdString> argv;
-  argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);
 
   // run the script
 #ifdef HAS_PYTHON
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (g_pythonParser.evalFile(addon->LibPath(), argv,addon) >= 0)
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), basePath.c_str(), argv[0].c_str(), argv[1].c_str());
+  if (g_pythonParser.evalFile(addon->LibPath(), argv, addon, true) >= 0)
     return true;
   else
 #endif

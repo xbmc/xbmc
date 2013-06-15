@@ -423,13 +423,12 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
     {
 #ifdef HAS_PYTHON
-      vector<CStdString> argv = params;
-
-      vector<CStdString> path;
-      //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
-      if (path.size())
-        argv[0] = path[path.size() - 1];
+      vector<CStdString> argv;
+      for (unsigned int i = 1; i < params.size(); ++i)
+      {
+        CStdString arg = params[i];
+        argv.push_back(arg);
+      }
 
       AddonPtr script;
       CStdString scriptpath(params[0]);
