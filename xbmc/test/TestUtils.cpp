@@ -45,8 +45,8 @@ public:
     char tmp[MAX_PATH];
     int fd;
 
-    m_ptempFilePath = CSpecialProtocol::TranslatePath("special://temp/");
-    m_ptempFilePath += "xbmctempfileXXXXXX";
+    m_ptempFileDirectory = CSpecialProtocol::TranslatePath("special://temp/");
+    m_ptempFilePath = m_ptempFileDirectory + "xbmctempfileXXXXXX";
     m_ptempFilePath += suffix;
     if (m_ptempFilePath.length() >= MAX_PATH)
     {
@@ -85,8 +85,13 @@ public:
   {
     return m_ptempFilePath;
   }
+  CStdString getTempFileDirectory() const
+  {
+    return m_ptempFileDirectory;
+  }
 private:
   CStdString m_ptempFilePath;
+  CStdString m_ptempFileDirectory;
 };
 
 CXBMCTestUtils::CXBMCTestUtils()
@@ -144,6 +149,14 @@ CStdString CXBMCTestUtils::TempFilePath(XFILE::CFile const* const tempfile)
     return "";
   CTempFile const* const f = static_cast<CTempFile const* const>(tempfile);
   return f->getTempFilePath();
+}
+
+CStdString CXBMCTestUtils::TempFileDirectory(XFILE::CFile const* const tempfile)
+{
+  if (!tempfile)
+    return "";
+  CTempFile const* const f = static_cast<CTempFile const* const>(tempfile);
+  return f->getTempFileDirectory();
 }
 
 XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(CStdString const& strFileName,
