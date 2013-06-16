@@ -2098,8 +2098,6 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
-  g_renderManager.FrameMove();
-
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
     hasRendered = true;
@@ -2756,6 +2754,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   }
   if (processGUI && m_renderGUI)
   {
+    g_renderManager.FrameMove();
+
     if (!m_bStop)
       g_windowManager.Process(CTimeUtils::GetFrameTime());
     g_windowManager.FrameMove();
