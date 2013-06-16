@@ -57,6 +57,8 @@ TEST(TestFileItem, GetLocalArt)
                                   { "/home/user/TV Shows/Dexter/S1/1x01.avi", false, "/home/user/TV Shows/Dexter/S1/1x01.tbn" },
                                   { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", false, "g:\\multimedia\\movies\\Sphere.tbn" }};
 
+  // Force all settings to be reset to defaults
+  g_advancedSettings.OnSettingsUnloaded();
   g_advancedSettings.Initialize();
 
   for (unsigned int i = 0; i < sizeof(test_files) / sizeof(testfiles); i++)
@@ -65,7 +67,7 @@ TEST(TestFileItem, GetLocalArt)
     item.SetPath(test_files[i].file);
     std::string path = CURL(item.GetLocalArt("art.jpg", test_files[i].use_folder)).Get();
     std::string compare = CURL(test_files[i].base).Get();
-    EXPECT_EQ(path, compare);
+    EXPECT_EQ(compare, path);
   }
 
   for (unsigned int i = 0; i < sizeof(test_file2) / sizeof(testfiles); i++)
@@ -74,7 +76,7 @@ TEST(TestFileItem, GetLocalArt)
     item.SetPath(test_file2[i].file);
     std::string path = CURL(item.GetLocalArt("", test_file2[i].use_folder)).Get();
     std::string compare = CURL(test_file2[i].base).Get();
-    EXPECT_EQ(path, compare);
+    EXPECT_EQ(compare, path);
   }
 }
 
