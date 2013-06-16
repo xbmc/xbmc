@@ -538,7 +538,9 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   struct in_addr host_ip; 
   host_ip.s_addr = remote_ip;
 
-#if defined(TARGET_DARWIN)
+#if defined (TARGET_DARWIN_IOS) // no timeout option available
+  sprintf(cmd_line, "ping -c 1 %s", inet_ntoa(host_ip));
+#elif defined (TARGET_DARWIN)
   sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
 #else
   sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
