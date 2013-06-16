@@ -79,6 +79,12 @@ public:
    */
   bool IsVisible() const;
 
+  /*! \brief set a visible condition for this item.
+   \param condition the condition to use.
+   \param context the context for the condition (typically a window id).
+   */
+  void SetVisibleCondition(const std::string &condition, int context);
+
   const CGUIAction &GetClickActions() const { return m_clickActions; };
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;

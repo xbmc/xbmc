@@ -45,7 +45,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     const char *id = item->Attribute("id");
     CStdString condition;
     CGUIControlFactory::GetConditionalVisibility(item, condition);
-    m_visCondition = g_infoManager.Register(condition, parentID);
+    SetVisibleCondition(condition, parentID);
     CGUIControlFactory::GetActions(item, "onclick", m_clickActions);
     SetLabel(label.GetLabel(parentID));
     SetLabel2(label2.GetLabel(parentID));
@@ -134,4 +134,10 @@ bool CGUIStaticItem::IsVisible() const
   if (m_visCondition)
     return m_visState;
   return true;
+}
+
+void CGUIStaticItem::SetVisibleCondition(const std::string &condition, int context)
+{
+  m_visCondition = g_infoManager.Register(condition, context);
+  m_visState = false;
 }
