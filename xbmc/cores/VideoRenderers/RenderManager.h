@@ -212,7 +212,6 @@ protected:
     PRESENT_METHOD_BLEND,
     PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
-    PRESENT_METHOD_BYPASS,
   };
 
   double m_displayLatency;
@@ -251,6 +250,7 @@ protected:
   CCriticalSection m_presentlock;
   CEvent     m_flushEvent;
 
+  ERenderFormat   m_format;
 
   OVERLAY::CRenderer m_overlays;
 
