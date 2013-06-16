@@ -34,6 +34,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "guilib/Key.h"
 
 using namespace PLAYLIST;
 
@@ -58,6 +59,22 @@ CPlayListPlayer::~CPlayListPlayer(void)
   delete m_PlaylistMusic;
   delete m_PlaylistVideo;
   delete m_PlaylistEmpty;
+}
+
+bool CPlayListPlayer::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_PREV_ITEM && !IsSingleItemNonRepeatPlaylist())
+  {
+    PlayPrevious();
+    return true;
+  }
+  else if (action.GetID() == ACTION_NEXT_ITEM && !IsSingleItemNonRepeatPlaylist())
+  {
+    PlayNext();
+    return true;
+  }
+  else
+    return false;
 }
 
 bool CPlayListPlayer::OnMessage(CGUIMessage &message)
@@ -198,6 +215,12 @@ bool CPlayListPlayer::PlayPrevious()
   }
 
   return Play(iSong, false, true);
+}
+
+bool CPlayListPlayer::IsSingleItemNonRepeatPlaylist() const
+{
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  return (playlist.size() <= 1 && !RepeatedOne(m_iCurrentPlayList) && !Repeated(m_iCurrentPlayList));
 }
 
 bool CPlayListPlayer::Play()
