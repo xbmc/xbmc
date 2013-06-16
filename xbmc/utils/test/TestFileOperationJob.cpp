@@ -230,6 +230,10 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 
   ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+
+  CStdString tmpfiledirectory =
+    CXBMCTestUtils::Instance().TempFileDirectory(tmpfile);
+
   tmpfile->Close();
 
   destpath = tmpfilepath;
@@ -242,13 +246,13 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
   item->Select(true);
   items.Add(item);
 
-  job.SetFileOperation(CFileOperationJob::ActionCreateFolder, items, destpath);
+  job.SetFileOperation(CFileOperationJob::ActionCreateFolder, items, tmpfiledirectory);
   EXPECT_EQ(CFileOperationJob::ActionCreateFolder, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
   EXPECT_TRUE(XFILE::CDirectory::Exists(destpath));
 
-  job.SetFileOperation(CFileOperationJob::ActionDeleteFolder, items, destpath);
+  job.SetFileOperation(CFileOperationJob::ActionDeleteFolder, items, tmpfiledirectory);
   EXPECT_EQ(CFileOperationJob::ActionDeleteFolder, job.GetAction());
 
   EXPECT_TRUE(job.DoWork());
