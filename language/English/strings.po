@@ -14150,7 +14150,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36501"
-msgid "Stereoscopic Mode"
+msgid "Stereoscopic mode (current)"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14211,18 +14211,13 @@ msgid "Use preferred mode"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#36523"
-msgid "don't do anything"
-msgstr ""
-
-#: system/settings/settings.xml
 msgctxt "#36524"
-msgid "Preferred stereoscopic mode"
+msgid "Preferred mode"
 msgstr ""
 
 #: settings/DisplaySettings.cpp
 msgctxt "#36525"
-msgid "Sames as movie (autodetect)"
+msgid "Same as movie (autodetect)"
 msgstr ""
 
 #: guilib/StereoscopicsManager.cpp

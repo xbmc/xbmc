@@ -610,12 +610,6 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *set
 
 void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(36525), 0)); // option for autodetect
-
-  for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
-  {
-    RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
-    if (g_Windowing.SupportsStereo(mode))
-      list.push_back(make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(mode), mode));
-  }
+  SettingOptionsStereoscopicModesFiller(setting, list, current);
+  list.push_back(make_pair(g_localizeStrings.Get(36525), RENDER_STEREO_MODE_AUTO)); // option for autodetect
 }

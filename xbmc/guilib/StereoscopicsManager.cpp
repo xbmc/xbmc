@@ -211,10 +211,10 @@ CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE
 RENDER_STEREO_MODE CStereoscopicsManager::GetPreferredPlaybackMode(void)
 {
   RENDER_STEREO_MODE playbackMode = m_lastStereoMode;
-  int preferredMode = CSettings::Get().GetInt("videoplayer.stereoscopicviewmode");
-  if (preferredMode == 0) // automatic mode, detect by movie
+  int preferredMode = CSettings::Get().GetInt("videoscreen.preferedstereoscopicmode");
+  if (preferredMode == RENDER_STEREO_MODE_AUTO) // automatic mode, detect by movie
   {
-    if (g_application.IsPlayingVideo() && g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
+    if (g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
       playbackMode = GetStereoModeOfPlayingVideo();
     else if (playbackMode == RENDER_STEREO_MODE_OFF)
       playbackMode = GetNextSupportedStereoMode(RENDER_STEREO_MODE_OFF);
@@ -371,7 +371,6 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   case 1: // Stereoscopic
     SetStereoMode( GetPreferredPlaybackMode() );
     break;
-  case 2: // do nothing; play as is
   default:
     break;
   }
