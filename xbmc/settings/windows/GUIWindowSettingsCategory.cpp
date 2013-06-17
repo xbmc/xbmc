@@ -654,8 +654,8 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
       pControl = new CGUIButtonControl(*m_pOriginalButton);
       if (pControl == NULL)
         return NULL;
-      
-      ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
+
+      ((CGUIButtonControl *)pControl)->SetLabel(label);
       pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
       break;
     }
