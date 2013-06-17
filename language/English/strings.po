@@ -14255,6 +14255,16 @@ msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr ""
 
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr ""
+
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp

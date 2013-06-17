@@ -1000,11 +1000,30 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
+std::string CDVDPlayerVideo::GetStereoMode()
+{
+  std::string  stereo_mode;
+
+  switch(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
+    default:                                  stereo_mode = m_hints.stereo_mode; break;
+  }
+
+  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
+    stereo_mode = GetStereoModeInvert(stereo_mode);
+  return stereo_mode;
+}
+
 int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
   /* picture buffer is not allowed to be modified in this call */
   DVDVideoPicture picture(*src);
   DVDVideoPicture* pPicture = &picture;
+
+  /* figure out steremode expected based on user settings and hints */
+  unsigned int stereo_flags = GetStereoModeFlags(GetStereoMode());
 
 #ifdef HAS_VIDEO_PLAYBACK
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
@@ -1021,7 +1040,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || ( m_output.chroma_position != pPicture->chroma_position && pPicture->chroma_position != 0 )
    || ( m_output.color_primaries != pPicture->color_primaries && pPicture->color_primaries != 0 )
    || ( m_output.color_transfer  != pPicture->color_transfer  && pPicture->color_transfer  != 0 )
-   || ( m_output.color_range     != pPicture->color_range ))
+   || ( m_output.color_range     != pPicture->color_range )
+   || ( m_output.stereo_flags    != stereo_flags))
   {
     CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i"
                        , config_framerate
@@ -1047,7 +1067,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-    flags |= GetStereoModeFlags(m_hints.stereo_mode);
+    flags |= stereo_flags;
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
     if(!g_renderManager.Configure(pPicture->iWidth
@@ -1077,6 +1097,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.color_primaries = pPicture->color_primaries;
     m_output.color_transfer  = pPicture->color_transfer;
     m_output.color_range     = pPicture->color_range;
+    m_output.stereo_flags    = stereo_flags;
   }
 
   int    result  = 0;

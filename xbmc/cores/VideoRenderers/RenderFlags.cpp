@@ -107,4 +107,28 @@ namespace RenderManager {
     return convert[mode];
   }
 
+  std::string GetStereoModeInvert(const std::string& mode)
+  {
+    static std::map<std::string, std::string> convert;
+    if(convert.empty())
+    {
+      convert["left_right"]             = "right_left";
+      convert["right_left"]             = "left_right";
+      convert["bottom_top"]             = "top_bottom";
+      convert["top_bottom"]             = "bottom_top";
+      convert["checkerboard_rl"]        = "checkerboard_lr";
+      convert["checkerboard_lr"]        = "checkerboard_rl";
+      convert["row_interleaved_rl"]     = "row_interleaved_lr";
+      convert["row_interleaved_lr"]     = "row_interleaved_rl";
+      convert["col_interleaved_rl"]     = "col_interleaved_lr";
+      convert["col_interleaved_lr"]     = "col_interleaved_rl";
+      convert["block_lr"]               = "block_lr";
+      convert["block_rl"]               = "block_rl";
+    }
+    std::string res = convert[mode];
+    if(res.empty())
+      return mode;
+    else
+      return res;
+  }
 }
