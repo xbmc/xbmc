@@ -296,7 +296,7 @@
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="255">
-				<visible>System.GetBool(videoscreen.hasstereoscopicsupport)</visible>
+				<visible>VideoPlayer.IsStereoscopic</visible>
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>55</width>
@@ -396,7 +396,7 @@
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="354">
-				<visible>System.GetBool(videoscreen.hasstereoscopicsupport)</visible>
+				<visible>VideoPlayer.IsStereoscopic</visible>
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>55</width>
@@ -612,7 +612,7 @@
 			<visible>Control.HasFocus(520) | Control.HasFocus(255) | ControlGroup(500).HasFocus</visible>
 		</control>
 		<control type="grouplist" id="500">
-			<visible>System.GetBool(videoscreen.hasstereoscopicsupport) + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>VideoPlayer.IsStereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<posx>455r</posx>
 			<posy>350r</posy>
@@ -690,7 +690,6 @@
 				<onclick>StereoModeToMono</onclick>
 				<selected>StringCompare(System.StereoscopicMode,7)</selected>
 				<pulseonselect>false</pulseonselect>
-				<visible>VideoPlayer.IsStereoscopic</visible>
 			</control>
 			<control type="image" id="549">
 				<description>Footer</description>
@@ -713,7 +712,7 @@
 			<visible>Control.HasFocus(570) | Control.HasFocus(354) | ControlGroup(550).HasFocus</visible>
 		</control>
 		<control type="grouplist" id="550">
-			<visible>System.GetBool(videoscreen.hasstereoscopicsupport) + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<posx>340r</posx>
 			<posy>350r</posy>
@@ -791,7 +790,6 @@
 				<onclick>StereoModeToMono</onclick>
 				<selected>StringCompare(System.StereoscopicMode,7)</selected>
 				<pulseonselect>false</pulseonselect>
-				<visible>VideoPlayer.IsStereoscopic</visible>
 			</control>
 			<control type="image" id="599">
 				<description>Footer</description>

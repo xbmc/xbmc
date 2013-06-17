@@ -551,9 +551,6 @@
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="">
           <level>0</level>
           <default>0</default>
-          <dependencies> 
-            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency> 
-          </dependencies>
           <constraints>
             <options>
               <option label="36521">0</option> <!-- ASK     -->
@@ -566,9 +563,6 @@
         <setting id="videoplayer.stereoscopicviewmode" type="integer" label="36524" help="">
           <level>0</level>
           <default>0</default>
-          <dependencies> 
-             <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency> 
-          </dependencies>
           <constraints>
             <options>preferedstereoscopicviewmodes</options>
           </constraints>
@@ -577,9 +571,6 @@
         <setting id="videoplayer.quitstereomodeonstop" type="boolean" label="36526" help="">
           <level>0</level>
           <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency>
-          </dependencies>
         </setting>
       </group>
     </category>
@@ -1928,16 +1919,9 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="videoscreen.hasstereoscopicsupport" type="boolean" label="36500" help="">
-          <level>0</level>
-          <default>false</default>
-        </setting>
         <setting id="videoscreen.stereoscopicmode" type="integer" label="36501" help="">
           <level>0</level>
           <default>0</default>
-          <dependencies>
-            <dependency type="enable" setting="videoscreen.hasstereoscopicsupport">true</dependency>
-          </dependencies>
           <constraints>
             <options>stereoscopicmodes</options>
           </constraints>
