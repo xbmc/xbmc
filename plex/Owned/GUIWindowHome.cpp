@@ -607,6 +607,7 @@ void CGUIWindowHome::UpdateSections()
 
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
+  sections->Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderNone);
   vector<CGUIListItemPtr> newList;
 
   for (int i = 0; i < oldList.size(); i ++)
@@ -621,6 +622,7 @@ void CGUIWindowHome::UpdateSections()
     CFileItemPtr sectionItem = sections->Get(i);
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(sectionItem->GetLabel());
+    item->SetLabel2(sectionItem->GetProperty("serverName").asString());
     item->SetProperty("plex", true);
     item->SetProperty("sectionPath", sectionItem->GetPath());
 
