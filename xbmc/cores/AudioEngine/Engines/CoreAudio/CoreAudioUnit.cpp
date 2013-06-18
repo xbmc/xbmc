@@ -300,18 +300,18 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
     case AE_FMT_TRUEHD:
     case AE_FMT_EAC3:
       streamDesc->mFormatFlags |= kAudioFormatFlagsNativeEndian;
-      streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     case AE_FMT_S16LE:
-      streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     case AE_FMT_S16BE:
       streamDesc->mFormatFlags |= kAudioFormatFlagIsBigEndian;
-      streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     default:
       streamDesc->mFormatFlags |= kAudioFormatFlagsNativeEndian;
-      streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
   }
   streamDesc->mChannelsPerFrame = format.m_channelLayout.Count();               // Number of interleaved audiochannels
@@ -334,7 +334,7 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
     case AE_FMT_FLOAT:
       coreaudioDesc->mFormatFlags |= kAudioFormatFlagIsFloat;
     default:
-      coreaudioDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      coreaudioDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
   }
   coreaudioDesc->mBitsPerChannel   = bps; //sizeof(Float32)<<3;
