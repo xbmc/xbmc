@@ -77,9 +77,11 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   { // music video
+    CHECK_THREAD_STOP_AND_RETURN(false);
     CVideoThumbLoader loader;
     if (loader.LoadItem(pItem))
       return true;
+    CHECK_THREAD_STOP_AND_RETURN(false);
   }
 
   if (!pItem->HasArt("fanart"))
@@ -87,6 +89,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
     if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
     {
       std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
+      SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
       m_database->Open();
       int idArtist = m_database->GetArtistByName(artist);
       if (idArtist >= 0)
@@ -104,6 +107,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasArt("thumb"))
   {
+    CHECK_THREAD_STOP_AND_RETURN(false);
     // Look for embedded art
     if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().empty())
     {
@@ -145,6 +149,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   CMusicInfoTag &tag = *item.GetMusicInfoTag();
   if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
   {
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
     m_database->Open();
     map<string, string> artwork;
     if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))

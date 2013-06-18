@@ -114,7 +114,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
+      m_thumbLoader.StopAsync(true);
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -271,7 +271,7 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   items.ClearProperties();
 

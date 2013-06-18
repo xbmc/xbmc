@@ -406,7 +406,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 void CGUIWindowPVRRecordings::BeforeUpdate(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 }
 
 void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)

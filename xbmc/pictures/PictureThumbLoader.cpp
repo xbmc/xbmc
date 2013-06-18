@@ -52,6 +52,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 
   if (pItem->HasArt("thumb") && m_regenerateThumbs)
   {
+    CHECK_THREAD_STOP_AND_RETURN(false);
     CTextureCache::Get().ClearCachedImage(pItem->GetArt("thumb"));
     CTextureDatabase db;
     if (db.Open())

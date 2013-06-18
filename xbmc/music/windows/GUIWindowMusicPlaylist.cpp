@@ -96,7 +96,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (m_musicInfoLoader.IsLoading())
-        m_musicInfoLoader.StopThread();
+        m_musicInfoLoader.StopAsync(true);
 
       m_movingFrom = -1;
     }
@@ -147,14 +147,14 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNSAVE)
       {
         if (m_musicInfoLoader.IsLoading()) // needed since we destroy m_vecitems to save memory
-          m_musicInfoLoader.StopThread();
+          m_musicInfoLoader.StopAsync(true);
 
         SavePlayList();
       }
       else if (iControl == CONTROL_BTNCLEAR)
       {
         if (m_musicInfoLoader.IsLoading())
-          m_musicInfoLoader.StopThread();
+          m_musicInfoLoader.StopAsync(true);
 
         ClearPlayList();
       }
@@ -482,7 +482,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_musicInfoLoader.IsLoading())
-    m_musicInfoLoader.StopThread();
+    m_musicInfoLoader.StopAsync(true);
 
   if (!CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
     return false;
@@ -623,7 +623,7 @@ void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
 
   bool bRestart = m_musicInfoLoader.IsLoading();
   if (bRestart)
-    m_musicInfoLoader.StopThread();
+    m_musicInfoLoader.StopAsync(true);
 
   MoveCurrentPlayListItem(iItem, iAction);
 
@@ -648,7 +648,7 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
 
   bool bRestart = m_musicInfoLoader.IsLoading();
   if (bRestart)
-    m_musicInfoLoader.StopThread();
+    m_musicInfoLoader.StopAsync(true);
 
   // keep swapping until you get to the destination or you
   // hit the currently playing song

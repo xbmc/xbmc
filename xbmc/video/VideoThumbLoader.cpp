@@ -203,7 +203,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+  SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
   m_database->Open();
+  CDBCloseGuard dbCloseGuard(m_database, &m_lock);
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
@@ -220,16 +222,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     FillLibraryArt(*pItem);
 
+    CHECK_THREAD_STOP_AND_RETURN(false);
     if (!pItem->GetVideoInfoTag()->m_type.empty()         &&
          pItem->GetVideoInfoTag()->m_type != "movie"      &&
          pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
          pItem->GetVideoInfoTag()->m_type != "episode"    &&
          pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
-      m_database->Close();
       return true; // nothing else to be done
     }
   }
+  lock.Leave();
 
   // if we have no art, look for it all
   map<string, string> artwork = pItem->GetArt();
@@ -276,6 +279,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
 
+        SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
         if (pItem->HasVideoInfoTag())
         {
           // Item has cached autogen image but no art entry. Save it to db.
@@ -292,10 +296,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         if (URIUtils::IsInRAR(item.GetPath()))
           SetupRarOptions(item,path);
 
+        CHECK_THREAD_STOP_AND_RETURN(false);
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
-
-        m_database->Close();
         return true;
       }
     }
@@ -310,12 +313,11 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       CStdString path(item.GetPath());
       if (URIUtils::IsInRAR(item.GetPath()))
         SetupRarOptions(item,path);
+      CHECK_THREAD_STOP_AND_RETURN(false);
       CThumbExtractor* extract = new CThumbExtractor(item,path,false);
       AddJob(extract);
     }
   }
-
-  m_database->Close();
   return true;
 }
 
@@ -337,11 +339,14 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   if (tag.m_iDbId > -1 && !tag.m_type.IsEmpty())
   {
     map<string, string> artwork;
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
     m_database->Open();
+    CDBCloseGuard dbCloser(m_database, &m_lock);
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
     else if (tag.m_type == "artist")
     { // we retrieve music video art from the music database (no backward compat)
+      lock.Leave();
       CMusicDatabase database;
       database.Open();
       int idArtist = database.GetArtistByName(item.GetLabel());
@@ -350,6 +355,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     }
     else if (tag.m_type == "album")
     { // we retrieve music video art from the music database (no backward compat)
+      lock.Leave();
       CMusicDatabase database;
       database.Open();
       int idAlbum = database.GetAlbumByName(item.GetLabel(), tag.m_artist);
@@ -359,6 +365,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     // For episodes and seasons, we want to set fanart for that of the show
     if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
     {
+      SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
       ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
       if (i == m_showArt.end())
       {
@@ -373,7 +380,6 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         item.SetArtFallback("tvshow.thumb", "tvshow.poster");
       }
     }
-    m_database->Close();
   }
   return !item.GetArt().empty();
 }

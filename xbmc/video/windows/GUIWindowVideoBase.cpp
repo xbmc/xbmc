@@ -133,7 +133,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
+      m_thumbLoader.StopAsync(true);
     m_database.Close();
     break;
 
@@ -1614,7 +1614,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   playlist.Add(movieItem);
 
   if(m_thumbLoader.IsLoading())
-    m_thumbLoader.StopAsync();
+    m_thumbLoader.StopAsync(true);
 
   // play movie...
   g_playlistPlayer.Play(0);
@@ -1829,7 +1829,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
 bool CGUIWindowVideoBase::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
@@ -1921,7 +1921,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 
   // reload thumbs after filtering and grouping
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   m_thumbLoader.Load(items);
 }

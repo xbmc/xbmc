@@ -73,7 +73,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
+      m_thumbLoader.StopAsync(true);
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -466,7 +466,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
 bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
 
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;

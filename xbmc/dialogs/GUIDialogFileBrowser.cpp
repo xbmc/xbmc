@@ -132,7 +132,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (m_thumbLoader.IsLoading())
-        m_thumbLoader.StopThread();
+        m_thumbLoader.StopAsync(true);
       CGUIDialog::OnMessage(message);
       ClearFileItems();
       m_addNetworkShareEnabled = false;
@@ -340,7 +340,7 @@ void CGUIDialogFileBrowser::OnSort()
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 {
   if (m_browsingForImages && m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
+    m_thumbLoader.StopAsync(true);
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";

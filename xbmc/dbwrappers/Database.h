@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "threads/SingleLock.h"
 
 namespace dbiplus {
   class Database;
@@ -173,4 +174,23 @@ private:
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   unsigned int m_openCount;
+};
+
+class CDBCloseGuard
+{
+public:
+  CDBCloseGuard(CDatabase *db, CCriticalSection *lock = NULL) : m_db(db), m_lock(lock) {}
+  ~CDBCloseGuard()
+  {
+    if (m_lock)
+    {
+      CSingleLock lock(*m_lock);
+      m_db->Close();
+    }
+    else
+      m_db->Close();
+  }
+protected:
+  CDatabase *m_db;
+  CCriticalSection *m_lock;
 };

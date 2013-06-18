@@ -45,6 +45,10 @@ public:
 // minimum as mandated by XTL
 #define THREAD_MINSTACKSIZE 0x10000
 
+#define CHECK_THREAD_STOP_AND_RETURN(x) do { \
+  if (CThread::IsCurrentThreadStopping()) return x ; \
+} while(0)
+
 namespace XbmcThreads { class ThreadSettings; }
 
 class CThread
@@ -82,6 +86,7 @@ public:
   static bool IsCurrentThread(const ThreadIdentifier tid);
   static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
+  static bool IsCurrentThreadStopping() { return GetCurrentThread() && GetCurrentThread()->m_bStop; };
   static inline void SetLogger(XbmcCommons::ILogger* logger_) { CThread::logger = logger_; }
   static inline XbmcCommons::ILogger* GetLogger() { return CThread::logger; }
 

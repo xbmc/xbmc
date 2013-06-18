@@ -50,8 +50,11 @@ void CPictureInfoLoader::OnLoaderStart()
 
 bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 {
-  if (m_pProgressCallback && !pItem->m_bIsFolder)
-    m_pProgressCallback->SetProgressAdvance();
+  {
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
+    if (m_pProgressCallback && !pItem->m_bIsFolder)
+      m_pProgressCallback->SetProgressAdvance();
+  }
 
   if (!pItem->IsPicture() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() || pItem->IsInternetStream() || pItem->IsVideo())
     return false;
@@ -60,7 +63,9 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
     return true;
 
   // first check the cached item
+  SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
   CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
+  lock.Leave();
   if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
@@ -70,7 +75,9 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 
   if (m_loadTags)
   { // Nothing found, load tag from file
+    CHECK_THREAD_STOP_AND_RETURN(false);
     pItem->GetPictureInfoTag()->Load(pItem->GetPath());
+    SINGLE_LOCK_CHECK_THREAD_STOP_AND_RETURN(m_lock, false);
     m_tagReads++;
   }
 
