@@ -594,6 +594,30 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return ret;
 }
 
+CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
+{
+  CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem);
+  newItem->SetLabel(item->GetLabel());
+  newItem->SetLabel2(item->GetProperty("serverName").asString());
+  newItem->SetProperty("plex", true);
+  newItem->SetProperty("sectionPath", item->GetPath());
+
+  AddSection(item->GetPath(),
+             CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
+
+  CStdString path("XBMC.ActivateWindow");
+  if (item->GetProperty("type").asString() == "artist")
+    path += "(MyMusicFiles, " + item->GetPath() + ",return)";
+  else if (item->GetProperty("type").asString() == "photo")
+    path += "(MyPictureFiles," + item->GetPath() + ",return)";
+  else
+    path += "(MyVideoFiles," + item->GetPath() + ",return)";
+
+  newItem->SetPath(path);
+  newItem->SetClickActions(CGUIAction("", path));
+  return newItem;
+}
+
 void CGUIWindowHome::UpdateSections()
 {
   CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");
@@ -606,74 +630,111 @@ void CGUIWindowHome::UpdateSections()
   }
 
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
+
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
   sections->Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderNone);
   vector<CGUIListItemPtr> newList;
+
+  bool listUpdated = false;
+  bool haveShared = false;
+  bool haveChannels = false;
 
   for (int i = 0; i < oldList.size(); i ++)
   {
     CGUIListItemPtr item = oldList[i];
     if (!item->HasProperty("plex"))
+    {
+      if (item->HasProperty("plexshared"))
+        haveShared = true;
+      if (item->HasProperty("plexchannels"))
+        haveChannels = true;
+
       newList.push_back(item);
+    }
+    else
+    {
+      CFileItemPtr foundItem;
+      for (int y = 0; y < sections->Size(); y++)
+      {
+        CFileItemPtr sectionItem = sections->Get(y);
+        if(sectionItem->GetPath() == item->GetProperty("sectionPath").asString())
+          foundItem = sectionItem;
+      }
+
+      if (foundItem)
+      {
+        /* If label or label2 has changed we need to update it */
+        if (item->GetLabel() != foundItem->GetLabel())
+        {
+          listUpdated = true;
+          item->SetLabel(foundItem->GetLabel());
+        }
+
+        if (item->GetLabel2() != foundItem->GetLabel2())
+        {
+          listUpdated = true;
+          item->SetLabel2(foundItem->GetLabel2());
+        }
+
+        newList.push_back(item);
+      }
+    }
   }
 
-  for (int i = 0; i < sections->Size(); i ++)
+  for (int i = 0; i < sections->Size(); i++)
   {
     CFileItemPtr sectionItem = sections->Get(i);
-    CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
-    item->SetLabel(sectionItem->GetLabel());
-    item->SetLabel2(sectionItem->GetProperty("serverName").asString());
-    item->SetProperty("plex", true);
-    item->SetProperty("sectionPath", sectionItem->GetPath());
+    bool found = false;
 
-    AddSection(sectionItem->GetPath(),
-               CGUIWindowHome::GetSectionTypeFromDirectoryType(sectionItem->GetPlexDirectoryType()));
+    BOOST_FOREACH(CGUIListItemPtr item, newList)
+    {
+      if (item->GetProperty("sectionPath").asString() == sectionItem->GetPath())
+        found = true;
+    }
 
-    CStdString path("XBMC.ActivateWindow");
-    if (sectionItem->GetProperty("type").asString() == "artist")
-      path += "(MyMusicFiles, " + sectionItem->GetPath() + ",return)";
-    else if (sectionItem->GetProperty("type").asString() == "photo")
-      path += "(MyPictureFiles," + sectionItem->GetPath() + ",return)";
-    else
-      path += "(MyVideoFiles," + sectionItem->GetPath() + ",return)";
-
-    item->SetPath(path);
-    item->SetClickActions(CGUIAction("", path));
-    newList.push_back(item);
-
+    if (!found)
+    {
+      newList.push_back(ItemToSection(sectionItem));
+      listUpdated = true;
+    }
   }
 
-  if (g_plexServerDataLoader.HasChannels())
+
+  if (g_plexServerDataLoader.HasChannels() && !haveChannels)
   {
     /* We need the channel button as well */
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(52102));
-    item->SetProperty("plex", true);
+    item->SetProperty("plexchannels", true);
     item->SetProperty("sectionPath", "plexserver://channels");
 
     item->SetPath("XBMC.ActivateWindow(MyChannels,plexserver://channels,return)");
     item->SetClickActions(CGUIAction("", item->GetPath()));
     newList.push_back(item);
+    listUpdated = true;
 
     AddSection("plexserver://channels", SECTION_TYPE_CHANNELS);
   }
 
   CFileItemListPtr sharedSections = g_plexServerDataLoader.GetAllSharedSections();
 
-  if (sharedSections->Size() > 0)
+  if (sharedSections->Size() > 0 && !haveShared)
   {
     CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
     item->SetLabel(g_localizeStrings.Get(44020));
-    item->SetProperty("plex", true);
+    item->SetProperty("plexshared", true);
     item->SetProperty("sectionPath", "plexserver://shared");
     item->SetPath("XBMC.ActivateWindow(MySharedContent,plexserver://shared,return)");
     item->SetClickActions(CGUIAction("", item->GetPath()));
     newList.push_back(item);
+    listUpdated = true;
   }
 
-  control->SetStaticContent(newList);
-
-  RestoreSection();
+  if (listUpdated)
+  {
+    control->SetStaticContent(newList);
+    RestoreSection();
+  }
 
 }
 

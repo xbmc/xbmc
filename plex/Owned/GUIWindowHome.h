@@ -25,6 +25,7 @@
 #include <string>
 
 #include "guilib/GUIWindow.h"
+#include "guilib/GUIStaticItem.h"
 #include "PlexContentPlayerMixin.h"
 #include "Job.h"
 #include <boost/timer.hpp>
@@ -123,8 +124,7 @@ public:
   virtual ~CGUIWindowHome(void) {}
   virtual bool OnMessage(CGUIMessage& message);
 
-
-private:
+  private:
   virtual bool OnAction(const CAction &action);
   virtual bool OnPopupMenu();
   virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
@@ -146,6 +146,7 @@ private:
   CFileItem* GetCurrentFileItem();
 
   void UpdateSections();
+  CGUIStaticItemPtr ItemToSection(CFileItemPtr item);
     
   bool                       m_globalArt;
   
