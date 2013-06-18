@@ -43,6 +43,7 @@ public:
   CPlexServerDataLoader();
 
   void LoadDataFromServer(const CPlexServerPtr& server);
+  void RemoveServer(const CPlexServerPtr& server);
 
   CFileItemListPtr GetSectionsForUUID(const CStdString& uuid);
   CFileItemListPtr GetSectionsForServer(const CPlexServerPtr &server) { return GetSectionsForUUID(server->GetUUID()); }

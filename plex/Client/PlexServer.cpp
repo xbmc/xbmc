@@ -128,6 +128,12 @@ CPlexServer::MarkUpdateFinished(int connType)
     CLog::Log(LOGDEBUG, "CPlexServer::MarkUpdateFinished Removing connection for %s after update finished for type %d: %s", m_name.c_str(), connType, conn->toString().c_str());
     vector<CPlexConnectionPtr>::iterator it = find(m_connections.begin(), m_connections.end(), conn);
     m_connections.erase(it);
+
+    if (m_activeConnection == conn)
+      m_activeConnection.reset();
+
+    if (m_bestConnection == conn)
+      m_bestConnection.reset();
   }
 
   return m_connections.size() > 0;

@@ -169,7 +169,7 @@ CPlexServerManager::UpdateReachability(bool force)
   CLog::Log(LOGDEBUG, "CPlexServerManager::UpdateReachability Updating reachability (force=%s)", force ? "YES" : "NO");
 
   BOOST_FOREACH(PlexServerPair p, m_serverMap)
-    new CPlexServerReachabilityThread(p.second, false);
+    new CPlexServerReachabilityThread(p.second, force);
 }
 
 void
@@ -202,10 +202,13 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
       SetBestServer(server, false);
       NotifyAboutServer(server);
     }
-    else if (m_bestServer==server)
-    {
+  }
+  else
+  {
+    if (m_bestServer==server)
       ClearBestServer();
-    }
+
+    NotifyAboutServer(server, false);
   }
 }
 
@@ -218,4 +221,6 @@ CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
 
   if (added)
     g_plexServerDataLoader.LoadDataFromServer(server);
+  else
+    g_plexServerDataLoader.RemoveServer(server);
 }

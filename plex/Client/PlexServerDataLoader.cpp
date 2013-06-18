@@ -22,6 +22,32 @@ CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
   AddJob(new CPlexServerDataLoaderJob(server));
 }
 
+void CPlexServerDataLoader::RemoveServer(const CPlexServerPtr &server)
+{
+  CSingleLock lk(m_dataLock);
+  if (m_sectionMap.find(server->GetUUID()) != m_sectionMap.end())
+  {
+    CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from sectionMap %s", server->GetName().c_str());
+    m_sectionMap.erase(server->GetUUID());
+  }
+
+  if (m_sharedSectionsMap.find(server->GetUUID()) != m_sharedSectionsMap.end())
+  {
+    CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from sharedSectionMap %s", server->GetName().c_str());
+    m_sharedSectionsMap.equal_range(server->GetUUID());
+  }
+
+  if (m_channelMap.find(server->GetUUID()) != m_channelMap.end())
+  {
+    CLog::Log(LOG_LEVEL_DEBUG, "CPlexServerDataLoader::RemoveServer from channelMap %s", server->GetName().c_str());
+    m_channelMap.equal_range(server->GetUUID());
+  }
+
+  CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_UNLOADED, PLEX_DATA_LOADER, 0);
+  msg.SetStringParam(server->GetUUID());
+  g_windowManager.SendThreadMessage(msg);
+}
+
 void
 CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {

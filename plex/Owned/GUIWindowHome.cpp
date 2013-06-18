@@ -499,10 +499,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLEX_BEST_SERVER_UPDATED:
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
+    case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
     {
       UpdateSections();
 
-      if (message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_LOADED)
+      if (message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_LOADED ||
+          message.GetMessage() != GUI_MSG_PLEX_SERVER_DATA_UNLOADED)
         RefreshAllSections(false);
     }
       break;
@@ -680,6 +682,9 @@ void CGUIWindowHome::UpdateSections()
 
         newSections.push_back(item);
       }
+      else
+        /* this means that a server has been removed */
+        listUpdated = true;
     }
   }
 
