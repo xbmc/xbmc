@@ -146,6 +146,9 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
         m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
       }
     }
+
+    m_textLayout.UpdateScrollinfo(m_scrollInfo);
+
     g_graphicsContext.RemoveTransform();
   }
 
