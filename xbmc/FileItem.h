@@ -427,6 +427,8 @@ public:
   std::vector<CFileItemPtr> m_mediaParts;
   std::vector<CFileItemPtr> m_mediaPartStreams;
 
+  CFileItemPtr m_selectedMediaPart;
+
   bool IsPlexMediaServer() const;
   bool IsRemoteSharedPlexMediaServerLibrary() const;
   bool IsRemotePlexMediaServerLibrary() const;

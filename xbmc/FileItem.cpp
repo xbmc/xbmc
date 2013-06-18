@@ -411,6 +411,7 @@ CFileItem::~CFileItem(void)
   m_mediaParts.clear();
   m_mediaItems.clear();
   m_mediaPartStreams.clear();
+  m_selectedMediaPart.reset();
   /* END PLEX */
 }
 
@@ -556,6 +557,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mediaParts = item.m_mediaParts;
   m_mediaItems = item.m_mediaItems;
   m_plexDirectoryType = item.m_plexDirectoryType;
+  m_selectedMediaPart = item.m_selectedMediaPart;
   /* END PLEX */
 
   return *this;
@@ -623,6 +625,7 @@ void CFileItem::Reset()
   m_mediaItems.clear();
   m_mediaParts.clear();
   m_mediaPartStreams.clear();
+  m_selectedMediaPart.reset();
   m_plexDirectoryType = PLEX_DIR_TYPE_UNKNOWN;
   /* END PLEX */
 

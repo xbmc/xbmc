@@ -314,7 +314,7 @@ public:
   virtual int GetAudioStreamPlexID();
   virtual int GetPlexMediaPartID()
   {
-    CFileItemPtr part = GetMediaPart();
+    CFileItemPtr part = m_item.m_selectedMediaPart;
     if (part)
       return part->GetProperty("id").asInteger();
 
@@ -557,25 +557,6 @@ protected:
   CFileItemPtr m_itemWithDetails;
   bool         m_hidingSub;
   int          m_vobsubToDisplay;
-
-  CFileItemPtr GetMediaPart()
-  {
-    CFileItemPtr part;
-
-    if (m_itemWithDetails)
-    {
-      // Figure out what part we're on.
-      int partIndex = 0;
-      if (m_item.HasProperty("partIndex"))
-        partIndex = m_item.GetProperty("partIndex").asInteger();
-
-      // Get the part if we have it.
-      if (partIndex >= 0 && size_t(partIndex) < m_itemWithDetails->m_mediaParts.size())
-        part = m_itemWithDetails->m_mediaParts[partIndex];
-    }
-
-    return part;
-  }
 
   unsigned int m_readRate;
   void UpdateReadRate();

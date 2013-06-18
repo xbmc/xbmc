@@ -669,7 +669,7 @@ bool CDVDPlayer::OpenInputStream()
       }   
     } // end loop over all subtitle files    
 #else
-    CFileItemPtr part = GetMediaPart();
+    CFileItemPtr part = m_item.m_selectedMediaPart;
     if (part)
     {
       CFileItemPtr   lastIdxStream;
@@ -4375,7 +4375,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     valid = false;
 
     // Pick selected audio stream.
-    CFileItemPtr part = GetMediaPart();
+    CFileItemPtr part = m_item.m_selectedMediaPart;
     if (part)
     {
       BOOST_FOREACH(CFileItemPtr stream, part->m_mediaPartStreams)
@@ -4421,7 +4421,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   m_dvdPlayerVideo.EnableSubtitle(true);
 
   // Open subtitle stream.
-  CFileItemPtr part = GetMediaPart();
+  CFileItemPtr part = m_item.m_selectedMediaPart;
   if (part)
   {
     BOOST_FOREACH(CFileItemPtr stream, part->m_mediaPartStreams)
@@ -4473,7 +4473,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
 
 void CDVDPlayer::RelinkPlexStreams()
 {
-  CFileItemPtr part = GetMediaPart();
+  CFileItemPtr part = m_item.m_selectedMediaPart;
   if (part)
   {
     BOOST_FOREACH(CFileItemPtr stream, part->m_mediaPartStreams)
@@ -4675,6 +4675,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     item.SetPath(mediaPart->GetPath());
   }
 
+  item.m_selectedMediaPart = mediaPart;
   m_mimetype = item.GetMimeType();
   m_filename = item.GetPath();
   m_item = item;
