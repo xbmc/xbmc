@@ -187,6 +187,15 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
 
     mediaStream->SetLabel(streamName);
 
+    /* FIXME: legacy, calling code should check if the
+     * property is set instead, but for now we don't want
+     * to audit all that shit */
+    if (!mediaStream->HasProperty("subIndex"))
+      mediaStream->SetProperty("subIndex", -1);
+
+    if (!mediaStream->HasProperty("index"))
+      mediaStream->SetProperty("index", -1);
+
     mediaPart.m_mediaPartStreams.push_back(mediaStream);
   }
 
