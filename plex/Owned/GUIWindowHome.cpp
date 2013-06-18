@@ -271,7 +271,6 @@ bool CPlexSectionFanout::NeedsRefresh()
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
     refreshTime = 100;
 
-  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:NeedsRefresh %s, age %f, refresh %s", m_url.Get().c_str(), m_age.elapsed(), m_age.elapsed() > refreshTime ? "yes" : "no");
   return m_age.elapsed() > refreshTime;
 }
 
@@ -759,7 +758,6 @@ void CGUIWindowHome::UpdateSections()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::HideAllLists()
 {
-  CLog::Log(LOGDEBUG, "CGUIWindowHome:HideAllLists");
   // Hide lists.
   short lists[] = {CONTENT_LIST_ON_DECK, CONTENT_LIST_RECENTLY_ACCESSED, CONTENT_LIST_RECENTLY_ADDED, CONTENT_LIST_QUEUE, CONTENT_LIST_RECOMMENDATIONS};
   BOOST_FOREACH(int id, lists)
@@ -915,7 +913,6 @@ CStdString CGUIWindowHome::GetCurrentItemName(bool onlySections)
 ///////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::RestoreSection()
 {
-  CLog::Log(LOGDEBUG, "CGUIWindowHome:RestoreSection %s", m_lastSelectedItem.c_str());
   if (m_lastSelectedItem == GetCurrentItemName())
   {
     ShowSection(m_lastSelectedItem);

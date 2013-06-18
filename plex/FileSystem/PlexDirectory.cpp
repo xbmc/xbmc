@@ -275,7 +275,7 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, con
   newItem->SetProperty("plex", true);
   newItem->SetProperty("plexserver", baseUrl.GetHostName());
 
-#if 1
+#if 0
   CLog::Log(LOGDEBUG, "CPlexDirectory::NewPlexElement %s (type: %s) -> isFolder(%s)",
             newItem->GetPath().c_str(),
             GetDirectoryTypeString(newItem->GetPlexDirectoryType()).c_str(),

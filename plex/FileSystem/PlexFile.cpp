@@ -3,6 +3,7 @@
 #include "utils/log.h"
 #include "settings/GUISettings.h"
 #include "boost/lexical_cast.hpp"
+#include <string>
 
 using namespace XFILE;
 
@@ -27,19 +28,28 @@ bool
 CPlexFile::BuildHTTPURL(CURL& url)
 {
   CURL newUrl;
+  CPlexServerPtr server;
+  CStdString key;
 
-  /* Resolve the correct URL */
-  CStdString uuid = url.GetHostName();
-  CPlexServerPtr server = g_plexServerManager.FindByUUID(uuid);
+  if (PlexUtils::IsValidIP(url.GetHostName()))
+  {
+    server = g_plexServerManager.FindByHostAndPort(url.GetHostName(), url.GetPort());
+    key = url.GetHostName() + ":" + boost::lexical_cast<CStdString>(url.GetPort());
+  }
+  else
+  {
+    key = url.GetHostName();
+    server = g_plexServerManager.FindByUUID(key);
+  }
+
   if (!server)
   {
     /* Ouch, this should not happen! */
-    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", uuid.c_str());
+    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", key.c_str());
     return false;
   }
 
   CLog::Log(LOGDEBUG, "CPlexFile::BuildHTTURL Passing %s to BuildURL", url.GetFileName().c_str());
-
   newUrl = server->BuildURL(url.GetFileName(), url.GetOptions());
 
   if (!url.GetUserName().empty())
