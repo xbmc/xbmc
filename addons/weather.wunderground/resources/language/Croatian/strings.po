@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#32101"
 msgid "Location setup"
-msgstr "Namjesti lokaciju"
+msgstr "Podešavanje lokacije"
 
 msgctxt "#32102"
 msgid "Advanced options"
-msgstr "Dodatne opcije"
+msgstr "Napredne mogućnosti"
 
 msgctxt "#32111"
 msgid "Location 1"
@@ -38,31 +38,31 @@ msgstr "Lokacija 3"
 
 msgctxt "#32114"
 msgid "Location 1 display name"
-msgstr "Lokacija 1 ime ekrana"
+msgstr "Naziv 1. lokacije"
 
 msgctxt "#32115"
 msgid "Location 2 display name"
-msgstr "Lokacija 2 ime ekrana"
+msgstr "Naziv 2. lokacije"
 
 msgctxt "#32116"
 msgid "Location 3 display name"
-msgstr "Lokacija 3 ime ekrana"
+msgstr "Naziv 3. lokacije"
 
 msgctxt "#32117"
 msgid "Location 1 id"
-msgstr "Lokacija 1 id"
+msgstr "ID lokacije 1"
 
 msgctxt "#32118"
 msgid "Location 2 id"
-msgstr "Lokacija 2 id"
+msgstr "ID lokacije 2"
 
 msgctxt "#32119"
 msgid "Location 3 id"
-msgstr "Lokacija 3 id"
+msgstr "ID lokacije 3"
 
 msgctxt "#32120"
 msgid "Enable logging"
-msgstr "Omogućiti prijave"
+msgstr "Omogući prijave"
 
 msgctxt "#32121"
 msgid "Weekend"
@@ -86,7 +86,31 @@ msgstr "Razina zumiranja karte"
 
 msgctxt "#32126"
 msgid "Animated map"
-msgstr "Animirane mape"
+msgstr "Animirana karta"
+
+msgctxt "#32127"
+msgid "Location 4"
+msgstr "Lokacija 4"
+
+msgctxt "#32128"
+msgid "Location 5"
+msgstr "Lokacija 5"
+
+msgctxt "#32129"
+msgid "Location 4 display name"
+msgstr "Lokacija 4 prikaži naziv"
+
+msgctxt "#32130"
+msgid "Location 5 display name"
+msgstr "Lokacija 5 prikaži naziv"
+
+msgctxt "#32131"
+msgid "Location 4 id"
+msgstr "Lokacija 4 ID"
+
+msgctxt "#32132"
+msgid "Location 5 id"
+msgstr "Lokacija 5 ID"
 
 msgctxt "#32501"
 msgid "New Moon"
@@ -122,7 +146,7 @@ msgstr "Mlađak"
 
 msgctxt "#32510"
 msgid "Warning"
-msgstr "Obavjesti"
+msgstr "Upozorenje"
 
 msgctxt "#32511"
 msgid "Watch"
@@ -138,7 +162,7 @@ msgstr "Izvještaj"
 
 msgctxt "#32514"
 msgid "Outlook"
-msgstr "Izgledi"
+msgstr "Prognoza"
 
 msgctxt "#32515"
 msgid "Forecast"

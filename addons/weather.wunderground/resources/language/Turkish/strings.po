@@ -116,6 +116,10 @@ msgctxt "#32507"
 msgid "Last Quarter"
 msgstr "Son Dördün"
 
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr "Hilal"
+
 msgctxt "#32510"
 msgid "Warning"
 msgstr "Uyarı"
@@ -124,6 +128,14 @@ msgctxt "#32511"
 msgid "Watch"
 msgstr "İzle"
 
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Öneri"
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr "Açıklama"
+
 msgctxt "#32514"
 msgid "Outlook"
 msgstr "Outlook"
@@ -131,3 +143,7 @@ msgstr "Outlook"
 msgctxt "#32515"
 msgid "Forecast"
 msgstr "Hava Tahmini"
+
+msgctxt "#32516"
+msgid "Synopsis"
+msgstr "Özet"

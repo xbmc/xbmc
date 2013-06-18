@@ -16,8 +16,9 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 
 
-import os, sys, socket, unicodedata, urllib2, time, base64
+import os, sys, socket, unicodedata, urllib2, time, base64, gzip
 from datetime import date
+from StringIO import StringIO
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 if sys.version_info < (2, 7):
     import simplejson
@@ -52,6 +53,13 @@ MAXDAYS          = 6
 
 socket.setdefaulttimeout(10)
 
+def recode(alert): # workaround: wunderground provides a corrupt alerts message
+    try:
+        alert = alert.encode("latin-1").rstrip('&nbsp)').decode("utf-8")
+    except:
+        pass
+    return alert
+
 def log(txt):
     if DEBUG == 'true':
         if isinstance (txt,str):
@@ -64,7 +72,7 @@ def set_property(name, value):
 
 def refresh_locations():
     locations = 0
-    for count in range(1, 4):
+    for count in range(1, 6):
         loc_name = __addon__.getSetting('Location%s' % count)
         if loc_name != '':
             locations += 1
@@ -120,19 +128,20 @@ def geoip():
         __addon__.setSetting('Location1id', locationid)
         log('geoip location: %s' % location)
     else:
+        location = ''
         locationid = ''
-    return locationid
+    return location, locationid
 
-def forecast(loc):
+def forecast(loc,locid):
     try:
         lang = LANG[LANGUAGE]
     except:
         lang = 'EN'
     opt = 'lang:' + lang
-    log('weather location: %s' % loc)
+    log('weather location: %s' % locid)
     retry = 0
     while (retry < 6) and (not xbmc.abortRequested):
-        query = wundergroundapi(WEATHER_FEATURES, opt, loc, FORMAT)
+        query = wundergroundapi(WEATHER_FEATURES, opt, locid, FORMAT)
         if query != '':
             retry = 6
         else:
@@ -141,8 +150,8 @@ def forecast(loc):
             log('weather download failed')
     log('forecast data: %s' % query)
     data = parse_data(query)
-    if data != '' and not data.has_key('error'):
-        properties(data,loc)
+    if data != '' and data.has_key('response') and not data['response'].has_key('error'):
+        properties(data,loc,locid)
     else:
         clear()
 
@@ -175,13 +184,10 @@ def parse_data(json):
         data = ''
     return data
 
-def properties(data,loc):
+def properties(data,loc,locid):
 # standard properties
     weathercode = WEATHER_CODES[data['current_observation']['icon_url'][31:-4]]
-    location = __addon__.getSetting('Location%s' % sys.argv[1])
-    if (location == '') and (sys.argv[1] != '1'):
-        location = __addon__.getSetting('Location1')
-    set_property('Current.Location'      , location)
+    set_property('Current.Location'      , loc)
     set_property('Current.Condition'     , data['current_observation']['weather'])
     set_property('Current.Temperature'   , str(data['current_observation']['temp_c']))
     set_property('Current.Wind'          , str(data['current_observation']['wind_kph']))
@@ -190,7 +196,7 @@ def properties(data,loc):
     set_property('Current.FeelsLike'     , data['current_observation']['feelslike_c'])
     set_property('Current.UVIndex'       , data['current_observation']['UV'])
     set_property('Current.DewPoint'      , str(data['current_observation']['dewpoint_c']))
-    set_property('Current.OutlookIcon'   , '%s.png' % weathercode)
+    set_property('Current.OutlookIcon'   , '%s.png' % weathercode) # xbmc translates it to Current.ConditionIcon
     set_property('Current.FanartCode'    , weathercode)
     for count, item in enumerate(data['forecast']['simpleforecast']['forecastday']):
         weathercode = WEATHER_CODES[item['icon_url'][31:-4]]
@@ -208,17 +214,27 @@ def properties(data,loc):
     set_property('Forecast.State'            , data['current_observation']['display_location']['state_name'])
     set_property('Forecast.Country'          , data['current_observation']['display_location']['country'])
     update = time.localtime(float(data['current_observation']['observation_epoch']))
-    if DATEFORMAT[1] == 'm':
-        localdate = WEEKDAY[update[6]] + ' ' + MONTH[update[1]] + ' ' + str(update[2]) + ', ' + str(update[0])
+    local = time.localtime(float(data['current_observation']['local_epoch']))
+    if DATEFORMAT[1] == 'd':
+        updatedate = WEEKDAY[update[6]] + ' ' + str(update[2]) + ' ' + MONTH[update[1]] + ' ' + str(update[0])
+        localdate = WEEKDAY[local[6]] + ' ' + str(local[2]) + ' ' + MONTH[local[1]] + ' ' + str(local[0])
+    elif DATEFORMAT[1] == 'm':
+        updatedate = WEEKDAY[update[6]] + ' ' + MONTH[update[1]] + ' ' + str(update[2]) + ', ' + str(update[0])
+        localdate = WEEKDAY[local[6]] + ' ' + str(local[2]) + ' ' + MONTH[local[1]] + ' ' + str(local[0])
     else:
-        localdate = WEEKDAY[update[6]] + ' ' + str(update[2]) + ' ' + MONTH[update[1]] + ' ' + str(update[0])
+        updatedate = WEEKDAY[update[6]] + ' ' + str(update[0]) + ' ' + MONTH[update[1]] + ' ' + str(update[2])
+        localdate = WEEKDAY[local[6]] + ' ' + str(local[0]) + ' ' + MONTH[local[1]] + ' ' + str(local[2])
     if TIMEFORMAT != '/':
-        localtime = time.strftime('%I:%M%p', update)
+        updatetime = time.strftime('%I:%M%p', update)
+        localtime = time.strftime('%I:%M%p', local)
     else:
-        localtime = time.strftime('%H:%M', update)
-    set_property('Forecast.Updated'          , localdate + ' - ' + localtime)
+        updatetime = time.strftime('%H:%M', update)
+        localtime = time.strftime('%H:%M', local)
+    set_property('Forecast.Updated'          , updatedate + ' - ' + updatetime)
 # current properties
     set_property('Current.IsFetched'         , 'true')
+    set_property('Current.LocalTime'         , localtime)
+    set_property('Current.LocalDate'         , localdate)
     set_property('Current.WindDegree'        , str(data['current_observation']['wind_degrees']) + u'°')
     set_property('Current.SolarRadiation'    , str(data['current_observation']['solarradiation']))
     if 'F' in TEMPUNIT:
@@ -295,12 +311,12 @@ def properties(data,loc):
         weathercode = WEATHER_CODES[item['icon_url'][31:-4]]
         set_property('Daily.%i.LongDay'              % (count+1), item['date']['weekday'])
         set_property('Daily.%i.ShortDay'             % (count+1), item['date']['weekday_short'])
-        if DATEFORMAT[1] == 'm':
-            set_property('Daily.%i.LongDate'         % (count+1), item['date']['monthname'] + ' ' + str(item['date']['day']))
-            set_property('Daily.%i.ShortDate'        % (count+1), MONTH[item['date']['month']] + ' ' + str(item['date']['day']))
-        else:
+        if DATEFORMAT[1] == 'd':
             set_property('Daily.%i.LongDate'         % (count+1), str(item['date']['day']) + ' ' + item['date']['monthname'])
             set_property('Daily.%i.ShortDate'        % (count+1), str(item['date']['day']) + ' ' + MONTH[item['date']['month']])
+        else:
+            set_property('Daily.%i.LongDate'         % (count+1), item['date']['monthname'] + ' ' + str(item['date']['day']))
+            set_property('Daily.%i.ShortDate'        % (count+1), MONTH[item['date']['month']] + ' ' + str(item['date']['day']))
         set_property('Daily.%i.Outlook'              % (count+1), item['conditions'])
         set_property('Daily.%i.OutlookIcon'          % (count+1), WEATHER_ICON % weathercode)
         set_property('Daily.%i.FanartCode'           % (count+1), weathercode)
@@ -348,12 +364,12 @@ def properties(data,loc):
             weathercode = WEATHER_CODES[item['icon_url'][31:-4]]
             set_property('Weekend.%i.LongDay'                  % (count+1), item['date']['weekday'])
             set_property('Weekend.%i.ShortDay'                 % (count+1), item['date']['weekday_short'])
-            if DATEFORMAT[1] == 'm':
-                set_property('Weekend.%i.LongDate'             % (count+1), item['date']['monthname'] + ' ' + str(item['date']['day']))
-                set_property('Weekend.%i.ShortDate'            % (count+1), MONTH[item['date']['month']] + ' ' + str(item['date']['day']))
-            else:
+            if DATEFORMAT[1] == 'd':
                 set_property('Weekend.%i.LongDate'             % (count+1), str(item['date']['day']) + ' ' + item['date']['monthname'])
                 set_property('Weekend.%i.ShortDate'            % (count+1), str(item['date']['day']) + ' ' + MONTH[item['date']['month']])
+            else:
+                set_property('Weekend.%i.LongDate'             % (count+1), item['date']['monthname'] + ' ' + str(item['date']['day']))
+                set_property('Weekend.%i.ShortDate'            % (count+1), MONTH[item['date']['month']] + ' ' + str(item['date']['day']))
             set_property('Weekend.%i.Outlook'                  % (count+1), item['conditions'])
             set_property('Weekend.%i.OutlookIcon'              % (count+1), WEATHER_ICON % weathercode)
             set_property('Weekend.%i.FanartCode'               % (count+1), weathercode)
@@ -468,12 +484,12 @@ def properties(data,loc):
             set_property('Hourly.%i.Time'            % (count+1), item['FCTTIME']['civil'])
         else:
             set_property('Hourly.%i.Time'            % (count+1), item['FCTTIME']['hour_padded'] + ':' + item['FCTTIME']['min'])
-        if DATEFORMAT[1] == 'm':
-            set_property('Hourly.%i.ShortDate'       % (count+1), item['FCTTIME']['month_name_abbrev'] + ' ' + item['FCTTIME']['mday_padded'])
-            set_property('Hourly.%i.LongDate'        % (count+1), item['FCTTIME']['month_name'] + ' ' + item['FCTTIME']['mday_padded'])
-        else:
+        if DATEFORMAT[1] == 'd':
             set_property('Hourly.%i.ShortDate'       % (count+1), item['FCTTIME']['mday_padded'] + ' ' + item['FCTTIME']['month_name_abbrev'])
             set_property('Hourly.%i.LongDate'        % (count+1), item['FCTTIME']['mday_padded'] + ' ' + item['FCTTIME']['month_name'])
+        else:
+            set_property('Hourly.%i.ShortDate'       % (count+1), item['FCTTIME']['month_name_abbrev'] + ' ' + item['FCTTIME']['mday_padded'])
+            set_property('Hourly.%i.LongDate'        % (count+1), item['FCTTIME']['month_name'] + ' ' + item['FCTTIME']['mday_padded'])
         if 'F' in TEMPUNIT:
             set_property('Hourly.%i.Temperature'     % (count+1), item['temp']['english'] + TEMPUNIT)
             set_property('Hourly.%i.DewPoint'        % (count+1), item['dewpoint']['english'] + TEMPUNIT)
@@ -507,23 +523,23 @@ def properties(data,loc):
         set_property('Hourly.%i.Outlook'             % (count+1), item['condition'])
         set_property('Hourly.%i.OutlookIcon'         % (count+1), WEATHER_ICON % weathercode)
         set_property('Hourly.%i.FanartCode'          % (count+1), weathercode)
-        if count == 35: # workaround: wunderground provides a 10day hourly forecast
-            break
 # alert properties
     set_property('Alerts.IsFetched', 'true')
     if str(data['alerts']) != '[]':
         rss = ''
         alerts = ''
         for count, item in enumerate(data['alerts']):
-            set_property('Alerts.%i.Description'     % (count+1), item['description'])
-            set_property('Alerts.%i.Message'         % (count+1), item['message'])
+            description = recode(item['description']) # workaround: wunderground provides a corrupt alerts message
+            message = recode(item['message']) # workaround: wunderground provides a corrupt alerts message
+            set_property('Alerts.%i.Description'     % (count+1), description)
+            set_property('Alerts.%i.Message'         % (count+1), message)
             set_property('Alerts.%i.StartDate'       % (count+1), item['date'])
             set_property('Alerts.%i.EndDate'         % (count+1), item['expires'])
             set_property('Alerts.%i.Significance'    % (count+1), SEVERITY[item['significance']])
-            rss    = rss + item['description'] + ' - '
-            alerts = alerts + item['message']
+            rss    = rss + description.replace('\n','') + ' - '
+            alerts = alerts + message + '[CR][CR]'
         set_property('Alerts.RSS'   , rss.rstrip(' - '))
-        set_property('Alerts'       , alerts)
+        set_property('Alerts'       , alerts.rstrip('[CR][CR]'))
         set_property('Alerts.Count' , str(count+1))
     else:
         set_property('Alerts.RSS'   , '')
@@ -532,21 +548,16 @@ def properties(data,loc):
 # map properties
     set_property('Map.IsFetched', 'true')
     filelist = []
-    locid = base64.b16encode(loc)
+    locid = base64.b16encode(locid)
     addondir = os.path.join(__cwd__, 'resources', 'logo')
     mapdir = xbmc.translatePath('special://profile/addon_data/%s/map' % __addonid__)
     set_property('MapPath', addondir)
     if not xbmcvfs.exists(mapdir):
         xbmcvfs.mkdir(mapdir)
-    json_query = xbmc.executeJSONRPC('{ "jsonrpc" : "2.0" , "method" : "Files.GetDirectory" , "params" : { "directory" : "%s" , "sort" : { "method" : "file" } } , "id" : 1 }' % mapdir.replace('\\', '\\\\'))
-    json_query = unicode(json_query, 'utf-8', errors='ignore')
-    json_response = simplejson.loads(json_query)
-    if (json_response['result'] != None) and (json_response['result'].has_key('files')) and (json_response['result']['files'] != None):
-        for item in json_response['result']['files']:
-            if item['filetype'] == 'file':
-                filelist.append(item['file'])
+    dirs, filelist = xbmcvfs.listdir(mapdir)
     animate = __addon__.getSetting('Animate')
-    for item in filelist:
+    for img in filelist:
+        item = xbmc.translatePath('special://profile/addon_data/%s/map/%s' % (__addonid__,img)).decode("utf-8")
         if animate == 'true':
             if (time.time() - os.path.getmtime(item) > 14400) or (not locid in item):
                 xbmcvfs.delete(item)
@@ -558,19 +569,26 @@ def properties(data,loc):
     url = data['satellite']['image_url_ir4'].replace('width=300&height=300','width=640&height=360').replace('radius=75','radius=%i' % int(1000/int(zoom.rstrip('0').rstrip('.,'))))
     log('map url: %s' % url)
     try:
-        req = urllib2.urlopen(url)
-        response = req.read()
-        req.close()
+        req = urllib2.Request(url)
+        req.add_header('Accept-encoding', 'gzip')
+        response = urllib2.urlopen(req)
+        if response.info().get('Content-Encoding') == 'gzip':
+            buf = StringIO(response.read())
+            compr = gzip.GzipFile(fileobj=buf)
+            data = compr.read()
+        else:
+            data = response.read()
+        response.close()
         log('satellite image downloaded')
     except:
-        response = ''
+        data = ''
         log('satellite image downloaded failed')
-    if response != '':
+    if data != '':
         timestamp = time.strftime('%Y%m%d%H%M%S')
         mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp)).decode("utf-8")
         try:
             tmpmap = open(mapfile, 'wb')
-            tmpmap.write(response)
+            tmpmap.write(data)
             tmpmap.close()
             set_property('MapPath', mapdir)
         except:
@@ -599,19 +617,18 @@ if sys.argv[1].startswith('Location'):
                 log('selected location id: %s' % locationids[selected])
         else:
             dialog.ok(__addonname__, xbmc.getLocalizedString(284))
-
 else:
-    location = __addon__.getSetting('Location%sid' % sys.argv[1])
-    if (location == '') and (sys.argv[1] != '1'):
-        location = __addon__.getSetting('Location1id')
+    location = __addon__.getSetting('Location%s' % sys.argv[1])
+    locationid = __addon__.getSetting('Location%sid' % sys.argv[1])
+    if (locationid == '') and (sys.argv[1] != '1'):
+        location = __addon__.getSetting('Location1')
+        locationid = __addon__.getSetting('Location1id')
         log('trying location 1 instead')
-    if location == '':
+    if locationid == '':
         log('fallback to geoip')
-        location = geoip()
-    if not location == '':
-        if location.startswith('/q/'): # backwards compatibility
-            location = location[3:]
-        forecast(location)
+        location, locationid = geoip()
+    if not locationid == '':
+        forecast(location, locationid)
     else:
         log('no location found')
         clear()

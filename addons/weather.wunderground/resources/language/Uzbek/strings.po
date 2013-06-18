@@ -1,0 +1,73 @@
+# XBMC Media Center language file
+# Addon Name: Weather Underground
+# Addon id: weather.wunderground
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Uzbek (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uz/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uz\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "O'rnashgan joy moslamalari"
+
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "Qo'shimcha parametrlar"
+
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "O'rnashgan joy 1"
+
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "O'rnashgan joy 2"
+
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "O'rnashgan joy 3"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Dam olish kunlari"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "Shanba/Yakshanba"
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "Juma/Shanba"
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "Payshanba/Juma"
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "Yangi oy"
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr "Birinchi chorak"
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "To'lgan oy"
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr "Oxirgi chorak"
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Ogohlantirish"

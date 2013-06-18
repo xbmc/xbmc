@@ -88,6 +88,30 @@ msgctxt "#32126"
 msgid "Animated map"
 msgstr "Mapa animado"
 
+msgctxt "#32127"
+msgid "Location 4"
+msgstr "Ubicación 4"
+
+msgctxt "#32128"
+msgid "Location 5"
+msgstr "Ubicación 5"
+
+msgctxt "#32129"
+msgid "Location 4 display name"
+msgstr "Nombre a mostrar para ubicación 4"
+
+msgctxt "#32130"
+msgid "Location 5 display name"
+msgstr "Nombre a mostrar para ubicación 5"
+
+msgctxt "#32131"
+msgid "Location 4 id"
+msgstr "Id de ubicación 4"
+
+msgctxt "#32132"
+msgid "Location 5 id"
+msgstr "Id de ubicación 5"
+
 msgctxt "#32501"
 msgid "New Moon"
 msgstr "Luna nueva"
