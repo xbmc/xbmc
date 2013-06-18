@@ -26,7 +26,7 @@ void
 CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexServerDataLoaderJob *j = (CPlexServerDataLoaderJob*)job;
-  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete %s", success ? "success" : "failed");
+  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete (%s) %s", j->m_server->GetName().c_str(), success ? "success" : "failed");
   if (success)
   {
     CSingleLock lk(m_dataLock);

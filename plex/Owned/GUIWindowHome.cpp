@@ -618,6 +618,14 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   return newItem;
 }
 
+static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& item2)
+{
+  if (item1->GetLabel() == item2->GetLabel())
+    return (item1->GetLabel2() < item2->GetLabel2());
+
+  return (item1->GetLabel() < item2->GetLabel());
+}
+
 void CGUIWindowHome::UpdateSections()
 {
   CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");
@@ -632,8 +640,8 @@ void CGUIWindowHome::UpdateSections()
   vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
 
   CFileItemListPtr sections = g_plexServerDataLoader.GetAllSections();
-  sections->Sort(SORT_METHOD_LABEL_IGNORE_THE, SortOrderNone);
   vector<CGUIListItemPtr> newList;
+  vector<CGUIListItemPtr> newSections;
 
   bool listUpdated = false;
   bool haveShared = false;
@@ -670,13 +678,7 @@ void CGUIWindowHome::UpdateSections()
           item->SetLabel(foundItem->GetLabel());
         }
 
-        if (item->GetLabel2() != foundItem->GetLabel2())
-        {
-          listUpdated = true;
-          item->SetLabel2(foundItem->GetLabel2());
-        }
-
-        newList.push_back(item);
+        newSections.push_back(item);
       }
     }
   }
@@ -686,17 +688,28 @@ void CGUIWindowHome::UpdateSections()
     CFileItemPtr sectionItem = sections->Get(i);
     bool found = false;
 
-    BOOST_FOREACH(CGUIListItemPtr item, newList)
+    for(int y = 0; y < newSections.size(); y++)
     {
+      CGUIListItemPtr item = newSections[y];
+
       if (item->GetProperty("sectionPath").asString() == sectionItem->GetPath())
+      {
         found = true;
+      }
     }
 
     if (!found)
     {
-      newList.push_back(ItemToSection(sectionItem));
+      newSections.push_back(ItemToSection(sectionItem));
       listUpdated = true;
     }
+  }
+
+  std::sort(newSections.begin(), newSections.end(), _sortLabels);
+  for(int i = 0; i < newSections.size(); i ++)
+  {
+    CGUIListItemPtr item = newSections[i];
+    newList.push_back(item);
   }
 
 
