@@ -2057,6 +2057,12 @@ void CApplication::Render()
       m_bPresentFrame = g_renderManager.FrameWait(100);
       hasRendered = true;
     }
+    else if(!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !g_renderManager.RendererHandlesPresent())
+    {
+      //Whether we're paused or not, if the renderer isn't in charge of presenting and we're fullscreen, we limit
+      singleFrameTime = 30;
+      limitFrames = true;
+    }
     else
     {
       // engage the frame limiter as needed
