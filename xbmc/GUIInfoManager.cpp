@@ -4642,16 +4642,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return item->GetMusicInfoTag()->GetAlbum();
     break;
   case LISTITEM_YEAR:
-    /* PLEX */
-    if (item->GetProperty("subtitle").size() > 0)
-      return item->GetProperty("subtitle").asString();
-
-    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetYearString().size() > 0)
-    {
-      return item->GetMusicInfoTag()->GetYearString();
-    }
-    /* END PLEX */
-
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;

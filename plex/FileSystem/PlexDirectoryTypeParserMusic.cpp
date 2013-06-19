@@ -19,11 +19,16 @@ CPlexDirectoryTypeParserAlbum::Process(CFileItem &item, CFileItem &mediaContaine
   CAlbum album;
   album.strLabel = item.GetProperty("title").asString();
   album.strAlbum = item.GetProperty("title").asString();
-  album.artist.push_back(mediaContainer.GetProperty("parentTitle").asString());
   album.iYear = item.GetProperty("year").asInteger();
   album.m_strDateOfRelease = item.GetProperty("originallyAvailableAt").asString();
 
+  if(item.HasProperty("parentTitle"))
+    album.artist.push_back(item.GetProperty("parentTitle").asString());
+  else if (mediaContainer.HasProperty("parentTitle"))
+    album.artist.push_back(mediaContainer.GetProperty("parentTitle").asString());
+
   item.SetFromAlbum(album);
+  item.SetProperty("description", item.GetProperty("summary"));
   if (!item.HasArt(PLEX_ART_THUMB))
     item.SetArt(PLEX_ART_THUMB, mediaContainer.GetArt(PLEX_ART_THUMB));
 }
@@ -35,8 +40,22 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
 
   song.strFileName = item.GetPath();
   song.strTitle = item.GetLabel();
-  song.strThumb = item.GetArt(PLEX_ART_THUMB);
   song.strComment = item.GetProperty("summary").asString();
+  song.iDuration = item.GetProperty("duration").asInteger() / 1000;
+
+  if (!item.HasArt(PLEX_ART_THUMB) && mediaContainer.HasArt(PLEX_ART_THUMB))
+    item.SetArt(PLEX_ART_THUMB, mediaContainer.GetArt(PLEX_ART_THUMB));
+  song.strThumb = item.GetArt(PLEX_ART_THUMB);
+
+  if (item.HasProperty("grandparentTitle"))
+    song.artist.push_back(item.GetProperty("grandparentTitle").asString());
+  else if (mediaContainer.HasProperty("grandparentTitle"))
+    song.artist.push_back(mediaContainer.GetProperty("grandparentTitle").asString());
+
+  if (item.HasProperty("parentTitle"))
+    song.strAlbum = item.GetProperty("parentTitle").asString();
+  else if (mediaContainer.HasProperty("parentTitle"))
+    song.strAlbum = mediaContainer.GetProperty("parentTitle").asString();
 
   if (item.HasProperty("originallyAvailableAt"))
   {
@@ -54,9 +73,6 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
   {
     CFileItemPtr firstMedia = item.m_mediaItems[0];
     item.m_mapProperties.insert(firstMedia->m_mapProperties.begin(), firstMedia->m_mapProperties.end());
-
-    /* also forward art, this is the mediaTags */
-    item.AppendArt(firstMedia->GetArt());
   }
 }
 
@@ -67,7 +83,7 @@ void CPlexDirectoryTypeParserArtist::Process(CFileItem &item, CFileItem &mediaCo
 
   artist.strArtist = item.GetLabel();
   artist.strBiography = item.GetProperty("summary").asString();
-  artist.thumbURL = CScraperUrl(item.GetArt(PLEX_ART_THUMB));
+  item.SetProperty("description", item.GetProperty("summary"));
 
   item.GetMusicInfoTag()->SetArtist(artist);
 }

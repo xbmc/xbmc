@@ -182,7 +182,8 @@ void CPlexSectionFanout::Refresh()
       trueUrl.SetOption("X-Plex-Container-Size", "20");
 #endif
       
-      trueUrl.SetOption("unwatched", "1");
+      if (m_sectionType != SECTION_TYPE_ALBUM)
+        trueUrl.SetOption("unwatched", "1");
       //trueUrl.SetOption("stack", "1");
       PlexUtils::AppendPathToURL(trueUrl, "recentlyAdded");
       

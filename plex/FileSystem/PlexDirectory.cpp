@@ -302,6 +302,10 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
     
     if (!item->HasArt(PLEX_ART_FANART) && container.HasArt(PLEX_ART_FANART))
       item->SetArt(PLEX_ART_FANART, container.GetArt(PLEX_ART_FANART));
+
+    if (!item->HasArt(PLEX_ART_THUMB) && container.HasArt(PLEX_ART_THUMB))
+      item->SetArt(PLEX_ART_THUMB, container.GetArt(PLEX_ART_THUMB));
+
     
     item->m_bIsFolder = IsFolder(*item, element);
 
@@ -449,9 +453,12 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
 
           fileItems.AppendArt(augItem->GetArt());
 
-          CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
-          CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
-          infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+          if (fileItems.HasVideoInfoTag() && augItem->HasVideoInfoTag())
+          {
+            CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
+            CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
+            infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+          }
         }
         else if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
         {
@@ -466,9 +473,13 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
           }
 
           fileItems.AppendArt(augItem->GetArt());
-          MUSIC_INFO::CMusicInfoTag* musicInfoTag = fileItems.GetMusicInfoTag();
-          MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
-          musicInfoTag->SetGenre(musicInfoTag2->GetGenre());
+
+          if (fileItems.HasMusicInfoTag() && augItem->HasMusicInfoTag())
+          {
+            MUSIC_INFO::CMusicInfoTag* musicInfoTag = fileItems.GetMusicInfoTag();
+            MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
+            musicInfoTag->SetGenre(musicInfoTag2->GetGenre());
+          }
         }
       }
     }

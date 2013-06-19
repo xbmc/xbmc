@@ -203,6 +203,9 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
 
 void CPlexDirectoryTypeParserVideo::ParseTag(CFileItem &item, CFileItem &tagItem)
 {
+  if (!item.HasVideoInfoTag())
+    return;
+
   CVideoInfoTag* tag = item.GetVideoInfoTag();
   CStdString tagVal = tagItem.GetProperty("tag").asString();
   switch(tagItem.GetPlexDirectoryType())
@@ -258,6 +261,9 @@ void CPlexDirectoryTypeParserVideo::DebugPrintVideoItem(const CFileItem &item)
 
 void CPlexDirectoryTypeParserVideo::SetTagsAsProperties(CFileItem &item)
 {
+  if (!item.HasVideoInfoTag())
+    return;
+
   CVideoInfoTag* infoTag = item.GetVideoInfoTag();
 
   if (infoTag->m_genre.size() > 0)
