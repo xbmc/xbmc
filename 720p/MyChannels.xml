@@ -41,7 +41,6 @@
 			<visible>!Control.IsVisible(53) | ![Container(53).Position(22) | Container(53).Position(23)]</visible>
 			<include>MediaCount</include>
 		</control>
-		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
 		<include>CommonSortLetters</include>
 	</controls>
 </window>
