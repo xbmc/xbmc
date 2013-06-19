@@ -38,7 +38,6 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
 {
   CSong song;
 
-  song.strFileName = item.GetPath();
   song.strTitle = item.GetLabel();
   song.strComment = item.GetProperty("summary").asString();
   song.iDuration = item.GetProperty("duration").asInteger() / 1000;
@@ -64,8 +63,6 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
       song.iYear = boost::lexical_cast<int>(s[0]);
   }
 
-  item.SetFromSong(song);
-
   ParseMediaNodes(item, itemElement);
 
   /* Now we have the Media nodes, we need to "borrow" some properties from it */
@@ -73,7 +70,12 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
   {
     CFileItemPtr firstMedia = item.m_mediaItems[0];
     item.m_mapProperties.insert(firstMedia->m_mapProperties.begin(), firstMedia->m_mapProperties.end());
+
+    if (firstMedia->m_mediaParts.size() > 0)
+      song.strFileName = firstMedia->m_mediaParts[0]->GetPath();
   }
+
+  item.SetFromSong(song);
 }
 
 
