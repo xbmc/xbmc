@@ -63,8 +63,10 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
 {
   const time_t t = time(NULL);
   struct tm now;
+  struct timespec accnow;
 
-  localtime_r(&t, &now);
+  clock_gettime(CLOCK_REALTIME, &accnow);
+  localtime_r(&(accnow.tv_sec), &now);
   sysTime->wYear = now.tm_year + 1900;
   sysTime->wMonth = now.tm_mon + 1;
   sysTime->wDayOfWeek = now.tm_wday;
@@ -72,7 +74,7 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   sysTime->wHour = now.tm_hour;
   sysTime->wMinute = now.tm_min;
   sysTime->wSecond = now.tm_sec;
-  sysTime->wMilliseconds = 0;
+  sysTime->wMilliseconds = accnow.tv_nsec / 1000000;
   // NOTE: localtime_r() is not required to set this, but we Assume that it's set here.
   g_timezone.m_IsDST = now.tm_isdst;
 }
