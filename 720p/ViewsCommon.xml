@@ -703,7 +703,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<textcolor>Unfocused</textcolor>
 						</control>
@@ -777,7 +777,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 						</control>
@@ -788,7 +788,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
