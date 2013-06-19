@@ -12,10 +12,19 @@ CPlexFile::CPlexFile(void) : CCurlFile()
   SetRequestHeader("X-Plex-Version", PLEX_VERSION);
   SetRequestHeader("X-Plex-Client-Platform", PlexUtils::GetMachinePlatform());
   SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
-  SetRequestHeader("X-Plex-Platform", PlexUtils::GetMachinePlatform());
   SetRequestHeader("X-Plex-Provides", "player");
   SetRequestHeader("X-Plex-Product", "Plex for Home Theater");
   SetRequestHeader("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename"));
+
+  SetRequestHeader("X-Plex-Platform", "PlexHomeTheater");
+  SetRequestHeader("X-Plex-Model", PlexUtils::GetMachinePlatform());
+#ifdef TARGET_RPI
+  SetRequestHeader("X-Plex-Device", "RaspberryPi");
+#elif defined(TARGET_DARWIN_IOS)
+  SetRequestHeader("X-Plex-Device", "AppleTV");
+#else
+  SetRequestHeader("X-Plex-Device", "PC");
+#endif
 
   if (g_myplexManager.IsSignedIn())
   {
