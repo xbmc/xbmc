@@ -17,6 +17,7 @@
 #include "PlexDirectoryTypeParser.h"
 
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap.hpp>
@@ -51,9 +52,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetChannelDirectory(fileItems);
   }
 
-  if (boost::ends_with(m_url.GetFileName(), "/children/"))
+  if (boost::ends_with(m_url.GetFileName(), "/children"))
   {
-    /* When we are asking for /children/ we also ask for the parent
+    /* When we are asking for /children we also ask for the parent
      * path to get more information for the path we want to navigate
      * to */
     CURL augmentUrl = m_url;
@@ -451,6 +452,23 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
           CVideoInfoTag* infoTag = fileItems.GetVideoInfoTag();
           CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
           infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
+        }
+        else if (fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST)
+        {
+          std::pair<CStdString, CVariant> p;
+          BOOST_FOREACH(p, augItem->m_mapProperties)
+          {
+            /* we only insert the properties if they are not available */
+            if (fileItems.m_mapProperties.find(p.first) == fileItems.m_mapProperties.end())
+            {
+              fileItems.m_mapProperties[p.first] = p.second;
+            }
+          }
+
+          fileItems.AppendArt(augItem->GetArt());
+          MUSIC_INFO::CMusicInfoTag* musicInfoTag = fileItems.GetMusicInfoTag();
+          MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
+          musicInfoTag->SetGenre(musicInfoTag2->GetGenre());
         }
       }
     }

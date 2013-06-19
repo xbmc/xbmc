@@ -3739,19 +3739,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetTitle().size()) { return tag.GetTitle(); }
     break;
   case MUSICPLAYER_ALBUM:
-    /* PLEX */
-    if (item->HasProperty("album"))
-      return item->GetProperty("album").asString();
-    /* END PLEX */
-
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    /* PLEX */
-    if (item->HasProperty("artist"))
-      return item->GetProperty("artist").asString();
-    /* END PLEX */
-
     if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
@@ -4628,11 +4618,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return disc;
     }
   case LISTITEM_ARTIST:
-    /* PLEX */
-    if (item->HasProperty("artist"))
-      return item->GetProperty("artist").asString();
-    /* END PLEX */
-
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
@@ -4651,10 +4636,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 #endif
     break;
   case LISTITEM_ALBUM:
-    /* PLEX */
-    if (item->HasProperty("album"))
-      return item->GetProperty("album").asString();
-    /* END PLEX */
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
     if (item->HasMusicInfoTag())

@@ -22,11 +22,11 @@ class CPlexDirectoryTypeParserVideo : public CPlexDirectoryTypeParserBase
     void ParseMediaNodes(CFileItem& item, TiXmlElement* element);
     void ParseMediaParts(CFileItem& mediaItem, TiXmlElement* element);
     void ParseMediaStreams(CFileItem& mediaPart, TiXmlElement* element);
-    void ParseTag(CFileItem& item, CFileItem& tagItem);
+    virtual void ParseTag(CFileItem& item, CFileItem& tagItem);
 
     static void DebugPrintVideoItem(const CFileItem &item);
 
-    void SetTagsAsProperties(CFileItem& item);
+    virtual void SetTagsAsProperties(CFileItem& item);
 };
 
 #endif // PLEXDIRECTORYTYPEPARSERVIDEO_H
