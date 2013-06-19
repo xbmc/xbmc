@@ -28,6 +28,7 @@ CPlexDirectoryTypeParserAlbum::Process(CFileItem &item, CFileItem &mediaContaine
     album.artist.push_back(mediaContainer.GetProperty("parentTitle").asString());
 
   item.SetFromAlbum(album);
+
   item.SetProperty("description", item.GetProperty("summary"));
   if (!item.HasArt(PLEX_ART_THUMB))
     item.SetArt(PLEX_ART_THUMB, mediaContainer.GetArt(PLEX_ART_THUMB));
@@ -41,6 +42,12 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
   song.strTitle = item.GetLabel();
   song.strComment = item.GetProperty("summary").asString();
   song.iDuration = item.GetProperty("duration").asInteger() / 1000;
+  song.iTrack = item.GetProperty("index").asInteger();
+
+  if (item.HasProperty("parentYear"))
+    song.iYear = item.GetProperty("parentYear").asInteger();
+  else if (mediaContainer.HasProperty("parentYear"))
+    song.iYear = mediaContainer.GetProperty("parentYear").asInteger();
 
   if (!item.HasArt(PLEX_ART_THUMB) && mediaContainer.HasArt(PLEX_ART_THUMB))
     item.SetArt(PLEX_ART_THUMB, mediaContainer.GetArt(PLEX_ART_THUMB));
