@@ -269,7 +269,7 @@ bool CPlexSectionFanout::NeedsRefresh()
     refreshTime = 20;
 
   if (m_sectionType == SECTION_TYPE_GLOBAL_FANART)
-    refreshTime = 100;
+    refreshTime = 3600;
 
   return m_age.elapsed() > refreshTime;
 }
@@ -277,7 +277,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 //////////////////////////////////////////////////////////////////////////////
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
-  AddSection("global://art", SECTION_TYPE_GLOBAL_FANART);
+  AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -320,7 +320,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         if (!ShowSection(pItem->GetProperty("sectionPath").asString()) && !m_globalArt)
         {
           HideAllLists();
-          ShowSection("global://art");
+          ShowSection("global://art/");
         }
       }
     }
@@ -488,7 +488,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         HideAllLists();
 
       if (m_lastSelectedItem == "Search")
-        RefreshSection("global://art", SECTION_TYPE_GLOBAL_FANART);
+        RefreshSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
 
       if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
         g_backgroundMusicPlayer.PlayElevatorMusic();
@@ -524,7 +524,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       if (type == CONTENT_LIST_FANART)
       {
-        if (url == sectionToLoad || url == "global://art")
+        if (url == sectionToLoad || url == "global://art/")
         {
           CFileItemListPtr list = GetContentListFromSection(url, CONTENT_LIST_FANART);
           if (list)
@@ -535,7 +535,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
             CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, list.get());
             OnMessage(msg);
           }
+          else
+            CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage GetContentListFromSection returned empty list");
         }
+        else
+          CLog::Log(LOGDEBUG, "CGUIWindowHome::OnMessage not activating FANART for '%s'", url.c_str());
       }
       else
       {
@@ -875,7 +879,7 @@ bool CGUIWindowHome::ShowSection(const CStdString &url)
     CPlexSectionFanout* section = m_sections[url];
     section->Show();
     
-    if (url == "global://art")
+    if (url == "global://art/")
       m_globalArt = true;
     else
       m_globalArt = false;
