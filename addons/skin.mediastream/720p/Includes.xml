@@ -961,7 +961,13 @@
 					<description>Objects</description>
 					<include>MediaCountLabel</include>
 					<label>$LOCALIZE[127]:</label>
-					<visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items) | Container.Content(photos)]</visible>
+					<visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items) | Container.Content(photos) | Window.IsActive(channels)]</visible>
+				</control>
+				<control type="label">
+					<description>Channels</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[31970]:</label>
+					<visible>Window.IsActive(channels)</visible>
 				</control>
 				<control type="label">
 					<description>TV Shows</description>
