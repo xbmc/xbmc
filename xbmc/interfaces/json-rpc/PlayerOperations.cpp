@@ -233,7 +233,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
   {
     case Video:
     case Audio:
-      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanPause())
+      if (!g_application.m_pPlayer->CanPause())
         return FailedToExecute;
       
       if (parameterObject["play"].isString())
@@ -337,7 +337,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanSeek())
+      if (!g_application.m_pPlayer->CanSeek())
         return FailedToExecute;
       
       if (parameterObject["value"].isObject())
@@ -795,7 +795,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const CStdString &method, ITran
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int index = -1;
         if (parameterObject["stream"].isString())
@@ -842,7 +842,7 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const CStdString &method, ITranspo
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int index = -1;
         if (parameterObject["subtitle"].isString())
@@ -1255,10 +1255,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        if (g_application.m_pPlayer)
-          result = g_application.m_pPlayer->CanSeek();
-        else
-          result = false;
+        result = g_application.m_pPlayer->CanSeek();
         break;
 
       case Picture:
@@ -1363,7 +1360,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           result = CVariant(CVariant::VariantTypeObject);
           int index = g_application.m_pPlayer->GetAudioStream();
@@ -1396,7 +1393,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
           {
@@ -1427,8 +1424,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
-          result = g_application.m_pPlayer->GetSubtitleVisible();
+        result = g_application.m_pPlayer->GetSubtitleVisible();
         break;
         
       case Audio:
@@ -1443,7 +1439,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           result = CVariant(CVariant::VariantTypeObject);
           int index = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
@@ -1474,7 +1470,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
           {

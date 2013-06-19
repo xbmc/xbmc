@@ -62,7 +62,7 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSeekBar::FrameMove()
 {
-  if (!g_application.m_pPlayer)
+  if (!g_application.m_pPlayer->HasPlayer())
   {
     Close(true);
     return;

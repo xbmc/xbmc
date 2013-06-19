@@ -563,7 +563,7 @@ void CGUIWindowFullScreen::FrameMove()
   if (m_bShowCurrentTime)
     g_infoManager.SetDisplayAfterSeek();
 
-  if (!g_application.m_pPlayer) return;
+  if (!g_application.m_pPlayer->HasPlayer()) return;
 
   if( g_application.m_pPlayer->IsCaching() )
   {
@@ -751,7 +751,7 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 
 void CGUIWindowFullScreen::Render()
 {
-  if (g_application.m_pPlayer)
+  if (g_application.m_pPlayer->HasPlayer())
     RenderTTFSubtitles();
   CGUIWindow::Render();
 }

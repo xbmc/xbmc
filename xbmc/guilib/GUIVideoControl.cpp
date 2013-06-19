@@ -61,7 +61,7 @@ void CGUIVideoControl::Render()
   if (g_application.IsPlayingVideo())
   {
 #endif
-    if (!g_application.m_pPlayer->IsPaused())
+    if (!g_application.IsPaused())
       g_application.ResetScreenSaver();
 
     g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
@@ -70,7 +70,7 @@ void CGUIVideoControl::Render()
     color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
     g_renderManager.Render(false, 0, alpha);
 #else
-    ((CDummyVideoPlayer *)g_application.m_pPlayer)->Render();
+    ((CDummyVideoPlayer *)g_application.m_pPlayer->GetInternal())->Render();
 #endif
   }
   CGUIControl::Render();

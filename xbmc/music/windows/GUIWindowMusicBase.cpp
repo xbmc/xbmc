@@ -220,7 +220,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           // if playback is paused or playback speed != 1, return
           if (g_application.IsPlayingAudio())
           {
-            if (g_application.m_pPlayer->IsPaused())
+            if (g_application.IsPaused())
               return false;
             if (g_application.GetPlaySpeed() != 1)
               return false;

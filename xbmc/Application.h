@@ -65,6 +65,8 @@ class CPlayerController;
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
+#include "ApplicationPlayer.h"
+
 class CSeekHandler;
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
@@ -109,16 +111,10 @@ protected:
   int       m_iPlayList;
 };
 
-typedef enum
-{
-  PLAYBACK_CANCELED = -1,
-  PLAYBACK_FAIL = 0,
-  PLAYBACK_OK = 1,
-} PlayBackRet;
-
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
+  friend class CApplicationPlayer;
 public:
 
   enum ESERVERS
@@ -273,12 +269,11 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  boost::shared_ptr<IPlayer> m_pPlayer;
+  CApplicationPlayer* m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
-  unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
   bool m_bPlaybackStarting;
   typedef enum
   {
@@ -413,7 +408,6 @@ protected:
   CStdString m_prevMedia;
   CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
-  PLAYERCOREID m_eCurrentPlayer;
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 

@@ -1363,15 +1363,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel.Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapter());
     break;
   case PLAYER_CHAPTERCOUNT:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapterCount());
     break;
   case PLAYER_CHAPTERNAME:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       g_application.m_pPlayer->GetChapterName(strLabel);
     break;
   case PLAYER_CACHELEVEL:
@@ -1382,11 +1382,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case PLAYER_TIME:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       strLabel = GetCurrentPlayTime(TIME_FORMAT_HH_MM);
     break;
   case PLAYER_DURATION:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       strLabel = GetDuration(TIME_FORMAT_HH_MM);
     break;
   case PLAYER_PATH:
@@ -1429,7 +1429,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
           return m_currentFile->GetMusicInfoTag()->GetTitle();
         // don't have the title, so use dvdplayer, label, or drop down to title from path
-        if (g_application.m_pPlayer && !g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+        if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
           return g_application.m_pPlayer->GetPlayingTitle();
         if (!m_currentFile->GetLabel().IsEmpty())
           return m_currentFile->GetLabel();
@@ -1437,7 +1437,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       }
       else
       {
-        if (g_application.m_pPlayer && !g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+        if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
           return g_application.m_pPlayer->GetPlayingTitle();
       }
     }
@@ -1511,39 +1511,39 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
     {
       UpdateAVInfo();
       strLabel = m_videoInfo.videoCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
       return CStreamDetails::VideoDimsToResolutionDescription(g_application.m_pPlayer->GetPictureWidth(), g_application.m_pPlayer->GetPictureHeight());
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
     {
       UpdateAVInfo();
       strLabel = m_audioInfo.audioCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
-    if (g_application.IsPlaying() && g_application.m_pPlayer)
+    if (g_application.IsPlaying())
     {
       UpdateAVInfo();
       strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.IsPlaying())
     {
       UpdateAVInfo();
       strLabel.Format("%i", m_audioInfo.channels);
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
-    if(g_application.IsPlaying() && g_application.m_pPlayer)
+    if(g_application.m_pPlayer->IsPlaying())
     {
       UpdateAVInfo();
       strLabel = m_videoInfo.stereoMode;
@@ -1959,7 +1959,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PLAYER_CHAPTER:
     case PLAYER_CHAPTERCOUNT:
       {
-        if( g_application.IsPlaying() && g_application.m_pPlayer)
+        if( g_application.IsPlaying())
         {
           switch( info )
           {
@@ -2423,7 +2423,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = m_playerShowTime;
     break;
     case PLAYER_PASSTHROUGH:
-      bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
+      bReturn = g_application.m_pPlayer->IsPassthrough();
       break;
     case PLAYER_ISINTERNETSTREAM:
       bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
@@ -2507,7 +2507,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
-      if(g_application.IsPlaying() && g_application.m_pPlayer)
+      if(g_application.m_pPlayer->IsPlaying())
       {
         UpdateAVInfo();
         bReturn = !m_videoInfo.stereoMode.empty();
@@ -4110,7 +4110,7 @@ void CGUIInfoManager::UpdateFPS()
 
 void CGUIInfoManager::UpdateAVInfo()
 {
-  if(g_application.IsPlaying() && g_application.m_pPlayer)
+  if(g_application.IsPlaying())
   {
     if (!m_AVInfoValid)
     {
