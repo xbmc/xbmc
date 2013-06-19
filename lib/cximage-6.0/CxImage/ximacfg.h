@@ -59,7 +59,9 @@
 #define CXIMAGE_ERR_NOFILE "null file handler"
 #define CXIMAGE_ERR_NOIMAGE "null image!!!"
 
+#ifndef __PLEX__
 #define CXIMAGE_SUPPORT_EXCEPTION_HANDLING 1
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //color to grey mapping <H. Muelner> <jurgene>
