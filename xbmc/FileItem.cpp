@@ -1822,8 +1822,6 @@ void CFileItemList::Clear()
   /* PLEX */
   m_chainedProviders.clear();
   m_saveInHistory = true;
-  m_firstTitle.Empty();
-  m_secondTitle.Empty();
   m_defaultViewMode = 0;
   m_disabledViewModes.Empty();
   m_wasListingCancelled = false;
@@ -1934,8 +1932,6 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_cacheToDisc = itemlist.m_cacheToDisc;
 
   /* PLEX */
-  m_firstTitle = itemlist.m_firstTitle;
-  m_secondTitle = itemlist.m_secondTitle;
   m_defaultViewMode = itemlist.m_defaultViewMode;
   m_disabledViewModes = itemlist.m_disabledViewModes;
   m_wasListingCancelled = itemlist.m_wasListingCancelled;
@@ -1965,8 +1961,6 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   m_sortIgnoreFolders = items.m_sortIgnoreFolders;
 
   /* PLEX */
-  m_firstTitle = items.m_firstTitle;
-  m_secondTitle = items.m_secondTitle;
   m_defaultViewMode = items.m_defaultViewMode;
   m_disabledViewModes = items.m_disabledViewModes;
   m_wasListingCancelled = items.m_wasListingCancelled;
@@ -2185,8 +2179,6 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << m_content;
     /* PLEX */
-    ar << m_firstTitle;
-    ar << m_secondTitle;
     ar << m_defaultViewMode;
     ar << m_disabledViewModes;
     ar << (int)m_autoRefresh;
@@ -2256,8 +2248,6 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar >> m_content;
     /* PLEX */
-    ar >> m_firstTitle;
-    ar >> m_secondTitle;
     ar >> m_defaultViewMode;
     ar >> m_disabledViewModes;
     ar >> (int&)m_autoRefresh;

@@ -3273,15 +3273,25 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   /* PLEX */
   else if (info.m_info == CONTAINER_FIRST_TITLE)
   {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIMediaWindow *window = (CGUIMediaWindow*)GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetFirstTitle();
+    {
+      if (window->CurrentDirectory().HasProperty("title1"))
+        return window->CurrentDirectory().GetProperty("title1").asString();
+      else
+        return window->CurrentDirectory().GetLabel();
+    }
   }
   else if (info.m_info == CONTAINER_SECOND_TITLE)
   {
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIMediaWindow *window = (CGUIMediaWindow*)GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetSecondTitle();
+    {
+      if (window->CurrentDirectory().HasProperty("title2"))
+        return window->CurrentDirectory().GetProperty("title2").asString();
+      else
+        return window->CurrentDirectory().GetLabel();
+    }
   }
   /* END PLEX */
 

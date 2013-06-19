@@ -442,12 +442,6 @@ public:
   void SetDisabledViewModes(const CStdString &viewModes) { m_disabledViewModes = viewModes; }
   const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
 
-  void SetFirstTitle(const CStdString& title) { m_firstTitle = title; }
-  const CStdString& GetFirstTitle() const { return m_firstTitle; }
-
-  void SetSecondTitle(const CStdString& title) { m_secondTitle = title; }
-  const CStdString& GetSecondTitle() const { return m_secondTitle; }
-
   void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
   std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
 
@@ -508,8 +502,6 @@ private:
 protected:
   int m_defaultViewMode;
   CStdString m_disabledViewModes;
-  CStdString m_firstTitle;
-  CStdString m_secondTitle;
   std::vector<CFileItemPtr> m_chainedProviders;
   CStdString m_strFanartUrl;
   CStdString m_strBannerUrl;
