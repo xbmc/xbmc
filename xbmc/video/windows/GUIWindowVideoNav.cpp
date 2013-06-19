@@ -1106,10 +1106,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (m_vecItems->GetContent() == "episodes")
       buttons.Add(CONTEXT_BUTTON_INFO, 20352);
 
-    if ((item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
-        (item->GetProperty("HasWatchedState").asBoolean() == true) &&
-        ((item->IsPlexMediaServerLibrary() && m_vecItems->GetContent() != "files") ||
-        item->HasProperty("ratingKey")))
+    if (item->IsPlexMediaServerLibrary())
     {
       CStdString viewOffset = item->GetProperty("viewOffset").asString();
 
