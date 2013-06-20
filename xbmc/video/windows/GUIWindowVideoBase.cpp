@@ -393,7 +393,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2)
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
 
-  pDlgInfo->SetMovie(item);
+  pDlgInfo->SetMovie(item.get());
   pDlgInfo->DoModal();
 
   if (pDlgInfo->NeedRefresh() == false)

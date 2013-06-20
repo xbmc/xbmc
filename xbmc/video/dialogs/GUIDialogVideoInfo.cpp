@@ -240,7 +240,6 @@ bool CGUIDialogVideoInfo::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-#ifndef __PLEX__
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
@@ -250,6 +249,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   // content type to determine visibility, so we'll set the wrong label)
   ClearCastList();
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
+#ifndef __PLEX__
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
     CMusicDatabase database;
@@ -268,6 +268,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     m_castList->SetContent("musicvideos");
   }
   else
+#endif
   { // movie/show/episode
     for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
@@ -363,73 +364,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   CVideoThumbLoader loader;
   loader.LoadItem(m_movieItem.get());
 }
-#else
-void CGUIDialogVideoInfo::SetMovie(const CFileItemPtr& item)
-{
-  m_movieItem = item;
-
-  ClearCastList();
-
-  // Set the cast list appropriately.
-  m_castList->SetContent(m_movieItem->GetProperty("mediaType").asString());
-
-  if (m_castList->GetContent() == "movies")
-  {
-    // Compute the URL for the movie information.
-    CURL url(item->GetPath());
-
-    // Is it a multipart item?
-    if (item->IsStack())
-    {
-      CStackDirectory dir;
-      url = dir.GetFirstStackedFile(item->GetPath());
-    }
-
-    url.SetFileName("library/metadata/" + item->GetProperty("ratingKey").asString());
-    url.SetOptions("?skipRefresh=1");
-
-    // Download the data.
-    CCurlFile set;
-    CStdString strData;
-    set.Get(url.Get(), strData);
-
-    // Parse document.
-    TiXmlDocument xmlDoc;
-    if (!xmlDoc.Parse(strData)) return;
-
-    // The container node.
-    TiXmlElement* root = xmlDoc.RootElement();
-    if (!root) return;
-
-    // The Video node.
-    TiXmlElement* video = root->FirstChildElement();
-    if (!video) return;
-
-    // The child nodes.
-    TiXmlElement* role = video->FirstChildElement("Role");
-    if (!role) return;
-
-    while (role)
-    {
-      const char* strActor = role->Attribute("tag");
-      const char* strRole  = role->Attribute("role");
-
-      CStdString character;
-      if (strRole == 0 || strlen(strRole) == 0)
-        character = strActor;
-      else
-        character.Format("%s %s %s", strActor, g_localizeStrings.Get(20347).c_str(), strRole);
-
-      CFileItemPtr item(new CFileItem(strActor));
-      item->SetIconImage("DefaultActor.png");
-      item->SetLabel(character);
-      m_castList->Add(item);
-
-      role = role->NextSiblingElement();
-    }
-  }
-}
-#endif
 
 void CGUIDialogVideoInfo::Update()
 {

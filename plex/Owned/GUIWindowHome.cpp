@@ -417,7 +417,7 @@ bool CGUIWindowHome::OnPopupMenu()
 
         if (!pDlgInfo) return false;
 
-        pDlgInfo->SetMovie(fileItem);
+        pDlgInfo->SetMovie(fileItem.get());
         pDlgInfo->DoModal();
 
         if (pDlgInfo->NeedRefresh() == false)
