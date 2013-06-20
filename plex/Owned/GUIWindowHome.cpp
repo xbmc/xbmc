@@ -615,7 +615,7 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   if (item->GetProperty("type").asString() == "artist")
     path += "(MyMusicFiles, " + item->GetPath() + ",return)";
   else if (item->GetProperty("type").asString() == "photo")
-    path += "(MyPictureFiles," + item->GetPath() + ",return)";
+    path += "(MyPictures," + item->GetPath() + ",return)";
   else
     path += "(MyVideoFiles," + item->GetPath() + ",return)";
 
