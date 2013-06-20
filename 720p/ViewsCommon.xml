@@ -280,7 +280,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + !IsEmpty(ListItem.Property(UnWatchedEpisodes))</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -397,7 +397,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + !IsEmpty(ListItem.Property(UnWatchedEpisodes))</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
