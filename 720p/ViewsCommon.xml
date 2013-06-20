@@ -673,6 +673,7 @@
 							<height>29</height>
 							<aspectratio>keep</aspectratio>
 							<texture>Unwatchedcount.png</texture>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 						</control>
 						<control type="label">
 							<posx>548</posx>
@@ -713,7 +714,7 @@
 						</control>
 						<!-- duration bg -->
 						<control type="image">
-							<visible>!IsEmpty(ListItem.Label2)</visible>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
