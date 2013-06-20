@@ -1102,7 +1102,7 @@ void CDVDPlayer::Process()
 #else
 
   CStdString stopURL;
-  if (!PlexProcess(stopURL))
+  if (m_item.IsPlexMediaServer() && !PlexProcess(stopURL))
     return;
 
   try
