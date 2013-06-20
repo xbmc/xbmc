@@ -77,7 +77,7 @@ void CMusicInfoLoader::OnLoaderStart()
   m_musicDatabase.Open();
 
   if (m_thumbLoader)
-    m_thumbLoader->Initialize();
+    m_thumbLoader->OnLoaderStart();
 }
 
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
@@ -227,7 +227,7 @@ void CMusicInfoLoader::OnLoaderFinish()
   m_musicDatabase.Close();
 
   if (m_thumbLoader)
-    m_thumbLoader->Deinitialize();
+    m_thumbLoader->OnLoaderFinish();
 }
 
 void CMusicInfoLoader::UseCacheOnHD(const CStdString& strFileName)

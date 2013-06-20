@@ -1632,7 +1632,8 @@ namespace VIDEO
     if (!imdbThumb.IsEmpty())
     {
       CFileItem folderItem(folder, true);
-      CThumbLoader::SetCachedImage(folderItem, "thumb", imdbThumb);
+      CThumbLoader loader;
+      loader.SetCachedImage(folderItem, "thumb", imdbThumb);
     }
   }
 

@@ -40,26 +40,18 @@ CMusicThumbLoader::~CMusicThumbLoader()
   delete m_musicDatabase;
 }
 
-void CMusicThumbLoader::Initialize()
+void CMusicThumbLoader::OnLoaderStart()
 {
   m_musicDatabase->Open();
   m_albumArt.clear();
-}
-
-void CMusicThumbLoader::Deinitialize()
-{
-  m_musicDatabase->Close();
-  m_albumArt.clear();
-}
-
-void CMusicThumbLoader::OnLoaderStart()
-{
-  Initialize();
+  CThumbLoader::OnLoaderStart();
 }
 
 void CMusicThumbLoader::OnLoaderFinish()
 {
-  Deinitialize();
+  m_musicDatabase->Close();
+  m_albumArt.clear();
+  CThumbLoader::OnLoaderFinish();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)

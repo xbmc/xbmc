@@ -545,7 +545,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
         }
         if (!thumb_loader.IsNull()) {
-            thumb_loader->Initialize();
+            thumb_loader->OnLoaderStart();
         }
         object = Build(item, true, context, thumb_loader, parent.empty()?NULL:parent.c_str());
     }
@@ -710,7 +710,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
     if (!thumb_loader.IsNull()) {
-        thumb_loader->Initialize();
+        thumb_loader->OnLoaderStart();
     }
 
     // this isn't pretty but needed to properly hide the addons node from clients

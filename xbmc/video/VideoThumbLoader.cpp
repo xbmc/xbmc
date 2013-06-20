@@ -127,21 +127,18 @@ CVideoThumbLoader::~CVideoThumbLoader()
   delete m_videoDatabase;
 }
 
-void CVideoThumbLoader::Initialize()
+void CVideoThumbLoader::OnLoaderStart()
 {
   m_videoDatabase->Open();
   m_showArt.clear();
-}
-
-void CVideoThumbLoader::OnLoaderStart()
-{
-  Initialize();
+  CThumbLoader::OnLoaderStart();
 }
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
   m_videoDatabase->Close();
   m_showArt.clear();
+  CThumbLoader::OnLoaderFinish();
 }
 
 static void SetupRarOptions(CFileItem& item, const CStdString& path)
