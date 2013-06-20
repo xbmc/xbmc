@@ -224,7 +224,7 @@
 							<height>455</height>
 							<width min="200" max="800">auto</width>
 							<aspectratio>keep</aspectratio>
-							<texture background="true">$INFO[ListItem(0).FileNameAndPath]</texture>							
+							<texture background="true">$INFO[ListItem.Art(thumb)]</texture>							
 							<info>ListItem(0).Thumb</info>
 							<visible>Container.Content(plugincontent)</visible>
 						</control>
@@ -233,7 +233,7 @@
 							<height>455</height>
 							<width min="200" max="800">auto</width>
 							<aspectratio>keep</aspectratio>
-							<texture background="true">$INFO[ListItem(0).FileNameAndPath]</texture>
+							<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 							<visible>!Container.Content(plugincontent)</visible>
 						</control>
 						<!-- right photo -->
@@ -270,7 +270,7 @@
 				<!--><include>ImageStreamVisible</include>-->
 				<include>MediaViewFade</include>
 				<control type="wraplist" id="57">
-					<visible>!Container.Content(Plugins)</visible>
+					<visible>!Container.Content(Channels)</visible>
 					<viewtype label="Image Stream">wraplist</viewtype>
 					<posx>10</posx>
 					<width>1260</width>
