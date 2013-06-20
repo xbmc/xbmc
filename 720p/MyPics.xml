@@ -87,6 +87,7 @@
 		<include>MediaCount</include>
 		<include>MusicNowPlayingIndicators</include>
 		<control type="group">
+			<visible>Player.HasAudio</visible>
 			<include>MusicOverlayNowPlayingDims</include>
 			<include>MusicNowPlaying</include>
 		</control>
