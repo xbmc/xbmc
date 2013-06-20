@@ -63,7 +63,7 @@ protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
   
-  CMusicDatabase *m_database;
+  CMusicDatabase *m_musicDatabase;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_albumArt;
 };

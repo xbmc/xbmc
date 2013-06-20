@@ -118,18 +118,18 @@ bool CThumbExtractor::DoWork()
 CVideoThumbLoader::CVideoThumbLoader() :
   CThumbLoader(), CJobQueue(true), m_pStreamDetailsObs(NULL)
 {
-  m_database = new CVideoDatabase();
+  m_videoDatabase = new CVideoDatabase();
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
 {
   StopThread();
-  delete m_database;
+  delete m_videoDatabase;
 }
 
 void CVideoThumbLoader::Initialize()
 {
-  m_database->Open();
+  m_videoDatabase->Open();
   m_showArt.clear();
 }
 
@@ -140,7 +140,7 @@ void CVideoThumbLoader::OnLoaderStart()
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
-  m_database->Close();
+  m_videoDatabase->Close();
   m_showArt.clear();
 }
 
@@ -211,14 +211,14 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
-  m_database->Open();
+  m_videoDatabase->Open();
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
     if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
     || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
     {
-      if (m_database->GetStreamDetails(*pItem))
+      if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
     }
   }
@@ -234,7 +234,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
          pItem->GetVideoInfoTag()->m_type != "episode"    &&
          pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
-      m_database->Close();
+      m_videoDatabase->Close();
       return true; // nothing else to be done
     }
   }
@@ -256,7 +256,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
     SetArt(*pItem, artwork);
   }
 
-  m_database->Close();
+  m_videoDatabase->Close();
 
   return true;
 }
@@ -275,7 +275,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       pItem->GetVideoInfoTag()->m_type != "musicvideo")
     return false; // Nothing to do here
 
-  m_database->Open();
+  m_videoDatabase->Open();
+
   map<string, string> artwork = pItem->GetArt();
   vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
   if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
@@ -320,7 +321,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
           // Item has cached autogen image but no art entry. Save it to db.
           CVideoInfoTag* info = pItem->GetVideoInfoTag();
           if (info->m_iDbId > 0 && !info->m_type.empty())
-            m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
+            m_videoDatabase->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
       else if (CSettings::Get().GetBool("myvideos.extractthumb") &&
@@ -334,7 +335,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
 
-        m_database->Close();
+        m_videoDatabase->Close();
         return true;
       }
     }
@@ -354,7 +355,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     }
   }
 
-  m_database->Close();
+  m_videoDatabase->Close();
   return true;
 }
 
@@ -376,8 +377,8 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   if (tag.m_iDbId > -1 && !tag.m_type.IsEmpty())
   {
     map<string, string> artwork;
-    m_database->Open();
-    if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
+    m_videoDatabase->Open();
+    if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
     else if (tag.m_type == "artist")
     { // we retrieve music video art from the music database (no backward compat)
@@ -402,7 +403,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (i == m_showArt.end())
       {
         map<string, string> showArt;
-        m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
+        m_videoDatabase->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
         i = m_showArt.insert(make_pair(tag.m_iIdShow, showArt)).first;
       }
       if (i != m_showArt.end())
@@ -412,7 +413,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         item.SetArtFallback("tvshow.thumb", "tvshow.poster");
       }
     }
-    m_database->Close();
+    m_videoDatabase->Close();
   }
   return !item.GetArt().empty();
 }

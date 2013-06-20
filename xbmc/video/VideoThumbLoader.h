@@ -128,7 +128,7 @@ protected:
   virtual void OnLoaderFinish();
 
   IStreamDetailsObserver *m_pStreamDetailsObs;
-  CVideoDatabase *m_database;
+  CVideoDatabase *m_videoDatabase;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_showArt;
 };
