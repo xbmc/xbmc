@@ -305,7 +305,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
@@ -316,7 +316,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -327,7 +327,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -338,7 +338,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -422,7 +422,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -434,7 +434,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -458,7 +458,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -473,7 +473,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
@@ -486,7 +486,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -504,7 +504,7 @@
 								<posx>60</posx>
 								<posy>1</posy>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -517,7 +517,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -562,7 +562,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -592,7 +592,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -616,7 +616,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>720</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -644,7 +644,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>720</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -656,7 +656,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>720</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -680,7 +680,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -748,7 +748,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -760,7 +760,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
