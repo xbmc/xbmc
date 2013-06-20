@@ -1,7 +1,5 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
-# not happy about this, tools/depends/configure should create this
-XBMC_ROOT= ../../../../
 
 # sync with <xbmc root>Makefile.in
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
@@ -24,7 +22,7 @@ all: .installed-$(PLATFORM)
 	@echo "Copy addon bindings to $(PREFIX)/include/xbmc"
 	@mkdir -p $(PREFIX)/include/xbmc
 	@for f in $(BINDINGS); do \
-	  cp -f $(XBMC_ROOT)/$$f $(PREFIX)/include/xbmc ; \
+	  cp -f $(XBMCROOT)/$$f $(PREFIX)/include/xbmc ; \
 	done
 	@touch $@
 
