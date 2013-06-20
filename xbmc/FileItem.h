@@ -459,9 +459,6 @@ public:
 
   void SetEpisodeData(int total, int watchedCount);
 
-  void SetIsPopupMenuItem(bool ispopup) { m_bIsPopupMenuItem = ispopup; }
-  bool IsPopupMenuItem() const { return m_bIsPopupMenuItem; }
-
   void SetIsSearchDir(bool issearch) { m_bIsSearchDir = issearch; }
   bool IsSearchDir() const { return m_bIsSearchDir; }
 
@@ -509,7 +506,6 @@ protected:
   bool m_autoRefresh;
   int m_iBitrate;
   bool m_includeStandardContextItems;
-  bool m_bIsPopupMenuItem;
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   bool m_bIsSettingsDir;

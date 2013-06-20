@@ -1295,7 +1295,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // Show a context menu for PMS popup directories
-    if (pItem->IsPopupMenuItem())
+    if (pItem->HasProperty("popup") && pItem->GetProperty("popup").asBoolean())
     {
       CFileItemList fileItems;
       CContextButtons buttons;

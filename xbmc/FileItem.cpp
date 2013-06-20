@@ -539,7 +539,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   /* PLEX */
   m_strFanartUrl = item.m_strFanartUrl;
   m_strBannerUrl = item.m_strBannerUrl;
-  m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
   m_bIsSettingsDir = item.m_bIsSettingsDir;
   m_bIsSearchDir = item.m_bIsSearchDir;
   m_strSearchPrompt = item.m_strSearchPrompt;
@@ -615,13 +614,11 @@ void CFileItem::Reset()
   m_strFanartUrl.Empty();
   m_strBannerUrl.Empty();
 
-  m_bIsPopupMenuItem = false;
   m_bIsSettingsDir = false;
   m_bIsSearchDir = false;
   m_strSearchPrompt = "";
   m_iBitrate = 0;
   m_includeStandardContextItems = true;
-  m_bIsPopupMenuItem = false;
   m_mediaItems.clear();
   m_mediaParts.clear();
   m_mediaPartStreams.clear();

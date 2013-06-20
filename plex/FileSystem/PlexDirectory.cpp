@@ -51,6 +51,10 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   {
     return GetChannelDirectory(fileItems);
   }
+  else if (url.GetHostName() == "channeldirectory")
+  {
+    return GetOnlineChannelDirectory(fileItems);
+  }
 
   if (boost::ends_with(m_url.GetFileName(), "/children"))
   {
@@ -187,6 +191,8 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("search", g_parserBool)
                                      ("selected", g_parserBool)
                                      ("indirect", g_parserBool)
+                                     ("popup", g_parserBool)
+                                     ("installed", g_parserBool)
 
                                      ("key", g_parserKey)
                                      ("theme", g_parserKey)
@@ -216,6 +222,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("content", g_parserType)
 
                                      ("title", g_parserLabel)
+                                     ("name", g_parserLabel)
 
                                      ("originallyAvailableAt", g_parserDateTime)
                                      ;
@@ -316,7 +323,7 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
 bool
 CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer)
 {
-  if (root->ValueStr() != "MediaContainer")
+  if (root->ValueStr() != "MediaContainer" && root->ValueStr() != "ASContainer")
   {
     CLog::Log(LOGWARNING, "CPlexDirectory::ReadMediaContainer got XML document without mediaContainer as root at %s", m_url.Get().c_str());
     return false;
@@ -624,5 +631,15 @@ bool CPlexDirectory::GetChannelDirectory(CFileItemList &items)
   }
   
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
+{
+  if (!g_plexServerManager.GetBestServer())
+    return false;
+
+  CURL newURL = g_plexServerManager.GetBestServer()->BuildPlexURL("/system/appstore");
+  return CPlexDirectory::GetDirectory(newURL.Get(), items);
 }
 
