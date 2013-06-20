@@ -244,38 +244,6 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
   return true;
 }
 
-bool OMXClock::OMXStart(bool lock /* = true */)
-{
-  if(m_omx_clock.GetComponent() == NULL)
-    return false;
-
-  if(lock)
-    Lock();
-
-  CLog::Log(LOGDEBUG, "OMXClock::OMXStart\n");
-
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  OMX_TIME_CONFIG_CLOCKSTATETYPE clock;
-  OMX_INIT_STRUCTURE(clock);
-
-  clock.eState      = OMX_TIME_ClockStateRunning;
-  clock.nOffset     = ToOMXTime(-1000LL * OMX_PRE_ROLL);
-
-  omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
-  if(omx_err != OMX_ErrorNone)
-  {
-    CLog::Log(LOGERROR, "OMXClock::Start error setting OMX_IndexConfigTimeClockState\n");
-    if(lock)
-      UnLock();
-    return false;
-  }
-
-  if(lock)
-    UnLock();
-
-  return true;
-}
-
 bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)

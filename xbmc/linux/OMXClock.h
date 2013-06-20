@@ -81,7 +81,6 @@ public:
   void OMXDeinitialize();
   bool OMXIsPaused() { return m_pause; };
   bool OMXStop(bool lock = true);
-  bool OMXStart(bool lock = true);
   bool OMXStep(int steps = 1, bool lock = true);
   bool OMXReset(bool lock = true);
   double OMXMediaTime(bool lock = true);
