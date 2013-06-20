@@ -100,9 +100,11 @@ public:
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   const CStdString GetInfo(int info) const;
 
+  int isAnimated() const { return m_isAnimated; };
   bool Loaded() const { return m_isLoaded; };
   bool Load(const CStdString &path);
 
+  void setIsAnimated(int animated);
   static int TranslateString(const CStdString &info);
 
   void SetInfo(int info, const CStdString& value);
@@ -118,6 +120,7 @@ private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
+  int        m_isAnimated;           // -1 := not yet determined, 0 := false, 1 := true
   bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
   bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
   CDateTime  m_dateTimeTaken;

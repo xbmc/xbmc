@@ -125,7 +125,12 @@ public:
    */
   bool IsVideo() const;
 
-  bool IsAnimatedGif() const;
+  /*!
+  \brief Check whether an item is an animated gif picture item.
+   Note that this may change the PictureInfoTag of the item.
+  \return true if the item is an animated gif , false otherwise. 
+  */
+  bool IsAnimatedGif();
 
   bool IsDiscStub() const;
 

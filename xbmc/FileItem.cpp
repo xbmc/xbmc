@@ -799,23 +799,45 @@ bool CFileItem::IsVideo() const
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_videoExtensions);
 }
 
-bool CFileItem::IsAnimatedGif() const
+bool CFileItem::IsAnimatedGif()
 {
-  bool isAnimated = false;
-  if (URIUtils::HasExtension(m_strPath, ".gif"))
+  if (URIUtils::HasExtension(m_strPath, ".gif") && HasPictureInfoTag())
   {
-    CFileItem copy(m_strPath, false);
-    CDVDFileInfo::GetFileStreamDetails(&copy);
-    CVideoInfoTag* tag = copy.GetVideoInfoTag();
-    if (tag)
+    if (GetPictureInfoTag()->isAnimated() == -1)
     {
-      const CStreamDetailVideo* d = (CStreamDetailVideo*)tag->m_streamDetails.GetNthStream(CStreamDetail::VIDEO, 0);
-      if (d)
-        if (d->m_avg_frame_rate > 0)
-          isAnimated =  true;
+      CFileItem copy(m_strPath, false);
+      if (!CDVDFileInfo::GetFileStreamDetails(&copy))
+      {
+        GetPictureInfoTag()->setIsAnimated(0);
+        return false;
+      }
+
+      CVideoInfoTag* tag = copy.GetVideoInfoTag();
+      if (tag)
+      {
+        const CStreamDetailVideo* d = (CStreamDetailVideo*)tag->m_streamDetails.GetNthStream(CStreamDetail::VIDEO, 0);
+        if (d)
+        {
+          if (d->m_avg_frame_rate > 0)
+            GetPictureInfoTag()->setIsAnimated(1);
+          else
+            GetPictureInfoTag()->setIsAnimated(0);
+        }
+        else
+          GetPictureInfoTag()->setIsAnimated(0);
+      }
+      else
+        GetPictureInfoTag()->setIsAnimated(0);
     }
+
+    if (GetPictureInfoTag()->isAnimated() == 0)
+      return false;
+    else if (GetPictureInfoTag()->isAnimated() == 1)
+      return true;
+    else 
+      return false;
   }
-  return isAnimated;
+  return false;
 }
 
 
