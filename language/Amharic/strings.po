@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Amharic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/am/)\n"
+"Language-Team: Amharic (http://www.transifex.com/projects/p/xbmc-main/language/am/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,7 +31,7 @@ msgstr "ቪዲዮ"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "የቲቪ - መመሪያ"
+msgstr "የቲቪ-መመሪያ"
 
 msgctxt "#5"
 msgid "Settings"
@@ -112,7 +111,7 @@ msgstr "ሐምሌ "
 
 msgctxt "#28"
 msgid "August"
-msgstr "ነሐሴ / ጳጉሜ "
+msgstr "ነሐሴ/ጳጉሜ "
 
 msgctxt "#29"
 msgid "September"
@@ -140,7 +139,7 @@ msgstr "ማክ"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "ራቡ"
+msgstr "ረቡ"
 
 msgctxt "#44"
 msgid "Thu"
@@ -156,7 +155,7 @@ msgstr "ቅዳ"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "እሁ"
+msgstr "እሑ"
 
 msgctxt "#51"
 msgid "Jan"
@@ -188,7 +187,7 @@ msgstr "ሐም "
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "ነሐ / ጳጉ "
+msgstr "ነሐ/ጳጉ "
 
 msgctxt "#59"
 msgid "Sep"
@@ -274,13 +273,33 @@ msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
 
+msgctxt "#88"
+msgid "South"
+msgstr "ከ ደቡብ"
+
+msgctxt "#89"
+msgid "North"
+msgstr "ከ ሰሜን "
+
+msgctxt "#90"
+msgid "West"
+msgstr "ከ ምእራብ"
+
+msgctxt "#91"
+msgid "East"
+msgstr "ከ ምስራቅ"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "ተለዋዋጭ"
+
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "መመልከቻ : በራሱ "
+msgstr "መመልከቻ: በራሱ "
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "መመልከቻ : በራሱ በትልቁ "
+msgstr "መመልከቻ: በራሱ በትልቅ  "
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -296,15 +315,15 @@ msgstr "ማሰሻ"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "በ ስም : መለያ "
+msgstr "በ ስም: መለያ "
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "በ ቀን : መለያ"
+msgstr "በ ቀን: መለያ"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "በ መጠን : መለያ"
+msgstr "በ መጠን: መለያ"
 
 msgctxt "#106"
 msgid "No"
@@ -436,7 +455,7 @@ msgstr "የስርአት መረጃ"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "የአየር ንብረት :"
+msgstr "የአየር ንብረት:"
 
 msgctxt "#140"
 msgid "CPU:"
@@ -448,23 +467,23 @@ msgstr "GPU:"
 
 msgctxt "#142"
 msgid "Time:"
-msgstr "ሰአት :"
+msgstr "ሰአት:"
 
 msgctxt "#143"
 msgid "Current:"
-msgstr "አሁን :"
+msgstr "አሁን:"
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "መገንቢያ :"
+msgstr "መገንቢያ:"
 
 msgctxt "#145"
 msgid "Network:"
-msgstr "ኔትዎርክ :"
+msgstr "ኔትዎርክ:"
 
 msgctxt "#146"
 msgid "Type:"
-msgstr "አይነት :"
+msgstr "አይነት:"
 
 msgctxt "#147"
 msgid "Static"
@@ -484,11 +503,15 @@ msgstr "IP address"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "አገናኝ :"
+msgstr "አገናኝ:"
 
 msgctxt "#154"
 msgid "Storage"
 msgstr "ማጠራቀሚያ"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "አካል"
 
 msgctxt "#156"
 msgid "Free"
@@ -520,7 +543,7 @@ msgstr "ማስገቢያውን መክፈቻ"
 
 msgctxt "#163"
 msgid "Reading"
-msgstr "በማንበብ ላይ "
+msgstr "በ ማንበብ ላይ "
 
 msgctxt "#164"
 msgid "No disc"
@@ -534,13 +557,17 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "ቆዳ"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Resolution"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "ማሳያው ከ ቪዲዮው ጋር እንዲመሳሰል የማነቃቂያውን መጠን ማስተካከያ "
+msgstr "የ ማሳያውን ማነቃቂያ መጠን ከቪዲዮ ጋር ማዛመጃ ማስተካከያ "
 
 msgctxt "#172"
 msgid "Release date"
@@ -620,7 +647,7 @@ msgstr "ምንም መረጃ አልተገኘም "
 
 msgctxt "#196"
 msgid "Select movie:"
-msgstr "ሙቪ ይምረጡ :"
+msgstr "ሙቪ ይምረጡ:"
 
 msgctxt "#197"
 msgid "Querying %s info"
@@ -629,6 +656,10 @@ msgstr "መረጃ %s በመጠየቅ ላይ"
 msgctxt "#198"
 msgid "Loading movie details"
 msgstr "የሙቪ ዝርዝርርችን በመጫን ላይ "
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "የ ዌብ ገጽታዎች"
 
 msgctxt "#205"
 msgid "Votes"
@@ -646,9 +677,25 @@ msgctxt "#210"
 msgid "Previous"
 msgstr "ቀደም ያለው "
 
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "የ ተጠቃሚ ገጽታዎች ማስተካከያ"
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "ቪዲዮ ማስተካከያ"
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "ማለስለሻ"
+
 msgctxt "#216"
 msgid "Zoom amount"
 msgstr "ማሳያ መጠን"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "የ ፒክስል መጠን"
 
 msgctxt "#218"
 msgid "DVD drive"
@@ -674,6 +721,10 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "ፍጥነት"
 
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "በቁመት መቀየሪያ"
+
 msgctxt "#226"
 msgid "Test patterns..."
 msgstr "መሞከሪያ ምሳሌዎች..."
@@ -697,6 +748,10 @@ msgstr "ቀጥተኛ "
 msgctxt "#238"
 msgid "Magnification"
 msgstr "ማጉያ"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "ሲጨርስ ያጫወተውን ምጽጃ"
 
 msgctxt "#240"
 msgid "Display Mode"
@@ -738,6 +793,10 @@ msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
 
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "የ ሲዲ መረጃ በ መፈለግ ላይ"
+
 msgctxt "#257"
 msgid "Error"
 msgstr "ስህተት"
@@ -764,19 +823,19 @@ msgstr "መቅረጫውን ማስቆሚያ"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "መለያ በ : ሰአት"
+msgstr "መለያ በ: ሰአት"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr " በ አርእስት : መለያ   "
+msgstr " በ አርእስት: መለያ   "
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "መለያ በ : ከያኒ  "
+msgstr "መለያ በ: ከያኒ  "
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "በ አልበም  : መለያ"
+msgstr "በ አልበም: መለያ"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -784,7 +843,7 @@ msgstr "ከፍተኛዎቹ 100 "
 
 msgctxt "#274"
 msgid "Subtitle positioning"
-msgstr "የንዑስ አርእስት ቦታ "
+msgstr "የ ንዑስ አርእስት ቦታ "
 
 msgctxt "#279"
 msgid "Unable to load settings"
@@ -810,6 +869,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "ምንም ውጤት አልተገኘም "
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "የ ተመረጠው የድምፅ ቋንቋ"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "የ ተመረጠው የ ንዑስ አርእስት ቋንቋ"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "ንዑስ አርእስት"
@@ -819,8 +886,8 @@ msgid "Font"
 msgstr "ፊደል "
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- መጠን "
+msgid "Size"
+msgstr "መጠን"
 
 msgctxt "#291"
 msgid "Video"
@@ -830,6 +897,10 @@ msgctxt "#292"
 msgid "Audio"
 msgstr "ድምፅ "
 
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "ንዑስ አርእስት መቃኛ"
+
 msgctxt "#294"
 msgid "Create bookmark"
 msgstr "ምልክት ማድረጊያ መፍጠሪያ"
@@ -837,6 +908,10 @@ msgstr "ምልክት ማድረጊያ መፍጠሪያ"
 msgctxt "#296"
 msgid "Clear bookmarks"
 msgstr "ምልክት ማድረጊያውን ማጽጃ "
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "ድምፅ ማካካሻ "
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -853,6 +928,10 @@ msgstr "ቋንቋ "
 msgctxt "#305"
 msgid "Enabled"
 msgstr "ተችሏል "
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "የ ተጠቃሚ ገጽታ ቋንቋ "
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -942,6 +1021,18 @@ msgctxt "#335"
 msgid "Start"
 msgstr "ማስጀመሪያ"
 
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "የ ክፈፍ መጠን መቀየሪያ"
+
+msgctxt "#337"
+msgid "Audio output"
+msgstr "የድምፅ ውጤት "
+
+msgctxt "#338"
+msgid "Analog"
+msgstr "አናሎግ "
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "የተለያዩ ከያኒዎች"
@@ -953,6 +1044,10 @@ msgstr "ዲስክ ማጫወቻ "
 msgctxt "#342"
 msgid "Movies"
 msgstr "ሙቪዎች"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "የ ክፈፍ መጠን ማስተካከያ"
 
 msgctxt "#344"
 msgid "Actors"
@@ -986,25 +1081,29 @@ msgctxt "#359"
 msgid "Recently added albums"
 msgstr "በቅርብ ጊዜ የተጨመሩ አልበሞች"
 
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "መመልከቻ ማዳኛ"
+
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "R. ተንሸራታች "
+msgstr "R. ተንሸራታች ማሳያ "
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "መለያ በ : ፋይል "
+msgstr "መለያ በ: ፋይል "
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "መለያ በ : ስም "
+msgstr "መለያ በ: ስም "
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "መለያ በ : አመት "
+msgstr "መለያ በ: አመት "
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "መለያ በ : ደረጃው "
+msgstr "መለያ በ: ደረጃው "
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1013,6 +1112,10 @@ msgstr "IMDb"
 msgctxt "#369"
 msgid "Title"
 msgstr "አርእስት"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "ነጎድጓዳማ "
 
 msgctxt "#371"
 msgid "Partly"
@@ -1037,6 +1140,10 @@ msgstr "በረዶ "
 msgctxt "#376"
 msgid "Rain"
 msgstr "ዝናብ "
+
+msgctxt "#377"
+msgid "Light"
+msgstr "ቀላል"
 
 msgctxt "#378"
 msgid "AM"
@@ -1086,6 +1193,10 @@ msgctxt "#389"
 msgid "Shower"
 msgstr "ካፊያ "
 
+msgctxt "#390"
+msgid "Flurries"
+msgstr "ብናኝ"
+
 msgctxt "#391"
 msgid "Low"
 msgstr "አነስተኛ "
@@ -1112,7 +1223,7 @@ msgstr "አካባቢ ይምረጡ"
 
 msgctxt "#397"
 msgid "Refresh time"
-msgstr "ሰአት ማነቃቂያ"
+msgstr "ማነቃቂያ ሰአት"
 
 msgctxt "#398"
 msgid "Temperature units"
@@ -1134,9 +1245,17 @@ msgctxt "#402"
 msgid "Feels like"
 msgstr "የሚሰማው እንደ"
 
+msgctxt "#403"
+msgid "UV index"
+msgstr "ጨረር "
+
 msgctxt "#404"
 msgid "Wind"
 msgstr "ነፋስ"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "የጤዛ ነጥብ"
 
 msgctxt "#406"
 msgid "Humidity"
@@ -1152,7 +1271,7 @@ msgstr "የአየር ንብረት ግልጋሎት በመፈለግ ላይ"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "የአየር ንብረት በመፈለግ ላይ ለ :"
+msgstr "የአየር ንብረት በመፈለግ ላይ ለ:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
@@ -1176,7 +1295,7 @@ msgstr "ዝግጁ አይደለም "
 
 msgctxt "#417"
 msgid "View: Big icons"
-msgstr "መመልከቻ : በትልቅ ምልክቶች "
+msgstr "መመልከቻ: በትልቅ ምልክቶች "
 
 msgctxt "#418"
 msgid "Low"
@@ -1192,19 +1311,23 @@ msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
-msgstr "የአልበም መረጃ ማጥፊያ "
+msgstr "የ አልበም መረጃ ማጥፊያ "
 
 msgctxt "#423"
 msgid "Delete CD information"
-msgstr "የሲዲ መረጃ ማጥፊያ "
+msgstr "የ ሲዲ መረጃ ማጥፊያ "
 
 msgctxt "#424"
 msgid "Select"
-msgstr "መምረጫ"
+msgstr "ይምረጡ"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "ምንም የ አልበም መረጃ አልተገኘም"
 
 msgctxt "#426"
 msgid "No CD information found"
-msgstr "የሲዲ መረጃ አልተገኘም"
+msgstr "የ ሲዲ መረጃ አልተገኘም"
 
 msgctxt "#427"
 msgid "Disc"
@@ -1212,19 +1335,19 @@ msgstr "ዲስክ "
 
 msgctxt "#428"
 msgid "Insert correct CD/DVD"
-msgstr "ትክክለኛውን ሲዲ / ዲቪዲ ያስገቡ "
+msgstr "ትክክለኛውን ሲዲ/ዲቪዲ ያስገቡ "
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "እባክዎን የሚቀጥለውን ዲስክ ያስገቡ"
+msgstr "እባክዎን የሚቀጥለውን ዲስክ ያስገቡ:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "መለያ በ : ዲቪድድድዲ#"
+msgstr "መለያ በ: ዲቪዲ#"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "ሙቪ ከመጽሐፍት ቤት ማስወገጃ "
+msgstr "ከመጽሐፍት ቤት ሙቪ ማስወገጃ "
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -1242,9 +1365,17 @@ msgctxt "#438"
 msgid "Opening file"
 msgstr "ፋይል በመክፈት ላይ "
 
+msgctxt "#440"
+msgid "Harddisk"
+msgstr "ሀርድ ዲስክ "
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "የ አካባቢ ኔትዎርክ "
 
 msgctxt "#443"
 msgid "Internet"
@@ -1261,10 +1392,6 @@ msgstr "ድምጽ"
 msgctxt "#446"
 msgid "DVD"
 msgstr "ዲቪዲ "
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1302,6 +1429,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr "መመልከቻ መቀየሪያ"
 
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "ድምፅ ማስተላለፊያ"
+
 msgctxt "#461"
 msgid "[active]"
 msgstr "[ንቁ]"
@@ -1312,11 +1443,15 @@ msgstr "ንዑስ አርእስት"
 
 msgctxt "#464"
 msgid "Brightness"
-msgstr "ብሩነት "
+msgstr "ብሩህነት "
 
 msgctxt "#465"
 msgid "Contrast"
 msgstr "ማነጻጸሪያ "
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "ጋማ "
 
 msgctxt "#467"
 msgid "Type"
@@ -1360,7 +1495,7 @@ msgstr "የድምፅ ምርጫዎች"
 
 msgctxt "#482"
 msgid "About XBMC"
-msgstr "ስለ  XBMC"
+msgstr "ስለ XBMC"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1372,7 +1507,7 @@ msgstr "መድገሚያ "
 
 msgctxt "#487"
 msgid "Repeat one"
-msgstr "አንድ ጊኡዜ መድገሚያ "
+msgstr "አንድ ጊዜ መድገሚያ "
 
 msgctxt "#488"
 msgid "Repeat folder"
@@ -1390,13 +1525,17 @@ msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
 msgstr "የረቀቁ ምርጫዎች (ለባለሞያዎች ብቻ)"
 
+msgctxt "#496"
+msgid "Calibration"
+msgstr "ማስተካከያ"
+
 msgctxt "#497"
 msgid "Show file extensions"
 msgstr "የፋይል ተቀጥያዎችን ማሳያ"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "መለያ በ : አይነት "
+msgstr "መለያ በ: አይነት "
 
 msgctxt "#501"
 msgid "Looking for album names..."
@@ -1416,7 +1555,11 @@ msgstr "ባዶ "
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "መለያ በ : አጠቃቀም "
+msgstr "መለያ በ: አጠቃቀም "
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "መስኮት ማስጀመሪያ"
 
 msgctxt "#513"
 msgid "Home window"
@@ -1429,6 +1572,10 @@ msgstr "በእጅ ማሰናጃ "
 msgctxt "#517"
 msgid "Recently played albums"
 msgstr "በቅርብ ጊዜ የተጫወቱት አልበሞች "
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "ማስነሻ"
 
 msgctxt "#522"
 msgid "Remove source"
@@ -1460,7 +1607,7 @@ msgstr "አርእስት ያስገቡ"
 
 msgctxt "#529"
 msgid "Error: Duplicate title"
-msgstr "ስህተት : አርእስቱን በመድገም ላይ "
+msgstr "ስህተት: የተደገመ አርእስት "
 
 msgctxt "#532"
 msgid "Manual addition"
@@ -1468,7 +1615,7 @@ msgstr "በእጅ መጨመሪያ "
 
 msgctxt "#534"
 msgid "View: %s"
-msgstr "መመልከቻ : %s"
+msgstr "መመልከቻ: %s"
 
 msgctxt "#535"
 msgid "List"
@@ -1500,7 +1647,7 @@ msgstr "የአልበም ምልክቶች "
 
 msgctxt "#542"
 msgid "DVD icons"
-msgstr "የዲቪዲ ምልክቶች"
+msgstr "የ ዲቪዲ ምልክቶች"
 
 msgctxt "#543"
 msgid "DVD"
@@ -1508,11 +1655,15 @@ msgstr "ዲቪዲ "
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "የመገናኛ መረጃ "
+msgstr "የ መገናኛ መረጃ "
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "የ ድምፅ አካሎች ውጤት"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "መለያ በ : %s"
+msgstr "መለያ በ: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -1570,6 +1721,10 @@ msgctxt "#566"
 msgid "Album artist"
 msgstr "የከያኒው አልበም "
 
+msgctxt "#567"
+msgid "Play count"
+msgstr "የሚጫወተውን መቁጠሪያ"
+
 msgctxt "#568"
 msgid "Last played"
 msgstr "መጨረሻ የተጫወተው "
@@ -1586,9 +1741,13 @@ msgctxt "#571"
 msgid "Default"
 msgstr "ነባር "
 
+msgctxt "#572"
+msgid "Studio"
+msgstr "ስቱዲዮ "
+
 msgctxt "#573"
 msgid "Path"
-msgstr "ማቆሚያ"
+msgstr "መንገድ"
 
 msgctxt "#574"
 msgid "Country"
@@ -1601,6 +1760,10 @@ msgstr "በሂደት ላይ "
 msgctxt "#576"
 msgid "Times played"
 msgstr "የተጫወተው መጠን "
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "የተወሰደው ቀን "
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -1660,15 +1823,15 @@ msgstr "ማጥፊያ "
 
 msgctxt "#595"
 msgid "Repeat: Off"
-msgstr "መድገሚያውን : ማጥፊያ "
+msgstr "መድገሚያውን: ማጥፊያ "
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "መድገሚያ : አንድ ጊዜ"
+msgstr "መድገሚያ: አንድ ጊዜ"
 
 msgctxt "#597"
 msgid "Repeat: All"
-msgstr "መድገሚያውን : ሁሉንም "
+msgstr "መድገሚያውን: ሁሉንም "
 
 msgctxt "#601"
 msgid "Medium"
@@ -1678,13 +1841,21 @@ msgctxt "#602"
 msgid "Standard"
 msgstr "መደበኛ "
 
+msgctxt "#603"
+msgid "Extreme"
+msgstr "ከፍተኛ"
+
 msgctxt "#607"
 msgid "To:"
-msgstr "ለ :"
+msgstr "ለ:"
 
 msgctxt "#611"
 msgid "Enter number"
 msgstr "ቁጥር ያስገቡ "
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "የ ናሙና መጠን"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -1693,6 +1864,10 @@ msgstr "የድምጽ ሲዲዎች "
 msgctxt "#622"
 msgid "Quality"
 msgstr "ጥራቱ "
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "ሁሉንም ዘፈኖች ከ "
 
 msgctxt "#629"
 msgid "View mode"
@@ -1706,9 +1881,17 @@ msgctxt "#631"
 msgid "Zoom"
 msgstr "ማሳያ "
 
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "ማስፊያ 4:3"
+
 msgctxt "#633"
 msgid "Wide Zoom"
 msgstr "በሰፊው ማሳያ "
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "ማስፊያ 16:9"
 
 msgctxt "#635"
 msgid "Original Size"
@@ -1732,11 +1915,11 @@ msgstr "የቪዲዮ መጽሐፍት ቤት ማምጫ "
 
 msgctxt "#649"
 msgid "Importing"
-msgstr "በማጣት ላይ "
+msgstr "በ ማምጣት ላይ "
 
 msgctxt "#650"
 msgid "Exporting"
-msgstr "በመላክ ላይ "
+msgstr "በ መላክ ላይ "
 
 msgctxt "#651"
 msgid "Browse for library"
@@ -1750,6 +1933,10 @@ msgctxt "#653"
 msgid "Update library"
 msgstr "መጽሐፍት ቤት ማሻሻያ "
 
+msgctxt "#656"
+msgid "Browse for playlist"
+msgstr "መቃኛ የሚጫወቱ ዝርዝር "
+
 msgctxt "#657"
 msgid "Browse for folder"
 msgstr "ፎልደር መቃኛ "
@@ -1757,6 +1944,14 @@ msgstr "ፎልደር መቃኛ "
 msgctxt "#658"
 msgid "Song information"
 msgstr "የዘፈን መረጃ "
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "መጠኑን ማጉያ"
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "የመላኪያ ፎልደር ይምረጡ"
 
 msgctxt "#662"
 msgid "This file is no longer available."
@@ -1787,8 +1982,8 @@ msgid "Network"
 msgstr "ኔትዎርክ"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- ሰርቨር "
+msgid "Server"
+msgstr "ሰርቨር"
 
 msgctxt "#711"
 msgid "Internet Protocol (IP)"
@@ -1807,32 +2002,44 @@ msgid "Manual (Static)"
 msgstr "በእጅ (Static)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP address"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmask"
+msgid "IP address"
+msgstr "IP address"
 
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "ማስቀመጫ & እንደገና ማስጀመሪያ"
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "የዌብ ሰርቨር"
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "FTP ሰርቨር"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "ማስቀመጫ & መፈጸሚያ "
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- የመግቢያ ቃል "
+msgid "Password"
+msgstr "የ መግቢያ ቃል"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "ማለፊያ የለም "
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "ባህሪ ማሰናጃ"
 
 msgctxt "#736"
-msgid "- Style"
-msgstr "- ዘዴዎች"
+msgid "Style"
+msgstr "ዘዴ"
 
 msgctxt "#737"
-msgid "- Colour"
-msgstr "- ቀለም "
+msgid "Colour"
+msgstr "ቀለም"
 
 msgctxt "#738"
 msgid "Normal"
@@ -1866,13 +2073,33 @@ msgctxt "#747"
 msgid "Error loading image"
 msgstr "ስህተት ምስሉን በመጫን ላይ "
 
+msgctxt "#748"
+msgid "Edit path"
+msgstr "መንገዱን ማረሚያ"
+
 msgctxt "#750"
 msgid "Are you sure?"
-msgstr "እርግጠኛ ኖት? "
+msgstr "እርግጠኛ ነዎት? "
 
 msgctxt "#751"
 msgid "Removing source"
 msgstr "ምንጩብ በማስወገድ ላይ "
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "የፕሮግራም አገናኝ መጨመሪያ"
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "የፕሮግራም መንገድ ማረሚያ"
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "የፕሮግራም ስም ማረሚያ"
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "መመልከቻ: ትልቅ ዝርዝር "
 
 msgctxt "#760"
 msgid "Yellow"
@@ -1902,6 +2129,26 @@ msgctxt "#767"
 msgid "Grey"
 msgstr "ግራጫ "
 
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "ስህተት %i: ማካፈል ዝግጁ አይደለም"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "የድምፅ ውጤት "
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "በ መፈለግ ላይ "
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "የተንሸራታች ማሳያ ፎልደር"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "የ ኔትዎርክክክክክ ገጽታዎች"
+
 msgctxt "#781"
 msgid "WEP"
 msgstr "WEP"
@@ -1914,6 +2161,18 @@ msgctxt "#783"
 msgid "WPA2"
 msgstr "WPA2"
 
+msgctxt "#790"
+msgid "Remote control"
+msgstr "በርቀት መቆጣጠሪያ"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "መጻህፍት ቤት ማሻሻያ"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "አሁን ማሰስ ይፈልጋሉ? "
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "ሙዚቃ መጨመሪያ..."
@@ -1922,17 +2181,25 @@ msgctxt "#999"
 msgid "Add Videos..."
 msgstr "ቪዲዮ መጨመሪያ..."
 
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- ቅድመ እይታ"
-
 msgctxt "#1001"
 msgid "Unable to connect"
 msgstr "መገናኘት አልተቻለም "
 
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "ለማንኛውም መጨመር ይፈልጋሉ?"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "IP address"
+
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "የ ኔትዎርክ አካባቢ መጨመሪያ "
+
+msgctxt "#1008"
+msgid "Protocol"
+msgstr "አሰራር"
 
 msgctxt "#1009"
 msgid "Server address"
@@ -1942,6 +2209,10 @@ msgctxt "#1010"
 msgid "Server name"
 msgstr "የሰርቨሩ ስም "
 
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "የ ርቀት መንገድ "
+
 msgctxt "#1012"
 msgid "Shared folder"
 msgstr "የሚካፈሉት ፎልደር"
@@ -1949,6 +2220,18 @@ msgstr "የሚካፈሉት ፎልደር"
 msgctxt "#1014"
 msgid "Username"
 msgstr "የተጠቃሚ ስም "
+
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "የ ኔትዎርክ ሰርቨር መቃኛ"
+
+msgctxt "#1019"
+msgid "Enter the username"
+msgstr "የ ተጠቃሚ ስም ያስገቡ"
+
+msgctxt "#1020"
+msgid "Add %s source"
+msgstr "ምንጭ %s መጨመሪያ"
 
 msgctxt "#1024"
 msgid "Browse"
@@ -1978,9 +2261,21 @@ msgctxt "#1031"
 msgid "Browse for image folder"
 msgstr "የምስል ፎልደር መቃኛ"
 
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "የ ኔትዎርክ አካባቢ መጨመሪያ "
+
 msgctxt "#1033"
 msgid "Browse for file"
 msgstr "ፋይል መቃኛ"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "ንዑስ ዝርዝር"
+
+msgctxt "#1035"
+msgid "Enable submenu buttons"
+msgstr "ማስቻያ የ ንዑስ ዝርዝር ቁልፎች"
 
 msgctxt "#1036"
 msgid "Favourites"
@@ -1988,19 +2283,27 @@ msgstr "የምወዳቸው"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "የቪዲዮ ተጨማ-ሪዎች "
+msgstr "የ ቪዲዮ ተጨማ-ሪዎች "
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "የመዚቃ ተጨማ-ሪዎች"
+msgstr "የ መዚቃ ተጨማ-ሪዎች"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "የስእል ተጨማ-ሪዎች"
+msgstr "የ ስእል ተጨማ-ሪዎች"
 
 msgctxt "#1040"
 msgid "Loading directory"
 msgstr "ዳይሬክቶሪውን በመጫን ላይ "
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "የ ተገኙት %i እቃዎች"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr "የ ተገኙት %i ከ %i እቃዎች"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
@@ -2015,12 +2318,40 @@ msgid "Other..."
 msgstr "ሌሎች..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- የተጠቃሚ ስም "
+msgid "Username"
+msgstr "የ ተጠቃሚ ስም"
 
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "የዌብ አድራሻ ያስገቡ "
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "SMB client"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "የ ስራ ቡድን "
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "ነባር የ ተጠቃሚ ስም "
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "ነባር የ መግቢያ ቃል"
 
 msgctxt "#1210"
 msgid "Remove"
@@ -2066,9 +2397,13 @@ msgctxt "#1220"
 msgid "Pictures & files"
 msgstr "ስእሎች & ፋይሎች "
 
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "ሙዚቃ & ቪዲዮ & ስእሎች"
+
 msgctxt "#1222"
 msgid "Music & video & pictures & files"
-msgstr "ሙዚቃ & ቪዲዮ ስእሎች & ፋይሎች "
+msgstr "ሙዚቃ & ቪዲዮ & ስእሎች & ፋይሎች "
 
 msgctxt "#1223"
 msgid "Disabled"
@@ -2118,13 +2453,49 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "የአካሉ ስም "
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "ማጣሪያ %s"
+
 msgctxt "#1397"
 msgid "and"
 msgstr "እና "
 
+msgctxt "#1400"
+msgid "Isolated"
+msgstr "የተለያ"
+
+msgctxt "#1402"
+msgid "Thunder"
+msgstr "መብረቅ "
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "ፀሐይ "
+
+msgctxt "#1404"
+msgid "Heavy"
+msgstr "ከባድ "
+
+msgctxt "#1405"
+msgid "in"
+msgstr "ውስጥ"
+
+msgctxt "#1406"
+msgid "the"
+msgstr "የ "
+
+msgctxt "#1407"
+msgid "Vicinity"
+msgstr "ቅርብ"
+
+msgctxt "#1408"
+msgid "Ice"
+msgstr "በረዶ "
+
+msgctxt "#1410"
+msgid "Calm"
+msgstr "የተረጋጋ "
 
 msgctxt "#1411"
 msgid "with"
@@ -2134,21 +2505,85 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "ነፋሳማ "
 
+msgctxt "#1414"
+msgid "Thunderstorm"
+msgstr "ነጎድጓዳማ "
+
+msgctxt "#1415"
+msgid "Drizzle"
+msgstr "ካፊያ "
+
 msgctxt "#1416"
 msgid "Foggy"
 msgstr "ጭጋጋማ "
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "ነጎድጓዳማ "
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "መካከለኛ"
+
+msgctxt "#1421"
+msgid "Very High"
+msgstr "በጣም ከፍተኛ"
 
 msgctxt "#1422"
 msgid "Windy"
 msgstr "ነፋሳማ "
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "ደመናማ"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "በረዶ "
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "ጪስ"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "እሳተ ጎመራ"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "አመድ"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "አቧራ"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "አሸዋ"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "ትንሽ "
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "ማስቻያ LCD/VFD"
+msgctxt "#1439"
+msgid "and"
+msgstr "እና"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "ጋር "
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "ደመና"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "ያልታወቀ"
+
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "ማስኬጃ ጊዜ"
 
 msgctxt "#10000"
 msgid "Home"
@@ -2180,7 +2615,7 @@ msgstr "ቪዲዮ"
 
 msgctxt "#10007"
 msgid "System information"
-msgstr "የስራቱ መረጃ "
+msgstr "የስርአቱ መረጃ "
 
 msgctxt "#10008"
 msgid "Settings - General"
@@ -2190,37 +2625,45 @@ msgctxt "#10009"
 msgid "Settings - Screen"
 msgstr "መመለከቻ  - ማሰናጃ "
 
+msgctxt "#10010"
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "ማሰናጃ - አቀራረብ - GUI ማስተካከያ"
+
+msgctxt "#10011"
+msgid "Settings - Videos - Screen Calibration"
+msgstr "ማሰናጃ - ቪዲዮ - መመልከቻ ማስተካከያ"
+
 msgctxt "#10012"
 msgid "Settings - Pictures"
-msgstr "ስእል  - ማሰናጃ "
+msgstr "ስእል - ማሰናጃ "
 
 msgctxt "#10013"
 msgid "Settings - Programs"
-msgstr "ፕሮግራም  - ማሰናጃ "
+msgstr "ፕሮግራም - ማሰናጃ "
 
 msgctxt "#10014"
 msgid "Settings - Weather"
-msgstr "የአየር ንብረት  - ማሰናጃ "
+msgstr "የአየር ንብረት - ማሰናጃ "
 
 msgctxt "#10015"
 msgid "Settings - Music"
-msgstr "ሙዚቃ  - ማሰናጃ "
+msgstr "ሙዚቃ - ማሰናጃ "
 
 msgctxt "#10016"
 msgid "Settings - System"
-msgstr "አርአት  - ማሰናጃ "
+msgstr "አርአት - ማሰናጃ "
 
 msgctxt "#10017"
 msgid "Settings - Videos"
-msgstr "ቪዲዮ  - ማሰናጃ "
+msgstr "ቪዲዮ - ማሰናጃ "
 
 msgctxt "#10018"
 msgid "Settings - Network"
-msgstr "ኔትዎርክ  - ማሰናጃ "
+msgstr "ኔትዎርክ - ማሰናጃ "
 
 msgctxt "#10019"
 msgid "Settings - Appearance"
-msgstr "አቀራረብ  - ማሰናጃ "
+msgstr "አቀራረብ - ማሰናጃ "
 
 msgctxt "#10021"
 msgid "Web Browser"
@@ -2232,7 +2675,7 @@ msgstr "ቪዲዮ"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
-msgstr "የቪዲዮ / ዝርዝር "
+msgstr "የቪዲዮ/ዝርዝር "
 
 msgctxt "#10029"
 msgid "Login screen"
@@ -2240,11 +2683,39 @@ msgstr "የመግቢያ መመለከቻ "
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
-msgstr "ገስታ ማሰናጃ "
+msgstr "ገጽታ ማሰናጃ "
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "ደረጃ: መሰረታዊ"
 
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "ተጨማሪዎች መቃኛ "
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "እርዳታ"
+
+msgctxt "#10100"
+msgid "Yes/No dialog"
+msgstr "አዎ/አይ ንግግር"
+
+msgctxt "#10101"
+msgid "Progress dialog"
+msgstr "የ ንግግር ሂደት"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "የምወዳቸው"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "ተጨማ-ሪዎች ማሰናጃ "
+
+msgctxt "#10210"
+msgid "Looking for subtitles..."
+msgstr "ንዑስ ስርእስቶች በመፈለግ ላይ..."
 
 msgctxt "#10212"
 msgid "terminating"
@@ -2270,6 +2741,14 @@ msgctxt "#10503"
 msgid "Playlist editor"
 msgstr "ዝርዝር ማረሚያ "
 
+msgctxt "#10504"
+msgid "Top 100 songs"
+msgstr "ከፍተኛ 100 ዘፈኖች "
+
+msgctxt "#10505"
+msgid "Top 100 albums"
+msgstr "ከፍተኛ 100 አልበሞች"
+
 msgctxt "#10506"
 msgid "Programs"
 msgstr "ፕሮግራሞች"
@@ -2278,9 +2757,21 @@ msgctxt "#10507"
 msgid "Configuration"
 msgstr "ማዋቀሪያ "
 
+msgctxt "#10508"
+msgid "Weather forecast"
+msgstr "የ አየር ንብረት"
+
+msgctxt "#10510"
+msgid "Extensions"
+msgstr "ተጨማሪዎች"
+
 msgctxt "#10511"
 msgid "System info"
 msgstr "የስርአቱ መረጃ"
+
+msgctxt "#10516"
+msgid "Music - Library"
+msgstr "የሙዚቃ - መጻህፍት ቤት"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -2298,13 +2789,37 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "የሙቪ መረጃ "
 
+msgctxt "#12000"
+msgid "Select dialog"
+msgstr "ንግግር ይምረጡ"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "የሙዚቃ / መረጃ "
 
+msgctxt "#12002"
+msgid "Dialog OK"
+msgstr "ንግግር እሺ"
+
 msgctxt "#12003"
 msgid "Videos/Info"
 msgstr "የቪዲዮ / መረጃ "
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "ቪዲዮ በሙሉ መመልከቻ ዘዴ"
+
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "ማውጫ እንደገና መገንቢያ"
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "ወደ ሙዚቃ መስኮት መመለሻ "
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "ወደ ቪዲዮ መስኮት መመለሻ "
 
 msgctxt "#12021"
 msgid "Start from beginning"
@@ -2366,9 +2881,17 @@ msgctxt "#12322"
 msgid "*"
 msgstr "*"
 
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "ተቆልፏል! ኮድ ያስገቡ..."
+
 msgctxt "#12326"
 msgid "Enter password"
 msgstr "የመግቢያ ቃል ያስገቡ "
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "ዋናውን የመግቢያ ቃል ያስገቡ "
 
 msgctxt "#12329"
 msgid "or press C to cancel"
@@ -2394,6 +2917,14 @@ msgctxt "#12335"
 msgid "Remove lock"
 msgstr "መቆለፊያውን ማስወገጃ "
 
+msgctxt "#12337"
+msgid "Numeric password"
+msgstr "የ ቁጥር የመግቢያ ቃል"
+
+msgctxt "#12339"
+msgid "Full-text password"
+msgstr "ሙሉ-ጽሁፍ የ መግቢያ ቃል"
+
 msgctxt "#12340"
 msgid "Enter new password"
 msgstr "አዲስ የመግቢያ ቃል ያስገቡ "
@@ -2406,6 +2937,10 @@ msgctxt "#12342"
 msgid "Incorrect password,"
 msgstr "የተሳሳተ የመግቢያ ቃል "
 
+msgctxt "#12343"
+msgid "retries left "
+msgstr "ሙከራ ቀርቷል"
+
 msgctxt "#12344"
 msgid "Passwords entered did not match."
 msgstr "ያስገቡት የመግቢያ ቃል አይመሳሰልም "
@@ -2414,9 +2949,45 @@ msgctxt "#12345"
 msgid "Access denied"
 msgstr "ፍቃድ ተከልክሏል "
 
+msgctxt "#12346"
+msgid "Password retry limit exceeded."
+msgstr "የ መግቢያ ቃል እንደገና መሞከሪያው ጊዜው አልፏል"
+
 msgctxt "#12347"
 msgid "The system will now shut off."
 msgstr "ስርአቱ አሁን ይጠፋል "
+
+msgctxt "#12348"
+msgid "Item locked"
+msgstr "እቃው ተቆልፏል"
+
+msgctxt "#12356"
+msgid "Change lock"
+msgstr "መቀየሪያ መቆለፊያ"
+
+msgctxt "#12357"
+msgid "Source lock"
+msgstr "ምንጭ መቆለፊያ"
+
+msgctxt "#12358"
+msgid "Password entry was blank. Try again."
+msgstr "እባክዎን እንደገና ይሞክሩ የ መግቢያ ቃል ማስገቢያ ባዶ ነው"
+
+msgctxt "#12360"
+msgid "Master lock"
+msgstr "ዋናው መቆለፊያ"
+
+msgctxt "#12367"
+msgid "Master code is not valid"
+msgstr "ዋናው ኮድ ዋጋ የለውም"
+
+msgctxt "#12368"
+msgid "Please enter a valid master code"
+msgstr "እባክዎን ዋጋ ያለው ዋናውን ኮድ ያስገቡ "
+
+msgctxt "#12373"
+msgid "Settings & file manager"
+msgstr "ማሰናጃዎች & የፋይል አስተዳዳሪ"
 
 msgctxt "#12383"
 msgid "12 hour clock"
@@ -2434,6 +3005,10 @@ msgctxt "#12386"
 msgid "Month/Day"
 msgstr "ወር / ቀን "
 
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "ስርአቱ ከ ጀመረ "
+
 msgctxt "#12391"
 msgid "Minutes"
 msgstr "ደቂቃዎች "
@@ -2446,6 +3021,10 @@ msgctxt "#12393"
 msgid "Days"
 msgstr "ቀኖች "
 
+msgctxt "#12394"
+msgid "Total uptime"
+msgstr "ጠቅላላ ክ ጀመረ"
+
 msgctxt "#12395"
 msgid "Battery level"
 msgstr "የባትሪ ደረጃ "
@@ -2453,6 +3032,14 @@ msgstr "የባትሪ ደረጃ "
 msgctxt "#12600"
 msgid "Weather"
 msgstr "የአየር ንብረት"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "መመልከቻ ማዳኛ"
+
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "በሙሉ መመልከቻ OSD"
 
 msgctxt "#13000"
 msgid "System"
@@ -2498,25 +3085,161 @@ msgctxt "#13014"
 msgid "Minimize"
 msgstr "ማሳነሻ "
 
+msgctxt "#13015"
+msgid "Power button action"
+msgstr "የ ሀይል ቁልፍ ተግባር "
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "ስርአቱን ማጥፊያ "
+
+msgctxt "#13020"
+msgid "Is another session active, perhaps over ssh?"
+msgstr "ሌላ ክፍለ ጊዜ ንቁ ነው ምናልባት over ssh?"
+
+msgctxt "#13021"
+msgid "Mounted removable harddrive"
+msgstr "የ ተጫነ የሚወልቅ ሃርድ ድራይቭ"
+
+msgctxt "#13022"
+msgid "Unsafe device removal"
+msgstr "ያለ ጥንቃቄ አካሎችን ማውጫ "
+
+msgctxt "#13023"
+msgid "Successfully removed device"
+msgstr "ተሳክቶ አካሉ ተወግዷል"
+
+msgctxt "#13100"
+msgid "Flicker filter"
+msgstr "የፍሊከር ማጣሪያ"
+
 msgctxt "#13106"
 msgid "Disabled"
 msgstr "ተሰናክሏል "
+
+msgctxt "#13108"
+msgid "Always enabled"
+msgstr "ሁልጊዜ ተችሏል"
+
+msgctxt "#13109"
+msgid "Test & apply resolution"
+msgstr "መሞከሪያ & መፈጸሚያ ሪዞሊሽን "
+
+msgctxt "#13110"
+msgid "Save resolution?"
+msgstr "ሪዞሊሽኑን ላስቀምጠው?"
 
 msgctxt "#13113"
 msgid "Disabled"
 msgstr "ተሰናክሏል "
 
+msgctxt "#13115"
+msgid "Always enabled"
+msgstr "ሁልጊዜ ተችሏል"
+
+msgctxt "#13117"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+msgctxt "#13118"
+msgid "Lanczos"
+msgstr "Lanczos"
+
+msgctxt "#13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
 msgctxt "#13131"
 msgid "Disabled"
 msgstr "ተሰናክሏል "
+
+msgctxt "#13132"
+msgid "Blank displays"
+msgstr "ባዶ ማሳያዎች"
+
+msgctxt "#13162"
+msgid "Initialize failed"
+msgstr "ማስነሳት አልተቻለም "
 
 msgctxt "#13170"
 msgid "Never"
 msgstr "በፍጹም "
 
+msgctxt "#13171"
+msgid "Immediately"
+msgstr "አሁኑኑ "
+
 msgctxt "#13172"
 msgid "After %i secs"
 msgstr "ከ %i ሰከንድ በኋላ "
+
+msgctxt "#13173"
+msgid "HDD install date:"
+msgstr "HDD የተገጠመበት ቀን:"
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "ገጽታዎች "
+
+msgctxt "#13201"
+msgid "Delete profile '%s'?"
+msgstr "ገጽታውን ላጥፋው '%s'?"
+
+msgctxt "#13204"
+msgid "Last loaded profile:"
+msgstr "መጨረሻ የተጫነው ገጽታ:"
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "ያልታወቀ"
+
+msgctxt "#13206"
+msgid "Overwrite"
+msgstr "በላዩ ላይ ደርቦ መጻፊያ"
+
+msgctxt "#13211"
+msgid "Alarm!"
+msgstr "ማስጠንቀቂያ"
+
+msgctxt "#13213"
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+msgctxt "#13214"
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+msgctxt "#13250"
+msgid "Browse for subtitle..."
+msgstr "መቃኛ ለ ንዑስ አርእስቶች"
+
+msgctxt "#13251"
+msgid "Move item"
+msgstr "እቃ ማንቀሳቀሻ"
+
+msgctxt "#13252"
+msgid "Move item here"
+msgstr "እቃውን ወደ እዚህ ማንቀሳቀሻ"
+
+msgctxt "#13253"
+msgid "Cancel move"
+msgstr "ማንቀሳቀሱን መሰረዣ"
+
+msgctxt "#13270"
+msgid "Hardware:"
+msgstr "ጠንካራ አካል:"
+
+msgctxt "#13271"
+msgid "CPU Usage:"
+msgstr "CPU አጠቃቀም:"
+
+msgctxt "#13275"
+msgid "Hard Disk"
+msgstr "ሀርድ ዲስክ "
+
+msgctxt "#13276"
+msgid "DVD-ROM"
+msgstr "ዲቪዲ-ራም"
 
 msgctxt "#13277"
 msgid "Storage"
@@ -2534,6 +3257,22 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "ቪዲዮ "
 
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "ጠንካራ አካል"
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "የ መስሪያው ስርአት:"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU ፍጥነት:"
+
+msgctxt "#13294"
+msgid "DVD region:"
+msgstr "ዲቪዲ አካባቢ:"
+
 msgctxt "#13295"
 msgid "Internet:"
 msgstr "ኢንተርኔት "
@@ -2542,13 +3281,41 @@ msgctxt "#13296"
 msgid "Connected"
 msgstr "ተገናኝቷል"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- ፊደሎች "
+msgctxt "#13306"
+msgid "Show parent folder items"
+msgstr "የ ወላጅ ፎልደር እቃዎች ማሳያ"
+
+msgctxt "#13308"
+msgid "Do you wish to reboot your system"
+msgstr "ስርአቱን እንደገና ማስነሳት ይፈልጋሉ? "
+
+msgctxt "#13309"
+msgid "instead of just XBMC?"
+msgstr "ከ XBMCበስተቀር?"
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "የ ማሳያ ውጤት"
+
+msgctxt "#13311"
+msgid "Float effect"
+msgstr "የ መንሳፈፊያ ውጤት"
 
 msgctxt "#13313"
 msgid "Restart"
 msgstr "እንደገና ማስጀመሪያ"
+
+msgctxt "#13317"
+msgid "View slideshow"
+msgstr "ተንሸራታች ማሳያ መመልከቻ"
+
+msgctxt "#13318"
+msgid "Recursive slideshow"
+msgstr "ተንሸራታች ማሳያ መደጋገሚያ"
+
+msgctxt "#13320"
+msgid "Stereo"
+msgstr "ስቴሪዮ "
 
 msgctxt "#13321"
 msgid "Left only"
@@ -2557,6 +3324,62 @@ msgstr "በግራ ብቻ "
 msgctxt "#13322"
 msgid "Right only"
 msgstr "በቀኝ ብቻ "
+
+msgctxt "#13323"
+msgid "Enable karaoke support"
+msgstr "የ ካሪዮኪ ድጋፍ ማስቻያ"
+
+msgctxt "#13324"
+msgid "Background transparency"
+msgstr "የ መደብ ግልፅነት "
+
+msgctxt "#13325"
+msgid "Foreground transparency"
+msgstr "የ ፊት ለፊት ግልፅነት "
+
+msgctxt "#13326"
+msgid "A/V delay"
+msgstr "A/V delay"
+
+msgctxt "#13327"
+msgid "Karaoke"
+msgstr "ካሪዮኪ"
+
+msgctxt "#13328"
+msgid "%s not found"
+msgstr "%s አልተገኘም"
+
+msgctxt "#13329"
+msgid "Error opening %s"
+msgstr "ስህተት በመክፈት ላይ %s"
+
+msgctxt "#13330"
+msgid "Unable to load %s"
+msgstr "መጫን አልተቻለም %s"
+
+msgctxt "#13332"
+msgid "Move up"
+msgstr "ወደ ላይ ማንቀሳቀሻ "
+
+msgctxt "#13333"
+msgid "Move down"
+msgstr "ወደ ታች ማንቀሳቀሻ"
+
+msgctxt "#13334"
+msgid "Edit label"
+msgstr "ምልክት ማረሚያ"
+
+msgctxt "#13335"
+msgid "Make default"
+msgstr "ነባር ማድረጊያ"
+
+msgctxt "#13336"
+msgid "Remove button"
+msgstr "ቁልፉን ማስወገጃ"
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "እንዳለ መተው"
 
 msgctxt "#13341"
 msgid "Green"
@@ -2570,6 +3393,14 @@ msgctxt "#13343"
 msgid "Red"
 msgstr "ቀይ "
 
+msgctxt "#13346"
+msgid "Movie information"
+msgstr "የሙቪ መረጃ "
+
+msgctxt "#13349"
+msgid "Scan for new content"
+msgstr "አዲስ ይዞታዎች ማሰሻ "
+
 msgctxt "#13350"
 msgid "Now playing..."
 msgstr "አሁን የሚጫወተው "
@@ -2578,13 +3409,137 @@ msgctxt "#13351"
 msgid "Album information"
 msgstr "የአልበም መረጃ "
 
+msgctxt "#13353"
+msgid "Stop scanning"
+msgstr "ማሰሻውን ማስቆሚያ"
+
+msgctxt "#13358"
+msgid "Play item"
+msgstr "እቃ ማጫወቻ "
+
+msgctxt "#13360"
+msgid "Automatically generate thumbnails"
+msgstr "ራሱ በራስይ በአውራ ጥፍር ልክ ማመንጫ"
+
+msgctxt "#13361"
+msgid "Enable voice"
+msgstr "ድምፅ ማስቻያ"
+
+msgctxt "#13375"
+msgid "Enable device"
+msgstr "አካሉን ማስቻያ"
+
 msgctxt "#13376"
 msgid "Volume"
 msgstr "መጠን "
 
+msgctxt "#13377"
+msgid "Default view mode"
+msgstr "ነባር መመልከቻ ዘዴ"
+
+msgctxt "#13378"
+msgid "Default brightness"
+msgstr "ነባር ብርሁነት "
+
+msgctxt "#13379"
+msgid "Default contrast"
+msgstr "ነባር ማነጻጸሪያ"
+
+msgctxt "#13381"
+msgid "Resume video"
+msgstr "ቪዲዮ መቀጠያ "
+
+msgctxt "#13391"
+msgid "Eject/Load"
+msgstr "ማውጫ/መጫኛ"
+
+msgctxt "#13393"
+msgid "Calculate size"
+msgstr "መጠኑን ማስሊያ "
+
+msgctxt "#13394"
+msgid "Calculating folder size"
+msgstr "የ ፎልደር መጠን በ ማስላት ላይ "
+
+msgctxt "#13395"
+msgid "Video settings"
+msgstr "ቪዲዮ ማሰናጃ"
+
+msgctxt "#13396"
+msgid "Audio and subtitle settings"
+msgstr "ድምፅ እና ንዑስ አርእስት ማሰናጃ "
+
+msgctxt "#13397"
+msgid "Enable subtitles"
+msgstr "ንዑስ አርእስቶች ማስቻያ"
+
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "አቋራጮች"
+
+msgctxt "#13401"
+msgid "Browse for %s"
+msgstr "መቃኛ ለ %s"
+
+msgctxt "#13403"
+msgid "Clear default"
+msgstr "ነባር ማጽጃ"
+
+msgctxt "#13404"
+msgid "Resume"
+msgstr "መቀጠያ"
+
+msgctxt "#13406"
+msgid "Picture information"
+msgstr "የ ስእል መረጃ "
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "ከፍተኛ 250 "
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "ከዚህ አጫውት"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "በማውረድ ላይ"
+
+msgctxt "#13416"
+msgid "Auto detect"
+msgstr "በራሱ ፈልጎ ማግኛ"
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "ሶፍትዌር "
+
+msgctxt "#13420"
+msgid "Remove safely"
+msgstr "በጥንቃቄ ማውጫ"
+
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13422"
+msgid "Start slideshow here"
+msgstr "ተንሸራታች ማሳያ ከዚህ ማስጀመሪያ"
+
+msgctxt "#13501"
+msgid "Audio clock"
+msgstr "የ ድምፅ ሰአት"
+
+msgctxt "#13502"
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "የቪዲዮ ሰአት (Drop/Dupe audio)"
+
+msgctxt "#13503"
+msgid "Video clock (Resample audio)"
+msgstr "የቪዲዮ ሰአት (Resample audio)"
+
+msgctxt "#13506"
+msgid "Low(fast)"
+msgstr "ዝቅተኛ(ፈጣን)"
 
 msgctxt "#13507"
 msgid "Medium"
@@ -2594,17 +3549,205 @@ msgctxt "#13508"
 msgid "High"
 msgstr "ከፍተኛ "
 
+msgctxt "#13509"
+msgid "Really high(slow!)"
+msgstr "በጣም ከፍተኛ(ዝቅተኛ)"
+
 msgctxt "#13551"
 msgid "Off"
 msgstr "ማጥፊያ "
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f ሰከንድ "
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f ሰከንዶች"
+
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "ተሰናክሏል "
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "መደበኛ "
+
+msgctxt "#14009"
+msgid "Games directory"
+msgstr "የ ጨዋታ ዳይሬክቶሪ "
+
+msgctxt "#14012"
+msgid "- Use large icons"
+msgstr "- ትልቅ ምልክት መጠቀሚያ large icons"
+
+msgctxt "#14014"
+msgid "- Percentage"
+msgstr "- ፐርሰንቴጅ"
 
 msgctxt "#14018"
 msgid "View options"
 msgstr "ምርጫዎችን መመልከቻ"
 
+msgctxt "#14022"
+msgid "Library"
+msgstr "መጻህፍት ቤት "
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "ቲቪ የለም"
+
+msgctxt "#14028"
+msgid "Internet"
+msgstr "ኢንተርኔት "
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "ኢንተርኔት "
+
 msgctxt "#14036"
 msgid "Services"
 msgstr "ግልጋሎቶች"
+
+msgctxt "#14038"
+msgid "Network settings changed"
+msgstr "የተሰናዳው ኔትዎርክ ተቀይሯል"
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i min"
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i ሰከንድ"
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i ማይክሮ ሰከንድ "
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i ኪቢ/ሰ "
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i ኪቢ "
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+msgctxt "#14051"
+msgid "Time format"
+msgstr "የ ሰአት አቀራረብ"
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "የ ቀን አቀራረብ"
+
+msgctxt "#14053"
+msgid "GUI filters"
+msgstr "GUI ማጣሪያዎች"
+
+msgctxt "#14056"
+msgid "Stop scan"
+msgstr "ማሰሻ ማስቆሚያ"
+
+msgctxt "#14061"
+msgid "Auto"
+msgstr "በራሱ "
+
+msgctxt "#14062"
+msgid "Enter username for"
+msgstr "የተጠቃሚ ስም ያስገቡ ለ "
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "ቀን & ሰአት "
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "ቀን ማሰናጅ"
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "ሰአት ማሰናጃ"
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "ሰአት ያስገቡ በ 24 ሰአት HH:MM አቀራረብ"
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "ቀን ያስገቡ በ DD/MM/YYYY አቀራረብ"
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "IP address ያስገቡ"
+
+msgctxt "#14069"
+msgid "Apply these settings now?"
+msgstr "ይህን ማሰናጃ አሁኑኑ መፈጸሚያ"
+
+msgctxt "#14070"
+msgid "Apply changes now"
+msgstr "ለውጡን አሁን መፈጸሚያ"
+
+msgctxt "#14074"
+msgid "Set timezone"
+msgstr "የሰአት ክልል ማሰናጃ"
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "ወደምወዳቸው መጨመሪያ"
+
+msgctxt "#14077"
+msgid "Remove from favourites"
+msgstr "ከምወዳቸው ማስወገጃ "
+
+msgctxt "#14079"
+msgid "Timezone country"
+msgstr "የ ሰአት ክልል አገር"
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "የሰአት ክልል "
+
+msgctxt "#14081"
+msgid "File lists"
+msgstr "የፋይል ዝርዝር "
+
+msgctxt "#14087"
+msgid "DVDs"
+msgstr "ዲቪዲዎች "
+
+msgctxt "#14088"
+msgid "Play DVDs automatically"
+msgstr "ዲቪዲ ራሱ በራሱ ማጫወቻ"
+
+msgctxt "#14090"
+msgid "International"
+msgstr "አለም አቀፍ"
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "ባህሪ ማሰናጃ"
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "ደህንነት "
+
+msgctxt "#14094"
+msgid "Input devices"
+msgstr "አካሎችን ማስገቢያ"
+
+msgctxt "#14095"
+msgid "Power saving"
+msgstr "ሐይል ማዳኛ"
 
 msgctxt "#14098"
 msgid "Play"
@@ -2614,29 +3757,269 @@ msgctxt "#15015"
 msgid "Remove"
 msgstr "ማስወገጃ "
 
+msgctxt "#15016"
+msgid "Games"
+msgstr "ጨዋታዎች"
+
+msgctxt "#15019"
+msgid "Add"
+msgstr "መጨመሪያ"
+
 msgctxt "#15052"
 msgid "Password"
 msgstr "የመግቢያ ቃል"
+
+msgctxt "#15100"
+msgid "Library"
+msgstr "መጻህፍት ቤት "
+
+msgctxt "#15101"
+msgid "Database"
+msgstr "ዳታቤዝ"
+
+msgctxt "#15102"
+msgid "* All albums"
+msgstr "* ሁሉንም አልበም"
+
+msgctxt "#15103"
+msgid "* All artists"
+msgstr "* ሁሉንም ከያኒ"
+
+msgctxt "#15104"
+msgid "* All songs"
+msgstr "* ሁሉንም ዘፈኖች"
 
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "መደበኛ "
 
+msgctxt "#15112"
+msgid "Default theme"
+msgstr "ነባር ገጽታ"
+
+msgctxt "#15200"
+msgid "Last.fm"
+msgstr "ላስት.ኤፍኤም"
+
+msgctxt "#15207"
+msgid "Connected"
+msgstr "ተገናኝቷል"
+
+msgctxt "#15208"
+msgid "Not connected"
+msgstr "አልተገናኘም "
+
+msgctxt "#15216"
+msgid "Play in party mode"
+msgstr "በ ፓርቲ ዘዴ ማጫወቻ "
+
+msgctxt "#15300"
+msgid "Path not found or invalid"
+msgstr "መንገዱ አልተገኘም ወይንም ዋጋ የለውም "
+
+msgctxt "#15301"
+msgid "Could not connect to network server"
+msgstr "ወደ ኔትዎርክ ሰርቨር መገናኘት አልተቻለም"
+
+msgctxt "#15302"
+msgid "No servers found"
+msgstr "ምንም ሰርቨር አልተገኘ"
+
+msgctxt "#15303"
+msgid "Workgroup not found"
+msgstr "የ ስራ ቡድን አልተገኘም"
+
+msgctxt "#15311"
+msgid "Path:"
+msgstr "መንገድ:"
+
 msgctxt "#16000"
 msgid "General"
 msgstr "ባጠቃላይ"
+
+msgctxt "#16003"
+msgid "Player"
+msgstr "ማጫወቻ"
+
+msgctxt "#16008"
+msgid "Enter new title"
+msgstr "አዲስ አርእስት ያስገቡ"
+
+msgctxt "#16009"
+msgid "Enter the movie name"
+msgstr "የ ሙቪ ስም ያስገቡ"
+
+msgctxt "#16010"
+msgid "Enter the profile name"
+msgstr "የ ገጽታ ስም ያስገቡ"
+
+msgctxt "#16011"
+msgid "Enter the album name"
+msgstr "የ አልበም ስም ያስገቡ"
+
+msgctxt "#16012"
+msgid "Enter the playlist name"
+msgstr "የሚጫወተውን ስም ያስገቡ"
+
+msgctxt "#16013"
+msgid "Enter new filename"
+msgstr "አዲስ የ ፋይል ስም ያስገቡ"
+
+msgctxt "#16014"
+msgid "Enter folder name"
+msgstr "የ ፎልደር ስም ያስገቡ "
+
+msgctxt "#16015"
+msgid "Enter directory"
+msgstr "ዳይሬክቶሪ ያስገቡ "
+
+msgctxt "#16016"
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "ዝግጁ ምርጫዎች: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
 
 msgctxt "#16018"
 msgid "None"
 msgstr "ምንም "
 
+msgctxt "#16019"
+msgid "Auto select"
+msgstr "በራሱ መራጭ"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "በ መሰረዥ ላይ"
+
+msgctxt "#16025"
+msgid "Enter the artist name"
+msgstr "የ ከያኒውን ስም ያስገቡ"
+
+msgctxt "#16028"
+msgid "Enter value"
+msgstr "ዋጋ ያስገቡ"
+
+msgctxt "#16032"
+msgid "Could not initialize database."
+msgstr "ዳታቤዝ ማስነሳት አልተቻለም "
+
+msgctxt "#16033"
+msgid "Could not open database."
+msgstr "ዳታቤዝ መክፈት አልተቻለም "
+
+msgctxt "#16034"
+msgid "Could not get songs from database."
+msgstr "ከ ዳታቤዝ ዘፈኖች ማግኘት አልተቻለም "
+
 msgctxt "#16039"
 msgid "Off"
 msgstr "ማጥፊያ "
 
+msgctxt "#16040"
+msgid "Auto"
+msgstr "በራሱ "
+
+msgctxt "#16041"
+msgid "On"
+msgstr "ማብሪያ"
+
+msgctxt "#16100"
+msgid "All Videos"
+msgstr "ሁሉንም ቪዲዮዎች "
+
+msgctxt "#16101"
+msgid "Unwatched"
+msgstr "ያልታዩ "
+
+msgctxt "#16102"
+msgid "Watched"
+msgstr "የታዩ "
+
+msgctxt "#16105"
+msgid "Edit title"
+msgstr "አርእስት ማረሚያ"
+
+msgctxt "#16201"
+msgid "Copy failed"
+msgstr "ኮፒ ማድረግ አልተቻለም"
+
+msgctxt "#16203"
+msgid "Move failed"
+msgstr "ማንቀሳቀስ አልተቻለም"
+
+msgctxt "#16205"
+msgid "Delete failed"
+msgstr "ማጥፋት አልተቻለም"
+
+msgctxt "#16301"
+msgid "Nearest neighbour"
+msgstr "የ ቅርብ ጎረቤት"
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+msgctxt "#16316"
+msgid "Auto"
+msgstr "በራሱ "
+
+msgctxt "#16319"
+msgid "DXVA"
+msgstr "DXVA"
+
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+msgctxt "#16321"
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+msgctxt "#16322"
+msgid "Spline36"
+msgstr "Spline36"
+
+msgctxt "#16323"
+msgid "Spline36 optimized"
+msgstr "Spline36 optimized"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i ሰአቶች"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i ቀኖች"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "በፍጥነት "
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "ጣቢያዎች"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "ቲቪ "
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "ሬዲዮ "
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "የተደበቀ"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -2646,13 +4029,313 @@ msgctxt "#19024"
 msgid "Radio channels"
 msgstr "የሬዲዮ ጣቢያ"
 
+msgctxt "#19029"
+msgid "Channel"
+msgstr "ጣቢያ "
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "አሁን"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "ይቀጥሉ "
 
+msgctxt "#19033"
+msgid "Information"
+msgstr "መረጃ"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "አዲስ ጣቢያ"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "የ ተደበቁ ጣቢያዎችን ማሳያ "
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "ጣቢያውን ማንቀሳቀሻ ወደ:"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "የ ተደበቁ ጣቢያዎች"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "መቅረጽ ማስቆሚያ"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "ወደ መጀመሪያው መሄጃ "
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "ወደ መጨረሻው መሄጃ "
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "ንቁ:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "ስም:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "ፎልደር:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "ሬዲዮ:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "ጣቢያ:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "ቀን:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "መጀመሪያ:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "መጨረሻ:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "ቅድሚያ:"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "የ መጀመሪያ ቀን:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "ያልታወቀ ጣቢያ %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "ሰኞ-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-ማክ-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-ረቡ-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-ሐሙ-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-አር-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-ቅዳ-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-እሑ"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "ሰኞ-ማክ-ረቡ-ሐሙ-አር-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "ሰኞ-ማክ-ረቡ-ሐሙ-አር-ቅዳ-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "ሰኞ-ማክ-ረቡ-ሐሙ-አር-ቅዳ-እሑ"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-ቅዳ-እሑ"
+
 msgctxt "#19098"
 msgid "Warning"
 msgstr "ማስጠንቀቂያ "
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "ጣቢያ "
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "ሰኞ"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "ማክ"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "ረቡ"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "ሐሙ"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "አር"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "ቅዳ"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "እሑ"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "ከ"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "ከ"
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "መቀየሪያ"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "ቲቪ "
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "ልቀጥል?"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "ጣቢያ ማረሚያ"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "አዲስ ጣቢያ"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "ቡድን:"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "ደንበኛ"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "ጣቢያውን ማጥፊያ"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "ሁሉንም የ ሬዲዮ ጣቢያዎች"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "ሁሉንም የ ቲቪ ጣቢያዎች"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "የሚታይ"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "መቅረጽ ተጀምሯል"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "መቅረጽ ጨርሷል "
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "መቅረጽ ጠፍቷል "
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "ጣቢያዎች ማጣሪያ"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "መቅረጽ ማስጀመሪያ"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "መቅረጽ ማስቆሚያ"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "ጣቢያ መቆለፊያ"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "ጣቢያ መክፈቻ"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "ሌላ/ያልታወቀ"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "ሙቪ/ቲያትር"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "አስቂኝ"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "የ ፍቅር"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "ዜና/የ እለቱ ሁኔታ"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "ስፖርት"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "የ ተለየ ሁኔታ "
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "የ እግር ኳስ"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "አትሌቲክስ"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "የ ውሀ ስፖርት"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "ባሌት"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "ሐይማኖት"
 
 msgctxt "#19607"
 msgid "Fashion"
@@ -2662,49 +4345,857 @@ msgctxt "#19635"
 msgid "Languages"
 msgstr "ቋንቋ "
 
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "አስቂኝ"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "የ ፍቅር"
+
+msgctxt "#20000"
+msgid "Saved music folder"
+msgstr "የ ተቀመጠ የ ሙዚቃ ፎልደር"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "የ መመልከቻው ፎቶ ፎልደር"
+
+msgctxt "#20006"
+msgid "Playlists folder"
+msgstr "የሚጫወቱ ዝርዝር ፎልደር "
+
+msgctxt "#20008"
+msgid "Screenshots"
+msgstr "የ መመልከቻው ፎቶ"
+
+msgctxt "#20009"
+msgid "Use XBMC"
+msgstr "XBMC ይጠቀሙ"
+
+msgctxt "#20011"
+msgid "Music playlists"
+msgstr "የ ሙዚቃ የሚጫወቱ ዝርዝር"
+
+msgctxt "#20012"
+msgid "Video playlists"
+msgstr "የ ቪዲዮ የሚጫወቱ ዝርዝር"
+
+msgctxt "#20014"
+msgid "Sort by: Playlist"
+msgstr "መለያ በ: በሚጫወቱ ዝርዝር "
+
+msgctxt "#20024"
+msgid "Scan new"
+msgstr "ማሰሻ አዲስ "
+
+msgctxt "#20025"
+msgid "Scan all"
+msgstr "ሁሉንም ማሰሻ"
+
+msgctxt "#20026"
+msgid "Region"
+msgstr "አካባቢ"
+
 msgctxt "#20037"
 msgid "Summary"
 msgstr "መረጃ"
+
+msgctxt "#20038"
+msgid "Lock music window"
+msgstr "የ ሙዚቃ መስኮት መቆለፊያ"
+
+msgctxt "#20039"
+msgid "Lock videos window"
+msgstr "የ ቪዲዮ መስኮት መቆለፊያ"
+
+msgctxt "#20040"
+msgid "Lock pictures window"
+msgstr "የ ስእሎች መስኮት መቆለፊያ"
+
+msgctxt "#20042"
+msgid "Lock file manager"
+msgstr "የ ፋይል አስተዳዳሪ መቆለፊያ"
+
+msgctxt "#20043"
+msgid "Lock settings"
+msgstr "ማሰናጃ መቆለፊያ"
+
+msgctxt "#20044"
+msgid "Start fresh"
+msgstr "እንደ አዲስ ማስጀመሪያ "
+
+msgctxt "#20045"
+msgid "Enter master mode"
+msgstr "ወደ ዋናው ዘዴ መግቢያ"
+
+msgctxt "#20046"
+msgid "Leave master mode"
+msgstr "ከ ዋናው ዘዴ መውጫ"
+
+msgctxt "#20047"
+msgid "Create profile '%s'?"
+msgstr "ገጽታ ልፍጠር '%s'?"
+
+msgctxt "#20052"
+msgid "Caution"
+msgstr "ማስጠንቀቂያ"
+
+msgctxt "#20058"
+msgid "Add profile..."
+msgstr "ገጽታ መጨመሪያ..."
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "የመገናኛ መረጃ "
+
+msgctxt "#20061"
+msgid "Separate"
+msgstr "መለያ "
+
+msgctxt "#20065"
+msgid "Profile picture"
+msgstr "የ ገጽታ ስእል"
+
+msgctxt "#20066"
+msgid "Lock preferences"
+msgstr "ምርጫዎችን መቆለፊያ"
+
+msgctxt "#20067"
+msgid "Edit profile"
+msgstr "ገጽታ ማረሚያ"
+
+msgctxt "#20068"
+msgid "Profile lock"
+msgstr "ገጽታ መቆለፊያ"
+
+msgctxt "#20069"
+msgid "Could not create folder"
+msgstr "ፎልደር መፍጠር አልተቻለም"
+
+msgctxt "#20070"
+msgid "Profile directory"
+msgstr "የ ገጽታ ዳይሬክቶሪ"
+
+msgctxt "#20083"
+msgid "Show music info"
+msgstr "የ ሙዚቃ መረጃ ማሳያ "
+
+msgctxt "#20084"
+msgid "Show weather info"
+msgstr "የ አየር ንብረት ማሳያ "
+
+msgctxt "#20085"
+msgid "Show system info"
+msgstr "የ ስርአት መረጃ ማሳያ"
+
+msgctxt "#20088"
+msgid "Weather info"
+msgstr "የ አየር ንብረት መረጃ"
+
+msgctxt "#20092"
+msgid "Load profile"
+msgstr "ገጽታ መጫኛ "
+
+msgctxt "#20093"
+msgid "Profile name"
+msgstr "የ ገጽታ ስም"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "የመግቢያ መመለከቻ "
+
+msgctxt "#20105"
+msgid "Do you want to use them?"
+msgstr "መጠቀም ይፈልጋሉ?"
+
+msgctxt "#20107"
+msgid "Separate (locked)"
+msgstr "የተለየ(የተቆለፈ)"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "ማሳያ "
+
+msgctxt "#20112"
+msgid "Last login: %s"
+msgstr "መጨረሻ የገባው login: %s"
+
+msgctxt "#20114"
+msgid "Profile %i / %i"
+msgstr "ገጽታ %i / %i"
+
+msgctxt "#20115"
+msgid "User login / Select a profile"
+msgstr "የተጠቃሚ መግቢያ / ገጽታ ይምረጡ"
+
+msgctxt "#20122"
+msgid "True"
+msgstr "እውነት"
+
+msgctxt "#20126"
+msgid "Log off"
+msgstr "መውጫ"
+
+msgctxt "#20141"
+msgid "Set"
+msgstr "ማሰናጃ "
 
 msgctxt "#20142"
 msgid "Username"
 msgstr "የተጠቃሚ ስም "
 
+msgctxt "#20147"
+msgid "Shutdown in 30 minutes"
+msgstr "ማጥፊያ በ 30 ሰከንዶች"
+
+msgctxt "#20148"
+msgid "Shutdown in 60 minutes"
+msgstr "ማጥፊያ በ 60 ሰከንዶች"
+
+msgctxt "#20149"
+msgid "Shutdown in 120 minutes"
+msgstr "ማጥፊያ በ 120 ሰከንዶች"
+
+msgctxt "#20153"
+msgid "Browse..."
+msgstr "መቃኛ..."
+
+msgctxt "#20155"
+msgid "Storage information"
+msgstr "የ ማጠራቀሚያ መረጃ "
+
+msgctxt "#20156"
+msgid "Hard disk information"
+msgstr "የ ሀርድ ዲስክ መረጃ "
+
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "የ ዲቪዲ-ራም መረጃ"
+
+msgctxt "#20158"
+msgid "Network information"
+msgstr "የ ኔትዎርክ መረጃ "
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "የቪዲዮ መረጃ"
+
+msgctxt "#20160"
+msgid "Hardware information"
+msgstr "የ ጠንካራ አካል መረጃ "
+
+msgctxt "#20161"
+msgid "Total"
+msgstr "ጠቅላላ "
+
+msgctxt "#20162"
+msgid "Used"
+msgstr "የተጠቀሙት"
+
+msgctxt "#20165"
+msgid "Not locked"
+msgstr "አልተቆለፈም "
+
+msgctxt "#20166"
+msgid "Locked"
+msgstr "ተቆልፏል "
+
+msgctxt "#20169"
+msgid "Week"
+msgstr "ሳምንት "
+
+msgctxt "#20170"
+msgid "Line"
+msgstr "መስመር "
+
+msgctxt "#20172"
+msgid "XBMSP server"
+msgstr "XBMSP ሰርቨር"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "FTP server"
+
 msgctxt "#20177"
 msgid "Done"
 msgstr "እሺ "
+
+msgctxt "#20180"
+msgid "Symbols"
+msgstr "ምልክቶች"
+
+msgctxt "#20181"
+msgid "Backspace"
+msgstr "የኋሊት ድምሳሽ "
+
+msgctxt "#20186"
+msgid "Please wait"
+msgstr "እባክዎን ይቆዩ "
+
+msgctxt "#20187"
+msgid "UPnP"
+msgstr "UPnP"
+
+msgctxt "#20196"
+msgid "Export music library"
+msgstr "የ ሙዚቃ መጻህፍት ቤት መላኪያ"
+
+msgctxt "#20197"
+msgid "Import music library"
+msgstr "የ ሙዚቃ መጻህፍት ቤት ማምጫ "
+
+msgctxt "#20198"
+msgid "No artist found!"
+msgstr "ምንም ከያኒ አልተገኘም"
+
+msgctxt "#20259"
+msgid "Network Filesystem (NFS)"
+msgstr "የ ኔትዎርክ የ ፋይል ስራት (NFS)"
+
+msgctxt "#20302"
+msgid "Unable to write to folder:"
+msgstr "ወደ ፎልደር መጻፍ አልተቻለም:"
+
+msgctxt "#20309"
+msgid "Make new folder"
+msgstr "አዲስ ፎልደር መፍጠሪያ"
+
+msgctxt "#20314"
+msgid "Videos - Library"
+msgstr "የ ቪዲዮ - መጻሕፍት ቤት"
+
+msgctxt "#20327"
+msgid "to it's default values."
+msgstr "ወደ ነባር ዋጋቸው"
+
+msgctxt "#20328"
+msgid "Browse for destination"
+msgstr "መድረሻውን መቃኛ"
 
 msgctxt "#20331"
 msgid "File"
 msgstr "ፋይል"
 
+msgctxt "#20333"
+msgid "Set content"
+msgstr "ይዞታ ማሰናጃ"
+
 msgctxt "#20334"
 msgid "Folder"
 msgstr "ፎልደር"
+
+msgctxt "#20336"
+msgid "Unlock sources"
+msgstr "ምንጮቹን መክፈቻ "
+
+msgctxt "#20337"
+msgid "Actor"
+msgstr "ተዋናይ "
+
+msgctxt "#20338"
+msgid "Movie"
+msgstr "ሙቪ "
 
 msgctxt "#20342"
 msgid "Movies"
 msgstr "ሙቪዎች"
 
+msgctxt "#20343"
+msgid "TV shows"
+msgstr "የቲቪ ትርኢት "
+
+msgctxt "#20344"
+msgid "This directory contains"
+msgstr "ይህ ዳይሬክቶሪ የያዘው"
+
+msgctxt "#20347"
+msgid "as"
+msgstr "እንደ "
+
+msgctxt "#20351"
+msgid "TV show information"
+msgstr "የ ቲቪ ትርኢት መረጃ"
+
+msgctxt "#20356"
+msgid "Select TV show:"
+msgstr "የ ቲቪ ትርኢት ይምረጡ:"
+
+msgctxt "#20357"
+msgid "Enter the TV show name"
+msgstr "የ ቲቪ ትርኢት ስም ያስገቡ:"
+
+msgctxt "#20364"
+msgid "TV show"
+msgstr "የ ቲቪ ትርኢት"
+
+msgctxt "#20367"
+msgid "Hide watched"
+msgstr "የታዩትን መደበቂያ"
+
+msgctxt "#20374"
+msgid "Downloading movie information"
+msgstr "የ ሙቪ መረጃ በ ማውረድ ላይ "
+
+msgctxt "#20376"
+msgid "Original title"
+msgstr "ዋንው አርእስት"
+
+msgctxt "#20381"
+msgid "Specials"
+msgstr "የተለዩ"
+
+msgctxt "#20386"
+msgid "Recently added movies"
+msgstr "በቅርብ የተጨመሩ ሙቪዎች"
+
+msgctxt "#20389"
+msgid "Music videos"
+msgstr "የ ሙዚቃ ቪዲዮ"
+
+msgctxt "#20391"
+msgid "Music video"
+msgstr "የ ሙዚቃ ቪዲዮ"
+
+msgctxt "#20393"
+msgid "Music video information"
+msgstr "የ ሙዚቃ ቪዲዮ መረጃ"
+
+msgctxt "#20394"
+msgid "Loading music video information"
+msgstr "የ ሙዚቃ ቪዲዮ መረጃ በ መጫን ላይ"
+
+msgctxt "#20398"
+msgid "Play song"
+msgstr "ሙዚቃ ማጫወቻ "
+
+msgctxt "#20401"
+msgid "Play music video"
+msgstr "የ ሙዚቃ ቪዲዮ ማጫወቻ"
+
+msgctxt "#20416"
+msgid "First aired"
+msgstr "መጀመሪያ የተላለፈ "
+
+msgctxt "#20417"
+msgid "Writer"
+msgstr "ጸሀፊው"
+
+msgctxt "#20420"
+msgid "Never"
+msgstr "በፍጹም "
+
+msgctxt "#20422"
+msgid "Always"
+msgstr "ሁልጊዜ"
+
+msgctxt "#20424"
+msgid "False"
+msgstr "ሀሰት"
+
+msgctxt "#20428"
+msgid "Single file"
+msgstr "ነጠላ ፋይል "
+
+msgctxt "#20429"
+msgid "Separate"
+msgstr "መለያ "
+
+msgctxt "#20442"
+msgid "Change content"
+msgstr "ይዞታ መቀየሪያ "
+
+msgctxt "#20448"
+msgid "Could not download information"
+msgstr "መረጃ ማውረድ አልተቻለም "
+
+msgctxt "#20449"
+msgid "Unable to connect to remote server"
+msgstr "በርቀት ወዳለው ሰርቨር መገናኘት አልተቻለም "
+
+msgctxt "#20450"
+msgid "Would you like to continue scanning?"
+msgstr "ማሰሱን መቀጠል ይፈልጋሉ"
+
+msgctxt "#20451"
+msgid "Countries"
+msgstr "አገሮች"
+
+msgctxt "#20454"
+msgid "Listener"
+msgstr "አድማጮች"
+
+msgctxt "#20455"
+msgid "Listeners"
+msgstr "አድማጮች"
+
+msgctxt "#20457"
+msgid "Movie set"
+msgstr "ሙቪ ማሰናጃ"
+
+msgctxt "#21336"
+msgid "Connecting to: %s"
+msgstr "በ መገናኘት ላይ: %s"
+
+msgctxt "#21366"
+msgid "Subtitle folder"
+msgstr "የ ንዑስ አርእስት ፎልደር"
+
+msgctxt "#21371"
+msgid "Thumbnail"
+msgstr "የ አውራ ጥፍር"
+
 msgctxt "#21373"
 msgid "Video output"
 msgstr "ቪዲዮ "
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "መደበኛ "
+
+msgctxt "#21379"
+msgid "Enable 720p"
+msgstr "ማስቻያ 720p"
+
+msgctxt "#21380"
+msgid "Enable 1080i"
+msgstr "ማስቻያ 1080i"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "መክፈቻ"
 
 msgctxt "#21387"
 msgid "Fast"
 msgstr "በፍጥነት "
 
+msgctxt "#21391"
+msgid "High power"
+msgstr "ከፍተኛ ሐይል"
+
+msgctxt "#21392"
+msgid "Low power"
+msgstr "ዝቅተኛ ሐይል"
+
+msgctxt "#21396"
+msgid "Chapter"
+msgstr "ምእራፍ"
+
+msgctxt "#21400"
+msgid "contains"
+msgstr "የ ያዘው"
+
+msgctxt "#21401"
+msgid "does not contain"
+msgstr "አልያዘም"
+
+msgctxt "#21402"
+msgid "is"
+msgstr "ነው"
+
+msgctxt "#21403"
+msgid "is not"
+msgstr "አይደለም"
+
+msgctxt "#21404"
+msgid "starts with"
+msgstr "ማስጀመሪያ በ"
+
+msgctxt "#21405"
+msgid "ends with"
+msgstr "መጨረሻ በ"
+
+msgctxt "#21406"
+msgid "greater than"
+msgstr "ይበልጣል"
+
+msgctxt "#21407"
+msgid "less than"
+msgstr "ያንሳል"
+
+msgctxt "#21408"
+msgid "after"
+msgstr "በኋላ"
+
+msgctxt "#21409"
+msgid "before"
+msgstr "በፊት"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "ማሰናጃዎች"
+
+msgctxt "#21423"
+msgid "New rule..."
+msgstr "አዲስ ሕግ..."
+
+msgctxt "#21430"
+msgid "ascending"
+msgstr "እየጨመረ በሚሄድ"
+
+msgctxt "#21431"
+msgid "descending"
+msgstr "እየቀነሰ በሚሄድ "
+
+msgctxt "#21435"
+msgid "Edit"
+msgstr "ማረሚያ"
+
+msgctxt "#21436"
+msgid "%i items"
+msgstr "%i እቃዎች"
+
+msgctxt "#21438"
+msgid "%c Drive"
+msgstr "%c አካል"
+
+msgctxt "#21440"
+msgid "Home folder"
+msgstr "የ ቤት ፎልደር"
+
+msgctxt "#21441"
+msgid "Watched count"
+msgstr "የታዩትን መቁጠሪያ"
+
+msgctxt "#21444"
+msgid "Audio channels"
+msgstr "የ ድምፅ ጣቢያዎች"
+
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "Video codec"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "Audio codec"
+
+msgctxt "#21447"
+msgid "Audio language"
+msgstr "የ ድምፅ ቋንቋ "
+
+msgctxt "#21452"
+msgid "Get More..."
+msgstr "ተጨማሪ ያግኙ..."
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "በፍጥነት "
+
+msgctxt "#21462"
+msgid "Bottom of video"
+msgstr "ከ ቪዲዮው በታች"
+
+msgctxt "#21463"
+msgid "Below video"
+msgstr "ከ ቪዲዮው በታች"
+
+msgctxt "#21464"
+msgid "Top of video"
+msgstr "ከ ቪዲዮው በላይ "
+
+msgctxt "#21465"
+msgid "Above video"
+msgstr "ከ ቪዲዮው በላይ "
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f ወደ %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d ወደ %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s ወደ %s"
+
+msgctxt "#21800"
+msgid "File name"
+msgstr "የ ፋይል ስም "
+
+msgctxt "#21801"
+msgid "File path"
+msgstr "የ ፋይል መንገድ "
+
+msgctxt "#21802"
+msgid "File size"
+msgstr "የ ፋይል መጠን "
+
+msgctxt "#21803"
+msgid "File date/time"
+msgstr "የ ፋይል ቀን/ሰአት "
+
+msgctxt "#21804"
+msgid "Slide index"
+msgstr "ተንሸራታች ማውጫ "
 
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Resolution"
 
+msgctxt "#21806"
+msgid "Comment"
+msgstr "አስተያየት"
+
+msgctxt "#21807"
+msgid "Colour/B&W"
+msgstr "ቀልም/ጥ&ነ "
+
+msgctxt "#21820"
+msgid "Date/Time"
+msgstr "ቀን/ሰአት "
+
+msgctxt "#21821"
+msgid "Description"
+msgstr "መግለጫ "
+
+msgctxt "#21835"
+msgid "Light source"
+msgstr "የ ብርሀን ምንጭ"
+
+msgctxt "#21837"
+msgid "ISO"
+msgstr "ISO"
+
+msgctxt "#21861"
+msgid "Keywords"
+msgstr "ቁልፍ ቃሎች "
+
+msgctxt "#21862"
+msgid "Caption"
+msgstr "መግለጫ "
+
+msgctxt "#21863"
+msgid "Author"
+msgstr "ደራሲው "
+
+msgctxt "#21864"
+msgid "Headline"
+msgstr "አርእስት"
+
+msgctxt "#21866"
+msgid "Category"
+msgstr "ምድብ "
+
+msgctxt "#21869"
+msgid "Credit"
+msgstr "ምስጋና "
+
+msgctxt "#21870"
+msgid "Source"
+msgstr "ምንጭ "
+
+msgctxt "#21872"
+msgid "Object name"
+msgstr "የ እቃው ስም "
+
+msgctxt "#21873"
+msgid "City"
+msgstr "ከተማ "
+
+msgctxt "#21874"
+msgid "State"
+msgstr "አገር "
+
 msgctxt "#21875"
 msgid "Country"
 msgstr "አገር"
+
+msgctxt "#21877"
+msgid "Date created"
+msgstr "የ ተፈጠረበት ቀን "
+
+msgctxt "#21883"
+msgid "Saved music"
+msgstr "የተቀመጡ ሙዚቃዎች "
+
+msgctxt "#21890"
+msgid "Select artist"
+msgstr "ከያኒ ይምረጡ"
+
+msgctxt "#21891"
+msgid "Artist information"
+msgstr "የ ከያኒ መረጃ"
+
+msgctxt "#21892"
+msgid "Instruments"
+msgstr "መሳሪያዎች "
+
+msgctxt "#21893"
+msgid "Born"
+msgstr "የተወለደው"
+
+msgctxt "#21897"
+msgid "Died"
+msgstr "የሞተው "
+
+msgctxt "#21899"
+msgid "Label"
+msgstr "ምልክት "
+
+msgctxt "#21900"
+msgid "Born/Formed"
+msgstr "የተወለደው/የተፈጠረው "
+
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "ማዘግያ በ: %2.3fs"
+
+msgctxt "#22016"
+msgid "By title"
+msgstr "በ አርእስት "
+
+msgctxt "#22017"
+msgid "By group"
+msgstr "በ ቡድን "
+
+msgctxt "#22020"
+msgid "Guide"
+msgstr "መመሪያ "
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "ፊደል "
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "መጠን "
+
+msgctxt "#22040"
+msgid "white/green"
+msgstr "ነጭ/አረንጓዴ "
+
+msgctxt "#22041"
+msgid "white/red"
+msgstr "ነጭ/ቀይ "
+
+msgctxt "#22042"
+msgid "white/blue"
+msgstr "ነጭ/ሰማያዊ "
+
+msgctxt "#22043"
+msgid "black/white"
+msgstr "ነጭ/ጥቁር "
+
+msgctxt "#22080"
+msgid "Choose"
+msgstr "ይምረጡ "
+
+msgctxt "#22081"
+msgid "Show Information"
+msgstr "መረጃ ማሳያ "
+
+msgctxt "#22082"
+msgid "More..."
+msgstr "ተጨማሪ..."
+
+msgctxt "#22083"
+msgid "Play all"
+msgstr "ሁሉንም አጫውት "
 
 msgctxt "#23053"
 msgid "Stopping"
@@ -2714,30 +5205,402 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "በማስኬድ ላይ"
 
+msgctxt "#24000"
+msgid "Add-on"
+msgstr "ተጨ-ማሪ"
+
+msgctxt "#24001"
+msgid "Add-ons"
+msgstr "ተጨማ-ሪዎች"
+
+msgctxt "#24002"
+msgid "Add-on options"
+msgstr "የ ተጨ-ማሪ ምርጫዎች"
+
+msgctxt "#24003"
+msgid "Add-on Information"
+msgstr "የ ተጨ-ማሪ መረጃ "
+
+msgctxt "#24007"
+msgid "Movie information"
+msgstr "የሙቪ መረጃ "
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "መመልከቻ ማዳኛ"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "ንዑስ አርእስት"
+
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr "ግጥም"
+
+msgctxt "#24014"
+msgid "TV information"
+msgstr "የ ቲቪ መረጃ "
+
+msgctxt "#24015"
+msgid "Music video information"
+msgstr "የ ሙዚቃ ቪዲዮ መረጃ"
+
+msgctxt "#24016"
+msgid "Album information"
+msgstr "የአልበም መረጃ "
+
+msgctxt "#24017"
+msgid "Artist information"
+msgstr "የ ከያኒ መረጃ"
 
 msgctxt "#24018"
 msgid "Services"
 msgstr "ግልጋሎቶች"
 
+msgctxt "#24020"
+msgid "Configure"
+msgstr "ማዋቀሪያ"
+
+msgctxt "#24021"
+msgid "Disable"
+msgstr "ማሰናከያ "
+
+msgctxt "#24022"
+msgid "Enable"
+msgstr "ማስቻያ "
+
+msgctxt "#24023"
+msgid "Add-on disabled"
+msgstr "ተጨ-ማሪ ተሰናክሏል "
+
 msgctxt "#24027"
 msgid "Weather"
 msgstr "የአየር ንብረት"
+
+msgctxt "#24032"
+msgid "All Add-ons"
+msgstr "ሁሉንም ተጨማ-ሪዎች "
+
+msgctxt "#24033"
+msgid "Get Add-ons"
+msgstr "ተጨማ-ሪዎች ማግኛ "
+
+msgctxt "#24034"
+msgid "Check for updates"
+msgstr "ማሻሻያ መፈለጊያ "
+
+msgctxt "#24035"
+msgid "Force refresh"
+msgstr "ማነቃቂያ ማስገደጃ "
+
+msgctxt "#24037"
+msgid "Uninstall"
+msgstr "ማጥፊያ"
+
+msgctxt "#24038"
+msgid "Install"
+msgstr "መግጠም "
+
+msgctxt "#24042"
+msgid "Downloading %i%%"
+msgstr "በ ማውረድ ላይ %i%%"
+
+msgctxt "#24043"
+msgid "Available Updates"
+msgstr "ዝግጁ ማሻሻያ "
+
+msgctxt "#24051"
+msgid "Version:"
+msgstr "እትም:"
+
+msgctxt "#24061"
+msgid "Add-on update available!"
+msgstr "የ ተጨማ-ሪዎች ማሻሻያ አለ!"
+
+msgctxt "#24062"
+msgid "Enabled Add-ons"
+msgstr "ተጨማ-ሪዎች ማስቻያ "
+
+msgctxt "#24063"
+msgid "Auto update"
+msgstr "በራሱ ማሻሻያ "
+
+msgctxt "#24068"
+msgid "Update available"
+msgstr "ማሻሻያ ዝግጁ ነው "
+
+msgctxt "#24069"
+msgid "Update"
+msgstr "ማሻሻያ "
+
+msgctxt "#24075"
+msgid "Disable"
+msgstr "ማሰናከያ "
+
+msgctxt "#24094"
+msgid "(current)"
+msgstr "(አሁን)"
+
+msgctxt "#25000"
+msgid "Notifications"
+msgstr "ማስታወቂያዎች"
+
+msgctxt "#25005"
+msgid "Title: %d"
+msgstr "አርእስት: %d"
+
+msgctxt "#29800"
+msgid "Library Mode"
+msgstr "በ መጻህፍት ቤት ዘዴ"
+
+msgctxt "#33003"
+msgid "Download"
+msgstr "የ ወረደ"
+
+msgctxt "#33004"
+msgid "Download & play"
+msgstr "የ ወረደ & ማጫወቻ "
+
+msgctxt "#33005"
+msgid "Download & save"
+msgstr "የ ወረደ & ማስቀመጫ"
+
+msgctxt "#33006"
+msgid "Today"
+msgstr "ዛሬ"
+
+msgctxt "#33007"
+msgid "Tomorrow"
+msgstr "ነገ "
+
+msgctxt "#33008"
+msgid "Saving"
+msgstr "በማስቀመጥ ላይ "
+
+msgctxt "#33009"
+msgid "Copying"
+msgstr "ኮፒ በማድረግ ላይ "
+
+msgctxt "#33012"
+msgid "Short"
+msgstr "አጭር "
+
+msgctxt "#33013"
+msgid "Long"
+msgstr "ረጅም "
+
+msgctxt "#33018"
+msgid "Tonight"
+msgstr "ዛሬ ማታ "
+
+msgctxt "#33019"
+msgid "Tomorrow Night"
+msgstr "ነገ ማታ "
+
+msgctxt "#33020"
+msgid "Condition"
+msgstr "ሁኔታው "
+
+msgctxt "#33027"
+msgid "Sunrise"
+msgstr "ፀሐይ መውጫ "
+
+msgctxt "#33028"
+msgid "Sunset"
+msgstr "ፀሐይ መጥለቂያ"
+
+msgctxt "#33029"
+msgid "Details"
+msgstr "ዝርዝሮች "
+
+msgctxt "#33034"
+msgid "36 Hour"
+msgstr "36 ሰአት"
+
+msgctxt "#33035"
+msgid "Maps"
+msgstr "ካርታ "
+
+msgctxt "#33036"
+msgid "Hourly"
+msgstr "በ የሰአቱ"
 
 msgctxt "#33037"
 msgid "Weekend"
 msgstr "የሳምንቱ መጨረሻ"
 
+msgctxt "#33038"
+msgid "%s day"
+msgstr "%s ቀን"
+
+msgctxt "#33049"
+msgid "Alert"
+msgstr "ማስጠንቀቂያ"
+
+msgctxt "#33050"
+msgid "Alerts"
+msgstr "ማስጠንቀቂያዎች"
+
+msgctxt "#33051"
+msgid "Choose Your"
+msgstr "የ እርስዎን ይምረጡ"
+
+msgctxt "#33055"
+msgid "Use your"
+msgstr "ይጠቀሙ የ እርስዎን "
+
+msgctxt "#33056"
+msgid "Watch your"
+msgstr "ይመልከቱ የ እርስዎን "
+
+msgctxt "#33057"
+msgid "Listen to"
+msgstr "ያድምጡ "
+
+msgctxt "#33058"
+msgid "View your"
+msgstr "መመልከቻ የ እርስዎን "
+
+msgctxt "#33060"
+msgid "Power"
+msgstr "ሐይል "
+
+msgctxt "#33061"
+msgid "Menu"
+msgstr "ዝርዝር "
+
 msgctxt "#33063"
 msgid "Options"
 msgstr "ምርጫዎች"
+
+msgctxt "#33065"
+msgid "Editor"
+msgstr "አራሚ "
+
+msgctxt "#33066"
+msgid "About your"
+msgstr "ስለ እርስዎ "
 
 msgctxt "#33068"
 msgid "Background"
 msgstr "መደብ"
 
+msgctxt "#33069"
+msgid "Backgrounds"
+msgstr "መደቦች "
+
+msgctxt "#33072"
+msgid "View Readme"
+msgstr "ያንብቡኝ መመልከቻ "
+
+msgctxt "#33076"
+msgid "Please update XBMC."
+msgstr "እባክዎን XBMC. ያሻሽሉ"
+
+msgctxt "#33077"
+msgid "No data found!"
+msgstr "ምንም ዳታ አልተገኘም "
+
+msgctxt "#33101"
+msgid "Webserver"
+msgstr "የ ዌብ ሰርቨር"
+
+msgctxt "#34002"
+msgid "Wav"
+msgstr "Wav"
+
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA2"
+
+msgctxt "#34004"
+msgid "VAAPI"
+msgstr "VAAPI"
+
+msgctxt "#34005"
+msgid "Flac"
+msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Speaker Configuration"
+msgstr "ስፒከር ማዋቀሪያ "
+
+msgctxt "#34101"
+msgid "2.0"
+msgstr "2.0"
+
+msgctxt "#34102"
+msgid "2.1"
+msgstr "2.1"
+
+msgctxt "#34103"
+msgid "3.0"
+msgstr "3.0"
+
+msgctxt "#34104"
+msgid "3.1"
+msgstr "3.1"
+
+msgctxt "#34105"
+msgid "4.0"
+msgstr "4.0"
+
+msgctxt "#34106"
+msgid "4.1"
+msgstr "4.1"
+
+msgctxt "#34107"
+msgid "5.0"
+msgstr "5.0"
+
+msgctxt "#34108"
+msgid "5.1"
+msgstr "5.1"
+
+msgctxt "#34109"
+msgid "7.0"
+msgstr "7.0"
+
+msgctxt "#34110"
+msgid "7.1"
+msgstr "7.1"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "ሁልጊዜ"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "በፍጹም "
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "አካባቢ "
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "ስም"
+
+msgctxt "#36016"
+msgid "Connected"
+msgstr "ተገናኝቷል"
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "መተው"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "ግንኙነት ተቋርጧል "
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "ሁልጊዜ"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "ቲቪ "
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "የ እቃ ፎልደር"

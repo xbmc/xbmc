@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Hindi (Devanagiri) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hi/)\n"
+"Language-Team: Hindi (Devanagiri) (http://www.transifex.com/projects/p/xbmc-main/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -823,8 +822,8 @@ msgid "Font"
 msgstr "अक्सर"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- अकारण"
+msgid "Size"
+msgstr "आकार"
 
 msgctxt "#291"
 msgid "Video"
@@ -853,10 +852,6 @@ msgstr "श्रव्य ओफ्फ्सेट"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "प्रस्थ स्मरति"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 कापबले रिसीवर"
 
 msgctxt "#303"
 msgid "Delay"
@@ -2070,10 +2065,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "नेटवर्क"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- सर्वर"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "एक HTTP प्रॉक्सी सर्वर का प्रयोग करें इंटरनेट एक्सेस"
@@ -2082,9 +2073,9 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP प्रॉक्सी."
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- असाइनमेंट"
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP पता"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2095,32 +2086,20 @@ msgid "Changes not saved. Continue without saving?"
 msgstr "सहेजे नहीं गए परिवर्तन. बचत के बिना जारी रखें?"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "-बंदरगाह"
+msgid "Port"
+msgstr "बंदरगाह"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "सहेजें और लागू"
-
-msgctxt "#733"
-msgid "- Password"
-msgstr "- पासवर्ड"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "कोई उत्तीर्ण"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- कैरेक्टर सेट"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- शैली"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- रंगीन"
+msgid "Character set"
+msgstr "वर्ण सेट"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2251,16 +2230,8 @@ msgid "Network interface"
 msgstr "नेटवर्क इंटरफेस"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- वायरलेस नेटवर्क नाम (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- वायरलेस पासवर्ड"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- वायरलेस सुरक्षा"
+msgid "Wireless network name (ESSID)"
+msgstr "वायरलेस नेटवर्क नाम (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2329,10 +2300,6 @@ msgstr "इंटरनेट का उपयोग"
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "अवैध पोर्ट संख्या दर्ज"
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- पूर्वावलोकन"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2519,8 +2486,8 @@ msgid "Other..."
 msgstr "अन्य ..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- उपयोगकर्ता नाम"
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2690,6 +2657,14 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "विडियो"
 
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "प्रिय"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "इसके अतिरिक्त सेटिंग्स"
+
 msgctxt "#10506"
 msgid "Programs"
 msgstr "करिअक्रम"
@@ -2769,10 +2744,6 @@ msgstr "नेटवर्क"
 msgctxt "#13280"
 msgid "Video"
 msgstr "विडियो"
-
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- फ़ॉन्ट्स"
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
@@ -2886,6 +2857,14 @@ msgctxt "#14022"
 msgid "Library"
 msgstr "पुस्तकालय"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "इंटरनेट"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "इंटरनेट"
+
 msgctxt "#14036"
 msgid "Services"
 msgstr "सेवाएँ"
@@ -2897,10 +2876,6 @@ msgstr "अज्ञात प्रकार कैश - इंटरनेट"
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr "फ़ाइल का नाम बदलने और विलोपन की अनुमति दें"
-
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- रंगीन"
 
 msgctxt "#14081"
 msgid "File lists"
@@ -2966,42 +2941,6 @@ msgctxt "#15108"
 msgid "Navigation sounds"
 msgstr "नेविगेशन लगता है"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- विषय"
-
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Last.fm के लिए गाने सबमिट"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm उपयोगकर्ता नाम"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm पासवर्ड"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Libre.fm के लिए गाने सबमिट"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm उपयोगकर्ता नाम"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm पासवर्ड"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "सांग प्रस्तुत"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Last.fm के लिए Last.fm रेडियो सबमिट"
-
 msgctxt "#16000"
 msgid "General"
 msgstr "सामान्य"
@@ -3025,6 +2964,10 @@ msgstr "अगला"
 msgctxt "#19177"
 msgid "Playback"
 msgstr "प्लेबैक"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "विधि"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -3059,8 +3002,8 @@ msgid "Master lock code and settings"
 msgstr "मास्टर ताला कोड और सेटिंग्स"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- ज़ूम"
+msgid "Zoom"
+msgstr "ज़ूम"
 
 msgctxt "#20142"
 msgid "Username"
@@ -3179,16 +3122,12 @@ msgid "Enable custom background"
 msgstr "कस्टम पृष्ठभूमि सक्षम"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- सेटिंग्स"
+msgid "Settings"
+msgstr "सेट्टिंग"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr "रिमोट कंट्रोल कुंजीपटल प्रेस भेजता"
-
-msgctxt "#21450"
-msgid "- Edit"
-msgstr "- संपादित करें"
 
 msgctxt "#21452"
 msgid "Get More..."
@@ -3201,6 +3140,10 @@ msgstr "संकल्प"
 msgctxt "#21806"
 msgid "Comment"
 msgstr "टिप्पणी"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "क्षेत्र"
 
 msgctxt "#21875"
 msgid "Country"
@@ -3243,16 +3186,8 @@ msgid "Font"
 msgstr "फ़ॉन्ट"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- आकार"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- रंगीन"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- वर्ण सेट"
+msgid "Size"
+msgstr "आकार"
 
 msgctxt "#22036"
 msgid "Import karaoke titles..."

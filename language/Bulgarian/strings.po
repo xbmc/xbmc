@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Bulgarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/bg/)\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-main/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -273,6 +272,22 @@ msgstr "ССЗ"
 msgctxt "#87"
 msgid "VAR"
 msgstr "Променливa"
+
+msgctxt "#88"
+msgid "South"
+msgstr "юг"
+
+msgctxt "#89"
+msgid "North"
+msgstr "север"
+
+msgctxt "#90"
+msgid "West"
+msgstr "запад"
+
+msgctxt "#91"
+msgid "East"
+msgstr "изток"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -846,10 +861,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Брой на каналите"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- приемникът ми поддържа DTS"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -987,8 +998,8 @@ msgid "Font"
 msgstr "Шрифт"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Размер"
+msgid "Size"
+msgstr "Размер"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1021,22 +1032,6 @@ msgstr "Отместване на звука"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Отметки"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- приемникът ми поддържа AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- приемникът ми поддържа MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- приемникът ми поддържа MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- приемникът ми поддържа MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1202,18 +1197,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Усили звука при смесване за намаляване броя на каналите"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- приемникът ми поддържа DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- приемникът ми поддържа Multichannel LPCM"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- приемникът ми поддържа TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "програми"
@@ -1269,10 +1252,6 @@ msgstr "Степен на затъмняване от скрийнсейвъра
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Сорт. по: Файл"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- приемникът ми поддържа Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1593,10 +1572,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Автоматично възпроизвеждане"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2366,10 +2341,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Мрежа"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Сървър"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Ползвай HTTP proxy сървър (посредник) за достъп до интернет"
@@ -2386,10 +2357,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Задаване"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Автоматично (DHCP) [динамично конфигуриране]"
@@ -2399,20 +2366,8 @@ msgid "Manual (Static)"
 msgstr "Ръчно (Статично)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP адрес"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmask"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Стандартен gateway [шлюз]"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS сървър"
+msgid "IP address"
+msgstr "IP адрес"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2439,32 +2394,24 @@ msgid "FTP server"
 msgstr "FTP сървър"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Порт"
+msgid "Port"
+msgstr "Порт"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Запиши и приложи"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Парола"
+msgid "Password"
+msgstr "Парола"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Без парола"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Набор от знаци"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Стил"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Цвят"
+msgid "Character set"
+msgstr "Набор от знаци"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2595,16 +2542,8 @@ msgid "Network interface"
 msgstr "Мрежови интерфейс"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Име на безжичната мрежа (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Парола за безжичната мрежа"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Сигурност на безжичната мрежа"
+msgid "Wireless network name (ESSID)"
+msgstr "Име на безжичната мрежа (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2713,10 +2652,6 @@ msgstr "Добави музика..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Добави видео..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Преглед"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2903,8 +2838,8 @@ msgid "Other..."
 msgstr "Други..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Потребителско име"
+msgid "Username"
+msgstr "Потребителско име"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3054,10 +2989,6 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Име на устройството"
 
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Защита с парола"
-
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
@@ -3170,6 +3101,26 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Мъгла"
 
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Градушка"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Дим"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Пепел"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Прах"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Пясък"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Малка"
@@ -3185,6 +3136,10 @@ msgstr "с"
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Вероятност"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "от"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -3209,10 +3164,6 @@ msgstr "Неуспешно изпълнен скрипт! : %s"
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Необходима е по-нова версия. Вижте дневника"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Включи LCD/VFD"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3329,6 +3280,18 @@ msgstr "С/Без прозорец"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Прозорец за напредъка"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Заключи настройките"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Любими"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Настройки на добавката"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4146,10 +4109,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Замени скоростта на вентилатора"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Шрифтове"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Включи обръщане на двупосочен низ"
@@ -4826,33 +4785,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Видео кеш - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Локална мрежа"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Интернет"
+msgid "Internet"
+msgstr "Интернет"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Аудио кеш - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Локална мрежа"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Интернет"
+msgid "Internet"
+msgstr "Интернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD кеш  - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Локална мрежа"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5002,10 +4949,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Премахни от любимите"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Цветове"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Часови пояс на държава"
@@ -5142,10 +5085,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "От облика"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Тема"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Стандартна тема"
@@ -5154,30 +5093,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Подаване на инф. за песните към Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm потребител"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm парола"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Здрависването не е възможно: заспиване..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Моля, актуализирайте XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Невалидна оторизация: Проверете името и паролата"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Свързан"
@@ -5185,22 +5100,6 @@ msgstr "Свързан"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Не сте свързан"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Подаване на инф. през %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Кеширани са %i песни"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Подаване на информация..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Подаване на информация след %i секунди"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5217,218 +5116,6 @@ msgstr "При вид с миниатюри скрий имената на фа�
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Възпроизведи в режим \"Парти\""
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Подаване на инф. за песните към Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm потребител"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm парола"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Подаване на инф. за песните"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Подавай инф. от \"Last.fm Radio\" към Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Свързване към Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Избери станция..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Търси подобни артисти..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Търси подобни етикети..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Вашият профил (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Топ етикети"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Топ артисти за етикет \"%name%\""
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Топ албуми за етикет \"%name%\""
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Топ песни за етикет \"%name%\""
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Слушай етикет \"%name%\" от Last.fm Radio"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Артисти подобни на %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Топ \"%name%\" албуми"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Топ \"%name%\" песни"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Топ \"%name%\" етикети"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Най-големите фенове на %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Слушай Last.fm Radio-то на феновете на \"%name%\""
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Слушай Last.fm Radio-то на артисти подобни на %name%"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Топ артисти на потребител %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Топ албуми на потребител %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Топ песни за потребител %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Приятели на потребител %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Съседи на потребител %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Седмична диаграма заа артистите на %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Седмична диаграма за албумите на %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Седмична диаграма за песните на %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Слушай Last.fm Radio-то на съседите на %name%"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Слушай личното Last.fm Radio на %name%"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Слушай любимите песни на %name% по Last.fm Radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Извличане на списък от Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Извличането на списък от Last.fm не е възможно..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Въведете име на артист, за да намерите сходните"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Въведете етикет за да намерите сходните"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Наскоро слушани песни от %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Слушай препоръчаните от %name% по Last.fm Radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Топ етикетите на потребител %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Желаете ли текущата песен да бъде добавена към любимите?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Желаете ли текущата песен да бъде забранена?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Добавена към любимите: \"%s\"."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "\"%s\" не може да бъде добавена към любимите."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Забранена: \"%s\"."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "\"%s\" не може да бъде забранена."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Наскоро харесани песни от %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Наскоро забранени песни от %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Премахни от любимите"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Премахни от забранените"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Желаете ли песента да бъде премахната от любимите?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Желаете ли песента да бъде премахната от забранените?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5877,10 +5564,6 @@ msgstr "Информация"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Каналът вече се записва"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Каналът не може да бъде възпроизведен. Проверете лога."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7179,8 +6862,8 @@ msgid "Root"
 msgstr "Основна"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Приближаване"
+msgid "Zoom"
+msgstr "Приближаване"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -7538,6 +7221,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Свалянето на информация за артист се провали"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Музика от Android"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Видео от Android"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Картини от Android"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Снимки от Android"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Приложения от Android"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Започва парти! (видео)"
@@ -7618,17 +7321,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Направи нова папка"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Затъмни LCD при възпроизвеждане"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Непознат или вграден (защитен)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Затъмни LCD при пауза"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8431,8 +8126,8 @@ msgid "Default music video scraper"
 msgstr "Стандартен източник за музикалните клипове"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Настройки"
+msgid "Settings"
+msgstr "Настройки"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -8563,8 +8258,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Дистанционното ми емулира клавиатура"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Редактиране"
+msgid "Edit"
+msgstr "Редактиране"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -8818,10 +8513,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Дата на създаване"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Флаг авторско право"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Код на държавата"
@@ -8918,10 +8609,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Скривай напредъка при актуализиране на библиотеката"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS наставка"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9015,16 +8702,8 @@ msgid "Font"
 msgstr "Шрифт"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Размер"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Цветове"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Набор от знаци"
+msgid "Size"
+msgstr "Размер"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9874,10 +9553,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не може да бъде намерен предходен елемент за възпроизвеждане"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Стартирането на zeroconf се провали"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Инсталиурана ли е услугата Apple's Bonjour? Вижте дневника за допълнителна информация."
@@ -10085,6 +9760,10 @@ msgstr "При изключване на телевизора"
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Връзката пропадна"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Потребителят няма разрешение за ползване на CEC адаптора"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"

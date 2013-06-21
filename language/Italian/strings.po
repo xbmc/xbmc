@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/xbmc-main/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Numero di canali"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- Amplificatore con DTS"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Carattere"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Dimensione"
+msgid "Size"
+msgstr "Dimensione"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Sfasamento audio"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Segnalibri"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- ricevitore compatibile AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- ricevitore compatibile MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- ricevitore compatibile MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- ricevitore compatibile MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Aumenta il livello del volume nella conversione"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "Ricevitore con supporto DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "Ricevitore con supporto LPCM multicanale"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "Ricevitore con supporto TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programmi"
@@ -1293,10 +1260,6 @@ msgstr "Livello di oscuramento salvaschermo"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordina per: File"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Amplificatore con AC3"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Avvio automatico"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Rete"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Usa un server proxy HTTP per accedere a internet"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Assegnazione"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatico (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Manuale (Static)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- Indirizzo IP"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmask"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Default gateway"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- Server DNS"
+msgid "IP address"
+msgstr "Indirizzo IP"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Porta"
+msgid "Port"
+msgstr "Porta"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Salva e applica"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Password"
+msgid "Password"
+msgstr "Password"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Nessuna password"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Set caratteri"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stile"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Colore"
+msgid "Character set"
+msgstr "Set di caratteri"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Interfaccia di rete"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Nome della rete wireless (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Password wireless"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Sicurezza wireless"
+msgid "Wireless network name (ESSID)"
+msgstr "Nome della rete wireless (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Aggiornamento Libreria"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "La libreria Musica ha bisogno di eseguire una nuova scansione per aggiornare le copertine dai tag"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Vuoi eseguire una scansione adesso?"
@@ -2753,10 +2672,6 @@ msgstr "Aggiungi Musica..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Aggiungi Video..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Anteprima"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Altro..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Nome utente"
+msgid "Username"
+msgstr "Nome utente"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Permetti ad XBMC di ricevere contenuti da AirPlay"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Nome periferica"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Proteggi con password"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Necessaria una versione più recente - Controlla il log"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Abilita LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Home"
@@ -3473,6 +3380,18 @@ msgstr "Casella di dialogo si/no"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Casella di Progresso"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Blocca impostazioni"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Preferiti"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Impostazioni Add-on"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Controllo velocità ventola"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Carattere"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Abilita inversione in stringhe bidirezionali"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "cache Video - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Rete Locale"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "cache Audio - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Rete Locale"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "cache DVD - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Rete Locale"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Rimuovi dai preferiti"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Colori"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Paese del fuso orario"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Default della skin"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Tema"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Tema di default"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Invia le canzoni a Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Nome utente Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Password Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Inoperabile: disattivo..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Per favore aggiornare XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Non autorizzato: controlla nome utente e password"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Connesso"
@@ -5333,22 +5204,6 @@ msgstr "Connesso"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Non connesso"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Intervallo invio %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "%i canzoni memorizzate"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Inviando..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Inviato in %i secondi"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Nascondi i nomi dei file in vista ad icone"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Esegui in modalità party"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Invia le canzoni a Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Nome utente di Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Password di Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Invio canzone"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Invia la radio Last.fm a Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Connessione a Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Selezione stazione..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Ricerca artisti simili..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Ricerca etichette simili..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Tuo profilo  (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Etichette migliori"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Artisti migliori con etichetta %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Album migliori con etichetta %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Canzoni migliori con etichetta %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Ascolta l'etichetta %name% Last.FM radio"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Artisti simili a %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Album %name% migliori"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Canzoni %name% migliori"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Etichette %name% migliori"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Più grandi fan di %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Ascolta %name% fans Last.fm radio"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Ascolta %name% artisti simili Last.fm radio"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Artisti migliori per l'utente %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Album migliori per l'utente %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Canzoni migliori per l'utente %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Amici dell'utente %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Vicini dell'utente %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Classifica settimanale artista per %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Classifica settimanale album per %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Classifica settimanale canzone per %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Ascolta la Last.fm radio dei vicini di %name%"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Ascolta la Last.fm radio personale di %name%"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Ascolta le Last.fm radio canzoni preferite di %name%"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Ricezione lista da Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Impossibile ricevere la lista da Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Inserire il nome di un artista per trovarne i correlati"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Inserire il nome di un etichetta per trovarne di simili"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Tracce recentemente ascoltate da %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Ascolta le %name%'s raccomandazioni Last.fm radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Etichette preferite per l'utente %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Vuoi aggiungere la traccia corrente alle tue preferite?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Vuoi vietare la traccia corrente?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Aggiunta alle tue traccie preferite: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Impossibile aggiungere '%s' alle tue tracce preferite."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Vietata: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Impossibile vietare '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Tracce recentemente preferite da %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Tracce recentemente vietate da %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Rimuovi dalle tracce preferite"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Riammetti"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Vuoi rimuovere questa traccia dalle tracce preferite?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Vuoi togliere il divieto a questa traccia?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Informazioni"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Hai già cominciato a registrare su questo canale"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Questo canale non può essere visualizzato. Controlla i log per maggiori dettagli."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Root"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoom"
+msgid "Zoom"
+msgstr "Zoom"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Crea nuova cartella"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Oscura LCD se in riproduzione"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Sconosciuto o installato (protetto)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Oscura LCD se in pausa"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Scraper predefinito per i video musicali"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Impostazioni"
+msgid "Settings"
+msgstr "Impostazioni"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Il telecomando simula i tasti della tastiera"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Edita"
+msgid "Edit"
+msgstr "Modifica"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Data creazione"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Copyright"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Codice paese"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Nascondi avanzamento aggiornamento archivio"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- Suffisso DNS"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "Carattere"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Dimensione"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Colore"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Carattere di default"
+msgid "Size"
+msgstr "Dimensione"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Non trovo il precedente elemento da riprodurre"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Avvio di zeroconf fallito"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Il servizio Apple Bonjour è installato? Controllare i log per maggiori informazioni."
@@ -10581,10 +10192,6 @@ msgstr "Non usare la mappatura tasti 'keymap' per questo dispositivo"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Abilita supporto per joystick e gamepad"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Disabilita joystick quando è presente iMON"
 
 msgctxt "#35500"
 msgid "Location"

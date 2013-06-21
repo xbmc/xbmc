@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sk/)\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/xbmc-main/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Počet kanálov"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS kompatibilný receiver"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Písmo"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Veľkosť"
+msgid "Size"
+msgstr "Veľkosť"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Posunutie zvuku"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Záložky"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC kompatibilný receiver"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 kompatibilný receiver"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 kompatibilný receiver"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 kompatibilný receiver"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Zvyšovať hlasitosť pri downmixe"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD kompatibilný receiver"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Viackanálový LPCM kompatibilný receiver"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD kompatibilný receiver"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programy"
@@ -1293,10 +1260,6 @@ msgstr "Úroveň stlmenia šetriča obrazovky"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Zoradiť podľa: Súboru"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) kompatibilný receiver"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Automaticky prehrávať médiá"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Sieť"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Použiť HTTP proxy server pre prístup na internet"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP Proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Priradenie"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatický (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Manuálne (Statický)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP Adresa"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Sieťová maska"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Predvolená brána"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS server"
+msgid "IP address"
+msgstr "IP adresa"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Uložiť a použiť"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Heslo"
+msgid "Password"
+msgstr "Heslo"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Žiadne heslo"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Písmo"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Štýl"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Farba"
+msgid "Character set"
+msgstr "Znaková sada"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Sieťové rozhranie"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Názov bezdrôtovej siete (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Heslo bezdrôtovej siete"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Bezpečnost bezdrôtovej siete"
+msgid "Wireless network name (ESSID)"
+msgstr "Názov bezdrôtovej siete (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Aktualizovať knižnicu"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Hudobná knižnica potrebuje opätovne prehľadať art na základe značiek"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Chcete spustiť prehľadávanie teraz?"
@@ -2753,10 +2672,6 @@ msgstr "Pridať hudbu..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Pridať videá..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Náhľad"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Ostatné ..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Užívateľské meno"
+msgid "Username"
+msgstr "Užívateľské meno"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Povoliť XBMC príjem AirPlay obsahu"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Názov zariadenia"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Použiť ochranu heslom"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Je vyžadovaná novšia verzia - Viac informácií v logu"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Aktivovať LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Domov"
@@ -3473,6 +3380,18 @@ msgstr "Áno/Nie dialog"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialóg spracovania"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Zamknúť nastavenia"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Obľúbené"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Nastavenie doplnku"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Nastavenie otáčok ventilátora"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Písmo"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Aktivovať opačné titulky (arabčina, hebrejčina, ...)"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Medzipamäť - Video - DVDRom"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Lokálna sieť"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Medzipamäť - Audio - DVDRom"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Lokálna sieť"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Medzipamäť - DVD - DVDRom"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Lokálna sieť"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Odstrániť z obľúbených"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Farby"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Časové pásmo krajiny"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Predvolené"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Téma"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Predvolená téma"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.FM"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Last.FM - Odosielať informácie o skladbách"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.FM - Užívateľské meno"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.FM - Heslo"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Nedá sa nadviazať spojenie: spím..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Prosím aktualizujte XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Zlá autorizácia: Skontrolujte meno a heslo"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Pripojený"
@@ -5333,22 +5204,6 @@ msgstr "Pripojený"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Odpojený"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Interval pre posielanie %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Načítaných %i skladieb"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Posielam..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Pošlem za %i sekund"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Skryť názvy súborov v náhľadoch"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Prehrať v párty režime"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Libre.fm - Odosielať informácie o skladbách"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm - Užívateľské meno"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm - Heslo"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Služby"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Last.fm - Odosielať informácie o rádiách"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Spájam sa s Last.FM..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Nastavujem stanicu..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Hľadať podobných interpretov..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Hľadať podobné slová..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Váš profil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Najpoužívanejšie slová"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Najlepší interpreti pre označenie %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Najlepšie albumy pre slovo %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Najlepšie skladby pre slovo %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Počúvať slovo %name% na Last.FM radiu"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Podobní interpreti ako %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Najlepšie albumy %name%"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Najlepšie skladby %name%"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Najpoužívanejšie slová %name%"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Najväčší fanúškovia %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Počúvať %name% fanúškov Last.FM radiu"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Počúvať %name% podobných interpretov na Last.FM rádiu"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Najlepší interpreti pre užívateľa %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Najlepšie albumy pre užívateľa %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Najlepšie skladby pre užívateľa %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Kamaráti užívateľa %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Susedia užívateľa %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Týždenné rebríčky interpretov pre %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Týždenné rebríčky albumov pre %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Týždenné rebríčky skladieb pre %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Počúvať %name% susedov Last.FM radiu"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Počúvať %name% osobný Last.FM radiu"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Počúvať %name% obľúbene skladby Last.FM radiu"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Sťahujem zoznam z Last.FM..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Nepodarilo sa stiahnuť zoznam z Last.FM..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Zadajte meno interpreta pre hľadanie podobných"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Zadajte slovo pre hľadanie podobných"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Naposledy počúvané skladby užívateľom %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Počúvať %name% odporúčania Last.FM"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Obľúbené tagy užívateľa %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Chcete pridať túto skladbu k Vaším obľúbeným?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Chcete zakázať túto skladbu?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Skladba pridaná k Vaším obľúbeným: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Skladbu '%s' sa nepodarilo pridať k Vaším obľúbeným."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Zakázané: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Nepodarilo sa zakázať '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Ostatné obľúbené skladby užívateľa %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Ostatné zakázané skladby užívateľa %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Odstrániť z obľúbených skladieb"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Povoliť zakázanú"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Chcete odstrániť túto skladbu z Vašich obľúbených?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Chcete opäť povoliť túto zakázanú skladbu?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Informácie"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Nahrávanie tohto kanálu už začalo"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Nie je možné prehrať tento kanál. Pre viac informácii si pozrite výpis z denníka."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Hlavný priečinok"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zväčšenie"
+msgid "Zoom"
+msgstr "Zväčšiť"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Vytvoriť nový priečinok"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Stmaviť LCD pri prehrávaní"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Neznáme alebo obsiahnuté (chránené)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Stmaviť LCD pri pozastavení"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Predvolený sťahovač pre klipy"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Nastavenie"
+msgid "Settings"
+msgstr "Nastavenia"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Emulovať klávesnicu diaľkovým ovládaním"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Upraviť"
+msgid "Edit"
+msgstr "Upraviť"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Dátum vytvorenia"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Označenie autorských práv"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Kód krajiny"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Aktualizovať knižnicu na pozadí / Skryť proces aktualizácie"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS suffix"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Veľkosť"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Farba"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Znaková sada"
+msgid "Size"
+msgstr "Veľkosť"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Nepodarilo sa nájsť predošlú položku"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Spustenie zeroconf zlyhalo"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Je Apple Bonjour služba nainštalovaná? Pozri log pre viac informácií."
@@ -10581,10 +10192,6 @@ msgstr "Nepoužívať vlastné klávesové mapy pre zariadenie"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Zapnúť podporu pákových ovládačov a gamepadov"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Vypnúť pákový ovládač, keď je prítomné zariadenie"
 
 msgctxt "#35500"
 msgid "Location"

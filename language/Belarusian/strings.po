@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Belarusian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/be/)\n"
+"Language-Team: Belarusian (http://www.transifex.com/projects/p/xbmc-main/language/be/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Колькасьць каналаў"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS прыймач"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Шрыфт"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Памер"
+msgid "Size"
+msgstr "Памеру"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Зрух аўдыё"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Закладкі"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC прыймач"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 прыймач"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 прыймач"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 прыймач"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Павялічваць гучнасьць у ціхага"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD прыймач"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Multichannel LPCM прыймач"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD прыймач"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Праграмы"
@@ -1293,10 +1260,6 @@ msgstr "Screensaver dim level"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Сартаваць па: файлам"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) прыймач"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Autorun media"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Сетка"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- сэрвер"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Выкарыстоўваць HTTP проксі-сэрвэр для доступу ў сеціва"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Проксі HTTP"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Прызначаны"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Аўтаматычна (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Уручную (Static)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP address"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmask"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Default gateway"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS server"
+msgid "IP address"
+msgstr "Адрас IP"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "Сэрвер FTP"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- порт"
+msgid "Port"
+msgstr "Порт"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Save & apply"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- пароль"
+msgid "Password"
+msgstr "Password"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Без паролю"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Знаказбор"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Стыль"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Колер"
+msgid "Character set"
+msgstr "Знаказбор"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Сеткавы інтэрфэйс"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Назва бяздротавай сеткі (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Пароль бяздротавай сеткі"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Бясьпека бяздротавай сеткі"
+msgid "Wireless network name (ESSID)"
+msgstr "Назва бяздротавай сеткі (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Абнаўленьне бібліятэкі"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Музычнай бібліятэцы трэба перасканаваць графіку з цэтлікаў"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Ці жадаеце сканаваць зараз ?"
@@ -2753,10 +2672,6 @@ msgstr "Дадаць музыку..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Дадаць відэа..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Папярэдні прагляд"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Іншае..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- імя карыстальніка"
+msgid "Username"
+msgstr "Імя карыстальніка"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Дазволіць XBMC прымаць зьмесьціва AirPlay"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Назва прылады"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- выкарыстоўваць парольную абарону"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Патрэбная новая вэрсія - глядзіце часапіс"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Дазволіць LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Дадому"
@@ -3473,6 +3380,18 @@ msgstr "Дыялёг Так/Не"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Дыялёг прагрэсу"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Налады блякаваньня"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Упадабаныя"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Налады дадатку"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Fan speed override"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Шрыфты"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Enable flipping bi-directional strings"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video cache - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Local Network"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Сеціва"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio cache - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Local Network"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Сеціва"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD cache - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Local Network"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Выдаліць з упадабаных"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Колеры"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Timezone country"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Перадвызначана"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Тэма"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Default theme"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Падаць кампазыцыю на Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Імя карыстальніка Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Пароль Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Unable to handshake: sleeping..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Please update XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Bad authorization: Check username and password"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Connected"
@@ -5333,22 +5204,6 @@ msgstr "Connected"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Not connected"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Submit interval %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Cached %i songs"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Submitting..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Submitting in %i secs"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Hide file names in thumbs view"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Граць у рэжыме вечарынкі"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Падаць кампазыцыю на Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Імя карыстальніка Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Пароль Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Падаваньне кампазыцыі"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Падаць Last.fm радыё на Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Злучэньне з Last.fm"
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Selecting station..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Search similar artists..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Search similar tags..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Your profile (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Overall top tags"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Лепшыя выканаўцы пад цэтлікам %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Лепшыя альбомы пад цэтлікам %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Лепшыя трэкі пад цэтлікам %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Слухаць радыё Last.fm па цэтліку %name%"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Выканаўцы падобныя на %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %name% albums"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %name% tracks"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %name% tags"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Biggest fans of %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Listen to %name% fans Last.fm radio"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Listen to %name% similar artists Last.fm radio"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Лепшыя выканаўцы для карыстальніка %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Лепшыя альбомы для карыстальніка %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Лепшыя трэкі для карыстальніка %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Сябры карыстальніка %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Суседзі карыстальніка %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Weekly artist chart for %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Weekly album chart for %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Weekly track chart for %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Listen to %name%'s neighbours Last.fm radio"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Listen to %name%'s personal Last.fm radio"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Listen to %name%'s mix Last.fm radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Атрымоўваньне сьпісу з Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Немагчыма атрымаць сьпіс з Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Enter an artist name to find related ones"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Enter a tag name to find similar ones"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Tracks recently listened by %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Listen to %name%'s recommendations Last.fm radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Top tags for user %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Do you want to add the current track to your loved tracks?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Do you want to ban the current track?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Added to your loved tracks: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Could not add '%s' to your loved tracks."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Banned: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Could not ban '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Tracks recently loved by %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Tracks recently banned by %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Remove from loved tracks"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Un-ban"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Do you want to remove this track from your loved tracks?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Do you want to un-ban this track?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Information"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Already started recording on this channel"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "This channel cannot be played. Check the log for details."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Root"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Сумер"
+msgid "Zoom"
+msgstr "Павялічанае"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Make new folder"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Dim LCD on playback"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Unknown or onboard (protected)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Dim LCD on paused"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Default music video scraper"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Налады"
+msgid "Settings"
+msgstr "Налады"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Аддалены кантроль дасылае націсканьні клявіятуры"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Рэдагаваць"
+msgid "Edit"
+msgstr "Рэдагаваць"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Date created"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Copyright flag"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Country code"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Схаваць працэс абнаўленьня бібліятэкі"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS suffix"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "Шрыфт"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Памер"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Колеры"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Знаказбор"
+msgid "Size"
+msgstr "Памеру"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Ня знойдзена папярэдняга складніка для прайграваньня"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Failed to start zeroconf"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Is Apple's Bonjour Service installed? See log for more info."
@@ -10581,10 +10192,6 @@ msgstr "Do not use the custom keymap for this device"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Дазволіць падтрымку джойсьціка і гэймпада"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Disable joystick when device is present"
 
 msgctxt "#35500"
 msgid "Location"

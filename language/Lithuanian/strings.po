@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Lithuanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/)\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-main/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanalų skaičius"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS garso formatas"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Šriftas"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Dydis"
+msgid "Size"
+msgstr "Dydis"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Garso perėjimas"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Žymos"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC garso formatas"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 garso formatas"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 garso formatas"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 garso formatas"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Padidinti garsumo lygį Downmix"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD garso formatas"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Daugiakanalis LPCM garso formatas"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD garso formatas"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programos"
@@ -1293,10 +1260,6 @@ msgstr "Ekrano užsklandos pritemdymo lygis"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Rūšiuoti pagal: Failas"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) garso formatas"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Medios auto paleistis"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Tinklas"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Serveris"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Naudoti HTTP proxy serverį prieigai prie interneto"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Priskyrimas"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatiškai (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Rankinis (Statiškas)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP adresas"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Tinklo kaukė"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Numatytas šliuzas"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- ADNS serveris"
+msgid "IP address"
+msgstr "IP adresas"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP serveris"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Prievadas"
+msgid "Port"
+msgstr "Portas"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Išsaugoti ir pritaikyti"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Slaptažodis"
+msgid "Password"
+msgstr "Slaptažodis"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Be slaptažodžio"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Simbolių kolekcija"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stilius"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Spalva"
+msgid "Character set"
+msgstr "Simbolių/ženklų rinkinys"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Tinko sąsaja"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Bevielio tinklo pavadinimas (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Bevielio tinklo slaptažodis"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Bevielio tinklo saugumas"
+msgid "Wireless network name (ESSID)"
+msgstr "Bevielio tinklo pavadinimas (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Biblioteka atnaujinta"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Muzikos biblioteka turi nuskaityti Art žymes"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Norėtumėte nuskaityti dabar?"
@@ -2753,10 +2672,6 @@ msgstr "Įkelti muziką ..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Įkelti video..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Peržiūra"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Kita..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Naudotojo vardas"
+msgid "Username"
+msgstr "Naudotojo vardas"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Leisti XBMC gauti AirPlay turinį"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Įrenginio pavadinimas"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Naudoti saugų slaptažodį"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Reikalinga naujesnė versija - Žiūrėkite žurnalą"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Įjungti LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Pagrindinis"
@@ -3473,6 +3380,18 @@ msgstr "Dialogas Taip/Ne"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialogo progresas"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Blokuoti Nustatymus"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Mėgstamiausi"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Priedų nustatymai"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Aušintuvo greitčio konrtolė"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Šriftas"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Leisti eilutes priešinga kryptimi"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video talpykla - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Vietinis tinklas"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internetas"
+msgid "Internet"
+msgstr "Internetas"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio talpykla - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Vietinis tinklas"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internetas"
+msgid "Internet"
+msgstr "Internetas"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD talpykla - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Vietinis tinklas"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Pašalinti iš mėgstamiausių"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Spalva"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Šalis, laiko juostoje"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Standartinė teminė išvaizda"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Tema"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Standartinė tema"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Pateikti dainas Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Naudotojo vardas Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Slaptažodis Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Nepavyko prisijungti: užmiegu..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Prašome atnaujinti XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Neteisingas prisijungimas: Patikrinkite naudotojo vardą ir slaptažodį"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Sujungtas"
@@ -5333,22 +5204,6 @@ msgstr "Sujungtas"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Nesujungtas"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Sujungimo intervalas %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Talpykloje %i dainos"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Sujungimas..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Sujungimas po %i sekundžių"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Slėpti failų vardus miniatiūrų rodinyje"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Atkūrti partijos režimu"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Pateikti dainas Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Naudotojo vardas Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Slaptažodis Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Dainų  pateikimas"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Pateikti Last.fm radiją į Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Prisijungti prie Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Stoties pasirinkimas..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Rasti panašius atlikėjus..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Rasti panašias žymas..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Jūsų profilis (%vardas%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Bendros top žymos"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Top atlikėjų pagal žymą %vardas%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Top albumų pagal žymą %vardas%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Top kūriniai pagal žymą %vardas%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Klausyti pažymėtus(-as) %vardas% Last.fm radija"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Panašūs atlikėjai kaip %vardas%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %vardas% albumų"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %vardas% kompozicijų"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %vardas% žymų"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Didžiausi gerbėjai %vardas%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Klausyti %vardas% gerbėjų Last.fm radija"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Klausyti %vardas% panašių atlikėjų Last.fm radija"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Top atlikėjų iš %vardas%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Top albumų iš %vardas%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Top kūrinių iš %vardas%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Draugai %vardas%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Bendrija %vardas%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Savaitės atlikėjų diagrama %vardas%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Savaitės albumų diagrama %vardas%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Savaitės takelių diagrama %vardas%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Klausyti %vardas%'s iš kitų Last.fm radija"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Klausyti %vardas%'s personalinio Last.fm radija"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Klausyti %vardas%'s milymiausia Last.fm radija"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Gaukite sąrašą iš Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Negalima gauti sąrašo iš Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Įveskite atlikėjo vardą, ieškoti panašių"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Įveskite pavadinime žymą, ieškoti panašių"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Pastaruoju metu klausomos dainos %vardas%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Klausyti %vardas%'s rekomenduojama Last.fm radija"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Naudotojų top žymos %vardas%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Ar norite įtraukti pasirinktą takelį į savo mylimus kūrinius?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Ar norite uždrausti esamą įrašą?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Pridėti prie savo mylimų kūrinių: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Negalima pridėti '%s' prie savo mylimų kūrinių."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Užblokuota: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Nepavyko užblokuoti: '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Jums patikę kūriniai %vardas%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Jūsų užblokuoti kūriniai %vardas%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Pašalinti iš 'Mylimiausi kūriniai'"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Atblokuoti"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Norite pašalinti šį kūrinį iš savo 'Mylimiausi kūriniai'?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Norite atblokuoti šį kūrinį?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Informacija"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "jau pradėtas šio kanalo įrašymas į..."
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Šis kanalas negali būti atkūtras. Patikrinkite 'Išsamesnės informacijos' žurnalą."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Šakninis"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Didinimas"
+msgid "Zoom"
+msgstr "Padidintas"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Sudaryti naują aplanką"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Pritemdyti LCD ekraną atkuriant"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Nežinomas arba integruotas (apsaugotas)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Pritemdyti LCD ekraną pauzėje"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Numatytasis vaizdo klipų Scraper"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Nustatymai"
+msgid "Settings"
+msgstr "Nustatymai"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Distancinis pultas siunčia klaviatūros kodus"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Redaguoti"
+msgid "Edit"
+msgstr "Redaguoti"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Sukūrimo data"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Autorinės teisės ženklas"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Šalies kodas"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Visada atnaujinti biblioteką fone"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS suffix"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fс"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "- Šriftas"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Dydis"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Spalva"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Koduotė"
+msgid "Size"
+msgstr "Dydis"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Nepavyksta rasti ankstesnio elemento atkūrimui"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Nepavyko paleisti Zeroconf"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Ar įdiegta Apple Bonjour tarnyba? Prisijungite informacijos gavimui."
@@ -10581,10 +10192,6 @@ msgstr "Negalima naudoti pasirinktinė klavišų lentelė šiuo prietaisu"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Įjungti vairalazdės ir vairamentės palaikymą"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Išjungti vairasvirtę, kai prietaisas yra pritaikytas"
 
 msgctxt "#35500"
 msgid "Location"

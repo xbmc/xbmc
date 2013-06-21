@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/)\n"
+"Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/xbmc-main/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "通道数"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- 接收器支持 DTS"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "字体"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- 尺寸"
+msgid "Size"
+msgstr "大小"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "声音延迟"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "书签"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- 接收器支持 AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- 接收器支持 MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- 接收器支持 MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- 接收器支持 MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "增加声道缩减混音音量"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- 接收器支持 DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- 接收器支持多声道 LPCM"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- 接收器支持 TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "程序"
@@ -1293,10 +1260,6 @@ msgstr "屏幕保护画面亮度衰减级别"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "排序：文件"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- 接收器支持 AC3"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "自动播放媒体"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "液晶屏设置"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "网络"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- 服务器"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "使用 HTTP 代理服务器访问互联网"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP 代理"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- 分配方式"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "自动（动态分配）"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "手动（静态分配）"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP 地址"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- 子网掩码"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- 默认网关"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS 服务器"
+msgid "IP address"
+msgstr "IP 地址"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP 服务器"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- 端口"
+msgid "Port"
+msgstr "端口"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "保存和应用"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- 密码"
+msgid "Password"
+msgstr "密码"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "无密码"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- 字符集"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- 字形"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- 颜色"
+msgid "Character set"
+msgstr "字符集"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "网卡"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- 无线网络名（ESSID）"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- 无线网加密方式"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- 无线网安全"
+msgid "Wireless network name (ESSID)"
+msgstr "无线网络名（ESSID）"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "资料库更新"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "音乐资料库需要重新扫描标签艺术"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "现在扫描吗？"
@@ -2753,10 +2672,6 @@ msgstr "添加音乐..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "添加视频..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- 预览"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "其它..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- 用户名"
+msgid "Username"
+msgstr "用户名"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "允许 XBMC 接收 AirPlay 内容"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "设备名"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- 使用密码保护"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "需要新版本 - 详见日志"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "启用 LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "首页"
@@ -3473,6 +3380,18 @@ msgstr "\"是/否\"对话框"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "进度对话框"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "锁定系统设置"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "收藏夹"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "扩展功能设置"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "指定风扇转速"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "皮肤字体"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "开启转换双向字串"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "视频缓存 - DVD 驱动器"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- 局域网"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- 互联网"
+msgid "Internet"
+msgstr "互联网"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "音频缓存 - DVD 驱动器"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- 局域网"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- 互联网"
+msgid "Internet"
+msgstr "互联网"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD 缓存 - DVD 驱动器"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- 局域网"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "从收藏夹移除"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "皮肤颜色"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "时区-国家"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "皮肤预设"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "皮肤主题"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "缺省主题"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "将歌曲提交到 Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm 用户名"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm 密码"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "无法连接：休眠中..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "请升级 XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "无法通过认证：检查帐号和密码"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "连接"
@@ -5333,22 +5204,6 @@ msgstr "连接"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "无法连接"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "上传进度%i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "已缓存%i首歌曲"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "上传中..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "上传剩余%i秒"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "缩略图显示时隐藏文件名"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "通过合作模式玩"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "将歌曲提交到 Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm 用户名"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm 密码"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "歌曲提交"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "将 Last.fm 节目提交到 Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "连接到 Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "选择电台..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "寻找相似的艺人..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "寻找相似的标记..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "你的用户配置（%name%）"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "所有排行"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "%name% 艺人排行"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "%name% 专辑排行"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "%name% 歌曲排行"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "收听 %name% Last.fm"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "%name% 同类型艺人"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "%name% 专辑排行"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "%name% 歌曲排行"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "%name% 标签排行"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "%name% 最爱歌迷"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "收听 %name% 在 Last.fm 的歌迷"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "收听 %name% 在 Last.fm 的同类型艺人"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "%name% 艺人排行"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "%name% 专辑排行"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "%name% 歌曲排行"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "%name% 好友"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "%name% 同好"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "%name% 艺人周排行"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "%name% 专辑周排行"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "%name% 歌曲周排行"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "收听 %name% 在 Last.fm 的同好"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "收听 %name% 的个人 Last.fm"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "收听 %name% 的 mix Last.fm radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "正在从 Last.fm 获取列表"
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "不能从 Last.fm 获取列表..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "输入艺人名来寻找相关资料"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "输入标签名来寻找相关资料"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "%name% 最近听过的歌曲"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "收听 %name% 在 Last.fm 的推荐"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "%name% 的排行"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "你想把目前歌曲加入你的最爱吗？"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "你想封锁目前的歌曲吗？"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "加入你的最爱歌曲：'%s'"
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "不能加入 '%s' 到你的最爱"
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "已被封禁：'%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "不能封禁 '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "%name% 最近喜好的歌曲"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "%name% 最近封锁的歌曲"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "从最爱中移除"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "解除封锁"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "您想从你的最爱移除这首歌曲吗？"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "你想解除封锁这首歌曲吗？"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "信息"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "此频道录制已启动"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "此频道无法播放，详细情况见 log 记录。"
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "根目录"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "皮肤缩放"
+msgid "Zoom"
+msgstr "满屏"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "新建文件夹"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "播放时关闭 LCD 背光"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "未知或板载（保护状态）"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "暂停时关闭 LCD 背光"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "默认音乐电视刮削器"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- 设置"
+msgid "Settings"
+msgstr "系统设置"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "摇控器发送键盘按键"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- 编辑"
+msgid "Edit"
+msgstr "编辑"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "日期建立"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "版权标志"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "国家代码"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "隐藏资料库更新进度条"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS 后缀"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f秒"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "字体"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- 尺寸"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- 颜色"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- 字符集"
+msgid "Size"
+msgstr "大小"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "未找到上一播放项目"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "启动 zeroconf 失败"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Apple 的 Bonjour 服务是否已安装？更多信息见日志记录。"
@@ -10581,10 +10192,6 @@ msgstr "此设备不使用自定义键盘映射"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "启用游戏杆和游戏手柄支持"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "设备启用时禁用游戏杆"
 
 msgctxt "#35500"
 msgid "Location"

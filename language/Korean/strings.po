@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ko/)\n"
+"Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-main/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -867,8 +866,8 @@ msgid "Number of channels"
 msgstr "채널수"
 
 msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS 지원 리시버"
+msgid "DTS capable receiver"
+msgstr "DTS 지원 리시버"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1007,8 +1006,8 @@ msgid "Font"
 msgstr "글꼴"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- 크기"
+msgid "Size"
+msgstr "크기"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1043,20 +1042,20 @@ msgid "Bookmarks"
 msgstr "북마크"
 
 msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC 지원 리시버"
+msgid "AAC capable receiver"
+msgstr "AAC 지원 리시버"
 
 msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 지원 리시버"
+msgid "MP1 capable receiver"
+msgstr "MP1 지원 리시버"
 
 msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 지원 리시버"
+msgid "MP2 capable receiver"
+msgstr "MP2 지원 리시버"
 
 msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 지원 리시버"
+msgid "MP3 capable receiver"
+msgstr "MP3 지원 리시버"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1223,16 +1222,16 @@ msgid "Boost volume level on downmix"
 msgstr "다운믹스의 음량 수준을 증폭"
 
 msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD 지원 리시버"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD 지원 리시버"
 
 msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- 멀티채널 LPCM 지원 리시버"
+msgid "Multichannel LPCM capable receiver"
+msgstr "멀티채널 LPCM 지원 리시버"
 
 msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD 지원 리시버"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD 지원 리시버"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1291,8 +1290,8 @@ msgid "Sort by: File"
 msgstr "정렬기준: 파일"
 
 msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- 돌비 디지털 (AC3) 지원 리시버"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "돌비 디지털 (AC3) 지원 리시버"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1613,10 +1612,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "미디어 자동실행"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2382,6 +2377,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "압축 수준"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "자세한 정보 로깅"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "라이브러리 정리"
@@ -2399,8 +2398,8 @@ msgid "Network"
 msgstr "네트워크"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- 서버"
+msgid "Server"
+msgstr "서버"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2419,8 +2418,8 @@ msgid "HTTP proxy"
 msgstr "HTTP 프록시"
 
 msgctxt "#715"
-msgid "- Assignment"
-msgstr "- 할당"
+msgid "Assignment"
+msgstr "할당"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"
@@ -2431,20 +2430,20 @@ msgid "Manual (Static)"
 msgstr "수동 (고정)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP 주소"
+msgid "IP address"
+msgstr "IP 주소"
 
 msgctxt "#720"
-msgid "- Netmask"
-msgstr "- 넷마스크"
+msgid "Netmask"
+msgstr "넷마스크"
 
 msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- 기본 게이트웨이"
+msgid "Default gateway"
+msgstr "기본 게이트웨이"
 
 msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS 서버"
+msgid "DNS server"
+msgstr "DNS 서버"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2471,32 +2470,32 @@ msgid "FTP server"
 msgstr "FTP 서버"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- 포트"
+msgid "Port"
+msgstr "포트"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "저장 &  적용"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- 비밀번호"
+msgid "Password"
+msgstr "비밀번호"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "암호 없음"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- 문자 집합"
+msgid "Character set"
+msgstr "문자 집합"
 
 msgctxt "#736"
-msgid "- Style"
-msgstr "- 스타일"
+msgid "Style"
+msgstr "스타일"
 
 msgctxt "#737"
-msgid "- Colour"
-msgstr "- 색깔"
+msgid "Colour"
+msgstr "색상"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2627,16 +2626,16 @@ msgid "Network interface"
 msgstr "네트워크 인터페이스"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- 무선 네트워크 이름 (ESSID)"
+msgid "Wireless network name (ESSID)"
+msgstr "무선 네트워크 이름 (ESSID)"
 
 msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- 무선 비밀번호"
+msgid "Wireless password"
+msgstr "무선 비밀번호"
 
 msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- 무선 보안"
+msgid "Wireless security"
+msgstr "무선 보안"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2723,8 +2722,8 @@ msgid "Library Update"
 msgstr "라이브러리 업데이트"
 
 msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "태그에서 앨범아트를 검색해야 합니다"
+msgid "Music library needs to rescan tags from files."
+msgstr "파일에서 태그를 재검색해야 합니다."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2742,6 +2741,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "유효한 포트 범위는 1024-65535 입니다"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "사진 추가..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "음악 파일 위치 추가..."
@@ -2751,8 +2754,8 @@ msgid "Add Videos..."
 msgstr "비디오 추가..."
 
 msgctxt "#1000"
-msgid "- Preview"
-msgstr "- 미리보기"
+msgid "Preview"
+msgstr "미리보기"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2939,8 +2942,8 @@ msgid "Other..."
 msgstr "기타..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- 사용자명"
+msgid "Username"
+msgstr "사용자명"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2953,6 +2956,26 @@ msgstr "단일"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "웹 주소 입력"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "프록시 형식"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3091,12 +3114,16 @@ msgid "Device name"
 msgstr "장치 이름"
 
 msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- 비밀번호 사용"
+msgid "Use password protection"
+msgstr "비밀번호 보호 사용"
 
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3270,9 +3297,17 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "낮음"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "및"
+
 msgctxt "#1440"
 msgid "Sleet"
 msgstr "진눈깨비"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "동반한"
 
 msgctxt "#1442"
 msgid "Chance"
@@ -3325,10 +3360,6 @@ msgstr "스크립트 실패! : %s"
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "새 버전이 필요함 - 로그를 보세요"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "LCD/VFD 사용"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3434,9 +3465,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "설정 - 프로파일"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "초기화"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "수준:기본"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "수준:표준"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "수준:고급"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "수준:전문가"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "추가기능 탐색기"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "설정 초기화"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "이 범주의 설정을 초기화하겠습니까?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "도움말"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "도움말 없음"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3445,6 +3512,58 @@ msgstr "예/아니오 대화창"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "진행 대화창"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "파일 탐색기"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "네트워크 설정"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "미디어 소스"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "프로파일 설정"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "잠금 설정"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "컨텐츠 설정"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "즐겨찾기"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "노래/정보"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "스마트 재생목록 편집기"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "스마트 재생목록 규칙 편집기"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "사진/정보"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "추가기능 설정"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "추가기능/정보"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3946,6 +4065,30 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "조이스틱 연결해제됨"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "네트워크 연결을 기다리는 중..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Wake on Lan 실행 실패!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "서버가 깨어나기를 기다리는 중..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "서비스 시작을 기다리는 중..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC 발견"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "낮은 배터리에서 실행중"
@@ -4267,8 +4410,8 @@ msgid "Fan speed override"
 msgstr "팬 속도 조절"
 
 msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- 글꼴"
+msgid "Fonts"
+msgstr "글꼴"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4794,6 +4937,10 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "아트 없음"
 
+msgctxt "#13516"
+msgid "Add art"
+msgstr "아트 추가"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "새로고침 비율 변경시 일시중지"
@@ -4947,32 +5094,32 @@ msgid "Video cache - DVD-ROM"
 msgstr "비디오 캐시 - DVD-롬"
 
 msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- 로컬 네트워크"
+msgid "Local Network"
+msgstr "로컬 네트워크"
 
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- 인터넷"
+msgid "Internet"
+msgstr "인터넷"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "오디오 캐시 - DVD-롬"
 
 msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- 로컬 네트워크"
+msgid "Local Network"
+msgstr "로컬 네트워크"
 
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- 인터넷"
+msgid "Internet"
+msgstr "인터넷"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD 캐시 - DVD-롬"
 
 msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- 로컬 네트워크"
+msgid "Local Network"
+msgstr "로컬 네트워크"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5123,8 +5270,8 @@ msgid "Remove from favourites"
 msgstr "즐겨찾기에서 제거"
 
 msgctxt "#14078"
-msgid "- Colours"
-msgstr "- 색깔"
+msgid "Colours"
+msgstr "색상"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5263,8 +5410,8 @@ msgid "Skin default"
 msgstr "스킨 기본값"
 
 msgctxt "#15111"
-msgid "- Theme"
-msgstr "- 테마"
+msgid "Theme"
+msgstr "테마"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5274,30 +5421,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "노래를 Last.fm 에 전송"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm 사용자명"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm 비밀번호"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "연결할 수 없음: 응답없음..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "XBMC를 업데이트해 주세요"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "인증 실패: 사용자명 및 비밀번호를 확인하세요"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "연결됨"
@@ -5305,22 +5428,6 @@ msgstr "연결됨"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "연결안됨"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "전송 간격 %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr " %i 곡 캐시됨"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "전송중..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "%i 초 후 전송"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5337,218 +5444,6 @@ msgstr "미리보기에서 파일 이름 숨기기"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "파티 모드로 재생"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "노래를 Libre.fm 에 전송"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm 사용자명"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm 비밀번호"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "노래 전송"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Last.fm 라디오를 Last.fm 에 전송"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Last.fm 연결중..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "방송국 선택중..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "비슷한 아티스트 찾기..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "비슷한 태그 찾기..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "당신의 프로파일 (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "전체 인기 태그"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "%name% 태그에 대한 인기 아티스트"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "%name% 태그에 대한 인기 앨범"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "%name% 태그에 대한 인기 트랙"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "%name% 태그의 Last.fm 라디오 듣기"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "%name% 와 비슷한 아티스트"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "%name% 인기 앨범"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "%name% 인기 트랙"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "%name% 인기 태그"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "%name% 의 골수팬"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "%name% 팬의 Last.fm 라디오 듣기"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "%name% 비슷한 아티스트의 Last.fm 라디오 듣기"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "사용자 %name% 의 인기 아티스트"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "사용자 %name% 의 인기 앨범"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "사용자 %name% 의 인기 트랙"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "사용자 %name% 의 친구들"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "사용자 %name% 의 이웃"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "%name% 주간 아티스트 차트"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "%name% 주간 앨범 차트"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "%name% 주간 트랙 차트"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "%name% 의 이웃 Last.fm 라디오 듣기"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "%name% 의 개인 Last.fm 라디오 듣기"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "%name% 의 모든 Last.fm 라디오 듣기"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Last.fm 에서 목록을 검색중..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Last.fm 에서 목록을 검색할 수 없음..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "찾을 관련 아티스트 이름을 입력"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "찾을 유사 태그 이름을 입력"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "%name% 의 최근 들은 트랙"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "%name% 의 추천 Last.fm 라디오 듣기"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "%name% 의 인기 태그"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "현재 트랙을 선호 트랙에 추가 하시겠습니까?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "현재 트랙을 제거 하시겠습니까?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "선호 트랙에 추가됨: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "'%s' 를 선호 트랙에 추가할 수 없습니다."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "제거됨: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "'%s' 을(를) 제거하지못함."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "%name% 의 최근 선호 트랙"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "%name% 의 최근 제거 트랙"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "선호 트랙에서 제거"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "제거 취소"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "이 트랙을 선호 트랙에서 제거 하시겠습니까?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "이 트랙의 제거를 취소 하시겠습니까?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6039,8 +5934,8 @@ msgid "Already started recording on this channel"
 msgstr "이미 이 채널의 녹화가 시작됨"
 
 msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "이 채널을 재생할 수 없습니다. 로그를 확인하세요."
+msgid "%s could not be played. Check the log for details."
+msgstr "%s를 재생할 수 없습니다. 로그를 확인하세요."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7699,8 +7594,8 @@ msgid "Root"
 msgstr "루트"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- 축소/확대"
+msgid "Zoom"
+msgstr "축소/확대"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8158,17 +8053,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "새 폴더 만들기"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "재생때 LCD 흐리게"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "알수없음 또는 온보드(보호됨)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "일시중지때 LCD 흐리게"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8518,6 +8405,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "배우 미리보기 설정"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "북마크 제거"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "에피소드 북마크 제거"
@@ -8568,6 +8459,10 @@ msgstr "초연"
 
 msgctxt "#20417"
 msgid "Writer"
+msgstr "각본"
+
+msgctxt "#20418"
+msgid "Writers"
 msgstr "각본"
 
 msgctxt "#20419"
@@ -8746,6 +8641,22 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "%s 선택"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "시리즈 영화 관리"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "시리즈 영화 선택"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "영화를 새 시리즈에 추가"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "현재 시리즈 (%s) 유지"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "숨김 파일 및 디렉터리 보이기"
@@ -8785,6 +8696,18 @@ msgstr "미디어 공유 추가..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "UPnP를 통해 비디오 및 음악 라이브러리 공유"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "원격 UPnP 플레이어 검색"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "북마크 생성됨"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "에피소드 북마크 생성됨"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8995,8 +8918,8 @@ msgid "Default music video scraper"
 msgstr "기본 뮤직비디오 자료수집기"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- 설정"
+msgid "Settings"
+msgstr "설정"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9127,8 +9050,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "리모컨이 키보드 누름 보냄"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- 수정"
+msgid "Edit"
+msgstr "편집"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9153,6 +9076,14 @@ msgstr "연속 재생에 필요한 양에 도달하기 전에 캐시가 채워�
 msgctxt "#21456"
 msgid "External storage"
 msgstr "외부 저장장치"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "시청한 에피소드"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "그룹"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9322,6 +9253,10 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "방향"
 
+msgctxt "#21858"
+msgid "Image type"
+msgstr "이미지 형식"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "추가 카테고리"
@@ -9393,10 +9328,6 @@ msgstr "Original Tx Reference"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "제작일"
-
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "저작권 표기"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9495,8 +9426,8 @@ msgid "Hide progress of library updates"
 msgstr "라이브러리 업데이트 진행 숨기기"
 
 msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS 접미사"
+msgid "DNS suffix"
+msgstr "DNS 접미사"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -9591,16 +9522,16 @@ msgid "Font"
 msgstr "글꼴"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- 크기"
+msgid "Size"
+msgstr "크기"
 
 msgctxt "#22032"
-msgid "- Colours"
-msgstr "- 색깔"
+msgid "Colours"
+msgstr "색상"
 
 msgctxt "#22033"
-msgid "- Charset"
-msgstr "- 문자집합"
+msgid "Charset"
+msgstr "문자집합"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10350,6 +10281,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "사용자 스크립트 버튼 사용"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "자동 로그인"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "시작할 수 없음"
@@ -10463,8 +10398,8 @@ msgid "Can't find a previous item to play"
 msgstr "재생할 이전 항목이 없습니다"
 
 msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "zeroconf 시작 실패"
+msgid "Failed to start Zeroconf"
+msgstr "Zeroconf 시작 실패"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
@@ -10549,10 +10484,6 @@ msgstr "이 장치에서 사용자 키맵 사용하지 않음"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "조이스틱과 게임패드 사용"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "iMON이 있으면 조이스틱 사용하지 않음"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10721,3 +10652,7 @@ msgstr "TV와 리시버 장치"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "지원하지 않는 libCEC 버전. %x 는 XBMC가 지원하는 것보다 낮은 버전입니다 (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* 항목 폴더"

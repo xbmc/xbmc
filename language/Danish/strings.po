@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/)\n"
+"Language-Team: Danish (http://www.transifex.com/projects/p/xbmc-main/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Antal lydkanaler"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS understøttet receiver"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Skrifttype"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Størrelse"
+msgid "Size"
+msgstr "Størrelse"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Lydforsinkelse"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Bogmærker"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC understøttet receiver"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 understøttet receiver"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 understøttet receiver"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 understøttet receiver"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Øg lydstyrken ved downmix"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD understøttet receiver"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Multikanals LPCM understøttet receiver"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD understøttet receiver"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programmer"
@@ -1293,10 +1260,6 @@ msgstr "Dæmpningsniveau for pauseskærmen"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sorter efter: Fil"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3)  understøttet receiver"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Afspil medie automatisk"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Netværk"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Brug en HTTP-proxyserver til internetadgang"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP-proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Tildeling"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatisk (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Manuel (Statisk)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP-adresse"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmaske"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Standard gateway"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS-server"
+msgid "IP address"
+msgstr "IP-adresse"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP-server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Gem og anvend"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Adgangskode"
+msgid "Password"
+msgstr "Adgangskode"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Ingen adgangskode"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Tegnsæt"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stil"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Farve"
+msgid "Character set"
+msgstr "Tegnsæt"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Netværksgrænseflade"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Navn på trådløst netværk (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Adgangskode til trådløst netværk"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Sikkerhedssytem på trådløst netværk"
+msgid "Wireless network name (ESSID)"
+msgstr "Navn på trådløst netværk (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Biblioteksopdatering"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Musikbiblioteket har behov for at genskanne kunst ud fra nøgleord"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Vil du skanne nu?"
@@ -2753,10 +2672,6 @@ msgstr "Tilføj Musik..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Tilføj Video..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Test"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Andet..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Brugernavn"
+msgid "Username"
+msgstr "Brugernavn"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Tillad XBMC at modtage Airplay-indhold"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Navn på enhed"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Brug adgangskodebeskyttelse"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Nyere version nødvendig - Se log"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Aktiver LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Hjem"
@@ -3473,6 +3380,18 @@ msgstr "Ja/Nej-dialog"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Fremskridtsdialog"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Lås indstillinger"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favoritter"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Indstillinger til Add-ons"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Gennemtving blæserhastighed"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Skrifttyper"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Aktiver drejning af bidirektionale strenge"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videocache - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Lokalt Netværk"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Lydcache - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Lokalt Netværk"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD-cache - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Lokalt Netværk"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Fjern fra favoritter"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Farver"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Land i tidszonen"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skinnets standard"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Tema"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Standardtema"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Send sange til Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm-brugernavn"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm-adgangskode"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Ikke i stand til at udføre håndtryk: sover..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Opdater venligst XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Fejl i autorisation: Kontroller brugernavn og adgangskode"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Forbundet"
@@ -5333,22 +5204,6 @@ msgstr "Forbundet"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Ikke forbundet"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Indsendingsinterval %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Cache %i sange"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Indsender..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Indsender om %i sekunder"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Skjul filnavne i miniaturebilledevisning"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Afspil i festtilstand"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Indsend sange til Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm-brugernavn"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm-adgangskode"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Sangindsendelse"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Indsend Last.fm radio til Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Forbinder til Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Vælger station..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Søg efter lignende kunstnere..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Søg efter lignende nøgleord..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Din profil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Samlet top nøgleord"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Top kunstner med nøgleordet %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Top albummer med nøgleordet %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Top sange med nøgleordet %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Lyt til Last.fm-radio for nøgleordet %name% "
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Kunstnere der minder om %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %name% albummer"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %name% sange"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %name% nøgleord"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Største fans af %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Lyt til brugeren %name%'s Last.fm-radio"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Lyt til %name% lignende kunstneres Last.fm-radio"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Favoritkunstnere for brugeren %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Topalbummer hos brugeren %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Favoritsange hos brugeren %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Brugerens venner %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Brugerens naboer %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Ugentlig kunstnerliste for %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Ugentlig albumliste for %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Ugentlig hitliste for %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Lyt til %name%'s naboers Last.fm-radio"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Lyt til %name%'s personlige Last.fm-radio"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Lyt til %name%'s favoritsange Last.fm-radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Henter liste fra Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Kunne ikke hente liste fra Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Indtast kunstnernavn for at finde relaterede"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Indtast et nøgleord for at finde lignende"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Sange som %name% har lyttet til for nylig"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Lyt til %name%'s anbefalede Last.fm-radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Top nøgleord for brugeren %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Vil du føje dette nummer til dine elskede numre?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Vil du blokere dette nummer?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Føjet til dine elskede numre: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Kunne ikke føje '%s' til dine elskede numre"
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Blokerede: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Kunne ikke blokere'%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Nyligt elskede hos %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Nylige blokeringer af %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Fjern fra elskede numre"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Fjern blokering"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Vil du fjerne dette nummer fra dine elskede numre?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Vil du fjerne blokeringen af dette nummer?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Information"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Optagelse allerede startet på denne kanal"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Denne kanal kan ikke afspilles. Kig i log'en for detajler."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Roden"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoom"
+msgid "Zoom"
+msgstr "Zoom"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Opret ny mappe"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Dæmp LCD ved afspilning"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Ukendt eller indbygget (beskyttet)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Dæmp LCD ved pause"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Standard scraper til musikvideoer"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Indstillinger"
+msgid "Settings"
+msgstr "Indstillinger"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Fjernbetjening sender tastaturtryk"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Rediger"
+msgid "Edit"
+msgstr "Rediger"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Oprettelsesdato"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Ophavsretsmærke"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Landekode"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Opdater biblioteket i baggrunden"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS-suffiks"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "Skrifttype"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Størrelse"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Farver"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Tegnsæt"
+msgid "Size"
+msgstr "Størrelse"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Kan ikke finde tidligere emne at afspille"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Start af zeroconf mislykkedes"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Er Apple's Bonjour-tjeneste installeret? Se log'en for mere information."
@@ -10581,10 +10192,6 @@ msgstr "Anvend ikke den brugerdefinerede tastaturopsætning til denne enhed"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktiver understøttelse af joystick og gamepad"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Deaktiver joystick når enhed er til stede"
 
 msgctxt "#35500"
 msgid "Location"

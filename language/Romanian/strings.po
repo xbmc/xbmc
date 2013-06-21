@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Romanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ro/)\n"
+"Language-Team: Romanian (http://www.transifex.com/projects/p/xbmc-main/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -574,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Renunță la operațiile cu fișiere"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Rezoluție"
@@ -871,8 +874,8 @@ msgid "Number of channels"
 msgstr "Număr de canale"
 
 msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- Receptor capabil DTS"
+msgid "DTS capable receiver"
+msgstr "Receptor cu capabilități DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1011,8 +1014,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Dimensiune"
+msgid "Size"
+msgstr "Mărime"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1047,20 +1050,8 @@ msgid "Bookmarks"
 msgstr "Semne de carte"
 
 msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- Receptor capabil AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- Receptor capabil MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- Receptor capabil MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- Receptor capabil MP3"
+msgid "AAC capable receiver"
+msgstr "Receptor cu capabilități AAC"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1217,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Amplifică volumul când numărul de canale este micșorat"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- Receptor capabil DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Receptor multicanal capabil LPCM "
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- Receptor capabil TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programe"
@@ -1293,10 +1272,6 @@ msgstr "Nivel de întunecare protector ecran"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sortează după: Fișier"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Receptor capabil Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1592,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Redare media automat"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2373,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Rețea"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Folosește un server proxy HTTP pentru accesul la Internet"
@@ -2422,10 +2389,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Proxy HTTP"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Atribuire"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automat (DHCP)"
@@ -2435,20 +2398,8 @@ msgid "Manual (Static)"
 msgstr "Manual (static)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- Adresă IP"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Mască de rețea"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Gateway implicit"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- Server DNS"
+msgid "IP address"
+msgstr "Adresă IP"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2426,24 @@ msgid "FTP server"
 msgstr "Server FTP"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Salvează și aplică"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Parolă"
+msgid "Password"
+msgstr "Parolă"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Nicio parolă"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Set de caractere"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stil"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Culoare"
+msgid "Character set"
+msgstr "Set de caractere"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2574,8 @@ msgid "Network interface"
 msgstr "Interfață rețea"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Nume rețea fără fir (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Parolă rețea fără fir"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Securitate rețea fără fir"
+msgid "Wireless network name (ESSID)"
+msgstr "Nume rețea fără fir (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2661,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Actualizare videotecă"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Imaginile mediatecii audio trebuie scanate din nou"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Dorești să efectuezi scanarea acum?"
@@ -2753,10 +2684,6 @@ msgstr "Adaugă muzică..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Adaugă filme..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Previzualizare"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2870,8 @@ msgid "Other..."
 msgstr "Altele..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Utilizator"
+msgid "Username"
+msgstr "Utilizator"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3020,6 @@ msgstr "Permite XBMC să primească conținut AirPlay"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Nume dispozitiv"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Folosește protecție prin parolă"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3277,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Este necesară o versiune mai nouă - Vedeți istoric modificări"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Activează LCD / VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Acasă"
@@ -3473,6 +3392,18 @@ msgstr "Dialog Da/Nu"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialog de progres"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Configurare blocare"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favorite"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Configurare supliment"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4225,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Înlocuire viteză ventilator"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Fonturi"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Activează inversare pentru textele bi-direcționale"
@@ -4974,33 +4901,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Preîncărcare video - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Rețea locală"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Preîncărcare audio - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Rețea locală"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Preîncărcare DVD - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Rețea locală"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5065,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Elimină din favorite"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Culori"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Țară fus orar"
@@ -5290,10 +5201,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Standard pentru costum"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Temă"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Temă implicită"
@@ -5302,30 +5209,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Trimite cântece către Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Utilizator Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Parolă Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Imposibil de conectat: repaus..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Vă rugăm actualizați XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Permisiune refuzată: Verificați numele de utilizator și parola"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "conectat"
@@ -5333,22 +5216,6 @@ msgstr "conectat"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Neconectat"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Interval de trimitere %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "%i cântece preîncărcate"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Se trimite..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Se trimite în %i secunde"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5232,6 @@ msgstr "Ascunde numele fișierelor în vizualizare miniaturi"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Redă în mod petrecere"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Trimite cântece către Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Utilizator Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Parolă Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Trimitere cântece"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Trimite cântece radio Last.fm către Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Se conectează cu Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Se selectează stația..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Caută artiști similari..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Caută etichete similare..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Profilul tău (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Top etichete per total"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Top artiști pentru eticheta %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Top top albume pentru eticheta %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Top piste pentru eticheta %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Ascultă cu eticheta %name% radio Last.fm"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Artiști similari cu %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %name% albume"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %name% piste"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %name% etichete"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Cei mai mari fani ai lui %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Ascultă fanii %name% radio Last.fm"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Ascultă %name% artiști similari radio Last.fm"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Top artiști pentru utilizator %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Top albume pentru utilizator %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Top piste pentru utilizator %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Prieteni cu utilizatorul %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Vecini cu utilizatorul %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Grafic artiști săptămânal pentru %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Grafic albume săptămânal pentru %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Grafic piste săptămânal pentru %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Ascultă radio Last.fm al veciniilor lui %name%"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Ascultă radio personal Last.fm al lui %name%'s"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Ascultă radio Last.fm mix %name%"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Se obține lista de la Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Nu se poate obține lista de la Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Introduceți un nume de artist pentru a găsii artiști similari"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Introduceți o etichetă pentru a găsii si altele similare"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Piese ascultate recent de %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Ascultă recomandăriile lui %name% pe radio Last.fm"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Top etichete pentru utilizator %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Doriți să adăugați piesa curentă la piesele îndrăgite?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Doriți să blocați piesa curentă?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Adaugată la piesele îndrăgite: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Nu se poate adăuga '%s' la piesele dumneavoastră îndrăgite."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Blocată: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Nu se poate bloca '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Piese îndrăgite recent de %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Piese blocate recent de %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Elimină din piesele îndrăgite"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Deblochează"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Doriți să eliminați această piesă din piesele îndrăgite?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Doriți să deblocați această piesă?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5720,6 @@ msgstr "Informaţii"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Înregistrare acestui canal deja a început"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Acest canal nu poate fi reprodus. Verifică log-ul pentru detalii."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7378,8 @@ msgid "Root"
 msgstr "Rădăcină"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoom"
+msgid "Zoom"
+msgstr "Zoom"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7837,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Creează dosar nou"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Întunecă LCD la redare"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Necunoscut sau integrat (protejat)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Întunecă LCD în pauză"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8666,8 @@ msgid "Default music video scraper"
 msgstr "Catalog (scraper) implicit pentru videoclipuri"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Setări"
+msgid "Settings"
+msgstr "Setări"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8798,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Telecomanda trimite apăsări de taste"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Modificare"
+msgid "Edit"
+msgstr "Modifică"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9069,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Dată creare"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Indicator drept de autor"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Cod țară"
@@ -9526,10 +9165,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Ascunde progresul când se actualizează mediateca"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- Sufix DNS"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9623,16 +9258,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Dimensiune"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Culori"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Set de caractere"
+msgid "Size"
+msgstr "Mărime"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10121,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Elementul anterior de redat nu poate fi găsit"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Zeroconf nu poate fi pornit"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Serviciul Bonjour de la Apple este instalat? Vedeți jurnalul pentru mai multe informații."
@@ -10581,10 +10204,6 @@ msgstr "Nu folosi maparea tastelor pentru acest dispozitiv"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activează suport pentru joystick și gamepad"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Dezactivează joystick-ul când dispozitivul este prezent"
 
 msgctxt "#35500"
 msgid "Location"

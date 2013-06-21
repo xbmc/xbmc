@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/xbmc-main/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -574,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Annuleer bestandsbewerkingen"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Resolutie"
@@ -871,8 +874,8 @@ msgid "Number of channels"
 msgstr "Aantal kanalen"
 
 msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- Versterker ondersteunt DTS"
+msgid "DTS capable receiver"
+msgstr "DTS geschikte ontvanger"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1011,8 +1014,8 @@ msgid "Font"
 msgstr "Lettertype"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Formaat"
+msgid "Size"
+msgstr "Grootte"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1047,20 +1050,20 @@ msgid "Bookmarks"
 msgstr "Favorieten"
 
 msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- Versterker ondersteunt AAC"
+msgid "AAC capable receiver"
+msgstr "AAC geschikte ontvanger"
 
 msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- Versterker ondersteunt MP1"
+msgid "MP1 capable receiver"
+msgstr "MP1 geschikte ontvanger"
 
 msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- Versterker ondersteunt MP2"
+msgid "MP2 capable receiver"
+msgstr "MP2 geschikte ontvanger"
 
 msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- Versterker ondersteunt MP3"
+msgid "MP3 capable receiver"
+msgstr "MP3 geschikte ontvanger"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1227,16 +1230,16 @@ msgid "Boost volume level on downmix"
 msgstr "Volume verhogen bij downmixen"
 
 msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- Versterker ondersteunt DTS-HD"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD geschikte obtvanger"
 
 msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Versterker ondersteunt Mutikanaals LPCM"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Multichannel LPCM geschikte ontvanger"
 
 msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- Versterker ondersteunt TrueHD"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD geschikte ontvanger"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1295,8 +1298,8 @@ msgid "Sort by: File"
 msgstr "Sorteer: Bestand"
 
 msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Versterker ondersteunt Dolby Digital (AC3)"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) geschikte ontvanger"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1620,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Autom. starten"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2086,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Keren afgespeeld"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Datum Genomen"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Sorteerrichting"
@@ -2386,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Compressieniveau"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Uitgebreide logging..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Bibliotheek opschonen"
@@ -2403,8 +2410,8 @@ msgid "Network"
 msgstr "Netwerk"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- Host"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2423,8 +2430,8 @@ msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
 msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Toewijzing"
+msgid "Assignment"
+msgstr "Opdracht"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"
@@ -2435,20 +2442,20 @@ msgid "Manual (Static)"
 msgstr "Handmatig (Statisch)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP-adres"
+msgid "IP address"
+msgstr "IP Adres"
 
 msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmasker"
+msgid "Netmask"
+msgstr "Net masker"
 
 msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Standaard Gateway"
+msgid "Default gateway"
+msgstr "Standaard gateway"
 
 msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS-server"
+msgid "DNS server"
+msgstr "DNS Server"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2482,32 @@ msgid "FTP server"
 msgstr "FTP-server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Poort"
+msgid "Port"
+msgstr "Poort"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Opslaan en toepassen"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Wachtwoord"
+msgid "Password"
+msgstr "Wachtwoord"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Geen wachtwoord"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Tekencodering"
+msgid "Character set"
+msgstr "Karakter set"
 
 msgctxt "#736"
-msgid "- Style"
-msgstr "- Stijl:"
+msgid "Style"
+msgstr "Stijl"
 
 msgctxt "#737"
-msgid "- Colour"
-msgstr "- Kleur:"
+msgid "Colour"
+msgstr "Kleur"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2638,16 @@ msgid "Network interface"
 msgstr "Netwerkverbinding"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Naam draadloos netwerk (ESSID)"
+msgid "Wireless network name (ESSID)"
+msgstr "Draaloze netwerk naam (ESSID)"
 
 msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Wachtwoord draadloos netwerk"
+msgid "Wireless password"
+msgstr "Draadloos wachtwoord"
 
 msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Beveiliging draadloos netwerk"
+msgid "Wireless security"
+msgstr "Draadloze beveiliging"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2727,8 +2734,8 @@ msgid "Library Update"
 msgstr "Bibliotheek Update"
 
 msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "De muziek bibliotheek moet afbeeldingen rescannen uit tags"
+msgid "Music library needs to rescan tags from files."
+msgstr "De muziek bibliotheek moet de tags van de bestanden herscannen."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2746,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Geldig poortbereik is 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Plaatjes toevoegen..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Muziek toevoegen..."
@@ -2755,8 +2766,8 @@ msgid "Add Videos..."
 msgstr "Videos toevoegen..."
 
 msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Voorbeeld"
+msgid "Preview"
+msgstr "Voorvertoning"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2954,8 @@ msgid "Other..."
 msgstr "Andere..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Gebruikersnaam"
+msgid "Username"
+msgstr "Gebruikersnaam"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2957,6 +2968,30 @@ msgstr "Singles"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Voer URL in"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Proxy type"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 met remote dns resolving"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3095,12 +3130,16 @@ msgid "Device name"
 msgstr "Apparaatnaam"
 
 msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Beveiliging met wachtwoord"
+msgid "Use password protection"
+msgstr "Gebruik een bescherming met wachtwoord"
 
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3354,10 +3393,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Nieuwere versie vereist - Zie log"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Gebruik LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Beginscherm"
@@ -3462,9 +3497,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Instellingen - Profielen"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Reset"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Nivo: Eenvoudig"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Nivo: Standaard"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Nivo: Geavanceerd"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Nivo: Expert"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Addon verkenner"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Instellingen terugzetten"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Weet je zeker dat je alle instellingen in deze categorie naar de standaard wilt terugzetten?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Hulp"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Geen hulp beschikbaar"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3473,6 +3544,58 @@ msgstr "Ja/Nee"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Voortgang"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Bestandsverkenner"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Netwerk instellingen"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Media bron"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profiel instellingen"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Beveiligings instellingen"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Inhouds instellingen"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favorieten"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Nummers/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Slimme afspeellijst editor"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Slimme afspeellijst regels editor"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Plaatjes/Info"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Add-On instellingen"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Add-ons/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3974,6 +4097,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick los gekoppeld"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Probeer servers op afstand te ontwaken"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Wachten op netwerk verbinding,,,"
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Gefaald om Wake on Lan uit te voeren!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Wachten tot de server ontwaakt..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Langer wachten tot de server ontwaakt..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Wachten tot de services zijn opgestart..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC Discovery"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Bijgewerkt voor %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Gevonden voor %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Gefaald voor %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Lage accuspanning"
@@ -4295,8 +4462,8 @@ msgid "Fan speed override"
 msgstr "Snelheidsregeling ventilator"
 
 msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Lettertype"
+msgid "Fonts"
+msgstr "Lettertypes"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4758,6 +4925,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Speel alleen dit"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Zet HQ Schalers aan voor schalen van bovenstaande"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synchronisatiemethode"
@@ -4821,6 +4992,10 @@ msgstr "Lokale afbeeldingen"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Geen afbeeldingen"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Voeg Art toe"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4975,32 +5150,32 @@ msgid "Video cache - DVD-ROM"
 msgstr "Videobuffer - DVD"
 
 msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Lokaal netwerk"
+msgid "Local Network"
+msgstr "Lokaal Netwerk"
 
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Geluidsbuffer - DVD"
 
 msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Lokaal netwerk"
+msgid "Local Network"
+msgstr "Lokaal Netwerk"
 
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD-buffer"
 
 msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Lokaal netwerk"
+msgid "Local Network"
+msgstr "Lokaal netwerk"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5151,8 +5326,8 @@ msgid "Remove from favourites"
 msgstr "Uit favorieten verwijderen"
 
 msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Kleuren"
+msgid "Colours"
+msgstr "Kleuren"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5291,8 +5466,8 @@ msgid "Skin default"
 msgstr "Standaarduiterijk"
 
 msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Thema"
+msgid "Theme"
+msgstr "Thema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5302,30 +5477,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.FM"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Afgespeelde nummers op Last.FM bijhouden"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.FM-gebruikersnaam"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.FM-wachtwoord"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Verbinding maken mislukt: sluimer..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Werk XBMC bij a.u.b."
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Authentificatie mislukt: controleer gebruikersnaam en wachtwoord"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Verbonden"
@@ -5333,22 +5484,6 @@ msgstr "Verbonden"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Niet verbonden"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Verzendinterval %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "%i nummers gebufferd"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Verzenden..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Verzenden over %i sec."
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5500,6 @@ msgstr "Bestandsnamen in miniatuurweergave verbergen"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Afspelen in feestmix"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Afgespeelde nummers naar Libre.fm verzenden"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm-gebruikersnaam"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm-wachtwoord"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Nummers verzenden"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Last.FM-radio aan Last.FM toevoegen"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Verbinding maken met Last.FM..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Station selecteren..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Naar vergelijkbare artiesten zoeken..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Naar vergelijkbare tags zoeken..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Mijn profiel (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Populairste tags"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Favoriete artiesten van %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Favoriete albums van %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Favoriete nummers van %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Beluister %name% op Last.fm-radio"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Artiesten vergelijkbaar met %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Populairste albums van %name%"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Populairste nummers van %name%"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Populairste tags voor %name%"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Grootste fans van %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Beluister de Last.fm-radio van fans van %name%"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Beluister artiesten vergelijkbaar met %name%"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Populairste artiesten van %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Populairste albums van %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Populairste nummers van %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Vrienden van %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Buren van %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Wekelijkse artiestenhitlijst voor %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Wekelijkse albumhitlijst voor %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Wekelijkse nummerhitlijst voor %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Beluister de 'buren' Last.fm-radio van %name%"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Beluister de persoonlijke Last.fm-radio van %name%"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Beluister favoriete nummers van %name% op Last.fm radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Lijst ontvangen van Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Lijst ontvangen mislukt..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Geef een artiest op om vergelijkbare artiesten te vinden"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Geef een tag om vergelijkbare te vinden"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Onlangs door %name% afgespeelde nummers"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Beluister de aanbevelingen van %name% op Last.FM-radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Top tags van %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Wilt u dit nummer toevoegen aan uw favoriete nummers?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Wilt u huidig nummer verbannen?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Toegevoegd aan favoriete nummers: %s"
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Toevoegen van '%s' aan favoriete nummers mislukt."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Verbannen: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Verbannen van '%s' mislukt."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Tracks recent gewaardeerd door %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Recent verbannen nummers door %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Verwijderen uit favoriete nummers"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Ban opheffen"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Wilt u dit nummer verwijderen uit uw favoriete nummers?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Wilt u de ban op dit nummer opheffen?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6067,8 +5990,8 @@ msgid "Already started recording on this channel"
 msgstr "Opname is al gestart"
 
 msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Kanaal kan niet worden weergegeven"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s kon niet worden afgespeeld, Controleer het log voor details."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7650,8 @@ msgid "Root"
 msgstr "Hoofdmap"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Verschalen "
+msgid "Zoom"
+msgstr "Zoomen"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +8109,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Nieuwe map"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "LCD dimmen tijdens afspelen"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Onbekend of onboard (beveiligd)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "LCD dimmen tijdens pauze"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8546,6 +8461,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Acteursafbeelding instellen"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Verwijder bladwijzer"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Afl. uit favorieten verwijderen"
@@ -8597,6 +8516,10 @@ msgstr "Eerst uitgez."
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Schrijver"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Schrijvers"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8774,6 +8697,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Selecteer %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Beheer film sets"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Selecteer film set"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Geen set (Verwijder van %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Voeg film toe aan nieuwe set"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Bewaar de huidige set (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Verborgen bestanden en mappen weergeven"
@@ -8813,6 +8756,18 @@ msgstr "Gedeelde media toevoegen..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Video en muziek delen met UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Zoek naar externe UPnP spelers"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Bladwijzer aangemaakt"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Aflevering Bladwijzer aangemaakt"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9023,8 +8978,8 @@ msgid "Default music video scraper"
 msgstr "Standaard muziekvideo scraper"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Instellingen"
+msgid "Settings"
+msgstr "Instellingen"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +9110,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Afstandsbediening stuurt toetsenbordaanslagen"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Wijzigen"
+msgid "Edit"
+msgstr "Wijzig"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9185,6 +9140,14 @@ msgstr "Externe opslag"
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Aantal bekeken afleveringen"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Groepeer bij"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "gemixed"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9354,6 +9317,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Oriëntatie"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Sub-locatie"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "plaatje type"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Tijd aangemaakt"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Overige categorieën"
@@ -9427,8 +9402,8 @@ msgid "Date created"
 msgstr "Datum aangemaakt"
 
 msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Copyright"
+msgid "Urgency"
+msgstr "Belang"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9527,8 +9502,8 @@ msgid "Hide progress of library updates"
 msgstr "Voortgang verbergen bij bibliotheek bijwerken"
 
 msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS-achtervoegsel"
+msgid "DNS suffix"
+msgstr "DNS toevoeging"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -9623,16 +9598,16 @@ msgid "Font"
 msgstr "Lettertype"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Grootte"
+msgid "Size"
+msgstr "Grootte"
 
 msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Kleuren"
+msgid "Colours"
+msgstr "Kleuren"
 
 msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Karakterset"
+msgid "Charset"
+msgstr "Karakter set"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10382,6 +10357,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Stel aangepaste scriptknop in"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Automatisch inloggen"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Starten mislukt"
@@ -10495,12 +10474,24 @@ msgid "Can't find a previous item to play"
 msgstr "Kan vorige item niet vinden om af te spelen"
 
 msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Niet gelukt om zeroconf te starten"
+msgid "Failed to start Zeroconf"
+msgstr "Gefaald om Zeroconf te starten"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Is Apple's Bonjour Service geinstalleerd? Zie log voor meer info."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "Airplay heeft Zeroconf nodig om te werken."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Niet in staat Zeroconf te stoppen"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "Airplay en AirTunes hebben Zeroconf nodig om te werken"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10583,8 +10574,8 @@ msgid "Enable joystick and gamepad support"
 msgstr "Schakel joystick en gamepad ondersteuning in"
 
 msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Schakel joystick uit wanneer apparaat aanwezig is"
+msgid "Disable joystick when this device is present"
+msgstr "Zet joysticks uit wanneer die present zijn"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10645,6 +10636,10 @@ msgstr "Schakel apparatuur uit bij het stoppen van XBMC"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Schakel app. uit zolang de schermbeveiliging actief is"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Ontwaak apparaten wanneer de sceensaver stopt"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10757,3 +10752,647 @@ msgstr "Niet-ondersteunde libCEC-interfaceversie. %x is lager dan de versie die 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr " * Item map"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Gebruik gelimiteerde kleuren range (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Verander de gebruikerservaring voor de interface."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "selecteer de skin voor de Gebruikers interface. Dit zal de gebruikerservaring voor XBMC bepalen."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Wijzig specifieke skin instellingen. De beschikbare opties worden bepaald door de gekozen skin."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Wijzig het thema dat geassocieerd is met de gekozen skin."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Wijzig de kleuren van de gekozen skin."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Kies de lettertypes die getoond worden in de Gebruikers Interface. De lettertypes worden geconfigureerd door de gekozen skin."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Wijzig het formaat van de GUI,"
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Selecteer het media venster dat XBMC bij opstarten toont."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Selecteer het geluid thema dat de Gebruikers Interface gebruikt,"
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Zet dit uit om de rollende RSS nieuws lijn uit te zetten."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Wijzig de RSS rol."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Kies de taal van de Gebruikers Interface."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Selecteer hoe de temperatuur, tijd en datum worden weergegeven. De aanwezig opties variëren per taal."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Kies welk karakterset gebruikt moet worden om tekst weer te geven in de GUI."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Selecteer de land locatie."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Selecteer de huidige tijdszone."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Kies de standaard audio taal als er meerdere talen beschikbaar zijn."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Kies de standaard ondertiteling als er meerdere talen beschikbaar zijn."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Laat bestandsextensies zien bij media bestanden. Bijvoorbeeld, 'Jij Geniet Van Mij.mp3' wordt getoond als 'Jij Geniet Van Mij'."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Negeer bepaalde woorden of tekens tijdens het sorteren. Bijvoorbeeld, 'The Simpsons' wordt gesorteerd als 'Simpsons'. Om meer woorden of tekens in te stellen, zie http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Maak het mogelijk dat bestanden verwijderd en hernoemd kunnen worden in de gebruikersinterface, via het context menu (druk C in op een toetsenbord, bijvoorbeeld, om in dit menu te komen)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Laat de knop voeg bron toe zien in de 'root sections' van de gebruikersinterface."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Laat verborgen mappen en bestanden zien."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Stel de hoeveelheid inactieve tijd in voordat de schermbeveiliging wordt gestart."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Verander specifieke schermbeveiligingsinstellingen. De beschikbare opties zijn afhankelijk van de gebruikte schermbeveiliging."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Test de gekozen screensaver."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "Als muziek wordt afgespeeld, zal XBMC de gekozen visualisatie laten zien in plaats van de schermbeveiliging."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Dim het scherm als de media wordt gepauzeerd. Niet beschikbaar voor de modus, gedimde schermbeveiliging."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Laat de plot informatie voor onbekeken media zien in de Video Bibliotheek."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Haal miniaturen voor acteurs op tijdens het scannen van media."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Controleer op nieuwe media bestanden bij het opstarten van XBMC"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Geforceerd)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Laatst gebruikt profiel"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Blader naar"

@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/)\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/xbmc-main/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canals"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- Descodificador compatible DTS"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Mida"
+msgid "Size"
+msgstr "Mida"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Desplaçament d'àudio"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Marcadors"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- Receptor compatible AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- Receptor compatible MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- Receptor compatible MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- Receptor compatible MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Augmenta el volum al fer un downmix"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- Receptor compatible DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Receptor compatible LPCM multicanal"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- Receptor compatible TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programes"
@@ -1293,10 +1260,6 @@ msgstr "Nivell d'atenuació de l'estalvi de pantalla"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordena per: Fitxer"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Receptor compatible amb Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Executa automàticament els suports"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2206,6 +2165,10 @@ msgctxt "#612"
 msgid "Bits/sample"
 msgstr "Bits/Mostra"
 
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Freqüència de mostreig"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Els CD d'àudio"
@@ -2398,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Xarxa"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Servidor"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Utilitza un servidor proxy HTTP per accedir a internet"
@@ -2418,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Proxy HTTP"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Assignació"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automàtica (DHCP)"
@@ -2431,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Manual (Estàtica)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- Adreça IP"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Màscara de xarxa"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Porta d'enllaç per defecte"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- Servidor DNS"
+msgid "IP address"
+msgstr "Adreça IP"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2471,32 +2414,24 @@ msgid "FTP server"
 msgstr "Servidor FTP"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Desa i aplica"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Contrasenya"
+msgid "Password"
+msgstr "Contrasenya"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Sense contrasenya"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Joc de caràcters"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Estil"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Color"
+msgid "Character set"
+msgstr "Joc de caràcters"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2627,16 +2562,8 @@ msgid "Network interface"
 msgstr "Interfície de xarxa"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Nom de la xarxa sense fils (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Contrasenya de la xarxa sense fils"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Seguretat de la xarxa sense fils"
+msgid "Wireless network name (ESSID)"
+msgstr "Nom de la xarxa sense fils (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2722,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Actualització de biblioteca"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "La llibreria de música necessita re-escanejar art des de les etiquetes"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Voleu escanejar ara?"
@@ -2749,10 +2672,6 @@ msgstr "Afegeix música..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Afegeix vídeos..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Previsualització"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2939,8 +2858,8 @@ msgid "Other..."
 msgstr "Altres..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Nom d'usuari"
+msgid "Username"
+msgstr "Nom d'usuari"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3090,10 +3009,6 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Nom del dispositiu"
 
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Utilitza protecció amb contrasenya"
-
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
@@ -3226,6 +3141,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Cobert"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pedres"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Calamarsa"
@@ -3254,6 +3173,10 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "Sorra"
 
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Plovisqueig"
+
 msgctxt "#1434"
 msgid "Whirls"
 msgstr "Remolins"
@@ -3261,6 +3184,14 @@ msgstr "Remolins"
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Tempesta de sorra"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Bufant"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Pedra"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3286,6 +3217,10 @@ msgctxt "#1443"
 msgid "of"
 msgstr "de"
 
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Embut"
+
 msgctxt "#1445"
 msgid "Cloud"
 msgstr "Núvol"
@@ -3293,6 +3228,10 @@ msgstr "Núvol"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Desconegut"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Ràfegues"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3314,6 +3253,10 @@ msgctxt "#2080"
 msgid "Empty list"
 msgstr "Llista buida"
 
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "S'ha tornat a la llista superior perquè la llista activa s'ha buidat"
+
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "L'script ha fallat : %s"
@@ -3321,10 +3264,6 @@ msgstr "L'script ha fallat : %s"
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Es necessita un versió més recent - Veure el registre"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Activa l'LCD/VFD"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3441,6 +3380,18 @@ msgstr "Diàleg Sí/No"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Diàleg de progrés"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Bloqueja la configuració"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Preferits"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Configuració del complement"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3726,9 +3677,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Element bloquejat"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "S'està actualitzant l'art de la videoteca."
+
 msgctxt "#12350"
 msgid "Processing %s"
 msgstr "S'està processant %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "La memòria cau d'art a la seva biblioteca de vídeo necessita actualitzar-se."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4130,6 +4089,10 @@ msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarma!"
 
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Cancel·lat quan quedava %im%is"
+
 msgctxt "#13213"
 msgid "%2.0fm"
 msgstr "%2.0fm"
@@ -4249,10 +4212,6 @@ msgstr "Control automàtic de temperatura"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Fan speed override"
-
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Fonts"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4758,6 +4717,26 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sync playback to display"
 
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Escull l'art"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Art actual"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Art remot"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Art local"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Sense art"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Pause during refresh rate change"
@@ -4910,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Memòria cau del vídeo - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Xarxa local"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Memòria cau de l'àudio - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Xarxa local"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Memòria cau del DVD - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Xarxa local"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5086,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Elimina de preferits"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Colors"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "País de la zona horària"
@@ -5170,6 +5133,10 @@ msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Expulsa el disc quan s'hagi completat l'extracció del CD"
 
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Atura l'extracció del CD"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Suprimeix"
@@ -5222,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Aparença per defecte"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Tema"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Tema per defecte"
@@ -5234,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Envia les cançons a Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Nom d'usuari de Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Contrasenya de Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "No s'ha pogut negociar: dormint..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Actualitzeu l'XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Autorització incorrecta: comprovi l'usuari i la contrasenya"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Connectat"
@@ -5265,22 +5204,6 @@ msgstr "Connectat"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "No està connectat"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Envia l'interval %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Cached %i cançons"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "S'està enviant..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "S'està enviant en %i segons"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5297,218 +5220,6 @@ msgstr "Oculta els noms dels fitxers en la vista de miniatures"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Reprodueix en mode festa"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Envia les cançons a Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Nom d'usuari de Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Contrasenya de Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Enviament de cançó"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Envia la ràdio de Last.fm a Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "S'està connectant a Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "S'està seleccionant emisora..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Cerca artistes semblants..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Cerca etiquetes semblants..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "El vostre perfil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Etiquetes globals"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Artistes més populars amb l'etiqueta %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Àlbums més populars amb l'etiqueta %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Pistes més populars amb l'etiqueta %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Escolta la ràdio de Last.fm amb l'etiqueta %name%"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Artistes semblants com %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %name% àlbums"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %name% pistes"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %name% etiquetes"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Majors fans de %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Escolta els %name% fans"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Escolta artistes similars de %name% "
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Artistes preferits de l'usuari %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Àlbums preferits de l'usuari %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Pistes preferides de l'usuari %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Amics de l'usuari %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Veïns de l'usuari %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Taula d'artistes setmanals per %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Taula d'àlbums setmanals per %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Taula de pistes setmanals per %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Escolta  veïns de %name%"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Escolta  personal %name%"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Escolta  les més estimades de %name%"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "S'està obtenint la llista desde Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "No s'ha pogut obtenir la llista desde Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Introduïu un nom d'artista per trobar-ne de similars"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Introduïu un nom d'etiqueta per trobar-ne de similars"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Pistes escoltades recentment per %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Listen to %name%'s recommendations Last.fm radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Etiquetes preferides per l'usuari %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Voleu afegir la pista actual a la llista de cançons preferides?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Voleu prohibir la pista actual?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Added to your loved tracks: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Could not add '%s' to your loved tracks."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Vetada: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Could not ban '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Tracks recently loved by %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Tracks recently banned by %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Elimina de la llista de preferides"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Desbloca"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Do you want to remove this track from your loved tracks?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Do you want to un-ban this track?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5997,10 +5708,6 @@ msgstr "Informació"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Ja s'esta enregistrant aquest canal"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Aquest canal no es pot reproduir. Comprovau els registres per detalls."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6918,6 +6625,18 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Error d'enregistrament"
 
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Específic del client"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Configuració específica del client"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Confirma el canvi de canal prement OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Un altre / Desconegut"
@@ -7647,8 +7366,8 @@ msgid "Root"
 msgstr "Arrel"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoom"
+msgid "Zoom"
+msgstr "Zoom"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -7958,6 +7677,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Anuncia les actualitzacions de la biblioteca via UPnP"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Enable auto scrolling for plot & review"
@@ -8102,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Crea una carpeta"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Dim LCD on playback"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Unknown or onboard (protected)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Dim LCD on paused"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8121,6 +7836,26 @@ msgstr "Vídeos - Biblioteca"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Ordena per: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "S'estan escanejant les pel·lícules utilitzant %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "S'estan escanejant els vídeos de música utilitzant %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "S'estan escanejant les sèries de televisió utilitzant %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "S'estan escanejant els artistes utilitzant %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "S'estan escanejant els àlbums utilitzant %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8919,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Default music video scraper"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Configuració"
+msgid "Settings"
+msgstr "Configuració"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9051,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "El control remot envia pulsacions de teclat"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Edita"
+msgid "Edit"
+msgstr "Edita"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9077,6 +8812,10 @@ msgstr "Caché necessària abans de permetre la reproducció fluïda"
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Emmagatzemament extern"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Comptador d'episodis vistos"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9318,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Data de creació"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Marca dels drets d'autor"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Codi del país"
@@ -9418,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Amaga el progrés d'actualització de la biblioteca"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- Sufix del DNS"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9515,16 +9246,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Mida"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Colors"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Joc de caràcters"
+msgid "Size"
+msgstr "Mida"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10386,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "No s'ha pogut trobar l'anterior element a reproduir"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "No s'ha pogut iniciar el zeroconf"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Està instal·lat el servei Apple Bonjour? Consulteu el registre per obtenir més informació."
@@ -10641,3 +10360,7 @@ msgstr "TV i dispositiu AVR (explícit)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "La versió d'interfície de libCEC no està suportada. %x és menor que la versió que XBMC suporta (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Carpeta d'elements"

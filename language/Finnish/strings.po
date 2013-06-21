@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fi/)\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/xbmc-main/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanavien määrä"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS-yhteensopiva vastaanotin"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CD-tietokanta"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Kirjasin"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Koko"
+msgid "Size"
+msgstr "Koko"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Äänen ajoitus"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Kirjanmerkit"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC-yhteensopiva vastaanotin"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1-yhteensopiva vastaanotin"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2-yhteensopiva vastaanotin"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3-yhteensopiva vastaanotin"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Lisää äänenvoimakkuutta äänikanavia yhdistettäessä"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "DTS-HD vahvistin"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "Monikanavainen LPCM vahvistin"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "TrueHD vahvistin"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Ohjelmat"
@@ -1293,10 +1260,6 @@ msgstr "Näytönsäästäjän läpinäkyvyys"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Järjestä: Tiedostonimi"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) -yhteensopiva vastaanotin"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Median käynnistys"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2403,8 +2362,8 @@ msgid "Network"
 msgstr "Verkko"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- Palvelin"
+msgid "Server"
+msgstr "Palvelin"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2422,10 +2381,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP-välipalvelin"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Määritys"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automaattinen (DHCP)"
@@ -2435,20 +2390,12 @@ msgid "Manual (Static)"
 msgstr "Manuaalinen (Kiinteä)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP-osoite"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Aliverkon peite"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Oletusyhdyskäytävä"
+msgid "IP address"
+msgstr "IP-osoite"
 
 msgctxt "#722"
-msgid "- DNS server"
-msgstr "- Nimipalvelin (DNS)"
+msgid "DNS server"
+msgstr "DNS-palvelin"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2422,32 @@ msgid "FTP server"
 msgstr "FTP-palvelin"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Portti"
+msgid "Port"
+msgstr "Portti"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Tallenna ja ota käyttöön"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Salasana"
+msgid "Password"
+msgstr "Salasana"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Ei salasanaa"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Merkistö"
+msgid "Character set"
+msgstr "Merkistökoodaus"
 
 msgctxt "#736"
-msgid "- Style"
-msgstr "- Tyyli"
+msgid "Style"
+msgstr "Tyyli"
 
 msgctxt "#737"
-msgid "- Colour"
-msgstr "- Väri"
+msgid "Colour"
+msgstr "Väri"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2578,8 @@ msgid "Network interface"
 msgstr "Verkkoliitäntä"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Langattoman verkon nimi (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Langattoman verkon salasana"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Langattoman verkon suojaus"
+msgid "Wireless network name (ESSID)"
+msgstr "Langattoman verkon nimi (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2665,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Kirjaston päivitys"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Musiikkikirjaston pitää hakea kansikuvat tageista"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Haetaanko nyt?"
@@ -2753,10 +2688,6 @@ msgstr "Lisää musiikkia..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Lisää videoita..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Esikatselu"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2874,8 @@ msgid "Other..."
 msgstr "Jokin muu..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Käyttäjätunnus"
+msgid "Username"
+msgstr "Käyttäjätunnus"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2957,6 +2888,22 @@ msgstr "Singlet"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Anna nettiosoite"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3093,10 +3040,6 @@ msgstr "Salli XBMC:n vastaanottaa AirPlay-sisältöä"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Laitteen nimi"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Käytä salasanaa"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3262,6 +3205,14 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "Hiekkaa"
 
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Kastetta"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Pyörteitä"
+
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Hiekkamyrsky"
@@ -3345,10 +3296,6 @@ msgstr "Skripti virhe! : %s"
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Tarvitaan uudempi versio - Katso lisää virhelokista"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "LCD/VFD käytössä"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3458,6 +3405,14 @@ msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Lisäosaselain"
 
+msgctxt "#10043"
+msgid "Help"
+msgstr "Ohje"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Ohjetta ei ole saatavilla"
+
 msgctxt "#10100"
 msgid "Yes/No dialog"
 msgstr "Kyllä/Ei -dialogi"
@@ -3465,6 +3420,18 @@ msgstr "Kyllä/Ei -dialogi"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Tila -dialogi"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Lukitse asetukset"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Suosikit"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Lisäosan asetukset"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4286,10 +4253,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Tuulettimen pyörintänopeuden säätö"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Kirjasin"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Käännä kaksisuuntainen merkistö"
@@ -4966,33 +4929,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videovälimuisti - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "Videovälimuisti - Lähiverkko"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "Videovälimuisti - Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Musiikkivälimuisti - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "Musiikkivälimuisti - Lähiverkko"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "Musiikkivälimuisti - Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD-välimuisti - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "DVD-välimuisti - Lähiverkko"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5143,8 +5094,8 @@ msgid "Remove from favourites"
 msgstr "Poista suosikeista"
 
 msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Värisävy"
+msgid "Colours"
+msgstr "Värit"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5283,8 +5234,8 @@ msgid "Skin default"
 msgstr "Oletus"
 
 msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Teema"
+msgid "Theme"
+msgstr "Teema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5294,30 +5245,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Lähetä kappaletiedot Last.fm-palveluun"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm-käyttäjätunnus"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm-salasana"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Ei saatu yhteyttä: odotetaan..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "XBMC täytyy päivittää"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Valtuutusvirhe: tarkista käyttäjätunnus ja salasana"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Yhdistetty"
@@ -5325,22 +5252,6 @@ msgstr "Yhdistetty"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Ei yhdistetty"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Lähetysväli %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Välimuistissa %i kappaletta"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Lähetetään..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Lähetetään %i s kuluttua"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5357,218 +5268,6 @@ msgstr "Piilota tiedostonimet pienoiskuva-näkymässä"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Toista jukeboksissa"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Lähetä kappaletiedot Libre.fm-palveluun"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm-käyttäjätunnus"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm-salasana"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Musiikin lähetys"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Last.fm-radion lähetys käytössä"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Yhdistetään Last.fm palveluun..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Valitaan radioasema..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Etsi samankaltaisia esittäjiä..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Etsi samankaltaisia tunnisteita..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Oma profiili (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Suosituimmat tunnisteet"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Suosituimmat esittäjät tunnisteelle:%name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Suosituimmat albumit tunnisteelle:%name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Suosituimmat kappaleet tunnisteelle:%name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Kuuntele tunnisteen %name% kappaleet Last.fm radiosta"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Samankaltaiset esittäjät kuin %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Suosituimmat %name%:n albumit"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Suosituimmat %name%:n kappaleet"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Suosituimmat %name%:n tunnisteet"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Suurimmat %name%:n fanit"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Kuuntele %name% fanien Last.fm radiota"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Kuuntele %name%:n samankaltaisten esittäjien last.fm radiota"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Käyttäjän %name% suosituimmat esittäjät"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Käyttäjän %name% suosituimmat albumit"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Käyttäjän %name% suosituimmat kappaleet"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Käyttäjän %name% kaverit"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Käyttäjän %name% naapurit"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "%name%:n viikottainen esittäjälista"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "%name%:n viikottainen albumilista"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "%name%:n viikottainen kappalelista"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Kuuntele %name%:n naapurien Last.fm radiota"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Kuuntele %name%:n henkilökohtaista Last.fm radiota"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Kuuntele %name%:n suosikki kappaleiden Last.fm radiota"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Noudetaan listaa Last.fm:stä..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Ei voida hakea listaa Last.fm:stä..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Anna esittäjän nimi löytääksesi vastaavia esittäjiä"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Anna tunniste löytääksesi vastaavia"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Käyttäjän %name% kuuntelemat kappaleet"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Kuuntele %name%:n suositukset Last.fm radiosta"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Käyttäjän %name% tunnisteet"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Haluatko lisätä nykyisen kappaleen omiin suosikkeihin?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Haluatko asettaa eston nykyiselle kappaleelle?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "'%s' lisätty omiin suosikki kappaleisiin."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "'%s':a ei voida lisätä omiin suosikki kappaleisiin."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Esto asetettu: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "'%s':lle ei voida asettaa estoa."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "%name%:n uusimmat suosikit"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "%name%:n viimeksi estetyt"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Poista omista suosikeista"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Poista esto"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Haluatko poistaa tämän kappaleen omista suosikeista?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Haluatko poistaa eston tältä kappaleelta?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6057,10 +5756,6 @@ msgstr "Tiedot"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Tämän kanavan nauhoittaminen on jo aloitettu"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Kanavaa ei voi toistaa. Katso lokitiedostosta lisätietoja."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7719,8 +7414,8 @@ msgid "Root"
 msgstr "Päähakemisto"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoomaus"
+msgid "Zoom"
+msgstr "Zoomaus"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8178,17 +7873,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Luo uusi kansio"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Himmennä LCD toistettaessa"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Tuntematon tai suojattu"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Himmennä LCD taukojen ajaksi"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8538,6 +8225,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Aseta ohjaajan pienoiskuva"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Poista kirjanmerkki"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Poista jakson kirjanmerkki"
@@ -8806,6 +8497,10 @@ msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Jaa video- ja musiikkikirjastot UPnP:n kautta"
 
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Kirjanmerkki luotu"
+
 msgctxt "#21364"
 msgid "Edit media share"
 msgstr "Muokkaa sijaintia"
@@ -9015,8 +8710,8 @@ msgid "Default music video scraper"
 msgstr "Musiikkivideoiden tietojen hakupaikka"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Asetukset"
+msgid "Settings"
+msgstr "Asetukset"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9147,7 +8842,7 @@ msgid "Remote control sends keyboard presses"
 msgstr "Kauko-ohjain lähettää näppäimistön painallukset"
 
 msgctxt "#21450"
-msgid "- Edit"
+msgid "Edit"
 msgstr "Muokkaa"
 
 msgctxt "#21451"
@@ -9418,10 +9113,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Luontipäivä"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Tekijänoikeus"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Maakoodi"
@@ -9518,10 +9209,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Piilota päivityksen edistyminen"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS-loppupääte"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9615,16 +9302,12 @@ msgid "Font"
 msgstr "Kirjasin"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Koko"
+msgid "Size"
+msgstr "Koko"
 
 msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Värit"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Merkistö"
+msgid "Colours"
+msgstr "Värit"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10486,10 +10169,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Edellistä kohdetta ei löydy"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Zeroconf-palvelua ei voitu käynnistää"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja."
@@ -10573,10 +10252,6 @@ msgstr "Älä käytä kustomoitua näppäinkarttaa tälle laitteellle"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktivoi joystick- ja PAD-ohjaintuki"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Älä käytä peliohjainta, kun laite on liitetty"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10749,3 +10424,19 @@ msgstr "libCEC-versio ei tuettu. %x on matalampi kun XBMC:n tukema versio (%x)"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Kohteiden kansio"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Muokkaa RSS-syötteitä."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Valitse nykyinen aikavyöhykkeesi."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Tekstityksen sijainti näytöllä."
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Viimeksi käytetty profiili"

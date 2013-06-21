@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Estonian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/et/)\n"
+"Language-Team: Estonian (http://www.transifex.com/projects/p/xbmc-main/language/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -281,6 +280,14 @@ msgstr "Lõuna"
 msgctxt "#89"
 msgid "North"
 msgstr "Põhi"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Lääs"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Ida"
 
 msgctxt "#92"
 msgid "Variable"
@@ -561,6 +568,14 @@ msgstr "Plaat saadaval"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Rüü"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Tühista failioperatsioonid"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -858,10 +873,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanalite arv"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS toega ressiiver"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -999,8 +1010,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Suurus"
+msgid "Size"
+msgstr "Suurus"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1033,22 +1044,6 @@ msgstr "Audio nihe"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Järjehoidjad"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC toega ressiiver"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1 toega ressiiver"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2 toega ressiiver"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3 toega ressiiver"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1214,18 +1209,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Võimenda helinivood down-miksil"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD toega ressiiver"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Mitmekanalise LPCM toega ressiiver"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD toega ressiiver"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programmid"
@@ -1281,10 +1264,6 @@ msgstr "Ekraanisäästja hämarduse aste"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Järjesta: Fail"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3) toega ressiiver"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1605,10 +1584,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Automaatne avamine"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2190,6 +2165,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Sisesta number"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bitid/diskreet"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Diskreetimissagedus"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Heliplaadid"
@@ -2383,8 +2366,8 @@ msgid "Network"
 msgstr "Võrk"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2402,10 +2385,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proksi"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Määramine"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automaatne (DHCP)"
@@ -2415,20 +2394,12 @@ msgid "Manual (Static)"
 msgstr "Manuaalne (staatiline)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP aadress"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Võrgumask"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Vaikelüüs"
+msgid "IP address"
+msgstr "IP-aadress"
 
 msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS server"
+msgid "DNS server"
+msgstr "DNS server"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2455,32 +2426,24 @@ msgid "FTP server"
 msgstr "FTP server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Salvesta & rakenda"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Salasõna"
+msgid "Password"
+msgstr "Parool"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Salasõna puudub"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Märgistik"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stiil"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Värv"
+msgid "Character set"
+msgstr "Märgistik"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2611,16 +2574,8 @@ msgid "Network interface"
 msgstr "Võrguliides"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Traadita võrgu nimi (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Traadita võrgu salasõna"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Traadita võrgu turvalisus"
+msgid "Wireless network name (ESSID)"
+msgstr "Traadita võrgu nimi (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2706,10 +2661,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Kogu uuendamine"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Muusikakogu vajab kunstikogu taas-skaneerimist"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Soovite kohe skaneerida?"
@@ -2733,10 +2684,6 @@ msgstr "Lisa muusikat..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Lisa videosid..."
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Eelvaade"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2923,8 +2870,8 @@ msgid "Other..."
 msgstr "Muu..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Kasutajanimi"
+msgid "Username"
+msgstr "Kasutajanimi"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3074,13 +3021,13 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Seadme nimi"
 
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Kasuta salasõna"
-
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Filtreeri %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3206,9 +3153,41 @@ msgctxt "#1425"
 msgid "Pellets"
 msgstr "Pelletid"
 
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Rahe"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Suits"
+
 msgctxt "#1428"
 msgid "Volcanic"
 msgstr "Vulkaaniline"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Tuhk"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "laiaulatuslik"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Tolm"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Liiv"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Liivatorm"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Puhumine"
 
 msgctxt "#1437"
 msgid "Pellet"
@@ -3218,13 +3197,37 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "Väike"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "ja"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Lörts"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "ning"
+
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Võimalus"
 
+msgctxt "#1443"
+msgid "of"
+msgstr "/"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Pilv"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Teadmata"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Tuulepuhang"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3242,6 +3245,10 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr "Kestvus"
 
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tühjenda nimekiri"
+
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Skripti viga! : %s"
@@ -3249,10 +3256,6 @@ msgstr "Skripti viga! : %s"
 msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Vajalik on uuem versioon - Vaata vealogi"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Luba LCD/VFD"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3369,6 +3372,18 @@ msgstr "Jah/Ei dialoog"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Edenemise dialoog"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Lukusta seaded"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Lemmikud"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Lisad"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3654,9 +3669,25 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Nimetus lukustatud"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Videokogu esikaante uuendamine"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "%s töötlemine"
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Allalaadimine pole vajalik."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Taasaktiveeri lukk"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Soovid kohe uuendada?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -4166,10 +4197,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Ventilaatori kiiruse alistus"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Fondid"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Luba kahesuunaliste märkide pööramist"
@@ -4622,6 +4649,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Luba riistvara kiirendus (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Esita järgmine video automaatselt"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Esita ainult see"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sünkro meetod"
@@ -4818,33 +4853,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video vahemälu - DVD-ROM"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Kohlik võrk"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Heli vahemälu - DVD-ROM"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "Heli vahemälu - Kohalik võrk"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "Heli vahemälu - Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD vahemälu - DVD-ROM"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "DVD vahemälu - kohalik võrk"
 
 msgctxt "#14036"
 msgid "Services"
@@ -4994,10 +5017,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Eemalda lemmikutest"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Värvid"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Ajavööndi riik"
@@ -5078,6 +5097,10 @@ msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "CD rippimise lõpetamisel ava kettaseade"
 
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Peata CD rippimine"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Eemalda"
@@ -5130,10 +5153,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Vaikimisi"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Teema"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Vaiketeema"
@@ -5142,30 +5161,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Saada lugude andmed Last.fm'i"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm kasutajanimi"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm parool"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Ei õnnestunud kätelda: puhkeolekus..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Palun uuenda XBMC-d"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Autentimine ebaõnnestus: kontrolli kasutajanime ja parooli"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Ühendatud"
@@ -5173,22 +5168,6 @@ msgstr "Ühendatud"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Ei ole ühendatud"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Saatmise intervall %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Vahemälus %i lugu"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Saatmine..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Saatmine %i s pärast"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5205,218 +5184,6 @@ msgstr "Peida pisipiltide vaates failinimed"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Esita plaadimasina režiimis"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Saada lugude andmed Libre.fm-i"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm kasutajanimi"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm salasõna"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Lugude saatmine"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Saada Last.fm raadio Last.fm'i"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Last.fm'iga ühendamine..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Jaama valimine..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Otsi sarnaseid artiste..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Otsi sarnaseid silte..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Sinu profiil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Üldine siltide top"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Top artistid sildile %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Sildi %name% top albumid"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Sildi %name% top lood"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Kuula sildi %name% Last.fm raadiot"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Sarnased artistid kui %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Top %name% albumid"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Top %name% lood"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Top %name% sildid"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "%name% suurimad fännid"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Kuula %name% fännide Last.fm raadiot"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Kuula esitajale %name% sarnaseid artiste Last.fm raadiost"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Kasutaja %name% top artistid"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Kasutaja %name% top albumid"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Kasutaja %name% top lood"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Kasutaja %name% sõbrad"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Kasutaja %name% naabrid"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Kasutaja %name% nädala artistide edetabel"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Kasutaja %name% nädala albumite edetabel"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Kasutaja %name% nädala lugude edetabel"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Kuula kasutaja %name% naabrite Last.fm raadiot"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Kuula kasutaja %name% personaalset Last.fm raadiot"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Kuula kasutaja %name% miksi Last.fm raadiost"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Loendi hankimine Last.fm'st..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Loendit ei saa Last.fm'st hankida..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Seotud artistide leidmiseks sisesta nimi"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Sarnaste siltide leidmiseks sisesta sildi nimi"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Kasutaja %name% viimatikuulatud lood"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Kuula kasutaja %name% soovitusi Last.fm raadiost"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Kasutaja %name% top sildid"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Kas soovid praegust lugu oma lemmikute hulka lisada?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Kas soovid praegust lugu blokeerida?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Lisati sinu lemmiklugude hulka: %s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "%s' ei õnnestunud lemmiklugude hulka lisada."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Blokeeritud: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "'%s' ei õnnestunud blokeerida."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "%name% - viimased lemmiklood"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "%name% - viimased blokeeritud lood"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Eemalda lemmiklugude hulgast"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Tühista"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Kas soovid selle loo oma lemmikute hulgast eemaldada?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Kas soovid selle loo blokeerimise lõpetada?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5517,6 +5284,10 @@ msgstr "Bob"
 msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (pööratud)"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Tühistamine…"
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -5774,6 +5545,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "või kasuta täpsemaks otsinguks väljendeid, näiteks \"The wizard of Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Leia sarnaseid programme"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Elektroonlise saatekava import klientidelt"
@@ -5897,10 +5672,6 @@ msgstr "Informatsioon"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Sellel kanalil juba toimub salvestamine"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Seda kanalit ei saa esitada. Detailsema info saamiseks kontrolli logi."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6402,9 +6173,25 @@ msgctxt "#19173"
 msgid "Default recording priority"
 msgstr "Vaikimisi salvestuse prioriteet"
 
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Tavaline salvestuse hoiuaeg"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Varu salvestuse alguses"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Varu salvestuse lõpus"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Taasesitus"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Kanaleid vahetades näita kanali infot"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
@@ -6458,6 +6245,10 @@ msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr "Ükski ühendatud videosalvestaja põhi ei toeta kanalite skaneerimist."
 
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Kanaliotsingut ei saa alustada. Detailsema info saamiseks kontrolli logi."
+
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "Jätka?"
@@ -6465,6 +6256,10 @@ msgstr "Jätka?"
 msgctxt "#19195"
 msgid "Client actions"
 msgstr "Kliendi tegevused"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR kliendile iseloomulikud tegevused"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6610,6 +6405,50 @@ msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR haldur käivitub"
 
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Kliendist kanalite laadimine"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Kliendist salvestuste laadimine"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Ühtegi PVR lisamoodulit pole lubatud"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR haldur lubati ilma ühegi"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "lubatud PVR lisamoodulita. Luba vähemalt üks lisamoodul"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "PVR funktsionaalsuse kasutamiseks."
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Määra üles äratus käsk (cmd [ajatempel])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Enne salvestamist ärka"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Päevane äratus"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Päevase äratuse aeg (TT:MM:SS)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Filtreeri kanaleid"
+
 msgctxt "#19250"
 msgid "Loading EPG from database"
 msgstr "Andmebaasist elektroonilise saatekava laadimine"
@@ -6638,17 +6477,81 @@ msgctxt "#19256"
 msgid "Stop recording"
 msgstr "Peata salvestamine"
 
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Lukusta kanal"
+
 msgctxt "#19258"
 msgid "Unlock channel"
 msgstr "Ava kanal"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Vanemlik kontroll"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Avatud olemise kestvus"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Muuda PINi"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Vanemlik kontroll. Sisesta PIN:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Lukustatud kanal. Sisesta PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Vale PIN"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Sisestatud PIN kood ei ole õige."
 
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Vanemlik lukustus"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Vanemlik lukustus:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Ära näita 'Informatsioon puudub' silte"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Ära näita 'Ühendus kadus' hoiatusi"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Kõik salvestised"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Ühtegi PVR lisamoodulit ei leitud"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Sa vajad tuunerit, põhja tarkvara, ja"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Lisainfo saamiseks külasta xbmc.org/pvr"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Konflikti hoiatus"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Konflikti tõrge"
 
 msgctxt "#19277"
 msgid "Recording conflict"
@@ -6658,17 +6561,113 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Salvestamise viga"
 
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Kinnita kanali vahetus vajutades OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Muu/Tundmatu"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Film/Draama"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Detektiiv/Põnevus"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Seiklus/Vestern/Sõda"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Ulme/Fantaasia/Õudus"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komöödia"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Seebiooper/Melodraama/Folkloor"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Tõsielu/Klassikaline/Usk/Ajalooline film/Draama"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Täiskasvanute film/Draama"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Uudised/Praegused afäärid"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Uudised/Ilmateade"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Ajaleht"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentaal"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Arutlus/Intervjuu/Debatt"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Šhow/Mängušhow"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Erinevad šhowd"
 
 msgctxt "#19535"
 msgid "Talk Show"
 msgstr "Jutusaade"
 
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Eriline sündmus"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Spordiajakiri"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Jalgpall"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tennis/Squash"
+
 msgctxt "#19553"
 msgid "Team Sports"
 msgstr "Meeskonnasport"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Kergejõustik"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motosport"
 
 msgctxt "#19556"
 msgid "Water Sport"
@@ -6678,25 +6677,157 @@ msgctxt "#19557"
 msgid "Winter Sports"
 msgstr "Talisport"
 
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Ratsutamine"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Võitluskunst"
+
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
 msgstr "Laste/noorte programmid"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Eelkooliealiste programmid"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Meelelahutusprogrammid 6 kuni 14 aastatele"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Meelelahutusprogrammid 10 kuni 16 aastastele"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Muusika/Ballett/Tants"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rokk/Popp"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Tõsine/Klassikaline muusika"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Folk/Traditsiooniline muusika"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Muusikal/Ooper"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Ballett"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Kunst/Kultuur"
 
 msgctxt "#19597"
 msgid "Performing Arts"
 msgstr "Lavakunst"
 
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Kujutav kunst"
+
 msgctxt "#19599"
 msgid "Religion"
 msgstr "Religioon"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Kirjandus"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Film/Kino"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Eksperimentaalne film/Video"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Uus meedia"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Kunsti/Kultuuriajakirjad"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Režiim"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Sotsiaalne/Poliitiline/Ökonoomne"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Ajakirjad/Reportaažid/Dokumentaalid"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Tähtsad isikud"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Tehnoloogia/Loodusteadus"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Meditsiin/Füsioloogia/Psühholoogia"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Välisriigid/Ekspeditsioonid"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Elukestev õpe"
 
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Keeled"
 
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Vaba aeg/Hobid"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Turism/Reisimine"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Käsitöö"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Kokandus"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Reklaam/Ostlemine"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Aiandus"
+
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Algupärane keel"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Must &amp; Valge"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -6705,6 +6836,42 @@ msgstr "Avaldamata"
 msgctxt "#19664"
 msgid "Live Broadcast"
 msgstr "Otseülekanne"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Draama"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Detektiiv/Põnevus"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Seiklus/Vestern/Sõda"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Ulme/Fantaasia/Õudus"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komöödia"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Seebiooper/Melodraama/Folkloor"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Tõsielu/KlassikalineUsk/Ajalooline"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Täiskasvanute"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7079,8 +7246,8 @@ msgid "Root"
 msgstr "Juur"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Suurenda"
+msgid "Zoom"
+msgstr "Suurendus"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -7434,6 +7601,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Artisti andmete allalaadimine ebaõnnestus"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Androidi muusika"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Androidi videod"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Androidi pildid"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Androidi fotod"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Androidi rakendused"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Videesitus algab"
@@ -7514,17 +7701,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Loo uus kaust"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Hämarda esitamisel LCD"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Teadmata või kaitstud"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Hämarda pausis-olekus LCD"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8082,9 +8261,21 @@ msgctxt "#20459"
 msgid "Tags"
 msgstr "Sildid"
 
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Lisa %s"
+
 msgctxt "#20461"
 msgid "Remove %s"
 msgstr "Eemalda %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Uus silt…"
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "'%s' nimeline silt on juba olemas."
 
 msgctxt "#20464"
 msgid "Select %s"
@@ -8339,8 +8530,8 @@ msgid "Default music video scraper"
 msgstr "Vaikimisi muusikavideo kraabits"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Seaded"
+msgid "Settings"
+msgstr "Seaded"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -8471,8 +8662,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Kaugjuhtimispult saadab klahvivajutusi"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Muuda"
+msgid "Edit"
+msgstr "Muuda"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -8493,6 +8684,10 @@ msgstr "Vahemälu täis"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Vahemälu täitus enne taasesituseks vajaliku mahu saavutamist"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Väline hoius"
 
 msgctxt "#21457"
 msgid "Watched episode count"
@@ -8726,10 +8921,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Sisestamise kuupäev"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Autoriõigus"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Riigi kood"
@@ -8826,10 +9017,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Peida teegi uuenduste edenemine"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS järelliide"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -8923,16 +9110,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Suurus"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Värv"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Märgistik"
+msgid "Size"
+msgstr "Suurus"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9097,6 +9276,10 @@ msgstr "Artisti andmed"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Teenused"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR kliendid"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9337,6 +9520,14 @@ msgstr "See funktsioon vajab järgmist lisamoodulit:"
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Kas soovid selle lisamooduli alla laadida?"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Rüü laadimine nurjus"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "Rüül puuduvad mõned failid"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9778,10 +9969,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Ei leia eelmist nimetust mida esitada"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Zeroconf'i alustamine ebaõnnestus"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Kas Apple'i Bonjour-teenus on paigaldatud? Täpsema info saamiseks vaata logi."
@@ -9861,6 +10048,10 @@ msgstr "Klahvitabel lubatud"
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Ära kausta selle seadme jaoks kohandatud klahvitabelit"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Luba juhtkangi ja puldi tugi"
 
 msgctxt "#35500"
 msgid "Location"
@@ -9974,13 +10165,25 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "XBMC sulgemisel edasta käsk 'allikas pole aktiive'"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "Pane seade ooterežiimi kui arvuti läheb ooterežiimile"
+
 msgctxt "#36027"
 msgid "This device needs servicing"
 msgstr "See seade vajab hooldamist"
 
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Eira"
+
 msgctxt "#36029"
 msgid "When the TV is switched off"
 msgstr "Kui teler on välja lülitatud"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "Ühendus kadus"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
@@ -9990,13 +10193,25 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr "See port on hõivatud. Ainult üks programm saab kasutada CEC adapterit"
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Teisele allikale üle minnes pausi taasesitus"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "Alati"
 
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Käivitamisel/peatamisel"
+
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Võimendi /AVR seade"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"

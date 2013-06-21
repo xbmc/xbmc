@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/)\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/xbmc-main/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -870,10 +869,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Кількість каналів"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- Виводити звук у форматі DTS"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1011,8 +1006,8 @@ msgid "Font"
 msgstr "Шрифт"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Розмір"
+msgid "Size"
+msgstr "Розмір"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1045,22 +1040,6 @@ msgstr "Зміщення звуку"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Закладки"
-
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- Виводити звук у форматі AAC"
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- Виводити звук у форматі MP1"
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- Виводити звук у форматі MP2"
-
-msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- Виводити звук у форматі MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1226,18 +1205,6 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Підвищувати гучність при змішуванні"
 
-msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- Виводити звук у форматі DTS-HD"
-
-msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Виводити звук в багатоканальному форматі LPCM"
-
-msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- Виводити звук у форматі TrueHD"
-
 msgctxt "#350"
 msgid "Programs"
 msgstr "Програми"
@@ -1293,10 +1260,6 @@ msgstr "Рівень затемнення екрану"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Сорт. за файлами"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Виводити звук у форматі Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1580,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Автозапуск"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD-екран"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2402,10 +2361,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Мережа"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "- Сервер"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Використовувати HTTP-проксі для доступу до Інтернету"
@@ -2422,10 +2377,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP-проксі"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Призначення"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Автоматично (DHCP)"
@@ -2435,20 +2386,8 @@ msgid "Manual (Static)"
 msgstr "Уручну (статична)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP-адреса"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Маска підмережі"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Основний шлюз"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS-сервер"
+msgid "IP address"
+msgstr "IP-адреса"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2414,24 @@ msgid "FTP server"
 msgstr "FTP-сервер"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Порт"
+msgid "Port"
+msgstr "Порт"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Зберегти та застосувати"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Пароль"
+msgid "Password"
+msgstr "Пароль"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Без пароля"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Кодування"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Стиль"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Колір"
+msgid "Character set"
+msgstr "Кодування"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2562,8 @@ msgid "Network interface"
 msgstr "Мережевий інтерфейс"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Ім'я бездротової мережі (ESSID)"
-
-msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Пароль бездротової мережі"
-
-msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Безпека бездротової мережі"
+msgid "Wireless network name (ESSID)"
+msgstr "Ім'я бездротової мережі (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2726,10 +2649,6 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Оновлення медіатеки"
 
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Потрібно відсканувати картинки із тегів музичних файлів"
-
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Сканували зараз?"
@@ -2753,10 +2672,6 @@ msgstr "Додати музику…"
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Додати відео…"
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Перегляд"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2858,8 @@ msgid "Other..."
 msgstr "Інше…"
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Ім'я користувача"
+msgid "Username"
+msgstr "Ім'я користувача"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3093,10 +3008,6 @@ msgstr "Дозволити XBMC отримувати вміст AirPlay"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Ім'я пристрою"
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Використовувати пароль"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3354,10 +3265,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Потрібна новіша версія; див. журнал"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Увімкнути LCD/VFD-дисплей"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Головне меню"
@@ -3473,6 +3380,18 @@ msgstr "Діалог \"Так/Ні\""
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Діалог виконання"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Заблокувати \"Налаштування\""
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Обране"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Налаштування надбудови"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4294,10 +4213,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Керування швидкість вентилятора"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Шрифти"
-
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Дозволити зворотній напрямок рядків"
@@ -4974,33 +4889,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Кеш відео - з DVD-диска"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- з локальної мережі"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- з Інтернету"
+msgid "Internet"
+msgstr "Інтернет"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Кеш аудіо - з DVD-диска"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- з локальної мережі"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- з Інтернету"
+msgid "Internet"
+msgstr "Інтернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Кеш DVD - с DVD-диска"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- з локальної мережі"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5150,10 +5053,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Видалити з \"Обраного\""
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Кольори"
-
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Країна в часовому поясі"
@@ -5290,10 +5189,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Стандартні"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Тема"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Стандартна тема"
@@ -5302,30 +5197,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Відправляти статистику на Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Ім'я користувача Last.fm"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Пароль Last.fm"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Не вдалося підключитися: очікування…"
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Оновити XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Помилка авторизації: перевірте ім'я користувача та пароль"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Підключено"
@@ -5333,22 +5204,6 @@ msgstr "Підключено"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Не підключено"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Інтервал підключення %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Пісень у кеші: %i"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Підключення…"
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Підключення через %i с."
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5220,6 @@ msgstr "Приховувати імена файлів у режимі ескі�
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Відтворювати в режимі \"party\""
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Відправляти статистику на Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Ім'я користувача Libre.fm"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Пароль Libre.fm"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Відправлення[CR]статистики"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Відправляти радіо Last.fm на Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Підключення до Last.fm…"
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Вибір станції…"
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Пошук схожих виконавців…"
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Пошук схожих тегів…"
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Ваш профіль (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Загальний топ тегів"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Топ виконавців за тегом %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Топ альбомів за тегом %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Топ треків за тегом %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Слухати треки за тегом %name% на Last.fm"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Виконавці, схожі на %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Топ альбомів %name%"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Топ треків %name%"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Топ тегів %name%"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Найвідданіші фани %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Слухати вибір фанів %name% на Last.fm"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Слухати схожих на %name% виконавців на Last.fm"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Топ виконавців від %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Топ альбомів від %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Топ треків від %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Друзі %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Спільноти %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Тижневий чарт виконавців %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Тижневий чарт альбомів %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Тижневий чарт треків %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Слухати вибір спільнот %name% на Last.fm"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Слухати особистий вибір %name% на Last.fm"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Слухати улюблені треки %name% на Last.fm"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Отримання списку від Last.fm…"
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Не вдається отримати список від Last.fm…"
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Уведіть ім'я виконавця для пошуку схожих"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Уведіть назву тегу для пошуку схожих"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Треки, нещодавно прослухані %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Слухати рекомендації %name% на Last.fm"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Топ тегів користувача %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Додати цей трек до ваших улюблених треків?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Заблокувати цей трек?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Додано до ваших улюблених треків: \"%s\"."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Не вдалося додати до ваших улюблених треків: \"%s\"."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Заблоковано: \"%s\"."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Не вдалося заблокувати: \"%s\"."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Останні улюблені треки %name%"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Останні заблоковані треки %name%"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Видалити з улюблених треків"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Розблокувати"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Видалити цей трек із ваших улюблених треків?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Розблокувати цей трек?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6065,10 +5708,6 @@ msgstr "Відомості"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Запис цього каналу вже почався"
-
-msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Неможливо відтворити канал. Див. журнал."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7366,8 @@ msgid "Root"
 msgstr "Корінь"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Масштаб"
+msgid "Zoom"
+msgstr "Збільшений"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +7825,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Створити нову папку"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Затемнювати LCD-екран під час відтворення"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Невідомий або вбудований (захищений)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Затемнювати LCD-екран під час паузи"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -9023,8 +8654,8 @@ msgid "Default music video scraper"
 msgstr "Інфоресурс для кліпів за промовчанням"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Налаштування"
+msgid "Settings"
+msgstr "Налаштування"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +8786,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Пульт ДК посилає коди натиснень клавіш"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Змінити"
+msgid "Edit"
+msgstr "Змінити"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9426,10 +9057,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Дата створення"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Ознака авторського права"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Код країни"
@@ -9526,10 +9153,6 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Приховувати стан оновлення медіатеки"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- Суфікс DNS"
-
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f с."
@@ -9623,16 +9246,8 @@ msgid "Font"
 msgstr "Шрифт"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Розмір"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Кольори"
-
-msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Кодування"
+msgid "Size"
+msgstr "Розмір"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10494,10 +10109,6 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не вдається знайти попередній файл"
 
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Не вдалося запустити zeroconf"
-
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Перевірте, чи встановлено службу Apple Bonjour. Див. журнал."
@@ -10581,10 +10192,6 @@ msgstr "Не використовувати власну розкладку дл
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Увімкнути джойстик і геймпад"
-
-msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Відключити джойстик, коли присутній цей пристрій"
 
 msgctxt "#35500"
 msgid "Location"

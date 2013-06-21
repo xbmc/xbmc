@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/)\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/xbmc-main/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -574,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Avbryt filoperationer"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Upplösning"
@@ -871,8 +874,8 @@ msgid "Number of channels"
 msgstr "Antal kanaler"
 
 msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS-kapabel förstärkare"
+msgid "DTS capable receiver"
+msgstr "DTS-kompatibel förstärkare"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1011,8 +1014,8 @@ msgid "Font"
 msgstr "Typsnitt"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Storlek"
+msgid "Size"
+msgstr "Storlek"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1047,20 +1050,20 @@ msgid "Bookmarks"
 msgstr "Bokmärken"
 
 msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr "- AAC-kapabel förstärkare"
+msgid "AAC capable receiver"
+msgstr "AAC-kompatibel förstärkare"
 
 msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr "- MP1-kapabel förstärkare"
+msgid "MP1 capable receiver"
+msgstr "MP1-kompatibel förstärkare"
 
 msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr "- MP2-kapabel förstärkare"
+msgid "MP2 capable receiver"
+msgstr "MP2-kompatibel förstärkare"
 
 msgctxt "#302"
-msgid "- MP3 capable receiver"
-msgstr "- MP3-kapabel förstärkare"
+msgid "MP3 capable receiver"
+msgstr "MP3-kompatibel förstärkare"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1227,16 +1230,16 @@ msgid "Boost volume level on downmix"
 msgstr "Öka volymen vid nedmixning"
 
 msgctxt "#347"
-msgid "- DTS-HD capable receiver"
-msgstr "- DTS-HD kapabel förstärkare"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD-kompatibel förstärkare"
 
 msgctxt "#348"
-msgid "- Multichannel LPCM capable receiver"
-msgstr "- Multikanal-LPCM kapabel förstärkare"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Flerkanalig LPCM-kompatibel förstärkare"
 
 msgctxt "#349"
-msgid "- TrueHD capable receiver"
-msgstr "- TrueHD-kapabel förstärkare"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD-kompatibel förstärkare"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1295,8 +1298,8 @@ msgid "Sort by: File"
 msgstr "Sortering: Filer"
 
 msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Dolby Digital (AC3)-kapabel förstärkare"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3)-kompatibel förstärkare"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1617,10 +1620,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Autostarta media"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2086,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Spelningar"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Datum upptaget"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Sorteringsriktning"
@@ -2386,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Kompressionsnivå"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Detaljerad loggning..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Städar bibliotek"
@@ -2403,8 +2410,8 @@ msgid "Network"
 msgstr "Nätverk"
 
 msgctxt "#706"
-msgid "- Server"
-msgstr "- Server"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2423,8 +2430,8 @@ msgid "HTTP proxy"
 msgstr "HTTP-proxy"
 
 msgctxt "#715"
-msgid "- Assignment"
-msgstr "- Tilldelning"
+msgid "Assignment"
+msgstr "Tilldelning"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"
@@ -2435,20 +2442,20 @@ msgid "Manual (Static)"
 msgstr "Manuell (Statisk)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP-adress"
+msgid "IP address"
+msgstr "IP-adress"
 
 msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Nätmask"
+msgid "Netmask"
+msgstr "Nätmask"
 
 msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Standardgateway"
+msgid "Default gateway"
+msgstr "Standard-gateway"
 
 msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS-server"
+msgid "DNS server"
+msgstr "DNS-server"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2475,32 +2482,32 @@ msgid "FTP server"
 msgstr "FTP-server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "- Port"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Spara & applicera"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "- Lösenord"
+msgid "Password"
+msgstr "Lösenord"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Inget lösenord"
 
 msgctxt "#735"
-msgid "- Character set"
-msgstr "- Teckenuppsättning"
+msgid "Character set"
+msgstr "Teckenuppsättning"
 
 msgctxt "#736"
-msgid "- Style"
-msgstr "- Stil"
+msgid "Style"
+msgstr "Stil"
 
 msgctxt "#737"
-msgid "- Colour"
-msgstr "- Färg"
+msgid "Colour"
+msgstr "Färg"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2631,16 +2638,16 @@ msgid "Network interface"
 msgstr "Nätverksgränssnitt"
 
 msgctxt "#776"
-msgid "- Wireless network name (ESSID)"
-msgstr "- Trådlöst nätverksnamn (ESSID)"
+msgid "Wireless network name (ESSID)"
+msgstr "Trådlöst nätverksnamn (ESSID)"
 
 msgctxt "#777"
-msgid "- Wireless password"
-msgstr "- Trådlöst lösenord"
+msgid "Wireless password"
+msgstr "Lösenord trådlöst nätverk"
 
 msgctxt "#778"
-msgid "- Wireless security"
-msgstr "- Trådlös säkerhet"
+msgid "Wireless security"
+msgstr "Säkerhet trådlöst nätverk"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2727,8 +2734,8 @@ msgid "Library Update"
 msgstr "Biblioteksuppdatering"
 
 msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr "Musikbiblioteket måste skanna om bilder från taggar"
+msgid "Music library needs to rescan tags from files."
+msgstr "Musikbiblioteket behöver skanna taggar från filer igen."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2746,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Giltigt portintervall är 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Lägg till bilder..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Lägg till musik..."
@@ -2755,8 +2766,8 @@ msgid "Add Videos..."
 msgstr "Lägg till videor..."
 
 msgctxt "#1000"
-msgid "- Preview"
-msgstr "- Förhandsgranska"
+msgid "Preview"
+msgstr "Förhandsvisning"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2943,8 +2954,8 @@ msgid "Other..."
 msgstr "Annan..."
 
 msgctxt "#1048"
-msgid "- Username"
-msgstr "- Användarnamn"
+msgid "Username"
+msgstr "Användarnamn"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2957,6 +2968,30 @@ msgstr "Singlar"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Skriv in webbadress"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Proxytyp"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 med fjärr-dnsresolving"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3095,12 +3130,16 @@ msgid "Device name"
 msgstr "Enhetsnamn"
 
 msgctxt "#1272"
-msgid "- Use password protection"
-msgstr "- Använd lösenordsskydd"
+msgid "Use password protection"
+msgstr "Använd lösenordsskydd"
 
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3354,10 +3393,6 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr "Nyare version behövs - Se loggen"
 
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Aktivera LCD/VFD"
-
 msgctxt "#10000"
 msgid "Home"
 msgstr "Hem"
@@ -3462,9 +3497,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Inställningar - Profiler"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Återställ"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Nivå: Enkel"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Nivå: Standard"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Nivå: Avancerad"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Nivå: Expert"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Tilläggsutforskare"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Återställ inställningar"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Är du säker på att du vill återställa inställningarna i denna kategori?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Hjälp"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Ingen hjälp tillgänglig"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3473,6 +3544,58 @@ msgstr "Ja/Nej-dialog"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Förloppsdialog"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Filhanterare"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Nätverksinställningar"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Mediakälla"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profilinställningar"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Låsinställningar"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Innehållsinställningar"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favoriter"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Låtar/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Smart spellistsredigerare"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Smart spellistregelredigerare"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Bilder/Info"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Tilläggsinställningar"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Tillägg/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3760,7 +3883,7 @@ msgstr "Objekt låst"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr "Uppdaterar vidobibliotekskonsten"
+msgstr "Uppdaterar videobibliotekskonsten"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -3796,11 +3919,11 @@ msgstr "Lösenordet var tomt. Försök igen."
 
 msgctxt "#12360"
 msgid "Master lock"
-msgstr "Huvudlås"
+msgstr "Huvudkod"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Stäng av systemet om låsförsök överskrids"
+msgstr "Stäng av systemet om antalet låsförsök överskrids"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
@@ -3974,6 +4097,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick borttagen"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Försök väcka fjärrservrar vid anslutning"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Väntar på nätverksanslutning..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Misslyckades med Wake on Lan!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Väntar på att servern vaknar upp..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Förlängd väntetid för servern att vakna upp..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Väntar på att tjänster startar..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC-upptäckt"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Uppdaterad för %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Hittad för %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Misslyckad för %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Batteriet börjar ta slut"
@@ -4092,7 +4259,7 @@ msgstr "Om du för närvarande använder Apple-fjärr för att kontrollera"
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC, ändra denna inställning kan påverka din möjlighet"
+msgstr "XBMC, att ändra denna inställning kan påverka din möjlighet"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
@@ -4295,8 +4462,8 @@ msgid "Fan speed override"
 msgstr "Åsidosätt fläkthastighet"
 
 msgctxt "#13303"
-msgid "- Fonts"
-msgstr "- Typsnitt"
+msgid "Fonts"
+msgstr "Typsnitt"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4758,6 +4925,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Spela endast denna"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Aktivera HQ-skalare för skalning över"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synkmetod"
@@ -4821,6 +4992,10 @@ msgstr "Lokal konst"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Ingen konst"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Lägg till konst"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4975,32 +5150,32 @@ msgid "Video cache - DVD-ROM"
 msgstr "Videobuffert - DVD-Rom"
 
 msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Lokalt nätverk"
+msgid "Local Network"
+msgstr "Lokalt nätverk"
 
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Ljudbuffert - DVD-Rom"
 
 msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Lokalt nätverk"
+msgid "Local Network"
+msgstr "Lokalt nätverk"
 
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD-buffert - DVD-Rom"
 
 msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Lokalt nätverk"
+msgid "Local Network"
+msgstr "Lokalt nätverk"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5151,8 +5326,8 @@ msgid "Remove from favourites"
 msgstr "Ta bort från favoriter"
 
 msgctxt "#14078"
-msgid "- Colours"
-msgstr "- Färger"
+msgid "Colours"
+msgstr "Färger"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5291,8 +5466,8 @@ msgid "Skin default"
 msgstr "Skalets egna"
 
 msgctxt "#15111"
-msgid "- Theme"
-msgstr "- Tema"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5302,30 +5477,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Skicka låtinfo till Last.fm"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "Last.fm-användarnamn"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "Last.fm-lösenord"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Inget svar: avvaktar..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Var vänlig uppdatera XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Felaktig autentisering: Kontrollera användarnamn och lösenord"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Uppkopplad"
@@ -5333,22 +5484,6 @@ msgstr "Uppkopplad"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Inte uppkopplad"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Leveransintervall %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Buffrade %i låtar"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Skickar..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Skickar om %i sek"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5365,218 +5500,6 @@ msgstr "Göm filnamn i miniatyrläget"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Spela i partyläge"
-
-msgctxt "#15217"
-msgid "Submit songs to Libre.fm"
-msgstr "Skicka låtar till Libre.fm"
-
-msgctxt "#15218"
-msgid "Libre.fm username"
-msgstr "Libre.fm-användarnamn"
-
-msgctxt "#15219"
-msgid "Libre.fm password"
-msgstr "Libre.fm-lösenord"
-
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr "Libre.fm"
-
-msgctxt "#15221"
-msgid "Song submission"
-msgstr "Låtinlämning"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Skicka Last.fm-radio till Last.fm"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Ansluter till Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Väljer station..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Sök liknande artister..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Sök liknande taggar..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Din profil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "Överlag topp-taggar"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "Toppartister för tagg %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "Toppalbum för tagg %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "Topplåtar för tagg %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Lyssna till tagg %name% Last.fm-radio"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Liknande artister som %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "Topp %name%-album"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "Topp %name%-spår"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "Topp %name%-taggar"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "Största fansen av %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Lyssna på %name%-fans Last.fm radio"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Lyssna på %name%-liknande artister Last.fm radio"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "Toppartister för användare %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "Toppalbum för användare %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "Topplåtar för användare %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Vänner till användare %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Grannar till användare %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Vecko-artistlista för %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Vecko-albumlista för %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Vecko-låtlista för %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Lyssna på %name%'s grannes Last.fm-radio"
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Lyssna på %name%'s personliga Last.fm-radio"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Lyssna på %name%'s älsklingsspår Last.fm-radio"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Hämtar lista från Last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Kan inte hämta lista från Last.fm..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Ange ett artistnamn för att hitta liknande"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Ange ett taggnamn för att hitta liknande"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Nyligen spelade låtar av %name%"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Lyssna till %name%'s rekommenderade Last.fm-radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "Topp taggar för användare %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Vill du lägga till detta spår i dina älsklingsspår?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Vill du bannlysa detta spår?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Tillagt i dina älsklingsspår: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Kunde inte lägga till '%s' till dina älsklingsspår."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Bannlyste: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Kunde inte bannlysa '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Nyligen tillagda spår i %name% älsklingsspår"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Nyligen tillagda spår i %name% bannlista"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Ta bort från älsklingsspår"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Ta bort bannlysning"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Vill du ta bort detta spår från dina älsklingsspår?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Vill du ta bort bannlysningen på detta spår?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -6067,8 +5990,8 @@ msgid "Already started recording on this channel"
 msgstr "Redan startat inspelning av denna kanal"
 
 msgctxt "#19035"
-msgid "This channel cannot be played. Check the log for details."
-msgstr "Denna kanal kan inte spelas. Kontrollera loggen för detaljer."
+msgid "%s could not be played. Check the log for details."
+msgstr "%s kunde inte spelas. Kontrollera loggen för detaljer."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7727,8 +7650,8 @@ msgid "Root"
 msgstr "Huvudmapp"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "- Zoom"
+msgid "Zoom"
+msgstr "Zoom"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -8186,17 +8109,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Skapa ny mapp"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Tona ned LCD under uppspelning"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Okänd eller inbyggd (skyddad)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Tona ned LCD under paus"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -8546,6 +8461,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Ange skådespelarminiatyr"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Ta bort bokmärke"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Ta bort avsnittsbokmärke"
@@ -8596,6 +8515,10 @@ msgstr "Först sänt"
 
 msgctxt "#20417"
 msgid "Writer"
+msgstr "Författare"
+
+msgctxt "#20418"
+msgid "Writers"
 msgstr "Författare"
 
 msgctxt "#20419"
@@ -8774,6 +8697,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Välj %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Hantera filmsamling"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Välj filmsamling"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Ingen samling (Ta bort från %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Lägg till film till en ny samling"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Behåll nuvarande samling (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Visa dolda filer och mappar"
@@ -8813,6 +8756,18 @@ msgstr "Lägg till mediautdelning..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Dela film- och musikbibliotek via UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Leta efter fjärranslutna UPnP-spelare"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Bokmärke skapat"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Avsnittsbokmärke skapat"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9023,8 +8978,8 @@ msgid "Default music video scraper"
 msgstr "Standard-musikvideoskrapa"
 
 msgctxt "#21417"
-msgid "- Settings"
-msgstr "- Inställningar"
+msgid "Settings"
+msgstr "Inställningar"
 
 msgctxt "#21418"
 msgid "Multilingual"
@@ -9155,8 +9110,8 @@ msgid "Remote control sends keyboard presses"
 msgstr "Fjärrkontroll sänder tangentbordstryckningar"
 
 msgctxt "#21450"
-msgid "- Edit"
-msgstr "- Redigera"
+msgid "Edit"
+msgstr "Redigera"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9185,6 +9140,14 @@ msgstr "Extern lagring"
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Sedda avsnittsräkning"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Gruppera efter"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "blandad"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9354,6 +9317,14 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Riktning"
 
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Bildtyp"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Tid skapat"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Tilläggskategorier"
@@ -9427,8 +9398,8 @@ msgid "Date created"
 msgstr "Skapad datum"
 
 msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Upphovsrättsflagga"
+msgid "Urgency"
+msgstr "Vikt"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9527,8 +9498,8 @@ msgid "Hide progress of library updates"
 msgstr "Dölj framsteg för biblioteksuppdateringar"
 
 msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS-suffix"
+msgid "DNS suffix"
+msgstr "DNS-suffix"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -9623,16 +9594,16 @@ msgid "Font"
 msgstr "Typsnitt"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Storlek"
+msgid "Size"
+msgstr "Storlek"
 
 msgctxt "#22032"
-msgid "- Colours"
-msgstr "- Färger"
+msgid "Colours"
+msgstr "Färger"
 
 msgctxt "#22033"
-msgid "- Charset"
-msgstr "- Teckenuppsättning"
+msgid "Charset"
+msgstr "Teckenkodning"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10382,6 +10353,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Aktivera anpassad skriptknapp"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Autoinloggning"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Misslyckades att starta"
@@ -10495,12 +10470,24 @@ msgid "Can't find a previous item to play"
 msgstr "Kan inte hitta föregående objekt att spela"
 
 msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr "Kunde inte starta zeroconf"
+msgid "Failed to start Zeroconf"
+msgstr "Lyckades inte starta Zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Är Apples Bonjour-service installerad? Se loggen för mer info."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay kräver Zeroconf för att aktiveras."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Lyckades inte stoppa Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay och AirTunes är beroende av att Zeroconf körs."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10583,8 +10570,8 @@ msgid "Enable joystick and gamepad support"
 msgstr "Aktivera joystick och gamepad-stöd"
 
 msgctxt "#35102"
-msgid "Disable joystick when device is present"
-msgstr "Inaktivera joysticken när enheten är tillgänglig"
+msgid "Disable joystick when this device is present"
+msgstr "Inaktivera joystick när denna enhet är närvarande"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10645,6 +10632,10 @@ msgstr "Slå av enheter när XBMC stängs av"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Ställ enheter i standbyläge när skärmsläckaren aktiveras"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Väck upp enheter när skärmsläckaren avaktiveras"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10757,3 +10748,835 @@ msgstr "Ej stödd libCEC-gränsnittsversion. %x är lägre än versionen XBMC st
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Objektsmapp"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Använd begränsad färgskala (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Ändra utseendet i användargränssnittet."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Välj skal för användargränssnittet. Detta kommer att definiera utseendet på XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Ändra specifika skalinställningar. De tillgängliga alternativen beror på det valda skalet."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Byt temat associerat med ditt valda skal."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Byt färgerna i ditt valda skal."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Välj typsnitten som visas i användargränssnittet. Teckenuppsättningarna konfigureras av ditt skal."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Byt storlek på gränssnittets vy."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Välj det mediafönster XBMC visar vid uppstart."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Välj eller stäng av ljudschemat som används i användargränssnittet."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Stäng av detta för att ta bort den rullande RSS-nyhetstickern."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Redigera RSS-flöden."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Väljer språket på användargränssnittet."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Välj format för temperatur, tid och datum. De tillgängliga alternativen beror på det valda språket."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Välj vilken teckenuppsättning som används för att visa text i gränssnittet."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Välj land."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Välj din nuvarande tidszon."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Välj standardljudspår när ljudspår på olika språk är tillgängliga."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Välj standardundertext när olika språk är tillgängliga."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Visa (..) i listor för att gå till den överordnade mappen."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Visa filändelser på mediafiler. Till exempel skulle 'You Enjoy Myself.mp3' helt enkelt visas som 'You Enjoy Myself'."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Ignorera vissa igenkänningstecken vid sorteringar. Till exempel skulle 'The Simpsons' helt enkelt visas som 'Simpsons'. För att konfigurera igenkänningstecken, se http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Tillåt att filer tas bort och döps om genom användargränssnittet, via snabbvalsmenyn (tryck C på ett tangentbord, till exempel, för att få fram denna meny)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Visa knappen \"lägg till källa\" från huvudmappen i användargränssnittet."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Visa dolda filer och mappar."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Ställ in tiden innan skärmsläckaren visas."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "Välj skärmsläckare. XBMC kommer att tona ned skärmen när video som spelas i fullskärm pausas, eller när en dialogruta är aktiv."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Ändra specifika skärmsläckarinställningar. De tillgängliga alternativen beror på den valda skärmsläckaren."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Förhandsvisa den valda skärmsläckaren."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "Om musik spelas kommer XBMC starta vald visualisering istället för att visa skärmsläckaren."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Tona ned bildskärmen när media pausas. Inte giltigt för läget med nedtonad skärmsläckare."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Visa information om handling för media som inte visats i videobiblioteket."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Hämta miniatyrbilder för skådespelare när media skannas."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Ta bort noden för TV-seriers säsonger. Växlar mellan 'Om endast en säsong (standard)', 'Alltid' och 'Aldrig'."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Gruppera filmer som 'filmsamlingar' när du bläddrar i filmbiblioteket."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Leta efter nya mediafiler när XBMC startar."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Dölj förloppsindikatorn när bibliotek skannas."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Ta bort objekt från ditt bibliotek som inte kan hittas (antingen omdöpta, borttagna eller på flyttbara lagringsmedia som för tillfället är urkopplade)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exportera videobibliotekets databas till XML-filer. Detta kommer eventuellt skriva över dina nuvarande XML-filer."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importera en XML-fil till videobibliotekets databas."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Aktivera automatisk uppspelning av nästkommande fil i listan med valda objekt."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Justera metoden som används för att behandla och visa video."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Aktivera hårdvaruavkodning av videofiler."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Välj när justering av uppdateringsfrekvensen bör ske."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Skala text-TV till 4:3-format."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Position av undertexter på skärmen."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Starta automatiskt DVD-video när den sätts i spelaren."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Tvinga region för DVD-uppspelning."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Försök hoppa över introduktioner 'som inte går' hoppa över innan DVD-menyn."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "Välj vilken visualisering som ska visas när du lyssnar på musik."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "När en CD stoppas i kommer denna att spelas upp automatiskt."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Välj vilken ljudkodare som används vid rippning."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Välj vilken kvalitet du vill rippa dina filer i."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Välj vilken bithastighet som används för den angivna ljudkodaren för ljudkomprimering."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Mata automatiskt ut skivan när rippning är klar."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "När du spelar musikfiler försöker XBMC hitta en matchande .cdg-fil och visar dess grafik."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Välj typsnitt att använda under karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Välj teckenstorlek att använda under karaoke."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Välj teckenfärg att använda under karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Välj teckenuppsättning att använda under karaoke."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Om EXIF-information existerar (datum, tid, kamera använd, o.s.v.), kommer den visas."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Generera automatiskt miniatyrbilder när du går in i bildmappen."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Visa bildspelet i slumpmässig ordning"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Ange webbserverns port."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Ange webbserverns användarnamn."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Ange webbserverns lösenord."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp AC3ljud"
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp DTSljud"
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp AACljud"
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp LPCMljud"
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp TrueHDljud"
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Välj det här alternativet om din receiver kan spela upp DTS-HDljud"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Använd en joystick för att kontrollera XBMC."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Om din internetanslutning använder en proxy så kan du konfigurera den här."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Nedsatt syn)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Regissörens kommentarer)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Regissörens kommentarer 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(Textning)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Tvingad)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Regissörens kommentarer)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Senast använda profil"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Bläddra i"

@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Maltese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/mt/)\n"
+"Language-Team: Maltese (http://www.transifex.com/projects/p/xbmc-main/language/mt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -133,6 +132,10 @@ msgstr "Xemx"
 msgctxt "#55"
 msgid "May"
 msgstr "Mejju"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Issettja"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -702,10 +705,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Numru ta' kanali"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr "- DTS Capable Receiver"
-
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -835,8 +834,8 @@ msgid "Font"
 msgstr "Font"
 
 msgctxt "#289"
-msgid "- Size"
-msgstr "- Kobor"
+msgid "Size"
+msgstr "Kobor"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1077,10 +1076,6 @@ msgstr "Skrinsejver Fade Level"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordni: File"
-
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- AC3 Capable Receiver"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1389,10 +1384,6 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "X'jiġri"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2114,10 +2105,6 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Network"
 
-msgctxt "#706"
-msgid "- Server"
-msgstr "Ħowst tal-HTTP Proxy"
-
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Attiva HTTP Proxy"
@@ -2134,10 +2121,6 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP Proxy"
 
-msgctxt "#715"
-msgid "- Assignment"
-msgstr "Assignment"
-
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Awto (DHCP)"
@@ -2147,20 +2130,8 @@ msgid "Manual (Static)"
 msgstr "Manwali (Static)"
 
 msgctxt "#719"
-msgid "- IP address"
-msgstr "- IP Address"
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr "- Netmask"
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr "- Difolt Gejtwej"
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr "- DNS Server"
+msgid "IP address"
+msgstr "IP:"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2187,32 +2158,20 @@ msgid "FTP server"
 msgstr "FTP Server"
 
 msgctxt "#730"
-msgid "- Port"
-msgstr "Port tal-Web Server"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Issevja w Uża"
 
 msgctxt "#733"
-msgid "- Password"
-msgstr "Sigriet tal-Web Server"
+msgid "Password"
+msgstr "Sigriet"
 
 msgctxt "#734"
 msgid "No pass"
 msgstr "Bla Sigriet"
-
-msgctxt "#735"
-msgid "- Character set"
-msgstr "- Charset"
-
-msgctxt "#736"
-msgid "- Style"
-msgstr "- Stil"
-
-msgctxt "#737"
-msgid "- Colour"
-msgstr "- Kulur"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2361,10 +2320,6 @@ msgstr "XLink Kai"
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Online Gaming"
-
-msgctxt "#1000"
-msgid "- Preview"
-msgstr "Screensaver Preview"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2541,6 +2496,10 @@ msgstr "Isettja Tambnejl tal-Plagin"
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Settings tal-Plagin"
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Username"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -2734,6 +2693,18 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Tempesti"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "u"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "bil-"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "%s: %s MB of %s MB Vojta"
+
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Ma nafx"
@@ -2741,10 +2712,6 @@ msgstr "Ma nafx"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Tul:"
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr "Tip tal-LCD"
 
 msgctxt "#10000"
 msgid "Home"
@@ -2857,6 +2824,18 @@ msgstr "Kaxxa Iva/Le"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Kaxxa Progress"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Settings tal-Aċċess"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favoriti"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Settings tal-Plagin"
 
 msgctxt "#10500"
 msgid "Music/Playlist"
@@ -3454,10 +3433,6 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Kontroll veloċita’ tal-Fan"
 
-msgctxt "#13303"
-msgid "- Fonts"
-msgstr "Fonts tal-Qoxra"
-
 msgctxt "#13305"
 msgid "Show RSS news feeds"
 msgstr "Attiva RSS Feeds"
@@ -3934,33 +3909,21 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video Cache - DVDRom"
 
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr "- Network Lokali"
-
 msgctxt "#14028"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio Cache - DVDRom"
 
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr "- Network Lokali"
-
 msgctxt "#14032"
-msgid "- Internet"
-msgstr "- Internet"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD Cache - DVDRom"
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr "- Network Lokali"
 
 msgctxt "#14036"
 msgid "Services"
@@ -4110,10 +4073,6 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Neħħi mill-Favoriti"
 
-msgctxt "#14078"
-msgid "- Colours"
-msgstr "Kuluri tal-qoxra"
-
 msgctxt "#14098"
 msgid "Play"
 msgstr "Ara"
@@ -4170,10 +4129,6 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "Qoxra Default"
 
-msgctxt "#15111"
-msgid "- Theme"
-msgstr "Theme tal-Qoxra"
-
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "Default Theme"
@@ -4182,30 +4137,6 @@ msgctxt "#15200"
 msgid "Last.fm"
 msgstr "LastFM"
 
-msgctxt "#15201"
-msgid "Submit songs to Last.fm"
-msgstr "Ibgħat Diski lil LastFM"
-
-msgctxt "#15202"
-msgid "Last.fm username"
-msgstr "LastFM Username"
-
-msgctxt "#15203"
-msgid "Last.fm password"
-msgstr "LastFM Sigriet"
-
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr "Handshake ma saritx: sleeping..."
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr "Jekk jogħogbok aġġorna l-XBMC"
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr "Mhux awtorizzat: Iċċekkja l-isem u l-sigriet"
-
 msgctxt "#15207"
 msgid "Connected"
 msgstr "Imqabbad"
@@ -4213,22 +4144,6 @@ msgstr "Imqabbad"
 msgctxt "#15208"
 msgid "Not connected"
 msgstr "Mhux imqabbad"
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr "Submit Interval %i"
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr "Cached %i Songs"
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr "Submitting..."
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr "Submitting in %i secs"
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -4245,198 +4160,6 @@ msgstr "Aħbi l-ismijiet tal-fajls meta tara Thumbs"
 msgctxt "#15216"
 msgid "Play in party mode"
 msgstr "Doqq fil-Partymode"
-
-msgctxt "#15250"
-msgid "Submit Last.fm radio to Last.fm"
-msgstr "Ibgħat Last.fm Radio lil LastFM"
-
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr "Nippova naqbad ma Last.fm..."
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr "Selecting station..."
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr "Fittex artisti simili..."
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr "Fittex taqs simili..."
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr "Profil (%name%)"
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr "L-aqwa tags minn kollox"
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr "L-aħjar artisti għat-tag %name%"
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr "L-aħjar albums għat-tag %name%"
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr "L-aħjar diski għat-tag %name%"
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr "Isma tag %name% last.fm radio"
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr "Artisti Simili  għal %name%"
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr "L-aqwa %name% albums"
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr "L-aqwa %name% diski"
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr "L-aqwa %name% tags"
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr "L-akbar fans ta %name%"
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr "Isma %name% fans last.fm radio"
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Isma %name% similar artists last.fm radio"
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr "L-aħjar artisti magħżula minn %name%"
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr "L-aħjar albums magħżula minn %name%"
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr "L-aħjar diski magħżula minn %name%"
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr "Ħbieb ta' %name%"
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr "Ġirien ta' %name%"
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr "Chart tal-artist tal-ġimgħa għal %name%"
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr "Chart tal-album tal-ġimgħa għal %name%"
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr "Chart tad-diska tal-ġimgħa għal %name%"
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Isma last.fm radio tal-girien ta' %name% "
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Isma last.fm radio personali ta' %name%"
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Isma  last.fm radio preferiti ta' %name%"
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr "Inniżżel lista minn last.fm..."
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr "Lista minn last.fm ma nizlitx..."
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr "Daħħal isem ta' artist biex issib oħrajn relatati"
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr "Daħħal tag name biex tfittex oħrajn simili"
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr "Diski li sema %name% ricentament"
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Isma l-għażla ta' %name% Last.FM radio"
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr "L-aqwa tags għal utent %name%"
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Trid iżżid din it-trekk mal-lista ta’ treks li tħobb?"
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr "Trid tagħmel bojkott li din it-trekk?"
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr "Miżjud mat-treks li tħobb: '%s'."
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr "Problema biex iżżid '%s' mal-lista ta’ treks li tħobb."
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr "Bojkott: '%s'."
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr "Problema biex tagħmel bojkott lil '%s'."
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr "Treks li %name% sar iħobb riċentament"
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr "Treks li %name% ibbojkotja riċentament"
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr "Neħħi mit-treks li tħobb"
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr "Neħħi bojkott"
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Trid tneħħi din it-trekk mil-lista ta' treks li tħobb?"
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr "Trid tneħħi l-bojkott fuq din it-trek?"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5015,8 +4738,8 @@ msgid "Root"
 msgstr "Root"
 
 msgctxt "#20109"
-msgid "- Zoom"
-msgstr "Qis tal-Qoxra"
+msgid "Zoom"
+msgstr "Lenti"
 
 msgctxt "#20110"
 msgid "UPnP settings"
@@ -5398,17 +5121,9 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr "Oħloq Fowlder ġdid"
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr "Dallam LCD on Playback"
-
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr "Mhux magħruf jew OnBoard (Protetta)"
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr "Dallam LCD fil-Pawza"
 
 msgctxt "#20314"
 msgid "Videos - Library"
@@ -5754,6 +5469,10 @@ msgctxt "#20429"
 msgid "Separate"
 msgstr "Separati"
 
+msgctxt "#20434"
+msgid "Sets"
+msgstr "Issettja"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Uri kannestri u fajls moħbija"
@@ -5966,6 +5685,10 @@ msgctxt "#21411"
 msgid "not in the last"
 msgstr "mhux fl-aħħar"
 
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Settings"
+
 msgctxt "#21420"
 msgid "Value to match"
 msgstr "Valur jixbaħ"
@@ -6045,6 +5768,10 @@ msgstr "Drive %c"
 msgctxt "#21439"
 msgid "Edit party mode rules"
 msgstr "Biddel Regoli tal-Party Mode"
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "Biddel"
 
 msgctxt "#21800"
 msgid "File name"
@@ -6214,10 +5941,6 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Data maħluq"
 
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr "Sinjal tad-Drittijiet tal-Awtur"
-
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Kowd tal-pajjiż"
@@ -6314,21 +6037,13 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Dejjem aġġorna librerija wara l-kwinti"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr "- DNS Suffix"
-
 msgctxt "#22030"
 msgid "Font"
 msgstr "Font"
 
 msgctxt "#22031"
-msgid "- Size"
-msgstr "- Kobor"
-
-msgctxt "#22032"
-msgid "- Colours"
-msgstr "Kuluri tal-qoxra"
+msgid "Size"
+msgstr "Kobor"
 
 msgctxt "#24005"
 msgid "Media sources"

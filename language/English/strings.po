@@ -1,13 +1,12 @@
 # XBMC Media Center language file
-# XBMC-core v12.0
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-main/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3454,10 +3453,8 @@ msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
 msgstr ""
 
-#empty strings from id 1186 to 1189
+#empty strings from id 1186 to 1199
 #strings 1186 to 1189 reserved for more proxy types
-
-#empty strings from id 1190 to 1199
 
 #: xbmc/settings/win32.xml
 msgctxt "#1200"
@@ -4211,14 +4208,14 @@ msgctxt "#10140"
 msgid "Add-on settings"
 msgstr ""
 
-#empty strings from id 10141 till 10145
+#empty strings from id 10141 to 10145
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10146"
 msgid "Add-ons/Info"
 msgstr ""
 
-#empty strings from id 10147 till 10209
+#empty strings from id 10147 to 10209
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4716,9 +4713,8 @@ msgctxt "#12901"
 msgid "Fullscreen OSD"
 msgstr ""
 
+#empty strings from id 12902 to 12999
 #string id 12902 to 12905 match in WindowIDs.h
-
-#empty strings from id 12906 to 12999
 
 #: system/settings/settings.xml
 msgctxt "#13000"
@@ -6481,7 +6477,7 @@ msgctxt "#15216"
 msgid "Play in party mode"
 msgstr ""
 
-#empty strings from id 15216 to 15299
+#empty strings from id 15217 to 15299
 
 #: xbmc/windows/GUIMediaWindow.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
@@ -8140,7 +8136,6 @@ msgctxt "#19535"
 msgid "Talk Show"
 msgstr ""
 
-#: xbmc/epg/Epg.cpp
 #empty strings from id 19536 to 19547
 
 #: xbmc/epg/Epg.cpp
@@ -10174,7 +10169,7 @@ msgid "Look for remote UPnP players"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
-msgctx "#21362"
+msgctxt "#21362"
 msgid "Bookmark created"
 msgstr ""
 
@@ -12156,7 +12151,7 @@ msgstr ""
 
 #empty strings from id 34203 to 34299
 
-xbmc\network\windows\ZeroconfWIN.cpp
+#: xbmc\network\windows\ZeroconfWIN.cpp
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
 msgstr ""
@@ -12535,8 +12530,7 @@ msgctxt "#36042"
 msgid "Use limited color range (16-235)"
 msgstr ""
 
-#empty strings from id 36043 to 36099
-
+#empty strings from id 36043 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #: system/settings/settings.xml
@@ -12656,7 +12650,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance.
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12741,9 +12735,8 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36141"
-msgid ""Show plot information for unwatched media in the Video Library.
+msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
-
 
 #: system/settings/settings.xml
 msgctxt "#36142"
@@ -13157,7 +13150,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36224"
-msgid "Hide "no information available" labels when no EPG data can be retrieved for a channel."
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13242,7 +13235,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36241"
-msgid "Execute the "wakeup command" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13700,7 +13693,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36335"
@@ -13777,7 +13770,7 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr ""
 
-#empty string id 36350
+#empty string with id 36350
 
 #: system/settings/settings.xml
 msgctxt "#36351"
@@ -13817,7 +13810,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
-msgstr "Limits the used color range."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36359"
@@ -14119,7 +14112,7 @@ msgctxt "#36418"
 msgid "No info available yet."
 msgstr ""
 
-#empty string 36419
+#empty string with id 36419
 
 #: system/settings/settings.xml
 msgctxt "#36420"
@@ -14143,6 +14136,8 @@ msgstr ""
 msgctxt "#37002"
 msgid "(Directors Comments 2)"
 msgstr ""
+
+#empty strings from id 37003 to 37010
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37011"
@@ -14168,4 +14163,3 @@ msgstr ""
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr ""
-
