@@ -32,7 +32,7 @@ class CMyPlexManager : public CThread
       ERROR_NETWORK,
       ERROR_WRONG_CREDS,
       ERROR_PARSE,
-      ERROR_TIMEOUT
+      ERROR_TMEOUT
     };
 
     CMyPlexManager() : CThread("MyPlexManager"), m_state(STATE_REFRESH) {}

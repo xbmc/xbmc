@@ -82,7 +82,7 @@ CPlexFile::Open(const CURL &url)
 }
 
 int
-CPlexFile::Stat(const CURL &url, struct stat *buffer)
+CPlexFile::Stat(const CURL &url, struct __stat64 *buffer)
 {
   CURL newUrl(url);
   if (BuildHTTPURL(newUrl))
