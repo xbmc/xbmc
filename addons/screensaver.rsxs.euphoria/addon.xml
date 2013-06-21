@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.2"
+  version="1.0.3"
   name="Euphoria"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -18,6 +18,7 @@
     <summary lang="bg">Колкото халюциногенен може да бъде един скрийнсейвър</summary>
     <summary lang="ca">Quant al més psicodèlic dels estalvis de pantalla</summary>
     <summary lang="cs">Nejdivočejší šetřič obrazovky všech dob</summary>
+    <summary lang="cy">Mor seicadelig ag y mae modd bod</summary>
     <summary lang="da">Omtrent så psykedelisk som en pauseskærm kan blive.</summary>
     <summary lang="de">So psychedelisch wie ein Bildschirmschoner nur sein kann</summary>
     <summary lang="el">Όσο πιο ψυχεδελική μπορεί να είναι μία προφύλαξη οθόνης</summary>
@@ -29,7 +30,7 @@
     <summary lang="fi">Mahdollisesti kaikkein psykedeelisin näytönsäästäjä</summary>
     <summary lang="fr">Difficilement plus psychédélique comme économiseur d'écran</summary>
     <summary lang="gl">Máis ou menos tan psicodélico como o pode ser un gardapantallas</summary>
-    <summary lang="he">זהו שומר המסך הפסיכודאלי ביותר שיש</summary>
+    <summary lang="he">זהו פחות או יותר שומר המסך הכי פסיכדלי שיש</summary>
     <summary lang="hr">Psihodeličan koliko čuvar zaslona može biti </summary>
     <summary lang="hu">A legpszihedelikusabb képernyővédő</summary>
     <summary lang="it">Quanto di più psichedelico possa essere un salvaschermo</summary>
@@ -48,14 +49,18 @@
     <summary lang="sk">Tak psychodelický ako to len ide</summary>
     <summary lang="sl">Najbolj psihadelični ohranjevalnik zaslona</summary>
     <summary lang="sv">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
+    <summary lang="ta_IN">மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான்</summary>
     <summary lang="uk">Настільки психоделічна наскільки можливо для заставки</summary>
+    <summary lang="vi">Tạo ra ảo giác mạnh nhất mà trình bảo vệ màn hình có thể có được</summary>
     <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
+    <summary lang="zh_TW">最具夢幻效果的螢幕保護程式</summary>
     <description lang="af">Die is omtrent so psigedelies soos sluimerskerm kan kom. mogumbo het gedink sy Plasma beskermer was heel voor in die koor, maar die een sal jou maag selfs meer laat draai. Jy beter een van daardie vlug siekte sakke kry voor jy te lank na hierdie een staar.</description>
     <description lang="ar">هذا حول الحصول على مهدء كشاشة التوقف. اعتقد موغمبو أن شاشة توقف البلازمة خاصته في قمة الجدول, لكن هذا مقرف أكثر. الأفضل أن تجد أحد أكياس الغثيان قبل أن تنظر لهذا لوقت طويل.</description>
     <description lang="be">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="bg">Точно колкото може един скрийнсейвър. mogumbo смяташе, че неговият "Plasma saver" е върхът, но този е по-смущаващ. Препоръчвам Ви да вземете една торбичка/лиген, преди да зазяпате в скрийнсейвъра по-дълго отколкото трябва.</description>
     <description lang="ca">Aquest és probablement el més psicodèlic dels estalvis de pantalla. mogumbo va pensar que el seu estalvi Plasma estava al capdamunt, però aquest és més nauseabund. Serà millor que agafi una bossa per als marejos si ha d'estar molta estona mirant-lo.</description>
     <description lang="cs">Asi nejdivočejší šetřič obrazovky všech dob.  Použití plazmového šetřiče bývalo vrcholem, ale tento spořič je ještě více zneklidňující. Připravte si pytlíky na zvracení pokud se jej rozhodnete sledovat příliš dlouho.</description>
+    <description lang="cy">Mor seicadelig ag y mae modd bod. Roedd mogumbo'n meddwl fod ei arbedwr Plasma ar frig y rhestr, ond mae hwn hyd yn oed yn fwy troëdig. Gwell dod o hyd i fag salwch cyn edrych ar hwn yn rhy hir.</description>
     <description lang="da">Dette er omtrent så psykedelisk som en pauseskærm kan blive. Mogumbo troede hans Plasma-pauseskærm var i toppen af skalaen, men denne er endnu mere kvalmende. Du må hellere finde en papirpose, inden du kigger alt for længe på denne.</description>
     <description lang="de">In etwa so ​​psychedelisch wie ein Bildschirmschoner nur sein kann. mogumbo dachte, sein Plasma-Bildschirmschoner wäre bereits abstoßend, aber dieser hier ist noch verabscheuenswürdiger. Kram' besser schon mal eine Kotztüte hervor, bevor Du diesen Bildschirmschoner zu lange anstarrst.</description>
     <description lang="el">Αυτή είναι η πιο ψυχεδελική προφύλαξη οθόνης που υπάρχει. Ο mogumbo  νόμιζε ότι η Plasma προφ. οθόνης του ήταν η κορυφαία, αλλά αυτή είναι ακόμα πιο μπερδεμένη. Καλύτερα να βρείτε μία από εκείνες τις σακούλες για τη ναυτία προτού την κοιτάξετε για πολλή ώρα.</description>
@@ -67,7 +72,7 @@
     <description lang="fi">Tämä on mahdollisesti niin psykedeelinen kuin vain näytönsäästäjä voi olla. mogumbo luuli, että hänen Plasma-näytönäästäjänsä oli asteikon huipulla, mutta tämä ohittaa senkin. Oksennuspussin hakeminen on suositeltavaa ennen pitkäaikaista tuijottamista.</description>
     <description lang="fr">En terme d'économiseur, on fait difficilement plus psychédélique. Mogumbo pensait son économiseur Plasma tout en haut de l'échelle mais, celui-ci donne encore plus la nausée. Mieux vaut se munir d'un de ces sachets pour le mal de l'air avant de le regarder trop longtemps.</description>
     <description lang="gl">Este é máis ou menos tan psicodélico como pode selo un gardapantalla. mogumbo pensou que o seu gardapantallas Plasma estaba arriba de todo na escala, pero este é incluso máis mareante. Será millor que colla unha bolsa de ventilzación ante de quedarse mirando a este demasiado tempo.</description>
-    <description lang="he">זהו שומר המסך הפסיכודאלי ביותר שיש. מוגמבו חשב ששומר מסך הפלזמה שלו הוא הטוב מסוגו, אבל שומר מסך זה הוא אפילו מבחיל יותר. עדיף שתשיג לעצמך כמה שקיות הקאה לפני שתבהה בזה יותר מדי זמן.</description>
+    <description lang="he">זוהי הרמה הגבוהה ביותר של פסיכדליות אליה יכולים להגיע שומרי מסך. mogumbo חשב ששומר מסך הפלזמה שלו הגיע לראש הטבלה אבל זה אפילו יותר מסחרר. מוטב להצטייד במספר שקיות הקאה בטרם בהייה ממושכת בשומר מסך זה.</description>
     <description lang="hr">Psihodeličan koliko čuvar zaslona može biti. mogumbo kroz svoj plazma čuvar zaslona je bio vrh, ali ovaj je odvratan. Bilo bi vam bolje da pronađete jednu od onih vrećica za mučninu što dijele u avionima prije nego počnete zuriti u ovaj.</description>
     <description lang="hu">Ez a legpszihedelikusabb képernyővédő. mogumbo úgy gondolta, hogy a Plasma képernyővédő van a lista tetején,de ez még inkább kábító. Jobb ha keresel egy légibetegség zacskót mielőtt túl sokáig néznéd a képernyőt.</description>
     <description lang="it">Questo è quanto di più psichedelico possa essere un salvaschermo. mogumbo pensava che il suo salvaschermo 'Plasma' fosse al massimo della psichedelicità, ma questo è anche più nauseante. Faresti meglio a cercare uno di quei sacchetti per il mal d'aria prima di fissarlo troppo a lungo.</description>
@@ -86,7 +91,11 @@
     <description lang="sk">Tento šetrič je tak psychodelický ako to len ide. Mogumbo myslel, že Plasma šetrič je na vrchole rebríčka, ale tento je ešte viac zvrátený. Radšej si nájdite hygienické vrecko skôr než naň budete civieť pridlho.</description>
     <description lang="sl">Težko bi si zamislili bolj psihadeličen ohranjevalnik zaslona. Stranski učinki daljše uporabe vključujejo slabost, glavobol in bruhanje.</description>
     <description lang="sv">Detta är ungefär så psykedelisk som en skärmsläckare kan bli. mogumbo trodde att hans Plasma Saver var toppen på skalan, men denna gör dig ännu mer illamående. Det är nog bäst att du letar upp en påse för flygsjuka innan du sätter dig ned och stirrar på denna för länge.</description>
+    <description lang="ta_IN">மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான் இதுபோல் இல்லை. mogumbo நினைத்தார் பிளாஸ்மா திரைகாப்பன்தான் இப்படி தோற்றம் தரக்கூடியது என்று, ஆனால் இந்த திரைகாப்பன் அதைவிட உகட்டுதலை உண்டாக்கும். எச்சரிக்கை வெகு நேரம் இதை பார்க்கதிர்கள் - தலை சுற்றகூடும்.</description>
+    <description lang="uk">Сама психоделічна в світі заставка. mogumbo вважав, що ніхто не зможе досягти ефекту його заставки плазми, але від цієї заставки заколисує ще сильніше. Якщо будете дивитися на цю заставку занадто довго, вам дуже скоро знадобиться гігієнічний пакет.</description>
+    <description lang="vi">Chú trọng để tạo ra ảo giác mạnh nhất mà trình bảo vệ màn hình có thể có được. Mogumbo từng nghĩ trình bảo vệ Plasma của mình đã đỉnh, nhưng trình này còn kinh khủng hơn. Tốt hơn hết là bạn nên chuẩn bị một túi chống nôn cho mình trước khi bắt đầu nhìn vào nó quá lâu</description>
     <description lang="zh">这大概是最具迷幻效果的屏幕保护程序了。mogumbo以为他的Plasma屏保已经是数一数二了，但这个更令人作犯晕。如果你要长时间盯视它最好先准备一个晕机袋。</description>
+    <description lang="zh_TW">這大概是最具夢幻效果的屏幕保護程序了。 mogumbo以為他的電漿螢幕保護程式已經是數一數二了，但這個更令人頭昏腦脹。如果你要長時間盯視它最好先準備一個夠用的暈機嘔吐袋。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>
