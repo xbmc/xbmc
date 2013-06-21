@@ -5284,11 +5284,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED)
-        UpdateFileState("stopped");
-
       if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED || message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+      {
+        UpdateFileState("stopped");
         HideBusyIndicator();
+      }
       /* END PLEX */
 
 #ifdef TARGET_DARWIN

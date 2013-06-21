@@ -76,7 +76,9 @@ bool CSaveFileStateJob::DoWork()
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
             /* PLEX */
-            g_plexMediaServerClient.SetItemWatched(boost::make_shared<CFileItem>(m_item));
+            CFileItemPtr item = boost::make_shared<CFileItem>(m_item);
+            g_plexMediaServerClient.SetItemWatched(item);
+            g_plexMediaServerClient.ReportItemProgress(item, CPlexMediaServerClient::MEDIA_STATE_STOPPED);
             /* END PLEX */
           }
 #ifndef __PLEX__
