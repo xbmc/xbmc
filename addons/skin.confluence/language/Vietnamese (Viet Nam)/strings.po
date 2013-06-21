@@ -1,0 +1,205 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/xbmc-main/language/vi_VN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi_VN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Thay đổi"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Tùy chọn năng lượng"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Đang tiến hành..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Ẩn thông tin"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Tùy chọn xem"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Độ dài"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Tập tin - Nhạc"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Đang phát"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Trang"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Đối tượng"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Tùy chọn tổng hợp"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Địa điểm"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Poster Wrap"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Hình thu nhỏ"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Image Wrap"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Thông tin"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Đang phát"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ĐANG PHÁT"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "TẠM DỪNG"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "LƯỚT NHANH"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "QUAY LẠI"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Hiệu chỉnh hiệu ứng"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Thời gian kết thúc"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Mở danh sách"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Lưu danh sách"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Đóng danh sách"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Tập tin nhạc thuộc hệ thống"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Danh sách hiện tại"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Tập tin này bị lỗi, hãy chọn một phần khác để phát."
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Đang được chọn"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Tùy chọn trang chính"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Hình nền"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Hiển thị \"Tạm Dừng\" trong trình diễn ảnh"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Hiển thị trailer ở một cửa sổ khác [COLOR=grey3](Chỉ hiện thông tin về video)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Tùy chọn tổng hợp"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Ẩn hình nền Fanart"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Đường dẫn"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Lần cập nhật cuối cùng"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Tùy chọn danh sách"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Độ phân giải"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Dừng lại"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Lướt nhanh"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Quay lại"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "TV trực tuyến"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Thiết đặt thời gian"

@@ -1,16 +1,15 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Lithuanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/)\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-main/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,6 +35,10 @@ msgstr "Slėpti informaciją"
 msgctxt "#31006"
 msgid "View Options"
 msgstr "Rodinio parinktys"
+
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Nustatymų parinktys"
 
 msgctxt "#31008"
 msgid "Fullscreen"
@@ -108,6 +111,10 @@ msgstr "PRASUKTI PIRMYN"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "PRASUKTI ATGAL"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "PAIEŠKA"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -540,3 +547,43 @@ msgstr "Atsiunčiama prognozės informacija..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Žemėlapis ir Įspėjimai"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ORAI"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "PAVEIKSLĖLIAI"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TIESIOGINIS TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEO"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMAI"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV LAIDOS"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUZIKA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMOS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "GROTI DISKĄ"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"

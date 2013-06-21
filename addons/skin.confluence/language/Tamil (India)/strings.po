@@ -1,0 +1,541 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/xbmc-main/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "மாற்றுக"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "மின்திறன் விருப்பங்கள்"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "சற்று காத்திருக்கவும்..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "தகவல் மறைப்பு"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "விருப்பங்கள் காண்க"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "முழுத்திரை"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "முழு நீடிக்கும் காலம்"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "இசை - கோப்புகள்"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "வாசிக்கபடுகிறது"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "பக்கம்"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "உருப்படிகள்"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "இதர விருப்பங்கள்"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "இருப்பிடம்"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "படத்தை சுற்றமை"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "விசிறிபடம்"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "படம் தேர்ந்தெடுக"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "படத்தை சுற்றமை"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "தகவல்"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "தற்போது வாசிக்கபடுவது"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "வாசிக்கபடுகிறது"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "இடைநிறுத்தம்"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "முன்சுற்று"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "பின்சுற்று"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "காட்சி முன் நிறுவுகள்"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "முடியும் நேரம்"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "வரிசைபடுத்து : ஏறுவரிசை"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "வரிசைபடுத்து : இறங்குவரிசை"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "பட்டியலை திற"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "பட்டியலை சேமி"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "பட்டியலை முடு"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "அமைப்பு இசை கோப்புகள்"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "தற்போதைய பட்டியல்"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "கோப்பு அடுக்கப்பட்டுள்ளது - வாசிக்கப்பட வேண்டியதை தேர்வு செய்க"
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "தற்போதைய தேர்வு"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "தொடக்கத்திரை விருப்பங்கள்"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "பின்னணி"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "படவில்லை செய்யும்போது \"இடைநிறுத்தம்\" செய்யப்பட்டுள்ளதை காண்பி"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "திரைப்படகண்ணோட்டத்தை ஒரு சாளரத்தில் காண்பி [COLOR=grey3](படகாட்சி தகவல் உரையாடல் பெட்டி மட்டுமே)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "இதர விருப்பங்கள்"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "படகாட்சி கோப்பு படித்தல் குறிகளை மறை [COLOR=grey3](புளு-கதிர், HD-DVD)[/COLOR]"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "பிரதான மெனுவை மறை"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "தனிப்பயன் பின்புல செயல்படுத்து"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "பின்புல பாதை:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "மறை"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "விருப்பங்கள்"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "சமிபத்தில் சேர்க்கப்பட்ட ஆல்பத்தை காமி"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "சமிபத்தில் சேர்க்கப்பட்ட படக்காட்சியை காமி"
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr "தொடக்கப்பக்கம் நிரல் துணை மெனு"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "பின்னணி வரைபடத்தை மறை"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "வானிலை பக்கம்"
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "பின்புலனில் காண்பி : \"தற்போது கான்பிக்கபடும்\" படகாட்சி"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "பின்புலனில் காண்பி : \"தற்போது கான்பிக்கபடும்\" காட்சி"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "நிழற்பட நிரலகத்தில் (தொலைராகங்கள் துணை-பயன்) உள்ள தொலைக்காட்சி அலங்கார பாடல்களை வாசி"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "தொலைராகங்கள்"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "பாடல்வரிகள்"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr "முழுத்திரையில் விசிறிபடத்தை மறை"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "பாடல்வரிகள் துணை-பயன்"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "துணைத்தலைப்பு துணை-பயன்"
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "தொடக்கப்பக்கம் படக்காட்சி துணை மெனு"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "தொடக்கப்பக்கம் இசை துணை மெனு"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "தொடக்கப்பக்கம் படங்கள் துணை மெனு"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "திரையில் காண்பிக்கப்படும் இசை"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "திரையில் காண்பிக்கப்படும் படகாட்சி"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "குறுக்குவழிகள்"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "பாடலை தேர்வுசெய்யவும்"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "பாடல்வரிகள் மூலம்"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "கண்டுபிடிக்கப்பட்டுள்ளது"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "இன்னும் அதிக உருப்படிகலை கண்டுபிடிக்கவும்"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "அடுத்து வருவது"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "தற்போதைய வெப்பம்"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "கடைசியாக புதுபித்தது"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "தரவு வழங்குநர்"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "விசிறிபடத்தை மறை"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "திரைப்பட விவரங்கள்"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "பயன்படுத்தப்பட்டுள்ள நினைவகம்"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "தடதின் எண்"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "விசிறிபடம் [CR][CR]காணவில்லை[CR][CR] பொத்தானை அழுத்தி பதிவுசெய்யவும்"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "தற்போதைய வலைசுரண்டி"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "வலைசுரண்டியை தேர்வுசெய்"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "உள்ளடக்கத்தை வருடும் விருப்பங்கள்"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "விசிறிபட பாதையை தேர்வுசெய்"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "தற்போதைய பண்பு"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "கடைசியாக உள்நுழைந்தது"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "கரோக்கி பாடல் தொகுப்பான்"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "வாசிக்கப்பட்டுள்ளது"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "இசைப்பட்டியல் விருப்பங்கள்"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "உருவாக்கப்பட்டுள்ளது"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "திரைத்திறன்"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "சமிபத்தில் சேர்க்கப்பட்டது"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]நேரம் அமைத்துள்ளது![/B] [COLOR=grey2] - அமைப்பு தானாக நிறுத்துப்படவுள்ளது [/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "பொத்தானை அழுத்தி [CR][CR]திரைப்படகண்ணோட்டம் காண்க"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "ஆல்பம் விவரங்கள்"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "இடைநிறுத்து"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "நிறுத்து"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "முன்சுற்று"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "பின்சுற்று"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "திரைப்பட மெனு"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "துணைத்தலைப்பை பதிவிறக்கு"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "இயல்புநிலை அலங்கார அமைப்பு"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "இயல்புநிலை அலங்கார அமைப்பு பெரிய எழுத்துக்கள் அல்லாமல்"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "ஏரியல் தொடர்பான"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]தோற்றம் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]அலங்காரம் மாற்று · மொழி மற்றும் பிராந்தியம் அமைக்க · கோப்பு பட்டியல் விருப்பங்களை மாற்று[CR]திரை காப்பான் அமைக்க"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]நிகழ்படம் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]உங்கள் வீடியோ நூலக மேலாண்மை · வீடியோ பின்னணி விருப்பங்களை அமைக்க · வீடியோ பட்டியல் விருப்பங்களை மாற்ற[CR]வசன எழுத்துருக்களை அமைக்க"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]இசை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]உங்கள் இசை நூலகம் நிர்வகிக்க · இசை பின்னணி விருப்பங்களை அமைக்க · இசை பட்டியல் விருப்பங்களை மாற்ற[CR]சமர்ப்பிப்பு பாடல் அமைப்பு · கரோக்கே விருப்பங்கள் அமைக்க"
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr "[B]படம் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]படம் பட்டியல் விருப்பங்கள் அமைக்க · படவில்லை கட்டமைக்க"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]வானிலை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]வானிலை தகவல்களை சேகரிக்க மூன்று நகரங்களின் பெயரை அமைக்க"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]கணினி அமைப்புகள் கட்டமைப்பு[/B][CR][CR]காட்சிகளை அமைப்பது மற்றும் அளவீடு · ஆடியோ வெளியீடு கட்டமைக்க · ரிமோட் கண்ட்ரோல்கள் அமைப்பதற்கு[CR]மின் ஆற்றல் சேமிப்பு விருப்பங்கள் அமைக்க · பிழைத்திருத்தம் செயல்படுத்த · மாஸ்டர் பூட்டு அமைப்பு"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]துணை-பயன் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]நிறுவிய துணை-பயன்களை மேலாண்மை · xbmc.org உலாவி மற்றும் துணை-பயன்களை நிறுவ[CR]துணை-பயன் அமைப்புகளை மாற்ற"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr "[B]தொலைக்காட்சி அமைப்புகள் கட்டமைப்பு[/B][CR][CR]முழுத்திரை தகவல் மாற்று · EPG தரவு அமைப்புகள் மேலாண்மை"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]சேவை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]UPnP மற்றும் HTTP வழியாக XBMCஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு[CR]Zeroconf செயல்படுத்த · AirPlay கட்டமைப்பு"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "முதன்முறை இயக்க உதவி...."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr "இந்த தாவல் மூலம் அறிவதாவது இந்த சாளரத்தின் பக்கத்தில் ஒரு மெனு உள்ளது. அதில்  கூடுதல் விருப்பங்கள் உள்ளன. அந்த மெனுவை அணுக, உங்கள் ரிமோட் கண்ட்ரோல் மூலம் அல்லது விசைப்பலகை மூலம் அல்லது சுட்டியை இடது நகர்த்தி தாவல் மேல் வைக்கவும். [CR][CR]இந்த உரையாடலை மூடுவதற்கு \"சரி\" என்பதை கிளிக் செய்யவும். அது மீண்டும் வராது."
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "உங்கள் XBMC பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr "பதிவு செய்யும் நேரம்"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "திட்டமிட்ட நேரம்"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "நேரடி தொலைக்காட்சி"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "குழுவை சேர்க்க"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "குழுவுக்கு வேறு பெயரிடு"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "குழுவை நீக்கு"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "இருக்கின்ற[CR]குழுக்கள்"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "சேனல் குழு"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "நேரம் அமைக்கப்பட்டுள்ளது"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "சேனல் விருப்பங்கள்"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 மணி நேர முன் அறிவிப்பு"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "மணி நேர முன் அறிவிப்பு"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "வாராந்திர முன் அறிவிப்பு"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10 நாட்கள் முன் அறிவிப்பு"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "முன் அறிவிப்பு"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "பொழிவு வாய்ப்பு"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "முன் அறிவிப்பு தகவல்களை சேகரித்தல்..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "நிலப்படம் மற்றும் விழிப்பூட்டல்"

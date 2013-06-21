@@ -1,16 +1,15 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/)\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/xbmc-main/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,6 +35,10 @@ msgstr "Skrýt informace"
 msgctxt "#31006"
 msgid "View Options"
 msgstr "Zobrazit možnosti"
+
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Možnosti nastavení"
 
 msgctxt "#31008"
 msgid "Fullscreen"
@@ -107,7 +110,7 @@ msgstr "RYCHLE VPŘED"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "PŘETÁČÍ SE ZPĚT"
+msgstr "PŘETOČIT ZPĚT"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -127,15 +130,15 @@ msgstr "Řazení: sestupně"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Otevřít seznam stop"
+msgstr "Otevřít seznam skladeb"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Uložit seznam stop"
+msgstr "Uložit seznam skladeb"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Zavřít seznam stop"
+msgstr "Zavřít seznam skladeb"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -143,7 +146,7 @@ msgstr "Hudební soubory systému"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Aktuální seznam stop"
+msgstr "Aktuální seznam skladeb"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -179,7 +182,7 @@ msgstr "Nezobrazovat ikony přečtené z názvu videa [COLOR=grey3](Blu-ray, HD-
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Skrýt tlačítka hlavního menu"
+msgstr "Skrýt tlačítka hlavní nabídky"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -203,11 +206,11 @@ msgstr "Zobrazit nedávno přidaná alba"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Zobrazovat nedávno přidané filmy"
+msgstr "Zobrazovat nedávno přidaná videa"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
-msgstr "Úvodní obrazovka, podmenu programů"
+msgstr "Úvodní obrazovka, podnabídka programů"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -251,11 +254,11 @@ msgstr "Doplněk titulků"
 
 msgctxt "#31134"
 msgid "Home Page Videos Submenu"
-msgstr "Úvodní obrazovka, podmenu videí"
+msgstr "Úvodní obrazovka, podnabídka videí"
 
 msgctxt "#31135"
 msgid "Home Page Music Submenu"
-msgstr "Úvodní obrazovka, podmenu Hudba"
+msgstr "Úvodní obrazovka, podnabídka Hudba"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
@@ -275,7 +278,7 @@ msgstr "Zkratky"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Vyberte Vaši skladbu"
+msgstr "Vyberte vaši skladbu"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -540,3 +543,39 @@ msgstr "Získávám informace předpovědi..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Mapa a upozornění"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "POČASÍ"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "OBRÁZKY"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEA"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMY"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV SHOW"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "HUDBA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMY"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "PŘEHRÁT DISK"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTÉM"

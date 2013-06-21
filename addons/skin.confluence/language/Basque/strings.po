@@ -1,16 +1,15 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Project-Id-Version: XBMC Main\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Basque (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/eu/)\n"
+"Language-Team: Basque (http://www.transifex.com/projects/p/xbmc-main/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -72,6 +71,10 @@ msgstr "Kokalekua"
 msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart-a"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Argb"
 
 msgctxt "#31040"
 msgid "Now Playing"
@@ -145,6 +148,22 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Atzeko irudia"
 
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Bestelako aukerak"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Ezkutatu menu nagusi botoiak"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Gaitu atzealde pertsonalizatua"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Atzealdearen bidea:"
+
 msgctxt "#31111"
 msgid "Hide"
 msgstr "Ezkutatu"
@@ -152,6 +171,18 @@ msgstr "Ezkutatu"
 msgctxt "#31112"
 msgid "Options"
 msgstr "Aukera"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Ikusi azkenaldian igotako albumak"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Ikusi azkenaldian igotako bideoak"
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr "Etxe orrialde programa azpimenua"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -165,9 +196,101 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Lasterbideak"
 
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Hautatu zure kanta"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Aurkitua"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "Bilatu elementu gehiago"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "Hurrengo atalak"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Uneko tenperatura"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Azken eguneraketa"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Datu hornitzailea"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "Pelikula xehetasunak"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Erabilitako memoria:"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "Pista zenbakia"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Eduki arakatze aukerak"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Hautatutako profila"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Azken saioa : "
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke kanta antzemalea"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Erreprodukzio-zerrenda aukerak"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Sortua"
+
 msgctxt "#31327"
 msgid "Resolution"
 msgstr "Bereizmena"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Azkenaldiak gehituak"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Album xehetasunak"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausatu"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Gelditu"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Azkar aurrera"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Atzera"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Pelikula menua"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -177,6 +300,66 @@ msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skin lehenetsia"
 
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Lehen exekuzio laguntza..."
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Hautatu zure XBMC profila[CR] saio hasi eta jarraitzeko"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "TB"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Gehitu taldea"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Berrizendatu taldea"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Ezabatu taldea"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Kate taldea"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Kate aukerak"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 orduko iragarpena"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Orduroko iragarpena"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Astebukaerako iragarpena"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "10 eguneko iragarpena"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Iragarpena"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Euri aukera"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Iragarpen argibideak eskuratzen"
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mapa eta alertak"
