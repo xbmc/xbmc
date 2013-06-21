@@ -315,7 +315,17 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
-  if (m_vecItems->Get(iItem)->IsVideo() || m_vecItems->Get(iItem)->IsAnimatedGif())
+  if (m_vecItems->Get(iItem)->IsAnimatedGif())
+  {
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.Add(PLAYLIST_VIDEO, m_vecItems->Get(iItem));
+    g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO,REPEAT_ALL);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+
+    return g_playlistPlayer.Play();
+  }
+  else if (m_vecItems->Get(iItem)->IsVideo())
     return CGUIMediaWindow::OnPlayMedia(iItem);
 
   return ShowPicture(iItem, false);
