@@ -803,12 +803,12 @@ bool CFileItem::IsAnimatedGif()
 {
   if (URIUtils::HasExtension(m_strPath, ".gif") && HasPictureInfoTag())
   {
-    if (GetPictureInfoTag()->isAnimated() == -1)
+    if (!HasProperty("isAnimated"))
     {
       CFileItem copy(m_strPath, false);
       if (!CDVDFileInfo::GetFileStreamDetails(&copy))
       {
-        GetPictureInfoTag()->setIsAnimated(0);
+        SetProperty("isAnimated", false);
         return false;
       }
 
@@ -819,23 +819,21 @@ bool CFileItem::IsAnimatedGif()
         if (d)
         {
           if (d->m_avg_frame_rate > 0)
-            GetPictureInfoTag()->setIsAnimated(1);
+            SetProperty("isAnimated", true);
           else
-            GetPictureInfoTag()->setIsAnimated(0);
+            SetProperty("isAnimated", false);
         }
         else
-          GetPictureInfoTag()->setIsAnimated(0);
+          SetProperty("isAnimated", false);
       }
       else
-        GetPictureInfoTag()->setIsAnimated(0);
+        SetProperty("isAnimated", false);
     }
 
-    if (GetPictureInfoTag()->isAnimated() == 0)
+    if (!GetProperty("isAnimated").asBoolean())
       return false;
-    else if (GetPictureInfoTag()->isAnimated() == 1)
+    else if (GetProperty("isAnimated").asBoolean())
       return true;
-    else 
-      return false;
   }
   return false;
 }
