@@ -510,6 +510,9 @@
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
+		DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
+		DFBB4309178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
+		DFBB430A178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
 		DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */; };
 		DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */; };
@@ -4187,6 +4190,8 @@
 		DFB65FB415373AE7006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6610715374E80006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
+		DFBB4307178B574E006CC20A /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksCodec.h; sourceTree = "<group>"; };
 		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPJsonRpcHandler.cpp; sourceTree = "<group>"; };
 		DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPJsonRpcHandler.h; sourceTree = "<group>"; };
@@ -5647,6 +5652,8 @@
 				C8482912156CFFE7005A996F /* AddonCallbacks.h */,
 				C8482913156CFFE7005A996F /* AddonCallbacksAddon.cpp */,
 				C8482914156CFFE7005A996F /* AddonCallbacksAddon.h */,
+				DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */,
+				DFBB4307178B574E006CC20A /* AddonCallbacksCodec.h */,
 				C8482915156CFFE7005A996F /* AddonCallbacksGUI.cpp */,
 				C8482916156CFFE7005A996F /* AddonCallbacksGUI.h */,
 				C8482917156CFFE7005A996F /* AddonCallbacksPVR.cpp */,
@@ -10546,6 +10553,7 @@
 				DF40BC20178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC2F178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC31178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
+				DFBB430A178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11567,6 +11575,7 @@
 				DF40BC1F178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC2C178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC2E178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
+				DFBB4309178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12590,6 +12599,7 @@
 				DF40BC1E178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC29178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC2B178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
+				DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -226,6 +226,7 @@ endif
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
+	lib/addons/library.xbmc.codec \
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.xbmc.gui \
 
@@ -355,6 +356,7 @@ screensavers: $(SS_DIRS)
 
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
+	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.xbmc.gui
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
@@ -442,10 +444,11 @@ ifneq (@USE_LIBXBMC@,1)
 MAINOBJS+=xbmc/main/main.o
 endif
 
-# sync with tools/depends/target/xbmc-addon-bindings
+# sync these entries manually with tools/depends/target/xbmc-addon-bindings/Makefile
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_types.h
+BINDINGS+=xbmc/addons/include/xbmc_codec_types.h
 BINDINGS+=xbmc/addons/include/xbmc_epg_types.h
 BINDINGS+=xbmc/addons/include/xbmc_pvr_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_pvr_types.h
@@ -456,6 +459,7 @@ BINDINGS+=xbmc/addons/include/xbmc_vis_types.h
 BINDINGS+=addons/library.xbmc.addon/libXBMC_addon.h
 BINDINGS+=addons/library.xbmc.gui/libXBMC_gui.h
 BINDINGS+=addons/library.xbmc.pvr/libXBMC_pvr.h
+BINDINGS+=addons/library.xbmc.codec/libXBMC_codec.h
 
 libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)

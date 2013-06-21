@@ -37,6 +37,7 @@
 
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
+#include "xbmc_codec_types.h"
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
  *        Also XBMC's "DVDDemuxPacket.h" file must be in the include path of the add-on,
@@ -74,7 +75,7 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.8.0"
+#define XBMC_PVR_API_VERSION "1.8.1"
 
 /* min. PVR API version */
 #define XBMC_PVR_MIN_API_VERSION "1.8.0"
@@ -168,22 +169,22 @@ extern "C" {
     unsigned int iStreamCount;
     struct PVR_STREAM
     {
-      unsigned int iPhysicalId;        /*!< @brief (required) physical index */
-      unsigned int iCodecType;         /*!< @brief (required) codec type id */
-      unsigned int iCodecId;           /*!< @brief (required) codec id */
-      char         strLanguage[4];     /*!< @brief (required) language id */
-      int          iIdentifier;        /*!< @brief (required) stream id */
-      int          iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
-      int          iFPSRate;           /*!< @brief (required) FPS rate */
-      int          iHeight;            /*!< @brief (required) height of the stream reported by the demuxer */
-      int          iWidth;             /*!< @brief (required) width of the stream reported by the demuxer */
-      float        fAspect;            /*!< @brief (required) display aspect ratio of the stream */
-      int          iChannels;          /*!< @brief (required) amount of channels */
-      int          iSampleRate;        /*!< @brief (required) sample rate */
-      int          iBlockAlign;        /*!< @brief (required) block alignment */
-      int          iBitRate;           /*!< @brief (required) bit rate */
-      int          iBitsPerSample;     /*!< @brief (required) bits per sample */
-     } stream[PVR_STREAM_MAX_STREAMS]; /*!< @brief (required) the streams */
+      unsigned int      iPhysicalId;        /*!< @brief (required) physical index */
+      xbmc_codec_type_t iCodecType;         /*!< @brief (required) codec type this stream */
+      xbmc_codec_id_t   iCodecId;           /*!< @brief (required) codec id of this stream */
+      char              strLanguage[4];     /*!< @brief (required) language id */
+      int               iIdentifier;        /*!< @brief (required) stream id */
+      int               iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
+      int               iFPSRate;           /*!< @brief (required) FPS rate */
+      int               iHeight;            /*!< @brief (required) height of the stream reported by the demuxer */
+      int               iWidth;             /*!< @brief (required) width of the stream reported by the demuxer */
+      float             fAspect;            /*!< @brief (required) display aspect ratio of the stream */
+      int               iChannels;          /*!< @brief (required) amount of channels */
+      int               iSampleRate;        /*!< @brief (required) sample rate */
+      int               iBlockAlign;        /*!< @brief (required) block alignment */
+      int               iBitRate;           /*!< @brief (required) bit rate */
+      int               iBitsPerSample;     /*!< @brief (required) bits per sample */
+     } stream[PVR_STREAM_MAX_STREAMS];      /*!< @brief (required) the streams */
    } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
 
   /*!
