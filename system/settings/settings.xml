@@ -1910,7 +1910,7 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="videoscreen.stereoscopicmode" type="integer" label="36501" help="">
+        <setting id="videoscreen.stereoscopicmode" type="integer" label="36500" help="">
           <level>2</level>
           <default>0</default>
           <constraints>

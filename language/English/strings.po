@@ -14149,8 +14149,13 @@ msgstr ""
 #end reservation
 
 #: system/settings/settings.xml
-msgctxt "#36501"
+msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36501"
+msgid "Stereoscopic mode"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14190,7 +14195,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36509"
-msgid "Mono (2D)"
+msgid "Monoscopic - 2D"
 msgstr ""
 
 #reserved strings for 3d modes 36509 - 36520
@@ -14222,7 +14227,7 @@ msgstr ""
 
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36526"
-msgid "Disable stereoscopic mode when playback stopped"
+msgid "Disable stereoscopic mode when playback is stopped"
 msgstr ""
 
 #: guilib/StereoscopicsManager.cpp
