@@ -344,23 +344,40 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
       pDlgSelect->SetHeading(g_localizeStrings.Get(36527).c_str());
 
       RENDER_STEREO_MODE preferred = GetPreferredPlaybackMode();
+      RENDER_STEREO_MODE playing   = GetStereoModeOfPlayingVideo();
+
+      int idx_preferred = -1
+        , idx_playing   = -1
+        , idx_mono      = -1
+        , idx_select    = -1;
 
       // add choices
-      pDlgSelect->Add( g_localizeStrings.Get(36530) + " - " + CStereoscopicsManager::Get().GetLabelForStereoMode(preferred) );
-      pDlgSelect->Add( g_localizeStrings.Get(36529) ); // mono / 2d
-      pDlgSelect->Add( g_localizeStrings.Get(36531) ); // other / select
+      idx_preferred = pDlgSelect->Add( g_localizeStrings.Get(36530)
+                                     + " ("
+                                     + GetLabelForStereoMode(preferred)
+                                     + ")");
+
+      if(preferred != RENDER_STEREO_MODE_MONO)
+        idx_mono = pDlgSelect->Add( g_localizeStrings.Get(36529) ); // mono / 2d
+
+
+      if(playing != RENDER_STEREO_MODE_OFF && g_Windowing.SupportsStereo(playing))
+        idx_playing = pDlgSelect->Add( g_localizeStrings.Get(36532)
+                                    + " ("
+                                    + GetLabelForStereoMode(playing)
+                                    + ")");
+
+      idx_select = pDlgSelect->Add( g_localizeStrings.Get(36531) ); // other / select
 
       pDlgSelect->DoModal();
 
       if(pDlgSelect->IsConfirmed())
       {
         int iItem = pDlgSelect->GetSelectedLabel();
-        if (iItem == 0)
-          mode = GetPreferredPlaybackMode();
-        else if (iItem == 1)
-          mode = RENDER_STEREO_MODE_MONO;
-        else if (iItem == 2)
-          mode = GetStereoModeByUserChoice();
+        if      (iItem == idx_preferred) mode = preferred;
+        else if (iItem == idx_mono)      mode = RENDER_STEREO_MODE_MONO;
+        else if (iItem == idx_playing)   mode = playing;
+        else if (iItem == idx_select)    mode = GetStereoModeByUserChoice();
 
         SetStereoMode(mode);
       }

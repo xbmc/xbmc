@@ -14250,6 +14250,11 @@ msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr ""
 
+#: settings/DisplaySettings.cpp
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr ""
+
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
