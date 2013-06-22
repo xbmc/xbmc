@@ -78,6 +78,9 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
   RENDER_STEREO_MODE currentMode = GetStereoMode();
   if (mode != currentMode && mode >= RENDER_STEREO_MODE_OFF)
   {
+    if(!g_Windowing.SupportsStereo(mode))
+      return;
+
     m_lastStereoMode = currentMode;
     CSettings::Get().SetInt("videoscreen.stereoscopicmode", mode);
   }
