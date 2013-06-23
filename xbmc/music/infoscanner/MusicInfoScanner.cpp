@@ -1048,9 +1048,12 @@ INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, C
 
   // find album info
   ADDON::ScraperPtr scraper;
-  if (!m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ALBUMS) || !scraper)
-    return INFO_ERROR;
+  bool result = m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ALBUMS);
+
   m_musicDatabase.Close();
+
+  if (!result || !scraper)
+    return INFO_ERROR;
 
 loop:
   CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
