@@ -3902,9 +3902,9 @@ bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const CStdString& strThumb)
   SetArtForItem(idAlbum, "album", "thumb", strThumb);
   // TODO: We should prompt the user to update the art for songs
   CStdString sql = PrepareSQL("UPDATE art"
-                              " SET art_url='-'"
+                              " SET url='-'"
                               " WHERE media_type='song'"
-                              " AND art_type='thumb'"
+                              " AND type='thumb'"
                               " AND media_id IN"
                               " (SELECT idSong FROM song WHERE idAlbum=%ld)", idAlbum);
   ExecuteQuery(sql);
