@@ -1009,8 +1009,10 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
     }
   }
   if (albums.size() == 1 && !albumArt.empty())
-  { // assign to folder thumb as well
-    CMusicThumbLoader::SetCachedImage(path, "thumb", albumArt);
+  {
+    // assign to folder thumb as well
+    CFileItem albumItem(path, true);
+    CMusicThumbLoader::SetCachedImage(albumItem, "thumb", albumArt);
   }
 }
 
