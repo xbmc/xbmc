@@ -618,7 +618,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       // No - download the information
       CMusicAlbumInfo albumInfo;
       INFO_RET albumDownloadStatus = INFO_NOT_FOUND;
-      if (m_flags & SCAN_ONLINE)
+      if ((m_flags & SCAN_ONLINE) && albumScraper)
         albumDownloadStatus = DownloadAlbumInfo(*album, albumScraper, albumInfo);
 
       if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
@@ -676,7 +676,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
         // No - download the information
         CMusicArtistInfo artistInfo;
         INFO_RET artistDownloadStatus = INFO_NOT_FOUND;
-        if (m_flags & SCAN_ONLINE)
+        if ((m_flags & SCAN_ONLINE) && artistScraper)
           artistDownloadStatus = DownloadArtistInfo(artistTmp, artistScraper, artistInfo);
 
         if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
@@ -747,7 +747,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
           // No - download the information
           CMusicArtistInfo artistInfo;
           INFO_RET artistDownloadStatus = INFO_NOT_FOUND;
-          if (m_flags & SCAN_ONLINE)
+          if ((m_flags & SCAN_ONLINE) && artistScraper)
             artistDownloadStatus = DownloadArtistInfo(artistTmp, artistScraper, artistInfo);
 
           if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
