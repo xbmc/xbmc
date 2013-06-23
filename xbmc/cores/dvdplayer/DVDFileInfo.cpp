@@ -359,6 +359,19 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   }
 }
 
+bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemuxer, const std::vector<CStreamDetailSubtitle> subs, CStreamDetails &details)
+{
+  bool result = DemuxerToStreamDetails(pInputStream, pDemuxer, details);
+  for (unsigned int i = 0; i < subs.size(); i++)
+  {
+    CStreamDetailSubtitle* sub = new CStreamDetailSubtitle();
+    sub->m_strLanguage = subs[i].m_strLanguage;
+    details.AddStream(sub);
+    result = true;
+  }
+  return result;
+}
+
 /* returns true if details have been added */
 bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path)
 {
