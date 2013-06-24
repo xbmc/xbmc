@@ -42,6 +42,8 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   CURL url = BuildURL("/");
   CStdString rootXml;
 
+  http.SetRequestHeader("Accept", "application/xml");
+
   if (http.Get(url.Get(), rootXml))
   {
     if (server->CollectDataFromRoot(rootXml))
