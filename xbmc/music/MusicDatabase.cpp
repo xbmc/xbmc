@@ -440,13 +440,13 @@ int CMusicDatabase::AddSong(const int idAlbum,
   return idSong;
 }
 
-  int CMusicDatabase::UpdateSong(int idSong,
-                                 const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
-                                 const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
-                                 const std::vector<std::string>& artists, const std::vector<std::string>& genres,
-                                 int iTrack, int iDuration, int iYear,
-                                 int iTimesPlayed, int iStartOffset, int iEndOffset,
-                                 const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
+int CMusicDatabase::UpdateSong(int idSong,
+                               const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
+                               const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
+                               const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+                               int iTrack, int iDuration, int iYear,
+                               int iTimesPlayed, int iStartOffset, int iEndOffset,
+                               const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
 {
   CStdString sql;
   if (idSong < 0)
