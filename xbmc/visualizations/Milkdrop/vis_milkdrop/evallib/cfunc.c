@@ -762,7 +762,7 @@ __declspec ( naked ) void _asm_if(void)
 }
 
 //---------------------------------------------------------------------------------------------------------------
-__declspec ( naked ) void _asm_equal(vpod)
+__declspec ( naked ) void _asm_equal(void)
 {
   __asm
   {
