@@ -640,14 +640,18 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       }
       else if (albumDownloadStatus == INFO_CANCELLED)
         break;
-      else // Cache the lookup failure so we don't retry
+      else
       {
+        // No download info, fallback to already gathered (eg. local) information/art (if any)
         album->idAlbum = m_musicDatabase.AddAlbum(album->strAlbum,
                                                   album->strMusicBrainzAlbumID,
                                                   album->GetArtistString(),
                                                   album->GetGenreString(),
                                                   album->iYear,
                                                   album->bCompilation);
+        if (!album->art.empty())
+          m_musicDatabase.SetArtForItem(album->idAlbum,
+                                        "album", album->art);
         m_albumCache.insert(make_pair(*album, *album));
       }
 
