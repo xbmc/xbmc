@@ -445,8 +445,8 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if ((mixerfd = open(mixerdev, O_RDWR, 0)) == -1)
   {
-    CLog::Log(LOGERROR,
-	  "CAESinkOSS::EnumerateDevicesEx - Failed to open mixer: %s", mixerdev);
+    CLog::Log(LOGNOTICE,
+	  "CAESinkOSS::EnumerateDevicesEx - No OSS mixer device present: %s", mixerdev);
     return;
   }	
 
