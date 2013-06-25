@@ -59,6 +59,7 @@ public:
   CStdString GetParentPath(bool filter = false);
   CStdString RemoveParentPath(bool filter = false);
   void ClearPathHistory();
+  void ClearSearchHistory();
   void DumpPathHistory();
 
 private:

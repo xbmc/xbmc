@@ -772,7 +772,7 @@ void CGUIWindowMusicNav::OnSearchUpdate()
   if (!search.IsEmpty())
   {
     CStdString path = "musicsearch://" + search + "/";
-    m_history.ClearPathHistory();
+    m_history.ClearSearchHistory();
     Update(path);
   }
   else if (m_vecItems->IsVirtualDirectoryRoot())
