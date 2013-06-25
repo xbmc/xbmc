@@ -124,7 +124,7 @@ public:
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
-  void ResolutionUpdateCallBack(uint32_t width, uint32_t height);
-  static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height);
+  void ResolutionUpdateCallBack(uint32_t width, uint32_t height, float pixel_aspect);
+  static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float pixel_aspect);
 };
 #endif
