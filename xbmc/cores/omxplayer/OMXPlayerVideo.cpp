@@ -337,6 +337,10 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
+
+      if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
+        pts = pMsgGeneralResync->m_timestamp;
+
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %d)", pts, pMsgGeneralResync->m_clock);
       pMsgGeneralResync->Release();
       continue;
