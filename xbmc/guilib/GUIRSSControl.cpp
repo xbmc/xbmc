@@ -42,6 +42,7 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
   m_pReader = NULL;
   m_rtl = false;
   m_stopped = false;
+  m_urlset = 1;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -55,6 +56,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
   m_pReader = NULL;
   m_rtl = from.m_rtl;
   m_stopped = from.m_stopped;
+  m_urlset = 1;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -64,16 +66,6 @@ CGUIRSSControl::~CGUIRSSControl(void)
   if (m_pReader)
     m_pReader->SetObserver(NULL);
   m_pReader = NULL;
-}
-
-void CGUIRSSControl::SetUrls(const vector<string> &vecUrl, bool rtl)
-{
-  m_vecUrls = vecUrl;
-  m_rtl = rtl;
-  if (m_scrollInfo.pixelSpeed > 0 && rtl)
-    m_scrollInfo.pixelSpeed *= -1;
-  else if (m_scrollInfo.pixelSpeed < 0 && !rtl)
-    m_scrollInfo.pixelSpeed *= -1;
 }
 
 void CGUIRSSControl::OnFocus()
@@ -86,9 +78,9 @@ void CGUIRSSControl::OnUnFocus()
   m_stopped = false;
 }
 
-void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
+void CGUIRSSControl::SetUrlSet(const int urlset)
 {
-  m_vecIntervals = vecIntervals;
+  m_urlset = urlset;
 }
 
 bool CGUIRSSControl::UpdateColors()
@@ -118,6 +110,20 @@ void CGUIRSSControl::Render()
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL)
     {
+      RssUrls::const_iterator iter = CRssManager::Get().GetUrls().find(m_urlset);
+      if (iter == CRssManager::Get().GetUrls().end())
+      {
+        CGUIControl::Render();
+        return;
+      }
+      m_rtl = iter->second.rtl;
+      m_vecUrls = iter->second.url;
+      m_vecIntervals = iter->second.interval;
+      if (m_scrollInfo.pixelSpeed > 0 && m_rtl)
+        m_scrollInfo.pixelSpeed *= -1;
+      else if (m_scrollInfo.pixelSpeed < 0 && !m_rtl)
+        m_scrollInfo.pixelSpeed *= -1;
+
       if (CRssManager::Get().GetReader(GetID(), GetParentID(), this, m_pReader))
         m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos;
       else
