@@ -1066,15 +1066,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIRSSControl(
       parentID, id, posX, posY, width, height,
       labelInfo, textColor3, headlineColor, strRSSTags);
-
     RssUrls::const_iterator iter = CRssManager::Get().GetUrls().find(iUrlSet);
     if (iter != CRssManager::Get().GetUrls().end())
-    {
-      ((CGUIRSSControl *)control)->SetUrls(iter->second.url,iter->second.rtl);
-      ((CGUIRSSControl *)control)->SetIntervals(iter->second.interval);
-    }
-    else
-      CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
+      ((CGUIRSSControl *)control)->SetUrlSet(iUrlSet);
   }
   else if (type == CGUIControl::GUICONTROL_BUTTON)
   {
