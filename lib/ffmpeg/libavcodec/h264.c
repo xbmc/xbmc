@@ -1437,6 +1437,7 @@ av_cold int ff_h264_decode_init(AVCodecContext *avctx)
     h->prev_poc_msb = 1 << 16;
     h->prev_frame_num = -1;
     h->x264_build   = -1;
+    h->sei_fpa.frame_packing_arrangement_cancel_flag = -1;
     ff_h264_reset_sei(h);
     if (avctx->codec_id == AV_CODEC_ID_H264) {
         if (avctx->ticks_per_frame == 1) {
@@ -4783,6 +4784,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
             out->f.reference &= ~DELAYED_PIC_REF;
             *got_frame = 1;
             *pict      = out->f;
+            av_dict_set(&pict->metadata, "stereo_mode", ff_h264_sei_stereo_mode(h), 0);
         }
 
         return buf_index;
@@ -4839,6 +4841,7 @@ not_extra:
         if (h->next_output_pic && (h->next_output_pic->sync || h->sync>1)) {
             *got_frame = 1;
             *pict      = h->next_output_pic->f;
+            av_dict_set(&pict->metadata, "stereo_mode", ff_h264_sei_stereo_mode(h), 0);
         }
     }
 
