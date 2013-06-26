@@ -1022,6 +1022,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   DVDVideoPicture picture(*src);
   DVDVideoPicture* pPicture = &picture;
 
+  /* grab stereo mode from image if available */
+  if(src->stereo_mode[0])
+    m_hints.stereo_mode = src->stereo_mode;
+
   /* figure out steremode expected based on user settings and hints */
   unsigned int stereo_flags = GetStereoModeFlags(GetStereoMode());
 

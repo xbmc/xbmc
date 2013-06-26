@@ -605,6 +605,13 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   if (!m_pFrame)
     return false;
 
+  AVDictionaryEntry * entry = m_dllAvUtil.av_dict_get(m_dllAvCodec.av_frame_get_metadata(m_pFrame), "stereo_mode", NULL, 0);
+  if(entry && entry->value)
+  {
+    strncpy(pDvdVideoPicture->stereo_mode, (const char*)entry->value, sizeof(pDvdVideoPicture->stereo_mode));
+    pDvdVideoPicture->stereo_mode[sizeof(pDvdVideoPicture->stereo_mode)-1] = '\0';
+  }
+
   pDvdVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
