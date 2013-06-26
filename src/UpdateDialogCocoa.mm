@@ -42,18 +42,14 @@ class UpdateDialogPrivate
 - (void) reportUpdateError: (id)arg
 {
 	dialog->hadError = true;
-	NSMutableString* message = [[NSMutableString alloc] init];
-	[message appendString:@"There was a problem installing the update:\n\n"];
-	[message appendString:arg];
 
 	NSAlert* alert = [NSAlert 
 		alertWithMessageText: @"Update Problem"
 	    defaultButton: nil
 	    alternateButton: nil
 	    otherButton: nil
-	    informativeTextWithFormat: message];
+	    informativeTextWithFormat: @"There was a problem installing the update:\n\n%@", arg];
 	[alert runModal];
-	[message release];
 }
 - (void) reportUpdateProgress: (id)arg
 {
