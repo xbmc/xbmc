@@ -88,7 +88,7 @@ protected:
   bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);
   bool FindArtistInfo(const CFileItem* artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection);
 
-  void ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
+  bool ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
   void ShowArtistInfo(const CFileItem *pItem, bool bShowInfo = true);
   void ShowSongInfo(CFileItem* pItem);
   void UpdateThumb(const CAlbum &album, const CStdString &path);
