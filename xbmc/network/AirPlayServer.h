@@ -31,14 +31,19 @@
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
 #include "utils/StdString.h"
+#include "interfaces/IAnnouncer.h"
 
 class DllLibPlist;
 
 #define AIRPLAY_SERVER_VERSION_STR "101.28"
 
-class CAirPlayServer : public CThread
+class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {
 public:
+  // IAnnouncer IF
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+
+  //AirPlayServer impl.
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
   static bool SetCredentials(bool usePassword, const CStdString& password);
@@ -50,9 +55,11 @@ protected:
 
 private:
   CAirPlayServer(int port, bool nonlocal);
+  ~CAirPlayServer();
   bool SetInternalCredentials(bool usePassword, const CStdString& password);
   bool Initialize();
   void Deinitialize();
+  void AnnounceToClients(int state);
 
   class CTCPClient
   {
@@ -66,6 +73,7 @@ private:
     void PushBuffer(CAirPlayServer *host, const char *buffer,
                     int length, CStdString &sessionId,
                     std::map<CStdString, int> &reverseSockets);
+    void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, int state);
 
     void Disconnect();
 
@@ -73,15 +81,13 @@ private:
     struct sockaddr m_cliaddr;
     socklen_t m_addrlen;
     CCriticalSection m_critSection;
+    int  m_sessionCounter;
+    CStdString m_sessionId;
 
   private:
     int ProcessRequest( CStdString& responseHeader,
-                        CStdString& response,
-                        CStdString& reverseHeader,
-                        CStdString& reverseBody,
-                        CStdString& sessionId);
+                        CStdString& response);
 
-    void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state);
     void ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody);
     bool checkAuthorization(const CStdString& authStr, const CStdString& method, const CStdString& uri);
     void Copy(const CTCPClient& client);
@@ -93,6 +99,7 @@ private:
     CStdString m_authNonce;
   };
 
+  CCriticalSection m_connectionLock;
   std::vector<CTCPClient> m_connections;
   std::map<CStdString, int> m_reverseSockets;
   int m_ServerSocket;

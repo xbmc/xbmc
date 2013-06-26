@@ -2949,6 +2949,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "грмљавина"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "и"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "од"

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<window id="12">
+	<defaultcontrol>3</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<backgroundcolor>0</backgroundcolor>
+	<controls>
+		<!-- bg's -->
+		<include>SlideshowDimmed</include>
+		<control type="group">
+			<posx>45</posx>
+			<include>SettingsBG</include>
+			<!-- settings menu (left) -->
+			<include>SettingsMenu</include>		
+			<!-- setting options (right) -->
+			<include>SettingOptions</include>
+		</control>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
+		<include>LeftSideMenuSettings</include>
+		<include>TopBar</include>
+		<include>debugInfos</include>
+		<include>Grid</include>
+		<include>WindowFade</include>
+	</controls>
+</window>

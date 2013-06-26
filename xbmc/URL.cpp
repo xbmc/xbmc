@@ -190,6 +190,9 @@ void CURL::Parse(const CStdString& strURL1)
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
     || strProtocol2.Equals("apk")
+    /* PLEX */
+    || strProtocol2.Equals("plexserver")
+    /* END PLEX */
     || strProtocol2.Equals("zip"))
     sep = "?;#|";
   else if(strProtocol2.Equals("ftp")
@@ -360,6 +363,12 @@ void CURL::Parse(const CStdString& strURL1)
 void CURL::SetFileName(const CStdString& strFileName)
 {
   m_strFileName = strFileName;
+
+  /* PLEX */
+  /* Plex media server hates double // */
+  if (m_strProtocol == "plexserver" && m_strFileName.find_first_of("/") == 0)
+    m_strFileName = m_strFileName.substr(1);
+  /* END PLEX */
 
   int slash = m_strFileName.find_last_of(GetDirectorySeparator());
   int period = m_strFileName.find_last_of('.');

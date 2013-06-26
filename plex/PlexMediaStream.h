@@ -1,6 +1,8 @@
 #pragma once
 
 #include <boost/shared_ptr.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 #include <string>
 
 class PlexMediaStream
@@ -11,6 +13,25 @@ public:
   {
     index = anIndex;	  // This looks crazy, but VS seems to barf at the initialization list.
   }
+  
+  std::string channelName()
+  {
+    if (channels == 1)
+      return "Mono";
+    else if (channels == 2)
+      return "Stereo";
+    
+    return boost::lexical_cast<std::string>(channels - 1) + ".1";
+  }
+  
+  std::string codecName()
+  {
+    if (codec == "dca")
+      return "DTS";
+    
+    return boost::to_upper_copy(codec);
+  }
+
 
   int         id;
   std::string key;
@@ -20,6 +41,8 @@ public:
   int         subIndex;
   bool        selected;
   std::string language;
+  
+  int         channels;
 };
 
 typedef boost::shared_ptr<PlexMediaStream> PlexMediaStreamPtr;

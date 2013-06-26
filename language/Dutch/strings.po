@@ -6203,7 +6203,7 @@ msgstr "TV gids"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "Vernieuwingsinterval van TV gids"
+msgstr "Vernieuwingsinterval van TV-gids"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
@@ -6619,7 +6619,7 @@ msgstr "Alle gegevens in de TV database worden gewist"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Wis TV gids informatie en lees nieuwe in"
+msgstr "Wis TV-gids informatie en lees nieuwe in"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
@@ -9799,7 +9799,7 @@ msgstr "Artiestinformatie"
 
 msgctxt "#24018"
 msgid "Services"
-msgstr "Processen"
+msgstr "Diensten"
 
 msgctxt "#24019"
 msgid "PVR clients"

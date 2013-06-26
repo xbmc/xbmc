@@ -1558,6 +1558,8 @@ bool CPlayerOperations::GetCurrentEpg(EPG::CEpgInfoTag &epg)
 }
 
 /* PLEX */
+#include "Client/PlexServerManager.h"
+
 JSONRPC_STATUS CPlayerOperations::PlexPlayMedia(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString path = parameterObject["path"].asString();
@@ -1566,15 +1568,31 @@ JSONRPC_STATUS CPlayerOperations::PlexPlayMedia(const CStdString &method, ITrans
   if (path.empty() || key.empty())
     return InvalidParams;
 
+  CURL serverUrl(path);
+
+  /* we get a IP address here, so I want to change it to a plexserver:// url */
+  if (PlexUtils::IsValidIP(serverUrl.GetHostName()))
+  {
+    CPlexServerPtr server = g_plexServerManager.FindByHostAndPort(serverUrl.GetHostName(), serverUrl.GetPort());
+    if (!server)
+    {
+      CLog::Log(LOGWARNING, "%s Can't find any server with a connection matching %s:%d", __FUNCTION__, serverUrl.GetHostName().c_str(), serverUrl.GetPort());
+      return FailedToExecute;
+    }
+    path = server->BuildPlexURL(serverUrl.GetFileName()).Get();
+  }
+  else
+    return FailedToExecute;
+
   CFileItemList fileItems;
-  CPlexDirectory plexDir;
+  XFILE::CPlexDirectory plexDir;
   plexDir.GetDirectory(path, fileItems);
   int itemIndex = -1;
 
   for (int i=0; i < fileItems.Size(); ++i)
   {
     CFileItemPtr fileItem = fileItems[i];
-    if (fileItem->GetProperty("unprocessedKey") == key)
+    if (fileItem->GetProperty("unprocessed_key") == key)
     {
       itemIndex = i;
       break;

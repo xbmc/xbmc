@@ -1,20 +1,16 @@
 #pragma once
 
 #include <boost/shared_ptr.hpp>
-#include "PlexMediaStream.h"
 #include <vector>
 #include <string>
+#include "FileItem.h"
 
-class PlexMediaPart
+class CPlexMediaStreams : public CFileItemList
 {
-public:
-  PlexMediaPart(int id, const std::string& key, int duration)
-  : id(id), key(key), duration(duration) {}
-
-  int id;
-  int duration;
-  std::string key;
-  std::vector<PlexMediaStreamPtr> mediaStreams;
 };
 
-typedef boost::shared_ptr<PlexMediaPart> PlexMediaPartPtr;
+class CPlexMediaParts : public CFileItemList
+{
+  public:
+    CPlexMediaStreams m_streams;
+};

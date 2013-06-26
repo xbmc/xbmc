@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.1], [http://trac.xbmc.org])
+AC_INIT([xbmc], [12.2], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -947,9 +947,15 @@ AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 if echo "$ARCH" | grep -q freebsd; then
 AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([pthread],     [pthread_set_name_np],
+  AC_DEFINE([HAVE_PTHREAD_SET_NAME_NP],[1],["Define to 1 if pthread has pthread_set_name_np"]),
+  AC_MSG_RESULT([Could not find pthread_set_name_np in pthread]))
 else
 if test "$target_platform" != "target_android" ; then
   AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([pthread],     [pthread_setname_np],
+    AC_DEFINE([HAVE_PTHREAD_SETNAME_NP],[1],["Define to 1 if pthread has pthread_setname_np"]),
+    AC_MSG_RESULT([Could not find pthread_setname_np in pthread]))
 fi
 fi
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))

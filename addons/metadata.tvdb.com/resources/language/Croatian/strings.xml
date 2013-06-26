@@ -4,5 +4,7 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30002">Omogući "Fanart"</string>
+    <string id="30003">Preferirani poster</string>
     <string id="30004">Jezik</string>
 </strings>

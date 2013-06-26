@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<window id="2001">
+	<defaultcontrol>5</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<include>FadeDialog</include>
+	<controls>
+		<include>FadeDialogBG</include>
+		<control type="group">
+			<include>InfoDialogPos</include>
+			<include>InfoDialogBG</include>
+			<control type="group">
+				<description>Thumb image</description>
+				<posx>50</posx>
+				<posy>160</posy>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<control type="image">
+					<posx>-8</posx>
+					<posy>-8</posy>
+					<width>320</width>
+					<height>320</height>
+					<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+					<texture background="true" border="13">bigPosterFrameShadow.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>320</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="bigPosterMask.png" background="true">DefaultAlbumCover.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>320</height>
+					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+					<texture diffuse="bigPosterMask.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				</control>
+			</control>
+			<control type="group">
+				<posx>InfoDialogTitleXOffset</posx>
+				<control type="label">
+					<description>Album title</description>
+					<visible>Container.Content(albums)</visible>
+					<info>ListItem.Album</info>
+				</control>
+				<control type="label">
+					<description>Artist name</description>
+					<visible>Container.Content(artists)</visible>
+					<info>ListItem.Artist</info>
+				</control>
+				<control type="grouplist">
+					<posx>28</posx>
+					<posy>InfoDialogTopButtonsPosY</posy>
+					<orientation>horizontal</orientation>
+					<ondown>61</ondown>
+					<visible>Container.Content(albums)</visible>
+					<control type="button" id="5">
+						<description>Cast/Review</description>
+						<label>206</label>
+					</control>
+					<control type="button" id="6">
+						<description>Refresh</description>
+						<label>184</label>
+					</control>
+					<control type="button" id="10">
+						<description>Thumb</description>
+						<label>31117</label>
+					</control>
+				</control>
+				<control type="grouplist">
+					<posx>36</posx>
+					<posy>InfoDialogTopButtonsPosY</posy>
+					<orientation>horizontal</orientation>
+					<ondown>50</ondown>
+					<visible>Container.Content(artists)</visible>
+					<control type="button" id="5">
+						<description>Cast/Review</description>
+						<label>206</label>
+					</control>
+					<control type="button" id="6">
+						<description>Refresh</description>
+						<label>184</label>
+					</control>
+					<control type="button" id="10">
+						<description>Thumb</description>
+						<label>31117</label>
+					</control>
+				</control>
+				<control type="group">
+					<posx>10</posx>
+					<posy>120</posy>
+					<control type="group">
+						<visible>Container.Content(albums)</visible>
+						<control type="group">
+							<description>Artist</description>
+							<control type="label">
+								<label>$LOCALIZE[557]</label>
+							</control>
+							<control type="label">
+								<info>ListItem.Artist</info>
+							</control>
+							<control type="group">
+								<description>Genre</description>
+								<posy>MusicAlbumInfoDetailOffset</posy>
+								<control type="label">
+									<label>$LOCALIZE[515]</label>
+								</control>
+								<control type="label">
+									<info>ListItem.Genre</info>
+								</control>
+								<control type="group">
+									<description>Year</description>
+									<posy>MusicAlbumInfoDetailOffset</posy>
+									<control type="label">
+										<label>$LOCALIZE[345]</label>
+									</control>
+									<control type="label">
+										<info>ListItem.Year</info>
+									</control>
+									<control type="group">
+										<description>Rating</description>
+										<posy>MusicAlbumInfoDetailOffset</posy>
+										<control type="label">
+											<label>$LOCALIZE[563]</label>
+										</control>
+										<control type="label">
+											<info>ListItem.Rating</info>
+										</control>
+										<control type="group">
+											<description>Album Moods</description>
+											<posy>MusicAlbumInfoDetailOffset</posy>
+											<control type="label">
+												<label>$LOCALIZE[175]</label>
+											</control>
+											<control type="label">
+												<info>ListItem.Property(AlbumMoods)</info>
+											</control>
+											<control type="group">
+												<description>Album Styles</description>
+												<posy>MusicAlbumInfoDetailOffset</posy>
+												<control type="label">
+													<label>$LOCALIZE[176]</label>
+												</control>
+												<control type="label">
+													<info>ListItem.Property(AlbumStyles)</info>
+												</control>
+												<control type="group">
+													<description>Album Themes</description>
+													<posy>MusicAlbumInfoDetailOffset</posy>
+													<control type="label">
+														<label>$LOCALIZE[21895]</label>
+													</control>
+													<control type="label">
+														<info>ListItem.Property(AlbumThemes)</info>
+													</control>
+													<control type="group">
+														<description>Album Type</description>
+														<posy>MusicAlbumInfoDetailOffset</posy>
+														<control type="label">
+															<label>$LOCALIZE[467]</label>
+														</control>
+														<control type="label">
+															<info>ListItem.Property(AlbumType)</info>
+														</control>
+													</control>
+												</control>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+					<control type="group">
+						<visible>Container.Content(artists)</visible>
+						<control type="group">
+							<description>Born/Formed</description>
+							<control type="label">
+								<label>$LOCALIZE[31027]</label>
+							</control>
+							<control type="label">
+								<visible>!IsEmpty(ListItem.Property(Born))</visible>
+								<info>ListItem.Property(Born)</info>
+							</control>
+							<control type="label">
+								<visible>IsEmpty(ListItem.Property(Born))</visible>
+								<info>ListItem.Property(Formed)</info>
+							</control>
+							<control type="group">
+								<description>Genre</description>
+								<posy>MusicArtistInfoDetailOffset</posy>
+								<control type="label">
+									<label>$LOCALIZE[515]</label>
+								</control>
+								<control type="label">
+									<info>ListItem.Genre</info>
+								</control>
+								<control type="group">
+									<description>Moods</description>
+									<posy>MusicArtistInfoDetailOffset</posy>
+									<control type="label">
+										<label>$LOCALIZE[175]</label>
+									</control>
+									<control type="label">
+										<info>ListItem.Property(Moods)</info>
+									</control>
+									<control type="group">
+										<description>Styles</description>
+										<posy>MusicArtistInfoDetailOffset</posy>
+										<control type="label">
+											<label>$LOCALIZE[176]</label>
+										</control>
+										<control type="label">
+											<info>ListItem.Property(Styles)</info>
+										</control>
+										<control type="group">
+											<description>Instruments</description>
+											<posy>MusicArtistInfoDetailOffset</posy>
+											<control type="label">
+												<label>$LOCALIZE[31032]</label>
+											</control>
+											<control type="label">
+												<info>ListItem.Property(Instruments)</info>
+											</control>
+											<control type="group">
+												<description>Died/Disbanded</description>
+												<posy>MusicArtistInfoDetailOffset</posy>
+												<control type="label">
+													<label>$LOCALIZE[31028]</label>
+												</control>
+												<control type="label">
+													<info>ListItem.Property(Died)</info>
+												</control>
+												<control type="label">
+													<info>ListItem.Property(Disbanded)</info>
+												</control>
+												<control type="group">
+													<description>Years Active</description>
+													<posy>MusicArtistInfoDetailOffset</posy>
+													<control type="label">
+														<label>$LOCALIZE[31031]</label>
+													</control>
+													<control type="label">
+														<info>ListItem.Property(YearsActive)</info>
+													</control>
+												</control>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>10</posx>
+					<posy>308</posy>
+					<control type="textbox" id="4">
+						<description>Review</description>
+					</control>
+					<control type="list" id="50">
+						<description>Tracks/Members</description>
+						<onup>5</onup>
+						<onleft>5</onleft>
+						<onright>10</onright>
+						<pagecontrol>61</pagecontrol>
+						<orientation>vertical</orientation>
+						<scrolltime>200</scrolltime>
+						<itemlayout width="MusicInfoListDims" height="29">
+							<include>MusicInfoListItemContent</include>
+						</itemlayout>
+						<focusedlayout width="MusicInfoListDims" height="29">
+							<include>MusicInfoListItemContent</include>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="61">
+						<onup>61</onup>
+						<ondown>61</ondown>
+						<onleft>5</onleft>
+						<onright>10</onright>
+						<visible>Control.IsVisible(50)</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

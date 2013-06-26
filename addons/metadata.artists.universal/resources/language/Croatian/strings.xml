@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Croatian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hr/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30004">Omogućite Fanart-s iz fanart.tv</string>
+    <string id="30005">Omogućite Umjetnine iz fanart.tv</string>
+    <string id="30023">Omogućiti Artist Fanarts iz theaudiodb.com</string>
+</strings>

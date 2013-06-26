@@ -1,3 +1,25 @@
+[B]2.6.5[/B]
+Updated language files from Transifex
+
+[B]2.6.4[/B]
+Changed: tighten search query and trust musicbrainz results sorting
+
+[B]2.6.3[/B]
+Fixed: AMGData
+
+[B]2.6.2[/B]
+Added: option to fall back on artist life span from TheAudioDb.com
+
+[B]2.6.1[/B]
+Disable last.fm options because last.fm is now truncating biogs
+
+[B]2.6.0[/B]
+Added: option to fetch discography and artist life span from TheAudioDb.com
+
+[B]2.5.0[/B]
+Added: option to select language from TheAudioDB.com
+Added back the option to scrape from last.fm
+
 [B]2.4.3[/B]
 Disable last.fm options because last.fm suspended XBMC's API account
 

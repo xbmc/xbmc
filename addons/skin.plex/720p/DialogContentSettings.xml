@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<window id="132">
+	<defaultcontrol>3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>FadeDialog</include>
+	<controls>
+		<include>FadeDialogBG</include>
+		<control type="group">
+			<posx>142</posx>
+			<posy>61</posy>
+			<include>InfoDialogBG</include>
+			<control type="group">
+				<posx>50</posx>
+				<posy>228</posy>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<control type="image">
+					<description>Poster</description>
+					<visible>Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
+					<width>426</width>
+					<height>170</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordertexture border="14">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="image">
+					<description>Poster</description>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
+					<width>426</width>
+					<height>170</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordertexture border="14">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="label">
+					<posy>60</posy>
+					<width>426</width>
+					<font>TitleCapsFont</font>
+					<align>center</align>
+					<label>$LOCALIZE[20018]</label>
+					<visible>IsEmpty(ListItem.Art(thumb)) + !Skin.HasSetting(HideNoThumbIcon)</visible>
+				</control>
+				<control type="image">
+					<description>Poster reflection</description>
+					<visible>Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
+					<posx>8</posx>
+					<posy>162</posy>
+					<width>426</width>
+					<height>154</height>
+					<aspectratio aligny="top">keep</aspectratio>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="image">
+					<description>Poster reflection</description>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
+					<posx>8</posx>
+					<posy>162</posy>
+					<width>426</width>
+					<height>154</height>
+					<aspectratio aligny="top">keep</aspectratio>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<posy>10</posy>
+				<posx>InfoDialogTitleXOffset</posx>
+				<control type="label" id="1000">
+					<description>Heading</description>
+					<label>$LOCALIZE[20333]</label>
+					<include>DialogHeading</include>
+				</control>
+				<control type="group">
+					<posy>10</posy>
+					<posx>-20</posx>
+				<control type="spincontrolex" id="3">
+					<description>Directory Content</description>
+					<onup>5</onup>
+					<ondown>9001</ondown>
+					<onleft>3</onleft>
+					<onright>3</onright>
+				</control>
+				</control>
+				<control type="group" id="9001">
+					<control type="panel" id="4">
+						<description>Directory List</description>
+						<posx>40</posx>
+						<posy>100</posy>
+						<width>400</width>
+						<height>272</height>
+						<onup>3</onup>
+						<ondown>5</ondown>
+						<onleft>3</onleft>
+						<onright>5</onright>
+						<scrolltime>200</scrolltime>
+						<pagecontrol>60</pagecontrol>
+						<visible allowhiddenfocus="false">true</visible>
+						<itemlayout width="132" height="136">
+							<control type="image">
+								<posx>5</posx>
+								<posy>5</posy>
+								<width>132</width>
+								<height>114</height>
+								<texture fallback="Scraper_Default_icon.png">$INFO[ListItem.Label,Scraper_,_icon.png]</texture>
+								<visible>!Skin.HasTheme(lite)</visible>
+								<colordiffuse>cc999999</colordiffuse>
+							</control>
+							<control type="label">
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout width="132" height="136">
+							<control type="image">
+								<posx>5</posx>
+								<posy>5</posy>
+								<width>132</width>
+								<height>114</height>
+								<texture fallback="Scraper_Default_icon.png">$INFO[ListItem.Label,Scraper_,_icon.png]</texture>
+								<visible>!Skin.HasTheme(lite)</visible>
+							</control>
+							<control type="label">
+								<visible>!Control.HasFocus(4)</visible>
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="label">
+								<visible>Control.HasFocus(4)</visible>
+								<textcolor>Focused</textcolor>
+								<scroll>true</scroll>
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="grouplist" id="5">
+						<description>Set Content Options</description>
+						<posx>0</posx>
+						<posy>386</posy>
+						<itemgap>0</itemgap>
+						<orientation>vertical</orientation>
+						<width>450</width>
+						<onup>4</onup>
+						<ondown>28</ondown>
+						<onleft>28</onleft>
+						<onright>28</onright>
+						<control type="button" id="7">
+							<description>Default Button</description>
+							<label>-</label>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+						</control>
+					</control>
+					<control type="radiobutton" id="8">
+						<description>Radiobutton</description>
+					</control>
+					<control type="grouplist" id="9002">
+						<onup>5</onup>
+						<ondown>3</ondown>
+						<posx>4</posx>
+						<posy>528</posy>
+						<itemgap>8</itemgap>
+						<orientation>horizontal</orientation>
+						<control type="button" id="28">
+							<description>Select</description>
+							<onleft>29</onleft>
+							<onright>6</onright>
+							<label>$LOCALIZE[424]</label>
+							<width>108</width>
+							<include>DialogPressButton</include>
+						</control>
+						<control type="button" id="6">
+							<description>Settings button</description>
+							<onleft>28</onleft>
+							<onright>29</onright>
+							<label>$LOCALIZE[5]</label>
+							<width>170</width>
+							<include>DialogPressButton</include>
+						</control>
+						<control type="button" id="29">
+							<description>Cancel</description>
+							<onleft>6</onleft>
+							<onright>28</onright>
+							<label>$LOCALIZE[222]</label>
+							<width>108</width>
+							<include>DialogPressButton</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

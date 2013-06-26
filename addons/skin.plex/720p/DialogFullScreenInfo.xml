@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<window type="dialog" id="142">
+	<defaultcontrol always="true">603</defaultcontrol>
+	<controls>
+		<!-- ViewsOSD.xml -->	
+		<include>VideoPresentation</include>
+	</controls>
+</window>

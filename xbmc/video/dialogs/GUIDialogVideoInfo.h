@@ -32,9 +32,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
-#ifndef __PLEX__
   void SetMovie(const CFileItem *item);
-#endif
   bool NeedRefresh() const;
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
@@ -43,10 +41,6 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
-
-  /* PLEX */
-  void SetMovie(const CFileItemPtr& item);
-  /* END PLEX */
 
 #ifndef __PLEX__
   static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);

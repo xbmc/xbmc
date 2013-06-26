@@ -20,7 +20,7 @@ public:
   virtual void Process()
   {
     // Execute the request.
-    CPlexDirectory plexDir(true, false);
+    XFILE::CPlexDirectory plexDir;
     plexDir.GetDirectory(m_path, m_itemList);
     m_doneLoading = true;
 

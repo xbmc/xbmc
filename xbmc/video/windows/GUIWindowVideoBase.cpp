@@ -76,8 +76,9 @@
 
 /* PLEX */
 #include "BackgroundMusicPlayer.h"
-#include "PlexMediaServerQueue.h"
+#include "Client/PlexMediaServerClient.h"
 #include "PlexContentPlayerMixin.h"
+#include "interfaces/Builtins.h"
 /* END PLEX */
 
 using namespace std;
@@ -392,7 +393,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2)
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
 
-  pDlgInfo->SetMovie(item);
+  pDlgInfo->SetMovie(item.get());
   pDlgInfo->DoModal();
 
   if (pDlgInfo->NeedRefresh() == false)
@@ -949,6 +950,17 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
     return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
+  
+  /* PLEX */
+  string type = item->GetProperty("type").asString();
+  if (PlexUtils::CurrentSkinHasPreplay() &&
+      item->IsPlexMediaServer() &&
+      (type == "movie" || type == "episode"))
+  {
+    CBuiltins::Execute("ActivateWindow(PlexPreplayVideo, " + item->GetProperty("key").asString() + ", return)");
+    return true;
+  }
+  /* END PLEX */
 
   CStdString path = item->GetPath();
   if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&

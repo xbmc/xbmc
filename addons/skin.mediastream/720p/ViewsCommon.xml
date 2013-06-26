@@ -280,7 +280,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + !IsEmpty(ListItem.Property(UnWatchedEpisodes))</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -291,21 +291,10 @@
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
-						<!--<control type="image">
-							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
-							<posx>520</posx>
-							<posy>9</posy>
-							<width>57</width>
-							<height>29</height>
-							<aspectratio>keep</aspectratio>
-							<texture>Unwatchedcount.png</texture>
-							<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-						</control>-->						
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
@@ -316,7 +305,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -327,7 +316,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -338,7 +327,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -358,7 +347,7 @@
 						</control>
 						<!-- unwatched icon -->
 						<control type="image">
-						<visible>Window.IsActive(videos) + !Container.Content(TVShows) + !Container.Content(Seasons)</visible>
+							<visible>Window.IsActive(videos) + !Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 							<posx>535</posx>
 							<posy>5</posy>
 							<width>35</width>
@@ -397,7 +386,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + !IsEmpty(ListItem.Property(UnWatchedEpisodes))</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -408,21 +397,10 @@
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
-						<!--<control type="image">
-							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
-							<posx>520</posx>
-							<posy>9</posy>
-							<width>57</width>
-							<height>29</height>
-							<aspectratio>keep</aspectratio>
-							<texture>UnwatchedcountFocused.png</texture>
-							<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-						</control>-->
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -434,7 +412,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -458,7 +436,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -473,7 +451,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
@@ -486,7 +464,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -504,7 +482,7 @@
 								<posx>60</posx>
 								<posy>1</posy>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -517,7 +495,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.Label]</label>
@@ -562,7 +540,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -592,7 +570,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -616,7 +594,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>720</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -644,7 +622,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>720</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -656,7 +634,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>720</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -680,7 +658,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -695,6 +673,7 @@
 							<height>29</height>
 							<aspectratio>keep</aspectratio>
 							<texture>Unwatchedcount.png</texture>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 						</control>
 						<control type="label">
 							<posx>548</posx>
@@ -703,7 +682,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<textcolor>Unfocused</textcolor>
 						</control>
@@ -735,7 +714,7 @@
 						</control>
 						<!-- duration bg -->
 						<control type="image">
-							<visible>!IsEmpty(ListItem.Label2)</visible>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -748,7 +727,7 @@
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
-							<height>42</height>
+							<height>45</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -760,7 +739,7 @@
 							<control type="label">
 								<posx>60</posx>
 								<width>454</width>
-								<height>42</height>
+								<height>45</height>
 								<align>left</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
@@ -777,7 +756,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 						</control>
@@ -788,7 +767,7 @@
 							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>SmallDefaultCapsFont</font>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
@@ -962,7 +941,7 @@
 									<posy>295</posy>
 									<posx>20</posx>
 									<width>550</width>
-									<height>157</height>
+									<height>154</height>
 									<info>ListItem.Property(description)</info>
 								</control>
 							</control>
@@ -1245,24 +1224,24 @@
 							<control type="group">
 								<posy>70</posy>
 								<posx>215</posx>
-							<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
-							<control type="image">
-								<posx>0</posx>
-								<posy>26</posy>
-								<width>436</width>
-								<height>230</height>
-								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
-								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
-							</control>
-							<control type="image">
-								<posx>0</posx>
-								<posy>258</posy>
-								<width>436</width>
-								<height>230</height>
-								<info>ListItem.Icon</info>
-								<texture flipy="true" diffuse="DiffuseMirror.png"/>
-								<aspectratio aligny="top">keep</aspectratio>
-							</control>
+								<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+								<control type="image">
+									<posx>0</posx>
+									<posy>26</posy>
+									<width>436</width>
+									<height>230</height>
+									<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
+									<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>258</posy>
+									<width>436</width>
+									<height>230</height>
+									<info>ListItem.Icon</info>
+									<texture flipy="true" diffuse="DiffuseMirror.png"/>
+									<aspectratio aligny="top">keep</aspectratio>
+								</control>
 							</control>
 						</control>
 						<!-- plugins FALLBACK HACK -->
@@ -1304,24 +1283,24 @@
 							<control type="group">
 								<posy>70</posy>
 								<posx>215</posx>
-							<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
-							<control type="image">
-								<posx>0</posx>
-								<posy>26</posy>
-								<width>436</width>
-								<height>230</height>
-								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
-								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
-							</control>
-							<control type="image">
-								<posx>0</posx>
-								<posy>258</posy>
-								<width>436</width>
-								<height>230</height>
-								<info>ListItem.Icon</info>
-								<texture flipy="true" diffuse="DiffuseMirror.png"/>
-								<aspectratio aligny="top">keep</aspectratio>
-							</control>
+								<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+								<control type="image">
+									<posx>0</posx>
+									<posy>26</posy>
+									<width>436</width>
+									<height>230</height>
+									<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
+									<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>258</posy>
+									<width>436</width>
+									<height>230</height>
+									<info>ListItem.Icon</info>
+									<texture flipy="true" diffuse="DiffuseMirror.png"/>
+									<aspectratio aligny="top">keep</aspectratio>
+								</control>
 							</control>
 						</control>
 						<!-- episode/clip image -->
@@ -2651,7 +2630,7 @@
 					<onup>59</onup>
 					<ondown>59</ondown>
 					<onleft>59</onleft>
-					<onright>9009</onright>
+					<onright>59</onright>
 					<orientation>vertical</orientation>
 					<posx>10</posx>
 					<posy>34</posy>
@@ -2689,7 +2668,7 @@
 							<wrapmultiline>false</wrapmultiline>
 						</control>
 					</itemlayout>
-					<focusedlayout condition="Container.content(plugins)" width="154" height="160">					
+					<focusedlayout condition="Container.content(plugins)" width="154" height="160">
 						<control type="image">
 							<description>Poster image</description>
 							<posx>15</posx>
@@ -2723,7 +2702,7 @@
 							<wrapmultiline>false</wrapmultiline>
 						</control>
 					</focusedlayout>
-					</control>
+				</control>
 			</control>
 		</control>
 	</include>

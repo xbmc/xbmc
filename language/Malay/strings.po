@@ -389,9 +389,25 @@ msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
 msgstr "Hapuskan fail ini? - Fail yang dihapuskan tidak boleh dicari semula!"
 
+msgctxt "#126"
+msgid "Status"
+msgstr "Status"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "Objek"
+
+msgctxt "#128"
+msgid "General"
+msgstr "Am"
+
 msgctxt "#130"
 msgid "System info"
 msgstr "Info sistem"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "Paparkan"
 
 msgctxt "#132"
 msgid "Albums"
@@ -408,6 +424,10 @@ msgstr "Lagu"
 msgctxt "#135"
 msgid "Genres"
 msgstr "Genre"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "Senarai"
 
 msgctxt "#137"
 msgid "Search"
@@ -657,6 +677,10 @@ msgctxt "#214"
 msgid "Video calibration..."
 msgstr "Mengkalibrasi video..."
 
+msgctxt "#215"
+msgid "Soften"
+msgstr "Lembutkan"
+
 msgctxt "#216"
 msgid "Zoom amount"
 msgstr "Jumlah zum"
@@ -736,6 +760,10 @@ msgstr "Proses Pengecilan"
 msgctxt "#238"
 msgid "Magnification"
 msgstr "Proses Pembesaran"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "Kosongkan playlist selepas habis"
 
 msgctxt "#240"
 msgid "Display Mode"
@@ -833,6 +861,10 @@ msgctxt "#265"
 msgid "Stop Rec."
 msgstr "Berhenti Rakam"
 
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "Isihan: Trek "
+
 msgctxt "#267"
 msgid "Sort by: Time"
 msgstr "Isihan: Masa"
@@ -852,6 +884,14 @@ msgstr "Isihan: Album"
 msgctxt "#271"
 msgid "Top 100"
 msgstr "100 Teratas"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "Bahasa"
 
 msgctxt "#350"
 msgid "Programs"
@@ -880,6 +920,14 @@ msgstr "Cuaca"
 msgctxt "#430"
 msgid "Sort by: DVD#"
 msgstr "Isihan: DVD#"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "Buang '%s'?"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "Video"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -917,9 +965,25 @@ msgctxt "#633"
 msgid "Wide Zoom"
 msgstr "Zum Lebar"
 
+msgctxt "#1006"
+msgid "IP address"
+msgstr "Alamat IP"
+
 msgctxt "#1211"
 msgid "Music"
 msgstr "Musik"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "Gambar"
+
+msgctxt "#1397"
+msgid "and"
+msgstr "dan"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
@@ -1029,6 +1093,10 @@ msgctxt "#10001"
 msgid "Programs"
 msgstr "Program"
 
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "Gambar"
+
 msgctxt "#10004"
 msgid "Settings"
 msgstr "Seting"
@@ -1064,6 +1132,14 @@ msgstr "Tetapkan nilai lalai untuk semua video"
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Cuaca"
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "Tidak Diketahui"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "Video"
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -1104,6 +1180,10 @@ msgstr "Tiada karya seni"
 msgctxt "#14098"
 msgid "Play"
 msgstr "Main"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "Am"
 
 msgctxt "#16018"
 msgid "None"
@@ -1273,6 +1353,14 @@ msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Sukan Seni Mempertahankan Diri"
 
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komedi"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Percintaan"
+
 msgctxt "#20109"
 msgid "- Zoom"
 msgstr "- Zum"
@@ -1356,6 +1444,10 @@ msgstr "%d ke %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s ke %s"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "Resolusi"
 
 msgctxt "#21838"
 msgid "Digital zoom"

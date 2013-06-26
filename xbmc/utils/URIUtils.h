@@ -97,7 +97,7 @@ public:
   static bool IsAndroidApp(const CStdString& strFile);
 
   static void AddSlashAtEnd(CStdString& strFolder);
-  static bool HasSlashAtEnd(const CStdString& strFile);
+  static bool HasSlashAtEnd(const CStdString& strFile, bool checkURL = false);
   static void RemoveSlashAtEnd(CStdString& strFolder);
   static bool CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2);
 

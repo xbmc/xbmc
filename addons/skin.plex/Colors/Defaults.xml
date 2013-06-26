@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<colors>
+	<color name="orange">FFd1801c</color>
+	<color name="orangeLight">FFf8a339</color>
+	<color name="greyLight">FFa5a4a4</color>
+	<color name="greyLighter">FFbfbdbd</color>
+	<!-- default colors -->
+	<color name="Focused">FFf8a339</color>
+	<color name="Unfocused">FF909090</color>
+	<color name="Selected">white</color>
+	<color name="Highlighted">FFd1801c</color>
+	<color name="Disabled">FF505050</color>
+</colors>

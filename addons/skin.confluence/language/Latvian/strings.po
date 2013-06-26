@@ -16,6 +16,194 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Maini savu"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Papildiespējas"
+
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Working..."
+msgstr "Strādāju..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Slēpt informāciju"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Skata iespējas"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Pilnekrāna režīms"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Kopējais ilgums"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Atskaņo"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Lapa"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Vienumi"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Dažādas iespējas"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Lokācija"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Plakāta ietvars"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanu māksla"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Attēlu sīktēli"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Attēla ietvars"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Pašlaik atskaņo"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ATSKAŅO"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "IEPAUZĒTS"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "TĪT UZ PRIEKŠU"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ATTĪT ATPAKAĻ"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Vizualizācijas sagataves"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Beigu laiks"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Kārtot: Augošā secībā"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Kārtot: Dilstošā secībā"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Atvērt atskaņošanas sarakstu"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Saglabāt atskaņošanas sarakstu"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Aizvērt atskaņošanas sarakstu"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Sistēmas mūzikas faili"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Pašreizējais atskaņošanas saraksts"
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Pašlaik izvēlētais"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Mājas ekrāna iespējas"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Fons"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Rādīt \"Iepauzēts\" attēlu slīdrādē"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Atskaņot treilerus logā [COLOR=grey3](Tikai video informācijas dialogs)[/COLOR]"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Slēpt"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Iespējas"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "Laika apstākļu lapa"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lirika"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Saīsnes"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Pēdējie atjaunotie"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Atmiņa izmantota:"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Izšķirtspēja"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauze"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Apturēt"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Patīt uz priekšu"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Attīt atpakaļ"

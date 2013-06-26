@@ -71,6 +71,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
+      m_headofdoc = strstr(m_headofdoc,"<episodedetails");
       while (m_headofdoc && details.m_iEpisode != episode)
       {
         m_headofdoc = strstr(m_headofdoc+1,"<episodedetails");

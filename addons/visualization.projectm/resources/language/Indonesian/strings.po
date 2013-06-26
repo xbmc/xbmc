@@ -16,6 +16,10 @@ msgstr ""
 "Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Kualitas Render"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Rendah"
@@ -27,3 +31,39 @@ msgstr "Medium"
 msgctxt "#30003"
 msgid "High"
 msgstr "Tinggi"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maksimum"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Mode Acak"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Durasi Preset Halus"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Durasi Preset"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Sentifitas Beat"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Paket Preset"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Paket Standar"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Folder Preset yang ditentukan Pengguna"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Gunakan Folder Preset"

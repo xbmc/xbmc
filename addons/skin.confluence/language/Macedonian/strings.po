@@ -34,11 +34,11 @@ msgstr "Сокриј инфо."
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Погледни опции"
+msgstr "Опции за преглед"
 
 msgctxt "#31008"
 msgid "Fullscreen"
-msgstr "Полн екран"
+msgstr "Цел екран"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -46,7 +46,7 @@ msgstr "Вкупно времетраење"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Музика - Папки"
+msgstr "Музика - Датотеки"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -70,7 +70,7 @@ msgstr "Локација"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Поредено"
+msgstr "Лента со постери"
 
 msgctxt "#31029"
 msgid "Fanart"
@@ -82,7 +82,7 @@ msgstr "Сликички"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Поредено"
+msgstr "Лента со слики"
 
 msgctxt "#31033"
 msgid "Info"
@@ -90,7 +90,7 @@ msgstr "Информации"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Се репродуцира во моментот"
+msgstr "Сега се изведува"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -98,7 +98,7 @@ msgstr "РЕПРОДУЦИРАЊЕ"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "ПАУЗИРАНО"
+msgstr "ПАУЗА"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -110,7 +110,7 @@ msgstr "ПРЕМОТУВАЊЕ НАЗАД"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
-msgstr "Постојни бизуализации"
+msgstr "Постојни визуелизации"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -118,11 +118,11 @@ msgstr "Време на завршување"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Подреди: Паѓачки"
+msgstr "Подреди: Растечки"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Подреди: Растечки"
+msgstr "Подреди: Опаѓачки"
 
 msgctxt "#31055"
 msgid "Open playlist"

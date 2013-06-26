@@ -498,7 +498,7 @@ BuildObject(CFileItem&                    item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
-        } else if (item.IsPlayList()) {
+        } else if (item.IsPlayList() || item.IsSmartPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
         }
 

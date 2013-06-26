@@ -4,7 +4,6 @@
     <setting label="30001" type="bool" id="absolutenumber" default="false" enable="!eq(-1,true)" />
     <setting type="sep" />
     <setting label="30002" type="bool" id="fanart" default="true" />
-    <setting label="30003" type="bool" id="posters" default="false" />
     <setting type="sep" />
     <setting label="30004" type="labelenum" id="language" values="da|fi|nl|de|it|es|fr|pl|hu|el|tr|ru|he|ja|pt|zh|cs|sl|hr|ko|en|sv|no" sort="yes" default="en" />
 </settings>

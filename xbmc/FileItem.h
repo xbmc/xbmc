@@ -39,8 +39,14 @@
 
 /* PLEX */
 #include <boost/enable_shared_from_this.hpp>
+
 class CFileItem;
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
+class CFileItemList;
+typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
+
+#include "plex/PlexTypes.h"
 /* END PLEX */
 
 namespace MUSIC_INFO
@@ -110,11 +116,32 @@ public:
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;
+  
+  /*!
+   \brief Check whether an item is a video item. Note that this returns true for
+    anything with a video info tag, so that may include eg. folders.
+   \return true if item is video, false otherwise. 
+   */
   bool IsVideo() const;
+
   bool IsDiscStub() const;
+
+  /*!
+   \brief Check whether an item is a picture item. Note that this returns true for
+    anything with a picture info tag, so that may include eg. folders.
+   \return true if item is picture, false otherwise. 
+   */
   bool IsPicture() const;
+
   bool IsLyrics() const;
+
+  /*!
+   \brief Check whether an item is an audio item. Note that this returns true for
+    anything with a music info tag, so that may include eg. folders.
+   \return true if item is audio, false otherwise. 
+   */
   bool IsAudio() const;
+
   bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsLastFM() const;
@@ -393,10 +420,14 @@ public:
   int m_iBadPwdCount;
 
   /* PLEX */
-  #include "PlexMediaPart.h"
   std::vector<CFileItemPtr> m_contextItems;
+
+  /* Video->Media->mediaParts->mediaPartStreams */
   std::vector<CFileItemPtr> m_mediaItems;
-  std::vector<PlexMediaPartPtr> m_mediaParts;
+  std::vector<CFileItemPtr> m_mediaParts;
+  std::vector<CFileItemPtr> m_mediaPartStreams;
+
+  CFileItemPtr m_selectedMediaPart;
 
   bool IsPlexMediaServer() const;
   bool IsRemoteSharedPlexMediaServerLibrary() const;
@@ -410,12 +441,6 @@ public:
 
   void SetDisabledViewModes(const CStdString &viewModes) { m_disabledViewModes = viewModes; }
   const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
-
-  void SetFirstTitle(const CStdString& title) { m_firstTitle = title; }
-  const CStdString& GetFirstTitle() const { return m_firstTitle; }
-
-  void SetSecondTitle(const CStdString& title) { m_secondTitle = title; }
-  const CStdString& GetSecondTitle() const { return m_secondTitle; }
 
   void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
   std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
@@ -434,9 +459,6 @@ public:
 
   void SetEpisodeData(int total, int watchedCount);
 
-  void SetIsPopupMenuItem(bool ispopup) { m_bIsPopupMenuItem = ispopup; }
-  bool IsPopupMenuItem() const { return m_bIsPopupMenuItem; }
-
   void SetIsSearchDir(bool issearch) { m_bIsSearchDir = issearch; }
   bool IsSearchDir() const { return m_bIsSearchDir; }
 
@@ -448,6 +470,9 @@ public:
 
   void MarkAsWatched();
   void MarkAsUnWatched();
+
+  EPlexDirectoryType GetPlexDirectoryType() const { return m_plexDirectoryType; }
+  void SetPlexDirectoryType(EPlexDirectoryType dirType) { m_plexDirectoryType = dirType; }
 
   /* END PLEX */
 
@@ -468,13 +493,12 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+  EPlexDirectoryType m_plexDirectoryType;
 
   /* PLEX */
 protected:
   int m_defaultViewMode;
   CStdString m_disabledViewModes;
-  CStdString m_firstTitle;
-  CStdString m_secondTitle;
   std::vector<CFileItemPtr> m_chainedProviders;
   CStdString m_strFanartUrl;
   CStdString m_strBannerUrl;
@@ -482,7 +506,6 @@ protected:
   bool m_autoRefresh;
   int m_iBitrate;
   bool m_includeStandardContextItems;
-  bool m_bIsPopupMenuItem;
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   bool m_bIsSettingsDir;

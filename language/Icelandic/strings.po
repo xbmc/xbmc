@@ -3161,6 +3161,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "Lítið"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "og"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "af"

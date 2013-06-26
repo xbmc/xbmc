@@ -59,10 +59,12 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 
   /* PLEX */
   unsigned int fileCacheSize = 0;
-  if (m_item.IsPlexMediaServerLibrary() && m_item.HasProperty("fileSize"))
+  if (m_item.IsPlexMediaServerLibrary() &&
+      m_item.m_selectedMediaPart &&
+      m_item.m_selectedMediaPart->HasProperty("size"))
   {
     CLog::Log(LOGDEBUG, "Cache selector: going to use cacheSize based on fileSize");
-    uint64_t fileSize = m_item.GetProperty("fileSize").asUnsignedInteger();
+    uint64_t fileSize = m_item.m_selectedMediaPart->GetProperty("size").asUnsignedInteger();
     float percent = g_guiSettings.GetInt("cache.percent") / 100.0;
     uint64_t cacheSize = fileSize * percent;
 

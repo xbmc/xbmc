@@ -47,7 +47,7 @@ elseif(TARGET_IOS)
 endif()
 
 if(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
-  message(FATAL_ERROR "Couldn't fetch dependencies")
+  message(FATAL_ERROR "Couldn't fetch dependencies ${dependdir} ${ffmpegdir}")
 endif(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
 
 file(COPY ${root}/tools/darwin/depends/libcrystalhd/libcrystalhd DESTINATION ${dependdir}/include)

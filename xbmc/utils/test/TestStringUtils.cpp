@@ -396,6 +396,35 @@ TEST(TestStringUtils, FindWords)
   ref = 5;
   var = StringUtils::FindWords("test string", "string");
   EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("12345string", "string");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("apple2012", "2012");
+  EXPECT_EQ(ref, var);
+  ref = -1;
+  var = StringUtils::FindWords("12345string", "ring");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("12345string", "345");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("apple2012", "e2012");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("apple2012", "12");
+  EXPECT_EQ(ref, var);
+}
+
+TEST(TestStringUtils, FindWords_NonAscii)
+{
+  int ref, var;
+
+  ref = 6;
+  var = StringUtils::FindWords("我的视频", "视频");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("我的视频", "视");
+  EXPECT_EQ(ref, var);
+  var = StringUtils::FindWords("Apple ple", "ple");
+  EXPECT_EQ(ref, var);
+  ref = 7;
+  var = StringUtils::FindWords("Äpfel.pfel", "pfel");
+  EXPECT_EQ(ref, var);
 }
 
 TEST(TestStringUtils, FindEndBracket)

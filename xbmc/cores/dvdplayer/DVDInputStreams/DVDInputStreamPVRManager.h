@@ -97,7 +97,6 @@ protected:
   XFILE::IRecordable*       m_pRecordable;
   bool                      m_eof;
   std::string               m_strContent;
-  bool                      m_bReopened;
   unsigned int              m_iScanTimeout;
 };
 

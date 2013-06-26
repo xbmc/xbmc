@@ -71,13 +71,13 @@
 			<name>MediaPreviewDetailsHeader</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>18</size>
+			<size>17</size>
 		</font>
 		<font>
 			<name>EpisodeTitles</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>18</size>
+			<size>17</size>
 		</font>
 		<!-- Default fonts -->
 		<font>
@@ -97,6 +97,18 @@
 			<filename>Helvetica</filename>
 			<variant>Bold</variant>
 			<size>20</size>
+		</font>
+		<font>
+			<name>PIN</name>
+			<filename>Helvetica</filename>
+			<variant>Bold</variant>
+			<size>144</size>
+		</font>
+		<font>
+			<name>Login</name>
+			<filename>HelveticaNeue</filename>
+			<variant>Regular</variant>
+			<size>24</size>
 		</font>
 		<font>
 			<name>NPNextFont</name>
@@ -255,26 +267,26 @@
 			<name>HomeScreenUnselectedItems</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>24</size>
+			<size>23</size>
 		</font>
 		<!-- InfoList titles -->
 		<font>
 			<name>MediumLargeTitleCapsFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>24</size>
+			<size>23</size>
 		</font>
 		<font>
 			<name>TitleFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>24</size>
+			<size>23</size>
 		</font>
 		<font>
 			<name>TitleCapsFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>24</size>
+			<size>23</size>
 		</font>
 		<font>
 			<name>MediumTitleFont</name>
@@ -300,7 +312,7 @@
 			<name>MediumSmallTitleFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>18</size>
+			<size>17</size>
 		</font>
 		<font>
 			<name>MediumSmallTitleFont2</name>
@@ -318,13 +330,13 @@
 			<name>MediumSmallTitleCapsFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>18</size>
+			<size>17</size>
 		</font>
 		<font>
 			<name>SmallTitleFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>15</size>
+			<size>16</size>
 		</font>
 		<font>
 			<name>SmallTitleCapsFont</name>

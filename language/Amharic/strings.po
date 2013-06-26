@@ -2161,6 +2161,10 @@ msgctxt "#1438"
 msgid "Small"
 msgstr "ትንሽ "
 
+msgctxt "#1439"
+msgid "and"
+msgstr "እና "
+
 msgctxt "#4501"
 msgid "Enable LCD/VFD"
 msgstr "ማስቻያ LCD/VFD"
@@ -2776,3 +2780,7 @@ msgstr "መደብ"
 msgctxt "#35500"
 msgid "Location"
 msgstr "አካባቢ "
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "ስም"

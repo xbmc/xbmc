@@ -11,15 +11,15 @@
   </dvd>
   <regions>
     <region name="Santiago, Galicia" locale="GL">
-      <dateshort>D/M/YYYY</dateshort>
-      <datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
     <region name="La Coruna, Galicia" locale="GL">
-      <dateshort>D/M/YYYY</dateshort>
-      <datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>

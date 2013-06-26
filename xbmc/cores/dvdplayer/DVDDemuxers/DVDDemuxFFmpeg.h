@@ -111,6 +111,7 @@ public:
   bool Aborted();
 
   AVFormatContext* m_pFormatContext;
+  CDVDInputStream* m_pInput;
 
   /* PLEX */
   int GetStreamBitrate();
@@ -145,6 +146,5 @@ protected:
   unsigned m_program;
   XbmcThreads::EndTime  m_timeout;
 
-  CDVDInputStream* m_pInput;
 };
 

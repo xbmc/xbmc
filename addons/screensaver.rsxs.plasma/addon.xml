@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.3"
+  version="1.0.4"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -18,6 +18,7 @@
     <summary lang="bg">Вероятно вторият най-халюциногенен скрийнсейвър</summary>
     <summary lang="ca">Probablement el segon estalvi de pantalla més psicodèlic mai creat</summary>
     <summary lang="cs">Pravděpodobně druhý nejdivočejší šetřič obrazovky všech dob</summary>
+    <summary lang="cy">Mwy na thebyg yr ail arbedwr sgrin mwyaf seicadelig</summary>
     <summary lang="da">Formodentlig den anden mest psykedeliske pauseskærm nogensinde</summary>
     <summary lang="de">Wahrscheinlich der zweit-psychodelischste Bildschirmschoner überhaupt</summary>
     <summary lang="el">Πιθανότατα η δεύτερη πιο ψυχεδελική προφύλαξη οθόνης που έγινε ποτέ</summary>
@@ -59,6 +60,7 @@
     <description lang="bg">Вероятно вторият по сила халюциногенен скрийнсейвър създаван някога. Просто се опитайте да съзрете всички тези цветове.</description>
     <description lang="ca">Probablement el segon estalvi de pantalla més psicodèlic que existeix. Intenti imaginar tots aquests colors movent-se.</description>
     <description lang="cs">Pravděpodobně druhý nejdivočejší šetřič obrazovky všech dob. Zkuste si představit všechny ty poletující barvy.</description>
+    <description lang="cy">Mwy na thebyg yr ail arbedwr sgrin mwyaf seicadelig sy'n bod. Ceisiwch ddychmygu'r holl liwiau na'n symud o gwmpas.</description>
     <description lang="da">Formodentlig den anden mest psykedeliske pauseskærm, der eksisterer. Forestil dig alle de farver, der bevæger sig omkring.</description>
     <description lang="de">Wahrscheinlich der zweit-psychodelischste Bildschirmschoner, den es gibt. Versuche doch alle diese Farben, die sich umher bewegen, festzuhalten.</description>
     <description lang="el">Πιθανότατα η δεύτερη πιο ψυχεδελική προφύλαξη οθόνης που υπάρχει. Απλά προσπαθήστε να φανταστείτε όλα αυτά τα χρώματα σε κίνηση.</description>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Burmese language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/my/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">DVD order ကို အသုံးပြုရန်</string>
+    <string id="30002">Enable Fanart</string>
+    <string id="30003">ပိုစတာ ပုံစံကို သဘောကျသည်</string>
+    <string id="30004">ဘာသာစကား</string>
+</strings>

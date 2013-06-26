@@ -170,7 +170,7 @@ class CPlexFilter
   private:
     bool FetchSublist()
     {
-      CPlexDirectory dir;
+      XFILE::CPlexDirectory dir;
       CStdString url(m_key);
 
       if (!m_filterUrl.empty())

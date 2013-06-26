@@ -15,11 +15,11 @@ msgstr ""
 
 msgctxt "#0"
 msgid "Programs"
-msgstr "Chương Trình"
+msgstr "Ứng dụng"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "Hình"
+msgstr "Ảnh"
 
 msgctxt "#2"
 msgid "Music"
@@ -31,11 +31,11 @@ msgstr "Video"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "TV-Guide"
+msgstr "Lịch chiếu TV"
 
 msgctxt "#5"
 msgid "Settings"
-msgstr "Cài Đặt"
+msgstr "Cài đặt"
 
 msgctxt "#6"
 msgid "XBMC SVN"
@@ -47,7 +47,7 @@ msgstr "Quản lý tập tin"
 
 msgctxt "#8"
 msgid "Weather"
-msgstr "Thời Tiết"
+msgstr "Thời tiết"
 
 msgctxt "#9"
 msgid "xbmc media center"
@@ -131,27 +131,27 @@ msgstr "Tháng Mười Hai"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "Th.2"
+msgstr "Thứ 2"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "Th.3"
+msgstr "Thứ 3"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Th.4"
+msgstr "Thứ 4"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "Th.5"
+msgstr "Thứ 5"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "Th.6"
+msgstr "Thứ 6"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Th.7"
+msgstr "Thứ 7"
 
 msgctxt "#47"
 msgid "Sun"
@@ -273,21 +273,37 @@ msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
 
+msgctxt "#88"
+msgid "South"
+msgstr "Nam"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Bắc"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Tây"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Đông"
+
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "Kiểu xem: Auto"
+msgstr "Kiểu xem: Tự động"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Kiểu xem: Auto big"
+msgstr "Kiểu xem: To tự động"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Kiểu xem: Icon"
+msgstr "Kiểu xem: Hình đại diện"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "Kiểu xem: List"
+msgstr "Kiểu xem: Danh sách"
 
 msgctxt "#102"
 msgid "Scan"
@@ -299,7 +315,7 @@ msgstr "Sắp xếp theo: Tên"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Sắp xếp theo: Ngày"
+msgstr "Sắp xếp theo: Thời gian"
 
 msgctxt "#105"
 msgid "Sort by: Size"
@@ -319,7 +335,7 @@ msgstr "Trình diễn"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "Tạo thumb"
+msgstr "Tạo hình thu nhỏ"
 
 msgctxt "#110"
 msgid "Create thumbnails"
@@ -331,23 +347,23 @@ msgstr "Shortcut"
 
 msgctxt "#112"
 msgid "Paused"
-msgstr "Tạm Dừng"
+msgstr "Tạm dừng"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Cập nhật thất bại"
+msgstr "Không thể cập nhật"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Cài đặt thất bại"
+msgstr "Không thể cài đặt"
 
 msgctxt "#115"
 msgid "Copy"
-msgstr "Copy"
+msgstr "Sao chép"
 
 msgctxt "#116"
 msgid "Move"
-msgstr "Move"
+msgstr "Di chuyển"
 
 msgctxt "#117"
 msgid "Delete"
@@ -355,7 +371,7 @@ msgstr "Xóa"
 
 msgctxt "#118"
 msgid "Rename"
-msgstr "Đổi Tên"
+msgstr "Đổi tên"
 
 msgctxt "#119"
 msgid "New folder"
@@ -371,7 +387,7 @@ msgstr "Xác nhận di chuyển tập tin"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Xác nhận xóa tập tin"
+msgstr "Xác nhận xóa tập tin?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -395,11 +411,11 @@ msgstr "Đối tượng"
 
 msgctxt "#128"
 msgid "General"
-msgstr "Tổng Quan"
+msgstr "Tổng quan"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Slideshow"
+msgstr "Trình diễn"
 
 msgctxt "#130"
 msgid "System info"
@@ -415,7 +431,7 @@ msgstr "Album"
 
 msgctxt "#133"
 msgid "Artists"
-msgstr "Nghệ sỹ"
+msgstr "Nghệ sĩ"
 
 msgctxt "#134"
 msgid "Songs"
@@ -427,19 +443,19 @@ msgstr "Thể loại"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Playlist"
+msgstr "Playlists"
 
 msgctxt "#137"
 msgid "Search"
-msgstr "Tìm Kiếm"
+msgstr "Tìm kiếm"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Thông Tin Hệ Thống"
+msgstr "Thông tin hệ thống"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "Nhiệt Độ:"
+msgstr "Nhiệt độ:"
 
 msgctxt "#140"
 msgid "CPU:"
@@ -467,7 +483,7 @@ msgstr "Mạng:"
 
 msgctxt "#146"
 msgid "Type:"
-msgstr "Thể loại"
+msgstr "Thể loại:"
 
 msgctxt "#147"
 msgid "Static"
@@ -479,7 +495,7 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "Địa Chỉ MAC"
+msgstr "Địa chỉ MAC"
 
 msgctxt "#150"
 msgid "IP address"
@@ -487,7 +503,7 @@ msgstr "Địa chỉ IP"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "Đường link:"
+msgstr "Liên kết:"
 
 msgctxt "#152"
 msgid "Half duplex"
@@ -547,7 +563,11 @@ msgstr "Có đĩa"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "Giao Diện"
+msgstr "Giao diện"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Hủy truy cập file"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -555,7 +575,7 @@ msgstr "Độ phân giải"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Điều chỉnh tốc độ làm tươi màn hình để phù hợp với video"
+msgstr "Điều chỉnh tốc độ làm tươi màn hình khớp với video"
 
 msgctxt "#172"
 msgid "Release date"
@@ -595,11 +615,11 @@ msgstr "Đánh giá"
 
 msgctxt "#184"
 msgid "Refresh"
-msgstr "Refresh"
+msgstr "Làm mới"
 
 msgctxt "#185"
 msgid "Searching album"
-msgstr "Tìm album"
+msgstr "Đang tìm album"
 
 msgctxt "#186"
 msgid "OK"
@@ -612,6 +632,10 @@ msgstr "Không tìm thấy album nào!"
 msgctxt "#188"
 msgid "Select all"
 msgstr "Chọn tất cả"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "Đang quét thông tin media"
 
 msgctxt "#190"
 msgid "Save"
@@ -635,15 +659,19 @@ msgstr "Đang tìm..."
 
 msgctxt "#195"
 msgid "No info found!"
-msgstr "Không tìm thấy thông tin nào!"
+msgstr "Không tìm thấy thông tin!"
 
 msgctxt "#196"
 msgid "Select movie:"
 msgstr "Chọn phim:"
 
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "Đang truy vấn thông tin %s"
+
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "Đang tải chi tiết phim"
+msgstr "Đang tải thông tin phim"
 
 msgctxt "#199"
 msgid "Web interface"
@@ -683,11 +711,15 @@ msgstr "Lùi"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Cài đặt giao diện người dùng..."
+msgstr "Hiệu chuẩn giao diện người dùng..."
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Cài đặt video..."
+msgstr "Hiệu chuẩn video..."
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "Làm mềm"
 
 msgctxt "#216"
 msgid "Zoom amount"
@@ -711,7 +743,7 @@ msgstr "Chia sẻ từ xa"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Không kết nối mạng lưới"
+msgstr "Không có kết nối mạng"
 
 msgctxt "#222"
 msgid "Cancel"
@@ -721,9 +753,13 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "Tốc độ"
 
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Thay đổi chiều dọc"
+
 msgctxt "#226"
 msgid "Test patterns..."
-msgstr "Mẫu thử màn hình..."
+msgstr "Mẫu thử..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
@@ -751,23 +787,35 @@ msgstr "Điểm"
 
 msgctxt "#233"
 msgid "Linear"
-msgstr "Linear"
+msgstr "Đường thẳng"
 
 msgctxt "#234"
 msgid "Anisotropic"
-msgstr "Anisotropic"
+msgstr "Dị hướng"
 
 msgctxt "#235"
 msgid "Quincunx"
-msgstr "Quincunx"
+msgstr "Tháp Quincunx"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Hộp khối Gauss"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Làm nhỏ"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Phóng đại"
 
 msgctxt "#239"
 msgid "Clear playlist on finish"
-msgstr "Xóa danh sách phát sau khi kết thúc"
+msgstr "Xóa danh sách sau khi kết thúc"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Chế độ Hiển thị"
+msgstr "Chế độ hiển thị"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -775,19 +823,23 @@ msgstr "Toàn màn hình #%d"
 
 msgctxt "#242"
 msgid "Windowed"
-msgstr "Chế độ Window"
+msgstr "Cửa sổ"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Tốc độ làm tươi"
+msgstr "Độ làm tươi"
 
 msgctxt "#244"
 msgid "Full screen"
 msgstr "Toàn màn hình"
 
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Cỡ: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Điểm ảnh: %2.2f:1) (VShift: %2.2f)"
+
 msgctxt "#247"
 msgid "Scripts"
-msgstr "Scripts"
+msgstr "Kịch bản"
 
 msgctxt "#248"
 msgid "Language"
@@ -796,6 +848,10 @@ msgstr "Ngôn ngữ"
 msgctxt "#249"
 msgid "Music"
 msgstr "Nhạc"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "Trình diễn hình"
 
 msgctxt "#251"
 msgid "Select destination directory"
@@ -835,11 +891,15 @@ msgstr "Đang mở"
 
 msgctxt "#260"
 msgid "Shoutcast"
-msgstr "Shoutcast"
+msgstr "Internet radio"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "Chờ để bắt đầu..."
+msgstr "Chuẩn bị bắt đầu..."
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "Đầu ra kịch bản"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -855,35 +915,47 @@ msgstr "Dừng thu âm."
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sắp xếp theo: Track"
+msgstr "Xếp theo: Track"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Sắp xếp theo: Thời gian"
+msgstr "Xếp theo: Thời gian"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Sắp xếp theo: Tiêu đề"
+msgstr "Xếp theo: Tên bài"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Sắp xếp theo: Nghệ sĩ"
+msgstr "Xếp theo: Nghệ sĩ"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Sếp theo: Album"
+msgstr "Xếp theo: Album"
 
 msgctxt "#271"
 msgid "Top 100"
 msgstr "Top 100"
 
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "Quét đè bù cho góc trên trái"
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "Quét đè bù cho góc dưới phải"
+
 msgctxt "#274"
 msgid "Subtitle positioning"
-msgstr "Đặt vị trí phụ đề"
+msgstr "Chỉnh vị trí phụ đề"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
 msgstr "Tinh chỉnh tỉ lệ kích thước điểm ảnh"
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Chỉnh mũi tên để thay đổi mức quét đè"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
@@ -891,15 +963,15 @@ msgstr "Điều chỉnh thanh chạy để thay đổi vị trí phụ đề"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "Điều chỉnh hình chữ nhật để cho nó thành hình vuông"
+msgstr "Chỉnh hình chữ nhật để giống với hình vuông nhất"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "Không thể tải cài đặt"
+msgstr "Không tìm thấy thiết lập"
 
 msgctxt "#280"
 msgid "Using default settings"
-msgstr "Dùng cài đặt mặc định"
+msgstr "Dùng thiết lập mặc định"
 
 msgctxt "#281"
 msgid "Please check the XML files"
@@ -907,7 +979,7 @@ msgstr "Hãy kiểm tra tập tin XML"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "Đã tìm thấy %i mục"
+msgstr "Tìm thấy %i mục"
 
 msgctxt "#283"
 msgid "Search results"
@@ -915,15 +987,15 @@ msgstr "Kết quả tìm kiếm"
 
 msgctxt "#284"
 msgid "No results found"
-msgstr "Không tìm thấy kết quả nào!"
+msgstr "Không tìm thấy!"
 
 msgctxt "#285"
 msgid "Preferred audio language"
-msgstr "Ngôn ngữ ưu tiên cho âm thanh"
+msgstr "Ngôn ngữ audio ưu tiên"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
-msgstr "Ngôn ngữ ưu tiên cho phụ đề"
+msgstr "Ngôn ngữ phụ đề ưu tiên"
 
 msgctxt "#287"
 msgid "Subtitles"
@@ -931,11 +1003,15 @@ msgstr "Phụ đề"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Phông chữ"
+msgstr "Font"
 
 msgctxt "#289"
 msgid "- Size"
-msgstr "- Dung lượng"
+msgstr "- Cỡ"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr "Thu hẹp khoảng cách động"
 
 msgctxt "#291"
 msgid "Video"
@@ -963,7 +1039,7 @@ msgstr "Độ lệch âm thanh"
 
 msgctxt "#298"
 msgid "Bookmarks"
-msgstr "Đánh dấu"
+msgstr "Sổ bookmark"
 
 msgctxt "#299"
 msgid "- AAC capable receiver"
@@ -983,7 +1059,7 @@ msgstr "- Đầu thu hỗ trợ MP3"
 
 msgctxt "#303"
 msgid "Delay"
-msgstr "Trễ"
+msgstr "Độ trễ"
 
 msgctxt "#304"
 msgid "Language"
@@ -1011,7 +1087,7 @@ msgstr "(0=tự động)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Đang làm sạch cơ sở sữ liệu"
+msgstr "Đang làm sạch cơ sở dữ liệu"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -1023,11 +1099,11 @@ msgstr "Lỗi cơ sở dữ liệu"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "Đang tìm bài hát..."
+msgstr "Đang tìm bài..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
-msgstr "Làm sạch cơ sở dữ liệu"
+msgstr "Đã làm sạch cơ sở dữ liệu"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
@@ -1035,19 +1111,39 @@ msgstr "Đang xóa các bài hát..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Xóa bài hát gặp lỗi"
+msgstr "Lỗi khi xóa bài hát"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "Đang xóa các artists..."
+msgstr "Đang xóa các nghệ sĩ..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
-msgstr "Xóa artists gặp lỗi"
+msgstr "Lỗi khi xóa các nghệ sĩ"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
 msgstr "Đang xóa các thể loại..."
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "Lỗi khi xóa các thể loại"
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "Đang xóa các đường dẫn"
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "Lỗi khi xóa các đường dẫn"
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "Đang xóa các album"
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "Lỗi khi xóa các album"
 
 msgctxt "#328"
 msgid "Writing changes..."
@@ -1057,17 +1153,29 @@ msgctxt "#329"
 msgid "Error writing changes"
 msgstr "Lỗi khi đang ghi lại các thay đổi"
 
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "Xin đợi một lúc..."
+
 msgctxt "#331"
 msgid "Compressing database..."
 msgstr "Đang nén cơ sở dữ liệu"
 
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "Lỗi nén cơ sở dữ liệu"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "Bạn muốn xóa thư viện?"
+
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Làm sạch thư viện"
+msgstr "Đang xóa thư viện"
 
 msgctxt "#335"
 msgid "Start"
-msgstr "Bắt Đầu"
+msgstr "Bắt đầu"
 
 msgctxt "#336"
 msgid "Framerate conversion"
@@ -1075,7 +1183,7 @@ msgstr "Chuyển đổi tốc độ khung hình"
 
 msgctxt "#337"
 msgid "Audio output"
-msgstr "Ngõ ra Âm thanh"
+msgstr "Đầu ra audio"
 
 msgctxt "#338"
 msgid "Analog"
@@ -1083,7 +1191,7 @@ msgstr "Analog"
 
 msgctxt "#339"
 msgid "Optical/Coax"
-msgstr "Quang"
+msgstr "Quang/Coax"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1099,7 +1207,7 @@ msgstr "Phim"
 
 msgctxt "#343"
 msgid "Adjust framerate"
-msgstr "Tinh chỉnh tốc độ khung hình"
+msgstr "Chỉnh tốc độ khung hình"
 
 msgctxt "#344"
 msgid "Actors"
@@ -1109,13 +1217,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Năm"
 
+msgctxt "#346"
+msgid "Boost volume level on downmix"
+msgstr "Kích âm lượng khi downmix"
+
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
 msgstr "- Đầu thu hỗ trợ DTS-HD"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr "- Đầu thu hỗ trợ Multichannel LPCM"
+msgstr "- Đầu thu hỗ trợ LPCM đa kênh"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
@@ -1123,7 +1235,7 @@ msgstr "- Đầu thu hỗ trợ TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
-msgstr "Chương Trình"
+msgstr "Ứng dụng"
 
 msgctxt "#351"
 msgid "Off"
@@ -1161,9 +1273,17 @@ msgctxt "#360"
 msgid "Screensaver"
 msgstr "Trình bảo vệ màn hình"
 
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "Mức mờ bảo vệ màn hình"
+
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sắp xếp theo: Tập tin"
+
+msgctxt "#364"
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "Đầu thu giải được Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1173,6 +1293,10 @@ msgctxt "#366"
 msgid "Sort by: Year"
 msgstr "Sắp xếp theo: Năm"
 
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Sắp xếp theo: Đánh giá"
+
 msgctxt "#368"
 msgid "IMDb"
 msgstr "IMDb"
@@ -1180,6 +1304,18 @@ msgstr "IMDb"
 msgctxt "#369"
 msgid "Title"
 msgstr "Tiêu đề"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "Giông bão"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "Có lúc"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "Hầu hết"
 
 msgctxt "#373"
 msgid "Sunny"
@@ -1199,7 +1335,7 @@ msgstr "Mưa"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "Ánh sáng"
+msgstr "Nhẹ"
 
 msgctxt "#378"
 msgid "AM"
@@ -1209,6 +1345,18 @@ msgctxt "#379"
 msgid "PM"
 msgstr "Chiều"
 
+msgctxt "#380"
+msgid "Showers"
+msgstr "Nhiều mưa"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "Ít"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "Rải rác"
+
 msgctxt "#383"
 msgid "Wind"
 msgstr "Gió"
@@ -1217,13 +1365,21 @@ msgctxt "#384"
 msgid "Strong"
 msgstr "Mạnh"
 
+msgctxt "#385"
+msgid "Fair"
+msgstr "Vừa"
+
 msgctxt "#386"
 msgid "Clear"
-msgstr "Làm sạch"
+msgstr "Quang"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "Mây"
+msgstr "Nhiều mây"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "Sớm"
 
 msgctxt "#389"
 msgid "Shower"
@@ -1231,7 +1387,7 @@ msgstr "Mưa"
 
 msgctxt "#390"
 msgid "Flurries"
-msgstr "Gió mạnh"
+msgstr "Nhiều gió mạnh"
 
 msgctxt "#391"
 msgid "Low"
@@ -1255,7 +1411,7 @@ msgstr "Sương nhẹ"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Chọn vị trí"
+msgstr "Chọn địa điểm"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1271,7 +1427,7 @@ msgstr "Đơn vị tốc độ"
 
 msgctxt "#400"
 msgid "Weather"
-msgstr "Thời Tiết"
+msgstr "Thời tiết"
 
 msgctxt "#401"
 msgid "Temp"
@@ -1303,7 +1459,7 @@ msgstr "Đang truy cập dịch vụ thời tiết"
 
 msgctxt "#411"
 msgid "Getting weather for:"
-msgstr "Lấy thời tiết cho:"
+msgstr "Đang tải thời tiết cho:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
@@ -1379,11 +1535,19 @@ msgstr "Xếp theo: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
-msgstr "Không lưu cache"
+msgstr "Không lưu bộ nhớ đệm"
 
 msgctxt "#432"
 msgid "Remove movie from library"
 msgstr "Xoá phim khỏi thư viện"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "Có thực sự xóa '%s'?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "Từ %s tại %i %s"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1425,6 +1589,10 @@ msgctxt "#446"
 msgid "DVD"
 msgstr "DVD"
 
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "Tự động chạy đĩa"
+
 msgctxt "#448"
 msgid "LCD"
 msgstr "LCD"
@@ -1436,6 +1604,26 @@ msgstr "Đã bật"
 msgctxt "#450"
 msgid "Columns"
 msgstr "Cột"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "Địa chỉ hàng 1"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "Địa chỉ hàng 2"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "Địa chỉ hàng 3"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "Địa chỉ hàng 4"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "Hàng"
 
 msgctxt "#456"
 msgid "Mode"
@@ -1449,13 +1637,25 @@ msgctxt "#459"
 msgid "Subs"
 msgstr "Phụ đề"
 
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "Audio stream"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[đang dùng]"
+
 msgctxt "#462"
 msgid "Subtitle"
 msgstr "Phụ đề"
 
+msgctxt "#463"
+msgid "Backlight"
+msgstr "Đèn nền"
+
 msgctxt "#464"
 msgid "Brightness"
-msgstr "Sáng rực"
+msgstr "Độ sáng"
 
 msgctxt "#465"
 msgid "Contrast"
@@ -1465,6 +1665,14 @@ msgctxt "#466"
 msgid "Gamma"
 msgstr "Gamma"
 
+msgctxt "#467"
+msgid "Type"
+msgstr "Kiểu"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "Di chuyển thanh trượt để thay đổi vị trí bảng điều khiển"
+
 msgctxt "#469"
 msgid "OSD position"
 msgstr "Vị trí bảng điều khiển"
@@ -1472,6 +1680,10 @@ msgstr "Vị trí bảng điều khiển"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Credit"
+
+msgctxt "#471"
+msgid "Modchip"
+msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -1495,11 +1707,15 @@ msgstr "OSD"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "Giao diện & Ngôn ngữ"
+msgstr "Skin & ngôn ngữ"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "Hiển thị"
 
 msgctxt "#481"
 msgid "Audio options"
-msgstr "Tùy chọn Âm thanh"
+msgstr "Thiết lập audio"
 
 msgctxt "#482"
 msgid "About XBMC"
@@ -1513,6 +1729,14 @@ msgctxt "#486"
 msgid "Repeat"
 msgstr "Lặp lại"
 
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "Lặp lại 1 lần"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "Lặp lại thư mục"
+
 msgctxt "#489"
 msgid "Play the next song automatically"
 msgstr "Tự động phát bài hát kế tiếp"
@@ -1525,13 +1749,117 @@ msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
 msgstr "Tùy chọn Nâng cao (Chuyên gia)"
 
+msgctxt "#496"
+msgid "Calibration"
+msgstr "Hiệu chuẩn"
+
 msgctxt "#497"
 msgid "Show file extensions"
 msgstr "Hiển thị kiểu tập tin"
 
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Sắp xếp theo: Kiểu"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "Không thể kết nối với dịch vụ tra cứu trực tuyến"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "Có lỗi xảy ra khi tải thông tin album"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "Đang tìm kiếm các tên album..."
+
 msgctxt "#502"
 msgid "Open"
 msgstr "Mở"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "Bận"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "Trống"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "Đang tải thông tin media từ các tệp tin..."
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Sắp xếp theo: Sử dụng"
+
+msgctxt "#510"
+msgid "Enable visualizations"
+msgstr "Bật trình diễn màn hình"
+
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "Bật chức năng chuyển chế độ video"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "Cửa sổ khởi động"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "Cửa sổ màn hình"
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "Các thiết lập tay"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "Thể loại"
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "Các album mới mở"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Chạy"
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "Chạy trong..."
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "Xóa nguồn"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "Đổi media"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "Chọn playlist"
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "Thêm playlist..."
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "Thêm vào playlist"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "Thêm vào thư viện bằng tay"
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "Điền tiêu đề"
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "Lỗi: Trùng tiêu đề"
 
 msgctxt "#530"
 msgid "Select genre"
@@ -1540,6 +1868,18 @@ msgstr "Chọn thể loại"
 msgctxt "#531"
 msgid "New genre"
 msgstr "Thể loại mới"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Thêm bằng tay"
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "Điền thể loại"
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "Kiểu xem: %s"
 
 msgctxt "#535"
 msgid "List"
@@ -1559,11 +1899,11 @@ msgstr "Biểu tượng lớn"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Độ rộng"
+msgstr "Rộng"
 
 msgctxt "#540"
 msgid "Big wide"
-msgstr "Độ rộng cao"
+msgstr "To và rộng"
 
 msgctxt "#541"
 msgid "Album icons"
@@ -1576,6 +1916,30 @@ msgstr "Biểu tượng DVD"
 msgctxt "#543"
 msgid "DVD"
 msgstr "DVD"
+
+msgctxt "#544"
+msgid "Media info"
+msgstr "Thông tin media"
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "Thiết bị audio đầu ra"
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "Thiết bị passthrough đầu ra"
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "Không có tiểu sử cho nghệ sĩ này"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "Downmix audio đa kênh xuống stereo"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Xếp theo: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -1629,17 +1993,73 @@ msgctxt "#563"
 msgid "Rating"
 msgstr "Chấm điểm"
 
+msgctxt "#564"
+msgid "Type"
+msgstr "Kiểu"
+
+msgctxt "#565"
+msgid "Usage"
+msgstr "Cách dùng"
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "Album của nghệ sĩ"
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "Số lần chơi"
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "Đã chơi"
+
 msgctxt "#569"
 msgid "Comment"
-msgstr "Bình Luận"
+msgstr "Bình luận"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "Ngày thêm vào"
 
 msgctxt "#571"
 msgid "Default"
 msgstr "Mặc định"
 
+msgctxt "#572"
+msgid "Studio"
+msgstr "Studio"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "Đường dẫn"
+
 msgctxt "#574"
 msgid "Country"
 msgstr "Quốc gia"
+
+msgctxt "#575"
+msgid "In progress"
+msgstr "Đang chạy"
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "Số thời gian đã chơi"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Thứ tự xếp"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Cách xếp"
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "Chế độ xem"
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "Nhớ chế độ xem cho từng thư mục"
 
 msgctxt "#584"
 msgid "Ascending"
@@ -1649,9 +2069,25 @@ msgctxt "#585"
 msgid "Descending"
 msgstr "Giảm"
 
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "Sửa playlist"
+
 msgctxt "#587"
 msgid "Filter"
 msgstr "Bộ lọc"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "Huỷ chế độ tiệc"
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "Chế độ nhóm"
+
+msgctxt "#590"
+msgid "Random"
+msgstr "Ngẫu nhiên"
 
 msgctxt "#591"
 msgid "Off"
@@ -1693,6 +2129,114 @@ msgctxt "#602"
 msgid "Standard"
 msgstr "Chuẩn"
 
+msgctxt "#603"
+msgid "Extreme"
+msgstr "Tối đa"
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "Bitrate cố định"
+
+msgctxt "#605"
+msgid "Ripping..."
+msgstr "Đang chép..."
+
+msgctxt "#607"
+msgid "To:"
+msgstr "Tới:"
+
+msgctxt "#608"
+msgid "Could not rip CD or track"
+msgstr "Không thể chép CD hay track"
+
+msgctxt "#609"
+msgid "CDDARipPath is not set."
+msgstr "Chưa đặt đường dẫn chép CDDA."
+
+msgctxt "#610"
+msgid "Rip audio track"
+msgstr "Chép track audio"
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "Điền số"
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "CD audio"
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "Người Encode"
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "Chất lượng"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Bitrate"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "Gồm số bài"
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "Tất cả các bài trong"
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "Chế độ xem"
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "Bình thường"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Thu phóng"
+
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "Tỉ lệ màn hình 4:3"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "Phóng to"
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "Tỉ lệ màn hình 16:9"
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "Kích cỡ ban đầu"
+
+msgctxt "#636"
+msgid "Custom"
+msgstr "Tuỳ chỉnh"
+
+msgctxt "#644"
+msgid "Crop black bars"
+msgstr "Cắt các thanh màu đen"
+
+msgctxt "#645"
+msgid "Need to unpack a big file. Continue?"
+msgstr "Cần giải nén một tập tin lớn. Tiếp tục?"
+
+msgctxt "#646"
+msgid "Remove from library"
+msgstr "Xóa khỏi thư viện"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "Xuất thư viện video"
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "Nhập thư viện video"
+
 msgctxt "#649"
 msgid "Importing"
 msgstr "Đang nhập"
@@ -1713,6 +2257,14 @@ msgctxt "#653"
 msgid "Update library"
 msgstr "Cập nhật thư viện"
 
+msgctxt "#654"
+msgid "Show debug info"
+msgstr "Hiển thị thông tin dò lỗi"
+
+msgctxt "#655"
+msgid "Browse for executable"
+msgstr "Duyệt tìm ứng dụng thực thi"
+
 msgctxt "#656"
 msgid "Browse for playlist"
 msgstr "Duyệt playlist"
@@ -1725,9 +2277,81 @@ msgctxt "#658"
 msgid "Song information"
 msgstr "Thông tin bài"
 
+msgctxt "#659"
+msgid "Non-linear stretch"
+msgstr "Kéo dãn phi tuyến tính"
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "Khuếch đại âm thanh"
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "Chọn thư mục xuất"
+
+msgctxt "#662"
+msgid "This file is no longer available."
+msgstr "Tệp này không còn tồn tại."
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "Bạn có muốn xoá bỏ nó khỏi thư viện?"
+
+msgctxt "#664"
+msgid "Browse for Script"
+msgstr "Mở tìm mã"
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "Mức nén"
+
+msgctxt "#700"
+msgid "Cleaning up library"
+msgstr "Dọn dẹp thư viện"
+
+msgctxt "#701"
+msgid "Removing old songs from the library"
+msgstr "Xoá các bài hát cũ khỏi thư viện"
+
+msgctxt "#702"
+msgid "This path has been scanned before"
+msgstr "Đường dẫn này đã được quét rồi"
+
 msgctxt "#705"
 msgid "Network"
 msgstr "Mạng"
+
+msgctxt "#706"
+msgid "- Server"
+msgstr "- Máy chủ"
+
+msgctxt "#708"
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Sử dụng máy chủ proxy giao thức HTTP để truy cập internet"
+
+msgctxt "#711"
+msgid "Internet Protocol (IP)"
+msgstr "Giao thức internet (IP)"
+
+msgctxt "#712"
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Cổng nhập vào không hợp lệ. Giá trị phải nằm trong dải 1-65535."
+
+msgctxt "#713"
+msgid "HTTP proxy"
+msgstr "HTTP proxy"
+
+msgctxt "#715"
+msgid "- Assignment"
+msgstr "- Gán"
+
+msgctxt "#716"
+msgid "Automatic (DHCP)"
+msgstr "Tự động (DHCP)"
+
+msgctxt "#717"
+msgid "Manual (Static)"
+msgstr "Cố định (IP tĩnh)"
 
 msgctxt "#719"
 msgid "- IP address"
@@ -1749,29 +2373,293 @@ msgctxt "#723"
 msgid "Save & restart"
 msgstr "Lưu & khởi động lại"
 
+msgctxt "#724"
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Điền sai địa chỉ. Giá trị phải có dạng AAA.BBB.CCC.DDD"
+
+msgctxt "#725"
+msgid "with numbers between 0 and 255."
+msgstr "với các số trong khoảng từ 0 đến 255."
+
+msgctxt "#726"
+msgid "Changes not saved. Continue without saving?"
+msgstr "Thay đổi chưa được lưu. Tiếp tục?"
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "Web server"
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "FTP server"
+
+msgctxt "#730"
+msgid "- Port"
+msgstr "- Port"
+
+msgctxt "#732"
+msgid "Save & apply"
+msgstr "Lưu và áp dụng"
+
+msgctxt "#733"
+msgid "- Password"
+msgstr "- Mật khẩu"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "Không mật khẩu"
+
+msgctxt "#735"
+msgid "- Character set"
+msgstr "- Bộ ký tự"
+
+msgctxt "#736"
+msgid "- Style"
+msgstr "- Style"
+
+msgctxt "#737"
+msgid "- Colour"
+msgstr "- Màu"
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "Bình thường"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "Đậm"
+
 msgctxt "#740"
 msgid "Italics"
-msgstr "Italics"
+msgstr "Nghiêng"
 
 msgctxt "#741"
 msgid "Bold italics"
-msgstr "Bold italics"
+msgstr "Nghiêng đậm"
+
+msgctxt "#742"
+msgid "White"
+msgstr "Trắng"
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "Vàng"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "Tập tin"
+
+msgctxt "#745"
+msgid "No scanned information for this view"
+msgstr "Không có thông tin quét được cho kiểu xem này"
+
+msgctxt "#746"
+msgid "Please turn off library mode"
+msgstr "Xin hãy tắt chế độ thư viện"
+
+msgctxt "#747"
+msgid "Error loading image"
+msgstr "Lỗi khi tải ảnh"
+
+msgctxt "#748"
+msgid "Edit path"
+msgstr "Đường dẫn chỉnh sửa"
+
+msgctxt "#749"
+msgid "Mirror image"
+msgstr "Ảnh gương"
+
+msgctxt "#750"
+msgid "Are you sure?"
+msgstr "Chắc chắn?"
+
+msgctxt "#751"
+msgid "Removing source"
+msgstr "Đang xóa nguồn"
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "Thêm liên kết ứng dụng"
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "Sửa đường dẫn chương trình"
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "Sử tên chương trình"
+
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "Sửa độ sâu đường dẫn"
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "Chế độ xem: Danh sách lớn"
+
+msgctxt "#760"
+msgid "Yellow"
+msgstr "Vàng"
+
+msgctxt "#761"
+msgid "White"
+msgstr "Trắng"
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "Xanh nước biển"
+
+msgctxt "#763"
+msgid "Bright green"
+msgstr "Xanh dương"
+
+msgctxt "#764"
+msgid "Yellow green"
+msgstr "Vàng lá"
+
+msgctxt "#765"
+msgid "Cyan"
+msgstr "Lục lam"
+
+msgctxt "#766"
+msgid "Light grey"
+msgstr "Xám nhạt"
+
+msgctxt "#767"
+msgid "Grey"
+msgstr "Xám"
+
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "Lỗi %i: không có chia sẻ"
 
 msgctxt "#772"
 msgid "Audio output"
-msgstr "Ngõ ra Âm thanh"
+msgstr "Đầu ra audio"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "Đang dò"
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "Thư mục trình chiếu"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "Giao diện mạng"
+
+msgctxt "#776"
+msgid "- Wireless network name (ESSID)"
+msgstr "- Tên mạng không dây (ESSID)"
+
+msgctxt "#777"
+msgid "- Wireless password"
+msgstr "- Mật khẩu wifi"
+
+msgctxt "#778"
+msgid "- Wireless security"
+msgstr "- Mã hóa wifi"
+
+msgctxt "#779"
+msgid "Save and apply network interface settings"
+msgstr "Lưu và áp dụng các thiết lập mạng"
+
+msgctxt "#780"
+msgid "No encryption"
+msgstr "Không mã hóa"
+
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
+msgctxt "#784"
+msgid "Applying network interface settings. Please wait."
+msgstr "Đang áp dụng các thiết lập mạng. Chờ một lát."
+
+msgctxt "#785"
+msgid "Network interface restarted successfully."
+msgstr "Đã khởi động lại giao tiếp mạng"
+
+msgctxt "#786"
+msgid "Network interface did not start successfully."
+msgstr "Lỗi khi khởi tạo giao tiếp mạng"
+
+msgctxt "#787"
+msgid "Interface disabled"
+msgstr "Giao tiếp bị tắt"
+
+msgctxt "#788"
+msgid "Network interface disabled successfully."
+msgstr "Tắt giao diện mạng thành công."
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "Tên mạng không dây (ESSID)"
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "Điều khiển từ xa"
+
+msgctxt "#791"
+msgid "Allow programs on this system to control XBMC"
+msgstr "Cho phép các chương trình trên cùng máy điểu khiển XBMC"
 
 msgctxt "#792"
 msgid "Port"
-msgstr "Cổng"
+msgstr "Port"
+
+msgctxt "#793"
+msgid "Port range"
+msgstr "Port range"
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Cho phép các chương trình trên máy khác điểu khiển XBMC"
+
+msgctxt "#795"
+msgid "Initial repeat delay (ms)"
+msgstr "Độ trễ lặp lại ban đầu (mini giây)"
+
+msgctxt "#796"
+msgid "Continuous repeat delay (ms)"
+msgstr "Độ trễ lặp lại liên tục (mini giây)"
+
+msgctxt "#797"
+msgid "Maximum number of clients"
+msgstr "Số lượng client tối đa"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Truy cập Internet"
+
+msgctxt "#850"
+msgid "Invalid port number entered"
+msgstr "Điền sai port number"
+
+msgctxt "#851"
+msgid "Valid port range is 1-65535"
+msgstr "Port range từ 1-65535"
+
+msgctxt "#852"
+msgid "Valid port range is 1024-65535"
+msgstr "Port range từ 1024-65535"
 
 msgctxt "#998"
 msgid "Add Music..."
-msgstr "Thêm Nhạc..."
+msgstr "Thêm nhạc..."
 
 msgctxt "#999"
 msgid "Add Videos..."
-msgstr "Thêm Video..."
+msgstr "Thêm video..."
 
 msgctxt "#1000"
 msgid "- Preview"
@@ -1781,9 +2669,25 @@ msgctxt "#1001"
 msgid "Unable to connect"
 msgstr "Không kết nối được"
 
+msgctxt "#1002"
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC không thể kết nối tới network location này."
+
+msgctxt "#1003"
+msgid "This could be due to the network not being connected."
+msgstr "Điều này có thể do mạng chưa được kết nối."
+
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "Bạn có muốn tạm thêm vào không?"
+
 msgctxt "#1006"
 msgid "IP address"
-msgstr "Địa chỉ IP"
+msgstr "IP address"
+
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "Thêm network location"
 
 msgctxt "#1008"
 msgid "Protocol"
@@ -1797,21 +2701,193 @@ msgctxt "#1010"
 msgid "Server name"
 msgstr "Tên máy chủ"
 
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "Đường dẫn từ xa"
+
+msgctxt "#1012"
+msgid "Shared folder"
+msgstr "Thư mục được chia sẻ"
+
 msgctxt "#1013"
 msgid "Port"
-msgstr "Cổng"
+msgstr "Port"
 
 msgctxt "#1014"
 msgid "Username"
 msgstr "Tên truy nhập"
 
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "Mở tìm máy chủ trong mạng"
+
+msgctxt "#1016"
+msgid "Enter the network address of the server"
+msgstr "Địa chỉ mạng của máy chủ"
+
+msgctxt "#1017"
+msgid "Enter the path on the server"
+msgstr "Đường dẫn trên máy chủ"
+
+msgctxt "#1018"
+msgid "Enter the port number"
+msgstr "Cổng kết nối"
+
 msgctxt "#1019"
 msgid "Enter the username"
 msgstr "Điền tên đăng nhập"
 
+msgctxt "#1020"
+msgid "Add %s source"
+msgstr "Thêm nguồn %s"
+
+msgctxt "#1021"
+msgid "Enter the paths or browse for the media locations."
+msgstr "Nhập các đường dẫn hoặc mở tìm các vị trí có media."
+
+msgctxt "#1022"
+msgid "Enter a name for this media Source."
+msgstr "Nhập tên cho nguồn media này."
+
+msgctxt "#1023"
+msgid "Browse for new share"
+msgstr "Mở tìm chia sẻ mới"
+
 msgctxt "#1024"
 msgid "Browse"
 msgstr "Duyệt"
+
+msgctxt "#1025"
+msgid "Could not retrieve directory information."
+msgstr "Không tìm thấy thông tin thư mục"
+
+msgctxt "#1026"
+msgid "Add source"
+msgstr "Thêm nguồn"
+
+msgctxt "#1027"
+msgid "Edit source"
+msgstr "Sử đổi nguồn"
+
+msgctxt "#1028"
+msgid "Edit %s source"
+msgstr "Sửa nguồn %s"
+
+msgctxt "#1029"
+msgid "Enter the new label"
+msgstr "Tên nhãn mới"
+
+msgctxt "#1030"
+msgid "Browse for image"
+msgstr "Duyệt ảnh"
+
+msgctxt "#1031"
+msgid "Browse for image folder"
+msgstr "Duyệt thư mục ảnh"
+
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "Thêm đường dẫn trong mạng..."
+
+msgctxt "#1033"
+msgid "Browse for file"
+msgstr "Duyệt file"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "Danh sách con"
+
+msgctxt "#1035"
+msgid "Enable submenu buttons"
+msgstr "Kích hoạt nút cho danh sách con"
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "Mục ưa thích"
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "Ứng dụng Video"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "Ứng dụng nhạc"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "Ứng dụng ảnh"
+
+msgctxt "#1040"
+msgid "Loading directory"
+msgstr "Đang nạp danh sách thư mục"
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "Đã nhận %i mục"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr "Đã nhận %i trong tổng số %i mục"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "Các ứng dụng thêm ngoài"
+
+msgctxt "#1044"
+msgid "Set plugin thumb"
+msgstr "Thiết lập ảnh đại diện cho plugin"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Các thiết lập Add-on"
+
+msgctxt "#1046"
+msgid "Access points"
+msgstr "Các điểm truy cập"
+
+msgctxt "#1047"
+msgid "Other..."
+msgstr "Khác..."
+
+msgctxt "#1048"
+msgid "- Username"
+msgstr "- Tên tài khoản"
+
+msgctxt "#1049"
+msgid "Script settings"
+msgstr "Các thiết lập mã"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "Nhập địa chỉ web"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "Máy khách SMB"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "Nhóm mạng"
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "Tên tài khoản mặc định"
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "Mật khẩu mặc định"
+
+msgctxt "#1207"
+msgid "WINS server"
+msgstr "Máy chủ WINS"
+
+msgctxt "#1208"
+msgid "Mount SMB shares"
+msgstr "Kết nối các chia sẻ SMB"
+
+msgctxt "#1210"
+msgid "Remove"
+msgstr "Xóa"
 
 msgctxt "#1211"
 msgid "Music"
@@ -1823,31 +2899,239 @@ msgstr "Video"
 
 msgctxt "#1213"
 msgid "Pictures"
-msgstr "Hình"
+msgstr "Ảnh"
+
+msgctxt "#1214"
+msgid "Files"
+msgstr "Tập tin"
+
+msgctxt "#1215"
+msgid "Music & video "
+msgstr "Nhạc & video"
+
+msgctxt "#1216"
+msgid "Music & pictures"
+msgstr "Nhạc & ảnh"
+
+msgctxt "#1217"
+msgid "Music & files"
+msgstr "Nhạc & tập tin"
+
+msgctxt "#1218"
+msgid "Video & pictures"
+msgstr "Video & ảnh"
+
+msgctxt "#1219"
+msgid "Video & files"
+msgstr "Video & tập tin"
+
+msgctxt "#1220"
+msgid "Pictures & files"
+msgstr "Ảnh & tập tin"
+
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "Nhạc & video & ảnh"
+
+msgctxt "#1222"
+msgid "Music & video & pictures & files"
+msgstr "Nhạc & video & ảnh & tập tin"
 
 msgctxt "#1223"
 msgid "Disabled"
 msgstr "Đã tắt"
 
+msgctxt "#1226"
+msgid "Files & music & video"
+msgstr "Tệp tin & nhạc & video"
+
+msgctxt "#1227"
+msgid "Files & pictures & music"
+msgstr "Tệp tin & ảnh & nhạc"
+
+msgctxt "#1228"
+msgid "Files & pictures & video"
+msgstr "Tệp tin & ảnh & video"
+
+msgctxt "#1229"
+msgid "Music & programs"
+msgstr "Nhạc & chương trình"
+
+msgctxt "#1230"
+msgid "Video & programs"
+msgstr "Video & chương trình"
+
+msgctxt "#1231"
+msgid "Pictures & programs"
+msgstr "Ảnh & chương trình"
+
+msgctxt "#1232"
+msgid "Music & video & pictures & programs"
+msgstr "Nhạc & video & ảnh & chương trình"
+
+msgctxt "#1233"
+msgid "Programs & video & music"
+msgstr "Chương trình & video & nhạc"
+
+msgctxt "#1234"
+msgid "Programs & pictures & music"
+msgstr "Chương trình & ảnh & nhạc"
+
+msgctxt "#1235"
+msgid "Programs & pictures & video"
+msgstr "Chương trình & ảnh & video"
+
+msgctxt "#1259"
+msgid "Zeroconf"
+msgstr "Mạng tự thiết lập"
+
+msgctxt "#1260"
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Thông báo những dịch vụ này tớ các hệ thống khác thông qua mạng tự thiết lập"
+
+msgctxt "#1270"
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Cho phép XBMC nhận nội dung từ AirPlay"
+
+msgctxt "#1271"
+msgid "Device name"
+msgstr "Tên thiết bị"
+
+msgctxt "#1272"
+msgid "- Use password protection"
+msgstr "- Sử dụng bảo vệ mật khẩu"
+
+msgctxt "#1273"
+msgid "AirPlay"
+msgstr "AirPlay"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Bộ lọc %s"
+
+msgctxt "#1300"
+msgid "Custom audio device"
+msgstr "Thiệt bị âm thanh tuỳ chọn"
+
+msgctxt "#1397"
+msgid "and"
+msgstr "và"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "CN"
+
+msgctxt "#1412"
+msgid "windy"
+msgstr "có gió"
+
+msgctxt "#1416"
+msgid "Foggy"
+msgstr "Sương mù"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "Giông bão"
 
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Trung bình"
 
+msgctxt "#1421"
+msgid "Very High"
+msgstr "Rất cao"
+
+msgctxt "#1422"
+msgid "Windy"
+msgstr "Có gió"
+
+msgctxt "#1423"
+msgid "Mist"
+msgstr "Sương mù"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Khói"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Núi lửa"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Lan rộng"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Bụi"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Cát"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Bão cát"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Nhỏ"
 
+msgctxt "#1439"
+msgid "and"
+msgstr "và"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "của"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Mây"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Không biết"
+
+msgctxt "#1450"
+msgid "Put display to sleep when idle"
+msgstr "Chuyển màn hình sang chế độ ngủ khi máy không vận hành"
+
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "Lúc thực thi"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Danh sách trống"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Đã quay trở lại danh sách cha do danh sách hiện tại bị trống"
+
+msgctxt "#2100"
+msgid "Script failed! : %s"
+msgstr "Mã không chạy: %s"
+
+msgctxt "#2101"
+msgid "Newer version needed - See log"
+msgstr "Cần phiên bản mới hơn - Xem ghi chú"
+
+msgctxt "#4501"
+msgid "Enable LCD/VFD"
+msgstr "Bật LCD/VFD"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "Màn hình chính"
+
 msgctxt "#10001"
 msgid "Programs"
-msgstr "Chương Trình"
+msgstr "Ứng dụng"
 
 msgctxt "#10002"
 msgid "Pictures"
-msgstr "Hình"
+msgstr "Ảnh"
 
 msgctxt "#10003"
 msgid "File manager"
@@ -1865,45 +3149,797 @@ msgctxt "#10006"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10007"
+msgid "System information"
+msgstr "Thông tin hệ thống"
+
+msgctxt "#10008"
+msgid "Settings - General"
+msgstr "Cài đặt - Chung"
+
+msgctxt "#10009"
+msgid "Settings - Screen"
+msgstr "Cài đặt - Màn hình"
+
+msgctxt "#10010"
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Cài đặt - Hiển thị - Chỉnh giao diện người dùng"
+
+msgctxt "#10011"
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Cài đặt - Video - Chỉnh màn hình"
+
+msgctxt "#10012"
+msgid "Settings - Pictures"
+msgstr "Cài đặt - Ảnh"
+
+msgctxt "#10013"
+msgid "Settings - Programs"
+msgstr "Cài đặt - Ứng dụng"
+
+msgctxt "#10014"
+msgid "Settings - Weather"
+msgstr "Cài đặt - Thời tiết"
+
+msgctxt "#10015"
+msgid "Settings - Music"
+msgstr "Cài đặt - Nhạc"
+
+msgctxt "#10016"
+msgid "Settings - System"
+msgstr "Cài đặt - Hệ thống"
+
+msgctxt "#10017"
+msgid "Settings - Videos"
+msgstr "Cài đặt - Video"
+
+msgctxt "#10018"
+msgid "Settings - Network"
+msgstr "Cài đặt - Mạng"
+
+msgctxt "#10019"
+msgid "Settings - Appearance"
+msgstr "Cài đặt - Hiển thị"
+
 msgctxt "#10020"
 msgid "Scripts"
 msgstr "Scripts"
+
+msgctxt "#10021"
+msgid "Web Browser"
+msgstr "Trình duyệt"
 
 msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10028"
+msgid "Videos/Playlist"
+msgstr "Video/Danh sách"
+
+msgctxt "#10029"
+msgid "Login screen"
+msgstr "Màn hình đăng nhập"
+
+msgctxt "#10034"
+msgid "Settings - Profiles"
+msgstr "Cài đặt - Tài khoản"
+
+msgctxt "#10040"
+msgid "Addon browser"
+msgstr "Addon cho trình duyệt"
+
+msgctxt "#10100"
+msgid "Yes/No dialog"
+msgstr "Hộp thoại Có/Không"
+
+msgctxt "#10101"
+msgid "Progress dialog"
+msgstr "Hộp thoại tiến trình"
+
+msgctxt "#10210"
+msgid "Looking for subtitles..."
+msgstr "Đang tìm phụ đề..."
+
+msgctxt "#10211"
+msgid "Looking for or caching subtitles..."
+msgstr "Đang tìm hoặc lưu phụ đề vào bộ nhớ..."
+
+msgctxt "#10212"
+msgid "terminating"
+msgstr "đang ngắt"
+
+msgctxt "#10213"
+msgid "buffering"
+msgstr "đang tải"
+
+msgctxt "#10214"
+msgid "Opening stream"
+msgstr "Đang mở luồng"
+
+msgctxt "#10500"
+msgid "Music/Playlist"
+msgstr "Nhạc/Danh sách"
+
+msgctxt "#10501"
+msgid "Music/Files"
+msgstr "Nhạc/Tệp tin"
+
+msgctxt "#10502"
+msgid "Music/Library"
+msgstr "Nhạc/Thư viện"
+
+msgctxt "#10503"
+msgid "Playlist editor"
+msgstr "Trình soạn thảo danh sách"
+
+msgctxt "#10504"
+msgid "Top 100 songs"
+msgstr "100 bài hát hay nhất"
+
+msgctxt "#10505"
+msgid "Top 100 albums"
+msgstr "100 album hay nhất"
+
 msgctxt "#10506"
 msgid "Programs"
-msgstr "Chương Trình"
+msgstr "Ứng dụng"
+
+msgctxt "#10507"
+msgid "Configuration"
+msgstr "Cấu hình"
+
+msgctxt "#10508"
+msgid "Weather forecast"
+msgstr "Dự báo thời tiết"
+
+msgctxt "#10509"
+msgid "Network gaming"
+msgstr "Trò chơi trên mạng"
+
+msgctxt "#10510"
+msgid "Extensions"
+msgstr "Các mở rộng"
 
 msgctxt "#10511"
 msgid "System info"
 msgstr "Thông tin hệ thống"
 
+msgctxt "#10516"
+msgid "Music - Library"
+msgstr "Nhạc - Thư viện"
+
+msgctxt "#10517"
+msgid "Now Playing - Music"
+msgstr "Đang chơi - Nhạc"
+
+msgctxt "#10522"
+msgid "Now Playing - Videos"
+msgstr "Đang chơi - Video"
+
+msgctxt "#10523"
+msgid "Album info"
+msgstr "Thông tin album"
+
+msgctxt "#10524"
+msgid "Movie info"
+msgstr "Thông tin phim"
+
+msgctxt "#12000"
+msgid "Select dialog"
+msgstr "Chọn hộp thoại"
+
+msgctxt "#12001"
+msgid "Music/Info"
+msgstr "Nhạc/Thông tin"
+
+msgctxt "#12002"
+msgid "Dialog OK"
+msgstr "Hộp thoại OK"
+
+msgctxt "#12003"
+msgid "Videos/Info"
+msgstr "Video/Thông tin"
+
+msgctxt "#12004"
+msgid "Scripts/Info"
+msgstr "Mã/Thông tin"
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "Video toàn màn hình"
+
+msgctxt "#12006"
+msgid "Audio visualization"
+msgstr "Trình diễn màn hình theo âm thanh"
+
+msgctxt "#12008"
+msgid "File stacking dialog"
+msgstr "Hộp thoại ngăn xếp tệp tin"
+
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "Lập lại chỉ mục..."
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "Quay lại cửa sổ nhạc"
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "Quay lại cửa sổ video"
+
+msgctxt "#12021"
+msgid "Start from beginning"
+msgstr "Bắt đầu lại từ đầu"
+
+msgctxt "#12022"
+msgid "Resume from %s"
+msgstr "Tiếp tục từ %s"
+
+msgctxt "#12310"
+msgid "0"
+msgstr "0"
+
+msgctxt "#12311"
+msgid "1"
+msgstr "1"
+
+msgctxt "#12312"
+msgid "2"
+msgstr "2"
+
+msgctxt "#12313"
+msgid "3"
+msgstr "3"
+
+msgctxt "#12314"
+msgid "4"
+msgstr "4"
+
+msgctxt "#12315"
+msgid "5"
+msgstr "5"
+
+msgctxt "#12316"
+msgid "6"
+msgstr "6"
+
+msgctxt "#12317"
+msgid "7"
+msgstr "7"
+
+msgctxt "#12318"
+msgid "8"
+msgstr "8"
+
+msgctxt "#12319"
+msgid "9"
+msgstr "9"
+
+msgctxt "#12320"
+msgid "c"
+msgstr "c"
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "Ok"
+
+msgctxt "#12322"
+msgid "*"
+msgstr "*"
+
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "Bị khoá! Hãy nhập mã..."
+
+msgctxt "#12326"
+msgid "Enter password"
+msgstr "Nhập mật khẩu"
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "Nhập mã chủ"
+
+msgctxt "#12328"
+msgid "Enter unlock code"
+msgstr "Nhập mã mở khoá"
+
+msgctxt "#12329"
+msgid "or press C to cancel"
+msgstr "hoặc nhấn C để huỷ"
+
+msgctxt "#12331"
+msgid "press OK, or Back to cancel"
+msgstr "Nhấn nút OK, hoặc phím Back để huỷ"
+
+msgctxt "#12332"
+msgid "Set lock"
+msgstr "Thiết lập khoá"
+
+msgctxt "#12333"
+msgid "Unlock"
+msgstr "Mở khoá"
+
+msgctxt "#12334"
+msgid "Reset lock"
+msgstr "Cài đặt lại khoá"
+
+msgctxt "#12335"
+msgid "Remove lock"
+msgstr "Bỏ khoá"
+
+msgctxt "#12337"
+msgid "Numeric password"
+msgstr "Mật khẩu chỉ có số"
+
+msgctxt "#12339"
+msgid "Full-text password"
+msgstr "Mật khẩu có chữ và số"
+
+msgctxt "#12340"
+msgid "Enter new password"
+msgstr "Nhập mật khẩu mới"
+
+msgctxt "#12341"
+msgid "Re-Enter new password"
+msgstr "Nhập lại mật khẩu mới"
+
+msgctxt "#12342"
+msgid "Incorrect password,"
+msgstr "Mật khẩu không đúng,"
+
+msgctxt "#12343"
+msgid "retries left "
+msgstr "số lần cho phép nhập còn lại"
+
+msgctxt "#12344"
+msgid "Passwords entered did not match."
+msgstr "Mật khẩu được nhập không khớp."
+
+msgctxt "#12345"
+msgid "Access denied"
+msgstr "Truy cập bị từ chối"
+
+msgctxt "#12346"
+msgid "Password retry limit exceeded."
+msgstr "Đã vượt quá giới hạn cho phép nhập mật khẩu."
+
+msgctxt "#12347"
+msgid "The system will now shut off."
+msgstr "Hệ thống chuẩn bị tắt."
+
+msgctxt "#12348"
+msgid "Item locked"
+msgstr "Mục bị khoá"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Xử lý %s"
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Không cần tải về"
+
+msgctxt "#12353"
+msgid "Reactivate lock"
+msgstr "Bật lại khoá"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Bạn muốn cập nhật ngay bây giờ?"
+
+msgctxt "#12356"
+msgid "Change lock"
+msgstr "Thay đổi khoá"
+
+msgctxt "#12357"
+msgid "Source lock"
+msgstr "Khoá nguồn"
+
+msgctxt "#12358"
+msgid "Password entry was blank. Try again."
+msgstr "Mật khẩu không được để trống. Hãy nhập lại."
+
+msgctxt "#12360"
+msgid "Master lock"
+msgstr "Khoá chủ"
+
+msgctxt "#12362"
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Tắt hệ thống nếu vượt qua số lần cho phép thử mở khoá chính"
+
+msgctxt "#12367"
+msgid "Master code is not valid"
+msgstr "Mã chính không đúng"
+
+msgctxt "#12368"
+msgid "Please enter a valid master code"
+msgstr "Hãy nhập mã chính hợp lệ"
+
+msgctxt "#12373"
+msgid "Settings & file manager"
+msgstr "Cài đặt & trình quản lý tệp tin"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Thiết lập làm mặc định cho tất cả các video"
+
+msgctxt "#12377"
+msgid "This will reset any previously saved values"
+msgstr "Sẽ thiết lập lại các giá trị đã được lưu trước đó"
+
+msgctxt "#12378"
+msgid "Amount of time to display each image"
+msgstr "Số thời gian chờ hiển thị mỗi ảnh"
+
+msgctxt "#12379"
+msgid "Use pan and zoom effects"
+msgstr "Sử dụng hiệu ứng thu phóng và chuyển động quay"
+
+msgctxt "#12383"
+msgid "12 hour clock"
+msgstr "kiểu 12 giờ"
+
+msgctxt "#12384"
+msgid "24 hour clock"
+msgstr "kiểu 24 giờ"
+
+msgctxt "#12385"
+msgid "Day/Month"
+msgstr "Ngày/Tháng"
+
+msgctxt "#12386"
+msgid "Month/Day"
+msgstr "Tháng/Ngày"
+
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "Thời gian hoạt động"
+
+msgctxt "#12391"
+msgid "Minutes"
+msgstr "Phút"
+
+msgctxt "#12392"
+msgid "Hours"
+msgstr "Giờ"
+
+msgctxt "#12393"
+msgid "Days"
+msgstr "Ngày"
+
+msgctxt "#12394"
+msgid "Total uptime"
+msgstr "Tổng thời gian hoạt động"
+
+msgctxt "#12395"
+msgid "Battery level"
+msgstr "Thời lượng pin"
+
 msgctxt "#12600"
 msgid "Weather"
-msgstr "Thời Tiết"
+msgstr "Thời tiết"
 
 msgctxt "#12900"
 msgid "Screensaver"
 msgstr "Trình bảo vệ màn hình"
 
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "Bảng điều khiển toàn màn hình"
+
 msgctxt "#13000"
 msgid "System"
 msgstr "Hệ thống"
+
+msgctxt "#13002"
+msgid "Video only"
+msgstr "Chỉ Video"
+
+msgctxt "#13003"
+msgid "- Delay"
+msgstr "- Trễ"
+
+msgctxt "#13004"
+msgid "- Minimum file duration"
+msgstr "- Thời lượng tệp tin nhỏ nhất"
+
+msgctxt "#13005"
+msgid "Shutdown"
+msgstr "Tắt máy"
+
+msgctxt "#13008"
+msgid "Shutdown function"
+msgstr "Chức năng tắt máy"
+
+msgctxt "#13009"
+msgid "Quit"
+msgstr "Thoát"
+
+msgctxt "#13010"
+msgid "Hibernate"
+msgstr "Hibernate"
+
+msgctxt "#13011"
+msgid "Suspend"
+msgstr "Chế độ chờ"
+
+msgctxt "#13012"
+msgid "Exit"
+msgstr "Thoát"
+
+msgctxt "#13013"
+msgid "Reboot"
+msgstr "Khởi động lại"
+
+msgctxt "#13014"
+msgid "Minimize"
+msgstr "Thu nhỏ"
+
+msgctxt "#13015"
+msgid "Power button action"
+msgstr "Hành động cho nút nguồn"
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "Tắt hệ thống"
+
+msgctxt "#13020"
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Có phải đang có một phiên khác hoạt động? Có thể qua ssh?"
+
+msgctxt "#13021"
+msgid "Mounted removable harddrive"
+msgstr "Ổ cứng được kết nối"
+
+msgctxt "#13022"
+msgid "Unsafe device removal"
+msgstr "Ngắt kết nối với thiết bị không an toàn"
+
+msgctxt "#13023"
+msgid "Successfully removed device"
+msgstr "Gỡ bỏ thiết bị thành công"
+
+msgctxt "#13024"
+msgid "Joystick plugged"
+msgstr "Đã cắm tay điều khiển"
+
+msgctxt "#13025"
+msgid "Joystick unplugged"
+msgstr "Đã tháo tay điều khiển"
+
+msgctxt "#13050"
+msgid "Running low on battery"
+msgstr "Sắp hết pin"
+
+msgctxt "#13100"
+msgid "Flicker filter"
+msgstr "Bộ lọc rung hình"
+
+msgctxt "#13101"
+msgid "Let driver choose (requires restart)"
+msgstr "Để trình điều khiển tự chọn (cần khởi động lại hệ thống)"
+
+msgctxt "#13105"
+msgid "Vertical blank sync"
+msgstr "Đồng bộ khoảng trống chiều dọc"
 
 msgctxt "#13106"
 msgid "Disabled"
 msgstr "Đã tắt"
 
+msgctxt "#13107"
+msgid "Enabled during video playback"
+msgstr "Kích hoạt trong lúc xem video"
+
+msgctxt "#13108"
+msgid "Always enabled"
+msgstr "Luôn bật"
+
+msgctxt "#13109"
+msgid "Test & apply resolution"
+msgstr "Thử và áp dụng độ phân giải"
+
+msgctxt "#13110"
+msgid "Save resolution?"
+msgstr "Lưu độ phân giải?"
+
+msgctxt "#13111"
+msgid "Would you like to keep this resolution?"
+msgstr "Bạn muốn giữ nguyên độ phân giải này không?"
+
+msgctxt "#13112"
+msgid "High quality upscaling"
+msgstr "Nâng cấp chất lượng cao"
+
 msgctxt "#13113"
 msgid "Disabled"
 msgstr "Đã tắt"
 
+msgctxt "#13114"
+msgid "Enabled for SD content"
+msgstr "Bật khi chạy các video SD"
+
+msgctxt "#13115"
+msgid "Always enabled"
+msgstr "Luôn bật"
+
+msgctxt "#13116"
+msgid "Upscaling method"
+msgstr "Cách thức nâng cấp"
+
+msgctxt "#13117"
+msgid "Bicubic"
+msgstr "Song lập thương"
+
+msgctxt "#13118"
+msgid "Lanczos"
+msgstr "Lanczos"
+
+msgctxt "#13119"
+msgid "Sinc"
+msgstr "Hình sin"
+
+msgctxt "#13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13130"
+msgid "Blank other displays"
+msgstr "Làm trắng các hiển thị khác"
+
 msgctxt "#13131"
 msgid "Disabled"
 msgstr "Đã tắt"
+
+msgctxt "#13132"
+msgid "Blank displays"
+msgstr "Màn hình trắng"
+
+msgctxt "#13140"
+msgid "Active connections detected!"
+msgstr "Các kết nối đang hoạt động được phát hiện!"
+
+msgctxt "#13141"
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Nếu tiếp tục, bạn có thể sẽ không điều khiển được XBMC"
+
+msgctxt "#13142"
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "nữa. Bạn có chắc muốn tắt Event server?"
+
+msgctxt "#13144"
+msgid "Change Apple Remote mode?"
+msgstr "Đổi chế độ Apple Remote?"
+
+msgctxt "#13145"
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Nếu bạn đang dùng Apple Remote để điều khiển"
+
+msgctxt "#13146"
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, thay đổi thiết lập này có thể ảnh hưởng đến khả năng của bạn"
+
+msgctxt "#13147"
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "để tiếp tục điều khiển nó. Bạn có muốn tiến hành?"
+
+msgctxt "#13160"
+msgid "Gateway"
+msgstr "Cổng"
+
+msgctxt "#13161"
+msgid "Primary DNS"
+msgstr "DNS sơ cấp"
+
+msgctxt "#13162"
+msgid "Initialize failed"
+msgstr "Không thể khởi tạo"
+
+msgctxt "#13170"
+msgid "Never"
+msgstr "Không bao giờ"
+
+msgctxt "#13171"
+msgid "Immediately"
+msgstr "Ngay lập tức"
+
+msgctxt "#13172"
+msgid "After %i secs"
+msgstr "Sau %i giây"
+
+msgctxt "#13173"
+msgid "HDD install date:"
+msgstr "Thời gian cài đặt HDD:"
+
+msgctxt "#13174"
+msgid "HDD power cycle count:"
+msgstr "Số chu kỳ nguồn HDD:"
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "Tài khoản"
+
+msgctxt "#13201"
+msgid "Delete profile '%s'?"
+msgstr "Xóa tài khoản '%s'?"
+
+msgctxt "#13204"
+msgid "Last loaded profile:"
+msgstr "Tài khoản sử dụng gần nhất:"
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "Không biết"
+
+msgctxt "#13206"
+msgid "Overwrite"
+msgstr "Ghi đè"
+
+msgctxt "#13208"
+msgid "Alarm clock"
+msgstr "Đồng hồ báo thức"
+
+msgctxt "#13209"
+msgid "Alarm clock interval (in minutes)"
+msgstr "Khoảng đồng hồ lặp lại báo thức (theo phút)"
+
+msgctxt "#13210"
+msgid "Started, alarm in %im"
+msgstr "Đã thiết lập, báo thức trong %i phút"
+
+msgctxt "#13211"
+msgid "Alarm!"
+msgstr "Báo thức!"
+
+msgctxt "#13213"
+msgid "%2.0fm"
+msgstr "%2.0f phút"
+
+msgctxt "#13214"
+msgid "%2.0fs"
+msgstr "%2.0f giây"
+
+msgctxt "#13249"
+msgid "Search for subtitles in RARs"
+msgstr "Tìm các phụ đề trong các tệp tin nén (.rar)"
+
+msgctxt "#13250"
+msgid "Browse for subtitle..."
+msgstr "Duyệt tìm phụ đề..."
+
+msgctxt "#13251"
+msgid "Move item"
+msgstr "Chuyển item"
+
+msgctxt "#13252"
+msgid "Move item here"
+msgstr "Chuyển item tới chỗ này"
+
+msgctxt "#13253"
+msgid "Cancel move"
+msgstr "Hủy di chuyển"
+
+msgctxt "#13270"
+msgid "Hardware:"
+msgstr "Phần cứng:"
+
+msgctxt "#13271"
+msgid "CPU Usage:"
+msgstr "Mức sử dụng CPU:"
+
+msgctxt "#13274"
+msgid "Connected, but no DNS is available."
+msgstr "Đã kết nối, nhưng không thiết lập được DNS."
+
+msgctxt "#13275"
+msgid "Hard Disk"
+msgstr "Ổ cứng"
+
+msgctxt "#13276"
+msgid "DVD-ROM"
+msgstr "Ổ đĩa DVD-ROM"
 
 msgctxt "#13277"
 msgid "Storage"
@@ -1921,9 +3957,409 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
 
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "Phần cứng"
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "Hệ điều hành:"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "Tốc độ CPU"
+
+msgctxt "#13286"
+msgid "Video encoder:"
+msgstr "Bộ giải mã video:"
+
+msgctxt "#13287"
+msgid "Screen resolution:"
+msgstr "Độ phân giải màn hình:"
+
+msgctxt "#13292"
+msgid "A/V cable:"
+msgstr "Cáp A/V:"
+
+msgctxt "#13294"
+msgid "DVD region:"
+msgstr "Vùng DVD:"
+
+msgctxt "#13295"
+msgid "Internet:"
+msgstr "Internet:"
+
+msgctxt "#13296"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "#13297"
+msgid "Not connected. Check network settings."
+msgstr "Chưa kết nối. Kiểm tra thiết lập mạng"
+
+msgctxt "#13299"
+msgid "Target temperature"
+msgstr "Nhiệt độ đích"
+
+msgctxt "#13300"
+msgid "Fan speed"
+msgstr "Tốc độ quạt"
+
+msgctxt "#13301"
+msgid "Auto temperature control"
+msgstr "Tự động điểu khiển nhiệt độ"
+
+msgctxt "#13302"
+msgid "Fan speed override"
+msgstr "Ép tốc độ quạt"
+
+msgctxt "#13303"
+msgid "- Fonts"
+msgstr "- Fonts"
+
+msgctxt "#13304"
+msgid "Enable flipping bi-directional strings"
+msgstr "Cho phép lật hai chiều các chuỗi"
+
+msgctxt "#13305"
+msgid "Show RSS news feeds"
+msgstr "Hiển thị tin tức từ các feed RSS"
+
+msgctxt "#13306"
+msgid "Show parent folder items"
+msgstr "Hiển thị các mục trong thư mục cha"
+
+msgctxt "#13307"
+msgid "Track naming template"
+msgstr "Mẫu đặt tên track"
+
+msgctxt "#13308"
+msgid "Do you wish to reboot your system"
+msgstr "Bạn có muốn khởi động lại cả hệ thống"
+
+msgctxt "#13309"
+msgid "instead of just XBMC?"
+msgstr "thay vì chỉ mỗi XBMC?"
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "Hiệu ứng zoom"
+
+msgctxt "#13311"
+msgid "Float effect"
+msgstr "Hiệu ứng float"
+
+msgctxt "#13312"
+msgid "Black bar reduction"
+msgstr "Giảm black bar"
+
+msgctxt "#13313"
+msgid "Restart"
+msgstr "Khởi động lại"
+
+msgctxt "#13314"
+msgid "Crossfade between songs"
+msgstr "Tăng giảm âm giữa các bài hát"
+
+msgctxt "#13315"
+msgid "Regenerate thumbnails"
+msgstr "Tái tạo lại các ảnh thu nhỏ"
+
+msgctxt "#13316"
+msgid "Recursive thumbnails"
+msgstr "Các ảnh thu nhỏ đệ quy"
+
+msgctxt "#13317"
+msgid "View slideshow"
+msgstr "Xem trình chiếu"
+
+msgctxt "#13318"
+msgid "Recursive slideshow"
+msgstr "Trình chiếu đệ quy"
+
+msgctxt "#13319"
+msgid "Randomize"
+msgstr "Ngẫu nhiên"
+
+msgctxt "#13320"
+msgid "Stereo"
+msgstr "Stereo"
+
+msgctxt "#13321"
+msgid "Left only"
+msgstr "Chỉ trái"
+
+msgctxt "#13322"
+msgid "Right only"
+msgstr "Chỉ phải"
+
+msgctxt "#13323"
+msgid "Enable karaoke support"
+msgstr "Bật hỗ trợ karaoke"
+
+msgctxt "#13324"
+msgid "Background transparency"
+msgstr "Độ trong của ảnh nền"
+
+msgctxt "#13325"
+msgid "Foreground transparency"
+msgstr "Độ trong của ảnh chính"
+
+msgctxt "#13326"
+msgid "A/V delay"
+msgstr "Trễ A/V"
+
+msgctxt "#13327"
+msgid "Karaoke"
+msgstr "Karaoke"
+
+msgctxt "#13328"
+msgid "%s not found"
+msgstr "%s không tìm thấy"
+
+msgctxt "#13329"
+msgid "Error opening %s"
+msgstr "Lỗi khi mở %s"
+
+msgctxt "#13330"
+msgid "Unable to load %s"
+msgstr "Không thể tải %s"
+
+msgctxt "#13331"
+msgid "Error: Out of memory"
+msgstr "Lỗi: Hết bộ nhớ"
+
+msgctxt "#13332"
+msgid "Move up"
+msgstr "Chuyển lên"
+
+msgctxt "#13333"
+msgid "Move down"
+msgstr "Chuyển xuống"
+
+msgctxt "#13334"
+msgid "Edit label"
+msgstr "Nhãn sửa"
+
+msgctxt "#13335"
+msgid "Make default"
+msgstr "Làm mặc định"
+
+msgctxt "#13336"
+msgid "Remove button"
+msgstr "Nút xoá"
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "Để như cũ"
+
+msgctxt "#13341"
+msgid "Green"
+msgstr "Xanh"
+
+msgctxt "#13342"
+msgid "Orange"
+msgstr "Cam"
+
+msgctxt "#13343"
+msgid "Red"
+msgstr "Đỏ"
+
+msgctxt "#13344"
+msgid "Cycle"
+msgstr "Chu kỳ"
+
+msgctxt "#13345"
+msgid "Switch LED off on playback"
+msgstr "Đắt đèn LED khi phát lại"
+
+msgctxt "#13346"
+msgid "Movie information"
+msgstr "Thông tin phim"
+
+msgctxt "#13347"
+msgid "Queue item"
+msgstr "Xếp hàng item"
+
+msgctxt "#13348"
+msgid "Search IMDb..."
+msgstr "Tìm trên IMDb..."
+
+msgctxt "#13349"
+msgid "Scan for new content"
+msgstr "Quét tìm dữ liệu mới"
+
+msgctxt "#13350"
+msgid "Now playing..."
+msgstr "Đang xem..."
+
+msgctxt "#13351"
+msgid "Album information"
+msgstr "Thông tin album"
+
+msgctxt "#13352"
+msgid "Scan item to library"
+msgstr "Quét item vào thư viện"
+
+msgctxt "#13353"
+msgid "Stop scanning"
+msgstr "Dừng quét"
+
+msgctxt "#13354"
+msgid "Render method"
+msgstr "Phương pháp render"
+
+msgctxt "#13355"
+msgid "Low quality pixel shader"
+msgstr "Pixel shader chất lượng thấp"
+
+msgctxt "#13357"
+msgid "High quality pixel shader"
+msgstr "Pixel shader chất lượng cao"
+
+msgctxt "#13358"
+msgid "Play item"
+msgstr "Play item"
+
+msgctxt "#13359"
+msgid "Set artist thumb"
+msgstr "Thiết lập ảnh đại diện cho nghệ sỹ"
+
+msgctxt "#13360"
+msgid "Automatically generate thumbnails"
+msgstr "Tự động tạo ảnh thumbnails"
+
+msgctxt "#13361"
+msgid "Enable voice"
+msgstr "Bật voice"
+
+msgctxt "#13375"
+msgid "Enable device"
+msgstr "Bật thiết bị"
+
+msgctxt "#13376"
+msgid "Volume"
+msgstr "Âm lượng"
+
+msgctxt "#13377"
+msgid "Default view mode"
+msgstr "Chế độ xem mặc định"
+
+msgctxt "#13378"
+msgid "Default brightness"
+msgstr "Độ sáng mặc định"
+
+msgctxt "#13379"
+msgid "Default contrast"
+msgstr "Tương phản mặc định"
+
+msgctxt "#13380"
+msgid "Default gamma"
+msgstr "Gamma mặc định"
+
+msgctxt "#13386"
+msgid "Use time based seeking"
+msgstr "Sử dụng tìm kiếm dựa trên thời gian"
+
+msgctxt "#13387"
+msgid "Track naming template - right"
+msgstr "Mẫu đặt trên track - phải"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "Preset"
+
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Không có preset ⏎ \ncho trình diễn màn hình này"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Không có thiết lập có sẵn ⏎\ncho trình diễn màn hình này"
+
+msgctxt "#13391"
+msgid "Eject/Load"
+msgstr "Cho ra/cho vào"
+
+msgctxt "#13392"
+msgid "Use visualization if playing audio"
+msgstr "Sử dụng trình diễn màn hình nếu chơi nhạc"
+
+msgctxt "#13393"
+msgid "Calculate size"
+msgstr "Tính toán dung lượng"
+
+msgctxt "#13394"
+msgid "Calculating folder size"
+msgstr "Đang tính dung lượng thư mục"
+
+msgctxt "#13395"
+msgid "Video settings"
+msgstr "Cài đặt video"
+
+msgctxt "#13396"
+msgid "Audio and subtitle settings"
+msgstr "Cài đặt audio và phụ đề"
+
+msgctxt "#13397"
+msgid "Enable subtitles"
+msgstr "Bật phụ đề"
+
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "Đường tắt"
+
+msgctxt "#13399"
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Không tính các mạo từ khi sắp xếp (ví dụ: \"the\")"
+
+msgctxt "#13400"
+msgid "Crossfade between songs on the same album"
+msgstr "Tăng giảm âm giữa các bài hát trong cùng một album"
+
+msgctxt "#13401"
+msgid "Browse for %s"
+msgstr "Duyệt tìm %s"
+
+msgctxt "#13402"
+msgid "Show track position"
+msgstr "Hiện số track"
+
+msgctxt "#13403"
+msgid "Clear default"
+msgstr "Xoá mặc định"
+
+msgctxt "#13404"
+msgid "Resume"
+msgstr "Tiếp tục"
+
+msgctxt "#13405"
+msgid "Get thumb"
+msgstr "Lấy ảnh đại diện"
+
+msgctxt "#13406"
+msgid "Picture information"
+msgstr "Thông tin bức hình"
+
+msgctxt "#13407"
+msgid "%s presets"
+msgstr "%s preset"
+
+msgctxt "#13408"
+msgid "(IMDb user rating)"
+msgstr "(Đánh giá của người dùng trên IMDb)"
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "250 hay nhất"
+
+msgctxt "#13410"
+msgid "Tune in on Last.fm"
+msgstr "Dò kênh trên Last.fm"
+
+msgctxt "#13411"
+msgid "Minimum fan speed"
+msgstr "Tốc độ quạt thấp nhất"
 
 msgctxt "#13412"
 msgid "Play from here"
@@ -1933,6 +4369,82 @@ msgctxt "#13413"
 msgid "Downloading"
 msgstr "Đang tải về"
 
+msgctxt "#13415"
+msgid "Render method"
+msgstr "Phương pháp render"
+
+msgctxt "#13416"
+msgid "Auto detect"
+msgstr "Tự động dò tìm"
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "Phần mềm"
+
+msgctxt "#13420"
+msgid "Remove safely"
+msgstr "Gỡ bỏ an toàn"
+
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13422"
+msgid "Start slideshow here"
+msgstr "Bắt đầu trình chiếu từ đây"
+
+msgctxt "#13423"
+msgid "Remember for this path"
+msgstr "Nhớ đường dẫn này"
+
+msgctxt "#13424"
+msgid "Use pixel buffer objects"
+msgstr "Sử dụng các đối tượng đệm pixel"
+
+msgctxt "#13425"
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Cho phép tăng tốc phần cứng (VDPAU)"
+
+msgctxt "#13426"
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Cho phép tăng tốc phần cứng (VAAPI)"
+
+msgctxt "#13427"
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Cho phép tăng tốc phần cứng (DXVA2)"
+
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Cho phép tăng tốc phần cứng (CrystalHD)"
+
+msgctxt "#13429"
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Cho phép tăng tốc phần cứng (VDADecoder)"
+
+msgctxt "#13430"
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Cho phép tăng tốc phần cứng (OpenMax)"
+
+msgctxt "#13432"
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Cho phép tăng tốc phần cứng (VideoToolbox)"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Tự động bật video kế tiếp"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Chỉ chơi bài này"
+
+msgctxt "#13500"
+msgid "A/V sync method"
+msgstr "Phương thức đồng bộ A/V"
+
+msgctxt "#13506"
+msgid "Low(fast)"
+msgstr "Thấp(nhanh)"
+
 msgctxt "#13507"
 msgid "Medium"
 msgstr "Trung bình"
@@ -1941,9 +4453,37 @@ msgctxt "#13508"
 msgid "High"
 msgstr "Cao"
 
+msgctxt "#13509"
+msgid "Really high(slow!)"
+msgstr "Rất cao(chậm!)"
+
+msgctxt "#13510"
+msgid "Sync playback to display"
+msgstr "Đồng bộ phát lại để hiển thị"
+
+msgctxt "#13550"
+msgid "Pause during refresh rate change"
+msgstr "Tạm dừng khi độ làm tươi thay đổi"
+
 msgctxt "#13551"
 msgid "Off"
 msgstr "Tắt"
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f giây"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f giây"
+
+msgctxt "#13602"
+msgid "Allow start of XBMC using the remote"
+msgstr "Cho phép chạy XBMC thông qua remote"
+
+msgctxt "#13603"
+msgid "Sequence delay time"
+msgstr "Thời gian trễ liên tiếp"
 
 msgctxt "#13610"
 msgid "Disabled"
@@ -1953,33 +4493,781 @@ msgctxt "#13611"
 msgid "Standard"
 msgstr "Chuẩn"
 
+msgctxt "#13612"
+msgid "Universal Remote"
+msgstr "Remote chung"
+
+msgctxt "#14003"
+msgid "Downloading playlist file..."
+msgstr "Đang tải tệp tin danh sách về..."
+
+msgctxt "#14004"
+msgid "Downloading streams list..."
+msgstr "Đang tải danh sách các luồng về..."
+
+msgctxt "#14005"
+msgid "Parsing streams list..."
+msgstr "Đang đọc danh sách các luồng..."
+
+msgctxt "#14006"
+msgid "Downloading streams list failed"
+msgstr "Không thể tải danh sách các luồng"
+
+msgctxt "#14007"
+msgid "Downloading playlist file failed"
+msgstr "Không thể tải tệp tin playlist"
+
+msgctxt "#14009"
+msgid "Games directory"
+msgstr "Thư mục các trò chơi"
+
+msgctxt "#14010"
+msgid "Auto switch to thumbs based on"
+msgstr "Tự động chuyển đổi sang ảnh đại diện dựa trên"
+
+msgctxt "#14011"
+msgid "Enable auto switching to thumbs view"
+msgstr "Bật tự động chuyển sang chế độ ảnh đại diện"
+
+msgctxt "#14012"
+msgid "- Use large icons"
+msgstr "- Sử dụng các biểu tượng lớn"
+
+msgctxt "#14013"
+msgid "- Switch based on"
+msgstr "- Đã chuyển dựa trên"
+
+msgctxt "#14014"
+msgid "- Percentage"
+msgstr "- Phần trăm"
+
+msgctxt "#14015"
+msgid "No files and at least one thumb"
+msgstr "Không có tệp tin nào và ít nhất 1 ảnh đại diện"
+
+msgctxt "#14016"
+msgid "At least one file and thumb"
+msgstr "Ít nhất 1 tệp tin và 1 ảnh nhỏ"
+
+msgctxt "#14017"
+msgid "Percentage of thumbs"
+msgstr "Tỉ lệ % của các ảnh nhỏ"
+
+msgctxt "#14018"
+msgid "View options"
+msgstr "Các tuỳ chọn xem"
+
+msgctxt "#14019"
+msgid "Change area code 1"
+msgstr "Thay đổi mã vùng 1"
+
+msgctxt "#14020"
+msgid "Change area code 2"
+msgstr "Thay đổi mã vùng 2"
+
+msgctxt "#14021"
+msgid "Change area code 3"
+msgstr "Thay đổi mã vùng 3"
+
+msgctxt "#14022"
+msgid "Library"
+msgstr "Thư viện"
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "Không có TV"
+
+msgctxt "#14024"
+msgid "Enter the nearest large town"
+msgstr "Nhập thị trí lớn gần nhất"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Đệm Video/Audio/DVD - Ổ cứng"
+
+msgctxt "#14026"
+msgid "Video cache - DVD-ROM"
+msgstr "Đệm video - DVD-ROM"
+
+msgctxt "#14027"
+msgid "- Local Network"
+msgstr "- Mạng nội bộ"
+
+msgctxt "#14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+msgctxt "#14030"
+msgid "Audio cache - DVD-ROM"
+msgstr "Đệm tiếng - DVD-ROM"
+
+msgctxt "#14031"
+msgid "- Local Network"
+msgstr "- Mạng nội bộ"
+
+msgctxt "#14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+msgctxt "#14034"
+msgid "DVD cache - DVD-ROM"
+msgstr "Đệm DVD - DVD-ROM"
+
+msgctxt "#14035"
+msgid "- Local Network"
+msgstr "- Mạng nội bộ"
+
 msgctxt "#14036"
 msgid "Services"
 msgstr "Dịch vụ"
+
+msgctxt "#14038"
+msgid "Network settings changed"
+msgstr "Các thiết lập mạng đã thay đổi"
+
+msgctxt "#14039"
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC yêu cầu phải được khởi động lại để thay đổi"
+
+msgctxt "#14040"
+msgid "network setup.  Would you like to restart now?"
+msgstr "thiết lập mạng của bạn. Bạn có muốn khởi động lại ngay bây giờ?"
+
+msgctxt "#14041"
+msgid "Internet connection bandwidth limitation"
+msgstr "Giới hạn băng thông kết nối internet"
+
+msgctxt "#14043"
+msgid "- Shutdown while playing"
+msgstr "- Tắt hệ thống khi đang chơi"
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i phút"
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i giây"
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i mini giây"
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i kbps"
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i kb"
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+msgctxt "#14051"
+msgid "Time format"
+msgstr "Định dạng thời gian"
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "Định dạng ngày tháng"
+
+msgctxt "#14053"
+msgid "GUI filters"
+msgstr "Các bộ lọc giao diện GUI"
+
+msgctxt "#14055"
+msgid "Use background scanning"
+msgstr "Sử dụng quét nền"
+
+msgctxt "#14056"
+msgid "Stop scan"
+msgstr "Dừng quét"
+
+msgctxt "#14057"
+msgid "Not possible while scanning for media info"
+msgstr "Không thể khi đang quét thông tin của media"
+
+msgctxt "#14059"
+msgid "Search for thumbnails on remote shares"
+msgstr "Tìm kiếm các ảnh nhỏ trên các chia sẻ từ xa"
+
+msgctxt "#14060"
+msgid "Unknown type cache - Internet"
+msgstr "Đệm kiểu không xác định - Internet"
+
+msgctxt "#14061"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "#14062"
+msgid "Enter username for"
+msgstr "Nhập tên tài khoản cho"
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "Ngày tháng và thời gian"
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "Thiết lập ngày tháng"
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "Thiết lập thời gian"
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Nhập thời gian theo định dạng 24 giờ HH:MM"
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Nhập ngày tháng theo định dạng DD/MM/YYYY"
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "Nhập địa chỉ IP"
+
+msgctxt "#14069"
+msgid "Apply these settings now?"
+msgstr "Áp dụng cài đặt ngay bây giờ?"
+
+msgctxt "#14070"
+msgid "Apply changes now"
+msgstr "Áp dụng thay đổi ngay"
+
+msgctxt "#14071"
+msgid "Allow file renaming and deletion"
+msgstr "Cho phép đổi tên và xóa file"
+
+msgctxt "#14074"
+msgid "Set timezone"
+msgstr "Đặt múi giờ"
+
+msgctxt "#14075"
+msgid "Use daylight saving time"
+msgstr "Sử dụng giờ mùa hè"
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "Thêm vào mục ưa thích"
+
+msgctxt "#14077"
+msgid "Remove from favourites"
+msgstr "Xóa khỏi mục ưa thích"
+
+msgctxt "#14078"
+msgid "- Colours"
+msgstr "- Các màu sắc"
+
+msgctxt "#14079"
+msgid "Timezone country"
+msgstr "Múi giờ nước"
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "Múi giờ"
+
+msgctxt "#14081"
+msgid "File lists"
+msgstr "Các danh sách tệp tin"
+
+msgctxt "#14082"
+msgid "Show EXIF picture information"
+msgstr "Hiển thị thông tin EXIF của ảnh"
+
+msgctxt "#14083"
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Sử dụng cửa sổ toàn màn hình thay vì toàn màn hình thực sự"
+
+msgctxt "#14084"
+msgid "Queue songs on selection"
+msgstr "Chèn thêm bài hát vào danh sách khi chọn"
 
 msgctxt "#14086"
 msgid "Playback"
 msgstr "Xem lại"
 
+msgctxt "#14087"
+msgid "DVDs"
+msgstr "DVD"
+
+msgctxt "#14088"
+msgid "Play DVDs automatically"
+msgstr "Tự động chơi DVD"
+
+msgctxt "#14089"
+msgid "Font to use for text subtitles"
+msgstr "Font chữ phụ đề"
+
+msgctxt "#14090"
+msgid "International"
+msgstr "Quốc tế"
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "Bộ ký tự"
+
+msgctxt "#14092"
+msgid "Debugging"
+msgstr "Tìm sửa lỗi"
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "Bảo mật"
+
+msgctxt "#14094"
+msgid "Input devices"
+msgstr "Các thiết bị đầu vào"
+
+msgctxt "#14095"
+msgid "Power saving"
+msgstr "Tiết kiệm năng lượng"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Thu"
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr "Tự động thực hiện khi cho Audio CD vào"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Phát"
+
+msgctxt "#14099"
+msgid "Eject disc when CD ripping is complete"
+msgstr "Bỏ đĩa ra sau khi đã hoàn thành thu đĩa"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Dừng rip CD"
+
+msgctxt "#15015"
+msgid "Remove"
+msgstr "Xóa"
+
+msgctxt "#15016"
+msgid "Games"
+msgstr "Trò chơi"
+
+msgctxt "#15019"
+msgid "Add"
+msgstr "Thêm"
 
 msgctxt "#15052"
 msgid "Password"
 msgstr "Mật khẩu"
 
+msgctxt "#15100"
+msgid "Library"
+msgstr "Thư viện"
+
+msgctxt "#15101"
+msgid "Database"
+msgstr "Cơ sở dữ liệu"
+
+msgctxt "#15102"
+msgid "* All albums"
+msgstr "* Tất cả các album"
+
+msgctxt "#15103"
+msgid "* All artists"
+msgstr "* Tất cả các nghệ sỹ"
+
+msgctxt "#15104"
+msgid "* All songs"
+msgstr "* Tất cả các bài hát"
+
+msgctxt "#15105"
+msgid "* All genres"
+msgstr "* Tất cả các thể loại"
+
+msgctxt "#15107"
+msgid "Buffering..."
+msgstr "Đang lưu đệm..."
+
+msgctxt "#15108"
+msgid "Navigation sounds"
+msgstr "Âm thanh điều khiển menu"
+
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Skin mặc định"
+
+msgctxt "#15111"
+msgid "- Theme"
+msgstr "- Chủ đề"
+
+msgctxt "#15112"
+msgid "Default theme"
+msgstr "Chủ đề mặc định"
+
+msgctxt "#15200"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#15201"
+msgid "Submit songs to Last.fm"
+msgstr "Đưa bài hát lên Last.fm"
+
+msgctxt "#15202"
+msgid "Last.fm username"
+msgstr "Tên tài khoản Last.fm"
+
+msgctxt "#15203"
+msgid "Last.fm password"
+msgstr "Mật khẩu Last.fm"
+
+msgctxt "#15204"
+msgid "Unable to handshake: sleeping..."
+msgstr "Không thể thực hiện cơ chế bắt tay: đang ngủ..."
+
+msgctxt "#15205"
+msgid "Please update XBMC"
+msgstr "Xin cập nhật XBMC"
+
+msgctxt "#15206"
+msgid "Bad authorization: Check username and password"
+msgstr "Không có quyền: Hãy kiểm tra tên tài khoản và mật khẩu"
+
+msgctxt "#15207"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "#15208"
+msgid "Not connected"
+msgstr "Chưa kết nối"
+
+msgctxt "#15209"
+msgid "Submit interval %i"
+msgstr "Khoảng đưa lên lặp lại %i"
+
+msgctxt "#15210"
+msgid "Cached %i songs"
+msgstr "Số bài được lưu đệm: %i"
+
+msgctxt "#15211"
+msgid "Submitting..."
+msgstr "Đang gửi..."
+
+msgctxt "#15212"
+msgid "Submitting in %i secs"
+msgstr "Đang đưa lên trong %i giây"
+
+msgctxt "#15213"
+msgid "Play using..."
+msgstr "Chơi sử dụng..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronization"
+msgstr "Sử dụng đồng bộ A/V mượt"
+
+msgctxt "#15215"
+msgid "Hide file names in thumbs view"
+msgstr "Giấu tên tệp tin trong chế độ xem ảnh nhỏ"
+
+msgctxt "#15216"
+msgid "Play in party mode"
+msgstr "Chơi trong chế độ tiệc"
+
+msgctxt "#15217"
+msgid "Submit songs to Libre.fm"
+msgstr "Đưa bài hát lên Libre.fm"
+
+msgctxt "#15218"
+msgid "Libre.fm username"
+msgstr "Tên tài khoản Libre.fm"
+
+msgctxt "#15219"
+msgid "Libre.fm password"
+msgstr "Mật khẩu Libre.fm"
+
+msgctxt "#15220"
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+msgctxt "#15221"
+msgid "Song submission"
+msgstr "Đưa bài hát lên"
+
+msgctxt "#15250"
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Đưa radio của Last.fm đến Last.fm"
+
+msgctxt "#15251"
+msgid "Connecting to Last.fm..."
+msgstr "Đang kết nối tới Last.fm..."
+
+msgctxt "#15252"
+msgid "Selecting station..."
+msgstr "Đang chọn trạm phát..."
+
+msgctxt "#15253"
+msgid "Search similar artists..."
+msgstr "Tìm kiếm các nghệ kỹ tương tự..."
+
+msgctxt "#15254"
+msgid "Search similar tags..."
+msgstr "Tìm kiếm các thẻ tương tự..."
+
+msgctxt "#15255"
+msgid "Your profile (%name%)"
+msgstr "Tài khoản của bạn (%name%)"
+
+msgctxt "#15256"
+msgid "Overall top tags"
+msgstr "Các thẻ hay nhất"
+
+msgctxt "#15257"
+msgid "Top artists for tag %name%"
+msgstr "Các nghệ sỹ hay nhất cho thẻ %name%"
+
+msgctxt "#15258"
+msgid "Top albums for tag %name%"
+msgstr "Các album hay nhất cho thẻ %name%"
+
+msgctxt "#15259"
+msgid "Top tracks for tag %name%"
+msgstr "Các bài hay nhất cho thẻ %name%"
+
+msgctxt "#15261"
+msgid "Similar artists as %name%"
+msgstr "Các nghệ sỹ tương tự với %name%"
+
+msgctxt "#15263"
+msgid "Top %name% tracks"
+msgstr "Các track hay nhất %name%"
+
+msgctxt "#15265"
+msgid "Biggest fans of %name%"
+msgstr "Người hâm mộ nhất của %name%"
+
+msgctxt "#15268"
+msgid "Top artists for user %name%"
+msgstr "Các nghệ sỹ hay nhất của người dùng %name%"
+
+msgctxt "#15269"
+msgid "Top albums for user %name%"
+msgstr "Các album hay nhất của người dùng %name%"
+
+msgctxt "#15270"
+msgid "Top tracks for user %name%"
+msgstr "Các track hay nhất của người dùng %name%"
+
+msgctxt "#15271"
+msgid "Friends of user %name%"
+msgstr "Bạn bè của người dùng %name%"
+
+msgctxt "#15272"
+msgid "Neighbours of user %name%"
+msgstr "Hàng xóm của người dùng %name%"
+
+msgctxt "#15273"
+msgid "Weekly artist chart for %name%"
+msgstr "Biểu đồ nghệ sỹ hàng tuần của %name%"
+
+msgctxt "#15274"
+msgid "Weekly album chart for %name%"
+msgstr "Biểu đồ album hàng tuần của %name%"
+
+msgctxt "#15275"
+msgid "Weekly track chart for %name%"
+msgstr "Biểu đồ track hàng tuần của %name%"
+
+msgctxt "#15276"
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Nghe radio Last.fm hàng xóm của %name%"
+
+msgctxt "#15277"
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Nghe radio Last.fm cá nhân của %name%"
+
+msgctxt "#15278"
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Nghe radio Last.fm mix của %name%"
+
+msgctxt "#15279"
+msgid "Retrieving list from Last.fm..."
+msgstr "Đang thu nhận danh sách từ Last.fm..."
+
+msgctxt "#15280"
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Không thể thu nhận danh sách từ Last.fm..."
+
+msgctxt "#15281"
+msgid "Enter an artist name to find related ones"
+msgstr "Nhập tên nghệ sỹ để tìm những bài liên quan"
+
+msgctxt "#15282"
+msgid "Enter a tag name to find similar ones"
+msgstr "Nhập tên thẻ đề tìm những bài liên quan"
+
+msgctxt "#15283"
+msgid "Tracks recently listened by %name%"
+msgstr "Các track mới được %name% nghe gần đây"
+
+msgctxt "#15284"
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Nghe radio Last.fm theo giới thiệu của %name%"
+
+msgctxt "#15285"
+msgid "Top tags for user %name%"
+msgstr "Các thẻ hay nhất của người dùng %name%"
+
+msgctxt "#15287"
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Bạn có muốn thêm bài hiện tại vào danh sách các bài yêu thích?"
+
+msgctxt "#15288"
+msgid "Do you want to ban the current track?"
+msgstr "Bạn có muốn cấm bài hiện tại?"
+
+msgctxt "#15289"
+msgid "Added to your loved tracks: '%s'."
+msgstr "Đã được thêm vào các track được yêu thích của bạn: '%s'."
+
+msgctxt "#15290"
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Không thể thêm '%s' vào các track được bạn yêu thích."
+
+msgctxt "#15291"
+msgid "Banned: '%s'."
+msgstr "Bị cấm: '%s'."
+
+msgctxt "#15292"
+msgid "Could not ban '%s'."
+msgstr "Không thể cấm '%s'."
+
+msgctxt "#15293"
+msgid "Tracks recently loved by %name%"
+msgstr "Các track được %name% yêu thích gần đây"
+
+msgctxt "#15294"
+msgid "Tracks recently banned by %name%"
+msgstr "Các track bị %name% cấm gần đây"
+
+msgctxt "#15295"
+msgid "Remove from loved tracks"
+msgstr "Loại bỏ khỏi các track yêu thích"
+
+msgctxt "#15296"
+msgid "Un-ban"
+msgstr "Không cấm nữa"
+
+msgctxt "#15297"
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Bạn có muốn loại bỏ track này ra khỏi các track yêu thích của bạn?"
+
+msgctxt "#15298"
+msgid "Do you want to un-ban this track?"
+msgstr "Bạn có muốn không cấm track này nữa?"
+
+msgctxt "#15300"
+msgid "Path not found or invalid"
+msgstr "Đường dẫn không thể tìm thấy hoặc không hợp lệ"
+
+msgctxt "#15301"
+msgid "Could not connect to network server"
+msgstr "Không kết nối được tới máy chủ mạng"
+
+msgctxt "#15302"
+msgid "No servers found"
+msgstr "Không tìm thấy máy chủ"
+
+msgctxt "#15303"
+msgid "Workgroup not found"
+msgstr "Không tìm thấy nhóm mạng"
+
+msgctxt "#15310"
+msgid "Opening multi-path source"
+msgstr "Đang mở nguồn nhiều đường dẫn"
+
+msgctxt "#15311"
+msgid "Path:"
+msgstr "Đường dẫn:"
 
 msgctxt "#16000"
 msgid "General"
 msgstr "Tổng Quan"
 
+msgctxt "#16002"
+msgid "Internet lookup"
+msgstr "Tìm trên internet"
+
+msgctxt "#16003"
+msgid "Player"
+msgstr "Máy đọc"
+
+msgctxt "#16004"
+msgid "Play media from disc"
+msgstr "Chơi media từ ổ đĩa"
+
+msgctxt "#16008"
+msgid "Enter new title"
+msgstr "Nhập tiêu đề mới"
+
+msgctxt "#16009"
+msgid "Enter the movie name"
+msgstr "Nhập tên phim"
+
+msgctxt "#16010"
+msgid "Enter the profile name"
+msgstr "Điền tên tài khoản"
+
+msgctxt "#16011"
+msgid "Enter the album name"
+msgstr "Nhập tên album"
+
+msgctxt "#16012"
+msgid "Enter the playlist name"
+msgstr "Nhập tên danh sách"
+
+msgctxt "#16013"
+msgid "Enter new filename"
+msgstr "Nhập tên tập tin mới"
+
+msgctxt "#16014"
+msgid "Enter folder name"
+msgstr "Nhập tên thư mục"
+
+msgctxt "#16015"
+msgid "Enter directory"
+msgstr "Nhập thư mục"
+
+msgctxt "#16016"
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Các tuỳ chọn: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+msgctxt "#16017"
+msgid "Enter search string"
+msgstr "Nhập chuỗi tìm kiếm"
+
 msgctxt "#16018"
 msgid "None"
 msgstr "Không"
+
+msgctxt "#16019"
+msgid "Auto select"
+msgstr "Lựa chọn tự động"
+
+msgctxt "#16020"
+msgid "De-interlace"
+msgstr "Huỷ đan xen"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Đang hủy..."
+
+msgctxt "#16025"
+msgid "Enter the artist name"
+msgstr "Nhập tên nghệ sỹ"
 
 msgctxt "#16026"
 msgid "Playback failed"
@@ -1989,9 +5277,29 @@ msgctxt "#16039"
 msgid "Off"
 msgstr "Tắt"
 
+msgctxt "#16040"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "Song lập thương"
+
+msgctxt "#16316"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Tìm chương trình tương tự"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Kênh"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -2004,6 +5312,26 @@ msgstr "Kênh Radio"
 msgctxt "#19031"
 msgid "Next"
 msgstr "Kế"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Kênh:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Ngày:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Bắt đầu:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Kết thúc:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Ưu tiên:"
 
 msgctxt "#19098"
 msgid "Warning"
@@ -2021,9 +5349,181 @@ msgctxt "#19177"
 msgid "Playback"
 msgstr "Xem lại"
 
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Tiếp tục?"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Nhóm:"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Đổi mã PIN"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Sai mã PIN"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Cảnh báo bị xung đột"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Lỗi xung đột"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Xung đột trong quá trình ghi"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Lỗi ghi"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Chuyên biệt cho máy khách"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Thiết lập chuyên biệt cho máy khách"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Nhấn OK để xác nhận chuyển kênh"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Điều tra/Ly kỳ"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Hài hước"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Lãng mạn"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Thể thao"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Tạp trí thể thao"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Tôn giáo"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Thời trang"
+
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Ngôn ngữ"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Nấu ăn"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Làm vườn"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Ngôn ngữ gốc"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Chưa phát hành"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Phát live"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Điều tra/Ly kỳ"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Hài hước"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Lãng mạn"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Người lớn"
+
+msgctxt "#20047"
+msgid "Create profile '%s'?"
+msgstr "Tạo tài khoản '%s'?"
+
+msgctxt "#20058"
+msgid "Add profile..."
+msgstr "Thêm tài khoản..."
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "Thông tin media"
+
+msgctxt "#20065"
+msgid "Profile picture"
+msgstr "Ảnh tài khoản"
+
+msgctxt "#20067"
+msgid "Edit profile"
+msgstr "Sửa tài khoản"
+
+msgctxt "#20068"
+msgid "Profile lock"
+msgstr "Khóa tài khoản"
+
+msgctxt "#20070"
+msgid "Profile directory"
+msgstr "Thư mục tài khoản"
+
+msgctxt "#20078"
+msgid "- no link set -"
+msgstr "- chưa đặt liên kết -"
+
+msgctxt "#20092"
+msgid "Load profile"
+msgstr "Nạp tài khoản"
+
+msgctxt "#20093"
+msgid "Profile name"
+msgstr "Tên tài khoản"
+
+msgctxt "#20095"
+msgid "Enter profile lock code"
+msgstr "Điền mã khóa tài khoản"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "Màn hình đăng nhập"
+
+msgctxt "#20103"
+msgid "Save changes to profile?"
+msgstr "Lưu thay đổi vào tài khoản?"
+
+msgctxt "#20114"
+msgid "Profile %i / %i"
+msgstr "Tài khoản %i / %i"
+
+msgctxt "#20115"
+msgid "User login / Select a profile"
+msgstr "Đăng nhập / Chọn tài khoản"
 
 msgctxt "#20142"
 msgid "Username"
@@ -2032,6 +5532,66 @@ msgstr "Tên truy nhập"
 msgctxt "#20159"
 msgid "Video information"
 msgstr "Thông tin video"
+
+msgctxt "#20163"
+msgid "of"
+msgstr "của"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "FTP server"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Công bố các cập nhật thư viện thông qua UPnP"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "Tuỳ chỉnh"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Nhạc Android"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Video Android"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Ảnh android"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Ảnh Android"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Các ứng dụng Android"
+
+msgctxt "#20255"
+msgid "First logon, edit your profile"
+msgstr "Đăng nhập lần đầu tiên, hãy chỉnh sửa tài khoản"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Đang quét phim sử dụng %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Đang quét video nhạc sử dụng %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Đang quét show truyền hình sử dụng %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Đang quét nghệ sỹ sử dụng %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Đang quét album sử dụng %s"
 
 msgctxt "#20331"
 msgid "File"
@@ -2045,9 +5605,57 @@ msgctxt "#20342"
 msgid "Movies"
 msgstr "Phim"
 
+msgctxt "#20384"
+msgid "Link to TV show"
+msgstr "Liên kết với TV show"
+
+msgctxt "#20385"
+msgid "Remove link to TV show"
+msgstr "Xóa liên kết với TV show"
+
+msgctxt "#20420"
+msgid "Never"
+msgstr "Không bao giờ"
+
+msgctxt "#20422"
+msgid "Always"
+msgstr "Luôn luôn"
+
+msgctxt "#20425"
+msgid "Fanart slideshow"
+msgstr "Trình chiếu Fanart"
+
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Fanart"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Các thẻ"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Thêm %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Bỏ %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Thẻ mới..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "Trùng thẻ với tên '%s' đã tồn tại"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Chọn %s"
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "Bình thường"
 
 msgctxt "#21385"
 msgid "Open"
@@ -2057,6 +5665,58 @@ msgctxt "#21387"
 msgid "Fast"
 msgstr "Nhanh"
 
+msgctxt "#21400"
+msgid "contains"
+msgstr "chứa"
+
+msgctxt "#21401"
+msgid "does not contain"
+msgstr "không chứa"
+
+msgctxt "#21402"
+msgid "is"
+msgstr "là"
+
+msgctxt "#21403"
+msgid "is not"
+msgstr "không phải là"
+
+msgctxt "#21404"
+msgid "starts with"
+msgstr "bắt đầu với"
+
+msgctxt "#21405"
+msgid "ends with"
+msgstr "kết thúc với"
+
+msgctxt "#21406"
+msgid "greater than"
+msgstr "lớn hơn"
+
+msgctxt "#21407"
+msgid "less than"
+msgstr "nhỏ hơn"
+
+msgctxt "#21408"
+msgid "after"
+msgstr "sau"
+
+msgctxt "#21409"
+msgid "before"
+msgstr "trước"
+
+msgctxt "#21410"
+msgid "in the last"
+msgstr "ở cuối cùng"
+
+msgctxt "#21411"
+msgid "not in the last"
+msgstr "không ở cuối cùng"
+
+msgctxt "#21417"
+msgid "- Settings"
+msgstr "- Cài đặt"
+
 msgctxt "#21445"
 msgid "Video codec"
 msgstr "Bộ giải mã Video"
@@ -2064,6 +5724,26 @@ msgstr "Bộ giải mã Video"
 msgctxt "#21446"
 msgid "Audio codec"
 msgstr "Bộ giải mã Audio"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Lưu trữ ngoài"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Số phần đã xem"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f đến %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d đến %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s đến %s"
 
 msgctxt "#21805"
 msgid "Resolution"
@@ -2073,9 +5753,25 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr "Bình Luận"
 
+msgctxt "#21873"
+msgid "City"
+msgstr "Thành phố"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "Bang"
+
 msgctxt "#21875"
 msgid "Country"
 msgstr "Quốc gia"
+
+msgctxt "#21877"
+msgid "Date created"
+msgstr "Ngày tạo"
+
+msgctxt "#22013"
+msgid "Profile data"
+msgstr "Dữ liệu tài khoản"
 
 msgctxt "#22030"
 msgid "Font"
@@ -2085,13 +5781,25 @@ msgctxt "#22031"
 msgid "- Size"
 msgstr "- Dung lượng"
 
+msgctxt "#22032"
+msgid "- Colours"
+msgstr "- Các màu sắc"
+
 msgctxt "#23054"
 msgid "Running"
 msgstr "Đang chạy"
 
+msgctxt "#24007"
+msgid "Movie information"
+msgstr "Thông tin phim"
+
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "Trình bảo vệ màn hình"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "Trình diễn hình"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -2101,13 +5809,41 @@ msgctxt "#24013"
 msgid "Lyrics"
 msgstr "Lời Bài Hát"
 
+msgctxt "#24016"
+msgid "Album information"
+msgstr "Thông tin album"
+
 msgctxt "#24018"
 msgid "Services"
 msgstr "Dịch vụ"
 
 msgctxt "#24027"
 msgid "Weather"
-msgstr "Thời Tiết"
+msgstr "Thời tiết"
+
+msgctxt "#24028"
+msgid "Weather.com (standard)"
+msgstr "Weather.com (chuẩn)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Dịch vụ cho thông tin thời tiết"
+
+msgctxt "#24037"
+msgid "Uninstall"
+msgstr "Gỡ bỏ"
+
+msgctxt "#24038"
+msgid "Install"
+msgstr "Cài"
+
+msgctxt "#24041"
+msgid "Install from zip file"
+msgstr "Cài đặt từ file zip"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Không thể nạp được skin"
 
 msgctxt "#33006"
 msgid "Today"
@@ -2141,6 +5877,18 @@ msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Tệp này đã bị chia cắt, chọn phần bạn muốn chơi."
 
+msgctxt "#34122"
+msgid "Always"
+msgstr "Luôn luôn"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Không bao giờ"
+
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Cấm tay cầm khi tìm thấy thiết bị"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Đường dẫn"
@@ -2148,3 +5896,63 @@ msgstr "Đường dẫn"
 msgctxt "#35502"
 msgid "Name"
 msgstr "Tên"
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr "Không thể khởi tạo bộ thích ứng CEC. Hãy kiểm tra lại các thiết lập."
+
+msgctxt "#36016"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "Không thể khởi tạo bộ thích ứng CEC: không tìm thấy libCEC trên hệ thống."
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Bỏ qua"
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr "Khi TV bị tắt"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "Mất kết nối"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Người dùng không có quyền để mở bộ thích ứng CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "Cổng này đang bận. Chỉ có một chương trình có thể truy cập  bộ thích ứng CEC"
+
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Dừng phát lại khi chuyển qua nguồn khác"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "Luôn luôn"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Khi bắt đầu/dừng"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "Thiết bị TV và AVR (tường minh)"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Phiên bản giao diện libCEC không được hỗ trợ. Phiên bản %x thấp hơn phiên bản được XBMC hỗ trợ (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Thư mục item"

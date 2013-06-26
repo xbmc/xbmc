@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<window id="51">
+	<defaultcontrol always="true">65</defaultcontrol>
+	<backgroundcolor>0</backgroundcolor>
+	<controls>
+		<include>BGGrainy</include>
+		<include>SlideshowDimmed</include>
+		<!-- ViewsSearch.xml -->
+		<include>SearchMain</include>
+		<include>debugInfos</include>
+		<include>Grid</include>
+	</controls>
+</window>

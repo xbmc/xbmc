@@ -1,0 +1,367 @@
+<?xml version="1.0"?>
+<window id="201">
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="label" id="100">
+			<visible>false</visible>
+		</control>
+		<control type="label" id="101">
+			<visible>false</visible>
+		</control>
+		<control type="image">
+			<description>Background Overlay</description>
+			<include>FullScreenOverlayDims</include>
+			<aspectratio>stretch</aspectratio>
+			<texture>BlackTransparent.png</texture>
+			<colordiffuse>99cccccc</colordiffuse>
+			<include>DialogFadeInOut</include>
+		</control>
+		<control type="group">
+			<posx>448</posx>
+			<posy>240</posy>
+			<include>DialogFadeInOut</include>
+			<!-- "off" dialog -->
+			<control type="group">
+				<description>"Off" background</description>
+				<posy>40</posy>
+				<visible>!Control.IsVisible(100)</visible>
+				<animation effect="slide" start="0,-40">Visible</animation>
+				<animation effect="slide" end="0,-40">Hidden</animation>
+				<control type="image">
+					<texture>DialogContextTop.png</texture>
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>250</width>
+					<height>37</height>
+				</control>
+				<control type="image">
+					<texture>DialogContextMiddle.png</texture>
+					<posx>0</posx>
+					<posy>37</posy>
+					<width>250</width>
+					<height>123</height>
+				</control>
+				<control type="image">
+					<texture>DialogContextBottom.png</texture>
+					<posx>0</posx>
+					<posy>160</posy>
+					<width>250</width>
+					<height>12</height>
+				</control>
+			</control>
+			<control type="label" id="1">
+				<visible>!Control.IsVisible(100)</visible>
+				<animation effect="fade" time="0" delay="400" start="0">Visible</animation>
+				<posy>56</posy>
+				<width>250</width>
+				<align>center</align>
+				<font>TitleCapsFont</font>
+				<label>Set Timer</label>
+			</control>
+			<control type="group">
+			<control type="group">
+				<description>Normal background (top)</description>
+				<visible>Control.IsVisible(100)</visible>
+				<animation effect="slide" start="0,40" time="300">Visible</animation>
+				<animation effect="slide" end="0,40" time="300" delay="200">Hidden</animation>
+				<control type="image">
+					<texture>DialogContextTop.png</texture>
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>250</width>
+					<height>37</height>
+				</control>
+				<control type="image">
+					<texture>DialogContextMiddle.png</texture>
+					<posx>0</posx>
+					<posy>37</posy>
+					<width>250</width>
+					<height>100</height>
+				</control>
+				<control type="label" id="2">
+					<posy>16</posy>
+					<width>250</width>
+					<align>center</align>
+					<font>TitleCapsFont</font>
+					<label>Set Timer</label>
+				</control>
+			</control>
+			<control type="group">
+				<description>Normal background (bottom)</description>
+				<visible>Control.IsVisible(100)</visible>
+				<animation effect="slide" start="0,-40" time="300">Visible</animation>
+				<animation effect="slide" end="0,-40" time="300" delay="200">Hidden</animation>
+				<control type="image">
+					<texture>DialogContextMiddle.png</texture>
+					<posx>0</posx>
+					<posy>137</posy>
+					<width>250</width>
+					<height>101</height>
+				</control>
+				<control type="image">
+					<texture>DialogContextBottom.png</texture>
+					<posx>0</posx>
+					<posy>238</posy>
+					<width>250</width>
+					<height>12</height>
+				</control>
+			</control>
+			<control type="group">
+				<description>Time cell background</description>				
+					<posx>-5</posx>
+					<posy>-10</posy>
+				<animation type="Visible">
+					<effect type="fade" time="300"/>
+					<effect type="slide" time="300" start="0,40"/>
+				</animation>
+				<animation type="Hidden">
+					<effect type="fade" time="300" delay="200"/>
+					<effect type="slide" time="300" end="0,40" delay="200"/>
+				</animation>
+				<visible>Control.IsVisible(100)</visible>
+				<control type="image" id="11">
+					<posx>32</posx>
+					<posy>65</posy>
+					<width>199</width>
+					<height>92</height>
+					<texture>flipclock_bg.png</texture>
+				</control>
+				<!--><control type="image" id="10">
+					<posx>23</posx>
+					<posy>56</posy>
+					<width>95</width>
+					<height>84</height>
+					<texture border="20">DialogWell.png</texture>
+				</control>
+				<control type="image" id="11">
+					<posx>132</posx>
+					<posy>56</posy>
+					<width>95</width>
+					<height>84</height>
+					<texture border="20">DialogWell.png</texture>
+				</control>-->
+			</control>
+			<control type="group">
+				<description>Time cell labels</description>
+					<posx>-5</posx>
+					<posy>-10</posy>
+				<animation type="Visible">
+					<effect type="fade" time="100" delay="200"/>
+					<effect type="slide" time="300" start="0,40"/>
+				</animation>
+				<animation type="Hidden">
+					<effect type="fade" time="300"/>
+					<effect type="slide" time="300" end="0,40" delay="200"/>
+				</animation>
+				<animation effect="fade" start="0" end="90" time="0" condition="true">Conditional</animation>
+				<visible>Control.IsVisible(100)</visible>
+				<control type="label" id="21">
+					<posx>35</posx>
+					<posy>71</posy>
+					<width>95</width>
+					<align>center</align>
+					<label/>
+					<font>XXXLargeTitleCapsFont</font>
+				</control>
+				<control type="label" id="22">
+					<posx>135</posx>
+					<posy>71</posy>
+					<width>95</width>
+					<align>center</align>
+					<label/>
+					<font>XXXLargeTitleCapsFont</font>
+				</control>
+				<control type="image" id="11">
+					<posx>50</posx>
+					<posy>107</posy>
+					<width>65</width>
+					<height>3</height>
+					<texture>black.png</texture>
+				</control>
+				<control type="image" id="11">
+					<posx>150</posx>
+					<posy>107</posy>
+					<width>65</width>
+					<height>3</height>
+					<texture>black.png</texture>
+				</control>
+				<!--<control type="label" id="25">
+					<posx>1</posx>
+					<posy>76</posy>
+					<width>253</width>
+					<align>center</align>
+					<label>:</label>
+					<textcolor>HomeMain2</textcolor>
+					<font>XLargeTitleCapsFont</font>
+				</control>-->
+			</control>
+			</control>
+			<control type="group">
+				<description>"Off" cell background</description>
+				<posy>40</posy>
+				<visible>!Control.IsVisible(100)</visible>
+				<animation type="Visible">
+					<effect type="slide" time="300" start="0,-40" delay="200"/>
+					<effect type="fade" time="200" delay="200"/>
+				</animation>
+				<animation type="Hidden">
+					<effect type="slide" time="300" end="0,-40"/>
+					<effect type="fade" time="200"/>
+				</animation>
+				<control type="group">
+					<description>Time cell background</description>				
+						<posx>-5</posx>
+						<posy>-10</posy>
+					<control type="image" id="11">
+						<posx>32</posx>
+						<posy>65</posy>
+						<width>199</width>
+						<height>92</height>
+						<texture>flipclock_bg.png</texture>
+					</control>
+					<!--><control type="image" id="10">
+						<posx>23</posx>
+						<posy>56</posy>
+						<width>95</width>
+						<height>84</height>
+						<texture border="20">DialogWell.png</texture>
+					</control>
+					<control type="image" id="11">
+						<posx>132</posx>
+						<posy>56</posy>
+						<width>95</width>
+						<height>84</height>
+						<texture border="20">DialogWell.png</texture>
+					</control>-->
+				</control>
+				<control type="group">
+					<description>Time cell labels</description>
+						<posx>-5</posx>
+						<posy>-10</posy>
+					<control type="label" id="10">
+						<posx>35</posx>
+						<posy>52</posy>
+						<width>95</width>
+						<align>center</align>
+						<label>--</label>
+						<font>XXXXLargeTitleCapsFont</font>
+					</control>
+					<control type="label">
+						<posx>135</posx>
+						<posy>52</posy>
+						<width>95</width>
+						<align>center</align>
+						<label>--</label>
+						<font>XXXXLargeTitleCapsFont</font>
+					</control>
+					<control type="image" id="11">
+						<posx>50</posx>
+						<posy>107</posy>
+						<width>65</width>
+						<height>3</height>
+						<texture>black.png</texture>
+					</control>
+					<control type="image" id="11">
+						<posx>150</posx>
+						<posy>107</posy>
+						<width>65</width>
+						<height>3</height>
+						<texture>black.png</texture>
+					</control>
+					<!--<control type="label" id="25">
+						<posx>1</posx>
+						<posy>76</posy>
+						<width>253</width>
+						<align>center</align>
+						<label>:</label>
+						<textcolor>HomeMain2</textcolor>
+						<font>XLargeTitleCapsFont</font>
+					</control>-->
+				</control>
+				<!--><control type="image" id="9">
+					<posx>23</posx>
+					<posy>56</posy>
+					<width>204</width>
+					<height>84</height>
+					<texture border="20">DialogWell.png</texture>
+				</control>-->
+			</control>
+			<control type="group">
+				<posy>40</posy>
+				<visible>!Control.IsVisible(100)</visible>
+				<animation type="Visible">
+					<effect type="slide" time="300" start="0,-40" delay="200"/>
+					<effect type="fade" time="200" delay="200"/>
+				</animation>
+				<animation type="Hidden">
+					<effect type="slide" time="300" end="0,-40"/>
+					<effect type="fade" time="200"/>
+				</animation>
+				<!--><control type="label">
+					<posy>60</posy>
+					<width>248</width>
+					<align>center</align>
+					<label>591</label>
+					<font>XXXXLargeTitleCapsFont</font>
+				</control>-->
+			</control>
+			<control type="group">
+				<description>Unit labels</description>
+				<posx>-5</posx>
+				<posy>-10</posy>
+				<animation type="Visible">
+					<effect type="fade" time="200" delay="100"/>
+					<effect type="slide" time="200" delay="100" start="0,10"/>
+				</animation>
+				<animation type="Hidden">
+					<effect type="fade" time="300"/>
+					<effect type="slide" time="300" delay="100" end="0,10"/>
+				</animation>
+				<visible>Control.IsVisible(100)</visible>
+				<control type="label" id="23">
+					<description>Hours</description>
+					<posx>32</posx>
+					<posy>152</posy>
+					<width>95</width>
+					<align>center</align>
+					<label>12392</label>
+					<textcolor>HomeMain2</textcolor>
+					<font>SmallDefaultFont</font>
+				</control>
+				<control type="label" id="24">
+					<description>Minutes</description>
+					<posx>133</posx>
+					<posy>152</posy>
+					<width>95</width>
+					<align>center</align>
+					<label>12391</label>
+					<textcolor>HomeMain2</textcolor>
+					<font>SmallDefaultFont</font>
+				</control>
+			</control>
+			<control type="group">
+				<animation effect="fade" time="400" delay="200">Visible</animation>
+				<animation effect="fade" time="200">Hidden</animation>
+				<visible>Control.IsVisible(100) + Control.IsVisible(101)</visible>
+				<control type="label" id="30">
+					<posy>180</posy>
+					<width>250</width>
+					<align>center</align>
+					<label>The system will shut down at</label>
+					<font>SmallDefaultFont</font>
+				</control>
+				<control type="label" id="31">
+					<posy>200</posy>
+					<width>250</width>
+					<align>center</align>
+					<label>10.00 PM</label>
+					<font>LargeDefaultFont</font>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

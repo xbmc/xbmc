@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<window id="135">
+	<defaultcontrol>10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<include>FadeDialog</include>
+	<controls>
+		<include>FadeDialogBG</include>
+		<control type="group">
+			<include>InfoDialogPos</include>
+			<include>InfoDialogBG</include>
+			<control type="group">
+				<description>Thumb image</description>
+				<posx>InfoDialogLargeThumbPosX</posx>
+				<posy>104</posy>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<control type="image">
+					<width>InfoDialogLargeThumbWidth</width>
+					<height>366</height>
+					<texture>DefaultAlbumCover.png</texture>
+					<info>ListItem.Art(thumb)</info>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordertexture border="14">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="label">
+					<posy>60</posy>
+					<width>InfoDialogLargeThumbWidth</width>
+					<font>TitleCapsFont</font>
+					<include>NoThumbLabel</include>
+				</control>
+				<control type="image">
+					<posx>8</posx>
+					<posy>358</posy>
+					<width>InfoDialogLargeThumbTextWidth</width>
+					<height>350</height>
+					<texture flipy="true" diffuse="DiffuseMirror3.png">DefaultAlbumCover.png</texture>
+					<info>ListItem.Art(thumb)</info>
+					<aspectratio aligny="top">keep</aspectratio>
+				</control>
+			</control>
+			<control type="group">
+				<posx>InfoDialogTitleXOffset</posx>
+				<control type="label">
+					<description>Song title</description>
+					<label>$INFO[ListItem.Title]</label>
+					<include>InfoDialogTitle</include>
+				</control>
+				<control type="grouplist">
+					<posx>SongInfoToButtonPosX</posx>
+					<posy>InfoDialogTopButtonsPosY</posy>
+					<orientation>horizontal</orientation>
+					<ondown>15</ondown>
+					<control type="button" id="10">
+						<description>OK</description>
+						<label>186</label>
+						<include>MusicInfoTopButton</include>
+					</control>
+					<control type="button" id="11">
+						<description>Cancel</description>
+						<label>222</label>
+						<include>MusicInfoTopButton</include>
+					</control>
+					<control type="button" id="12">
+						<description>Album Info</description>
+						<label>10523</label>
+						<include>MusicInfoTopButton</include>
+					</control>
+				</control>
+				<control type="group">
+					<posx>10</posx>
+					<posy>120</posy>
+					<control type="group">
+						<description>Artist</description>
+						<control type="label">
+							<label>$LOCALIZE[557]</label>
+							<include>MediaInfoCaption</include>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Artist]</label>
+							<include>MediaInfoWideValue</include>
+						</control>
+						<control type="group">
+							<description>Album</description>
+							<posy>MusicSongInfoDetailOffset</posy>
+							<control type="label">
+								<label>$LOCALIZE[558]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<label>$INFO[ListItem.Album]</label>
+								<include>MediaInfoWideValue</include>
+							</control>
+							<control type="group">
+								<description>Year</description>
+								<posy>MusicSongInfoDetailOffset</posy>
+								<control type="label">
+									<label>$LOCALIZE[345]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="label">
+									<label>$INFO[ListItem.Year]</label>
+									<include>MediaInfoWideValue</include>
+								</control>
+								<control type="group">
+									<description>Genre</description>
+									<posy>MusicSongInfoDetailOffset</posy>
+									<control type="label">
+										<label>$LOCALIZE[515]</label>
+										<include>MediaInfoCaption</include>
+									</control>
+									<control type="label">
+										<label>$INFO[ListItem.Genre]</label>
+										<include>MediaInfoWideValue</include>
+									</control>
+									<control type="group">
+										<description>Track No.</description>
+										<posy>MusicSongInfoDetailOffset</posy>
+										<control type="label">
+											<label>$LOCALIZE[31030]</label>
+											<include>MediaInfoCaption</include>
+										</control>
+										<control type="label">
+											<label>$INFO[ListItem.TrackNumber]</label>
+											<include>MediaInfoWideValue</include>
+										</control>
+										<control type="group">
+											<description>Rating</description>
+											<posy>MusicSongInfoDetailOffset</posy>
+											<control type="label">
+												<label>$LOCALIZE[563]</label>
+												<include>MediaInfoCaption</include>
+											</control>
+											<control type="image">
+												<include>SongInfoRatingImageDims</include>
+												<info>ListItem.Rating</info>
+												<include>MediaInfoWideValue</include>
+											</control>
+											<control type="button" id="14">
+												<description>Decrease Rating</description>
+												<posx>SongInfoDecreaseRatingPosX</posx>
+												<onclick>DecreaseRating</onclick>
+												<texturenofocus>ArrowDownNF.png</texturenofocus>
+												<texturefocus>ArrowDownFO.png</texturefocus>
+												<onleft>15</onleft>
+												<onright>15</onright>
+												<include>MusicSongRatingChangeArrow</include>
+											</control>
+											<control type="button" id="15">
+												<description>Increase Rating</description>
+												<posx>SongInfoIncreaseRatingPosX</posx>
+												<onclick>IncreaseRating</onclick>
+												<texturenofocus>ArrowUpNF.png</texturenofocus>
+												<texturefocus>ArrowUpFO.png</texturefocus>
+												<onleft>14</onleft>
+												<onright>14</onright>
+												<include>MusicSongRatingChangeArrow</include>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>10</posx>
+					<posy>308</posy>
+					<control type="textbox">
+						<description>Comment</description>
+						<width>450</width>
+						<height>240</height>
+						<info>ListItem.Comment</info>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<window id="2003">
+	<defaultcontrol always="true">10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="button" id="10">
+			<description>Trigger</description>
+			<onfocus>PreviousMenu</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+		</control>
+	</controls>
+</window>

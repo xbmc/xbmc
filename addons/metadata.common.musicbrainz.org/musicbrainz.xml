@@ -45,6 +45,9 @@
 				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistLifeSpanByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
+				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetTADBFallbackLifeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
 			<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$11" dest="2">

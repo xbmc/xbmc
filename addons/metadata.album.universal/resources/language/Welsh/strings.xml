@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Welsh language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cy/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Estyn Lluniau Bach Album o fanart.tv</string>
+    <string id="30001">Estyn Lluniau Bach Album o Last.fm</string>
+    <string id="30002">Estyn Adolygiad Album</string>
+    <string id="30003">Dewis Iaith</string>
+    <string id="30004">Estyn Graddio Album o</string>
+    <string id="30005">Estyn Arddulliau Album o</string>
+    <string id="30006">Estyn Naws Album o</string>
+    <string id="30007">Estyn Themau Album o</string>
+    <string id="30008">Estyn Lluniau Bach Album o allmusic.com</string>
+    <string id="30009">Gwaith Celf</string>
+    <string id="30010">Estyn Lluniau Bach Album o theaudiodb.com</string>
+</strings>

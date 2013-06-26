@@ -1,0 +1,10 @@
+﻿<?xml version="1.0"?>
+<window id="101">
+	<defaultcontrol always="true">10</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogProgress</include>
+	</controls>
+</window>

@@ -87,6 +87,7 @@ namespace XFILE
       bool Put(const CStdString& strURL, CStdString& strHTML);
       bool Delete(const CStdString& strURL, CStdString& strHTML);
       void ClearCookies() { m_clearCookies = true; }
+      long GetLastHTTPResponseCode() const { return m_httpresponse; }
       /* END PLEX */
 
       class CReadState

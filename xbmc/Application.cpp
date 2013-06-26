@@ -338,9 +338,8 @@
 /* PLEX */
 #include "plex/PlexApplication.h"
 #include "plex/Players/PlexMediaServerPlayer.h"
-#include "plex/PlexMediaServerQueue.h"
-#include "plex/MyPlexManager.h"
-#include "plex/PlexServerManager.h"
+#include "Client/PlexMediaServerClient.h"
+#include "plex/Client/PlexServerManager.h"
 #include "plex/Helper/PlexHTHelper.h"
 #include "plex/GUI/GUIDialogRating.h"
 #include "plex/GUI/GUIWindowSharedContent.h"
@@ -351,9 +350,10 @@
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
 #include "plex/GUI/GUIPlexMusicWindow.h"
-#include "plex/GUI/GUIDialogMyPlexPin.h"
+#include "plex/GUI/GUIDialogMyPlex.h"
 #include "plex/GUI/GUIDialogPlexPluginSettings.h"
-   
+#include "plex/GUI/GUIWindowPlexPreplayVideo.h"
+#include "plex/GUI/GUIWindowPlexMyChannels.h"
 #include "settings/GUISettings.h"
 /* END PLEX */
 
@@ -1370,7 +1370,9 @@ bool CApplication::Initialize()
 #endif
     g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);
     g_windowManager.Add(new CGUIWindowSettingsCategory);
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowVideoNav);
+#endif
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
     g_windowManager.Add(new CGUIWindowLoginScreen);
     g_windowManager.Add(new CGUIWindowSettingsProfile);
@@ -1436,7 +1438,9 @@ bool CApplication::Initialize()
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);
     g_windowManager.Add(new CGUIWindowMusicSongs);
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicNav);
+#endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
 
     /* Load PVR related Windows and Dialogs */
@@ -1480,12 +1484,12 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
     g_windowManager.Add(new CGUIDialogFilterSort);
-#if 0 // Add these later to enable filtering again
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
-#endif
-    g_windowManager.Add(new CGUIDialogMyPlexPin);
+    g_windowManager.Add(new CGUIWindowPlexPreplayVideo);
+    g_windowManager.Add(new CGUIDialogMyPlex);
     g_windowManager.Add(new CGUIDialogPlexPluginSettings);
+    g_windowManager.Add(new CGUIWindowPlexMyChannels);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
@@ -2536,8 +2540,6 @@ void CApplication::Render()
     g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
@@ -3516,6 +3518,7 @@ bool CApplication::Cleanup()
   try
   {
     /* PLEX */
+    g_windowManager.Delete(WINDOW_PLEX_MYCHANNELS);
     g_windowManager.Delete(WINDOW_SHARED_CONTENT);
     g_windowManager.Delete(WINDOW_NOW_PLAYING);
     g_windowManager.Delete(WINDOW_PLEX_SEARCH);
@@ -3838,10 +3841,6 @@ void CApplication::Stop(int exitCode)
 #endif
 #endif
 
-    /* PLEX */
-    PlexMediaServerQueue::Get().StopThread();
-    /* END PLEX */
-
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::RemoveInstance();
 #endif
@@ -4067,9 +4066,9 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 #else
         /* PLEX */
         int duration = 0;
-        if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->duration > 0)
+        if (item.m_mediaParts.size() > (unsigned int)i && item.m_mediaParts[i]->GetProperty("duration").asInteger() > 0)
         {
-          duration = item.m_mediaParts[i]->duration;
+          duration = item.m_mediaParts[i]->GetProperty("duration").asInteger();
         }
         /* END PLEX */
 #endif
@@ -4246,7 +4245,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   /* PLEX */
-  PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+  CPlexServerPtr bestServer = g_plexServerManager.GetBestServer();
   /* END PLEX */
 
   CPlayerOptions options;
@@ -4261,7 +4260,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   PLAYERCOREID eNewCore = EPC_NONE;
   /* PLEX */
-  if (bestServer && bestServer->local == false && item.IsPlexWebkit())
+  if (bestServer &&
+      bestServer->GetActiveConnection() &&
+      bestServer->GetActiveConnection()->IsLocal() == false &&
+      item.IsPlexWebkit())
   {
     eNewCore = EPC_DVDPLAYER;
   }
@@ -5252,11 +5254,22 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 #endif
 
-      // ok - send the file to the player if it wants it
-      if (m_pPlayer && m_pPlayer->QueueNextFile(file))
-      { // player wants the next file
-        m_nextPlaylistItem = iNext;
+      // ok - send the file to the player, if it accepts it
+      if (m_pPlayer)
+      {
+        if (m_pPlayer->QueueNextFile(file))
+        {
+          // player accepted the next file
+          m_nextPlaylistItem = iNext;
+        }
+        else
+        {
+          /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
+             queue the next (if it wants to) and it doesn't keep looping on this song */
+          g_playlistPlayer.SetCurrentSong(iNext);
+        }
       }
+
       return true;
     }
     break;
@@ -5271,11 +5284,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED)
-        UpdateFileState("stopped");
-
       if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED || message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+      {
+        UpdateFileState("stopped");
         HideBusyIndicator();
+      }
       /* END PLEX */
 
 #ifdef TARGET_DARWIN
@@ -5543,6 +5556,8 @@ void CApplication::ProcessSlow()
 
   if (!IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();
+
+  g_TextureManager.FreeUnusedTextures();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
@@ -6340,12 +6355,12 @@ void CApplication::UpdateFileState(const string& aState)
           m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(t*1000)));
           m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
         }
-
-        PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, int(t*1000), state);
+        
+        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
       else
       {
-        PlexMediaServerQueue::Get().onPlayTimeline(m_itemCurrentFile, int(t*1000), state);
+        g_plexMediaServerClient.ReportItemProgress(m_itemCurrentFile, state, int(t*1000));
       }
     }
 
@@ -6358,7 +6373,7 @@ void CApplication::UpdateFileState(const string& aState)
       m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
       m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
       m_itemCurrentFile->ClearProperty("viewOffset");
-      PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+      g_plexMediaServerClient.SetItemWatched(m_itemCurrentFile);
     }
 
     // Update the item in place.

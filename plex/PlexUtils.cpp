@@ -15,6 +15,9 @@
 
 #include "SystemInfo.h"
 
+#include "utils/StringUtils.h"
+#include "addons/Skin.h"
+
 #ifdef TARGET_DARWIN_OSX
 #include <CoreServices/CoreServices.h>
 #endif
@@ -26,6 +29,27 @@
 using namespace std;
 using namespace boost;
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsLocalNetworkIP(const CStdString &host)
+{
+  bool isLocal = false;
+  if (starts_with(host, "10.") || starts_with(host, "192.168.") || starts_with(host, "127.0.0.1"))
+  {
+    isLocal = true;
+  }
+  else if (starts_with(host, "172."))
+  {
+    vector<string> elems = StringUtils::Split(host, ".");
+    if (elems.size() == 4)
+    {
+      int secondOct = lexical_cast<int>(elems[1]);
+      if (secondOct >= 16 && secondOct <= 31)
+        isLocal = true;
+    }
+  }
+  return isLocal;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 std::string PlexUtils::CacheImageUrl(const string &url)
@@ -61,6 +85,16 @@ int64_t PlexUtils::Size(const CStdString& strFileName)
   if (XFILE::CFile::Stat(strFileName, &buffer) == 0)
     return buffer.st_size;
   return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexUtils::AppendPathToURL(CURL& baseURL, const string& relativePath)
+{
+  string filename = baseURL.GetFileName();
+  if (boost::ends_with(filename, "/") == false)
+    filename += "/";
+  filename += relativePath;
+  baseURL.SetFileName(filename);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +175,7 @@ string PlexUtils::GetHostName()
 bool PlexUtils::IsPlexMediaServer(const CStdString& strFile)
 {
   CURL url(strFile);
-  if (url.GetProtocol() == "plex" || url.GetPort() == 32400 || url.GetOptions().find("X-Plex-Token") != -1)
+  if (url.GetProtocol() == "plexserver" || url.GetProtocol() == "plex")
     return true;
 
   // A stack can also come from the Plex Media Servers.
@@ -228,6 +262,55 @@ string PlexUtils::GetMachinePlatformVersion()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetStreamChannelName(CFileItemPtr item)
+{
+  int64_t channels = item->GetProperty("channels").asInteger();
+
+  if (channels == 1)
+    return "Mono";
+  else if (channels == 2)
+    return "Stereo";
+
+  return boost::lexical_cast<std::string>(channels - 1) + ".1";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetStreamCodecName(CFileItemPtr item)
+{
+  std::string codec = item->GetProperty("codec").asString();
+  if (codec == "dca")
+    return "DTS";
+
+  return boost::to_upper_copy(codec);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+CFileItemPtr PlexUtils::GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType)
+{
+  BOOST_FOREACH(CFileItemPtr stream, mediaPart->m_mediaPartStreams)
+  {
+    int64_t _streamType = stream->GetProperty("streamType").asInteger();
+    bool selected = stream->GetProperty("selected").asBoolean();
+    if (_streamType == streamType && selected)
+      return stream;
+  }
+
+  return CFileItemPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PlexUtils::SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id)
+{
+  BOOST_FOREACH(CFileItemPtr stream, mediaPart->m_mediaPartStreams)
+  {
+    if (stream->GetProperty("streamType").asInteger() == streamType && stream->GetProperty("id").asInteger() == id)
+      stream->SetProperty("selected", true);
+    else
+      stream->SetProperty("selected", false);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
 
 int usleep(useconds_t useconds)
@@ -237,3 +320,9 @@ int usleep(useconds_t useconds)
 }
 
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::CurrentSkinHasPreplay()
+{
+  return g_SkinInfo->HasSkinFile("PlexPreplayVideo.xml");
+}

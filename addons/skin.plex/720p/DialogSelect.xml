@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<window id="2000">
+	<defaultcontrol>3</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include condition="!Window.IsVisible(10090)">DialogSelectDefault</include>
+		<include condition="Window.IsVisible(10090)">DialogSelectAudioSubtitleStreamPicker</include>
+	</controls>
+</window>

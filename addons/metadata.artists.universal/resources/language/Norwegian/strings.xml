@@ -4,6 +4,27 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Aktiv artist-fanart fra HTBackdrops.com</string>
+    <string id="30001">Aktiver Artist Thumbs fra allmusic.com</string>
+    <string id="30002">Aktiver Artist Thumbs fra last.fm</string>
+    <string id="30003">Aktiver Artist Thumbs fra HTBackdrops.com</string>
+    <string id="30004">Aktiver Artist Fanarts fra fanart.tv</string>
+    <string id="30005">Aktiv artist-forhåndsvisninger fra fanart.tv</string>
+    <string id="30006">Hent artistbiografi fra</string>
     <string id="30007">Artwork</string>
-    <string id="30015">Foretrukket Språk</string>
+    <string id="30008">Hent artist-diskografi fra</string>
+    <string id="30009">Hent artistsjangere fra</string>
+    <string id="30010">Hent artiststiler fra</string>
+    <string id="30011">Hent artistlevetid fra</string>
+    <string id="30012">Hent artisthumør fra</string>
+    <string id="30014">Hent artistens aktive år fra</string>
+    <string id="30015">Foretrukket språk</string>
+    <string id="30016">Fall tilbake til artistbiografi fra</string>
+    <string id="30017">Fall tilbake til artist-diskografi fra</string>
+    <string id="30018">Fall tilbake til artistsjangere fra</string>
+    <string id="30019">Fall tilbake til artiststiler fra</string>
+    <string id="30020">Fall tilbake til artistlevetid fra</string>
+    <string id="30021">Tilbakefallinger</string>
+    <string id="30022">Aktiver artist-forhåndsvisning fra theaudiodb.com</string>
+    <string id="30023">Aktiver artist-fanart fra theaudiodb.com</string>
 </strings>

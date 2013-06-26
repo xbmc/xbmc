@@ -105,6 +105,9 @@
 				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetMBFallbackLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
 					<expression>MusicBrainz</expression>
 				</RegExp>
+				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetTADBFallbackLifeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
 			<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$11" dest="2">
@@ -179,6 +182,9 @@
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
 					<expression>last.fm</expression>
+				</RegExp>
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetTADBFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
 				</RegExp>
 				<expression>&lt;genre&gt;&lt;/genre&gt;</expression>
 			</RegExp>
@@ -277,10 +283,10 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="\1" dest="8">
+			<RegExp input="$$1" output="\1" dest="10">
 				<expression noclean="1">&lt;h4&gt;artist moods&lt;/h4&gt;(.*?)&lt;/ul&gt;</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;mood&gt;\1&lt;/mood&gt;" dest="2">
+			<RegExp input="$$10" output="&lt;mood&gt;\1&lt;/mood&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />

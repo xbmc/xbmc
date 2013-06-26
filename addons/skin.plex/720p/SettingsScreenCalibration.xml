@@ -1,0 +1,71 @@
+﻿<?xml version="1.0"?>
+<window id="11">
+	<defaultcontrol>8</defaultcontrol>
+	<controls>
+		<control type="videowindow" id="20">
+			<description>Video Window</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+		</control>
+		<control type="mover" id="8">
+			<description>Top Left Mover</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>64</width>
+			<height>64</height>
+			<texturefocus>Calibrate.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="mover" id="9">
+			<description>Right Bottom Mover</description>
+			<posx>700</posx>
+			<posy>500</posy>
+			<width>64</width>
+			<height>64</height>
+			<texturefocus flipx="true" flipy="true">Calibrate.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="mover" id="10">
+			<description>Subtitle Position Mover</description>
+			<posx>200</posx>
+			<posy>500</posy>
+			<width>256</width>
+			<height>85</height>
+			<texturefocus border="7,0,7,0">CalibrateSubtitles.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="resize" id="11">
+			<description>Pixel Aspect Ratio Box</description>
+			<posx>0</posx>
+			<posy>270</posy>
+			<width>270</width>
+			<height>270</height>
+			<texturefocus>CalibratePixelRatio.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="image" id="1">
+			<description>Rectangle Image</description>
+			<posx>0</posx>
+			<posy>256</posy>
+			<width>720</width>
+			<height>57</height>
+			<texture>Bluebar.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>Coordinates Label</description>
+			<posx>55</posx>
+			<posy>260</posy>
+			<label>-</label>
+			<textcolor>Focused</textcolor>
+		</control>
+		<control type="label" id="3">
+			<description>Help Information</description>
+			<posx>55</posx>
+			<posy>280</posy>
+			<label>-</label>
+			<textcolor>Focused</textcolor>
+		</control>
+	</controls>
+</window>

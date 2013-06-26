@@ -3067,7 +3067,9 @@ namespace JSONRPC
       "\"description\": \"Jump forward in movie\","
       "\"transport\": \"Response\","
       "\"permission\": \"Navigate\","
-      "\"params\": [],"
+      "\"params\": ["
+          "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"Input.StepBackward\": {"
@@ -3075,7 +3077,9 @@ namespace JSONRPC
       "\"description\": \"Jump backwards in movie\","
       "\"transport\": \"Response\","
       "\"permission\": \"Navigate\","
-      "\"params\": [],"
+      "\"params\": ["
+              "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+          "],"
       "\"returns\": \"string\""
     "}",
     "\"Input.BigStepForward\": {"
@@ -3083,7 +3087,9 @@ namespace JSONRPC
       "\"description\": \"Big jump forward in movie\","
       "\"transport\": \"Response\","
       "\"permission\": \"Navigate\","
-      "\"params\": [],"
+      "\"params\": ["
+              "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"Input.BigStepBackward\": {"
@@ -3091,7 +3097,9 @@ namespace JSONRPC
       "\"description\": \"Big jump backward in movie\","
       "\"transport\": \"Response\","
       "\"permission\": \"Navigate\","
-      "\"params\": [],"
+      "\"params\": ["
+              "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+      "],"
       "\"returns\": \"string\""
     "}",
     /* END PLEX */

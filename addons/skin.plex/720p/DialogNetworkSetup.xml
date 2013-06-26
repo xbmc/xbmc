@@ -1,0 +1,107 @@
+﻿<?xml version="1.0"?>
+<window id="128">
+	<defaultcontrol>10</defaultcontrol>
+	<controls>
+		<include>FadeDialog</include>
+		<control type="group">
+			<include>SelectionDialogPos</include>
+			<include>SelectionDialogBG</include>
+			<control type="label" id="2">
+				<description>Heading</description>
+				<label>$LOCALIZE[1007]</label>
+				<include>SelectionDialogTitle</include>
+			</control>
+			<control type="group">
+				<include>SelectionDialogControlsPos</include>
+				<control type="spincontrolex" id="10">
+					<description>protocol_spincontrol</description>
+					<label>1008</label>
+					<align>left</align>
+					<ondown>9001</ondown>
+					<onleft>10</onleft>
+					<onright>10</onright>
+				</control>
+				<control type="group" id="9001">
+					<posy>44</posy>
+					<control type="button" id="11">
+						<description>server address</description>
+						<width>SelectionDialogShortTextWidth</width>
+						<align>left</align>
+						<onup>10</onup>
+						<onleft>12</onleft>
+						<onright>12</onright>
+						<ondown>9002</ondown>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="button" id="12">
+						<description>server browse</description>
+						<include>NetworkSetupBrowseBtnDims</include>
+						<label>1024</label>
+						<onup>10</onup>
+						<onleft>11</onleft>
+						<onright>11</onright>
+						<ondown>9002</ondown>
+						<include>DialogButton</include>
+					</control>
+				</control>
+				<control type="group" id="9002">
+					<posy>94</posy>
+					<control type="button" id="16">
+						<description>remote</description>
+						<width>SelectionDialogTextWidth</width>
+						<label>-</label>
+						<align>left</align>
+						<onup>9001</onup>
+						<ondown>13</ondown>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="button" id="13">
+						<description>port</description>
+						<posy>32</posy>
+						<width>SelectionDialogTextWidth</width>
+						<label>1013</label>
+						<onup>16</onup>
+						<ondown>14</ondown>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="button" id="14">
+						<description>username</description>
+						<posy>64</posy>
+						<width>SelectionDialogTextWidth</width>
+						<label>1014</label>
+						<onup>13</onup>
+						<ondown>15</ondown>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="button" id="15">
+						<description>password</description>
+						<posy>96</posy>
+						<width>SelectionDialogTextWidth</width>
+						<label>15052</label>
+						<onup>14</onup>
+						<ondown>18</ondown>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="grouplist">
+						<include>NetworkSetupBottomBtnsDims</include>
+						<onup>15</onup>
+						<orientation>horizontal</orientation>
+						<itemgap>8</itemgap>
+						<control type="button" id="18">
+							<description>ok</description>
+							<label>186</label>
+							<onright>19</onright>
+							<include>DialogButton</include>
+						</control>
+						<control type="button" id="19">
+							<description>cancel</description>
+							<label>222</label>
+							<onleft>18</onleft>
+							<include>DialogButton</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

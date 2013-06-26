@@ -778,8 +778,8 @@ msgid "Password"
 msgstr "Password"
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Sign in with PIN code"
+msgid "Use PIN"
+msgstr "Use PIN"
 
 msgctxt "#44003"
 msgid "Sign out"
@@ -895,3 +895,15 @@ msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
 msgstr "This media is geoblocked and can't be accessed from your current location."
 #### end error strings
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Select Audio Track"
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Select Subtitle"
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Channels"

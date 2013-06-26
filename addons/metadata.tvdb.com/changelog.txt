@@ -1,3 +1,20 @@
+[B]1.5.4[/B]
+- Updated: language files from Transifex
+
+[B]1.5.3[/B]
+- Fixed: Language tag caching - round two (thx and credits to pgit)
+
+[B]1.5.2[/B]
+- Changed: Dropped the www from thetvdb URLs
+
+[B]1.5.1[/B]
+- Updated: Versioning for xbmc.metadata
+
+[B]1.5.0[/B]
+- Added: Language tag to caching (thx and credits to pgit)
+- Added: Caching for search results (thx and credits to pgit)
+- Removed: Poster preference as this is not needed for Frodo
+
 [B]1.4.5[/B]
 - Fixed: dvdorder setting won't apply in GetEpisodeDetails (thx and credits to scudlee)
 

@@ -22,7 +22,6 @@ bool CGUIPlexMusicWindow::OnMessage(CGUIMessage &message)
     {
       bool update = false;
       int ctrlId = message.GetSenderId();
-      dprintf("Clicked with CtrlID = %d", ctrlId);
       if (ctrlId < 0 && ctrlId >= FILTER_BUTTONS_START)
       {
         update = m_filterHelper.ApplyFilter(ctrlId);
@@ -80,10 +79,7 @@ void CGUIPlexMusicWindow::BuildFilters(const CStdString& strDirectory)
 {
   if (strDirectory.empty())
     return;
-  int type = 0;
-  if (m_vecItems->HasProperty("typeNumber"))
-    type = m_vecItems->GetProperty("typeNumber").asInteger();
-  m_filterHelper.BuildFilters(strDirectory, type);
+  m_filterHelper.BuildFilters(strDirectory, m_vecItems->GetPlexDirectoryType());
 }
 
 bool CGUIPlexMusicWindow::Update(const CStdString &strDirectory, bool updateFilterPath)

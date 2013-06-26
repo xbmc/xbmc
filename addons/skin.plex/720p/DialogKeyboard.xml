@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<window id="103">
+	<defaultcontrol always="true">65</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<zorder>1</zorder>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<include>KeyboardFull</include>		
+	</controls>
+</window>

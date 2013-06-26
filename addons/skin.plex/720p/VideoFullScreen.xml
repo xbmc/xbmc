@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<window id="2005">
+	<defaultcontrol>702</defaultcontrol>
+	<controls>
+		<!-- ViewsOSD.xml -->
+		<include>VideoOSD</include>
+	</controls>
+</window>

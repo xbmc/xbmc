@@ -2,6 +2,7 @@
 
 #include <string>
 #include <StdString.h>
+#include "FileItem.h"
 
 namespace PlexUtils
 {
@@ -12,12 +13,22 @@ namespace PlexUtils
   bool IsPlexWebKit(const CStdString& strFile);
   bool IsStack(const CStdString& strFile);
   std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
+  void AppendPathToURL(CURL &baseURL, const std::string& relativePath);
   int64_t Size(const CStdString& strFileName);
   std::string CacheImageUrl(const std::string& url);
   std::string CacheImageUrlAsync(const std::string &url);
 
   std::string GetMachinePlatform();
   std::string GetMachinePlatformVersion();
+  bool IsLocalNetworkIP(const CStdString &host);
+
+  std::string GetStreamCodecName(CFileItemPtr item);
+  std::string GetStreamChannelName(CFileItemPtr item);
+
+  CFileItemPtr GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType);
+  void SetSelectedStream(CFileItemPtr mediaPart, int streamType, int id);
+
+  bool CurrentSkinHasPreplay();
 }
 
 #ifdef _WIN32

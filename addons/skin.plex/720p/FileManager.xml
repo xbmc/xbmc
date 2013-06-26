@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<window id="3">
+	<defaultcontrol always="true">20</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="group">
+			<include>Background</include>
+			<control type="group">
+				<include>TopOverlayTitlePos</include>
+				<include>TopOverlayFirstTitleAreaBG</include>
+				<control type="label">
+					<description>File Manager label</description>
+					<include>TopOverlayFirstTitleAreaText</include>
+					<label>$LOCALIZE[31062]</label>
+				</control>
+			</control>
+			<control type="group">
+				<posy>224</posy>
+				<control type="group">
+					<include>FileMgrDividersBG</include>
+				</control>
+				<!-- Left File Manager -->
+				<control type="group" id="201">
+					<control type="label" id="101">
+						<description>Current Directory</description>
+						<include>FileMgrDirectoryLabel</include>
+					</control>
+					<control type="group">
+						<posy>FileMgrFilesListYOffset</posy>
+						<control type="list" id="20">
+							<description>Files list</description>
+							<posy>188</posy>
+							<onright>21</onright>
+							<onup>20</onup>
+							<ondown>20</ondown>
+							<include>FileMgrFilesList</include>
+							<itemlayout height="FileMgrFileItemHeight">
+								<control type="label">
+									<include>FileMgrFileItemLabel</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel2</include>
+								</control>
+							</itemlayout>
+							<focusedlayout height="FileMgrFileItemHeight">
+								<control type="image">
+									<include>FileMgrFileItemFOImage</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel2</include>
+								</control>
+							</focusedlayout>
+						</control>
+					</control>
+					<control type="label" id="12">
+						<description>No. of Files</description>
+						<include>FileMgrFilesCount</include>
+					</control>
+					<control type="image">
+						<include>FileMgrNonFocusOverlay</include>
+						<visible>!Control.HasFocus(20)</visible>
+					</control>
+				</control>
+				<!-- Right File Manager -->
+				<control type="group" id="202">
+					<posx>786</posx>
+					<control type="group">
+						<include>FileMgrDividersBG</include>
+					</control>
+					<control type="label" id="102">
+						<description>Current Directory</description>
+						<include>FileMgrDirectoryLabel</include>
+					</control>
+					<control type="group">
+						<posy>FileMgrFilesListYOffset</posy>
+						<control type="list" id="21">
+							<description>Files list</description>
+							<onleft>20</onleft>
+							<onup>21</onup>
+							<ondown>21</ondown>
+							<include>FileMgrFilesList</include>
+							<itemlayout height="FileMgrFileItemHeight">
+								<control type="label">
+									<include>FileMgrFileItemLabel</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel2</include>
+								</control>
+							</itemlayout>
+							<focusedlayout height="FileMgrFileItemHeight">
+								<control type="image">
+									<include>FileMgrFileItemFOImage</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel</include>
+								</control>
+								<control type="label">
+									<include>FileMgrFileItemLabel2</include>
+								</control>
+							</focusedlayout>
+						</control>
+					</control>
+					<control type="label" id="13">
+						<description>No. of Files</description>
+						<include>FileMgrFilesCount</include>
+					</control>
+					<control type="image">
+						<include>FileMgrNonFocusOverlay</include>
+						<visible>!Control.HasFocus(21)</visible>
+					</control>
+				</control>
+				<control type="group">
+					<posx>492</posx>
+					<posy>-8</posy>
+					<control type="image">
+						<width>296</width>
+						<height>504</height>
+						<texture>Black.png</texture>
+						<colordiffuse>99cccccc</colordiffuse>
+						<visible>Skin.HasTheme(lite)</visible>
+					</control>
+					<control type="image">
+						<width>296</width>
+						<height>504</height>
+						<texture>FileMgrInfoPanel.png</texture>
+						<colordiffuse>99cccccc</colordiffuse>
+						<visible>!Skin.HasTheme(lite)</visible>
+					</control>
+					<control type="group">
+						<posx>14</posx>
+						<posy>74</posy>
+						<control type="label">
+							<description>System Information label</description>
+							<label>$LOCALIZE[10007]</label>
+							<include>FileMgrInfoTitle</include>
+						</control>
+						<control type="group">
+							<description>IP Address</description>
+							<posy>FileMgrInfoTitleHeight</posy>
+							<control type="label">
+								<label>$LOCALIZE[31036]</label>
+								<include>FileMgrInfoCaption</include>
+							</control>
+							<control type="label">
+								<info>Network.IPAddress</info>
+								<include>FileMgrInfoValue</include>
+							</control>
+							<control type="group">
+								<description>DVD</description>
+								<posy>FileMgrInfoHeight</posy>
+								<control type="label">
+									<label>$LOCALIZE[446]</label>
+									<include>FileMgrInfoCaption</include>
+								</control>
+								<control type="label">
+									<info>System.DVDInfoModel</info>
+									<include>FileMgrInfoValue</include>
+								</control>
+								<control type="group">
+									<description>Build</description>
+									<posy>FileMgrInfoHeight</posy>
+									<control type="label">
+										<label>$LOCALIZE[31034]</label>
+										<include>FileMgrInfoCaption</include>
+									</control>
+									<control type="label">
+										<info>System.BuildVersion</info>
+										<include>FileMgrInfoValue</include>
+									</control>
+									<control type="group">
+										<description>Free RAM</description>
+										<posy>FileMgrInfoHeight</posy>
+										<control type="label">
+											<label>$LOCALIZE[31035]</label>
+											<include>FileMgrInfoCaption</include>
+										</control>
+										<control type="label">
+											<info>System.FreeMemory</info>
+											<include>FileMgrInfoValue</include>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+						<control type="group">
+							<posy>242</posy>
+							<control type="label">
+								<description>Hard Drive Space label</description>
+								<label>$LOCALIZE[31037]</label>
+								<include>FileMgrInfoTitle</include>
+							</control>
+							<control type="group">
+								<description>C Drive</description>
+								<posy>FileMgrInfoTitleHeight</posy>
+								<control type="label">
+									<label>C $LOCALIZE[155]</label>
+									<include>FileMgrInfoCaption</include>
+								</control>
+								<control type="label">
+									<label>$INFO[System.Freespace(C)]</label>
+									<include>FileMgrDriveInfoValue</include>
+								</control>
+								<control type="group">
+									<description>D Drive</description>
+									<posy>FileMgrInfoHeight</posy>
+									<control type="label">
+										<label>D $LOCALIZE[155]</label>
+										<include>FileMgrInfoCaption</include>
+									</control>
+									<control type="label">
+										<label>$INFO[System.Freespace(D)]</label>
+										<include>FileMgrDriveInfoValue</include>
+									</control>
+									<control type="group">
+										<description>E Drive</description>
+										<posy>FileMgrInfoHeight</posy>
+										<control type="label">
+											<label>E $LOCALIZE[155]</label>
+											<include>FileMgrInfoCaption</include>
+										</control>
+										<control type="label">
+											<label>$INFO[System.Freespace(E)]</label>
+											<include>FileMgrDriveInfoValue</include>
+										</control>
+										<control type="group">
+											<description>F Drive</description>
+											<posy>FileMgrInfoHeight</posy>
+											<control type="label">
+												<label>F $LOCALIZE[155]</label>
+												<include>FileMgrInfoCaption</include>
+											</control>
+											<control type="label">
+												<label>$INFO[System.Freespace(F)]</label>
+												<include>FileMgrDriveInfoValue</include>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<include>Clock</include>
+			<include>MusicNowPlayingIndicators</include>
+		</control>
+	</controls>
+</window>

@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Gerenciar arquivos"
+msgstr "Gerenciador de arquivos"
 
 msgctxt "#8"
 msgid "Weather"
@@ -391,7 +391,7 @@ msgstr "Confirmar mover arquivos"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Confirma excluir arquivos?"
+msgstr "Confirma exclusão de arquivos?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -423,7 +423,7 @@ msgstr "Apresentação"
 
 msgctxt "#130"
 msgid "System info"
-msgstr "Info. do Sistema"
+msgstr "Informações do sistema"
 
 msgctxt "#131"
 msgid "Display"
@@ -747,7 +747,7 @@ msgstr "Compartilhamento remoto"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Rede não está conectada"
+msgstr "Rede não conectada"
 
 msgctxt "#222"
 msgid "Cancel"
@@ -1203,7 +1203,7 @@ msgstr "Vários artistas"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Reproduzir disco"
+msgstr "Repr. disco"
 
 msgctxt "#342"
 msgid "Movies"
@@ -2079,7 +2079,7 @@ msgstr "País"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "Em progresso"
+msgstr "Em andamento"
 
 msgctxt "#576"
 msgid "Times played"
@@ -2235,7 +2235,7 @@ msgstr "Todas as músicas de"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Séries em progresso"
+msgstr "Séries em andamento"
 
 msgctxt "#629"
 msgid "View mode"
@@ -3387,7 +3387,7 @@ msgstr "Vídeos"
 
 msgctxt "#10007"
 msgid "System information"
-msgstr "Informação do sistema"
+msgstr "Informações do sistema"
 
 msgctxt "#10008"
 msgid "Settings - General"
@@ -3811,7 +3811,7 @@ msgstr "Insira um código mestre válido!"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Configurações &  arquivos"
+msgstr "Configurações & arquivos"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
@@ -9075,11 +9075,11 @@ msgstr "Ordenar por"
 
 msgctxt "#21430"
 msgid "ascending"
-msgstr "ascendente"
+msgstr "crescente"
 
 msgctxt "#21431"
 msgid "descending"
-msgstr "descendente"
+msgstr "decrescente"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
@@ -10059,7 +10059,7 @@ msgstr "Notificações"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr "Oculte Entrangeiro"
+msgstr "Ocultar Estrangeiros"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."

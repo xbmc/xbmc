@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<window id="50">
+	<backgroundcolor>0</backgroundcolor>
+	<controls>
+	<include>NowPlaying</include>	
+	<include>Grid</include>
+	<include>WindowFade</include>
+	</controls>
+</window>

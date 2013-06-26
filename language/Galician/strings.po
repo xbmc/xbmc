@@ -3087,7 +3087,7 @@ msgstr "Anunciar estes servizos a outros sistemas vía Zeroconf"
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr "Permitir a XBMC recivir contido por AirPlay"
+msgstr "Permitir a XBMC recibir contido por AirPlay"
 
 msgctxt "#1271"
 msgid "Device name"

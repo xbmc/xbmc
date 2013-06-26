@@ -340,9 +340,7 @@ void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
     if (ret != noErr)
       return;
 
-    CStdString n;
-    if (DarwinCFStringRefToString(theDeviceName, n))
-      name = n;
+    DarwinCFStringRefToUTF8String(theDeviceName, name);
 
     CFRelease(theDeviceName);
   }

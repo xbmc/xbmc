@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<window id="2008">
+	<defaultcontrol>450</defaultcontrol>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogFileStacking</include>
+	</controls>
+</window>

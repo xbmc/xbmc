@@ -81,6 +81,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       !CTextureCache::Get().HasCachedImage(pItem->GetArt("grandParentThumb")))
     CTextureCache::Get().BackgroundCacheImage(pItem->GetArt("grandParentThumb"));
 
+  if (pItem->HasArt("bigPoster") &&
+      !CTextureCache::Get().HasCachedImage(pItem->GetArt("bigPoster")))
+    CTextureCache::Get().BackgroundCacheImage(pItem->GetArt("bigPoster"));
   
   return true;
 }

@@ -125,12 +125,12 @@
 #endif
 
 /* PLEX */
-#include "MyPlexManager.h"
-#include "ManualServerScanner.h"
+#include "Client/MyPlex/MyPlexManager.h"
 #include "PlexUtils.h"
-#include "plex/GUI/GUIDialogMyPlexPin.h"
+#include "plex/GUI/GUIDialogMyPlex.h"
 #include "PlexApplication.h"
 #include "BackgroundMusicPlayer.h"
+#include "Client/PlexServerManager.h"
 /* END PLEX */
 
 using namespace std;
@@ -1080,40 +1080,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(false);
     }
-    else if (strSetting.Equals("myplex.pinsignin"))
+    else if (strSetting.Equals("myplex.signin"))
     {
-      int label = g_guiSettings.GetString("myplex.token").empty() ? 44002 : 44003;
+      int label = g_myplexManager.IsSignedIn() ? 44003 : 44100;
 
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pControl)
       {
         pControl->SetLabel(g_localizeStrings.Get(label));
-        pControl->SetEnabled(!g_guiSettings.GetBool("myplex.manualsignin"));
-      }
-
-      //pSettingString->SetLabel(44003);
-    }
-    else if (strSetting.Equals("myplex.email"))
-    {
-      CGUIControl* tControl = (CGUIControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
-    }
-    else if (strSetting.Equals("myplex.password"))
-    {
-      CGUIControl* tControl = (CGUIControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
-    }
-    else if (strSetting.Equals("myplex.dosignin"))
-    {
-      int label = g_guiSettings.GetString("myplex.token").empty() ? 44004 : 44003;
-
-      CGUIButtonControl* tControl = (CGUIButtonControl*)GetControl(GetSetting(strSetting)->GetID());
-      if(tControl)
-      {
-        tControl->SetLabel(g_localizeStrings.Get(label));
-        tControl->SetEnabled(g_guiSettings.GetBool("myplex.manualsignin"));
       }
     }
     else if (strSetting.Equals("plexmediaserver.address"))
@@ -2161,53 +2135,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     if (pControl)
       pControl->SetEnabled(false);
   }
-  else if (strSetting.Equals("myplex.pinsignin"))
+  else if (strSetting.Equals("myplex.signin"))
   {
     CGUIButtonControl* pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
     CSettingString*    pSettingString = (CSettingString* )pSettingControl->GetSetting();
 
-    if (g_guiSettings.GetString("myplex.token").empty())
+    if (!g_myplexManager.IsSignedIn())
     {
-      CGUIDialogMyPlexPin::ShowAndGetInput();
+      CGUIDialogMyPlex::ShowAndGetInput();
     }
     else
     {
-      // We're signing out.
-      MyPlexManager::Get().signOut();
-
-      // Change the button to "sign in".
-      pControl->SetLabel(g_localizeStrings.Get(44002));
-      pSettingString->SetLabel(44002);
-    }
-  }
-  else if (strSetting.Equals("myplex.dosignin"))
-  {
-    CGUIButtonControl* pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-    CSettingString*    pSettingString = (CSettingString* )pSettingControl->GetSetting();
-
-    if (g_guiSettings.GetString("myplex.token").empty())
-    {
-      if (MyPlexManager::Get().signIn())
-      {
-        pControl->SetLabel(g_localizeStrings.Get(44003));
-        pSettingString->SetLabel(44003);
-
-        /* Remove password from guisettings.xml */
-        g_guiSettings.SetString("myplex.password", "");
-      }
-      else
-      {
-        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44012));
-      }
-    }
-    else
-    {
-      // We're signing out.
-      MyPlexManager::Get().signOut();
-
-      // Change the button to "sign in".
-      pControl->SetLabel(g_localizeStrings.Get(44004));
-      pSettingString->SetLabel(44004);
+      g_myplexManager.Logout();
+      pControl->SetLabel(g_localizeStrings.Get(44003));
+      pSettingString->SetLabel(44003);
     }
   }
   else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Left(23).Equals("backgroundmusic.bgmusic"))
@@ -2222,21 +2163,25 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       string address = g_guiSettings.GetString("plexmediaserver.address");
       if (PlexUtils::IsValidIP(address))
-        ManualServerScanner::Get().addServer(address, true);
-      else
-        ManualServerScanner::Get().removeAllServersButLocal();
+      {
+        PlexServerList list;
+        CPlexServerPtr server = CPlexServerPtr(new CPlexServer("", address, 32400));
+        list.push_back(server);
+        g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
+      }
     }
     else
     {
-      ManualServerScanner::Get().removeAllServersButLocal();
+      PlexServerList list;
+      g_plexServerManager.UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
     }
   }
   else if (strSetting.Equals("services.plexplayer"))
   {
     if (g_guiSettings.GetBool(strSetting))
-      g_plexApplication.GetServiceListener()->startAdvertisement();
+      g_plexApplication.GetServiceListener()->StartAdvertisement();
     else
-      g_plexApplication.GetServiceListener()->stopAdvertisement();
+      g_plexApplication.GetServiceListener()->StopAdvertisement();
   }
   /* END PLEX */
 

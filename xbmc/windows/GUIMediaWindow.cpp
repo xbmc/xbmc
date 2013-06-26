@@ -77,8 +77,8 @@
 #include "filesystem/DirectoryCache.h"
 #include "GUI/GUIDialogRating.h"
 #include "dialogs/GUIDialogCache.h"
-#include "PlexSourceScanner.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "filesystem/CurlFile.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -94,6 +94,10 @@
 
 using namespace std;
 using namespace ADDON;
+
+/* PLEX */
+using namespace XFILE;
+/* END PLEX */
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -525,10 +529,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
+      /*
       PlexMediaServerQueue::Get().onViewModeChanged(m_vecItems->GetProperty("identifier").asString(),
                                                     m_vecItems->GetPath(),
                                                     m_vecItems->GetProperty("viewGroup").asString(),
-                                                    viewMode, -1, -1);
+                                                    viewMode, -1, -1);*/
       m_vecItems->SetDefaultViewMode(viewMode);
       /* END PLEX */
 
@@ -1290,7 +1295,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // Show a context menu for PMS popup directories
-    if (pItem->IsPopupMenuItem())
+    if (pItem->HasProperty("popup") && pItem->GetProperty("popup").asBoolean())
     {
       CFileItemList fileItems;
       CContextButtons buttons;
@@ -1325,7 +1330,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       CFileItemList fileItems;
       vector<CStdString> items;
-      CPlexDirectory plexDir(false);
+      CPlexDirectory plexDir;
 
       plexDir.GetDirectory(directory.GetPath(), fileItems);
       CGUIDialogPlexPluginSettings::ShowAndGetInput(pItem->GetPath(), plexDir.GetData());
@@ -1984,7 +1989,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     if (newRating >= 0 && newRating <= 10)
     {
-      PlexMediaServerQueue::Get().onRate(item, float(newRating));
+      g_plexMediaServerClient.SetItemRating(item, float(newRating));
       item->SetProperty("userRating", newRating);
     }
 
@@ -2004,6 +2009,7 @@ const CGUIViewState *CGUIMediaWindow::GetViewState() const
 
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
+  CFileItemPtr item = m_vecItems->Get(0);
   /* PLEX */
   if (m_vecItems->GetContent().IsEmpty())
   {
@@ -2315,6 +2321,7 @@ CStdString CGUIMediaWindow::RemoveParameterFromPath(const CStdString &strDirecto
 /* PLEX */
 void CGUIMediaWindow::RefreshShares(bool update)
 {
+  /*
   if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
   {
     CPlexSourceScanner::MergeSourcesForWindow(GetID());
@@ -2327,6 +2334,7 @@ void CGUIMediaWindow::RefreshShares(bool update)
       m_viewControl.SetSelectedItem(iItem);
     }
   }
+   */
 }
 
 void CGUIMediaWindow::Render()

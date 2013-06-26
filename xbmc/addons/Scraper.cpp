@@ -490,7 +490,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   CStdString sTitle, sTitleYear, sYear;
   CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, fFirst);
 
-  if (!fFirst || Content() == CONTENT_MUSICVIDEOS)
+  if (!fFirst)
     sTitle.Replace("-"," ");
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "

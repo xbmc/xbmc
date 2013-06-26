@@ -388,6 +388,7 @@ class CAdvancedSettings
 
     bool m_bAlwaysReinitCoreAudio;
     bool m_bHideFanouts;
+    bool m_bForceJpegImageFormat;
     /* END PLEX */
 };
 

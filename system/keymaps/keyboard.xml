@@ -164,6 +164,7 @@
     <keyboard>
       <i>info</i>
       <end mod="ctrl">XBMC.ShutDown()</end>
+      <space>Play</space>
     </keyboard>
   </Home>
   <VirtualKeyboard>

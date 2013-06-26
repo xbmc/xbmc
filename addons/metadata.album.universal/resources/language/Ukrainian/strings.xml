@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Ukrainian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Отримати малюнки альбомів з fanart.tv</string>
+    <string id="30001">Отримати малюнки альбому з Last.fm</string>
+    <string id="30002">Отримати огляд альбому з</string>
+    <string id="30003">Улюблена мова</string>
+    <string id="30004">Отримати рейтинг альбому з</string>
+    <string id="30005">Отримати стилі альбому з</string>
+    <string id="30006">Отримати настрої альбому з</string>
+    <string id="30007">Отримати теми альбому з</string>
+    <string id="30008">Отримати малюнки альбому з allmusic.com</string>
+    <string id="30009">Обкладинка</string>
+    <string id="30010">Отримати малюнки альбому з theaudiodb.com</string>
+</strings>

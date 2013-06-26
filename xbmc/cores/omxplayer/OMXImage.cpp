@@ -487,30 +487,47 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height)
 {
   RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
   const bool transposed = m_orientation & 4;
-  const int gui_width  = transposed ? res_info.iHeight:res_info.iWidth;
-  const int gui_height = transposed ? res_info.iWidth:res_info.iHeight;
-  const unsigned int max_width  = min(gui_width, 2048);
-  const unsigned int max_height = min(gui_height, 2048);
+  unsigned int max_width = width;
+  unsigned int max_height = height;
+  const unsigned int gui_width  = transposed ? res_info.iHeight:res_info.iWidth;
+  const unsigned int gui_height = transposed ? res_info.iWidth:res_info.iHeight;
+  const float aspect = (float)m_width / m_height;
 
-  if(!max_width || !max_height)
-    return false;
+  if (max_width == 0 || max_height == 0)
+  {
+    max_height = g_advancedSettings.m_imageRes;
 
-  const float ar = (float)width/(float)height;
-  // bigger than maximum, so need to clamp
-  if (width > max_width || height > max_height) {
-    // wider than max, so clamp width first
-    if (ar > (float)max_width/(float)max_height)
-    {
-      width = max_width;
-      height = (float)max_width / ar + 0.5f;
-    // taller than max, so clamp height first
-    } else {
-      height = max_height;
-      width = (float)max_height * ar + 0.5f;
+    if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+    { // 16x9 images larger than the fanart res use that rather than the image res
+      if (fabsf(aspect / (16.0f/9.0f) - 1.0f) <= 0.01f && m_height >= g_advancedSettings.m_fanartRes)
+      {
+        max_height = g_advancedSettings.m_fanartRes;
+      }
     }
-    return true;
+    max_width = max_height * 16/9;
   }
 
+  if (gui_width)
+    max_width = min(max_width, gui_width);
+  if (gui_height)
+    max_height = min(max_height, gui_height);
+
+  max_width  = min(max_width, 2048U);
+  max_height = min(max_height, 2048U);
+
+
+  width = m_width;
+  height = m_height;
+  if (width > max_width || height > max_height)
+  {
+    if ((unsigned int)(max_width / aspect + 0.5f) > max_height)
+      max_width = (unsigned int)(max_height * aspect + 0.5f);
+    else
+      max_height = (unsigned int)(max_width / aspect + 0.5f);
+    width = max_width;
+    height = max_height;
+    return true;
+  }
   return false;
 }
 
@@ -549,7 +566,6 @@ bool COMXImage::ReadFile(const CStdString& inputFile)
     CLog::Log(LOGERROR, "%s::%s %s m_width=%d m_height=%d\n", CLASSNAME, __func__, inputFile.c_str(), m_width, m_height);
     return false;
   }
-  ClampLimits(m_width, m_height);
 
   m_is_open = true;
 
@@ -718,26 +734,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
   }
 
   m_decoder_open = true;
-
-  if(width == 0 || height == 0)
-  {
-    height = g_advancedSettings.m_imageRes;
-    if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
-    { // a separate fanart resolution is specified - check if the image is exactly equal to this res
-      if (m_width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 &&
-          m_height == (unsigned int)g_advancedSettings.m_fanartRes)
-      { // special case for fanart res
-        height = g_advancedSettings.m_fanartRes;
-      }
-    }
-    width = height * 16/9;
-    if(!width || !height)
-    {
-      width = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-      height = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
-    }
-  }
-
   ClampLimits(width, height);
 
   // set input format

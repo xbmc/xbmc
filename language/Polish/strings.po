@@ -351,7 +351,7 @@ msgstr "Skróty"
 
 msgctxt "#112"
 msgid "Paused"
-msgstr "Wstrzymano"
+msgstr "Pauza"
 
 msgctxt "#113"
 msgid "Update failed"
@@ -1071,7 +1071,7 @@ msgstr "Język"
 
 msgctxt "#305"
 msgid "Enabled"
-msgstr "Włączenie"
+msgstr "Włączone"
 
 msgctxt "#306"
 msgid "Non-interleaved"
@@ -1171,11 +1171,11 @@ msgstr "Błąd kompresji bazy"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Wyczyścić kolekcję?"
+msgstr "Chcesz wyczyścić bibliotekę?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Wyczyść kolekcję...."
+msgstr "Wyczyść bibliotekę...."
 
 msgctxt "#335"
 msgid "Start"
@@ -1267,7 +1267,7 @@ msgstr "Tryb wygaszacza ekranu"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Czas planowania wyłączenia"
+msgstr "Wyłączenie planowane"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1555,7 +1555,7 @@ msgstr "Bez pamięci podręcznej"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "Usuń film z kolekcji"
+msgstr "Usuń film z biblioteki"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -1623,7 +1623,7 @@ msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
-msgstr "Włączenie"
+msgstr "Włączone"
 
 msgctxt "#450"
 msgid "Columns"
@@ -1799,7 +1799,7 @@ msgstr "Sortuj: Typ"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
-msgstr "Nie można połączyć się z serwisem"
+msgstr "Nie można połączyć się z serwisem wyszukiwania"
 
 msgctxt "#500"
 msgid "Downloading album information failed"
@@ -1891,7 +1891,7 @@ msgstr "Dodaj do listy odtwarzania"
 
 msgctxt "#527"
 msgid "Manually add to library"
-msgstr "Dodaj ręcznie do kolekcji"
+msgstr "Dodaj ręcznie do biblioteki"
 
 msgctxt "#528"
 msgid "Enter title"
@@ -2307,15 +2307,15 @@ msgstr "Wymagane rozpakowanie dużego pliku. Kontynuować?"
 
 msgctxt "#646"
 msgid "Remove from library"
-msgstr "Usuń z kolekcji"
+msgstr "Usuń z biblioteki"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Eksportuj kolekcję wideo"
+msgstr "Eksportuj bibliotekę wideo"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Importuj kolekcję wideo"
+msgstr "Importuj bibliotekę wideo"
 
 msgctxt "#649"
 msgid "Importing"
@@ -2327,7 +2327,7 @@ msgstr "Eksportowanie"
 
 msgctxt "#651"
 msgid "Browse for library"
-msgstr "Wybór kolekcji"
+msgstr "Wskaż bibliotekę"
 
 msgctxt "#652"
 msgid "Years"
@@ -2335,7 +2335,7 @@ msgstr "Lata"
 
 msgctxt "#653"
 msgid "Update library"
-msgstr "Uaktualnij kolekcję"
+msgstr "Uaktualnij bibliotekę"
 
 msgctxt "#654"
 msgid "Show debug info"
@@ -2375,7 +2375,7 @@ msgstr "Plik nie jest już dostępny."
 
 msgctxt "#663"
 msgid "Would you like to remove it from the library?"
-msgstr "Usunąć pozycję z kolekcji?"
+msgstr "Usunąć pozycję z biblioteki?"
 
 msgctxt "#664"
 msgid "Browse for Script"
@@ -2387,11 +2387,11 @@ msgstr "Poziom kompresji"
 
 msgctxt "#700"
 msgid "Cleaning up library"
-msgstr "Czyszczenie kolekcji"
+msgstr "Czyszczenie biblioteki"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Usuwanie starych nagrań z kolekcji"
+msgstr "Usuwanie starych utworów z biblioteki"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -2535,7 +2535,7 @@ msgstr "Nie ma danych dla tego widoku"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
-msgstr "Proszę wyłączyć tryb kolekcji"
+msgstr "Proszę wyłączyć tryb biblioteki"
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -2723,11 +2723,11 @@ msgstr "Internet"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr "Uaktualnianie kolekcji"
+msgstr "Uaktualnianie biblioteki"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
-msgstr "Kolekcja muzyki wymaga wyszukania grafik z etykiet."
+msgstr "Biblioteka muzyki wymaga wyszukania grafik z etykiet."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3503,7 +3503,7 @@ msgstr "Muzyka/Pliki"
 
 msgctxt "#10502"
 msgid "Music/Library"
-msgstr "Muzyka/Kolekcja"
+msgstr "Muzyka/Biblioteka"
 
 msgctxt "#10503"
 msgid "Playlist editor"
@@ -3543,7 +3543,7 @@ msgstr "Informacje o systemie"
 
 msgctxt "#10516"
 msgid "Music - Library"
-msgstr "Muzyka - Kolekcja"
+msgstr "Muzyka - Biblioteka"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -3759,7 +3759,7 @@ msgstr "Zablokowany"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr "Uaktualnianie grafik kolekcji wideo"
+msgstr "Uaktualnianie grafik biblioteki wideo"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -3767,7 +3767,7 @@ msgstr "Przetwarzanie %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr "Pamięć podręczna grafik kolekcji wymaga uaktualnienia."
+msgstr "Pamięć podręczna grafik biblioteki wideo wymaga uaktualnienia."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4479,7 +4479,7 @@ msgstr "Informacje o albumie"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Dodaj do kolekcji"
+msgstr "Dodaj pozycję do biblioteki"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4575,11 +4575,11 @@ msgstr "Ustawienie"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "Nie ma dostępnych efektów\\ndla tej wizualizacji"
+msgstr "Nie ma dostępnych efektów\ndla tej wizualizacji"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "Nie ma dostępnych opcji\\ndla tej wizualizacji"
+msgstr "Nie ma dostępnych opcji\ndla tej wizualizacji"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4955,7 +4955,7 @@ msgstr "Ustaw miasto 3"
 
 msgctxt "#14022"
 msgid "Library"
-msgstr "Kolekcja"
+msgstr "Biblioteka"
 
 msgctxt "#14023"
 msgid "No TV"
@@ -5255,7 +5255,7 @@ msgstr "Hasło"
 
 msgctxt "#15100"
 msgid "Library"
-msgstr "Kolekcja"
+msgstr "Biblioteka"
 
 msgctxt "#15101"
 msgid "Database"
@@ -5707,7 +5707,7 @@ msgstr "Opuszczono tryb imprezowy."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Brak utworów w kolekcji spełniających kryteria."
+msgstr "Brak utworów w bibliotece spełniających kryteria."
 
 msgctxt "#16032"
 msgid "Could not initialize database."
@@ -6839,7 +6839,7 @@ msgstr "Menedżer PVR został uruchomiony bez żadnej"
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "włączonej wtyczki PVR. Proszę włączyć co najmniej jedną wtyczkę"
+msgstr "włączonej wtyczki PVR. Włącz przynajmniej jedną wtyczkę"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -8039,7 +8039,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr "Rozgłaszanie uaktualnień kolekcji za pośrednictwem UPnP"
+msgstr "Rozgłaszanie uaktualnień biblioteki za pośrednictwem UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8071,11 +8071,11 @@ msgstr "Zmień scraper"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Eksportuj kolekcję muzyki"
+msgstr "Eksportuj bibliotekę muzyki"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Importuj kolekcję muzyki"
+msgstr "Importuj bibliotekę muzyki"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8199,7 +8199,7 @@ msgstr "Przyciemnij LCD podczas pauzy"
 
 msgctxt "#20314"
 msgid "Videos - Library"
-msgstr "Wideo - Kolekcja"
+msgstr "Wideo - Biblioteka"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
@@ -8379,11 +8379,11 @@ msgstr "Wczytywanie informacji o odcinkach"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
-msgstr "Usuń odcinek z kolekcji"
+msgstr "Usuń odcinek z biblioteki"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Usuń serial z kolekcji"
+msgstr "Usuń serial z biblioteki"
 
 msgctxt "#20364"
 msgid "TV show"
@@ -8499,7 +8499,7 @@ msgstr "Teledysk"
 
 msgctxt "#20392"
 msgid "Remove music video from library"
-msgstr "Usuń teledysk z kolekcji"
+msgstr "Usuń teledysk z biblioteki"
 
 msgctxt "#20393"
 msgid "Music video information"
@@ -8539,7 +8539,7 @@ msgstr "Odtwarzaj teledysk"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Pobieranie zdjęć aktorów podczas dodawania filmu do kolekcji"
+msgstr "Pobieranie zdjęć aktorów podczas dodawania filmu do biblioteki"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -8583,7 +8583,7 @@ msgstr "Pobierz fanart"
 
 msgctxt "#20414"
 msgid "Show Fanart in video and music libraries"
-msgstr "Fanart jako tło w trybie kolekcji"
+msgstr "Fanart jako tło w trybie biblioteki"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8599,7 +8599,7 @@ msgstr "Scenariusz"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
-msgstr "Wyświetlanie tytułów kolekcji zamiast nazw plików"
+msgstr "Wyświetlanie tytułów zamiast nazw plików"
 
 msgctxt "#20420"
 msgid "Never"
@@ -8651,7 +8651,7 @@ msgstr "Nadpisać istniejące pliki?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
-msgstr "Pomijaj ten folder podczas aktualizacji kolekcji"
+msgstr "Pomijaj ten folder podczas aktualizacji biblioteki"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
@@ -8811,7 +8811,7 @@ msgstr "Dodaj udział..."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
-msgstr "Udostępnianie kolekcji za pośrednictwem UPnP"
+msgstr "Udostępnianie biblioteki wideo i muzyki za pośrednictwem UPnP"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8895,7 +8895,7 @@ msgstr "Pokazuj pasek przewijania"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Filtrowanie oglądanych pozycji jako przełącznik w trybie kolekcji"
+msgstr "Filtrowanie oglądanych pozycji jako przełącznik w trybie biblioteki"
 
 msgctxt "#21385"
 msgid "Open"
@@ -9519,11 +9519,11 @@ msgstr "Data urodzenia/powstania"
 
 msgctxt "#22000"
 msgid "Update library on startup"
-msgstr "Uaktualnianie kolekcji podczas uruchamiania"
+msgstr "Uaktualnianie biblioteki podczas uruchamiania"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Ukrywanie postępu uaktualniania kolekcji"
+msgstr "Ukrywanie postępu uaktualniania biblioteki"
 
 msgctxt "#22002"
 msgid "- DNS suffix"
@@ -10083,7 +10083,7 @@ msgstr "Wybierz pozycję do odtwarzania"
 
 msgctxt "#29800"
 msgid "Library Mode"
-msgstr "Tryb kolekcji"
+msgstr "Tryb biblioteki"
 
 msgctxt "#29801"
 msgid "QWERTY keyboard"
@@ -10555,7 +10555,7 @@ msgstr "Standardowy dysk"
 
 msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
-msgstr "To urządzenie\\nnie ma ustawień."
+msgstr "To urządzenie\nnie ma ustawień."
 
 msgctxt "#35005"
 msgid "New device configured"

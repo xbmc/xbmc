@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<window>
+	<defaultcontrol always="true">101</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<!-- bg's -->
+		<include>SlideshowDimmed</include>
+		<include>SettingsBG</include>
+		<!-- categories menu (top) -->
+		<include>SettingsCategoryMenu</include>
+		<!-- settings menu (left) -->
+		<control type="group" id="302">
+			<control type="list" id="101">
+				<posy>215</posy>
+				<posx>120</posx>
+				<width>350</width>
+				<onup>1000</onup>
+				<ondown>101</ondown>
+				<onleft>101</onleft>
+				<onright>5</onright>
+				<height>500</height>
+				<scrolltime>200</scrolltime>
+				<itemlayout width="300" height="50">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<height>50</height>
+						<texture border="5">border-bottom-grey.png</texture>
+					</control>
+					<control type="label">
+						<posx>20</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<font>CondensedBold-18</font>
+						<height>50</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<textcolor>Unfocused</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="300" height="50">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<height>50</height>
+						<texture border="5">black-bottom-grey.png</texture>
+					</control>
+					<control type="label">
+						<posx>20</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<font>CondensedBold-18</font>
+						<height>50</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<textcolor>orangeLight</textcolor>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<description>General</description>
+						<label>$LOCALIZE[31604]</label>
+						<onclick>SetFocus(201)</onclick>
+					</item>
+					<item id="2">
+						<description>Home</description>
+						<label>$LOCALIZE[31605]</label>
+						<onclick>SetFocus(202)</onclick>
+					</item>
+				</content>
+			</control>
+			<!-- a hack for highlighting the parent category while in settings list -->
+			<control type="group">
+				<control type="image">
+					<posx>120</posx>
+					<posy>215</posy>
+					<width>300</width>
+					<height>50</height>
+					<texture border="5">black-bottom-grey.png</texture>
+					<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					<visible>ControlGroup(201).HasFocus</visible>
+				</control>
+				<control type="label">
+					<description>General</description>
+					<posx>140</posx>
+					<posy>215</posy>
+					<width>300</width>
+					<font>CondensedBold-18</font>
+					<height>50</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31604]</label>
+					<textcolor>orangeLight</textcolor>
+					<visible>ControlGroup(201).HasFocus</visible>
+				</control>
+				<control type="image">
+					<posx>120</posx>
+					<posy>265</posy>
+					<width>300</width>
+					<height>50</height>
+					<texture border="5">black-bottom-grey.png</texture>
+					<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					<visible>ControlGroup(202).HasFocus</visible>
+				</control>
+				<control type="label">
+					<description>General</description>
+					<posx>140</posx>
+					<posy>265</posy>
+					<width>300</width>
+					<font>CondensedBold-18</font>
+					<height>50</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31605]</label>
+					<textcolor>orangeLight</textcolor>
+					<visible>ControlGroup(202).HasFocus</visible>
+				</control>
+			</control>
+		</control>
+		<!-- Main control area -->
+		<control type="group" id="5">
+			<posx>400</posx>
+			<posy>150</posy>
+			<!-- General Options -->
+			<control type="grouplist" id="201">
+				<posy>65</posy>
+				<posx>105</posx>
+				<width>625</width>
+				<height>400</height>
+				<onup>201</onup>
+				<onleft>101</onleft>
+				<itemgap>0</itemgap>
+				<pagecontrol>61</pagecontrol>
+				<visible allowhiddenfocus="false">Container(101).HasFocus(1) | ControlGroup(201).HasFocus()</visible>
+				<orientation>vertical</orientation>
+				<control type="radiobutton" id="210">
+					<description>Show Thumbs in List View (All)</description>
+					<width>625</width>
+					<label>$LOCALIZE[31981]</label>
+					<onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
+					<selected>!Skin.HasSetting(HideListViewIcons)</selected>
+				</control>
+				<control type="radiobutton" id="240">
+					<description>Show Plot in Video OSD</description>
+					<width>625</width>
+					<label>$LOCALIZE[31982]</label>
+					<onclick>Skin.ToggleSetting(HidePlotInVideoOSD)</onclick>
+					<selected>!Skin.HasSetting(HidePlotInVideoOSD)</selected>
+				</control>
+				<control type="radiobutton" id="324">
+					<description>Show Pictures description</description>
+					<width>625</width>
+					<label>$LOCALIZE[31983]</label>
+					<onclick>Skin.ToggleSetting(HideDescriptionInSlideshow)</onclick>
+					<selected>!Skin.HasSetting(HideDescriptionInSlideshow)</selected>
+				</control>
+				<control type="radiobutton" id="325">
+					<description>Show Now playing in viz description</description>
+					<width>625</width>
+					<label>$LOCALIZE[31984]</label>
+					<onclick>Skin.ToggleSetting(HideNowPlayingInViz)</onclick>
+					<selected>!Skin.HasSetting(HideNowPlayingInViz)</selected>
+				</control>
+			</control>
+			<!-- Home Options -->
+			<control type="grouplist" id="202">
+				<onup>202</onup>
+				<pagecontrol>61</pagecontrol>
+				<visible allowhiddenfocus="false">Container(101).HasFocus(2) | ControlGroup(202).HasFocus()</visible>
+				<posx>105</posx>
+				<posy>65</posy>
+				<width>625</width>
+				<height>350</height>
+				<itemgap>0</itemgap>
+				<onleft>101</onleft>
+				<orientation>vertical</orientation>
+				<animation effect="fade" end="100" time="500">WindowOpen</animation>
+				<animation effect="fade" end="0" time="500">WindowClose</animation>
+				<control type="radiobutton" id="220">
+					<description>Show Videos Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31971]</label>
+					<onclick>Skin.ToggleSetting(HideVideos)</onclick>
+					<selected>!Skin.HasSetting(HideVideos)</selected>
+				</control>
+				<control type="radiobutton" id="235">
+					<description>Show Music Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31972]</label>
+					<onclick>Skin.ToggleSetting(HideMusic)</onclick>
+					<selected>!Skin.HasSetting(HideMusic)</selected>
+				</control>
+				<control type="radiobutton" id="240">
+					<description>Show Pictures Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31973]</label>
+					<onclick>Skin.ToggleSetting(HidePictures)</onclick>
+					<selected>!Skin.HasSetting(HidePictures)</selected>
+				</control>
+				<control type="radiobutton" id="245">
+					<description>Show Applications Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31004]</label>
+					<onclick>Skin.ToggleSetting(HidePrograms)</onclick>
+					<selected>!Skin.HasSetting(HidePrograms)</selected>
+				</control>
+				<control type="radiobutton" id="250">
+					<description>Show DVD Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] DVD</label>
+					<onclick>Skin.ToggleSetting(HideDVD)</onclick>
+					<selected>!Skin.HasSetting(HideDVD)</selected>
+				</control>
+				<control type="radiobutton" id="300">
+					<description>Show Help Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31954]</label>
+					<onclick>Skin.ToggleSetting(HideHelp)</onclick>
+					<selected>!Skin.HasSetting(HideHelp)</selected>
+				</control>
+				<control type="radiobutton" id="307">
+					<description>Show App Store Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31952]</label>
+					<onclick>Skin.ToggleSetting(HideAppStore)</onclick>
+					<selected>!Skin.HasSetting(HideAppStore)</selected>
+				</control>
+				<control type="radiobutton" id="308">
+					<description>Show Power Menu</description>
+					<width>625</width>
+					<label>$LOCALIZE[31956] $LOCALIZE[31962]</label>
+					<onclick>Skin.ToggleSetting(HidePower)</onclick>
+					<onclick>Skin.Reset(ShowShutDown)</onclick>
+					<onclick>Skin.Reset(ShowSleep)</onclick>
+					<selected>!Skin.HasSetting(HidePower)</selected>
+				</control>
+				<control type="radiobutton" id="309">
+					<description>Show Quit</description>
+					<width>625</width>
+					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31007]</label>
+					<onclick>Skin.Reset(ShowShutDown)</onclick>
+					<onclick>Skin.Reset(ShowSleep)</onclick>
+					<enable>!Skin.HasSetting(HidePower)</enable>
+					<selected>!Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</selected>
+				</control>
+				<control type="radiobutton" id="310">
+					<description>Show Sleep</description>
+					<width>625</width>
+					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31960]</label>
+					<onclick>Skin.Reset(ShowShutDown)</onclick>
+					<onclick>Skin.SetBool(ShowSleep)</onclick>
+					<enable>!Skin.HasSetting(HidePower)</enable>
+					<selected>Skin.HasSetting(ShowSleep)</selected>
+				</control>
+				<control type="radiobutton" id="311">
+					<description>Show Shutdown</description>
+					<width>625</width>
+					<label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31961]</label>
+					<onclick>Skin.SetBool(ShowShutDown)</onclick>
+					<onclick>Skin.Reset(ShowSleep)</onclick>
+					<enable>!Skin.HasSetting(HidePower)</enable>
+					<selected>Skin.HasSetting(ShowShutDown)</selected>
+				</control>
+			</control>
+			<!-- Scrollbar -->
+			<control type="scrollbar" id="61">
+				<description>Scroll Bar</description>
+				<posx>735</posx>
+				<posy>60</posy>
+			</control>
+		</control>
+		<!-- Widgets -->
+		<include>Clock</include>
+	</controls>
+</window>

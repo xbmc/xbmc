@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Упр. со датотеки"
+msgstr "Упрaвување со датотеки"
 
 msgctxt "#8"
 msgid "Weather"
@@ -5901,6 +5901,10 @@ msgctxt "#19011"
 msgid "UNC"
 msgstr "UNC"
 
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Фиксирано"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Канали"
@@ -7505,6 +7509,14 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Зан. слика"
 
+msgctxt "#20414"
+msgid "Show Fanart in video and music libraries"
+msgstr "Прикажи сликички во видео и музички библиотеки"
+
+msgctxt "#20415"
+msgid "Scanning for new content"
+msgstr "Пребарување за нови содржини"
+
 msgctxt "#20416"
 msgid "First aired"
 msgstr "Првпат емитувана"
@@ -7513,9 +7525,17 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "Писател"
 
+msgctxt "#20419"
+msgid "Replace file names with library titles"
+msgstr "Наместо имињата на датотеките прикажи наслови"
+
 msgctxt "#20420"
 msgid "Never"
 msgstr "Никогаш"
+
+msgctxt "#20421"
+msgid "If only one season"
+msgstr "Ако е само една сезона"
 
 msgctxt "#20422"
 msgid "Always"
@@ -7525,17 +7545,85 @@ msgctxt "#20423"
 msgid "Has trailer"
 msgstr "Трејлер"
 
+msgctxt "#20424"
+msgid "False"
+msgstr "Неактивно"
+
+msgctxt "#20425"
+msgid "Fanart slideshow"
+msgstr "Слајдшоу"
+
+msgctxt "#20426"
+msgid "Export to a single file or separate"
+msgstr "Експортирај во една датотека или секое одделно"
+
+msgctxt "#20427"
+msgid "files per entry?"
+msgstr "Колку датотеки во запис?"
+
+msgctxt "#20428"
+msgid "Single file"
+msgstr "Една датотека"
+
 msgctxt "#20429"
 msgid "Separate"
 msgstr "Одвоено"
+
+msgctxt "#20430"
+msgid "Export thumbnails and fanart?"
+msgstr "Експортирај сликички?"
+
+msgctxt "#20431"
+msgid "Overwrite old files?"
+msgstr "Пребриши стари датотеки?"
+
+msgctxt "#20432"
+msgid "Exclude path from library updates"
+msgstr "Не скенирај ја оваа патека при освежување на библиотеката"
+
+msgctxt "#20433"
+msgid "Extract thumbnails and video information"
+msgstr "Пронајди сликички и информации за видеата"
 
 msgctxt "#20434"
 msgid "Sets"
 msgstr "Постави"
 
+msgctxt "#20436"
+msgid "Export actor thumbs?"
+msgstr "Експортирај сликички за глумците"
+
+msgctxt "#20437"
+msgid "Choose fanart"
+msgstr "Одбери постери"
+
+msgctxt "#20438"
+msgid "Local fanart"
+msgstr "Локални постери"
+
+msgctxt "#20439"
+msgid "No fanart"
+msgstr "Нема постери"
+
+msgctxt "#20440"
+msgid "Current fanart"
+msgstr "Активни постери"
+
+msgctxt "#20441"
+msgid "Remote fanart"
+msgstr "Други постери"
+
 msgctxt "#20442"
 msgid "Change content"
 msgstr "Смени содржина"
+
+msgctxt "#20443"
+msgid "Do you want to refresh info for all"
+msgstr "Дали да се обноват информации за сите"
+
+msgctxt "#20444"
+msgid "items within this path?"
+msgstr "ставки во оваа патека?"
 
 msgctxt "#20445"
 msgid "Fanart"
@@ -7561,6 +7649,10 @@ msgctxt "#20450"
 msgid "Would you like to continue scanning?"
 msgstr "Дали сакате да продолжите со скенирање"
 
+msgctxt "#20451"
+msgid "Countries"
+msgstr "Држави"
+
 msgctxt "#20452"
 msgid "episode"
 msgstr "епизода"
@@ -7568,6 +7660,14 @@ msgstr "епизода"
 msgctxt "#20453"
 msgid "episodes"
 msgstr "епизоди"
+
+msgctxt "#20454"
+msgid "Listener"
+msgstr "Слушател"
+
+msgctxt "#20455"
+msgid "Listeners"
+msgstr "Слушатели"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -7577,9 +7677,29 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Групирај Филмови во сетови"
 
+msgctxt "#21330"
+msgid "Show hidden files and directories"
+msgstr "Прикажи скриени датотеки и папки"
+
 msgctxt "#21331"
 msgid "TuxBox client"
 msgstr "TuxBox клиент"
+
+msgctxt "#21332"
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "ВНИМАНИЕ: Уредот TuxBox е веќе во режим за снимање!"
+
+msgctxt "#21333"
+msgid "The stream will be stopped!"
+msgstr "Стримот ќе биде запрен!"
+
+msgctxt "#21334"
+msgid "Zap to channel: %s failed!"
+msgstr "Префрлање на канал: %s неуспешно!"
+
+msgctxt "#21335"
+msgid "Are you sure to start the stream?"
+msgstr "Дали да се активира стримот?"
 
 msgctxt "#21336"
 msgid "Connecting to: %s"
@@ -7589,17 +7709,45 @@ msgctxt "#21337"
 msgid "TuxBox device"
 msgstr "TuxBox уред"
 
+msgctxt "#21359"
+msgid "Add media share..."
+msgstr "Додај медиа извор..."
+
+msgctxt "#21360"
+msgid "Share video and music libraries through UPnP"
+msgstr "Споделувај видео и музички библиотеки преку UPnP"
+
 msgctxt "#21366"
 msgid "Subtitle folder"
 msgstr "Титл фолдер"
+
+msgctxt "#21368"
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "Игнорирај фонтови во ASS/SSA титлови"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
 msgstr "Овозможи подршка за Маус и Екран на допир"
 
+msgctxt "#21370"
+msgid "Play navigation sounds during media playback"
+msgstr "Активирај звуци за команди додека трае репродукција"
+
+msgctxt "#21371"
+msgid "Thumbnail"
+msgstr "Сликичка"
+
+msgctxt "#21372"
+msgid "Forced DVD player region"
+msgstr "Форсиран регион на DVD плејер"
+
 msgctxt "#21373"
 msgid "Video output"
 msgstr "Видео излез"
+
+msgctxt "#21374"
+msgid "Video aspect"
+msgstr "Формат на видеото"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -7625,6 +7773,18 @@ msgctxt "#21380"
 msgid "Enable 1080i"
 msgstr "Овозможи 1080i"
 
+msgctxt "#21381"
+msgid "Enter name of new playlist"
+msgstr "Внесете име за новата листа"
+
+msgctxt "#21382"
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Прикажи копче „Додај извор“ кај листите на датотеки"
+
+msgctxt "#21383"
+msgid "Enable scrollbars"
+msgstr "Овозможи "
+
 msgctxt "#21385"
 msgid "Open"
 msgstr "Отвори"
@@ -7645,9 +7805,45 @@ msgctxt "#21389"
 msgid "Enable custom background"
 msgstr "Овозможи сопствени позадини"
 
+msgctxt "#21390"
+msgid "Power management level"
+msgstr "Ниво на штедење струја"
+
+msgctxt "#21391"
+msgid "High power"
+msgstr "Високо"
+
+msgctxt "#21392"
+msgid "Low power"
+msgstr "Ниско"
+
+msgctxt "#21393"
+msgid "High standby"
+msgstr "Високо (мирување)"
+
+msgctxt "#21394"
+msgid "Low standby"
+msgstr "Ниско (мирување)"
+
+msgctxt "#21395"
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Не е можно кеширање датотеки поголеми од 4GB"
+
 msgctxt "#21396"
 msgid "Chapter"
 msgstr "Поглавје"
+
+msgctxt "#21397"
+msgid "High quality pixel shader v2"
+msgstr "Високо квалитетен pixel shader v2"
+
+msgctxt "#21398"
+msgid "Enable playlist at startup"
+msgstr "Активирај листа за репр. при старување"
+
+msgctxt "#21399"
+msgid "Use tween animations"
+msgstr "Користи двојни анимации"
 
 msgctxt "#21400"
 msgid "contains"
@@ -7693,9 +7889,73 @@ msgctxt "#21410"
 msgid "in the last"
 msgstr "е последен"
 
+msgctxt "#21411"
+msgid "not in the last"
+msgstr "не е во последните"
+
+msgctxt "#21412"
+msgid "Scrapers"
+msgstr "Добавувачи"
+
+msgctxt "#21413"
+msgid "Default movie scraper"
+msgstr "Основен добавувач за филмови"
+
+msgctxt "#21414"
+msgid "Default tvshow scraper"
+msgstr "Основен добавувач за серии"
+
+msgctxt "#21415"
+msgid "Default music video scraper"
+msgstr "Основен добавувач за музички спотови"
+
+msgctxt "#21417"
+msgid "- Settings"
+msgstr "- Поставки"
+
 msgctxt "#21418"
 msgid "Multilingual"
 msgstr "Повеќејазично"
+
+msgctxt "#21419"
+msgid "No scrapers present"
+msgstr "нема добавувачи"
+
+msgctxt "#21420"
+msgid "Value to match"
+msgstr "Вредност која се бара"
+
+msgctxt "#21421"
+msgid "Smart playlist rule"
+msgstr "Правило за паметен список на реп."
+
+msgctxt "#21422"
+msgid "Match items where"
+msgstr "Пронајди ставки каде"
+
+msgctxt "#21423"
+msgid "New rule..."
+msgstr "Ново правило..."
+
+msgctxt "#21424"
+msgid "Items must match"
+msgstr "Ставките мора да ги исполнат"
+
+msgctxt "#21425"
+msgid "all of the rules"
+msgstr "сите правила"
+
+msgctxt "#21426"
+msgid "one or more of the rules"
+msgstr "едно или повеќе од правилата"
+
+msgctxt "#21427"
+msgid "Limit to"
+msgstr "Ограничи на "
+
+msgctxt "#21428"
+msgid "No limit"
+msgstr "Нема ограничувања"
 
 msgctxt "#21429"
 msgid "Order by"
@@ -7709,9 +7969,45 @@ msgctxt "#21431"
 msgid "descending"
 msgstr "опаѓачки"
 
+msgctxt "#21432"
+msgid "Edit smart playlist"
+msgstr "Промена на паметен список на реп."
+
+msgctxt "#21433"
+msgid "Name of the playlist"
+msgstr "Име на список за реп."
+
+msgctxt "#21434"
+msgid "Find items where"
+msgstr "Пронајди ставки каде"
+
 msgctxt "#21435"
 msgid "Edit"
 msgstr "Уреди"
+
+msgctxt "#21436"
+msgid "%i items"
+msgstr "%i ставки"
+
+msgctxt "#21437"
+msgid "New smart playlist..."
+msgstr "Нов паметен список за реп."
+
+msgctxt "#21438"
+msgid "%c Drive"
+msgstr "%c Драјв"
+
+msgctxt "#21439"
+msgid "Edit party mode rules"
+msgstr "Промена на правилата за режим на журка"
+
+msgctxt "#21440"
+msgid "Home folder"
+msgstr "Почетна папка"
+
+msgctxt "#21441"
+msgid "Watched count"
+msgstr "Број на гледања"
 
 msgctxt "#21442"
 msgid "Episode title"
@@ -7757,9 +8053,17 @@ msgctxt "#21452"
 msgid "Get More..."
 msgstr "Превземи повеќе"
 
+msgctxt "#21453"
+msgid "Root filesystem"
+msgstr "Root filesystem"
+
 msgctxt "#21454"
 msgid "Cache full"
 msgstr "Кешот е полн"
+
+msgctxt "#21455"
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "Кешот се преполни пред да има доволно податоци за непрекинато гледање"
 
 msgctxt "#21457"
 msgid "Watched episode count"
@@ -7768,6 +8072,26 @@ msgstr "Број на гледани епизоди"
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Локација на титл"
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Фиксирано"
+
+msgctxt "#21462"
+msgid "Bottom of video"
+msgstr "На дното на видеото"
+
+msgctxt "#21463"
+msgid "Below video"
+msgstr "Под видеото"
+
+msgctxt "#21464"
+msgid "Top of video"
+msgstr "На врвот од видеото"
+
+msgctxt "#21465"
+msgid "Above video"
+msgstr "Над видеото"
 
 msgctxt "#21467"
 msgid "%.1f to %.1f"
@@ -7781,6 +8105,22 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s до %s"
 
+msgctxt "#21800"
+msgid "File name"
+msgstr "Име на датотека"
+
+msgctxt "#21801"
+msgid "File path"
+msgstr "Патека"
+
+msgctxt "#21802"
+msgid "File size"
+msgstr "Големина"
+
+msgctxt "#21803"
+msgid "File date/time"
+msgstr "датум/време на датотеката"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Резолуција"
@@ -7788,6 +8128,14 @@ msgstr "Резолуција"
 msgctxt "#21806"
 msgid "Comment"
 msgstr "Коментар"
+
+msgctxt "#21807"
+msgid "Colour/B&W"
+msgstr "Колор/Ц&Б"
+
+msgctxt "#21808"
+msgid "JPEG process"
+msgstr "JPEG тип"
 
 msgctxt "#21820"
 msgid "Date/Time"
@@ -7797,13 +8145,113 @@ msgctxt "#21821"
 msgid "Description"
 msgstr "Опис"
 
+msgctxt "#21822"
+msgid "Camera make"
+msgstr "Произведувач на камера"
+
+msgctxt "#21823"
+msgid "Camera model"
+msgstr "Модел на камера"
+
+msgctxt "#21824"
+msgid "EXIF comment"
+msgstr "EXIF коментар"
+
+msgctxt "#21825"
+msgid "Firmware"
+msgstr "Firmware"
+
+msgctxt "#21826"
+msgid "Aperture"
+msgstr "Апертура"
+
+msgctxt "#21827"
+msgid "Focal length"
+msgstr "Фокална должина"
+
+msgctxt "#21828"
+msgid "Focus distance"
+msgstr "Фокусно растојание"
+
+msgctxt "#21829"
+msgid "Exposure"
+msgstr "Експозиција"
+
+msgctxt "#21830"
+msgid "Exposure time"
+msgstr "Време на експозиција"
+
+msgctxt "#21831"
+msgid "Exposure bias"
+msgstr "Прилагодување на експозиција"
+
+msgctxt "#21832"
+msgid "Exposure mode"
+msgstr "Мод на експозиција"
+
+msgctxt "#21833"
+msgid "Flash used"
+msgstr "Блиц користен"
+
+msgctxt "#21834"
+msgid "White-balance"
+msgstr "Ниво на белата"
+
+msgctxt "#21835"
+msgid "Light source"
+msgstr "Извор на светло"
+
+msgctxt "#21836"
+msgid "Metering mode"
+msgstr "Начин на мерење"
+
 msgctxt "#21837"
 msgid "ISO"
 msgstr "ISO"
 
+msgctxt "#21838"
+msgid "Digital zoom"
+msgstr "Дигитален зум"
+
+msgctxt "#21839"
+msgid "CCD width"
+msgstr "CCD ширина"
+
+msgctxt "#21840"
+msgid "GPS latitude"
+msgstr "GPS ширина"
+
+msgctxt "#21841"
+msgid "GPS longitude"
+msgstr "GPS должина"
+
+msgctxt "#21842"
+msgid "GPS altitude"
+msgstr "GPS висина"
+
+msgctxt "#21843"
+msgid "Orientation"
+msgstr "Ориентација"
+
+msgctxt "#21860"
+msgid "Supplemental categories"
+msgstr "Дополнителни категории"
+
+msgctxt "#21861"
+msgid "Keywords"
+msgstr "Клучни зборови"
+
+msgctxt "#21862"
+msgid "Caption"
+msgstr "Наслов"
+
 msgctxt "#21863"
 msgid "Author"
 msgstr "Автор"
+
+msgctxt "#21864"
+msgid "Headline"
+msgstr "Наслов"
 
 msgctxt "#21865"
 msgid "Special instructions"
@@ -7813,9 +8261,29 @@ msgctxt "#21866"
 msgid "Category"
 msgstr "Категорија"
 
+msgctxt "#21867"
+msgid "Byline"
+msgstr "Опис"
+
+msgctxt "#21868"
+msgid "Byline title"
+msgstr "наслов на опис"
+
+msgctxt "#21869"
+msgid "Credit"
+msgstr "Автори"
+
 msgctxt "#21870"
 msgid "Source"
 msgstr "Извор"
+
+msgctxt "#21871"
+msgid "Copyright notice"
+msgstr "Авторски права"
+
+msgctxt "#21872"
+msgid "Object name"
+msgstr "Име на објектот"
 
 msgctxt "#21873"
 msgid "City"

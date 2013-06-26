@@ -313,6 +313,14 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
 {
+  std::vector<std::string> preDeps;
+  preDeps.push_back(addon->ID());
+  return CheckDependencies(addon, preDeps);
+}
+
+bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
+                                        std::vector<std::string>& preDeps)
+{
   if (!addon.get())
     return true; // a NULL addon has no dependencies
   ADDONDEPS deps = addon->GetDeps();
@@ -333,16 +341,14 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
         return false;
       }
     }
-    // prevent infinite loops
-    if (dep && dep->ID() == addon->ID())
-    {
-      CLog::Log(LOGERROR, "Addon %s depends on itself, ignoring", addon->ID().c_str());
-      return false;
-    }
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
-    if (dep && !CheckDependencies(dep))
-      return false;
+    if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
+    {
+      if (!CheckDependencies(dep, preDeps))
+        return false;
+      preDeps.push_back(dep->ID());
+    }
   }
   return true;
 }

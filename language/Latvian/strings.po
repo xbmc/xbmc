@@ -1,0 +1,1226 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Latvian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "Programmas"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Attēli"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Mūzika"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "Video"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "TV programma"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "Iestatījumi"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "Failu pārvaldnieks"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "Laika apstākļi"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "Pirmdiena"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "Otrdiena"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "Trešdiena"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "Ceturtdiena"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "Piektdiena"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "Sestdiena"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "Svētdiena"
+
+msgctxt "#21"
+msgid "January"
+msgstr "Janvāris"
+
+msgctxt "#22"
+msgid "February"
+msgstr "Februāris"
+
+msgctxt "#23"
+msgid "March"
+msgstr "Marts"
+
+msgctxt "#24"
+msgid "April"
+msgstr "Aprīlis"
+
+msgctxt "#25"
+msgid "May"
+msgstr "Maijs"
+
+msgctxt "#26"
+msgid "June"
+msgstr "Jūnijs"
+
+msgctxt "#27"
+msgid "July"
+msgstr "Jūlijs"
+
+msgctxt "#28"
+msgid "August"
+msgstr "Augusts"
+
+msgctxt "#29"
+msgid "September"
+msgstr "Septembris"
+
+msgctxt "#30"
+msgid "October"
+msgstr "Oktobris"
+
+msgctxt "#31"
+msgid "November"
+msgstr "Novembris"
+
+msgctxt "#32"
+msgid "December"
+msgstr "Decembris"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "Pirm"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Otr"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Treš"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Cet"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Piekt"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Sest"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "Svēt"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Jan"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Feb"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Mar"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Apr"
+
+msgctxt "#55"
+msgid "May"
+msgstr "Mai"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Jūn"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Jūl"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Aug"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Sep"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Okt"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Dec"
+
+msgctxt "#71"
+msgid "N"
+msgstr "Z"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "ZZA"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "ZA"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "AZA"
+
+msgctxt "#75"
+msgid "E"
+msgstr "A"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "ADA"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "DA"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "DDA"
+
+msgctxt "#79"
+msgid "S"
+msgstr "D"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "DDR"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "DR"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "RDR"
+
+msgctxt "#83"
+msgid "W"
+msgstr "R"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "RZR"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "ZR"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "ZZR"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "Skats: Auto"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "Skats: Auto liels"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "Skats: Ikonas"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "Skats: Saraksts"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "Skanēt"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "Kārtot pēc: Nosaukuma"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "Kārtot pēc: Datuma"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "Kārtot pēc: Izmēra"
+
+msgctxt "#106"
+msgid "No"
+msgstr "Nē"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "Jā"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "Slīdrāde"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "Izveidot sīktēlus"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "Izveidot sīktēlus"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "Saīsnes"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "Iepauzēts"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Atjaunināšana neizdevās"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Instalācija neizdevās"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "Kopēt"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "Pārvietot"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "Dzēst"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "Pārsaukt"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "Jauna mape"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "Apstiprini faila kopēšanu"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "Apstiprini faila pārvietošanu"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "Apstiprini faila dzēšanu?"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "Kopēt šos failus?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "Pārvietot šos failus?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Dzēst šos failus? - Izdzēstus failus neatgriezīsi!"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "Statuss"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "Objekti"
+
+msgctxt "#128"
+msgid "General"
+msgstr "Vispārīgi"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "Slīdrāde"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "Sistēmas informācija"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "Attēls"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "Albūmi"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "Mākslinieki"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "Dziesmas"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "Žanri"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "Atskaņošanas saraksti"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "Meklēšana"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "Sistēmas informācija"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "Temperatūras:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "Procesors:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "Grafika:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "Laiks:"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "Pašlaik:"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "Būvējums:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "Tīkls:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "Tips:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "Statiski"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC adrese"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP adrese"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Links:"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "Half duplex"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "Full duplex"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "Glabātuve"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "Disks"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "Brīvs"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "Brīvā atmiņa"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "Nav linka"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "Brīvs"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "Nav pieejams"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "Atvilkne vaļā"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "Lasu"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "Nav diska"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "Disks pieejams"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "Āda"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "Izšķirtspēja"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "Izlaišanas datums"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "Parādīt 4:3 video kā"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "Dziesma"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "Ilgums"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "Izvēlēties albumu"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "Atsvaidzināt"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "Labi"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "Nav atrasts neviens albums!"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "Izvēlēties visu"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "Saglabāt"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "Sajaukt"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "Skaidrs"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "Skanēt"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "Meklē..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "Nav informācijas!"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "Izvēlēties filmu:"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "Ielādē filmas informāciju"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "Balsis"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Atskaņot"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "Nākamais"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "Iepriekšējais"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "Pikseļu attiecība"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD lasītājs"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "Lūdzu ievieto disku"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "Tīkls nav pievienots"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "Atcelt"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "Ātrums"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "Punkts"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Palielinājums"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Pilnekrāns"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "Skripti"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "Valoda"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "Mūzika"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "Vizualizācija"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "Kļūda"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "Atver"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "Gaida sākumu..."
+
+msgctxt "#264"
+msgid "Record"
+msgstr "Ierakstīt"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "Apturēt ierakst."
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "Kārtot pēc: Dziesmas"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "Kārtot pēc: Laika"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "Kārtot pēc: Nosaukuma"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "Kārtot pēc: Izpildītāja"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "Kārtot pēc: Albuma"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "Top 100"
+
+msgctxt "#275"
+msgid "Pixel ratio adjustment"
+msgstr "Pikseļu attiecības pielāgošana"
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "Lūdzu pārbaudi XML failus"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "Nekas netika atrasts"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "Fonts"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "Valoda"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "Ieslēgts"
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "Tīra datubāzi"
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "Sagatavo..."
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "Datubāzes kļūda"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "Meklē dziesmas..."
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "Veiksmīgi iztīrīta datubāze"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "Tīra dziesmas..."
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "Kļūda tīrot dziesmas"
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "Tīra izpildītājus..."
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "Kļūda tīrot izpildītājus"
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "Tīra albumus..."
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "Kļūda tīrot albumus"
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "Raksta izmaiņas..."
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "Kļūda rakstot izmaiņas"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "Šis var aizņemt kādu laiku..."
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "Saspiež datubāzi..."
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "Kļūda saspiežot datubāzi"
+
+msgctxt "#335"
+msgid "Start"
+msgstr "Sākt"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "Atskaņot disku"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "Filmas"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "Aktieri"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "Gads"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "Programmas"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "Melns"
+
+msgctxt "#355"
+msgid "Screensaver time"
+msgstr "Ekrānsaudzētāja laiks"
+
+msgctxt "#356"
+msgid "Screensaver mode"
+msgstr "Ekrānsaudzētāja veids"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "Visi albumi"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "Nesen pievienotie albumi"
+
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "Ekrānsaudzētājs"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "Kārtot pēc: Faila"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "Kārtot pēc: Vārda"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "Kārtot pēc: Gada"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Kārtot pēc: Novērtējuma"
+
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "Nosaukums"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "Daļēji"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "Pārsvarā"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "Saulains"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "Mākoņains"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "Sniegs"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "Lietus"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "AM"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "PM"
+
+msgctxt "#380"
+msgid "Showers"
+msgstr "Lietusgāzes"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "Daži"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "Izkaisīti"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "Vējš"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "Stiprs"
+
+msgctxt "#385"
+msgid "Fair"
+msgstr "Vājš"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "Skaidrs"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "Mākoņi"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "Agri"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "Lietusgāze"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "Brāzmas"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "Zems"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "Vidējs"
+
+msgctxt "#393"
+msgid "High"
+msgstr "Augsts"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "Migla"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "Dūmaka"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "Izvēlēties atrašanās vietu"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "Atsvaidzināt laiku"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "Temperatūras vienības"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "Ātruma vienības"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "Laika apstākļi"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "Temperatūra"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "Liekas kā"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "UV indekss"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "Vējš"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "Kušanas temperatūra"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "Mirtums"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "Noklusējums"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "Zems"
+
+msgctxt "#419"
+msgid "High"
+msgstr "Augsts"
+
+msgctxt "#420"
+msgid "HDMI"
+msgstr "HDMI"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "Izvēlēties"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "Disks"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "Ievietojiet pareizu CD/DVD"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "Atver failu"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "Ieslēgts"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "Nosaukums"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "Gads"
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "Vidējs"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP adrese"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "Mūzika"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "Attēli"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "Svēt"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "Programmas"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "Attēli"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "Failu pārvaldnieks"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "Iestatījumi"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "Mūzika"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "Video"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "Skripti"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "Video"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "Programmas"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "Sistēmas informācija"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "Laika apstākļi"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "Ekrānsaudzētājs"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "Glabātuve"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "Saīsnes"
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "Vidējs"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "Augsts"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Atskaņot"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "Vispārīgi"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Nākamais"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "Filmas"
+
+msgctxt "#20445"
+msgid "Fanart"
+msgstr "Fanu māksla"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "Izšķirtspēja"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "Fonts"
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "Ekrānsaudzētājs"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "Vizualizācija"
+
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "Lirika"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "Laika apstākļi"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "Iespējas"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "Fons"
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "Lokācija"

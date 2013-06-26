@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Welsh language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cy/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Galluogi celf artisiaid o HTBackdrops.com</string>
+    <string id="30001">Galluogi lluniau bach artistiaid o allmusic.com</string>
+    <string id="30002">Galluogi lluniau bach artistiaid o last.fm</string>
+    <string id="30003">Galluogi lluniau bach artistiaid o HTBackdrops.com</string>
+    <string id="30004">Galluogi celf artistiaid o fanart.tv</string>
+    <string id="30005">Galluogi lluniau bach artistiaid o fanart.tv</string>
+    <string id="30006">Estyn bywgraffiad artist o</string>
+    <string id="30007">Gwaith Celf</string>
+    <string id="30008">Estyn disgograffeg artist o</string>
+    <string id="30009">Estyn Genres Artistiaid o</string>
+    <string id="30010">Estyn Arddulliau Artistiaid o</string>
+    <string id="30011">Estyn Hyd Oes Artistiaid o</string>
+    <string id="30012">Estyn Naws Artistiaid o</string>
+    <string id="30014">Estyn Blynyddoedd Cynhyrchiol Artistiaid o</string>
+    <string id="30015">Dewis Iaith</string>
+    <string id="30016">Camu nol Bywgraffiad Artist o</string>
+    <string id="30017">Cammu nol i Ddisgograffeg Artist o</string>
+    <string id="30018">Cammu nol i Genres Artistiaid o</string>
+    <string id="30019">Cammu nol i Arddulliau Artistiaid o</string>
+    <string id="30020">Cammu nol i Hyd Oes Artisitiaid o</string>
+    <string id="30021">Cammu nol</string>
+    <string id="30022">Galluogi lluniau bach artistiaid o theaudiodb.com</string>
+    <string id="30023">Galluogi Celf Artistiaid o theaudiodb.com</string>
+</strings>

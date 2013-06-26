@@ -28,12 +28,14 @@
 class NetworkServiceBrowser;
 typedef boost::shared_ptr<NetworkServiceBrowser> NetworkServiceBrowserPtr;
 typedef pair<boost::asio::ip::address, NetworkServicePtr> address_service_pair;
+
+#define SCAN_TIMEOUT_MS 2000
  
 /////////////////////////////////////////////////////////////////////////////
 class NetworkServiceBrowser : public NetworkServiceBase
 {
  public:
-  
+
   /// Constructor.
   NetworkServiceBrowser(boost::asio::io_service& ioService, unsigned short port, int refreshTime=NS_BROWSE_REFRESH_INTERVAL)
    : NetworkServiceBase(ioService)
@@ -74,7 +76,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
     dprintf("NetworkServiceBrowser: SERVICE reachability: %s (will always be false)", service->address().to_string().c_str());
     return false;
   }
-  
+
   /// Copy out the current service list.
   map<boost::asio::ip::address, NetworkServicePtr> copyServices()
   {
@@ -90,7 +92,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
 
   // Force a scan event now.
   void scanNow() { dprintf("Forced network scan running!"); m_timer.expires_from_now(boost::posix_time::milliseconds(1)); }
-  
+
  private:
 
   /// Handle network change.
@@ -161,6 +163,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
     {
       wprintf("NetworkServiceBrowser: Error sending out discover packet: %s", e.what());
     }
+
   }
   
   /// Find a network service by resource identifier.
@@ -278,7 +281,15 @@ class NetworkServiceBrowser : public NetworkServiceBase
     
     // If the socket is open, keep receiving (On XP we need to abandon a socket for 10022 - An invalid argument was supplied - as well).
     if (socket->is_open() && error.value() != 10022)
-      socket->async_receive_from(boost::asio::buffer(m_data, NS_MAX_PACKET_SIZE), m_endpoint, boost::bind(&NetworkServiceBrowser::handleRead, this, socket, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, interfaceIndex));
+    {
+      socket->async_receive_from(boost::asio::buffer(m_data, NS_MAX_PACKET_SIZE),
+                                 m_endpoint,
+                                 boost::bind(&NetworkServiceBrowser::handleRead,
+                                             this, socket,
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred,
+                                             interfaceIndex));
+    }
     else
       iprintf("Network Service: Abandoning browse socket, it was closed.");
   }

@@ -78,7 +78,7 @@ msgstr "Fanart"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Slikovne Ikonice"
+msgstr "Slikovne ikonice"
 
 msgctxt "#31032"
 msgid "Image Wrap"
@@ -178,7 +178,7 @@ msgstr "Sakrij označavanje čitanje iz video datoteka [COLOR=grey3](Blu-ray, HD
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Sakrite Tipke Glavnog Izbornika"
+msgstr "Sakrite tipke glavnog izbornika"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -198,7 +198,7 @@ msgstr "Mogućnosti"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Prikaži Nedavno dodane Albume"
+msgstr "Prikaži nedavno dodane albume"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -206,11 +206,11 @@ msgstr "Prikaži Nedavno dodan Video"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
-msgstr "Početna Stranica Programa Podizbornika"
+msgstr "Početna stranica programa podizbornika"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Sakrij Pozadina Fanarta"
+msgstr "Sakrij pozadinu Fanarta"
 
 msgctxt "#31122"
 msgid "Weather Page"

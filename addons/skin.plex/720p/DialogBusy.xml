@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<window id="136">
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<!-- ViewsDialog.xml -->
+	<include>DialogBottomRightSlide</include>
+	<controls>
+		<!-- ViewsDialog.xml -->
+		<include>DialogBusy</include>
+	</controls>
+</window>

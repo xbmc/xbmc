@@ -28,6 +28,7 @@ xcodepath=$(xcode-select -print-path)
 xcodebuild=$xcodepath/usr/bin/xcodebuild
 if [ $darwin = "osx" ]; then
   sdkversion=$($xcodebuild -showsdks | grep macosx | sort |  tail -n 1 | grep -oE 'macosx[0-9.0-9]+' | cut -c 7-$NF)
+  #sdkversion="10.8"
 else
   sdkversion=$($xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}')
 fi
@@ -46,13 +47,22 @@ function fail
 }
 
 if [ ! -d plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH -o ! -d plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH ]; then
-  curl --head --fail -s http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz > /dev/null || fail xbmc $DEPEND_HASH
-  curl --head --fail -s http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz > /dev/null || fail ffmpeg $FFMPEG_HASH
-  
-  echo "-- Fetching http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz"
-  curl -s --fail http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz -o /tmp/$outputdir-xbmc-$DEPEND_HASH.tar.xz || fail xbmc $DEPEND_HASH  
-  echo "-- Fetching http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz"
-  curl -s --fail http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz -o /tmp/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz || fail ffmpeg $FFMPEG_HASH
+  if [ ! -e plex/Dependencies/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz ]; then
+    echo "-- Missing plex/Dependencies/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz"
+    curl --head --fail -s http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz > /dev/null || fail xbmc $DEPEND_HASH
+    echo "-- Fetching http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz"
+    curl -s --fail http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz -o /tmp/$outputdir-xbmc-$DEPEND_HASH.tar.xz || fail xbmc $DEPEND_HASH  
+  else
+    cp -v plex/Dependencies/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz /tmp/
+  fi
+
+  if [ ! -e plex/Dependencies/built-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ]; then
+    curl --head --fail -s http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz > /dev/null || fail ffmpeg $FFMPEG_HASH
+    echo "-- Fetching http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz"
+    curl -s --fail http://nightlies.plexapp.com/plex-dependencies/pht-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz -o /tmp/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz || fail ffmpeg $FFMPEG_HASH
+  else
+    cp -v plex/Dependencies/built-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz /tmp/
+  fi
   
   echo "-- Unpacking $outputdir-xbmc-$DEPEND_HASH.tar.xz"
   gtar -xaf /tmp/$outputdir-xbmc-$DEPEND_HASH.tar.xz -C plex/Dependencies
@@ -64,3 +74,6 @@ if [ ! -d plex/Dependencies/$outputdir-xbmc-$DEPEND_HASH -o ! -d plex/Dependenci
   mv plex/Dependencies/ffmpeg-$outputdir plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH
   plex/scripts/fix_install_names.py $ROOT/plex/Dependencies/$outputdir-ffmpeg-$FFMPEG_HASH/lib
 fi
+
+echo "-- Done with dependencies"
+exit 0

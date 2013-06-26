@@ -13,32 +13,32 @@
 
 	<regions>
 	<region name="España (12 horas)" locale="ES">
-  	  	<dateshort>D/M/YYYY</dateshort>
-  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+  	  	<dateshort>DD/MM/YYYY</dateshort>
+  	  	<datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
 		<time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
   	  	<tempunit>C</tempunit>
   	  	<speedunit>kmh</speedunit>
 		<timezone>CEST</timezone>
 	</region>
 	<region name="España (24 horas)" locale="ES">
-  	  	<dateshort>D/M/YYYY</dateshort>
-  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+  	  	<dateshort>DD/MM/YYYY</dateshort>
+  	  	<datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
   	  	<tempunit>C</tempunit>
   	  	<speedunit>kmh</speedunit>
 		<timezone>CEST</timezone>
 	</region>
 	<region name="Canarias (12 horas)" locale="ES">
-  	  	<dateshort>D/M/YYYY</dateshort>
-  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+  	  	<dateshort>DD/MM/YYYY</dateshort>
+  	  	<datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
 		<time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
   	  	<tempunit>C</tempunit>
   	  	<speedunit>kmh</speedunit>
 		<timezone>GMT</timezone>
 	</region>
 	<region name="Canarias (24 horas)" locale="ES">
-  	  	<dateshort>D/M/YYYY</dateshort>
-  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+  	  	<dateshort>DD/MM/YYYY</dateshort>
+  	  	<datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
   	  	<tempunit>C</tempunit>
   	  	<speedunit>kmh</speedunit>

@@ -5,4 +5,5 @@
 
 <strings>
     <string id="30000">Récupérer les vignettes d'albums depuis fanart.tv</string>
+    <string id="30001">Récupère les vignettes des albums depuis theaudiodb.com</string>
 </strings>

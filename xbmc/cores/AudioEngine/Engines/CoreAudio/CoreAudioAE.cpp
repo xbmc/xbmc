@@ -51,8 +51,11 @@ OSStatus deviceChangedCB( AudioObjectID                       inObjectID,
                           void*                               inClientData)
 {
   CCoreAudioAE *pEngine = (CCoreAudioAE *)inClientData;
-  pEngine->AudioDevicesChanged();
-  CLog::Log(LOGDEBUG, "CCoreAudioAE - audiodevicelist changed!");
+  if (pEngine->GetHAL())
+  {
+    pEngine->AudioDevicesChanged();
+    CLog::Log(LOGDEBUG, "CCoreAudioAE - audiodevicelist changed!");
+  }
   return noErr;
 }
 
@@ -102,8 +105,8 @@ CCoreAudioAE::CCoreAudioAE() :
 
 CCoreAudioAE::~CCoreAudioAE()
 {
-  RegisterDeviceChangedCB(false, this);
   Shutdown();
+  RegisterDeviceChangedCB(false, this);
 }
 
 void CCoreAudioAE::Shutdown()
@@ -138,6 +141,9 @@ void CCoreAudioAE::Shutdown()
 
 void CCoreAudioAE::AudioDevicesChanged()
 {
+  if (!m_Initialized)
+    return;
+
   // give CA a bit time to realise that maybe the 
   // default device might have changed now - else
   // OpenCoreAudio might open the old default device

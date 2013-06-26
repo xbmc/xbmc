@@ -16,6 +16,7 @@ include_directories(
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
+add_subdirectory(Client)
 add_subdirectory(FileSystem)
 add_subdirectory(GUI)
 add_subdirectory(Network)
@@ -75,6 +76,7 @@ endif(ENABLE_PYTHON)
 
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
+file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
 if(COMPRESS_TEXTURES)
   # Build the packed textures
@@ -97,10 +99,22 @@ if(COMPRESS_TEXTURES)
     DEPENDS TexturePacker
     WORKING_DIRECTORY ${WORKDIR}
   )
-
-  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
+
+  if(ENABLE_NEW_SKIN)
+    add_custom_command(
+      OUTPUT Textures_Plex.xbt
+      COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+      MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
+      DEPENDS TexturePacker
+    )
+    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
+  else(ENABLE_NEW_SKIN)
+    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+  endif(ENABLE_NEW_SKIN)
+
+  set(EXCLUDE_TEXTURES "skin.(mediastream|plex)/Media/*")
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -130,11 +144,20 @@ install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RE
 
 install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN python EXCLUDE
+        PATTERN playercorefactory.xml EXCLUDE
         PATTERN peripherals.xml EXCLUDE)
+
+
+if(NOT ENABLE_NEW_SKIN)
+  set(EXCLUDE_NEW_SKIN skin.plex)
+else(NOT ENABLE_NEW_SKIN)
+  set(EXCLUDE_NEW_SKIN ^foo)
+endif(NOT ENABLE_NEW_SKIN)
 
 install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN skin.confluence EXCLUDE
         PATTERN skin.touched EXCLUDE
+        PATTERN ${EXCLUDE_NEW_SKIN} EXCLUDE
         REGEX screensaver.rsxs* EXCLUDE
         REGEX library.* EXCLUDE
         REGEX metadata.* EXCLUDE
@@ -167,7 +190,7 @@ install(FILES ${plexdir}/Resources/${PLEX_SPLASH} DESTINATION ${RESOURCEPATH}/me
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/peripherals.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
+install(FILES ${plexdir}/Resources/peripherals.xml ${plexdir}/Resources/playercorefactory.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
 if(TARGET_OSX)
   install(FILES ${plexdir}/Resources/com.plexapp.ht.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
@@ -181,26 +204,8 @@ elseif(TARGET_WIN32)
   install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 endif()
 
-if(TARGET_OSX)
-  set(DSYM_FNAME "${EXECUTABLE_NAME}-${PLEX_VERSION_STRING}-${OSX_ARCH}.dSYM")
-  add_custom_command(
-    OUTPUT "${DSYM_FNAME}"
-    COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
-    DEPENDS ${PLEX_TARGET_NAME}
-  )
-  add_custom_command(
-    OUTPUT "${DSYM_FNAME}.zip"
-    COMMAND ditto -c -k "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}" "${CMAKE_CURRENT_BINARY_DIR}/${DSYM_FNAME}.zip"
-    DEPENDS "${DSYM_FNAME}"
-  )
-  add_custom_target(Symbols DEPENDS "${DSYM_FNAME}.zip")
-endif()
-
 if(CREATE_BUNDLE)
   if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
     install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
-  endif()
-  if(TARGET_OSX)
-    add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
   endif()
 endif()

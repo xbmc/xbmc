@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<window id="129">
+	<defaultcontrol>15</defaultcontrol>
+	<controls>
+		<include>FadeDialog</include>
+		<control type="group">
+			<include>ProgressDialogCenterPos</include>
+			<include>ProgressDialogBG</include>
+			<control type="group">
+				<include>ProgressDialogHeadingPos</include>
+				<control type="label">
+					<description>Heading</description>
+					<label>21421</label>
+					<include>ProgressDialogHeading</include>
+				</control>
+				<control type="label" id="0">
+					<description>Rule match label</description>
+					<posy>26</posy>
+					<width>480</width>
+					<label>21422</label>
+					<textcolor>Unfocused</textcolor>
+				</control>
+				<control type="group" id="9001">
+					<posy>44</posy>
+					<control type="spincontrolex" id="15">
+						<description>Rule Field</description>
+						<width>170</width>
+						<onright>16</onright>
+						<ondown>9000</ondown>
+					</control>
+					<control type="spincontrolex" id="16">
+						<description>Rule operator</description>
+						<posx>176</posx>
+						<width>150</width>
+						<onleft>15</onleft>
+						<onright>17</onright>
+						<ondown>9000</ondown>
+					</control>
+					<control type="button" id="17">
+						<description>Value Button</description>
+						<posx>330</posx>
+						<width>134</width>
+						<onleft>16</onleft>
+						<ondown>20</ondown>
+						<onright>20</onright>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="group">
+						<posy>28</posy>
+						<control type="button" id="20">
+							<description>Browse Button</description>
+							<posx>400</posx>
+							<label>1024</label>
+							<onup>17</onup>
+							<ondown>9000</ondown>
+							<onleft>9000</onleft>
+							<onright>9000</onright>
+							<include>DialogButton</include>
+						</control>
+					</control>
+				</control>
+				<control type="group" id="9000">
+					<posy>ConfirmDialogButtonYPos</posy>
+					<posx>160</posx>
+					<control type="button" id="18">
+						<description>Ok Button</description>
+						<label>$LOCALIZE[186]</label>
+						<onup>9001</onup>
+						<onleft>20</onleft>
+						<onright>19</onright>
+						<ondown>9001</ondown>
+						<include>DialogButton</include>
+					</control>
+					<control type="button" id="19">
+						<description>Cancel Button</description>
+						<posx>76</posx>
+						<label>$LOCALIZE[222]</label>
+						<onup>9001</onup>
+						<onleft>18</onleft>
+						<onright>20</onright>
+						<ondown>9001</ondown>
+						<include>DialogButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

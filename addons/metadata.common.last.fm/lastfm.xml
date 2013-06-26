@@ -87,6 +87,9 @@
 				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistGenresByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
+				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetTADBFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
 				<expression>&lt;genre&gt;&lt;/genre&gt;</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$11" dest="4">

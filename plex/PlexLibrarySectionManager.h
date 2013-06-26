@@ -17,6 +17,8 @@
 
 #include "FileItem.h"
 
+#include "utils/log.h"
+
 using namespace std;
 
 typedef pair<string, map<string, CFileItemPtr> > uuid_section_map_pair;
@@ -41,7 +43,7 @@ class PlexLibrarySectionManager
   {
     boost::mutex::scoped_lock lk(m_mutex);
     
-    dprintf("Adding %ld local sections for %s", sections.size(), uuid.c_str());
+    CLog::Log(LOGDEBUG, "Adding %ld local sections for %s", sections.size(), uuid.c_str());
     map<string, CFileItemPtr>& map = ensureMap(uuid);
     map.clear();
     
@@ -49,7 +51,7 @@ class PlexLibrarySectionManager
     BOOST_FOREACH(CFileItemPtr& section, sections)
     {
       string key = uuid + "://" + string(section->GetProperty("unprocessedKey").c_str());
-      dprintf("Adding local owned section %s -> %s (%s)", key.c_str(), section->GetLabel().c_str(), section->GetPath().c_str());
+      CLog::Log(LOGDEBUG, "Adding local owned section %s -> %s (%s)", key.c_str(), section->GetLabel().c_str(), section->GetPath().c_str());
       map[key] = section;
     }
   }
@@ -58,7 +60,7 @@ class PlexLibrarySectionManager
   void removeLocalSections(const string& uuid)
   {
     boost::mutex::scoped_lock lk(m_mutex);
-    dprintf("Removing local sections for %s", uuid.c_str());
+    CLog::Log(LOGDEBUG, "Removing local sections for %s", uuid.c_str());
     m_localSections.erase(uuid);
   }
 
@@ -85,7 +87,7 @@ class PlexLibrarySectionManager
   void getOwnedSections(vector<CFileItemPtr>& sections)
   {
     boost::mutex::scoped_lock lk(m_mutex);
-    dprintf("Getting owned sections.");
+    CLog::Log(LOGDEBUG, "Getting owned sections.");
     
     // First add all the local sections.
     set<string> localSections;
@@ -93,7 +95,7 @@ class PlexLibrarySectionManager
     {
       BOOST_FOREACH(key_section_pair p2, pair.second)
       {
-        dprintf(" -> Adding local section: %s", p2.second->GetLabel().c_str());
+        CLog::Log(LOGDEBUG, " -> Adding local section: %s", p2.second->GetLabel().c_str());
         localSections.insert(p2.first);
         sections.push_back(p2.second);
       }
@@ -106,7 +108,7 @@ class PlexLibrarySectionManager
       {
         if (localSections.find(pair.first) == localSections.end())
         {
-          dprintf(" -> Adding remote owned section: %s", pair.second->GetLabel().c_str());
+          CLog::Log(LOGDEBUG, " -> Adding remote owned section: %s", pair.second->GetLabel().c_str());
           sections.push_back(pair.second);
         }
       }
@@ -150,7 +152,7 @@ class PlexLibrarySectionManager
       key = key.substr(lastSlash+1);
       key = string(section->GetProperty("machineIdentifier").c_str()) + "://" + key;
       
-      dprintf("Adding myPlex section %s -> %s", key.c_str(), section->GetLabel().c_str());
+      CLog::Log(LOGDEBUG, "Adding myPlex section %s -> %s", key.c_str(), section->GetLabel().c_str());
       map[key] = section;
     }
   }

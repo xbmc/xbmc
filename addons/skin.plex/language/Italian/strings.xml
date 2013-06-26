@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+<!-- $Revision: 204$ -->
+<!--  strings 31000 thru 31999 reserved for skins  -->
+
+ <strings>
+  <string id="31000">Esplora</string>
+  <string id="31001">I Video</string>
+  <string id="31002">La Musica</string>
+  <string id="31003">Le Immagini</string>
+  <string id="31004">I Programmi</string>
+  <string id="31005">Il Meteo</string>
+  <string id="31006">Il Sistema</string>
+  <string id="31007">On/Off</string>
+  <string id="31008">Le Serie TV</string>
+  <string id="31011">Guarda</string>
+  <string id="31012">Ascolta</string>
+  <string id="31013">Vedi</string>
+  <string id="31014">Usa</string>
+  <string id="31015">Controlla</string>
+  <string id="31016">Configura</string> 
+  <string id="31017">Power</string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Suona</string> 
+  <string id="31020">Opzioni</string>
+  <string id="31021">Stagioni</string> 
+  <string id="31022">Nascondi</string>
+  <string id="31023">Ordina Per</string>
+  <string id="31024">Direzione</string>
+  <string id="31025">Decrescente</string> 
+  <string id="31026">Crescente</string> 
+  <string id="31027">Partito</string> 
+  <string id="31028">Terminato</string>
+  <string id="31029">Scrittore</string> 
+  <string id="31030">Traccia N.</string> 
+  <string id="31031">Attivo</string> 
+  <string id="31032">Strumenti</string> 
+  <string id="31033">Ultimo Aggiornamento</string>
+  <string id="31034">Build</string>
+  <string id="31035">RAM Libera</string>
+  <string id="31036">Ind. IP</string>
+  <string id="31037">Spazio Su Disco</string>
+  <string id="31038">Scegli</string>
+  <string id="31039">Preferito</string>
+  <string id="31040">Modifica</string>
+  <string id="31041">Editor</string>
+  <string id="31042">Immagine</string>
+  <string id="31043">Controlla</string>
+  <string id="31044">Per</string>
+  <string id="31045">Nuovi Arrivi</string>
+  <string id="31046">Percorso dello Script Lyrics</string>
+
+<!--  Programs  -->
+  <string id="31051">Giochi</string>
+  <string id="31052">Emulatori</string>
+  <string id="31053">Applicazioni</string>
+
+<!--  System  -->
+  <string id="31060">Settaggi</string>
+  <string id="31061">Script</string>
+  <string id="31062">Esplora Risorse</string>
+  <string id="31063">Preferiti</string>
+  <string id="31064">Profili</string>
+  <string id="31065">Info</string>
+  <string id="31066">Aggiorna</string>
+  <string id="31067">Il</string>
+
+<!--  Power  -->
+  <string id="31071">Spegni</string>
+  <string id="31072">Riavvia</string>
+  <string id="31073">Ricarica XBMC</string>
+  <string id="31074">Dashboard</string>
+  <string id="31075">Ricarica skin</string>
+
+<!--  Video  -->
+  <string id="31111">I Film</string>
+  <string id="31112">Serie TV</string> 
+  <string id="31113">Clip</string>
+  <string id="31114">Episodio:</string> 
+  <string id="31115">N/D</string> 
+  <string id="31116">Titolo Film</string>
+  <string id="31117">Icona</string> 
+  <string id="31118">Fanart</string> 
+  <string id="31119">Descrizione</string> 
+  <string id="31120">Valutazione</string>
+  <string id="31121">Dettagli Film</string>
+  <string id="31122">Trasmesso</string>
+  <string id="31123">MPAA</string>
+  <string id="31124">Epis.</string> 
+  <string id="31125">Orari</string> 
+  <string id="31126">Dettagli Serie</string>
+  <string id="31127">Dettagli Episodio</string>
+
+<!--  Music  -->
+  <string id="31220">In Riproduzione</string>
+  <string id="31221">Traccia Precedente</string>
+  <string id="31222">Tracce Successive</string>
+  <string id="31223">Clicca Per I Testi</string>
+  <string id="31224">Apri Il MENU</string>
+  <string id="31225">Valutazione</string>
+  <string id="31226">Cambia</string>
+  <string id="31227">Il Preset</string>
+  <string id="31228">Testi</string>
+
+<!--  Settings  --> 
+  <string id="31601">Aspetto</string> 
+  <string id="31602">Rete</string>
+  <string id="31603">Skin</string> 
+  <string id="31604">Generale</string>
+  <string id="31605">Home</string> 
+  <string id="31606">Cambia Impostazioni Per</string>
+  <string id="31607">Attuale</string> 
+  <string id="31608">Sorgente</string> 
+  <string id="31609">Dest.</string> 
+  <string id="31620">Menu</string> 
+  <string id="31621">Disabilita</string> 
+  <string id="31622">Abilita</string> 
+  <string id="31623">Sfondo</string>
+  <string id="31624">Seleziona</string>
+  <string id="31625">Usa Il Default</string>
+  <string id="31650">Nascondi Colonna Destra</string>
+  <string id="31651">Abilita Sfondi Personalizzati</string>
+  <string id="31652">Abilita</string>
+  <string id="31653">Visualizza</string>
+  <string id="31654">Nascondi Etichette Icone in Esplora Risorse</string>
+  <string id="31655">Visualizza Icone Ruotate in Visualizzazione Episodi</string>
+  <string id="31656">Sfondi</string>
+  <string id="31657">Immagine</string>
+  <string id="31658">Cartella</string>
+  <string id="31659">Resetta</string>
+  <string id="31660">Abilita Sfondi Personalizzati nella Home</string>
+	<string id="31661">Apple Movie Trailers</string>
+	<string id="31662">Nascondi Orologio</string>
+	<string id="31663">Visualizza Numero File</string>
+	<string id="31664">Nascondi Barre di Scorrimento nelle Schermate Media</string>
+	<string id="31665">Nascondi Icone Visto/Non Visto</string>
+	<string id="31666">Mostra Colonna al Centro dello Schermo</string>
+	<string id="31667">MediaStream</string>
+	<string id="31668">Visualizza Orologio Grande</string>
+	<string id="31669">Visualizza Meteo in Home</string>
+	<string id="31670">Visualizza Fanart</string>
+	<string id="31671">Nascondi Trama nell'OSD</string>
+	<string id="31672">Nascondi Info</string>
+	<string id="31673">Visualizzazioni</string>
+	<string id="31674">Nascondi Fanart</string>
+	<string id="31675">Nelle Visualizzazioni Media</string>
+	<string id="31676">Nell'Anteprima Media</string>
+	<string id="31677">Nella lista Serie TV</string>
+  <string id="31678">Mostra Icone Stagione</string>
+  <string id="31679">Nascondi Dettagli Fuoco in Panel Stream</string>
+  <string id="31680">Nascondi Icone in Modo Lista</string>
+	<string id="31681">in Modo File</string>
+	<string id="31682">in Muro TV</string>
+	<string id="31683">in Vista TV</string>
+	<string id="31684">Nascondi Sfondi Personalizzati</string>
+	<string id="31685">Mostra Animazioni</string>
+	<string id="31686">Mostra Vis. Musicali Orizzontali</string>
+	<string id="31687">nei Video</string>
+	<string id="31688">nella Musica</string>
+	<string id="31689">nelle Immagini</string>
+	<string id="31690">Non Nascondere Icone</string>
+	<string id="31691">Utilizza Sovrapposizione Bassa in modo Coverflow per le Serie TV</string>
+  <string id="31692">Nascondi Info in Modo Muraglia</string>
+  <string id="31693">Nascondi Icone nel Menu Opzioni</string>
+  <string id="31694">Mostra Interfaccia di Riproduzione a Sinistra</string>
+  <string id="31695">Visualizza AM/PM nell'orologio</string>
+
+<!--  Options Menu  -->
+  <string id="31701">Setup</string>
+  <string id="31702">Locandina</string>
+  <string id="31703">Stagioni</string>
+  <string id="31704">Foto</string> 
+  <string id="31705">Convesso</string> 
+  <string id="31706">Icone Episodi</string> 
+  <string id="31707">Anteprima</string> 
+  <string id="31708">Lista Media</string> 
+  <string id="31709">Concavo</string>
+  <string id="31710">Visualizza</string> 
+  <string id="31711">Lista Info</string>
+  <string id="31712">Immagini</string>
+  <string id="31713">Opzioni</string>
+  <string id="31714">Muraglia</string>
+  <string id="31715">Pannello</string>
+  <string id="31716">Coverflow</string>
+  <string id="31717">Menu Opzioni</string>
+
+<!--  Credits  -->
+  <string id="31800">Riconoscimenti</string>
+  <string id="31801">Benvenuto a</string>
+  <string id="31802">i tuoi media.... a modo [COLOR Highlighted]tuo[/COLOR]</string>
+  <string id="31803"></string>
+  <string id="31804">MediaStream e' una nuova interfaccia per XBMC.  Creata dal neonato "Team RazorFish", questa nuova interfaccia vorrebbe unire la funzionalita' e la forma, raggruppando stile e sostanza.  Progettata ed ottimizzata per la generazione 'High-Def', questa interfaccia cerca di creare un'esperienza nuova ad una piattaforma gia' ben conosciuta.</string>
+  <string id="31805">Nota</string>
+  <string id="31806">Assicuratevi di avere l'ultima versione di XBMC.  Ci sentiamo di raccomandare l'ultima versione SVN di XBMC, e desidereremmo che venisse sempre scaricato il pacchetto completo di skin.</string>
+  <string id="31807">Riconoscimenti della Skin</string>
+  <string id="31808">Questo progetto nasce da una collaborazione tra molti individui talentosi.  Questo l'elenco: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 e aenima99x.  Un ringraziamento particolare per emilio (a.k.a. thedeViL), senza cui questo progetto non sarebbe mai nato.  Naturalmente tutti i ringraziamenti vanno a voi, la comunita' di XBMC... senza di voi tutto questo non avrebbe ragione di essere... Continuate cosi', siete i migliori!!!</string>
+  <string id="31809">Un ringraziamento speciale a tutto il team di XBMC, e a chi lo sostiene sul forum di XBMC e su xbox-scene</string>
+  <string id="31810">Clicca "OK" per continuare e cominciare ad usare la nostra skin</string>
+  <string id="31811">Nota: Una volta premuto 'OK' qesto messaggio non apparira' piu'</string>
+
+<!--  Profiles  -->
+  <string id="31900">Loggati Come</string>
+  <string id="31901">Modifica</string>
+  <string id="31902">Il Profilo</string>
+  <string id="31903">Il Nome Profilo</string>
+  <string id="31904">L'Immagine Profilo</string>
+</strings>

@@ -4,5 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30002">Gaitu Fanarta</string>
     <string id="30004">Hizkuntza</string>
 </strings>

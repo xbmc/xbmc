@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<window id="4">
+	<defaultcontrol>9000</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>Background</description>
+			<include>Base</include>
+			<include>FullScreenStretched</include>
+			<colordiffuse>FF111315</colordiffuse>
+		</control>
+		<control type="image">
+			<description>Background</description>
+			<width>1280</width>
+			<height>360</height>
+			<include>Black</include>
+		</control>
+		<control type="image">
+			<description>Background</description>
+			<posy>360</posy>
+			<width>1280</width>
+			<height>360</height>
+			<include>Base</include>
+			<colordiffuse>FFd1801c</colordiffuse>
+			<animation effect="fade" start="0" end="6" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<description>PHT Icon</description>
+			<posy>104</posy>
+			<posx>0</posx>
+			<height>152</height>
+			<width>1280</width>
+			<texture>icon-pht.png</texture>
+			<aspectratio scalediffuse="false" align="center">keep</aspectratio>
+		</control>
+		<control type="group">
+			<posy>410</posy>
+			<posx>60</posx>
+			<control type="textbox">
+				<width>1120</width>
+				<height>300</height>
+				<label>$LOCALIZE[31851][CR]$LOCALIZE[31852][CR][CR]&#xB7; $LOCALIZE[31853][CR]&#xB7; $LOCALIZE[31855][CR]&#xB7; $LOCALIZE[31856][CR]&#xB7; $LOCALIZE[31857][CR]&#xB7; $LOCALIZE[31858][CR]&#xB7; $LOCALIZE[31859]</label>
+			</control>
+			<control type="button" id="9000">
+				<description>OK</description>
+				<posx>1060</posx>
+				<posy>200</posy>
+				<width>100</width>
+				<label>OK</label>
+				<onclick>ActivateWindow(0)</onclick>
+				<include>DialogPressButton</include>
+			</control>
+		</control>
+		<include>debugInfos</include>
+		<include>Grid</include>
+	</controls>
+</window>

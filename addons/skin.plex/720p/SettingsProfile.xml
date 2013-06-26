@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<window id="34">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<include>HomeRightOverlay</include>
+		<!-- Submenu blade -->
+		<control type="group">
+			<include>SettingsSubBlade</include>
+			<control type="radiobutton" id="4">
+				<description>default_radio_button</description>
+				<posx>70</posx>
+				<label>$LOCALIZE[20096]</label>
+				<ondown>2</ondown>
+			</control>
+			<control type="list" id="2">
+				<description>main menu</description>
+				<posx>75</posx>
+				<posy>43</posy>
+				<height>215</height>
+				<onup>4</onup>
+				<orientation>vertical</orientation>
+				<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
+				<include>SettingsSideMenu</include>
+				<focusedlayout width="300" height="HomeSideMenuItemHeight">
+					<control type="image">
+						<include>HomeSideMenuNFBGImage</include>
+					</control>
+					<control type="label">
+						<posx>SettingsTextXOffset</posx>
+						<include>HomeSideMenuNFBGLabel</include>
+					</control>
+					<control type="image">
+						<visible>Control.HasFocus(2)</visible>
+						<include>HomeSideMenuFOBGImage</include>
+					</control>
+					<control type="label">
+						<posx>SettingsTextXOffset</posx>
+						<visible>Control.HasFocus(2)</visible>
+						<include>HomeSideMenuFOBGLabel</include>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<!-- Main control area -->
+		<include>SettingsTextArea</include>
+		<control type="group">
+			<description>Control Area</description>
+			<include>SettingsOptionsArea</include>
+			<control type="grouplist">
+				<description>control_area</description>
+				<posx>105</posx>
+				<posy>65</posy>
+				<width>625</width>
+				<height>400</height>
+				<onup>-</onup>
+				<ondown>-</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<itemgap>0</itemgap>
+				<control type="button">
+					<description>Fake Button</description>
+					<width>626</width>
+					<height>43</height>
+					<textcolor>Unfocused</textcolor>
+					<disabledcolor>-</disabledcolor>
+					<textoffsetx>45</textoffsetx>
+					<include>MenuItemNFTextureNF</include>
+					<texturefocus>-</texturefocus>
+					<font>MediumDefaultFont</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31903]</label>
+				</control>
+				<control type="button">
+					<description>Fake Button</description>
+					<width>626</width>
+					<height>43</height>
+					<textcolor>Unfocused</textcolor>
+					<disabledcolor>-</disabledcolor>
+					<textoffsetx>45</textoffsetx>
+					<include>MenuItemNFTextureNF</include>
+					<texturefocus>-</texturefocus>
+					<font>MediumDefaultFont</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31904]</label>
+				</control>
+			</control>
+			<control type="button" id="28">
+				<description>ok button</description>
+				<posx>105</posx>
+				<posy>390</posy>
+				<width>626</width>
+				<height>43</height>
+				<onup>5</onup>
+				<ondown>29</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<include>MenuItemNFTextureNF</include>
+				<texturefocus>-</texturefocus>
+				<textcolor>Unfocused</textcolor>
+				<disabledcolor>-</disabledcolor>
+				<font>MediumDefaultFont</font>
+				<textoffsetx>45</textoffsetx>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[186]</label>
+			</control>
+			<control type="button" id="29">
+				<description>cancel button</description>
+				<posx>105</posx>
+				<posy>433</posy>
+				<width>626</width>
+				<height>43</height>
+				<onup>28</onup>
+				<ondown>-</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<include>MenuItemNFTextureNF</include>
+				<texturefocus>-</texturefocus>
+				<textcolor>Unfocused</textcolor>
+				<disabledcolor>-</disabledcolor>
+				<font>MediumDefaultFont</font>
+				<textoffsetx>45</textoffsetx>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[222]</label>
+			</control>
+			<control type="image">
+				<posx>156</posx>
+				<posy>-70</posy>
+				<width>120</width>
+				<height>120</height>
+				<texture border="12">ThumbBorder.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="image">
+				<posx>166</posx>
+				<posy>-60</posy>
+				<width>98</width>
+				<height>98</height>
+				<colordiffuse>ffffffff</colordiffuse>
+				<texture fallback="unknown-user.png">$INFO[Container(2).ListItem.Icon]</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<posx>680</posx>
+				<posy>-50</posy>
+				<width>700</width>
+				<scroll>true</scroll>
+				<align>right</align>
+				<label>$LOCALIZE[31901]</label>
+				<font>XLargeDefaultCapsFont</font>
+				<textcolor>Focused</textcolor>
+			</control>
+			<control type="label">
+				<description>Title label2</description>
+				<posx>680</posx>
+				<posy>-20</posy>
+				<width>700</width>
+				<scroll>true</scroll>
+				<align>right</align>
+				<label>$LOCALIZE[31902]</label>
+				<font>XXXLargeTitleCapsFont</font>
+				<textcolor>Focused</textcolor>
+			</control>
+			<control type="label">
+				<description>Last Login Name</description>
+				<posx>685</posx>
+				<posy>481</posy>
+				<width>700</width>
+				<scroll>true</scroll>
+				<align>right</align>
+				<label>[COLOR=Highlighted]$LOCALIZE[13204][/COLOR] $INFO[system.profilename]</label>
+				<font>MediumDefaultCapsFont</font>
+				<textcolor>Focused</textcolor>
+			</control>
+		</control>
+		<!-- Blades -->
+		<include>SettingsLeftBlade</include>
+		<!-- Widgets -->
+		<include>Clock</include>
+	</controls>
+</window>

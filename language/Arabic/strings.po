@@ -291,11 +291,11 @@ msgstr "شرق"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "عرض: تلقائية"
+msgstr "عرض: تلقائي"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "عرض: تلقائية كبيرة"
+msgstr "عرض: تلقائي كبير"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -307,7 +307,7 @@ msgstr "عرض: قائمة"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "فحص"
+msgstr "مسح"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -399,7 +399,7 @@ msgstr "تحريك هذه الملفات؟"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "حذف هذه الملفات؟ - لايمكن التراجع بعد حذف هذه الملفات!"
+msgstr "حذف هذه الملفات؟ - لا يمكن التراجع بعد حذف هذه الملفات!"
 
 msgctxt "#126"
 msgid "Status"
@@ -3200,6 +3200,10 @@ msgstr "ضباب"
 msgctxt "#1438"
 msgid "Small"
 msgstr "صغير"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "و"
 
 msgctxt "#1443"
 msgid "of"
