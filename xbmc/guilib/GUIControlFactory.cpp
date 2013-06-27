@@ -178,18 +178,41 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
+float CGUIControlFactory::ParsePosition(const char* pos, float parentSize)
+{
+  char* end;
+  float value = (float)strtod(pos, &end);
+  if (end)
+  {
+    if (*end == 'r')
+      value = parentSize - value;
+    else if (*end == '%')
+      value = value * parentSize / 100.0f;
+  }
+  return value;
+}
+
+bool CGUIControlFactory::GetPosition(const TiXmlElement *pControlNode, const char* strTag, float& value, float parentSize)
+{
+  const TiXmlElement* pNode = pControlNode->FirstChildElement(strTag);
+  if (!pNode || !pNode->FirstChild()) return false;
+
+  value = ParsePosition(pNode->FirstChild()->Value(), parentSize);
+  return true;
+}
+
+bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min, float parentSize)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
   { // auto-width - at least min must be set
-    pNode->QueryFloatAttribute("max", &value);
-    pNode->QueryFloatAttribute("min", &min);
+    value = ParsePosition(pNode->Attribute("max"), parentSize);
+    min = ParsePosition(pNode->Attribute("min"), parentSize);
     if (!min) min = 1;
     return true;
   }
-  value = (float)atof(pNode->FirstChild()->Value());
+  value = ParsePosition(pNode->FirstChild()->Value(), parentSize);
   return true;
 }
 
@@ -698,19 +721,57 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  XMLUtils::GetFloat(pControlNode, "posx", posX);
-  XMLUtils::GetFloat(pControlNode, "posy", posY);
-  // Convert these from relative coords
-  CStdString pos;
-  XMLUtils::GetString(pControlNode, "posx", pos);
-  if (pos.Right(1) == "r")
-    posX = rect.Width() - posX;
-  XMLUtils::GetString(pControlNode, "posy", pos);
-  if (pos.Right(1) == "r")
-    posY = rect.Height() - posY;
+  {
+    // determine position and size of control
+    // horizontal
+    bool hasLeft = false;
+    bool hasWidth = false;
 
-  GetDimension(pControlNode, "width", width, minWidth);
-  GetDimension(pControlNode, "height", height, minHeight);
+    if (GetPosition(pControlNode, "left", posX, rect.Width()) ||
+        GetPosition(pControlNode, "posx", posX, rect.Width()))
+      hasLeft = true;
+
+    if (GetDimension(pControlNode, "width", width, minWidth, rect.Width()))
+      hasWidth = true;
+
+    if (hasLeft != hasWidth) // poor man xor, we have to have at least 1 to continue
+    {
+      // if we have just one of <posx>, <width> we search for <right>
+      float right;
+      if (GetPosition(pControlNode, "right", right, rect.Width()))
+      {
+        if (hasLeft)
+          width = (rect.Width() - right) - posX;
+        else // if (hasWidth)
+          posX = (rect.Width() - right) - width;
+      }
+    }
+
+    // vertical
+    bool hasTop = false;
+    bool hasHeight = false;
+
+    if (GetPosition(pControlNode, "top", posY, rect.Height()) ||
+        GetPosition(pControlNode, "posy", posY, rect.Height()))
+      hasTop = true;
+
+    if (GetDimension(pControlNode, "height", height, minHeight, rect.Height()))
+      hasHeight = true;
+
+    if (hasTop != hasHeight) // poor man xor, we have to have at least 1 to continue
+    {
+      // if we have just one of <posy>, <height> we search for <bottom>
+      float bottom;
+      if (GetPosition(pControlNode, "bottom", bottom, rect.Height()))
+      {
+        if (hasTop)
+          height = (rect.Height() - bottom) - posY;
+        else // if (hasHeight)
+          posY = (rect.Height() - bottom) - height;
+      }
+    }
+  }
+
   XMLUtils::GetFloat(pControlNode, "offsetx", offset.x);
   XMLUtils::GetFloat(pControlNode, "offsety", offset.y);
 

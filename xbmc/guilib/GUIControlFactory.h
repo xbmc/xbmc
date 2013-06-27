@@ -71,7 +71,7 @@ public:
    \param min minimum value - set != 0 if auto is used.
    \return true if we found and read the tag.
    */
-  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
+  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min, float parentSize);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
@@ -101,6 +101,8 @@ public:
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
   static bool GetScroller(const TiXmlNode *pControlNode, const CStdString &scrollerTag, CScroller& scroller);
 private:
+  static float ParsePosition(const char* pos, float parentSize);
+  static bool GetPosition(const TiXmlElement *pControlNode, const char* strTag, float& value, float parentSize);
   static CStdString GetType(const TiXmlElement *pControlNode);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
