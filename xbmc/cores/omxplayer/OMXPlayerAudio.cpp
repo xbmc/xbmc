@@ -717,9 +717,9 @@ void OMXPlayerAudio::UnRegisterAudioCallback()
   m_omxAudio.UnRegisterAudioCallback();
 }
 
-void OMXPlayerAudio::SetCurrentVolume(float fVolume)
+bool OMXPlayerAudio::SetCurrentVolume(float fVolume)
 {
-  m_omxAudio.SetCurrentVolume(fVolume);
+  return m_omxAudio.SetCurrentVolume(fVolume);
 }
 
 void OMXPlayerAudio::SetSpeed(int speed)
