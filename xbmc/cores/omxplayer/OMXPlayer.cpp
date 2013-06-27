@@ -1332,7 +1332,7 @@ void COMXPlayer::Process()
 
     if(m_change_volume && m_CurrentAudio.started)
     {
-      if(m_player_audio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume))
+      if(m_omxPlayerAudio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume))
         m_change_volume = false;
     }
 
