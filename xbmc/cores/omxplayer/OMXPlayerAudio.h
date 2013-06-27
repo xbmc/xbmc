@@ -109,7 +109,7 @@ public:
   void SubmitEOS();
   void  RegisterAudioCallback(IAudioCallback* pCallback);
   void  UnRegisterAudioCallback();
-  void SetCurrentVolume(float fVolume);
+  bool SetCurrentVolume(float fVolume);
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();
   std::string GetPlayerInfo();
