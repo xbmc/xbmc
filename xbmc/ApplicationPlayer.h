@@ -115,9 +115,11 @@ public:
   bool  IsCaching() const;
   bool  IsInMenu() const;
   bool  IsPaused() const;
+  bool  IsPausedPlayback() const;
   bool  IsPassthrough() const;
   bool  IsPlaying() const;
-  bool  IsRecording() const;
+  bool  IsPlayingAudio() const;
+  bool  IsPlayingVideo() const;  bool  IsRecording() const;
   void  LoadPage(int p, int sp, unsigned char* buffer);
   bool  OnAction(const CAction &action);
   void  OnNothingToQueueNotify();

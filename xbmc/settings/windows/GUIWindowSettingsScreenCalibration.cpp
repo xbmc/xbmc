@@ -142,7 +142,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
-      if (g_application.IsPlayingVideo())
+      if (g_application.m_pPlayer->IsPlayingVideo())
       { // don't allow resolution switching if we are playing a video
 
 #ifdef HAS_VIDEO_PLAYBACK

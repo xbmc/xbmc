@@ -391,7 +391,7 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 
-    if (g_application.IsCurrentThread() || !g_application.IsPlaying())
+    if (g_application.IsCurrentThread() || !g_application.m_pPlayer->IsPlaying())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
     return;
   }

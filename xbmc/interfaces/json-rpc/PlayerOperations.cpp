@@ -242,15 +242,15 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
       {
         if (parameterObject["play"].asBoolean())
         {
-          if (g_application.IsPaused())
+          if (g_application.m_pPlayer->IsPausedPlayback())
             CApplicationMessenger::Get().MediaPause();
           else if (g_application.GetPlaySpeed() != 1)
             g_application.SetPlaySpeed(1);
         }
-        else if (!g_application.IsPaused())
+        else if (!g_application.m_pPlayer->IsPausedPlayback())
           CApplicationMessenger::Get().MediaPause();
       }
-      result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -303,7 +303,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
         if (speed != 0)
         {
           // If the player is paused we first need to unpause
-          if (g_application.IsPaused())
+          if (g_application.m_pPlayer->IsPausedPlayback())
             g_application.m_pPlayer->Pause();
           g_application.SetPlaySpeed(speed);
         }
@@ -320,7 +320,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
       else
         return InvalidParams;
 
-      result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -902,9 +902,9 @@ int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
 
-  if (g_application.IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
+  if (g_application.m_pPlayer->IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
     activePlayers |= Video;
-  if (g_application.IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
+  if (g_application.m_pPlayer->IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
     activePlayers |= Audio;
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
@@ -1052,7 +1052,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+        result = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
         break;
 
       case Picture:

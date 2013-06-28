@@ -287,25 +287,25 @@ namespace XBMCAddon
     bool Player::isPlaying()
     {
       TRACE;
-      return g_application.IsPlaying();
+      return g_application.m_pPlayer->IsPlaying();
     }
 
     bool Player::isPlayingAudio()
     {
       TRACE;
-      return g_application.IsPlayingAudio();
+      return g_application.m_pPlayer->IsPlayingAudio();
     }
 
     bool Player::isPlayingVideo()
     {
       TRACE;
-      return g_application.IsPlayingVideo();
+      return g_application.m_pPlayer->IsPlayingVideo();
     }
 
     String Player::getPlayingFile() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any file");
 
       return g_application.CurrentFile();
@@ -314,7 +314,7 @@ namespace XBMCAddon
     InfoTagVideo* Player::getVideoInfoTag() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlayingVideo())
+      if (!g_application.m_pPlayer->IsPlayingVideo())
         throw PlayerException("XBMC is not playing any videofile");
 
       const CVideoInfoTag* movie = g_infoManager.GetCurrentMovieTag();
@@ -327,7 +327,7 @@ namespace XBMCAddon
     InfoTagMusic* Player::getMusicInfoTag() throw (PlayerException)
     {
       TRACE;
-      if (g_application.IsPlayingVideo() || !g_application.IsPlayingAudio())
+      if (g_application.m_pPlayer->IsPlayingVideo() || !g_application.m_pPlayer->IsPlayingAudio())
         throw PlayerException("XBMC is not playing any music file");
 
       const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
@@ -340,7 +340,7 @@ namespace XBMCAddon
     double Player::getTotalTime() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       return g_application.GetTotalTime();
@@ -349,7 +349,7 @@ namespace XBMCAddon
     double Player::getTime() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       return g_application.GetTime();
@@ -358,7 +358,7 @@ namespace XBMCAddon
     void Player::seekTime(double pTime) throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       g_application.SeekTime( pTime );

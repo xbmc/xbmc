@@ -730,14 +730,14 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else if (rate == 0)
       {
-        if (g_application.IsPlaying() && !g_application.IsPaused())
+        if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
         {
           CApplicationMessenger::Get().MediaPause();
         }
       }
       else
       {
-        if (g_application.IsPlaying() && g_application.IsPaused())
+        if (g_application.m_pPlayer->IsPausedPlayback())
         {
           CApplicationMessenger::Get().MediaPause();
         }

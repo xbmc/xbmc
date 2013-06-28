@@ -175,6 +175,21 @@ bool CApplicationPlayer::IsPlaying() const
   return (player && player->IsPlaying());
 }
 
+bool CApplicationPlayer::IsPausedPlayback() const
+{
+  return (IsPlaying() && IsPaused());
+}
+
+bool CApplicationPlayer::IsPlayingAudio() const
+{
+  return (IsPlaying() && !HasVideo() && HasAudio());
+}
+
+bool CApplicationPlayer::IsPlayingVideo() const
+{
+  return (IsPlaying() && HasVideo());
+}
+
 void CApplicationPlayer::Pause()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();

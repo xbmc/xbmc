@@ -136,7 +136,7 @@ void CKaraokeLyricsManager::ProcessSlow()
 {
   CSingleLock lock (m_CritSection);
 
-  if ( g_application.IsPlaying() )
+  if ( g_application.m_pPlayer->IsPlaying() )
   {
     if ( m_karaokeSongPlaying )
       m_lastPlayedTime = XbmcThreads::SystemClockMillis();
