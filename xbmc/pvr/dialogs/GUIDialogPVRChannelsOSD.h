@@ -41,6 +41,9 @@ namespace PVR
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
 
   protected:
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+
     void CloseOrSelect(unsigned int iItem);
     void GotoChannel(int iItem);
     void ShowInfo(int item);

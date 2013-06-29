@@ -48,27 +48,7 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      Clear();
-    }
-    break;
-
-  case GUI_MSG_WINDOW_INIT:
-    {
-      /* Close dialog immediately if now TV or radio channel is playing */
-      if (!g_PVRManager.IsPlaying())
-      {
-        Close();
-        return true;
-      }
-      CGUIWindow::OnMessage(message);
-      Update();
-      return true;
-    }
-    break;
-
-  case GUI_MSG_CLICKED:
+    case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
 
@@ -90,8 +70,17 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRGuideOSD::Update()
+void CGUIDialogPVRGuideOSD::OnInitWindow()
 {
+  /* Close dialog immediately if no TV or radio channel is playing */
+  if (!g_PVRManager.IsPlaying())
+  {
+    Close();
+    return;
+  }
+
+  CGUIDialog::OnInitWindow();
+
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
@@ -116,6 +105,12 @@ void CGUIDialogPVRGuideOSD::Update()
   m_viewControl.SetSelectedItem(iSelectedItem);
 
   g_graphicsContext.Unlock();
+}
+
+void CGUIDialogPVRGuideOSD::OnDeinitWindow(int nextWindowID)
+{
+  Clear();
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIDialogPVRGuideOSD::Clear()

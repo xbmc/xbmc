@@ -42,7 +42,8 @@ namespace PVR
     void SetProgInfo(const CFileItem *item);
 
   protected:
-    void Update();
+    virtual void OnInitWindow();
+
     bool ActionStartTimer(const EPG::CEpgInfoTag *tag);
     bool ActionCancelTimer(CFileItemPtr timer);
 

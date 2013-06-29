@@ -47,7 +47,10 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
   : CGUIDialogSettings(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml")
 {
   m_cancelled = true;
-  m_tmp_day   = 11;
+  m_tmp_day = 11;
+  m_bTimerActive = false;
+  m_tmp_iFirstDay = 0;
+  m_timerItem = new CFileItem;
   m_loadType = LOAD_EVERY_TIME;
 }
 

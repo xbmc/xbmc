@@ -189,10 +189,6 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_INIT:
-    CGUIDialog::OnMessage(message);
-    Update();
-    return true;
   case GUI_MSG_CLICKED:
     return OnClickButtonOK(message) ||
            OnClickButtonRecord(message) ||
@@ -212,8 +208,10 @@ CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
   return m_progItem;
 }
 
-void CGUIDialogPVRGuideInfo::Update()
+void CGUIDialogPVRGuideInfo::OnInitWindow()
 {
+  CGUIDialog::OnInitWindow();
+
   const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
   if (!tag)
   {

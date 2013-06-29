@@ -64,36 +64,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      if (m_group)
-      {
-        g_PVRManager.SetPlayingGroup(m_group);
-        SetLastSelectedItem(m_group->GroupID());
-      }
-      Clear();
-    }
-    break;
-
-  case GUI_MSG_WINDOW_INIT:
-    {
-      /* Close dialog immediately if now TV or radio channel is playing */
-      if (!g_PVRManager.IsPlaying())
-      {
-        Close();
-        return true;
-      }
-
-      m_group = GetPlayingGroup();
-
-      CGUIWindow::OnMessage(message);
-      Update(true);
-
-      return true;
-    }
-    break;
-
-  case GUI_MSG_CLICKED:
+    case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
 
@@ -120,6 +91,33 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogPVRChannelsOSD::OnInitWindow()
+{
+  /* Close dialog immediately if now TV or radio channel is playing */
+  if (!g_PVRManager.IsPlaying())
+  {
+    Close();
+    return;
+  }
+
+  CGUIDialog::OnInitWindow();
+
+  m_group = GetPlayingGroup();
+  Update(true);
+}
+
+void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
+{
+  if (m_group)
+  {
+    g_PVRManager.SetPlayingGroup(m_group);
+    SetLastSelectedItem(m_group->GroupID());
+  }
+  Clear();
+
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
