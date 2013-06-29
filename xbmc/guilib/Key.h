@@ -30,6 +30,10 @@
 
 #include "utils/StdString.h"
 
+// Reserved 0 - 255
+//  XBIRRemote.h
+//  XINPUT_IR_REMOTE-*
+
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256
 #define KEY_BUTTON_B                        257
