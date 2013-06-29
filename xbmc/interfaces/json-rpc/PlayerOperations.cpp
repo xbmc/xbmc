@@ -244,13 +244,13 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
         {
           if (g_application.m_pPlayer->IsPausedPlayback())
             CApplicationMessenger::Get().MediaPause();
-          else if (g_application.GetPlaySpeed() != 1)
-            g_application.SetPlaySpeed(1);
+          else if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+            g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
         }
         else if (!g_application.m_pPlayer->IsPausedPlayback())
           CApplicationMessenger::Get().MediaPause();
       }
-      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -305,7 +305,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
           // If the player is paused we first need to unpause
           if (g_application.m_pPlayer->IsPausedPlayback())
             g_application.m_pPlayer->Pause();
-          g_application.SetPlaySpeed(speed);
+          g_application.m_pPlayer->SetPlaySpeed(speed, g_application.IsMutedInternal());
         }
         else
           g_application.m_pPlayer->Pause();
@@ -320,7 +320,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
       else
         return InvalidParams;
 
-      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -1052,7 +1052,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.GetPlaySpeed();
+        result = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
         break;
 
       case Picture:

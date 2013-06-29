@@ -57,16 +57,20 @@ class CApplicationPlayer
 public:
   CApplicationPlayer();
 
+  int m_iPlaySpeed;
+
   // player management
   void CloseFile();
   void ClosePlayer();
   void ClosePlayerGapless(PLAYERCOREID newCore);
   void CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& callback);
-  bool HasPlayer() const;
   PLAYERCOREID GetCurrentPlayer() const { return m_eCurrentPlayer; }
   boost::shared_ptr<IPlayer> GetInternal() const;
+  int  GetPlaySpeed() const;
+  bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
   void ResetPlayer() { m_eCurrentPlayer = EPC_NONE; }
+  void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
 
   // proxy calls
   int   AddSubtitle(const CStdString& strSubPath);

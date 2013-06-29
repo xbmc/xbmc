@@ -21,6 +21,9 @@
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 
+#define VOLUME_MINIMUM 0.0f        // -60dB
+#define VOLUME_MAXIMUM 1.0f        // 0dB
+
 CApplicationPlayer::CApplicationPlayer()
 {
   m_iPlayerOPSeq = 0;
@@ -656,7 +659,7 @@ void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
     player->GetScalingMethods(scalingMethods);
 }
 
-void CApplicationPlayer::SetPlaySpeed(int iSpeed)
+void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
 {
   if (!IsPlayingAudio() && !IsPlayingVideo())
     return ;
@@ -690,7 +693,7 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed)
     { // mute volume
       m_pPlayer->SetVolume(VOLUME_MINIMUM);
     }
-    m_pPlayer->SetMute(g_application.m_muted);
+    m_pPlayer->SetMute(bApplicationMuted);
   }
 }
 
@@ -698,4 +701,3 @@ int CApplicationPlayer::GetPlaySpeed() const
 {
   return m_iPlaySpeed;
 }
-

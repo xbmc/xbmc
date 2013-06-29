@@ -222,7 +222,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           {
             if (g_application.m_pPlayer->IsPausedPlayback())
               return false;
-            if (g_application.GetPlaySpeed() != 1)
+            if (g_application.m_pPlayer->GetPlaySpeed() != 1)
               return false;
           }
 

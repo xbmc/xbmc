@@ -197,13 +197,12 @@ public:
   float GetVolume(bool percentage = true) const;
   void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
+  bool IsMutedInternal() const { return m_muted; }
   void ToggleMute(void);
   void SetMute(bool mute);
   void ShowVolumeBar(const CAction *action = NULL);
-  int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
-  void SetPlaySpeed(int iSpeed);
   void ResetSystemIdleTimer();
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
@@ -411,7 +410,6 @@ protected:
   CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 
-  int m_iPlaySpeed;
   int m_currentStackPosition;
   int m_nextPlaylistItem;
 

@@ -389,7 +389,6 @@ CApplication::CApplication(void)
 {
   m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
-  m_iPlaySpeed = 1;
   m_bInhibitIdleShutdown = false;
   m_bScreenSave = false;
   m_dpms = NULL;
@@ -2567,7 +2566,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_PREV_ITEM && m_pPlayer->CanSeek())
   {
     SeekTime(0);
-    SetPlaySpeed(1);
+    m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
     return true;
   }
 
@@ -2589,7 +2588,7 @@ bool CApplication::OnAction(const CAction &action)
     }
 
     // pause : pauses current audio song
-    if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
+    if (action.GetID() == ACTION_PAUSE && m_pPlayer->GetPlaySpeed() == 1)
     {
       m_pPlayer->Pause();
 #ifdef HAS_KARAOKE
@@ -2597,7 +2596,7 @@ bool CApplication::OnAction(const CAction &action)
 #endif
       if (!m_pPlayer->IsPaused())
       { // unpaused - set the playspeed back to normal
-        SetPlaySpeed(1);
+        m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
       }
       g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
@@ -2608,9 +2607,9 @@ bool CApplication::OnAction(const CAction &action)
       // if we are playing at normal speed, then allow play to pause
       if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
       {
-        if (m_iPlaySpeed != 1)
+        if (m_pPlayer->GetPlaySpeed() != 1)
         {
-          SetPlaySpeed(1);
+          m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
         }
         else
         {
@@ -2620,7 +2619,7 @@ bool CApplication::OnAction(const CAction &action)
       }
       if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
       {
-        int iPlaySpeed = m_iPlaySpeed;
+        int iPlaySpeed = m_pPlayer->GetPlaySpeed();
         if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
         else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
@@ -2635,10 +2634,10 @@ bool CApplication::OnAction(const CAction &action)
         if (iPlaySpeed > 32 || iPlaySpeed < -32)
           iPlaySpeed = 1;
 
-        SetPlaySpeed(iPlaySpeed);
+        m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.m_muted);
         return true;
       }
-      else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+      else if ((action.GetAmount() || m_pPlayer->GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
       {
         // calculate the speed based on the amount the button is held down
         int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
@@ -2646,7 +2645,7 @@ bool CApplication::OnAction(const CAction &action)
         int iSpeed = 1 << iPower;
         if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
           iSpeed = -iSpeed;
-        g_application.SetPlaySpeed(iSpeed);
+        g_application.m_pPlayer->SetPlaySpeed(iSpeed, g_application.m_muted);
         if (iSpeed == 1)
           CLog::Log(LOGDEBUG,"Resetting playspeed");
         return true;
@@ -2661,7 +2660,7 @@ bool CApplication::OnAction(const CAction &action)
         m_pPlayer->Pause();
         g_audioManager.Enable(m_pPlayer->IsPaused());
 
-        g_application.SetPlaySpeed(1);
+        g_application.m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
         return true;
       }
     }
@@ -3698,8 +3697,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
     // see if we have saved options in the database
 
-    SetPlaySpeed(1);
-    m_iPlaySpeed = 1;     // Reset both CApp's & Player's speed else we'll get confused
+    m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
+    m_pPlayer->m_iPlaySpeed = 1;     // Reset both CApp's & Player's speed else we'll get confused
 
     *m_itemCurrentFile = item;
     m_nextPlaylistItem = -1;
@@ -3957,11 +3956,11 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if(iResult == PLAYBACK_OK)
   {
-    if (m_iPlaySpeed != 1)
+    if (m_pPlayer->GetPlaySpeed() != 1)
     {
-      int iSpeed = m_iPlaySpeed;
-      m_iPlaySpeed = 1;
-      SetPlaySpeed(iSpeed);
+      int iSpeed = m_pPlayer->GetPlaySpeed();
+      m_pPlayer->m_iPlaySpeed = 1;
+      m_pPlayer->SetPlaySpeed(iSpeed, g_application.m_muted);
     }
 
     // if player has volume control, set it.
@@ -4176,7 +4175,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-  param["player"]["speed"] = GetPlaySpeed();
+  param["player"]["speed"] = m_pPlayer->GetPlaySpeed();
   CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
@@ -4775,7 +4774,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_pPlayer->ClosePlayer();
 
         // Reset playspeed
-        m_iPlaySpeed = 1;
+        m_pPlayer->m_iPlaySpeed = 1;
       }
 
       if (!m_pPlayer->IsPlaying())
@@ -5236,49 +5235,6 @@ int CApplication::GetAudioDelay() const
   return int(((float)(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
-void CApplication::SetPlaySpeed(int iSpeed)
-{
-  if (!m_pPlayer->IsPlayingAudio() && !m_pPlayer->IsPlayingVideo())
-    return ;
-  if (m_iPlaySpeed == iSpeed)
-    return ;
-  if (!m_pPlayer->CanSeek())
-    return;
-  if (m_pPlayer->IsPaused())
-  {
-    if (
-      ((m_iPlaySpeed > 1) && (iSpeed > m_iPlaySpeed)) ||
-      ((m_iPlaySpeed < -1) && (iSpeed < m_iPlaySpeed))
-    )
-    {
-      iSpeed = m_iPlaySpeed; // from pause to ff/rw, do previous ff/rw speed
-    }
-    m_pPlayer->Pause();
-  }
-  m_iPlaySpeed = iSpeed;
-
-  m_pPlayer->ToFFRW(m_iPlaySpeed);
-
-  // if player has volume control, set it.
-  if (m_pPlayer->ControlsVolume())
-  {
-    if (m_iPlaySpeed == 1)
-    { // restore volume
-      m_pPlayer->SetVolume(VOLUME_MAXIMUM);
-    }
-    else
-    { // mute volume
-      m_pPlayer->SetVolume(VOLUME_MINIMUM);
-    }
-    m_pPlayer->SetMute(m_muted);
-  }
-}
-
-int CApplication::GetPlaySpeed() const
-{
-  return m_iPlaySpeed;
-}
-
 // Returns the total time in seconds of the current media.  Fractional
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
@@ -5570,7 +5526,7 @@ void CApplication::CheckPlayingProgress()
   // check if we haven't rewound past the start of the file
   if (m_pPlayer->IsPlaying())
   {
-    int iSpeed = g_application.GetPlaySpeed();
+    int iSpeed = g_application.m_pPlayer->GetPlaySpeed();
     if (iSpeed < 1)
     {
       iSpeed *= -1;
@@ -5582,7 +5538,7 @@ void CApplication::CheckPlayingProgress()
       }
       if (g_infoManager.GetPlayTime() / 1000 < iPower)
       {
-        g_application.SetPlaySpeed(1);
+        g_application.m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
         g_application.SeekTime(0);
       }
     }

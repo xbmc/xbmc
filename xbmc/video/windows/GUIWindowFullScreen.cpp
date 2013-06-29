@@ -558,7 +558,7 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUIWindowFullScreen::FrameMove()
 {
-  if (g_application.GetPlaySpeed() != 1)
+  if (g_application.m_pPlayer->GetPlaySpeed() != 1)
     g_infoManager.SetDisplayAfterSeek();
   if (m_bShowCurrentTime)
     g_infoManager.SetDisplayAfterSeek();

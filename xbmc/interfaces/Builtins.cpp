@@ -741,8 +741,8 @@ int CBuiltins::Execute(const CStdString& execString)
       // either resume playing, or pause
       if (g_application.m_pPlayer->IsPlaying())
       {
-        if (g_application.GetPlaySpeed() != 1)
-          g_application.SetPlaySpeed(1);
+        if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+          g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
         else
           g_application.m_pPlayer->Pause();
       }
@@ -755,7 +755,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
       {
-        int iPlaySpeed = g_application.GetPlaySpeed();
+        int iPlaySpeed = g_application.m_pPlayer->GetPlaySpeed();
         if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
         else if (parameter.Equals("rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
@@ -771,7 +771,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (iPlaySpeed > 32 || iPlaySpeed < -32)
           iPlaySpeed = 1;
 
-        g_application.SetPlaySpeed(iPlaySpeed);
+        g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
       }
     }
     else if (parameter.Equals("next"))
