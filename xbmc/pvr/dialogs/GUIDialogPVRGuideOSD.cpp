@@ -79,8 +79,6 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
     return;
   }
 
-  CGUIDialog::OnInitWindow();
-
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
@@ -91,7 +89,12 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
   g_PVRManager.GetCurrentEpg(*m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
 
-  /* select the active entry */
+  g_graphicsContext.Unlock();
+
+  // call init
+  CGUIDialog::OnInitWindow();
+
+  // select the active entry
   unsigned int iSelectedItem = 0;
   for (int iEpgPtr = 0; iEpgPtr < m_vecItems->Size(); iEpgPtr++)
   {
@@ -103,14 +106,12 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
     }
   }
   m_viewControl.SetSelectedItem(iSelectedItem);
-
-  g_graphicsContext.Unlock();
 }
 
 void CGUIDialogPVRGuideOSD::OnDeinitWindow(int nextWindowID)
 {
-  Clear();
   CGUIDialog::OnDeinitWindow(nextWindowID);
+  Clear();
 }
 
 void CGUIDialogPVRGuideOSD::Clear()
