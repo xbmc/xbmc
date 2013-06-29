@@ -64,6 +64,11 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
       }
       CGUIWindow::OnMessage(message);
       Update();
+
+      // set focus to the default control
+      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_defaultControl);
+      CGUIWindow::OnMessage(msg);
+
       return true;
     }
     break;
