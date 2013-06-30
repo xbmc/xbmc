@@ -2,8 +2,8 @@
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.xbmc.xbmc"
-    android:versionCode="11"
-    android:versionName="13.0-ALPHA5" >
+    android:versionCode="12"
+    android:versionName="13.0-ALPHA6" >
 
     <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="14" />
