@@ -181,6 +181,27 @@ bool COMXAudio::PortSettingsChanged()
   if(!m_omx_render.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
     return false;
 
+  if(!m_Passthrough)
+  {
+    /* setup mixer output */
+    OMX_INIT_STRUCTURE(m_pcm_output);
+    m_pcm_output.nPortIndex      = m_omx_decoder.GetOutputPort();
+    omx_err = m_omx_decoder.GetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
+    if(omx_err != OMX_ErrorNone)
+    {
+       CLog::Log(LOGERROR, "%s::%s - error SetParameter 1 output omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    }
+    m_pcm_output.nPortIndex      = m_omx_mixer.GetOutputPort();
+    omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
+    if(omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "%s::%s - error SetParameter 1 output omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    }
+    CLog::Log(LOGDEBUG, "%s::%s - Output bps %d samplerate %d channels %d buffer size %d bytes per second %d",
+        CLASSNAME, __func__, (int)m_pcm_output.nBitPerSample, (int)m_pcm_output.nSamplingRate, (int)m_pcm_output.nChannels, m_BufferLen, m_BytesPerSec);
+    PrintPCM(&m_pcm_output, std::string("output"));
+  }
+
   m_omx_tunnel_clock.Initialize(m_omx_clock, m_omx_clock->GetInputPort(), &m_omx_render, m_omx_render.GetInputPort()+1);
 
   omx_err = m_omx_tunnel_clock.Establish(false);
@@ -345,20 +366,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
     m_vizRemap.Initialize(m_format.m_channelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true);
   }
 
-  OMX_INIT_STRUCTURE(m_pcm_output);
   OMX_INIT_STRUCTURE(m_pcm_input);
 
-  memcpy(m_pcm_output.eChannelMapping, m_output_channels, sizeof(m_output_channels));
   memcpy(m_pcm_input.eChannelMapping, m_input_channels, sizeof(m_input_channels));
-
-  // set the m_pcm_output parameters
-  m_pcm_output.eNumData            = OMX_NumericalDataSigned;
-  m_pcm_output.eEndian             = OMX_EndianLittle;
-  m_pcm_output.bInterleaved        = OMX_TRUE;
-  m_pcm_output.nBitPerSample       = 16; // float is decoded to 16bit integer by gpu
-  m_pcm_output.ePCMMode            = OMX_AUDIO_PCMModeLinear;
-  m_pcm_output.nChannels           = m_OutputChannels;
-  m_pcm_output.nSamplingRate       = m_format.m_sampleRate;
 
   m_SampleRate    = m_format.m_sampleRate;
   m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
@@ -548,10 +558,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_settings_changed = false;
   m_last_pts      = DVD_NOPTS_VALUE;
 
-  CLog::Log(LOGDEBUG, "COMXAudio::Initialize Ouput bps %d samplerate %d channels %d buffer size %d bytes per second %d", 
-      (int)m_pcm_output.nBitPerSample, (int)m_pcm_output.nSamplingRate, (int)m_pcm_output.nChannels, m_BufferLen, m_BytesPerSec);
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d", 
       (int)m_pcm_input.nBitPerSample, (int)m_pcm_input.nSamplingRate, (int)m_pcm_input.nChannels, m_BufferLen, m_BytesPerSec);
+  PrintPCM(&m_pcm_output, std::string("input"));
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device %s passthrough %d hwdecode %d", 
       device.c_str(), m_Passthrough, m_HWDecode);
 
