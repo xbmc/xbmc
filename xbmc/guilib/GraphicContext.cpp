@@ -171,9 +171,6 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-  CRect oldviewport;
-  g_Windowing.GetViewPort(oldviewport);
-
   // transform coordinates - we may have a rotation which changes the positioning of the
   // minimal and maximal viewport extents.  We currently go to the maximal extent.
   float x[4], y[4];
@@ -201,6 +198,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   int newBottom = (int)(maxY + 0.5f);
   if (intersectPrevious)
   {
+    CRect oldviewport = m_viewStack.top();
     // do the intersection
     int oldLeft = (int)oldviewport.x1;
     int oldTop = (int)oldviewport.y1;
@@ -233,9 +231,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newTop < newBottom);
 
   CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
+
+  m_viewStack.push(newviewport);
+
   g_Windowing.SetViewPort(newviewport);
 
-  m_viewStack.push(oldviewport);
 
   UpdateCameraPosition(m_cameras.top());
   return true;
@@ -243,12 +243,10 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
 
 void CGraphicContext::RestoreViewPort()
 {
-  if (!m_viewStack.size()) return;
-
-  CRect oldviewport = m_viewStack.top();
-  g_Windowing.SetViewPort(oldviewport);
+  if (m_viewStack.size() <= 1) return;
 
   m_viewStack.pop();
+  g_Windowing.SetViewPort(m_viewStack.top());
 
   UpdateCameraPosition(m_cameras.top());
 }
