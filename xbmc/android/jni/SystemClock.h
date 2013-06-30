@@ -18,13 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-// This class contains only static methods, so no need to inherit from JNIBase.
+
 #include <stdint.h>
+
+// This class contains only static methods, so no need to inherit from JNIBase.
 class CJNISystemClock
 {
 public:
   static int64_t uptimeMillis();
+
 private:
-  CJNISystemClock(){};
-  ~CJNISystemClock(){};
+  CJNISystemClock()  {};
+  ~CJNISystemClock() {};
 };

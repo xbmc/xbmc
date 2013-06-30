@@ -18,13 +18,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIDrawable : public CJNIBase
 {
 public:
   CJNIDrawable();
-  ~CJNIDrawable(){};
   CJNIDrawable(const jni::jhobject &object) : CJNIBase(object){};
   CJNIDrawable(std::string classname) : CJNIBase(classname){};
+  ~CJNIDrawable(){};
 };

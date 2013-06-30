@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "BitmapDrawable.h"
 #include "Bitmap.h"
 #include "jutils/jutils-details.hpp"
@@ -31,5 +32,6 @@ CJNIBitmapDrawable::CJNIBitmapDrawable() : CJNIDrawable("android/graphics/drawab
 
 CJNIBitmap CJNIBitmapDrawable::getBitmap()
 {
-   return (CJNIBitmap)call_method<jhobject>(m_object, "getBitmap", "()Landroid/graphics/Bitmap;");
+   return call_method<jhobject>(m_object,
+    "getBitmap", "()Landroid/graphics/Bitmap;");
 }

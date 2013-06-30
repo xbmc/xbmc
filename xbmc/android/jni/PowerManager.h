@@ -18,21 +18,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIWakeLock;
+
 class CJNIPowerManager : public CJNIBase
 {
 public:
-  CJNIWakeLock newWakeLock(const std::string &name);
-  void reboot(const std::string &reason);
-  void goToSleep(int64_t timestamp);
+  CJNIPowerManager(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIPowerManager() {};
 
-  static void PopulateStaticFields();
-  CJNIPowerManager(const jni::jhobject &object) : CJNIBase(object){};
-  ~CJNIPowerManager(){};
+  CJNIWakeLock  newWakeLock(const std::string &name);
+  void          reboot(const std::string &reason);
+  void          goToSleep(int64_t timestamp);
+
+  static void   PopulateStaticFields();
 
 private:
   CJNIPowerManager();
+
   static int FULL_WAKE_LOCK;
 };

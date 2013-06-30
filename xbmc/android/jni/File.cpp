@@ -17,11 +17,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "File.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
+
 std::string CJNIFile::getAbsolutePath()
 {
-  return jcast<std::string>(call_method<jhstring>(m_object, "getAbsolutePath", "()Ljava/lang/String;"));
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "getAbsolutePath", "()Ljava/lang/String;"));
 }

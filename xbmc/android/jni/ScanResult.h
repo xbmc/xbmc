@@ -18,22 +18,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIScanResult : public CJNIBase
 {
 public:
   CJNIScanResult(const jni::jhobject &object);
+  ~CJNIScanResult(){};
+
   std::string SSID;
   std::string BSSID;
   std::string capabilities;
-  int level;
-  int frequency;
+  int         level;
+  int         frequency;
   std::string toString();
-  int describeContents();
+  int         describeContents();
 
-  ~CJNIScanResult(){};
 private:
   CJNIScanResult();
 };
+
 typedef std::vector<CJNIScanResult> CJNIScanResults;

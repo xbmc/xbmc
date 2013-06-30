@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "MediaStore.h"
 #include "jutils/jutils-details.hpp"
 
@@ -29,14 +30,15 @@ std::string CJNIMediaStoreMediaColumns::TITLE;
 std::string CJNIMediaStoreMediaColumns::DATE_ADDED;
 std::string CJNIMediaStoreMediaColumns::DATE_MODIFIED;
 std::string CJNIMediaStoreMediaColumns::MIME_TYPE;
+
 void CJNIMediaStoreMediaColumns::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/provider/MediaStore$MediaColumns");
-  DATA = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATA")));
-  SIZE = (jcast<std::string>(get_static_field<jhstring>(clazz, "SIZE")));
-  DISPLAY_NAME = (jcast<std::string>(get_static_field<jhstring>(clazz, "DISPLAY_NAME")));
-  TITLE = (jcast<std::string>(get_static_field<jhstring>(clazz, "TITLE")));
-  DATE_ADDED = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATE_ADDED")));
+  DATA          = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATA")));
+  SIZE          = (jcast<std::string>(get_static_field<jhstring>(clazz, "SIZE")));
+  DISPLAY_NAME  = (jcast<std::string>(get_static_field<jhstring>(clazz, "DISPLAY_NAME")));
+  TITLE         = (jcast<std::string>(get_static_field<jhstring>(clazz, "TITLE")));
+  DATE_ADDED    = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATE_ADDED")));
   DATE_MODIFIED = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATE_MODIFIED")));
-  MIME_TYPE = (jcast<std::string>(get_static_field<jhstring>(clazz, "MIME_TYPE")));
+  MIME_TYPE     = (jcast<std::string>(get_static_field<jhstring>(clazz, "MIME_TYPE")));
 }

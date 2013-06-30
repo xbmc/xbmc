@@ -18,14 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "Enum.h"
 
 class CJNINetworkInfoState : public CJNIEnum
 {
 public:
-  ~CJNINetworkInfoState(){};
-  CJNINetworkInfoState(const jni::jhobject &object) : CJNIEnum(object){};
+  CJNINetworkInfoState(const jni::jhobject &object) : CJNIEnum(object) {};
+  ~CJNINetworkInfoState() {};
+
 private:
   CJNINetworkInfoState();
 };
@@ -33,8 +35,9 @@ private:
 class CJNINetworkInfoDetailedState : public CJNIEnum
 {
 public:
-  ~CJNINetworkInfoDetailedState(){};
-  CJNINetworkInfoDetailedState(const jni::jhobject &object) : CJNIEnum(object){};
+  CJNINetworkInfoDetailedState(const jni::jhobject &object) : CJNIEnum(object) {};
+  ~CJNINetworkInfoDetailedState() {};
+
 private:
   CJNINetworkInfoDetailedState();
 };
@@ -42,25 +45,25 @@ private:
 class CJNINetworkInfo : public CJNIBase
 {
 public:
+  CJNINetworkInfo();
   CJNINetworkInfo(const jni::jhobject &object) : CJNIBase(object){};
   ~CJNINetworkInfo(){};
-  int getType() const;
-  int getSubtype() const;
+
+  int         getType()     const;
+  int         getSubtype()  const;
   std::string getTypeName() const;
   std::string getSubtypeName() const;
-  bool isConnectedOrConnecting() const;
-  bool isConnected() const;
-  bool isAvailable() const;
-  bool isFailover() const;
-  bool isRoaming() const;
+  bool        isConnectedOrConnecting() const;
+  bool        isConnected() const;
+  bool        isAvailable() const;
+  bool        isFailover()  const;
+  bool        isRoaming()   const;
 
   CJNINetworkInfoState getState() const;
   CJNINetworkInfoDetailedState getDetailedState() const;
 
-  std::string getReason() const;
+  std::string getReason()   const;
   std::string getExtraInfo() const;
-  std::string toString() const;
-  int describeContents() const;
-  CJNINetworkInfo();
-private:
+  std::string toString()    const;
+  int         describeContents() const;
 };

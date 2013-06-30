@@ -18,11 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIDhcpInfo : public CJNIBase
 {
 public:
+  CJNIDhcpInfo();
+  CJNIDhcpInfo(const jni::jhobject &object);
+  ~CJNIDhcpInfo(){};
+
   std::string toString();
   int ipAddress;
   int gateway;
@@ -32,9 +37,4 @@ public:
   int serverAddress;
   int leaseDuration;
   int describeContents();
-
-  CJNIDhcpInfo();
-  ~CJNIDhcpInfo(){};
-  CJNIDhcpInfo(const jni::jhobject &object);
-private:
 };

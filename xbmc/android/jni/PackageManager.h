@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "List.h"
 
@@ -25,19 +26,21 @@ class CJNIIntent;
 class CJNIDrawable;
 class CJNIApplicationInfo;
 class CJNICharSequence;
+
 class CJNIPackageManager : public CJNIBase
 {
 public:
   CJNIPackageManager(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIPackageManager(){};
+  ~CJNIPackageManager() {};
 
-  CJNIIntent getLaunchIntentForPackage(const std::string &package);
-  CJNIDrawable getApplicationIcon(const std::string &package);
+  CJNIIntent        getLaunchIntentForPackage(const std::string &package);
+  CJNIDrawable      getApplicationIcon(const std::string &package);
   CJNIList<CJNIApplicationInfo> getInstalledApplications(int flags);
-  CJNICharSequence getApplicationLabel(const CJNIApplicationInfo &info);
+  CJNICharSequence  getApplicationLabel(const CJNIApplicationInfo &info);
 
-  static void PopulateStaticFields();
-  static int GET_ACTIVITIES;
+  static void       PopulateStaticFields();
+  static int        GET_ACTIVITIES;
+
 private:
   CJNIPackageManager();
 };

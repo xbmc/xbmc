@@ -18,16 +18,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIIntentFilter : public CJNIBase
 {
 public:
   CJNIIntentFilter();
+  CJNIIntentFilter(const jni::jhobject &object) : CJNIBase(object) {};
   CJNIIntentFilter(const std::string &action);
+  ~CJNIIntentFilter() {};
+
   void addDataScheme(std::string scheme);
   void addAction(std::string action);
-
-  ~CJNIIntentFilter(){};
-  CJNIIntentFilter(const jni::jhobject &object) : CJNIBase(object){};
 };

@@ -18,11 +18,15 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "BaseColumns.h"
+
 class CJNIMediaStoreMediaColumns : public CJNIBaseColumns
 {
 public:
+  static void PopulateStaticFields();
+
   static std::string DATA; 
   static std::string SIZE; 
   static std::string DISPLAY_NAME;
@@ -30,7 +34,7 @@ public:
   static std::string DATE_ADDED;
   static std::string DATE_MODIFIED;
   static std::string MIME_TYPE;
-  static void PopulateStaticFields();
+
 private:
   CJNIMediaStoreMediaColumns();
 };
@@ -38,6 +42,6 @@ private:
 class CJNIMediaStore : public CJNIBase
 {
 public:
-  ~CJNIMediaStore(){};
-  CJNIMediaStore(const jni::jhobject &object) : CJNIBase(object){};
+  CJNIMediaStore(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIMediaStore() {};
 };

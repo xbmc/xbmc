@@ -18,14 +18,15 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIFile : public CJNIBase
 {
 public:
   CJNIFile();
-  ~CJNIFile(){};
   CJNIFile(const jni::jhobject &file) : CJNIBase(file){};
+  ~CJNIFile(){};
 
   std::string getAbsolutePath();
 };

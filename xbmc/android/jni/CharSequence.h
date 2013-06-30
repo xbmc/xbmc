@@ -18,14 +18,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNICharSequence : public CJNIBase
 {
 public:
-  ~CJNICharSequence(){};
-  CJNICharSequence(const jni::jhobject &object) : CJNIBase(object){};
+  CJNICharSequence(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNICharSequence() {};
+
   std::string toString();
+
 private:
   CJNICharSequence();
 };

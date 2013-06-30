@@ -18,13 +18,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIBitmap : public CJNIBase
 {
 public:
   CJNIBitmap();
-  ~CJNIBitmap(){};
-  CJNIBitmap(const jni::jhobject &object) : CJNIBase(object){};
-
+  CJNIBitmap(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIBitmap() {};
 };

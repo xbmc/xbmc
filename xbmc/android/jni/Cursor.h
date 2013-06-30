@@ -18,16 +18,20 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "MediaStore.h"
+
 class CJNIURI;
+
 class CJNICursor : public CJNIBase
 {
 public:
-  ~CJNICursor(){};
   CJNICursor(const jni::jhobject &object) : CJNIBase(object){};
-  int getCount();
-  int getPosition();
+  ~CJNICursor(){};
+
+  int  getCount();
+  int  getPosition();
   bool move(int offset);
   bool moveToPosition(int position);
   bool moveToFirst();
@@ -38,30 +42,31 @@ public:
   bool isLast();
   bool isBeforeFirst();
   bool isAfterLast();
-  int getColumnIndex(const std::string &columnName);
+  int  getColumnIndex(const std::string &columnName);
   std::string getColumnName(int columnIndex);
   std::vector<std::string> getColumnNames();
-  int getColumnCount();
+  int  getColumnCount();
   std::string getString(int columnIndex);
   short getShort(int columnIndex);
-  int getInt(int columnIndex);
+  int  getInt(int columnIndex);
   long getLong(int columnIndex);
   float getFloat(int columnIndex);
   double getDouble(int columnIndex);
-  int getType(int columnIndex);
+  int  getType(int columnIndex);
   bool isNull(int columnIndex);
   void deactivate();
   bool requery();
   void close();
   bool isClosed();
 
+  static void PopulateStaticFields();
   static int FIELD_TYPE_NULL;
   static int FIELD_TYPE_INTEGER;
   static int FIELD_TYPE_FLOAT;
   static int FIELD_TYPE_STRING;
   static int FIELD_TYPE_BLOB;
 
-  static void PopulateStaticFields();
+
 private:
   CJNICursor();
 };

@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "SystemClock.h"
 #include "jutils/jutils-details.hpp"
 
@@ -24,6 +25,7 @@ using namespace jni;
 
 int64_t CJNISystemClock::uptimeMillis()
 {
-  return call_static_method<jlong>("android/os/SystemClock", "uptimeMillis", "()J");
+  return call_static_method<jlong>("android/os/SystemClock",
+    "uptimeMillis", "()J");
 }
 

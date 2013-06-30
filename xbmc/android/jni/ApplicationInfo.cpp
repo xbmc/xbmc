@@ -17,19 +17,20 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "ApplicationInfo.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
 
 CJNIApplicationInfo::CJNIApplicationInfo(const jhobject &object) : CJNIBase(object)
-  ,sourceDir(jcast<std::string>(get_field<jhstring>(m_object, "sourceDir")))
-  ,publicSourceDir(jcast<std::string>(get_field<jhstring>(m_object, "publicSourceDir")))
-  ,dataDir(jcast<std::string>(get_field<jhstring>(m_object, "dataDir")))
+  ,sourceDir(       jcast<std::string>(get_field<jhstring>(m_object, "sourceDir")))
+  ,publicSourceDir( jcast<std::string>(get_field<jhstring>(m_object, "publicSourceDir")))
+  ,dataDir(         jcast<std::string>(get_field<jhstring>(m_object, "dataDir")))
   ,nativeLibraryDir(jcast<std::string>(get_field<jhstring>(m_object, "nativeLibraryDir")))
-  ,packageName(jcast<std::string>(get_field<jhstring>(m_object, "packageName")))
-  ,uid(get_field<int>(m_object, "uid"))
+  ,packageName(     jcast<std::string>(get_field<jhstring>(m_object, "packageName")))
+  ,uid(             get_field<int>(m_object, "uid"))
   ,targetSdkVersion(get_field<int>(m_object, "targetSdkVersion"))
-  ,enabled(get_field<jboolean>(m_object, "enabled"))
+  ,enabled(         get_field<jboolean>(m_object, "enabled"))
 {
 }

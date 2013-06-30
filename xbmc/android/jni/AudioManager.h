@@ -18,20 +18,23 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIAudioManager : public CJNIBase
 {
 public:
+  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIAudioManager() {};
+
   // Note removal of streamType param.
-  int getStreamMaxVolume();
+  int  getStreamMaxVolume();
   void setStreamVolume(int index = 0, int flags = 0);
 
   static void PopulateStaticFields();
-  ~CJNIAudioManager(){};
-  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object){};
 
 private:
   CJNIAudioManager();
+
   static int STREAM_MUSIC;
 };

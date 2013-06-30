@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "Enum.h"
 #include "NetworkInfo.h"
@@ -25,8 +26,9 @@
 class CJNISupplicantState : public CJNIEnum
 {
 public:
-  ~CJNISupplicantState(){};
   CJNISupplicantState(const jni::jhobject &object) : CJNIEnum(object){};
+  ~CJNISupplicantState(){};
+
 private:
   CJNISupplicantState();
 };
@@ -36,18 +38,20 @@ class CJNIWifiInfo : public CJNIBase
 public:
   CJNIWifiInfo(const jni::jhobject &object) : CJNIBase(object){};
   ~CJNIWifiInfo(){};
-  std::string getSSID() const;
+
+  std::string getSSID()  const;
   std::string getBSSID() const;
-  int getRssi() const;
-  int getLinkSpeed() const;
+  int         getRssi()  const;
+  int         getLinkSpeed()  const;
   std::string getMacAddress() const;
-  int getNetworkId() const;
-  int getIpAddress() const;
-  bool getHiddenSSID() const;
+  int         getNetworkId()  const;
+  int         getIpAddress()  const;
+  bool        getHiddenSSID() const;
   std::string toString() const;
-  int describeContents() const;
+  int         describeContents() const;
   CJNISupplicantState getSupplicantState() const;
   static CJNINetworkInfoDetailedState getDetailedStateOf(const CJNISupplicantState &suppState);
+
 private:
   CJNIWifiInfo();
 };

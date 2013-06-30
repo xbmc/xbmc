@@ -18,13 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
+
 class CJNIEnum : public CJNIBase
 {
 public:
-  CJNIEnum(jni::jhobject const& object) : CJNIBase(object){};
+  CJNIEnum(jni::jhobject const& object) : CJNIBase(object) {};
+  ~CJNIEnum() {};
+
   virtual std::string name();
   virtual std::string toString();
   virtual bool equals(const CJNIEnum &object);
-  ~CJNIEnum(){};
 };

@@ -17,8 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
+
 using namespace jni;
+
 CJNIBase::CJNIBase(std::string classname)
 {
   m_className = classname;

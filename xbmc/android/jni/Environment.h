@@ -18,15 +18,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIFile;
+
 class CJNIEnvironment : public CJNIBase
 {
 public:
-  static std::string getExternalStorageState();
-  static CJNIFile getExternalStorageDirectory();
-  static CJNIFile getExternalStoragePublicDirectory(const std::string &type);
+  static std::string  getExternalStorageState();
+  static CJNIFile     getExternalStorageDirectory();
+  static CJNIFile     getExternalStoragePublicDirectory(const std::string &type);
+
 protected:
   CJNIEnvironment();
   ~CJNIEnvironment(){};

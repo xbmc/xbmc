@@ -18,8 +18,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 #include "BroadcastReceiver.h"
+
 class ANativeActivity;
 class CJNIIntent;
 class CJNIPackageManager;
@@ -29,6 +31,7 @@ class CJNIClassLoader;
 class CJNIApplicationInfo;
 class CJNIFile;
 class CJNIContentResolver;
+
 class CJNIContext
 {
 public:
@@ -50,13 +53,16 @@ public:
   static CJNIContentResolver getContentResolver();
   static CJNIContext* GetAppInstance() { return m_appInstance; };
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
+
 protected:
-  virtual void onNewIntent(CJNIIntent intent)=0;
   CJNIContext(const ANativeActivity *nativeActivity);
   ~CJNIContext();
 
+  virtual void onNewIntent(CJNIIntent intent)=0;
+
 private:
   CJNIContext();
+
   void PopulateStaticFields();
   void operator=(CJNIContext const&){};
   static jni::jhobject m_context;

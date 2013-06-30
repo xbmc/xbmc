@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "List.h"
 #include "jutils/jutils-details.hpp"
 #include "ScanResult.h"
@@ -28,13 +29,16 @@ using namespace jni;
 template <typename T>
 T CJNIList<T>::get(int index)
 {
-  return (T)call_method<jhobject>(m_object, "get", "(I)Ljava/lang/Object;", index);
+  return (T)call_method<jhobject>(m_object,
+    "get", "(I)Ljava/lang/Object;",
+    index);
 }
 
 template <typename T>
 int CJNIList<T>::size()
 {
-  return m_object.get() ? call_method<jint>(m_object, "size", "()I") : 0;
+  return m_object.get() ? call_method<jint>(m_object,
+    "size", "()I") : 0;
 }
 
 template class CJNIList<CJNIScanResult>;

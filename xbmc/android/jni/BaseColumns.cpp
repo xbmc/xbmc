@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "BaseColumns.h"
 #include "jutils/jutils-details.hpp"
 
@@ -28,6 +29,6 @@ std::string CJNIBaseColumns::_COUNT;
 void CJNIBaseColumns::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/provider/BaseColumns");
-  _ID = (jcast<std::string>(get_static_field<jhstring>(clazz, "_ID")));
+  _ID    = (jcast<std::string>(get_static_field<jhstring>(clazz, "_ID")));
   _COUNT = (jcast<std::string>(get_static_field<jhstring>(clazz, "_COUNT")));
 }

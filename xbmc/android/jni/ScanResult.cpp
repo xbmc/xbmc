@@ -17,26 +17,29 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "ScanResult.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
 
 CJNIScanResult::CJNIScanResult(const jhobject &object) : CJNIBase(object)
-  ,SSID(jcast<std::string>(get_field<jhstring>(m_object, "SSID")))
-  ,BSSID(jcast<std::string>(get_field<jhstring>(m_object, "BSSID")))
+  ,SSID(        jcast<std::string>(get_field<jhstring>(m_object, "SSID")))
+  ,BSSID(       jcast<std::string>(get_field<jhstring>(m_object, "BSSID")))
   ,capabilities(jcast<std::string>(get_field<jhstring>(m_object, "capabilities")))
-  ,level(get_field<int>(m_object, "level"))
-  ,frequency(get_field<int>(m_object, "frequency"))
+  ,level(       get_field<int>(m_object, "level"))
+  ,frequency(   get_field<int>(m_object, "frequency"))
 {
 }
 
 std::string CJNIScanResult::toString()
 {
-  return jcast<std::string>(call_method<jhstring>(m_object, "toString", "()Ljava/lang/String;"));
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "toString", "()Ljava/lang/String;"));
 }
 
 int CJNIScanResult::describeContents()
 {
-  return call_method<jint>(m_object, "describeContents", "()I");
+  return call_method<jint>(m_object,
+    "describeContents", "()I");
 }

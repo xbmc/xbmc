@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "jutils/jutils.hpp"
 
 class CJNIBase

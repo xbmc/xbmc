@@ -18,16 +18,19 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 template <typename T>
 class CJNIList : public CJNIBase
 {
 public:
-  ~CJNIList(){};
   CJNIList(const jni::jhobject &object) : CJNIBase(object){};
-  T get(int index);
+  ~CJNIList(){};
+
+  T   get(int index);
   int size();
+
 private:
   CJNIList();
 };

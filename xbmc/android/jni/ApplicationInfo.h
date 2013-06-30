@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIApplicationInfo : public CJNIBase
@@ -31,11 +32,12 @@ public:
   std::string dataDir;
   std::string nativeLibraryDir;
   std::string packageName;
-  int uid; 
-  int targetSdkVersion;
-  bool enabled;
+  int         uid; 
+  int         targetSdkVersion;
+  bool        enabled;
 
 private:
   CJNIApplicationInfo();
 };
+
 typedef std::vector<CJNIApplicationInfo> CJNIApplicationInfos;

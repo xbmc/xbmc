@@ -18,17 +18,19 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIStatFs : public CJNIBase
 {
 public:
   CJNIStatFs(const std::string &path);
-  CJNIStatFs(const jni::jhobject &object) : CJNIBase(object){};
-  ~CJNIStatFs(){};
-  void restat(const std::string &path);
-  int getBlockSize();
-  int getBlockCount();
-  int getFreeBlocks();
-  int getAvailableBlocks();
+  CJNIStatFs(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIStatFs() {};
+
+  void  restat(const std::string &path);
+  int   getBlockSize();
+  int   getBlockCount();
+  int   getFreeBlocks();
+  int   getAvailableBlocks();
 };

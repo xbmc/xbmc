@@ -18,13 +18,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include <string>
+
 class CJNIBaseColumns
 {
 public:
+  static void PopulateStaticFields();
+
   static std::string _ID;
   static std::string _COUNT;
-  static void PopulateStaticFields();
+
 private:
   CJNIBaseColumns();
 };

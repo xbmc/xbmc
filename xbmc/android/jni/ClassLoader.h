@@ -18,14 +18,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIClassLoader : public CJNIBase
 {
 public:
-  ~CJNIClassLoader(){};
+  CJNIClassLoader(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIClassLoader() {};
+
   jni::jhclass loadClass(std::string className);
-  CJNIClassLoader(const jni::jhobject &object) : CJNIBase(object){};
+
 private:
   CJNIClassLoader();
 };

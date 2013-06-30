@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "Enum.h"
 #include "jutils/jutils-details.hpp"
 
@@ -24,14 +25,17 @@ using namespace jni;
 
 std::string CJNIEnum::name()
 {
-  return jcast<std::string>(call_method<jhstring>(m_object, "name", "()Ljava/lang/String;"));
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "name", "()Ljava/lang/String;"));
 }
 
 std::string CJNIEnum::toString()
 {
-  return jcast<std::string>(call_method<jhstring>(m_object, "toString", "()Ljava/lang/String;"));
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "toString", "()Ljava/lang/String;"));
 }
 bool CJNIEnum::equals(const CJNIEnum &object)
 {
-  return call_method<jboolean>(m_object, "equals", "(Ljava/lang/Object;)Z", object.get_raw());
+  return call_method<jboolean>(m_object,
+    "equals", "(Ljava/lang/Object;)Z", object.get_raw());
 }

@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "WifiManager.h"
 #include "DhcpInfo.h"
 #include "List.h"
@@ -30,93 +31,111 @@ using namespace jni;
 
 CJNIList<CJNIWifiConfiguration> CJNIWifiManager::getConfiguredNetworks()
 {
-  return (CJNIList<CJNIWifiConfiguration>)call_method<jhobject>(m_object, "getConfiguredNetworks" , "()Ljava/util/List;");
+  return call_method<jhobject>(m_object,
+    "getConfiguredNetworks" , "()Ljava/util/List;");
 }
 
 CJNIList<CJNIScanResult> CJNIWifiManager::getScanResults()
 {
-  return (CJNIList<CJNIScanResult>)call_method<jhobject>(m_object, "getScanResults" , "()Ljava/util/List;");
+  return call_method<jhobject>(m_object,
+    "getScanResults" , "()Ljava/util/List;");
 }
 
 bool CJNIWifiManager::removeNetwork(int netId)
 {
-  return call_method<jboolean>(m_object, "removeNetwork", "(I)Z", netId);
+  return call_method<jboolean>(m_object,
+    "removeNetwork", "(I)Z", netId);
 }
 
 bool CJNIWifiManager::enableNetwork(int netID, bool disableOthers)
 {
-  return call_method<jboolean>(m_object, "enableNetwork", "(IZ)Z", netID, disableOthers);
+  return call_method<jboolean>(m_object,
+    "enableNetwork", "(IZ)Z", netID, disableOthers);
 }
 
 bool CJNIWifiManager::disableNetwork(int netID)
 {
-  return call_method<jboolean>(m_object, "disableNetwork", "(I)Z", netID);
+  return call_method<jboolean>(m_object,
+    "disableNetwork", "(I)Z", netID);
 }
 
 bool CJNIWifiManager::disconnect()
 {
-  return call_method<jboolean>(m_object, "disconnect", "()Z");
+  return call_method<jboolean>(m_object,
+    "disconnect", "()Z");
 }
 
 bool CJNIWifiManager::reconnect()
 {
-  return call_method<jboolean>(m_object, "reconnect", "()Z");
+  return call_method<jboolean>(m_object,
+    "reconnect", "()Z");
 }
 
 bool CJNIWifiManager::reassociate()
 {
-  return call_method<jboolean>(m_object, "rassociate", "()Z");
+  return call_method<jboolean>(m_object,
+    "rassociate", "()Z");
 }
 
 bool CJNIWifiManager::pingSupplicant()
 {
-  return call_method<jboolean>(m_object, "pingSupplicant", "()Z");
+  return call_method<jboolean>(m_object,
+    "pingSupplicant", "()Z");
 }
 
 bool CJNIWifiManager::startScan()
 {
-  return call_method<jboolean>(m_object, "startScan", "()Z");
+  return call_method<jboolean>(m_object,
+    "startScan", "()Z");
 }
 
 CJNIWifiInfo CJNIWifiManager::getConnectionInfo()
 {
-  return (CJNIWifiInfo)call_method<jhobject>(m_object, "getConnectionInfo", "()Landroid/net/wifi/WifiInfo;");
+  return call_method<jhobject>(m_object,
+    "getConnectionInfo", "()Landroid/net/wifi/WifiInfo;");
 }
 
 
 bool CJNIWifiManager::saveConfiguration()
 {
-  return call_method<jboolean>(m_object, "saveConfiguration", "()Z");
+  return call_method<jboolean>(m_object,
+    "saveConfiguration", "()Z");
 }
 
 CJNIDhcpInfo CJNIWifiManager::getDhcpInfo()
 {
-  return call_method<jhobject>(m_object, "getDhcpInfo", "()Landroid/net/DhcpInfo;");
+  return call_method<jhobject>(m_object,
+    "getDhcpInfo", "()Landroid/net/DhcpInfo;");
 }
 
 bool CJNIWifiManager::setWifiEnabled(bool enabled)
 {
-  return call_method<jboolean>(m_object, "setWifiEnabled", "(Z)Z", enabled);
+  return call_method<jboolean>(m_object,
+    "setWifiEnabled", "(Z)Z", enabled);
 }
 
 int CJNIWifiManager::getWifiState()
 {
-  return call_method<jint>(m_object, "getWifiState", "()I");
+  return call_method<jint>(m_object,
+    "getWifiState", "()I");
 }
 
 bool CJNIWifiManager::isWifiEnabled()
 {
-  return call_method<jboolean>(m_object, "isWifiEnabled", "()Z");
+  return call_method<jboolean>(m_object,
+    "isWifiEnabled", "()Z");
 }
 
 int CJNIWifiManager::calculateSignalLevel(int rssi, int numLevels)
 {
-  return call_static_method<jint>("android/net/wifi/WifiManager", "calculateSignalLevel", "(II)I", rssi, numLevels);
+  return call_static_method<jint>("android/net/wifi/WifiManager",
+    "calculateSignalLevel", "(II)I", rssi, numLevels);
 }
 
 int CJNIWifiManager::compareSignalLevel(int rssiA, int rssiB)
 {
-  return call_static_method<jint>("android/net/wifi/WifiManager", "compareSignalLevel", "(II)I", rssiA, rssiB);
+  return call_static_method<jint>("android/net/wifi/WifiManager",
+    "compareSignalLevel", "(II)I", rssiA, rssiB);
 }
 
 CJNIWifiManagerMulticastLock CJNIWifiManager::createMulticastLock(const std::string &tag)

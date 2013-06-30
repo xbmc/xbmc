@@ -18,14 +18,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "Drawable.h"
+
 class CJNIBitmap;
+
 class CJNIBitmapDrawable : public CJNIDrawable
 {
 public:
   CJNIBitmapDrawable();
-  CJNIBitmapDrawable(const jni::jhobject &object) : CJNIDrawable(object){};
-  CJNIBitmapDrawable(const CJNIDrawable &drawable) : CJNIDrawable(drawable.get_raw()){};
+  CJNIBitmapDrawable(const jni::jhobject &object)  : CJNIDrawable(object) {};
+  CJNIBitmapDrawable(const CJNIDrawable &drawable) : CJNIDrawable(drawable.get_raw()) {};
+  ~CJNIBitmapDrawable() {};
+
   CJNIBitmap getBitmap();
-  ~CJNIBitmapDrawable(){};
 };

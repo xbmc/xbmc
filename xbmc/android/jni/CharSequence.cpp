@@ -17,11 +17,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "CharSequence.h"
 #include "jutils/jutils-details.hpp"
+
 using namespace jni;
 
 std::string CJNICharSequence::toString()
 {
-  return jcast<std::string>(call_method<jhstring>(m_object, "toString", "()Ljava/lang/String;"));
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "toString", "()Ljava/lang/String;"));
 }

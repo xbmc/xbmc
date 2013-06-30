@@ -49,10 +49,13 @@
 #define DBG(fmt, ...)
 #include <string>
 #include "jutils/jutils-details.hpp"
+
 namespace jni
 {
+
 namespace details
 {
+
 std::string jcast_helper<std::string, jstring>::cast(jstring const &v)
 {
     JNIEnv *env = xbmc_jnienv();

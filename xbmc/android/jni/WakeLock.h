@@ -18,15 +18,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "JNIBase.h"
 
 class CJNIWakeLock : public CJNIBase
 {
 public:
-  CJNIWakeLock(const jni::jhobject &wakelock) : CJNIBase(wakelock){};
-  ~CJNIWakeLock(){};
+  CJNIWakeLock(const jni::jhobject &wakelock) : CJNIBase(wakelock) {};
+  ~CJNIWakeLock() {};
+
   void acquire();
   void release();
+
 protected:
   CJNIWakeLock();
 };

@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "AudioManager.h"
 #include "jutils/jutils-details.hpp"
 
@@ -27,15 +28,19 @@ int CJNIAudioManager::STREAM_MUSIC(0);
 void CJNIAudioManager::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/media/AudioManager");
-  STREAM_MUSIC = (get_static_field<int>(clazz, "STREAM_MUSIC"));
+  STREAM_MUSIC  = (get_static_field<int>(clazz, "STREAM_MUSIC"));
 }
 
 int CJNIAudioManager::getStreamMaxVolume()
 {
-  return call_method<jint>(m_object, "getStreamMaxVolume", "(I)I", STREAM_MUSIC);
+  return call_method<jint>(m_object,
+    "getStreamMaxVolume", "(I)I",
+    STREAM_MUSIC);
 }
 
 void CJNIAudioManager::setStreamVolume(int index /* 0 */, int flags /* NONE */)
 {
-  call_method<void>(m_object, "setStreamVolume", "(III)V", STREAM_MUSIC, index, flags);
+  call_method<void>(m_object,
+    "setStreamVolume", "(III)V",
+    STREAM_MUSIC, index, flags);
 }

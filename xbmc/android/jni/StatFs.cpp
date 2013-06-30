@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "StatFs.h"
 #include "jutils/jutils-details.hpp"
 
@@ -24,31 +25,39 @@ using namespace jni;
 
 CJNIStatFs::CJNIStatFs(const std::string &path) : CJNIBase("android/os/StatFs")
 {
-  m_object = new_object(GetClassName(), "<init>", "(Ljava/lang/String;)V", jcast<jhstring>(path));
+  m_object = new_object(GetClassName(), "<init>",
+    "(Ljava/lang/String;)V",
+    jcast<jhstring>(path));
   m_object.setGlobal();
 }
 
 void CJNIStatFs::restat(const std::string &path)
 {
-  call_method<void>(m_object, "restat", "(Ljava/lang/String;)V", jcast<jhstring>(path));
+  call_method<void>(m_object,
+    "restat", "(Ljava/lang/String;)V",
+    jcast<jhstring>(path));
 }
 
 int CJNIStatFs::getBlockSize()
 {
-  return call_method<jint>(m_object, "getBlockSize", "()I");
+  return call_method<jint>(m_object,
+    "getBlockSize", "()I");
 }
 
 int CJNIStatFs::getBlockCount()
 {
-  return call_method<jint>(m_object, "getBlockCount", "()I");
+  return call_method<jint>(m_object,
+    "getBlockCount", "()I");
 }
 
 int CJNIStatFs::getFreeBlocks()
 {
-  return call_method<jint>(m_object, "getFreeBlocks", "()I");
+  return call_method<jint>(m_object,
+    "getFreeBlocks", "()I");
 }
 
 int CJNIStatFs::getAvailableBlocks()
 {
-  return call_method<jint>(m_object, "getAvailableBlocks", "()I");
+  return call_method<jint>(m_object,
+    "getAvailableBlocks", "()I");
 }
