@@ -826,7 +826,7 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // position.
   D3DXMATRIX flipY, translate, mtxView;
   D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
-  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
+  D3DXMatrixTranslation(&translate, -(w + offset.x), -(h + offset.y), 2*h);
   D3DXMatrixMultiply(&mtxView, &translate, &flipY);
   m_pD3DDevice->SetTransform(D3DTS_VIEW, &mtxView);
 

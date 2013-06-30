@@ -445,7 +445,7 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
+  glTranslatef(-(w + offset.x), +(h + offset.y), 0);
   gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
