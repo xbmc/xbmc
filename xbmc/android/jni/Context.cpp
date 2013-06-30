@@ -36,10 +36,6 @@
 #include "Cursor.h"
 #include "ConnectivityManager.h"
 #include "AudioManager.h"
-#include "Surface.h"
-#include "MediaCodec.h"
-#include "MediaCodecInfo.h"
-#include "MediaFormat.h"
 
 #include <android/native_activity.h>
 
@@ -74,11 +70,6 @@ void CJNIContext::PopulateStaticFields()
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
-  CJNISurface::PopulateStaticFields();
-  CJNIMediaCodec::PopulateStaticFields();
-  CJNIMediaCodecInfoCodecProfileLevel::PopulateStaticFields();
-  CJNIMediaCodecInfoCodecCapabilities::PopulateStaticFields();
-  CJNIMediaFormat::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()
