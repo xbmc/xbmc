@@ -633,9 +633,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
     CLASSNAME, __func__, m_omx_decoder.GetComponent(), m_omx_decoder.GetInputPort(), m_omx_decoder.GetOutputPort(),
     m_deinterlace_request, m_hdmi_clock_sync);
 
-  // start from assuming all recent frames had valid pts
-  m_history_valid_pts = ~0;
-
   return true;
 }
 
@@ -693,15 +690,7 @@ unsigned int COMXVideo::GetSize()
   return m_omx_decoder.GetInputBufferSize();
 }
 
-static unsigned count_bits(int32_t value)
-{
-  unsigned bits = 0;
-  for(;value;++bits)
-    value &= value - 1;
-  return bits;
-}
-
-int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
+int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
 {
   OMX_ERRORTYPE omx_err;
 
@@ -725,18 +714,9 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
 
       omx_buffer->nFlags = 0;
       omx_buffer->nOffset = 0;
-      // some packed bitstream AVI files set almost all pts values to DVD_NOPTS_VALUE, but have a scattering of real pts values.
-      // the valid pts values match the dts values.
-      // if a stream has had more than 4 valid pts values in the last 16, the use UNKNOWN, otherwise use dts
-      m_history_valid_pts = (m_history_valid_pts << 1) | (pts != DVD_NOPTS_VALUE);
-      if(pts == DVD_NOPTS_VALUE && count_bits(m_history_valid_pts & 0xffff) < 4)
-        pts = dts;
 
       if(m_av_clock->VideoStart())
       {
-        // only send dts on first frame to get nearly correct starttime
-        if(pts == DVD_NOPTS_VALUE)
-          pts = dts;
         omx_buffer->nFlags |= OMX_BUFFERFLAG_STARTTIME;
         CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (pts == DVD_NOPTS_VALUE ? 0.0 : pts) / DVD_TIME_BASE);
         m_av_clock->VideoStart(false);
