@@ -156,9 +156,25 @@ bool COMXVideo::PortSettingsChanged()
   {
     CLog::Log(LOGERROR, "%s::%s - error m_omx_decoder.GetParameter(OMX_IndexParamPortDefinition) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
   }
+
+  OMX_CONFIG_POINTTYPE pixel_aspect;
+  OMX_INIT_STRUCTURE(pixel_aspect);
+  pixel_aspect.nPortIndex = m_omx_decoder.GetOutputPort();
+  omx_err = m_omx_decoder.GetParameter(OMX_IndexParamBrcmPixelAspectRatio, &pixel_aspect);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s::%s - error m_omx_decoder.GetParameter(OMX_IndexParamBrcmPixelAspectRatio) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+  }
+
   // let OMXPlayerVideo know about resolution so it can inform RenderManager
   if (m_res_callback)
-    m_res_callback(m_res_ctx, port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight);
+  {
+    float display_aspect = 0.0f;
+    if (pixel_aspect.nX && pixel_aspect.nY)
+      display_aspect = (float)pixel_aspect.nX * port_image.format.video.nFrameWidth /
+        ((float)pixel_aspect.nY * port_image.format.video.nFrameHeight);
+    m_res_callback(m_res_ctx, port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight, display_aspect);
+  }
 
   if (m_settings_changed)
   {
@@ -523,6 +539,20 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
     return false;
   }
 
+  // request portsettingschanged on aspect ratio change
+  OMX_CONFIG_REQUESTCALLBACKTYPE notifications;
+  OMX_INIT_STRUCTURE(notifications);
+  notifications.nPortIndex = m_omx_decoder.GetOutputPort();
+  notifications.nIndex = OMX_IndexParamBrcmPixelAspectRatio;
+  notifications.bEnable = OMX_TRUE;
+
+  omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexConfigRequestCallback, &notifications);
+  if (omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "COMXVideo::Open OMX_IndexConfigRequestCallback error (0%08x)\n", omx_err);
+    return false;
+  }
+
   OMX_PARAM_BRCMVIDEODECODEERRORCONCEALMENTTYPE concanParam;
   OMX_INIT_STRUCTURE(concanParam);
   if(g_advancedSettings.m_omxDecodeStartWithValidFrame)
@@ -782,6 +812,14 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
         {
           CLog::Log(LOGERROR, "%s::%s - error PortSettingsChanged omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
           return false;
+        }
+      }
+      omx_err = m_omx_decoder.WaitForEvent(OMX_EventParamOrConfigChanged, 0);
+      if (omx_err == OMX_ErrorNone)
+      {
+        if(!PortSettingsChanged())
+        {
+          CLog::Log(LOGERROR, "%s::%s - error PortSettingsChanged (EventParamOrConfigChanged) omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
         }
       }
     }
