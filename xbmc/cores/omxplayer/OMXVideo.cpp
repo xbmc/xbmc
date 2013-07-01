@@ -34,6 +34,8 @@
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
 
+#include "linux/RBP.h"
+
 #include <sys/time.h>
 #include <inttypes.h>
 
@@ -527,8 +529,8 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
   }
 
   portParam.nPortIndex = m_omx_decoder.GetInputPort();
-  portParam.nBufferCountActual = VIDEO_BUFFERS;
-
+  bool small_mem = g_RBP.GetArmMem() < 256;
+  portParam.nBufferCountActual = small_mem ? VIDEO_BUFFERS:2*VIDEO_BUFFERS;
   portParam.format.video.nFrameWidth  = m_decoded_width;
   portParam.format.video.nFrameHeight = m_decoded_height;
 
