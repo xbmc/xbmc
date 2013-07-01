@@ -94,10 +94,12 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_messageQueue.SetMaxTimeSize(8.0);
 
   m_dst_rect.SetRect(0, 0, 0, 0);
-  m_nextOverlay = DVD_NOPTS_VALUE;
   m_started = false;
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_nextOverlay = DVD_NOPTS_VALUE;
   m_flush = false;
   m_view_mode = 0;
+  m_history_valid_pts = 0;
 }
 
 OMXPlayerVideo::~OMXPlayerVideo()
@@ -136,6 +138,8 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   }
 
   m_open        = true;
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_nextOverlay = DVD_NOPTS_VALUE;
 
   return true;
 }
@@ -177,8 +181,6 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
 void OMXPlayerVideo::OnStartup()
 {
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-  m_nextOverlay = DVD_NOPTS_VALUE;
 }
 
 void OMXPlayerVideo::OnExit()
@@ -267,8 +269,6 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
     return;
   }
 
-  m_iCurrentPts = pts;
-
   if (CThread::m_bStop)
     return;
 
@@ -297,9 +297,16 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   g_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
 }
 
+static unsigned count_bits(int32_t value)
+{
+  unsigned bits = 0;
+  for(;value;++bits)
+    value &= value - 1;
+  return bits;
+}
+
 void OMXPlayerVideo::Process()
 {
-  double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
   bool bRequestDrop = false;
 
@@ -339,11 +346,9 @@ void OMXPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-
-      if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
-        pts = pMsgGeneralResync->m_timestamp;
-
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %d)", pts, pMsgGeneralResync->m_clock);
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %d)", pMsgGeneralResync->m_timestamp, pMsgGeneralResync->m_clock);
+      m_nextOverlay = DVD_NOPTS_VALUE;
+      m_iCurrentPts = DVD_NOPTS_VALUE;
       pMsgGeneralResync->Release();
       continue;
     }
@@ -367,6 +372,7 @@ void OMXPlayerVideo::Process()
       m_av_clock->UnLock();
       m_started = false;
       m_nextOverlay = DVD_NOPTS_VALUE;
+      m_iCurrentPts = DVD_NOPTS_VALUE;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (COMXPlayerVideo::Flush())
     {
@@ -376,6 +382,7 @@ void OMXPlayerVideo::Process()
       m_nextOverlay = DVD_NOPTS_VALUE;
       m_av_clock->Lock();
       m_av_clock->OMXStop(false);
+      m_iCurrentPts = DVD_NOPTS_VALUE;
       m_omxVideo.Reset();
       m_av_clock->OMXReset(false);
       m_av_clock->UnLock();
@@ -457,32 +464,20 @@ void OMXPlayerVideo::Process()
           m_stalled = false;
         }
 
-        double output_pts = 0;
-        // validate picture timing,
-        // if both dts/pts invalid, use pts calulated from picture.iDuration
-        // if pts invalid use dts, else use picture.pts as passed
-        if (pPacket->dts == DVD_NOPTS_VALUE && pPacket->pts == DVD_NOPTS_VALUE)
-          output_pts = pts;
-        else if (pPacket->pts == DVD_NOPTS_VALUE)
-          output_pts = pts;
-        else
-          output_pts = pPacket->pts;
+        // some packed bitstream AVI files set almost all pts values to DVD_NOPTS_VALUE, but have a scattering of real pts values.
+        // the valid pts values match the dts values.
+        // if a stream has had more than 4 valid pts values in the last 16, the use UNKNOWN, otherwise use dts
+        m_history_valid_pts = (m_history_valid_pts << 1) | (pPacket->pts != DVD_NOPTS_VALUE);
+        double pts = pPacket->pts;
+        if(pPacket->pts == DVD_NOPTS_VALUE && count_bits(m_history_valid_pts & 0xffff) < 4)
+          pts = pPacket->dts;
 
-        if(pPacket->pts != DVD_NOPTS_VALUE)
-          pPacket->pts += m_iVideoDelay;
+        if (pts != DVD_NOPTS_VALUE)
+          pts += m_iVideoDelay;
 
-        if(pPacket->dts != DVD_NOPTS_VALUE)
-          pPacket->dts += m_iVideoDelay;
-
-        if(pPacket->duration == 0)
-          pPacket->duration = frametime;
-
-        if(output_pts != DVD_NOPTS_VALUE)
-          pts = output_pts;
-
-        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
-
-        Output(output_pts, bRequestDrop);
+        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pts);
+        Output(pts, bRequestDrop);
+        m_iCurrentPts = pts;
 
         if(m_started == false)
         {
@@ -490,10 +485,6 @@ void OMXPlayerVideo::Process()
           m_started = true;
           m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
         }
-
-        // guess next frame pts. iDuration is always valid
-        if (m_speed != 0)
-          pts += pPacket->duration * m_speed / abs(m_speed);
 
         break;
       }
@@ -569,6 +560,8 @@ bool OMXPlayerVideo::OpenDecoder()
   m_av_clock->HasVideo(bVideoDecoderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
+  // start from assuming all recent frames had valid pts
+  m_history_valid_pts = ~0;
 
   return bVideoDecoderOpen;
 }

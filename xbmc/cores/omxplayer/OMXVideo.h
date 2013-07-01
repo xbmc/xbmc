@@ -53,7 +53,7 @@ public:
   void Close(void);
   unsigned int GetFreeSpace();
   unsigned int GetSize();
-  int  Decode(uint8_t *pData, int iSize, double dts, double pts);
+  int  Decode(uint8_t *pData, int iSize, double pts);
   void Reset(void);
   void SetDropState(bool bDrop);
   std::string GetDecoderName() { return m_video_codec_name; };
@@ -93,7 +93,6 @@ protected:
   bool              m_deinterlace;
   EDEINTERLACEMODE  m_deinterlace_request;
   bool              m_hdmi_clock_sync;
-  uint32_t          m_history_valid_pts;
   ResolutionUpdateCallBackFn m_res_callback;
   void              *m_res_ctx;
   bool              m_submitted_eos;
