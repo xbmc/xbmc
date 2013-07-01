@@ -347,18 +347,8 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
     {
-      if (m_speed != DVD_PLAYSPEED_PAUSE)
-      {
-        double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-
-        CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_DELAY(%f)", timeout);
-
-        timeout *= (double)DVD_PLAYSPEED_NORMAL / abs(m_speed);
-        timeout += m_av_clock->GetAbsoluteClock();
-
-        while(!m_bStop && m_av_clock->GetAbsoluteClock() < timeout)
-          Sleep(1);
-      }
+      double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_DELAY(%f)", timeout);
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
