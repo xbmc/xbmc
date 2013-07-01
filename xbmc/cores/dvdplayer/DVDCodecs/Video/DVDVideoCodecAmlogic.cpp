@@ -61,12 +61,12 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 {
   switch(hints.codec)
   {
-    case CODEC_ID_MJPEG:
+    case AV_CODEC_ID_MJPEG:
       m_pFormatName = "am-mjpeg";
       break;
-    case CODEC_ID_MPEG1VIDEO:
-    case CODEC_ID_MPEG2VIDEO:
-    case CODEC_ID_MPEG2VIDEO_XVMC:
+    case AV_CODEC_ID_MPEG1VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO_XVMC:
       m_mpeg2_sequence_pts = 0;
       m_mpeg2_sequence = new mpeg2_sequence;
       m_mpeg2_sequence->width  = hints.width;
@@ -80,36 +80,36 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_mpeg2_sequence->rate = 1.0;
       m_pFormatName = "am-mpeg2";
       break;
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
       m_pFormatName = "am-h264";
       break;
-    case CODEC_ID_MPEG4:
-    case CODEC_ID_MSMPEG4V2:
-    case CODEC_ID_MSMPEG4V3:
+    case AV_CODEC_ID_MPEG4:
+    case AV_CODEC_ID_MSMPEG4V2:
+    case AV_CODEC_ID_MSMPEG4V3:
       m_pFormatName = "am-mpeg4";
       break;
-    case CODEC_ID_H263:
-    case CODEC_ID_H263P:
-    case CODEC_ID_H263I:
+    case AV_CODEC_ID_H263:
+    case AV_CODEC_ID_H263P:
+    case AV_CODEC_ID_H263I:
       m_pFormatName = "am-h263";
       break;
-    case CODEC_ID_FLV1:
+    case AV_CODEC_ID_FLV1:
       m_pFormatName = "am-flv1";
       break;
-    case CODEC_ID_RV10:
-    case CODEC_ID_RV20:
-    case CODEC_ID_RV30:
-    case CODEC_ID_RV40:
+    case AV_CODEC_ID_RV10:
+    case AV_CODEC_ID_RV20:
+    case AV_CODEC_ID_RV30:
+    case AV_CODEC_ID_RV40:
       m_pFormatName = "am-rv";
       break;
-    case CODEC_ID_VC1:
+    case AV_CODEC_ID_VC1:
       m_pFormatName = "am-vc1";
       break;
-    case CODEC_ID_WMV3:
+    case AV_CODEC_ID_WMV3:
       m_pFormatName = "am-wmv3";
       break;
-    case CODEC_ID_AVS:
-    case CODEC_ID_CAVS:
+    case AV_CODEC_ID_AVS:
+    case AV_CODEC_ID_CAVS:
       m_pFormatName = "am-avs";
       break;
     default:

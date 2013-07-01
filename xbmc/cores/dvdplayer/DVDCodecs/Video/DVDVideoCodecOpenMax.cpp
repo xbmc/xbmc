@@ -57,7 +57,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
     switch (hints.codec)
     {
-      case CODEC_ID_H264:
+      case AV_CODEC_ID_H264:
       {
         m_pFormatName = "omx-h264";
         if (hints.extrasize < 7 || hints.extradata == NULL)
@@ -71,13 +71,13 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
           m_convert_bitstream = bitstream_convert_init(hints.extradata, hints.extrasize);
       }
       break;
-      case CODEC_ID_MPEG4:
+      case AV_CODEC_ID_MPEG4:
         m_pFormatName = "omx-mpeg4";
       break;
-      case CODEC_ID_MPEG2VIDEO:
+      case AV_CODEC_ID_MPEG2VIDEO:
         m_pFormatName = "omx-mpeg2";
       break;
-      case CODEC_ID_VC1:
+      case AV_CODEC_ID_VC1:
         m_pFormatName = "omx-vc1";
       break;
       default:

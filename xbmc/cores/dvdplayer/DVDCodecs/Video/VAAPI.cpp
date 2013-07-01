@@ -268,14 +268,14 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   vector<VAProfile> accepted;
   switch (avctx->codec_id) {
-    case CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
       accepted.push_back(VAProfileMPEG2Main);
       break;
-    case CODEC_ID_MPEG4:
-    case CODEC_ID_H263:
+    case AV_CODEC_ID_MPEG4:
+    case AV_CODEC_ID_H263:
       accepted.push_back(VAProfileMPEG4AdvancedSimple);
       break;
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
     {
 #ifdef FF_PROFILE_H264_BASELINE
       if  (avctx->profile == FF_PROFILE_H264_BASELINE)
@@ -294,10 +294,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
       }
       break;
     }
-    case CODEC_ID_WMV3:
+    case AV_CODEC_ID_WMV3:
       accepted.push_back(VAProfileVC1Main);
       break;
-    case CODEC_ID_VC1:
+    case AV_CODEC_ID_VC1:
       accepted.push_back(VAProfileVC1Advanced);
       break;
     default:
@@ -384,7 +384,7 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
   m_refs = avctx->refs;
   if(m_refs == 0)
   {
-    if(avctx->codec_id == CODEC_ID_H264)
+    if(avctx->codec_id == AV_CODEC_ID_H264)
       m_refs = 16;
     else
       m_refs = 2;

@@ -44,7 +44,7 @@ protected:
   short m_decodedData[131072]; // could be a bit to big
   int m_decodedDataSize;
 
-  CodecID m_codecID;
+  AVCodecID m_codecID;
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;

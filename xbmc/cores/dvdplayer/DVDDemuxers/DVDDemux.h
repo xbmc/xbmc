@@ -35,7 +35,7 @@ class CDVDInputStream;
   #include "config.h"
 #endif
 #ifndef TARGET_POSIX
-// enum CodecID; // auto defined when neccesary
+// enum AVCodecID; // auto defined when neccesary
 #include <libavcodec/avcodec.h>
 #else
 extern "C" {
@@ -88,7 +88,7 @@ public:
   {
     iId = 0;
     iPhysicalId = 0;
-    codec = (CodecID)0; // CODEC_ID_NONE
+    codec = (AVCodecID)0; // AV_CODEC_ID_NONE
     codec_fourcc = 0;
     profile = FF_PROFILE_UNKNOWN;
     level = 0;
@@ -122,7 +122,7 @@ public:
 
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
-  CodecID codec;
+  AVCodecID codec;
   unsigned int codec_fourcc; // if available
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   int level;   // encoder level of the stream reported by the decoder. used to qualify hw decoders.

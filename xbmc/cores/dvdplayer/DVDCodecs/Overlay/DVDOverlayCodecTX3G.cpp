@@ -75,7 +75,7 @@ CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
 
 bool CDVDOverlayCodecTX3G::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (hints.codec == CODEC_ID_MOV_TEXT)
+  if (hints.codec == AV_CODEC_ID_MOV_TEXT)
     return true;
   return false;
 }

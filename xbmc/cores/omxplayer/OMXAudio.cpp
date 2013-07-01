@@ -1049,17 +1049,17 @@ void COMXAudio::SetCodingType(AEDataFormat dataFormat)
   } 
 }
 
-bool COMXAudio::CanHWDecode(CodecID codec)
+bool COMXAudio::CanHWDecode(AVCodecID codec)
 {
   bool ret = false;
   switch(codec)
   { 
-    case CODEC_ID_DTS:
+    case AV_CODEC_ID_DTS:
       CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDTS\n");
       ret = true;
       break;
-    case CODEC_ID_AC3:
-    case CODEC_ID_EAC3:
+    case AV_CODEC_ID_AC3:
+    case AV_CODEC_ID_EAC3:
       CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDDP\n");
       ret = true;
       break;

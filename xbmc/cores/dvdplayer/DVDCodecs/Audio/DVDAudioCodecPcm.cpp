@@ -113,7 +113,7 @@ CDVDAudioCodecPcm::CDVDAudioCodecPcm() : CDVDAudioCodec()
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
   m_decodedDataSize = 0;
-  m_codecID = CODEC_ID_NONE;
+  m_codecID = AV_CODEC_ID_NONE;
   m_iOutputChannels = 0;
 
   memset(m_decodedData, 0, sizeof(m_decodedData));
@@ -136,12 +136,12 @@ bool CDVDAudioCodecPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   switch (m_codecID)
   {
-    case CODEC_ID_PCM_ALAW:
+    case AV_CODEC_ID_PCM_ALAW:
     {
       for (int i = 0; i < 256; i++) table[i] = alaw2linear(i);
       break;
     }
-    case CODEC_ID_PCM_MULAW:
+    case AV_CODEC_ID_PCM_MULAW:
     {
       for (int i = 0; i < 256; i++) table[i] = ulaw2linear(i);
       break;
@@ -177,31 +177,31 @@ int CDVDAudioCodecPcm::Decode(uint8_t* pData, int iSize)
 
     switch (m_codecID)
     {
-    case CODEC_ID_PCM_S32LE:
+    case AV_CODEC_ID_PCM_S32LE:
         decode_to16(4, 1, 0, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_S32BE:
+    case AV_CODEC_ID_PCM_S32BE:
         decode_to16(4, 0, 0, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_U32LE:
+    case AV_CODEC_ID_PCM_U32LE:
         decode_to16(4, 1, 1, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_U32BE:
+    case AV_CODEC_ID_PCM_U32BE:
         decode_to16(4, 0, 1, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_S24LE:
+    case AV_CODEC_ID_PCM_S24LE:
         decode_to16(3, 1, 0, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_S24BE:
+    case AV_CODEC_ID_PCM_S24BE:
         decode_to16(3, 0, 0, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_U24LE:
+    case AV_CODEC_ID_PCM_U24LE:
         decode_to16(3, 1, 1, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_U24BE:
+    case AV_CODEC_ID_PCM_U24BE:
         decode_to16(3, 0, 1, &src, &samples, buf_size);
         break;
-    case CODEC_ID_PCM_S24DAUD:
+    case AV_CODEC_ID_PCM_S24DAUD:
         n = buf_size / 3;
         for(;n>0;n--) {
           uint32_t v = src[0] << 16 | src[1] << 8 | src[2];
@@ -211,50 +211,50 @@ int CDVDAudioCodecPcm::Decode(uint8_t* pData, int iSize)
           src += 3;
         }
         break;
-    case CODEC_ID_PCM_S16LE:
+    case AV_CODEC_ID_PCM_S16LE:
         n = buf_size >> 1;
         for(;n>0;n--) {
             *samples++ = src[0] | (src[1] << 8);
             src += 2;
         }
         break;
-    case CODEC_ID_PCM_S16BE:
+    case AV_CODEC_ID_PCM_S16BE:
         n = buf_size >> 1;
         for(;n>0;n--) {
             *samples++ = (src[0] << 8) | src[1];
             src += 2;
         }
         break;
-    case CODEC_ID_PCM_U16LE:
+    case AV_CODEC_ID_PCM_U16LE:
         n = buf_size >> 1;
         for(;n>0;n--) {
             *samples++ = (src[0] | (src[1] << 8)) - 0x8000;
             src += 2;
         }
         break;
-    case CODEC_ID_PCM_U16BE:
+    case AV_CODEC_ID_PCM_U16BE:
         n = buf_size >> 1;
         for(;n>0;n--) {
             *samples++ = ((src[0] << 8) | src[1]) - 0x8000;
             src += 2;
         }
         break;
-    case CODEC_ID_PCM_S8:
+    case AV_CODEC_ID_PCM_S8:
         n = buf_size;
         for(;n>0;n--) {
             *samples++ = src[0] << 8;
             src++;
         }
         break;
-    case CODEC_ID_PCM_U8:
+    case AV_CODEC_ID_PCM_U8:
         n = buf_size;
         for(;n>0;n--) {
             *samples++ = ((int)src[0] - 128) << 8;
             src++;
         }
         break;
-    case CODEC_ID_PCM_ALAW:
-    case CODEC_ID_PCM_MULAW:
+    case AV_CODEC_ID_PCM_ALAW:
+    case AV_CODEC_ID_PCM_MULAW:
         n = buf_size;
         for(;n>0;n--) {
             *samples++ = table[src[0]];
@@ -281,7 +281,7 @@ void CDVDAudioCodecPcm::SetDefault()
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
   m_decodedDataSize = 0;
-  m_codecID = CODEC_ID_NONE;
+  m_codecID = AV_CODEC_ID_NONE;
 }
 
 void CDVDAudioCodecPcm::Reset()

@@ -181,7 +181,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
 
   double pts_offset = 0.0;
  
-  if (m_pCodecContext->codec_id == CODEC_ID_HDMV_PGS_SUBTITLE && m_Subtitle.format == 0) 
+  if (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE && m_Subtitle.format == 0)
   {
     // for pgs subtitles the packet pts of the end_segments are wrong
     // instead use the subtitle pts to calc the offset here

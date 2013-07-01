@@ -124,7 +124,7 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
 
   switch (hints.codec)
   {
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
     {
       switch(hints.profile)
       {
@@ -149,7 +149,7 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
       }
     }
     break;
-    case CODEC_ID_MPEG4:
+    case AV_CODEC_ID_MPEG4:
       // (role name) video_decoder.mpeg4
       // MPEG-4, DivX 4/5 and Xvid compatible
       decoder_name = OMX_MPEG4_DECODER;
@@ -163,12 +163,12 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
       m_pFormatName = "omx-mpeg4";
     break;
     */
-    case CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
       // (role name) video_decoder.mpeg2
       // MPEG-2
       decoder_name = OMX_MPEG2V_DECODER;
     break;
-    case CODEC_ID_VC1:
+    case AV_CODEC_ID_VC1:
       // (role name) video_decoder.vc1
       // VC-1, WMV9
       decoder_name = OMX_VC1_DECODER;

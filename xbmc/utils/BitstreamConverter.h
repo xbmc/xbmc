@@ -124,7 +124,7 @@ public:
   static void     skip_bits( bits_reader_t *br, int nbits );
   static uint32_t get_bits( bits_reader_t *br, int nbits );
 
-  bool Open(enum CodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
+  bool Open(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
   void Close(void);
   bool NeedConvert(void) { return m_convert_bitstream; };
   bool Convert(uint8_t *pData, int iSize);
@@ -175,7 +175,7 @@ protected:
   bool              m_convert_bytestream;
   DllAvUtil         *m_dllAvUtil;
   DllAvFormat       *m_dllAvFormat;
-  CodecID           m_codec;
+  AVCodecID           m_codec;
 };
 
 #endif

@@ -104,7 +104,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #ifdef HAVE_LIBVA
     // mpeg4 vaapi decoding is disabled
     if(*cur == PIX_FMT_VAAPI_VLD && CSettings::Get().GetBool("videoplayer.usevaapi") 
-    && (avctx->codec_id != CODEC_ID_MPEG4 || g_advancedSettings.m_videoAllowMpeg4VAAPI)) 
+    && (avctx->codec_id != AV_CODEC_ID_MPEG4 || g_advancedSettings.m_videoAllowMpeg4VAAPI)) 
     {
       if (ctx->GetHardware() != NULL)
       {
@@ -198,7 +198,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
   m_pCodecContext = NULL;
 
-  if (hints.codec == CODEC_ID_H264)
+  if (hints.codec == AV_CODEC_ID_H264)
   {
     switch(hints.profile)
     {
@@ -256,8 +256,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // ffmpeg with enabled neon will crash and burn if this is enabled
   m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
 #else
-  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
-      && pCodec->id != CODEC_ID_VP8
+  if (pCodec->id != AV_CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
+      && pCodec->id != AV_CODEC_ID_VP8
      )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 #endif
@@ -292,8 +292,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
-  && ( pCodec->id == CODEC_ID_H264
-    || pCodec->id == CODEC_ID_MPEG4 ))
+  && ( pCodec->id == AV_CODEC_ID_H264
+    || pCodec->id == AV_CODEC_ID_MPEG4 ))
     m_pCodecContext->thread_count = num_threads;
 
   if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
@@ -492,8 +492,8 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     m_iLastKeyframe = 300;
 
   /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
-  if(m_pCodecContext->codec_id == CODEC_ID_H264
-  || m_pCodecContext->codec_id == CODEC_ID_SVQ3)
+  if(m_pCodecContext->codec_id == AV_CODEC_ID_H264
+  || m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)
     m_started = true;
 
   if(m_pHardware == NULL)
