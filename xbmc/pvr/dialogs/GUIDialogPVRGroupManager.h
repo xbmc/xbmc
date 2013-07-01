@@ -38,6 +38,9 @@ namespace PVR
     void SetRadio(bool IsRadio) { m_bIsRadio = IsRadio; }
 
   protected:
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+
     void Clear();
     void Update();
 

@@ -177,13 +177,6 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
 
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      m_bConfirmed = false;
-      m_bCanceled = false;
-    }
-    break;
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -221,6 +214,14 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
   }
 
   return false;
+}
+
+void CGUIDialogPVRGuideSearch::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+
+  m_bConfirmed = false;
+  m_bCanceled = false;
 }
 
 void CGUIDialogPVRGuideSearch::OnWindowLoaded()

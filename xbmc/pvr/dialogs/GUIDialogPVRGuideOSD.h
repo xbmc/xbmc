@@ -36,9 +36,11 @@ namespace PVR
     virtual void OnWindowUnload();
 
   protected:
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+
     void ShowInfo(int iItem);
     void Clear();
-    void Update();
 
     CGUIControl *GetFirstFocusableControl(int id);
 

@@ -39,12 +39,14 @@ namespace PVR
     virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
   protected:
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+
     virtual bool OnPopupMenu(int iItem);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
     virtual bool OnActionMove(const CAction &action);
 
-    virtual bool OnMessageInit(CGUIMessage &message);
     virtual bool OnMessageClick(CGUIMessage &message);
 
     virtual bool OnClickListChannels(CGUIMessage &message);
