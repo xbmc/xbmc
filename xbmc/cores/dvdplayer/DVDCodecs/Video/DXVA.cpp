@@ -1287,6 +1287,14 @@ bool CProcessor::OpenProcessor()
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
   CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, rtFormat, &m_caps))
 
+  /* HACK for Intel Egde Device. 
+   * won't work if backward refs is equals value from the capabilities *
+   * Possible reasons are:                                             *
+   * 1) The device capabilities are incorrectly reported               *
+   * 2) The device is broken                                           */
+  if (IsEqualGUID(m_device, DXVA2_VideoProcIntelEdgeDevice))
+    m_caps.NumBackwardRefSamples = 0;
+
   if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
     CLog::Log(LOGDEBUG, "DXVA - processor is software device");
 
