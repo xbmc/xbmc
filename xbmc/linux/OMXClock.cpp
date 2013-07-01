@@ -276,20 +276,6 @@ bool OMXClock::OMXStart(bool lock /* = true */)
   return true;
 }
 
-void OMXClock::VideoStart(bool video_start)
-{ 
-  Lock();
-  m_video_start = video_start; 
-  UnLock();
-};
-
-void OMXClock::AudioStart(bool audio_start) 
-{ 
-  Lock();
-  m_audio_start = audio_start; 
-  UnLock();
-};
-
 bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)

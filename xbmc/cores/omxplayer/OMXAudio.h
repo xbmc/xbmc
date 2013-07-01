@@ -110,6 +110,7 @@ private:
   COMXCoreComponent *m_omx_clock;
   OMXClock       *m_av_clock;
   bool          m_settings_changed;
+  bool          m_setStartTime;
   bool          m_LostSync;
   int           m_SampleRate;
   OMX_AUDIO_CODINGTYPE m_eEncoding;
