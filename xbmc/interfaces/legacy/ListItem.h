@@ -47,7 +47,9 @@ namespace XBMCAddon
     class ListItem : public AddonClass
     {
     public:
+#ifndef SWIG
       CFileItemPtr item;
+#endif
 
       ListItem(const String& label = emptyString, 
                const String& label2 = emptyString,
