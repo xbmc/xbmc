@@ -50,6 +50,14 @@ bool CRBP::Initialize()
   if(!m_omx_initialized)
     return false;
 
+  char response[80] = "";
+  m_arm_mem = 0;
+  m_gpu_mem = 0;
+  if (vc_gencmd(response, sizeof response, "get_mem arm") == 0)
+    vc_gencmd_number_property(response, "arm", &m_arm_mem);
+  if (vc_gencmd(response, sizeof response, "get_mem gpu") == 0)
+    vc_gencmd_number_property(response, "gpu", &m_gpu_mem);
+
   return true;
 }
 
@@ -59,6 +67,7 @@ void CRBP::LogFirmwareVerison()
   m_DllBcmHost->vc_gencmd(response, sizeof response, "version");
   response[sizeof(response) - 1] = '\0';
   CLog::Log(LOGNOTICE, "Raspberry PI firmware version: %s", response);
+  CLog::Log(LOGNOTICE, "ARM mem: %dMB GPU mem: %dMB", m_arm_mem, m_gpu_mem);
 }
 
 void CRBP::Deinitialize()
