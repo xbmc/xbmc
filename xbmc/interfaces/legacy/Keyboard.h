@@ -55,11 +55,13 @@ namespace XBMCAddon
     class Keyboard : public AddonClass
     {
     public:
+#ifndef SWIG
       String strDefault;
       String strHeading;
       bool bHidden;
       String strText;
       bool bConfirmed;
+#endif
 
       Keyboard(const String& line = emptyString, const String& heading = emptyString, bool hidden = false);
       virtual ~Keyboard();

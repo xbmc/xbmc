@@ -85,7 +85,7 @@ public class Helper
     Node doc = null
     def ret = ''
 
-    // make the class name or namespave
+    // make the class name or namespace
     String doxygenId = findFullClassName(methodOrClass,'_1_1')
     boolean isInClass = doxygenId != null
     if (!doxygenId)
@@ -107,7 +107,7 @@ public class Helper
     {
       Node memberdef = docspec.depthFirst().find { 
         return (it instanceof String) ? false :
-          ((it.name() == 'memberdef' && it.@kind == 'function' && it.@id.startsWith(doxygenId)) &&
+          ((it.name() == 'memberdef' && (it.@kind == 'function' || it.@kind == 'variable') && it.@id.startsWith(doxygenId)) &&
            (it.name != null && it.name.text().trim() == methodOrClass.@sym_name))
       }
 
@@ -479,6 +479,19 @@ public class Helper
       List allMethods = ret.depthFirst().findAll({ it.name() == 'function' || it.name() == 'destructor' || it.name() == 'constructor'})
       allMethods.each {
          if (it.@access != null && it.@access != 'public' && it.name() != 'constructor')
+            it.parent().remove(it)
+         else
+         {
+           def doc = retrieveDocStringFromDoxygen(it)
+           if (doc != null && doc != '' && doc.trim() != ' ')
+             new Node(it,'doc',['value' : doc])
+         }
+      }
+      
+      // now remove all non-public variables
+      List allVariables = ret.depthFirst().findAll({ it.name() == 'variable' })
+      allVariables.each {
+         if (it.@access != null && it.@access != 'public')
             it.parent().remove(it)
          else
          {
