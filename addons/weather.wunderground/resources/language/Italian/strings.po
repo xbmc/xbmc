@@ -88,6 +88,30 @@ msgctxt "#32126"
 msgid "Animated map"
 msgstr "Mappa animata"
 
+msgctxt "#32127"
+msgid "Location 4"
+msgstr "Località 4"
+
+msgctxt "#32128"
+msgid "Location 5"
+msgstr "Località 5"
+
+msgctxt "#32129"
+msgid "Location 4 display name"
+msgstr "Località 4 mostra nome"
+
+msgctxt "#32130"
+msgid "Location 5 display name"
+msgstr "Località 5 mostra nome"
+
+msgctxt "#32131"
+msgid "Location 4 id"
+msgstr "Località 4 id"
+
+msgctxt "#32132"
+msgid "Location 5 id"
+msgstr "Località 5 id"
+
 msgctxt "#32501"
 msgid "New Moon"
 msgstr "Novilunio"

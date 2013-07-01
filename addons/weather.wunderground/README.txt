@@ -14,7 +14,7 @@ Current.Humidity
 Current.FeelsLike
 Current.UVIndex
 Current.DewPoint
-Current.OutlookIcon
+Current.ConditionIcon
 Current.FanartCode
 
 
@@ -52,6 +52,8 @@ Forecast.Updated
 CURRENT
 -------
 Current.IsFetched
+Current.LocalTime
+Current.LocalDate
 Current.WindDegree
 Current.SolarRadiation
 Current.Pressure

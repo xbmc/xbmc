@@ -98,11 +98,11 @@ msgstr "Erstes Viertel"
 
 msgctxt "#32503"
 msgid "First Quarter"
-msgstr "Erstes Quartal"
+msgstr "Zunehmender Halbmond"
 
 msgctxt "#32504"
 msgid "Waxing Gibbous"
-msgstr "Zweites Viertel"
+msgstr "Zunehmender Mond"
 
 msgctxt "#32505"
 msgid "Full Moon"
@@ -110,11 +110,11 @@ msgstr "Vollmond"
 
 msgctxt "#32506"
 msgid "Waning Gibbous"
-msgstr "Drittes Viertel"
+msgstr "Abnehmender Mond"
 
 msgctxt "#32507"
 msgid "Last Quarter"
-msgstr "Letztes Quartal"
+msgstr "Abnehmender Halbmond"
 
 msgctxt "#32508"
 msgid "Waning Crescent"
@@ -122,7 +122,7 @@ msgstr "Letztes Viertel"
 
 msgctxt "#32510"
 msgid "Warning"
-msgstr "Achtung"
+msgstr "Warnung"
 
 msgctxt "#32511"
 msgid "Watch"
@@ -138,7 +138,7 @@ msgstr "Bericht"
 
 msgctxt "#32514"
 msgid "Outlook"
-msgstr "Outlook"
+msgstr "Ausblick"
 
 msgctxt "#32515"
 msgid "Forecast"

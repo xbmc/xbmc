@@ -9,165 +9,129 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: French (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fr/)\n"
+"Language-Team: Faroese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fo/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fo\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#32101"
 msgid "Location setup"
-msgstr "Emplacements"
+msgstr "Uppseting av stað"
 
 msgctxt "#32102"
 msgid "Advanced options"
-msgstr "Options avancées"
+msgstr "Víðkaðar stillingar"
 
 msgctxt "#32111"
 msgid "Location 1"
-msgstr "Emplacement 1"
+msgstr "Stað 1"
 
 msgctxt "#32112"
 msgid "Location 2"
-msgstr "Emplacement 2"
+msgstr "Stað 2"
 
 msgctxt "#32113"
 msgid "Location 3"
-msgstr "Emplacement 3"
+msgstr "Stað 3"
 
 msgctxt "#32114"
 msgid "Location 1 display name"
-msgstr "Nom de l'emplacement 1"
+msgstr "Heiti á stað 1"
 
 msgctxt "#32115"
 msgid "Location 2 display name"
-msgstr "Nom de l'emplacement 2"
+msgstr "Heiti á stað 2"
 
 msgctxt "#32116"
 msgid "Location 3 display name"
-msgstr "Nom de l'emplacement 3"
+msgstr "Heiti á stað 3"
 
 msgctxt "#32117"
 msgid "Location 1 id"
-msgstr "Identifiant emplacement 1"
+msgstr "Stað 1 id"
 
 msgctxt "#32118"
 msgid "Location 2 id"
-msgstr "Identifiant emplacement 2"
+msgstr "Stað 2 id"
 
 msgctxt "#32119"
 msgid "Location 3 id"
-msgstr "Identifiant emplacement 3"
+msgstr "Stað 3 id"
 
 msgctxt "#32120"
 msgid "Enable logging"
-msgstr "Activer le mode debug"
+msgstr "Tendra log"
 
 msgctxt "#32121"
 msgid "Weekend"
-msgstr "Week-end"
+msgstr "Vikuskifti"
 
 msgctxt "#32122"
 msgid "Saturday/Sunday"
-msgstr "Samedi/Dimanche"
+msgstr "Leygardagur/Sunnudagur"
 
 msgctxt "#32123"
 msgid "Friday/Saturday"
-msgstr "Vendredi/Samedi"
+msgstr "Fríggjadagur/Leygardagur"
 
 msgctxt "#32124"
 msgid "Thursday/Friday"
-msgstr "Jeudi/Vendredi"
+msgstr "Hósdagur/Fríggjadagur"
 
 msgctxt "#32125"
 msgid "Map zoom level"
-msgstr "Niveau de zoom de la carte"
+msgstr "Stødd á korti"
 
 msgctxt "#32126"
 msgid "Animated map"
-msgstr "Carte animée"
-
-msgctxt "#32127"
-msgid "Location 4"
-msgstr "Emplacement 4"
-
-msgctxt "#32128"
-msgid "Location 5"
-msgstr "Emplacement 5"
-
-msgctxt "#32129"
-msgid "Location 4 display name"
-msgstr "Nom de l'emplacement 4"
-
-msgctxt "#32130"
-msgid "Location 5 display name"
-msgstr "Nom de l'emplacement 5"
-
-msgctxt "#32131"
-msgid "Location 4 id"
-msgstr "Identifiant emplacement 4"
-
-msgctxt "#32132"
-msgid "Location 5 id"
-msgstr "Identifiant emplacement 5"
+msgstr "Livandi kort"
 
 msgctxt "#32501"
 msgid "New Moon"
-msgstr "Nouvelle Lune"
+msgstr "Nýmáni (tendring)"
 
 msgctxt "#32502"
 msgid "Waxing Crescent"
-msgstr "Premier Croissant"
+msgstr "Hálvmáni"
 
 msgctxt "#32503"
 msgid "First Quarter"
-msgstr "Premier Quartier"
-
-msgctxt "#32504"
-msgid "Waxing Gibbous"
-msgstr "Lune Gibbeuse Croissante"
+msgstr "Fyrsti fjórðingur"
 
 msgctxt "#32505"
 msgid "Full Moon"
-msgstr "Pleine Lune"
-
-msgctxt "#32506"
-msgid "Waning Gibbous"
-msgstr "Lune Gibbeuse Décroissante"
+msgstr "Fullmáni (full sól)"
 
 msgctxt "#32507"
 msgid "Last Quarter"
-msgstr "Dernier Quartier"
-
-msgctxt "#32508"
-msgid "Waning Crescent"
-msgstr "Dernier Croissant"
+msgstr "Seinni fjórðingur"
 
 msgctxt "#32510"
 msgid "Warning"
-msgstr "Attention"
+msgstr "Ávarðing"
 
 msgctxt "#32511"
 msgid "Watch"
-msgstr "Regarder"
+msgstr "Hygg"
 
 msgctxt "#32512"
 msgid "Advisory"
-msgstr "Avertissement"
+msgstr "Vegleiðing"
 
 msgctxt "#32513"
 msgid "Statement"
-msgstr "Déclaration"
+msgstr "Frágreiðing"
 
 msgctxt "#32514"
 msgid "Outlook"
-msgstr "Perspective"
+msgstr "Útlit"
 
 msgctxt "#32515"
 msgid "Forecast"
-msgstr "Prévisions"
+msgstr "Forsøgn"
 
 msgctxt "#32516"
 msgid "Synopsis"
-msgstr "Résumé"
+msgstr "Samandráttur"
