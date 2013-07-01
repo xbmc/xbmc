@@ -349,25 +349,28 @@ bool OMXClock::OMXReset(bool lock /* = true */)
     return false;
   }
 
-  clock.eState    = OMX_TIME_ClockStateWaitingForStartTime;
-  clock.nOffset   = ToOMXTime(-1000LL * OMX_PRE_ROLL);
-
-  OMXSetClockPorts(&clock);
-
-  if(clock.nWaitMask)
+  OMX_TIME_CLOCKSTATE old_eState = clock.eState;
+  if (clock.eState == OMX_TIME_ClockStateStopped)
   {
-    omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
-    if(omx_err != OMX_ErrorNone)
+    clock.eState    = OMX_TIME_ClockStateWaitingForStartTime;
+    clock.nOffset   = ToOMXTime(-1000LL * OMX_PRE_ROLL);
+
+    OMXSetClockPorts(&clock);
+
+    if(clock.nWaitMask)
     {
-      CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState\n");
-      if(lock)
-        UnLock();
-      return false;
+      omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
+      if(omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState\n");
+        if(lock)
+          UnLock();
+        return false;
+      }
     }
   }
-
-  CLog::Log(LOGDEBUG, "OMXClock::OMXReset audio / video : %d / %d start audio / video : %d / %d wait mask %d\n", 
-      m_has_audio, m_has_video, m_audio_start, m_video_start, clock.nWaitMask);
+  CLog::Log(LOGDEBUG, "OMXClock::OMXReset audio / video : %d / %d start audio / video : %d / %d wait mask %d state : %d->%d\n",
+      m_has_audio, m_has_video, m_audio_start, m_video_start, clock.nWaitMask, old_eState, clock.eState);
 
   if(lock)
     UnLock();
