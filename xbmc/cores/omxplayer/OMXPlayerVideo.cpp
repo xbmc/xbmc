@@ -48,6 +48,7 @@
 #include "guilib/GraphicContext.h"
 
 #include "OMXPlayer.h"
+#include "linux/RBP.h"
 
 class COMXMsgVideoCodecChange : public CDVDMsg
 {
@@ -88,7 +89,8 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_iVideoDelay           = 0;
   m_fForcedAspectRatio    = 0.0f;
-  m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
+  bool small_mem = g_RBP.GetArmMem() < 256;
+  m_messageQueue.SetMaxDataSize((small_mem ? 10:40) * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
   m_dst_rect.SetRect(0, 0, 0, 0);
