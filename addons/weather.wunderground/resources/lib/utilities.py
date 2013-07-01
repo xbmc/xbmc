@@ -8,11 +8,15 @@ __language__ = sys.modules[ "__main__" ].__language__
 #http://www.wunderground.com/weather/api/d/docs?d=language-support
         # xbmc lang name         # wu code
 LANG = { 'afrikaans'             : 'AF',
+         'albanian'              : 'AL',
+         'amharic'               : 'EN', # AM is n/a, use AR or EN? 
          'arabic'                : 'AR',
+         'azerbaijani'           : 'AZ',
          'basque'                : 'EU',
          'belarusian'            : 'BY',
          'bosnian'               : 'CR', # BS is n/a, use CR or SR? 
          'bulgarian'             : 'BU',
+         'burmese'               : 'MY',
          'catalan'               : 'CA',
          'chinese (simple)'      : 'CN',
          'chinese (traditional)' : 'TW',
@@ -24,6 +28,7 @@ LANG = { 'afrikaans'             : 'AF',
          'english (us)'          : 'EN',
          'esperanto'             : 'EO',
          'estonian'              : 'ET',
+         'faroese'               : 'DK', # FO is n/a, use DK
          'finnish'               : 'FI',
          'french'                : 'FR',
          'galician'              : 'GZ',
@@ -37,10 +42,16 @@ LANG = { 'afrikaans'             : 'AF',
          'italian'               : 'IT',
          'japanese'              : 'JP',
          'korean'                : 'KR',
+         'latvian'               : 'LV',
          'lithuanian'            : 'LT',
          'macedonian'            : 'MK',
+         'malay'                 : 'EN', # MS is n/a, use EN
+         'malayalam'             : 'EN', # ML is n/a, use EN
          'maltese'               : 'MT',
          'norwegian'             : 'NO',
+         'ossetic'               : 'EN', # OS is n/a, use EN
+         'persian'               : 'FA',
+         'persian (iran)'        : 'FA',
          'polish'                : 'PL',
          'portuguese'            : 'BR',
          'portuguese (brazil)'   : 'BR',
@@ -54,9 +65,14 @@ LANG = { 'afrikaans'             : 'AF',
          'spanish (argentina)'   : 'SP',
          'spanish (mexico)'      : 'SP',
          'swedish'               : 'SW',
+         'tamil (india)'         : 'EN', # TA is n/a, use EN
          'thai'                  : 'TH',
          'turkish'               : 'TU',
-         'ukrainian'             : 'UA'}
+         'ukrainian'             : 'UA',
+         'uzbek'                 : 'UZ',
+         'vietnamese'            : 'VU',
+         'vietnamese (viet nam)' : 'VU',
+         'welsh'                 : 'CY'}
 
 WEATHER_CODES = { 'chanceflurries'    : '41',
                   'chancerain'        : '39',

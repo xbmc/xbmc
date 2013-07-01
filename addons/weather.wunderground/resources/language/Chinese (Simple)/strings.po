@@ -88,6 +88,30 @@ msgctxt "#32126"
 msgid "Animated map"
 msgstr "动态地图"
 
+msgctxt "#32127"
+msgid "Location 4"
+msgstr "地点4"
+
+msgctxt "#32128"
+msgid "Location 5"
+msgstr "地点5"
+
+msgctxt "#32129"
+msgid "Location 4 display name"
+msgstr "地点4显示名称"
+
+msgctxt "#32130"
+msgid "Location 5 display name"
+msgstr "地点5显示名称"
+
+msgctxt "#32131"
+msgid "Location 4 id"
+msgstr "地点4 ID"
+
+msgctxt "#32132"
+msgid "Location 5 id"
+msgstr "地点5 ID"
+
 msgctxt "#32501"
 msgid "New Moon"
 msgstr "新月"

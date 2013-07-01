@@ -1,3 +1,27 @@
+v1.0.15
+- fix animated radar images
+- added gzip compression for image retrieval
+
+v1.0.14
+- add support for 5 locations
+- fix possible incorrect display of location name
+- remove old backward compatibility code
+
+v1.0.13
+- added localtime and localdate infolabels
+
+v1.0.12
+- added yyyy-mm-dd format for regions that use this format
+- fixed strip returns in rss label
+
+v1.0.11
+- fix corrupted alert message
+
+v1.0.10
+- fix potential crash on invalid json response
+- fix api error response check
+- added gzip compression support
+
 v1.0.9
 - updated language files from Transifex
 
