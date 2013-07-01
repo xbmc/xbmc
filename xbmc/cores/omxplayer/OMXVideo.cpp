@@ -124,11 +124,11 @@ bool COMXVideo::SendDecoderConfig()
   return true;
 }
 
-bool COMXVideo::NaluFormatStartCodes(enum CodecID codec, uint8_t *in_extradata, int in_extrasize)
+bool COMXVideo::NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize)
 {
   switch(codec)
   {
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
       if (in_extrasize < 7 || in_extradata == NULL)
         return true;
       // valid avcC atom data always starts with the value 1 (version), otherwise annexb
@@ -349,7 +349,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
 
   switch (hints.codec)
   {
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
     {
       switch(hints.profile)
       {
@@ -387,64 +387,64 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
       }
     }
     break;
-    case CODEC_ID_MPEG4:
+    case AV_CODEC_ID_MPEG4:
       // (role name) video_decoder.mpeg4
       // MPEG-4, DivX 4/5 and Xvid compatible
       decoder_name = OMX_MPEG4_DECODER;
       m_codingType = OMX_VIDEO_CodingMPEG4;
       m_video_codec_name = "omx-mpeg4";
       break;
-    case CODEC_ID_MPEG1VIDEO:
-    case CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG1VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
       // (role name) video_decoder.mpeg2
       // MPEG-2
       decoder_name = OMX_MPEG2V_DECODER;
       m_codingType = OMX_VIDEO_CodingMPEG2;
       m_video_codec_name = "omx-mpeg2";
       break;
-    case CODEC_ID_H263:
+    case AV_CODEC_ID_H263:
       // (role name) video_decoder.mpeg4
       // MPEG-4, DivX 4/5 and Xvid compatible
       decoder_name = OMX_MPEG4_DECODER;
       m_codingType = OMX_VIDEO_CodingMPEG4;
       m_video_codec_name = "omx-h263";
       break;
-    case CODEC_ID_VP6:
+    case AV_CODEC_ID_VP6:
       // this form is encoded upside down
       vflip = true;
       // fall through
-    case CODEC_ID_VP6F:
-    case CODEC_ID_VP6A:
+    case AV_CODEC_ID_VP6F:
+    case AV_CODEC_ID_VP6A:
       // (role name) video_decoder.vp6
       // VP6
       decoder_name = OMX_VP6_DECODER;
       m_codingType = OMX_VIDEO_CodingVP6;
       m_video_codec_name = "omx-vp6";
     break;
-    case CODEC_ID_VP8:
+    case AV_CODEC_ID_VP8:
       // (role name) video_decoder.vp8
       // VP8
       decoder_name = OMX_VP8_DECODER;
       m_codingType = OMX_VIDEO_CodingVP8;
       m_video_codec_name = "omx-vp8";
     break;
-    case CODEC_ID_THEORA:
+    case AV_CODEC_ID_THEORA:
       // (role name) video_decoder.theora
       // theora
       decoder_name = OMX_THEORA_DECODER;
       m_codingType = OMX_VIDEO_CodingTheora;
       m_video_codec_name = "omx-theora";
     break;
-    case CODEC_ID_MJPEG:
-    case CODEC_ID_MJPEGB:
+    case AV_CODEC_ID_MJPEG:
+    case AV_CODEC_ID_MJPEGB:
       // (role name) video_decoder.mjpg
       // mjpg
       decoder_name = OMX_MJPEG_DECODER;
       m_codingType = OMX_VIDEO_CodingMJPEG;
       m_video_codec_name = "omx-mjpeg";
     break;
-    case CODEC_ID_VC1:
-    case CODEC_ID_WMV3:
+    case AV_CODEC_ID_VC1:
+    case AV_CODEC_ID_WMV3:
       // (role name) video_decoder.vc1
       // VC-1, WMV9
       decoder_name = OMX_VC1_DECODER;

@@ -282,49 +282,49 @@ static int set_pts_pcrscr(int64_t value)
   return -1;
 }
 
-static vformat_t codecid_to_vformat(enum CodecID id)
+static vformat_t codecid_to_vformat(enum AVCodecID id)
 {
   vformat_t format;
   switch (id)
   {
-    case CODEC_ID_MPEG1VIDEO:
-    case CODEC_ID_MPEG2VIDEO:
-    case CODEC_ID_MPEG2VIDEO_XVMC:
+    case AV_CODEC_ID_MPEG1VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO:
+    case AV_CODEC_ID_MPEG2VIDEO_XVMC:
       format = VFORMAT_MPEG12;
       break;
-    case CODEC_ID_H263:
-    case CODEC_ID_MPEG4:
-    case CODEC_ID_H263P:
-    case CODEC_ID_H263I:
-    case CODEC_ID_MSMPEG4V2:
-    case CODEC_ID_MSMPEG4V3:
-    case CODEC_ID_FLV1:
+    case AV_CODEC_ID_H263:
+    case AV_CODEC_ID_MPEG4:
+    case AV_CODEC_ID_H263P:
+    case AV_CODEC_ID_H263I:
+    case AV_CODEC_ID_MSMPEG4V2:
+    case AV_CODEC_ID_MSMPEG4V3:
+    case AV_CODEC_ID_FLV1:
       format = VFORMAT_MPEG4;
       break;
-    case CODEC_ID_RV10:
-    case CODEC_ID_RV20:
-    case CODEC_ID_RV30:
-    case CODEC_ID_RV40:
+    case AV_CODEC_ID_RV10:
+    case AV_CODEC_ID_RV20:
+    case AV_CODEC_ID_RV30:
+    case AV_CODEC_ID_RV40:
       format = VFORMAT_REAL;
       break;
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
       format = VFORMAT_H264;
       break;
     /*
-    case CODEC_ID_H264MVC:
+    case AV_CODEC_ID_H264MVC:
       // H264 Multiview Video Coding (3d blurays)
       format = VFORMAT_H264MVC;
       break;
     */
-    case CODEC_ID_MJPEG:
+    case AV_CODEC_ID_MJPEG:
       format = VFORMAT_MJPEG;
       break;
-    case CODEC_ID_VC1:
-    case CODEC_ID_WMV3:
+    case AV_CODEC_ID_VC1:
+    case AV_CODEC_ID_WMV3:
       format = VFORMAT_VC1;
       break;
-    case CODEC_ID_AVS:
-    case CODEC_ID_CAVS:
+    case AV_CODEC_ID_AVS:
+    case AV_CODEC_ID_CAVS:
       format = VFORMAT_AVS;
       break;
 
@@ -381,11 +381,11 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case CODEC_TAG_RMP4:
     case CODEC_TAG_MPG4:
     case CODEC_TAG_mp4v:
-    case CODEC_ID_MPEG4:
+    case AV_CODEC_ID_MPEG4:
       // mp4
       dec_type = VIDEO_DEC_FORMAT_MPEG4_5;
       break;
-    case CODEC_ID_H263:
+    case AV_CODEC_ID_H263:
     case CODEC_TAG_H263:
     case CODEC_TAG_h263:
     case CODEC_TAG_s263:
@@ -397,21 +397,21 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
     case CODEC_TAG_avc1:
     case CODEC_TAG_H264:
     case CODEC_TAG_h264:
-    case CODEC_ID_H264:
+    case AV_CODEC_ID_H264:
       // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
     /*
-    case CODEC_ID_H264MVC:
+    case AV_CODEC_ID_H264MVC:
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
     */
-    case CODEC_ID_RV30:
+    case AV_CODEC_ID_RV30:
     case CODEC_TAG_RV30:
       // realmedia 3
       dec_type = VIDEO_DEC_FORMAT_REAL_8;
       break;
-    case CODEC_ID_RV40:
+    case AV_CODEC_ID_RV40:
     case CODEC_TAG_RV40:
       // realmedia 4
       dec_type = VIDEO_DEC_FORMAT_REAL_9;
@@ -420,19 +420,19 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       // wmv3
       dec_type = VIDEO_DEC_FORMAT_WMV3;
       break;
-    case CODEC_ID_VC1:
+    case AV_CODEC_ID_VC1:
     case CODEC_TAG_VC_1:
     case CODEC_TAG_WVC1:
     case CODEC_TAG_WMVA:
       // vc1
       dec_type = VIDEO_DEC_FORMAT_WVC1;
       break;
-    case CODEC_ID_VP6F:
+    case AV_CODEC_ID_VP6F:
       // vp6
       dec_type = VIDEO_DEC_FORMAT_SW;
       break;
-    case CODEC_ID_CAVS:
-    case CODEC_ID_AVS:
+    case AV_CODEC_ID_CAVS:
+    case AV_CODEC_ID_AVS:
       // avs
       dec_type = VIDEO_DEC_FORMAT_AVS;
       break;
@@ -1129,9 +1129,9 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
                 return PLAYER_NOMEM;
             }
         }
-        if (( CODEC_ID_MPEG1VIDEO == para->video_codec_id)
-          || (CODEC_ID_MPEG2VIDEO == para->video_codec_id)
-          || (CODEC_ID_MPEG2VIDEO_XVMC == para->video_codec_id)) {
+        if (( AV_CODEC_ID_MPEG1VIDEO == para->video_codec_id)
+          || (AV_CODEC_ID_MPEG2VIDEO == para->video_codec_id)
+          || (AV_CODEC_ID_MPEG2VIDEO_XVMC == para->video_codec_id)) {
             ret = mpeg_add_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
                 return ret;
@@ -1531,7 +1531,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   // check for SD h264 content incorrectly reported as 60 fsp
   // mp4/avi containers :(
-  if (hints.codec == CODEC_ID_H264 && hints.width <= 720 && am_private->video_rate == 1602)
+  if (hints.codec == AV_CODEC_ID_H264 && hints.width <= 720 && am_private->video_rate == 1602)
   {
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder video_rate exception");
     am_private->video_rate = 0.5 + (float)UNIT_FREQ * 1001 / 24000;
@@ -1539,7 +1539,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   // check for SD h264 content incorrectly reported as some form of 30 fsp
   // mp4/avi containers :(
-  if (hints.codec == CODEC_ID_H264 && hints.width <= 720)
+  if (hints.codec == AV_CODEC_ID_H264 && hints.width <= 720)
   {
     if (am_private->video_rate >= 3200 && am_private->video_rate <= 3210)
     {
@@ -1576,7 +1576,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   am_private->flv_flag = 0;
-  if (am_private->video_codec_id == CODEC_ID_FLV1)
+  if (am_private->video_codec_id == AV_CODEC_ID_FLV1)
   {
     am_private->video_codec_tag = CODEC_TAG_F263;
     am_private->flv_flag = 1;

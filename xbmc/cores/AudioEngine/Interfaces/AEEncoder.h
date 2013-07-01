@@ -64,10 +64,10 @@ public:
   virtual unsigned int GetBitRate() = 0;
 
   /**
-   * Returns the CodecID of the encoder
+   * Returns the AVCodecID of the encoder
    * @return the ffmpeg codec id
    */
-  virtual CodecID GetCodecID() = 0;
+  virtual AVCodecID GetCodecID() = 0;
 
   /**
    * Return the number of frames needed to encode

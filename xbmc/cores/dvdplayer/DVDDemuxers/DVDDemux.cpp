@@ -30,8 +30,8 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
   char sInfo[64];
 
-  if (codec == CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
-  else if (codec == CODEC_ID_DTS)
+  if (codec == AV_CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
+  else if (codec == AV_CODEC_ID_DTS)
   {
 #ifdef FF_PROFILE_DTS_HD_MA
     if (profile == FF_PROFILE_DTS_HD_MA)
@@ -42,8 +42,8 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 #endif
       strcpy(sInfo, "DTS ");
   }
-  else if (codec == CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
-  else if (codec == CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
+  else if (codec == AV_CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
+  else if (codec == AV_CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
   else strcpy(sInfo, "");
 
   if (iChannels == 1) strcat(sInfo, "Mono");

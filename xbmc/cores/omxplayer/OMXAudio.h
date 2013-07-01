@@ -83,7 +83,7 @@ public:
   void Process();
 
   void SetCodingType(AEDataFormat dataFormat);
-  static bool CanHWDecode(CodecID codec);
+  static bool CanHWDecode(AVCodecID codec);
 
   static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
   void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);

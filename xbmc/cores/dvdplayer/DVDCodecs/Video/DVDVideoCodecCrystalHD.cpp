@@ -55,11 +55,11 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   {
     switch (hints.codec)
     {
-      case CODEC_ID_MPEG2VIDEO:
+      case AV_CODEC_ID_MPEG2VIDEO:
         m_CodecType = CRYSTALHD_CODEC_ID_MPEG2;
         m_pFormatName = "chd-mpeg2";
       break;
-      case CODEC_ID_H264:
+      case AV_CODEC_ID_H264:
         switch(hints.profile)
         {
           case FF_PROFILE_H264_HIGH_10:
@@ -86,11 +86,11 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
 
         m_pFormatName = "chd-h264";
       break;
-      case CODEC_ID_VC1:
+      case AV_CODEC_ID_VC1:
         m_CodecType = CRYSTALHD_CODEC_ID_VC1;
         m_pFormatName = "chd-vc1";
       break;
-      case CODEC_ID_WMV3:
+      case AV_CODEC_ID_WMV3:
         m_CodecType = CRYSTALHD_CODEC_ID_WMV3;
         m_pFormatName = "chd-wmv3";
       break;

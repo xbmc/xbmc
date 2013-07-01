@@ -194,8 +194,8 @@ bool OMXPlayerAudio::CodecChange()
     m_hints.samplerate = m_pAudioCodec->GetSampleRate();
   }
 
-  /* only check bitrate changes on CODEC_ID_DTS, CODEC_ID_AC3, CODEC_ID_EAC3 */
-  if(m_hints.codec != CODEC_ID_DTS && m_hints.codec != CODEC_ID_AC3 && m_hints.codec != CODEC_ID_EAC3)
+  /* only check bitrate changes on AV_CODEC_ID_DTS, AV_CODEC_ID_AC3, AV_CODEC_ID_EAC3 */
+  if(m_hints.codec != AV_CODEC_ID_DTS && m_hints.codec != AV_CODEC_ID_AC3 && m_hints.codec != AV_CODEC_ID_EAC3)
     new_bitrate = old_bitrate = 0;
     
   if(m_hints_current.codec          != m_hints.codec ||
@@ -545,12 +545,12 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
   /* pathrought is overriding hw decode*/
   if(AUDIO_IS_BITSTREAM(CSettings::Get().GetInt("audiooutput.mode")) && m_use_passthrough)
   {
-    if(hints.codec == CODEC_ID_AC3 && CSettings::Get().GetBool("audiooutput.ac3passthrough") && hdmi_passthrough_ac3)
+    if(hints.codec == AV_CODEC_ID_AC3 && CSettings::Get().GetBool("audiooutput.ac3passthrough") && hdmi_passthrough_ac3)
     {
       dataFormat = AE_FMT_AC3;
       m_passthrough = true;
     }
-    if(hints.codec == CODEC_ID_DTS && CSettings::Get().GetBool("audiooutput.dtspassthrough") && hdmi_passthrough_dts)
+    if(hints.codec == AV_CODEC_ID_DTS && CSettings::Get().GetBool("audiooutput.dtspassthrough") && hdmi_passthrough_dts)
     {
       dataFormat = AE_FMT_DTS;
       m_passthrough = true;
@@ -560,12 +560,12 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
   /* hw decode */
   if(m_use_hw_decode && !m_passthrough)
   {
-    if(hints.codec == CODEC_ID_AC3 && COMXAudio::CanHWDecode(m_hints.codec))
+    if(hints.codec == AV_CODEC_ID_AC3 && COMXAudio::CanHWDecode(m_hints.codec))
     {
       dataFormat = AE_FMT_AC3;
       m_hw_decode = true;
     }
-    if(hints.codec == CODEC_ID_DTS && COMXAudio::CanHWDecode(m_hints.codec))
+    if(hints.codec == AV_CODEC_ID_DTS && COMXAudio::CanHWDecode(m_hints.codec))
     {
       dataFormat = AE_FMT_DTS;
       m_hw_decode = true;
