@@ -41,12 +41,16 @@ namespace PVR
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
 
   protected:
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+    virtual void RestoreControlStates();
+    virtual void SaveControlStates();
+
     void CloseOrSelect(unsigned int iItem);
     void GotoChannel(int iItem);
     void ShowInfo(int item);
     void Clear();
     void Update();
-    void Update(bool selectPlayingChannel);
     CPVRChannelGroupPtr GetPlayingGroup();
     CGUIControl *GetFirstFocusableControl(int id);
 
@@ -56,7 +60,7 @@ namespace PVR
   private:
     CPVRChannelGroupPtr m_group;
     std::map<int,int> m_groupSelectedItems;
-    void SetLastSelectedItem(int iGroupID);
+    void SaveSelectedItem(int iGroupID);
     int GetLastSelectedItem(int iGroupID) const;
   };
 }

@@ -43,6 +43,8 @@ namespace PVR
     void OnSearch();
 
   protected:
+    virtual void OnInitWindow();
+
     void UpdateChannelSpin(void);
     void UpdateGroupsSpin(void);
     void UpdateGenreSpin(void);

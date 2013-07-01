@@ -263,23 +263,6 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 
   switch (iMessage)
   {
-    case GUI_MSG_WINDOW_DEINIT:
-    {
-      Clear();
-    }
-    break;
-
-    case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIWindow::OnMessage(message);
-      m_iSelectedUngroupedChannel  = 0;
-      m_iSelectedGroupMember = 0;
-      m_iSelectedChannelGroup = 0;
-      Update();
-      return true;
-    }
-    break;
-
     case GUI_MSG_CLICKED:
     {
       OnMessageClick(message);
@@ -288,6 +271,21 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogPVRGroupManager::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+  m_iSelectedUngroupedChannel  = 0;
+  m_iSelectedGroupMember = 0;
+  m_iSelectedChannelGroup = 0;
+  Update();
+}
+
+void CGUIDialogPVRGroupManager::OnDeinitWindow(int nextWindowID)
+{
+  Clear();
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIDialogPVRGroupManager::OnWindowLoaded()

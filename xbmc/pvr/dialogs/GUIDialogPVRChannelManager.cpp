@@ -64,6 +64,9 @@ using namespace PVR;
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
     CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
     m_bIsRadio(false),
+    m_bMovingMode(false),
+    m_bContainsChanges(false),
+    m_iSelected(0),
     m_channelItems(new CFileItemList)
 {
 }
@@ -134,9 +137,10 @@ bool CGUIDialogPVRChannelManager::OnAction(const CAction& action)
          CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogPVRChannelManager::OnMessageInit(CGUIMessage &message)
+void CGUIDialogPVRChannelManager::OnInitWindow()
 {
-  CGUIWindow::OnMessage(message);
+  CGUIDialog::OnInitWindow();
+
   m_iSelected = 0;
   m_bIsRadio = false;
   m_bMovingMode = false;
@@ -144,8 +148,13 @@ bool CGUIDialogPVRChannelManager::OnMessageInit(CGUIMessage &message)
   SetProperty("IsRadio", "");
   Update();
   SetData(m_iSelected);
+}
 
-  return true;
+void CGUIDialogPVRChannelManager::OnDeinitWindow(int nextWindowID)
+{
+  Clear();
+
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 bool CGUIDialogPVRChannelManager::OnClickListChannels(CGUIMessage &message)
@@ -573,11 +582,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
   switch (iMessage)
   {
-    case GUI_MSG_WINDOW_DEINIT:
-      Clear();
-      break;
-    case GUI_MSG_WINDOW_INIT:
-      return OnMessageInit(message);
     case GUI_MSG_CLICKED:
       return OnMessageClick(message);
   }
