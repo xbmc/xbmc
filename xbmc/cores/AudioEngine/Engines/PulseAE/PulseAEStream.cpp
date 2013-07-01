@@ -386,7 +386,7 @@ void CPulseAEStream::Resume()
     m_Paused = Cork(false);
 }
 
-void CPulseAEStream::Drain()
+void CPulseAEStream::Drain(bool wait)
 {
   if (!m_Initialized)
     return;

@@ -59,7 +59,7 @@ public:
 
   virtual void              Pause           ();
   virtual void              Resume          ();
-  virtual void              Drain           ();
+  virtual void              Drain           (bool wait);
   virtual bool              IsDraining      () { return m_draining;    }
   virtual bool              IsDrained       ();
   virtual void              Flush           ();

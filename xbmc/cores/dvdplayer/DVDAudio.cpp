@@ -298,7 +298,7 @@ void CDVDAudio::Drain()
   Finish();
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
-    m_pAudioStream->Drain();
+    m_pAudioStream->Drain(true);
 }
 
 void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)

@@ -610,7 +610,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
       /* unregister the audio callback */
       si->m_stream->UnRegisterAudioCallback();
       si->m_decoder.Destroy();      
-      si->m_stream->Drain();
+      si->m_stream->Drain(false);
       m_finishing.push_back(si);
       return;
     }
