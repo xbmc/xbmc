@@ -272,7 +272,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 
   // we aim to submit subtitles 100ms early
   const double preroll = DVD_MSEC_TO_TIME(100);
-  double media_pts = m_av_clock->OMXMediaTime(false);
+  double media_pts = m_av_clock->OMXMediaTime();
 
   if (m_nextOverlay != DVD_NOPTS_VALUE && media_pts + preroll <= m_nextOverlay)
     return;
@@ -408,7 +408,7 @@ void OMXPlayerVideo::Process()
       COMXPlayer::SPlayerState& state = ((CDVDMsgType<COMXPlayer::SPlayerState>*)pMsg)->m_value;
 
       if(state.time_src == COMXPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime(true));
+        state.time      = DVD_TIME_TO_MSEC(m_av_clock->OMXMediaTime());
         //state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
       else
         state.timestamp = m_av_clock->GetAbsoluteClock();

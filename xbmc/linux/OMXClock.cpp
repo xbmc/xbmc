@@ -379,7 +379,7 @@ bool OMXClock::OMXReset(bool lock /* = true */)
   return true;
 }
 
-double OMXClock::OMXMediaTime(bool fixPreroll /* true */ , bool lock /* = true */)
+double OMXClock::OMXMediaTime(bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)
     return 0;
@@ -404,9 +404,6 @@ double OMXClock::OMXMediaTime(bool fixPreroll /* true */ , bool lock /* = true *
   }
 
   pts = FromOMXTime(timeStamp.nTimestamp);
-
-  if(fixPreroll)
-    pts += (OMX_PRE_ROLL * 1000);
 
   if(lock)
     UnLock();
@@ -449,7 +446,7 @@ double OMXClock::OMXClockAdjustment(bool lock /* = true */)
 
 // Set the media time, so calls to get media time use the updated value,
 // useful after a seek so mediatime is updated immediately (rather than waiting for first decoded packet)
-bool OMXClock::OMXMediaTime(double pts, bool fixPreroll /* = true*/, bool lock /* = true*/)
+bool OMXClock::OMXMediaTime(double pts, bool lock /* = true*/)
 {
   if(m_omx_clock.GetComponent() == NULL)
     return false;
@@ -468,8 +465,6 @@ bool OMXClock::OMXMediaTime(double pts, bool fixPreroll /* = true*/, bool lock /
   else
     index = OMX_IndexConfigTimeCurrentVideoReference;
 
-  if(fixPreroll)
-    pts -= (OMX_PRE_ROLL * 1000);
   timeStamp.nTimestamp = ToOMXTime(pts);
 
   omx_err = m_omx_clock.SetConfig(index, &timeStamp);
