@@ -83,9 +83,21 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
       return true;
   }
 
+  if (!pItem->HasArt("thumb"))
+  {
+    std::string art = GetCachedImage(*pItem, "thumb");
+    if (!art.empty())
+      pItem->SetArt("thumb", art);
+  }
+
   if (!pItem->HasArt("fanart"))
   {
-    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
+    std::string art = GetCachedImage(*pItem, "fanart");
+    if (!art.empty())
+    {
+      pItem->SetArt("fanart", art);
+    }
+    else if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
     {
       std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
       m_musicDatabase->Open();
