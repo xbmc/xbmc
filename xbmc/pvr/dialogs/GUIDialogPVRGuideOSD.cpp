@@ -48,7 +48,7 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_CLICKED:
+  case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
 
