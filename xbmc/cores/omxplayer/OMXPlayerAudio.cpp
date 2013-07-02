@@ -400,22 +400,14 @@ void OMXPlayerAudio::Process()
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESET");
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
-      m_av_clock->Lock();
-      m_av_clock->OMXStop(false);
       m_omxAudio.Flush();
-      m_av_clock->OMXReset(false);
-      m_av_clock->UnLock();
       m_started = false;
       m_audioClock = DVD_NOPTS_VALUE;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_FLUSH");
-      m_av_clock->Lock();
-      m_av_clock->OMXStop(false);
       m_omxAudio.Flush();
-      m_av_clock->OMXReset(false);
-      m_av_clock->UnLock();
       m_stalled   = true;
       m_started   = false;
 
@@ -589,9 +581,6 @@ bool OMXPlayerAudio::OpenDecoder()
   else
     device = "local";
 
-  m_av_clock->Lock();
-  m_av_clock->OMXStop(false);
-
   bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
@@ -608,11 +597,6 @@ bool OMXPlayerAudio::OpenDecoder()
       m_codec_name.c_str(), m_nChannels, m_hints.samplerate, m_hints.bitspersample);
   }
 
-  m_av_clock->OMXStateExecute(false);
-  m_av_clock->HasAudio(bAudioRenderOpen);
-  m_av_clock->OMXReset(false);
-  m_av_clock->UnLock();
-
   m_started = false;
 
   // TODO : Send FLUSH to parent, only if we had a valid open codec. 
@@ -626,13 +610,7 @@ bool OMXPlayerAudio::OpenDecoder()
 
 void OMXPlayerAudio::CloseDecoder()
 {
-  m_av_clock->Lock();
-  m_av_clock->OMXStop(false);
   m_omxAudio.Deinitialize();
-  m_av_clock->HasAudio(false);
-  m_av_clock->OMXReset(false);
-  m_av_clock->UnLock();
-
   m_DecoderOpen = false;
 }
 

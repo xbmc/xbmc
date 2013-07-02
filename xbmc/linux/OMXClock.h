@@ -81,7 +81,6 @@ public:
   void OMXDeinitialize();
   bool OMXIsPaused() { return m_pause; };
   bool OMXStop(bool lock = true);
-  bool OMXStart(bool lock = true);
   bool OMXStep(int steps = 1, bool lock = true);
   bool OMXReset(bool lock = true);
   double OMXMediaTime(bool lock = true);
@@ -101,10 +100,6 @@ public:
   bool HasAudio() { return m_has_audio; };
   void HasVideo(bool has_video) { m_has_video = has_video; };
   void HasAudio(bool has_audio) { m_has_audio = has_audio; };
-  bool VideoStart() { return m_video_start; };
-  bool AudioStart() { return m_audio_start; };
-  void VideoStart(bool video_start);
-  void AudioStart(bool audio_start);
 
   int     GetRefreshRate(double* interval = NULL);
   void    SetRefreshRate(double fps) { m_fps = fps; };
