@@ -558,14 +558,11 @@ bool OMXPlayerAudio::OpenDecoder()
   m_passthrough = false;
   m_hw_decode   = false;
 
-  bool bSendParent = false;
-
   if(m_DecoderOpen)
   {
     WaitCompletion();
     m_omxAudio.Deinitialize();
     m_DecoderOpen = false;
-    bSendParent = true;
   }
 
   /* setup audi format for audio render */
@@ -598,12 +595,6 @@ bool OMXPlayerAudio::OpenDecoder()
   }
 
   m_started = false;
-
-  // TODO : Send FLUSH to parent, only if we had a valid open codec. 
-  // this is just a workaround to get the omx video decoder happy again
-  // This situation happens, for example where we have in the stream an audio codec change
-  if(bSendParent)
-    m_messageParent.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 
   return bAudioRenderOpen;
 }
