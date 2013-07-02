@@ -57,6 +57,7 @@ protected:
   int      m_iBufferSize1;
   uint8_t*    m_pBuffer2;
   int      m_iBufferSize2;
+  int      m_iBufferTotalSize2;
 
   bool m_bOpenedCodec;
   int m_iBuffered;
