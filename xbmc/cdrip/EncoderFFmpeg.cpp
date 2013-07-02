@@ -66,9 +66,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   AVCodec *codec;
-  codec = m_dllAvCodec.avcodec_find_encoder(
-    strcmp(fmt->name, "ogg") == 0 ? AV_CODEC_ID_VORBIS : fmt->audio_codec
-  );
+  codec = m_dllAvCodec.avcodec_find_encoder(fmt->audio_codec);
 
   if (!codec)
   {
