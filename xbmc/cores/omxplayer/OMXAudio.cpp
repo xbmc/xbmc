@@ -112,7 +112,8 @@ COMXAudio::COMXAudio() :
   m_eEncoding       (OMX_AUDIO_CodingPCM),
   m_extradata       (NULL   ),
   m_extrasize       (0      ),
-  m_last_pts        (DVD_NOPTS_VALUE)
+  m_last_pts        (DVD_NOPTS_VALUE),
+  m_submitted_eos   (false  )
 {
   m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
   m_vizRemapBuffer  = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);
@@ -570,6 +571,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   m_Initialized   = true;
   m_settings_changed = false;
   m_setStartTime = true;
+  m_submitted_eos = false;
   m_last_pts      = DVD_NOPTS_VALUE;
 
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d", 
@@ -1016,6 +1018,8 @@ void COMXAudio::SubmitEOS()
   if(!m_Initialized)
     return;
 
+  m_submitted_eos = true;
+
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
 
@@ -1037,6 +1041,7 @@ void COMXAudio::SubmitEOS()
     CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
     return;
   }
+  CLog::Log(LOGINFO, "%s::%s", CLASSNAME, __func__);
 }
 
 bool COMXAudio::IsEOS()
@@ -1045,7 +1050,16 @@ bool COMXAudio::IsEOS()
     return true;
   unsigned int latency = GetAudioRenderingLatency();
   CSingleLock lock (m_critSection);
-  return m_omx_decoder.IsEOS() && latency <= 0;
+
+  if (!(m_omx_decoder.IsEOS() && latency == 0))
+    return false;
+
+  if (m_submitted_eos)
+  {
+    CLog::Log(LOGINFO, "%s::%s", CLASSNAME, __func__);
+    m_submitted_eos = false;
+  }
+  return true;
 }
 
 void COMXAudio::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
