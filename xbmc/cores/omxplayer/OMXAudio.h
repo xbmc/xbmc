@@ -41,7 +41,7 @@
 
 #include "threads/CriticalSection.h"
 
-#define AUDIO_BUFFER_SECONDS 2
+#define AUDIO_BUFFER_SECONDS 3
 #define VIS_PACKET_SIZE 512
 
 #define OMX_IS_RAW(x)       \
