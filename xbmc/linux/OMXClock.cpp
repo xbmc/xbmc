@@ -32,7 +32,7 @@
 #include "OMXClock.h"
 #include "utils/MathUtils.h"
 
-#define OMX_PRE_ROLL 800
+#define OMX_PRE_ROLL 200
 
 OMXClock::OMXClock()
 {
