@@ -64,7 +64,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_CLICKED:
+  case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
 
@@ -124,8 +124,8 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-    case ACTION_PREVIOUS_CHANNELGROUP:
-    case ACTION_NEXT_CHANNELGROUP:
+  case ACTION_PREVIOUS_CHANNELGROUP:
+  case ACTION_NEXT_CHANNELGROUP:
     {
       // save control states and currently selected item of group
       SaveControlStates();
@@ -176,9 +176,9 @@ void CGUIDialogPVRChannelsOSD::Update()
 
     if(!m_group)
     {
-        m_group = group;
-        m_viewControl.SetSelectedItem(group->GetIndex(*channel));
-        SaveSelectedItem(group->GroupID());
+      m_group = group;
+      m_viewControl.SetSelectedItem(group->GetIndex(*channel));
+      SaveSelectedItem(group->GroupID());
     }
   }
 
