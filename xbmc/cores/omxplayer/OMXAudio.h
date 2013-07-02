@@ -124,6 +124,7 @@ private:
   int           m_vizRemapBufferSize;
   uint8_t       *m_vizRemapBuffer;
   CAERemap      m_vizRemap;
+  bool          m_submitted_eos;
 
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_output;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
