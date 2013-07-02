@@ -66,7 +66,6 @@ protected:
 
   BitstreamStats            m_audioStats;
 
-  struct timespec           m_starttime, m_endtime;
   bool                      m_buffer_empty;
   bool                      m_flush;
   int                       m_nChannels;

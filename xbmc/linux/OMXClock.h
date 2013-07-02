@@ -63,7 +63,6 @@ protected:
   int               m_omx_speed;
   bool              m_video_start;
   bool              m_audio_start;
-  bool              m_audio_buffer;
   CDVDClock         *m_clock;
 private:
   COMXCoreComponent m_omx_clock;
@@ -106,9 +105,6 @@ public:
   bool AudioStart() { return m_audio_start; };
   void VideoStart(bool video_start);
   void AudioStart(bool audio_start);
-  void OMXAudioBufferStart();
-  void OMXAudioBufferStop();
-  bool OMXAudioBuffer() { return m_audio_buffer; };
 
   int     GetRefreshRate(double* interval = NULL);
   void    SetRefreshRate(double fps) { m_fps = fps; };
