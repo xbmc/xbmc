@@ -302,7 +302,7 @@ bool CSettings::Load(const TiXmlElement *root, bool hide /* = false */)
   // if necessary hide all the loaded settings
   if (success && hide && loadedSettings != NULL)
   {
-    for(std::map<std::string, CSetting*>::const_iterator setting = loadedSettings->begin(); setting != loadedSettings->end(); setting++)
+    for(std::map<std::string, CSetting*>::const_iterator setting = loadedSettings->begin(); setting != loadedSettings->end(); ++setting)
       setting->second->SetVisible(false);
 
     delete loadedSettings;

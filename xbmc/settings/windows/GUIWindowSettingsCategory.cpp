@@ -92,6 +92,12 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml"),
       m_settings(CSettings::Get()),
       m_iCategory(0), m_iSection(0),
+      m_pOriginalSpin(NULL),
+      m_pOriginalRadioButton(NULL),
+      m_pOriginalCategoryButton(NULL),
+      m_pOriginalButton(NULL),
+      m_pOriginalEdit(NULL),
+      m_pOriginalImage(NULL),
       m_delayedTimer(this),
       m_returningFromSkinLoad(false)
 {
@@ -272,7 +278,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
     {
       if (CGUIDialogYesNo::ShowAndGetInput(10041, 0, 10042, 0))
       {
-        for(vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); it++)
+        for(vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
         {
           CSetting *setting = (*it)->GetSetting();
           if (setting != NULL)
@@ -350,7 +356,7 @@ void CGUIWindowSettingsCategory::DoProcess(unsigned int currentTime, CDirtyRegio
     }
   }
   CGUIWindow::DoProcess(currentTime, dirtyregions);
-  if (bAlphaFaded)
+  if (control && bAlphaFaded)
   {
     control->SetFocus(false);
     if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
@@ -415,7 +421,7 @@ void CGUIWindowSettingsCategory::SetupControls(bool createSettings /* = true */)
 
   // go through the categories and create the necessary buttons
   int buttonIdOffset = 0;
-  for (SettingCategoryList::const_iterator category = m_categories.begin(); category != m_categories.end(); category++)
+  for (SettingCategoryList::const_iterator category = m_categories.begin(); category != m_categories.end(); ++category)
   {
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
@@ -461,7 +467,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
     control->ClearAll();
   }
 
-  for (std::vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); control++)
+  for (std::vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); ++control)
     (*control)->Clear();
 
   m_settingControls.clear();
@@ -530,7 +536,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   const SettingGroupList& groups = category->GetGroups(CViewStateSettings::Get().GetSettingLevel());
   int iControlID = CONTROL_START_CONTROL;
   bool first = true;
-  for (SettingGroupList::const_iterator groupIt = groups.begin(); groupIt != groups.end(); groupIt++)
+  for (SettingGroupList::const_iterator groupIt = groups.begin(); groupIt != groups.end(); ++groupIt)
   {
     if (*groupIt == NULL)
       continue;
@@ -544,7 +550,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else
       AddSeparator(group->GetWidth(), iControlID);
 
-    for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end(); settingIt++)
+    for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end(); ++settingIt)
     {
       CSetting *pSetting = *settingIt;
       settingMap.insert(pSetting->GetId());
@@ -552,7 +558,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
   }
 
-  if (settingMap.size() > 0)
+  if (!settingMap.empty())
     m_settings.RegisterCallback(this, settingMap);
   
   // update our settings (turns controls on/off as appropriate)
@@ -561,7 +567,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
 void CGUIWindowSettingsCategory::UpdateSettings()
 {
-  for (vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); it++)
+  for (vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
   {
     BaseSettingControlPtr pSettingControl = *it;
     CSetting *pSetting = pSettingControl->GetSetting();
@@ -719,8 +725,6 @@ CGUIControl* CGUIWindowSettingsCategory::AddSettingControl(CGUIControl *pControl
 
 void CGUIWindowSettingsCategory::OnClick(BaseSettingControlPtr pSettingControl)
 {
-  std::string strSetting = pSettingControl->GetSetting()->GetId();
-
   // we need to first set the delayed setting and then execute OnClick()
   // because OnClick() triggers OnSettingChanged() and there we need to
   // know if the changed setting is delayed or not
@@ -754,7 +758,7 @@ CSettingSection* CGUIWindowSettingsCategory::GetSection(int windowID) const
 
 BaseSettingControlPtr CGUIWindowSettingsCategory::GetSettingControl(const std::string &strSetting)
 {
-  for (vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); control++)
+  for (vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); ++control)
   {
     if ((*control)->GetSetting() != NULL && (*control)->GetSetting()->GetId() == strSetting)
       return *control;

@@ -68,7 +68,7 @@ public:
 protected:
   CSkinSettings();
   CSkinSettings(const CSkinSettings&);
-  CSkinSettings const& operator=(CSkinSettings const&);
+  CSkinSettings& operator=(CSkinSettings const&);
   virtual ~CSkinSettings();
 
   std::string GetCurrentSkin() const;

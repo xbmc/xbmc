@@ -364,7 +364,7 @@ private:
   bool Serialize(TiXmlNode *parent) const;
   bool Deserialize(const TiXmlNode *node, std::map<std::string, CSetting*> *loadedSettings = NULL);
 
-  bool LoadSetting(const TiXmlNode *node, CSetting *setting);
+  static bool LoadSetting(const TiXmlNode *node, CSetting *setting);
   bool UpdateSettings(const TiXmlNode *root);
   bool UpdateSetting(const TiXmlNode *node, CSetting *setting, const CSettingUpdate& update);
   void UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency);

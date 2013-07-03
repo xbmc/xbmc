@@ -300,7 +300,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iEdlCommBreakAutowait;    // seconds
     int m_iEdlCommBreakAutowind;    // seconds
 
-    bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
     int m_curlretries;

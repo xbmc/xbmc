@@ -56,7 +56,7 @@ CMediaSettings::CMediaSettings()
   m_additionalSubtitleDirectoryChecked = 0;
 
   m_musicNeedsUpdate = 0;
-  m_musicNeedsUpdate = 0;
+  m_videoNeedsUpdate = 0;
 }
 
 CMediaSettings::~CMediaSettings()

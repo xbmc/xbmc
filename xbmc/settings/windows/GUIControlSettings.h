@@ -41,7 +41,7 @@ public:
   CGUIControlBaseSetting(int id, CSetting *pSetting);
   virtual ~CGUIControlBaseSetting() {}
   
-  int GetID() { return m_id; }
+  int GetID() const { return m_id; }
   CSetting* GetSetting() { return m_pSetting; }
 
   /*!

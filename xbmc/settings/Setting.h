@@ -204,7 +204,7 @@ public:
 
 private:
   void copy(const CSettingInt &setting);
-  bool fromString(const std::string &strValue, int &value) const;
+  static bool fromString(const std::string &strValue, int &value);
 
   int m_value;
   int m_default;
@@ -253,7 +253,7 @@ public:
 
 private:
   virtual void copy(const CSettingNumber &setting);
-  bool fromString(const std::string &strValue, double &value) const;
+  static bool fromString(const std::string &strValue, double &value);
 
   double m_value;
   double m_default;
