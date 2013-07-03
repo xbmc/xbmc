@@ -256,7 +256,7 @@ void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
 int CEncoderFFmpeg::MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size)
 {
   CEncoderFFmpeg *enc = (CEncoderFFmpeg*)opaque;
-  if(enc->WriteStream(buf, buf_size) != buf_size)
+  if(enc->FileWrite(buf, buf_size) != buf_size)
   {
     CLog::Log(LOGERROR, "Error writing FFmpeg buffer to file");
     return -1;
