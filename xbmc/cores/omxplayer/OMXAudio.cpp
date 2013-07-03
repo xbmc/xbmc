@@ -194,6 +194,12 @@ bool COMXAudio::PortSettingsChanged()
        CLog::Log(LOGERROR, "%s::%s - error SetParameter 1 output omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
     }
     m_pcm_output.nPortIndex      = m_omx_mixer.GetOutputPort();
+
+    /* mixer output is always stereo */
+    m_pcm_output.eChannelMapping[0] = OMX_AUDIO_ChannelLF;
+    m_pcm_output.eChannelMapping[1] = OMX_AUDIO_ChannelRF;
+    m_pcm_output.nChannels = 2;
+
     omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
     if(omx_err != OMX_ErrorNone)
     {
