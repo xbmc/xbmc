@@ -43,8 +43,10 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
   if (request.method == POST)
   {
     string contentType = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
-    // If the content-type of the request was specified, it must be application/json
-    if (!contentType.empty() && contentType.compare("application/json") != 0)
+    // If the content-type of the request was specified, it must be application/json-rpc, application/json, or application/jsonrequest
+    // http://www.jsonrpc.org/historical/json-rpc-over-http.html
+    if (!contentType.empty() && contentType.compare("application/json-rpc") != 0 &&
+        contentType.compare("application/json") != 0 && contentType.compare("application/jsonrequest") != 0)
     {
       m_responseType = HTTPError;
       m_responseCode = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
