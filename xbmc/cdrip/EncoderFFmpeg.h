@@ -57,7 +57,7 @@ private:
    * For others a typical size is a cache page, e.g. 4kb.
    */
   unsigned char     m_BCBuffer[4096];
-  static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
+  static int        avio_write_callback(void *opaque, uint8_t *buf, int buf_size);
   void              SetTag(const CStdString tag, const CStdString value);
 
 

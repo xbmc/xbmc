@@ -78,7 +78,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     return false;
   }
 
-  m_Format->pb = m_dllAvFormat.avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_WRITE, this,  NULL, MuxerReadPacket, NULL);
+  m_Format->pb = m_dllAvFormat.avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_WRITE, this,  NULL, avio_write_callback, NULL);
   if (!m_Format->pb)
   {
     m_dllAvUtil.av_freep(&m_Format);
@@ -253,7 +253,7 @@ void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
   m_dllAvUtil.av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
 }
 
-int CEncoderFFmpeg::MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size)
+int CEncoderFFmpeg::avio_write_callback(void *opaque, uint8_t *buf, int buf_size)
 {
   CEncoderFFmpeg *enc = (CEncoderFFmpeg*)opaque;
   if(enc->FileWrite(buf, buf_size) != buf_size)
