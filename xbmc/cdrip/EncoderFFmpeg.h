@@ -25,6 +25,7 @@
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"
 #include "DllAvUtil.h"
+#include "DllSwResample.h"
 
 class CEncoderFFmpeg : public CEncoder
 {
@@ -40,11 +41,15 @@ private:
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
   DllAvFormat m_dllAvFormat;
+  DllSwResample m_dllSwResample;
 
   AVFormatContext  *m_Format;
   AVCodecContext   *m_CodecCtx;
+  SwrContext       *m_SwrCtx;
   AVStream         *m_Stream;
   AVPacket          m_Pkt;
+  AVSampleFormat    m_InFormat;
+  AVSampleFormat    m_OutFormat;
   unsigned char     m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
   void              SetTag(const CStdString tag, const CStdString value);
@@ -54,6 +59,11 @@ private:
   unsigned int      m_NeededBytes;
   uint8_t          *m_Buffer;
   unsigned int      m_BufferSize;
+  AVFrame          *m_BufferFrame;
+  uint8_t          *m_ResampledBuffer;
+  unsigned int      m_ResampledBufferSize;
+  AVFrame          *m_ResampledFrame;
+  bool              m_NeedConversion;
 
   bool WriteFrame();
 };
