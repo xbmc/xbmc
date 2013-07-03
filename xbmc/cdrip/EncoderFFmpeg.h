@@ -50,7 +50,13 @@ private:
   AVPacket          m_Pkt;
   AVSampleFormat    m_InFormat;
   AVSampleFormat    m_OutFormat;
-  unsigned char     m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  /* From libavformat/avio.h:
+   * The buffer size is very important for performance.
+   * For protocols with fixed blocksize it should be set to this
+   * blocksize.
+   * For others a typical size is a cache page, e.g. 4kb.
+   */
+  unsigned char     m_BCBuffer[4096];
   static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
   void              SetTag(const CStdString tag, const CStdString value);
 
