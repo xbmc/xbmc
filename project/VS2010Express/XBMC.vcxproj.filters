@@ -879,6 +879,9 @@
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cdrip\EncoderFFmpeg.cpp">
+      <Filter>cdrip</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
@@ -3755,6 +3758,9 @@
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\Encoder.h">
+      <Filter>cdrip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cdrip\EncoderFFmpeg.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h">

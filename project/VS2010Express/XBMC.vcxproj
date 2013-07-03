@@ -1955,6 +1955,7 @@
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipJob.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp" />
+    <ClCompile Include="..\..\xbmc\cdrip\EncoderFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderLame.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderVorbis.cpp" />
@@ -2762,6 +2763,7 @@
     <ClInclude Include="..\..\xbmc\cdrip\DllVorbis.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllVorbisEnc.h" />
     <ClInclude Include="..\..\xbmc\cdrip\Encoder.h" />
+    <ClInclude Include="..\..\xbmc\cdrip\EncoderFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderLame.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderVorbis.h" />

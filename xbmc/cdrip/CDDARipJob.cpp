@@ -198,6 +198,10 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   case CDDARIP_ENCODER_FLAC:
     encoder = new CEncoderFlac();
     break;
+  case CDDARIP_ENCODER_FFMPEG_M4A:
+  case CDDARIP_ENCODER_FFMPEG_WMA:
+    encoder = new CEncoderFFmpeg();
+    break;
   case CDDARIP_ENCODER_WAV:
   default:
     encoder = new CEncoderWav();
