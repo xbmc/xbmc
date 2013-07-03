@@ -103,6 +103,17 @@ bool CThumbExtractor::DoWork()
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
       m_item.SetArt("thumb", m_target);
+
+      CVideoInfoTag* info = m_item.GetVideoInfoTag();
+      if (info->m_iDbId > 0 && !info->m_type.empty())
+      {
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", m_item.GetArt("thumb"));
+          db.Close();
+        }
+      }
     }
   }
   else if (!m_item.HasVideoInfoTag() || !m_item.GetVideoInfoTag()->HasStreamDetails())
@@ -112,11 +123,27 @@ bool CThumbExtractor::DoWork()
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
-  return result;
+  if (result)
+  {
+    CVideoInfoTag* info = m_item.GetVideoInfoTag();
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      if (info->m_iFileId < 0)
+        db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.IsEmpty() ? info->m_strFileNameAndPath : m_item.GetPath());
+      else
+        db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+
+      db.Close();
+    }
+    return true;
+  }
+
+  return false;
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(), CJobQueue(true), m_pStreamDetailsObs(NULL)
+  CThumbLoader(), CJobQueue(true)
 {
   m_videoDatabase = new CVideoDatabase();
 }
@@ -481,21 +508,7 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
   {
     CThumbExtractor* loader = (CThumbExtractor*)job;
     loader->m_item.SetPath(loader->m_listpath);
-    CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
 
-    if (loader->m_thumb && info->m_iDbId > 0 && !info->m_type.empty())
-    {
-      // This runs in a different thread than the CVideoThumbLoader object.
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", loader->m_item.GetArt("thumb"));
-        db.Close();
-      }
-    }
-
-    if (m_pStreamDetailsObs)
-      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, !info->m_strFileNameAndPath.IsEmpty() ? info->m_strFileNameAndPath : loader->m_item.GetPath(), info->m_iFileId);
     if (m_pObserver)
       m_pObserver->OnItemLoaded(&loader->m_item);
     CFileItemPtr pItem(new CFileItem(loader->m_item));
