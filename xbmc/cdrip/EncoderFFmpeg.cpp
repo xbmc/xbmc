@@ -106,7 +106,8 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;
   m_CodecCtx->channel_layout = m_dllAvUtil.av_get_default_channel_layout(iInChannels);
-  m_CodecCtx->time_base      = (AVRational){1, iInRate};
+  m_CodecCtx->time_base.num  = 1;
+  m_CodecCtx->time_base.den  = iInRate;
   /* Allow experimental encoders (like FFmpeg builtin AAC encoder) */
   m_CodecCtx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 
