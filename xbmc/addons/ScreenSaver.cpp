@@ -48,7 +48,13 @@ bool CScreenSaver::CreateScreenSaver()
     g_alarmClock.Stop(PYTHON_ALARM, true);
 
     if (!g_pythonParser.StopScript(LibPath()))
-      g_pythonParser.evalFile(LibPath(), AddonPtr(new CScreenSaver(Props())));
+    {
+      std::vector<CStdString> argv;
+      argv.push_back(LibPath());
+      argv.push_back("screensaver=1");
+
+      g_pythonParser.evalFile(LibPath(), argv, AddonPtr(new CScreenSaver(Props())));
+    }
     return true;
   }
 #endif
