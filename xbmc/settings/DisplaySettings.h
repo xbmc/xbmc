@@ -97,7 +97,7 @@ public:
 protected:
   CDisplaySettings();
   CDisplaySettings(const CDisplaySettings&);
-  CDisplaySettings const& operator=(CDisplaySettings const&);
+  CDisplaySettings& operator=(CDisplaySettings const&);
   virtual ~CDisplaySettings();
 
   DisplayMode GetCurrentDisplayMode() const;

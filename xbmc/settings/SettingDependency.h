@@ -49,7 +49,8 @@ class CSettingDependencyCondition : public CSettingConditionItem
 public:
   CSettingDependencyCondition(CSettingsManager *settingsManager = NULL)
     : CSettingConditionItem(settingsManager),
-      m_operator(SettingDependencyOperatorEquals)
+      m_target(SettingDependencyTargetNone),  
+      m_operator(SettingDependencyOperatorEquals)      
   { }
   virtual ~CSettingDependencyCondition() { }
 

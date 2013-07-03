@@ -525,7 +525,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const CSetting *setting,
   vector<REFRESHRATE> refreshrates = g_Windowing.RefreshRates(resInfo.iScreen, resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
 
   bool match = false;
-  for (vector<REFRESHRATE>::const_iterator refreshrate = refreshrates.begin(); refreshrate != refreshrates.end(); refreshrate++)
+  for (vector<REFRESHRATE>::const_iterator refreshrate = refreshrates.begin(); refreshrate != refreshrates.end(); ++refreshrate)
   {
     std::string screenmode = GetStringFromResolution((RESOLUTION)refreshrate->ResInfo_Index, refreshrate->RefreshRate);
     if (!match && StringUtils::EqualsNoCase(((CSettingString*)setting)->GetValue(), screenmode))
@@ -550,7 +550,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const CSetting *setting, 
   {
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
     vector<RESOLUTION_WHR> resolutions = g_Windowing.ScreenResolutions(info.iScreen, info.fRefreshRate);
-    for (vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); resolution++)
+    for (vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
       list.push_back(make_pair(
         StringUtils::Format("%dx%d%s", resolution->width, resolution->height,

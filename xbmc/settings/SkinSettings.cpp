@@ -55,7 +55,7 @@ int CSkinSettings::TranslateString(const string &setting)
 
   CSingleLock lock(m_critical);
   // run through and see if we have this setting
-  for (map<int, CSkinString>::const_iterator it = m_strings.begin(); it != m_strings.end(); it++)
+  for (map<int, CSkinString>::const_iterator it = m_strings.begin(); it != m_strings.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(settingName, it->second.name))
       return it->first;
@@ -100,7 +100,7 @@ int CSkinSettings::TranslateBool(const string &setting)
 
   CSingleLock lock(m_critical);
   // run through and see if we have this setting
-  for (map<int, CSkinBool>::const_iterator it = m_bools.begin(); it != m_bools.end(); it++)
+  for (map<int, CSkinBool>::const_iterator it = m_bools.begin(); it != m_bools.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(settingName, it->second.name))
       return it->first;
@@ -147,7 +147,7 @@ void CSkinSettings::Reset(const string &setting)
 
   CSingleLock lock(m_critical);
   // run through and see if we have this setting as a string
-  for (map<int, CSkinString>::iterator it = m_strings.begin(); it != m_strings.end(); it++)
+  for (map<int, CSkinString>::iterator it = m_strings.begin(); it != m_strings.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(settingName, it->second.name))
     {
@@ -157,7 +157,7 @@ void CSkinSettings::Reset(const string &setting)
   }
 
   // and now check for the skin bool
-  for (map<int, CSkinBool>::iterator it = m_bools.begin(); it != m_bools.end(); it++)
+  for (map<int, CSkinBool>::iterator it = m_bools.begin(); it != m_bools.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(settingName, it->second.name))
     {
@@ -173,13 +173,13 @@ void CSkinSettings::Reset()
 
   CSingleLock lock(m_critical);
   // clear all the settings and strings from this skin.
-  for (map<int, CSkinBool>::iterator it = m_bools.begin(); it != m_bools.end(); it++)
+  for (map<int, CSkinBool>::iterator it = m_bools.begin(); it != m_bools.end(); ++it)
   {
     if (StringUtils::StartsWith(it->second.name, currentSkin))
       it->second.value = false;
   }
 
-  for (map<int, CSkinString>::iterator it = m_strings.begin(); it != m_strings.end(); it++)
+  for (map<int, CSkinString>::iterator it = m_strings.begin(); it != m_strings.end(); ++it)
   {
     if (StringUtils::StartsWith(it->second.name, currentSkin))
       it->second.value.clear();

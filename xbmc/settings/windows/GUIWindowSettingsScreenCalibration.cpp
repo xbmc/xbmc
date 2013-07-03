@@ -49,6 +49,9 @@ using namespace std;
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
     : CGUIWindow(WINDOW_SCREEN_CALIBRATION, "SettingsScreenCalibration.xml")
 {
+  m_iCurRes = 0;
+  m_iControl = 0;
+  m_fPixelRatioBoxHeight = 0.0f;
   m_needsScaling = false;         // we handle all the scaling
 }
 

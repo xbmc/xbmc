@@ -541,7 +541,7 @@ bool CSettingInt::CheckValidity(int value) const
   {
     //if the setting is an std::map, check if we got a valid value before assigning it
     bool ok = false;
-    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); it++)
+    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); ++it)
     {
       if (it->second == value)
       {
@@ -664,7 +664,7 @@ void CSettingInt::copy(const CSettingInt &setting)
   m_optionsFiller = setting.m_optionsFiller;
 }
 
-bool CSettingInt::fromString(const std::string &strValue, int &value) const
+bool CSettingInt::fromString(const std::string &strValue, int &value)
 {
   if (strValue.empty())
     return false;
@@ -830,7 +830,7 @@ void CSettingNumber::copy(const CSettingNumber &setting)
   m_max = setting.m_max;
 }
 
-bool CSettingNumber::fromString(const std::string &strValue, double &value) const
+bool CSettingNumber::fromString(const std::string &strValue, double &value)
 {
   if (strValue.empty())
     return false;

@@ -57,7 +57,7 @@ bool CSettingConditionCombination::Check() const
 {
   bool ok = false;
   for (CBooleanLogicOperations::const_iterator operation = m_operations.begin();
-       operation != m_operations.end(); operation++)
+       operation != m_operations.end(); ++operation)
   {
     if (*operation == NULL)
       continue;
@@ -73,7 +73,7 @@ bool CSettingConditionCombination::Check() const
   }
 
   for (CBooleanLogicValues::const_iterator value = m_values.begin();
-       value != m_values.end(); value++)
+       value != m_values.end(); ++value)
   {
     if (*value == NULL)
       continue;
@@ -122,7 +122,7 @@ void CSettingConditionsManager::AddCondition(const std::string &identifier, Sett
   m_conditions.insert(SettingConditionPair(identifier, condition));
 }
 
-bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const std::string settingId /* = "" */) const
+bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const std::string &settingId /* = "" */) const
 {
   if (condition.empty())
     return false;

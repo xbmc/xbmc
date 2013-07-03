@@ -46,14 +46,14 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
 
   if (positionId != NULL && strlen(positionId) > 0 && position >= 0)
   {
-    for (typename std::vector<T>::iterator it = items.begin(); it != items.end(); it++)
+    for (typename std::vector<T>::iterator it = items.begin(); it != items.end(); ++it)
     {
       if (!StringUtils::EqualsNoCase((*it)->GetId(), positionId))
         continue;
 
       typename std::vector<T>::iterator positionIt = it;
       if (position == 1)
-        positionIt++;
+        ++positionIt;
 
       items.insert(positionIt, item);
       return;
@@ -69,7 +69,7 @@ CSettingGroup::CSettingGroup(const std::string &id, CSettingsManager *settingsMa
 
 CSettingGroup::~CSettingGroup()
 {
-  for (SettingList::const_iterator setting = m_settings.begin(); setting != m_settings.end(); setting++)
+  for (SettingList::const_iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
     delete *setting;
   m_settings.clear();
 }
@@ -87,7 +87,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
     if (CSettingCategory::DeserializeIdentification(settingElement, settingId))
     {
       CSetting *setting = NULL;
-      for (SettingList::iterator itSetting = m_settings.begin(); itSetting != m_settings.end(); itSetting++)
+      for (SettingList::iterator itSetting = m_settings.begin(); itSetting != m_settings.end(); ++itSetting)
       {
         if ((*itSetting)->GetId() == settingId)
         {
@@ -133,7 +133,7 @@ SettingList CSettingGroup::GetSettings(SettingLevel level) const
 {
   SettingList settings;
 
-  for (SettingList::const_iterator it = m_settings.begin(); it != m_settings.end(); it++)
+  for (SettingList::const_iterator it = m_settings.begin(); it != m_settings.end(); ++it)
   {
     if ((*it)->GetLevel() <= level && (*it)->IsVisible())
       settings.push_back(*it);
@@ -150,7 +150,7 @@ CSettingCategory::CSettingCategory(const std::string &id, CSettingsManager *sett
 
 CSettingCategory::~CSettingCategory()
 {
-  for (SettingGroupList::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
+  for (SettingGroupList::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
     delete *it;
 
   m_groups.clear();
@@ -183,7 +183,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
     if (CSettingGroup::DeserializeIdentification(groupNode, groupId))
     {
       CSettingGroup *group = NULL;
-      for (SettingGroupList::iterator itGroup = m_groups.begin(); itGroup != m_groups.end(); itGroup++)
+      for (SettingGroupList::iterator itGroup = m_groups.begin(); itGroup != m_groups.end(); ++itGroup)
       {
         if ((*itGroup)->GetId() == groupId)
         {
@@ -219,7 +219,7 @@ SettingGroupList CSettingCategory::GetGroups(SettingLevel level) const
 {
   SettingGroupList groups;
 
-  for (SettingGroupList::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
+  for (SettingGroupList::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
     if ((*it)->IsVisible() && (*it)->GetSettings(level).size() > 0)
       groups.push_back(*it);
@@ -240,7 +240,7 @@ CSettingSection::CSettingSection(const std::string &id, CSettingsManager *settin
 
 CSettingSection::~CSettingSection()
 {
-  for (SettingCategoryList::const_iterator it = m_categories.begin(); it != m_categories.end(); it++)
+  for (SettingCategoryList::const_iterator it = m_categories.begin(); it != m_categories.end(); ++it)
     delete *it;
 
   m_categories.clear();
@@ -269,7 +269,7 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
     if (CSettingCategory::DeserializeIdentification(categoryNode, categoryId))
     {
       CSettingCategory *category = NULL;
-      for (SettingCategoryList::iterator itCategory = m_categories.begin(); itCategory != m_categories.end(); itCategory++)
+      for (SettingCategoryList::iterator itCategory = m_categories.begin(); itCategory != m_categories.end(); ++itCategory)
       {
         if ((*itCategory)->GetId() == categoryId)
         {
@@ -305,7 +305,7 @@ SettingCategoryList CSettingSection::GetCategories(SettingLevel level) const
 {
   SettingCategoryList categories;
 
-  for (SettingCategoryList::const_iterator it = m_categories.begin(); it != m_categories.end(); it++)
+  for (SettingCategoryList::const_iterator it = m_categories.begin(); it != m_categories.end(); ++it)
   {
     if ((*it)->IsVisible() && (*it)->GetGroups(level).size() > 0)
       categories.push_back(*it);

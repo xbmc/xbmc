@@ -46,15 +46,15 @@ public:
   const std::string& GetDefaultSource(const std::string &type) const;
   void SetDefaultSource(const std::string &type, const std::string &source);
 
-  bool UpdateSource(const std::string &strType, const std::string strOldName, const std::string &strUpdateChild, const std::string &strUpdateValue);
-  bool DeleteSource(const std::string &strType, const std::string &strName, const std::string strPath, bool virtualSource = false);
+  bool UpdateSource(const std::string &strType, const std::string &strOldName, const std::string &strUpdateChild, const std::string &strUpdateValue);
+  bool DeleteSource(const std::string &strType, const std::string &strName, const std::string &strPath, bool virtualSource = false);
   bool AddShare(const std::string &type, const CMediaSource &share);
   bool UpdateShare(const std::string &type, const std::string &oldName, const CMediaSource &share);
 
 protected:
   CMediaSourceSettings();
   CMediaSourceSettings(const CMediaSourceSettings&);
-  CMediaSourceSettings const& operator=(CMediaSourceSettings const&);
+  CMediaSourceSettings& operator=(CMediaSourceSettings const&);
   virtual ~CMediaSourceSettings();
 
 private:

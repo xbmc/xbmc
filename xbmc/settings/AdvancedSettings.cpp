@@ -376,7 +376,6 @@ void CAdvancedSettings::Initialize()
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
-  m_initialized = true;
 
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
@@ -402,6 +401,8 @@ void CAdvancedSettings::Initialize()
   #endif
 
   m_userAgent = g_sysinfo.GetUserAgent();
+
+  m_initialized = true;
 }
 
 bool CAdvancedSettings::Load()
