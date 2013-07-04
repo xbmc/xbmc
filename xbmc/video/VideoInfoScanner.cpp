@@ -1393,16 +1393,25 @@ namespace VIDEO
       }
 
       EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
+      EPISODE backupkey(file->iSeason, file->iEpisode, 0);
       bool bFound = false;
       EPISODELIST::iterator guide = episodes.begin();;
       EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
       {
-        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==*guide))
+        if ((file->iEpisode!=-1) && (file->iSeason!=-1))
         {
-          bFound = true;
-          break;
+          if (key==*guide)
+          {
+            bFound = true;
+            break;
+          }
+          else if ((file->iSubepisode!=0) && (backupkey==*guide))
+          {
+            matches.push_back(*guide);
+            continue;
+          }
         }
         if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
         {
