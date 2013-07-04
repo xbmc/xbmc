@@ -257,12 +257,8 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
-  if (!addon->FanArt().IsEmpty() && 
-      (URIUtils::IsInternetStream(addon->FanArt()) || 
-       CFile::Exists(addon->FanArt())))
-  {
+  if (URIUtils::IsInternetStream(addon->FanArt()) || CFile::Exists(addon->FanArt()))
     item->SetArt("fanart", addon->FanArt());
-  }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;
 }
