@@ -612,11 +612,51 @@ CStdString CSysInfo::GetLinuxDistro()
                                         "/etc/buildroot-release",
                                         NULL };
   CStdString result("");
+  char buffer[256] = {'\0'};
+
+  /* Try reading PRETTY_NAME from /etc/os-release first.
+   * If this fails, fall back to lsb_release or distro-specific release-file. */
+
+  FILE *os_release = fopen("/etc/os-release", "r");
+
+  if (os_release)
+  {
+    char *key = NULL;
+    char *val = NULL;
+
+    while (fgets(buffer, sizeof(buffer), os_release))
+    {
+      key = val = buffer;
+      strsep(&val, "=");
+
+      if (strcmp(key, "PRETTY_NAME") == 0)
+      {
+        char *pretty_name = val;
+
+        // remove newline and enclosing quotes
+        if (pretty_name[strlen(pretty_name) - 1] == '\n')
+          pretty_name[strlen(pretty_name) - 1] = '\0';
+
+        if (pretty_name[0] == '\'' || pretty_name[0] == '\"')
+        {
+          pretty_name++;
+          pretty_name[strlen(pretty_name) - 1] = '\0';
+        }
+
+        result = pretty_name;
+        break;
+      }
+    }
+
+    fclose(os_release);
+
+    if (!result.IsEmpty())
+      return result;
+  }
 
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d  2>/dev/null | cut -f2", "r");
   if (pipe)
   {
-    char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
     pclose(pipe);
@@ -630,7 +670,6 @@ CStdString CSysInfo::GetLinuxDistro()
     file = fopen(release_file[i], "r");
     if (file)
     {
-      char buffer[256] = {'\0'};
       if (fgets(buffer, sizeof(buffer), file))
       {
         result = buffer;
