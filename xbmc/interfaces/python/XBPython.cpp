@@ -687,7 +687,7 @@ int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
   return evalFile(src, argv, addon);
 }
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
+int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon, bool plugin /*= false */)
 {
   CSingleExit ex(g_graphicsContext);
   // return if file doesn't exist
@@ -708,7 +708,20 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
 
   m_nextid++;
   boost::shared_ptr<XBPyThread> pyThread = boost::shared_ptr<XBPyThread>(new XBPyThread(this, m_nextid));
-  pyThread->setArgv(argv);
+
+  // add addon id formatted properly as first arg in argv
+  std::vector<CStdString> newargv;
+  CStdString path = addon->ID();
+  if (plugin)
+    path.Format("plugin://%s", addon->ID().c_str());
+  newargv.push_back(path);
+  for (unsigned int i = 0; i < argv.size(); ++i)
+  {
+    CStdString arg = argv[i];
+    newargv.push_back(arg);
+  }
+  
+  pyThread->setArgv(newargv);
   pyThread->setAddon(addon);
   pyThread->evalFile(src);
   PyElem inf;

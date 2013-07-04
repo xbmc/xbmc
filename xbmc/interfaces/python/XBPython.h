@@ -95,7 +95,7 @@ public:
   int ScriptsSize();
   int GetPythonScriptId(int scriptPosition);
   int evalFile(const CStdString &src, ADDON::AddonPtr addon);
-  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon);
+  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon, bool plugin = false);
   int evalString(const CStdString &src, const std::vector<CStdString> &argv);
 
   bool isRunning(int scriptId);

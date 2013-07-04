@@ -88,7 +88,6 @@ bool CWeatherJob::DoWork()
 
   // initialize our sys.argv variables
   std::vector<CStdString> argv;
-  argv.push_back(addon->LibPath());
 
   CStdString strSetting;
   strSetting.Format("%i", m_location);
@@ -98,7 +97,7 @@ bool CWeatherJob::DoWork()
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
   // call our script, passing the areacode
-  if (g_pythonParser.evalFile(argv[0], argv,addon))
+  if (g_pythonParser.evalFile(addon->LibPath(), argv,addon))
   {
     while (true)
     {
