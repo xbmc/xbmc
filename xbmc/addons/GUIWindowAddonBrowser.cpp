@@ -59,7 +59,6 @@ using namespace std;
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
-  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()

@@ -346,8 +346,6 @@ void CAdvancedSettings::Initialize()
   m_alwaysOnTop = false;
 #endif
 
-  m_bgInfoLoaderMaxThreads = 5;
-
   m_iPVRTimeCorrection             = 0;
   m_iPVRInfoToggleInterval         = 3000;
   m_bPVRShowEpgInfoOnEpgItemSelect = true;
@@ -1053,9 +1051,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
-
-  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
-  m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
   TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
   if (pPVR)

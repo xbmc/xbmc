@@ -30,11 +30,13 @@ public:
 
   void UseCacheOnHD(const CStdString& strFileName);
   virtual bool LoadItem(CFileItem* pItem);
+  virtual bool LoadItemCached(CFileItem* pItem);
+  virtual bool LoadItemLookup(CFileItem* pItem);
 
 protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
-protected:
+
   CFileItemList* m_mapFileItems;
   unsigned int m_tagReads;
   bool m_loadTags;

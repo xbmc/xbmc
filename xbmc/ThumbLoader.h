@@ -22,13 +22,16 @@
 #include "BackgroundInfoLoader.h"
 #include "utils/StdString.h"
 
+class CTextureDatabase;
+
 class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CThumbLoader(int nThreads=-1);
+  CThumbLoader();
   virtual ~CThumbLoader();
 
-  virtual void Initialize() { };
+  virtual void OnLoaderStart();
+  virtual void OnLoaderFinish();
 
   /*! \brief helper function to fill the art for a library item
    \param item a CFileItem
@@ -41,14 +44,17 @@ public:
    \param type the type of image to retrieve
    \return the image associated with this item
    */
-  static CStdString GetCachedImage(const CFileItem &item, const CStdString &type);
+  virtual CStdString GetCachedImage(const CFileItem &item, const CStdString &type);
 
   /*! \brief Associate an image with the given item in the texture database
    \param item CFileItem to associate the image with
    \param type the type of image
    \param image the URL of the image
    */
-  static void SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image);
+  virtual void SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image);
+
+protected:
+  CTextureDatabase *m_textureDatabase;
 };
 
 class CProgramThumbLoader : public CThumbLoader
@@ -57,6 +63,8 @@ public:
   CProgramThumbLoader();
   virtual ~CProgramThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+  virtual bool LoadItemCached(CFileItem* pItem);
+  virtual bool LoadItemLookup(CFileItem* pItem);
 
   /*! \brief Fill the thumb of a programs item
    First uses a cached thumb from a previous run, then checks for a local thumb
@@ -65,7 +73,7 @@ public:
    \return true if we fill the thumb, false otherwise
    \sa GetLocalThumb
    */
-  static bool FillThumb(CFileItem &item);
+  virtual bool FillThumb(CFileItem &item);
 
   /*! \brief Get a local thumb for a programs item
    Shortcuts are checked, then we check for a file or folder thumb
