@@ -78,7 +78,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     return false;
   }
 
-  m_Format->pb = m_dllAvFormat.avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_WRITE, this,  NULL, avio_write_callback, NULL);
+  m_Format->pb = m_dllAvFormat.avio_alloc_context(m_BCBuffer, sizeof(m_BCBuffer), AVIO_FLAG_WRITE, this,  NULL, avio_write_callback, avio_seek_callback);
   if (!m_Format->pb)
   {
     m_dllAvUtil.av_freep(&m_Format);
@@ -263,6 +263,12 @@ int CEncoderFFmpeg::avio_write_callback(void *opaque, uint8_t *buf, int buf_size
     return -1;
   }
   return buf_size;
+}
+
+int64_t CEncoderFFmpeg::avio_seek_callback(void *opaque, int64_t offset, int whence)
+{
+  CEncoderFFmpeg *enc = (CEncoderFFmpeg*)opaque;
+  return enc->FileSeek(offset, whence);
 }
 
 int CEncoderFFmpeg::Encode(int nNumBytesRead, BYTE* pbtStream)

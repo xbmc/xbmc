@@ -58,6 +58,7 @@ private:
    */
   unsigned char     m_BCBuffer[4096];
   static int        avio_write_callback(void *opaque, uint8_t *buf, int buf_size);
+  static int64_t    avio_seek_callback(void *opaque, int64_t offset, int whence);
   void              SetTag(const CStdString tag, const CStdString value);
 
 
