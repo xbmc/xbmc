@@ -72,7 +72,12 @@ protected:
   bool                      m_bAllowFullscreen;
 
   float                     m_fForcedAspectRatio;
+  unsigned int              m_width;
+  unsigned int              m_height;
+  unsigned int              m_video_width;
+  unsigned int              m_video_height;
   unsigned                  m_flags;
+  float                     m_fps;
 
   CRect                     m_dst_rect;
   int                       m_view_mode;
@@ -131,7 +136,5 @@ public:
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
-  void ResolutionUpdateCallBack(uint32_t width, uint32_t height);
-  static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height);
 };
 #endif

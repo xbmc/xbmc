@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
@@ -19,15 +18,14 @@
  *
  */
 
+#ifndef OMXLIBHEADER
+#define OMXLIBHEADER
+
 #if defined(HAVE_OMXLIB)
 
 #include <string>
 #include <queue>
 
-// TODO: should this be in configure
-#ifndef OMX_SKIP64BIT
-#define OMX_SKIP64BIT
-#endif
 
 #include "DllOMX.h"
 
@@ -226,4 +224,4 @@ protected:
 };
 
 #endif
-
+#endif //#ifndef OMXLIBHEADER

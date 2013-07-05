@@ -4517,7 +4517,6 @@ int CDVDPlayer::GetSubtitlePlexID()
   SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this));
   return stream.plexID;
 }
-
 void CDVDPlayer::SetAudioStreamPlexID(int plexID)
 {
   std::vector<SelectionStream> audiost = m_SelectionStreams.Get(STREAM_AUDIO);
