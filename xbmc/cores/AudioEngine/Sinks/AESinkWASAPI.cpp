@@ -423,7 +423,7 @@ double CAESinkWASAPI::GetCacheTotal()
   return m_sinkLatency;
 }
 
-unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
+unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   if (!m_initialized)
     return 0;

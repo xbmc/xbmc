@@ -99,7 +99,7 @@ double CAESinkNULL::GetCacheTotal()
   return m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_size;
 }
 
-unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
+unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   unsigned int max_frames = (m_sinkbuffer_size - m_sinkbuffer_level) / m_sink_frameSize;
   if (frames > max_frames)

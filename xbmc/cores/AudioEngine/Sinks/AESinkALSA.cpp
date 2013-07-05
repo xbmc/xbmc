@@ -497,7 +497,7 @@ double CAESinkALSA::GetCacheTotal()
   return (double)m_bufferSize * m_formatSampleRateMul;
 }
 
-unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
+unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   if (!m_pcm)
   {
@@ -518,7 +518,14 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool ha
   }
 
   if ((unsigned int)ret < frames)
-    return 0;
+    if(blocking)
+    {
+      ret = snd_pcm_wait(m_pcm, m_timeout);
+      if (ret < 0)
+        HandleError("snd_pcm_wait", ret);
+    }
+    else
+      return 0;
 
   ret = snd_pcm_writei(m_pcm, (void*)data, frames);
   if (ret < 0)

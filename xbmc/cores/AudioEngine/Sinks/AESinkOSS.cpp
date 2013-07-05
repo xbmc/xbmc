@@ -408,7 +408,7 @@ double CAESinkOSS::GetDelay()
   return (double)delay / (m_format.m_frameSize * m_format.m_sampleRate);
 }
 
-unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
+unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   int size = frames * m_format.m_frameSize;
   if (m_fd == -1)
