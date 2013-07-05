@@ -11,11 +11,7 @@
 
 #if CXIMAGE_SUPPORT_TIF
 
-#ifdef _LINUX
-#include <tiffio.h>
-#else
 #include "../tiff/tiffiop.h"
-#endif
 
 #include "xfile.h"
 
@@ -96,10 +92,8 @@ _TIFFFdOpen(void* fd, const char* name, const char* mode)
 	    (thandle_t) fd,
 	    _tiffReadProcEx, _tiffWriteProcEx, _tiffSeekProcEx, _tiffCloseProcEx,
 	    _tiffSizeProcEx, _tiffMapProcEx, _tiffUnmapProcEx);
-#ifndef _LINUX
 	if (tif)
 		tif->tif_fd = fd;
-#endif
 	return (tif);
 }
 

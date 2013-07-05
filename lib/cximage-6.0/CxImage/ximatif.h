@@ -23,11 +23,7 @@
 
 #if CXIMAGE_SUPPORT_TIF
 
-#ifdef _LINUX
-#include <tiffio.h>
-#else
 #include "../tiff/tiffio.h"
-#endif
 
 class DLL_EXP CxImageTIF: public CxImage
 {

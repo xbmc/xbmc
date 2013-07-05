@@ -11,6 +11,8 @@
 
 #define FIX_16BPP_DARKIMG // + VK: if uncomment, dark 16bpp images are fixed
 
+#include "../tiff/tiffio.h"
+
 #define CVT(x)			(((x) * 255L) / ((1L<<16)-1))
 #define	SCALE(x)		(((x)*((1L<<16)-1))/255)
 #define CalculateLine(width,bitdepth)	(((width * bitdepth) + 7) / 8)
