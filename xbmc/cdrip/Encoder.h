@@ -76,6 +76,7 @@ protected:
   bool FileCreate(const char* filename);
   bool FileClose();
   int FileWrite(const void *pBuffer, uint32_t iBytes);
+  int64_t FileSeek(int64_t iFilePosition, int iWhence = SEEK_SET);
 
   int WriteStream(const void *pBuffer, uint32_t iBytes);
   int FlushStream();
