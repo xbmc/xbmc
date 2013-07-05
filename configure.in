@@ -2562,7 +2562,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     ffmpg_config="$ffmpg_config --enable-gpl"
     ffmpg_config="$ffmpg_config --enable-postproc"
     ffmpg_config="$ffmpg_config --enable-static      --enable-pthreads"
-    ffmpg_config="$ffmpg_config --enable-muxer=spdif --enable-muxer=adts --enable-muxer=asf"
+    ffmpg_config="$ffmpg_config --enable-muxer=spdif --enable-muxer=adts --enable-muxer=asf --enable-muxer=ipod"
     ffmpg_config="$ffmpg_config --enable-encoder=ac3 --enable-encoder=aac --enable-encoder=wmav2"
     ffmpg_config="$ffmpg_config --enable-protocol=http"
     ffmpg_config="$ffmpg_config --enable-runtime-cpudetect"
@@ -2610,6 +2610,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-muxer=spdif \
       --enable-muxer=adts \
       --enable-muxer=asf \
+      --enable-muxer=ipod \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
