@@ -57,6 +57,7 @@ public:
   void Update();
   void FrameMove();
   void FrameFinish();
+  bool FrameDirty();
   bool FrameWait(int ms);
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
@@ -242,6 +243,7 @@ protected:
   CCriticalSection m_presentlock;
   CEvent     m_flushEvent;
 
+  ERenderFormat   m_format;
 
   OVERLAY::CRenderer m_overlays;
 

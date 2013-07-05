@@ -2057,6 +2057,12 @@ void CApplication::Render()
       m_bPresentFrame = g_renderManager.FrameWait(100);
       hasRendered = true;
     }
+    else if(!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !g_renderManager.RendererHandlesPresent())
+    {
+      //Whether we're paused or not, if the renderer isn't in charge of presenting and we're fullscreen, we limit
+      singleFrameTime = 30;
+      limitFrames = true;
+    }
     else
     {
       // engage the frame limiter as needed
@@ -2097,8 +2103,6 @@ void CApplication::Render()
 
   if(!g_Windowing.BeginRender())
     return;
-
-  g_renderManager.FrameMove();
 
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
@@ -2760,6 +2764,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   }
   if (processGUI && m_renderGUI)
   {
+    g_renderManager.FrameMove();
+
     if (!m_bStop)
       g_windowManager.Process(CTimeUtils::GetFrameTime());
     g_windowManager.FrameMove();
