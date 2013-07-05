@@ -981,8 +981,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     {
       CreateIconPixmap();
       XWMHints *wm_hints;
+      XClassHint *class_hints;
       XTextProperty windowName, iconName;
       std::string titleString = "XBMC Media Center";
+      std::string classString = "xbmc.bin";
       char *title = (char*)titleString.c_str();
 
       XStringListToTextProperty(&title, 1, &windowName);
@@ -993,10 +995,15 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
       wm_hints->icon_pixmap = m_icon;
       wm_hints->flags = StateHint | IconPixmapHint;
 
+      class_hints = XAllocClassHint();
+      class_hints->res_class = (char*)classString.c_str();
+      class_hints->res_name = (char*)classString.c_str();
+
       XSync(m_dpy,False);
       XSetWMProperties(m_dpy, m_mainWindow, &windowName, &iconName,
                             NULL, 0, NULL, wm_hints,
-                            NULL);
+                            class_hints);
+      XFree(class_hints);
       XFree(wm_hints);
 
       // register interest in the delete window message
