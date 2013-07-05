@@ -26,28 +26,45 @@
 using namespace std;
 using namespace XFILE;
 
-CThumbLoader::CThumbLoader(int nThreads) :
-  CBackgroundInfoLoader(nThreads)
+CThumbLoader::CThumbLoader() :
+  CBackgroundInfoLoader()
 {
+  m_textureDatabase = new CTextureDatabase();
 }
 
 CThumbLoader::~CThumbLoader()
 {
+  delete m_textureDatabase;
+}
+
+void CThumbLoader::OnLoaderStart()
+{
+  m_textureDatabase->Open();
+}
+
+void CThumbLoader::OnLoaderFinish()
+{
+  m_textureDatabase->Close();
 }
 
 CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString &type)
 {
-  CTextureDatabase db;
-  if (!item.GetPath().empty() && db.Open())
-    return db.GetTextureForPath(item.GetPath(), type);
+  if (!item.GetPath().empty() && m_textureDatabase->Open())
+  {
+    CStdString image = m_textureDatabase->GetTextureForPath(item.GetPath(), type);
+    m_textureDatabase->Close();
+    return image;
+  }
   return "";
 }
 
 void CThumbLoader::SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image)
 {
-  CTextureDatabase db;
-  if (!item.GetPath().empty() && db.Open())
-    db.SetTextureForPath(item.GetPath(), type, image);
+  if (!item.GetPath().empty() && m_textureDatabase->Open())
+  {
+    m_textureDatabase->SetTextureForPath(item.GetPath(), type, image);
+    m_textureDatabase->Close();
+  }
 }
 
 CProgramThumbLoader::CProgramThumbLoader()
@@ -60,8 +77,23 @@ CProgramThumbLoader::~CProgramThumbLoader()
 
 bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 {
-  if (pItem->IsParentFolder()) return true;
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CProgramThumbLoader::LoadItemCached(CFileItem *pItem)
+{
+  if (pItem->IsParentFolder())
+    return false;
+
   return FillThumb(*pItem);
+}
+
+bool CProgramThumbLoader::LoadItemLookup(CFileItem *pItem)
+{
+  return false;
 }
 
 bool CProgramThumbLoader::FillThumb(CFileItem &item)
@@ -71,12 +103,13 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
   if (thumb.IsEmpty())
   { // see whether we have a cached image for this item
-    thumb = GetCachedImage(item, "thumb");
+    CProgramThumbLoader loader;
+    thumb = loader.GetCachedImage(item, "thumb");
     if (thumb.IsEmpty())
     {
       thumb = GetLocalThumb(item);
       if (!thumb.IsEmpty())
-        SetCachedImage(item, "thumb", thumb);
+        loader.SetCachedImage(item, "thumb", thumb);
     }
   }
 

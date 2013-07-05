@@ -103,6 +103,17 @@ bool CThumbExtractor::DoWork()
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
       m_item.SetArt("thumb", m_target);
+
+      CVideoInfoTag* info = m_item.GetVideoInfoTag();
+      if (info->m_iDbId > 0 && !info->m_type.empty())
+      {
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", m_item.GetArt("thumb"));
+          db.Close();
+        }
+      }
     }
   }
   else if (!m_item.HasVideoInfoTag() || !m_item.GetVideoInfoTag()->HasStreamDetails())
@@ -112,36 +123,49 @@ bool CThumbExtractor::DoWork()
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
-  return result;
+  if (result)
+  {
+    CVideoInfoTag* info = m_item.GetVideoInfoTag();
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      if (info->m_iFileId < 0)
+        db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.IsEmpty() ? info->m_strFileNameAndPath : m_item.GetPath());
+      else
+        db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+
+      db.Close();
+    }
+    return true;
+  }
+
+  return false;
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
+  CThumbLoader(), CJobQueue(true)
 {
-  m_database = new CVideoDatabase();
+  m_videoDatabase = new CVideoDatabase();
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
 {
   StopThread();
-  delete m_database;
-}
-
-void CVideoThumbLoader::Initialize()
-{
-  m_database->Open();
-  m_showArt.clear();
+  delete m_videoDatabase;
 }
 
 void CVideoThumbLoader::OnLoaderStart()
 {
-  Initialize();
+  m_videoDatabase->Open();
+  m_showArt.clear();
+  CThumbLoader::OnLoaderStart();
 }
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
-  m_database->Close();
+  m_videoDatabase->Close();
   m_showArt.clear();
+  CThumbLoader::OnLoaderFinish();
 }
 
 static void SetupRarOptions(CFileItem& item, const CStdString& path)
@@ -199,18 +223,26 @@ vector<string> CVideoThumbLoader::GetArtTypes(const string &type)
  */
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
+{
   if (pItem->m_bIsShareOrDrive
   ||  pItem->IsParentFolder())
     return false;
 
-  m_database->Open();
+  m_videoDatabase->Open();
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
     if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
     || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
     {
-      if (m_database->GetStreamDetails(*pItem))
+      if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
     }
   }
@@ -226,7 +258,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
          pItem->GetVideoInfoTag()->m_type != "episode"    &&
          pItem->GetVideoInfoTag()->m_type != "musicvideo")
     {
-      m_database->Close();
+      m_videoDatabase->Close();
       return true; // nothing else to be done
     }
   }
@@ -242,20 +274,52 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     {
       std::string type = *i;
       std::string art = GetCachedImage(*pItem, type);
-      if (art.empty())
-      {
-        art = GetLocalArt(*pItem, type, type=="fanart");
-        if (!art.empty()) // cache it
-          SetCachedImage(*pItem, type, art);
-      }
       if (!art.empty())
+        artwork.insert(make_pair(type, art));
+    }
+    SetArt(*pItem, artwork);
+  }
+
+  m_videoDatabase->Close();
+
+  return true;
+}
+
+bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive
+  ||  pItem->IsParentFolder())
+    return false;
+
+  if (pItem->HasVideoInfoTag()                         &&
+     !pItem->GetVideoInfoTag()->m_type.empty()         &&
+      pItem->GetVideoInfoTag()->m_type != "movie"      &&
+      pItem->GetVideoInfoTag()->m_type != "tvshow"     &&
+      pItem->GetVideoInfoTag()->m_type != "episode"    &&
+      pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    return false; // Nothing to do here
+
+  m_videoDatabase->Open();
+
+  map<string, string> artwork = pItem->GetArt();
+  vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+  if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
+    artTypes.push_back("thumb"); // always look for "thumb" art for files
+  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  {
+    std::string type = *i;
+    if (!pItem->HasArt(type))
+    {
+      std::string art = GetLocalArt(*pItem, type, type=="fanart");
+      if (!art.empty()) // cache it
       {
+        SetCachedImage(*pItem, type, art);
         CTextureCache::Get().BackgroundCacheImage(art);
         artwork.insert(make_pair(type, art));
       }
     }
-    SetArt(*pItem, artwork);
   }
+  SetArt(*pItem, artwork);
 
   // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
@@ -281,7 +345,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           // Item has cached autogen image but no art entry. Save it to db.
           CVideoInfoTag* info = pItem->GetVideoInfoTag();
           if (info->m_iDbId > 0 && !info->m_type.empty())
-            m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
+            m_videoDatabase->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
       else if (CSettings::Get().GetBool("myvideos.extractthumb") &&
@@ -295,7 +359,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
 
-        m_database->Close();
+        m_videoDatabase->Close();
         return true;
       }
     }
@@ -315,7 +379,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
   }
 
-  m_database->Close();
+  m_videoDatabase->Close();
   return true;
 }
 
@@ -337,8 +401,8 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   if (tag.m_iDbId > -1 && !tag.m_type.IsEmpty())
   {
     map<string, string> artwork;
-    m_database->Open();
-    if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
+    m_videoDatabase->Open();
+    if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
     else if (tag.m_type == "artist")
     { // we retrieve music video art from the music database (no backward compat)
@@ -363,7 +427,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (i == m_showArt.end())
       {
         map<string, string> showArt;
-        m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
+        m_videoDatabase->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
         i = m_showArt.insert(make_pair(tag.m_iIdShow, showArt)).first;
       }
       if (i != m_showArt.end())
@@ -373,7 +437,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         item.SetArtFallback("tvshow.thumb", "tvshow.poster");
       }
     }
-    m_database->Close();
+    m_videoDatabase->Close();
   }
   return !item.GetArt().empty();
 }
@@ -444,21 +508,7 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
   {
     CThumbExtractor* loader = (CThumbExtractor*)job;
     loader->m_item.SetPath(loader->m_listpath);
-    CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
 
-    if (loader->m_thumb && info->m_iDbId > 0 && !info->m_type.empty())
-    {
-      // This runs in a different thread than the CVideoThumbLoader object.
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.SetArtForItem(info->m_iDbId, info->m_type, "thumb", loader->m_item.GetArt("thumb"));
-        db.Close();
-      }
-    }
-
-    if (m_pStreamDetailsObs)
-      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, !info->m_strFileNameAndPath.IsEmpty() ? info->m_strFileNameAndPath : loader->m_item.GetPath(), info->m_iFileId);
     if (m_pObserver)
       m_pObserver->OnItemLoaded(&loader->m_item);
     CFileItemPtr pItem(new CFileItem(loader->m_item));

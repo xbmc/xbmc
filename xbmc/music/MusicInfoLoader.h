@@ -34,6 +34,8 @@ public:
 
   void UseCacheOnHD(const CStdString& strFileName);
   virtual bool LoadItem(CFileItem* pItem);
+  virtual bool LoadItemCached(CFileItem* pItem);
+  virtual bool LoadItemLookup(CFileItem* pItem);
   static bool LoadAdditionalTagInfo(CFileItem* pItem);
 
 protected:

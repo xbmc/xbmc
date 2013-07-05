@@ -30,76 +30,107 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader(1)
+CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader()
 {
-  m_database = new CMusicDatabase;
+  m_musicDatabase = new CMusicDatabase;
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
-  delete m_database;
-}
-
-void CMusicThumbLoader::Initialize()
-{
-  m_database->Open();
-  m_albumArt.clear();
-}
-
-void CMusicThumbLoader::Deinitialize()
-{
-  m_database->Close();
-  m_albumArt.clear();
+  delete m_musicDatabase;
 }
 
 void CMusicThumbLoader::OnLoaderStart()
 {
-  Initialize();
+  m_musicDatabase->Open();
+  m_albumArt.clear();
+  CThumbLoader::OnLoaderStart();
 }
 
 void CMusicThumbLoader::OnLoaderFinish()
 {
-  Deinitialize();
+  m_musicDatabase->Close();
+  m_albumArt.clear();
+  CThumbLoader::OnLoaderFinish();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
+  bool result  = LoadItemCached(pItem);
+       result |= LoadItemLookup(pItem);
+
+  return result;
+}
+
+bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
+{
   if (pItem->m_bIsShareOrDrive)
-    return true;
+    return false;
 
   if (pItem->HasMusicInfoTag() && pItem->GetArt().empty())
   {
     if (FillLibraryArt(*pItem))
       return true;
+      
     if (pItem->GetMusicInfoTag()->GetType() == "artist")
-      return true; // no fallback
+      return false; // No fallback
   }
 
   if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
   { // music video
     CVideoThumbLoader loader;
-    if (loader.LoadItem(pItem))
+    if (loader.LoadItemCached(pItem))
       return true;
+  }
+
+  if (!pItem->HasArt("thumb"))
+  {
+    std::string art = GetCachedImage(*pItem, "thumb");
+    if (!art.empty())
+      pItem->SetArt("thumb", art);
   }
 
   if (!pItem->HasArt("fanart"))
   {
-    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
+    std::string art = GetCachedImage(*pItem, "fanart");
+    if (!art.empty())
+    {
+      pItem->SetArt("fanart", art);
+    }
+    else if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
     {
       std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
-      m_database->Open();
-      int idArtist = m_database->GetArtistByName(artist);
+      m_musicDatabase->Open();
+      int idArtist = m_musicDatabase->GetArtistByName(artist);
       if (idArtist >= 0)
       {
-        string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
+        string fanart = m_musicDatabase->GetArtForItem(idArtist, "artist", "fanart");
         if (!fanart.empty())
         {
           pItem->SetArt("artist.fanart", fanart);
           pItem->SetArtFallback("fanart", "artist.fanart");
         }
       }
-      m_database->Close();
+      m_musicDatabase->Close();
     }
+  }
+
+  return false;
+}
+
+bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+    return false;
+
+  if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetType() == "artist") // No fallback for artist
+    return false;
+
+  if (pItem->HasVideoInfoTag())
+  { // music video
+    CVideoThumbLoader loader;
+    if (loader.LoadItemLookup(pItem))
+      return true;
   }
 
   if (!pItem->HasArt("thumb"))
@@ -145,16 +176,16 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   CMusicInfoTag &tag = *item.GetMusicInfoTag();
   if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
   {
-    m_database->Open();
+    m_musicDatabase->Open();
     map<string, string> artwork;
-    if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
+    if (m_musicDatabase->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
       item.SetArt(artwork);
     else if (tag.GetType() == "song")
     { // no art for the song, try the album
       ArtCache::const_iterator i = m_albumArt.find(tag.GetAlbumId());
       if (i == m_albumArt.end())
       {
-        m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork);
+        m_musicDatabase->GetArtForItem(tag.GetAlbumId(), "album", artwork);
         i = m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork)).first;
       }
       if (i != m_albumArt.end())
@@ -166,14 +197,14 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
     { // fanart from the artist
-      string fanart = m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
+      string fanart = m_musicDatabase->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
       if (!fanart.empty())
       {
         item.SetArt("artist.fanart", fanart);
         item.SetArtFallback("fanart", "artist.fanart");
       }
     }
-    m_database->Close();
+    m_musicDatabase->Close();
   }
   return !item.GetArt().empty();
 }

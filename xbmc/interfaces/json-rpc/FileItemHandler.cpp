@@ -221,7 +221,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       thumbLoader = new CMusicThumbLoader();
 
     if (thumbLoader != NULL)
-      thumbLoader->Initialize();
+      thumbLoader->OnLoaderStart();
   }
 
   std::set<std::string> fields;
@@ -329,7 +329,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       if (thumbLoader != NULL)
       {
         deleteThumbloader = true;
-        thumbLoader->Initialize();
+        thumbLoader->OnLoaderStart();
       }
     }
 
