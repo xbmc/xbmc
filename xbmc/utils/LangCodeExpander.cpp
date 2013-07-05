@@ -479,6 +479,17 @@ bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdStri
   return expandedLang1.Equals(expandedLang2);
 }
 
+CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)
+{
+  CStdString two, three;
+  if (ConvertToTwoCharCode(two, lang))
+  {
+    if (ConvertToThreeCharCode(three, two))
+      return three;
+  }
+  return lang;
+}
+
 extern const LCENTRY g_iso639_1[144] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },

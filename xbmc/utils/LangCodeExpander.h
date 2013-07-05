@@ -65,6 +65,14 @@ public:
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
   bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *   \param[in] lang The language that should be converted.
+  *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
+  */
+  CStdString ConvertToISO6392T(const CStdString& lang);
 #ifdef TARGET_WINDOWS
   bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
   bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool localeHack = false);
