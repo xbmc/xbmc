@@ -280,6 +280,8 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
     unsigned int maxchunksize = 2048*1024U; /* max 2MB chunksize */
 
     unsigned int total_read = 0, free_space = 0;
+   /*
+    Reading the file once is not required as it's already read below by Read Function
     while (true)
     {
       if (!free_space)
@@ -300,7 +302,13 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
       if (!read)
         break;
     }
-    m_inputBuffSize = total_read;
+    m_inputBuffSize = total_read;*/
+    m_inputBuff = (unsigned char *)malloc(filesize);
+    if (m_inputBuff)
+    	m_inputBuffSize = filesize;
+    else
+    	return false;
+
     file.Close();
 
     if (m_inputBuffSize == 0)

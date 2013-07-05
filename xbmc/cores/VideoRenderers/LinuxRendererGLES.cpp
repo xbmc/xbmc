@@ -112,6 +112,10 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 
   m_dllSwScale = new DllSwScale;
   m_sw_context = NULL;
+  /* PLEX */
+  m_bRGBImageSet = false;
+  /* END PLEX */
+
 }
 
 CLinuxRendererGLES::~CLinuxRendererGLES()
@@ -343,8 +347,15 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
                                 , unsigned width, unsigned height
                                 , int stride, void* data )
 {
+  /* PLEX */
+  if(!m_bRGBImageSet && plane.flipindex == flipindex)
+    return;
+  /* END PLEX */
+#ifndef __PLEX__
   if(plane.flipindex == flipindex)
     return;
+#endif
+
 
   const GLvoid *pixelData = data;
 
@@ -1314,6 +1325,47 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
 #endif
 }
 
+
+bool CLinuxRendererGLES::ValidateRenderer()
+{
+  if (!m_bConfigured)
+    return false;
+
+  // if its first pass, just init textures and return
+  if (ValidateRenderTarget())
+    return false;
+
+  // this needs to be checked after texture validation
+#ifndef __PLEX__
+  if (!m_bImageReady)
+#else
+  if (!m_bRGBImageSet && !m_bImageReady)
+#endif
+    return false;
+
+  int index = m_iYV12RenderBuffer;
+  YUVBUFFER& buf =  m_buffers[index];
+
+#ifndef __PLEX__
+  if (!buf.fields[FIELD_FULL][0].id)
+#else
+  if (!m_bRGBImageSet && !buf.fields[FIELD_FULL][0].id)
+#endif
+    return false;
+
+#ifndef __PLEX__
+  if (buf.image.flags==0)
+#else
+  if (!m_bRGBImageSet && buf.image.flags==0)
+#endif
+    return false;
+
+  return true;
+}
+
+
+ 
+
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
   if (!m_bValidated)
@@ -1379,10 +1431,10 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
-
+ 
 #if defined(HAVE_LIBOPENMAX)
   if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBuffer)
-#else
+#else //plex case
   if (!(im->flags&IMAGE_FLAG_READY))
 #endif
   {
@@ -1999,6 +2051,43 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
   CVBufferRetain(buf.cvBufferRef);
 }
 #endif
+
+
+
+/* PLEX */
+void CLinuxRendererGLES::SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+{
+  CSingleLock lock(g_graphicsContext);
+  if (m_rgbBuffer == 0)
+  {
+    m_rgbBufferSize = nWidth*nHeight*4;
+    m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    memset(m_rgbBuffer, 0, m_rgbBufferSize);
+  }
+
+  if (nHeight * nWidth * 4 > m_rgbBufferSize)
+  {
+    CLog::Log(LOGERROR,"%s, incorrect image size", __FUNCTION__);
+    return;
+  }
+
+  if (nPitch == nWidth * 4)
+    memcpy(m_rgbBuffer, image, nHeight * nPitch);
+  else
+    for (int i=0; i<nHeight; i++)
+      memcpy(m_rgbBuffer + (i * nWidth * 4), image + (i * nPitch),  nWidth * 4);
+
+  m_bRGBImageSet = true;
+  m_renderMethod = RENDER_SW;
+
+  if (m_pYUVShader)
+  {
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
+  }
+}
+/* END PLEX */
+
 
 #endif
 

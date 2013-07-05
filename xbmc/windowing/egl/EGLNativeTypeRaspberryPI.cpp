@@ -20,6 +20,7 @@
 #include "system.h"
 
 #include <EGL/egl.h>
+#include <EGL/eglplatform.h>
 #include "EGLNativeTypeRaspberryPI.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
@@ -120,7 +121,7 @@ bool CEGLNativeTypeRaspberryPI::CreateNativeWindow()
 {
 #if defined(TARGET_RASPBERRY_PI)
   if(!m_nativeWindow)
-    m_nativeWindow = (EGLNativeWindowType) calloc(1,sizeof( EGL_DISPMANX_WINDOW_T));
+    m_nativeWindow = (XBNativeWindowType) calloc(1,sizeof( EGL_DISPMANX_WINDOW_T));
   DLOG("CEGLNativeTypeRaspberryPI::CEGLNativeTypeRaspberryPI\n");
   return true;
 #else

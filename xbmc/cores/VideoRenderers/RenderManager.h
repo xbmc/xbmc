@@ -34,7 +34,7 @@
 #ifdef TARGET_WINDOWS
 #include "cores/VideoRenderers/WinRenderer.h"
 #else
-#include "cores/VideoRenderers/LinuxRendererGL.h"
+#include "cores/VideoRenderers/LinuxRendererGLES.h"
 #endif
 /* END PLEX */
 

@@ -158,6 +158,7 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
 
 #elif defined(HAS_GLES)
 
+
 void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
 {
   GLfloat col[] =  {

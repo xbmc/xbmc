@@ -26,6 +26,9 @@
 #include <bcm_host.h>
 #endif
 
+
+#include "interface/vmcs_host/vc_dispmanx.h" 
+
 class DllBcmHost;
 class CEGLNativeTypeRaspberryPI : public CEGLNativeType
 {

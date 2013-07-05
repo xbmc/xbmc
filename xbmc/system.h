@@ -37,9 +37,9 @@
 #define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
-#ifndef __PLEX__
+
 #define HAS_PVRCLIENTS
-#endif
+
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
@@ -270,6 +270,8 @@
 #ifdef HAVE_LIBGLESV2
 #undef HAS_GL
 #define HAS_GLES 2
+#undef HAS_SDL_WIN_EVENTS
+#define HAS_LINUX_EVENTS
 #endif
 
 // GLES1.0 detected. Dont use GL!
@@ -294,3 +296,4 @@
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
 
+#undef HAS_SDL_JOYSTICK

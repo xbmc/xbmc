@@ -382,6 +382,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      /* PLEX */
+
       { // State of the sources changed, so update our view
 #ifndef __PLEX__
 
@@ -392,8 +394,16 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           Refresh();
           m_viewControl.SetSelectedItem(iItem);
         }
-        return true;
 #endif
+        RefreshShares(true);
+        return true;
+      
+
+     }
+      else if (message.GetParam1() == GUI_MSG_UPDATE_REMOTE_SOURCES)
+      {
+        RefreshShares(true);
+        return true;
       }
 
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
@@ -765,6 +775,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   /* END PLEX */
 
+
   if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
@@ -842,8 +853,14 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   CFileItemList items;
 
 #ifndef __PLEX__
+  /* PLEX */
+  // Save the default view mode.
+  if (strDirectory == strCurrentDirectory)
+    items.SetDefaultViewMode(m_vecItems->GetDefaultViewMode());
+
+
   if (!GetDirectory(directory, items))
-#endif
+
   if (!GetDirectory(strDirectory, items) || (items.m_displayMessage && items.Size() == 0))
   {
     if (items.m_displayMessage)
@@ -948,7 +965,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     showLabel = 999;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
-#ifndef __PLEX__
+
     CStdString strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
@@ -958,7 +975,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     pItem->m_bIsFolder = true;
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
-#endif
+
   }
   m_iLastControl = GetFocusedControlID();
 
@@ -1020,6 +1037,18 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 
   //m_history.DumpPathHistory();
 
+
+
+  // Last, but not least, make sure the filter list is bound.
+  CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(CONTENT_LIST_FILTERS);
+  if (control && CPlexDirectory::GetFilterList()->Size() > 0)
+  {
+    // Bind the list.
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTENT_LIST_FILTERS, 0, 0, CPlexDirectory::GetFilterList().get());
+    OnMessage(msg);
+  }
+  /* END PLEX */
+
   return true;
 }
 
@@ -1078,11 +1107,14 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
+
   if (pItem->GetPath() == "add" || pItem->GetPath() == "sources://add/") // 'add source button' in empty root
   {
     OnContextButton(iItem, CONTEXT_BUTTON_ADD_SOURCE);
     return true;
   }
+
+
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
@@ -1109,6 +1141,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
   }
+
 
   if (pItem->m_bIsFolder)
   {
@@ -1696,7 +1729,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label).asString());
   }
 
-#ifndef __PLEX__
+
   if (item->GetProperty("pluginreplacecontextitems").asBoolean())
     return;
 
@@ -1713,20 +1746,21 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   /* PLEX */
   buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
   /* END PLEX */
+
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
-#ifndef __PLEX__
+
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       CFavourites::AddOrRemove(item.get(), GetID());
       return true;
     }
-#endif
+
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
@@ -1770,6 +1804,7 @@ const CGUIViewState *CGUIMediaWindow::GetViewState() const
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
   CFileItemPtr item = m_vecItems->Get(0);
+
   return *m_vecItems;
 }
 
