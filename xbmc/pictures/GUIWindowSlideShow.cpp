@@ -530,7 +530,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_iLastFailedNextSlide = -1;
     CFileItemPtr item = m_slides->Get(m_iNextSlide);
     CStdString picturePath = GetPicturePath(item.get());
-    if (!picturePath.IsEmpty())
+    if (!picturePath.IsEmpty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
     {
       if (item->IsVideo())
         CLog::Log(LOGDEBUG, "Loading the thumb %s for next video %d: %s", picturePath.c_str(), m_iNextSlide, item->GetPath().c_str());
@@ -574,7 +574,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // render the next image
   if (m_Image[m_iCurrentPic].DrawNextImage())
   {
-    if (m_Image[1 - m_iCurrentPic].IsLoaded())
+    if (m_bSlideShow && !m_bPause && m_slides->Get(m_iNextSlide)->IsVideo())
+    {
+      // do not show thumb of video when playing slideshow
+    }
+    else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
       // first time render the next image, make sure using current display effect.
       if (!m_Image[1 - m_iCurrentPic].IsStarted())
