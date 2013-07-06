@@ -56,7 +56,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
@@ -72,7 +72,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>

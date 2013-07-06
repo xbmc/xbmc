@@ -131,7 +131,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>false</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -183,7 +183,7 @@
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
@@ -228,7 +228,7 @@
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -270,7 +270,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>false</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -321,6 +321,7 @@
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)\a\a\%(RelativeDir)</ObjectFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
@@ -348,6 +349,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -2277,7 +2279,7 @@
     <ClInclude Include="..\..\xbmc\network\EventServer.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogAccessPoints.h" />
     <ClInclude Include="..\..\xbmc\network\GUIDialogNetworkSetup.h" />
-    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfMDNS.h" />    
+    <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfMDNS.h" />
     <ClInclude Include="..\..\xbmc\network\Network.h" />
     <ClInclude Include="..\..\xbmc\network\Socket.h" />
     <ClInclude Include="..\..\xbmc\network\TCPServer.h" />
