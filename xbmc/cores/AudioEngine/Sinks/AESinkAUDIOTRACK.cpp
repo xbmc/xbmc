@@ -217,7 +217,10 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
   // write as many frames of audio as we can fit into our internal buffer.
 
   // our internal sink buffer is always AE_FMT_S16LE
-  unsigned int write_frames = (m_sinkbuffer->GetWriteSize() / m_sink_frameSize) % frames;
+  unsigned int write_frames = m_sinkbuffer->GetWriteSize() / m_sink_frameSize;
+  if (write_frames > frames)
+    write_frames = frames;
+
   if (hasAudio && write_frames)
   {
     switch(m_format.m_dataFormat)
@@ -372,7 +375,10 @@ void CAESinkAUDIOTRACK::Process()
       jenv->CallVoidMethod(joAudioTrack, jmFlush);
     }
 
-    unsigned int read_bytes = m_sinkbuffer->GetReadSize() % min_buffer_size;
+    unsigned int read_bytes = m_sinkbuffer->GetReadSize();
+    if (read_bytes > min_buffer_size)
+      read_bytes = min_buffer_size;
+
     if (read_bytes > 0)
     {
       // android will auto pause the playstate when it senses idle,
