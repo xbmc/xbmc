@@ -243,6 +243,11 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
         break;
     }
   }
+  // AddPackets runs under a non-idled AE thread we must block or sleep.
+  // Trying to calc the optimal sleep is tricky so just a minimal sleep.
+  if(blocking)
+    Sleep(10);
+
   return hasAudio ? write_frames:frames;
 }
 

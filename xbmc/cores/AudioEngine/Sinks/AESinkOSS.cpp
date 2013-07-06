@@ -420,7 +420,7 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
   int wrote = write(m_fd, data, size);
   if (wrote < 0)
   {
-    if(errno == EAGAIN || errno == EWOULDBLOCK)
+    if(!blocking && (errno == EAGAIN || errno == EWOULDBLOCK))
       return 0;
 
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");

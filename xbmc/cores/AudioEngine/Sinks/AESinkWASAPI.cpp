@@ -488,10 +488,33 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
 #endif
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
-  DWORD eventAudioCallback = WaitForSingleObject(m_needDataEvent, 0);
+  DWORD eventAudioCallback;
+  if(!blocking)
+    eventAudioCallback = WaitForSingleObject(m_needDataEvent, 0);
+  else
+    eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
 
-  if (eventAudioCallback != WAIT_OBJECT_0)
-    return 0;
+  if (!blocking)
+  {
+    if(eventAudioCallback != WAIT_OBJECT_0)
+	  return 0;
+  }
+  else
+  {
+    if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
+    {
+      /* Event handle timed out - flag sink as dirty for re-initializing */
+      CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
+      if (g_advancedSettings.m_streamSilence)
+      {
+        m_isDirty = true; //flag new device or re-init needed
+        Deinitialize();
+        m_running = false;
+        return INT_MAX;
+      }
+    }
+  }
+
 
   if (!m_running)
     return 0;
