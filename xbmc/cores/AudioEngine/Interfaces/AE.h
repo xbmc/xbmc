@@ -34,6 +34,7 @@ typedef std::vector<AEDevice> AEDeviceList;
 class IAEStream;
 class IAESound;
 class IAEPacketizer;
+class IAudioCallback;
 
 /* sound options */
 #define AE_SOUND_OFF    0 /* disable sounds */
@@ -183,5 +184,9 @@ public:
    * @returns true if the AudioEngine is capable of RAW output
    */
   virtual bool SupportsRaw() { return false; }
+
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
+
+  virtual void UnregisterAudioCallback() {}
 };
 

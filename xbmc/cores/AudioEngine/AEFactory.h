@@ -67,6 +67,9 @@ public:
   static void SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
+  static void RegisterAudioCallback(IAudioCallback* pCallback);
+  static void UnregisterAudioCallback();
+
 private:
   static bool LoadEngine(enum AEEngine engine);
   static IAE *AE;

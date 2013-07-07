@@ -358,3 +358,15 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
   if (!foundValue)
     current = firstDevice;
 }
+
+void CAEFactory::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  if (AE)
+    AE->RegisterAudioCallback(pCallback);
+}
+
+void CAEFactory::UnregisterAudioCallback()
+{
+  if (AE)
+    AE->UnregisterAudioCallback();
+}
