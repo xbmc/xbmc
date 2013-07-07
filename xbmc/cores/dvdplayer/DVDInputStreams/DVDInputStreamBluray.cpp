@@ -418,6 +418,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to select title %d", m_title->idx);
       return false;
     }
+    m_clip = 0;
   }
 
   return true;
