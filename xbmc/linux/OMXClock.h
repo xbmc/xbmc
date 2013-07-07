@@ -45,24 +45,14 @@ static inline int64_t FromOMXTime(OMX_TICKS ticks)
 #define ToOMXTime(x) (x)
 #endif
 
-enum {
-  AV_SYNC_AUDIO_MASTER,
-  AV_SYNC_VIDEO_MASTER,
-  AV_SYNC_EXTERNAL_MASTER,
-};
-
 class OMXClock
 {
 protected:
   bool              m_pause;
-  bool              m_has_video;
-  bool              m_has_audio;
-  int               m_play_speed;
   pthread_mutex_t   m_lock;
   double            m_fps;
   int               m_omx_speed;
-  bool              m_video_start;
-  bool              m_audio_start;
+  OMX_TIME_REFCLOCKTYPE m_eClock;
   CDVDClock         *m_clock;
 private:
   COMXCoreComponent m_omx_clock;
@@ -75,14 +65,14 @@ public:
   double GetClock(bool interpolated = true) { return m_clock ? m_clock->GetClock(interpolated):0; }
   double GetClock(double& absolute, bool interpolated = true) { return m_clock ? m_clock->GetClock(absolute, interpolated):0; }
   void Discontinuity(double currentPts = 0LL) { if (m_clock) m_clock->Discontinuity(currentPts); }
-  void OMXSetClockPorts(OMX_TIME_CONFIG_CLOCKSTATETYPE *clock);
-  bool OMXSetReferenceClock(bool lock = true);
-  bool OMXInitialize(CDVDClock *clock, bool has_video, bool has_audio);
+  void OMXSetClockPorts(OMX_TIME_CONFIG_CLOCKSTATETYPE *clock, bool has_video, bool has_audio);
+  bool OMXSetReferenceClock(bool has_audio, bool lock = true);
+  bool OMXInitialize(CDVDClock *clock);
   void OMXDeinitialize();
   bool OMXIsPaused() { return m_pause; };
   bool OMXStop(bool lock = true);
   bool OMXStep(int steps = 1, bool lock = true);
-  bool OMXReset(bool lock = true);
+  bool OMXReset(bool has_video, bool has_audio, bool lock = true);
   double OMXMediaTime(bool lock = true);
   double OMXClockAdjustment(bool lock = true);
   bool OMXMediaTime(double pts, bool lock = true);
@@ -96,10 +86,6 @@ public:
   bool HDMIClockSync(bool lock = true);
   static int64_t CurrentHostCounter(void);
   static int64_t CurrentHostFrequency(void);
-  bool HasVideo() { return m_has_video; };
-  bool HasAudio() { return m_has_audio; };
-  void HasVideo(bool has_video) { m_has_video = has_video; };
-  void HasAudio(bool has_audio) { m_has_audio = has_audio; };
 
   int     GetRefreshRate(double* interval = NULL);
   void    SetRefreshRate(double fps) { m_fps = fps; };
