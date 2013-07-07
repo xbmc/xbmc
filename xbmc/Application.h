@@ -191,8 +191,8 @@ public:
   void CheckPlayingProgress();
   void ActivateScreenSaver(bool forceType = false);
   void CloseNetworkShares();
-  void StartAddonServices();
-  void StopAddonServices();
+  void StartServiceAddons();
+  void StopServiceAddons();
 
   virtual void Process();
   void ProcessSlow();

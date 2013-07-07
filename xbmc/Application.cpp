@@ -5724,15 +5724,15 @@ void CApplication::CloseNetworkShares()
 #endif
 }
 
-void CApplication::StopAddonServices()
+void CApplication::StopServiceAddons()
 {
-  CLog::Log(LOGDEBUG,"CApplication::StopAddonServices");
+  CLog::Log(LOGDEBUG,"CApplication::StopServiceAddons");
   CAddonMgr::Get().StopServices(false);
 }
 
-void CApplication::StartAddonServices()
+void CApplication::StartServiceAddons()
 {
-  CLog::Log(LOGDEBUG,"CApplication::StartAddonServices - before login services");
+  CLog::Log(LOGDEBUG,"CApplication::StartServiceAddons - before login services");
 
   //we start all services that run before login
   CAddonMgr::Get().StartServices(true);
@@ -5741,7 +5741,7 @@ void CApplication::StartAddonServices()
   //so only start after-login services if we are not seeing the login screen
   if (g_windowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
   {
-    CLog::Log(LOGDEBUG,"CApplication::StartAddonServices - No login screen? So starting after-login-services also");
+    CLog::Log(LOGDEBUG,"CApplication::StartServiceAddons - No login screen? So starting after-login-services also");
     CAddonMgr::Get().StartServices(false);
   }
 }

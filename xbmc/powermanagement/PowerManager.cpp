@@ -249,7 +249,7 @@ void CPowerManager::OnPrepareSleep()
   //stop all addon services here
   //we do this here instead in OnSleep cause according to DBUS specification we only have 1 second of time in OnSleep
   //so shutdowns that may potentially take longer should be issued in here
-  g_application.StopAddonServices();
+  g_application.StopServiceAddons();
 }
 
 void CPowerManager::OnSleep()
@@ -276,7 +276,7 @@ void CPowerManager::OnWake()
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   //re-start addon services
-  g_application.StartAddonServices();
+  g_application.StartServiceAddons();
 
   // reset out timers
   g_application.ResetShutdownTimers();
