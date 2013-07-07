@@ -111,8 +111,9 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   uint8_t *text = READ_ARRAY(textLength);
 
   int numStyleRecords = 0;
-  uint8_t *bgnStyle   = (uint8_t*)calloc(textLength, 1);
-  uint8_t *endStyle   = (uint8_t*)calloc(textLength, 1);
+  // reserve one more style slot for broken encoders
+  uint8_t *bgnStyle   = (uint8_t*)calloc(textLength+1, 1);
+  uint8_t *endStyle   = (uint8_t*)calloc(textLength+1, 1);
   int bgnColorIndex = 0, endColorIndex = 0;
   uint32_t textColorRGBA = m_textColor;
   while (pos < end)
@@ -153,6 +154,14 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
         curRecord.faceStyleFlags  = READ_U8();
         curRecord.fontSize        = READ_U8();
         curRecord.textColorRGBA   = READ_U32();
+        // clamp bgnChar/bgnChar to textLength,
+        // we alloc enough space above and this
+        // fixes borken encoders that do not handle
+        // endChar correctly.
+        if (curRecord.bgnChar > textLength)
+          curRecord.bgnChar = textLength;
+        if (curRecord.endChar > textLength)
+          curRecord.endChar = textLength;
 
         bgnStyle[curRecord.bgnChar] |= curRecord.faceStyleFlags;
         endStyle[curRecord.endChar] |= curRecord.faceStyleFlags;
@@ -171,7 +180,9 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   // Copy text to out and add HTML markup for the style records
   int charIndex = 0;
   CStdStringA strUTF8;
-  for (pos = text, end = text + textLength; pos < end; pos++)
+  // index over textLength chars to include broken encoders,
+  // so we pickup closing styles on broken encoders
+  for (pos = text, end = text + textLength; pos <= end; pos++)
   {
     if ((*pos & 0xC0) == 0x80)
     {
