@@ -32,6 +32,7 @@ CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
   m_pObserver=NULL;
   m_pProgressCallback=NULL;
   m_pVecItems = NULL;
+  m_bIsLoading = false;
 }
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
@@ -88,6 +89,7 @@ void CBackgroundInfoLoader::Run()
       }
     }
 
+    m_bIsLoading = false;
     OnLoaderFinish();
   }
   catch (...)
@@ -110,6 +112,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   m_pVecItems = &items;
   m_bStop = false;
+  m_bIsLoading = true;
 
   m_thread = new CThread(this, "BackgroundLoader");
   m_thread->Create();
@@ -136,11 +139,12 @@ void CBackgroundInfoLoader::StopThread()
   }
   m_vecItems.clear();
   m_pVecItems = NULL;
+  m_bIsLoading = false;
 }
 
 bool CBackgroundInfoLoader::IsLoading()
 {
-  return m_thread != NULL;
+  return m_bIsLoading;
 }
 
 void CBackgroundInfoLoader::SetObserver(IBackgroundLoaderObserver* pObserver)
