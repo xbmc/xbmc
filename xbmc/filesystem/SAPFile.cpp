@@ -84,7 +84,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
       memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_mode = _S_IFDIR;
     }
-    return true;
+    return 0;
   }
 
 
@@ -100,10 +100,10 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
         buffer->st_size = it->payload.size();
         buffer->st_mode = _S_IFREG;
       }
-      return true;
+      return 0;
     }
   }
-  return false;
+  return -1;
 
 }
 
