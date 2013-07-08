@@ -48,6 +48,9 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/LangCodeExpander.h"
+#ifdef TARGET_LINUX
+#include "utils/Environment.h"
+#endif
 
 /* Target identification */
 #if defined(TARGET_DARWIN)
@@ -621,9 +624,55 @@ std::string CSysInfo::GetUserDefaultLanguageTag()
   if (g_LangCodeExpander.ConvertWindowsLCIDtoLanguageTag(GetUserDefaultLCID(), langTag))
     return langTag;
   return "";
-#elif defined(TARGET_LINUX)
-  // TODO: Implement for Linux
+#elif defined(TARGET_ANDROID)
+  // TODO: Implement for Android
   return "";
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  std::string sysLang;
+  sysLang = CEnvironment::getenv("LC_ALL");
+  if (sysLang.empty())
+    sysLang = CEnvironment::getenv("LANG");
+  if (sysLang == "C")
+    return "";
+  if (sysLang.length() < 2)
+    return "";
+  size_t pos = sysLang.find('.');
+  if (pos != std::string::npos)
+    sysLang.erase(pos); // Cut encoding
+
+  std::string regTag, additionalTag;
+  pos = sysLang.find('@');
+  if (pos != std::string::npos)
+  {
+    if (sysLang.length() > pos + 1)
+      additionalTag.assign(sysLang, pos + 1, std::string::npos);
+    sysLang.erase(pos);
+  }
+
+  pos = sysLang.find('_');
+  if (pos != std::string::npos)
+  {
+    if (sysLang.length() > pos + 1)
+      regTag = "-" + sysLang.substr(pos + 1, std::string::npos);
+    sysLang.erase(pos);
+  }
+
+  /* now sysLang should contain only main language tag, like 'en'  */
+  if (sysLang.empty())
+    return "";
+
+  if (!additionalTag.empty())
+  {
+    if (additionalTag == "euro")
+      return sysLang + regTag;
+    if (additionalTag.length() == 3)
+      return sysLang + "-" + additionalTag + regTag; // additionalTag is extended language tag
+    if (additionalTag.length() == 4 && isalpha(additionalTag[0]))
+      return sysLang + "-" + additionalTag + regTag; // additionalTag is script tag
+    return sysLang + regTag + "-" + additionalTag; // additionalTag is variant tag
+  }
+
+  return sysLang + regTag;
 #else
   // TODO: Implement for other platforms
   return "";
