@@ -47,6 +47,7 @@
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/LangCodeExpander.h"
 
 /* Target identification */
 #if defined(TARGET_DARWIN)
@@ -604,6 +605,29 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       strRet = g_localizeStrings.Get(161);
   }
   return strRet;
+}
+
+std::string CSysInfo::GetUserDefaultLanguageTag()
+{
+#if defined(TARGET_WINDOWS)
+  if (IsWindowsVersionAtLeast(WindowsVersionVista))
+  {
+    #define MAXLOCALENAMELEN 85
+    char info[MAXLOCALENAMELEN];
+    if (GetLocaleInfoA(LOCALE_USER_DEFAULT, 0x5c /* LOCALE_SNAME */, info, MAXLOCALENAMELEN) > 0)
+      return info;
+  }
+  std::string langTag;
+  if (g_LangCodeExpander.ConvertWindowsLCIDtoLanguageTag(GetUserDefaultLCID(), langTag))
+    return langTag;
+  return "";
+#elif defined(TARGET_LINUX)
+  // TODO: Implement for Linux
+  return "";
+#else
+  // TODO: Implement for other platforms
+  return "";
+#endif
 }
 
 #if defined(TARGET_LINUX)

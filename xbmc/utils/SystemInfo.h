@@ -131,6 +131,11 @@ public:
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 
+  /** \brief Get user default language tag as defined in RFC 5646.
+  *   \return RFC 5646 language tag or empty string if tag is unknown or not defined.
+  */
+  static std::string GetUserDefaultLanguageTag();
+
   int GetTotalUptime() const { return m_iSystemTimeTotalUp; }
   void SetTotalUptime(int uptime) { m_iSystemTimeTotalUp = uptime; }
 
