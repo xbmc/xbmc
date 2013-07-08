@@ -60,6 +60,13 @@ public:
 #ifdef TARGET_WINDOWS
   bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
   bool ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode);
+
+  /** \brief Convert win32 LCID to RFC 5646 language tag.
+  *   \param[in] id The win32 LCID to convert.
+  *   \param[out] languageTag The RFC 5646 language tag.
+  *   \return true if conversion successful, false otherwise.
+  */ 
+  static bool ConvertWindowsLCIDtoLanguageTag(LCID id, std::string& languageTag);
 #endif
 
   void LoadUserCodes(const TiXmlElement* pRootElement);
