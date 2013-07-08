@@ -61,9 +61,9 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
     CStdString fileName = URIUtils::GetFileName(strFile);
 
     // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
-    return fileName == "video_ts.ifo" ||
-          (fileName.length() == 12 && fileName.Left(4) == "vts_" &&
-           fileName.Right(6) == "_0.ifo");
+    return fileName.Equals("video_ts.ifo") ||
+          (fileName.length() == 12 && fileName.Left(4).Equals("vts_") &&
+           fileName.Right(6).Equals("_0.ifo"));
   }
   
   if (URIUtils::HasExtension(strFile, ".dat"))
@@ -73,8 +73,8 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
     // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
     // and MUSIC##(#).DAT
     return (fileName.length() == 11 || fileName.length() == 12) &&
-           (fileName.Left(5) == "AVSEQ" || fileName.Left(5) == "MUSIC" ||
-            fileName.Left(4) == "ITEM");
+           (fileName.Left(5).Equals("AVSEQ") || fileName.Left(5).Equals("MUSIC") ||
+            fileName.Left(4).Equals("ITEM"));
   }
 
   return true;
