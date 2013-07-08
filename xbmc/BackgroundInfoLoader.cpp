@@ -89,11 +89,12 @@ void CBackgroundInfoLoader::Run()
       }
     }
 
-    m_bIsLoading = false;
     OnLoaderFinish();
+    m_bIsLoading = false;
   }
   catch (...)
   {
+    m_bIsLoading = false;
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
 }
