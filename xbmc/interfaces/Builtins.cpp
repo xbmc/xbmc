@@ -44,6 +44,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
@@ -78,10 +79,6 @@
 
   #include "input/windows/IRServerSuite.h"
 
-#endif
-
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
 #endif
 
 #if defined(TARGET_DARWIN)
@@ -422,8 +419,9 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
-#ifdef HAS_PYTHON
-      vector<CStdString> argv = params;
+      vector<string> argv;
+      for (vector<CStdString>::const_iterator param = params.begin(); param != params.end(); ++param)
+        argv.push_back(*param);
 
       vector<CStdString> path;
       //split the path up to find the filename
@@ -436,8 +434,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
-      g_pythonParser.evalFile(scriptpath, argv,script);
-#endif
+      CScriptInvocationManager::Get().Execute(scriptpath, script, argv);
     }
   }
 #if defined(TARGET_DARWIN_OSX)
@@ -448,7 +445,6 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
   else if (execute.Equals("stopscript"))
   {
-#ifdef HAS_PYTHON
     CStdString scriptpath(params[0]);
 
     // Test to see if the param is an addon ID
@@ -456,8 +452,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (CAddonMgr::Get().GetAddon(params[0], script))
       scriptpath = script->LibPath();
 
-    g_pythonParser.StopScript(scriptpath);
-#endif
+    CScriptInvocationManager::Get().Stop(scriptpath);
   }
   else if (execute.Equals("system.exec"))
   {
