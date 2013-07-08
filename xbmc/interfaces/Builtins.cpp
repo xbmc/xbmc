@@ -204,6 +204,9 @@ const BUILT_IN commands[] = {
   { "UpdateAddonRepos",           false,  "Check add-on repositories for updates" },
   { "UpdateLocalAddons",          false,  "Check for local add-on changes" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
+  { "CECToggleState",             false,  "Toggle state of playing device via a CEC peripheral"},
+  { "CECActivateSource",          false,  "Wake up playing device via a CEC peripheral"},
+  { "CECStandby",                 false,  "Put playing device on standby via a CEC peripheral"},
   { "Weather.Refresh",            false,  "Force weather data refresh"},
   { "Weather.LocationNext",       false,  "Switch to next weather location"},
   { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
@@ -1590,6 +1593,18 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("toggledpms"))
   {
     g_application.ToggleDPMS(true);
+  }
+  else if (execute.Equals("cectogglestate"))
+  {
+    CApplicationMessenger::Get().CECToggleState();
+  }
+  else if (execute.Equals("cecactivatesource"))
+  {
+    CApplicationMessenger::Get().CECActivateSource();
+  }
+  else if (execute.Equals("cecstandby"))
+  {
+    CApplicationMessenger::Get().CECStandby();
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
