@@ -26,9 +26,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
 #include "addons/IAddon.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -122,7 +120,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  vector<CStdString> argv;
+  vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);
@@ -130,16 +128,14 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
-#ifdef HAS_PYTHON
   CStdString file = m_addon->LibPath();
-  int id = g_pythonParser.evalFile(file, argv,m_addon);
+  int id = CScriptInvocationManager::Get().Execute(file, m_addon, argv);
   if (id >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
     success = WaitOnScriptResult(file, id, scriptName, retrievingDir);
   }
   else
-#endif
     CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
 
   // free our handle
@@ -470,18 +466,16 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", -1);
-  vector<CStdString> argv;
+  vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);
 
   // run the script
-#ifdef HAS_PYTHON
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (g_pythonParser.evalFile(addon->LibPath(), argv,addon) >= 0)
+  if (CScriptInvocationManager::Get().Execute(addon->LibPath(), addon, argv) >= 0)
     return true;
   else
-#endif
     CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
 
   return false;
@@ -510,9 +504,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scri
       }
     }
     // check our script is still running
-#ifdef HAS_PYTHON
-    if (!g_pythonParser.isRunning(scriptId))
-#endif
+    if (!CScriptInvocationManager::Get().IsRunning(scriptId))
     { // check whether we exited normally
       if (!m_fetchComplete.WaitMSec(0))
       { // python didn't return correctly
@@ -565,14 +557,12 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scri
     }
     if (cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
     { // cancel our script
-#ifdef HAS_PYTHON
-      if (scriptId != -1 && g_pythonParser.isRunning(scriptId))
+      if (scriptId != -1 && CScriptInvocationManager::Get().IsRunning(scriptId))
       {
         CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
-        g_pythonParser.stopScript(scriptId);
+        CScriptInvocationManager::Get().Stop(scriptId);
         break;
       }
-#endif
     }
   }
 

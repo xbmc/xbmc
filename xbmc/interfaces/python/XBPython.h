@@ -21,20 +21,23 @@
  *
  */
 
-#include "XBPyThread.h"
 #include "cores/IPlayerCallback.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
 #include "interfaces/IAnnouncer.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "addons/IAddon.h"
 
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
+class CPythonInvoker;
+
 typedef struct {
   int id;
   bool bDone;
-  std::string strFile;
-  boost::shared_ptr<XBPyThread> pyThread;
+  CPythonInvoker* pyThread;
 }PyElem;
 
 class LibraryLoader;
@@ -47,7 +50,7 @@ namespace XBMCAddon
   }
 }
 
-template <class T> struct LockableType : public T, public CCriticalSection 
+template <class T> struct LockableType : public T, public CCriticalSection
 { bool hadSomethingRemoved; };
 
 typedef LockableType<std::vector<void*> > PlayerCallbackList;
@@ -55,11 +58,11 @@ typedef LockableType<std::vector<XBMCAddon::xbmc::Monitor*> > MonitorCallbackLis
 typedef LockableType<std::vector<PyElem> > PyList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
-class XBPython : 
+class XBPython :
   public IPlayerCallback,
-  public ANNOUNCEMENT::IAnnouncer
+  public ANNOUNCEMENT::IAnnouncer,
+  public ILanguageInvocationHandler
 {
-  void Finalize();
 public:
   XBPython();
   virtual ~XBPython();
@@ -84,29 +87,18 @@ public:
   void OnDatabaseUpdated(const std::string &database);
   void OnDatabaseScanStarted(const std::string &database);
   void OnAbortRequested(const CStdString &ID="");
-  void Initialize();
+
+  virtual void Process();
+  virtual void Uninitialize();
+  virtual void OnScriptStarted(ILanguageInvoker *invoker);
+  virtual void OnScriptEnded(ILanguageInvoker *invoker);
+  virtual ILanguageInvoker* CreateInvoker();
+
+  bool InitializeEngine();
   void FinalizeScript();
-  void FreeResources();
-  void Process();
 
   void PulseGlobalEvent();
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
-
-  int ScriptsSize();
-  int GetPythonScriptId(int scriptPosition);
-  int evalFile(const CStdString &src, ADDON::AddonPtr addon);
-  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon);
-  int evalString(const CStdString &src, const std::vector<CStdString> &argv);
-
-  bool isRunning(int scriptId);
-  bool isStopping(int scriptId);
-  void setDone(int id);
-  
-  /*! \brief Stop a script if it's running
-   \param path path to the script
-   \return true if the script was running and is now stopped, false otherwise
-   */
-  bool StopScript(const CStdString &path);
 
   // inject xbmc stuff into the interpreter.
   // should be called for every new interpreter
@@ -119,23 +111,12 @@ public:
   void UnregisterExtensionLib(LibraryLoader *pLib);
   void UnloadExtensionLibs();
 
-  //only should be called from thread which is running the script
-  void  stopScript(int scriptId);
-
-  // returns NULL if script doesn't exist or if script doesn't have a filename
-  const char* getFileName(int scriptId);
-
-  // returns -1 if no scripts exist with specified filename
-  int getScriptId(const CStdString &strFile);
-
-  void* getMainThreadState();
-
-  bool m_bLogin;
 private:
+  void Finalize();
+
   CCriticalSection    m_critSection;
   bool              FileExist(const char* strFile);
 
-  int               m_nextid;
   void*             m_mainThreadState;
   ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;

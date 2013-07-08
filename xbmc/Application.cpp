@@ -46,6 +46,7 @@
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUITextLayout.h"
 #include "addons/Skin.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -402,6 +403,7 @@ CApplication::CApplication(void)
   m_bPlaybackStarting = false;
   m_ePlayState = PLAY_STATE_NONE;
   m_skinReloading = false;
+  m_loggingIn = false;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -458,7 +460,6 @@ CApplication::~CApplication(void)
   delete m_seekHandler;
   delete m_playerController;
   delete m_pInertialScrollingHandler;
-
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -776,6 +777,10 @@ bool CApplication::Create()
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::Get().Initialize(true);
+
+#ifdef HAS_PYTHON
+  CScriptInvocationManager::Get().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
+#endif // HAS_PYTHON
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -1417,9 +1422,7 @@ bool CApplication::Initialize()
   if (!CProfilesManager::Get().UsingLoginScreen())
   {
     UpdateLibraries();
-#ifdef HAS_PYTHON
-    g_pythonParser.m_bLogin = true;
-#endif
+    SetLoggingIn(true);
   }
 
   m_slowTimer.StartZero();
@@ -3375,17 +3378,16 @@ void CApplication::Stop(int exitCode)
     CCrystalHD::RemoveInstance();
 #endif
 
-  g_mediaManager.Stop();
+    g_mediaManager.Stop();
 
-  // Stop services before unloading Python
-  CAddonMgr::Get().StopServices(false);
+    // Stop services before unloading Python
+    CAddonMgr::Get().StopServices(false);
 
-/* Python resource freeing must be done after skin has been unloaded, not before
-   some windows still need it when deinitializing during skin unloading. */
-#ifdef HAS_PYTHON
-  CLog::Log(LOGNOTICE, "stop python");
-  g_pythonParser.FreeResources();
-#endif
+    // stop all remaining scripts; must be done after skin has been unloaded,
+    // not before some windows still need it when deinitializing during skin
+    // unloading
+    CScriptInvocationManager::Get().Uninitialize();
+
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
@@ -4890,7 +4892,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 #ifdef HAS_PYTHON
     if (item.IsPythonScript())
     { // a python script
-      g_pythonParser.evalFile(item.GetPath().c_str(),ADDON::AddonPtr());
+      CScriptInvocationManager::Get().Execute(item.GetPath());
     }
     else
 #endif
@@ -4915,10 +4917,21 @@ void CApplication::Process()
   // (this can only be done after g_windowManager.Render())
   CApplicationMessenger::Get().ProcessWindowMessages();
 
-#ifdef HAS_PYTHON
-  // process any Python scripts
-  g_pythonParser.Process();
-#endif
+  if (m_loggingIn)
+  {
+    m_loggingIn = false;
+
+    // autoexec.py - profile
+    CStdString strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
+
+    if (XFILE::CFile::Exists(strAutoExecPy))
+      CScriptInvocationManager::Get().Execute(strAutoExecPy);
+    else
+      CLog::Log(LOGDEBUG, "no profile autoexec.py (%s) found, skipping", strAutoExecPy.c_str());
+  }
+
+  // handle any active scripts
+  CScriptInvocationManager::Get().Process();
 
   // process messages, even if a movie is playing
   CApplicationMessenger::Get().ProcessMessages();

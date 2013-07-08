@@ -28,9 +28,6 @@
 #include "profiles/windows/GUIWindowSettingsProfile.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "GUIPassword.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
@@ -306,9 +303,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   ADDON::CAddonMgr::Get().ReInit();
 
   g_weatherManager.Refresh();
-#ifdef HAS_PYTHON
-  g_pythonParser.m_bLogin = true;
-#endif
+  g_application.SetLoggingIn(true);
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();

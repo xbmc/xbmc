@@ -48,6 +48,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/filesystem/filesystem.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
+                   xbmc/interfaces/generic/interfaces-generic.a \
                    xbmc/interfaces/info/info.a \
                    xbmc/interfaces/interfaces.a \
                    xbmc/interfaces/json-rpc/json-rpc.a \

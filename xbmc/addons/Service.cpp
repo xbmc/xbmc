@@ -19,10 +19,8 @@
  */
 #include "Service.h"
 #include "AddonManager.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/log.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
 
 using namespace std;
 
@@ -53,7 +51,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (g_pythonParser.evalFile(LibPath(), this->shared_from_this()) != -1);
+    ret = (CScriptInvocationManager::Get().Execute(LibPath(), this->shared_from_this()) != -1);
     break;
 #endif
 
@@ -74,7 +72,7 @@ bool CService::Stop()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = g_pythonParser.StopScript(LibPath());
+    ret = CScriptInvocationManager::Get().Stop(LibPath());
     break;
 #endif
 

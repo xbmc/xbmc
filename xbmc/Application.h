@@ -359,6 +359,9 @@ public:
   bool SetLanguage(const CStdString &strLanguage);
 
   ReplayGainSettings& GetReplayGainSettings() { return m_replayGainSettings; }
+
+  void SetLoggingIn(bool loggingIn) { m_loggingIn = loggingIn; }
+
 protected:
   virtual bool OnSettingsSaving() const;
 
@@ -373,6 +376,8 @@ protected:
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
+
+  bool m_loggingIn;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;

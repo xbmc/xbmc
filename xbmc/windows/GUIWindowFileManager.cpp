@@ -31,9 +31,7 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/XBPython.h"
-#endif
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "playlists/PlayListFactory.h"
 #include "network/Network.h"
@@ -619,7 +617,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 #ifdef HAS_PYTHON
   if (pItem->IsPythonScript())
   {
-    g_pythonParser.evalFile(pItem->GetPath().c_str(),ADDON::AddonPtr());
+    CScriptInvocationManager::Get().Execute(pItem->GetPath());
     return ;
   }
 #endif
