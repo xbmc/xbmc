@@ -12053,7 +12053,17 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr ""
 
-#empty strings from id 34006 to 34099
+#: system/settings/settings.xml
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr ""
+
+#empty strings from id 34008 to 34099
 
 #: system/settings/settings.xml
 msgctxt "#34100"

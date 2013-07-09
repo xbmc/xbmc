@@ -94,6 +94,7 @@ public:
   virtual void avio_wb32(AVIOContext *s, unsigned int val)=0;
   virtual void avio_wb16(AVIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
+  virtual int avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat, const char *format_name, const char *filename) = 0;
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c)=0;
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
   virtual int avformat_write_header (AVFormatContext *s, AVDictionary **options)=0;
@@ -150,6 +151,7 @@ public:
   virtual void avio_wb32(AVIOContext *s, unsigned int val) { ::avio_wb32(s, val); }
   virtual void avio_wb16(AVIOContext *s, unsigned int val) { ::avio_wb16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
+  virtual int avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat, const char *format_name, const char *filename){ return ::avformat_alloc_output_context2(ctx,oformat,format_name,filename); }
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c) { return ::avformat_new_stream(s, c); }
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
   virtual int avformat_write_header (AVFormatContext *s, AVDictionary **options) { return ::avformat_write_header (s, options); }
@@ -217,6 +219,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD2(int, avio_close_dyn_buf, (AVIOContext *p1, uint8_t **p2))
   DEFINE_METHOD3(offset_t, avio_seek, (AVIOContext *p1, offset_t p2, int p3))
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
+  DEFINE_METHOD4(int, avformat_alloc_output_context2, (AVFormatContext **p1, AVOutputFormat *p2, const char *p3, const char *p4))
   DEFINE_METHOD2(AVStream *, avformat_new_stream, (AVFormatContext *p1, AVCodec *p2))
   DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
   DEFINE_METHOD2(int, avformat_write_header , (AVFormatContext *p1, AVDictionary **p2))
@@ -252,6 +255,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(avio_wb32)
     RESOLVE_METHOD(avio_wb16)
     RESOLVE_METHOD(avformat_alloc_context)
+    RESOLVE_METHOD(avformat_alloc_output_context2)
     RESOLVE_METHOD(avformat_new_stream)
     RESOLVE_METHOD(av_guess_format)
     RESOLVE_METHOD(avformat_write_header)
