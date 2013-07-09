@@ -60,6 +60,12 @@ bool CWinSystemWin32::InitWindowSystem()
   if(!CWinSystemBase::InitWindowSystem())
     return false;
 
+  if(m_MonitorsInfo.size() < 1)
+  {
+    CLog::Log(LOGERROR, "%s - no suitable monitor found, aborting...", __FUNCTION__);
+    return false;
+  }
+
   return true;
 }
 
