@@ -1676,7 +1676,33 @@ void CPeripheralCecAdapter::ProcessStandbyDevices(void)
   }
 
   if (bStandby)
+  {
     m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
+    if (m_configuration.bSendInactiveSource == 1)
+    {
+      CLog::Log(LOGDEBUG, "%s - sending inactive source commands", __FUNCTION__);
+      m_cecAdapter->SetInactiveView();
+    }
+  }
+}
+
+bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE */, bool forceType /*= false */)
+{
+  if (!IsRunning())
+    return false;
+  if (m_cecAdapter->IsLibCECActiveSource() && (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
+  {
+    CLog::Log(LOGDEBUG, "%s - putting CEC device on standby...", __FUNCTION__);
+    m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
+    StandbyDevices();
+    return false;
+  }
+  else if (mode == STATE_SWITCH_TOGGLE || mode == STATE_ACTIVATE_SOURCE)
+  {
+    CLog::Log(LOGDEBUG, "%s - waking up CEC device...", __FUNCTION__);
+    ActivateSource();
+    return true;
+  }
 }
 
 #endif
