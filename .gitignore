@@ -141,6 +141,8 @@ config.log
 /lib/addons/library.xbmc.codec/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
+/lib/addons/library.xbmc.codec/project/VS2010Express/Release
+/lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.gui/project/VS2010Express/Release
 /lib/addons/library.xbmc.gui/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
@@ -1214,6 +1216,8 @@ lib/cmyth/Makefile
 
 /addons/library.xbmc.addon/libXBMC_addon.dll
 /addons/library.xbmc.addon/libXBMC_addon.lib
+/addons/library.xbmc.codec/libXBMC_codec.dll
+/addons/library.xbmc.codec/libXBMC_codec.lib
 /addons/library.xbmc.gui/libXBMC_gui.dll
 /addons/library.xbmc.gui/libXBMC_gui.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
