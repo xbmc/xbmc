@@ -37,6 +37,7 @@ CAddonCallbacks::CAddonCallbacks(CAddon* addon)
   m_helperAddon = NULL;
   m_helperGUI   = NULL;
   m_helperPVR   = NULL;
+  m_helperCODEC = NULL;
 
   m_callbacks->libBasePath           = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons"));
   m_callbacks->addonData             = this;
