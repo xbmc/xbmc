@@ -89,6 +89,14 @@ int CEncoder::FileWrite(const void *pBuffer, uint32_t iBytes)
   return dwBytesWritten;
 }
 
+int64_t CEncoder::FileSeek(int64_t iFilePosition, int iWhence)
+{
+  if (!m_file)
+    return -1;
+  FlushStream();
+  return m_file->Seek(iFilePosition, iWhence);
+}
+
 // write the stream to our writebuffer, and write the buffer to disk if it's full
 int CEncoder::WriteStream(const void *pBuffer, uint32_t iBytes)
 {

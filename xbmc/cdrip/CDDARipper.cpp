@@ -155,6 +155,8 @@ const char* CCDDARipper::GetExtension(int iEncoder)
   if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
   if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";
   if (iEncoder == CDDARIP_ENCODER_FLAC) return ".flac";
+  if (iEncoder == CDDARIP_ENCODER_FFMPEG_M4A) return ".m4a";
+  if (iEncoder == CDDARIP_ENCODER_FFMPEG_WMA) return ".wma";
   return ".mp3";
 }
 
