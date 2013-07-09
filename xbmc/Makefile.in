@@ -9,6 +9,7 @@ SRCS=Application.cpp \
      DbUrl.cpp \
      DynamicDll.cpp \
      FileItem.cpp \
+     GitRevision.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
      GUIPassword.cpp \

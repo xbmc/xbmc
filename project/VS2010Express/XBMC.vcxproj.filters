@@ -3041,6 +3041,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5964,6 +5965,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
@@ -5971,9 +5973,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\xbmc\win32\PlatformInclude.h">
-      <Filter>win32</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcplugin.i">
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
@@ -5989,6 +5988,7 @@
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmc.i">
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
+    <CustomBuild Include="..\..\xbmc\GitRevision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\interfaces\swig\ControlListAddItemMethods.i">

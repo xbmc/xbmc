@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2011-2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,7 +20,5 @@
  *
  */
 
-#pragma once
-
-#undef GIT_REV
-
+// Returns the current Git revision, or NULL if unavailable.
+const char *GetXbmcGitRevision();

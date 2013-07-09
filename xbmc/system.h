@@ -198,18 +198,6 @@
 #define HAS_FILESYSTEM_SFTP
 #endif
 
-/*****************
- * Git revision
- *****************/
-
-#if defined(TARGET_DARWIN)
-#include "../git_revision.h"
-#endif
-
-#ifndef GIT_REV
-#define GIT_REV "Unknown"
-#endif
-
 /****************************************
  * Additional platform specific includes
  ****************************************/
