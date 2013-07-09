@@ -100,6 +100,7 @@ public:
   virtual void av_init_packet(AVPacket *pkt)=0;
   virtual int avcodec_fill_audio_frame(AVFrame *frame, int nb_channels, enum AVSampleFormat sample_fmt, const uint8_t *buf, int buf_size, int align) = 0;
   virtual void avcodec_free_frame(AVFrame **frame)=0;
+  virtual int av_codec_is_decoder(const AVCodec *codec)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -171,6 +172,7 @@ public:
   virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
   virtual int avcodec_fill_audio_frame(AVFrame *frame, int nb_channels, enum AVSampleFormat sample_fmt, const uint8_t *buf, int buf_size, int align) { return ::avcodec_fill_audio_frame(frame, nb_channels, sample_fmt, buf, buf_size, align); }
   virtual void avcodec_free_frame(AVFrame **frame) { return ::avcodec_free_frame(frame); };
+  virtual int av_codec_is_decoder(const AVCodec *codec) { return ::av_codec_is_decoder(codec); }
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -222,8 +224,9 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(enum PixelFormat, avcodec_default_get_format, (struct AVCodecContext *p1, const enum PixelFormat *p2))
   DEFINE_METHOD6(int, avcodec_fill_audio_frame, (AVFrame* p1, int p2, enum AVSampleFormat p3, const uint8_t* p4, int p5, int p6))
   DEFINE_METHOD1(void, avcodec_free_frame, (AVFrame **p1))
-
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
+  DEFINE_METHOD1(int, av_codec_is_decoder, (const AVCodec *p1))
+
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open2,avcodec_open2_dont_call)
@@ -259,6 +262,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_init_packet)
     RESOLVE_METHOD(avcodec_fill_audio_frame)
     RESOLVE_METHOD(avcodec_free_frame)
+    RESOLVE_METHOD(av_codec_is_decoder)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */
