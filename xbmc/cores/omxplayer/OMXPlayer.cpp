@@ -1009,7 +1009,7 @@ void COMXPlayer::Process()
   // allow renderer to switch to fullscreen if requested
   m_omxPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
-  if(!m_av_clock.OMXInitialize(&m_clock, false, false))
+  if(!m_av_clock.OMXInitialize(&m_clock))
   {
     m_bAbortRequest = true;
     return;
@@ -1018,8 +1018,6 @@ void COMXPlayer::Process()
     m_av_clock.HDMIClockSync();
   m_av_clock.OMXStateIdle();
   m_av_clock.OMXStop();
-  m_av_clock.HasAudio(m_HasVideo);
-  m_av_clock.HasVideo(m_HasAudio);
   m_av_clock.OMXPause();
 
   OpenDefaultStreams();
@@ -2524,9 +2522,7 @@ void COMXPlayer::HandleMessages()
 
         if ((player == DVDPLAYER_AUDIO || player == DVDPLAYER_VIDEO) && (!m_HasAudio || m_CurrentAudio.started) && (!m_HasVideo || m_CurrentVideo.started))
         {
-          m_av_clock.HasAudio(m_HasAudio);
-          m_av_clock.HasVideo(m_HasVideo);
-          m_av_clock.OMXReset();
+          m_av_clock.OMXReset(m_HasVideo, m_HasAudio);
         }
 
         CLog::Log(LOGDEBUG, "COMXPlayer::HandleMessages - player started %d", player);
