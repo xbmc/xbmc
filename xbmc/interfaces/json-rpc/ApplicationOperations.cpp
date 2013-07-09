@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "GUIInfoManager.h"
 #include "system.h"
+#include "GitRevision.h"
 
 using namespace JSONRPC;
 
@@ -119,9 +120,8 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &proper
     result = CVariant(CVariant::VariantTypeObject);
     result["major"] = VERSION_MAJOR;
     result["minor"] = VERSION_MINOR;
-#ifdef GIT_REV
-    result["revision"] = GIT_REV;
-#endif
+    if (GetXbmcGitRevision())
+      result["revision"] = GetXbmcGitRevision();
     CStdString tag(VERSION_TAG);
     if (tag.ToLower().Equals("-pre"))
       result["tag"] = "alpha";

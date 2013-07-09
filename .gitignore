@@ -706,6 +706,7 @@ lib/cmyth/Makefile
 /xbmc/visualizations/fishBMC/Makefile
 
 #/xbmc/win32/
+# no longer used
 /xbmc/win32/git_rev.h
 
 # /lib/ffmpeg/

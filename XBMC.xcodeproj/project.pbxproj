@@ -510,6 +510,9 @@
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
+		DFBB4319178B5E6F006CC20A /* GitRevision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4317178B5E6F006CC20A /* GitRevision.cpp */; };
+		DFBB431A178B5E6F006CC20A /* GitRevision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4317178B5E6F006CC20A /* GitRevision.cpp */; };
+		DFBB431B178B5E6F006CC20A /* GitRevision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4317178B5E6F006CC20A /* GitRevision.cpp */; };
 		DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
 		DFBB4309178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
 		DFBB430A178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */; };
@@ -4190,6 +4193,8 @@
 		DFB65FB415373AE7006B8FF1 /* AEWAVLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWAVLoader.h; sourceTree = "<group>"; };
 		DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		DFB6610715374E80006B8FF1 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		DFBB4317178B5E6F006CC20A /* GitRevision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GitRevision.cpp; sourceTree = "<group>"; };
+		DFBB4318178B5E6F006CC20A /* GitRevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitRevision.h; sourceTree = "<group>"; };
 		DFBB4306178B574E006CC20A /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
 		DFBB4307178B574E006CC20A /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksCodec.h; sourceTree = "<group>"; };
 		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -7165,6 +7170,8 @@
 				E38E168D0D25F9FA00618676 /* DynamicDll.h */,
 				E38E16920D25F9FA00618676 /* FileItem.cpp */,
 				E38E16930D25F9FA00618676 /* FileItem.h */,
+				DFBB4317178B5E6F006CC20A /* GitRevision.cpp */,
+				DFBB4318178B5E6F006CC20A /* GitRevision.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
 				E38E1E3F0D25F9FD00618676 /* GUIInfoManager.h */,
 				E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */,
@@ -10550,6 +10557,7 @@
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
+				DFBB431B178B5E6F006CC20A /* GitRevision.cpp in Sources */,
 				DF40BC20178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC2F178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC31178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
@@ -11572,6 +11580,7 @@
 				DF3C3C0F1752A7EE000989C3 /* IOSExternalTouchController.mm in Sources */,
 				DF3C3C101752A7EE000989C3 /* IOSScreenManager.mm in Sources */,
 				0E3036EE1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
+				DFBB431A178B5E6F006CC20A /* GitRevision.cpp in Sources */,
 				DF40BC1F178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC2C178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC2E178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
@@ -12596,6 +12605,7 @@
 				E4991593174E707400741B6D /* cc_decoder.c in Sources */,
 				E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */,
 				0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
+				DFBB4319178B5E6F006CC20A /* GitRevision.cpp in Sources */,
 				DF40BC1E178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
 				DF40BC29178B4C07009DB567 /* LanguageInvokerThread.cpp in Sources */,
 				DF40BC2B178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */,
