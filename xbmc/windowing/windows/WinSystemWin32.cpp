@@ -60,7 +60,7 @@ bool CWinSystemWin32::InitWindowSystem()
   if(!CWinSystemBase::InitWindowSystem())
     return false;
 
-  if(m_MonitorsInfo.size() < 1)
+  if(m_MonitorsInfo.empty())
   {
     CLog::Log(LOGERROR, "%s - no suitable monitor found, aborting...", __FUNCTION__);
     return false;
@@ -467,7 +467,7 @@ void CWinSystemWin32::UpdateResolutions()
 
   UpdateResolutionsInternal();
 
-  if(m_MonitorsInfo.size() < 1)
+  if(m_MonitorsInfo.empty())
     return;
 
   float refreshRate = 0;
