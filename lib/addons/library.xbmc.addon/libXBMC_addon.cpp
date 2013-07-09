@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
+#include "../../../xbmc/addons/include/xbmc_addon_types.h"
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../../xbmc/addons/AddonCallbacks.h"
 

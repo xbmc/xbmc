@@ -3038,6 +3038,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5957,6 +5960,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvocationHandler.h">
       <Filter>interfaces\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

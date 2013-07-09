@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "network/Network.h"
 #include "utils/CharsetConverter.h"
+#include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
 using namespace XFILE;
 

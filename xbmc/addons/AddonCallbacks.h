@@ -21,6 +21,7 @@
 
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "addons/include/xbmc_codec_types.h"
 #include "../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
 
@@ -84,6 +85,13 @@ typedef struct CB_AddOn
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
 } CB_AddOnLib;
+
+typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
+
+typedef struct CB_CODEC
+{
+  CODECGetCodecByName   GetCodecByName;
+} CB_CODECLib;
 
 typedef void (*GUILock)();
 typedef void (*GUIUnlock)();
@@ -267,6 +275,8 @@ typedef struct CB_PVRLib
 
 typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
 typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
+typedef CB_CODECLib* (*XBMCCODECLib_RegisterMe)(void *addonData);
+typedef void (*XBMCCODECLib_UnRegisterMe)(void *addonData, CB_CODECLib *cbTable);
 typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
 typedef void (*XBMCGUILib_UnRegisterMe)(void *addonData, CB_GUILib *cbTable);
 typedef CB_PVRLib* (*XBMCPVRLib_RegisterMe)(void *addonData);
@@ -278,6 +288,8 @@ typedef struct AddonCB
   void                      *addonData;
   XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
   XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
+  XBMCCODECLib_RegisterMe    CODECLib_RegisterMe;
+  XBMCCODECLib_UnRegisterMe  CODECLib_UnRegisterMe;
   XBMCGUILib_RegisterMe      GUILib_RegisterMe;
   XBMCGUILib_UnRegisterMe    GUILib_UnRegisterMe;
   XBMCPVRLib_RegisterMe      PVRLib_RegisterMe;
@@ -290,6 +302,7 @@ namespace ADDON
 
 class CAddon;
 class CAddonCallbacksAddon;
+class CAddonCallbacksCodec;
 class CAddonCallbacksGUI;
 class CAddonCallbacksPVR;
 
@@ -302,12 +315,15 @@ public:
 
   static CB_AddOnLib* AddOnLib_RegisterMe(void *addonData);
   static void AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable);
+  static CB_CODECLib* CODECLib_RegisterMe(void *addonData);
+  static void CODECLib_UnRegisterMe(void *addonData, CB_CODECLib *cbTable);
   static CB_GUILib* GUILib_RegisterMe(void *addonData);
   static void GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable);
   static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
 
   CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
+  CAddonCallbacksCodec *GetHelperCodec() { return m_helperCODEC; }
   CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
 
@@ -315,6 +331,7 @@ private:
   AddonCB             *m_callbacks;
   CAddon              *m_addon;
   CAddonCallbacksAddon *m_helperAddon;
+  CAddonCallbacksCodec *m_helperCODEC;
   CAddonCallbacksGUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;
 };
