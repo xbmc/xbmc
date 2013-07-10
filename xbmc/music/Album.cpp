@@ -55,8 +55,17 @@ CStdString CAlbum::GetGenreString() const
 
 bool CAlbum::operator<(const CAlbum &a) const
 {
-  if (strAlbum < a.strAlbum) return true;
-  if (strAlbum > a.strAlbum) return false;
+  if (strMusicBrainzAlbumID.IsEmpty() && a.strMusicBrainzAlbumID.IsEmpty())
+  {
+    if (strAlbum < a.strAlbum) return true;
+    if (strAlbum > a.strAlbum) return false;
+
+    // This will do an std::vector compare (i.e. item by item)
+    if (artist < a.artist) return true;
+    if (artist > a.artist) return false;
+    return false;
+  }
+
   if (strMusicBrainzAlbumID < a.strMusicBrainzAlbumID) return true;
   if (strMusicBrainzAlbumID > a.strMusicBrainzAlbumID) return false;
   return false;
