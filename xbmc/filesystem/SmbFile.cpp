@@ -27,7 +27,7 @@
 #include "PasswordManager.h"
 #include "SMBDirectory.h"
 #include "Util.h"
-#include <libsmbclient.h>
+#include <samba-4.0/libsmbclient.h>
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
