@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ver opcións"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Opcións dos axustes"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Pantalla compelta"
@@ -107,6 +111,10 @@ msgstr "AXIÑA ADIANTE"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "REBOBINAR"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "BUSCANDO"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -539,3 +547,43 @@ msgstr "Colleitando información da predición..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Mapas e Alertas"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "O TEMPO"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "IMAXES"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TV EN DIRECTO"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VÍDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMES"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SERIES DE TV"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MÚSICA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMAS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "REPRODUCIR DISCO"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"

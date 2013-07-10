@@ -550,7 +550,7 @@ msgstr "지도와 경보"
 
 msgctxt "#31950"
 msgid "WEATHER"
-msgstr "날ㅆ"
+msgstr "날씨"
 
 msgctxt "#31951"
 msgid "PICTURES"

@@ -112,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PŘETOČIT ZPĚT"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "VYHLEDÁVÁM"
+
 msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr "Předvolby vizualizace"
@@ -334,7 +338,7 @@ msgstr "Současný stahovač"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Změnit stahovač"
+msgstr "Vyberte stahovač"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
@@ -551,6 +555,10 @@ msgstr "POČASÍ"
 msgctxt "#31951"
 msgid "PICTURES"
 msgstr "OBRÁZKY"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "ŽIVÉ VYSÍLÁNÍ"
 
 msgctxt "#31953"
 msgid "VIDEOS"

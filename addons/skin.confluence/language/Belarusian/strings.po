@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Налады выгляду"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Settings Options"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "На ўвесь экран"
@@ -107,6 +111,10 @@ msgstr "FAST FORWARD"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "REWIND"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "SEEKING"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -539,3 +547,43 @@ msgstr "Атрымоўваем прагноз..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Мапа і перасьцярогі"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "WEATHER"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "PICTURES"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "LIVE TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "MOVIES"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV SHOWS"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSIC"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "PLAY DISC"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTEM"

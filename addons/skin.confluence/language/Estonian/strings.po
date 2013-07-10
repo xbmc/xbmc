@@ -112,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "TAGASI"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "OTSIMINE"
+
 msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr "Visuaalide häälestused"

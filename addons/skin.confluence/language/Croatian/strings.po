@@ -126,11 +126,11 @@ msgstr "Vrijeme završetka"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Složi: Uzlazno"
+msgstr "Složi: Padajući"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Složi: Silazno"
+msgstr "Složi: Rastući"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -182,11 +182,11 @@ msgstr "Ostale mogućnosti"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Sakrij oznake pročitane iz video datoteka [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Sakrij oznake pročitane iz naziva video datoteka [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Sakrij tipke glavnog izbornika"
+msgstr "Prilagodi prikaz glavnog izbornika"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -238,7 +238,7 @@ msgstr "Reproduciraj pjesme TV tema iz videoteke (TvTunes dodatak)"
 
 msgctxt "#31127"
 msgid "TvTunes"
-msgstr "TvTunes"
+msgstr "Tv melodije"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -354,7 +354,7 @@ msgstr "Odabrani profil"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Posljednji prijavljeni"
+msgstr "Posljednji prijavljen"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
@@ -382,7 +382,7 @@ msgstr "Nedavno dodano"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Namješteo zakazano snimanje![/B][COLOR=grey2] - Sustav se automatski isključuje za[/COLOR]"
+msgstr "[B]Vrijeme isključivanja![/B][COLOR=grey2] - Sustav se automatski isključuje za[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -458,11 +458,11 @@ msgstr "[B]PODESITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima 
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]PODESITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zaslona · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
+msgstr "[B]PODESITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelozaslonskog prikaza · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PODESITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje XBMC-om putem UPnP-a i HTTP-a · Podesite dijeljenje datoteka[CR]Omogućite Zeroconf · Podesite emitiranje uživo"
+msgstr "[B]PODESITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje XBMC-om putem UPnP-a i HTTP-a · Podesite dijeljenje datoteka[CR]Omogućite Zeroconf · Podesite AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -570,7 +570,7 @@ msgstr "FILMOVI"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV EMISIJE"
+msgstr "TV SERIJE"
 
 msgctxt "#31956"
 msgid "MUSIC"

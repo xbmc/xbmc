@@ -112,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "RETROCESO"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "BUSCANDO"
+
 msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr "Visualizaciones preestablecidas"
@@ -552,6 +556,10 @@ msgctxt "#31951"
 msgid "PICTURES"
 msgstr "IMÁGENES"
 
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TELEVISIÓN EN DIRECTO"
+
 msgctxt "#31953"
 msgid "VIDEOS"
 msgstr "VIDEOS"
@@ -560,6 +568,10 @@ msgctxt "#31954"
 msgid "MOVIES"
 msgstr "PELÍCULAS"
 
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "PROGRAMAS DE TELEVISIÓN"
+
 msgctxt "#31956"
 msgid "MUSIC"
 msgstr "MÚSICA"
@@ -567,6 +579,10 @@ msgstr "MÚSICA"
 msgctxt "#31957"
 msgid "PROGRAMS"
 msgstr "PROGRAMAS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "REPRODUCIR DISCO"
 
 msgctxt "#31959"
 msgid "SYSTEM"

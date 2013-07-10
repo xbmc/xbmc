@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Nézet lehetőségek"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Beállítási lehetőségek"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Teljes képernyő"
@@ -107,6 +111,10 @@ msgstr "ELŐRETEKERÉS"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "VISSZATEKERÉS"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "KERESŐ"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -539,3 +547,43 @@ msgstr "Előrejelzési információ letöltése..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Térkép & Riasztások"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "IDŐJÁRÁS"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "KÉPEK"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "ÉLŐ TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEÓK"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMEK"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SOROZATOK"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "ZENE"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMOK"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "LEMEZ LEJÁTSZÁSA"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "RENDSZER"

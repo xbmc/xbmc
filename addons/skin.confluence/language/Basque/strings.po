@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ikusi aukerak"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Ezarpen aukerak"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Pantaila-osoa"

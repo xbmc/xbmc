@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "视图选项"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "设置项"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "全屏"
@@ -107,6 +111,10 @@ msgstr "快进"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "回退"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "查找中"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -539,3 +547,43 @@ msgstr "获取天气信息..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "地图 & 警报"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "天气"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "图片"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "直播电视"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "视频"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "电影"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "剧集"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "音乐"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "程序"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "播放光盘"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "系统"

@@ -547,3 +547,43 @@ msgstr "Đang tải dữ liệu thời tiết..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Bản đồ & Cảnh Báo"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "Thời tiết"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "Ảnh"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TV trực tuyến"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "Video"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "Phim"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV Show"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "Nhạc"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "Ứng dụng"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "Chơi đĩa"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Hệ thống"
