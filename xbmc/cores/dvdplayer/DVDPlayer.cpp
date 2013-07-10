@@ -3520,6 +3520,11 @@ bool CDVDPlayer::OnAction(const CAction &action)
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - go to menu");
         pMenus->OnMenu();
+        if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+        {
+          SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+          m_callback.OnPlayBackResumed();
+        }
         // send a message to everyone that we've gone to the menu
         CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
         g_windowManager.SendThreadMessage(msg);
