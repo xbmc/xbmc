@@ -307,6 +307,9 @@
     <Filter Include="interfaces\generic">
       <UniqueIdentifier>{4286258a-45d7-45e8-9e56-ebf18fea53ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\AudioEngine\Engines\ActiveAE">
+      <UniqueIdentifier>{27f2c647-7b5f-4c49-b2e7-22bf360e58ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3045,6 +3048,27 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESound.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEStream.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\ActorProtocol.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5972,6 +5996,27 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEBuffer.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEResample.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESink.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAESound.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEStream.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ActorProtocol.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
