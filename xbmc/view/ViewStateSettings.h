@@ -45,6 +45,7 @@ public:
   SettingLevel GetSettingLevel() const { return m_settingLevel; }
   void SetSettingLevel(SettingLevel settingLevel);
   void CycleSettingLevel();
+  SettingLevel GetNextSettingLevel() const;
 
 protected:
   CViewStateSettings();
