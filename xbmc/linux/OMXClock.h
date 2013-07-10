@@ -52,6 +52,8 @@ protected:
   pthread_mutex_t   m_lock;
   double            m_fps;
   int               m_omx_speed;
+  OMX_U32           m_WaitMask;
+  OMX_TIME_CLOCKSTATE   m_eState;
   OMX_TIME_REFCLOCKTYPE m_eClock;
   CDVDClock         *m_clock;
 private:

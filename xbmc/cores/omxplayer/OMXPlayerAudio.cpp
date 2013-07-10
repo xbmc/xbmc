@@ -226,7 +226,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
   const uint8_t *data_dec = pkt->pData;
   int            data_len = pkt->iSize;
 
-  if(!OMX_IS_RAW(m_format.m_dataFormat))
+  if(!OMX_IS_RAW(m_format.m_dataFormat) && !bDropPacket)
   {
     while(!m_bStop && data_len > 0)
     {
@@ -283,15 +283,12 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
           }
         }
 
-        int n = (m_nChannels * m_hints.bitspersample * m_hints.samplerate)>>3;
-        if (n > 0)
-          m_audioClock += ((double)decoded_size * DVD_TIME_BASE) / n;
         break;
 
       }
     }
   }
-  else
+  else if(!bDropPacket)
   {
     if(CodecChange())
     {
