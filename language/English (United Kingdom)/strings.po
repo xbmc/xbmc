@@ -1,0 +1,3314 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/xbmc-main/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "Programs"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Pictures"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#3"
+msgid "Videos"
+msgstr "Videos"
+
+msgctxt "#4"
+msgid "TV-Guide"
+msgstr "TV-Guide"
+
+msgctxt "#5"
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+msgctxt "#7"
+msgid "File manager"
+msgstr "File manager"
+
+msgctxt "#8"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "xbmc media centre"
+
+msgctxt "#11"
+msgid "Monday"
+msgstr "Monday"
+
+msgctxt "#12"
+msgid "Tuesday"
+msgstr "Tuesday"
+
+msgctxt "#13"
+msgid "Wednesday"
+msgstr "Wednesday"
+
+msgctxt "#14"
+msgid "Thursday"
+msgstr "Thursday"
+
+msgctxt "#15"
+msgid "Friday"
+msgstr "Friday"
+
+msgctxt "#16"
+msgid "Saturday"
+msgstr "Saturday"
+
+msgctxt "#17"
+msgid "Sunday"
+msgstr "Sunday"
+
+msgctxt "#21"
+msgid "January"
+msgstr "January"
+
+msgctxt "#22"
+msgid "February"
+msgstr "February"
+
+msgctxt "#23"
+msgid "March"
+msgstr "March"
+
+msgctxt "#24"
+msgid "April"
+msgstr "April"
+
+msgctxt "#25"
+msgid "May"
+msgstr "May"
+
+msgctxt "#26"
+msgid "June"
+msgstr "June"
+
+msgctxt "#27"
+msgid "July"
+msgstr "July"
+
+msgctxt "#28"
+msgid "August"
+msgstr "August"
+
+msgctxt "#29"
+msgid "September"
+msgstr "September"
+
+msgctxt "#30"
+msgid "October"
+msgstr "October"
+
+msgctxt "#31"
+msgid "November"
+msgstr "November"
+
+msgctxt "#32"
+msgid "December"
+msgstr "December"
+
+msgctxt "#41"
+msgid "Mon"
+msgstr "Mon"
+
+msgctxt "#42"
+msgid "Tue"
+msgstr "Tue"
+
+msgctxt "#43"
+msgid "Wed"
+msgstr "Wed"
+
+msgctxt "#44"
+msgid "Thu"
+msgstr "Thu"
+
+msgctxt "#45"
+msgid "Fri"
+msgstr "Fri"
+
+msgctxt "#46"
+msgid "Sat"
+msgstr "Sat"
+
+msgctxt "#47"
+msgid "Sun"
+msgstr "Sun"
+
+msgctxt "#51"
+msgid "Jan"
+msgstr "Jan"
+
+msgctxt "#52"
+msgid "Feb"
+msgstr "Feb"
+
+msgctxt "#53"
+msgid "Mar"
+msgstr "Mar"
+
+msgctxt "#54"
+msgid "Apr"
+msgstr "Apr"
+
+msgctxt "#55"
+msgid "May"
+msgstr "May"
+
+msgctxt "#56"
+msgid "Jun"
+msgstr "Jun"
+
+msgctxt "#57"
+msgid "Jul"
+msgstr "Jul"
+
+msgctxt "#58"
+msgid "Aug"
+msgstr "Aug"
+
+msgctxt "#59"
+msgid "Sep"
+msgstr "Sep"
+
+msgctxt "#60"
+msgid "Oct"
+msgstr "Oct"
+
+msgctxt "#61"
+msgid "Nov"
+msgstr "Nov"
+
+msgctxt "#62"
+msgid "Dec"
+msgstr "Dec"
+
+msgctxt "#71"
+msgid "N"
+msgstr "N"
+
+msgctxt "#72"
+msgid "NNE"
+msgstr "NNE"
+
+msgctxt "#73"
+msgid "NE"
+msgstr "NE"
+
+msgctxt "#74"
+msgid "ENE"
+msgstr "ENE"
+
+msgctxt "#75"
+msgid "E"
+msgstr "E"
+
+msgctxt "#76"
+msgid "ESE"
+msgstr "ESE"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "SE"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "SSE"
+
+msgctxt "#79"
+msgid "S"
+msgstr "S"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "SSW"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "SW"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "WSW"
+
+msgctxt "#83"
+msgid "W"
+msgstr "W"
+
+msgctxt "#84"
+msgid "WNW"
+msgstr "WNW"
+
+msgctxt "#85"
+msgid "NW"
+msgstr "NW"
+
+msgctxt "#86"
+msgid "NNW"
+msgstr "NNW"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "South"
+
+msgctxt "#89"
+msgid "North"
+msgstr "North"
+
+msgctxt "#90"
+msgid "West"
+msgstr "West"
+
+msgctxt "#91"
+msgid "East"
+msgstr "East"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Variable"
+
+msgctxt "#98"
+msgid "View: Auto"
+msgstr "View: Auto"
+
+msgctxt "#99"
+msgid "View: Auto big"
+msgstr "View: Auto big"
+
+msgctxt "#100"
+msgid "View: Icons"
+msgstr "View: Icons"
+
+msgctxt "#101"
+msgid "View: List"
+msgstr "View: List"
+
+msgctxt "#102"
+msgid "Scan"
+msgstr "Scan"
+
+msgctxt "#103"
+msgid "Sort by: Name"
+msgstr "Sort by: Name"
+
+msgctxt "#104"
+msgid "Sort by: Date"
+msgstr "Sort by: Date"
+
+msgctxt "#105"
+msgid "Sort by: Size"
+msgstr "Sort by: Size"
+
+msgctxt "#106"
+msgid "No"
+msgstr "No"
+
+msgctxt "#107"
+msgid "Yes"
+msgstr "Yes"
+
+msgctxt "#108"
+msgid "Slideshow"
+msgstr "Slideshow"
+
+msgctxt "#109"
+msgid "Create thumbs"
+msgstr "Create thumbs"
+
+msgctxt "#110"
+msgid "Create thumbnails"
+msgstr "Create thumbnails"
+
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+msgctxt "#112"
+msgid "Paused"
+msgstr "Paused"
+
+msgctxt "#113"
+msgid "Update failed"
+msgstr "Update failed"
+
+msgctxt "#114"
+msgid "Installation failed"
+msgstr "Installation failed"
+
+msgctxt "#115"
+msgid "Copy"
+msgstr "Copy"
+
+msgctxt "#116"
+msgid "Move"
+msgstr "Move"
+
+msgctxt "#117"
+msgid "Delete"
+msgstr "Delete"
+
+msgctxt "#118"
+msgid "Rename"
+msgstr "Rename"
+
+msgctxt "#119"
+msgid "New folder"
+msgstr "New folder"
+
+msgctxt "#120"
+msgid "Confirm file copy"
+msgstr "Confirm file copy"
+
+msgctxt "#121"
+msgid "Confirm file move"
+msgstr "Confirm file move"
+
+msgctxt "#122"
+msgid "Confirm file delete?"
+msgstr "Confirm file delete?"
+
+msgctxt "#123"
+msgid "Copy these files?"
+msgstr "Copy these files?"
+
+msgctxt "#124"
+msgid "Move these files?"
+msgstr "Move these files?"
+
+msgctxt "#125"
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Delete these files? - Deleting files cannot be undone!"
+
+msgctxt "#126"
+msgid "Status"
+msgstr "Status"
+
+msgctxt "#127"
+msgid "Objects"
+msgstr "Objects"
+
+msgctxt "#128"
+msgid "General"
+msgstr "General"
+
+msgctxt "#129"
+msgid "Slideshow"
+msgstr "Slideshow"
+
+msgctxt "#130"
+msgid "System info"
+msgstr "System info"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "Display"
+
+msgctxt "#132"
+msgid "Albums"
+msgstr "Albums"
+
+msgctxt "#133"
+msgid "Artists"
+msgstr "Artists"
+
+msgctxt "#134"
+msgid "Songs"
+msgstr "Songs"
+
+msgctxt "#135"
+msgid "Genres"
+msgstr "Genres"
+
+msgctxt "#136"
+msgid "Playlists"
+msgstr "Playlists"
+
+msgctxt "#137"
+msgid "Search"
+msgstr "Search"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "System Information"
+
+msgctxt "#139"
+msgid "Temperatures:"
+msgstr "Temperatures:"
+
+msgctxt "#140"
+msgid "CPU:"
+msgstr "CPU:"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "GPU:"
+
+msgctxt "#142"
+msgid "Time:"
+msgstr "Time:"
+
+msgctxt "#143"
+msgid "Current:"
+msgstr "Current:"
+
+msgctxt "#144"
+msgid "Build:"
+msgstr "Build:"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "Network:"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "Type:"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "Static"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "DHCP"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "MAC address"
+
+msgctxt "#150"
+msgid "IP address"
+msgstr "IP address"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "Link:"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "Half duplex"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "Full duplex"
+
+msgctxt "#154"
+msgid "Storage"
+msgstr "Storage"
+
+msgctxt "#155"
+msgid "Drive"
+msgstr "Drive"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "Free"
+
+msgctxt "#157"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "Free memory"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "No link"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "Free"
+
+msgctxt "#161"
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgctxt "#162"
+msgid "Tray open"
+msgstr "Tray open"
+
+msgctxt "#163"
+msgid "Reading"
+msgstr "Reading"
+
+msgctxt "#164"
+msgid "No disc"
+msgstr "No disc"
+
+msgctxt "#165"
+msgid "Disc present"
+msgstr "Disc present"
+
+msgctxt "#166"
+msgid "Skin"
+msgstr "Skin"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Cancel file operations"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
+msgctxt "#169"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr "Adjust display refresh rate to match video"
+
+msgctxt "#172"
+msgid "Release date"
+msgstr "Release date"
+
+msgctxt "#173"
+msgid "Display 4:3 videos as"
+msgstr "Display 4:3 videos as"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "Moods"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "Styles"
+
+msgctxt "#179"
+msgid "Song"
+msgstr "Song"
+
+msgctxt "#180"
+msgid "Duration"
+msgstr "Duration"
+
+msgctxt "#181"
+msgid "Select album"
+msgstr "Select album"
+
+msgctxt "#182"
+msgid "Tracks"
+msgstr "Tracks"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "Review"
+
+msgctxt "#184"
+msgid "Refresh"
+msgstr "Refresh"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "Searching album"
+
+msgctxt "#186"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "#187"
+msgid "No albums found!"
+msgstr "No albums found!"
+
+msgctxt "#188"
+msgid "Select all"
+msgstr "Select all"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "Scanning media info"
+
+msgctxt "#190"
+msgid "Save"
+msgstr "Save"
+
+msgctxt "#191"
+msgid "Shuffle"
+msgstr "Shuffle"
+
+msgctxt "#192"
+msgid "Clear"
+msgstr "Clear"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "Scan"
+
+msgctxt "#194"
+msgid "Searching..."
+msgstr "Searching..."
+
+msgctxt "#195"
+msgid "No info found!"
+msgstr "No info found!"
+
+msgctxt "#196"
+msgid "Select movie:"
+msgstr "Select film:"
+
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "Querying %s info"
+
+msgctxt "#198"
+msgid "Loading movie details"
+msgstr "Loading film details"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Web interface"
+
+msgctxt "#202"
+msgid "Tagline"
+msgstr "Tagline"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "Plot outline"
+
+msgctxt "#205"
+msgid "Votes"
+msgstr "Votes"
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "Cast"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "Plot"
+
+msgctxt "#208"
+msgid "Play"
+msgstr "Play"
+
+msgctxt "#209"
+msgid "Next"
+msgstr "Next"
+
+msgctxt "#210"
+msgid "Previous"
+msgstr "Previous"
+
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "Calibrate user interface..."
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "Video calibration..."
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "Soften"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "Zoom amount"
+
+msgctxt "#217"
+msgid "Pixel ratio"
+msgstr "Pixel ratio"
+
+msgctxt "#218"
+msgid "DVD drive"
+msgstr "DVD drive"
+
+msgctxt "#219"
+msgid "Please insert disc"
+msgstr "Please insert disc"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "Remote share"
+
+msgctxt "#221"
+msgid "Network is not connected"
+msgstr "Network is not connected"
+
+msgctxt "#222"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#224"
+msgid "Speed"
+msgstr "Speed"
+
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Vertical Shift"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "Test patterns..."
+
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Lookup audio CD track names from freedb.org"
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "Shuffle playlist on load"
+
+msgctxt "#229"
+msgid "HDD spindown time"
+msgstr "HDD spindown time"
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "Video filters"
+
+msgctxt "#231"
+msgid "None"
+msgstr "None"
+
+msgctxt "#232"
+msgid "Point"
+msgstr "Point"
+
+msgctxt "#233"
+msgid "Linear"
+msgstr "Linear"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Quincunx"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Gaussian cubic"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Minification"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Magnification"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "Clear playlist on finish"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "Display Mode"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Full Screen #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "Windowed"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Refresh Rate"
+
+msgctxt "#244"
+msgid "Full screen"
+msgstr "Full screen"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "Scripts"
+
+msgctxt "#248"
+msgid "Language"
+msgstr "Language"
+
+msgctxt "#249"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#250"
+msgid "Visualization"
+msgstr "Visualisation"
+
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "Select destination directory"
+
+msgctxt "#252"
+msgid "Output stereo to all speakers"
+msgstr "Output stereo to all speakers"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "Number of channels"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS capable receiver"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "Fetching CD information"
+
+msgctxt "#257"
+msgid "Error"
+msgstr "Error"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "Enable tag reading"
+
+msgctxt "#259"
+msgid "Opening"
+msgstr "Opening"
+
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+msgctxt "#261"
+msgid "Waiting for start..."
+msgstr "Waiting for start..."
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "Scripts output"
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "Allow control of XBMC via HTTP"
+
+msgctxt "#264"
+msgid "Record"
+msgstr "Record"
+
+msgctxt "#265"
+msgid "Stop Rec."
+msgstr "Stop Rec."
+
+msgctxt "#266"
+msgid "Sort by: Track"
+msgstr "Sort by: Track"
+
+msgctxt "#267"
+msgid "Sort by: Time"
+msgstr "Sort by: Time"
+
+msgctxt "#268"
+msgid "Sort by: Title"
+msgstr "Sort by: Title"
+
+msgctxt "#269"
+msgid "Sort by: Artist"
+msgstr "Sort by: Artist"
+
+msgctxt "#270"
+msgid "Sort by: Album"
+msgstr "Sort by: Album"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "Top 100"
+
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "Top-Left overscan compensation"
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "Bottom-Right overscan compensation"
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "Subtitle positioning"
+
+msgctxt "#275"
+msgid "Pixel ratio adjustment"
+msgstr "Pixel ratio adjustment"
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Adjust the arrow to change the amount of overscan"
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Adjust the bar to change the subtitles position"
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Adjust the rectangle so it is perfectly square"
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "Unable to load settings"
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "Using default settings"
+
+msgctxt "#281"
+msgid "Please check the XML files"
+msgstr "Please check the XML files"
+
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "Found %i items"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "Search results"
+
+msgctxt "#284"
+msgid "No results found"
+msgstr "No results found"
+
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Preferred audio language"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Preferred subtitle language"
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#288"
+msgid "Font"
+msgstr "Font"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Size"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr "Dynamic range compression"
+
+msgctxt "#291"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#292"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "Browse for subtitles"
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "Create bookmark"
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "Clear bookmarks"
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "Audio offset"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "Bookmarks"
+
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC capable receiver"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 capable receiver"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 capable receiver"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 capable receiver"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "Delay"
+
+msgctxt "#304"
+msgid "Language"
+msgstr "Language"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "Enabled"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "Non-interleaved"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Original stream's language"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "User Interface language"
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+msgctxt "#313"
+msgid "Cleaning database"
+msgstr "Cleaning database"
+
+msgctxt "#314"
+msgid "Preparing..."
+msgstr "Preparing..."
+
+msgctxt "#315"
+msgid "Database error"
+msgstr "Database error"
+
+msgctxt "#316"
+msgid "Searching songs..."
+msgstr "Searching songs..."
+
+msgctxt "#317"
+msgid "Cleaned database successfully"
+msgstr "Cleaned database successfully"
+
+msgctxt "#318"
+msgid "Cleaning songs..."
+msgstr "Cleaning songs..."
+
+msgctxt "#319"
+msgid "Error cleaning songs"
+msgstr "Error cleaning songs"
+
+msgctxt "#320"
+msgid "Cleaning artists..."
+msgstr "Cleaning artists..."
+
+msgctxt "#321"
+msgid "Error cleaning artists"
+msgstr "Error cleaning artists"
+
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "Cleaning genres..."
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "Error cleaning genres"
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "Cleaning paths..."
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "Error cleaning paths"
+
+msgctxt "#326"
+msgid "Cleaning albums..."
+msgstr "Cleaning albums..."
+
+msgctxt "#327"
+msgid "Error cleaning albums"
+msgstr "Error cleaning albums"
+
+msgctxt "#328"
+msgid "Writing changes..."
+msgstr "Writing changes..."
+
+msgctxt "#329"
+msgid "Error writing changes"
+msgstr "Error writing changes"
+
+msgctxt "#330"
+msgid "This may take some time..."
+msgstr "This may take some time..."
+
+msgctxt "#331"
+msgid "Compressing database..."
+msgstr "Compressing database..."
+
+msgctxt "#332"
+msgid "Error compressing database"
+msgstr "Error compressing database"
+
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "Do you want to clean the library?"
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "Clean library..."
+
+msgctxt "#335"
+msgid "Start"
+msgstr "Start"
+
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "Framerate conversion"
+
+msgctxt "#337"
+msgid "Audio output"
+msgstr "Audio output"
+
+msgctxt "#338"
+msgid "Analog"
+msgstr "Analogue"
+
+msgctxt "#339"
+msgid "Optical/Coax"
+msgstr "Optical/Coax"
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "Various artists"
+
+msgctxt "#341"
+msgid "Play disc"
+msgstr "Play disc"
+
+msgctxt "#342"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "Adjust framerate"
+
+msgctxt "#344"
+msgid "Actors"
+msgstr "Actors"
+
+msgctxt "#345"
+msgid "Year"
+msgstr "Year"
+
+msgctxt "#346"
+msgid "Boost volume level on downmix"
+msgstr "Boost volume level on downmix"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD capable receiver"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Multichannel LPCM capable receiver"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD capable receiver"
+
+msgctxt "#350"
+msgid "Programs"
+msgstr "Programs"
+
+msgctxt "#351"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "Dim"
+
+msgctxt "#353"
+msgid "Black"
+msgstr "Black"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "Matrix trails"
+
+msgctxt "#355"
+msgid "Screensaver time"
+msgstr "Screensaver time"
+
+msgctxt "#356"
+msgid "Screensaver mode"
+msgstr "Screensaver mode"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "Shutdown function timer"
+
+msgctxt "#358"
+msgid "All albums"
+msgstr "All albums"
+
+msgctxt "#359"
+msgid "Recently added albums"
+msgstr "Recently added albums"
+
+msgctxt "#360"
+msgid "Screensaver"
+msgstr "Screensaver"
+
+msgctxt "#361"
+msgid "R. Slideshow"
+msgstr "R. Slideshow"
+
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "Screensaver dim level"
+
+msgctxt "#363"
+msgid "Sort by: File"
+msgstr "Sort by: File"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) capable receiver"
+
+msgctxt "#365"
+msgid "Sort by: Name"
+msgstr "Sort by: Name"
+
+msgctxt "#366"
+msgid "Sort by: Year"
+msgstr "Sort by: Year"
+
+msgctxt "#367"
+msgid "Sort by: Rating"
+msgstr "Sort by: Rating"
+
+msgctxt "#368"
+msgid "IMDb"
+msgstr "IMDb"
+
+msgctxt "#369"
+msgid "Title"
+msgstr "Title"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "Thunderstorms"
+
+msgctxt "#371"
+msgid "Partly"
+msgstr "Partly"
+
+msgctxt "#372"
+msgid "Mostly"
+msgstr "Mostly"
+
+msgctxt "#373"
+msgid "Sunny"
+msgstr "Sunny"
+
+msgctxt "#374"
+msgid "Cloudy"
+msgstr "Cloudy"
+
+msgctxt "#375"
+msgid "Snow"
+msgstr "Snow"
+
+msgctxt "#376"
+msgid "Rain"
+msgstr "Rain"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "Light"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "AM"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "PM"
+
+msgctxt "#380"
+msgid "Showers"
+msgstr "Showers"
+
+msgctxt "#381"
+msgid "Few"
+msgstr "Few"
+
+msgctxt "#382"
+msgid "Scattered"
+msgstr "Scattered"
+
+msgctxt "#383"
+msgid "Wind"
+msgstr "Wind"
+
+msgctxt "#384"
+msgid "Strong"
+msgstr "Strong"
+
+msgctxt "#385"
+msgid "Fair"
+msgstr "Fair"
+
+msgctxt "#386"
+msgid "Clear"
+msgstr "Clear"
+
+msgctxt "#387"
+msgid "Clouds"
+msgstr "Clouds"
+
+msgctxt "#388"
+msgid "Early"
+msgstr "Early"
+
+msgctxt "#389"
+msgid "Shower"
+msgstr "Shower"
+
+msgctxt "#390"
+msgid "Flurries"
+msgstr "Flurries"
+
+msgctxt "#391"
+msgid "Low"
+msgstr "Low"
+
+msgctxt "#392"
+msgid "Medium"
+msgstr "Medium"
+
+msgctxt "#393"
+msgid "High"
+msgstr "High"
+
+msgctxt "#394"
+msgid "Fog"
+msgstr "Fog"
+
+msgctxt "#395"
+msgid "Haze"
+msgstr "Haze"
+
+msgctxt "#396"
+msgid "Select location"
+msgstr "Select location"
+
+msgctxt "#397"
+msgid "Refresh time"
+msgstr "Refresh time"
+
+msgctxt "#398"
+msgid "Temperature units"
+msgstr "Temperature units"
+
+msgctxt "#399"
+msgid "Speed units"
+msgstr "Speed units"
+
+msgctxt "#400"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#401"
+msgid "Temp"
+msgstr "Temp"
+
+msgctxt "#402"
+msgid "Feels like"
+msgstr "Feels like"
+
+msgctxt "#403"
+msgid "UV index"
+msgstr "UV index"
+
+msgctxt "#404"
+msgid "Wind"
+msgstr "Wind"
+
+msgctxt "#405"
+msgid "Dew point"
+msgstr "Dew point"
+
+msgctxt "#406"
+msgid "Humidity"
+msgstr "Humidity"
+
+msgctxt "#409"
+msgid "Defaults"
+msgstr "Defaults"
+
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "Accessing weather service"
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr "Getting weather for:"
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "Unable to get weather data"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "Manual"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "No review for this album"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "Downloading thumbnail..."
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "Not available"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "View: Big icons"
+
+msgctxt "#418"
+msgid "Low"
+msgstr "Low"
+
+msgctxt "#419"
+msgid "High"
+msgstr "High"
+
+msgctxt "#420"
+msgid "HDMI"
+msgstr "HDMI"
+
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "Delete album info"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "Delete CD information"
+
+msgctxt "#424"
+msgid "Select"
+msgstr "Select"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "No album information found"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "No CD information found"
+
+msgctxt "#427"
+msgid "Disc"
+msgstr "Disc"
+
+msgctxt "#428"
+msgid "Insert correct CD/DVD"
+msgstr "Insert correct CD/DVD"
+
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "Please insert the following disc:"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "Sort by: DVD#"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "No cache"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "Remove film from library"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "Really remove '%s'?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "From %s at %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "No optical disc drive detected"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "You need an optical disc drive to play this video"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "Removable disc"
+
+msgctxt "#438"
+msgid "Opening file"
+msgstr "Opening file"
+
+msgctxt "#439"
+msgid "Cache"
+msgstr "Cache"
+
+msgctxt "#440"
+msgid "Harddisk"
+msgstr "Harddisk"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "Local network"
+
+msgctxt "#443"
+msgid "Internet"
+msgstr "Internet"
+
+msgctxt "#444"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "Autorun media"
+
+msgctxt "#449"
+msgid "Enabled"
+msgstr "Enabled"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "Columns"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "Row 1 address"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "Row 2 address"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "Row 3 address"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "Row 4 address"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "Rows"
+
+msgctxt "#456"
+msgid "Mode"
+msgstr "Mode"
+
+msgctxt "#457"
+msgid "Switch view"
+msgstr "Switch view"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "Subs"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "Audio stream"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[active]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "Subtitle"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "Backlight"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "Brightness"
+
+msgctxt "#465"
+msgid "Contrast"
+msgstr "Contrast"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "Gamma"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "Type"
+
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "Move the bar to change the OSD position"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "OSD position"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "Credits"
+
+msgctxt "#471"
+msgid "Modchip"
+msgstr "Modchip"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "Music only"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "Music & video"
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "Unable to load playlist"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "OSD"
+
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "Skin & language"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "Appearance"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "Audio options"
+
+msgctxt "#482"
+msgid "About XBMC"
+msgstr "About XBMC"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "Delete album"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "Repeat"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "Repeat one"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "Repeat folder"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "Play the next song automatically"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "- Use big icons"
+
+msgctxt "#492"
+msgid "Resize VobSubs"
+msgstr "Resize VobSubs"
+
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "Advanced options (Experts Only!)"
+
+msgctxt "#494"
+msgid "Overall audio headroom"
+msgstr "Overall audio headroom"
+
+msgctxt "#495"
+msgid "Upsample videos to GUI resolution"
+msgstr "Upsample videos to GUI resolution"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "Calibration"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "Show file extensions"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Sort by: Type"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "Unable to connect to online lookup service"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "Downloading album information failed"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "Looking for album names..."
+
+msgctxt "#502"
+msgid "Open"
+msgstr "Open"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "Busy"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "Empty"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "Loading media info from files..."
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Sort by: Usage"
+
+msgctxt "#510"
+msgid "Enable visualizations"
+msgstr "Enable visualisations"
+
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "Enable video mode switching"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "Start-up window"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "Home window"
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "Manual settings"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "Genre"
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "Recently played albums"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Launch"
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "Launch in..."
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "Compilations"
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "Remove source"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "Switch media"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "Select playlist"
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "New playlist..."
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "Add to playlist"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "Manually add to library"
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "Enter title"
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "Error: Duplicate title"
+
+msgctxt "#530"
+msgid "Select genre"
+msgstr "Select genre"
+
+msgctxt "#531"
+msgid "New genre"
+msgstr "New genre"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Manual addition"
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "Enter genre"
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "View: %s"
+
+msgctxt "#535"
+msgid "List"
+msgstr "List"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "Icons"
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "Big list"
+
+msgctxt "#538"
+msgid "Big icons"
+msgstr "Big icons"
+
+msgctxt "#539"
+msgid "Wide"
+msgstr "Wide"
+
+msgctxt "#540"
+msgid "Big wide"
+msgstr "Big wide"
+
+msgctxt "#541"
+msgid "Album icons"
+msgstr "Album icons"
+
+msgctxt "#542"
+msgid "DVD icons"
+msgstr "DVD icons"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
+msgctxt "#544"
+msgid "Media info"
+msgstr "Media info"
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "Audio output device"
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "Passthrough output device"
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "No biography for this artist"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "Downmix multichannel audio to stereo"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Sort by: %s"
+
+msgctxt "#551"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "#552"
+msgid "Date"
+msgstr "Date"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "Size"
+
+msgctxt "#554"
+msgid "Track"
+msgstr "Track"
+
+msgctxt "#555"
+msgid "Time"
+msgstr "Time"
+
+msgctxt "#556"
+msgid "Title"
+msgstr "Title"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "Artist"
+
+msgctxt "#558"
+msgid "Album"
+msgstr "Album"
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "Playlist"
+
+msgctxt "#560"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "#561"
+msgid "File"
+msgstr "File"
+
+msgctxt "#562"
+msgid "Year"
+msgstr "Year"
+
+msgctxt "#563"
+msgid "Rating"
+msgstr "Rating"
+
+msgctxt "#564"
+msgid "Type"
+msgstr "Type"
+
+msgctxt "#565"
+msgid "Usage"
+msgstr "Usage"
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "Album artist"
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "Play count"
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "Last played"
+
+msgctxt "#569"
+msgid "Comment"
+msgstr "Comment"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "Date added"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "Default"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "Studio"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "Path"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "Country"
+
+msgctxt "#575"
+msgid "In progress"
+msgstr "In progress"
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "Times played"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Date Taken"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Sort direction"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Sort method"
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "View mode"
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "Remember views for different folders"
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "Ascending"
+
+msgctxt "#585"
+msgid "Descending"
+msgstr "Descending"
+
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "Edit playlist"
+
+msgctxt "#587"
+msgid "Filter"
+msgstr "Filter"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "Cancel party mode"
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "Party mode"
+
+msgctxt "#590"
+msgid "Random"
+msgstr "Random"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#592"
+msgid "One"
+msgstr "One"
+
+msgctxt "#593"
+msgid "All"
+msgstr "All"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#595"
+msgid "Repeat: Off"
+msgstr "Repeat: Off"
+
+msgctxt "#596"
+msgid "Repeat: One"
+msgstr "Repeat: One"
+
+msgctxt "#597"
+msgid "Repeat: All"
+msgstr "Repeat: All"
+
+msgctxt "#600"
+msgid "Rip audio CD"
+msgstr "Rip audio CD"
+
+msgctxt "#601"
+msgid "Medium"
+msgstr "Medium"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "Standard"
+
+msgctxt "#603"
+msgid "Extreme"
+msgstr "Extreme"
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "Constant bitrate"
+
+msgctxt "#605"
+msgid "Ripping..."
+msgstr "Ripping..."
+
+msgctxt "#607"
+msgid "To:"
+msgstr "To:"
+
+msgctxt "#608"
+msgid "Could not rip CD or track"
+msgstr "Could not rip CD or track"
+
+msgctxt "#609"
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath is not set."
+
+msgctxt "#610"
+msgid "Rip audio track"
+msgstr "Rip audio track"
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "Enter number"
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/sample"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Sample rate"
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "Audio CDs"
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "Encoder"
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "Quality"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Bitrate"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "Include track number"
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "All songs of"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "In progress TV shows"
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "View mode"
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Zoom"
+
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "Stretch 4:3"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "Wide Zoom"
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "Stretch 16:9"
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "Original Size"
+
+msgctxt "#636"
+msgid "Custom"
+msgstr "Custom"
+
+msgctxt "#637"
+msgid "Replay gain"
+msgstr "Replay gain"
+
+msgctxt "#638"
+msgid "Replaygain volume adjustments"
+msgstr "Replaygain volume adjustments"
+
+msgctxt "#639"
+msgid "Use track levels"
+msgstr "Use track levels"
+
+msgctxt "#640"
+msgid "Use album levels"
+msgstr "Use album levels"
+
+msgctxt "#641"
+msgid "PreAmp Level - Replay gained files"
+msgstr "PreAmp Level - Replay gained files"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non replay gained files"
+msgstr "PreAmp Level - Non replay gained files"
+
+msgctxt "#643"
+msgid "Avoid clipping on replay gained files"
+msgstr "Avoid clipping on replay gained files"
+
+msgctxt "#644"
+msgid "Crop black bars"
+msgstr "Crop black bars"
+
+msgctxt "#645"
+msgid "Need to unpack a big file. Continue?"
+msgstr "Need to unpack a big file. Continue?"
+
+msgctxt "#646"
+msgid "Remove from library"
+msgstr "Remove from library"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "Export video library"
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "Import video library"
+
+msgctxt "#649"
+msgid "Importing"
+msgstr "Importing"
+
+msgctxt "#650"
+msgid "Exporting"
+msgstr "Exporting"
+
+msgctxt "#651"
+msgid "Browse for library"
+msgstr "Browse for library"
+
+msgctxt "#652"
+msgid "Years"
+msgstr "Years"
+
+msgctxt "#653"
+msgid "Update library"
+msgstr "Update library"
+
+msgctxt "#654"
+msgid "Show debug info"
+msgstr "Show debug info"
+
+msgctxt "#655"
+msgid "Browse for executable"
+msgstr "Browse for executable"
+
+msgctxt "#656"
+msgid "Browse for playlist"
+msgstr "Browse for playlist"
+
+msgctxt "#657"
+msgid "Browse for folder"
+msgstr "Browse for folder"
+
+msgctxt "#658"
+msgid "Song information"
+msgstr "Song information"
+
+msgctxt "#659"
+msgid "Non-linear stretch"
+msgstr "Non-linear stretch"
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "Volume amplification"
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "Choose export folder"
+
+msgctxt "#662"
+msgid "This file is no longer available."
+msgstr "This file is no longer available."
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "Would you like to remove it from the library?"
+
+msgctxt "#664"
+msgid "Browse for Script"
+msgstr "Browse for Script"
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "Compression level"
+
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Verbose logging..."
+
+msgctxt "#700"
+msgid "Cleaning up library"
+msgstr "Cleaning up library"
+
+msgctxt "#701"
+msgid "Removing old songs from the library"
+msgstr "Removing old songs from the library"
+
+msgctxt "#702"
+msgid "This path has been scanned before"
+msgstr "This path has been scanned before"
+
+msgctxt "#705"
+msgid "Network"
+msgstr "Network"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Server"
+
+msgctxt "#708"
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Use an HTTP proxy server to access the Internet"
+
+msgctxt "#711"
+msgid "Internet Protocol (IP)"
+msgstr "Internet Protocol (IP)"
+
+msgctxt "#712"
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Invalid port specified. Value must be between 1 and 65535."
+
+msgctxt "#713"
+msgid "HTTP proxy"
+msgstr "HTTP proxy"
+
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Assignment"
+
+msgctxt "#716"
+msgid "Automatic (DHCP)"
+msgstr "Automatic (DHCP)"
+
+msgctxt "#717"
+msgid "Manual (Static)"
+msgstr "Manual (Static)"
+
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP address"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Netmask"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Default gateway"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS server"
+
+msgctxt "#723"
+msgid "Save & restart"
+msgstr "Save & restart"
+
+msgctxt "#724"
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+
+msgctxt "#725"
+msgid "with numbers between 0 and 255."
+msgstr "with numbers between 0 and 255."
+
+msgctxt "#726"
+msgid "Changes not saved. Continue without saving?"
+msgstr "Changes not saved. Continue without saving?"
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "Web server"
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "FTP server"
+
+msgctxt "#730"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#732"
+msgid "Save & apply"
+msgstr "Save & apply"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "No pass"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Character set"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Style"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Colour"
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "Bold"
+
+msgctxt "#740"
+msgid "Italics"
+msgstr "Italics"
+
+msgctxt "#741"
+msgid "Bold italics"
+msgstr "Bold italics"
+
+msgctxt "#742"
+msgid "White"
+msgstr "White"
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "Yellow"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "Files"
+
+msgctxt "#745"
+msgid "No scanned information for this view"
+msgstr "No scanned information for this view"
+
+msgctxt "#746"
+msgid "Please turn off library mode"
+msgstr "Please turn off library mode"
+
+msgctxt "#747"
+msgid "Error loading image"
+msgstr "Error loading image"
+
+msgctxt "#748"
+msgid "Edit path"
+msgstr "Edit path"
+
+msgctxt "#749"
+msgid "Mirror image"
+msgstr "Mirror image"
+
+msgctxt "#750"
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgctxt "#751"
+msgid "Removing source"
+msgstr "Removing source"
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "Add program link"
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "Edit program path"
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "Edit program name"
+
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "Edit path depth"
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "View: Big list"
+
+msgctxt "#760"
+msgid "Yellow"
+msgstr "Yellow"
+
+msgctxt "#761"
+msgid "White"
+msgstr "White"
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "Blue"
+
+msgctxt "#763"
+msgid "Bright green"
+msgstr "Bright green"
+
+msgctxt "#764"
+msgid "Yellow green"
+msgstr "Yellow green"
+
+msgctxt "#765"
+msgid "Cyan"
+msgstr "Cyan"
+
+msgctxt "#766"
+msgid "Light grey"
+msgstr "Light grey"
+
+msgctxt "#767"
+msgid "Grey"
+msgstr "Grey"
+
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "Error %i: share not available"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "Audio output"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "Seeking"
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "Slideshow folder"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "Network interface"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Wireless network name (ESSID)"
+
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Wireless password"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Wireless security"
+
+msgctxt "#779"
+msgid "Save and apply network interface settings"
+msgstr "Save and apply network interface settings"
+
+msgctxt "#780"
+msgid "No encryption"
+msgstr "No encryption"
+
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
+msgctxt "#784"
+msgid "Applying network interface settings. Please wait."
+msgstr "Applying network interface settings. Please wait."
+
+msgctxt "#785"
+msgid "Network interface restarted successfully."
+msgstr "Network interface restarted successfully."
+
+msgctxt "#786"
+msgid "Network interface did not start successfully."
+msgstr "Network interface did not start successfully."
+
+msgctxt "#787"
+msgid "Interface disabled"
+msgstr "Interface disabled"
+
+msgctxt "#788"
+msgid "Network interface disabled successfully."
+msgstr "Network interface disabled successfully."
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "Wireless network name (ESSID)"
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "Remote control"
+
+msgctxt "#791"
+msgid "Allow programs on this system to control XBMC"
+msgstr "Allow programs on this system to control XBMC"
+
+msgctxt "#792"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#793"
+msgid "Port range"
+msgstr "Port range"
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Allow programs on other systems to control XBMC"
+
+msgctxt "#795"
+msgid "Initial repeat delay (ms)"
+msgstr "Initial repeat delay (ms)"
+
+msgctxt "#796"
+msgid "Continuous repeat delay (ms)"
+msgstr "Continuous repeat delay (ms)"
+
+msgctxt "#797"
+msgid "Maximum number of clients"
+msgstr "Maximum number of clients"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Internet access"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Library Update"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Music library needs to rescan tags from files."
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Would you like to scan now?"
+
+msgctxt "#850"
+msgid "Invalid port number entered"
+msgstr "Invalid port number entered"
+
+msgctxt "#851"
+msgid "Valid port range is 1-65535"
+msgstr "Valid port range is 1-65535"
+
+msgctxt "#852"
+msgid "Valid port range is 1024-65535"
+msgstr "Valid port range is 1024-65535"
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Add Pictures..."
+
+msgctxt "#998"
+msgid "Add Music..."
+msgstr "Add Music..."
+
+msgctxt "#999"
+msgid "Add Videos..."
+msgstr "Add Videos..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Preview"
+
+msgctxt "#1001"
+msgid "Unable to connect"
+msgstr "Unable to connect"
+
+msgctxt "#1002"
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC was unable to connect to the network location."
+
+msgctxt "#1003"
+msgid "This could be due to the network not being connected."
+msgstr "This could be due to the network not being connected."
+
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "Would you like to add it anyway?"
+
+msgctxt "#1006"
+msgid "IP address"
+msgstr "IP address"
+
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "Add network location"
+
+msgctxt "#1008"
+msgid "Protocol"
+msgstr "Protocol"
+
+msgctxt "#1009"
+msgid "Server address"
+msgstr "Server address"
+
+msgctxt "#1010"
+msgid "Server name"
+msgstr "Server name"
+
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "Remote path"
+
+msgctxt "#1012"
+msgid "Shared folder"
+msgstr "Shared folder"
+
+msgctxt "#1013"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "Username"
+
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "Browse for network server"
+
+msgctxt "#1016"
+msgid "Enter the network address of the server"
+msgstr "Enter the network address of the server"
+
+msgctxt "#1017"
+msgid "Enter the path on the server"
+msgstr "Enter the path on the server"
+
+msgctxt "#1018"
+msgid "Enter the port number"
+msgstr "Enter the port number"
+
+msgctxt "#1019"
+msgid "Enter the username"
+msgstr "Enter the username"
+
+msgctxt "#1021"
+msgid "Enter the paths or browse for the media locations."
+msgstr "Enter the paths or browse for the media locations."
+
+msgctxt "#1022"
+msgid "Enter a name for this media Source."
+msgstr "Enter a name for this media Source."
+
+msgctxt "#1023"
+msgid "Browse for new share"
+msgstr "Browse for new share"
+
+msgctxt "#1024"
+msgid "Browse"
+msgstr "Browse"
+
+msgctxt "#1025"
+msgid "Could not retrieve directory information."
+msgstr "Could not retrieve directory information."
+
+msgctxt "#1026"
+msgid "Add source"
+msgstr "Add source"
+
+msgctxt "#1027"
+msgid "Edit source"
+msgstr "Edit source"
+
+msgctxt "#1028"
+msgid "Edit %s source"
+msgstr "Edit %s source"
+
+msgctxt "#1029"
+msgid "Enter the new label"
+msgstr "Enter the new label"
+
+msgctxt "#1030"
+msgid "Browse for image"
+msgstr "Browse for image"
+
+msgctxt "#1031"
+msgid "Browse for image folder"
+msgstr "Browse for image folder"
+
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "Add network location..."
+
+msgctxt "#1033"
+msgid "Browse for file"
+msgstr "Browse for file"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "Submenu"
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "Favourites"
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "Video Add-ons"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "Music Add-ons"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "Picture Add-ons"
+
+msgctxt "#1040"
+msgid "Loading directory"
+msgstr "Loading directory"
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "Retrieved %i items"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr "Retrieved %i of %i items"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "Program Add-ons"
+
+msgctxt "#1044"
+msgid "Set plugin thumb"
+msgstr "Set plug-in thumb"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Add-on settings"
+
+msgctxt "#1046"
+msgid "Access points"
+msgstr "Access points"
+
+msgctxt "#1047"
+msgid "Other..."
+msgstr "Other..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Username"
+
+msgctxt "#1049"
+msgid "Script settings"
+msgstr "Script settings"
+
+msgctxt "#1050"
+msgid "Singles"
+msgstr "Singles"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "Enter web address"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Proxy type"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 with remote DNS resolving"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "SMB client"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "Workgroup"
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "Default username"
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "Default password"
+
+msgctxt "#1207"
+msgid "WINS server"
+msgstr "WINS server"
+
+msgctxt "#1208"
+msgid "Mount SMB shares"
+msgstr "Mount SMB shares"
+
+msgctxt "#1210"
+msgid "Remove"
+msgstr "Remove"
+
+msgctxt "#1211"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#1212"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#1213"
+msgid "Pictures"
+msgstr "Pictures"
+
+msgctxt "#1214"
+msgid "Files"
+msgstr "Files"
+
+msgctxt "#1215"
+msgid "Music & video "
+msgstr "Music & video "
+
+msgctxt "#1216"
+msgid "Music & pictures"
+msgstr "Music & pictures"
+
+msgctxt "#1217"
+msgid "Music & files"
+msgstr "Music & files"
+
+msgctxt "#1218"
+msgid "Video & pictures"
+msgstr "Video & pictures"
+
+msgctxt "#1219"
+msgid "Video & files"
+msgstr "Video & files"
+
+msgctxt "#1220"
+msgid "Pictures & files"
+msgstr "Pictures & files"
+
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "Music & video & pictures"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "Sun"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "Thunderstorms"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Small"
+
+msgctxt "#10001"
+msgid "Programs"
+msgstr "Programs"
+
+msgctxt "#10002"
+msgid "Pictures"
+msgstr "Pictures"
+
+msgctxt "#10003"
+msgid "File manager"
+msgstr "File manager"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "#10005"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#10006"
+msgid "Videos"
+msgstr "Videos"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "Scripts"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "Videos"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Favourites"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Add-on settings"
+
+msgctxt "#10506"
+msgid "Programs"
+msgstr "Programs"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "System info"
+
+msgctxt "#12600"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#12900"
+msgid "Screensaver"
+msgstr "Screensaver"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "Storage"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "Default"
+
+msgctxt "#13279"
+msgid "Network"
+msgstr "Network"
+
+msgctxt "#13280"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+msgctxt "#13507"
+msgid "Medium"
+msgstr "Medium"
+
+msgctxt "#13508"
+msgid "High"
+msgstr "High"
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "Standard"
+
+msgctxt "#14028"
+msgid "Internet"
+msgstr "Internet"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "Internet"
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "Character set"
+
+msgctxt "#14098"
+msgid "Play"
+msgstr "Play"
+
+msgctxt "#15015"
+msgid "Remove"
+msgstr "Remove"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "Skin default"
+
+msgctxt "#16000"
+msgid "General"
+msgstr "General"
+
+msgctxt "#16018"
+msgid "None"
+msgstr "None"
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Next"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "Media info"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Zoom"
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "Username"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "FTP server"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "Custom"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "File"
+
+msgctxt "#20342"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#20445"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "Open"
+
+msgctxt "#21387"
+msgid "Fast"
+msgstr "Fast"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "#21805"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "Comment"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "Country"
+
+msgctxt "#22030"
+msgid "Font"
+msgstr "Font"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Size"
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "Screensaver"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "Visualisation"
+
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#24013"
+msgid "Lyrics"
+msgstr "Lyrics"
+
+msgctxt "#24027"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#33063"
+msgid "Options"
+msgstr "Options"
+
+msgctxt "#33068"
+msgid "Background"
+msgstr "Background"
+
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "This file is stacked, select the part you want to play from."
+
+msgctxt "#35500"
+msgid "Location"
+msgstr "Location"
+
+msgctxt "#35502"
+msgid "Name"
+msgstr "Name"
