@@ -12810,7 +12810,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36154"
-msgid ""
+msgid "No info available yet."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13697,7 +13697,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36333"
-msgid ""
+msgid "No info available yet."
 msgstr ""
 
 #: system/settings/settings.xml
