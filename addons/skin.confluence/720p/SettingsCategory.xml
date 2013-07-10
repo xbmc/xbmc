@@ -108,7 +108,7 @@
 				<posx>290</posx>
 				<posy>70</posy>
 				<width>750</width>
-				<height>530</height>
+				<height>435</height>
 				<itemgap>-1</itemgap>
 				<pagecontrol>60</pagecontrol>
 				<onleft>3</onleft>
@@ -120,7 +120,7 @@
 				<posx>1060</posx>
 				<posy>60</posy>
 				<width>25</width>
-				<height>530</height>
+				<height>435</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -130,6 +130,17 @@
 				<onright>3</onright>
 				<showonepage>false</showonepage>
 				<orientation>vertical</orientation>
+			</control>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<posx>290</posx>
+				<posy>515</posy>
+				<width>750</width>
+				<height>85</height>
+				<font>font12</font>
+				<align>justify</align>
+				<textcolor>white</textcolor>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 			</control>
 		</control>
 		<include>BehindDialogFadeOut</include>
