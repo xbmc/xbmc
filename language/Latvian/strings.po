@@ -1081,6 +1081,10 @@ msgctxt "#601"
 msgid "Medium"
 msgstr "Vidējs"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP adrese"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "IP adrese"
@@ -1192,6 +1196,10 @@ msgstr "Fanu māksla"
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Fanu māksla"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Iestatījumi"
 
 msgctxt "#21805"
 msgid "Resolution"

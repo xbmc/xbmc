@@ -745,6 +745,10 @@ msgctxt "#444"
 msgid "Video"
 msgstr "വീഡിയോ"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "ഐ പി വിലാസം"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "ഐ പി വിലാസം"
@@ -809,6 +813,10 @@ msgctxt "#12600"
 msgid "Weather"
 msgstr "കാലാവസ്ഥ"
 
+msgctxt "#13277"
+msgid "Storage"
+msgstr "ശേഖരം"
+
 msgctxt "#13280"
 msgid "Video"
 msgstr "വീഡിയോ"
@@ -832,6 +840,10 @@ msgstr "അടുത്തത്"
 msgctxt "#20177"
 msgid "Done"
 msgstr "ശരി"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "പണിപ്പലക"
 
 msgctxt "#21805"
 msgid "Resolution"

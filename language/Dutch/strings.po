@@ -10921,9 +10921,17 @@ msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
 msgstr "Haal miniaturen voor acteurs op tijdens het scannen van media."
 
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Groepeer films in 'Film sets' wanneer je de film bibliotheek verkent."
+
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
 msgstr "Controleer op nieuwe media bestanden bij het opstarten van XBMC"
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "verberg de bibliotheek voortgangs bar tijdens scannen."
 
 msgctxt "#36151"
 msgid "No info available yet."
@@ -11021,13 +11029,45 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Instellen van een andere folder voor ondertitels. Dit kan een netwerklocatie zijn."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Plaatsing van de ondertitels op het scherm."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Opstarten DVD wanneer in de drive geplaatst."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Forceer een regio voor afspelen DVD "
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Probeer niet-overslaanbare introducties voor het DVD menu over te slaan."
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Kies de standaardbron voor filminformatie. Ga naar de Add-ons Beheerder voor opties."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Kies de standaardbron voor TV showinformatie. Zie de Add-ons Beheerder voor opties."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Standaard scraper voor het toevoegen van musicvideos aan je bilbiotheek."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -11077,6 +11117,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Toon het laatstbekeken kanaal bij het schakelen naar Live TV."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
@@ -11096,6 +11140,10 @@ msgstr "Nog geen informatie beschikbaar."
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Voer een nieuwe pincode in om de afgesloten kanalen te ontsluiten."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11137,13 +11185,25 @@ msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Automatisch schijf uitwerpen nadat het rippen voltooid is."
+
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Bij het afspelen van een muziekbestand, zal XBMC naar een overeenkomstig .cdg bestand zoeken en de grafieken weergeven."
+
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Kies de karakterset voor tijdens karaoke."
 
 msgctxt "#36299"
 msgid "No info available yet."

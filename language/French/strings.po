@@ -2389,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Niveau de compression"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Verbosité de la journalisation..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Nettoyage de la médiathèque"
@@ -11377,6 +11381,14 @@ msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Lire automatiquement le CD après insertion dans le lecteur."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Éjecte automatiquement le CD à la fin de l'extraction."
+
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11624,3 +11636,35 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Malvoyants)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Commentaires du réalisateur)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Commentaires du réalisateur 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(Malentendants)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Forcé)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Commentaires du réalisateur)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Dernier profil utilisé"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Parcourir"

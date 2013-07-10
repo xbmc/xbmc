@@ -873,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canales"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Receptor compatible con DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1045,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Marcadores"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Receptor compatible con AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Receptor compatible con MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Receptor compatible con MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Receptor compatible con MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Retardo"
@@ -1209,6 +1229,14 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Aumentar el volumen al hacer un downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Receptor compatible con DTS-HD"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Receptor compatible con True-HD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programas"
@@ -1264,6 +1292,10 @@ msgstr "Nivel de atenuación"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordenar por: Archivo"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Receptor compatible con Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -3441,6 +3473,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Configuración - Perfiles"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Reiniciar"
+
 msgctxt "#10036"
 msgid "Level: Basic"
 msgstr "Nivel: Básico"
@@ -3461,6 +3497,10 @@ msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Buscador de addons"
 
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Reiniciar ajustes"
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "Ayuda"
@@ -3477,9 +3517,17 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Diálogo de progreso"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Navegador de archivos"
+
 msgctxt "#10128"
 msgid "Network setup"
 msgstr "Configuración de red"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Fuentes de medios"
 
 msgctxt "#10130"
 msgid "Profile settings"
@@ -3516,6 +3564,10 @@ msgstr "Imágenes/Info"
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Configuración del Add-on"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Add-ons/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4016,6 +4068,10 @@ msgstr "Joystick conectado"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick desconectado"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
 
 msgctxt "#13028"
 msgid "Waiting for network to connect..."
@@ -9169,6 +9225,10 @@ msgctxt "#21858"
 msgid "Image type"
 msgstr "Tipo de imágen"
 
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Fecha de creación"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Categorías complementarias"
@@ -10588,6 +10648,10 @@ msgstr "No hay información disponible."
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Selecciona el país"
 
 msgctxt "#36121"
 msgid "No info available yet."

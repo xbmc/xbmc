@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Peru tiedostotoimenpiteet"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Näytön resoluutio"
@@ -2681,6 +2685,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Portin oltava väliltä 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Lisää kuvia..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Lisää musiikkia..."
@@ -2888,6 +2896,10 @@ msgstr "Singlet"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Anna nettiosoite"
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Välityspalvelimen tyyppi"
 
 msgctxt "#1181"
 msgid "HTTP"
@@ -3421,9 +3433,17 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Tila -dialogi"
 
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profiiliasetukset"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lukitse asetukset"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Sisältöasetukset"
 
 msgctxt "#10134"
 msgid "Favourites"
@@ -4252,6 +4272,10 @@ msgstr "Automaattinen lämmönhallinta"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Tuulettimen pyörintänopeuden säätö"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Kirjasimet"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -10425,17 +10449,585 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Kohteiden kansio"
 
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Muokkaa RSS-syötteitä."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr "Valitse nykyinen aikavyöhykkeesi."
 
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Esikatsele valittu näytönsäästäjä."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Tekstityksen sijainti näytöllä."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Käynnistä DVD-video automaattisesti, kun levy syötetään asemaan."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Pakota alue DVD-toistoa varten."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "Suoritettava komento. Oletuksena '/usr/bin/setwakeup.sh'."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Käynnistä CD-levyt automaattisesti, kun levy syötetään asemaan."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Määritä web-palvelimen portti."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Määritä web-palvelimen käyttäjätunnus."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Määritä web-palvelimen salasana."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Valitse kaiuttimiesi fyysinen asettelu."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Jos internetyhteytesi käyttää välityspalvelinta, määritä sen asetukset tässä."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Määritä käytettävän välityspalvelimen tyyppi."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Määritä välityspalvelimen osoite."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Määritä välityspalvelimen portti."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Määritä välityspalvelimen käyttäjätunnus."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Määritä välityspalveimen salasana."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Kansio, johon XBMC:ssä otetut kuvakaappaukset tallennetaan."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#37014"
 msgid "Last used profile"

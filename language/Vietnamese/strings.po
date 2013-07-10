@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Hủy truy cập file"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Độ phân giải"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Số lượng kênh"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Đầu thu hỗ trợ DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1004,6 +1012,10 @@ msgstr "Phụ đề"
 msgctxt "#288"
 msgid "Font"
 msgstr "Font"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Dung lượng"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1201,6 +1213,14 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Kích âm lượng khi downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Đầu thu hỗ trợ DTS-HD"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Đầu thu hỗ trợ TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Ứng dụng"
@@ -1256,6 +1276,10 @@ msgstr "Mức mờ bảo vệ màn hình"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sắp xếp theo: Tập tin"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Đầu thu hỗ trợ Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2329,6 +2353,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Cố định (IP tĩnh)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "Địa chỉ IP"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "Lưu & khởi động lại"
@@ -2353,13 +2381,25 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "FTP server"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "Port"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Lưu và áp dụng"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "Mật khẩu"
+
 msgctxt "#734"
 msgid "No pass"
 msgstr "Không mật khẩu"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Bộ ký tự"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2488,6 +2528,10 @@ msgstr "Thư mục trình chiếu"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "Giao diện mạng"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Tên mạng không dây (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2772,6 +2816,10 @@ msgstr "Các điểm truy cập"
 msgctxt "#1047"
 msgid "Other..."
 msgstr "Khác..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Tên truy nhập"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3220,6 +3268,18 @@ msgstr "Hộp thoại Có/Không"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Hộp thoại tiến trình"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Khóa cài đặt"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Mục ưa thích"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Các thiết lập Add-on"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4637,9 +4697,17 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Đệm video - DVD-ROM"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Đệm tiếng - DVD-ROM"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5581,6 +5649,10 @@ msgctxt "#20105"
 msgid "Do you want to use them?"
 msgstr "Bạn muốn sử dụng chúng?"
 
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Thu phóng"
+
 msgctxt "#20110"
 msgid "UPnP settings"
 msgstr "Cài đặt UPnP"
@@ -6160,6 +6232,10 @@ msgstr "Hướng dẫn"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Phông Chữ"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Dung lượng"
 
 msgctxt "#23054"
 msgid "Running"

@@ -335,7 +335,7 @@ msgstr "Sim"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Apresentar Slides"
+msgstr "Slides"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -419,7 +419,7 @@ msgstr "Geral"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Apresentar Slides"
+msgstr "Slides"
 
 msgctxt "#130"
 msgid "System info"
@@ -1227,7 +1227,7 @@ msgstr "Ano"
 
 msgctxt "#346"
 msgid "Boost volume level on downmix"
-msgstr "Aumentar nível de som no downmix"
+msgstr "Aumentar nível de som em remisturas diminuídas"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1283,7 +1283,7 @@ msgstr "Álbuns recentes"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#361"
 msgid "R. Slideshow"
@@ -2279,7 +2279,7 @@ msgstr "Normalização de volume"
 
 msgctxt "#638"
 msgid "Replaygain volume adjustments"
-msgstr "Ajustar normalização de volume"
+msgstr "Ajustes de normalização de volume"
 
 msgctxt "#639"
 msgid "Use track levels"
@@ -2429,6 +2429,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP Proxy"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Tarefa"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automático (DHCP)"
@@ -2447,7 +2451,7 @@ msgstr "Máscara de rede"
 
 msgctxt "#721"
 msgid "Default gateway"
-msgstr "Gateway por defeito"
+msgstr "Gateway padrão"
 
 msgctxt "#722"
 msgid "DNS server"
@@ -2499,7 +2503,7 @@ msgstr "Conjunto de caracteres"
 
 msgctxt "#736"
 msgid "Style"
-msgstr "Estil"
+msgstr "Estilo"
 
 msgctxt "#737"
 msgid "Colour"
@@ -2627,7 +2631,7 @@ msgstr "Procurando"
 
 msgctxt "#774"
 msgid "Slideshow folder"
-msgstr "Pasta para Apresentar Slides"
+msgstr "Pasta para Slides"
 
 msgctxt "#775"
 msgid "Network interface"
@@ -2691,7 +2695,7 @@ msgstr "Nome da rede sem fios (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr "Controlo remoto"
+msgstr "Remoto"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2984,6 +2988,10 @@ msgstr "SOCKS4A"
 msgctxt "#1184"
 msgid "SOCKS5"
 msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 com resolução de dns remota"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3363,7 +3371,7 @@ msgstr "Parcial"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Desligar ecrã se estiver inactivo durante"
+msgstr "Suspender ecrã quando o sistema estiver inactivo"
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -3915,7 +3923,7 @@ msgstr "Bloqueio Mestre"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Desligar sistema se tentativas de Bloqueio Mestre ultrapassarem"
+msgstr "Desligar sistema se tentativas de Bloqueio Mestre forem ultrapassadas"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
@@ -3991,7 +3999,7 @@ msgstr "Tempo"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
@@ -4089,9 +4097,13 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick desligado"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Tentar despertar servidores remotos ao acedê-los"
+
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
-msgstr "Acordar em Lan (%s)"
+msgstr "Despear por Lan (%s)"
 
 msgctxt "#13028"
 msgid "Waiting for network to connect..."
@@ -4099,19 +4111,23 @@ msgstr "Aguardando pela ligação de rede..."
 
 msgctxt "#13029"
 msgid "Failed to execute Wake on Lan!"
-msgstr "Falha na execução de \"Acordar em Lan\""
+msgstr "Falha ao executar o Despertar por Lan!"
 
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
-msgstr "A espera de resposta dos servidores..."
+msgstr "Esperando o despertar dos servidores..."
 
 msgctxt "#13031"
 msgid "Extended wait for server to wake up..."
-msgstr "Estender o tempo de espera para resposta dos servidores..."
+msgstr "Esperando ainda o despertar dos servidores..."
 
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
 msgstr "Esperando a inicialização dos serviços..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Descoberta de endereço MAC"
 
 msgctxt "#13034"
 msgid "Updated for %s"
@@ -4909,6 +4925,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Iniciar apenas isto"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Activar escaloneamento de alta qualidade para as definições em cima"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de sincronia A/V"
@@ -4975,7 +4995,7 @@ msgstr "Sem imagem"
 
 msgctxt "#13516"
 msgid "Add art"
-msgstr "Adicionar art"
+msgstr "Adicionar arte"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5319,7 +5339,7 @@ msgstr "Fuso horário"
 
 msgctxt "#14081"
 msgid "File lists"
-msgstr "Lista de ficheiros"
+msgstr "Listas ficheiros"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
@@ -5371,7 +5391,7 @@ msgstr "Dispositivos"
 
 msgctxt "#14095"
 msgid "Power saving"
-msgstr "Poupança energia"
+msgstr "Energia"
 
 msgctxt "#14096"
 msgid "Rip"
@@ -5815,7 +5835,7 @@ msgstr "Pós-processamento"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
-msgstr "Tempo até desligar o ecrã"
+msgstr "Intervalo de tempo para suspender o ecrã"
 
 msgctxt "#17997"
 msgid "%i MByte"
@@ -6111,7 +6131,7 @@ msgstr "Intervalo de atualizações do EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Não gravar o EPG na base de dados."
+msgstr "Não gravar o EPG na base de dados"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6471,11 +6491,11 @@ msgstr "Duração da gravação instantânea"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr "Padrão da prioridade de gravação"
+msgstr "Padrão para prioridade de gravação"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr "Padrão de tempo de vida da gravação"
+msgstr "Padrão para tempo de vida da gravação"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
@@ -6511,7 +6531,7 @@ msgstr "Quantos dias exibir no EPG"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr "Duração da info de canal"
+msgstr "Duração da info do canal"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6755,7 +6775,7 @@ msgstr "Tempo de espera para backend"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
-msgstr "Defina o comando de despertar (cmd [timestamp])"
+msgstr "Definir o comando de despertar (cmd [timestamp])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
@@ -7775,19 +7795,19 @@ msgstr "Minutos até desligar automaticamente"
 
 msgctxt "#20146"
 msgid "Started, shutdown in %im"
-msgstr "Iniciado, desligar em %m"
+msgstr "Iniciado, desligar daqui a %im"
 
 msgctxt "#20147"
 msgid "Shutdown in 30 minutes"
-msgstr "Desligar em 30 minutos"
+msgstr "Desligar daqui a 30 minutos"
 
 msgctxt "#20148"
 msgid "Shutdown in 60 minutes"
-msgstr "Desligar em 60 minutos"
+msgstr "Desligar daqui a 60 minutos"
 
 msgctxt "#20149"
 msgid "Shutdown in 120 minutes"
-msgstr "Desligar em 120 minutos"
+msgstr "Desligar daqui a 120 minutos"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
@@ -8855,15 +8875,15 @@ msgstr "Activar fundo personalizado"
 
 msgctxt "#21390"
 msgid "Power management level"
-msgstr "Gestão da poupança de energia"
+msgstr "Nível da poupança de energia"
 
 msgctxt "#21391"
 msgid "High power"
-msgstr "Energia alta"
+msgstr "Muita Energia"
 
 msgctxt "#21392"
 msgid "Low power"
-msgstr "Energia baixa"
+msgstr "Pouca Energia"
 
 msgctxt "#21393"
 msgid "High standby"
@@ -9475,11 +9495,11 @@ msgstr "Nascimento/Formação"
 
 msgctxt "#22000"
 msgid "Update library on startup"
-msgstr "Actualizar Biblioteca ao iniciar"
+msgstr "Actualizar Biblioteca ao iniciar o XBMC"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Ocultar progresso de actualização da biblioteca"
+msgstr "Ocultar progresso de actualização da Biblioteca"
 
 msgctxt "#22002"
 msgid "DNS suffix"
@@ -9715,7 +9735,7 @@ msgstr "Informação de vídeos"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr "Protecção de ecrã"
+msgstr "Protecção ecrã"
 
 msgctxt "#24009"
 msgid "Script"
@@ -10247,7 +10267,7 @@ msgstr "Configurar o"
 
 msgctxt "#33060"
 msgid "Power"
-msgstr "Power"
+msgstr "Energia"
 
 msgctxt "#33061"
 msgid "Menu"
@@ -10607,11 +10627,11 @@ msgstr "Não foi possível iniciar o adaptador"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr "Ligar estes dispositivos quando iniciar o XBMC"
+msgstr "Ligar estes dispositivos ao iniciar o XBMC"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Desligar estes diapositivos quando sair do XBMC"
+msgstr "Desligar estes diapositivos ao sair do XBMC"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
@@ -10619,7 +10639,7 @@ msgstr "Pôr dispositivos em espera se a protecção de ecrã estiver activa "
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "Acordar dispositivos ao desactivar a protecção de ecrã"
+msgstr "Despertar dispositivos ao sair da protecção de ecrã"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10837,6 +10857,10 @@ msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Permitir apagar e renomear ficheiros na interface do utilizador, através do menu de contexto (premir C no teclado, por exemplo, para exibir o menu)."
 
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Exibir o botão de adicionar fonte nas secções de raiz da interface de utilizador."
+
 msgctxt "#36127"
 msgid "Show hidden files and directories."
 msgstr "Exibir ficheiros e pastas ocultos."
@@ -10904,6 +10928,10 @@ msgstr "Ainda não há informação disponível."
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
 msgstr "Obter miniaturas de actores quando analisar média."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Remove a divisão em temporadas das séries TV, alterna entre 'Com apenas uma temporada' (padrão), 'Sempre' e 'Nunca'."
 
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
@@ -10981,9 +11009,17 @@ msgctxt "#36164"
 msgid "Select when the refresh rate adjustments should take place."
 msgstr "Definir quando se deve ajustar a taxa de actualização de ecrã."
 
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Pausar durante uma pequena quantidade de tempo ao alterar a taxa de actualização de ecrã. Activar isto para definir automaticamente a taxa de actualização que melhor corresponde ao vídeo a ser reproduzido. Permitirá potencialmente uma reprodução vídeo perfeita e suave, já que os materiais vídeo podem ser gravados numa variedade de framerates que têm de corresponder à taxa de actualização do ecrã para poderem ser exibidos com suavidade."
+
 msgctxt "#36166"
 msgid "Synchronize the video to the refresh rate of the monitor."
 msgstr "Sincronizar o vídeo à taxa de actualização do monitor."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "O áudio tem de manter-se sincronizado, isto pode ser feito por remasterização, ignorando/duplicando pacotes, ou ajustando o clock se ficar muito dessincronizado."
 
 msgctxt "#36168"
 msgid "No info available yet."
@@ -11000,6 +11036,10 @@ msgstr "Permitir que o reprodutor de vídeo ignore o rácio de aspecto por uma c
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Seleccionar o nível de ampliação para exibir vídeos 4:3 em ecrãs panorâmicos."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "A conversão de alta qualidade VDPAU permite que aplicações avançadas como o XBMC influenciem a conversão do espectro de cores."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11273,9 +11313,29 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Ainda não há informação disponível."
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Executar o \"comando de despertar\" em baixo quando o XBMC é encerrado ou entra em modo de hibernação. A marcação horária da próxima gravação agendada é transmitida como um parâmetro."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "O comando não será executado quando uma gravação for iniciada dentro deste tempo limite. O padrão é de 15 minutos."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "O comando a executar. O padrão é '/usr/bin/setwakeup.sh'."
+
 msgctxt "#36244"
 msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
 msgstr "Quantidade de tempo a subtrair da hora de início da próxima gravação agendada. O padrão é de 15 minutos."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Executar o comando de despertar todos os dias a uma certa hora."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "A hora a que o comando de despertar deve ser executado."
 
 msgctxt "#36247"
 msgid "No info available yet."
@@ -11348,6 +11408,30 @@ msgstr "O XBMC reproduzirá automaticamente o próximo item na pasta actual. Por
 msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Quando são adicionadas músicas a uma lista de reprodução, estas são colocadas em fila em vez de reproduzidas de imediato."
+
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr "O XBMC irá ler a informação de Normalização de Volume codificada nos seus ficheiros áudio por um programa, como o MP3GAIN, e normalizar os níveis de som em conformidade."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "O padrão é de 89dB, por norma. Tenha cuidado ao alterar."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "O padrão é de 89dB, por norma. Tenha cuidado ao alterar."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Reduzir o volume do ficheiro se for provável a ocorrência de cortes."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Transitar suavemente de uma faixa áudio para a próxima. Pode definir o intervalo de sobreposição entre 1-15 segundos."
+
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Permitir sobreposição de transições quando ambas as faixas são do mesmo álbum."
 
 msgctxt "#36273"
 msgid "Select the visualization that will be displayed while listening to music."
@@ -11509,6 +11593,10 @@ msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "Seleccionar a quantidade de tempo a exibir cada imagem numa apresentação de slides."
 
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "As imagens numa apresentação de slides exibirão efeitos de movimento e ampliação."
+
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Exibir imagens de slides numa ordem aleatória."
@@ -11669,6 +11757,14 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "Numa configuração com vários ecrãs, aqueles onde o XBMC não for exibido serão escurecidos."
 
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Eliminar rasgamento vertical."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Calibrar a Interface de Utilizador, ajustando o overscan. Utilize esta ferramenta se a imagem exibida é demasiado grande ou pequena para o seu ecrã."
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Padrões de teste para calibração do hardware do ecrã."
@@ -11688,6 +11784,14 @@ msgstr "Tipo de ligação ao equipamento áudio."
 msgctxt "#36362"
 msgid "Select your physical speaker layout."
 msgstr "Seleccionar a disposição física das suas colunas."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Aumentar volume em pistas AC3 que foram remisturadas para 2 canais."
+
+msgctxt "#36364"
+msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgstr "Remisturar fontes com 2 canais estéreo, para que o número de canais áudio corresponda ao número de colunas."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11777,9 +11881,21 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Se tiver largura de banda limitada, o XBMC tentará mantê-la dentro destes limites."
 
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Desligar o ecrã quando inactivo. É útil com TVs que se desligam quando não há nenhum sinal de imagem detectado, sem que o computador seja suspenso/encerrado."
+
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Ainda não há informação disponível."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Definir quanto tempo o XBMC deve estar inactivo para desligar o computador."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Definir a acção a realizar pelo XBMC quando estiver inactivo durante um longo período de tempo."
 
 msgctxt "#36391"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11792,6 +11908,10 @@ msgstr "Ainda não há informação disponível."
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr "Pasta usada para guardar capturas de ecrã do XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Especifica quais os arquivos adicionais que devem ser incluídos no registo de depuração."
 
 msgctxt "#36395"
 msgid "Open the Master Lock dialog, where you can configure your Master Lock options."

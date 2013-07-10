@@ -10857,6 +10857,10 @@ msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Permitir apagar e renomear arquivos na interface do utilizador, através do menu de contexto (pressione C no teclado, por exemplo, para exibir o menu)."
 
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Mostrar o botão adicionar fonte na sessão raiz da interface do usuário."
+
 msgctxt "#36127"
 msgid "Show hidden files and directories."
 msgstr "Exibir arquivos e pastas ocultos."
@@ -11005,9 +11009,17 @@ msgctxt "#36164"
 msgid "Select when the refresh rate adjustments should take place."
 msgstr "Definir quando se deve ajustar a taxa de atualização da tela.."
 
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Pausa por um pequeno período de tempo durante uma mudança de taxa de atualização. Ative para definir automaticamente a taxa de atualização que é melhor comparado com o vídeo que está sendo reproduzido. Isso potencialmente permite a reprodução de vídeo  de maneira mais perfeita, como material de vídeo podem ser gravados em uma variedade de taxas de quadro que precisam ser adequadamente compensada pela taxa de atualização do monitor, a fim de serem exibidos sem problemas."
+
 msgctxt "#36166"
 msgid "Synchronize the video to the refresh rate of the monitor."
 msgstr "Sincronizar o vídeo à taxa de atualização do monitor."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Áudio deve se manter em sincronia, isto pode ser feito via reamostragem, duplicação de pacotes/pulando, ou ajustando o clock se estiver fora de sincronia."
 
 msgctxt "#36168"
 msgid "No info available yet."
@@ -11024,6 +11036,10 @@ msgstr "Permitir que o reprodutor de vídeo ignore a taxa de aspecto até uma ce
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Selecionar o nível de ampliação para exibir vídeos 4:3 em telas widescreen."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "VDPAU conversão nível de estúdio fornece uma maneira para aplicativos avançados como o XBMC influenciarem na conversão de espaço de cores."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11297,9 +11313,29 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Nenhuma informação disponível ainda."
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Executa o comando \"despertar\" abaixo quando XBMC sair ou estiver entrando no modo de hibernação. A data e a hora da próxima gravação programada é passado como parâmetro."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "O comando não será executado quando a gravação for iniciada dentro deste timeout. O padrão é 15 minutos."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "O comando para executar. Padrão é '/usr/bin/setwakeup.sh'"
+
 msgctxt "#36244"
 msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
 msgstr "Quantidade de tempo a subtrair da hora de início da próxima gravação agendada. O padrão é de 15 minutos."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Executar o comando despertar todo dia dia no mesmo horário."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Quando executar o comando despertar diariamente."
 
 msgctxt "#36247"
 msgid "No info available yet."
@@ -11373,6 +11409,10 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Quando são adicionadas músicas a uma lista de reprodução, estas são colocadas em fila em vez de reproduzidas de imediato."
 
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr "XBMC irá ler as informações Replay Gain codificados em seus arquivos de áudio por programas como o MP3Gain e normalizar os níveis de som em conformidade."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Padrão é 89DB como valor standard. Altere com cautela."
@@ -11380,6 +11420,18 @@ msgstr "Padrão é 89DB como valor standard. Altere com cautela."
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Padrão é 89DB como valor standard. Altere com cautela."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Reduzir o volume se existir risco de clipping."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Transição suave entre faixas. Você pode setar o tempo de duração de 1-15 segundos."
+
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Permitir croosfading quando ambas as faixas forem do mesmo álbum."
 
 msgctxt "#36273"
 msgid "Select the visualization that will be displayed while listening to music."
@@ -11541,6 +11593,10 @@ msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "Selecionar a quantidade de tempo a exibir cada imagem numa apresentação de slides."
 
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "Imagens na apresentação de imagens irão apresentar efeito pan e zoom enquanto mostradas."
+
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Exibir imagens de slides numa ordem aleatória."
@@ -11701,6 +11757,14 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "Numa configuração com várias telas, aqueles onde o XBMC não for exibido serão escurecidas."
 
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Elimina o tearing vertical."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Calibrar a interface do usuário, ajustando o overscan. Use esta ferramenta se a imagem que está sendo exibida for muito grande ou pequena para o seu monitor."
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Padrões de teste para calibração do hardware da tela."
@@ -11720,6 +11784,14 @@ msgstr "Tipo de ligação ao equipamento áudio."
 msgctxt "#36362"
 msgid "Select your physical speaker layout."
 msgstr "Selecionar a disposição física das suas caixas."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Ampliar os fluxos AC3 que foram misturados para 2 canais"
+
+msgctxt "#36364"
+msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgstr "Upmix fontes estéreo de 2 canais para que o número de canais de áudio corresponda ao número de alto-falantes."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11809,9 +11881,21 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Se tiver largura de banda limitada, o XBMC tentará mantê-la dentro destes limites."
 
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Desligue exibir quando ocioso. Útil para TVs que desligam quando não há nenhum sinal de exibição detectado, mas você não quer suspender / desligar todo o computador."
+
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Nenhuma informação disponível ainda."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Define quanto tempo o XBMC deve ficar em espera antes de desligar."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Define qual ação o XBMC deve executar quanto estiver ocioso por muito tempo."
 
 msgctxt "#36391"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11824,6 +11908,10 @@ msgstr "Nenhuma informação disponível ainda."
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr "Pasta usada para guardar capturas de telas do XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Especifica as bibliotecas adicionais que serão incluídas no log de depuração."
 
 msgctxt "#36395"
 msgid "Open the Master Lock dialog, where you can configure your Master Lock options."

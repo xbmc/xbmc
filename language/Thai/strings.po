@@ -571,7 +571,7 @@ msgstr "หน้าตา"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr "ยกเลิกการดำเนินงานไฟล์"
+msgstr "ยกเลิกการดำเนินการแฟ้ม"
 
 msgctxt "#168"
 msgid "%s- %s"
@@ -873,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "จำนวนของช่อง"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "ตัวรับที่สนับสนุน DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1045,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "บุ๊คมาร์ค"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "ตัวรับที่สนับสนุน AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "ตัวรับที่สนับสนุน MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "ตัวรับที่สนับสนุน MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "ตัวรับที่สนับสนุน MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "หน่วงเวลา"
@@ -1209,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "เพิ่มระดับความดังเมื่อรวมช่องเสียง"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "ตัวรับที่สนับสนุน DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "ตัวรับที่สนับสนุน LPCM หลายช่องเสียง"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "ตัวรับที่สนับสนุน TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "โปรแกรม"
@@ -1264,6 +1296,10 @@ msgstr "ระดับการมืดลงของพักหน้าจ
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "เรียงลำดับ: แฟ้ม"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "ตัวรับที่สนับสนุน Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1787,7 +1823,7 @@ msgstr "ว่างเปล่า"
 
 msgctxt "#505"
 msgid "Loading media info from files..."
-msgstr "กำลังโหลดข้อมูลจากแฟ้ม..."
+msgstr "กำลังโหลดข้อมูลสื่อจากแฟ้ม..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -2048,6 +2084,10 @@ msgstr "อยู่ในการดำเนินการ"
 msgctxt "#576"
 msgid "Times played"
 msgstr "เวลาที่ใช้เล่น"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "วันที่ถ่าย"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2349,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "ระดับการบีบอัด"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "บันทึก โดยละเอียด..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "ทำความสะอาดคลังข้อมูล"
@@ -2364,6 +2408,10 @@ msgstr "เส้นทางนี้ได้รับการสำรวจ
 msgctxt "#705"
 msgid "Network"
 msgstr "เครือข่าย"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "เซิร์ฟเวอร์"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2381,6 +2429,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "การกำหนด"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "อัตโนมัติ (DHCP)"
@@ -2392,6 +2444,18 @@ msgstr "ด้วยตนเอง (ค่าคงที่)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "ที่อยู่ไอพี"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "กรองเครือข่าย"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "เกตเวย์เริ่มต้น"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "เซิร์ฟเวอร์ DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2436,6 +2500,14 @@ msgstr "ไม่มีรหัส"
 msgctxt "#735"
 msgid "Character set"
 msgstr "ชุดอักขระ"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "รูปแบบ"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "สี"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2569,6 +2641,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "ชื่อเครือข่ายไร้สาย(ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "รหัสผ่าน เครือข่ายไร้สาย"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "ความปลอดภัย เครือข่ายไร้สาย"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "บันทึกและนำการตั้งค่าเครือข่ายไปใช้"
@@ -2653,6 +2733,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "ปรับปรุง คลังข้อมูล"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "คลังข้อมูลเพลง ต้องสำรวจ tags จากแฟ้มใหม่"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "คุณต้องการที่จะสแกนตอนนี้หรือไม่"
@@ -2669,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "ช่วงพอร์ตที่ถูกต้องคือ 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "เพิ่ม รูปภาพ"
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "เพิ่มเพลง..."
@@ -2676,6 +2764,10 @@ msgstr "เพิ่มเพลง..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "เพิ่มวีดีโอ..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "แสดงตัวอย่าง"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2877,6 +2969,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "ป้อนที่อยู่เว็บ"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "ชนิดของพร็อกซี่"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 ที่มีการแก้ไข dns ระยะไกล"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB client"
@@ -3013,9 +3129,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "ชื่ออุปกรณ์"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "ใช้การป้องกัน ด้วยรหัสผ่าน"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3371,11 +3495,47 @@ msgstr "หน้าจอเข้าระบบ"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
-msgstr "การตั้งค่า - แฟ้มประวัติ"
+msgstr "การตั้งค่า - ข้อมูลส่วนตัว"
+
+msgctxt "#10035"
+msgid "Reset"
+msgstr "คืนค่า"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "ระดับ: พื้นฐาน"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "ระดับ: มาตรฐาน"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "ระดับ: ขั้นสูง"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "ระดับ: ผู้เชี่ยวชาญ"
 
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "สืบค้น ส่วนเสริม"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "คืนค่า การตั้งค่า"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "คุณแน่ใจหรือว่าคุณต้องการ คืนค่าเดิมของการตั้งค่า ในหมวดนี้?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "ช่วยเหลือ"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "ไม่มี ส่วนช่วยเหลือ ที่มีอยู่"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3385,17 +3545,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "กล่องโต้ตอบ กระบวนการ"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "เรียกดู แฟ้ม"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "ติดตั้งเครือข่าย"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "แหล่งของสื่อ"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "การตั้งค่า ข้อมูลส่วนตัว"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "ล๊อคการตั้งค่า"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "การตั้งค่า เนื้อหา"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "ที่ชื่นชอบ"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "เพลง/ข้อมูล"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "ตัวแก้ไข รายการเล่นอัจฉริยะ"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "ตัวแก้ไข ข้อบังคับ รายการเล่นอัจฉริยะ"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "รูปภาพ/ข้อมูล"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "การตั้งค่าส่วนเสริม"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "ส่วนเสริม/ข้อมูล"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3897,6 +4097,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "ถอดจอยสติ๊ก"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "พยายามปลุกเซิร์ฟเวอร์ระยะไกลในการเข้าถึง"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "ปลุกผ่าน Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "กำลังรอ เครือข่ายที่จะเชื่อมต่อ"
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "ล้มเหลวในการดำเนินการ ปลุกผ่าน Lan!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "กำลังรอ เพื่อให้เซิร์ฟเวอร์ถูกปลุก..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "เพิ่มช่วงการรอ เพื่อให้เซิร์ฟเวอร์ถูกปลุก..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "กำลังรอ เพื่อให้บริการเริ่มทำงาน"
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "ค้นหา MAC"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "อัพเดตแล้ว สำหรับ %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "ค้นพบ สำหรับ %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "ล้มเหลว สำหรับ %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "แบตเตอรี่ต่ำ"
@@ -4216,6 +4460,10 @@ msgstr "ควบคุมอุณภูมิอัตโนมัติ"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "แทนที่ความเร็วพัดลม"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "ตัวอักษร"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4677,6 +4925,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "เล่นเพียงแค่นี้"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "เปิดใช้งาน HQ Scalers สำหรับปรับขนาดข้างต้น"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "กระบวนการ A/V sync"
@@ -4740,6 +4992,10 @@ msgstr "งานศิลป์ ในเครื่อง"
 msgctxt "#13515"
 msgid "No art"
 msgstr "ไม่มี งานศิลป์"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "เพิ่ม งานศิลป์"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4893,6 +5149,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "วิดีโอ แคช - ดีวีดี รอม"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "เครือข่ายท้องถิ่น"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "อินเตอร์เน็ต"
@@ -4901,6 +5161,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "แคชเสียง - ดีวีดี รอม"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "เครือข่ายท้องถิ่น"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "อินเตอร์เน็ต"
@@ -4908,6 +5172,10 @@ msgstr "อินเตอร์เน็ต"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "ดีวีดี แคช - ดีวีดี รอม"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "เครือข่ายท้องถิ่น"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5057,6 +5325,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "ลบที่ชื่นชอบ"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "สี"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "โซนเวลาประเทศ"
@@ -5192,6 +5464,10 @@ msgstr "เสียงนำทาง"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "หน้าตาพื้นฐาน"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "ชุดรูปแบบ"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5712,6 +5988,10 @@ msgstr "ข้อมูล"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "การบันทึกในช่องนี้เริ่มต้นแล้ว"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s ไม่สามารถเล่นได้. ตรวจสอบ log สำหรับรายละเอียด."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -7195,7 +7475,7 @@ msgstr "คัดลอกปริยาย"
 
 msgctxt "#20065"
 msgid "Profile picture"
-msgstr "ข้อมูลส่วนตัวรูปภาพ"
+msgstr "รูปภาพ ข้อมูลส่วนตัว"
 
 msgctxt "#20066"
 msgid "Lock preferences"
@@ -7203,11 +7483,11 @@ msgstr "ล๊อคการแสดงผล"
 
 msgctxt "#20067"
 msgid "Edit profile"
-msgstr "แก้ไขข้อมูลส่วนตัว"
+msgstr "แก้ไข ข้อมูลส่วนตัว"
 
 msgctxt "#20068"
 msgid "Profile lock"
-msgstr "ข้อมูลส่วนตัวล๊อค"
+msgstr "ล๊อค ข้อมูลส่วนตัว"
 
 msgctxt "#20069"
 msgid "Could not create folder"
@@ -7303,11 +7583,11 @@ msgstr "รหัสล๊อค"
 
 msgctxt "#20092"
 msgid "Load profile"
-msgstr "โหลดข้อมูลส่วนตัว"
+msgstr "โหลด ข้อมูลส่วนตัว"
 
 msgctxt "#20093"
 msgid "Profile name"
-msgstr "ชื่อข้อมูลส่วนตัว"
+msgstr "ชื่อ ข้อมูลส่วนตัว"
 
 msgctxt "#20094"
 msgid "Media sources"
@@ -7315,7 +7595,7 @@ msgstr "แหล่งข้อมูลสื่อ"
 
 msgctxt "#20095"
 msgid "Enter profile lock code"
-msgstr "ป้อนรหัสล๊อคข้อมูลส่วนตัว"
+msgstr "ป้อนรหัส ล๊อคข้อมูลส่วนตัว"
 
 msgctxt "#20096"
 msgid "Login screen"
@@ -7347,7 +7627,7 @@ msgstr "หรือคัดลอกจากค่าปริยาย?"
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
-msgstr "จัดเก็บการตั้งค่าลงข้อมูลส่วนตัว?"
+msgstr "บันทึกการเปลี่ยนแปลง ไปยังข้อมูลส่วนตัว?"
 
 msgctxt "#20104"
 msgid "Old settings found."
@@ -7771,7 +8051,7 @@ msgstr "WebDAV server (HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
-msgstr "เข้าสู่ระบบครั้งแรก, แก้ไขโปรไฟล์ของคุณ"
+msgstr "เข้าสู่ระบบครั้งแรก, แก้ไขข้อมูลส่วนตัวของคุณ"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
@@ -8181,6 +8461,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "ตั้งค่ารูปย่อนักแสดง"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "เอาออก บุ๊คมาร์ค"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "ลบบุ๊คมาร์คตอน"
@@ -8232,6 +8516,10 @@ msgstr "ออกอากาศครั้งแรก"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "เขียน"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "นักเขียน"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8409,6 +8697,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "เลือก %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "จัดการ ชุดภาพยนตร์"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "เลือก ชุดภาพยนตร์"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "ไม่เป็นชุด (เอาออกจาก %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "เพิ่มภาพยนตร์ ไปยังชุดใหม่"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "เก็บชุดปัจจุบัน (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "แสดงแฟ้มและโฟลเดอร์ที่ซ่อน"
@@ -8448,6 +8756,18 @@ msgstr "เพิ่มสื่อที่แบ่งปัน..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "แบ่งปันวิดีโอและเพลงผ่าน UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "มองหาตัวเล่น UPnP ระยะไกล"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "บุ๊คมาร์ค สร้างแล้ว"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "บุ๊คมาร์คสำหรับตอน สร้างแล้ว"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8821,6 +9141,14 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "จำนวนตอนที่ดูแล้ว"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "จัดกลุ่ม โดย"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "ผสม"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "ตำแหน่งของคำบรรยาย"
@@ -8989,6 +9317,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "ปฐมนิเทศ"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "ตำแหน่ง-ย่อย"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "ชนิดของรูปภาพ"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "ตั้งเวลาแล้ว"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "ประเภทเพิ่มเติม"
@@ -9060,6 +9400,10 @@ msgstr "อ้างอิง Tx ต้นฉบับ "
 msgctxt "#21877"
 msgid "Date created"
 msgstr "วันที่สร้าง"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "เร่งด่วน"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9157,6 +9501,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "ปรังปรุงคลังแบบพื้นหลังเสมอ"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "ส่วนต่อท้าย DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9252,6 +9600,14 @@ msgstr "ตัวอักษร"
 msgctxt "#22031"
 msgid "Size"
 msgstr "ขนาด"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "สี"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "ชุดอักขระ"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10001,6 +10357,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "เปิดใช้ปุ่มสริปต์กำหนดเอง"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "เข้าระบบอัตโนมัติ"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "ล้มเหลวในการเริ่มต้น"
@@ -10113,9 +10473,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "ไม่พบรายการก่อนหน้าที่จะเล่น"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "ล้มเหลวในการเริ่ม Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "มี Apple's Bonjour Service ติดตั้งอยู่หรือไม่ ดู log เพื่อดูข้อมูลเพิ่มเติม"
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay จะต้องใช้ การเปิดทำงานของ Zeroconf."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "ไม่สามารถหยุด Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay และ AirTunes ตัองอาศัยการทำงานของ Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10197,6 +10573,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "เปิดใช้การรองรับจอยสติ๊กและเกมส์แพด"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "ปิดใช้งานจอยสติ๊ก เมื่อค้นพบอุปกรณ์นี้"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "ที่ตั้ง"
@@ -10256,6 +10636,10 @@ msgstr "อุปกรณ์ที่จะปิด เมื่อหยุ�
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "ทำให้อุปกรณ์อยู่ในโหมดสแตนด์บาย เมื่อเปิดใช้งานตัวพักหน้าจอ"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "ปลุกอุปกรณ์ เมื่อปิดการทำงานสกรีนเซฟเวอร์ "
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10368,3 +10752,727 @@ msgstr "รุ่นที่ไม่สนับสนุนส่วนติ
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* โฟลเดอร์ รายการ"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "ใช้ขอบเขตของสีแบบจำกัด (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "เปลี่ยนรูปลักษณ์และความรู้สึก ของส่วนติดต่อผู้ใช้."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "เลือกสกินสำหรับส่วนติดต่อผู้ใช้. ส่วนนี้จะกำหนดรูปลักษณ์และความรู้สึกของ XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "เปลี่ยนการตั้งค่าเฉพาะของสกิน. ตัวเลือกที่มีจะขึ้นอยู่กับสกินที่ใช้อยู่."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "เปลี่ยนชุดรูปแบบ ที่ขึ้นกับสกินที่คุณเลือกใช้."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "เปลี่ยนสีของสกินที่คุณเลือกใช้."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "เลือกแบบอักษร ที่แสดงในส่วนติดต่อผู้ใช้. ชุดของแบบอักษร ได้ถูกกำหนดค่าโดยสกินของคุณเอง."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "ปรับขนาดมุมมองของ GUI."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "เลือกหน้าต่างของสื่อ ที่ XBMC จะแสดงในตอนเริ่มระบบ."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "เลือกหรือปิดรูปแบบเสียง ที่ใช้ในส่วนติดต่อผู้ใช้."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "ปิดตรงนี้ เพื่อเอาป้ายเลื่อน ข่าว RSS ออก "
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "แก้ไข RSS feeds."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "เลือกภาษา ของส่วนติดต่อผู้ใช้."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "เลือกรูปแบบของอุณหภูมิ, เวลาและวันที่. ตัวเลือกที่มีขึ้นอยู่กับภาษาที่เลือกไว้."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "เลือกชุดอักขระ ที่จะใช้สำหรับการแสดงผลใน GUI."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "เลือกสถานที่ตั้งของประเทศ"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "เลือกเขตเวลาปัจจุบันของคุณ"
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "เลือกแทร็คเสียงเริ่มต้น เมื่อมีแทร็คภาษาที่แตกต่างกัน"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "เลือกคำบรรยายเริ่มต้น เมื่อมีภาษาที่แตกต่างกัน"
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "แสดง (..) รายการ ในรายการเพื่อไปยังโฟลเดอร์หลัก"
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "แสดงส่วนขยายของแฟ้มมีเดีย. ตัวอย่าง เช่น, 'You Enjoy Myself.mp3' ซึ่งจะถูกแสดงแบบง่ายเพียง 'You Enjoy Myself'."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "ไม่สนใจคำนำหน้าบางคำ ในระหว่างทำการจัดเรียง. ตัวอย่าง เช่น, 'The Simpsons' จะถูกจัดเรียงแบบง่ายเพียง 'Simpsons'. ในการกำหนดค่าคำนำหน้า, ดูที่ http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "อนุญาตให้สามารถลบและเปลี่ยนชื่อแฟ้ม ด้วยส่วนติดต่อผู้ใช้, ผ่านทางเมนูตามเนื้อหา (กด C บนแป้นพิมพ์, ตัวอย่าง เช่น, การเรียกเมนูนี้)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "แสดงปุ่ม เพิ่มแหล่งข้อมูล จากส่วนหลักของส่วนติดต่อผู้ใช้"
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "แสดงแฟ้มและไดเร็กทอรี่ที่ซ่อนอยู่"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "ตั้งระยะเวลาที่ไม่ได้ใช้งาน ก่อนจะแสดงผลการพักหน้าจอ"
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "เลือกการพักหน้าจอ. XBMC จะบังคับใช้  การพักหน้าจอ 'ทำให้มืดลง'  เมื่อการเล่นวิดีโอเต็มจอถูก หยุดชั่วขณะ หรือเมื่อกล่องโต้ตอบปรากฏขึ้น."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "เปลี่ยนการตั้งค่าเฉพาะของการพักหน้าจอ. ตัวเลือกที่มีจะขึ้นอยู่กับการพักหน้าจอที่ใช้อยู่."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "แสดงตัวอย่าง การพักหน้าจอที่เลือกไว้"
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "เมื่อเพลงถูกเล่น, XBMC จะเริ่มการแสดงแสงสีที่เลือกไว้ แทนที่การแสดงผลพักหน้าจอ"
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "ทำให้จอแสดงผลมืดลง เมื่อสื่อหยุดชั่วขณะ. ไม่สามารถใช้ได้กับ โหมดการพักหน้าจอ 'ทำให้มืดลง'."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "แสดงข้อมูลเรื่องย่อ สำหรับสื่อที่ยังไม่ได้ดู ในคลังวิดีโอ"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "รับรูปย่อของนักแสดง ในขณะสแกนสื่อ"
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "เอา หมวดฤดู ของ รายการทีวี ออก, เลือกใช้ ระหว่าง 'ถ้ามีเพียงหนึ่งฤดู' (ค่าเริ่มต้น), 'ทั้งหมด' และ 'ไม่ใช้'."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "รวมภาพยนตร์ เป็น 'ภาพยนตร์ชุด' เมื่อเลื่อนดูใน คลังข้อมูลภาพยนตร์."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "ตรวจสอบแฟ้มสื่อใหม่ ในตอนเริ่มระบบ XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "ซ่อนแถบแสดงการดำเนินการสแกนคลังข้อมูล ขณะทำการสแกน."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "ลบรายการที่ไม่พบ ออกจากคลังข้อมูลของตุณ (อาจจะถูกเปลี่ยนชื่อ, ลบไป, หรืออยู่ในที่เก็บข้อมูลภายนอก ที่ไม่ได้เชื่อมต่อ)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "ส่งออกฐานข้อมูลคลังวิดีโอ ไปยังแฟ้ม XML. นี้เป็นตัวเลือกที่จะเขียนทับแฟ้ม XML ที่มีอยู่ของคุณ."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "นำเข้าแฟ้ม XML ไปยังฐานข้อมูล คลังวิดีโอ."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "เปิดใช้งานการเล่นอัตโนมัติของแฟ้มถัดไป ในลำดับรายการของสิ่งที่เลือก."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "ปรับกระบวนการที่ใช้ ในการประมวลผลและแสดงผลวิดีโอ."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์สำหรับไฟล์วิดีโอ."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "เลือกว่าจะปรับอัตราการรีเฟชหน้าจอเมื่อไหร่."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "หยุดชั่วขณะ เป็นเวลาเล็กน้อย ในระหว่างทำการเปลี่ยนอัตรารีเฟชหน้าจอ. เปิดใช้งาน เพื่อตั้งอัตราการรีเฟชหน้าจอโดยอัตโนมัติ ที่เหมาะสมกับวิดีโอที่เล่นอยู่. นี้อาจช่วยให้การแสดงภาพวิดีโอลื่นไหลสมบูรณ์แบบ, ดังที่เนื้อหาวิดีโอนั้นได้บันทึกมาในอัตรารีเฟชที่หลากหลาย ที่จำเป็นต้องใช้การจับคู่ที่เหมาะสมกับอัตรารีเฟชหน้าจอ เพื่อให้แสดงผลได้อย่างลื่นไหล."
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "เชื่อมโยงวิดีโอไปสู่อัตราการรีเฟรชของจอภาพ"
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "เสียงอยู่ในการ ทำให้ตรงกัน, นี้สามารถทำได้ โดย เพิ่มอัตราสุ่ม, การข้าม/ทำซ้ำ ชุดข้อมูล, หรือปรับสัญญาณนาฬิกา ถ้ามันเริ่มไม่ตรงกันมากเกินไป."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "ยินยอมให้ตัวเล่นวิดีโอ ละเลยสัดส่วนของภาพด้วยปริมาณทีกำหนด เพื่อให้เต็มขนาดของจอภาพด้วยวิดีโอ."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "เลือกระดับการซูมภาพ ที่วิดีโอ สัดส่วน 4:3 จะแสดงบนจอภาพแบบกว้าง."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "การแปลงในระดับสตูดิโอ VDPAU เป็นวิธีสำหรับโปรแกรมขั้นสูงเช่น XBMC ที่จะมีผลต่อการแปลง ขอบเขตการแสดงผลของสี."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "เปิดใช้งาน เทเลเท็กซ์เมื่อดูสตรีมทีวีสด."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "ปรับขนาดเทเลเท็กซ์ ไปยังสัดส่วน 4:3"
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "สลับไปมาระหว่าง เลือก, เล่น (ค่าเริ่มต้น), เล่นต่อจากเดิม และแสดงข้อมูล. เลือกการกระทำกับรายการที่เลือก, อย่างเช่น เปิดไดเรกทอรีในโหมดแฟ้ม. เล่นต่อจากเดิม จะเริ่มเล่นวิดีโอจากตำเหน่งที่คุณเคยดูโดยอัตโนมัติ, แม้กระทั่งหลังจากที่เริ่มระบบใหม่."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "เมื่อแฟ้มถูกสำรวจไปยังคลังข้อมูล มันจะแสดงชื่อจากข้อมูลหลัก แทนการแสดงชื่อแฟ้ม."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "ข้อมูลส่วนตัว ที่ใช้งานล่าสุด"

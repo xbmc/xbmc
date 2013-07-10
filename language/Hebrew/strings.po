@@ -903,7 +903,7 @@ msgstr "Shoutcast"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "....ממתין להתחלה"
+msgstr "ממתין להתחלה..."
 
 msgctxt "#262"
 msgid "Scripts output"
@@ -1099,7 +1099,7 @@ msgstr "מנקה מסד נתונים"
 
 msgctxt "#314"
 msgid "Preparing..."
-msgstr "...מתכונן"
+msgstr "מתכונן..."
 
 msgctxt "#315"
 msgid "Database error"
@@ -1107,7 +1107,7 @@ msgstr "שגיאת מסד נתונים"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "...מחפש שירים"
+msgstr "מחפש שירים..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1115,7 +1115,7 @@ msgstr "ניקוי הושלם בהצלחה"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "...מנקה שירים"
+msgstr "מנקה שירים..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
@@ -1123,7 +1123,7 @@ msgstr "שגיאה בניקוי שירים"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "...ניקוי אמנים"
+msgstr "ניקוי אמנים..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
@@ -1131,7 +1131,7 @@ msgstr "שגיאה בניקוי אמנים"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "...ניקוי סגנונות"
+msgstr "ניקוי סגנונות..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
@@ -1139,7 +1139,7 @@ msgstr "שגיאה בניקוי סגנונות"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "...ניקוי נתיבים"
+msgstr "ניקוי נתיבים..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
@@ -1147,7 +1147,7 @@ msgstr "שגיאה בניקוי נתיבים"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "...ניקוי אלבומים"
+msgstr "ניקוי אלבומים..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
@@ -1155,7 +1155,7 @@ msgstr "שגיאה בניקוי אלבומים"
 
 msgctxt "#328"
 msgid "Writing changes..."
-msgstr "...כותב שינויים"
+msgstr "כותב שינויים..."
 
 msgctxt "#329"
 msgid "Error writing changes"
@@ -1163,11 +1163,11 @@ msgstr "שגיאה בכתיבת שינויים"
 
 msgctxt "#330"
 msgid "This may take some time..."
-msgstr "...פעולה זו עשויה לקחת זמן"
+msgstr "פעולה זו עשויה לקחת זמן..."
 
 msgctxt "#331"
 msgid "Compressing database..."
-msgstr "...דוחס נתונים"
+msgstr "דוחס נתונים..."
 
 msgctxt "#332"
 msgid "Error compressing database"
@@ -1495,7 +1495,7 @@ msgstr "אין סקירות עבור אלבום זה"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "...מוריד תמונות ממוזערות"
+msgstr "מוריד תמונות ממוזערות..."
 
 msgctxt "#416"
 msgid "Not available"
@@ -1863,7 +1863,7 @@ msgstr "הפעל"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "...הפעל ב"
+msgstr "הפעל ב..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -2183,7 +2183,7 @@ msgstr "קצב ביטים קבוע"
 
 msgctxt "#605"
 msgid "Ripping..."
-msgstr "...מעתיק"
+msgstr "מעתיק..."
 
 msgctxt "#607"
 msgid "To:"
@@ -4988,6 +4988,10 @@ msgstr "תמונה מקומית"
 msgctxt "#13515"
 msgid "No art"
 msgstr "מספר תמונה"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "הוסף תמונה"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -10749,9 +10753,29 @@ msgctxt "#36102"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
 
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "בחר את המעטפת בשביל ממשק המשתמש. זה יגדיר את המראה והתחושה של XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "שנה הגדרות מעטפת ספציפיות. האפשריות הקיימות תלויות במעטפת שבשימוש."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "שנה את הצבעים של המעטפת שבחרת."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "בחר את הפונטים שיוצגו בממשק המשתמש. ערכות הפונטים מוגדרות על ידי המעטפת שלך."
+
 msgctxt "#36108"
 msgid "Resize the view of the GUI."
 msgstr "שינוי גודל התצוגה של מנשק המשתמש."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "בחר או השבת את ערכת הצלילים בממשק המשתמש"
 
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
@@ -10760,6 +10784,10 @@ msgstr "עריכת הזנות ה־RSS."
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "בחר את השפה של ממשק המשתמש."
 
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the GUI."
@@ -10784,6 +10812,10 @@ msgstr "הצגת קבצים ותיקיות מוסתרים."
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "תצוגה מקדימה של שומר המסך."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10817,9 +10849,21 @@ msgctxt "#36142"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
 
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת XBMC."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "ייבא קובץ XML אל ספריית הוידאו."
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "אפשר פענוח חומרה של קבצי וידאו."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10853,6 +10897,10 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין.אין מידע זמין עדיין.אין מידע זמין עדיין."
 
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "סנכרן את הוידאו לקצב הרענון של המסך."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
@@ -10868,6 +10916,10 @@ msgstr "אין מידע זמין עדיין."
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "הפעלת טלטקסט בעת צפייה בתזרים טלוויזיה חי."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "שנה יחס תצוגת טלטקס ל 4:3"
 
 msgctxt "#36176"
 msgid "No info available yet."
@@ -10917,6 +10969,10 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
 
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "מיקום הכתוביות על המסך."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
@@ -10936,6 +10992,10 @@ msgstr "אין מידע זמין עדיין."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr "הפעל את תכונות מקליט הוידאו (PVR) בXBMC. זה דורש שלפחות תוסף PVR אחד יהיה מותקן."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11052,6 +11112,18 @@ msgstr "אין מידע זמין עדיין."
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "בחר את המיקום בדיסק הקשיח שלך שבו הרצועות המועתקות ישמרו."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "בחר באיזו איכות אתה רוצה להעתיק את הקבצים שלך."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "הוצא דיסק לאחר שההעתקה תושלם."
 
 msgctxt "#36292"
 msgid "No info available yet."
@@ -11300,6 +11372,10 @@ msgstr "אם על החיבור שלך יש הגבלת רוחב פס, מערכת 
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "הגדר/י כמה זמן להמתין לפני כבוי"
 
 msgctxt "#36392"
 msgid "No info available yet."

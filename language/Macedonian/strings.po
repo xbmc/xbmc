@@ -5577,6 +5577,14 @@ msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Прикажи квалитет на сигнал"
 
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Нов канал"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Управување со групи"
+
 msgctxt "#19069"
 msgid "EPG"
 msgstr "ТВ-Водич"
@@ -5628,6 +5636,10 @@ msgstr "__-__-__-__-__-Са-Не"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Предупредување"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Управување со групи"
 
 msgctxt "#19146"
 msgid "Groups"
@@ -8173,6 +8185,10 @@ msgctxt "#24016"
 msgid "Album information"
 msgstr "Податоци за албумот"
 
+msgctxt "#24017"
+msgid "Artist information"
+msgstr "Информации за изведувач"
+
 msgctxt "#24018"
 msgid "Services"
 msgstr "Избор на сервис"
@@ -8308,6 +8324,10 @@ msgstr "Вечерва"
 msgctxt "#33019"
 msgid "Tomorrow Night"
 msgstr "Утре вечер"
+
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "Врнежи"
 
 msgctxt "#33030"
 msgid "Outlook"

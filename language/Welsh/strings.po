@@ -1005,6 +1005,10 @@ msgctxt "#288"
 msgid "Font"
 msgstr "Ffont"
 
+msgctxt "#289"
+msgid "Size"
+msgstr "Maint"
+
 msgctxt "#290"
 msgid "Dynamic range compression"
 msgstr "Cywasgiad ystod dynamig"
@@ -2381,6 +2385,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Gyda llaw (Statig)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "Cyfeiriad IP"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "Cadw ac ailgychwyn"
@@ -2405,13 +2413,25 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "Gweinydd FTP"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "Porth"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Gadw a gosod"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "Cyfrinair"
+
 msgctxt "#734"
 msgid "No pass"
 msgstr "Dim parhau"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Set nod"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2540,6 +2560,10 @@ msgstr "Ffolder sioe sleidiau"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "Rhyngwyneb rhwydwaith"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Enw rhwydwaith diwyfr (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2832,6 +2856,10 @@ msgstr "Pwyntiau mynediad"
 msgctxt "#1047"
 msgid "Other..."
 msgstr "Eraill..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Enw defnyddiwr"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3352,6 +3380,18 @@ msgstr "Deialog Iawn/Na"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Deialog cynnydd"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Gosodiadau cloi"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Ffefrynnau"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Gosodidau ychwanegion"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4849,9 +4889,17 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Storfa Fideo - DVD-ROM"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "Rhyngrwyd"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Storfa Sain - DVD-ROM"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "Rhyngrwyd"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -7317,6 +7365,10 @@ msgctxt "#20108"
 msgid "Root"
 msgstr "Gwraidd"
 
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Chwyddo"
+
 msgctxt "#20110"
 msgid "UPnP settings"
 msgstr "Gosodiadau UPnP"
@@ -8601,6 +8653,10 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Crafwr fideo cerddoriaeth rhagosodedig"
 
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Gosodiadau"
+
 msgctxt "#21418"
 msgid "Multilingual"
 msgstr "Amlieithog"
@@ -8728,6 +8784,10 @@ msgstr "Iaith isdeitlau"
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr "Rheolwr pell yn efelychu pwyso bysellfwrdd"
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "Golygu"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9184,6 +9244,10 @@ msgstr "Fersiwn Direct3D:"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Ffont"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Maint"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"

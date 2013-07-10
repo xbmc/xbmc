@@ -34,7 +34,7 @@ msgstr "Punkter"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "Bar Høyde"
+msgstr "Søylehøyde"
 
 msgctxt "#30005"
 msgid "Small"
@@ -50,7 +50,7 @@ msgstr "Stor"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "Veldig Stor"
+msgstr "Veldig stor"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -58,7 +58,7 @@ msgstr "Hastighet"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Veldig Sakte"
+msgstr "Veldig sakte"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -74,4 +74,4 @@ msgstr "Rask"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Veldig Raskt"
+msgstr "Veldig rask"

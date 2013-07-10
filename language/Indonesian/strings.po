@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Batalkan operasi berkas"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Resolusi"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Jumlah saluran"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Penerima berkemampuan DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1005,6 +1013,10 @@ msgctxt "#288"
 msgid "Font"
 msgstr "Huruf"
 
+msgctxt "#289"
+msgid "Size"
+msgstr "Ukuran"
+
 msgctxt "#290"
 msgid "Dynamic range compression"
 msgstr "Volume Pengerasan"
@@ -1036,6 +1048,22 @@ msgstr "AVDelay"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Bookmarks"
+
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Penerima berkemampuan AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Penerima berkemampuan MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Penerima berkemampuan MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Penerima berkemampuan MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1201,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Dorong tingkat suara pada downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Penerima berkemampuan DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Penerima berkemampuan Multichannel LPCM"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Penerima berkemampuan TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Program"
@@ -1256,6 +1296,10 @@ msgstr "Tingkat Pudar Screensaver"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sortir : File"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Penerima berkemampuan Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2041,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Jumlah main"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Tanggal Pengambilan"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Arah sortir"
@@ -2341,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Tingkat Kompresi"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Log Verbose..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Bersihkan Pustaka"
@@ -2356,6 +2408,10 @@ msgstr "path ini telah di-scan sebelumnya"
 msgctxt "#705"
 msgid "Network"
 msgstr "Jaringan"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2373,6 +2429,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Proxy HTTP"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Penugasan"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Otomatis (DHCP)"
@@ -2384,6 +2444,18 @@ msgstr "Manual (Statik)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Netmask"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Gateway standar"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Server DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2424,6 +2496,18 @@ msgstr "Password"
 msgctxt "#734"
 msgid "No pass"
 msgstr "Tanpa Pass"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Set Karakter"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Gaya"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Warna"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2553,6 +2637,18 @@ msgctxt "#775"
 msgid "Network interface"
 msgstr "Antarmuka Jaringan"
 
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Nama jaringan nirkabel (ESSID)"
+
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Kata kunci nirkabel"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Keamanan nirkabel"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Simpan dan terapkan pengaturan antarmuka jaringan"
@@ -2637,6 +2733,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Pustaka Diperbarui"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Pustaka musik perlu memindai ulang tag dari berkas"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Apakah anda ingin memindai sekarang?"
@@ -2653,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Tingkat port yang valid adalah 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Tambahkan Gambar..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "XLink Kai"
@@ -2660,6 +2764,10 @@ msgstr "XLink Kai"
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Permainan Online"
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Pratinjau"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2861,6 +2969,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Masukkan alamat web"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Tipe proksi"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 dengan remote dns resolving"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "Klien SMB"
@@ -2997,9 +3129,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Nama Perangkat"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Gunakan proteksi kata kunci"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3357,9 +3497,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Setelan->Profil"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Atur Ulang"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Tingkatan: Dasar"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Tingkatan: Standar"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Tingkatan: Lanjutan"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Tingkatan: Ahli"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Addon browser"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Atur ulang pengaturan"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Apakah anda yakin ingin atur ulang pengaturan di dalam kategori ini?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Bantuan"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Tidak ada bantuan tersedia"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3369,9 +3545,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialog Kemajuan"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Perambah berkas"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Pengaturan jaringan"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Sumber media"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Pengaturan profil"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Setting Penguncian"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Pengaturan konten"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Kegemaran"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Lagu/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Penyusun playlist Smart"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Penyusun aturan playlist Smart"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Gambar/Info"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Pengaturan Pengaya"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Pengaya/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3873,6 +4097,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystik tercabut"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Coba untuk membangunkan remote server pada saat diakses"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Menunggu jaringan untuk terhubung..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Gagal menjalankan Wake on Lan!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Menunggu server untuk bangun..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Menunggu lebih lama server untuk bangun..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Menunggu servis untuk dijalankan..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC Discovery"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Termutakhirkan untuk %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Ditemukan untuk %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Gagal untuk %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Batere mulai habis"
@@ -4192,6 +4460,10 @@ msgstr "Kontrol Suhu Otomatis"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Mengesampingkan Kecepatan Kipas"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Font"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4653,6 +4925,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Mainkan ini saja"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Aktifkan HQ Scalers untuk mengubah skala di atas"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metode sinkronisasi A/V"
@@ -4716,6 +4992,10 @@ msgstr "Art lokal"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Tanpa art"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Tambahkan art"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4869,6 +5149,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video Cache - DVDRom"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Jaringan Lokal"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4877,6 +5161,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio Cache - DVDRom"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "jaringan Lokal"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4884,6 +5172,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD Cache - DVDRom"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Jaringan Lokal"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5033,6 +5325,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Hapus dari favorit"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Warna"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Zona waktu negara"
@@ -5168,6 +5464,10 @@ msgstr "Navigasi Suara"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Kulit Standar"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5688,6 +5988,10 @@ msgstr "Informasi"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Sudah memulai rekaman pada saluran ini"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s tidak dapat dimainkan. Periksa log untuk detil."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8157,6 +8461,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Atur thum artis"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Hapus penanda"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Hapus bookmark episode"
@@ -8207,6 +8515,10 @@ msgstr "Pertama kali ditayangkan"
 
 msgctxt "#20417"
 msgid "Writer"
+msgstr "Penulis"
+
+msgctxt "#20418"
+msgid "Writers"
 msgstr "Penulis"
 
 msgctxt "#20419"
@@ -8385,6 +8697,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Pilih %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Atur kumpulan film"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Pilih kumpulan film"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Tidak ada kumpulan (Hapus dari %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Tambahkan film ke kumpulan baru"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Biarkan kumpulan yang sekarang (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Perlihatkan berkas dan direktori tersembunyi"
@@ -8424,6 +8756,18 @@ msgstr "Menambahkan media kongsi..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Kongsikan pustaka video dan musik melalui UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Cari remote UPnP player"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Penanda telah dibuat"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Penanda Episode telah dibuat"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8765,6 +9109,10 @@ msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr "Pengendali remote mengirimkan tekanan keyboard"
 
+msgctxt "#21450"
+msgid "Edit"
+msgstr "Ubah"
+
 msgctxt "#21451"
 msgid "Internet connection required."
 msgstr "Koneksi internet dibutuhkan."
@@ -8792,6 +9140,14 @@ msgstr "Penyimpanan eksternal"
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Jumlah episode yang sudah ditonton"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Kelompokkan berdasarkan"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "tercampur"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8961,6 +9317,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientasi"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Sub-lokasi"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "jenis gambar"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Waktu pembuatan"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Kategori tambahan"
@@ -9032,6 +9400,10 @@ msgstr "Referensi Tx Asli"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Tanggal dibuat"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Urgensi"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9129,6 +9501,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Sembunyikan perkembangan pembaruan pustaka"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Akhiran DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9220,6 +9596,18 @@ msgstr "Versi Direct3D:"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Huruf"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Ukuran"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Warna"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Charset"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9969,6 +10357,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Aktifkan tombol skrip ubahan"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Login otomatis"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Gagal memulai"
@@ -10081,9 +10473,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Tidak dapat menemukan item sebelumnya untuk dimainkan"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Gagal untuk memulai Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Apakah Service Bonjour dari Apple sudah diinstal? Lihat log untuk info lebih lanjut."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "Airplay membutuhkan Zeroconf untuk dapat diaktifkan"
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Tidak dapat menghentikan Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "Airplay dan AirTunes bergantung pada Zeroconf untuk berjalan."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10165,6 +10573,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Mengaktifkan dukungan joystik dan gamepad"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Lumpuhkan joystick saat perangkat ini terpasang"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokasi"
@@ -10224,6 +10636,10 @@ msgstr "Perangkat untuk menonaktifkan ketika menghentikan XBMC"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Biarkan perangkat pada mode standby ketika mengaktifkan screensaver"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Bangunkan perangkat saat mematikan screensaver"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10336,3 +10752,663 @@ msgstr "Versi libCEC tidak didukung. %x lebih rendah dari versi XBMC mendukung (
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Item folder"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Gunakan rentang warna terbatas (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Ubah tampilan dari User Interface."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Pilih selerang untuk Antarmuka Pengguna. Ini akan menentukan tampilan dan nuansa XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Ubah pengaturan selerang tertentu. Pilihan yang tersedia bergantung pada selerang yang digunakan."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Ubah tema yang terkait dengan selerang yang dipilih."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Ubah warna dari selerang yang dipilih."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Pilih tampilan font Antarmuka Pengguna. Kumpulan font diatur oleh selerang anda."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Ubah ukuran tampilan dari GUI."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Pilih jendela media yang XBMC tampilkan di awal mulai."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Pilih atau matikan skema suara digunakan di Antarmuka Pengguna."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Matikan ini untuk menghilangkan baris berita RSS bergulir."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Ubah asupan RSS."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Memilih bahasa dari Antarmuka Pengguna."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Pilih format dari suhu, waktu, dan tanggal. Pilihan tersedia bergantung dari bahasa yang dipilih."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Pilih kumpulan karakter yang digunakan untuk menampilkan teks di GUI. "
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Pilih lokasi negara."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Pilih timezone saat ini."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Pilih trek suara standar ketika trek bahasa lainnya tersedia."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Pilih subtitle standar ketika bahasa lainnya tersedia."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Tampilkan (..) butir dalam bentuk daftar untuk mengunjungi folder induk."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Tampilkan ekstensi berkas untuk berkas media. Sebagai contoh, 'You Enjoy Myself.mp3' akan ditampilkan sederhananya sebagai 'You Enjoy Myself'."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Abaikan token-token tertentu saat proses pengurutan. Sebagai contoh, 'The Simpsons' akan diurutkan sederhananya sebagai 'Simpsons'. Untuk mengatur token, lihat http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Izinkan berkas untuk dihapus dan diubah nama melalui antarmuka pengguna, dengan menu kontekstual (tekan C di keyboard, sebagai contoh, akan memunculkan menu ini)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Tampilkan tombol tambah sumber dari bagian akar dari antarmuka pengguna."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Tampilkan berkas dan direktori tersembunyi."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Tentukan lama waktu diam sebelum menampilkan screensaver."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "Pilih screensaver. XBMC akan memaksa screensaver 'Redup' ketika pemutaran video layar penuh dijeda atau sebuah kotak dialog aktif."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Ubah pengaturan screensaver tertentu. Pilihan yang tersedia bergantung pada screensaver yang digunakan."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Pratinjau screensaver yang dipilih."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "Jika musik sedang dimainkan, XBMC akan memulai visualisasi terpilih bukannya menampilkan screensaver."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Redupkan tampilan ketika media dijeda. Tidak berlaku untuk mode screensaver 'Redup'."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Tampilkan informasi plot untuk media yang tidak tertonton di Pustaka Video."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Dapatkan gambar kecil dari aktor saat memindai media."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Hapus simpul acara TV musiman, beralih antara 'Jika hanya satu musim' (standar), 'Selalu' dan 'Tidak pernah'."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Kelompokkan film menjadi 'Kumpulan film' ketika merambah pustaka film."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Periksa berkas media baru saat memulai XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Sembunyikan penunjuk perkembangan pindai pustaka saat memindai."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Hapus butir-butir yang tidak dapat ditemukan (entah diubah nama, dihapus, atau di penyimpanan lepasan yang sedang tidak terpasang) dari pustaka."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Pilih sumber informasi film standar. Lihat Pengatur Pengaya untuk pilihan."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Belum ada info tersedia."

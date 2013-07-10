@@ -355,11 +355,11 @@ msgstr "Пауза"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Сбой обновления"
+msgstr "Не удалось обновить"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Сбой установки"
+msgstr "Не удалось установить"
 
 msgctxt "#115"
 msgid "Copy"
@@ -1227,7 +1227,7 @@ msgstr "Год"
 
 msgctxt "#346"
 msgid "Boost volume level on downmix"
-msgstr "Громче при микшировании"
+msgstr "Повышать громкость при микшировании"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -3577,6 +3577,14 @@ msgctxt "#10135"
 msgid "Songs/Info"
 msgstr "Песни/информация"
 
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Редактор смарт-плейлиста"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Редактор правил смарт-плейлиста"
+
 msgctxt "#10139"
 msgid "Pictures/Info"
 msgstr "Картинки/информация"
@@ -4101,9 +4109,17 @@ msgctxt "#13028"
 msgid "Waiting for network to connect..."
 msgstr "Ожидание подключения сети..."
 
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Не удалось вызвать Wake on Lan!"
+
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
 msgstr "Ожидание пробуждения сервера..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Длительное ожидание пробуждения сервера..."
 
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
@@ -4977,6 +4993,10 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "Без картинки"
 
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Добавить картинку"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Пауза для смены частоты дисплея"
@@ -5304,6 +5324,10 @@ msgstr "Добавить в \"Избранное\""
 msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Удалить из \"\"Избранного\""
+
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Цвета"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5964,6 +5988,10 @@ msgstr "Сведения"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Этот канал уже записывается"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s не может быть воспроизведён. См. журнал."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8433,6 +8461,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Выбрать эскиз для актера"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Удалить закладку"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Удалить закладку серии"
@@ -8484,6 +8516,10 @@ msgstr "Премьера"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Сценарий"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Сценаристы"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8661,6 +8697,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Выбрать %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Управление киноциклом"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Выбрать киноцикл"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Нет цикла (Убрать из %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Добавить фильм в новый цикл"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Оставить текущий цикл (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Показывать скрытые файлы и папки"
@@ -8700,6 +8756,18 @@ msgstr "Добавить медиаресурс…"
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Включить доступ к медиатеке по UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Поиск сетевых плееров UPnP"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Закладка создана"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Закладка на эпизод создана"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9073,6 +9141,14 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Кол-во просмотренных серий"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Группировать по"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "смешанно"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Расположение субтитров"
@@ -9241,6 +9317,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Ориентация"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Под-размещение"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Тип изображения"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Время создания"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Дополнительные категории"
@@ -9312,6 +9400,10 @@ msgstr "Оригинальный Tx Reference"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Дата создания"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Срочность"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9508,6 +9600,10 @@ msgstr "Шрифт"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Размер"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Цвета"
 
 msgctxt "#22033"
 msgid "Charset"
@@ -10377,9 +10473,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не удается найти предыдущий файл"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Не удалось запустить Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Проверьте, установлена ли служба Apple Bonjour. См. журнал."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay требует включенного Zeroconf."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Не удалось остановить Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay и AirTunes зависят от запущенного Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10525,6 +10637,10 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Переводить устройства в спящий режим при активной заставке"
 
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Пробуждать устройства при отключении заставки."
+
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Не удалось обнаружить порт CEC. Настройте его вручную."
@@ -10637,21 +10753,145 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Папка объекта"
 
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Использовать огранчиенный цветовой диапазон (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Изменить стиль интерфейса пользователя."
+
 msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Выберите обложку для интерфейса пользователя. Это изменит стиль XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Настройка обложки. Доступные параметры зависят от используемой обложки."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Изменение темы выбранной обложки."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Изменение цветов выбранной обложки."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Выбор шрифтов интерфейса. Набор шрифтов зависит от обложки"
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Изменение размера интерфейса."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Выбор окна, открываемого при запуске XBMC."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Выбор или отключение звуков интерфейса."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Включение новостной ленты RSS."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Изменение лент RSS."
 
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Выбор языков интерфейса."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Выбор форматов температуры и даты. Доступные настройки зависят от выбранного языка."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Выбор кодировки текста интерфейса."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Выбор расположения страны."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Выбор часового пояса."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Выбор языка аудиодорожки по умолчанию при наличии нескольких аудиодорожек."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Выбор языка субтитров по умолчанию при наличии нескольких субтитров."
+
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Отображать символ папки верхнего уровня (..)."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Показывать расширения файлов. Например, файл \"You Enjoy Myself.mp3\" будет показан как \"You Enjoy Myself\"."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Игнорировать артикли при сортировке. Например, файл \"The Simpsons\" будет отсортирован как \"Simpsons\". Дополнительная информация: http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Разрешить удаление и переименование файлов посредством контекстного меню интерфейса (клавиша \"С\" на клавиатуре\")."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Показывать кнопку \"Добавить источник\" в корневых разделах интерфейса."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Показывать скрытые файлы и папки."
+
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Время бездействия до включения заставки."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "Выбор заставки. При паузе видео или вызове диалогового окна XBMC отобразит заставку \"Dim\"."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Настройка заставки. Доступные параметры зависят от выбранной заставки."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Предварительный просмотр заставки."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "При проигрывании музыки будет показана визуализация вместо заставки."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Затемнять дисплей на паузе. Не применимо к заставке \"Dim\"."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10677,13 +10917,61 @@ msgctxt "#36140"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Показывать сюжет непросмотренных фильмов/серий."
+
 msgctxt "#36142"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Загружать эскизы актеров при сканировании медиафайлов."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Не объединять серии сериалов в сезоны. Возможные значения: \"Если один сезон\" (по умолчанию), \"Всегда\" и \"Никогда\"."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Объединять фильмы в киноциклы при просмотре фильмотеки."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Сканировать новые медиафайлы при запуске XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Прятать окно выполнения сканирования."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Удалить отсутствующие объекты из медиатеки (файлы, которые были переименованы, удалены или находятся на отключенном носителе)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Экспортировать медиатеку видео в файлы XML. Существующие файлы XML могут быть перезаписаны."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Импортировать файл XML в медиатеку видео."
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Автоматически проигрывать следующий файл в списке."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Выбор метода обработки и отображения видео."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Включение аппаратного декодирования видеофайлов."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10717,6 +11005,22 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Подстраивать частоту дисплея в зависимости от частоты кадров видео."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Кратковременная пауза при смене частоты обновления. Активируйте, для автоустановки частоты обновления, наиболее согласованой с воспроизводимым видео. Это потенциально позволяет идеально гладкое воспроизводение видео, т.к. видеоматериал может быть записан с разной частотой кадров, которую для гладкости показа нужно согласовать с частотой обновления дисплея"
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Синхронизировать видео с частотой обновления дисплея."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Синхронизация видео и звука при путем изменения частоты звука, пропуска/дублирования пакетов или подстройки синхронизации."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -10725,17 +11029,49 @@ msgctxt "#36169"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Игнорировать соотношение сторон видео до некоторой степени, чтобы заполнить больше площади экрана."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Выбор увеличения видео 4:3 при показе на широкоформатных дисплеях."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "Преобразование цветов VDPAU позволят приложениям, например XBMC, влиять на преобразование цветового пространства."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Включить Телетекст при просмотре потокового ТВ."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Масштаб телетекста с соотношением 4:3."
 
 msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Переключатель - Выбор, Игра (по умолчанию), Продолжить и Показ информации. Выбор - выбор элемента, например открыть каталог в режиме файлов. Продолжить - возобновит показ видео с последней позиции, даже после перезапуска системы."
+
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Когда файл отсканироан в библиотеку, он покажет заголовок метаданных вместо имени файла."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Извлечение эскизов и информации, например кодеки и пропорции, для отображения в режиме библиотеки."
 
 msgctxt "#36181"
 msgid "No info available yet."
@@ -10777,13 +11113,45 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Задайте заказной каталог для ваших субтитров. Это может быть общий файловый ресурс."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Расположение субтитров на экране."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Автозапуск Видео-DVD при вставке в дисковод."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Принудительный регион для воспроизведения DVD."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Пытаться пропустить 'обязательное' введение перед меню DVD."
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Выберите заданный по умолчанию источник информации фильма. См. Менеджер надстроек для вариантов."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Выберите заданный по умолчанию источник информации ТВ шоу. См. Менеджер надстроек для вариантов."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Программа по умолчанию для добавления музыкальных клипов в вашу библиотеку."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -10792,6 +11160,34 @@ msgstr "Информация пока недоступна."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr "Включите функцию \"Собственное устройство записи Видео\" (PVR) в XBMC. Для этого нужна хотя бы одна установленная надстройка PVR."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Импорт группы каналов от подсисиемы PVR (если поддержано). Удалит созданные пользователем группы, если они не найдены подсисиемой."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Сортировка каналов по номеру канала на сервере, но используя собственную нумерацию каналов XBMC's."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Нумерация от подсисиемы, вместо ручной настройки по XBMC."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Откройте диспетчер каналов, который позволяет изменить порядок, имя канала, значок и т.д."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Поручить подсисиеме искать каналы (если поддержано)."
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Удалить канал/EPG базу данных, и потом повторно импортировать данные от подсисиемы"
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -10829,13 +11225,57 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "Показываемое по умолчанию окно EPG. Умолчания Графика времени."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "Число дней для импорта EPG данных из подсистем. По умолчанию 2 дня."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "Время между импортом EPG данных из подсистем. По умолчанию 120 минут."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Не импортировать EPG данные во время показа ТВ, чтобы снизить нагрузку на ЦП."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "По умолчанию EPG данные хранятся в локальной базе данных чтобы ускорить импорт при перезапуске XBMC."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Скрыть метки \"нет информации\", если EPG данные для канала не могут быть получены."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "Удалить базу данных EPG в xbmc и потом повторно получить данные от подсистемы."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Показать поток выбранного канала в маленьком поле вместо полноэкранного."
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Показать последний просмотренный канал при переключении на ТВ."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr "Информация качества сигнала в окне информации кодека (если поддержано надстройкой и подсистемой)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Нажатие номерной кнопки в полноэкранном режиме через 1 секунду автоматически переключит на этот номер канала."
 
 msgctxt "#36232"
 msgid "No info available yet."
@@ -10845,9 +11285,45 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr "Продолжительность записи при нажатии кнопки \"запись\", или при создании нового ручного таймера. По умолчанию - 180 минут."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr "Приоритет записи. Большее число означает более высокий приоритет. По умолчанию = 50. Поддерживается не всеми надстройками и подсистемами."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr "Удалить запись после этого времени. По умолчанию 99 дней. Поддерживается не всеми надстройками и подсистемами."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr "Начать запись с упреждением. По умолчанию 2 минуты. Поддерживается не всеми надстройками и подсистемами."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr "Заканчивать запись после указанного времени. По-умолчанию равно 10 минутам. Не все дополнения и бэкэнды поддерживют эту функцию."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Показывать уведомление при добавлении, удалении или завершении таймеров бэкэндом."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Выполнять указанную ниже \"команду пробуждения\" при выходе из XBMC или переходе в спящий режим. Время следующей запланированной записи передаётся как параметр."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "При начале записи, команда не будет выполнена в течении указанного времени. По-умолчанию равно 15 минутам."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "Команда для выполнения. По-умолчанию '/usr/bin/setwakeup.sh'."
 
 msgctxt "#36247"
 msgid "No info available yet."
@@ -10892,6 +11368,10 @@ msgstr "Информация пока недоступна."
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Теги: [B]%N[/B]: НомерТрека, [B]%S[/B]: НомерДиска, [B]%A[/B]: Исполнитель, [B]%T[/B]: Название, [B]%B[/B]: Альбом, [B]%G[/B]: Жанр, [B]%Y[/B]: Год, [B]%F[/B]: ИмяФайла, [B]%D[/B]: Длительность, [B]%J[/B]: Дата, [B]%R[/B]: Рейтинг, [B]%I[/B]: РазмерФайла."
 
 msgctxt "#36292"
 msgid "No info available yet."

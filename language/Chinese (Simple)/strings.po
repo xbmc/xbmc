@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "取消文件操作"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "分辨率"
@@ -855,7 +859,7 @@ msgstr "音乐"
 
 msgctxt "#250"
 msgid "Visualization"
-msgstr "视觉效果"
+msgstr "可视化效果"
 
 msgctxt "#251"
 msgid "Select destination directory"
@@ -868,6 +872,10 @@ msgstr "双声道时输出到所有扬声器"
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "通道数"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS兼容接收器"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1041,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "书签"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC兼容接收器"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1兼容接收器"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2兼容接收器"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3兼容接收器"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "延迟"
@@ -1205,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "增加声道缩减混音音量"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD兼容接收器"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "多通道LPCM兼容接收器"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD接收机"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "程序"
@@ -1260,6 +1296,10 @@ msgstr "屏幕保护画面亮度衰减级别"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "排序：文件"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "杜比数字 (AC3)接收机"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1791,7 +1831,7 @@ msgstr "排序：使用次数"
 
 msgctxt "#510"
 msgid "Enable visualizations"
-msgstr "开启可视化效果"
+msgstr "启用可视化效果"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2044,6 +2084,10 @@ msgstr "进行中"
 msgctxt "#576"
 msgid "Times played"
 msgstr "播放次数"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "拍摄日期"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2345,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "压缩级别"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "详细记录……"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "清理资料库"
@@ -2360,6 +2408,10 @@ msgstr "当前路径曾被扫瞄过"
 msgctxt "#705"
 msgid "Network"
 msgstr "网络"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "服务器"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2377,6 +2429,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP 代理"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "任务"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "自动（动态分配）"
@@ -2388,6 +2444,18 @@ msgstr "手动（静态分配）"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP 地址"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "子网掩码"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "默认网关"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS 服务器"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2500,14 @@ msgstr "无密码"
 msgctxt "#735"
 msgid "Character set"
 msgstr "字符集"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "风格"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "颜色"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2641,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "无线网络名（ESSID）"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "无线密码"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "无线安全"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "保存和应用网卡设置"
@@ -2649,6 +2733,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "资料库更新"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "音乐库需要重新扫描文件标签。"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "现在扫描吗？"
@@ -2665,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "有效端口范围是 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "添加图片……"
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "添加音乐..."
@@ -2672,6 +2764,10 @@ msgstr "添加音乐..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "添加视频..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "预览"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2873,6 +2969,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "输入网页地址"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "代理类型"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5，具备远程dns解析"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB 共享设置"
@@ -3009,9 +3129,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "设备名"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "使用密码保护"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "Airtunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,9 +3497,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "设置->用户配置"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "重置"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "等级：基础"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "等级：标准"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "等级：高级"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "等级：专家"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "扩展功能浏览器"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "重置设置"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "你确定要重置此项的所有设置？"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "帮助"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "无可用帮助"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3381,17 +3545,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "进度对话框"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "文件浏览器"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "网络设置"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "媒体源"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "用户配置设置"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "锁定系统设置"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "内容设置"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "收藏夹"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "歌曲/信息"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "智能播放列表编辑器"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "智能播放列表规则编辑器"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "图片/信息"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "扩展功能设置"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "插件/信息"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3893,6 +4097,34 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "游戏杆拔出"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "在访问时唤醒远程服务器"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "局域网唤醒 (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "等待连接网络…"
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "执行局域网唤醒失败！"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "等待服务器启恢复工作…"
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "等待服务器启动…"
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC 地址发现"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "电池电量不足"
@@ -4213,6 +4445,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "指定风扇转速"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "字体"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "开启转换双向字串"
@@ -4491,11 +4727,11 @@ msgstr "预设"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "该可视化效果没有预设"
+msgstr "该可视化效果无可用预设"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "该可视化效果没有设置"
+msgstr "该可视化效果无可用设置"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4737,6 +4973,10 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "无艺术图片"
 
+msgctxt "#13516"
+msgid "Add art"
+msgstr "添加封面"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "切换刷新率时暂停播放"
@@ -4889,6 +5129,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "视频缓存 - DVD 驱动器"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "局域网"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "互联网"
@@ -4897,6 +5141,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "音频缓存 - DVD 驱动器"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "局域网"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "互联网"
@@ -4904,6 +5152,10 @@ msgstr "互联网"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD 缓存 - DVD 驱动器"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "局域网"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5053,6 +5305,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "从收藏夹移除"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "颜色"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "时区-国家"
@@ -5188,6 +5444,10 @@ msgstr "导航音效"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "皮肤预设"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "主题"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5399,7 +5659,7 @@ msgstr "所有视频文件"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "未观看的"
+msgstr "未观看"
 
 msgctxt "#16102"
 msgid "Watched"
@@ -5708,6 +5968,10 @@ msgstr "信息"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "此频道录制已启动"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s 不能播放。请查看日志获取详情。"
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8039,7 +8303,7 @@ msgstr "序列号"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "显示未观看影片的剧情介绍"
+msgstr "显示未观看项的剧情介绍"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -8177,6 +8441,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "设置演员缩略图"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "移除书签"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "移除分集书签"
@@ -8227,6 +8495,10 @@ msgstr "最初发表"
 
 msgctxt "#20417"
 msgid "Writer"
+msgstr "编剧"
+
+msgctxt "#20418"
+msgid "Writers"
 msgstr "编剧"
 
 msgctxt "#20419"
@@ -8405,6 +8677,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "选择 %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "管理电影集"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "选择电影集"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "无影片集(从%s 移除)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "添加电影到新的电影集"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "保持当前电影集(%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "显示隐藏文件和目录"
@@ -8444,6 +8736,18 @@ msgstr "添加共享媒体..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "通过 UPnP 共享视频和音乐库"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "搜寻远程UPnP播放器"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "书签已建立"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "分集书签已建立"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8985,6 +9289,18 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "方位"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "子区域"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "图像类型"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "创建时间"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "补充类别"
@@ -9056,6 +9372,10 @@ msgstr "原始的 Tx 引用"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "日期建立"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "紧迫性"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9153,6 +9473,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "隐藏资料库更新进度条"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS 后缀"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f秒"
@@ -9248,6 +9572,14 @@ msgstr "字体"
 msgctxt "#22031"
 msgid "Size"
 msgstr "大小"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "颜色"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "编码"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9997,6 +10329,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "启用自定义脚本按钮"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "自动登录"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "启动失败"
@@ -10109,9 +10445,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "未找到上一播放项目"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "启动Zeroconf失败"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Apple 的 Bonjour 服务是否已安装？更多信息见日志记录。"
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "使用 AirPlay 需要启用 Zeroconf 。"
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "无法停止Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay和Airtunes依赖于Zeroconf"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10193,6 +10545,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "启用游戏杆和游戏手柄支持"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "当此设备接入时禁用游戏杆"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "位置"
@@ -10252,6 +10608,10 @@ msgstr "退出XBMC时关闭的设备"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "激活屏幕保护程序时设备进入待机状态"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "当解除屏幕保护后唤醒设备"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10364,3 +10724,799 @@ msgstr "不支持的libCEC接口版本，%x 低于XBMC支持的版本（%x）"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* 项目文件夹"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "使用有限的色彩范围（16-235）"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "改变用户界面的外观及感觉。"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "选择用户界面的皮肤，这将决定 XBMC 的外观。"
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "改变指定皮肤的设置，可设置的选项因皮肤而异。"
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "改变所选皮肤的主题。"
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "改变所选皮肤的配色。"
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "改变用户界面显示字体。字体集由所选皮肤定义。"
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "调整图形用户界面视图。"
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "选择XBMC启动时显示的媒体窗口。"
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "选择或禁用用户界面音效方案。"
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "关闭此功能以移除滚动 RSS 新闻栏。"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "编辑 RSS 信源。"
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "选择用户界面语言。"
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "选择温度、日期和时间格式。可用选项依赖于所选语言。"
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "选择在图形用户界面显示文本所使用的字符集。"
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "选择所在国家。"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "选择当前时区。"
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "选择当多语言音轨可用时使用的默认音轨。"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "选择当多种语言可用时使用的默认字幕。"
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "在列表中显示（..）项表示上级目录。"
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "显示媒体文件的扩展文件名。例如，“我的歌声里.mp3”会简单地显示为“我的歌声里”。"
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "排序操作中忽略特定词。例如，“The Simpsons”将作为“Simpsons”来排序。特定词的设置见：http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "允许在用户界面通过上下文菜单（按C键，如开启本菜单）删除和重命名。"
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "在用户界面根目录显示“添加目录”按钮"
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "显示隐藏文件和目录。"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "设置显示屏幕保护所需的空闲时间。"
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "选择屏幕保护。当全屏视频播放暂停或对话框开启时，XBMC将强制使用“Dim”屏幕保护。"
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "改变指定屏幕保护的设置，可设置的选项因屏幕保护程序而异。"
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "预览选定的屏幕保护。"
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "音乐播放时，XBMC将显示选定的可视化效果而非屏幕保护。"
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "媒体暂停时显示变暗。在“Dim”屏幕保护模式无效。"
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "显示视频资料库中未观看媒体的剧情信息。"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "扫描媒体时获取演员缩略图。"
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "去除剧集季结点，可在“如果只有一季”（默认）、“总是”和“从不”之间切换。"
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "浏览电影资料库时将电影按影片集分组"
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "XBMC启动时检查新媒体文件。"
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "扫描时隐藏资料库扫描进度条。"
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "从资料库删除无法找到的项目（包括已改名、删除，或者未连接的移动存储项）。"
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "将视频资料库数据库导出到XML文件。这将有选择地覆盖当前XML文件。"
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "从XML文件导入到视频资料库数据库。"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "启用自动播放选定项目列表中的下一个文件。"
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "调整处理和显示视频的方式。"
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "启用视频文件的硬件解码。"
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "选择刷新率调整的时机。"
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "刷新率变换时短暂暂停。激活自动设定与正在播放的视频最匹配的刷新率来获得最平滑的视频呈现。由于视频资料可能以多种帧速录制，需要适当的显示器刷新率相匹配以平滑显示。"
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "同步视频和显示器的刷新率。"
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "音频保持同步，方式包括当不同步时重采样、丢弃/重复包，或调整时钟。"
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "允许视频播放器为尽可能将视频满屏显示而在一定程度上忽略宽高比。"
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "选择在宽屏显示屏显示4:3视频的缩放级别。"
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "VDPAU 演播室级色彩转换为象XBMC这样的高级应用提供一个支配色彩空间转换的途径。"
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "在观看直播电视流时允许图文字幕。"
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "图文字幕比例为4:3"
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "在选定、播放（默认）、继续播放和显示信息之间切换。选定将选择项目，例如在文件模式打开一个目录。继续播放将自动从上次播放位置继续播放视频。"
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "文件被扫描进资料库后，将显示其元数据标题而非文件名。"
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "提取缩略图和信息，如编码和宽高比，在资料库模式显示。"
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "设置用于字幕的自定义目录。可以是一个网络共享目录。"
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "字幕在屏幕的显示位置。"
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "插入光盘时自动播放DVD视频。"
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "强制DVD播放的区码。"
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "尝试略过“不可跳过”的介绍直接跳至 DVD 菜单"
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "选择默认电影信息来源。选项见扩展功能管理器。"
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "选择默认剧集信息来源。选项见扩展功能管理器。"
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "用于给资料库加入音乐电视的默认刮削器。"
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "从PVR后端（如果支持）导入频道组。这将删除用户创建但后端中没有的组。"
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "按服务器频道号排序频道，但使用XBMC的频道编号。"
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "使用后端编号取代XBMC中人工设置的编号。"
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "打开频道管理器。可以修改频道顺序、名称、图标等。"
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "命令后端搜索频道（如果支持）。"
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "删除频道/电子节目单数据库，然后从后端重新导入数据。"
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "选择默认艺人信息来源。选项见扩展功能管理器。"
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "选择听音乐时显示的可视化效果。"
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr "选择默认天气信息来源。选项见扩展功能管理器。"
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "无可用信息。"

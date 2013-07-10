@@ -51,7 +51,7 @@ msgstr "Veður"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc miðla depil"
+msgstr "xbmc miðladepil"
 
 msgctxt "#11"
 msgid "Monday"
@@ -299,7 +299,7 @@ msgstr "Vísing: Sjálvvirkandi"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Vísing: Sjálvvirkandi stór"
+msgstr "Vísing: Stór sjálvvirkandi"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -355,11 +355,11 @@ msgstr "Steðgur"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Dagføring miseydnaðist"
+msgstr "Dagføring eydnaðist ikki"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Innlegging miseydnaðist"
+msgstr "Innlegging eydnaðist ikki"
 
 msgctxt "#115"
 msgid "Copy"
@@ -383,15 +383,15 @@ msgstr "Nýggja skjáttu"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Vátta fíluavritan"
+msgstr "Vátta fílu avritan"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Vátta fíluflyting"
+msgstr "Vátta fílu flyting"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Vátta fílustriking?"
+msgstr "Vátta fílu strikan?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -539,7 +539,7 @@ msgstr "Frítt minni"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Onki samband"
+msgstr "Onkin íbinding"
 
 msgctxt "#160"
 msgid "Free"
@@ -563,7 +563,7 @@ msgstr "Ongin fløga"
 
 msgctxt "#165"
 msgid "Disc present"
-msgstr "Fløga tøk"
+msgstr "Fløga er tøk"
 
 msgctxt "#166"
 msgid "Skin"
@@ -571,7 +571,11 @@ msgstr "Útsjónd"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr "Steðga fílkoyring"
+msgstr "Steðga fíluarbeiði"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -679,7 +683,7 @@ msgstr "Innlesi upplýsing um filmin"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Web nýtsluflata"
+msgstr "Vev nýtsluflata"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -695,7 +699,7 @@ msgstr "Atkvøður"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "Luttakarar"
+msgstr "Luttakandi"
 
 msgctxt "#207"
 msgid "Plot"
@@ -777,6 +781,14 @@ msgctxt "#233"
 msgid "Linear"
 msgstr "Loddrætt"
 
+msgctxt "#237"
+msgid "Minification"
+msgstr "Minking"
+
+msgctxt "#238"
+msgid "Magnification"
+msgstr "Vaksing"
+
 msgctxt "#239"
 msgid "Clear playlist on finish"
 msgstr "Rudda spælilistan tá liðugt er"
@@ -796,6 +808,14 @@ msgstr "Dagføringar týttleiki"
 msgctxt "#244"
 msgid "Full screen"
 msgstr "Fullan skerm"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Stødd: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1) (VShift: %2.2f)"
+
+msgctxt "#247"
+msgid "Scripts"
+msgstr "Scripts"
 
 msgctxt "#248"
 msgid "Language"
@@ -817,13 +837,21 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Tal av kanalum"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS tøkur móttakari"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
 msgctxt "#256"
 msgid "Fetching CD information"
 msgstr "Heinti upplýsing um fløguna"
 
 msgctxt "#257"
 msgid "Error"
-msgstr "Feilur"
+msgstr "Brek"
 
 msgctxt "#258"
 msgid "Enable tag reading"
@@ -833,9 +861,17 @@ msgctxt "#259"
 msgid "Opening"
 msgstr "Opni"
 
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
 msgctxt "#261"
 msgid "Waiting for start..."
 msgstr "Bíði eftir byrjan..."
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "Script útprent"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -868,6 +904,14 @@ msgstr "Skipa eftir: Tónleikara"
 msgctxt "#270"
 msgid "Sort by: Album"
 msgstr "Skipa eftir: Útgávu"
+
+msgctxt "#271"
+msgid "Top 100"
+msgstr "Top 100"
+
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "Ovara-Vinstra overscan tillaging"
 
 msgctxt "#279"
 msgid "Unable to load settings"
@@ -908,6 +952,10 @@ msgstr "Undirtekstir"
 msgctxt "#288"
 msgid "Font"
 msgstr "Skrivttypa"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Stødd"
 
 msgctxt "#291"
 msgid "Video"
@@ -1341,6 +1389,10 @@ msgctxt "#445"
 msgid "Audio"
 msgstr "Ljóð"
 
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Virkin"
@@ -1493,6 +1545,10 @@ msgctxt "#513"
 msgid "Home window"
 msgstr "Heima gluggi"
 
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "Manuellar stillingar"
+
 msgctxt "#515"
 msgid "Genre"
 msgstr "Evni"
@@ -1503,11 +1559,11 @@ msgstr "Nýligar spældar útgávur"
 
 msgctxt "#518"
 msgid "Launch"
-msgstr "Koyr"
+msgstr "Tendra"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Koyr um..."
+msgstr "Tendra um..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -1516,6 +1572,10 @@ msgstr "Útgávur"
 msgctxt "#522"
 msgid "Remove source"
 msgstr "Strika keldu"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "Skift media"
 
 msgctxt "#524"
 msgid "Select playlist"
@@ -1549,6 +1609,10 @@ msgctxt "#531"
 msgid "New genre"
 msgstr "Nýtt evni"
 
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Manuell stovnan"
+
 msgctxt "#533"
 msgid "Enter genre"
 msgstr "Skriva evni"
@@ -1563,7 +1627,7 @@ msgstr "Listi"
 
 msgctxt "#536"
 msgid "Icons"
-msgstr "Mynd"
+msgstr "Ímyndir"
 
 msgctxt "#537"
 msgid "Big list"
@@ -1571,23 +1635,27 @@ msgstr "Stórur listi"
 
 msgctxt "#538"
 msgid "Big icons"
-msgstr "Stórar myndir"
+msgstr "Stórar ímyndir"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Vítt"
+msgstr "Breið"
 
 msgctxt "#540"
 msgid "Big wide"
-msgstr "Sera vítt"
+msgstr "Sera breið"
 
 msgctxt "#541"
 msgid "Album icons"
-msgstr "Útgávu myndir"
+msgstr "Útgávu ímyndir"
 
 msgctxt "#542"
 msgid "DVD icons"
-msgstr "DVD myndir"
+msgstr "DVD ímyndir"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
@@ -1597,9 +1665,17 @@ msgctxt "#545"
 msgid "Audio output device"
 msgstr "Ljóð eind"
 
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "Passthrough output eind"
+
 msgctxt "#547"
 msgid "No biography for this artist"
 msgstr "Ongin lýsing finst av hesum tónleikara"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "Broyt multichannel ljóð til stereo"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -1679,7 +1755,7 @@ msgstr "Spælt seinast"
 
 msgctxt "#569"
 msgid "Comment"
-msgstr "Viðmerkingar"
+msgstr "Viðmerking"
 
 msgctxt "#570"
 msgid "Date added"
@@ -1688,6 +1764,10 @@ msgstr "Innlagt"
 msgctxt "#571"
 msgid "Default"
 msgstr "Vanligt"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "Studio"
 
 msgctxt "#573"
 msgid "Path"
@@ -1705,13 +1785,17 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Spælingar"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Dagfesting"
+
 msgctxt "#580"
 msgid "Sort direction"
-msgstr "Skipanarað"
+msgstr "Skipanar rað"
 
 msgctxt "#581"
 msgid "Sort method"
-msgstr "Skipanarháttur"
+msgstr "Skipanar háttur"
 
 msgctxt "#582"
 msgid "View mode"
@@ -1719,7 +1803,7 @@ msgstr "Vísing"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
-msgstr "Goym vísingar fyri ymiskar mappur"
+msgstr "Brúka serligar vísingar fyri mappur"
 
 msgctxt "#584"
 msgid "Ascending"
@@ -1736,6 +1820,10 @@ msgstr "Tillaga spælilista"
 msgctxt "#587"
 msgid "Filter"
 msgstr "Filtur"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "Steðga ballinun"
 
 msgctxt "#590"
 msgid "Random"
@@ -1781,6 +1869,10 @@ msgctxt "#602"
 msgid "Standard"
 msgstr "Vanligt"
 
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "Støðug upptøku"
+
 msgctxt "#605"
 msgid "Ripping..."
 msgstr "Avriti..."
@@ -1805,6 +1897,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Skriva tal"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/sample"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Sample rate"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Tónleika fløgur"
@@ -1812,6 +1912,10 @@ msgstr "Tónleika fløgur"
 msgctxt "#622"
 msgid "Quality"
 msgstr "Góðska"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Bitrate"
 
 msgctxt "#624"
 msgid "Include track number"
@@ -1833,6 +1937,10 @@ msgctxt "#630"
 msgid "Normal"
 msgstr "Vanligt"
 
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Zoom"
+
 msgctxt "#635"
 msgid "Original Size"
 msgstr "Uppruna stødd"
@@ -1843,7 +1951,7 @@ msgstr "Serligt"
 
 msgctxt "#639"
 msgid "Use track levels"
-msgstr "Brúka lag uppseting"
+msgstr "Brúka lag støði"
 
 msgctxt "#640"
 msgid "Use album levels"
@@ -1953,6 +2061,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Manuelt (Statiskt)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP adressa"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "Goym og endurstarta"
@@ -1977,9 +2089,21 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "FTP ambætari"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "Portur"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Goym og áset"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Loyniorð"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Teknsett"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2104,6 +2228,10 @@ msgstr "Mappa til myndarøð"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "Netkort"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Tráðleyst net (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2368,6 +2496,10 @@ msgstr "Víðkanar stilling"
 msgctxt "#1047"
 msgid "Other..."
 msgstr "Annað..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Brúkaranavn"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2841,6 +2973,10 @@ msgctxt "#10019"
 msgid "Settings - Appearance"
 msgstr "Stillingar - Útsjónd"
 
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "Scripts"
+
 msgctxt "#10021"
 msgid "Web Browser"
 msgstr "Kagi"
@@ -2872,6 +3008,18 @@ msgstr "Ja/Nei spurnarblað"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Upplýsing um framstig"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Læs stillingar"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Snarvegir"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Víðkanar stilling"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -5929,6 +6077,10 @@ msgctxt "#20108"
 msgid "Root"
 msgstr "Rót"
 
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Zoom"
+
 msgctxt "#20110"
 msgid "UPnP settings"
 msgstr "UPnP stillingar"
@@ -7061,6 +7213,10 @@ msgctxt "#21411"
 msgid "not in the last"
 msgstr "ikki í seinastu"
 
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Stillingar"
+
 msgctxt "#21418"
 msgid "Multilingual"
 msgstr "Fleiri mál"
@@ -7172,6 +7328,10 @@ msgstr "Mál á undirteksti"
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr "Fjarstýring sendur knappaborð presses"
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "Broyt"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -7520,6 +7680,10 @@ msgstr "Direct3D útgáva:"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Skrivttypa"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Stødd"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"

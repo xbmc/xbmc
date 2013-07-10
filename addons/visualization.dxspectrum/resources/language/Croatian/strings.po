@@ -50,7 +50,7 @@ msgstr "Veliko"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "Veoma veliko"
+msgstr "Vrlo veliko"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -58,7 +58,7 @@ msgstr "Brzina"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Veoma sporo"
+msgstr "Vrlo sporo"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -74,4 +74,4 @@ msgstr "Brzo"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Veoma brzo"
+msgstr "Vrlo brzo"

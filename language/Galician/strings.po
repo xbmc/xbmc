@@ -15,7 +15,7 @@ msgstr ""
 
 msgctxt "#0"
 msgid "Programs"
-msgstr "Aplicativos"
+msgstr "Programas"
 
 msgctxt "#1"
 msgid "Pictures"
@@ -139,7 +139,7 @@ msgstr "Mar"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Mer"
+msgstr "Mér"
 
 msgctxt "#44"
 msgid "Thu"
@@ -151,7 +151,7 @@ msgstr "Ven"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Sab"
+msgstr "Sáb"
 
 msgctxt "#47"
 msgid "Sun"
@@ -307,7 +307,7 @@ msgstr "Visualización: Iconas"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "Visualización: Lista"
+msgstr "Visualización: Listaxe"
 
 msgctxt "#102"
 msgid "Scan"
@@ -315,15 +315,15 @@ msgstr "Escanear"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Ordear por: Nome"
+msgstr "Ordenar por: Nome"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Ordear por: Data"
+msgstr "Ordenar por: Data"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Ordear por: Tamaño"
+msgstr "Ordenar por: Tamaño"
 
 msgctxt "#106"
 msgid "No"
@@ -427,7 +427,7 @@ msgstr "Información do sistema"
 
 msgctxt "#131"
 msgid "Display"
-msgstr "Display"
+msgstr "Pantalla"
 
 msgctxt "#132"
 msgid "Albums"
@@ -447,15 +447,15 @@ msgstr "Xéneros"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Listas de reprodución"
+msgstr "Listaxes de reprodución"
 
 msgctxt "#137"
 msgid "Search"
-msgstr "Búsqueda"
+msgstr "Buscar"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Información do sistema"
+msgstr "Información do Sistema"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -539,7 +539,7 @@ msgstr "Memoria libre"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Non hai enlace"
+msgstr "Sen ligazón"
 
 msgctxt "#160"
 msgid "Free"
@@ -547,7 +547,7 @@ msgstr "Libre"
 
 msgctxt "#161"
 msgid "Unavailable"
-msgstr "Non está dispoñible"
+msgstr "Non está dispoñíbel"
 
 msgctxt "#162"
 msgid "Tray open"
@@ -572,6 +572,10 @@ msgstr "Pel"
 msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Cancelar a operación cos ficheiros"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -631,7 +635,7 @@ msgstr "Aceptar"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Non se atoparon albumes!"
+msgstr "Non se atoparon álbums!"
 
 msgctxt "#188"
 msgid "Select all"
@@ -639,7 +643,7 @@ msgstr "Seleccionar todo"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Procurando información dos medios"
+msgstr "Obtendo información dos medios"
 
 msgctxt "#190"
 msgid "Save"
@@ -647,7 +651,7 @@ msgstr "Gardar"
 
 msgctxt "#191"
 msgid "Shuffle"
-msgstr "Aleatorio"
+msgstr "Ó chou"
 
 msgctxt "#192"
 msgid "Clear"
@@ -659,7 +663,7 @@ msgstr "Escanear"
 
 msgctxt "#194"
 msgid "Searching..."
-msgstr "Procurando..."
+msgstr "Buscando..."
 
 msgctxt "#195"
 msgid "No info found!"
@@ -715,11 +719,11 @@ msgstr "Anterior"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Calibrar interface de usuaria..."
+msgstr "Calibrar interface de usuario..."
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Calibración de vídeo..."
+msgstr "Calibración do vídeo..."
 
 msgctxt "#215"
 msgid "Soften"
@@ -731,7 +735,7 @@ msgstr "Cantidade de zoom"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Ratio do pixel"
+msgstr "Taxa do píxel"
 
 msgctxt "#218"
 msgid "DVD drive"
@@ -771,7 +775,7 @@ msgstr "Buscar nomes das pistas do CD en freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
-msgstr "Lista de reproducción aleatoria ao cargar"
+msgstr "Listaxe de reproducción ó chou ao cargar"
 
 msgctxt "#229"
 msgid "HDD spindown time"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canles"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Receptor compatíbel con DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -903,7 +911,7 @@ msgstr "Saída dos scripts"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
-msgstr "Consentir o control de XBMC vía HTTP"
+msgstr "Permitir o control de XBMC vía HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -915,23 +923,23 @@ msgstr "Para gravación"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Ordear por: Pista"
+msgstr "Ordenar por: Pista"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Ordear por: Tempo"
+msgstr "Ordenar por: Tempo"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Ordear por: Título"
+msgstr "Ordenar por: Título"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Ordear por: Artista"
+msgstr "Ordenar por: Artista"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Ordear por: Álbum"
+msgstr "Ordenar por: Álbum"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -951,7 +959,7 @@ msgstr "Posición do subtítulo"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
-msgstr "Axuste do ratio do pixel"
+msgstr "Axuste da taxa do píxel"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
@@ -967,15 +975,15 @@ msgstr "Axusta o rectángulo ate ficar perfectamente cadrado"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "Imposible cargar a configuración"
+msgstr "Non foi posíbel cargar a configuración"
 
 msgctxt "#280"
 msgid "Using default settings"
-msgstr "Empregando a configuración por defecto"
+msgstr "Empregando a configuración predefinida"
 
 msgctxt "#281"
 msgid "Please check the XML files"
-msgstr "Por favor, comprobe os arquivos XML"
+msgstr "Por favor, comprobe os ficheiros XML"
 
 msgctxt "#282"
 msgid "Found %i items"
@@ -991,7 +999,7 @@ msgstr "Non se atoparon resultados"
 
 msgctxt "#285"
 msgid "Preferred audio language"
-msgstr "Lingua de audio preferida"
+msgstr "Idioma do audio preferido"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
@@ -999,7 +1007,7 @@ msgstr "Idioma preferido para os subtítulos"
 
 msgctxt "#287"
 msgid "Subtitles"
-msgstr "Súbtítulos"
+msgstr "Subtítulos"
 
 msgctxt "#288"
 msgid "Font"
@@ -1041,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Marcadores"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Receptor compatíbel con AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Receptor compatíbel con MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Receptor compatíbel con MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Receptor compatíbel con MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Atraso"
@@ -1063,7 +1087,7 @@ msgstr "Idioma orixinal do fluxo"
 
 msgctxt "#309"
 msgid "User Interface language"
-msgstr "Idioma da interface de usuaria"
+msgstr "Idioma da interface de usuario"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1071,11 +1095,11 @@ msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "A limpar a base de datos"
+msgstr "Limpando a base de datos"
 
 msgctxt "#314"
 msgid "Preparing..."
-msgstr "A preparar..."
+msgstr "Preparando..."
 
 msgctxt "#315"
 msgid "Database error"
@@ -1083,7 +1107,7 @@ msgstr "Erro na base de datos"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "A procurar cancións..."
+msgstr "Buscando cancións..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1091,51 +1115,51 @@ msgstr "Limpouse  a base de datos"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "A limpar cancións..."
+msgstr "Limpando cancións..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Houbo un erro ao limpar as cancións"
+msgstr "Produciuse un erro limpando as cancións"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "A limpar artistas..."
+msgstr "Limpando artistas..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
-msgstr "Houbo un erro ao limpar as artistas"
+msgstr "Produciuse un erro limpando os artistas"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "A limpar xéneros..."
+msgstr "Limpando xéneros..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
-msgstr "Houbo un erro ao limpar os xéneros"
+msgstr "Produciuse un erro limpando os xéneros"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "A limpar camiños..."
+msgstr "Limpando camiños..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
-msgstr "Houbo un erro ao limpar os camiños"
+msgstr "Produciuse un erro limpando os camiños"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "A limpar os álbumes..."
+msgstr "Limpando os álbums..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
-msgstr "Houbo un erro ao limpar os álbumees"
+msgstr "Produciuse un erro limpando os álbums"
 
 msgctxt "#328"
 msgid "Writing changes..."
-msgstr "A escribir os cambios..."
+msgstr "Escribindo os cambios..."
 
 msgctxt "#329"
 msgid "Error writing changes"
-msgstr "Houbo un erro ao escribir os cambios"
+msgstr "Produciuse un erro escribindo os cambios"
 
 msgctxt "#330"
 msgid "This may take some time..."
@@ -1143,11 +1167,11 @@ msgstr "Isto pode levar algún tempo..."
 
 msgctxt "#331"
 msgid "Compressing database..."
-msgstr "A comprimir a base de datos..."
+msgstr "Comprimindo a base de datos..."
 
 msgctxt "#332"
 msgid "Error compressing database"
-msgstr "Houbo un erro ao comprimir a base de datos"
+msgstr "Produciuse un erro limpando a base de datos"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
@@ -1163,7 +1187,7 @@ msgstr "Comezar"
 
 msgctxt "#336"
 msgid "Framerate conversion"
-msgstr "Conversión do ratio de cadros"
+msgstr "Conversión da taxa de cadros"
 
 msgctxt "#337"
 msgid "Audio output"
@@ -1187,11 +1211,11 @@ msgstr "Reproducir disco"
 
 msgctxt "#342"
 msgid "Movies"
-msgstr "Películas"
+msgstr "Filmes"
 
 msgctxt "#343"
 msgid "Adjust framerate"
-msgstr "Axustar o ratio de cadros"
+msgstr "Axustar a taxa de cadros"
 
 msgctxt "#344"
 msgid "Actors"
@@ -1205,9 +1229,21 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Aumentar volume no \"downmix\""
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Receptor compatíbel con DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Receptor compatíbel con LPCM Multi-canle"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Receptor compatíbel con TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
-msgstr "Aplicativos"
+msgstr "Programas"
 
 msgctxt "#351"
 msgid "Off"
@@ -1227,11 +1263,11 @@ msgstr "Estelas de Matrix"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Tempo do gardapantallas"
+msgstr "Tempo do protector de pantalla"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Modo do gardapantallas"
+msgstr "Modo do protector de pantalla"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1247,31 +1283,35 @@ msgstr "Álbums engadidos recentemente"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "Gardapantallas"
+msgstr "Protector de pantalla"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "R. Presentación "
+msgstr "R. Presentación"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "Nivel de diminución do gardapantallas"
+msgstr "Nivel de diminución do protector de pantalla"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Ordear por: Arquivo"
+msgstr "Ordenar por: Ficheiro"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Receptor compatíbel con Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Ordear por: Nome"
+msgstr "Ordenar por: Nome"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Ordear por: Ano"
+msgstr "Ordenar por: Ano"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Ordear por: Valoración"
+msgstr "Ordenar por: Valoración"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1295,7 +1335,7 @@ msgstr "Maiormente"
 
 msgctxt "#373"
 msgid "Sunny"
-msgstr "Soleado"
+msgstr "Solleiro"
 
 msgctxt "#374"
 msgid "Cloudy"
@@ -1431,7 +1471,7 @@ msgstr "Humidade"
 
 msgctxt "#409"
 msgid "Defaults"
-msgstr "Predeterminados"
+msgstr "Predefinidos"
 
 msgctxt "#410"
 msgid "Accessing weather service"
@@ -1511,7 +1551,7 @@ msgstr "Insire o seguinte disco:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Ordear por: DVD#"
+msgstr "Ordenar por: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1523,11 +1563,11 @@ msgstr "Eliminar filme da biblioteca"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "Estás segura de que queres eliminar '%s'?"
+msgstr "Ten a certeza de quere eliminar '%s'?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
-msgstr "Desde %s até %i %s"
+msgstr "Dende %s até %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
@@ -1535,7 +1575,7 @@ msgstr "Non se detectou ningún disco óptico"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr "Precisas un dispositivo de disco óptico opcional para reproducir este vídeo"
+msgstr "Precisas dun dispositivo de disco óptico opcional para reproducir este vídeo"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1543,7 +1583,7 @@ msgstr "Disco externo"
 
 msgctxt "#438"
 msgid "Opening file"
-msgstr "Estase a abrir o ficheiro"
+msgstr "Abrindo o ficheiro"
 
 msgctxt "#439"
 msgid "Cache"
@@ -1591,19 +1631,19 @@ msgstr "Columnas"
 
 msgctxt "#451"
 msgid "Row 1 address"
-msgstr "Direción da fila  1"
+msgstr "Dirección da fila  1"
 
 msgctxt "#452"
 msgid "Row 2 address"
-msgstr "Direción da fila 2"
+msgstr "Dirección da fila 2"
 
 msgctxt "#453"
 msgid "Row 3 address"
-msgstr "Direción da fila 3"
+msgstr "Dirección da fila 3"
 
 msgctxt "#454"
 msgid "Row 4 address"
-msgstr "Direción da fila 4"
+msgstr "Dirección da fila 4"
 
 msgctxt "#455"
 msgid "Rows"
@@ -1683,7 +1723,7 @@ msgstr "Música e vídeo"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
-msgstr "Imposible cargar a lista de reprodución"
+msgstr "Non foi posíbel cargar a listaxe de reprodución"
 
 msgctxt "#478"
 msgid "OSD"
@@ -1691,11 +1731,11 @@ msgstr "OSD"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "Pel e lingua"
+msgstr "Pel e Idioma"
 
 msgctxt "#480"
 msgid "Appearance"
-msgstr "Apariencia"
+msgstr "Aparencia"
 
 msgctxt "#481"
 msgid "Audio options"
@@ -1755,7 +1795,7 @@ msgstr "Amosar as extensións dos arquivos"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Ordear por: Tipo"
+msgstr "Ordenar por: Tipo"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1787,7 +1827,7 @@ msgstr "Cargando información dos medios dende os arquivos..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Ordear por: Uso"
+msgstr "Ordenar por: Uso"
 
 msgctxt "#510"
 msgid "Enable visualizations"
@@ -1939,7 +1979,7 @@ msgstr "Mesturar audio multicanle a estereo"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "Ordear por: %s"
+msgstr "Ordenar por: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -2044,6 +2084,10 @@ msgstr "En proceso"
 msgctxt "#576"
 msgid "Times played"
 msgstr "Cantidade de reproducións"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Data da captura"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2361,6 +2405,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Rede"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "Servidor"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Empregar proxy HTTP para acceder a internet"
@@ -2377,6 +2425,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Proxy HTTP"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Asignación"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automático (DHCP)"
@@ -2388,6 +2440,18 @@ msgstr "Manual (IP estática)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "Enderezo IP"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Máscara de rede"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Pasarela predefinida"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Servidor DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2496,14 @@ msgstr "Sen contrasinal"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Conxunto de caracteres"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Estilo"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Cor"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2637,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Nome da rede inalámbrica (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Contrasinal da rede sen fíos"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Seguranza da rede sen fíos"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "- Gardar e aplicar as configuracións da interface de rede"
@@ -2615,7 +2695,7 @@ msgstr "Control remoto"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "Permitir controlar XBMC ós aplicativos deste sistema"
+msgstr "Permitir controlar o XBMC ás aplicacións deste sistema"
 
 msgctxt "#792"
 msgid "Port"
@@ -2627,7 +2707,7 @@ msgstr "Rango de portos"
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "Permitir controlar XBMC ós aplicativos noutros sistemas"
+msgstr "Permitir controlar o XBMC ás aplicacións doutros sistemas"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -2649,6 +2729,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Actualización da Biblioteca"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "A biblioteca de música precisa de volver verificar as etiquetas dos ficheiros."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Gustaríache escanear agora?"
@@ -2665,6 +2749,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "O rango válido de portos é 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Engadir Imaxes..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Engadir Música..."
@@ -2672,6 +2760,10 @@ msgstr "Engadir Música..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Engadir Vídeos..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Vista Previa"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2873,6 +2965,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Introducir direción web"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Tipo de Proxy"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 con resolución de dns remota"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "Cliente SMB"
@@ -3003,15 +3119,23 @@ msgstr "Anunciar estes servizos a outros sistemas vía Zeroconf"
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr "Permitir a XBMC recivir contido por AirPlay"
+msgstr "Permitir a XBMC recibir contido por AirPlay"
 
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Nome de dispositivo"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Usar protección mediante contrasinal"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,9 +3493,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Configuracións - Perfís"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Restabelecer"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Nivel: Básico"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Nivel: Normal"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Nivel: Avanzado"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Nivel: Experto"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Buscador de engadido"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Restabelecer a configuración"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Ten a certeza de querer restabelecer a configuración desta categoria?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Axuda"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Sen axuda dispoñíbel"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3381,17 +3541,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Diálogo de progreso"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Explorador de ficheiros"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Configuración de rede"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Fonte do medio"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Configuración do perfil"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Bloquear configuracións"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Configuración do contido"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Favoritos"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Cancións/Info."
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Editor da listaxe de reprodución intelixente"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Editor das regras da listaxe de reprodución intelixente"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Imaxes/Info."
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Configuración de Engadido"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Complementos/Info."
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3893,6 +4093,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick desenchufado"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "tentar activar os servidores remotos ao acceder a eles."
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Reactivar por Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Agardando á conexión da rede..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Fallou a executar Wake on Lan!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Agardando pola reactivación do servidor..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Agardando aínda pola reactivación do servidor..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Agardando a que inicien os servizos..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Descubrimento da MAC"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Actualizado para %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Atopado para %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Fallou para %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Estase a quedar sen batería"
@@ -4212,6 +4456,10 @@ msgstr "Control automático de temperatura"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Substituir a velocidade do ventilador"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Fontes"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4719,23 +4967,27 @@ msgstr "Sincronizar reprodución coa pantalla"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr "Escoller arte"
+msgstr "Escoller Ilustración"
 
 msgctxt "#13512"
 msgid "Current art"
-msgstr "Arte actual"
+msgstr "Ilustración actual"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr "Arte remoto"
+msgstr "Ilustración remota"
 
 msgctxt "#13514"
 msgid "Local art"
-msgstr "Arte local"
+msgstr "Ilustración local"
 
 msgctxt "#13515"
 msgid "No art"
-msgstr "Sen arte"
+msgstr "Sen ilustración"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Engadir ilustración"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4889,6 +5141,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Caché de vídeo - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Rede Local"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4897,6 +5153,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Caché de audio - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Rede Local"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4904,6 +5164,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Caché de DVD - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Rede Local"
 
 msgctxt "#14036"
 msgid "Services"
@@ -4983,7 +5247,7 @@ msgstr "Imposible nametras se escanea información dos medios"
 
 msgctxt "#14058"
 msgid "Film grain effect"
-msgstr "Efecto de grao de película"
+msgstr "Efecto de grao do filme"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
@@ -5035,7 +5299,7 @@ msgstr "Aplicar trocos agora?"
 
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
-msgstr "Permitir borrado e renomeado de arquivos"
+msgstr "Permitir o borrado e renomeado de ficheiros"
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -5052,6 +5316,10 @@ msgstr "Engadir a favoritos"
 msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Borrar de favoritos"
+
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Cores"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5188,6 +5456,10 @@ msgstr "Sons de navegación"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Pel por defecto"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Temas"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -7043,7 +7315,7 @@ msgstr "Quere comezar o xogo?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Ordear por: Lista de reprodución"
+msgstr "Ordenar por: Listaxe de reprodución"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -7835,7 +8107,7 @@ msgstr "Vídeos - Bibloteca"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
-msgstr "Ordear por: ID"
+msgstr "Ordenar por: ID"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
@@ -8177,6 +8449,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Estabrecer miniatura do actor"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Eliminar o marcador"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Borrar marcador do episodio"
@@ -8228,6 +8504,10 @@ msgstr "Primeira emitsión"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Escritor"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Escritores"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8405,6 +8685,22 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Seleccionar %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Xestionar conxunto de filmes"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Seleccionar conxunto de filmes"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Engadir o filme a un novo conxunto"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Manter o conxunto actual (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Amosar arquivos e diretorios agochados"
@@ -8444,6 +8740,18 @@ msgstr "Engadir recurso compartido..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Compartir as biblotecas de vídeo e música vía UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Buscar reprodutores UPnP remotos"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Marcador creado"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Marcador do Episodio creado"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8817,6 +9125,14 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Contador de episodios vistos"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Agrupado por"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "mesturado"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Localización dos subtítulos"
@@ -8985,6 +9301,10 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientación"
 
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Tipo de imaxe"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Categorías adicionais"
@@ -9056,6 +9376,10 @@ msgstr "Referencia Orixinal"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Data de creación"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Urxencia"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9153,6 +9477,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Agochar progreso da actualización da bibloteca"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Sufixo DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9248,6 +9576,14 @@ msgstr "Fonte"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Tamaño"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Cores"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Conxunto de caracteres"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9997,6 +10333,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Activar botón de script personalizado"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Inicio de Sesión Auto."
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Fallo ó iniciar"
@@ -10109,9 +10449,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Non se puido atopar o anterior elemento a reproducir"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Produciuse un erro ao iniciar Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Esta o servizo de Apple Bonjour instalado? Olle o rexistro para máis información."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay necesita que Zeroconf estea activado."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Non se puido deter Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay e AirTunes dependen da execución de Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10192,6 +10548,10 @@ msgstr "Non empregue un mapa de teclado personalizado para este dispositivo"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Habilitar o soporte para pancas de mando e gamepad"
+
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Desactivar o joystick cando o dispositivo está presente"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10364,3 +10724,779 @@ msgstr " Versión da interface libCEC non soportada. %x é menor que a versión 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Cartafol do elemento"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Usar un rango de cores limitadas (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Mudar a aparencia da Interface de Usuario."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Escoller o tema para a Interface de Usuario, definindo a aparencia do XBMC."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Seleccionar a localización xeográfica."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Seleccionar o seu fuso horario."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Reproducir o Vídeo DVD cando se insira na unidade."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Ordenar as canles polo seu número no servidor, pero usar a numeración do XBMC."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Abrir o xestor de canles, que permite modificar a orde das canles, o nome, a icona, etc."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Agochar as etiquetas \"sen información dispoñíbel\" caneo no se poda obter datos da canle."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Buscar ficheiros de medios novos e eliminados no inicio do XBMC."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "O normal son 89dB, por norma. Trocar con coidado."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "O normal son 89dB, por norma. Trocar con coidado."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Reproducir os CDs cando se insiran na unidade."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Ler a información pertencente ao CD de son dunha base de datos de internet."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Escoller a localización no seu disco duro on o ripeador gardará as pistas."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Etiquetas: [B]%N[/B]: Nº Pista, [B]%S[/B]: Nº Disco, [B]%A[/B]: Artista, [B]%T[/B]: Título, [B]%B[/B]: Álbum, [B]%G[/B]: Xénero, [B]%Y[/B]: Ano, [B]%F[/B]: Nome do Ficheiro, [B]%D[/B]: Duración, [B]%J[/B]: Data, [B]%R[/B]: Taxa, [B]%I[/B]: Tamaño."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Escoller o codificador de son para ripear."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "Estabelecer o nivel de compresión para FLAC, predefinido 5."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Expulsión automática do disco despois de completarse o ripeo."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Escoller a fonte a usar no karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Escoller a tamaño da fonte a usar no karaoke."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Escoller a cor da fonte a usar no karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Escoller o conxunto de carácteres a usar no karaoke."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
+msgstr "Activar o servidor UPnP. Permítelle transmitir fluxos aos clientes UPnP."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Activar o cliente UPnP. Permitiralle transmitir fluxos dende calquera servidor UPnP cun punto de control e controlar a reprodución dende ese servidor."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Definir o porto do servidor web."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Definir o nome de usuario do servidor web."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Definir o contrasinal do servidor web."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Permitir ás aplicacións deste computador controlar o XBMC mediante o Interface Web ou o protocolo da interface JSON-RPC."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Permitir controlar o XBMC ás aplicacións da rede."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Calibrar o Interface de Usuario axustando o overscan. Use esta ferramenta se a imaxe a mostrar e máis grande ou pequena que a pantalla."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Patróns de proba para a calibración da pantalla."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Tipo de conexión ao equipo de son."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Escolla a disposición física dos seus altofalantes."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos AC3."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos DTS."
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos AAC."
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos LPCM."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos TrueHD."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos DTS-HD."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr "Usar un rato ou un dispositivo con pantalla táctil para controlar o XBMC. Nota: a desactivación fará que perda o control sobre o XBMC cando no haxa un teclado ou un control remoto presentes."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Usar un joystick para controlar o XBMC."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Se a súa conexión a internet fai uso dun proxy, configúreo aquí."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Configurar o tipo de proxy a usar."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Configurar o enderezo do servidor proxy."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Configurar o porto do servidor proxy."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Configurar o nome de usuario do proxy."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Configurar o contrasinal do servidor proxy."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Se ten un largo de banda limitado, XBMC tentará manterse neses límites."
+
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Apagar a pantalla cando estea inactivo. Moi útil nas TVs que se apagan cando non detectan sinal, pero non quere suspender/apagar todo o computador."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Estabelecer canto ten que estar o XBMC inactivo antes de pecharse."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Estabelecer que acción realizará o XBMC cando leve un longo periodo de tempo inactivo."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Activar ou desactivar o rexistro da depuración. Moi útil no caso de ter problemas."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Cartafol usado para gardar as capturas de pantalla feitas no XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Especificar librerias adicionais a incluír no rexistro de depuración."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgstr "Abrir o diálogo do Bloqueo Mestre, onde poda configurar as opcións."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Estabelecer o código PIN usado no bloqueo mestre."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "se está activo, requirirase o código de bloqueo mestre para desbloquear o XBMC ao iniciar"
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Estabelecer o número máximo de intentos antes de pecharse o XBMC."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "Estabelecer o patrón do Apple remote usado."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Discapacitados Visuais)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Comentarios dos Directores)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Comentarios dos Directores 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(CC)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Forzado)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Comentarios dos Directores)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Último perfil usado"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Buscar en"

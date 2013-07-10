@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Скасувати операцію з файлами"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Роздільна здатність"
@@ -2045,6 +2049,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Кільк. відтворювань"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Дата взяття"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Напрямок сортування"
@@ -2360,6 +2368,10 @@ msgstr "Цю папку вже проскановано раніше"
 msgctxt "#705"
 msgid "Network"
 msgstr "Мережа"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Сервер"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -10364,3 +10376,527 @@ msgstr "Версія інтерфейсу libCEC %x не підтримуєть�
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Папка об'єкту"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Змінити тему, що асоційована з вибраною шкіркою."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Зміна кольорів вибраної шкірки."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Змінити розмір вигляду GUI"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Редагування потоків RSS."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Вказати розміщення країни."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Ще немає доступної інформації."

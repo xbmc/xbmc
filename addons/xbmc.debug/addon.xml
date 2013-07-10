@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.0" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.1" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
   </requires>
   <extension point="xbmc.python.module"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="en">Addon to improve logging customizability</summary>
     <platform>all</platform>
   </extension>
 </addon>

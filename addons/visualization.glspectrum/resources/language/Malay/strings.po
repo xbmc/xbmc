@@ -19,3 +19,7 @@ msgstr ""
 msgctxt "#30005"
 msgid "Small"
 msgstr "Kecil"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Kelajuan"

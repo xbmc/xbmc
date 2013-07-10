@@ -20,13 +20,49 @@ msgctxt "#30000"
 msgid "Mode"
 msgstr "Modua"
 
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Betea"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Burdin-haria"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puntuak"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Barra garaiera"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Txikia"
+
 msgctxt "#30006"
 msgid "Default"
 msgstr "Lehenetsia"
 
+msgctxt "#30007"
+msgid "Big"
+msgstr "Handia"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Oso handia"
+
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Abiadura"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Oso poliki"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Poliki"
 
 msgctxt "#30012"
 msgid "Default"
@@ -35,3 +71,7 @@ msgstr "Lehenetsia"
 msgctxt "#30013"
 msgid "Fast"
 msgstr "Azkarra"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Oso azkarra"

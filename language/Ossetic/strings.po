@@ -569,6 +569,10 @@ msgctxt "#444"
 msgid "Video"
 msgstr "Видео"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP адрис"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "IP адрис"
@@ -640,6 +644,10 @@ msgstr "Цыбыргӕнӕнтӕ"
 msgctxt "#16000"
 msgid "General"
 msgstr "Сӕйраг"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Уаг"
 
 msgctxt "#24027"
 msgid "Weather"

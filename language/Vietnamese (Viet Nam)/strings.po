@@ -849,6 +849,14 @@ msgctxt "#590"
 msgid "Random"
 msgstr "Ngẫu nhiên"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "Địa chỉ IP"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Mật khẩu"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "Địa chỉ IP"
@@ -1024,6 +1032,10 @@ msgstr "Đi đến video âm nhạc từ bộ sưu tập"
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Fanart"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Cài đặt"
 
 msgctxt "#21805"
 msgid "Resolution"

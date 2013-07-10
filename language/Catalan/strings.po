@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Cancel·la les operacions de fitxer"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Resolució"
@@ -607,7 +611,7 @@ msgstr "Duració"
 
 msgctxt "#181"
 msgid "Select album"
-msgstr "Seleciona un àlbum"
+msgstr "Selecioneu un àlbum"
 
 msgctxt "#182"
 msgid "Tracks"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canals"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Receptor compatible DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -967,7 +975,7 @@ msgstr "Ajusteu el rectangle fins que sigui un rectangle perfecte"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "No es pot carregar la configuració"
+msgstr "No s'ha pogut carregar la configuració"
 
 msgctxt "#280"
 msgid "Using default settings"
@@ -1027,11 +1035,11 @@ msgstr "Cerca subtítols"
 
 msgctxt "#294"
 msgid "Create bookmark"
-msgstr "Crea marcador"
+msgstr "Crea una adreça d'interès"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Esborra marcadors"
+msgstr "Esborra les adreces d'interès"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1039,7 +1047,23 @@ msgstr "Desplaçament d'àudio"
 
 msgctxt "#298"
 msgid "Bookmarks"
-msgstr "Marcadors"
+msgstr "Adreces d'interès"
+
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Receptor compatible AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Receptor compatible MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Receptor compatible MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Receptor compatible MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1205,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Augmenta el volum al fer un downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Receptor compatible DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Receptor compatible LPCM multicanal"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Receptor compatible TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programes"
@@ -1260,6 +1296,10 @@ msgstr "Nivell d'atenuació de l'estalvi de pantalla"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordena per: Fitxer"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Receptor compatible Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1387,7 +1427,7 @@ msgstr "Boirina"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Seleccioneu un lloc"
+msgstr "Seleccioneu una ubicació"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1443,7 +1483,7 @@ msgstr "S'està obtenint el temps per:"
 
 msgctxt "#412"
 msgid "Unable to get weather data"
-msgstr "No es poden obtenir les dades meteorològiques"
+msgstr "No s'ha pogut obtenir la informació meteorològica"
 
 msgctxt "#413"
 msgid "Manual"
@@ -1683,7 +1723,7 @@ msgstr "Música i vídeo"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
-msgstr "No es pot carregar la llista de reproducció"
+msgstr "No s'ha pogut carregar la llista de reproducció"
 
 msgctxt "#478"
 msgid "OSD"
@@ -1759,7 +1799,7 @@ msgstr "Ordena per: Tipus"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
-msgstr "No es pot connectar al servei de cerca en línia"
+msgstr "No s'ha pogut connectar al servei de cerca en línia"
 
 msgctxt "#500"
 msgid "Downloading album information failed"
@@ -2327,7 +2367,7 @@ msgstr "Amplificació del volum"
 
 msgctxt "#661"
 msgid "Choose export folder"
-msgstr "Seleccioneu la carpeta d'exportació"
+msgstr "Trieu la carpeta d'exportació"
 
 msgctxt "#662"
 msgid "This file is no longer available."
@@ -2355,11 +2395,15 @@ msgstr "S'estan eliminant les cançons velles de la biblioteca"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
-msgstr "Aquest camí ja ha estat explorat."
+msgstr "Aquest camí ha estat escanejat amb anterioritat"
 
 msgctxt "#705"
 msgid "Network"
 msgstr "Xarxa"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Servidor"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2377,6 +2421,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Proxy HTTP"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Tasca"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automàtica (DHCP)"
@@ -2388,6 +2436,18 @@ msgstr "Manual (Estàtica)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "Adreça IP"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Màscara de xarxa"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Passarel·la per defecte"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Servidor DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2492,14 @@ msgstr "Sense contrasenya"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Joc de caràcters"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Estil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Color"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2633,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Nom de la xarxa sense fils (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Contrasenya de la xarxa sense fils"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Seguretat de la xarxa sense fils"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Desa i aplica la configuració de la interfície de xarxa"
@@ -2649,6 +2725,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Actualització de biblioteca"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "La llibreria de música necessista tornar a escanejar les etiquetes dels fitxers."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Voleu escanejar ara?"
@@ -2665,6 +2745,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "El rang de ports vàlid és 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Afegeix imatges..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Afegeix música..."
@@ -2673,9 +2757,13 @@ msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Afegeix vídeos..."
 
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Previsualització"
+
 msgctxt "#1001"
 msgid "Unable to connect"
-msgstr "No es pot connectar"
+msgstr "No s'ha pogut connectar"
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
@@ -2873,6 +2961,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Introduïu l'adreça web"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Tipus de proxy"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 amb resolució de DNS de forma remota"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "Client SMB"
@@ -3009,9 +3121,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Nom del dispositiu"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Utilitza protecció de contrasenya"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,9 +3489,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Configuració - Perfils"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Reinicialitza"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Nivell: Bàsic"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Nivell: Estàndard"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Nivell: Avançat"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Nivell: Expert"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Cercador de complements"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Reinicialitza la configuració"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Esteu segur que voleu reinicialitzar la configuració en aquesta categoria?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Ajuda"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "No hi ha ajuda disponible"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3381,17 +3537,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Diàleg de progrés"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Gestor de fitxers"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Configuració de la xarxa"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Recurs multimèdia"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Configuració del perfil"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Bloqueja la configuració"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Configuració del contingut"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Preferits"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Cançons/Informació"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Editor de llistes de reproducció intel·ligents"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Editor de regles de llistes de reproducció intel·ligents"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Imatges/Informació"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Configuració del complement"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Complements/Informació"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3893,6 +4089,18 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "S'ha desconnectat el joystick"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Actualitzat per %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Trobat per %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "La càrrega de la bateria és baixa"
@@ -4213,6 +4421,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Fan speed override"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Fonts"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "Activa invertir cadenes bidireccionals"
@@ -4319,7 +4531,7 @@ msgstr "Hi ha un error obrint %s"
 
 msgctxt "#13330"
 msgid "Unable to load %s"
-msgstr "No es pot carregar %s"
+msgstr "No s'ha pogut carregar %s"
 
 msgctxt "#13331"
 msgid "Error: Out of memory"
@@ -4719,7 +4931,7 @@ msgstr "Sync playback to display"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr "Escull l'art"
+msgstr "Trieu l'art"
 
 msgctxt "#13512"
 msgid "Current art"
@@ -4736,6 +4948,10 @@ msgstr "Art local"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Sense art"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Afegeix art"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4889,6 +5105,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Memòria cau del vídeo - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Xarxa local"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4897,6 +5117,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Memòria cau de l'àudio - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Xarxa local"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4904,6 +5128,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Memòria cau del DVD - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Xarxa local"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5053,6 +5281,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Elimina de preferits"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Colors"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "País de la zona horària"
@@ -5188,6 +5420,10 @@ msgstr "Sons de navegació"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Aparença per defecte"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5743,7 +5979,7 @@ msgstr "Enregistrament"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Per favor, comprovau la vostra configuració o comprovau els registres per detalls."
+msgstr "Comproveu la vostra configuració o comproveu els registres per detalls."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
@@ -5955,7 +6191,7 @@ msgstr "Advertència"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr "Per favor, canviau a un altre canal"
+msgstr "canvieu a un altre canal"
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
@@ -6079,7 +6315,7 @@ msgstr "No s'ha definit cap grup"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr "Per favor, creau primer un grup"
+msgstr "Creeu primer un grup"
 
 msgctxt "#19139"
 msgid "Name of the new group"
@@ -6607,7 +6843,7 @@ msgstr "afegitó del rerefons per poder utilitzar el PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Per favor visiteu xbmc.org/pvr per saber més."
+msgstr "Visiteu xbmc.org/pvr per saber més."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -7479,7 +7715,7 @@ msgstr "S'ha muntat la unitat de memòria"
 
 msgctxt "#20138"
 msgid "Unable to mount memory unit"
-msgstr "No es pot muntar la unitat de memòria"
+msgstr "No s'ha pogut muntar la unitat de memòria"
 
 msgctxt "#20139"
 msgid "In port %i, slot %i"
@@ -7803,7 +8039,7 @@ msgstr "Directori dels servidor web (HTTPS)"
 
 msgctxt "#20302"
 msgid "Unable to write to folder:"
-msgstr "No es pot escriure a la carpeta:"
+msgstr "No s'ha pogut escriure a la carpeta:"
 
 msgctxt "#20303"
 msgid "Do you want to skip and proceed?"
@@ -8177,9 +8413,13 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Set actor thumb"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Elimina l'adreça d'interès"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
-msgstr "Remove episode bookmark"
+msgstr "Elimina l'adreça d'interès de l'episodi "
 
 msgctxt "#20406"
 msgid "Set episode bookmark"
@@ -8228,6 +8468,10 @@ msgstr "Emés per primera vegada"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Escriptor"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Escriptors"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8347,7 +8591,7 @@ msgstr "No s'ha pogut baixar la informació"
 
 msgctxt "#20449"
 msgid "Unable to connect to remote server"
-msgstr "No es pot connectar al servidor remot"
+msgstr "No s'ha pogut connectar al servidor remot"
 
 msgctxt "#20450"
 msgid "Would you like to continue scanning?"
@@ -8444,6 +8688,10 @@ msgstr "Afegeix recurs compartit..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Comparteix les biblioteques de vídeo i música a través de UPnP"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Adreça d'interès creada"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8817,6 +9065,10 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Comptador d'episodis vistos"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Ordena per"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Subtitle location"
@@ -8985,6 +9237,14 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientació"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Sub-ubicació"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Tipus d'imatge"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Categories suplementaries"
@@ -9056,6 +9316,10 @@ msgstr "Referència Tx original"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Data de creació"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Urgència"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9153,6 +9417,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Amaga el progrés d'actualització de la biblioteca"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Sufix del DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9248,6 +9516,14 @@ msgstr "Font"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Mida"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Colors"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Joc de caràcters"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9997,6 +10273,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Activa el botó d'scripts personalitzats"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Inicia la sessió automàticament"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "No s'ha pogut iniciar"
@@ -10109,9 +10389,21 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "No s'ha pogut trobar l'anterior element a reproduir"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "No s'ha pogut iniciar el Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Està instal·lat el servei Apple Bonjour? Consulteu el registre per obtenir més informació."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "L'AirPlay necessita que el Zeroconf estigui habilitat."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "No s'ha pogut aturar el Zeroconf"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10259,7 +10551,7 @@ msgstr "No s'ha pogut detectar el port CEC. Establiu-ho manualment."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "No s'ha pogut inicialitzar l'adaptador CEC. Per favor revisau la vostra configuració."
+msgstr "No s'ha pogut inicialitzar l'adaptador CEC. Reviseu la vostra configuració."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10299,7 +10591,7 @@ msgstr "Configuració actualitzada"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr "No s'ha pogut establir la nova configuració. Si us plau, revisi la seva configuració."
+msgstr "No s'ha pogut establir la nova configuració. Reviseu la vostra configuració."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
@@ -10364,3 +10656,551 @@ msgstr "La versió d'interfície de libCEC no està suportada. %x és menor que 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Carpeta d'elements"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Edita els canals RSS."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "trieu l'idioma de la interfície d'usuari."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Seleccioneu una ubicació del país"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Selecciona la teva zona horària actual."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Escala el Teletext a la proporció 4:3."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Ubicació dels subtítols a la pantalla."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Seleccioneu el color de la font utilitzat durant el karoake."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Definiu el port del servidor web."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Definiu l'usuari del servidor web."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Definiu la contrasenya del servidor web."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Definiu quina acció ha de fer l'XBMC quan ha estat inactiu durant un llarg període de temps."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "No hi ha informació disponible"

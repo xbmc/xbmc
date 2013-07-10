@@ -18,67 +18,67 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr "Automatsko vrijeme zatamljenja"
+msgstr "Automatsko vrijeme miješanja"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Vrijeme Između Prestavljanja"
+msgstr "Vrijeme između predloška"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Dodatna Slučajno Vrijeme"
+msgstr "Dodatno naizmjenično vrijeme"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Omogućiti Anizotropno filtriranje"
+msgstr "Omogućite Anizotropno filtriranje"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Omogućiti Velike Rezove"
+msgstr "Omogući velike rezove"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "Glasnosni Prag za Velike Rezove"
+msgstr "Prag glasnoće za velike rezove"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
-msgstr "Prosječno vrijeme između Veliki Rezova"
+msgstr "Prosječno vrijeme između veliki rezova"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
-msgstr "Maksimalna stopa osvježavanja"
+msgstr "Maksimalna brzina osvježavanja"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Omogućite Stereo 3D"
+msgstr "Omogući Stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Spakiraj"
+msgstr "Paket predložaka"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Podesite korisničke mape"
+msgstr "Mapa korisnikovih predložaka"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Podesite miješani mod"
+msgstr "Način naizmjeničnih predložaka"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 Memoriran"
+msgstr "WA51 predlošci"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp Memoriran"
+msgstr "Winamp predlošci"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Korisnički definirano Memoriranje mape"
+msgstr "Korisnički odabrana mapa predložaka"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
-msgstr "%2.0f secs"
+msgstr "%2.0f sekundi"
 
 msgctxt "#30051"
 msgid "%2.0f %%"

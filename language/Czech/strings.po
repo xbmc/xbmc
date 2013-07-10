@@ -51,7 +51,7 @@ msgstr "Počasí"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc centrum médií"
+msgstr "Multimediální centrum xmbc"
 
 msgctxt "#11"
 msgid "Monday"
@@ -568,6 +568,10 @@ msgstr "Motiv"
 msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Zrušit operace se soubory"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2041,6 +2045,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Počet přehrání"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Datum pořízení"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Směr řazení"
@@ -2341,6 +2349,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Úroveň komprese"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Podrobný záznam..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Čistím knihovnu"
@@ -2356,6 +2368,10 @@ msgstr "Tato cesta byla již prohledána"
 msgctxt "#705"
 msgid "Network"
 msgstr "Síť"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2373,6 +2389,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP Proxy"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Přiřazení"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatické (DHCP)"
@@ -2384,6 +2404,18 @@ msgstr "Manuálně (Statická IP)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP adresa"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Maska sítě"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Výchozí brána"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Server DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2428,6 +2460,14 @@ msgstr "Bez hesla"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Znaková sada"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Styl"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Barva"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2561,6 +2601,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Název bezdrátové sítě (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Heslo bezdrátové sítě"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Zabezpečení bezdrátové sítě"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Uložit a použít nastavení sítě"
@@ -2645,6 +2693,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Aktualizace knihovny"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Hudební knihovna potřebuje znovu načíst značky ze souborů."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Chcete začít prohledávat nyní?"
@@ -2661,6 +2713,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Platný rozsah portu je 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Přidat obrázky..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Přidat hudbu..."
@@ -2668,6 +2724,10 @@ msgstr "Přidat hudbu..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Přidat video..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Náhled"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2869,6 +2929,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Zadejte webovou adresu"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Typ proxy"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 se vzdáleným překladem jmen dns"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "Klient SMB"
@@ -3005,9 +3089,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Název zařízení"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Použít zabezpečení heslem"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3313,9 +3405,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Nastavení - Profily"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Obnovit"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Úroveň: Základní"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Úroveň: Standardní"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Úroveň: Pokročilá"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Úroveň: Expert"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Prohlížeč doplňků"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Obnovit nastavení"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Opravdu si přejete obnovit nastavení v této kategorii?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Nápověda"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Žádná dostupná nápověda"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3325,17 +3453,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialog s průběhem stavu"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Prohlížeč souborů"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Nastavení sítě"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Zdroj médií"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Nastavení profilu"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Uzamknout nastavení"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Nastavení obsahu"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Oblíbené"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Písně/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Editor chytrého seznamu stop"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Editor pravidel chytrého seznamu stop"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Obrázky/Info"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Nastavení doplňků"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Doplňky/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3837,6 +4005,14 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick odpojen"
 
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Čeká se na spojení se sítí..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Čeká se na spuštění služeb..."
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Nízká úroveň baterie"
@@ -4156,6 +4332,10 @@ msgstr "Automatická kontrola teploty"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Manuální nastavení rychlosti chladiče"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Písma"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4833,6 +5013,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Vyrovnávací paměť videa - DVDROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Místní síť"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4841,6 +5025,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Vyrovnávací paměť zvuku - DVDROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Místní síť"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4848,6 +5036,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "Vyrovnávací paměť DVD - DVDROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Místní síť"
 
 msgctxt "#14036"
 msgid "Services"
@@ -4997,6 +5189,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Odebrat z oblíbených"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Barvy"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Časové pásmo země"
@@ -5132,6 +5328,10 @@ msgstr "Zvuky při navigaci"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Výchozí hodnoty motivu"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Motiv"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -9193,6 +9393,14 @@ msgctxt "#22031"
 msgid "Size"
 msgstr "Velikost"
 
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Barvy"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Znaková sada"
+
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
 msgstr "Exportovat titulky karaoke do HTML"
@@ -10308,3 +10516,7 @@ msgstr "Nepodporovaná verze rozhraní libCEC. %x je nižší než verze podporo
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* složka položky"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Upravte kanály RSS."

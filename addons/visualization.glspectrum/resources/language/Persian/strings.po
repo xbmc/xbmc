@@ -20,6 +20,10 @@ msgctxt "#30006"
 msgid "Default"
 msgstr "پیش فرض"
 
+msgctxt "#30009"
+msgid "Speed"
+msgstr "سرعت"
+
 msgctxt "#30012"
 msgid "Default"
 msgstr "پیش فرض"

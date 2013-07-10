@@ -913,6 +913,10 @@ msgctxt "#367"
 msgid "Sort by: Rating"
 msgstr "Isihan: Rating"
 
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "Ribut Petir"
+
 msgctxt "#400"
 msgid "Weather"
 msgstr "Cuaca"
@@ -965,6 +969,10 @@ msgctxt "#633"
 msgid "Wide Zoom"
 msgstr "Zum Lebar"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "Alamat IP"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "Alamat IP"
@@ -984,6 +992,14 @@ msgstr "Gambar"
 msgctxt "#1397"
 msgid "and"
 msgstr "dan"
+
+msgctxt "#1403"
+msgid "Sun"
+msgstr "Sun"
+
+msgctxt "#1411"
+msgid "with"
+msgstr "dengan"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
@@ -1097,6 +1113,10 @@ msgctxt "#10002"
 msgid "Pictures"
 msgstr "Gambar"
 
+msgctxt "#10003"
+msgid "File manager"
+msgstr "Pengurus Fail"
+
 msgctxt "#10004"
 msgid "Settings"
 msgstr "Seting"
@@ -1105,9 +1125,25 @@ msgctxt "#10005"
 msgid "Music"
 msgstr "Musik"
 
+msgctxt "#10006"
+msgid "Videos"
+msgstr "Video"
+
+msgctxt "#10020"
+msgid "Scripts"
+msgstr "Skrip"
+
+msgctxt "#10025"
+msgid "Videos"
+msgstr "Video"
+
 msgctxt "#10506"
 msgid "Programs"
 msgstr "Program"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "Info sistem"
 
 msgctxt "#12349"
 msgid "Updating video library art"
@@ -1136,6 +1172,10 @@ msgstr "Cuaca"
 msgctxt "#13205"
 msgid "Unknown"
 msgstr "Tidak Diketahui"
+
+msgctxt "#13277"
+msgid "Storage"
+msgstr "Simpanan"
 
 msgctxt "#13280"
 msgid "Video"
@@ -1197,6 +1237,10 @@ msgctxt "#19003"
 msgid "Find similar programs"
 msgstr "Cari program yang sama"
 
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Seterusnya"
@@ -1204,6 +1248,10 @@ msgstr "Seterusnya"
 msgctxt "#19062"
 msgid "Sort by: Channel"
 msgstr "Isihan: Saluran"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
@@ -1357,13 +1405,33 @@ msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Sukan Seni Mempertahankan Diri"
 
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Detektif/Ngeri"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Pengembaraan/Barat/Perang"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Sains Fiksyen/Fantasi/Seram"
+
 msgctxt "#19680"
 msgid "Comedy"
 msgstr "Komedi"
 
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Lipur Lara/Mélodrama/Budaya Rakyat"
+
 msgctxt "#19682"
 msgid "Romance"
 msgstr "Percintaan"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Zum"
 
 msgctxt "#20242"
 msgid "Android pictures"
@@ -1401,6 +1469,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Mengimbas album menggunakan %s"
 
+msgctxt "#20422"
+msgid "Always"
+msgstr "Sentiasa"
+
 msgctxt "#20459"
 msgid "Tags"
 msgstr "Tag"
@@ -1424,6 +1496,10 @@ msgstr "Tag dengan nama %s sudah wujud."
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "Pilih %s"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Seting"
 
 msgctxt "#21456"
 msgid "External storage"
@@ -1457,6 +1533,10 @@ msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
 msgstr "Pengskalaan Teleteks ke 4:3"
 
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "Visualisasi"
+
 msgctxt "#24018"
 msgid "Services"
 msgstr "Perkhidmatan"
@@ -1472,6 +1552,14 @@ msgstr "Cuaca"
 msgctxt "#24029"
 msgid "Service for weather information"
 msgstr "Servis untuk informasi cuaca"
+
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "Presipitasi"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Sentiasa"
 
 msgctxt "#36028"
 msgid "Ignore"

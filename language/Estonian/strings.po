@@ -873,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanalite arv"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS toetav vastuvõtja"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1045,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Järjehoidjad"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC toetav vastuvõtja"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 toetav vastuvõtja"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 toetav vastuvõtja"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 toetav vastuvõtja"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Viivitus"
@@ -1209,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Võimenda helinivood down-miksil"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD toetav vastuvõtja"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Mitme kanaliga LPCM toetav vastuvõtja"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD toetav vastuvõtja"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programmid"
@@ -1264,6 +1296,10 @@ msgstr "Ekraanisäästja hämarduse aste"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Järjesta: Fail"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) toetav vastuvõtja"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2049,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Kordi mängitud"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Tegemise kuupäev"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Järjestuse suund"
@@ -2349,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Pakkimise aste"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Detailne logimine…"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Teegi puhastamine"
@@ -2397,6 +2441,14 @@ msgctxt "#719"
 msgid "IP address"
 msgstr "IP-aadress"
 
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Võrgumask"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Vaikelüüs"
+
 msgctxt "#722"
 msgid "DNS server"
 msgstr "DNS server"
@@ -2444,6 +2496,14 @@ msgstr "Salasõna puudub"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Märgistik"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stiil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Värv"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2577,6 +2637,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Traadita võrgu nimi (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "WIFI salasõna"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "WIFI turvalisus"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Salvesta ja rakenda võrguliidese seaded"
@@ -2655,7 +2723,7 @@ msgstr "Maksimaalne klientide arv"
 
 msgctxt "#798"
 msgid "Internet access"
-msgstr "Internett"
+msgstr "Internet"
 
 msgctxt "#799"
 msgid "Library Update"
@@ -2677,6 +2745,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Pordid on vahemikus 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Lisa pilte…"
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Lisa muusikat..."
@@ -2684,6 +2756,10 @@ msgstr "Lisa muusikat..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Lisa videosid..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Eelvaade"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2885,6 +2961,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Sisesta veebiaadress"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Puhverserveri tüüp"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 koos dns lahendamisega"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB klient"
@@ -3021,9 +3121,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Seadme nimi"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Kasuta salasõnaga kaitsmist"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3361,9 +3469,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Seaded - Profiilid"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Lähtesta"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Tase: Lihtne"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Tase: Tavaline"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Tase: Edasijõudnud"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Tase: Ekspert"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Lisamoodulite brauser"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Lähtesta seaded"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Oled kindel, et soovid selle kategooria seaded lähtestada?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Abi"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Abi pole saadaval"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3373,13 +3517,49 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Edenemise dialoog"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Failide lehitseja"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Võrgu seadistus"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Meedia allikas"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profiili seaded"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lukusta seaded"
 
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Sisu seaded"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Lemmikud"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Laulud/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Aruka esitlusloendi redaktor"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Aruka esitlusloendi reeglite redaktor"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Pildid/Info"
 
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -3881,6 +4061,22 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Juhtkang lahti ühendatud"
 
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Serveri ärkamise ootamine…"
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Teenuste käivitamise ootamine…"
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC leidmine"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "%s nurjus"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Aku hakkab tühjaks saama"
@@ -4196,6 +4392,10 @@ msgstr "Automaatne temperatuuri kontroll"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Ventilaatori kiiruse alistus"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Fondid"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4853,6 +5053,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video vahemälu - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Kohtvõrk"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4861,6 +5065,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Heli vahemälu - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Kohtvõrk"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4868,6 +5076,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD vahemälu - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Kohtvõrk"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5017,6 +5229,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Eemalda lemmikutest"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Värvid"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Ajavööndi riik"
@@ -5152,6 +5368,10 @@ msgstr "Menüü helinad"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Vaikimisi"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Teema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5672,6 +5892,10 @@ msgstr "Informatsioon"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Sellel kanalil juba toimub salvestamine"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s ei saa esitada. Vaata logist detaile."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6561,6 +6785,14 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Salvestamise viga"
 
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Kliendipõhine"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Kliendipõhised seadistused"
+
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Kinnita kanali vahetus vajutades OK"
@@ -6820,6 +7052,10 @@ msgstr "Reklaam/Ostlemine"
 msgctxt "#19651"
 msgid "Gardening"
 msgstr "Aiandus"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Eriomadused"
 
 msgctxt "#19661"
 msgid "Original Language"
@@ -7557,6 +7793,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Kuuluta teegi uuendusi kasutades UPnPd"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Luba sisututvustuste ja ülevaadete juures automaatne kerimine"
@@ -8053,6 +8293,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Määra näitleja pisipilt"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Eemalda järjehoidja"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Eemalda osa järjehoidja"
@@ -8104,6 +8348,10 @@ msgstr "Esmakordselt eetris"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Stsenarist"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Stsenaristid"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8199,7 +8447,7 @@ msgstr "Muuda sisu"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
-msgstr "Kas soovid värskendda andmeid kõigi"
+msgstr "Kas soovid värskendada andmeid kõigi"
 
 msgctxt "#20444"
 msgid "items within this path?"
@@ -8320,6 +8568,14 @@ msgstr "Lisa meedia jagu..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Jaga video- ja muusikakogusid üle UPnP"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Järjehoidja loodud"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Osa järjehoidja loodud"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8693,6 +8949,14 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Vaadatud episoodide arv"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Grupeeri"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "segatud"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Subtiitrite asukoht"
@@ -8848,6 +9112,14 @@ msgstr "GPS-kõrgus"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "Suund"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Pildi tüüp"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Loomise kuupäev"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9017,6 +9289,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Peida teegi uuenduste edenemine"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS järelliides"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9113,6 +9389,14 @@ msgctxt "#22031"
 msgid "Size"
 msgstr "Suurus"
 
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Värvid"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Märgistik"
+
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
 msgstr "Salvesta HTML formaadis"
@@ -9196,6 +9480,10 @@ msgstr "Peatamine"
 msgctxt "#23054"
 msgid "Running"
 msgstr "Töötab"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Kohanda teletekst 4:3 mõõtu"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9857,6 +10145,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Luba kohandatud skripti nupp"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Automaatne sisselogimine"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Käivitamine ebaõnnestus"
@@ -9969,9 +10261,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Ei leia eelmist nimetust mida esitada"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Zeroconfi käivitamine nurjus"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Kas Apple'i Bonjour-teenus on paigaldatud? Täpsema info saamiseks vaata logi."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay jaoks peab Zeroconf lubatud olema."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Zeroconfi peatamine nurjus"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay ja AirTunes vajavad töötavat Zeroconfi."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10216,3 +10524,655 @@ msgstr "Võimendi /AVR seade"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Toetuseta libCEC kasutajaliidese versioon. %x on madalam kui XBMC toetatud versioon (%x)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Muuda kasutajaliidese välimust."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Redigeeri RSS vooge."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Vali kasutajaliidese keel."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Vali oma asukohariik."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Vali oma praegune ajatsoon."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Näita peidetud faile ja katalooge."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Otsi XBMC käivitudes uusi faile."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Impordi XML fail video teegi andmebaasi."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Luba riistvaraline videofailide dekodeerimine."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Subtiitrite asukoht ekraanil."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Käivita DVD sisestamisel automaatselt video."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Ürita DVD sissejuhatav osa enne peamenüüd vahele jätta."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "Vaikimisi näidatav EPG aken. Vaikeväärtus on ajaskaala."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Impordi XML fail muusika teegi andmebaasi."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Vali karaokes kasutatav font."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Vali karaokes kasutatava fondi suurus."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Vali karaokes kasutatava fondi värv."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Vali karaokes kasutatav märgistik."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Kui EXIF info on olemas (kuupäev, kellaaeg, kaamera jne.) siis seda näidatakse."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Piltide kausta sisenedes genereeri automaatselt pisipildid."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Pildid keeratakse EXIFis oleva info järgi."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Määra veebiserveri port."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Määra veebiserveri kasutajanimi."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Määra veebiserveri salasõna."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Luba võrgus olevatel rakendustel XBMC-d kontrollida."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Ekraani kalibreerimis mustrid."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Vali kõlarite füüsilise asetuse plaan."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Määra puhverserveri aadress."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Määra puhverserveri port."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Määra puhverserveri kasutajanimi."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Määra puhverserveri salasõna."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Lülita silumis logi sisse või välja. Kasulik vigade leidmisel."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "XBMC-ga tehtud ekraanitõmmiste salvestamise kaust"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Info pole veel saadaval."
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Režisööri kommentaarid)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Režisööri kommentaarid)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Viimati kasutatud profiil"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Sirvi infot"

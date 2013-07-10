@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "取消檔案操作"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "解析度"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "通道數"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS相容接收機"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1041,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "書籤"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC相容接收機"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1相容接收機"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2相容接收機"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3相容接收機"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "延遲"
@@ -1205,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "增加聲道縮減混音音量"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD 相容接收機"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "多聲道LPCM相容接收機"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD相容接收機"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "程式"
@@ -1260,6 +1296,10 @@ msgstr "螢幕保護的亮度"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "排序：檔案"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) 相容接收機"
 
 msgctxt "#365"
 msgid "Sort by: Name"

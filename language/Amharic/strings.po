@@ -2705,6 +2705,10 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "የ ንግግር ሂደት"
 
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "ማሰናጃ መቆለፊያ"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "የምወዳቸው"
@@ -4972,6 +4976,10 @@ msgstr "Audio codec"
 msgctxt "#21447"
 msgid "Audio language"
 msgstr "የ ድምፅ ቋንቋ "
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "ማረሚያ"
 
 msgctxt "#21452"
 msgid "Get More..."

@@ -67,3 +67,11 @@ msgstr "Folder Preset yang ditentukan Pengguna"
 msgctxt "#30012"
 msgid "User Preset Folder"
 msgstr "Gunakan Folder Preset"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f detik"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

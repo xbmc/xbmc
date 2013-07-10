@@ -387,15 +387,15 @@ msgstr "파일 이동 확인"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "파일 삭제"
+msgstr "파일 삭제 확인?"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "이 파일을 복사 하시겠습니까?"
+msgstr "이 파일을 복사 하겠습니까?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "이 파일을 이동 하시겠습니까?"
+msgstr "이 파일을 이동 하겠습니까?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
@@ -1539,7 +1539,7 @@ msgstr "올바른 CD/DVD 를 넣어 주세요"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "다음 CD/DVD 를 넣어 주세요"
+msgstr "다음 CD/DVD 를 넣어 주세요:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -3323,7 +3323,7 @@ msgstr "구름"
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr "알수없음"
+msgstr "알 수 없음"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3863,7 +3863,7 @@ msgstr "비디오 라이브러리의 아트 캐시를 업데이트해야 합니�
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr "다운로드가 필요하지는 않습니다."
+msgstr "다운로드가 필요하지 않습니다."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -4065,6 +4065,10 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "조이스틱 연결해제됨"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "접속할 때 원격 서버 깨우기 시도"
+
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
 msgstr "Wake on Lan (%s)"
@@ -4123,7 +4127,7 @@ msgstr "해상도 테스트 & 적용"
 
 msgctxt "#13110"
 msgid "Save resolution?"
-msgstr "해상도를 저장 하시겠습니까?"
+msgstr "해상도를 저장 하겠습니까?"
 
 msgctxt "#13111"
 msgid "Would you like to keep this resolution?"
@@ -4771,7 +4775,7 @@ msgstr "(사용자 평점)"
 
 msgctxt "#13409"
 msgid "Top 250"
-msgstr "인기 250"
+msgstr "Top 250"
 
 msgctxt "#13410"
 msgid "Tune in on Last.fm"
@@ -8649,6 +8653,10 @@ msgctxt "#20466"
 msgid "Select movie set"
 msgstr "시리즈 영화 선택"
 
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "시리즈 없음 (%s에서 제거)"
+
 msgctxt "#20468"
 msgid "Add movie to a new set"
 msgstr "영화를 새 시리즈에 추가"
@@ -8659,7 +8667,7 @@ msgstr "현재 시리즈 (%s) 유지"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
-msgstr "숨김 파일 및 디렉터리 보이기"
+msgstr "숨김 파일 및 디렉터리 보기"
 
 msgctxt "#21331"
 msgid "TuxBox client"
@@ -8955,7 +8963,7 @@ msgstr "모든 규칙"
 
 msgctxt "#21426"
 msgid "one or more of the rules"
-msgstr "한개 또는 그이상의 규칙"
+msgstr "한개 또는 그 이상의 규칙"
 
 msgctxt "#21427"
 msgid "Limit to"
@@ -9071,7 +9079,7 @@ msgstr "캐시 가득참"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr "연속 재생에 필요한 양에 도달하기 전에 캐시가 채워짐"
+msgstr "연속 재생에 필요한 양에 도달하기 전에 캐시가 가득 참"
 
 msgctxt "#21456"
 msgid "External storage"
@@ -9267,7 +9275,7 @@ msgstr "키워드"
 
 msgctxt "#21862"
 msgid "Caption"
-msgstr "제목"
+msgstr "설명"
 
 msgctxt "#21863"
 msgid "Author"
@@ -10485,6 +10493,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "조이스틱과 게임패드 사용"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "이 장치가 있을 때 조이스틱 사용 안 함"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "위치"
@@ -10544,6 +10556,10 @@ msgstr "XBMC 종료시 장치 전원 끄기"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "화면보호기 작동시 장치를 대기모드로 설정"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "화면보호기가 작동하지 않을 때 장치 깨우기"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10656,3 +10672,147 @@ msgstr "지원하지 않는 libCEC 버전. %x 는 XBMC가 지원하는 것보다
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* 항목 폴더"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "사용자 인터페이스의 모양새를 바꾸세요."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "사용자 인터페이스 스킨을 선택하세요. 이것은 XBMC 모양새를 결정합니다."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "스킨별 설정을 바꾸세요. 사용 가능한 옵션은 스킨에 따라 다릅니다."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "선택한 스킨과 관련된 테마를 바꾸세요."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "선택한 스킨의 색상을 바꾸세요."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "RSS 피드를 편집하세요."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "사용자 인터페이스 언어를 선택하세요."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "온도, 시간, 날짜 형식을 선택하세요. 사용가능한 옵션은 선택한 언어에 따라 다릅니다."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "GUI에서 문자열을 표시하는데 사용할 문자집합을 선택하세요."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "국가를 선택하세요."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "현재 시간대를 선택하세요."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "다국어 오디오가 사용 가능할 때 기본 오디오를 선택하세요"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "다국어 자막이 사용 가능할 때 기본 자막을 선택하세요."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "리스트에 상위 폴더로 이동 (...) 항목을 표시합니다."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "파일과 미디어 확장자 표시 여부. 예를 들면, 'You Enjoy Myself.mp3'를 'You Enjoy Myself'로 보여 줍니다."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "정렬 작업에서 특정 문자 또는 문자열을 무시합니다. 예를 들면, 'The Simpsons'는 'Simpson' 으로 정렬됩니다. 무시할 문자나 문자열을 편집하려면, http://wiki.xbmc.org/index.php?title=Settings/Appearance 를 참조하세요."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "컨텍스트 메뉴 (키보드 C)를 사용하여 파일을 삭제하거나 이름을 변경할 수 있게 허용합니다."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "사용자 인터페이스의 루트 영역에 소스 추가 버튼을 표시합니다."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "숨김 파일과 폴더 보기."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "화면보호기가 표시되는데 필요한 유휴 시간을 설정하세요."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "화면보호기를 선택하세요. 전체화면 비디오 재생이 일시정지되거나 대화상자가 활성화된 상태에서는 'Dim' 화면보호기가 강제 실행됩니다."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "화면보호기별 설정을 바꾸세요. 사용 가능한 옵션은 화면보호기에 따라 다릅니다."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "선택한 화면보호기 미리보기."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "음악이 재생중인 경우 XBMC는 화면보호기 대신, 선택한 시각화를 실행합니다."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "비디오 라이브러리에서 미시청 미디어의 줄거리 정보 표시."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "미디어를 검색할 때 배우 썸네일 가져오기."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "TV 쇼에서 시즌 노드를 제거합니다. '한 시즌일 때만' (기본값), '항상', '안 함' 에서 선택하세요."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "영화 라이브러리를 탐색할 때 '시리즈 영화'로 영화를 묶어 줍니다."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "XBMC를 시작할 때 새 미미어를 확인합니다."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "라이브러리를 검색할 때 진행 막대를 숨깁니다."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "이름 변경, 삭제 또는 연결되지 않은 이동식 저장소에 있어 찾을 수 없는 항목을 라이브러리에서 제거합니다."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "비디오 라이브러리 데이터베이스를 XML 파일로 내보냅니다. 이 작업은 현재 존재하는 XML 파일을 덮어 씁니다."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "XML 파일을 비디오 라이브러리 데이터베이스로 가져옵니다."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "리스트에서 선택한 항목의 다음 파일을 자동으로 재생합니다."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "비디오 처리와 화면 표시 방법을 조정합니다."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "비디오 하드웨어 디코딩을 사용합니다."

@@ -1005,6 +1005,10 @@ msgctxt "#288"
 msgid "Font"
 msgstr "Fonti"
 
+msgctxt "#289"
+msgid "Size"
+msgstr "Madhësia"
+
 msgctxt "#290"
 msgid "Dynamic range compression"
 msgstr "Presioni i shtrirjes dinamike"
@@ -2381,6 +2385,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Manual (Statik)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "Adresa IP"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "Rregjistroni & Ristartoni"
@@ -2405,13 +2413,25 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "Serveri FTP"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "Porti"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Rregjistroni & Përdorni"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "Fjalkalimi"
+
 msgctxt "#734"
 msgid "No pass"
 msgstr "Asnjë fjalkalim"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Character set"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2540,6 +2560,10 @@ msgstr "Dosja e  paradës"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "Nënfaqja e rrjetit"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Emri i rrjetit wireless (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2832,6 +2856,10 @@ msgstr "Access points"
 msgctxt "#1047"
 msgid "Other..."
 msgstr "Të tjera..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Emri i përdoruesit"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3348,6 +3376,18 @@ msgstr "Dialogu Po/Jo"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Dialogu i progresit"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Bllokoni cilësimet"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Të Preferuara"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Cilësimet e shtesave"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4845,9 +4885,17 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video cache - DVD-ROM"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "Interneti"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio cache - DVD-ROM"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "Interneti"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -7313,6 +7361,10 @@ msgctxt "#20108"
 msgid "Root"
 msgstr "Root"
 
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Zoom"
+
 msgctxt "#20110"
 msgid "UPnP settings"
 msgstr "Cilësimet UPnP"
@@ -8597,6 +8649,10 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Scraper'i kryesor i videove muzikore"
 
+msgctxt "#21417"
+msgid "Settings"
+msgstr "Cilësimet"
+
 msgctxt "#21418"
 msgid "Multilingual"
 msgstr "Shumëgjuhësh"
@@ -8724,6 +8780,10 @@ msgstr "Subtitër-gjuha"
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr "Telekomanda dërgon shtypje të tastierës"
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "Modifikoni"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -9180,6 +9240,10 @@ msgstr "Verzioni i Direct3D"
 msgctxt "#22030"
 msgid "Font"
 msgstr "Fonti"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "Madhësia"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"

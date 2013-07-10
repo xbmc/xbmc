@@ -9667,11 +9667,11 @@ msgstr "Spela alla"
 
 msgctxt "#23049"
 msgid "Teletext not available"
-msgstr "Teletext inte tillgänglig"
+msgstr "Text-TV inte tillgänglig"
 
 msgctxt "#23050"
 msgid "Activate Teletext"
-msgstr "Aktivera teletext"
+msgstr "Aktivera text-TV"
 
 msgctxt "#23051"
 msgid "Part %i"
@@ -9691,7 +9691,7 @@ msgstr "Igång"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Skala teletext till 4:3"
+msgstr "Skala text-TV till 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -11005,6 +11005,14 @@ msgctxt "#36164"
 msgid "Select when the refresh rate adjustments should take place."
 msgstr "Välj när justering av uppdateringsfrekvensen bör ske."
 
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Synkronisera videon till skärmens uppdateringsfrekvens."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Ljudet måste vara synkroniserat, detta kan antingen göras genom att sampla om, skippa/duplicera paket, eller ställa om klockan om den är för mycket ur synk."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
@@ -11013,9 +11021,21 @@ msgctxt "#36169"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
 
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Tillåt videospelaren ignorera bildförhållande med ett visst mått för att fylla en större del av skärmen med video."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Välj den zoomnivå som videor i 4:3-format visas på bredbildsskärmar."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Aktivera text-TV när live-TV visas."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
@@ -11137,6 +11157,10 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
 
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Importera inte EPGinformation under tiden som du tittar på TV, detta för att minimera CPUanvändningen."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
@@ -11181,6 +11205,14 @@ msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
 
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC spelar automatatiskt upp nästa objekt i nuvarande mapp. Till exempel när ett spår har spelats kommer XBMC att spela upp nästa spår automatiskt som ligger i samma mapp."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "När låtar blir tillagda i en spellista kommer de är läggas i \"kö\" i stället för att spelas upp omedelbart."
+
 msgctxt "#36273"
 msgid "Select the visualization that will be displayed while listening to music."
 msgstr "Välj vilken visualisering som ska visas när du lyssnar på musik."
@@ -11209,6 +11241,10 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "När en CD stoppas i kommer denna att spelas upp automatiskt."
 
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Ange en plats på hårddisken där rippade låter kommer att sparas på."
+
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "Välj vilken ljudkodare som används vid rippning."
@@ -11220,6 +11256,10 @@ msgstr "Välj vilken kvalitet du vill rippa dina filer i."
 msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Välj vilken bithastighet som används för den angivna ljudkodaren för ljudkomprimering."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "För FLAC måste kompressionsnivån anges, default är 5"
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -11297,6 +11337,10 @@ msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
 
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Ange tiden som varje bild visas i ett bildspel."
+
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Visa bildspelet i slumpmässig ordning"
@@ -11352,6 +11396,10 @@ msgstr "Ingen info tillgänglig ännu."
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Tillåt program i nätverket att kontrollera XBMC."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -11417,6 +11465,10 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
 
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Ange ur många högtalare du har."
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "Välj det här alternativet om din receiver kan spela upp AC3ljud"
@@ -11461,6 +11513,30 @@ msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
 msgstr "Om din internetanslutning använder en proxy så kan du konfigurera den här."
 
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Konfigurera vilken proxytyp som används."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Konfigurera proxyserverns adress."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Konfigurera proxyserverns port."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Konfigurera proxyserverns användarnamn."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Konfigurera proxyserverns lösenord."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Om du har begränsad bandbredd kommer XBMC försöka hålla sig inom dessa gränser."
+
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
@@ -11468,6 +11544,18 @@ msgstr "Ingen info tillgänglig ännu."
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Ingen info tillgänglig ännu."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Mapp som används för att spara skärmdumpar tagna inne i XBMC."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Definiera PIN-koden som används för huvudlåset."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Ange maximalt antal försök innan XBMC avslutas."
 
 msgctxt "#36399"
 msgid "No info available yet."

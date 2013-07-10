@@ -207,7 +207,7 @@ msgstr "Gru"
 
 msgctxt "#71"
 msgid "N"
-msgstr "pn. "
+msgstr "płn. "
 
 msgctxt "#72"
 msgid "NNE"
@@ -215,59 +215,59 @@ msgstr "pn.-wsch."
 
 msgctxt "#73"
 msgid "NE"
-msgstr "NE"
+msgstr "pn.-wsch. "
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ENE"
+msgstr "pn.-wsch. "
 
 msgctxt "#75"
 msgid "E"
-msgstr "E"
+msgstr "wsch."
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "ESE"
+msgstr "pd.-wsch. "
 
 msgctxt "#77"
 msgid "SE"
-msgstr "SE"
+msgstr "pd.-wsch. "
 
 msgctxt "#78"
 msgid "SSE"
-msgstr "SSE"
+msgstr "pd.-wsch. "
 
 msgctxt "#79"
 msgid "S"
-msgstr "S"
+msgstr " płd. "
 
 msgctxt "#80"
 msgid "SSW"
-msgstr "SSW"
+msgstr "pd.-zach. "
 
 msgctxt "#81"
 msgid "SW"
-msgstr "SW"
+msgstr "pd.-zach. "
 
 msgctxt "#82"
 msgid "WSW"
-msgstr "WSW"
+msgstr "pd.-zach. "
 
 msgctxt "#83"
 msgid "W"
-msgstr "W"
+msgstr "zach."
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "WNW"
+msgstr "pn.-zach. "
 
 msgctxt "#85"
 msgid "NW"
-msgstr "NW"
+msgstr "pn.-zach. "
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "NNW"
+msgstr "pn.-zach. "
 
 msgctxt "#87"
 msgid "VAR"

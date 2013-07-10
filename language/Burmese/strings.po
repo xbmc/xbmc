@@ -31,7 +31,7 @@ msgstr "ရုပ်ရှင်များ"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "တီဗီ အစီအစဉ်"
+msgstr "တီဗီ လမ်းညွှန်"
 
 msgctxt "#5"
 msgid "Settings"
@@ -257,6 +257,10 @@ msgctxt "#101"
 msgid "View: List"
 msgstr "စာရင်း ပုံစံ"
 
+msgctxt "#102"
+msgid "Scan"
+msgstr "စစ်ဆေးသည်"
+
 msgctxt "#103"
 msgid "Sort by: Name"
 msgstr "နာမည်ဖြင့် စီရန်"
@@ -271,7 +275,7 @@ msgstr "အရွယ်အစားဖြင့် စီရန်"
 
 msgctxt "#106"
 msgid "No"
-msgstr "မဟုတ်ပါ"
+msgstr "မဟုတ်"
 
 msgctxt "#107"
 msgid "Yes"
@@ -377,6 +381,10 @@ msgctxt "#134"
 msgid "Songs"
 msgstr "သီချင်းများ"
 
+msgctxt "#135"
+msgid "Genres"
+msgstr "အမျိုးအစား"
+
 msgctxt "#136"
 msgid "Playlists"
 msgstr "ဖွင့်မည့်စာရင်း"
@@ -384,6 +392,10 @@ msgstr "ဖွင့်မည့်စာရင်း"
 msgctxt "#137"
 msgid "Search"
 msgstr "ရှာဖွေမည်"
+
+msgctxt "#138"
+msgid "System Information"
+msgstr "စနစ် အချက်အလက်များ"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -433,6 +445,10 @@ msgctxt "#150"
 msgid "IP address"
 msgstr "IP address"
 
+msgctxt "#151"
+msgid "Link:"
+msgstr "ချိတ်ဆက်:"
+
 msgctxt "#152"
 msgid "Half duplex"
 msgstr "Half duplex"
@@ -445,9 +461,25 @@ msgctxt "#154"
 msgid "Storage"
 msgstr "သိမ်းဆည်းမှု့"
 
+msgctxt "#155"
+msgid "Drive"
+msgstr "Drive"
+
+msgctxt "#156"
+msgid "Free"
+msgstr "အလွတ်"
+
 msgctxt "#157"
 msgid "Video"
 msgstr "ဗွီဒီယို"
+
+msgctxt "#158"
+msgid "Free memory"
+msgstr "အားနေသော memory"
+
+msgctxt "#160"
+msgid "Free"
+msgstr "အလွတ်"
 
 msgctxt "#161"
 msgid "Unavailable"
@@ -465,13 +497,25 @@ msgctxt "#165"
 msgid "Disc present"
 msgstr "အခွေ့ရှိပါသည်"
 
+msgctxt "#166"
+msgid "Skin"
+msgstr "အသွင်အပြင်ပုံစံ"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "ဖိုင် လုပ်ငန်းဆောင်ရွက် နေခြင်းကို မလုပ်တော့ပါ"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Resolution"
 
 msgctxt "#172"
 msgid "Release date"
-msgstr "ထုတ်သည့်ရက်စွဲ"
+msgstr "ထုတ်သည့် ရက်စွဲ"
 
 msgctxt "#176"
 msgid "Styles"
@@ -511,11 +555,15 @@ msgstr "အားလုံကိုရွေးပါ"
 
 msgctxt "#190"
 msgid "Save"
-msgstr "သိမ်းဆည်းမည်"
+msgstr "သိမ်းမည်"
 
 msgctxt "#192"
 msgid "Clear"
 msgstr "ရှင်းလင်းမည်"
+
+msgctxt "#193"
+msgid "Scan"
+msgstr "စစ်ဆေးသည်"
 
 msgctxt "#194"
 msgid "Searching..."
@@ -523,7 +571,7 @@ msgstr "ရှာနေသည်"
 
 msgctxt "#195"
 msgid "No info found!"
-msgstr "အချကအလက်များမတွေ့ပါ"
+msgstr "အချက်အလက်များ မတွေ့ပါ"
 
 msgctxt "#196"
 msgid "Select movie:"
@@ -532,6 +580,10 @@ msgstr "ရုပ်ရှင်ကိုရွေးပါ -"
 msgctxt "#198"
 msgid "Loading movie details"
 msgstr "ရုပ်ရှင်အချက်အလက်များဖွင့်နေသည်"
+
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Web အသွင်အပြင်"
 
 msgctxt "#203"
 msgid "Plot outline"
@@ -716,6 +768,10 @@ msgstr "စာတန်းထိုး"
 msgctxt "#288"
 msgid "Font"
 msgstr "စာလုံးပုံစံ"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "အရွယ်အစား"
 
 msgctxt "#291"
 msgid "Video"
@@ -1605,6 +1661,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "သီချင်းများအားလုံး၏"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "တီဗီ အစီအစဉ် လုပ်ဆောင်နေဆဲ"
+
 msgctxt "#630"
 msgid "Normal"
 msgstr "ပုံမှန်"
@@ -1709,6 +1769,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Manual (Static)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "IP address"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "သိမ်းပြီးပြန်စမည်"
@@ -1729,9 +1793,17 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "FTP server"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "Port"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "Save & apply"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "စကားဝှက်"
 
 msgctxt "#738"
 msgid "Normal"
@@ -1809,6 +1881,10 @@ msgctxt "#767"
 msgid "Grey"
 msgstr "အညို"
 
+msgctxt "#772"
+msgid "Audio output"
+msgstr "audio ထွက်ရှိမှု့"
+
 msgctxt "#773"
 msgid "Seeking"
 msgstr "ရှာနေသည်"
@@ -1820,6 +1896,10 @@ msgstr "Slideshow ဖိုလ်ဒါလ်"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "Network interface"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Wireless network name (ESSID)"
 
 msgctxt "#781"
 msgid "WEP"
@@ -1860,6 +1940,10 @@ msgstr "Wireless network name (ESSID)"
 msgctxt "#790"
 msgid "Remote control"
 msgstr "အဝေးမှထိန်းချုပ်ခြင်း"
+
+msgctxt "#792"
+msgid "Port"
+msgstr "Port"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -1971,15 +2055,15 @@ msgstr "အကြိုက်နှစ်သက်ဆုံး"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Video Add-ons"
+msgstr "ရုပ်ရှင် Add-on များ"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Music Add-ons"
+msgstr "သီချင်း Add-on များ"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Picture Add-ons"
+msgstr "ဓာတ်ပုံ Add-on များ"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -1996,6 +2080,10 @@ msgstr "Access points"
 msgctxt "#1047"
 msgid "Other..."
 msgstr "တခြား"
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "အသုံးပြုသူအမည်"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -2173,9 +2261,29 @@ msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "မုန်တိုင်း"
 
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "မုန်တိုင်း"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "သေးငယ်သော"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "နှင့်"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "နှင့်"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "၏"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "မသိရှိသော"
 
 msgctxt "#10000"
 msgid "Home"
@@ -2192,6 +2300,10 @@ msgstr "ပုံများ"
 msgctxt "#10003"
 msgid "File manager"
 msgstr "ဖိုင် မန်နေဂျာ"
+
+msgctxt "#10004"
+msgid "Settings"
+msgstr "ပြုပြင်ရန်"
 
 msgctxt "#10005"
 msgid "Music"
@@ -2236,6 +2348,18 @@ msgstr "ရုပ်ရှင်များ"
 msgctxt "#10029"
 msgid "Login screen"
 msgstr "ဝင်ရောက်သည့်စခရင်"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Lock settings"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "အကြိုက်နှစ်သက်ဆုံး"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Add-on များ / အချက်အလက်"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -2889,6 +3013,10 @@ msgctxt "#13420"
 msgid "Remove safely"
 msgstr "သေချာစွာဖြုတ်မည်"
 
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
 msgctxt "#13422"
 msgid "Start slideshow here"
 msgstr "Slideshow ကိုဒီနေရာမှစမည်"
@@ -2961,6 +3089,10 @@ msgctxt "#13610"
 msgid "Disabled"
 msgstr "ပိတ်ထားမည်"
 
+msgctxt "#13611"
+msgid "Standard"
+msgstr "စံ"
+
 msgctxt "#14003"
 msgid "Downloading playlist file..."
 msgstr "ဖွင့်မည့်စာရင်းဖိုင်ကိုဒေါင်းလုတ်ဆွဲနေသည်"
@@ -2988,6 +3120,14 @@ msgstr "တီဗွီ"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "အနီးဆုံးကျယ်သည့်မြို့ထဲသို့ဝင်မည်"
+
+msgctxt "#14028"
+msgid "Internet"
+msgstr "အင်တာနက်"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "အင်တာနက်"
 
 msgctxt "#14036"
 msgid "Services"
@@ -3356,6 +3496,10 @@ msgstr "ဖိုင်တစ်ဖိုင်တောင်ဖျက်လိ
 msgctxt "#16301"
 msgid "Nearest neighbour"
 msgstr "အနီးဆုံးအိမ်နီးချင်း"
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "Bicubic"
 
 msgctxt "#16304"
 msgid "Lanczos2"
@@ -3745,6 +3889,10 @@ msgctxt "#19160"
 msgid "to"
 msgstr "သို့"
 
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "အသံသွင်းခြင်း"
+
 msgctxt "#19165"
 msgid "Switch"
 msgstr "ပြောင်းမည်"
@@ -3796,6 +3944,10 @@ msgstr "PIN မမှန်ကန်ပါ"
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "ရိုက်ထည့်သော PIN နံပါတ်မှားယွင်းနေသည်"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "PVR add-on ရှာမတွေ့ပါ"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -3944,6 +4096,14 @@ msgstr "thumbnail ကိုဖြုတ်မည်"
 msgctxt "#20058"
 msgid "Add profile..."
 msgstr "Add profile..."
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "မီဒီယာအချက်အလက်"
+
+msgctxt "#20061"
+msgid "Separate"
+msgstr "သီးခြားခွဲထွက်သော"
 
 msgctxt "#20065"
 msgid "Profile picture"
@@ -4327,7 +4487,7 @@ msgstr "မဲများ"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "TV show အချက်အလက်"
+msgstr "တီဗီ အစီအစဉ် အချက်အလက်"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -4517,6 +4677,10 @@ msgctxt "#21381"
 msgid "Enter name of new playlist"
 msgstr "ဖွင့်မည့်စာရင်းအသစ်၏အမည်ကိုရိုက်ထည့်ပါ"
 
+msgctxt "#21382"
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "\"ရင်းမြစ် အသစ်ထည့်သွင်းမည်\" ခလုတ်ကို ဖိုလ် စာရင်းတွင် ပြရန်"
+
 msgctxt "#21385"
 msgid "Open"
 msgstr "ဖွင့်မည်"
@@ -4581,6 +4745,10 @@ msgctxt "#21413"
 msgid "Default movie scraper"
 msgstr "Default movie scraper"
 
+msgctxt "#21417"
+msgid "Settings"
+msgstr "ပြုပြင်ရန်"
+
 msgctxt "#21418"
 msgid "Multilingual"
 msgstr "ဘာသာစကားအမြောက်အမြား"
@@ -4612,6 +4780,10 @@ msgstr "Audio ဘာသာစကား"
 msgctxt "#21448"
 msgid "Subtitle language"
 msgstr "စာတန်းထိုးရန်ဘာသာစကား"
+
+msgctxt "#21450"
+msgid "Edit"
+msgstr "ပြင်ဆင်ရန်"
 
 msgctxt "#21451"
 msgid "Internet connection required."
@@ -4821,6 +4993,10 @@ msgctxt "#22030"
 msgid "Font"
 msgstr "စာလုံးပုံစံ"
 
+msgctxt "#22031"
+msgid "Size"
+msgstr "အရွယ်အစား"
+
 msgctxt "#22040"
 msgid "white/green"
 msgstr "အဖြူ၊အစိမ်း"
@@ -4871,7 +5047,11 @@ msgstr "Add-on"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Add-onများ"
+msgstr "Add-on များ"
+
+msgctxt "#24002"
+msgid "Add-on options"
+msgstr "Add-on အတွင်း ပြင်ဆင်မှု"
 
 msgctxt "#24003"
 msgid "Add-on Information"
@@ -4947,11 +5127,11 @@ msgstr "Error loading settings"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "All Add-ons"
+msgstr "Add-on အကုန်"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "Get Add-ons"
+msgstr "Add-on များ ရယူရန်"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -4971,7 +5151,7 @@ msgstr "သွင်းမည်"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Add-ons ကိုပိတ်ထားမည်"
+msgstr "ပိတ်ထားသည့် Add-on များ"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -5015,7 +5195,7 @@ msgstr "Add-on update available!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Add-on များဖွင့်ထားမည်"
+msgstr "အသုံးပြုထားသည့် Add-on များ"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -5023,7 +5203,7 @@ msgstr "အလိုအလျောက် update"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "ယခုဒေါင်းလုတ်ဆွဲနေသည် Add-onများ"
+msgstr "ယခု Download ဆွဲနေသည့် Add-onများ"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -5412,3 +5592,39 @@ msgstr "အမြဲတမ်း"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "user interface ၏ root sections မှ ရင်းမြစ်ထည့်သွင်း ခလုတ်ကို ဖော်ပြရန်"
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "ရုပ်ရှင် အချက်အလက် များ ပုံမှန် ရယူမည့် ရင်းမြစ် ရွေးချယ်ပါ။ ပြုပြင်ပြောင်းလဲ လို့ရသည်များကို Add-ons မန်နေဂျာ တွင် ကြည့်ပါ။"
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "တီဗီ အစီအစဉ် အချက်အလက် များ ပုံမှန် ရယူမည့် ရင်းမြစ် ရွေးချယ်ပါ။ ပြုပြင်ပြောင်းလဲ လို့ရသည်များကို Add-ons မန်နေဂျာ တွင် ကြည့်ပါ။"
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr "ကူးယူမည့် ဦးစားပေး အစီအစဉ်။ နံပတ် အများဆုံးသည် အမြင့်ဆုံး ဦးစားပေးဖြစ်သည်။ ပုံမှန်သည် 50 ဖြစ်သည်။ Add-ons အားလုံး နှင့် backends များမှ အထောက်အပံ့ မပေးပါ။"
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr "ဒီ အချိန် ရောက်လျှင် ကူးထားသည်များကို ဖျက်ပါ။ ပုံမှန် အချိန် သည် 99 ရက်ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr "တကယ့်အချိန် မစခင်မှာ စပြီး ကူးယူပါ။ ပုံမှန် သည် 2 မိနစ်ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr "ပြီးသွားသော်လျှင် ဒီ အချိန်ရောက်မှ ကူးတာကို ရပ်ပါ။ ပုံမှန် သည် 10 မိနစ် ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "အဆိုတော် အချက်အလက် ပုံမှန် ရယူမည့် ရင်းမြစ်ကို ရွေးပါ။ ပြုပြင်ပြောင်းလဲလို့ရသည်များကို Add-ons မန်နေဂျာတွင် ကြည့်ပါ။"
+
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr "ရာသီဥတု အချက်အလက် ပုံမှန် ရယူမည့် ရင်းမြစ်ကို ရွေးပါ။ ပြုပြင်ပြောင်းလဲလို့ ရသည်များကို Add-ons မန်နေဂျာတွင် ကြည့်ပါ။"

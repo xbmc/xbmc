@@ -23,3 +23,11 @@ msgstr "Paket Preset"
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
 msgstr "Folder Preset yang ditentukan Pengguna"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f detik"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

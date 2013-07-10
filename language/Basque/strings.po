@@ -3193,6 +3193,10 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Lanbroa"
 
+msgctxt "#1438"
+msgid "Small"
+msgstr "Txikia"
+
 msgctxt "#1439"
 msgid "and"
 msgstr "eta"
@@ -3380,6 +3384,10 @@ msgstr "Fitxategi kudeatzailea"
 msgctxt "#10128"
 msgid "Network setup"
 msgstr "Sare ezarpenak"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Euskarri iturria"
 
 msgctxt "#10130"
 msgid "Profile settings"
@@ -3888,6 +3896,22 @@ msgstr "Joystick-a konektatuta"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick-a deskonektatuta"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Sare konexio itxoiten..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Huts \"Wake on Lan\" exekutatzean!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Abiarazteko zerbitzariaren zain..."
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -9217,6 +9241,14 @@ msgctxt "#25000"
 msgid "Notifications"
 msgstr "Jakinarazpenak"
 
+msgctxt "#25001"
+msgid "Hide foreign"
+msgstr "Ezkutatu iragarpena"
+
+msgctxt "#25002"
+msgid "Select from all titles ..."
+msgstr "Hautatu izenburu guztietatik ..."
+
 msgctxt "#25003"
 msgid "Show bluray menus"
 msgstr "Bistarazi bluray menuak"
@@ -9525,6 +9557,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Gaitu script pertsonalizatuaren botoia"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Saio automatikoa"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Huts abiaraztean"
@@ -9637,9 +9673,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Ezin da erreproduzitzeko aurreko elementua aurkitu"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Huts Zeroconf konfiguratzean"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Apple-ren Bonjour zerbitzua instalaturik dago? Erregistroa ikusi argibide gehiagorentzat."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay-ek Zeroconf gaiturik egotea behar du."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Ezin da Zeroconf geratu"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay eta AirTunes-ek Zeroconf martxan behar dute."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -9652,6 +9704,10 @@ msgstr "Ezin da audio gailua abiarazi"
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Egiaztatu gailu ezarpenak"
+
+msgctxt "#35000"
+msgid "Peripherals"
+msgstr "Periferikoak"
 
 msgctxt "#35001"
 msgid "Generic HID device"
@@ -9692,6 +9748,10 @@ msgstr "e"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Gaitu joystick eta gamepad euskarria"
+
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Desgaitu jolas-mandoa gailua aurkitzen denean"
 
 msgctxt "#35500"
 msgid "Location"
@@ -9769,9 +9829,41 @@ msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Editatu RSS jarioak."
+
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Hautatu erabiltzaile interfazearen hizkuntza."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Tenperatura, ordu eta data formatuak hautatu. Aukera erabilgarriak hautatutako hizkuntzaren araberakoak izango dira."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Hautatu interfaze testuetan zein karaktere-joko erabili den."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Hautatu nazio kokalekua."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Hautatu ordu-zonaldea."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Hautatu lehenetsitakoa hizkuntza ezberdinetako pistak dauden kasuetarako."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Hautatu lehenetsitakoa hizkuntza ezberdinetako azpitituluak dauden kasuetarako."
 
 msgctxt "#36121"
 msgid "No info available yet."
@@ -9905,9 +9997,17 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Azpitituluen pantailako kokalekua."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Autoabiarazi DVD bideao gailuan sartzerakoan."
 
 msgctxt "#36197"
 msgid "No info available yet."
@@ -10029,6 +10129,22 @@ msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Hautatu karaokean erabiliko den letra-tipoa."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Hautatu karaokean erabiliko den letra tamaina."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Hautatu karaokean erabiliko den letra kolorea."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Hautatu karaokean erabiliko den letra-tipoa."
+
 msgctxt "#36299"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
@@ -10057,6 +10173,10 @@ msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "EXIF informazioa badago (data, ordua, erabilitako kamera, etab.) bistarazi egingo da."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
@@ -10064,6 +10184,10 @@ msgstr "Ez dago informazio erabilgarririk oraindik."
 msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Ikusi presentazio irudiak ausazko ordenan."
 
 msgctxt "#36315"
 msgid "No info available yet."
@@ -10093,6 +10217,26 @@ msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Ezarri web-zerbitzari ataka."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Ezarri web-zerbitzari erabiltzailea."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Ezarri web-zerbitzari pasahitza."
+
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "Hautatu gehigarri kudeatzailea erabiliaz instalatutako web interfazeen artean."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Ahalmendu ordenagailu honetako programek XBMC JSON-RPC interfazeko protokoloaren web-zerbitzariaren bidez kontrolatzea."
+
 msgctxt "#36335"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
@@ -10104,6 +10248,10 @@ msgstr "Ez dago informazio erabilgarririk oraindik."
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Baimendu sareko programek XBMC kontrolatzea."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -10180,6 +10328,26 @@ msgstr "Ez dago informazio erabilgarririk oraindik."
 msgctxt "#36379"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Ezarri zein proxy mota erabiliko den."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Ezarri proxy zerbitzari helbidea."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Ezarri proxy zerbitzari ataka."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Ezarri proxy zerbitzari erabiltzaile-izena."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Ezarri proxy zerbitzari pasahitza."
 
 msgctxt "#36388"
 msgid "No info available yet."
@@ -10264,6 +10432,10 @@ msgstr "Ez dago informazio erabilgarririk oraindik."
 msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "Ezarri erabiliko den Apple urruneko estandarra."
 
 msgctxt "#36417"
 msgid "No info available yet."

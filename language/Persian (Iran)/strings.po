@@ -981,6 +981,10 @@ msgctxt "#288"
 msgid "Font"
 msgstr "فونت"
 
+msgctxt "#289"
+msgid "Size"
+msgstr "اندازه"
+
 msgctxt "#290"
 msgid "Dynamic range compression"
 msgstr "فشرده سازی پویای محدوده"
@@ -2337,6 +2341,10 @@ msgctxt "#717"
 msgid "Manual (Static)"
 msgstr "Manual (Static)"
 
+msgctxt "#719"
+msgid "IP address"
+msgstr "آدرس ای پی"
+
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "ذخیره و ریستارت"
@@ -2361,13 +2369,25 @@ msgctxt "#728"
 msgid "FTP server"
 msgstr "سرور اف تی پی"
 
+msgctxt "#730"
+msgid "Port"
+msgstr "پورت"
+
 msgctxt "#732"
 msgid "Save & apply"
 msgstr "ذخیره و به کارگیری"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "رمز عبور"
+
 msgctxt "#734"
 msgid "No pass"
 msgstr "بدون رمز عبور"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "کارکتر ست"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2496,6 +2516,10 @@ msgstr "فولدر اسلاید نمایشی"
 msgctxt "#775"
 msgid "Network interface"
 msgstr "رابط شبکه"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "نام شبکه ی بی سیم (ESSID)"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2781,6 +2805,10 @@ msgctxt "#1047"
 msgid "Other..."
 msgstr "دیگر..."
 
+msgctxt "#1048"
+msgid "Username"
+msgstr "نام کاربری"
+
 msgctxt "#1049"
 msgid "Script settings"
 msgstr "تنظیمات اسکریپت"
@@ -3025,6 +3053,10 @@ msgctxt "#1417"
 msgid "Grains"
 msgstr "دانه دانه"
 
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "طوفانی"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "معتدل"
@@ -3044,6 +3076,10 @@ msgstr "غبار"
 msgctxt "#1439"
 msgid "and"
 msgstr "و"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "با"
 
 msgctxt "#1443"
 msgid "of"
@@ -3184,6 +3220,18 @@ msgstr "محاوره  بله/ خیر"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "محاوره ی پیشرفت"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "تنظیمات قفل"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "موارد دلخواه"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "تنظیمات افزودنی ها"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4617,9 +4665,17 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "حافظه ی کش ویدیو -  DVD-ROM"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "اینترنت"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "حافظه ی کش صدا -  DVD-ROM"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "اینترنت"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5661,6 +5717,10 @@ msgctxt "#20108"
 msgid "Root"
 msgstr "ریشه"
 
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "زوم"
+
 msgctxt "#20110"
 msgid "UPnP settings"
 msgstr "تنظیمات UPnP "
@@ -6425,6 +6485,10 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "فن آرت"
 
+msgctxt "#20420"
+msgid "Never"
+msgstr "هرگز"
+
 msgctxt "#20422"
 msgid "Always"
 msgstr "همیشه"
@@ -6441,9 +6505,21 @@ msgctxt "#21375"
 msgid "Normal"
 msgstr "نرمال"
 
+msgctxt "#21385"
+msgid "Open"
+msgstr "باز"
+
+msgctxt "#21417"
+msgid "Settings"
+msgstr "تنظیمات"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "رزولیشن"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "نظر"
 
 msgctxt "#21866"
 msgid "Category"
@@ -6453,6 +6529,14 @@ msgctxt "#21875"
 msgid "Country"
 msgstr "کشور"
 
+msgctxt "#22030"
+msgid "Font"
+msgstr "فونت"
+
+msgctxt "#22031"
+msgid "Size"
+msgstr "اندازه"
+
 msgctxt "#24005"
 msgid "Media sources"
 msgstr "منبع رسانه‌ای"
@@ -6460,6 +6544,14 @@ msgstr "منبع رسانه‌ای"
 msgctxt "#24007"
 msgid "Movie information"
 msgstr "اطلاعات فیلم"
+
+msgctxt "#24008"
+msgid "Screensaver"
+msgstr "محافظ صفحه"
+
+msgctxt "#24010"
+msgid "Visualization"
+msgstr "تجسم"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -6492,6 +6584,10 @@ msgstr "این فایل چند بخشی است, قسمت مورد نظر را ب
 msgctxt "#34122"
 msgid "Always"
 msgstr "همیشه"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "هرگز"
 
 msgctxt "#35502"
 msgid "Name"
