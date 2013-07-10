@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "view/ViewStateSettings.h"
+#include "GUIPassword.h"
 
 using namespace std;
 
@@ -290,6 +291,10 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 
     case ACTION_SETTINGS_LEVEL_CHANGE:
     {
+      //Test if we can access the new level
+      if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::Get().GetNextSettingLevel(), true))
+        return false;
+      
       CViewStateSettings::Get().CycleSettingLevel();
       CSettings::Get().Save();
 
@@ -415,6 +420,8 @@ void CGUIWindowSettingsCategory::SetupControls(bool createSettings /* = true */)
   
   // update the screen string
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, section->GetLabel());
+  
+  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::Get().GetSettingLevel());
 
   // get the categories we need
   m_categories = section->GetCategories(CViewStateSettings::Get().GetSettingLevel());

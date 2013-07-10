@@ -101,7 +101,15 @@ void CGUIDialogLockSettings::CreateSettings()
     AddBool(5,20040,&m_locks.pictures);
     AddBool(6,20041,&m_locks.programs);
     AddBool(7,20042,&m_locks.files);
-    AddBool(8,20043,&m_locks.settings);
+    
+    std::vector<std::pair<int, int> > settingsLevelOptions;
+    settingsLevelOptions.push_back(std::make_pair(LOCK_LEVEL::NONE,     106));
+    settingsLevelOptions.push_back(std::make_pair(LOCK_LEVEL::ALL,      593));
+    settingsLevelOptions.push_back(std::make_pair(LOCK_LEVEL::STANDARD, 10037));
+    settingsLevelOptions.push_back(std::make_pair(LOCK_LEVEL::ADVANCED, 10038));
+    settingsLevelOptions.push_back(std::make_pair(LOCK_LEVEL::EXPERT,   10039));
+    AddSpin(8, 20043, (int*)&m_locks.settings, settingsLevelOptions);
+    
     AddBool(9,24090,&m_locks.addonManager);
     EnableDetails(m_locks.mode != LOCK_MODE_EVERYONE);
   }
