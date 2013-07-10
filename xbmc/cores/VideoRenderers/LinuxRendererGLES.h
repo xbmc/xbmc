@@ -281,9 +281,6 @@ protected:
   struct SwsContext *m_sw_context;
   BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
-
-  CEvent* m_eventTexturesDone[NUM_BUFFERS];
-
 };
 
 
