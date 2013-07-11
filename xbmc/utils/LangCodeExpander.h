@@ -24,6 +24,81 @@
 
 class TiXmlElement;
 
+// TODO: move CLanguageTag declaration to new .h file
+
+/* BCP 47 (RFC 5646) language tag */
+class CLanguageTag
+{
+public:
+  CLanguageTag(void);
+  CLanguageTag(const std::string& languageTagString);
+  CLanguageTag(const CLanguageTag& other);
+  CLanguageTag& operator=(const CLanguageTag& other);
+  bool operator==(const CLanguageTag& other) const;
+  bool operator!=(const CLanguageTag& other) const;
+  void Clear(void);
+  bool IsValid(void) const;
+
+  bool SetFromString(const std::string& languageTagString);
+  std::string GetTagString(void) const;
+  bool IsFromWellFormedString(void) const { return m_FromWellFormedString; }
+
+  void SetLanguageSubtag(const std::string& languageSubtag);
+  std::string GetLanguageSubtag(void) const { return m_LanguageSubtag; }
+  std::string GetLanguageFullSubtag(void) const;
+
+  void SetExtlangSubtag(const std::string& extlangSubtag);
+  std::string GetExtlangSubtag(void) const { return m_ExtlangSubtag; }
+
+  void SetScriptSubtag(const std::string& scriptSubtag);
+  std::string GetScriptSubtag(void) const;
+
+  void SetRegionSubtag(const std::string& regionSubtag);
+  std::string GetRegionSubtag(void) const { return m_RegionSubtag; }
+
+  void SetVariantSubtag(const std::string& variantSubtag);
+  std::string GetVariantSubtag(void) const { return m_VariantSubtag; }
+
+  void SetExtensionSubtag(const std::string& extensionSubtag);
+  std::string GetExtensionSubtag(void) const { return m_ExtensionSubtag; }
+
+  void SetPrivateuseSubtag(const std::string& privateuseSubtag);
+  std::string GetPrivateuseSubtag(void) const { return m_PrivateuseSubtag; }
+
+  bool DecodeTagToNames(void);
+  bool IsDecodedToNamesWithoutErrors(void) const { return m_DecodedToNamesWithoutErrors; }
+
+  std::string GetLanguageName(void);
+  std::string GetExtlangName(void);
+  std::string GetScriptName(void);
+  std::string GetRegionName(void);
+  std::string GetVariantName(void);
+  std::string GetExtensionName(void);
+private:
+  bool m_FromWellFormedString;
+  std::string m_LanguageSubtag;
+  std::string m_ExtlangSubtag;
+  std::string m_ScriptSubtag;
+  std::string m_RegionSubtag;
+  std::string m_VariantSubtag;
+  std::string m_ExtensionSubtag;
+  std::string m_PrivateuseSubtag;
+  std::string m_DefaultScriptSubtag;
+  void SetSubtagsDefaults(void);
+
+  bool m_DecodedToNames;
+  bool m_DecodedToNamesWithoutErrors;
+  bool DecodeLanguageSubtag(void);
+  std::string m_LanguageName;
+  std::string m_ExtlangName;
+  std::string m_ScriptName;
+  std::string m_RegionName;
+  /* TODO: implement variantName and extensionName when needed
+  std::string variantName;
+  std::string extensionName; */
+  void ClearDecodedNames(void);
+};
+
 class CLangCodeExpander
 {
 public:

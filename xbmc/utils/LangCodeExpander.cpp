@@ -22,6 +22,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
 #include "utils/log.h" 
+#include "utils/StringUtils.h"
+#include "utils/RegExp.h"
 
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
@@ -61,6 +63,401 @@ typedef struct _WINLCIDENTRY
 
 extern const WINLCIDENTRY WinLCIDtoLangTag[351];
 #endif
+
+// TODO: move CLanguageTag implementation to new .cpp file
+
+CLanguageTag::CLanguageTag(void)
+{
+  m_FromWellFormedString = false;
+  m_DecodedToNames = false;
+  m_DecodedToNamesWithoutErrors = false;
+}
+
+CLanguageTag::CLanguageTag(const std::string& languageTagString)
+{
+  SetFromString(languageTagString);
+}
+
+CLanguageTag::CLanguageTag(const CLanguageTag& other)
+{
+  operator=(other);
+}
+
+CLanguageTag& CLanguageTag::operator=(const CLanguageTag& other)
+{
+  m_FromWellFormedString = other.m_FromWellFormedString;
+  m_LanguageSubtag       = other.m_LanguageSubtag;
+  m_ExtlangSubtag        = other.m_ExtlangSubtag;
+  m_ScriptSubtag         = other.m_ScriptSubtag;
+  m_RegionSubtag         = other.m_RegionSubtag;
+  m_VariantSubtag        = other.m_VariantSubtag;
+  m_ExtensionSubtag      = other.m_ExtensionSubtag;
+  m_PrivateuseSubtag     = other.m_PrivateuseSubtag;
+  m_DefaultScriptSubtag  = other.m_DefaultScriptSubtag;
+
+  m_DecodedToNames       = other.m_DecodedToNames;
+  if (m_DecodedToNames)
+  {
+    m_DecodedToNamesWithoutErrors =
+                           other.m_DecodedToNamesWithoutErrors;
+    m_LanguageName       = other.m_LanguageName;
+    m_ExtlangName        = other.m_ExtlangName;
+    m_ScriptName         = other.m_ScriptName;
+    m_RegionName         = other.m_RegionName;
+  }
+  else
+    ClearDecodedNames();
+
+  return *this;
+}
+
+bool CLanguageTag::operator==(const CLanguageTag& other) const
+{
+  return  m_LanguageSubtag   == other.m_LanguageSubtag &&
+          m_ExtlangSubtag    == other.m_ExtlangSubtag &&
+          m_ScriptSubtag     == other.m_ScriptSubtag &&
+          m_RegionSubtag     == other.m_RegionSubtag &&
+          m_VariantSubtag    == other.m_VariantSubtag &&
+          m_ExtensionSubtag  == other.m_ExtensionSubtag &&
+          StringUtils::EqualsNoCase(m_PrivateuseSubtag, other.m_PrivateuseSubtag);
+}
+
+bool CLanguageTag::operator!=(const CLanguageTag& other) const
+{
+  return !operator==(other);
+}
+
+void CLanguageTag::Clear(void)
+{
+  m_FromWellFormedString = false;
+  m_LanguageSubtag.clear();
+  m_ExtlangSubtag.clear();
+  m_ScriptSubtag.clear();
+  m_RegionSubtag.clear();
+  m_VariantSubtag.clear();
+  m_ExtensionSubtag.clear();
+  m_PrivateuseSubtag.clear();
+  m_DefaultScriptSubtag.clear();
+
+  ClearDecodedNames();
+}
+
+bool CLanguageTag::IsValid(void) const
+{
+  const size_t s = m_LanguageSubtag.length();
+  return s==2 || s==3;
+}
+
+bool CLanguageTag::SetFromString(const std::string& languageTagString)
+{
+  Clear();
+  if (languageTagString.length() < 2)
+    return false;
+
+  CRegExp re; 
+  /* note: regexp formed for matching lower case string */ 
+  if (!re.RegComp("^(?<lang>(?:(?<primlang>[a-z]{2,3})(?:-(?<extlang>[a-z]{3}))?)|[a-z]{4,8})"
+                    "(?:-(?<script>[a-z]{4}))?(?:-(?<region>[a-z]{2}|\\d{3}))?"
+                    "(?:-(?<variant>[0-9a-z]{5,8}|\\d[0-9a-z]{3})(?:-(?<mvariants>[0-9a-z]{5,8}|\\d[0-9a-z]{3}))*)?" /* PCRE catches only last match, 'variant' will contain first match */
+                    "(?:-(?<ext>[0-9a-wyz](?:-[0-9a-z]{2,8})+))*(?:-(?<private>x(?:-[0-9a-z]{1,8})+))?$"))
+    return false; /* PCRE error */
+
+  std::string strLower (languageTagString);
+  StringUtils::ToLower(strLower);
+
+  if (re.RegFind(strLower) == 0)
+  {
+    std::string languageFullSubtag;
+    if (!re.GetNamedSubPattern("lang", languageFullSubtag) ||
+          !re.GetNamedSubPattern("primlang", m_LanguageSubtag) ||
+          !re.GetNamedSubPattern("extlang", m_ExtlangSubtag) ||
+          !re.GetNamedSubPattern("script", m_ScriptSubtag) ||
+          !re.GetNamedSubPattern("region", m_RegionSubtag) ||
+          !re.GetNamedSubPattern("variant", m_VariantSubtag) ||
+          !re.GetNamedSubPattern("ext", m_ExtensionSubtag))
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+    
+    if (m_LanguageSubtag.empty())
+      m_LanguageSubtag = languageFullSubtag;
+
+    int privNum = re.GetNamedSubPatternNumber("private");
+    if (privNum < 0)
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+    else
+    {
+      int pos = re.GetSubStart(privNum);
+      int len = re.GetSubLength(privNum);
+      if (pos >= 0 && len > 0)
+        m_PrivateuseSubtag.assign(languageTagString, pos, len); /* preserve case for private subtag */
+    }
+
+    m_FromWellFormedString = true;
+  }
+  else
+  {
+    /* string is not well formed RFC 5646 language tag */
+    /* try to extract minimum language information */
+    StringUtils::Trim(strLower);
+    /* note: regexp formed for matching lower case string */ 
+    if (!re.RegComp("^(?<lang>[a-z]{2,3})"
+            "(?:$|-(?:(?<region1>[a-z]{2})(?:$|-))|-(?:[0-9a-wyz]-|[0-9a-z]{2,}-)+(?<region2>[a-z]{2})(?:$|-)|.)"))
+    {
+      Clear();
+      return false; /* PCRE error */
+    }
+  
+    if (re.RegFind(strLower) < 0)
+    {
+      Clear();
+      return false;
+    }
+
+    re.GetNamedSubPattern("lang", m_LanguageSubtag);
+    re.GetNamedSubPattern("region1", m_RegionSubtag);
+    if (m_RegionSubtag.empty())
+      re.GetNamedSubPattern("region2", m_RegionSubtag);
+  }
+
+  /* Format result */
+  if (!m_RegionSubtag.empty())
+    StringUtils::ToUpper(m_RegionSubtag);
+  if (!m_ScriptSubtag.empty())
+    m_ScriptSubtag[0] = toupper(m_ScriptSubtag[0]);
+  
+  SetSubtagsDefaults();
+
+  return m_FromWellFormedString;
+}
+
+std::string CLanguageTag::GetTagString(void) const
+{
+  std::string tag (GetLanguageFullSubtag());
+  if (!GetScriptSubtag().empty())
+    tag += "-" + GetScriptSubtag();
+  if (!m_RegionSubtag.empty())
+    tag += "-" + m_RegionSubtag;
+  if (!m_VariantSubtag.empty())
+    tag += "-" + m_VariantSubtag;
+  if (!m_ExtensionSubtag.empty())
+    tag += "-" + m_ExtensionSubtag;
+  if (!m_PrivateuseSubtag.empty())
+    tag += "-" + m_PrivateuseSubtag;
+
+  return tag;
+}
+
+void CLanguageTag::SetLanguageSubtag(const std::string& languageSubtag)
+{
+  if (languageSubtag == m_LanguageSubtag)
+    return;
+  ClearDecodedNames();
+  m_LanguageSubtag = languageSubtag; 
+  StringUtils::ToLower(m_LanguageSubtag);
+  SetSubtagsDefaults();
+}
+
+std::string CLanguageTag::GetLanguageFullSubtag(void) const
+{
+  std::string tag (m_LanguageSubtag);
+  if (!m_ExtlangSubtag.empty())
+    tag += "-" + m_ExtlangSubtag;
+
+  return tag;
+}
+
+void CLanguageTag::SetExtlangSubtag(const std::string& extlangSubtag)
+{
+  if (extlangSubtag == m_ExtlangSubtag)
+    return;
+  ClearDecodedNames();
+  m_ExtlangSubtag = extlangSubtag; 
+  StringUtils::ToLower(m_ExtlangSubtag);
+  SetSubtagsDefaults();
+}
+
+void CLanguageTag::SetScriptSubtag(const std::string& scriptSubtag)
+{
+  if (scriptSubtag == m_ScriptSubtag)
+    return;
+  ClearDecodedNames();
+  m_ScriptSubtag = scriptSubtag; 
+  StringUtils::ToLower(m_ScriptSubtag);
+  if (!m_ScriptSubtag.empty())
+    m_ScriptSubtag[0] = toupper(m_ScriptSubtag[0]);
+  SetSubtagsDefaults();
+}
+
+std::string CLanguageTag::GetScriptSubtag(void) const
+{
+  if (m_ScriptSubtag.empty())
+    return m_DefaultScriptSubtag;
+
+  return m_ScriptSubtag;
+}
+
+void CLanguageTag::SetRegionSubtag(const std::string& regionSubtag)
+{
+  if (regionSubtag == m_RegionSubtag)
+    return;
+  ClearDecodedNames();
+  m_RegionSubtag = regionSubtag; 
+  StringUtils::ToUpper(m_RegionSubtag);
+  SetSubtagsDefaults();
+}
+
+void CLanguageTag::SetVariantSubtag(const std::string& variantSubtag)
+{
+  if (variantSubtag == m_VariantSubtag)
+    return;
+  ClearDecodedNames();
+  m_VariantSubtag = variantSubtag; 
+  StringUtils::ToLower(m_VariantSubtag);
+}
+
+void CLanguageTag::SetExtensionSubtag(const std::string& extensionSubtag)
+{
+  if (extensionSubtag == m_ExtensionSubtag)
+    return;
+  ClearDecodedNames();
+  m_ExtensionSubtag = extensionSubtag; 
+  StringUtils::ToLower(m_ExtensionSubtag);
+}
+
+void CLanguageTag::SetPrivateuseSubtag(const std::string& privateuseSubtag)
+{
+  if (privateuseSubtag == m_PrivateuseSubtag)
+    return;
+  m_PrivateuseSubtag = privateuseSubtag; 
+}
+
+bool CLanguageTag::DecodeTagToNames(void)
+{
+  if (m_DecodedToNames)
+    return m_DecodedToNamesWithoutErrors;
+
+  m_DecodedToNamesWithoutErrors = DecodeLanguageSubtag();
+
+  /* Only few scripts and regions are supported for now, variant and extension are not used */
+  /* TODO: when needed, add decoding support for all standard scripts, regions and variants to CLangCodeExpander */
+
+  /* Decode script subtag */
+  std::string scriptTag = GetScriptSubtag();
+  if (scriptTag == "Cyrl")
+    m_ScriptName = "Cyrillic";
+  else if (scriptTag == "Hans")
+    m_ScriptName = "Simplified";
+  else if (scriptTag == "Hant")
+    m_ScriptName = "Traditional";
+  else if (scriptTag == "Deva")
+    m_ScriptName = "Devanagari";
+
+  /* Decode region subtag */
+  if (m_RegionSubtag == "AR")
+    m_RegionName = "Argentina";
+  else if (m_RegionSubtag == "BR")
+    m_RegionName = "Brazil";
+  else if (m_RegionSubtag == "MX")
+    m_RegionName = "Mexico";
+  else if (m_RegionSubtag == "US")
+    m_RegionName = "United States";
+
+  m_DecodedToNames = true;
+
+  return m_DecodedToNamesWithoutErrors;
+}
+
+std::string CLanguageTag::GetLanguageName(void)
+{
+  DecodeTagToNames();
+  return m_LanguageName;
+}
+
+std::string CLanguageTag::GetExtlangName(void)
+{
+  DecodeTagToNames();
+  return m_ExtlangName;
+}
+
+std::string CLanguageTag::GetScriptName(void)
+{
+  DecodeTagToNames();
+  return m_ScriptName;
+}
+
+std::string CLanguageTag::GetRegionName(void)
+{
+  DecodeTagToNames();
+  return m_RegionName;
+}
+
+std::string CLanguageTag::GetVariantName(void)
+{
+  return "";
+}
+
+std::string CLanguageTag::GetExtensionName(void)
+{
+  return "";
+}
+
+void CLanguageTag::SetSubtagsDefaults(void)
+{
+  DecodeLanguageSubtag();
+  if (m_LanguageName.empty() && m_ExtlangName.empty())
+    return;
+
+  /* minimum defaults, only required for XBMC language selection */
+  if (m_ScriptSubtag.empty())
+  {
+    /* Set some default scripts */
+    if (m_LanguageName == "Chinese" || m_ExtlangName == "Chinese")
+    {
+      if (m_RegionSubtag == "CN")
+        m_DefaultScriptSubtag = "Hans";
+      else if (m_RegionSubtag == "TW")
+        m_DefaultScriptSubtag = "Hant";
+      else
+        m_DefaultScriptSubtag = "Hans"; // FIXME: Hant?
+    }
+    else if (m_LanguageName == "Hindi" || m_ExtlangName == "Hindi")
+      m_DefaultScriptSubtag = "Deva";
+    else
+      m_DefaultScriptSubtag.clear();
+  }
+  else
+    m_DefaultScriptSubtag.clear();
+}
+
+bool CLanguageTag::DecodeLanguageSubtag(void)
+{
+  if (m_DecodedToNames)
+    return m_DecodedToNamesWithoutErrors;
+
+  bool decodedOK = true;
+  if (m_LanguageSubtag.empty() || !g_LangCodeExpander.LookupInDb(m_LanguageName, m_LanguageSubtag))
+    decodedOK = false;
+  if (!m_ExtlangSubtag.empty() && !g_LangCodeExpander.LookupInDb(m_ExtlangName, m_ExtlangSubtag))
+    decodedOK = false;
+
+  return decodedOK;
+}
+
+void CLanguageTag::ClearDecodedNames(void)
+{
+  m_DecodedToNames = false;
+  m_DecodedToNamesWithoutErrors = false;
+  m_LanguageName.clear();
+  m_ExtlangName.clear();
+  m_ScriptName.clear();
+  m_RegionName.clear();
+}
+
 
 CLangCodeExpander::CLangCodeExpander(void)
 {}
