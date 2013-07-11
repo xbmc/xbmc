@@ -73,6 +73,20 @@ bool CAEFactory::LoadEngine()
   }
 #endif
 
+#if defined(TARGET_WINDOWS)
+  std::string engine;
+  if (getenv("AE_ENGINE"))
+  {
+    engine = (std::string)getenv("AE_ENGINE");
+    std::transform(engine.begin(), engine.end(), engine.begin(), ::toupper);
+
+    if (!loaded && engine == "SOFT" )
+      loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+    if (!loaded && engine == "ACTIVE")
+      loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
+  }
+#endif
+
 #if defined(HAS_PULSEAUDIO)
   if (!loaded)
     loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
