@@ -37,6 +37,9 @@
 #include "utils/URIUtils.h"
 #endif
 #include "utils/log.h"
+#ifdef TARGET_WINDOWS
+#include "win32/WIN32Util.h"
+#endif
 
 #include <algorithm>
 
@@ -78,8 +81,7 @@ CStdString CHDFile::GetLocal(const CURL &url)
   }
 
 #ifdef TARGET_WINDOWS
-  path.Insert(0, "\\\\?\\");
-  path.Replace('/', '\\');
+  path = CWIN32Util::NormalToExtendedLengthPath(path);
 #endif
 
   if (IsAliasShortcut(path))
@@ -160,7 +162,7 @@ int CHDFile::Stat(const CURL& url, struct __stat64* buffer)
 #ifdef TARGET_WINDOWS
   CStdStringW strWFile;
   /* _wstat64 can't handle long paths therefore we remove the \\?\ */
-  strFile.Replace("\\\\?\\", "");
+  strFile = CWIN32Util::ExtendedToNormalLengthPath(strFile);
   // win32 can only stat root drives with a slash at the end
   if(strFile.length() == 2 && strFile[1] ==':')
     URIUtils::AddSlashAtEnd(strFile);
