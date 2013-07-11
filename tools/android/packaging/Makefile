@@ -98,7 +98,7 @@ libs: $(PREFIX)/lib/xbmc/libxbmc.so
 	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
 
 $(PREFIX)/lib/xbmc/libxbmc.so: $(SRCLIBS)
-	$(MAKE) -C ../depends/xbmc
+	$(MAKE) -C ../../depends/target/xbmc
 
 $(SRCLIBS):
 
