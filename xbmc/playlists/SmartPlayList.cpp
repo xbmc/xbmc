@@ -1403,7 +1403,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   if (obj.isMember("order") && obj["order"].isMember("method") && obj["order"]["method"].isString())
   {
     if (obj["order"].isMember("direction") && obj["order"]["direction"].isString())
-      m_orderDirection = StringUtils::EqualsNoCase(obj["order"]["direction"].asString(), "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = StringUtils::EqualsNoCase(obj["order"]["direction"].asString(), "ascending") ? SortOrderAscending : SortOrderDescending;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(obj["order"]["method"].asString().c_str());
   }
