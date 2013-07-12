@@ -29,6 +29,7 @@
  */
 
 #include "utils/StdString.h"
+#include "threads/CriticalSection.h"
 
 #include <map>
 
@@ -101,6 +102,7 @@ protected:
   static const uint32_t block_size = 4096;
   std::map<CStdString, uint32_t> m_blocks;
   typedef std::map<CStdString, uint32_t>::iterator iBlocks;
+  CCriticalSection m_critSection;
 };
 
 /*!
