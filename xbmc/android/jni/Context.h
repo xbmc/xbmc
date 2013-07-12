@@ -22,7 +22,7 @@
 #include "JNIBase.h"
 #include "BroadcastReceiver.h"
 
-class ANativeActivity;
+struct ANativeActivity;
 class CJNIIntent;
 class CJNIPackageManager;
 class CJNIBroadcastReceiver;
