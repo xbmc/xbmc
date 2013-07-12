@@ -734,12 +734,16 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     pDialog->Reset();
     pDialog->SetHeading(19196);
     for (unsigned int i = 0; i < hooks->size(); i++)
-      pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
+      if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
+      {
+        pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
+        hookIDs.push_back(i);
+      }
     pDialog->DoModal();
 
     int selection = pDialog->GetSelectedLabel();
     if (selection >= 0)
-      client->CallMenuHook(hooks->at(selection), item);
+      client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
   }
 }
 
