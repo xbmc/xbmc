@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "xbmc_codec_types.h"
-#include "../library.xbmc.addon/libXBMC_addon.h"
+#include "libXBMC_addon.h"
 
 #ifdef _WIN32
 #define CODEC_HELPER_DLL "\\library.xbmc.codec\\libXBMC_codec" ADDON_HELPER_EXT

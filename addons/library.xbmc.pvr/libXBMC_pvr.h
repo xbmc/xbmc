@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "xbmc_pvr_types.h"
-#include "../library.xbmc.addon/libXBMC_addon.h"
+#include "libXBMC_addon.h"
 
 #ifdef _WIN32
 #define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr" ADDON_HELPER_EXT

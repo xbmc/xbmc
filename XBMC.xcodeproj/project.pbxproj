@@ -12677,8 +12677,45 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GENERATE_PROFILING_CODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					$SRCROOT,
+					xbmc,
+					xbmc/linux,
+					xbmc/osx,
+					xbmc/cores/dvdplayer,
+					lib,
+					lib/ffmpeg,
+					addons/library.xbmc.addon,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
+				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/SlingboxLib",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+					"\"$(SRCROOT)/xbmc/interfaces/python\"",
+					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
+				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -12772,8 +12809,45 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					$SRCROOT,
+					xbmc,
+					xbmc/linux,
+					xbmc/osx,
+					xbmc/cores/dvdplayer,
+					lib,
+					lib/ffmpeg,
+					addons/library.xbmc.addon,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
+				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/SlingboxLib",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+					"\"$(SRCROOT)/xbmc/interfaces/python\"",
+					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
+				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -12913,6 +12987,7 @@
 					xbmc/cores/AudioEngine/Utils,
 					lib,
 					lib/ffmpeg,
+					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
@@ -13026,6 +13101,7 @@
 					xbmc/cores/AudioEngine/Utils,
 					lib,
 					lib/ffmpeg,
+					addons/library.xbmc.addon,
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
@@ -13129,6 +13205,22 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					$SRCROOT,
+					xbmc,
+					xbmc/linux,
+					xbmc/osx,
+					xbmc/cores/dvdplayer,
+					lib,
+					lib/ffmpeg,
+					addons/library.xbmc.addon,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
+				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -13154,6 +13246,22 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					$SRCROOT,
+					xbmc,
+					xbmc/linux,
+					xbmc/osx,
+					xbmc/cores/dvdplayer,
+					lib,
+					lib/ffmpeg,
+					addons/library.xbmc.addon,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
+				);
 				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
