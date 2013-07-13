@@ -304,7 +304,7 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD3(dvdnav_status_t, dvdnav_get_audio_info, (dvdnav_t * p1, int32_t p2, audio_attr_t* p3))
   DEFINE_METHOD3(dvdnav_status_t, dvdnav_get_stitle_info, (dvdnav_t * p1, int32_t p2, subp_attr_t* p3))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_time_search, (dvdnav_t * p1, uint64_t p2))
-  DEFINE_METHOD2(dvdnav_status_t, dvdnav_jump_to_sector_by_time, (dvdnav_t * p1, uint64_t p2))
+  DEFINE_METHOD3(dvdnav_status_t, dvdnav_jump_to_sector_by_time, (dvdnav_t * p1, uint64_t p2, int32_t p3))
   DEFINE_METHOD1(int64_t, dvdnav_convert_time, (dvd_time_t *p1))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_state, (dvdnav_t *p1, dvd_state_t *p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_set_state, (dvdnav_t *p1, dvd_state_t *p2))

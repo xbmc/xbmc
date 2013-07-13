@@ -160,6 +160,9 @@ typedef struct {
  */
 #define TMAP_IDX_EDGE_BGN  -1
 #define TMAP_IDX_EDGE_END  -2
+#define JUMP_MODE_TIME_AFTER 1
+#define JUMP_MODE_TIME_DEFAULT 0
+#define JUMP_MODE_TIME_BEFORE -1
 
 typedef struct dvdnav_vobu_s {
   int32_t vobu_start;  /* Logical Absolute. MAX needed is 0x300000 */

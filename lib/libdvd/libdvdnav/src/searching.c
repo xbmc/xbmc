@@ -1030,7 +1030,7 @@ static int32_t dvdnav_tmap_search(vts_tmap_t *tmap, uint32_t tmap_len,
   }
 }
 
-/* Find the cell for a given sector */
+/* Find the cell for a given time */
 static int32_t dvdnav_cell_find(dvdnav_t *this, dvd_state_t *state,
             uint64_t find_val, dvdnav_cell_data_t *cell_data) {
   uint32_t cells_len = 0;
@@ -1329,9 +1329,16 @@ static int32_t dvdnav_find_vobu_by_cell_boundaries(dvdnav_t *this,
   return 1;
 }
 
+/* Jump to sector by time */
+/* NOTE: Mode is currently unimplemented. Only 0 should be passed. */
+/* 1 and -1 are for future implementation */
+/*  0: Default. Jump to a time which may be either <> time_in_pts_ticks */
+/*  1: After. Always jump to a time that is > time_in_pts_ticks */
+/* -1: Before. Always jump to a time that is < time_in_pts_ticks */
 dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this,
-            uint64_t time_in_pts_ticks) {
-  int32_t result = 1;
+            uint64_t time_in_pts_ticks, int32_t mode) {
+  if (mode != JUMP_MODE_TIME_DEFAULT) return DVDNAV_STATUS_ERR;
+  int32_t result = DVDNAV_STATUS_ERR;
   dvd_state_t *state = NULL;
   uint32_t sector_off = 0;
   dvdnav_pos_data_t *jump = NULL;
@@ -1360,7 +1367,7 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this,
 
   /* find sector */
   result = dvdnav_find_vobu_by_tmap(this, state, args, cell_data, jump);
-  if (!result) {// bad tmap; interpolate over cell
+  if (!result) {/* bad tmap; interpolate over cell */
     result = dvdnav_find_vobu_by_cell_boundaries(this, args, cell_data, jump);
     if (!result) {
       goto exit;
@@ -1379,7 +1386,7 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this,
     pthread_mutex_lock(&this->vm_lock);
     this->vm->hop_channel += HOP_SEEK;
     pthread_mutex_unlock(&this->vm_lock);
-    result = 1;
+    result = DVDNAV_STATUS_OK;
   }
 
 #ifdef LOG_DEBUG
