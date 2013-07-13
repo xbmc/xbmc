@@ -30,6 +30,7 @@
 
 #include "Interfaces/ThreadedAE.h"
 #include "Utils/AEBuffer.h"
+#include "Utils/AERingBuffer.h"
 #include "AEAudioFormat.h"
 #include "AESinkFactory.h"
 

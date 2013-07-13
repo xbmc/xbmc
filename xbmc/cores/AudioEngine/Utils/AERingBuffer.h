@@ -19,10 +19,10 @@
  *
  */
 
-#define AE_RING_BUFFER_OK 0;
-#define AE_RING_BUFFER_EMPTY 1;
-#define AE_RING_BUFFER_FULL 2;
-#define AE_RING_BUFFER_NOTAVAILABLE 3;
+#define AE_RING_BUFFER_OK 0
+#define AE_RING_BUFFER_EMPTY 1
+#define AE_RING_BUFFER_FULL 2
+#define AE_RING_BUFFER_NOTAVAILABLE 3
 
 //#define AE_RING_BUFFER_DEBUG
 
@@ -35,10 +35,10 @@
  * If you intend to call the Reset() method, please use Locks.
  * All other operations are thread-safe.
  */
-class AERingBuffer {
+class CAERingBuffer {
 
 public:
-  AERingBuffer() :
+  CAERingBuffer() :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -48,7 +48,7 @@ public:
   {
   }
 
-  AERingBuffer(unsigned int size) :
+  CAERingBuffer(unsigned int size) :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -59,12 +59,12 @@ public:
     Create(size);
   }
 
-  ~AERingBuffer()
+  ~CAERingBuffer()
   {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer::~AERingBuffer: Deleting buffer.");
+    CLog::Log(LOGDEBUG, "CAERingBuffer::~CAERingBuffer: Deleting buffer.");
 #endif
-    _aligned_free(m_Buffer);
+    Free();
   }
 
   /**
@@ -74,7 +74,8 @@ public:
    */
   bool Create(int size)
   {
-    m_Buffer =  (unsigned char*)_aligned_malloc(size,16);
+    Free();
+    m_Buffer = (unsigned char*)_aligned_malloc(size,16);
     if ( m_Buffer )
     {
       m_iSize = size;
@@ -85,13 +86,26 @@ public:
   }
 
   /**
+   * Reset the buffer state and free the buffer
+   */
+  void Free()
+  {
+    if ( !m_Buffer )
+      return;
+
+    Reset();
+    _aligned_free(m_Buffer);
+    m_Buffer = NULL;
+  }
+
+  /**
    * Fills the buffer with zeros and resets the pointers.
    * This method is not thread-safe, so before using this method
    * please acquire a Lock()
    */
   void Reset() {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer::Reset: Buffer reset.");
+    CLog::Log(LOGDEBUG, "CAERingBuffer::Reset: Buffer reset.");
 #endif
     m_iWritten = 0;
     m_iRead = 0;
@@ -105,14 +119,14 @@ public:
    *
    * @return AE_RING_BUFFER_OK on success, otherwise an error code
    */
-  int Write(unsigned char *src, unsigned int size)
+  int Write(void *src, unsigned int size)
   {
     unsigned int space = GetWriteSize();
 
     //do we have enough space for all the data?
     if (size > space) {
 #ifdef AE_RING_BUFFER_DEBUG
-    CLog::Log(LOGDEBUG, "AERingBuffer: Not enough space, ignoring data. Requested: %u Available: %u",size, space);
+    CLog::Log(LOGDEBUG, "CAERingBuffer: Not enough space, ignoring data. Requested: %u Available: %u",size, space);
 #endif
       return AE_RING_BUFFER_FULL;
     }
@@ -121,7 +135,7 @@ public:
     if ( m_iSize > size + m_iWritePos )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
 #endif
       memcpy(&(m_Buffer[m_iWritePos]), src, size);
       m_iWritePos+=size;
@@ -132,15 +146,71 @@ public:
       unsigned int first = m_iSize - m_iWritePos;
       unsigned int second = size - first;
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
 #endif
       memcpy(&(m_Buffer[m_iWritePos]), src, first);
-      memcpy(&(m_Buffer[0]), &src[first], second);
+      memcpy(&(m_Buffer[0]), &((unsigned char*)src)[first], second);
       m_iWritePos = second;
     }
 
     //we can increase the write count now
     m_iWritten+=size;
+    return AE_RING_BUFFER_OK;
+  }
+
+  /**
+   * Reads data from buffer without removing it
+   * Attempt to read more bytes than available results in RING_BUFFER_NOTAVAILABLE.
+   * Reading from empty buffer returns AE_RING_BUFFER_EMPTY
+   *
+   * @return AE_RING_BUFFER_OK on success, otherwise an error code
+   */
+  int Peek(void *dest, unsigned int size)
+  {
+    unsigned int space = GetReadSize();
+
+    //want to read more than we have written?
+    if( space <= 0 )
+    {
+#ifdef AE_RING_BUFFER_DEBUG
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't read from empty buffer.");
+#endif
+      return AE_RING_BUFFER_EMPTY;
+    }
+
+    //want to read more than we have available
+    if( size > space )
+    {
+#ifdef AE_RING_BUFFER_DEBUG
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't read %u bytes when we only have %u.", size, space);
+#endif
+      return AE_RING_BUFFER_NOTAVAILABLE;
+    }
+
+    //no wrapping?
+    if ( size + m_iReadPos < m_iSize )
+    {
+#ifdef AE_RING_BUFFER_DEBUG
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Reading from: %u size: %u space before: %u\n", m_iWritePos, size, space);
+#endif
+      if (dest)
+        memcpy(dest, &(m_Buffer[m_iReadPos]), size);
+    }
+    //need to wrap
+    else
+    {
+      unsigned int first = m_iSize - m_iReadPos;
+      unsigned int second = size - first;
+#ifdef AE_RING_BUFFER_DEBUG
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+#endif
+      if (dest)
+      {
+        memcpy(dest, &(m_Buffer[m_iReadPos]), first);
+        memcpy(&((unsigned char*)dest)[first], &(m_Buffer[0]), second);
+      }
+    }
+
     return AE_RING_BUFFER_OK;
   }
 
@@ -151,15 +221,39 @@ public:
    *
    * @return AE_RING_BUFFER_OK on success, otherwise an error code
    */
-  int Read(unsigned char *dest, unsigned int size)
+  int Read(void *dest, unsigned int size)
+  {
+    int result = Peek(dest, size);
+    if (result == AE_RING_BUFFER_OK)
+    {
+      //we can increase the read count now
+      m_iReadPos += size;
+      m_iRead    += size;
+
+      if (m_iReadPos >= m_iSize)
+        m_iReadPos -= m_iSize;
+
+      return AE_RING_BUFFER_OK;
+    }
+
+    return result;
+  }
+
+  /**
+   * Advance the read position
+   * Attempt to advance more bytes then available results in RING_BUFFER_NOTAVAILABLE.
+   *
+   * @return AE_RING_BUFFER_OK on success, otherwise an error code
+   */
+  int AdvanceRead(unsigned int size)
   {
     unsigned int space = GetReadSize();
 
-    //want to read more than we have written?
-    if( space <= 0 )
+    //want to advance more than we have written?
+    if( space == 0 )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Can't read from empty buffer.");
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't advance empty buffer.");
 #endif
       return AE_RING_BUFFER_EMPTY;
     }
@@ -168,38 +262,16 @@ public:
     if( size > space )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Can't read %u bytes when we only have %u.", size, space);
+      CLog::Log(LOGDEBUG, "CAERingBuffer: Can't advance %u bytes when we only have %u.", size, space);
 #endif
       return AE_RING_BUFFER_NOTAVAILABLE;
     }
 
-    //no wrapping?
-    if ( size + m_iReadPos < m_iSize )
-    {
-#ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from: %u size: %u space before: %u\n", m_iWritePos, size, space);
-#endif
-      if (dest)
-        memcpy(dest, &(m_Buffer[m_iReadPos]), size);
-      m_iReadPos+=size;
-    }
-    //need to wrap
-    else
-    {
-      unsigned int first = m_iSize - m_iReadPos;
-      unsigned int second = size - first;
-#ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
-#endif
-      if (dest)
-      {
-        memcpy(dest, &(m_Buffer[m_iReadPos]), first);
-        memcpy(&dest[first], &(m_Buffer[0]), second);
-      }
-      m_iReadPos = second;
-    }
-    //we can increase the read count now
-    m_iRead+=size;
+    m_iReadPos += size;
+    m_iRead    += size;
+
+    if (m_iReadPos >= m_iSize)
+      m_iReadPos -= m_iSize;
 
     return AE_RING_BUFFER_OK;
   }
@@ -209,16 +281,24 @@ public:
    */
   void Dump()
   {
-    unsigned char* bufferContents =  (unsigned char *)_aligned_malloc(m_iSize + 1,16);
-    for (unsigned int i=0; i<m_iSize; i++) {
-      if (i >= m_iReadPos && i<m_iWritePos)
+    unsigned char* bufferContents = (unsigned char *)_aligned_malloc(m_iSize + 1, 16);
+    for (unsigned int i = 0; i < m_iSize; i++) {
+      if (i >= m_iReadPos && i < m_iWritePos)
         bufferContents[i] = m_Buffer[i];
       else
         bufferContents[i] = '_';
     }
     bufferContents[m_iSize] = '\0';
-    CLog::Log(LOGDEBUG, "AERingBuffer::Dump()\n%s",bufferContents);
+    CLog::Log(LOGDEBUG, "CAERingBuffer::Dump()\n%s", bufferContents);
     _aligned_free(bufferContents);
+  }
+
+  /**
+   * Returns the buffer at the current read position
+   */
+  void *GetReadBuffer()
+  {
+    return &m_Buffer[m_iReadPos];
   }
 
   /**
@@ -240,6 +320,14 @@ public:
   }
 
   /**
+   * Returns available space for reading from buffer before wrapping
+   */
+  unsigned int GetFlatReadSize()
+  {
+    return m_iWritten - m_iRead - m_iReadPos;
+  }
+
+  /**
    * Returns the buffer size.
    */
   unsigned int GetMaxSize()
@@ -248,10 +336,10 @@ public:
   }
 
 private:
-  unsigned int m_iReadPos;
-  unsigned int m_iWritePos;
-  unsigned int m_iRead;
-  unsigned int m_iWritten;
-  unsigned int m_iSize;
+  unsigned int   m_iReadPos;
+  unsigned int   m_iWritePos;
+  unsigned int   m_iRead;
+  unsigned int   m_iWritten;
+  unsigned int   m_iSize;
   unsigned char *m_Buffer;
 };
