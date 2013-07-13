@@ -902,7 +902,7 @@ long iso9660::ReadFile(HANDLE hFile, uint8_t *pBuffer, long lSize)
   if ( pContext->m_bUseMode2 )
     sectorSize = MODE2_DATA_SIZE;
 
-  while (lSize > 0 && pContext->m_dwFilePos + sectorSize <= pContext->m_dwFileSize)
+  while (lSize > 0 && pContext->m_dwFilePos < pContext->m_dwFileSize)
   {
     pContext->m_dwCurrentBlock = (DWORD) (pContext->m_dwFilePos / sectorSize);
     int64_t iOffsetInBuffer = pContext->m_dwFilePos - (sectorSize * pContext->m_dwCurrentBlock);
