@@ -1412,3 +1412,21 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     return 0;
   }
 }
+
+bool CDVDInputStreamNavigator::GetDVDTitleString(std::string& titleStr)
+{
+  if (!m_dvdnav) return false;
+  const char* str = NULL;
+  m_dll.dvdnav_get_title_string(m_dvdnav, &str);
+  titleStr.assign(str);
+  return true;
+}
+
+bool CDVDInputStreamNavigator::GetDVDSerialString(std::string& serialStr)
+{
+  if (!m_dvdnav) return false;
+  const char* str = NULL;
+  m_dll.dvdnav_get_serial_string(m_dvdnav, &str);
+  serialStr.assign(str);
+  return true;
+}
