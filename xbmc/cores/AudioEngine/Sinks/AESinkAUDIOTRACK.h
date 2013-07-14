@@ -53,7 +53,7 @@ private:
   double             m_volume;
   bool               m_volume_changed;
   volatile int       m_min_frames;
-  int16_t           *m_alignedS16LE;
+  int16_t           *m_alignedS16;
   AERingBuffer      *m_sinkbuffer;
   unsigned int       m_sink_frameSize;
   double             m_sinkbuffer_sec;

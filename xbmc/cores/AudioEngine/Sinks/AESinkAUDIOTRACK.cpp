@@ -73,7 +73,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   : CThread("AudioTrack")
 {
   m_sinkbuffer = NULL;
-  m_alignedS16LE = NULL;
+  m_alignedS16 = NULL;
   m_volume_changed = false;
   m_min_frames = 0;
   m_sink_frameSize = 0;
@@ -166,8 +166,8 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_wake.Set();
   StopThread();
   delete m_sinkbuffer, m_sinkbuffer = NULL;
-  if (m_alignedS16LE)
-    _aligned_free(m_alignedS16LE), m_alignedS16LE = NULL;
+  if (m_alignedS16)
+    _aligned_free(m_alignedS16), m_alignedS16 = NULL;
 }
 
 bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat format, const std::string &device)
@@ -216,7 +216,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
 {
   // write as many frames of audio as we can fit into our internal buffer.
 
-  // our internal sink buffer is always AE_FMT_S16LE
+  // our internal sink buffer is always AE_FMT_S16
   unsigned int write_frames = m_sinkbuffer->GetWriteSize() / m_sink_frameSize;
   if (write_frames > frames)
     write_frames = frames;
@@ -225,17 +225,19 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
   {
     switch(m_format.m_dataFormat)
     {
+      // 99.95 percent of Android is LE so treat NE the same.
       case AE_FMT_S16LE:
+      case AE_FMT_S16NE:
         m_sinkbuffer->Write(data, write_frames * m_sink_frameSize);
         m_wake.Set();
         break;
 #if defined(__ARM_NEON__)
       case AE_FMT_FLOAT:
-        if (!m_alignedS16LE)
-          m_alignedS16LE = (int16_t*)_aligned_malloc(m_format.m_frames * m_sink_frameSize, 16);
+        if (!m_alignedS16)
+          m_alignedS16 = (int16_t*)_aligned_malloc(m_format.m_frames * m_sink_frameSize, 16);
         // neon convert AE_FMT_S16LE to AE_FMT_FLOAT
-        pa_sconv_s16le_from_f32ne_neon(write_frames * m_format.m_channelLayout.Count(), (const float32_t *)data, m_alignedS16LE);
-        m_sinkbuffer->Write((unsigned char*)m_alignedS16LE, write_frames * m_sink_frameSize);
+        pa_sconv_s16le_from_f32ne_neon(write_frames * m_format.m_channelLayout.Count(), (const float32_t *)data, m_alignedS16);
+        m_sinkbuffer->Write((unsigned char*)m_alignedS16, write_frames * m_sink_frameSize);
         m_wake.Set();
         break;
 #endif
@@ -282,6 +284,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_sampleRates.push_back(44100);
   m_info.m_sampleRates.push_back(48000);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_S16NE);
 #if defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
