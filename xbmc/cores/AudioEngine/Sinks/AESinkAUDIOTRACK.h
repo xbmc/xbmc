@@ -21,6 +21,7 @@
 
 #include "Interfaces/AESink.h"
 #include "Utils/AEDeviceInfo.h"
+#include "threads/CriticalSection.h"
 
 class AERingBuffer;
 
@@ -52,6 +53,7 @@ private:
   AEAudioFormat      m_format;
   double             m_volume;
   bool               m_volume_changed;
+  CCriticalSection   m_volume_lock;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16;
   AERingBuffer      *m_sinkbuffer;
@@ -62,6 +64,7 @@ private:
   CEvent             m_wake;
   CEvent             m_inited;
   volatile bool      m_draining;
+  CCriticalSection   m_drain_lock;
   bool               m_passthrough;
 
   double             m_audiotrackbuffer_sec;
