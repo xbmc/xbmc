@@ -34,6 +34,7 @@ private:
   static unsigned int S24BE3_Float(uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S32LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S32BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int Float_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int DOUBLE_Float(uint8_t *data, const unsigned int samples, float   *dest);
 
   static unsigned int Float_U8    (float   *data, const unsigned int samples, uint8_t *dest);
@@ -44,6 +45,7 @@ private:
   static unsigned int Float_S24NE3(float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S32LE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S32BE (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_Float (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_DOUBLE(float   *data, const unsigned int samples, uint8_t *dest);
 
   static unsigned int S32LE_Float_Neon (uint8_t *data, const unsigned int samples, float   *dest);

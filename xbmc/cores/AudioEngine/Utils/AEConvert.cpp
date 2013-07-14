@@ -95,6 +95,7 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
     case AE_FMT_S32LE : return &S32LE_Float;
     case AE_FMT_S32BE : return &S32BE_Float;
 #endif
+    case AE_FMT_FLOAT : return &Float_Float;
     case AE_FMT_DOUBLE: return &DOUBLE_Float;
     default:
       return NULL;
@@ -125,6 +126,7 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
     case AE_FMT_S32LE : return &Float_S32LE;
     case AE_FMT_S32BE : return &Float_S32BE;
 #endif
+    case AE_FMT_FLOAT : return &Float_Float;
     case AE_FMT_DOUBLE: return &Float_DOUBLE;
     default:
       return NULL;
@@ -368,6 +370,13 @@ unsigned int CAEConvert::S32BE_Float_Neon(uint8_t *data, const unsigned int samp
     dest[0] = (float)src[0] * factor;
 
 #endif /* !defined(__ARM_NEON__) */
+  return samples;
+}
+
+unsigned int CAEConvert::Float_Float(uint8_t *data, const unsigned int samples, float *dest)
+{
+  memcpy(dest, data, samples*sizeof(float));
+
   return samples;
 }
 
@@ -1141,6 +1150,13 @@ unsigned int CAEConvert::Float_S32BE_Neon(float *data, const unsigned int sample
   }
 #endif
   return samples << 2;
+}
+
+unsigned int CAEConvert::Float_Float(float *data, const unsigned int samples, uint8_t *dest)
+{
+  memcpy(dest, data, samples*sizeof(float));
+
+  return samples;
 }
 
 unsigned int CAEConvert::Float_DOUBLE(float *data, const unsigned int samples, uint8_t *dest)
