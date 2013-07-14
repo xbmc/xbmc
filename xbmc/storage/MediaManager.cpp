@@ -50,7 +50,6 @@
 #include "filesystem/File.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/Directory.h"
-#include "utils/Crc32.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
@@ -546,59 +545,6 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 
   return strID;
 }
-
-bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
-{
-  CFileItemList vecItemsTS;
-  bool success = false;
-
-  // first try to open the VIDEO_TS folder of the DVD
-  if (!CDirectory::GetDirectory( dvdpath, vecItemsTS, ".ifo" ))
-  {
-    CLog::Log(LOGERROR, "%s - Cannot open dvd VIDEO_TS folder -- ABORTING", __FUNCTION__);
-    return false;
-  }
-
-  Crc32 crc32;
-  bool dataRead = false;
-
-  vecItemsTS.Sort(SORT_METHOD_FILE, SortOrderAscending);
-  for (int i = 0; i < vecItemsTS.Size(); i++)
-  {
-    CFileItemPtr videoTSItem = vecItemsTS[i];
-    success = true;
-
-    // get the file name for logging purposes
-    CStdString fileName = URIUtils::GetFileName(videoTSItem->GetPath());
-    CLog::Log(LOGDEBUG, "%s - Adding file content for dvd file: %s", __FUNCTION__, fileName.c_str());
-    CFile file;
-    if(!file.Open(videoTSItem->GetPath()))
-    {
-      CLog::Log(LOGERROR, "%s - Cannot open dvd file: %s -- ABORTING", __FUNCTION__, fileName.c_str());
-      return false;
-    }
-    int res;
-    char buf[2048];
-    while( (res = file.Read(buf, sizeof(buf))) > 0)
-    {
-      dataRead = true;
-      crc32.Compute(buf, res);
-    }
-    file.Close();
-  }
-
-  if (!dataRead)
-  {
-    CLog::Log(LOGERROR, "%s - Did not read any data from the IFO files -- ABORTING", __FUNCTION__);
-    return false;
-  }
-
-  // put result back in reference parameter
-  crc = (uint32_t) crc32;
-
-  return success;
-}
-
 
 CStdString CMediaManager::GetDiscPath()
 {
