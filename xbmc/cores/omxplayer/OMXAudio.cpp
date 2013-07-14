@@ -451,7 +451,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   port_param.format.audio.eEncoding = m_eEncoding;
 
   port_param.nBufferSize = m_ChunkLen;
-  port_param.nBufferCountActual = std::max(port_param.nBufferCountMin, 6U);
+  port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, 6U);
 
   omx_err = m_omx_decoder.SetParameter(OMX_IndexParamPortDefinition, &port_param);
   if(omx_err != OMX_ErrorNone)
