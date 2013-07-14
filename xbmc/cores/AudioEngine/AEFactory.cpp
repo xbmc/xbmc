@@ -97,7 +97,7 @@ bool CAEFactory::LoadEngine()
     loaded = CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
 #else
   if (!loaded)
-    loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
 #endif
 
   return loaded;
