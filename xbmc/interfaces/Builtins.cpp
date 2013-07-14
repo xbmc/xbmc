@@ -604,7 +604,9 @@ int CBuiltins::Execute(const CStdString& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(),items,g_settings.m_videoExtensions);
+      CStdString extensions = g_settings.m_videoExtensions + "|" + g_settings.m_musicExtensions;
+      CDirectory::GetDirectory(item.GetPath(),items,extensions);
+
       int playlist = PLAYLIST_MUSIC;
       for (int i = 0; i < items.Size(); i++)
       {
