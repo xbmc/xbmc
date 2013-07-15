@@ -38,6 +38,16 @@ CAlbum::CAlbum(const CFileItem& item)
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   genre = tag.GetGenre();
   artist = tag.GetAlbumArtist();
+  bool hasMusicBrainzAlbumArtist = !tag.GetMusicBrainzAlbumArtistID().empty();
+  const vector<string>& artists = hasMusicBrainzAlbumArtist ? tag.GetMusicBrainzAlbumArtistID() : tag.GetAlbumArtist();
+  for (vector<string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+  {
+    CStdString artistName = hasMusicBrainzAlbumArtist && !artist.empty() ? artist[0] : *it;
+    CStdString artistId = hasMusicBrainzAlbumArtist ? *it : StringUtils::EmptyString;
+    CStdString strJoinPhrase = (it == --artists.end() ? "" : g_advancedSettings.m_musicItemSeparator);
+    CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
+    artistCredits.push_back(artistCredit);
+  }
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;

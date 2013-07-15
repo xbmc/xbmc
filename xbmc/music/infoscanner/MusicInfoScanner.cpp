@@ -492,18 +492,28 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
   return INFO_ADDED;
 }
 
+static bool SortSongsByTrack(const CSong& song, const CSong& song2)
+{
+  return song.iTrack < song2.iTrack;
+}
+
 void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& albums, MAPSONGS* songsMap /* = NULL */)
 {
+  /*
+   * Step 1: Convert the FileItems into Songs. 
+   * If they're MB tagged, create albums directly from the FileItems.
+   * If they're non-MB tagged, index them by album name ready for step 2.
+   */
+  map<string, VECSONGS> songsByAlbumNames;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItemPtr pItem = items[i];
-    CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
-    CSong song(*pItem);
+    CMusicInfoTag& tag = *items[i]->GetMusicInfoTag();
+    CSong song(*items[i]);
 
     // keep the db-only fields intact on rescan...
     if (songsMap != NULL)
     {
-      MAPSONGS::iterator it = songsMap->find(pItem->GetPath());
+      MAPSONGS::iterator it = songsMap->find(items[i]->GetPath());
       if (it != songsMap->end())
       {
         song.iTimesPlayed = it->second.iTimesPlayed;
@@ -514,61 +524,143 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       }
     }
 
-    if (!tag.GetMusicBrainzArtistID().empty())
+    if (!tag.GetMusicBrainzAlbumID().empty())
     {
-      for (vector<string>::const_iterator it = tag.GetMusicBrainzArtistID().begin(); it != tag.GetMusicBrainzArtistID().end(); ++it)
-      {
-        CStdString strJoinPhrase = (it == --tag.GetMusicBrainzArtistID().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit mbartist(tag.GetArtist().empty() ? "" : tag.GetArtist()[0], *it, strJoinPhrase);
-        song.artistCredits.push_back(mbartist);
-      }
-      song.artist = tag.GetArtist();
-    }
-    else
-    {
-      for (vector<string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
-      {
-        CStdString strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit nonmbartist(*it, strJoinPhrase);
-        song.artistCredits.push_back(nonmbartist);
-      }
-      song.artist = tag.GetArtist();
-    }
+      VECALBUMS::iterator it;
+      for (it = albums.begin(); it != albums.end(); ++it)
+        if (it->strMusicBrainzAlbumID.Equals(tag.GetMusicBrainzAlbumID()))
+          break;
 
-    bool found = false;
-    for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
-    {
-      if (it->strAlbum == tag.GetAlbum() && it->strMusicBrainzAlbumID == tag.GetMusicBrainzAlbumID())
+      if (it == albums.end())
       {
-        it->songs.push_back(song);
-        found = true;
-      }
-    }
-    if (!found)
-    {
-      CAlbum album(*pItem.get());
-      if (!tag.GetMusicBrainzAlbumArtistID().empty())
-      {
-        for (vector<string>::const_iterator it = tag.GetMusicBrainzAlbumArtistID().begin(); it != tag.GetMusicBrainzAlbumArtistID().end(); ++it)
-        {
-          // Picard always stored the display artist string in the first artist slot, no need to split it
-          CStdString strJoinPhrase = (it == --tag.GetMusicBrainzAlbumArtistID().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-          CArtistCredit mbartist(tag.GetAlbumArtist().empty() ? "" : tag.GetAlbumArtist()[0], *it, strJoinPhrase);
-          album.artistCredits.push_back(mbartist);
-        }
-        album.artist = tag.GetAlbumArtist();
+        CAlbum album(*items[i]);
+        album.songs.push_back(song);
+        albums.push_back(album);
       }
       else
+        it->songs.push_back(song);
+    }
+    else
+      songsByAlbumNames[tag.GetAlbum()].push_back(song);
+  }
+
+  /*
+   Step 2: Split into unique albums based on album name and album artist
+   In the case where the album artist is unknown, we use the primary artist
+   (i.e. first artist from each song).
+   */
+  for (map<string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
+  {
+    VECSONGS &songs = songsByAlbumName->second;
+    // sort the songs by tracknumber to identify duplicate track numbers
+    sort(songs.begin(), songs.end(), SortSongsByTrack);
+
+    // map the songs to their primary artists
+    bool tracksOverlap = false;
+    bool hasAlbumArtist = false;
+    bool isCompilation = true;
+
+    map<string, vector<CSong *> > artists;
+    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    {
+      // test for song overlap
+      if (song != songs.begin() && song->iTrack == (song - 1)->iTrack)
+        tracksOverlap = true;
+
+      if (!song->bCompilation)
+        isCompilation = false;
+
+      // get primary artist
+      string primary;
+      if (!song->albumArtist.empty())
       {
-        for (vector<string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
-        {
-          CStdString strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-          CArtistCredit nonmbartist(*it, strJoinPhrase);
-          album.artistCredits.push_back(nonmbartist);
-        }
-        album.artist = tag.GetAlbumArtist();
+        primary = song->albumArtist[0];
+        hasAlbumArtist = true;
       }
-      album.songs.push_back(song);
+      else if (!song->artist.empty())
+        primary = song->artist[0];
+
+      // add to the artist map
+      artists[primary].push_back(&(*song));
+    }
+
+    /*
+     We have a compilation if
+     1. album name is non-empty AND
+     2a. no tracks overlap OR
+     2b. all tracks are marked as part of compilation AND
+     3a. a unique primary artist is specified as "various" or "various artists" OR
+     3b. we have at least two primary artists and no album artist specified.
+     */
+    bool compilation = !songsByAlbumName->first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
+    if (artists.size() == 1)
+    {
+      string artist = artists.begin()->first; StringUtils::ToLower(artist);
+      if (!StringUtils::EqualsNoCase(artist, "various") &&
+          !StringUtils::EqualsNoCase(artist, "various artists")) // 3a
+        compilation = false;
+    }
+    else if (hasAlbumArtist) // 3b
+      compilation = false;
+
+    if (compilation)
+    {
+      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", songsByAlbumName->first.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
+      artists.clear();
+      std::string various = g_localizeStrings.Get(340); // Various Artists
+      vector<string> va; va.push_back(various);
+      for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+      {
+        song->albumArtist = va;
+        artists[various].push_back(&(*song));
+      }
+    }
+
+    /*
+     Step 3: Find the common albumartist for each song and assign
+     albumartist to those tracks that don't have it set.
+     */
+    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    {
+      // find the common artist for these songs
+      vector<CSong *> &artistSongs = j->second;
+      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
+      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      {
+        unsigned int match = 0;
+        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        for (; match < common.size() && match < compare.size(); match++)
+        {
+          if (compare[match] != common[match])
+            break;
+        }
+        common.erase(common.begin() + match, common.end());
+      }
+
+      /*
+       Step 4: Assign the album artist for each song that doesn't have it set
+       and add to the album vector
+       */
+      CAlbum album;
+      album.strAlbum = songsByAlbumName->first;
+      album.artist = common;
+      for (vector<string>::iterator it = common.begin(); it != common.end(); ++it)
+      {
+        CStdString strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
+        CArtistCredit artistCredit(*it, strJoinPhrase);
+        album.artistCredits.push_back(artistCredit);
+      }
+      album.bCompilation = compilation;
+      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
+      {
+        if ((*k)->albumArtist.empty())
+          (*k)->albumArtist = common;
+        // TODO: in future we may wish to union up the genres, for now we assume they're the same
+        album.genre = (*k)->genre;
+        //       in addition, we may want to use year as discriminating for albums
+        album.iYear = (*k)->iYear;
+        album.songs.push_back(**k);
+      }
       albums.push_back(album);
     }
   }
@@ -588,8 +680,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
 
   VECALBUMS albums;
   FileItemsToAlbums(scannedItems, albums, &songsMap);
-  if (!(m_flags & SCAN_ONLINE))
-    FixupAlbums(albums);
   FindArtForAlbums(albums, items.GetPath());
 
   int numAdded = 0;
@@ -803,140 +893,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
     m_handle->SetTitle(g_localizeStrings.Get(505));
 
   return numAdded;
-}
-
-static bool SortSongsByTrack(const CSong& song, const CSong& song2)
-{
-  return song.iTrack < song2.iTrack;
-}
-
-void CMusicInfoScanner::FixupAlbums(VECALBUMS &albums)
-{
-  /*
-   Step 2: Split into unique albums based on album name and album artist
-   In the case where the album artist is unknown, we use the primary artist
-   (i.e. first artist from each song).
-   */
-  for (VECALBUMS::iterator album = albums.begin(); album != albums.end(); ++album)
-  {
-    /*
-     * If we have a valid MusicBrainz tag for the album, assume everything
-     * is okay with our tags, as Picard should set everything up correctly.
-     */
-    if (!album->strMusicBrainzAlbumID.IsEmpty())
-      continue;
-
-    VECSONGS &songs = album->songs;
-    // sort the songs by tracknumber to identify duplicate track numbers
-    sort(songs.begin(), songs.end(), SortSongsByTrack);
-
-    // map the songs to their primary artists
-    bool tracksOverlap = false;
-    bool hasAlbumArtist = false;
-    bool isCompilation = true;
-
-    map<string, vector<CSong *> > artists;
-    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
-    {
-      // test for song overlap
-      if (song != songs.begin() && song->iTrack == (song - 1)->iTrack)
-        tracksOverlap = true;
-
-      if (!song->bCompilation)
-        isCompilation = false;
-
-      // get primary artist
-      string primary;
-      if (!song->albumArtist.empty())
-      {
-        primary = song->albumArtist[0];
-        hasAlbumArtist = true;
-      }
-      else if (!song->artist.empty())
-        primary = song->artist[0];
-
-      // add to the artist map
-      artists[primary].push_back(&(*song));
-    }
-
-    /*
-     We have a compilation if
-     1. album name is non-empty AND
-     2a. no tracks overlap OR
-     2b. all tracks are marked as part of compilation AND
-     3a. a unique primary artist is specified as "various" or "various artists" OR
-     3b. we have at least two primary artists and no album artist specified.
-     */
-    bool compilation = !album->strAlbum.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
-    if (artists.size() == 1)
-    {
-      string artist = artists.begin()->first; StringUtils::ToLower(artist);
-      if (!StringUtils::EqualsNoCase(artist, "various") &&
-          !StringUtils::EqualsNoCase(artist, "various artists")) // 3a
-        compilation = false;
-    }
-    else if (hasAlbumArtist) // 3b
-      compilation = false;
-
-    if (compilation)
-    {
-      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", album->strAlbum.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
-      artists.clear();
-      std::string various = g_localizeStrings.Get(340); // Various Artists
-      vector<string> va; va.push_back(various);
-      for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
-      {
-        song->albumArtist = va;
-        artists[various].push_back(&(*song));
-      }
-    }
-
-    /*
-     Step 3: Find the common albumartist for each song and assign
-     albumartist to those tracks that don't have it set.
-     */
-    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
-    {
-      // find the common artist for these songs
-      vector<CSong *> &artistSongs = j->second;
-      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
-      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
-      {
-        unsigned int match = 0;
-        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
-        for (; match < common.size() && match < compare.size(); match++)
-        {
-          if (compare[match] != common[match])
-            break;
-        }
-        common.erase(common.begin() + match, common.end());
-      }
-
-      /*
-       Step 4: Assign the album artist for each song that doesn't have it set
-       and add to the album vector
-       */
-      album->artistCredits.clear();
-      for (vector<string>::iterator it = common.begin(); it != common.end(); ++it)
-      {
-        CStdString strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit artistCredit(*it, strJoinPhrase);
-        album->artistCredits.push_back(artistCredit);
-      }
-      album->bCompilation = compilation;
-      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
-      {
-        if ((*k)->albumArtist.empty())
-          (*k)->albumArtist = common;
-        // TODO: in future we may wish to union up the genres, for now we assume they're the same
-        if (album->genre.empty())
-          album->genre = (*k)->genre;
-        //       in addition, we may want to use year as discriminating for albums
-        if (album->iYear == 0)
-          album->iYear = (*k)->iYear;
-      }
-    }
-  }
 }
 
 void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &path)
