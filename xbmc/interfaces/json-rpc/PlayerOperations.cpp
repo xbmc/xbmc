@@ -123,7 +123,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
         {
           const CVideoInfoTag *currentVideoTag = g_infoManager.GetCurrentMovieTag();
           if (currentVideoTag != NULL)
-            fileItem = CFileItemPtr(new CFileItem(*currentVideoTag));
+          {
+            CStdString originalLabel = fileItem->GetLabel();
+            fileItem->SetFromVideoInfoTag(*currentVideoTag);
+            if (fileItem->GetLabel().empty())
+              fileItem->SetLabel(originalLabel);
+          }
           fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
       }
@@ -133,7 +138,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
         {
           const MUSIC_INFO::CMusicInfoTag *currentMusicTag = g_infoManager.GetCurrentSongTag();
           if (currentMusicTag != NULL)
+          {
+            CStdString originalLabel = fileItem->GetLabel();
             fileItem = CFileItemPtr(new CFileItem(*currentMusicTag));
+            if (fileItem->GetLabel().empty())
+              fileItem->SetLabel(originalLabel);
+          }
           fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
       }

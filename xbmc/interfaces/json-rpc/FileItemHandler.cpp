@@ -389,8 +389,12 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
         picture.Load(item->GetPath());
         *item->GetPictureInfoTag() = picture;
       }
-      if (item->GetLabel().IsEmpty())
+      if (item->GetLabel().empty())
+      {
         item->SetLabel(CUtil::GetTitleFromPath(file, false));
+        if (item->GetLabel().empty())
+          item->SetLabel(URIUtils::GetFileName(file));
+      }
       list.Add(item);
     }
   }

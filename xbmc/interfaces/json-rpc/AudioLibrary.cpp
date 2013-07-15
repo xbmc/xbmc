@@ -555,35 +555,39 @@ JSONRPC_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *t
 bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CMusicDatabase musicdatabase;
-  if (strFilename.empty() || !musicdatabase.Open())
+  if (strFilename.empty())
     return false;
 
-  if (CDirectory::Exists(strFilename))
+  bool filled = false;
+  if (musicdatabase.Open())
   {
-    CAlbum album;
-    int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
-    if (!musicdatabase.GetAlbumInfo(albumid, album, NULL))
-      return false;
+    if (CDirectory::Exists(strFilename))
+    {
+      CAlbum album;
+      int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
+      if (musicdatabase.GetAlbumInfo(albumid, album, NULL))
+      {
+        item->SetFromAlbum(album);
 
-    item->SetFromAlbum(album);
+        CFileItemList items;
+        items.Add(item);
+        if (GetAdditionalAlbumDetails(parameterObject, items, musicdatabase) == OK)
+          filled = true;
+      }
+    }
+    else
+    {
+      CSong song;
+      if (musicdatabase.GetSongByFileName(strFilename, song))
+      {
+        item->SetFromSong(song);
 
-    CFileItemList items;
-    items.Add(item);
-    if (GetAdditionalAlbumDetails(parameterObject, items, musicdatabase) != OK)
-      return false;
-  }
-  else
-  {
-    CSong song;
-    if (!musicdatabase.GetSongByFileName(strFilename, song))
-      return false;
-
-    item->SetFromSong(song);
-
-    CFileItemList items;
-    items.Add(item);
-    if (GetAdditionalSongDetails(parameterObject, items, musicdatabase) != OK)
-      return false;
+        CFileItemList items;
+        items.Add(item);
+        if (GetAdditionalSongDetails(parameterObject, items, musicdatabase) == OK)
+          filled = true;
+      }
+    }
   }
 
   if (item->GetLabel().empty())
@@ -593,7 +597,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
       item->SetLabel(URIUtils::GetFileName(strFilename));
   }
 
-  return true;
+  return filled;
 }
 
 bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
