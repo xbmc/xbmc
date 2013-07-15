@@ -495,7 +495,7 @@ bool CAddon::LoadUserSettings()
 
 void CAddon::SaveSettings(void)
 {
-  if (!m_settings.size())
+  if (m_settings.empty())
     return; // no settings to save
 
   // break down the path into directories
