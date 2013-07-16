@@ -6671,7 +6671,7 @@ msgstr ""
 
 #: xbmc/settings/settings.xml
 msgctxt "#14101"
-msgid "Swtich off other Monitor"
+msgid "Switch off other Monitor"
 msgstr ""
 
 #empty strings from id 14102 to 15011
