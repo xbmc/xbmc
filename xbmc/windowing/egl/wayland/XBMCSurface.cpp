@@ -52,6 +52,7 @@ public:
 
   Private(IDllWaylandClient &clientLibrary,
           IDllWaylandEGL &eglLibrary,
+          const EventInjector &eventInjector,
           const boost::scoped_ptr<Compositor> &compositor,
           const boost::scoped_ptr<Shell> &shell,
           uint32_t width,
@@ -61,6 +62,8 @@ public:
 
   IDllWaylandClient &m_clientLibrary;
   IDllWaylandEGL &m_eglLibrary;
+  
+  EventInjector m_eventInjector;
 
   /* We only care about xbmc::Compositor's CreateRegion function
    * and don't want to store a pointer to the compositor to create
@@ -92,12 +95,14 @@ namespace xw = xbmc::wayland;
  */
 xw::XBMCSurface::Private::Private(IDllWaylandClient &clientLibrary,
                                   IDllWaylandEGL &eglLibrary,
+                                  const EventInjector &eventInjector,
                                   const boost::scoped_ptr<Compositor> &compositor,
                                   const boost::scoped_ptr<Shell> &shell,
                                   uint32_t width,
                                   uint32_t height) :
   m_clientLibrary(clientLibrary),
   m_eglLibrary(eglLibrary),
+  m_eventInjector(eventInjector),
   m_regionFactory(boost::bind(&Compositor::CreateRegion,
                               compositor.get())),
   m_surface(new xw::Surface(m_clientLibrary,
@@ -133,16 +138,20 @@ xw::XBMCSurface::Private::Private(IDllWaylandClient &clientLibrary,
    * but some compositor expect it, so we must add a frame callback
    * as soon as the surface is ready to be rendered to */ 
   AddFrameCallback();
+  
+  (*m_eventInjector.setXBMCSurface)(m_surface->GetWlSurface());
 }
 
 xw::XBMCSurface::XBMCSurface(IDllWaylandClient &clientLibrary,
                              IDllWaylandEGL &eglLibrary,
+                             const EventInjector &eventInjector,
                              const boost::scoped_ptr<Compositor> &compositor,
                              const boost::scoped_ptr<Shell> &shell,
                              uint32_t width,
                              uint32_t height) :
   priv(new Private(clientLibrary,
                    eglLibrary,
+                   eventInjector,
                    compositor,
                    shell,
                    width,

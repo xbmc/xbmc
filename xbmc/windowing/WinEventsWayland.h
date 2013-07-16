@@ -29,7 +29,6 @@ struct wl_seat;
 struct wl_surface;
 
 class IDllWaylandClient;
-class IDllWaylandCursor;
 class IDllXKBCommon;
 
 class CWinEventsWayland : public IWinEvents
@@ -44,6 +43,13 @@ public:
   static void SetWaylandDisplay(IDllWaylandClient *clientLibrary,
                                 struct wl_display *d);
   static void DestroyWaylandDisplay();
+
+  static void SetWaylandSeat(IDllWaylandClient &clientLibrary,
+                             IDllXKBCommon &xkbCommonLibrary,
+                             struct wl_seat *seat);
+  static void DestroyWaylandSeat();
+  
+  static void SetXBMCSurface(struct wl_surface *surf);
 };
 
 #endif

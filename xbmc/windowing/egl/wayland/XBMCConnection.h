@@ -29,6 +29,7 @@ struct wl_compositor;
 struct wl_display;
 struct wl_output;
 struct wl_shell;
+struct wl_seat;
 
 typedef struct wl_egl_window * EGLNativeWindowType;
 
@@ -51,10 +52,16 @@ public:
     typedef void (*SetWaylandDisplay)(IDllWaylandClient *clientLibrary,
                                       struct wl_display *display);
     typedef void (*DestroyWaylandDisplay)();
+    typedef void (*SetWaylandSeat)(IDllWaylandClient &clientLibrary,
+                                   IDllXKBCommon &xkbCommonLibrary,
+                                   struct wl_seat *seat);
+    typedef void (*DestroyWaylandSeat)();
     typedef bool (*MessagePump)();
     
     SetWaylandDisplay setDisplay;
     DestroyWaylandDisplay destroyDisplay;
+    SetWaylandSeat setWaylandSeat;
+    DestroyWaylandSeat destroyWaylandSeat;
     MessagePump messagePump;
   };
 
