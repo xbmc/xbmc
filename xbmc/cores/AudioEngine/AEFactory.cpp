@@ -261,6 +261,14 @@ bool CAEFactory::SupportsRaw()
   return false;
 }
 
+bool CAEFactory::SupportsDrain()
+{
+  if(AE)
+    return AE->SupportsDrain();
+
+  return false;
+}
+
 void CAEFactory::SetMute(const bool enabled)
 {
   if(AE)

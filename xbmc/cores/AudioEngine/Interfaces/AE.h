@@ -185,6 +185,12 @@ public:
    */
   virtual bool SupportsRaw() { return false; }
 
+   /**
+   * Returns true if the AudioEngine supports drain mode which is not streaming silence when idle
+   * @returns true if the AudioEngine is capable of drain mode
+   */
+  virtual bool SupportsDrain() { return false; }
+
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
 
   virtual void UnregisterAudioCallback() {}

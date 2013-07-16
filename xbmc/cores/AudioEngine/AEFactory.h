@@ -54,6 +54,7 @@ public:
   static void VerifyOutputDevice(std::string &device, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
   static bool SupportsRaw();
+  static bool SupportsDrain();
   static void SetMute(const bool enabled);
   static bool IsMuted();
   static float GetVolume();

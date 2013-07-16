@@ -2020,6 +2020,11 @@
             </dependency>
           </dependencies>
         </setting>
+        <setting id="audiooutput.streamsilence" type="boolean" label="421" help="34111">
+          <level>2</level>
+          <visible>audiosupportsdrain</visible>
+          <default>true</default>
+        </setting>
       </group>
       <group id="2">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">

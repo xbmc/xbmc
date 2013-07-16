@@ -1762,7 +1762,10 @@ msgctxt "#420"
 msgid "HDMI"
 msgstr ""
 
-#empty string with id 421
+#: system/settings/settings.xml
+msgctxt "#421"
+msgid "Stream silence when idle"
+msgstr ""
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -12120,8 +12123,13 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr ""
 
-#empty strings from id 34111 to 34119
-#34111-34119 reserved for future use
+#: system/settings/settings.xml
+msgctxt "#34111"
+msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
+msgstr ""
+
+#empty strings from id 34112 to 34119
+#34112-34119 reserved for future use
 
 #: system/settings/settings.xml
 msgctxt "#34120"
