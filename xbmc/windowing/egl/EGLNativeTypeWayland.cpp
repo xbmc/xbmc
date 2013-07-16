@@ -175,6 +175,8 @@ bool CEGLNativeTypeWayland::CreateNativeDisplay()
     {
       CWinEventsWayland::SetWaylandDisplay,
       CWinEventsWayland::DestroyWaylandDisplay,
+      CWinEventsWayland::SetWaylandSeat,
+      CWinEventsWayland::DestroyWaylandSeat,
       CWinEvents::MessagePump
     };
       
@@ -222,8 +224,15 @@ bool CEGLNativeTypeWayland::CreateNativeWindow()
   {
     RESOLUTION_INFO info;
     priv->m_connection->CurrentResolution(info);
+
+    xw::XBMCSurface::EventInjector injector =
+    {
+      CWinEventsWayland::SetXBMCSurface
+    };
+
     priv->m_surface.reset(new xw::XBMCSurface(priv->m_libraries->ClientLibrary(),
                                               priv->m_libraries->EGLLibrary(),
+                                              injector,
                                               priv->m_connection->GetCompositor(),
                                               priv->m_connection->GetShell(),
                                               info.iScreenWidth,

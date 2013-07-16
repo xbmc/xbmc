@@ -47,8 +47,16 @@ class XBMCSurface
 {
 public:
 
+  struct EventInjector
+  {
+    typedef void (*SetXBMCSurface)(struct wl_surface *);
+    
+    SetXBMCSurface setXBMCSurface;
+  };
+
   XBMCSurface(IDllWaylandClient &clientLibrary,
               IDllWaylandEGL &eglLibrary,
+              const EventInjector &eventInjector,
               const boost::scoped_ptr<Compositor> &compositor,
               const boost::scoped_ptr<Shell> &shell,
               uint32_t width,

@@ -3,7 +3,12 @@ SRCS=WinEventsSDL.cpp \
      WinEventsWayland.cpp \
      WinSystem.cpp \
      WinEvents.cpp
-     
+
+# Wayland implementation detail
+ifeq(@USE_WAYLAND@,1)
+SRCS += wayland/Seat.cpp
+endif
+
 LIB=windowing.a
 
 include ../../Makefile.include
