@@ -645,6 +645,9 @@ void CSettings::InitializeDefaults()
   ((CSettingString*)m_settingsManager->GetSetting("audiooutput.audiodevice"))->SetDefault(defaultAudioDeviceName);
   ((CSettingString*)m_settingsManager->GetSetting("audiooutput.passthroughdevice"))->SetDefault(defaultAudioDeviceName);
   #endif
+#elif defined(TARGET_WINDOWS)
+  ((CSettingString*)m_settingsManager->GetSetting("audiooutput.audiodevice"))->SetDefault(std::string("WASAPI:default"));
+  ((CSettingString*)m_settingsManager->GetSetting("audiooutput.passthroughdevice"))->SetDefault(std::string("WASAPI:default"));
 #else
   ((CSettingString*)m_settingsManager->GetSetting("audiooutput.audiodevice"))->SetDefault(CAEFactory::GetDefaultDevice(false));
   ((CSettingString*)m_settingsManager->GetSetting("audiooutput.passthroughdevice"))->SetDefault(CAEFactory::GetDefaultDevice(true));
