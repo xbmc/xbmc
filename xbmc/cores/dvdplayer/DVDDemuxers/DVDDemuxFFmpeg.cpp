@@ -697,7 +697,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     // check size and stream index for being in a valid range
     else if (m_pkt.pkt.size < 0 ||
              m_pkt.pkt.stream_index < 0 ||
-             m_pkt.pkt.stream_index >= m_pFormatContext->nb_streams)
+             m_pkt.pkt.stream_index >= (int)m_pFormatContext->nb_streams)
     {
       // XXX, in some cases ffmpeg returns a negative packet size
       if(m_pFormatContext->pb && !m_pFormatContext->pb->eof_reached)
