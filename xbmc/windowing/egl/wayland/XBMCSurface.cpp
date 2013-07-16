@@ -23,6 +23,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <wayland-client.h>
 
@@ -32,6 +33,7 @@
 #include "Callback.h"
 #include "Compositor.h"
 #include "OpenGLSurface.h"
+#include "Output.h"
 #include "Region.h"
 #include "Shell.h"
 #include "ShellSurface.h"
@@ -155,11 +157,20 @@ xw::XBMCSurface::~XBMCSurface()
 }
 
 void
-xw::XBMCSurface::Show()
+xw::XBMCSurface::Show(const boost::shared_ptr<xw::Output> &output)
 {
-  protocol::CallMethodOnWaylandObject(priv->m_clientLibrary,
-                                      priv->m_shellSurface->GetWlShellSurface(),
-                                      WL_SHELL_SURFACE_SET_TOPLEVEL);
+  xw::Output &mutableOutput (const_cast<xw::Output &>(*output));
+  
+  /* Calling SetFullscreen will implicitly show the surface, center
+   * it as full-screen on the selected output and change the resolution
+   * of the output so as to fit as much of the surface as possible
+   * without adding black bars.
+   * 
+   * While the surface is fullscreen, any attempt to resize it will
+   * result in the resolution changing to the nearest match */
+  priv->m_shellSurface->SetFullscreen(WL_SHELL_SURFACE_FULLSCREEN_METHOD_DRIVER,
+                                      0,
+                                      mutableOutput.GetWlOutput());
 }
 
 void

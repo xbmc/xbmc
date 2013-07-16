@@ -13,6 +13,7 @@ SRCS+= wayland/Callback.cpp \
        wayland/Compositor.cpp \
        wayland/Display.cpp \
        wayland/OpenGLSurface.cpp \
+       wayland/Output.cpp \
        wayland/Region.cpp \
        wayland/Registry.cpp \
        wayland/Shell.cpp \

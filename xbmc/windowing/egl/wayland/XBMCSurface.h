@@ -22,6 +22,7 @@
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 class IDllWaylandClient;
 class IDllWaylandEGL;
@@ -37,6 +38,7 @@ namespace wayland
 class Callback;
 class Compositor;
 class OpenGLSurface;
+class Output;
 class Shell;
 class ShellSurface;
 class Surface;
@@ -53,7 +55,7 @@ public:
               uint32_t height);
   ~XBMCSurface();
 
-  void Show();
+  void Show(const boost::shared_ptr<Output> &output);
   void Resize(uint32_t width, uint32_t height);
   EGLNativeWindowType * EGLNativeWindow() const;
 

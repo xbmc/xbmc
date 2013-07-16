@@ -28,6 +28,7 @@ namespace
 const std::string CompositorName("wl_compositor");
 const std::string ShellName("wl_shell");
 const std::string SeatName("wl_seat");
+const std::string OutputName("wl_output");
 }
 
 namespace xw = xbmc::wayland;
@@ -124,6 +125,22 @@ xw::Registry::HandleGlobal(uint32_t name,
                                         1,
                                         seat);
     m_registration.OnSeatAvailable(seat);
+  }
+  else if (interface == OutputName)
+  {
+    struct wl_output *output =
+      static_cast<struct wl_output *>(protocol::CreateWaylandObject<struct wl_output *,
+                                                                    struct wl_registry *>(m_clientLibrary,
+                                                                                          m_registry,
+                                                                                          m_clientLibrary.Get_wl_output_interface()));
+    protocol::CallMethodOnWaylandObject(m_clientLibrary,
+                                        m_registry,
+                                        WL_REGISTRY_BIND,
+                                        name,
+                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_output_interface())->name,
+                                        1,
+                                        output);
+    m_registration.OnOutputAvailable(output);
   }
 }
 

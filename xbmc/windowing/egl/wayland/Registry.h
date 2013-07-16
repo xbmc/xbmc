@@ -40,6 +40,7 @@ public:
   virtual bool OnCompositorAvailable(struct wl_compositor *) = 0;
   virtual bool OnShellAvailable(struct wl_shell *) = 0;
   virtual bool OnSeatAvailable(struct wl_seat *) = 0;
+  virtual bool OnOutputAvailable(struct wl_output *) = 0;
 };
 
 class Registry :
