@@ -1161,6 +1161,9 @@ bool CEGLNativeTypeWayland::Private::OnShellAvailable(struct wl_shell *s)
 
 bool CEGLNativeTypeWayland::Private::OnSeatAvailable(struct wl_seat *s)
 {
+  CWinEventsWayland::SetWaylandSeat(m_clientLibrary,
+                                    m_xkbCommonLibrary,
+                                    s);
   return true;
 }
 
@@ -1332,6 +1335,8 @@ bool CEGLNativeTypeWayland::CreateNativeWindow()
   priv->AddFrameCallback();
   priv->WaitForSynchronize();
 
+  CWinEventsWayland::SetXBMCSurface(wls);
+
   return true;
 #else
   return false;
@@ -1366,6 +1371,7 @@ bool CEGLNativeTypeWayland::GetNativeWindow(XBNativeDisplayType **nativeWindow) 
 bool CEGLNativeTypeWayland::DestroyNativeDisplay()
 {
 #if defined(HAVE_WAYLAND)
+  CWinEventsWayland::DestroyWaylandSeat();
   CWinEventsWayland::DestroyWaylandDisplay();
 
   priv->m_shell.reset();
