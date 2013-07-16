@@ -1,6 +1,8 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,31 +20,22 @@
  *
  */
 
-#ifndef WINDOW_EVENTS_H
-#define WINDOW_EVENTS_H
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+  #include "config.h"
+#endif
+#include <xkbcommon/xkbcommon.h>
+#include "utils/log.h"
+#include "DynamicDll.h"
 
-#pragma once
-
-#include "utils/Observer.h"
-#include "XBMC_events.h"
-
-typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
-
-class IWinEvents : public Observer
+class IDllXKBCommon
 {
-  public:
-    virtual       ~IWinEvents() {};
-    virtual bool  MessagePump()   = 0;
-    virtual size_t GetQueueSize()  = 0;
-    virtual void  MessagePush(XBMC_Event* ev) {};
-    virtual void  Notify(const Observable &obs, const ObservableMessage msg) {};
-};
-class CWinEvents
-{
-  public:
-    static void MessagePush(XBMC_Event* ev);
-    static bool MessagePump();
-    static size_t GetQueueSize();
+public:
+  virtual ~IDllXKBCommon() {}
 };
 
-#endif // WINDOW_EVENTS_H
+class DllXKBCommon : public DllDynamic, public IDllXKBCommon
+{
+  DECLARE_DLL_WRAPPER(DllXKBCommon, DLL_PATH_XKBCOMMON)
+  BEGIN_METHOD_RESOLVE()
+  END_METHOD_RESOLVE()
+};

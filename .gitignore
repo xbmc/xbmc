@@ -717,6 +717,10 @@ lib/cmyth/Makefile
 # no longer used
 /xbmc/win32/git_rev.h
 
+# /xbmc/windowing/
+/xbmc/windowing/Makefile
+/xbmc/windowing/egl/Makefile
+
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
 /lib/ffmpeg/config.err
