@@ -24,7 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../library.xbmc.addon/libXBMC_addon.h"
+#include "libXBMC_addon.h"
 
 typedef void* GUIHANDLE;
 
