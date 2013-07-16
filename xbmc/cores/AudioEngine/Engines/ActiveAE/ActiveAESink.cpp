@@ -26,7 +26,6 @@
 #include "ActiveAE.h"
 
 #include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
 
 using namespace ActiveAE;
 
@@ -229,7 +228,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::SILENCEMODE:
           m_extSilence = *(bool*)msg->data;
-          if (g_advancedSettings.m_streamSilence)
+          if (CSettings::Get().GetBool("audiooutput.streamsilence"))
             m_extSilence = true;
           if (m_extSilence)
           {

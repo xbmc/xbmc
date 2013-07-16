@@ -213,6 +213,7 @@ public:
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw();
+  virtual bool SupportsDrain();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();

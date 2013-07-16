@@ -384,6 +384,11 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CActiveAEControlProtocol::RECONFIGURE:
+          if (m_streams.empty())
+          {
+            bool silence = false;
+            m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SILENCEMODE, &silence, sizeof(bool));
+          }
           LoadSettings();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
@@ -1817,13 +1822,19 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.dtshdpassthrough"  ||
       setting == "audiooutput.channels"          ||
       setting == "audiooutput.multichannellpcm"  ||
-      setting == "audiooutput.stereoupmix")
+      setting == "audiooutput.stereoupmix"       ||
+      setting == "audiooutput.streamsilence")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
 }
 
 bool CActiveAE::SupportsRaw()
+{
+  return true;
+}
+
+bool CActiveAE::SupportsDrain()
 {
   return true;
 }
