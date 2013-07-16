@@ -69,5 +69,27 @@ void xw::Seat::HandleCapabilitiesCallback(void *data,
  * for all of the child objects of a Seat */
 void xw::Seat::HandleCapabilities(enum wl_seat_capability cap)
 {
+  enum wl_seat_capability newCaps =
+    static_cast<enum wl_seat_capability>(~m_currentCapabilities & cap);
+  enum wl_seat_capability lostCaps =
+    static_cast<enum wl_seat_capability>(m_currentCapabilities & ~cap);
+
+  if (newCaps & WL_SEAT_CAPABILITY_POINTER)
+  {
+    struct wl_pointer *pointer =
+      protocol::CreateWaylandObject<struct wl_pointer *,
+                                    struct wl_seat *>(m_clientLibrary,
+                                                      m_seat,
+                                                      m_clientLibrary.Get_wl_pointer_interface());
+    protocol::CallMethodOnWaylandObject(m_clientLibrary,
+                                        m_seat,
+                                        WL_SEAT_GET_POINTER,
+                                        pointer);
+    m_input.InsertPointer(pointer);
+  }
+
+  if (lostCaps & WL_SEAT_CAPABILITY_POINTER)
+    m_input.RemovePointer();
+
   m_currentCapabilities = cap;
 }
