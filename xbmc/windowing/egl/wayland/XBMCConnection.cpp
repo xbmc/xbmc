@@ -23,6 +23,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <wayland-client.h>
 
@@ -35,6 +36,7 @@
 #include "Callback.h"
 #include "Compositor.h"
 #include "Display.h"
+#include "Output.h"
 #include "Registry.h"
 #include "Region.h"
 #include "Shell.h"
@@ -65,6 +67,8 @@ public:
   boost::scoped_ptr<Registry> m_registry;
   boost::scoped_ptr<Compositor> m_compositor;
   boost::scoped_ptr<Shell> m_shell;
+  
+  std::vector<boost::shared_ptr<Output> > m_outputs;
 
   /* Synchronization logic - these variables should not be touched
    * outside the scope of WaitForSynchronize() */
@@ -132,6 +136,12 @@ xw::XBMCConnection::Private::Private(IDllWaylandClient &clientLibrary,
                                 m_display->GetWlDisplay());
 	
   WaitForSynchronize();
+
+  if (m_outputs.empty())
+  {
+    std::stringstream ss;
+    throw std::runtime_error(ss.str());
+  }
 }
 
 xw::XBMCConnection::Private::~Private()
@@ -173,6 +183,20 @@ bool xw::XBMCConnection::Private::OnSeatAvailable(struct wl_seat *s)
   return true;
 }
 
+bool xw::XBMCConnection::Private::OnOutputAvailable(struct wl_output *o)
+{
+  /* Even though wl_output is a global interface, there can be multiple
+   * outputs available, so we put them into a list */
+  m_outputs.push_back(boost::shared_ptr<xw::Output>(new xw::Output(m_clientLibrary,
+                                                                   o)));
+
+  /* As soon as an output is available and we bind to it and register
+   * a new listener, we must synchronize the display, so that all
+   * the modes are available after this point */
+  WaitForSynchronize();
+  return true;
+}
+
 void xw::XBMCConnection::Private::WaitForSynchronize()
 {
   boost::function<void(uint32_t)> func(boost::bind(&Private::Synchronize,
@@ -192,12 +216,17 @@ void xw::XBMCConnection::Private::Synchronize()
   synchronizeCallback.reset();
 }
 
-void
-xw::XBMCConnection::CurrentResolution(RESOLUTION_INFO &res) const
+namespace
 {
-  res.iWidth = 640;
-  res.iHeight = 480;
-  res.fRefreshRate = 60;
+void ResolutionInfoForMode(const xw::Output::ModeGeometry &mode,
+                           RESOLUTION_INFO &res)
+{
+  res.iWidth = mode.width;
+  res.iHeight = mode.height;
+  
+  /* The refresh rate is given as an integer in the second exponent
+   * so we need to divide by 100.0f to get a floating point value */
+  res.fRefreshRate = mode.refresh / 100.0f;
   res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   res.iScreen = 0;
   res.bFullScreen = true;
@@ -210,19 +239,41 @@ xw::XBMCConnection::CurrentResolution(RESOLUTION_INFO &res) const
                      res.iScreenHeight,
                      res.fRefreshRate);
 }
+}
+
+void
+xw::XBMCConnection::CurrentResolution(RESOLUTION_INFO &res) const
+{
+  /* Supporting only the first output device at the moment */
+  const xw::Output::ModeGeometry &current(priv->m_outputs[0]->CurrentMode());
+  
+  ResolutionInfoForMode(current, res);
+}
 
 void
 xw::XBMCConnection::PreferredResolution(RESOLUTION_INFO &res) const
 {
-  CurrentResolution(res);
+  /* Supporting only the first output device at the moment */
+  const xw::Output::ModeGeometry &preferred(priv->m_outputs[0]->PreferredMode());
+  ResolutionInfoForMode(preferred, res);
 }
 
 void
-xw::XBMCConnection::AvailableResolutions(std::vector<RESOLUTION_INFO> &res) const
+xw::XBMCConnection::AvailableResolutions(std::vector<RESOLUTION_INFO> &resolutions) const
 {
-  RESOLUTION_INFO resolution;
-  CurrentResolution(resolution);
-  res.push_back(resolution);
+  /* Supporting only the first output device at the moment */
+  const boost::shared_ptr <xw::Output> &output(priv->m_outputs[0]);
+  const std::vector<xw::Output::ModeGeometry> &m_modes(output->AllModes());
+
+  for (std::vector<xw::Output::ModeGeometry>::const_iterator it = m_modes.begin();
+       it != m_modes.end();
+       ++it)
+  {
+    resolutions.push_back(RESOLUTION_INFO());
+    RESOLUTION_INFO &back(resolutions.back());
+    
+    ResolutionInfoForMode(*it, back);
+  }
 }
 
 EGLNativeDisplayType *
@@ -241,4 +292,10 @@ const boost::scoped_ptr<xw::Shell> &
 xw::XBMCConnection::GetShell() const
 {
   return priv->m_shell;
+}
+
+const boost::shared_ptr<xw::Output> &
+xw::XBMCConnection::GetFirstOutput() const
+{
+  return priv->m_outputs[0];
 }

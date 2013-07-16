@@ -220,12 +220,14 @@ bool CEGLNativeTypeWayland::CreateNativeWindow()
    */
   try
   {
+    RESOLUTION_INFO info;
+    priv->m_connection->CurrentResolution(info);
     priv->m_surface.reset(new xw::XBMCSurface(priv->m_libraries->ClientLibrary(),
                                               priv->m_libraries->EGLLibrary(),
                                               priv->m_connection->GetCompositor(),
                                               priv->m_connection->GetShell(),
-                                              640,
-                                              480));
+                                              info.iScreenWidth,
+                                              info.iScreenHeight));
   }
   catch (const std::runtime_error &err)
   {
@@ -262,7 +264,7 @@ bool CEGLNativeTypeWayland::GetNativeWindow(XBNativeDisplayType **nativeWindow) 
 #else
   return false;
 #endif
-}  
+}
 
 /* DestroyNativeDisplay and DestroyNativeWindow simply just call
  * reset on the relevant scoped_ptr. This will effectively destroy
@@ -295,7 +297,6 @@ bool CEGLNativeTypeWayland::GetNativeResolution(RESOLUTION_INFO *res) const
 {
 #if defined(HAVE_WAYLAND)
   priv->m_connection->CurrentResolution(*res);
-
   return true;
 #else
   return false;
@@ -335,8 +336,11 @@ bool CEGLNativeTypeWayland::GetPreferredResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeWayland::ShowWindow(bool show)
 {
 #if defined(HAVE_WAYLAND)
+
+  /* XBMC lacks a way to select the output it should appear on,
+   * so we always appear on the first output */
   if (show)
-    priv->m_surface->Show();
+    priv->m_surface->Show(priv->m_connection->GetFirstOutput());
   else
     return false;
 
