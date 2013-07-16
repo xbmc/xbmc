@@ -1,5 +1,6 @@
 SRCS=WinEventsSDL.cpp \
      WinEventsLinux.cpp \
+     WinEventsWayland.cpp \
      WinSystem.cpp \
      WinEvents.cpp
      

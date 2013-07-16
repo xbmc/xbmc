@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2011-2013 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,32 +19,35 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <boost/noncopyable.hpp>
 
-#ifndef WINDOW_EVENTS_H
-#define WINDOW_EVENTS_H
+class IDllWaylandClient;
 
-#pragma once
+struct wl_display;
+struct wl_callback;
 
-#include "utils/Observer.h"
-#include "XBMC_events.h"
+typedef struct wl_display * EGLNativeDisplayType;
 
-typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
-
-class IWinEvents : public Observer
+namespace xbmc
+{
+namespace wayland
+{
+class Display :
+  boost::noncopyable
 {
   public:
-    virtual       ~IWinEvents() {};
-    virtual bool  MessagePump()   = 0;
-    virtual size_t GetQueueSize()  = 0;
-    virtual void  MessagePush(XBMC_Event* ev) {};
-    virtual void  Notify(const Observable &obs, const ObservableMessage msg) {};
-};
-class CWinEvents
-{
-  public:
-    static void MessagePush(XBMC_Event* ev);
-    static bool MessagePump();
-    static size_t GetQueueSize();
-};
 
-#endif // WINDOW_EVENTS_H
+    Display(IDllWaylandClient &clientLibrary);
+    ~Display();
+
+    struct wl_display * GetWlDisplay();
+    EGLNativeDisplayType* GetEGLNativeDisplay();
+    struct wl_callback * Sync();
+
+  private:
+
+    IDllWaylandClient &m_clientLibrary;
+    struct wl_display *m_display;
+};
+}
+}
