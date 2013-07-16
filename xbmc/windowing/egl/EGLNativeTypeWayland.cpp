@@ -55,6 +55,7 @@ public:
   virtual bool OnShellAvailable(struct wl_shell *) = 0;
   virtual bool OnSeatAvailable(struct wl_seat *) = 0;
   virtual bool OnShmAvailable(struct wl_shm *) = 0;
+  virtual bool OnOutputAvailable(struct wl_output *) = 0;
 };
 }
 
@@ -155,6 +156,7 @@ public:
   static const std::string ShellName;
   static const std::string SeatName;
   static const std::string ShmName;
+  static const std::string OutputName;
 
 private:
 
@@ -172,6 +174,7 @@ const std::string Registry::CompositorName("wl_compositor");
 const std::string Registry::ShellName("wl_shell");
 const std::string Registry::SeatName("wl_seat");
 const std::string Registry::ShmName("wl_shm");
+const std::string Registry::OutputName("wl_output");
 
 const struct wl_registry_listener Registry::m_listener =
 {
@@ -214,6 +217,108 @@ private:
 
   IDllWaylandClient &m_clientLibrary;
   struct wl_shell *m_shell;
+};
+
+struct Output :
+  boost::noncopyable
+{
+public:
+
+  Output(IDllWaylandClient &,
+         struct wl_output *);
+  ~Output();
+
+  struct ModeGeometry
+  {
+    int32_t width;
+    int32_t height;
+    int32_t refresh;
+  };
+
+  struct PhysicalGeometry
+  {
+    int32_t x;
+    int32_t y;
+    int32_t physicalWidth;
+    int32_t physicalHeight;
+    enum wl_output_subpixel subpixelArrangement;
+    enum wl_output_transform outputTransformation;
+  };
+
+  struct wl_output * GetWlOutput();
+
+  const ModeGeometry & CurrentMode();
+  const ModeGeometry & PreferredMode();
+
+  const std::vector <ModeGeometry> & AllModes();
+
+  const PhysicalGeometry & Geometry();
+  uint32_t ScaleFactor();
+
+  static void GeometryCallback(void *,
+                               struct wl_output *,
+                               int32_t,
+                               int32_t,
+                               int32_t,
+                               int32_t,
+                               int32_t,
+                               const char *,
+                               const char *,
+                               int32_t);
+  static void ModeCallback(void *,
+                           struct wl_output *,
+                           uint32_t,
+                           int32_t,
+                           int32_t,
+                           int32_t);
+  static void ScaleCallback(void *,
+                            struct wl_output *,
+                            int32_t);
+  static void DoneCallback(void *,
+                           struct wl_output *);
+
+private:
+
+  static const wl_output_listener m_listener;
+
+  void Geometry(int32_t x,
+                int32_t y,
+                int32_t physicalWidth,
+                int32_t physicalHeight,
+                int32_t subpixel,
+                const char *make,
+                const char *model,
+                int32_t transform);
+  void Mode(uint32_t flags,
+            int32_t width,
+            int32_t height,
+            int32_t refresh);
+  void Scale(int32_t);
+  void Done();
+
+  IDllWaylandClient &m_clientLibrary;
+
+  struct wl_output *m_output;
+
+  PhysicalGeometry m_geometry;
+  std::vector<ModeGeometry> m_modes;
+
+  uint32_t m_scaleFactor;
+
+  ModeGeometry *m_current;
+  ModeGeometry *m_preferred;
+};
+
+const wl_output_listener Output::m_listener = 
+{
+  Output::GeometryCallback,
+#if defined(HAVE_WAYLAND_1_1_90)
+  Output::ModeCallback,
+  Output::DoneCallback,
+  Output::ScaleCallback
+#else
+  Output::ModeCallback
+#endif
 };
 
 class Surface :
@@ -504,6 +609,22 @@ xw::Registry::HandleGlobal(uint32_t name,
   else if (interface == ShmName)
   {
   }
+  else if (interface == OutputName)
+  {
+    struct wl_output *output =
+      static_cast<struct wl_output *>(protocol::CreateWaylandObject<struct wl_output *,
+                                                                    struct wl_registry *>(m_clientLibrary,
+                                                                                          m_registry,
+                                                                                          m_clientLibrary.Get_wl_output_interface()));
+    protocol::CallMethodOnWaylandObject(m_clientLibrary,
+                                        m_registry,
+                                        WL_REGISTRY_BIND,
+                                        name,
+                                        reinterpret_cast<struct wl_interface *>(m_clientLibrary.Get_wl_output_interface())->name,
+                                        1,
+                                        output);
+    m_registration.OnOutputAvailable(output);
+  }
 }
 
 void
@@ -611,6 +732,195 @@ xw::Shell::CreateShellSurface(struct wl_surface *surface)
                                       shellSurface,
                                       surface);
   return shellSurface;
+}
+
+xw::Output::Output(IDllWaylandClient &clientLibrary,
+                   struct wl_output *output) :
+  m_clientLibrary(clientLibrary),
+  m_output(output),
+  m_scaleFactor(1.0),
+  m_current(NULL),
+  m_preferred(NULL)
+{
+  protocol::AddListenerOnWaylandObject(m_clientLibrary,
+                                       m_output,
+                                       &m_listener,
+                                       reinterpret_cast<void *>(this));
+}
+
+xw::Output::~Output()
+{
+  protocol::DestroyWaylandObject(m_clientLibrary,
+                                 m_output);
+}
+
+struct wl_output *
+xw::Output::GetWlOutput()
+{
+  return m_output;
+}
+
+const xw::Output::ModeGeometry &
+xw::Output::CurrentMode()
+{
+  if (!m_current)
+    throw std::logic_error("No current mode has been set by the server"
+                           " yet");
+  
+  return *m_current;
+}
+
+const xw::Output::ModeGeometry &
+xw::Output::PreferredMode()
+{
+  if (!m_preferred)
+    throw std::logic_error("No preferred mode has been set by the "
+                           " server yet");
+
+  return *m_preferred;
+}
+
+const std::vector <xw::Output::ModeGeometry> &
+xw::Output::AllModes()
+{
+  return m_modes;
+}
+
+const xw::Output::PhysicalGeometry &
+xw::Output::Geometry()
+{
+  return m_geometry;
+}
+
+uint32_t
+xw::Output::ScaleFactor()
+{
+  return m_scaleFactor;
+}
+
+void
+xw::Output::GeometryCallback(void *data,
+                             struct wl_output *output,
+                             int32_t x,
+                             int32_t y,
+                             int32_t physicalWidth,
+                             int32_t physicalHeight,
+                             int32_t subpixelArrangement,
+                             const char *make,
+                             const char *model,
+                             int32_t transform)
+{
+  return static_cast<xw::Output *>(data)->Geometry(x,
+                                                   y,
+                                                   physicalWidth,
+                                                   physicalHeight,
+                                                   subpixelArrangement,
+                                                   make,
+                                                   model,
+                                                   transform);
+}
+
+void
+xw::Output::ModeCallback(void *data,
+                         struct wl_output *output,
+                         uint32_t flags,
+                         int32_t width,
+                         int32_t height,
+                         int32_t refresh)
+{
+  return static_cast<xw::Output *>(data)->Mode(flags,
+                                               width,
+                                               height,
+                                               refresh);
+}
+
+void
+xw::Output::DoneCallback(void *data,
+                         struct wl_output *output)
+{
+  return static_cast<xw::Output *>(data)->Done();
+}
+
+void
+xw::Output::ScaleCallback(void *data,
+                          struct wl_output *output,
+                          int32_t factor)
+{
+  return static_cast<xw::Output *>(data)->Scale(factor);
+}
+
+void
+xw::Output::Geometry(int32_t x,
+                     int32_t y,
+                     int32_t physicalWidth,
+                     int32_t physicalHeight,
+                     int32_t subpixelArrangement,
+                     const char *make,
+                     const char *model,
+                     int32_t transform)
+{
+  m_geometry.x = x;
+  m_geometry.y = y;
+  m_geometry.physicalWidth = physicalWidth;
+  m_geometry.physicalHeight = physicalHeight;
+  m_geometry.subpixelArrangement =
+    static_cast<enum wl_output_subpixel>(subpixelArrangement);
+  m_geometry.outputTransformation =
+    static_cast<enum wl_output_transform>(transform);
+}
+
+void
+xw::Output::Mode(uint32_t flags,
+                 int32_t width,
+                 int32_t height,
+                 int32_t refresh)
+{
+  xw::Output::ModeGeometry *update = NULL;
+  
+  for (std::vector<ModeGeometry>::iterator it = m_modes.begin();
+       it != m_modes.end();
+       ++it)
+  { 
+    if (it->width == width &&
+        it->height == height &&
+        it->refresh == refresh)
+    {
+      update = &(*it);
+      break;
+    }
+  }
+  
+  enum wl_output_mode outputFlags =
+    static_cast<enum wl_output_mode>(flags);
+  
+  if (!update)
+  {
+    /* New output created */
+    m_modes.push_back(ModeGeometry());
+    ModeGeometry &next(m_modes.back());
+    
+    next.width = width;
+    next.height = height;
+    next.refresh = refresh;
+    
+    update = &next;
+  }
+  
+  if (outputFlags & WL_OUTPUT_MODE_CURRENT)
+    m_current = update;
+  if (outputFlags & WL_OUTPUT_MODE_PREFERRED)
+    m_preferred = update;
+}
+
+void
+xw::Output::Done()
+{
+}
+
+void
+xw::Output::Scale(int32_t factor)
+{
+  m_scaleFactor = factor;
 }
 
 xw::Surface::Surface(IDllWaylandClient &clientLibrary,
@@ -801,7 +1111,8 @@ public:
   boost::scoped_ptr<xw::ShellSurface> m_shellSurface;
   boost::scoped_ptr<xw::OpenGLSurface> m_glSurface;
   boost::scoped_ptr<xw::Callback> m_frameCallback;
-  
+  std::vector<boost::shared_ptr <xw::Output> > m_outputs;
+
   DllWaylandClient m_clientLibrary;
   DllWaylandEGL m_eglLibrary;
   DllXKBCommon m_xkbCommonLibrary;
@@ -820,6 +1131,7 @@ private:
   bool OnShellAvailable(struct wl_shell *);
   bool OnSeatAvailable(struct wl_seat *);
   bool OnShmAvailable(struct wl_shm *);
+  bool OnOutputAvailable(struct wl_output *);
 
   void OnFrameCallback(uint32_t);
 };
@@ -858,6 +1170,14 @@ bool CEGLNativeTypeWayland::Private::OnSeatAvailable(struct wl_seat *s)
 
 bool CEGLNativeTypeWayland::Private::OnShmAvailable(struct wl_shm *s)
 {
+  return true;
+}
+
+bool CEGLNativeTypeWayland::Private::OnOutputAvailable(struct wl_output *o)
+{
+  m_outputs.push_back(boost::shared_ptr<xw::Output>(new xw::Output(m_clientLibrary,
+                                                                   o)));
+  WaitForSynchronize();
   return true;
 }
 
@@ -970,6 +1290,13 @@ bool CEGLNativeTypeWayland::CreateNativeDisplay()
                                           priv->m_display->GetWlDisplay(),
                                           *priv));
   priv->WaitForSynchronize();
+  
+  if (priv->m_outputs.empty())
+  {
+    CLog::Log(LOGERROR, "%s: compositor did not provide at least one "
+              "output", __FUNCTION__);
+    return false;
+  }
 
   return true;
 #else
@@ -989,16 +1316,19 @@ bool CEGLNativeTypeWayland::CreateNativeWindow()
                          priv->m_shell->CreateShellSurface(wls));
   priv->m_shellSurface.reset(ss);
 
+  /* Supporting only the first output device at the moment */
+  const xw::Output::ModeGeometry &current(priv->m_outputs[0]->CurrentMode());
+
   xw::OpenGLSurface *os = new xw::OpenGLSurface(priv->m_eglLibrary,
                                                 wls,
-                                                640,
-                                                480);
+                                                current.width,
+                                                current.height);
   priv->m_glSurface.reset(os);
   
   xw::Region region(priv->m_clientLibrary,
                     priv->m_compositor->CreateRegion());
   
-  region.AddRectangle(0, 0, 640, 480);
+  region.AddRectangle(0, 0, current.width, current.height);
   
   priv->m_surface->SetOpaqueRegion(region.GetWlRegion());
   priv->m_surface->Commit();
@@ -1043,6 +1373,7 @@ bool CEGLNativeTypeWayland::DestroyNativeDisplay()
   CWinEventsWayland::DestroyWaylandDisplay();
 
   priv->m_shell.reset();
+  priv->m_outputs.clear();
   priv->m_compositor.reset();
 
   priv->m_display.reset();
@@ -1065,12 +1396,18 @@ bool CEGLNativeTypeWayland::DestroyNativeWindow()
 #endif
 }
 
-bool CEGLNativeTypeWayland::GetNativeResolution(RESOLUTION_INFO *res) const
-{
 #if defined(HAVE_WAYLAND)
-  res->iWidth = 640;
-  res->iHeight = 480;
-  res->fRefreshRate = 60;
+namespace
+{
+void ResolutionInfoForMode(const xw::Output::ModeGeometry &mode,
+                           RESOLUTION_INFO *res)
+{
+  res->iWidth = mode.width;
+  res->iHeight = mode.height;
+  
+  /* The refresh rate is given as an integer in the second exponent
+   * so we need to divide by 100.0f to get a floating point value */
+  res->fRefreshRate = mode.refresh / 100.0f;
   res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   res->iScreen = 0;
   res->bFullScreen = true;
@@ -1082,6 +1419,18 @@ bool CEGLNativeTypeWayland::GetNativeResolution(RESOLUTION_INFO *res) const
                       res->iScreenWidth,
                       res->iScreenHeight,
                       res->fRefreshRate);
+}
+}
+#endif
+
+bool CEGLNativeTypeWayland::GetNativeResolution(RESOLUTION_INFO *res) const
+{
+#if defined(HAVE_WAYLAND)
+  /* Supporting only the first output device at the moment */
+  const xw::Output::ModeGeometry &current(priv->m_outputs[0]->CurrentMode());
+  
+  ResolutionInfoForMode(current, res);
+
   return true;
 #else
   return false;
@@ -1108,26 +1457,46 @@ bool CEGLNativeTypeWayland::SetNativeResolution(const RESOLUTION_INFO &res)
 
 bool CEGLNativeTypeWayland::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  RESOLUTION_INFO info;
-  bool ret = GetNativeResolution(&info);
-  if (ret)
-    resolutions.push_back(info);
-  return ret;
+#if defined(HAVE_WAYLAND)
+  /* Supporting only the first output device at the moment */
+  const boost::shared_ptr <xw::Output> &output(priv->m_outputs[0]);
+  const std::vector<xw::Output::ModeGeometry> &m_modes(output->AllModes());
+
+  for (std::vector<xw::Output::ModeGeometry>::const_iterator it = m_modes.begin();
+       it != m_modes.end();
+       ++it)
+  {
+    resolutions.push_back(RESOLUTION_INFO());
+    RESOLUTION_INFO &back(resolutions.back());
+    
+    ResolutionInfoForMode(*it, &back);
+  }
+
+  return true;
+#else
+  return false;
+#endif
 }
 
 bool CEGLNativeTypeWayland::GetPreferredResolution(RESOLUTION_INFO *res) const
 {
-  return GetNativeResolution(res);
+#if defined(HAVE_WAYLAND)
+  /* Supporting only the first output device at the moment */
+  const xw::Output::ModeGeometry &preferred(priv->m_outputs[0]->PreferredMode());
+  ResolutionInfoForMode(preferred, res);
+  return true;
+#else
+  return false;
+#endif
 }
 
 bool CEGLNativeTypeWayland::ShowWindow(bool show)
 {
 #if defined(HAVE_WAYLAND)
   if (show)
-    xbmc::wayland::protocol::CallMethodOnWaylandObject(priv->m_clientLibrary,
-                                                       priv->m_shellSurface->GetWlShellSurface(),
-                                                       WL_SHELL_SURFACE_SET_TOPLEVEL);
-  else
+    priv->m_shellSurface->SetFullscreen(WL_SHELL_SURFACE_FULLSCREEN_METHOD_DRIVER,
+                                        0,
+                                        priv->m_outputs[0]->GetWlOutput());  else
     return false;
 
   return true;

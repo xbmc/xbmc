@@ -1131,6 +1131,11 @@ if test "$use_wayland" = "yes" && test "$host_vendor" != "apple"; then
      XB_FIND_SONAME([XKBCOMMON_LIBRARY], $XKBCOMMON_LIBRARY_LINE)],
     AC_MSG_WARN($missing_library))
   AC_DEFINE([HAVE_WAYLAND], [1], [Define to 1 if you have Wayland libs installed.])
+  
+  # Check if we have wayland-client > 1.1.90
+  PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.1.90],
+                    [AC_DEFINE([HAVE_WAYLAND_1_1_90], [1], [Define to 1 if you have wayland-client > 1.1.90])],
+                    [])
 
   # Disable SDL and X11 builds
   use_sdl=no
