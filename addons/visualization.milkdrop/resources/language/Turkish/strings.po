@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: projectM
-# Addon id: visualization.projectm
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -16,34 +16,10 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "#30000"
-msgid "Render Quality"
-msgstr "İşleyici Kalitesi"
-
-msgctxt "#30001"
-msgid "Low"
-msgstr "Düşük"
-
-msgctxt "#30002"
-msgid "Medium"
-msgstr "Orta"
-
-msgctxt "#30003"
-msgid "High"
-msgstr "Yüksek"
-
-msgctxt "#30004"
-msgid "Maximum"
-msgstr "En fazla"
-
 msgctxt "#30009"
 msgid "Preset Pack"
 msgstr "Önayar Paketi"
 
-msgctxt "#30011"
+msgctxt "#30022"
 msgid "User Defined Preset Folder"
 msgstr "Kullanıcı Tanımlı Ön Ayar Klasörü"
-
-msgctxt "#30012"
-msgid "User Preset Folder"
-msgstr "Kullanıcı Ön Ayar Klasörü"

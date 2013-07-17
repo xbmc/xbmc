@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.dxspectrum"
-  version="1.0.4"
+  version="1.0.5"
   name="DirectX Spectrum"
   provider-name="Team XBMC">
   <extension
@@ -38,6 +38,7 @@
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
     <summary lang="lt">Vizualizacija rodo rotacinis 3D spektro analizatorių</summary>
     <summary lang="mk">Оваа визуализација покажува ротирачки 3Д анализатор на спектар</summary>
+    <summary lang="my">လည်ပတ်နေသော 3D Spectrum Analyzer ဖန်တီး ပြနေသည်</summary>
     <summary lang="nl">DirectX-visualisatie die een roterende 3D-spectrumanalyse weergeeft</summary>
     <summary lang="no">Visualisering som viser en roterende 3D-spektrumanalysator</summary>
     <summary lang="pl">Wizualizacja pokazująca obracający się analizator widma w 3D (DirectX)</summary>

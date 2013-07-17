@@ -16,13 +16,25 @@ msgstr ""
 "Language: my\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Mode"
+msgstr "အခြေအနေ"
+
 msgctxt "#30001"
 msgid "Filled"
 msgstr "ဖြည့်စွက်မည်"
 
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "အခြေခံဖွဲ့စည်းမှု"
+
 msgctxt "#30003"
 msgid "Points"
 msgstr "အမှတ်များ"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "ဘား အမြင့်"
 
 msgctxt "#30005"
 msgid "Small"

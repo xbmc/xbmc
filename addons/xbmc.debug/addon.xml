@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.1" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.2" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
   </requires>
   <extension point="xbmc.python.module"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="de">Erweiterung zur Verbesserung der Logging Anpassbarkeit.</summary>
+    <summary lang="el">Πρόσθετο για τη βελτίωση της προσαρμοστικότητας των καταγραφών σφαλμάτων</summary>
     <summary lang="en">Addon to improve logging customizability</summary>
+    <summary lang="en_GB">Add-on to improve logging customisability</summary>
+    <summary lang="es">Complemento para mejorar la personalización del inicio de sesión.</summary>
+    <summary lang="et">Lisa, mis võimaldab logimise kohandamist</summary>
+    <summary lang="gl">Complemento para mellorar a personalización do rexistro</summary>
+    <summary lang="hu">Kiegészítő a naplózás testre szabásához</summary>
+    <summary lang="my">logging စိတ်ကြိုက်ပြုပြင် မှုကို တိုးတက်စေသော Addon</summary>
+    <summary lang="no">Tillegg for å forbedre loggmulighetene</summary>
+    <summary lang="pl">Dodatek dostosowywania rejestracji zdarzeń systemu </summary>
+    <summary lang="pt">Um addon que melhora a personalização do registo de erros</summary>
+    <summary lang="pt_BR">Complemento para melhorar customização de registro</summary>
+    <summary lang="ta_IN">தனிப்பயனாக்கு பதிவை மேம்படுத்துவதற்கான துணை-பயன்</summary>
+    <summary lang="tr">Kayıt defteri kişiselleştirmesini geliştirmek için eklenti</summary>
     <platform>all</platform>
   </extension>
 </addon>

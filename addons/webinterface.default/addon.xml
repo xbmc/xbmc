@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.1.7"
+  version="2.1.8"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -45,7 +45,7 @@
     <summary lang="ms">Antaramuka web kumpulan XBMC (antaramuka web lalai XBMC) </summary>
     <summary lang="my">Team XBMC ဝက်ဘ် အသွင်အပြင် (XBMC ၏ မူရင် ဝက်ဘ် အသွင်အပြင်)</summary>
     <summary lang="nl">Team XBMC Webinterface. (XBMC's standaard webinterface)</summary>
-    <summary lang="no">Team XBMC webgrensesnitt. (XBMC's standard webgrensesnitt)</summary>
+    <summary lang="no">Team XBMC nettgrensesnitt. (XBMCs standard nettgrensesnitt)</summary>
     <summary lang="pl">Standardowy interfejs WWW XBMC.</summary>
     <summary lang="pt">Interface Web da Team XBMC. (Interface Web padrão do XBMC)</summary>
     <summary lang="pt_BR">Interface Web da Equipe XBMC. (interface web padrão do XBMC)</summary>
@@ -97,7 +97,7 @@
     <description lang="ms">Antaramuka web lalai untuk XBMC; Di reka untuk peranti pelbagai resolusi</description>
     <description lang="my">XBMC အတွက် မူရင်း ဝက်ဘ် အသွင်ပြင် ၊ စက်များ အားလုံး၏ resolutions အတွက် ရေးဆွဲထားသည်။</description>
     <description lang="nl">Standaard XBMC-webinterface; geschikt voor alle resoluties</description>
-    <description lang="no">Standard webgrensesnitt for XBMC; Laget for alle oppløsninger</description>
+    <description lang="no">Standard nettgrensesnitt for XBMC; Laget for alle oppløsninger</description>
     <description lang="pl">Domyślny interfejs WWW dla XBMC; Zaprojektowany dla urządzeń z dowolną rozdzielczością</description>
     <description lang="pt">Interface Web padrão do XBMC. Pensada para dispositivos com qualquer resolução</description>
     <description lang="pt_BR">Interface web padrão para XBMC; Concebida para dispositivos de todas as resoluções</description>
