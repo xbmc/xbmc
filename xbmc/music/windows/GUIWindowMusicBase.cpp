@@ -1140,10 +1140,6 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   return bResult;
 }
 
-void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
-{
-}
-
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   CStdString content = items.GetContent();

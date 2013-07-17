@@ -209,6 +209,8 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 
 void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 {
+  CGUIWindowMusicBase::OnPrepareFileItems(items);
+
   RetrieveMusicInfo();
 }
 
