@@ -890,7 +890,21 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 // It's used to load tag info for music.
 void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 {
-
+  // check for smartplaylist-specific sorting information
+  if (!items.HasProperty(PROPERTY_SORT_ORDER))
+  {  
+    CURL url(items.GetPath());
+    CStdString strXsp;
+    if (url.GetOption("xsp", strXsp))
+    {
+      CSmartPlaylist xsp;
+      if (xsp.LoadFromJson(strXsp))
+      {
+        items.SetProperty(PROPERTY_SORT_ORDER, (int)xsp.GetOrder());
+        items.SetProperty(PROPERTY_SORT_ASCENDING, xsp.GetOrderDirection() == SortOrderAscending);
+      }
+    }
+  }
 }
 
 // \brief This function will be called by Update() before
