@@ -2303,15 +2303,20 @@ bool CApplication::OnKey(const CKey& key)
         if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
-        { // see if we've got an ascii key
-          if (key.GetUnicode())
+        {
+          // Check for ctrl-V
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
+            action = CAction(ACTION_PASTE);
+          // If the unicode is non-zero the keypress is a non-printing character
+          else if (key.GetUnicode())
             action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+          // The keypress is a non-printing character
           else
             action = CAction(key.GetVKey() | KEY_VKEY);
         }
       }
 
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %x", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
 
       if (OnAction(action))
         return true;
