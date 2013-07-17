@@ -874,7 +874,10 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Send the Hello message
-  CStdString strGreeting = "cddb hello xbmc xbmc XBMC/"+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  CStdString version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  if (version.Find(" ") >= 0) 
+    version = version.Left(version.Find(" "));
+  CStdString strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
   if ( ! Send(strGreeting.c_str()) )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", strGreeting.c_str());
