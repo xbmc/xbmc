@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Görünüm Seçenekleri"
 
+msgctxt "#31007"
+msgid "Settings Options"
+msgstr "Ayar Seçenekleri"
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Tam ekran"
@@ -107,6 +111,10 @@ msgstr "İLERİ SAR"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "GERİ SAR"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ARIYOR"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -539,3 +547,43 @@ msgstr "Hava tahmini bilgisi getiriliyor..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Harita ve Uyarılar"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "HAVA DURUMU"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "RESİMLER"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "CANLI YAYIN"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VİDEOLAR"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FİLMLER"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV ŞOVLARI"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MÜZİK"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMLAR"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "DİSKİ OYNAT"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SİSTEM"

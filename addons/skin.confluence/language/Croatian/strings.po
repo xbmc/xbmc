@@ -582,7 +582,7 @@ msgstr "PROGRAMI"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "REPRODUCIRAJ DISK"
+msgstr "OPTIČKI DISK"
 
 msgctxt "#31959"
 msgid "SYSTEM"

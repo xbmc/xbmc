@@ -358,7 +358,7 @@ msgstr "Sist innlogget"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Sangvelger for karaoke"
+msgstr "Låtvelger for karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -418,11 +418,11 @@ msgstr "Hent undertekster"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Standard for tema"
+msgstr "Standard for skall"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Temastandard uten versaler"
+msgstr "Skallstandard uten versaler"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -430,7 +430,7 @@ msgstr "Arial-basert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Endre temaet · Oppgi dine regionale innstillinger · Endre globale visningsalternativer[CR]Konfigurer skjermsparer"
+msgstr "[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Endre skallet · Oppgi dine regionale innstillinger · Endre globale visningsalternativer[CR]Konfigurer skjermsparer"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
