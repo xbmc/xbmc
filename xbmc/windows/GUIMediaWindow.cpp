@@ -69,6 +69,7 @@
 #if defined(TARGET_ANDROID)
 #include "xbmc/android/activity/XBMCApp.h"
 #endif
+#include "FileItemListModification.h"
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -895,7 +896,7 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 // It's used to load tag info for music.
 void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 {
-
+  CFileItemListModification::Get().Modify(items);
 }
 
 // \brief This function will be called by Update() before
