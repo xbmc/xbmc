@@ -488,23 +488,41 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
   }
 }
 
-void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)
+bool CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortBy sortBy /* = SortByPlaylistOrder */, SortOrder sortOrder /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */)
 {
-  SortBy sortBy = SortByPlaylistOrder;
-  int         sortLabel = 559;
-  SortOrder   sortOrder = SortOrderAscending;
+  bool add = false;
+  int sortLabel = 559;
+  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
+    sortAttributes = (SortAttribute)(sortAttributes | SortAttributeIgnoreArticle);
+
   if (items.HasProperty(PROPERTY_SORT_ORDER))
   {
-    sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
-    if (sortBy != SortByNone)
+    SortBy sortByTmp = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+    if (sortByTmp != SortByNone)
     {
+      add = true;
+      sortBy = sortByTmp;
       sortLabel = SortUtils::GetSortLabel(sortBy);
       sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
     }
   }
-  AddSortMethod(sortBy, sortLabel, label_masks);
-  SetSortMethod(sortBy);
+
+  if (!add &&
+     (items.IsSmartPlayList() || items.GetProperty("library.filter").asBoolean()))
+    add = true;
+
+  if (add)
+    AddSortMethod(sortBy, sortAttributes, sortLabel, label_masks);
+
+  SetSortMethod(sortBy, sortAttributes);
   SetSortOrder(sortOrder);
+
+  return add;
+}
+
+bool CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription)
+{
+  return AddPlaylistOrder(items, label_masks, sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes);
 }
 
 
