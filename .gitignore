@@ -124,6 +124,8 @@ config.log
 
 # /lib/
 /lib/Makefile
+/lib/*/1
+/lib/*/win32/1
 
 # /lib/asap/
 /lib/asap/Makefile
@@ -371,6 +373,8 @@ lib/cmyth/Makefile
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
 /project/VS2010Express/*.vsp
+/project/VS2010Express/*.metaproj
+/project/VS2010Express/*.metaproj.tmp
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
