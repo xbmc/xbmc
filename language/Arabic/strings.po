@@ -289,6 +289,10 @@ msgctxt "#91"
 msgid "East"
 msgstr "شرق"
 
+msgctxt "#92"
+msgid "Variable"
+msgstr "متغير"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "عرض: تلقائية"
@@ -564,6 +568,14 @@ msgstr "القرص الحالي"
 msgctxt "#166"
 msgid "Skin"
 msgstr "الغلاف"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "إلغاء عمليات الملفات"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -861,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "عدد القنوات"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "لاقط يدعم نظام (DTS)"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1033,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "العلامات"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "لاقط يدعم نظام (AAC)"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "لاقط يدعم نظام (MP1)"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "لاقط يدعم نظام (MP2)"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "لاقط يدعم نظام (MP3)"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "تأخير"
@@ -1197,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "دفع مستوى الصوت على downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "لاقط يدعم نظام (DTS-HD)"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "لاقط يدعم نظام (LPCM) متعدد القنوات"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "لاقط يدعم نظام (TrueHD)"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "برامج"
@@ -1252,6 +1296,10 @@ msgstr "مستوى خفت شاشة التوقف"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "ترتيب حسب: ملف"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "لاقط يدعم نظام دولبي ديجيتال (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2037,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "مرات أجريت"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "تاريخ الإلتقاط"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "اتجاه الفرز"
@@ -2152,6 +2204,14 @@ msgstr "نسخ مسار الصوت"
 msgctxt "#611"
 msgid "Enter number"
 msgstr "إدخال رقم"
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "بت/عينة"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "معدل العينة"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2329,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "مستوى الضغط"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "تسجيل حرفي"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "تنظيف قاعدة البيانات"
@@ -2345,6 +2409,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "الشبكة"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "الخادم"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "استخدام وكيل HTTP للوصول الإنترنت"
@@ -2360,6 +2428,10 @@ msgstr "منفذ غير صحيح. يجب أن تكون القيمة بين 1 و 
 msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "وكيل HTTP"
+
+msgctxt "#715"
+msgid "Assignment"
+msgstr "مهمة"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"

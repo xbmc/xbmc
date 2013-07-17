@@ -2085,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Numero di riproduzioni"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Aggiunto in data"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Direzione ordinamento"
@@ -2973,6 +2977,14 @@ msgctxt "#1182"
 msgid "SOCKS4"
 msgstr "SOCK4"
 
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
 msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
 msgstr "SOCKS5 con risoluzione dns remota"
@@ -3509,6 +3521,10 @@ msgctxt "#10041"
 msgid "Reset settings"
 msgstr "Ripristino impostazioni"
 
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Sai sicuro di voler resettare le impostazioni in questa categoria"
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "Aiut"
@@ -3525,6 +3541,10 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Casella di Progresso"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "File browser"
+
 msgctxt "#10128"
 msgid "Network setup"
 msgstr "Impostazioni Rete"
@@ -3533,17 +3553,45 @@ msgctxt "#10129"
 msgid "Media source"
 msgstr "Sorgente media"
 
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Impostazioni profilo"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Blocca impostazioni"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Impostazioni contenuto"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Preferiti"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Canzoni/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Modifica smart playlist"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Modifica le regole per la playlist intelligente"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Immagini/Info"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Impostazioni Add-on"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Add-ons/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4045,6 +4093,50 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick disinserito"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Prova ad avviare i server remoti  all'accesso"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Aspettando che la rete sia connessa...."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Errore nell'esecuzione Sveglia con Lan"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Aspettando che il server si accenda..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Tempo extra di attesa per l'accensione del server"
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Aspettando che i servizi vengano avviati..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC Discovery"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Aggiornato per %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Trovato per %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Fallito per %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Batteria scarica"
@@ -4364,6 +4456,10 @@ msgstr "Controllo automatico temperatura"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Controllo velocità ventola"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Caratteri"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4889,6 +4985,10 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "Nessuna immagine"
 
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Aggiungi immagine"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Pausa durante il cambio di frequenza"
@@ -5041,6 +5141,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "cache Video - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Rete locale"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -5049,6 +5153,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "cache Audio - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Rete locale"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -5056,6 +5164,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "cache DVD - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Rete locale"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5344,6 +5456,10 @@ msgstr "Suoni di navigazione"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Default della skin"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5864,6 +5980,10 @@ msgstr "Informazioni"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Hai già cominciato a registrare su questo canale"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s non può essere riprodotto. Controlla il log per i dettagli."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8333,6 +8453,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Imposta icona attore"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Rimuovi segnalibro"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Rimuovi segnalibro episodio"
@@ -8384,6 +8508,10 @@ msgstr "Prima visione"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Scrittore"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Scrittori"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8560,6 +8688,22 @@ msgstr "Un tag con il nome '%s' esiste di già."
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "Seleziona %s"
+
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Modifica set filmato"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Seleziona set filmato"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Nessun' set trovato (Rimuovi da %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Aggiungi filmato al nuovo set"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -9140,6 +9284,10 @@ msgstr "Altitudine GPS"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientamento"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "TIpo immagine"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -10541,9 +10689,17 @@ msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Abilita feed RSS."
+
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Seleziona paese."
 
 msgctxt "#36121"
 msgid "No info available yet."

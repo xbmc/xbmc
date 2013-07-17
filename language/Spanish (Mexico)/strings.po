@@ -10889,6 +10889,10 @@ msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
 msgstr "Si se reproduce musica, XBMC puede iniciar la visualizacion seleccionada en lugar de mostrar el protector de pantalla."
 
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Oscurecer la pantalla cuando la reproducción está en pausa. No funciona si lo eliges con el protector de pantalla en modo 'Dim'"
+
 msgctxt "#36135"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -10913,13 +10917,61 @@ msgctxt "#36140"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Muestra la información sobre los medios no vistos en la Librería de Videos"
+
 msgctxt "#36142"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Obtener vistas previas cuando se escanea los medios"
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Remover el nodo de temporadas de series de TV, selecciona entre 'If only one season' (default), 'Always' and 'Never'."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Agrupar las peliculas en 'Movie sets' cuando navegas en la librería de películas."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Revisar si hay nuevos archivos de medios cuando inicias XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Esconde la barra de progreso de escaneo de librerías mientras se realiza los escaneos."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Quita los items no encontrados de tu librería (también los que han sido renombrados, borrados o que se encontraban en la tarjeta externa de memoria que ha sido removida)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exporta la base de datos de la Librería de Vídeo a un archivo XML. Esto puede sobreescribir opcionalmente sus archivos XML actuales."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importar un archivo XML a la base de datos de la Librería de Vídeo."
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Activa la reproducción automática del siguiente archivo."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Ajusta el método usado para procesar el vídeo."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Activa la decodificación por hardware para archivos de vídeo."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10953,6 +11005,22 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Elige cuando serán aplicados los ajustes en la tasa de refresco."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Se realiza una pequeña pausa mientras se ajusta la tasa de refresco. Activar para ajustar automáticamente la tasa de refresco a la que más se ajuste al vídeo que está reproduciéndose. Esto puede permitir una reproducción perfectamente suave, ya que el material de vídeo puede ser grabado en una gran variedad de ajustes de velocidad de cuadros para lo cuales necesario ajustar la tasa de refresco para que se muestre una reproducción suave.  "
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Sincroniza el vídeo para que se ajuste a la tasa de refresco del monitor."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "El audio debe permanecer en sincronía, esto puede hacerse con saltos de paquetes duplicados o remuestreos, o ajustando la velocidad de reloj si la falta de sincronismo es muy marcada."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -10961,21 +11029,49 @@ msgctxt "#36169"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Permitir que el reproductor de vídeo ignore el radio de aspecto llenando la pantalla con una más grande cantidad de vídeo."
+
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Selecciona el nivel de zoom de esos videos 4:3 que seran mostrados en pantallas panoramicas."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colorspace conversion."
+msgstr "La conversión VDPAU studio level provee una manera de influenciar la conversión del espacio de color en aplicaciones avanzadas como XBMC."
 
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Activa el la información de teletexto cuando estás mirando una transmisión de TV en vivo."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Escala la información del teletexto al radio de aspecto 4:3."
+
 msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Elige entre las opciones, Reproducir (por omisión), Reanudar y mostrar la información. Elija un elemento, por ejemplo, abrir un directorio en modo de archivos. Reanudar retomará los vídeos automáticamente desde la última posición en la que estabas viendolo, incluso cuando reinicias el sistema."
+
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Cuando un archivo es escaneado en la librería, se mostrará el título de metadata en lugar del nombre del archivo."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Extrae las miniaturas y la información, tal como los codecs y radio de aspecto, para mostrarlo en el modo de Librería."
 
 msgctxt "#36181"
 msgid "No info available yet."
@@ -11017,6 +11113,10 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Ajusta un directorio personal para tus subtitulos. Este puede ser un archivo compartido."
+
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Ubicacion de los subtitulos en la pantalla."
@@ -11033,6 +11133,10 @@ msgctxt "#36195"
 msgid "Force a region for DVD playback."
 msgstr "Forzar la region para reproducir el DVD."
 
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Intenta saltar las introducciones 'unskippable' antes del menú de un DVD."
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11041,6 +11145,14 @@ msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
 msgstr "Selecciona la fuente de informacion de peliculas predeterminada. Ver el Administrador de Complementos para mas opciones."
 
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Elige la fuente por omisión de la información de un programa de TV. Para opciones, mira en el administrador de Add-ons."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Scraper por omisión para añadir vídeos musicales a tu librería."
+
 msgctxt "#36201"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11048,6 +11160,34 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr "Activar las opciones de la Grabadora Personal de Vídeo (PVR) en XBMC. Esto requiere que al menos un add-on PVR esté instalado."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Importa los grupos de canales del backend PVR (si es que lo soporta). Esto borrará los grupos creados por el usuario si estos no se encuentran en el backend usado."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Organiza los canales por su número en el servidor, pero usa los números de XBMC para los canales."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Usa la numeración del backend, en lugar de tener que configurarlos manualmente desde XBMC."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Abre el administrador de canales, lo que permite modificar el orden de los mismos, sus nombres, íconos, etc."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Instruye al backend para que busque canales (si lo soporta)"
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Borra la base de datos de canales/EPG y seguidamente reimporta los datos desde el backend."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11085,13 +11225,57 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "Ventana EPG que se mostrará. Por omisión al Timeline."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "Número de días de los datos del EPG que se importarán desde el backend. Por omisión, 2 días."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "Tiempo entre cada importación de EPG desde el backend. Por omisión, 120 minutos."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "No importar los datos de EPG mientras miras TV para disminuir el uso del CPU."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "Por omisión, los datos del EPG están guardados en bases de datos locales para acelerar su importación cuando XBMC reinicia."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Esconde las etiquetas \"no hay información disponible\" cuando no hay datos EPG para recuperar de un canal."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "Borra las bases de datos de EPG en XBMC y luego reimporta los datos desde el backend."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Muestra previsualización del canal seleccionado en una pequeña ventana en lugar de usar la pantalla entera."
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Muestra los últimos canales vistos si cambias a la televisión en vivo."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr "Muestra la información de calidad de señal en la ventana de información del codec (si es que lo soporta el add-on y el backend)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Presionando un boton de número en el modo de pantalla completa, se cambia automáticamente al canal que fue marcado después de 1 segundo."
 
 msgctxt "#36232"
 msgid "No info available yet."
@@ -11101,13 +11285,73 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr "Duración de la grabación cuando presionas el botón de grabar, o cuando creas un temporizador manual nuevo. Por omisión, 180 minutos."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr "Prioridad de grabación. Números más altos, significan más alta prioridad. Por omisión en 50. No soportado por todos los add-ons ni todos los backends."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr "Borrar las grabaciones después de este tiempo. Por omisión, 99 días. No soportado por todos los add-ons ni backends."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr "Inicia la grabación después de este tiempo. Por omisión, 2 minutos. No soportado por todos los ad-ons ni backends."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr "La grabación se detiene luego del tiempo indicado. Por omisión se ajusta a 10 minutos. No soportado por todos los add-ons ni todos los backends."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Muestra una notificación cuando un backend añade, termina o remueve un temporizador."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Ejecuta el \"comando para despertar\" abajo cuando XBMC sale o entra en modo hibernacion. El timestamp de la siguiente grabacion programada pasa a ser parametro."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "El comando no se ejecutará cuando una grabación inicie dentro de este tiempo. Por omisión ajustado a 15 minutos."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "El comando a ejecutarse. Por omisión en '/usr/bin/setwakeup.sh'"
+
+msgctxt "#36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr "Tiempo a eliminar del tiempo en que inicia la siguiente grabación programada. Por omisión en 15 minutos."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Despertar el programa cada día a la hora ajustada."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Cuando se ejecutará el comando despertar diariamente."
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Solicita un código de acceso a los canales bloqueados por control parental. Los canales pueden ser bloqueados en el editor que se encuentra en la pestaña general. Los canales bloqueados por control parental no pueden ser reproducidos ni grabados sin ingresar el código de autorización, y la información EPG también se esconde en estos canales."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Introduce un nuevo codigo pin para desbloquear los canales con bloqueo paternal. "
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Preguntar por el codigo pin de nuevo cuando se trate de acceder a un canal con bloqueo paternal y el codigo no tiene que de preguntado en esta duracion. Predeterminado en 300 segundos."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11125,9 +11369,65 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Determinar si los artistas que aparecen solo en las compilaciones se muestran en la vista de artista de biblioteca."
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Recoger automaticamente informacion de album y artista a traves de excavadores durante el escaneo."
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Selecciona la fuente de informacion de album predeterminada"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "Selecciona la fuente de informacion de artistas predeterminada. Ver el Administrador de Complementos para mas opciones."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Comprobar si hay archivos de medios nuevos o removidos al inicio de XBMC."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exportar la base de datos de la Biblioteca de Musica a un archivo XML. Esto puede sobrescribir opcionalmente sus archivos XML actuales."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Importar un archivo XML a la base de datos de la Biblioteca de Musica."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC automaticamente reproduce el siguiente elemento de la carpeta actual. Por ejemplo, en le Vista de Archivos: Despues de que la pista a sido reproducida, XBMC autometicamente reproduce la siguiente pista en la misma carpeta."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "Cuando las canciones son agregadas ala lista de reproduccion ellas quedan en cola en lugar de reproducirse inmediatamente."
+
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr "XBMC puede leer el la informacion de Replay Gain codificada en sus archivos de audio por un programa como MP3Gain y normalizar el nivel de sonido en consecuencia. "
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "El valor predeterminado estandar es 89dB. Cambielo con precaucion.  "
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "El valor predeterminado estandar es 89dB. Cambielo con precaucion.  "
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Reducir el volumen del archivo, es probable que produzca distorsion."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Suavemente desaparecer de una pista de audio a la siguiente. Usted puede ajustar la cantidad de superposicion de 1-15 segundos."
 
 msgctxt "#36277"
 msgid "No info available yet."

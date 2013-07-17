@@ -19,7 +19,7 @@ msgstr "Programe"
 
 msgctxt "#1"
 msgid "Pictures"
-msgstr "Fotografi"
+msgstr "Fotografit"
 
 msgctxt "#2"
 msgid "Music"
@@ -573,9 +573,13 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Anuloni operacionet e skedarit"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s-%s"
+
 msgctxt "#169"
 msgid "Resolution"
-msgstr "Zbërthimi"
+msgstr "Rezolucioni"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Numri i kanaleve"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Marrës i aftë DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1041,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "bookmark-at"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Marrës i aftë AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Marrës i aftë MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Marrës i aftë MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Marrës i aftë MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Vonesë"
@@ -1205,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Ngritni nivelin e zërit në rastin downmix"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Marrës i aftë DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Marrës i aftë Multikanlësh LPCM"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Marrës i aftë TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programe"
@@ -1260,6 +1296,10 @@ msgstr "Niveli i errësimit të ekran-ruajtësit"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Klasifikoni sipas: Skedar"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Marrës i aftë Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2045,6 +2085,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Herë të riprodhuar"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Data e marrjes"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Drejtimi i klasifikimit"
@@ -2345,6 +2389,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Niveli i kompresionit"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Prerje shumfjalësh"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Duke pastruar bibliotekën"
@@ -2360,6 +2408,10 @@ msgstr "Kjo vendndodhje është kërkuar më parë"
 msgctxt "#705"
 msgid "Network"
 msgstr "Rrjeti"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2377,6 +2429,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Ngarkim"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automatik (DHCP)"
@@ -2388,6 +2444,18 @@ msgstr "Manual (Statik)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "Adresa IP"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Netmask"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Dalja e nënkuptueshme"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Server DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2500,14 @@ msgstr "Asnjë fjalkalim"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Character set"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Ngjyrë"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2641,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Emri i rrjetit wireless (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Passwordi Wireless"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Siguria e Wireless"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "- Ruani dhe aplikoni cilësimet e ndërfaqes së rrjetit"
@@ -2649,6 +2733,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Aktualizimi i bibliotekës"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Libraria muzikore ka nevoj që të skanoj etiketimet nga dosjet"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Dëshironi të kërkoni tani?"
@@ -2665,6 +2753,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Vargu i porteve të vlefshëm është 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Shto fotografi"
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Shtoni Muzikë..."
@@ -2672,6 +2764,10 @@ msgstr "Shtoni Muzikë..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Shtoni Video..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Shikim paraprak"
 
 msgctxt "#1001"
 msgid "Unable to connect"

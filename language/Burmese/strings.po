@@ -225,6 +225,38 @@ msgctxt "#75"
 msgid "E"
 msgstr "အရှေ့"
 
+msgctxt "#76"
+msgid "ESE"
+msgstr "အရှေ့တောင်အရှေ့"
+
+msgctxt "#77"
+msgid "SE"
+msgstr "အရှေ့တောင်"
+
+msgctxt "#78"
+msgid "SSE"
+msgstr "တောင်တောင်အရှေ့"
+
+msgctxt "#79"
+msgid "S"
+msgstr "တောင်"
+
+msgctxt "#80"
+msgid "SSW"
+msgstr "တောင်တောင်နောက်"
+
+msgctxt "#81"
+msgid "SW"
+msgstr "အနောက်တောင်"
+
+msgctxt "#82"
+msgid "WSW"
+msgstr "အနောက်တောင်အနောက်"
+
+msgctxt "#83"
+msgid "W"
+msgstr "အနောက်"
+
 msgctxt "#88"
 msgid "South"
 msgstr "တောင်"
@@ -369,6 +401,14 @@ msgctxt "#129"
 msgid "Slideshow"
 msgstr "Slideshow"
 
+msgctxt "#130"
+msgid "System info"
+msgstr "စနစ် အချက်အလက်"
+
+msgctxt "#131"
+msgid "Display"
+msgstr "ပြသမှု"
+
 msgctxt "#132"
 msgid "Albums"
 msgstr "အယ်လဘမ်များ"
@@ -399,11 +439,11 @@ msgstr "စနစ် အချက်အလက်များ"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "အပူချိန်-"
+msgstr "အပူချိန် -"
 
 msgctxt "#140"
 msgid "CPU:"
-msgstr "CPU:"
+msgstr "CPU -"
 
 msgctxt "#141"
 msgid "GPU:"
@@ -419,11 +459,11 @@ msgstr "ယခု -"
 
 msgctxt "#144"
 msgid "Build:"
-msgstr "Build:"
+msgstr "တည်ဆောက်မှု -"
 
 msgctxt "#145"
 msgid "Network:"
-msgstr "Network -"
+msgstr "ကွန်ရက် -"
 
 msgctxt "#146"
 msgid "Type:"
@@ -443,7 +483,7 @@ msgstr "MAC လိပ်စာ"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP address"
+msgstr "IP လိပ်စာ"
 
 msgctxt "#151"
 msgid "Link:"
@@ -476,6 +516,10 @@ msgstr "ဗွီဒီယို"
 msgctxt "#158"
 msgid "Free memory"
 msgstr "အားနေသော memory"
+
+msgctxt "#159"
+msgid "No link"
+msgstr "ချိတ်ဆက်မှု မရှိ"
 
 msgctxt "#160"
 msgid "Free"
@@ -1273,6 +1317,10 @@ msgctxt "#455"
 msgid "Rows"
 msgstr "တန်းများ"
 
+msgctxt "#456"
+msgid "Mode"
+msgstr "အခြေအနေ"
+
 msgctxt "#462"
 msgid "Subtitle"
 msgstr "စာတန်းထိုး"
@@ -1424,6 +1472,10 @@ msgstr "genre ရွေးမည်"
 msgctxt "#531"
 msgid "New genre"
 msgstr "genre အသစ်"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "မိမိ ကိုယ်တိုင် ထည့်သွင်းမည်"
 
 msgctxt "#533"
 msgid "Enter genre"
@@ -2073,6 +2125,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "ပရိုဂရမ် Add-ons"
 
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Add-on များ ပြုပြင်ခြင်း"
+
 msgctxt "#1046"
 msgid "Access points"
 msgstr "Access points"
@@ -2349,6 +2405,10 @@ msgctxt "#10029"
 msgid "Login screen"
 msgstr "ဝင်ရောက်သည့်စခရင်"
 
+msgctxt "#10040"
+msgid "Addon browser"
+msgstr "Addon များကြည့်ရှုခြင်း"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lock settings"
@@ -2356,6 +2416,10 @@ msgstr "Lock settings"
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "အကြိုက်နှစ်သက်ဆုံး"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Add-on ပြုပြင်ခြင်း"
 
 msgctxt "#10146"
 msgid "Add-ons/Info"
@@ -2396,6 +2460,10 @@ msgstr "ရာသီဥတုခန့်မှန်းချက် "
 msgctxt "#10510"
 msgid "Extensions"
 msgstr "Extensions"
+
+msgctxt "#10511"
+msgid "System info"
+msgstr "စနစ် အချက်အလက်"
 
 msgctxt "#10516"
 msgid "Music - Library"
@@ -5055,7 +5123,7 @@ msgstr "Add-on အတွင်း ပြင်ဆင်မှု"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr "Add-on Information"
+msgstr "Add-on အချက်အလက်များ"
 
 msgctxt "#24007"
 msgid "Movie information"
@@ -5068,6 +5136,10 @@ msgstr "Screensaver"
 msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
+
+msgctxt "#24011"
+msgid "Add-on repository"
+msgstr "Add-on သိမ်းဆည်းထားသည့်နေရာ"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -5248,6 +5320,10 @@ msgstr "Add-on restarts"
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(ယခု)"
+
+msgctxt "#24096"
+msgid "Add-on has been marked as broken in repository."
+msgstr "သိမ်းဆည်းထားသော နေရာရှိ Add-on သည် သုံးမရတော့ပါ။"
 
 msgctxt "#24098"
 msgid "Broken"

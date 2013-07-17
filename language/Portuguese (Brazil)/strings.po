@@ -3519,7 +3519,7 @@ msgstr "Nível: Expert"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr "Navegador de Addons"
+msgstr "Navegador de complementos"
 
 msgctxt "#10041"
 msgid "Reset settings"
@@ -6731,7 +6731,7 @@ msgstr "Mostrar uma notificação das atualizações de agendamentos"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Use números canais do backend (somente funciona com 1 addon PVR ativado)"
+msgstr "Use os números de canais do backend (somente funciona com 1 complemento PVR ativado)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -10404,6 +10404,14 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"

@@ -2935,7 +2935,7 @@ msgstr "Säti pisiprogrammi pilt"
 
 msgctxt "#1045"
 msgid "Add-on settings"
-msgstr "Lisad"
+msgstr "Lisamooduli seaded"
 
 msgctxt "#1046"
 msgid "Access points"
@@ -3563,7 +3563,7 @@ msgstr "Pildid/Info"
 
 msgctxt "#10140"
 msgid "Add-on settings"
-msgstr "Lisad"
+msgstr "Lisamooduli seaded"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -9179,7 +9179,7 @@ msgstr "Linn"
 
 msgctxt "#21874"
 msgid "State"
-msgstr "Osariik"
+msgstr "Olek"
 
 msgctxt "#21875"
 msgid "Country"

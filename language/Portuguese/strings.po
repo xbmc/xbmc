@@ -7463,11 +7463,11 @@ msgstr "Separado"
 
 msgctxt "#20062"
 msgid "Shares with default"
-msgstr "Partilhas com padrão"
+msgstr "Partilhar com padrão"
 
 msgctxt "#20063"
 msgid "Shares with default (read only)"
-msgstr "Partilhas com padrão (só leitura)"
+msgstr "Partilhar com padrão (só leitura)"
 
 msgctxt "#20064"
 msgid "Copy default"
@@ -10404,6 +10404,14 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "Áudio MPEG-4 (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Áudio Windows Media 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"

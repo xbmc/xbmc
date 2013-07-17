@@ -11197,6 +11197,10 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "请勿在播放电视时导入EPG数据以减少CPU占用。"
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "无可用信息。"
@@ -11221,6 +11225,10 @@ msgctxt "#36247"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "输入一个新的PIN代码以解锁父母锁定频道。"
+
 msgctxt "#36251"
 msgid "No info available yet."
 msgstr "无可用信息。"
@@ -11236,6 +11244,10 @@ msgstr "无可用信息。"
 msgctxt "#36254"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "选择默认唱片信息来源"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11268,6 +11280,18 @@ msgstr "无可用信息。"
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "插入光盘时自动播放CD。"
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "选择抓取后保存的文件质量"
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "抓取完成后弹出光盘"
 
 msgctxt "#36292"
 msgid "No info available yet."
@@ -11312,6 +11336,10 @@ msgstr "无可用信息。"
 msgctxt "#36311"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "使用幻灯片模式时随机播放。"
 
 msgctxt "#36315"
 msgid "No info available yet."

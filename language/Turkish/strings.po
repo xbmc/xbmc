@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Dosya işlemlerini iptal et"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Çözünürlük"
@@ -2045,6 +2049,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Yürütme sayısı"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Kayıt Tarihi"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Sıralama yönü"
@@ -2361,6 +2369,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Ağ Bağlantıları"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "Sunucu"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "İnternet erişimi için HTTP vekil sunucusu kullan"
@@ -2377,6 +2389,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP vekil sunucu"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Atama"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Otomatik (DHCP)"
@@ -2388,6 +2404,18 @@ msgstr "Kişisel (Statik)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP adresi"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Ağ Maskesi"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Varsayılan Ağ Geçidi"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS sunucu"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2460,14 @@ msgstr "Parola yok"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Karakter kümesi"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Renk"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2601,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Kablosuz ağ adı (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Kablosuz Ağ şifresi"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Kablosuz Ağ güvenliği"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Ağ arabirimi ayarlarını kaydet ve uygula"
@@ -2665,6 +2709,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Geçerli bağlantı noktası aralığı 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Resim Ekle..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Müzik Ekle..."
@@ -2672,6 +2720,10 @@ msgstr "Müzik Ekle..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Video Ekle..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Önizleme"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2873,6 +2925,26 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "İnternet adresini girin"
 
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "Uzak dns çözümlemeli SOCKS5"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB istemcisi"
@@ -3009,9 +3081,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Aygıt adı"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Parola koruma kullan"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,9 +3449,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Ayarlar - Profiller"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Sıfırla"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Düzey:Temel"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Düzey:Standart"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Düzey:Gelişmiş"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Düzey:Uzman"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Eklenti tarayıcısı"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Ayarları sıfırla"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Bu kategorideki ayarları sıfırlamak istediğinize emin misiniz?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Yardım"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Yardım mevcut değil"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3381,17 +3497,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "İlerleme iletişim kutusu"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Dosya gezgini"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Ağ kurulumu"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Medya kaynağı"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profil ayarları"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Ayarları kilitle"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "İçerik ayarları"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Sık Kullanılanlar"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Şarkılar/Bilgi"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Akıllı çalma listesi düzenleyicisi"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Akıllı çalma listesi kural düzenleyicisi"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Resimler/Bilgi"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Eklenti ayarları"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Ekler/Bilgi"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3893,6 +4049,46 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick takılı değil"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Ulaşıldığında uzak sunucuları uyandırmaya çalış"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Ağ üzerinden Uyanma (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Ağ bağlantı için bekleniyor..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Ağ üzerinden uyanma gerçekleştirilemedi!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Sunucunun uyanması bekleniyor..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Sunucunun uyanması için fazladan bekleniyor..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Servislerin başlaması bekleniyor..."
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "%s için güncellendi"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "%s için bulundu"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "%s hatası"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Düşük pil ile çalışıyor"
@@ -4212,6 +4408,10 @@ msgstr "Otomatik ısı kontrolü"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Fan hızını geçersiz kıl"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Yazı tipleri"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4889,6 +5089,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video önbelleği - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Yerel Ağ"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "İnternet"
@@ -4897,6 +5101,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Ses önbelleği - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Yerel Ağ"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "İnternet"
@@ -4904,6 +5112,10 @@ msgstr "İnternet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD önbelleği - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Yerel Ağ"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5053,6 +5265,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Sık kullanılanlardan kaldır"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Renkler"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Ülke zaman dilimi"
@@ -5188,6 +5404,10 @@ msgstr "Menü sesleri"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Dış görünüm varsayılanı"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -8229,6 +8449,10 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "Yazar"
 
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Yazarlar"
+
 msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr "Dosya adlarını kitaplık başlıkları ile değiştir"
@@ -8404,6 +8628,18 @@ msgstr " '%s' adındaki etiket zaten var."
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "Seç: %s"
+
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Film dizisini yönet"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Film serisini seç"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Filmi yeni seriye ekle"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -9057,6 +9293,10 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Oluşturma tarihi"
 
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Aciliyet"
+
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Ülke kodu"
@@ -9153,6 +9393,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Kitaplık güncellemelerinin ilerleme durumunu gizle"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS eki"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9248,6 +9492,14 @@ msgstr "Yazı tipi"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Boyut"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Renkler"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Karakter seti"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9997,6 +10249,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Özel betik düğmesini etkinleştir"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Otomatik giriş"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Başlatılamadı"
@@ -10364,3 +10620,599 @@ msgstr "Desteklenmeyen libCEC arabirim sürümü. %x sürümü XBMC'nin  destekl
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Öğe klasörü"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Sınırlı renk aralığı kullan (16-235)"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Henüz bilgi mevcut değil."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "RSS beslemelerini düzenle."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Kullanıcı Arabirimi dilini seçer."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Grafik Kullanıcı Arabirimini gösterirken hangi karakter setinin kullanılacağını seçiniz."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Ülke seçiniz."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Geçerli zaman dilimini seçiniz."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Farklı dil seçenekleri mevcut olduğunda geçerli ses dilini seçiniz."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Farklı dil seçenekleri mevcut olduğunda geçerli altyazı dilini seçiniz."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Seçilen ekran koruyucuyu göster."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "XMBC başlatılırken yeni medya dosyalarını kontrol et."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Web sunucu portunu belirle."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Web sunucu kullanıcı adını belirle."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Web sunucu şifresini belirle."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Ağ üzerindeki programların XMBC yi kontrol etmesine izin ver."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Fiziksel hoparlör yerleşiminizi seçiniz."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "XMBC yi kontrol etmek için joystick kullan."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "İnternet bağlantınız bir vekil sunucu kullanıyor ise, burada ayarlayınız."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Ne tip bir vekil sunucu kullanıldığını ayarlayınız."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Vekil sunucu adresini ayarlayınız."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Vekil sunucu portunu ayarlayınız."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Vekil sunucu kullanıcı adını ayarlayınız."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Vekil sunucu şifresini ayarlayınız."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Bilgi mevcut değil."
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Son kullanılan profil"

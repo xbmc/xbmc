@@ -10405,6 +10405,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "Audio MPEG-4 (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Configuration des Haut-Parleurs"
@@ -11341,6 +11349,18 @@ msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Demande un code PIN pour accéder aux chaînes protégées par verrouillage parental. Le verrouillage parental peut être activée pour une chaîne dans l'éditeur des chaîne de l'onglet général. Une chaîne protégée par verrouillage parental ne peut être ni lue ni enregistrée sans entrer le code PIN, les informations du guide électronique des programmes sont masquées pour ces chaînes."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Entrez un nouveau code pour débloquer les chaines bloquées par le filtre parental."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Demande à nouveau le code PIN pour accéder à une chaîne protégée par verrouillage parental alors que le code n'a pas été demandée pendant cette durée.  Par défaut, 300 secondes. "
+
 msgctxt "#36251"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11357,9 +11377,57 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Détermine si la liste des artistes qui apparaissent seulement dans une compilation doivent aussi apparaitre dans la bibliothèques des artistes.  "
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Récupère automatiquement les informations liées à l'album et l'artiste pendant l'analyse."
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Sélectionner la source d'information par défaut pour les albums"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "Sélectionner la source d'information par défaut pour les artistes. Voir le gestionnaire d'extensions pour les options."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Met à jour la liste des médias au démarrage de XBMC."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exporte la base de données musicale vers un fichier XML. Si un fichier XML existe, celui-ci sera écrasé."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Importer un fichier XML dans votre base de donnée musicale."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC joue automatiquement l'item suivant dans le dossier actuel. Par exemple, dans la vue par fichiers: Après qu'une chanson ait été lue, XBMC va automatiquement lire la piste suivante dans le même dossier."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "Quand des sons sont ajoutés à une liste de lecture ils sont mis en attente au lieu d'être lus immédiatement. "
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "89dB est la valeur standard conseillée par défaut. Attention lors de la modification de cette valeur."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "89dB est la valeur standard conseillée par défaut. Attention lors de la modification de cette valeur."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Lis les informations taguées d'une fichier son. Pour un gros dossier cela peut ralentir la vitesse de lecture, en particulier sur un réseau."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11385,6 +11453,18 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "Lire automatiquement le CD après insertion dans le lecteur."
 
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Sélectionner l'encodeur audio que vous voulez utiliser pour l'encodage."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Sélectionner la qualité que vous voulez pour encoder vos fichiers."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "Pour le FLAC, définir le niveau de compression (5 par défaut)"
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Éjecte automatiquement le CD à la fin de l'extraction."
@@ -11396,6 +11476,18 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Choississez la police pour le karaoké."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Choississez la taille de police pour le karaoké."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Choississez la couleur de police pour le karaoké."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11460,6 +11552,18 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Définisser le port du serveur web."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Définisser le nom d'utilisateur du serveur web."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Définisser le mot de passe du serveur web."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -11545,9 +11649,41 @@ msgctxt "#36375"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Utiliser une manette pour controler XBMC."
+
 msgctxt "#36379"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Si votre connexion Internet utilise un proxy, configurez le içi."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Configurer quel type de proxy est utilisé."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Configurer l'adresse du serveur proxy."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Configurer le port du serveur proxy."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Configurer le nom d'utilisateur du serveur proxy."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Configurer le mot de passe du serveur proxy."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Si vous avez une bande passante limitée, XBMC va essayer de rester à l'intérieur de ces limites."
 
 msgctxt "#36388"
 msgid "No info available yet."
@@ -11556,6 +11692,18 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Dossier pour enregistrer les captures d'écran prises avec XBMC."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Définir le code PIN pour le verrouillage général."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Définit le maximum de fois que XBMC va réessayer avant de se fermer."
 
 msgctxt "#36399"
 msgid "No info available yet."
@@ -11624,6 +11772,10 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "Définit l'usage standard de la télécommande Apple."
 
 msgctxt "#36417"
 msgid "No info available yet."

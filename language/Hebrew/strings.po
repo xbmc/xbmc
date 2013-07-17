@@ -11037,6 +11037,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "הצג את הערוץ הנבחר בחלונית קטנה במקום בחלון מלא."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
@@ -11217,6 +11221,10 @@ msgctxt "#36327"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
 
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "אפשר שליטה מרחוק של ה-XBMC באמצעות שרת ה-WEB."
+
 msgctxt "#36329"
 msgid "Define the webserver port."
 msgstr "אין מידע זמין עדיין."
@@ -11224,6 +11232,10 @@ msgstr "אין מידע זמין עדיין."
 msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "הגדר סיסמא לשרת ה-WEB שלך."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -11380,6 +11392,22 @@ msgstr "הגדר/י כמה זמן להמתין לפני כבוי"
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "אין מידע זמין עדיין."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "התקייה לשמירת תצלומי מסך נלקחת מתוך ה-XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "הגדר הצגת ספריות נוספות לתצוגה בלוג הדיבאג."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "הגדר את קוד ה-PIN לשימוש לנעילת מאסטר."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "אם מאופשר, קוד המאסטר נדרש לפתיחת ה-XBMC בעת האתחול."
 
 msgctxt "#36399"
 msgid "No info available yet."

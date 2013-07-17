@@ -10405,6 +10405,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "Ήχος MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Ήχος Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Διάταξη ηχείων"
@@ -10970,7 +10978,7 @@ msgid "Adjust the method used to process and display video."
 msgstr "Ρύθμιση της μεθόδου επεξεργασίας και αναπαραγωγής βίντεο."
 
 msgctxt "#36154"
-msgid ""
+msgid "No info available yet."
 msgstr "-"
 
 msgctxt "#36155"
@@ -11678,7 +11686,7 @@ msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Επιλογή μεταξύ των διεπαφών ιστού που εγκαταστάθηκαν μέσω της Διαχείρισης Πρόσθετων."
 
 msgctxt "#36333"
-msgid ""
+msgid "No info available yet."
 msgstr "-"
 
 msgctxt "#36334"

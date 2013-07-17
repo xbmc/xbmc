@@ -499,11 +499,11 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC"
+msgstr "Dirección MAC"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP"
+msgstr "Dirección IP"
 
 msgctxt "#151"
 msgid "Link:"
@@ -2749,6 +2749,10 @@ msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Añadir Vídeos..."
 
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Vista previa"
+
 msgctxt "#1001"
 msgid "Unable to connect"
 msgstr "Imposible conectar"
@@ -4077,9 +4081,21 @@ msgctxt "#13028"
 msgid "Waiting for network to connect..."
 msgstr "Esperando a que la red se conecte..."
 
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "¡Fallo al ejecutar Wake on Lan!"
+
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
 msgstr "Esperando a que el servidor se despierte..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Esperando a que los servicios se lancen..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Descubrir la MAC"
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -8625,6 +8641,18 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Seleccionar %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Administrar colección de películas"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Seleccionar colección de películas"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Añadir película a una nueva colección"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Mostrar archivos y directorios ocultos"
@@ -9500,6 +9528,10 @@ msgstr "Tamaño"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "Colores"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Juego de caracteres"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10645,21 +10677,49 @@ msgctxt "#36102"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Editar las fuentes RSS."
+
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Elige el idioma de la interfaz de usuario."
 
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Selecciona el país"
 
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Selecciona tu zona horaria."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Seleccionar los subtítulos por defectos cuando estén disponibles varios idiomas."
+
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Mostrar el ítem (..) en listados para llegar al directorio superior."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Mostrar archivos y directorios ocultos."
+
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Previsualizar el protector de pantalla seleccionado."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10689,9 +10749,29 @@ msgctxt "#36142"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Obtener imágenes en miniatura de los actores cuando se analice el medio."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Ocultar la barra de progreso del análisis de la biblioteca."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Eliminar ítems de tu biblioteca que no se encuentren (renombrados, borrados o que estén en un dispositivo de almacenamiento portátil que esté desconectado)."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importar un archivo XML a la base de datos de la Biblioteca de Vídeo"
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Habilitar decodificación de vídeo por hardware."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10733,9 +10813,17 @@ msgctxt "#36169"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Seleccionar el nivel de zoom que los vídeos 4:3 muestran en pantallas anchas."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Habilitar el teletexto cuando se vea streaming en directo de TV."
 
 msgctxt "#36176"
 msgid "No info available yet."
@@ -10813,6 +10901,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Abrir el administrador de canales, que permite modificar el orden, nombre, icono, etc. de los canales."
+
 msgctxt "#36210"
 msgid "No info available yet."
 msgstr "No hay información disponible."
@@ -10853,6 +10945,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Mostrar el último canal visto cuando se vuelva a TV."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "No hay información disponible."
@@ -10865,13 +10961,33 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr "Prioridad de la grabación. Números altos significan mayor prioridad. El valor por defecto es 50. No soportado por todos los add-ons y backends."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "El comando a ejecutar. La ruta por defecto es '/usr/bin/setwakeup.sh'."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Ejecutar el comando despertados cada día a la hora fijada."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Cuándo ejecutar el comando despertador diario."
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Introducir un nuevo código PIN para desbloquear los canales con bloqueo parental."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -10889,9 +11005,21 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Seleccionar el servicio de información de álbum por defecto."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "No hay información disponible."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "El valor por defecto estándar es 89dB. Cambiar con precaución."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "El valor por defecto estándar es 89dB. Cambiar con precaución."
 
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."

@@ -11325,9 +11325,21 @@ msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
 msgstr "Команда для выполнения. По-умолчанию '/usr/bin/setwakeup.sh'."
 
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Выполнять команду включения каждый день в заданное время"
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Когда выполнять ежедневную команду включения"
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Введите новый пин-код для разблокировки заблокированных родительским контролем каналов"
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11373,6 +11385,10 @@ msgctxt "#36286"
 msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
 msgstr "Теги: [B]%N[/B]: НомерТрека, [B]%S[/B]: НомерДиска, [B]%A[/B]: Исполнитель, [B]%T[/B]: Название, [B]%B[/B]: Альбом, [B]%G[/B]: Жанр, [B]%Y[/B]: Год, [B]%F[/B]: ИмяФайла, [B]%D[/B]: Длительность, [B]%J[/B]: Дата, [B]%R[/B]: Рейтинг, [B]%I[/B]: РазмерФайла."
 
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Автоизвлечение диска после копирования"
+
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11380,6 +11396,22 @@ msgstr "Информация пока недоступна."
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Выберите шрифт для караоке"
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Выберите размер шрифта для караоке"
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Выберите цвет шрифта для караоке"
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Выберите кодировку символов для караоке"
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11416,6 +11448,10 @@ msgstr "Информация пока недоступна."
 msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Просматривать изображения слайд-шоу в случайном порядке"
 
 msgctxt "#36315"
 msgid "No info available yet."
@@ -11520,6 +11556,14 @@ msgstr "Информация пока недоступна."
 msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Тип подключения к аудио-оборудованию"
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Выберите физическое расположение динамиков"
 
 msgctxt "#36374"
 msgid "No info available yet."

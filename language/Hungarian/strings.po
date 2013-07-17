@@ -869,6 +869,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Csatornák száma"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS kompatibilis vevőkészülék"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1041,6 +1045,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Könyvjelzők"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC kompatibilis vevőkészülék"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 kompatibilis vevőkészülék"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 kompatibilis vevőkészülék"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 kompatibilis vevőkészülék"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Késleltetés"
@@ -1205,6 +1225,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Csatornalekeverésnél hangerő emelése"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Nagy felbontású DTS kompatibilis vevőkészülék"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Többcsatornás LPCM kompatibilis vevőkészülék"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD kompatibilis vevőkészülék"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programok"
@@ -1260,6 +1292,10 @@ msgstr "Képernyőkímélő elhalványodási szintje"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Fájlnév szerint"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) kompatibilis vevőkészülék"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2345,6 +2381,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Tömörítés erőssége"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Bőbeszédű naplózás..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Médiatár tisztítása"
@@ -2360,6 +2400,10 @@ msgstr "Ez az elérési út már át lett vizsgálva korábban"
 msgctxt "#705"
 msgid "Network"
 msgstr "Hálózat"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Kiszolgáló"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2388,6 +2432,18 @@ msgstr "Kézi (Állandó)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP cím"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Hálózati maszk"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Alapértelmezett átjáró"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Névkiszolgáló"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2432,6 +2488,14 @@ msgstr "Nincs jelszó"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Karakterkészlet"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stílus"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Szín"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2565,6 +2629,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Vezetéknélküli hálózat neve (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "WiFi jelszó"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "WiFi titkosítás"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Hálózati eszköz beállításainak mentése"
@@ -2665,6 +2737,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Érvényes porttartomány: 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Képek hozzáadása..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Zene hozzáadása..."
@@ -2672,6 +2748,10 @@ msgstr "Zene hozzáadása..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Videó hozzáadása..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Előnézet"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2873,6 +2953,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Webcím megadása"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Helyettes kiszolgáló típusa"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 távoli névfeloldással"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB ügyfél"
@@ -3009,9 +3113,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Eszköz neve"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Használjon jelszavas védelmet"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3369,9 +3481,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Beállítások - Profilok"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Visszaállítás"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Alapszint"
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Normál szint"
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Haladó szint"
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Profi szint"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Kiegészítő böngésző"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Beállítások nullázása"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Biztosan nullázni akarja a kategória beállításait?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Súgó"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Nem áll rendelkezésre súgó"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3381,9 +3529,25 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Folyamatjelző párbeszédpanel"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Fájlkezelő"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Hálózat beállítása"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profil beállításai"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Beállítások zárolása"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Tartalom beállítások"
 
 msgctxt "#10134"
 msgid "Favourites"

@@ -289,6 +289,10 @@ msgctxt "#91"
 msgid "East"
 msgstr "Východ"
 
+msgctxt "#92"
+msgid "Variable"
+msgstr "Proměnná"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Pohled: automatický"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Počet kanálů"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS kompatibilní přijímač"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1041,6 +1049,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Záložky"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "AAC kompatibilní přijímač"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 kompatibilní přijímač"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 kompatibilní přijímač"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 kompatibilní přijímač"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Zpoždění"
@@ -1205,6 +1229,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Zvyšovat hlasitost při downmixu"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD kompatibilní přijímač"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Vícekanálový LPCM kompatibilní přijímač"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr " TrueHD kompatibilní přijímač"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programy"
@@ -1260,6 +1296,10 @@ msgstr "Úroveň ztmavení spořiče obrazovky"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Řazení: soubor"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) kompatibilní přijímač"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -3180,6 +3220,10 @@ msgstr "s"
 msgctxt "#1412"
 msgid "windy"
 msgstr "větrno"
+
+msgctxt "#1413"
+msgid "Patches"
+msgstr "Opravy"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -8321,6 +8365,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Změnit ikonu herce"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Odstranit záložku"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Odstranit záložku epizody"
@@ -8588,6 +8636,10 @@ msgstr "Přidat sdílení..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Sdílet knihovny filmů a hudby přes UPnP"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Záložka vytvořena"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9128,6 +9180,14 @@ msgstr "Výška GPS"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientace"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Typ obrázku"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Čas vytvoření"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -10149,6 +10209,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Povolit tlačítko vlastního skriptu"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Automatické přihlášení"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Spuštění selhalo"
@@ -10517,6 +10581,530 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* složka položky"
 
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Změna velikosti zobrazení uživatelského rozhraní."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Upravte kanály RSS."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Zvolit jazyk uživatelského rozhraní."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Vyberte svoje aktuální časové pásmo."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Synchronizovat video s obnovovací frekvencí monitoru."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Nastavit zobrazení teletextu na poměr 4:3."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Žádné informace nejsou zatím k dispozici."

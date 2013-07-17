@@ -323,7 +323,7 @@ msgstr "Sorter etter: Dato"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Sorter etter: Størr."
+msgstr "Sorter etter: Størrelse"
 
 msgctxt "#106"
 msgid "No"
@@ -335,7 +335,7 @@ msgstr "Ja"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Bildefremvisning"
+msgstr "Lysbildefremvisning"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -355,7 +355,7 @@ msgstr "Pause"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Oppdatering feilet"
+msgstr "Oppdatering mislyktes"
 
 msgctxt "#114"
 msgid "Installation failed"
@@ -439,7 +439,7 @@ msgstr "Artister"
 
 msgctxt "#134"
 msgid "Songs"
-msgstr "Sanger"
+msgstr "Låter"
 
 msgctxt "#135"
 msgid "Genres"
@@ -583,7 +583,7 @@ msgstr "Oppløsning"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Sett oppdateringsfrekvens til å samsvare med video"
+msgstr "Juster oppdateringsfrekvenen til å samsvare med video"
 
 msgctxt "#172"
 msgid "Release date"
@@ -603,7 +603,7 @@ msgstr "Stiler"
 
 msgctxt "#179"
 msgid "Song"
-msgstr "Sang"
+msgstr "Låt"
 
 msgctxt "#180"
 msgid "Duration"
@@ -655,7 +655,7 @@ msgstr "Bland"
 
 msgctxt "#192"
 msgid "Clear"
-msgstr "Fjern"
+msgstr "Tøm"
 
 msgctxt "#193"
 msgid "Scan"
@@ -679,7 +679,7 @@ msgstr "Spør etter %s informasjon"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "Laster filmdetaljer"
+msgstr "Henter filmdetaljer"
 
 msgctxt "#199"
 msgid "Web interface"
@@ -719,7 +719,7 @@ msgstr "Forrige"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Kalibrer grensesnitt..."
+msgstr "Kalibrer brukergrensesnitt..."
 
 msgctxt "#214"
 msgid "Video calibration..."
@@ -771,11 +771,11 @@ msgstr "Testbilder..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Hent CD-informasjon fra freedb.org"
+msgstr "Slå opp spornavn på freedb.org for lyd-CD."
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
-msgstr "Bland spillelisten ved lasting"
+msgstr "Bland spillelisten ved henting"
 
 msgctxt "#229"
 msgid "HDD spindown time"
@@ -875,7 +875,7 @@ msgstr "Antall kanaler"
 
 msgctxt "#254"
 msgid "DTS capable receiver"
-msgstr "DTS kapabel reciever"
+msgstr "Receiver kan ta imot DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -891,7 +891,7 @@ msgstr "Feil"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Aktiver tagginformasjon"
+msgstr "Aktiver knagginformasjon"
 
 msgctxt "#259"
 msgid "Opening"
@@ -947,11 +947,11 @@ msgstr "Topp 100"
 
 msgctxt "#272"
 msgid "Top-Left overscan compensation"
-msgstr "Venstre hjørne oppe"
+msgstr "Overskanningskompensasjon på hjørnet øverst til venstre"
 
 msgctxt "#273"
 msgid "Bottom-Right overscan compensation"
-msgstr "Høyre hjørne nede"
+msgstr "Overskanningskompensasjon på hjørnet nederst til høyre"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
@@ -963,7 +963,7 @@ msgstr "Justering av pikselforhold"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "Juster pilen for å endre overskanning"
+msgstr "Juster pilen for å endre mengden overskanning"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
@@ -975,7 +975,7 @@ msgstr "Juster firkanten til den blir helt kvadratisk"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "Kunne ikke laste innstillinger"
+msgstr "Kunne ikke hente innstillinger"
 
 msgctxt "#280"
 msgid "Using default settings"
@@ -987,7 +987,7 @@ msgstr "Vennligst sjekk XML-filene"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "Fant %i treff"
+msgstr "Fant %i oppføringer"
 
 msgctxt "#283"
 msgid "Search results"
@@ -1039,7 +1039,7 @@ msgstr "Lag bokmerke"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Slett bokmerker"
+msgstr "Tøm bokmerker"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1051,19 +1051,19 @@ msgstr "Bokmerker"
 
 msgctxt "#299"
 msgid "AAC capable receiver"
-msgstr "AAC kapabel receiver"
+msgstr "Receiver kan ta imot AAC"
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
-msgstr "MP1 kapabel receiver"
+msgstr "Receiver kan ta imot MP1"
 
 msgctxt "#301"
 msgid "MP2 capable receiver"
-msgstr "MP2 kapabel receiver"
+msgstr "Receiver kan ta imot MP2"
 
 msgctxt "#302"
 msgid "MP3 capable receiver"
-msgstr "MP3 kapabel receiver"
+msgstr "Receiver kan ta imot MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1107,7 +1107,7 @@ msgstr "Databasefeil"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "Søker i sanger..."
+msgstr "Søker i låter..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1115,11 +1115,11 @@ msgstr "Opprensking av database fullført"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "Renser opp i sanger"
+msgstr "Renser opp i låter"
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Feil ved rensing av sanger"
+msgstr "Feil ved rensing av låter"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
@@ -1175,7 +1175,7 @@ msgstr "Feil under komprimering av database"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Vil du rense biblioteket?"
+msgstr "Ønsker du å rense biblioteket?"
 
 msgctxt "#334"
 msgid "Clean library..."
@@ -1231,15 +1231,15 @@ msgstr "Øk volumet ved nedmiks"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "DTS-HD kapabel receiver"
+msgstr "Receiver kan ta imot DTS-HD"
 
 msgctxt "#348"
 msgid "Multichannel LPCM capable receiver"
-msgstr "Multikanal LPCM kapabel receiver"
+msgstr "Receiver kan ta imot flerkanals-LPCM"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
-msgstr "TrueHD kapabel receiver"
+msgstr "Receiver kan ta imot TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1263,11 +1263,11 @@ msgstr "Matrise"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Aktiver skjermbeskytter etter"
+msgstr "Aktiver skjermsparer etter"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Skjermbeskyttermodus"
+msgstr "Skjermsparermodus"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1279,19 +1279,19 @@ msgstr "Alle album"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Album nylig lagt til"
+msgstr "Album lagt til nylig"
 
 msgctxt "#360"
 msgid "Screensaver"
-msgstr "Skjermbeskytter"
+msgstr "Skjermsparer"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "Bildefremvisning"
+msgstr "Lysbildefremvisning"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
-msgstr "Uttoningsnivå på skjermbeskytter (%)"
+msgstr "Dempingsnivå på skjermsparer"
 
 msgctxt "#363"
 msgid "Sort by: File"
@@ -1299,7 +1299,7 @@ msgstr "Sorter etter: Fil"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
-msgstr "Dolby Digital (AC3) kapabel receiver"
+msgstr "Receiver kan ta imot Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1331,7 +1331,7 @@ msgstr "delvis"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "stort sett"
+msgstr "Stort sett"
 
 msgctxt "#373"
 msgid "Sunny"
@@ -1387,7 +1387,7 @@ msgstr "lettskyet"
 
 msgctxt "#386"
 msgid "Clear"
-msgstr "klart"
+msgstr "Tøm"
 
 msgctxt "#387"
 msgid "Clouds"
@@ -1547,7 +1547,7 @@ msgstr "Sett inn riktig CD/DVD"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "Vennligst sett i følgende CD/DVD"
+msgstr "Vennligst sett i følgende CD/DVD:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -1559,11 +1559,11 @@ msgstr "Ingen mellomlagring"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "Slett film fra bibliotek"
+msgstr "Fjern film fra bibliotek"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "Er du sikker på at du vil slette '%s'?"
+msgstr "Er du sikker på at du vil fjerne «%s»?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -1723,7 +1723,7 @@ msgstr "Musikk og film"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
-msgstr "Kan ikke laste spilleliste"
+msgstr "Kan ikke hente spilleliste"
 
 msgctxt "#478"
 msgid "OSD"
@@ -1763,7 +1763,7 @@ msgstr "Gjenta mapper"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Spill av neste sang automatisk"
+msgstr "Spill av neste låt automatisk"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -1775,7 +1775,7 @@ msgstr "Endre størrelse på VobSub"
 
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
-msgstr "Avanserte innstillinger (kun eksperter)"
+msgstr "Utvidede innstillinger (kun eksperter!)"
 
 msgctxt "#494"
 msgid "Overall audio headroom"
@@ -1823,7 +1823,7 @@ msgstr "Tom"
 
 msgctxt "#505"
 msgid "Loading media info from files..."
-msgstr "Laster informasjon fra filer..."
+msgstr "Henter informasjon fra filer..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -1855,7 +1855,7 @@ msgstr "Sjanger"
 
 msgctxt "#517"
 msgid "Recently played albums"
-msgstr "Nylig spilte album"
+msgstr "Nylig avspilte album"
 
 msgctxt "#518"
 msgid "Launch"
@@ -1891,7 +1891,7 @@ msgstr "Legg til i spilleliste"
 
 msgctxt "#527"
 msgid "Manually add to library"
-msgstr "Legg til i biblioteket manuelt"
+msgstr "Legg til manuelt i biblioteket"
 
 msgctxt "#528"
 msgid "Enter title"
@@ -1959,7 +1959,7 @@ msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "Mediainfo"
+msgstr "Mediainformasjon"
 
 msgctxt "#545"
 msgid "Audio output device"
@@ -2083,7 +2083,7 @@ msgstr "Pågår"
 
 msgctxt "#576"
 msgid "Times played"
-msgstr "Ganger spilt"
+msgstr "Ganger avspilt"
 
 msgctxt "#577"
 msgid "Date Taken"
@@ -2163,7 +2163,7 @@ msgstr "Gjenta: Alle"
 
 msgctxt "#600"
 msgid "Rip audio CD"
-msgstr "Ripp musikk-CD"
+msgstr "Ripp lyd-CD"
 
 msgctxt "#601"
 msgid "Medium"
@@ -2215,7 +2215,7 @@ msgstr "Samplingsrate"
 
 msgctxt "#620"
 msgid "Audio CDs"
-msgstr "CD-ripping"
+msgstr "Lyd-CD-er"
 
 msgctxt "#621"
 msgid "Encoder"
@@ -2235,7 +2235,7 @@ msgstr "Inkluder spornummer"
 
 msgctxt "#625"
 msgid "All songs of"
-msgstr "Alle sanger fra"
+msgstr "Alle låter fra"
 
 msgctxt "#626"
 msgid "In progress TV shows"
@@ -2279,7 +2279,7 @@ msgstr "Replay Gain"
 
 msgctxt "#638"
 msgid "Replaygain volume adjustments"
-msgstr "Replay Gain-modus"
+msgstr "Replay Gain volumjustering"
 
 msgctxt "#639"
 msgid "Use track levels"
@@ -2291,11 +2291,11 @@ msgstr "Bruk albumnivåer"
 
 msgctxt "#641"
 msgid "PreAmp Level - Replay gained files"
-msgstr "PreAmp nivå - filer med Replay Gain"
+msgstr "PreAmp-nivå - filer med Replay Gain"
 
 msgctxt "#642"
 msgid "PreAmp Level - Non replay gained files"
-msgstr "PreAmp nivå - filer uten Replay Gain"
+msgstr "PreAmp-nivå - filer uten Replay Gain"
 
 msgctxt "#643"
 msgid "Avoid clipping on replay gained files"
@@ -2359,7 +2359,7 @@ msgstr "Bla etter mappe"
 
 msgctxt "#658"
 msgid "Song information"
-msgstr "Sanginformasjon"
+msgstr "Låtinformasjon"
 
 msgctxt "#659"
 msgid "Non-linear stretch"
@@ -2383,7 +2383,7 @@ msgstr "Vil du fjerne den fra biblioteket?"
 
 msgctxt "#664"
 msgid "Browse for Script"
-msgstr "Let etter script"
+msgstr "Bla etter skript"
 
 msgctxt "#665"
 msgid "Compression level"
@@ -2399,7 +2399,7 @@ msgstr "Renser bibliotek"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Fjerner gamle sanger fra biblioteket"
+msgstr "Fjerner gamle låter fra biblioteket"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -2411,11 +2411,11 @@ msgstr "Nettverk"
 
 msgctxt "#706"
 msgid "Server"
-msgstr "Server"
+msgstr "Tjener"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
-msgstr "Bruk HTTP proxy for å få tilgang til Internett"
+msgstr "Bruk en HTTP proxytjener for å få tilgang til Internett"
 
 msgctxt "#711"
 msgid "Internet Protocol (IP)"
@@ -2455,7 +2455,7 @@ msgstr "Standard gateway"
 
 msgctxt "#722"
 msgid "DNS server"
-msgstr "DNS server"
+msgstr "DNS-tjener"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2463,7 +2463,7 @@ msgstr "Lagre og starte på nytt"
 
 msgctxt "#724"
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr "Ugyldig adresse spesifisert. Verdien må være på formen AAA.BBB.CCC.DDD"
+msgstr "Ugyldig adresse spesifisert. Verdien må ha formen AAA.BBB.CCC.DDD"
 
 msgctxt "#725"
 msgid "with numbers between 0 and 255."
@@ -2475,11 +2475,11 @@ msgstr "Forandringer er ikke lagret. Vil du fortsette uten å lagre?"
 
 msgctxt "#727"
 msgid "Web server"
-msgstr "Webserver"
+msgstr "Nettjener"
 
 msgctxt "#728"
 msgid "FTP server"
-msgstr "FTP-server"
+msgstr "FTP-tjener"
 
 msgctxt "#730"
 msgid "Port"
@@ -2547,7 +2547,7 @@ msgstr "Skru av biblioteksmodus"
 
 msgctxt "#747"
 msgid "Error loading image"
-msgstr "Feil ved lasting av bilde"
+msgstr "Feil ved henting av bilde"
 
 msgctxt "#748"
 msgid "Edit path"
@@ -2619,11 +2619,11 @@ msgstr "Grå"
 
 msgctxt "#770"
 msgid "Error %i: share not available"
-msgstr "Feil %i: delt mappe ikke tilgjengelig"
+msgstr "Feil %i: delt ressurs er ikke tilgjengelig"
 
 msgctxt "#772"
 msgid "Audio output"
-msgstr "Lydmaskinvare"
+msgstr "Utgående lyd"
 
 msgctxt "#773"
 msgid "Seeking"
@@ -2631,7 +2631,7 @@ msgstr "Søker"
 
 msgctxt "#774"
 msgid "Slideshow folder"
-msgstr "Mappe for bildefremvisning"
+msgstr "Mappe for lysbildefremvisning"
 
 msgctxt "#775"
 msgid "Network interface"
@@ -2651,7 +2651,7 @@ msgstr "Trådløs sikkerhet"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
-msgstr "Lagre og bruk nettverksinnstillingene"
+msgstr "Lagre og bruk nettverksgrensesnittinnstillingene"
 
 msgctxt "#780"
 msgid "No encryption"
@@ -2671,7 +2671,7 @@ msgstr "WPA2"
 
 msgctxt "#784"
 msgid "Applying network interface settings. Please wait."
-msgstr "Lagrer innstillingene for nettverksenheten. Vennligst vent."
+msgstr "Lagrer innstillingene for nettverksgrensesnittet. Vennligst vent."
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
@@ -2683,11 +2683,11 @@ msgstr "Nettverksenheten startet ikke korrekt."
 
 msgctxt "#787"
 msgid "Interface disabled"
-msgstr "Enheten deaktivert"
+msgstr "Grensesnitt deaktivert"
 
 msgctxt "#788"
 msgid "Network interface disabled successfully."
-msgstr "Nettverksenheten deaktivert uten feil."
+msgstr "Nettverksgrensesnittet deaktivert uten feil."
 
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
@@ -2735,7 +2735,7 @@ msgstr "Bibliotekoppdatering"
 
 msgctxt "#800"
 msgid "Music library needs to rescan tags from files."
-msgstr "Musikkbiblioteket trenger å hente filinformasjon på nytt"
+msgstr "Musikkbiblioteket trenger å hente knagginformasjon på nytt"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2755,7 +2755,7 @@ msgstr "Gyldig område er 1024-65535"
 
 msgctxt "#997"
 msgid "Add Pictures..."
-msgstr "Legg til Bilder..."
+msgstr "Legg til bilder..."
 
 msgctxt "#998"
 msgid "Add Music..."
@@ -2799,11 +2799,11 @@ msgstr "Protokoll"
 
 msgctxt "#1009"
 msgid "Server address"
-msgstr "Serveradresse"
+msgstr "Tjeneradresse"
 
 msgctxt "#1010"
 msgid "Server name"
-msgstr "Servernavn"
+msgstr "Tjenernavn"
 
 msgctxt "#1011"
 msgid "Remote path"
@@ -2823,15 +2823,15 @@ msgstr "Brukernavn"
 
 msgctxt "#1015"
 msgid "Browse for network server"
-msgstr "Bla etter nettverksserver"
+msgstr "Bla etter nettverkstjener"
 
 msgctxt "#1016"
 msgid "Enter the network address of the server"
-msgstr "Skriv inn adressen til serveren"
+msgstr "Skriv inn nettverksadressen til tjeneren"
 
 msgctxt "#1017"
 msgid "Enter the path on the server"
-msgstr "Skriv inn stien til serveren"
+msgstr "Skriv inn stien til tjener"
 
 msgctxt "#1018"
 msgid "Enter the port number"
@@ -2847,7 +2847,7 @@ msgstr "Legg til %s kilde"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "Skriv inn sti eller bla etter plassering."
+msgstr "Skriv inn stier eller bla etter mediaplasseringer."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
@@ -2855,7 +2855,7 @@ msgstr "Skriv inn et navn for denne kilden."
 
 msgctxt "#1023"
 msgid "Browse for new share"
-msgstr "Bla etter ny delt mappe"
+msgstr "Bla etter ny, delt ressurs"
 
 msgctxt "#1024"
 msgid "Browse"
@@ -2879,7 +2879,7 @@ msgstr "Rediger %s-kilde"
 
 msgctxt "#1029"
 msgid "Enter the new label"
-msgstr "Skriv inn et nytt navn"
+msgstr "Skriv inn ett nytt plateselskap"
 
 msgctxt "#1030"
 msgid "Browse for image"
@@ -2923,15 +2923,15 @@ msgstr "Bildetillegg"
 
 msgctxt "#1040"
 msgid "Loading directory"
-msgstr "Laster katalog"
+msgstr "Henter katalog"
 
 msgctxt "#1041"
 msgid "Retrieved %i items"
-msgstr "Gjenopprettet %i deler"
+msgstr "Gjenopprettet %i oppføringer"
 
 msgctxt "#1042"
 msgid "Retrieved %i of %i items"
-msgstr "Gjenopprettet %i av %i deler"
+msgstr "Gjenopprettet %i av %i oppføringer"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
@@ -2959,7 +2959,7 @@ msgstr "Brukernavn"
 
 msgctxt "#1049"
 msgid "Script settings"
-msgstr "Skript-innstillinger"
+msgstr "Skriptinnstillinger"
 
 msgctxt "#1050"
 msgid "Singles"
@@ -2967,7 +2967,7 @@ msgstr "Singler"
 
 msgctxt "#1051"
 msgid "Enter web address"
-msgstr "Skriv inn webadresse"
+msgstr "Skriv inn nettadresse"
 
 msgctxt "#1180"
 msgid "Proxy type"
@@ -2991,7 +2991,7 @@ msgstr "SOCKS5"
 
 msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
-msgstr "SOCKS5 med ekstern dns løsing"
+msgstr "SOCKS5 med ekstern DNS-løsing"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3011,11 +3011,11 @@ msgstr "Standard passord"
 
 msgctxt "#1207"
 msgid "WINS server"
-msgstr "WINS-server"
+msgstr "WINS-tjener"
 
 msgctxt "#1208"
 msgid "Mount SMB shares"
-msgstr "Monter delte SMB-mapper"
+msgstr "Monter delte SMB-ressurser"
 
 msgctxt "#1210"
 msgid "Remove"
@@ -3071,7 +3071,7 @@ msgstr "Musikk & video & bilder & filer"
 
 msgctxt "#1223"
 msgid "Disabled"
-msgstr "Skrudd av"
+msgstr "Deaktivert"
 
 msgctxt "#1226"
 msgid "Files & music & video"
@@ -3371,7 +3371,7 @@ msgstr "Delvis"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Slukk skjerm når ikke i bruk"
+msgstr "Slukk skjerm når inaktiv"
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -3391,7 +3391,7 @@ msgstr "Skript mislyktes! : %s"
 
 msgctxt "#2101"
 msgid "Newer version needed - See log"
-msgstr "Nyere versjon trengs - se logg"
+msgstr "Nyere versjon trengs - se loggen"
 
 msgctxt "#10000"
 msgid "Home"
@@ -3451,7 +3451,7 @@ msgstr "Innstillinger - Programmer"
 
 msgctxt "#10014"
 msgid "Settings - Weather"
-msgstr "Innstillinger - Været"
+msgstr "Innstillinger - Vær"
 
 msgctxt "#10015"
 msgid "Settings - Music"
@@ -3499,7 +3499,7 @@ msgstr "Innstillinger - Profiler"
 
 msgctxt "#10035"
 msgid "Reset"
-msgstr "Reset"
+msgstr "Nullstill"
 
 msgctxt "#10036"
 msgid "Level: Basic"
@@ -3511,7 +3511,7 @@ msgstr "Nivå: Standard"
 
 msgctxt "#10038"
 msgid "Level: Advanced"
-msgstr "Nivå: Avansert"
+msgstr "Nivå: Utvided"
 
 msgctxt "#10039"
 msgid "Level: Expert"
@@ -3523,11 +3523,11 @@ msgstr "Tilleggsutforsker"
 
 msgctxt "#10041"
 msgid "Reset settings"
-msgstr "Reset innstillinger"
+msgstr "Nullstill innstillinger"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
-msgstr "Er du sikker på at du vil resete instillingene for denne kategorien?"
+msgstr "Er du sikker på at du ønsker å nullstille innstillingene for denne kategorien?"
 
 msgctxt "#10043"
 msgid "Help"
@@ -3543,7 +3543,7 @@ msgstr "Ja/Nei dialog"
 
 msgctxt "#10101"
 msgid "Progress dialog"
-msgstr "Forløpsdialgboks"
+msgstr "Forløpsdialog"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3551,7 +3551,7 @@ msgstr "Filutforsker"
 
 msgctxt "#10128"
 msgid "Network setup"
-msgstr "Nettverk oppsett"
+msgstr "Nettverksoppsett"
 
 msgctxt "#10129"
 msgid "Media source"
@@ -3559,11 +3559,11 @@ msgstr "Mediakilde"
 
 msgctxt "#10130"
 msgid "Profile settings"
-msgstr "Profil innstillinger"
+msgstr "Profilinnstillinger"
 
 msgctxt "#10131"
 msgid "Lock settings"
-msgstr "Lås innstillger"
+msgstr "Låsinnstillinger"
 
 msgctxt "#10132"
 msgid "Content settings"
@@ -3575,7 +3575,7 @@ msgstr "Favoritter"
 
 msgctxt "#10135"
 msgid "Songs/Info"
-msgstr "Sang/info"
+msgstr "Låt/Info"
 
 msgctxt "#10136"
 msgid "Smart playlist editor"
@@ -3583,11 +3583,11 @@ msgstr "Redigerer for smart spilleliste"
 
 msgctxt "#10137"
 msgid "Smart playlist rule editor"
-msgstr "Redigerer for smart spillelisteoppsett"
+msgstr "Behandler for smart spillelisteoppsett"
 
 msgctxt "#10139"
 msgid "Pictures/Info"
-msgstr "Bilder/info"
+msgstr "Bilder/Info"
 
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -3595,7 +3595,7 @@ msgstr "Innstillinger for tillegg"
 
 msgctxt "#10146"
 msgid "Add-ons/Info"
-msgstr "Tillegg/info"
+msgstr "Tillegg/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3635,11 +3635,11 @@ msgstr "Spillelisteredigering"
 
 msgctxt "#10504"
 msgid "Top 100 songs"
-msgstr "Topp 100 sanger"
+msgstr "Topp 100 låter"
 
 msgctxt "#10505"
 msgid "Top 100 albums"
-msgstr "Topp 100 album"
+msgstr "Topp 100 albumer"
 
 msgctxt "#10506"
 msgid "Programs"
@@ -3671,11 +3671,11 @@ msgstr "Musikk - bibliotek"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
-msgstr "Spilles nå - Musikk"
+msgstr "Avspilles nå - Musikk"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "Spilles nå - Videoer"
+msgstr "Avspilles nå - Videoer"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -3683,7 +3683,7 @@ msgstr "Albuminformasjon"
 
 msgctxt "#10524"
 msgid "Movie info"
-msgstr "Informasjon om film"
+msgstr "Filminformasjon"
 
 msgctxt "#12000"
 msgid "Select dialog"
@@ -3799,11 +3799,11 @@ msgstr "Skriv inn passord"
 
 msgctxt "#12327"
 msgid "Enter master code"
-msgstr "Skriv inn masterkode"
+msgstr "Skriv inn systemkode"
 
 msgctxt "#12328"
 msgid "Enter unlock code"
-msgstr "Skriv inn kode"
+msgstr "Skriv inn kode for å låse opp"
 
 msgctxt "#12329"
 msgid "or press C to cancel"
@@ -3811,7 +3811,7 @@ msgstr "eller trykk C for å avbryte"
 
 msgctxt "#12330"
 msgid "Enter gamepad button combo and"
-msgstr "Skriv inn knappekombinasjon og trykk start"
+msgstr "Skriv inn kontrollknappekombinasjon og"
 
 msgctxt "#12331"
 msgid "press OK, or Back to cancel"
@@ -3819,7 +3819,7 @@ msgstr "trykk Ok, eller Tilbake for å avbryte"
 
 msgctxt "#12332"
 msgid "Set lock"
-msgstr "Lås"
+msgstr "Oppgi lås"
 
 msgctxt "#12333"
 msgid "Unlock"
@@ -3919,31 +3919,31 @@ msgstr "Blankt passord. Prøv igjen."
 
 msgctxt "#12360"
 msgid "Master lock"
-msgstr "Masterlås"
+msgstr "Systemlås"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Skru av maskin hvis masterlåsen forsøkes for mange ganger"
+msgstr "Skru av maskinen hvis antall forsøk på å åpne systemlåsen overskrides"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
-msgstr "Masterkoden er ikke gyldig!"
+msgstr "Systemkoden er ikke gyldig!"
 
 msgctxt "#12368"
 msgid "Please enter a valid master code"
-msgstr "Vennligst skriv inn en gyldig masterkode!"
+msgstr "Vennligst skriv inn en gyldig systemkode!"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Innstillinger & filbehandler"
+msgstr "Innstillings- og filbehandler"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr "Sett som standard for alle videoer"
+msgstr "Fastsett som standard for alle videoer"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
-msgstr "Dette vil slette alle tidligere innstillinger"
+msgstr "Dette vil nullstille alle tidligere innstillinger"
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
@@ -3999,7 +3999,7 @@ msgstr "Vær"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr "Skjermbeskytter"
+msgstr "Skjermsparer"
 
 msgctxt "#12901"
 msgid "Fullscreen OSD"
@@ -4079,7 +4079,7 @@ msgstr "Er en annen sesjon aktiv, kanskje over ssh?"
 
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
-msgstr "Montert utskiftbar harddisk"
+msgstr "Monterte flyttbar harddisk"
 
 msgctxt "#13022"
 msgid "Unsafe device removal"
@@ -4099,11 +4099,11 @@ msgstr "Joystick ble plugget ut"
 
 msgctxt "#13026"
 msgid "Try to wake remote servers on access"
-msgstr "Forsøk å vekke eksternserver ved tilgang"
+msgstr "Forsøk å vekke nettverkstjenere ved tilgang"
 
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
-msgstr "Wake on Lan (%s)"
+msgstr "Vekking over nettverk (WoL) (%s)"
 
 msgctxt "#13028"
 msgid "Waiting for network to connect..."
@@ -4111,19 +4111,19 @@ msgstr "Venter på at nettverket skal koble til..."
 
 msgctxt "#13029"
 msgid "Failed to execute Wake on Lan!"
-msgstr "Feil ved utføring av Wake on Lan!"
+msgstr "Vekking over nettverk mislyktes!"
 
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
-msgstr "Venter på at serveren skal våkne..."
+msgstr "Venter på at tjeneren skal våkne..."
 
 msgctxt "#13031"
 msgid "Extended wait for server to wake up..."
-msgstr "Forlenger ventetid for at server skal våkne..."
+msgstr "Forlenger ventetid for at tjener skal våkne..."
 
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
-msgstr "Venter på at serveren skal starte..."
+msgstr "Venter på at tjenester skal starte..."
 
 msgctxt "#13033"
 msgid "MAC Discovery"
@@ -4139,7 +4139,7 @@ msgstr "Fant for %s"
 
 msgctxt "#13036"
 msgid "Failed for %s"
-msgstr "Feilet for %s"
+msgstr "Mislyktes for %s"
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -4227,7 +4227,7 @@ msgstr "VDPAU studionivå fargekonvertering"
 
 msgctxt "#13130"
 msgid "Blank other displays"
-msgstr "Blank andre skjermer"
+msgstr "Slukk andre skjermer"
 
 msgctxt "#13131"
 msgid "Disabled"
@@ -4235,7 +4235,7 @@ msgstr "Deaktivert"
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr "Blank skjermer"
+msgstr "Slukk skjermer"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -4247,11 +4247,11 @@ msgstr "Om du fortsetter kan det hende du ikke greier kontrollere XBMC"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "lengre. Er du sikker på du vil stoppe hendelseserveren?"
+msgstr "lengre. Er du sikker på du ønsker å stoppe hendelsestjeneren?"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
-msgstr "Endre Apple fjernkontrollmodus?"
+msgstr "Endre Apple fjernkontrollsmodus?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
@@ -4259,11 +4259,11 @@ msgstr "Hvis du bruker Apple fjernkontroll til å styre"
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
-msgstr "XBMC nå, kan denne innstillingen påvirke muligheten"
+msgstr "XBMC, å forandre denne innstillingen kan påvirke muligheten din til å"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
-msgstr "for fortsette styring. Ønsker du å gå videre?"
+msgstr "for å fortsette styring. Ønsker du å gå videre?"
 
 msgctxt "#13159"
 msgid "Subnet mask"
@@ -4307,11 +4307,11 @@ msgstr "Profiler"
 
 msgctxt "#13201"
 msgid "Delete profile '%s'?"
-msgstr "Slett profil '%s'?"
+msgstr "Slett profil «%s»?"
 
 msgctxt "#13204"
 msgid "Last loaded profile:"
-msgstr "Sist lastede profil:"
+msgstr "Sist brukte profil:"
 
 msgctxt "#13205"
 msgid "Unknown"
@@ -4363,7 +4363,7 @@ msgstr "Flytt oppføring"
 
 msgctxt "#13252"
 msgid "Move item here"
-msgstr "Flytt hit"
+msgstr "Flytt oppføring hit"
 
 msgctxt "#13253"
 msgid "Cancel move"
@@ -4475,11 +4475,11 @@ msgstr "Vis RSS-nyhetsstrømmer"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "Vis oppføring i overordnet mappe"
+msgstr "Vis oppføringer i foreldremappen"
 
 msgctxt "#13307"
 msgid "Track naming template"
-msgstr "Spornavnformat"
+msgstr "Spornavnsjablong"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
@@ -4507,23 +4507,23 @@ msgstr "Omstart"
 
 msgctxt "#13314"
 msgid "Crossfade between songs"
-msgstr "Overtoning"
+msgstr "Ton ut mellom låter"
 
 msgctxt "#13315"
 msgid "Regenerate thumbnails"
-msgstr "Regenerer miniatyrbilder"
+msgstr "Gjenskap miniatyrbilder"
 
 msgctxt "#13316"
 msgid "Recursive thumbnails"
-msgstr "Rekursive miniatyrbilder"
+msgstr "Tilbakevirkende miniatyrbilder"
 
 msgctxt "#13317"
 msgid "View slideshow"
-msgstr "Vis bildefremvisning"
+msgstr "Vis lysbildefremvisning"
 
 msgctxt "#13318"
 msgid "Recursive slideshow"
-msgstr "Rekursiv bildefremvisning"
+msgstr "Rekursiv lysbildefremvisning"
 
 msgctxt "#13319"
 msgid "Randomize"
@@ -4571,7 +4571,7 @@ msgstr "Feil ved åpning av %s"
 
 msgctxt "#13330"
 msgid "Unable to load %s"
-msgstr "Kunne ikke laste %s"
+msgstr "Kunne ikke hente %s"
 
 msgctxt "#13331"
 msgid "Error: Out of memory"
@@ -4587,7 +4587,7 @@ msgstr "Flytt ned"
 
 msgctxt "#13334"
 msgid "Edit label"
-msgstr "Rediger knapp"
+msgstr "Rediger plateselskap"
 
 msgctxt "#13335"
 msgid "Make default"
@@ -4623,11 +4623,11 @@ msgstr "Skru av LED ved avspilling"
 
 msgctxt "#13346"
 msgid "Movie information"
-msgstr "Informasjon om film"
+msgstr "Filminformasjon"
 
 msgctxt "#13347"
 msgid "Queue item"
-msgstr "Legg i kø"
+msgstr "Legg oppføring i kø"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
@@ -4639,7 +4639,7 @@ msgstr "Søk etter nytt innhold"
 
 msgctxt "#13350"
 msgid "Now playing..."
-msgstr "Spilles nå..."
+msgstr "Avspilles nå..."
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4647,7 +4647,7 @@ msgstr "Albuminformasjon"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Skann til bibliotek"
+msgstr "Skann oppføring til bibliotek"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4671,15 +4671,15 @@ msgstr "Høykvalitets pikselshader"
 
 msgctxt "#13358"
 msgid "Play item"
-msgstr "Spill av"
+msgstr "Spill av oppføring"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
-msgstr "Sett artistbilde"
+msgstr "Oppgi artistminatyrbilde"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
-msgstr "Generer miniatyrbilder automatisk"
+msgstr "Skap miniatyrbilder automatisk"
 
 msgctxt "#13361"
 msgid "Enable voice"
@@ -4735,7 +4735,7 @@ msgstr "Bruk tidsbasert søking"
 
 msgctxt "#13387"
 msgid "Track naming template - right"
-msgstr "Format på høyre del av musikkliste"
+msgstr "Spornavnsjablong - høyre"
 
 msgctxt "#13388"
 msgid "Preset"
@@ -4743,11 +4743,11 @@ msgstr "%s forhåndsinnstillinger"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualiseringen"
+msgstr "Det er ingen forhåndsinnstillinger tilgjengelige⏎\nfor denne visualiseringen"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
-msgstr "Det er ingen innstillinger tilgjengelige&#10;for denne visualiseringen"
+msgstr "Det er ingen innstillinger tilgjengelige\nfor denne visualiseringen"
 
 msgctxt "#13391"
 msgid "Eject/Load"
@@ -4771,7 +4771,7 @@ msgstr "Videoinnstillinger"
 
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
-msgstr "Lyd- og tekstinnstillinger"
+msgstr "Lyd- og undertekstinnstillinger"
 
 msgctxt "#13397"
 msgid "Enable subtitles"
@@ -4783,11 +4783,11 @@ msgstr "Snarveier"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr "Ignorer \"the\" ved sortering"
+msgstr "Ignorer «the» ved sortering"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
-msgstr "Overtoning for spor av samme album"
+msgstr "Ton ut mellom låter på samme album"
 
 msgctxt "#13401"
 msgid "Browse for %s"
@@ -4799,7 +4799,7 @@ msgstr "Vis sporposisjon"
 
 msgctxt "#13403"
 msgid "Clear default"
-msgstr "Fjern standard"
+msgstr "Tøm standard"
 
 msgctxt "#13404"
 msgid "Resume"
@@ -4859,7 +4859,7 @@ msgstr "Basic shaders (ARB)"
 
 msgctxt "#13418"
 msgid "Advanced shaders (GLSL)"
-msgstr "Advanced shaders (GLSL)"
+msgstr "Utvidede skyggeleggere (GLSL)"
 
 msgctxt "#13419"
 msgid "Software"
@@ -4875,7 +4875,7 @@ msgstr "VDPAU"
 
 msgctxt "#13422"
 msgid "Start slideshow here"
-msgstr "Start bildefremvisning her"
+msgstr "Start lysbildefremvisning her"
 
 msgctxt "#13423"
 msgid "Remember for this path"
@@ -4923,7 +4923,7 @@ msgstr "Spill av neste video automatisk"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr "Spill bare denne"
+msgstr "Spill av bare denne"
 
 msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
@@ -4983,7 +4983,7 @@ msgstr "Gjeldende"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr "Ekstern"
+msgstr "Ekstern grafikk"
 
 msgctxt "#13514"
 msgid "Local art"
@@ -5015,11 +5015,11 @@ msgstr "%.1f sekunder"
 
 msgctxt "#13600"
 msgid "Apple remote"
-msgstr "Apple-fjernkontroll"
+msgstr "Apple fjernkontroll"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr "Tillat oppstart av XBMC fra fjernkontrollen"
+msgstr "Tillat oppstart av XBMC ved å bruke fjernkontrollen"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
@@ -5039,7 +5039,7 @@ msgstr "Universal fjernkontroll"
 
 msgctxt "#13613"
 msgid "Multi Remote (Harmony)"
-msgstr "Multifjernkontroll (Harmony)"
+msgstr "Flerbruksfjernkontroll (Harmony)"
 
 msgctxt "#13620"
 msgid "Apple Remote Error"
@@ -5047,7 +5047,7 @@ msgstr "Feil med Apple fjernkontroll"
 
 msgctxt "#13621"
 msgid "Apple Remote support could be enabled."
-msgstr "Apple fjernkontroll kunne aktiveres"
+msgstr "Apple fjernkontrollstøtte kan bli aktivert."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5063,15 +5063,15 @@ msgstr "Laster ned spilleliste..."
 
 msgctxt "#14004"
 msgid "Downloading streams list..."
-msgstr "Laster ned liste av strømmer..."
+msgstr "Laster ned liste over strømmer..."
 
 msgctxt "#14005"
 msgid "Parsing streams list..."
-msgstr "Analyserer liste av strømmer..."
+msgstr "Analyserer liste over strømmer..."
 
 msgctxt "#14006"
 msgid "Downloading streams list failed"
-msgstr "Kunne ikke laste ned liste av strømmer"
+msgstr "Kunne ikke laste ned liste over strømmer"
 
 msgctxt "#14007"
 msgid "Downloading playlist file failed"
@@ -5259,7 +5259,7 @@ msgstr "Filmstøyeffekt"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
-msgstr "Se etter miniatyrbilder i nettverksmapper"
+msgstr "Søk etter miniatyrbilder i nettverksstasjoner"
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
@@ -5279,11 +5279,11 @@ msgstr "Dato & tid"
 
 msgctxt "#14064"
 msgid "Set date"
-msgstr "Sett dato"
+msgstr "Oppgi dato"
 
 msgctxt "#14065"
 msgid "Set time"
-msgstr "Sett tid"
+msgstr "Oppgi tid"
 
 msgctxt "#14066"
 msgid "Enter the time in 24 hour HH:MM format"
@@ -5311,7 +5311,7 @@ msgstr "Tillat endring av filnavn og sletting"
 
 msgctxt "#14074"
 msgid "Set timezone"
-msgstr "Sett tidssone"
+msgstr "Oppgi tidssone"
 
 msgctxt "#14075"
 msgid "Use daylight saving time"
@@ -5351,7 +5351,7 @@ msgstr "Bruk ett fullskjermsvindu istedenfor sann fullskjerm"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
-msgstr "Legg sanger i kø når de velges"
+msgstr "Legg låter i kø når de velges"
 
 msgctxt "#14086"
 msgid "Playback"
@@ -5399,7 +5399,7 @@ msgstr "Ripp"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr "Hendelse når musikk-CD settes inn"
+msgstr "Hendelse når lyd-CD settes inn"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5407,7 +5407,7 @@ msgstr "Spill av"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr "Løs ut CD når rippingen er ferdig"
+msgstr "Løs ut CD når rippingen er fullført"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
@@ -5447,7 +5447,7 @@ msgstr "* Alle artister"
 
 msgctxt "#15104"
 msgid "* All songs"
-msgstr "* Alle sanger"
+msgstr "* Alle låter"
 
 msgctxt "#15105"
 msgid "* All genres"
@@ -5463,7 +5463,7 @@ msgstr "Navigasjonslyder"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Standard"
+msgstr "Standard for skall"
 
 msgctxt "#15111"
 msgid "Theme"
@@ -5499,7 +5499,7 @@ msgstr "Skjul filnavn i miniatyrvisning"
 
 msgctxt "#15216"
 msgid "Play in party mode"
-msgstr "Spill av i partymodus"
+msgstr "Spill av i festmodus"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5507,11 +5507,11 @@ msgstr "Sti ble ikke funnet eller er ugyldig"
 
 msgctxt "#15301"
 msgid "Could not connect to network server"
-msgstr "Kunne ikke koble til nettverksserver"
+msgstr "Kunne ikke koble til nettverkstjener"
 
 msgctxt "#15302"
 msgid "No servers found"
-msgstr "Ingen servere funnet"
+msgstr "Ingen tjenere funnet"
 
 msgctxt "#15303"
 msgid "Workgroup not found"
@@ -5535,7 +5535,7 @@ msgstr "Internettoppslag"
 
 msgctxt "#16003"
 msgid "Player"
-msgstr "Spiller"
+msgstr "Avspiller"
 
 msgctxt "#16004"
 msgid "Play media from disc"
@@ -5615,7 +5615,7 @@ msgstr "Avspilling mislyktes"
 
 msgctxt "#16027"
 msgid "One or more items failed to play."
-msgstr "En eller flere elementer kunne ikke spilles"
+msgstr "En eller flere oppføringer kunne ikke spilles av"
 
 msgctxt "#16028"
 msgid "Enter value"
@@ -5627,11 +5627,11 @@ msgstr "Sjekk loggfilen for detaljer"
 
 msgctxt "#16030"
 msgid "Party mode aborted."
-msgstr "Partymodus avbrutt."
+msgstr "Partymodus stoppet."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Ingen samsvarende sanger i bibliotek."
+msgstr "Ingen samsvarende låter i bibliotek."
 
 msgctxt "#16032"
 msgid "Could not initialize database."
@@ -5643,11 +5643,11 @@ msgstr "Kunne ikke åpne databasen."
 
 msgctxt "#16034"
 msgid "Could not get songs from database."
-msgstr "Kunne ikke hente sanger fra databasen."
+msgstr "Kunne ikke hente låter fra databasen."
 
 msgctxt "#16035"
 msgid "Party mode playlist"
-msgstr "Partymode spilleliste"
+msgstr "Festmodus spilleliste"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
@@ -5679,19 +5679,19 @@ msgstr "Alle filmer"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "Usette"
+msgstr "Ikke sett"
 
 msgctxt "#16102"
 msgid "Watched"
-msgstr "Sette"
+msgstr "Sett"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Merk som «sett»"
+msgstr "Marker som «sett»"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Merk som «ikke sett»"
+msgstr "Marker som «ikke sett»"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -5699,11 +5699,11 @@ msgstr "Rediger tittel"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
-msgstr "Handlingen ble avbrutt"
+msgstr "Handlingen ble stoppet"
 
 msgctxt "#16201"
 msgid "Copy failed"
-msgstr "Kopiering mislykket"
+msgstr "Kopiering mislyktes"
 
 msgctxt "#16202"
 msgid "Failed to copy at least one file"
@@ -5711,7 +5711,7 @@ msgstr "Kunne ikke kopiere en eller flere filer"
 
 msgctxt "#16203"
 msgid "Move failed"
-msgstr "Flytting mislykket"
+msgstr "Flytting mislyktes"
 
 msgctxt "#16204"
 msgid "Failed to move at least one file"
@@ -5719,7 +5719,7 @@ msgstr "Kunne ikke flytte en eller flere filer"
 
 msgctxt "#16205"
 msgid "Delete failed"
-msgstr "Sletting mislykket"
+msgstr "Sletting mislyktes"
 
 msgctxt "#16206"
 msgid "Failed to delete at least one file"
@@ -5859,7 +5859,7 @@ msgstr "Sepparer søkeordene med AND, OR og/eller NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr "eller bruk uttrykk for å finne eksakte treff, slik som \"Trollmannen fra Oz\"."
+msgstr "eller bruk uttrykk for å finne eksakte treff, slik som «Trollmannen fra Oz»."
 
 msgctxt "#19003"
 msgid "Find similar programs"
@@ -5899,7 +5899,7 @@ msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "PVR Backend"
+msgstr "PVR-kulisseklient"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -5915,7 +5915,7 @@ msgstr "Kryptering"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr "PVR Backend %i - %s"
+msgstr "PVR-kulisseklient %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -5923,7 +5923,7 @@ msgstr "TV-opptak"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr "Standard mappe for PVR miniatyrbiler"
+msgstr "Standard mappe for PVR-miniatyrbilder"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5991,7 +5991,7 @@ msgstr "Har allerede startet opptak på denne kanalen."
 
 msgctxt "#19035"
 msgid "%s could not be played. Check the log for details."
-msgstr "%s kunne ikke bli avspilt. Sjekk loggen for detaljer."
+msgstr "%s kunne ikke bli spilt av. Sjekk loggen for detaljer."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6003,11 +6003,11 @@ msgstr "Vis signalkvalitet"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr "Ikke støttet av PVR backend."
+msgstr "Ikke støttet av PVR-kulisseklienten."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr "Er du sikker på at du vil skjule denne kanalen?"
+msgstr "Er du sikker på at du ønsker å skjule denne kanalen?"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -6015,11 +6015,11 @@ msgstr "Tidsur"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr "Er du sikker på at du vil gi nytt navn til dette opptaket?"
+msgstr "Er du sikker på at du ønsker å gi nytt navn til dette opptaket?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr "Vil du virkelig gi nytt navn til dette tidsuret?"
+msgstr "Ønsker du virkelig gi nytt navn til dette tidsuret?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -6027,11 +6027,11 @@ msgstr "Opptak"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Vennlisgst sjekk innstillingene eller sjekk loggen for detaljer"
+msgstr "Vennlisgst sjekk dine konfigurasjoner eller sjekk loggen for detaljer"
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Ingen PVR-klienter har blitt startet enda. Vent til PVR-kienter har startet eller sjekk loggen for detaljer."
+msgstr "Ingen PVR-klienter har blitt startet enda. Vent til PVR-klientene har startet eller sjekk loggen for detaljer."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6039,7 +6039,7 @@ msgstr "Ny kanal"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr "Programinfo"
+msgstr "Programinformasjon"
 
 msgctxt "#19048"
 msgid "Group management"
@@ -6119,7 +6119,7 @@ msgstr "Denne hendelsen blir allerede tatt opp"
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr "Dette opptaket kunne ikke slettes. Sjekk logg for detaljer."
+msgstr "Dette opptaket kunne ikke slettes. Sjekk loggen for detaljer."
 
 msgctxt "#19069"
 msgid "EPG"
@@ -6259,11 +6259,11 @@ msgstr "Kunne ikke lagre tidsur. Sjekk loggen for detaljer"
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr "En uventet feil oppstod. Prøv igjen senere eller sjekk logg for detaljer."
+msgstr "En uventet feil oppstod. Prøv igjen senere eller sjekk loggen for detaljer."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "PVR backend feil. Sjekk logg for detaljer."
+msgstr "PVR-kulisseklientfeil. Sjekk loggen for detaljer."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6299,7 +6299,7 @@ msgstr "Unngå gjentagelser"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr "Dette tidsuret tar fortsatt opp. Er du helt sikker på at du vil slette dette tidsuret?"
+msgstr "Dette tidsuret tar fortsatt opp. Er du helt sikker på at du ønsker å slette dette tidsuret?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
@@ -6363,7 +6363,7 @@ msgstr "Ingen grupper definert"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr "Vennligst opprett gruppe først"
+msgstr "Vennligst opprett en gruppe først"
 
 msgctxt "#19139"
 msgid "Name of the new group"
@@ -6395,7 +6395,7 @@ msgstr "Grupper"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "PVR backend støtter ikke denne handling. Sjekk logg for detaljer."
+msgstr "PVR-kulisseklienten støtter ikke denne handlingen. Sjekk loggen for detaljer."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6459,7 +6459,7 @@ msgstr "Opptak"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr "Kan ikke starte opptak. Sjekk logg for detaljer."
+msgstr "Kan ikke starte opptak. Sjekk loggen for detaljer."
 
 msgctxt "#19165"
 msgid "Switch"
@@ -6511,7 +6511,7 @@ msgstr "Avspilling"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr "Vis kanalinformsjon når kanal byttes"
+msgstr "Vis kanalinformasjon når kanal byttes"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
@@ -6563,11 +6563,11 @@ msgstr "PVR-tjeneste"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Ingen av de tilkoplede PVR backends støtter skanning av kanaler."
+msgstr "Ingen av de tilkoblede PVR-kulisseklientene støtter skanning etter kanaler."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr "Kanalskann kan ikke starte. Sjekk logg for detaljer."
+msgstr "Kanalskann kunne ikke startes. Sjekk loggen for detaljer."
 
 msgctxt "#19194"
 msgid "Continue?"
@@ -6579,7 +6579,7 @@ msgstr "Klienthandlinger"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "Klientspesifike PVR handlinger"
+msgstr "Klientspesifike PVR-handlinger"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6591,7 +6591,7 @@ msgstr "Opptak sluttet: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
-msgstr "Kanalhåndtering"
+msgstr "Kanalbehandler"
 
 msgctxt "#19200"
 msgid "EPG source:"
@@ -6631,7 +6631,7 @@ msgstr "Skriv inn navn på den nye kanalen"
 
 msgctxt "#19209"
 msgid "XBMC virtual backend"
-msgstr "XBMC virtuell backend"
+msgstr "XBMC virtuell kulisseklient "
 
 msgctxt "#19210"
 msgid "Client"
@@ -6647,7 +6647,7 @@ msgstr "Denne listen inneholder endringer"
 
 msgctxt "#19213"
 msgid "Select backend"
-msgstr "Velg backend"
+msgstr "Velg kulisseklient"
 
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
@@ -6655,7 +6655,7 @@ msgstr "Skriv inn gyldig URL for ny kanal"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Denne PVR backend støtter ikke timere."
+msgstr "Denne PVR-kulisseklienten støtter ikke tidsur."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6679,7 +6679,7 @@ msgstr "Kanaler i"
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
-msgstr "Synkroniser kanalgrupper med backender"
+msgstr "Synkroniser kanalgrupper med kulisseklienter"
 
 msgctxt "#19222"
 msgid "EPG"
@@ -6687,11 +6687,11 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Ingen PVR-tillegg kunne aktiveres. Kontroller innstillingene eller loggen for mer informasjon."
+msgstr "Ingen PVR-tillegg kunne aktiveres. Kontroller innstillingene eller sjekk loggen for mer informasjon."
 
 msgctxt "#19224"
 msgid "Recording aborted"
-msgstr "Opptak avbrutt"
+msgstr "Opptak stoppet"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
@@ -6703,7 +6703,7 @@ msgstr "Opptak startet"
 
 msgctxt "#19227"
 msgid "Recording completed"
-msgstr "Opptak ferdig"
+msgstr "Opptak fullført"
 
 msgctxt "#19228"
 msgid "Recording deleted"
@@ -6719,35 +6719,35 @@ msgstr "Hindre EPG-oppdateringer når en TV-strøm spilles"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr "Bruk alltid kanalrekkefølge fra backend(er)"
+msgstr "Bruk alltid kanalrekkefølge fra kulisseklient(er)"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr "Fjern søkeresultat"
+msgstr "Tøm søkeresultat"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr "Vis notifikasjon ved tidsur oppdateringer"
+msgstr "Vis notifikasjon ved tidsuroppdateringer"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Bruk kanalnumre fra backend (fungerer kun med 1 aktivert PVR add-on)"
+msgstr "Bruk kanalnumre fra kulisseklient (fungerer kun med et aktivert PVR-tillegg)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "PVR-håndtering starter"
+msgstr "Starter PVR-behandler"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr "Laster kanaler fra klienter"
+msgstr "Henter kanaler fra klienter"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr "Last inn tidsur fra clienter"
+msgstr "Henter tidsur fra klienter"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr "Laster opptak fra klienter"
+msgstr "Henter opptak fra klienter"
 
 msgctxt "#19239"
 msgid "Starting background threads"
@@ -6755,11 +6755,11 @@ msgstr "Starter bakgrunnstråder"
 
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
-msgstr "Ingen PVR-tilegg aktivert"
+msgstr "Ingen PVR-tillegg aktivert"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "PVR-håndteringen er blitt aktivert uten et"
+msgstr "PVR-behandleren er blitt aktivert uten et"
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
@@ -6771,11 +6771,11 @@ msgstr "for å bruke PVR-funksjonaliteten."
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr "Backend ventetid"
+msgstr "Inaktivitetstid for kulisseklient"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
-msgstr "Oppvåkningskommando (cmd [timestamp])"
+msgstr "Oppgi oppvåkningskommando (cmd [timestamp])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
@@ -6795,7 +6795,7 @@ msgstr "Filtrer kanaler"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"
-msgstr "Laster EPG fra database"
+msgstr "Henter EPG fra database"
 
 msgctxt "#19251"
 msgid "Update EPG information"
@@ -6811,7 +6811,7 @@ msgstr "EPG-oppdatering planlagt for kanal"
 
 msgctxt "#19254"
 msgid "EPG update failed for channel"
-msgstr "EPG-oppdatering feilet for kanal"
+msgstr "EPG-oppdatering mislyktes for kanal"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -6867,11 +6867,11 @@ msgstr "Låst av foreldrekontroll:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr "Ikke vis \"ingen informasjon\" merkelapper"
+msgstr "Ikke vis «ingen informasjon»-etiketter"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Ikke vis 'tilkobling brutt' advarsler"
+msgstr "Ikke vis «tilkobling brutt» advarsler"
 
 msgctxt "#19270"
 msgid "* All recordings"
@@ -6883,11 +6883,11 @@ msgstr "Ingen PVR-tillegg ble funnet"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
-msgstr "Du trenger en tuner, tilhørende programvare, og et"
+msgstr "Du trenger en tuner, kulisseklientprogramvare, og et"
 
 msgctxt "#19273"
 msgid "add-on for the backend to be able to use PVR."
-msgstr "tillegg for programvaren for å kunne bruke PVR."
+msgstr "tillegg for kulisseklienten for å kunne bruke PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -6911,7 +6911,7 @@ msgstr "Innspilling feil"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "Klient"
+msgstr "Klientspesifikk"
 
 msgctxt "#19280"
 msgid "Client specific settings"
@@ -7283,11 +7283,11 @@ msgstr "Mappe for lagret musikk"
 
 msgctxt "#20001"
 msgid "Use external DVD player"
-msgstr "Bruk ekstern DVD-spiller"
+msgstr "Bruk ekstern DVD-avspiller"
 
 msgctxt "#20002"
 msgid "External DVD player"
-msgstr "Ekstern DVD-spiller"
+msgstr "Ekstern DVD-avspiller"
 
 msgctxt "#20003"
 msgid "Trainers folder"
@@ -7347,7 +7347,7 @@ msgstr "Ingen miniatyr"
 
 msgctxt "#20019"
 msgid "Choose thumbnail"
-msgstr "Velg miniatyr"
+msgstr "Velg miniatyrbilde"
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -7383,7 +7383,7 @@ msgstr "Lås bildeseksjon"
 
 msgctxt "#20041"
 msgid "Lock programs & scripts windows"
-msgstr "Lås program- og scriptseksjon"
+msgstr "Lås program- og skriptseksjon"
 
 msgctxt "#20042"
 msgid "Lock file manager"
@@ -7391,7 +7391,7 @@ msgstr "Lås filbehandler"
 
 msgctxt "#20043"
 msgid "Lock settings"
-msgstr "Lås innstillinger"
+msgstr "Låsinnstillinger"
 
 msgctxt "#20044"
 msgid "Start fresh"
@@ -7399,15 +7399,15 @@ msgstr "Start på nytt"
 
 msgctxt "#20045"
 msgid "Enter master mode"
-msgstr "Gå i mastermodus"
+msgstr "Gå inn i systemmodus"
 
 msgctxt "#20046"
 msgid "Leave master mode"
-msgstr "Forlat mastermodus"
+msgstr "Forlat systemmodus"
 
 msgctxt "#20047"
 msgid "Create profile '%s'?"
-msgstr "Lag profil '%s' ?"
+msgstr "Lag profil «%s»?"
 
 msgctxt "#20048"
 msgid "Start with fresh settings"
@@ -7431,11 +7431,11 @@ msgstr "Advarsel"
 
 msgctxt "#20053"
 msgid "Left master mode"
-msgstr "Forlot mastermodus"
+msgstr "Forlot systemmodus"
 
 msgctxt "#20054"
 msgid "Entered master mode"
-msgstr "Gikk i mastermodus"
+msgstr "Gikk inn i systemmodus"
 
 msgctxt "#20055"
 msgid "Allmusic.com thumb"
@@ -7451,11 +7451,11 @@ msgstr "Legg til profil..."
 
 msgctxt "#20059"
 msgid "Query info for all albums"
-msgstr "Spør etter info for alle album"
+msgstr "Spør etter informasjon for alle album"
 
 msgctxt "#20060"
 msgid "Media info"
-msgstr "Mediainfo"
+msgstr "Mediainformasjon"
 
 msgctxt "#20061"
 msgid "Separate"
@@ -7463,11 +7463,11 @@ msgstr "Separate"
 
 msgctxt "#20062"
 msgid "Shares with default"
-msgstr "Delte filer med standard"
+msgstr "Delte ressurser med standard"
 
 msgctxt "#20063"
 msgid "Shares with default (read only)"
-msgstr "Delte filer med standard (kun lesing)"
+msgstr "Delte ressurs med standard (kun lesing)"
 
 msgctxt "#20064"
 msgid "Copy default"
@@ -7515,11 +7515,11 @@ msgstr "Aldersgrense"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
-msgstr "Skriv inn masterlåskode"
+msgstr "Skriv inn systemlåskoden"
 
 msgctxt "#20076"
 msgid "Ask for master lock code on startup"
-msgstr "Spør etter masterlåskode ved oppstart"
+msgstr "Spør etter systemlåskode ved oppstart"
 
 msgctxt "#20077"
 msgid "Skin settings"
@@ -7527,7 +7527,7 @@ msgstr "Skallinnstillinger"
 
 msgctxt "#20078"
 msgid "- no link set -"
-msgstr "- ingen link satt -"
+msgstr "- ingen kobling satt -"
 
 msgctxt "#20079"
 msgid "Enable animations"
@@ -7575,7 +7575,7 @@ msgstr "Ledig diskplass"
 
 msgctxt "#20090"
 msgid "Enter the name of an existing share"
-msgstr "Skriv inn navnet på en eksisterende delt mappe"
+msgstr "Skriv inn navnet på en eksisterende, delt ressurs"
 
 msgctxt "#20091"
 msgid "Lock code"
@@ -7583,7 +7583,7 @@ msgstr "Låskode"
 
 msgctxt "#20092"
 msgid "Load profile"
-msgstr "Last profil"
+msgstr "Hent profil"
 
 msgctxt "#20093"
 msgid "Profile name"
@@ -7603,23 +7603,23 @@ msgstr "Innloggingsbilde"
 
 msgctxt "#20097"
 msgid "Fetching album info"
-msgstr "Henter albuminfo"
+msgstr "Henter albuminformasjon"
 
 msgctxt "#20098"
 msgid "Fetching info for album"
-msgstr "Henter info for album"
+msgstr "Henter informasjon for album"
 
 msgctxt "#20099"
 msgid "Can't rip CD or track while playing from CD"
-msgstr "Kan ikke rippe CD eller spor ved avspilling av CD"
+msgstr "Kan ikke rippe CD eller spor under avspilling av CD"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
-msgstr "Masterkode og låser"
+msgstr "Systemlåskode og -innstillinger"
 
 msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
-msgstr "Angivelse av masterkode aktiverer alltid mastermodus"
+msgstr "Angivelse av systemlåskode aktiverer alltid systemmodus"
 
 msgctxt "#20102"
 msgid "or copy from default?"
@@ -7635,7 +7635,7 @@ msgstr "Gamle innstillinger funnet."
 
 msgctxt "#20105"
 msgid "Do you want to use them?"
-msgstr "Vil du bruke dem?"
+msgstr "Ønsker du å bruke dem?"
 
 msgctxt "#20106"
 msgid "Old media sources found."
@@ -7687,7 +7687,7 @@ msgstr "Ugyldig kode."
 
 msgctxt "#20118"
 msgid "This requires the master lock to be set."
-msgstr "Dette krever at masterkoden blir satt."
+msgstr "Dette krever at systemlåsen blir aktivert."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
@@ -7695,7 +7695,7 @@ msgstr "Vil du angi den nå?"
 
 msgctxt "#20120"
 msgid "Loading program information"
-msgstr "Laster programinformasjon"
+msgstr "Henter programinformasjon"
 
 msgctxt "#20121"
 msgid "Party on!"
@@ -7751,7 +7751,7 @@ msgstr "Fjern nettverkssted"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
-msgstr "Vil du skanne mappen?"
+msgstr "Ønsker du å skanne mappen?"
 
 msgctxt "#20136"
 msgid "Memory unit"
@@ -7771,11 +7771,11 @@ msgstr "I port %i, plass %i"
 
 msgctxt "#20140"
 msgid "Lock screensaver"
-msgstr "Lås skjermbeskytter"
+msgstr "Lås skjermsparer"
 
 msgctxt "#20141"
 msgid "Set"
-msgstr "Sett"
+msgstr "Oppgi"
 
 msgctxt "#20142"
 msgid "Username"
@@ -7787,7 +7787,7 @@ msgstr "Skriv inn passord for"
 
 msgctxt "#20144"
 msgid "Shutdown timer"
-msgstr "Slå-av-timer"
+msgstr "Slå-av-tidsur"
 
 msgctxt "#20145"
 msgid "Shutdown interval (in minutes)"
@@ -7811,11 +7811,11 @@ msgstr "Slår av om 120 minutter"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Egendefinert slå-av-timer"
+msgstr "Egendefinert avsluttingstidsur"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
-msgstr "Avbryt slå-av-timer"
+msgstr "Avbryt slå-av-tidsur"
 
 msgctxt "#20152"
 msgid "Lock preferences for %s"
@@ -7839,7 +7839,7 @@ msgstr "Harddiskinformasjon"
 
 msgctxt "#20157"
 msgid "DVD-ROM information"
-msgstr "DVD-spillerinformasjon"
+msgstr "DVD-avspillerinformasjon"
 
 msgctxt "#20158"
 msgid "Network information"
@@ -7899,23 +7899,23 @@ msgstr "Windows nettverk (SMB)"
 
 msgctxt "#20172"
 msgid "XBMSP server"
-msgstr "XBMSP server"
+msgstr "XBMSP-tjener"
 
 msgctxt "#20173"
 msgid "FTP server"
-msgstr "FTP server"
+msgstr "FTP-tjener"
 
 msgctxt "#20174"
 msgid "iTunes music share (DAAP)"
-msgstr "iTunes musikkdeling (DAAP)"
+msgstr "iTunes musikkdelingsressurs (DAAP)"
 
 msgctxt "#20175"
 msgid "UPnP server"
-msgstr "UPnP server"
+msgstr "UPnP-tjener"
 
 msgctxt "#20176"
 msgid "Show video info"
-msgstr "Vis informasjon om film"
+msgstr "Vis videoinformasjon"
 
 msgctxt "#20177"
 msgid "Done"
@@ -7943,7 +7943,7 @@ msgstr "Mellomrom"
 
 msgctxt "#20183"
 msgid "Reload skin"
-msgstr "Last skall på ny"
+msgstr "Last inn skall på ny"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
@@ -7979,15 +7979,15 @@ msgstr "Aktiver feilsøkingslogg"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
-msgstr "Last ned ekstra informasjon under oppdateringer"
+msgstr "Last ned ytterligere informasjon under oppdateringer"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Standardtjener for albuminformasjon"
+msgstr "Standardtjeneste for albuminformasjon"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Standardtjener for artistinformasjon"
+msgstr "Standardtjeneste for artistinformasjon"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -8007,7 +8007,7 @@ msgstr "Ingen artist funnet!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
-msgstr "Nedlasting av artistinfo mislyktes"
+msgstr "Nedlasting av artistinformasjon mislyktes"
 
 msgctxt "#20240"
 msgid "Android music"
@@ -8043,11 +8043,11 @@ msgstr "Fyller glassene (filmer)"
 
 msgctxt "#20253"
 msgid "WebDAV server (HTTP)"
-msgstr "WebDAV-server (HTTP)"
+msgstr "WebDAV-tjener (HTTP)"
 
 msgctxt "#20254"
 msgid "WebDAV server (HTTPS)"
-msgstr "WebDAV-server (HTTPS)"
+msgstr "WebDAV-tjener (HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
@@ -8079,11 +8079,11 @@ msgstr "Apple Filprotokoll (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
-msgstr "Webserverkatalog (HTTP)"
+msgstr "Nettjenerkatalog (HTTP)"
 
 msgctxt "#20301"
 msgid "Web server directory (HTTPS)"
-msgstr "Webserverkatalog (HTTPS)"
+msgstr "Nettjenerkatalog (HTTPS)"
 
 msgctxt "#20302"
 msgid "Unable to write to folder:"
@@ -8091,7 +8091,7 @@ msgstr "Kunne ikke skrive til mappe:"
 
 msgctxt "#20303"
 msgid "Do you want to skip and proceed?"
-msgstr "Vil du ignorere og fortsette?"
+msgstr "Ønsker du å ignorere og fortsette?"
 
 msgctxt "#20304"
 msgid "RSS Feed"
@@ -8103,7 +8103,7 @@ msgstr "Sekundær DNS"
 
 msgctxt "#20308"
 msgid "DHCP server:"
-msgstr "DHCP-server:"
+msgstr "DHCP-tjener:"
 
 msgctxt "#20309"
 msgid "Make new folder"
@@ -8179,7 +8179,7 @@ msgstr "Bruk fil- eller mappenavn ved oppslag?"
 
 msgctxt "#20333"
 msgid "Set content"
-msgstr "Sett innhold"
+msgstr "Oppgi innhold"
 
 msgctxt "#20334"
 msgid "Folder"
@@ -8207,7 +8207,7 @@ msgstr "Regissør"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Vil du slette alle oppføringer fra"
+msgstr "Ønsker du å fjerne alle oppføringer fra"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
@@ -8251,15 +8251,15 @@ msgstr "stemmer"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "Informasjon om TV-serier"
+msgstr "TV-serieinformasjon"
 
 msgctxt "#20352"
 msgid "Episode information"
-msgstr "Informasjon om episode"
+msgstr "Episodeinformasjon"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Laster TV-seriedetaljer"
+msgstr "Henter TV-seriedetaljer"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
@@ -8267,7 +8267,7 @@ msgstr "Henter episodeguide"
 
 msgctxt "#20355"
 msgid "Loading info for episodes in directory"
-msgstr "Laster info for episoder i mappen"
+msgstr "Henter informasjon for episoder i mappen"
 
 msgctxt "#20356"
 msgid "Select TV show:"
@@ -8291,7 +8291,7 @@ msgstr "Episoder"
 
 msgctxt "#20361"
 msgid "Loading episode details"
-msgstr "Laster episodedetaljer"
+msgstr "Henter episodedetaljer"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
@@ -8323,7 +8323,7 @@ msgstr "Prod. kode"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Vis omtale for videoer som ikke er sett"
+msgstr "Vis omtale for oppføringer som ikke er sett"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -8331,7 +8331,7 @@ msgstr "* Skjult for ikke å røpe handling *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Sett miniatyrbilde for sesong"
+msgstr "Oppgi miniatyrbilde for sesong"
 
 msgctxt "#20372"
 msgid "Season image"
@@ -8343,7 +8343,7 @@ msgstr "Sesong"
 
 msgctxt "#20374"
 msgid "Downloading movie information"
-msgstr "Laster ned informasjon om film"
+msgstr "Laster ned filminformasjon"
 
 msgctxt "#20375"
 msgid "Unassign content"
@@ -8383,7 +8383,7 @@ msgstr "Valgt mappe inneholder kun én film"
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Koble med TV-serie"
+msgstr "Koble til TV-serie"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
@@ -8391,11 +8391,11 @@ msgstr "Fjern kobling til TV-serie"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Filmer nylig lagt til"
+msgstr "Filmer lagt til nylig"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "Episoder nylig lagt til"
+msgstr "Episoder lagt til nylig"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -8407,7 +8407,7 @@ msgstr "Musikkvideoer"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Musikkvideoer nylig lagt til"
+msgstr "Musikkvideoer lagt til nylig"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -8419,11 +8419,11 @@ msgstr "Fjern musikkvideo fra bibliotek"
 
 msgctxt "#20393"
 msgid "Music video information"
-msgstr "Informasjon om musikkvideo"
+msgstr "Musikkvideoinformasjon"
 
 msgctxt "#20394"
 msgid "Loading music video information"
-msgstr "Laster musikkvideoinformasjon"
+msgstr "Henter musikkvideoinformasjon"
 
 msgctxt "#20395"
 msgid "Mixed"
@@ -8439,7 +8439,7 @@ msgstr "Gå til album"
 
 msgctxt "#20398"
 msgid "Play song"
-msgstr "Spill av sang"
+msgstr "Spill av låt"
 
 msgctxt "#20399"
 msgid "Go to music videos from album"
@@ -8455,11 +8455,11 @@ msgstr "Spill av musikkvideo"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Last ned bilder av skuespiller automatisk"
+msgstr "Last ned miniatyrer av skuespillere automatisk"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
-msgstr "Sett miniatyr for skuespiller"
+msgstr "Oppgi miniatyr for skuespiller"
 
 msgctxt "#20404"
 msgid "Remove bookmark"
@@ -8467,11 +8467,11 @@ msgstr "Fjern bokmerker"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
-msgstr "Fjern bokmerke for episode"
+msgstr "Fjern episodebokmerke"
 
 msgctxt "#20406"
 msgid "Set episode bookmark"
-msgstr "Sett bokmerke for episode"
+msgstr "Oppgi bokmerke for episode"
 
 msgctxt "#20407"
 msgid "Scraper settings"
@@ -8479,11 +8479,11 @@ msgstr "Skraperinnstillinger"
 
 msgctxt "#20408"
 msgid "Downloading music video information"
-msgstr "Last ned musikkvideoinformasjon"
+msgstr "Laster ned musikkvideoinformasjon"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "Laster ned informasjon om TV-serie"
+msgstr "Laster ned TV-serieinformasjon"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -8499,11 +8499,11 @@ msgstr "Slå sammen TV-serier"
 
 msgctxt "#20413"
 msgid "Get fanart"
-msgstr "Hent Fanart"
+msgstr "Hent fankunst"
 
 msgctxt "#20414"
 msgid "Show Fanart in video and music libraries"
-msgstr "Vis Fanart i video- og musikkbibliotek"
+msgstr "Vis fankunst i video- og musikkbibliotek"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8547,7 +8547,7 @@ msgstr "Usann"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Bildefremvisning av Fanart"
+msgstr "Lysbildefremvisning av fankunst"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -8567,7 +8567,7 @@ msgstr "Separer"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Eksporter miniatyrbilder og Fanart?"
+msgstr "Eksporter miniatyrbilder og fankunst?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -8579,7 +8579,7 @@ msgstr "Ekskluder sti fra biblioteksoppdateringer"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Hent ut miniatyrer og videoinformasjon"
+msgstr "Hent ut miniatyr- og videoinformasjon"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -8591,23 +8591,23 @@ msgstr "Eksporter skuespiller bilder?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
-msgstr "Velg Fanart"
+msgstr "Velg fankunst"
 
 msgctxt "#20438"
 msgid "Local fanart"
-msgstr "Lokal Fanart"
+msgstr "Lokal fankunst"
 
 msgctxt "#20439"
 msgid "No fanart"
-msgstr "Ingen Fanart"
+msgstr "Ingen fankunst"
 
 msgctxt "#20440"
 msgid "Current fanart"
-msgstr "Nåværende Fanart"
+msgstr "Nåværende fankunst"
 
 msgctxt "#20441"
 msgid "Remote fanart"
-msgstr "Ekstern Fanart"
+msgstr "Ekstern fankunst"
 
 msgctxt "#20442"
 msgid "Change content"
@@ -8615,19 +8615,19 @@ msgstr "Endre innhold"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
-msgstr "Ønsker du å fornye info for alle"
+msgstr "Ønsker du å fornye informasjon for alle"
 
 msgctxt "#20444"
 msgid "items within this path?"
-msgstr "elementer innenfor denne stien?"
+msgstr "oppføringer innenfor denne stien?"
 
 msgctxt "#20445"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "Fankunst"
 
 msgctxt "#20446"
 msgid "Locally stored information found."
-msgstr "Lokalt lagret informasjon funnet."
+msgstr "Lokallagret informasjon funnet."
 
 msgctxt "#20447"
 msgid "Ignore and refresh from internet?"
@@ -8639,7 +8639,7 @@ msgstr "Kunne ikke laste ned informasjon"
 
 msgctxt "#20449"
 msgid "Unable to connect to remote server"
-msgstr "Fikk ikke kontakt med tjener."
+msgstr "Fikk ikke kontakt med nettverkstjener."
 
 msgctxt "#20450"
 msgid "Would you like to continue scanning?"
@@ -8671,11 +8671,11 @@ msgstr "Filmsamling"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Grupper filmer i sett"
+msgstr "Grupper filmer i samlinger"
 
 msgctxt "#20459"
 msgid "Tags"
-msgstr "Merkelapper"
+msgstr "Knagger"
 
 msgctxt "#20460"
 msgid "Add %s"
@@ -8687,11 +8687,11 @@ msgstr "Fjern %s"
 
 msgctxt "#20462"
 msgid "New tag..."
-msgstr "Ny merkelapp"
+msgstr "Ny knagg..."
 
 msgctxt "#20463"
 msgid "A tag with the name '%s' already exists."
-msgstr "En merkelapp med navnet %s' eksisterer alt."
+msgstr "En knagg med navnet «%s» eksisterer alt."
 
 msgctxt "#20464"
 msgid "Select %s"
@@ -8703,15 +8703,15 @@ msgstr "Håndter filmsamling"
 
 msgctxt "#20466"
 msgid "Select movie set"
-msgstr "Velg filmsett"
+msgstr "Velg filmsamling"
 
 msgctxt "#20467"
 msgid "No set (Remove from %s)"
-msgstr "Inget sett (fjern fra %s)"
+msgstr "Ingen samling (fjern fra %s)"
 
 msgctxt "#20468"
 msgid "Add movie to a new set"
-msgstr "Legg til film i et nytt sett"
+msgstr "Legg til film i en ny samling"
 
 msgctxt "#20469"
 msgid "Keep current set (%s)"
@@ -8723,7 +8723,7 @@ msgstr "Vis skjulte filer og mapper"
 
 msgctxt "#21331"
 msgid "TuxBox client"
-msgstr "TuxBox klient"
+msgstr "TuxBox-klient"
 
 msgctxt "#21332"
 msgid "WARNING: Target TuxBox device is in recording-mode!"
@@ -8751,7 +8751,7 @@ msgstr "TuxBox enhet"
 
 msgctxt "#21359"
 msgid "Add media share..."
-msgstr "Legg til delt media...."
+msgstr "Legg til delt mediaressurs...."
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
@@ -8763,7 +8763,7 @@ msgstr "Se etter eksterne UPnP-avspillere"
 
 msgctxt "#21362"
 msgid "Bookmark created"
-msgstr "Oppretet bokmerke"
+msgstr "Opprettet bokmerke"
 
 msgctxt "#21363"
 msgid "Episode Bookmark created"
@@ -8771,11 +8771,11 @@ msgstr "Bokmerke for episoden opprettet"
 
 msgctxt "#21364"
 msgid "Edit media share"
-msgstr "Rediger delt media"
+msgstr "Rediger delt mediaressurs"
 
 msgctxt "#21365"
 msgid "Remove media share"
-msgstr "Fjern delt media"
+msgstr "Fjern delt mediaressurs"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
@@ -8799,11 +8799,11 @@ msgstr "Aktiver navigasjonslyder under medieavspilling"
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "Miniatyr"
+msgstr "Miniatyrbilde"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
-msgstr "Tving DVD-spillerens regionkoding"
+msgstr "Tving DVD-spillerens region"
 
 msgctxt "#21373"
 msgid "Video output"
@@ -8843,7 +8843,7 @@ msgstr "Skriv inn navn på ny spilleliste"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
-msgstr "Vis \"Legg til kilde\" i fillisten"
+msgstr "Vis «Legg til kilde» i fillisten"
 
 msgctxt "#21383"
 msgid "Enable scrollbars"
@@ -8851,7 +8851,7 @@ msgstr "Aktiver rullefelt"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Aktiver av/på-knapp for 'sett/ikke sett' i videobiblioteket"
+msgstr "Aktiver av/på-knapp for «sett/ikke sett» i videobiblioteket"
 
 msgctxt "#21385"
 msgid "Open"
@@ -8859,7 +8859,7 @@ msgstr "Åpne"
 
 msgctxt "#21386"
 msgid "Acoustic management level"
-msgstr "Acoustic management level"
+msgstr "Akustiskinstillingsnivå"
 
 msgctxt "#21387"
 msgid "Fast"
@@ -9007,7 +9007,7 @@ msgstr "Ny søkeregel"
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Oppføring må samsvare med"
+msgstr "Oppføringer må svare til"
 
 msgctxt "#21425"
 msgid "all of the rules"
@@ -9047,7 +9047,7 @@ msgstr "Navn på spilleliste"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Finn oppføring der"
+msgstr "Finn oppføringer hvor"
 
 msgctxt "#21435"
 msgid "Edit"
@@ -9107,7 +9107,7 @@ msgstr "Språk for undertekster"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
-msgstr "Fjernkontroll sender tastetrykk (tastatur)"
+msgstr "Fjernkontroll sender tastetrykk"
 
 msgctxt "#21450"
 msgid "Edit"
@@ -9139,7 +9139,7 @@ msgstr "Ekstern lagring"
 
 msgctxt "#21457"
 msgid "Watched episode count"
-msgstr "Sett episode teller"
+msgstr "Teller for sette episoder"
 
 msgctxt "#21458"
 msgid "Group by"
@@ -9327,7 +9327,7 @@ msgstr "Bildetype"
 
 msgctxt "#21859"
 msgid "Time created"
-msgstr "Dato opprettet"
+msgstr "Tidspunkt opprettet"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9419,7 +9419,7 @@ msgstr "Tillat styring av XBMC via UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
-msgstr "Prøv å hoppe over intro før DVD-menyen"
+msgstr "Prøv å hoppe over introdusjoner før DVD-menyen"
 
 msgctxt "#21883"
 msgid "Saved music"
@@ -9427,7 +9427,7 @@ msgstr "Lagret musikk"
 
 msgctxt "#21884"
 msgid "Query info for all artists"
-msgstr "Spør etter info for alle artister"
+msgstr "Spør etter informasjon for alle artister"
 
 msgctxt "#21885"
 msgid "Downloading album information"
@@ -9471,7 +9471,7 @@ msgstr "Startet"
 
 msgctxt "#21895"
 msgid "Themes"
-msgstr "Tema"
+msgstr "Temaer"
 
 msgctxt "#21896"
 msgid "Disbanded"
@@ -9499,7 +9499,7 @@ msgstr "Oppdater bibliotek ved oppstart"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Ikke vis biblioteksoppdateringer som skjer i bakgrunnen"
+msgstr "Skjul forløpet av biblioteksoppdateringer"
 
 msgctxt "#22002"
 msgid "DNS suffix"
@@ -9551,7 +9551,7 @@ msgstr "Profildata"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Dim ned hvis pause under filmavspilling"
+msgstr "Demp hvis pause under filmavspilling"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -9579,7 +9579,7 @@ msgstr "Guide"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimize black bars"
-msgstr "Tillatt avvik i høyde/bredde-forhold for reduksjon av sort felt"
+msgstr "Tillatt avvik i formatforhold for å redusere sorte felt"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -9623,7 +9623,7 @@ msgstr "Importer karaoketitler..."
 
 msgctxt "#22037"
 msgid "Show song selector automatically"
-msgstr "Automatisk sprett-opp-sangvelger"
+msgstr "Automatisk sprett-opp-låtvelger"
 
 msgctxt "#22038"
 msgid "Export karaoke titles..."
@@ -9631,7 +9631,7 @@ msgstr "Eksporter karaoketitler..."
 
 msgctxt "#22039"
 msgid "Enter song number"
-msgstr "Skriv inn sangnummer"
+msgstr "Skriv inn låtnummer"
 
 msgctxt "#22040"
 msgid "white/green"
@@ -9699,11 +9699,11 @@ msgstr "Skaler tekst-tv til 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
-msgstr "Ekstern spiller aktiv"
+msgstr "Ekstern avspiller aktiv"
 
 msgctxt "#23101"
 msgid "Click OK to terminate the player"
-msgstr "Trykk OK for å avslutte spilleren"
+msgstr "Trykk OK for å avslutte avspilleren"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
@@ -9715,7 +9715,7 @@ msgstr "Tillegg"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Tillegg"
+msgstr "Tillegger"
 
 msgctxt "#24002"
 msgid "Add-on options"
@@ -9851,7 +9851,7 @@ msgstr "Deaktiverte tillegg"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
-msgstr "(Tilbakestill innstilling)"
+msgstr "(Tilbakestill gjeldende innstillinger)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
@@ -9875,11 +9875,11 @@ msgstr "Tillegg har ikke den korrekte strukturen"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed add-on(s)"
-msgstr "%s benyttes av følgende tillegg"
+msgstr "%s benyttes av følgende, installerte tillegg"
 
 msgctxt "#24047"
 msgid "This add-on cannot be uninstalled"
-msgstr "Dette tillegget kan ikke bli avinstallert"
+msgstr "Dette tillegget kan ikke bli fjernet"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9907,15 +9907,15 @@ msgstr "Endringslogg"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "Vil du aktivere dette tillegget?"
+msgstr "Ønsker du å aktivere dette tillegget?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "Vil du deaktivere dette tillegget?"
+msgstr "Ønsker du å deaktivere dette tillegget?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Oppdatering for tillegg tilgjengelig!"
+msgstr "Tilleggsoppdatering tilgjengelig!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
@@ -9999,11 +9999,11 @@ msgstr "(svartelistet)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr "Tillegget er markert som ødelagt i pakkebrønnen."
+msgstr "Tillegget er markert som «ødelagt i pakkebrønnen."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
-msgstr "Vil du deaktivere tillegget?"
+msgstr "Ønsker du å deaktivere det på ditt system?"
 
 msgctxt "#24098"
 msgid "Broken"
@@ -10015,19 +10015,19 @@ msgstr "Ønsker du å bytte til dette skallet nå?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "For å benytte denne funksjonen må du laste ned et Tillegg"
+msgstr "For å benytte denne funksjonen må du laste ned et tillegg"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Vil du laste ned dette Tillegget?"
+msgstr "Vil du laste ned dette tillegget?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr "Kan ikke laste skall"
+msgstr "Kan ikke hente skall"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr "Skallet mangler filer"
+msgstr "Skallet mangler noen filer"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10043,7 +10043,7 @@ msgstr "Velg fra alle titler ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr "Vis bluray menyer"
+msgstr "Vis Blu-ray menyer"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10055,7 +10055,7 @@ msgstr "Spor: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr "Velg avspillingsobjekt"
+msgstr "Velg avspillingsoppføring"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10107,7 +10107,7 @@ msgstr "Kopierer"
 
 msgctxt "#33010"
 msgid "Set download directory"
-msgstr "Sett nedlastingsmappe"
+msgstr "Oppgi nedlastingsmappe"
 
 msgctxt "#33011"
 msgid "Search duration"
@@ -10127,7 +10127,7 @@ msgstr "Bruk DVD-avspiller i stedet for vanlig avspiller"
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
-msgstr "Spør om nedlasting før filmer spilles"
+msgstr "Spør om nedlasting før filmer spilles av"
 
 msgctxt "#33016"
 msgid "Clips"
@@ -10255,7 +10255,7 @@ msgstr "Se dine"
 
 msgctxt "#33057"
 msgid "Listen to"
-msgstr "Hør på"
+msgstr "Lytt til"
 
 msgctxt "#33058"
 msgid "View your"
@@ -10275,7 +10275,7 @@ msgstr "Meny"
 
 msgctxt "#33062"
 msgid "Play the"
-msgstr "Spill"
+msgstr "Spill av"
 
 msgctxt "#33063"
 msgid "Options"
@@ -10347,7 +10347,7 @@ msgstr "Hater"
 
 msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Denne filen er stablet, velg den delen du vil spille fra."
+msgstr "Denne filen er stablet, velg den delen du ønsker å spille av fra."
 
 msgctxt "#33082"
 msgid "Path to script"
@@ -10355,7 +10355,7 @@ msgstr "Sti til skript"
 
 msgctxt "#33083"
 msgid "Enable custom script button"
-msgstr "Aktiver knapp for egendefinert skript"
+msgstr "Aktiver knapp for egendefinerte skript"
 
 msgctxt "#33084"
 msgid "Auto login"
@@ -10367,15 +10367,15 @@ msgstr "Kunne ikke starte"
 
 msgctxt "#33101"
 msgid "Webserver"
-msgstr "Webserver"
+msgstr "Nettjener"
 
 msgctxt "#33102"
 msgid "Event Server"
-msgstr "Event Server"
+msgstr "Hendelsestjener"
 
 msgctxt "#33103"
 msgid "Remote communication server"
-msgstr "Remote communication server"
+msgstr "Eksternkommunikasjonstjener"
 
 msgctxt "#33200"
 msgid "Detected New Connection"
@@ -10404,6 +10404,14 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4-lyd (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -10467,11 +10475,11 @@ msgstr "Aldri"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr "Kan ikke finne neste ting å spille"
+msgstr "Kan ikke finne neste oppføring å spille av"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr "Kan ikke finne tidligere ting å spille"
+msgstr "Kan ikke finne en tidligere oppføring å spille av"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
@@ -10479,11 +10487,11 @@ msgstr "Kunne ikke starte Zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr "Er Apples Bonjour tjeneste installert? Se i logg for mer info."
+msgstr "Er Apples Bonjour-tjeneste installert? Se loggen for mer informasjon."
 
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
-msgstr "Airplay krever Zeroconf for å aktiveres."
+msgstr "Airplay krever at Zeroconf er aktivert."
 
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
@@ -10499,11 +10507,11 @@ msgstr "Video Rendering"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr "Feilet ved initiering av videofilter/skalerere, går tilbake til bilineær skalering"
+msgstr "Mislyktes ved initiering av videofilter/skalerere, går tilbake til bilineær skalering"
 
 msgctxt "#34402"
 msgid "Failed to initialize audio device"
-msgstr "Feilet ved initiering av lydenhet"
+msgstr "Mislyktes ved initiering av lydenhet"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
@@ -10615,7 +10623,7 @@ msgstr "Endre til fjernkontrollside-kommando"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
-msgstr "Trykk \"bruker\" knappen-kommando"
+msgstr "Trykk «bruker» knappen"
 
 msgctxt "#36005"
 msgid "Enable switch side commands"
@@ -10635,7 +10643,7 @@ msgstr "Enheter å slå av når XBMS slutter"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Sett enheter i strømsparing når skjermbeskytteren aktiveres"
+msgstr "Sett enheter i strømsparing når skjermspareren aktiveres"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
@@ -10647,7 +10655,7 @@ msgstr "Kunne ikke finne CEC kommunikasjonsporten. Still den inn manuelt."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Kunne ikke starte CEC-adapteren. Sjekk dine innstillinger."
+msgstr "Kunne ikke starte CEC-adapteret. Sjekk dine innstillinger."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10663,7 +10671,7 @@ msgstr "Kunne ikke starte CEC-adapteren: libCEC ble ikke funnet på ditt system.
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
-msgstr "Bruk TV'ens språkinnstillinger"
+msgstr "Bruk TV-ens språkinnstillinger"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
@@ -10687,15 +10695,15 @@ msgstr "Konfigurasjon oppdatert"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr "Fikk ikke satt ny konfigurasjon. Vennligst sjekk innstillingene."
+msgstr "Ny konfigurasjon mislyktes. Vennligst sjekk dine innstillinger."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Send 'inaktiv kilde'-kommando når XBMC slutter"
+msgstr "Send «inaktiv kilde»-kommando når XBMC avsluttes"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Sett enheten i standbymodus når datamaskinen settes i standbymodus"
+msgstr "Sett enheter i standbymodus når datamaskinen settes i standbymodus"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -10751,7 +10759,7 @@ msgstr "libCECs grensesnittversjon er ikke støttet. %x er lavere enn versjonen 
 
 msgctxt "#36041"
 msgid "* Item folder"
-msgstr "* Innholdsmappe"
+msgstr "* Oppføringsmappe"
 
 msgctxt "#36042"
 msgid "Use limited color range (16-235)"
@@ -10767,11 +10775,15 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36103"
 msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Velg temaet for brukergrensesnittet. Dette vil bestemme utseendet og opplevelsen av XBMC."
+msgstr "Velg skallet for brukergrensesnittet. Dette vil bestemme utseendet og opplevelsen av XBMC."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
-msgstr "Endre spesifike skallinstillinger. De tilgjengelige valgene avhenger av hvilket skall som blir brukt."
+msgstr "Endre spesifike skallinnstillinger. De tilgjengelige valgene avhenger av hvilket skall som blir brukt."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Bytt temaet assosiert med ditt valgte skall."
 
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."
@@ -10779,7 +10791,7 @@ msgstr "Endre farge på ditt gjeldende skall."
 
 msgctxt "#36107"
 msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "Velg skrifttype som benyttes i brukergrensesnittet. Skrifttypesamlingene blir bestemt av ditt tema."
+msgstr "Velg skrifttype som benyttes i brukergrensesnittet. Skrifttypesamlingene blir konfigurert av ditt skall."
 
 msgctxt "#36108"
 msgid "Resize the view of the GUI."
@@ -10791,7 +10803,7 @@ msgstr "Velg hvilket mediavindu XBMC skal vise ved oppstart."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Velg eller deaktiver lydoppsettet bruk i brukergrensesnittet."
+msgstr "Velg eller deaktiver lydoppsettet brukt i brukergrensesnittet."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10811,7 +10823,7 @@ msgstr "Velg språket for brukergrensesnittet."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
-msgstr "Endre formatet for temperatur, tid og dato. De tilgjengelige valgene avhenger av ditt aktive språk."
+msgstr "Endre formatet for temperatur, tid og dato. De tilgjengelige alternativene avhenger av ditt valgte språk."
 
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the GUI."
@@ -10827,7 +10839,7 @@ msgstr "Velg din gjeldende tidssone."
 
 msgctxt "#36119"
 msgid "Select the default audio track when different language tracks are available."
-msgstr "Velg lydsporstandard når lydspor er tigjengelige på andre språk."
+msgstr "Velg lydsporstandard når lydspor er tilgjengelige på andre språk."
 
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
@@ -10839,19 +10851,23 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
-msgstr "Vis (...) elementet i lister får å gå til foreldremappen."
+msgstr "Vis (...) oppføringen i lister for å gå til foreldremappen."
 
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
-msgstr "Vis filendelse for mediafiler. Feks. \"Jeg er en katt.mp3\" vil bli vist som \"Jeg er en katt\""
+msgstr "Vis filendelser for mediafiler. Feks. «Jeg er en katt.mp3» vil bli vist som «Jeg er en katt»."
 
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Ignorer visse ord i sorteringsoperasjoner. For eksempel vil 'The Simpsons' bli sortert som 'Simpsons'. For å kunne konfigurere ordene, konsulter http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Ignorer visse ord i sorteringsoperasjoner. For eksempel vil «The Simpsons» bli sortert som «Simpsons». For å kunne konfigurere ordene, konsulter http://wiki.xbmc.org/index.php?title=Settings/Appearance."
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Tillat sletting av, og å gi nytt navn til filer gjennom brukergrensesnittet, ved å benytte kontekstmenyen (For eksempel, trykk på C-tasten på et tastatur for å vise kontekstmenyen)."
+msgstr "Tillat sletting av, og å gi nytt navn til, filer gjennom brukergrensesnittet ved å benytte kontekstmenyen (For eksempel, trykk på C-tasten på et tastatur for å vise kontekstmenyen)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Vis legg-til-kilde-knappen fra rotseksjoner av brukergrensesnittet."
 
 msgctxt "#36127"
 msgid "Show hidden files and directories."
@@ -10863,11 +10879,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
-msgstr "Oppgi tiden det tar før skjermspareren vises."
+msgstr "Oppgi tiden det tar før skjermspareren vises ved inaktivitet."
 
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
-msgstr "Velg skjermsparer. XBMC vil benytte 'dempet' skjermsparer når en video i fullskjerm blir satt i pause eller når en dialogboks er aktiv."
+msgstr "Velg skjermsparer. XBMC vil benytte «dempet» skjermsparer når en video avspilt i fullskjerm blir satt i pause eller når en dialogboks er aktiv."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -10875,7 +10891,7 @@ msgstr "Endre skjermsparerinnstillingene. De tilgjengelige alternativene bestemm
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
-msgstr "Forhåndsvis valgt skjermbeskytter."
+msgstr "Forhåndsvis den valgte skjermsparer."
 
 msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
@@ -10883,7 +10899,7 @@ msgstr "Hvis musikk blir avspilt, så vil XBMC benytte den valgte visualiseringe
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
-msgstr "Demp skjermen når medier blir satt i pause. Benyttes ikke når 'dempet' er valg som skjermsparer."
+msgstr "Demp skjermen når medier blir satt i pause. Benyttes ikke når «dempet» er valg som skjermsparer."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10911,7 +10927,7 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Vis plotinformasjon for usett media i videobiblioteket."
+msgstr "Vis fortellingsinformasjon for media som ikke er sett i videobiblioteket."
 
 msgctxt "#36142"
 msgid "No info available yet."
@@ -10923,15 +10939,15 @@ msgstr "Hent miniatyrbilder for skuespillere når medier skannes."
 
 msgctxt "#36144"
 msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
-msgstr "Fjern knutepunkt for TV-serier, skifter mellom 'Kun en sesong (forvalgt), 'Alltid' og 'Aldri'."
+msgstr "Fjern knutepunkt for TV-serier, skifter mellom «Kun en sesong (forvalgt)», «Alltid» og «Aldri»."
 
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
-msgstr "Grupper filmer i \"film sett\" når du bler i filmbiblioteket."
+msgstr "Grupper filmer i «filmsamlinger» når du blar i filmbiblioteket."
 
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
-msgstr "Sjekk etter nye mediefiler når XBMC starter."
+msgstr "Se etter nye mediefiler når XBMC starter."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -10939,7 +10955,7 @@ msgstr "Skjul statuslinjen når biblioteker skannes."
 
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
-msgstr "Fjern elementer fra biblioteket som ikke er tilgjengelige (har fått nytt navn, blitt slettet eller som befinner seg på eksterne lagringsmedier som ikke er tilkoblet)."
+msgstr "Fjern oppføringer fra biblioteket som ikke er tilgjengelige (har fått nytt navn, blitt slettet eller som befinner seg på eksterne lagringsmedier som ikke er tilkoblet)."
 
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
@@ -10955,11 +10971,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "Aktiver automatisk avspilling av den neste filen i den aktiverte listen."
+msgstr "Aktiver automatisk avspilling av den neste oppføringen i den aktiverte listen."
 
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
-msgstr "Endre metodene brukt for å bearbeide og vise video."
+msgstr "Juster metodene brukt for å bearbeide og vise video."
 
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
@@ -11051,7 +11067,7 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Skift mellom Velg, Spill (forvalgt), Fortsett og Vis Informasjon. Velg vil velge et element, med andre ord åpne en mappe i filmodus. Fortsett vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt. "
+msgstr "Skift mellom «Velg», «Spill (forvalgt)», «Fortsett» og «Vis informasjon». «Velg» vil velge en oppføring, med andre ord åpne en mappe i filmodus. «Fortsett» vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt. "
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11127,7 +11143,7 @@ msgstr "Tving en region ved DVD-avspilling."
 
 msgctxt "#36196"
 msgid "Attempt to skip 'unskippable' introductions before DVD menu."
-msgstr "Prøv å hoppe over introduksjoner man egentlig ikke kan hoppe over før DVD-menyen."
+msgstr "Prøv å hoppe over introduksjoner man «egentlig ikke kan hoppe over» før DVD-menyen."
 
 msgctxt "#36197"
 msgid "No info available yet."
@@ -11135,11 +11151,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for filminformasjon. Se tilleggshåndtereren for alternativer."
+msgstr "Velg standardkilden for filminformasjon. Se tilleggsbehandleren for alternativer."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for TV-serieinformasjon. Se tilleggshåndtereren for alternativer."
+msgstr "Velg standardkilden for TV-serieinformasjon. Se tilleggsbehandleren for alternativer."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11155,15 +11171,31 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "Aktiver PVR-funksjonen i XBMC. Dette betinger at du har minst et PVR-tillegg installert."
+msgstr "Aktiver PVR-funksjonen i XBMC. Dette betinger at du har minst ett PVR-tillegg installert."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Hent kanalgrupper fra PVR-kulisseklienten (hvis støttet). Dette vil slette brukeropprettede kanalgrupper som ikke eksisterer på kulisseklienten."
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
-msgstr "Sorter kanalene etter kanalnummer på serveren, men bruk XBMCs egen kanalnummerering."
+msgstr "Sorter kanalene etter kanalnummer på tjeneren, men bruk XBMCs egen kanalnummerering."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Bruk nummerering fra kulisseklienten istedenfor å manuelt konfigurere dem i XBMC."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
-msgstr "Åpne kanalhåndtereren, som gjør det mulig å endre kanalrekkefølge, kanalnavn, ikoner og lignende."
+msgstr "Åpne kanalbehandleren, som gjør det mulig å endre kanalrekkefølge, kanalnavn, ikoner og lignende."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Instruer kulisseklienten å søke etter kanaler (hvis støttet). "
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Slett kanal/EPG-database og etterpå hent data på ny fra kulisseklienten."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11205,6 +11237,14 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Viser standard EPG-vindu. Bruker tidslinjevisning som standard."
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "Antall dager med EPG-informasjon som skal hentes fra kulisseklienten. Standarden er 2 dager."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "Tid mellom datahentinger fra kulisseklienten. Standarden er 120 minutter."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ikke hent EPG-informasjon under TV-visning for å begrense prosessorbruk."
@@ -11215,7 +11255,11 @@ msgstr "Til vanlig blir EPG-infromasjon lagret i en lokal database for øke hast
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
-msgstr "Skjul etiketten \"ingen informasjon er tilgjengelig\" når det ikke er mulig å hente EPG-informasjon for en kanal."
+msgstr "Skjul etiketten «ingen informasjon er tilgjengelig» når det ikke er mulig å hente EPG-informasjon for en kanal."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "Slett EPG-databasen i XBMC og etterpå hent data på ny fra kulisseklient."
 
 msgctxt "#36226"
 msgid "No info available yet."
@@ -11228,6 +11272,10 @@ msgstr "Vis valgt kanalstrøm i et lite vindu istedenfor fullskjerm."
 msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Vis den sist sette kanalen hvis det byttes til Live-TV."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr "Vis informasjon om signalkvaliteten i kodekinformasjonsvinduet (hvis støttet av tillegget og kulisseklienten)"
 
 msgctxt "#36230"
 msgid "No info available yet."
@@ -11245,13 +11293,37 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr "Varigheten på opptakene når opptaksknappen trykkes, eller når et nytt, manuellt tidsur opprettes. Standarden er 180 minutter."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
+msgstr "Opptaksprioritet. Et høyere tall betyr en høyere prioritet. Standarden er 50. Ikke støttet av alle tillegg og kulisseklienter."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
+msgstr "Slett opptak etter denne perioden. Standarden er 99 dager. Ikke støttet av alle tillegg og kulisseklienter."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
+msgstr "Start opptaket før det fastsatte tidspunktet. Standarden er 2 minutter. Ikke støttet av alle tillegg og kulisseklienter."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
+msgstr "Avslutt opptak etter det fastsatte tidspunktet.. Standarden er 10 minutter. Ikke støttet av alle tillegg eller kulisseklienter."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Vis en melding når tidsur blir lagt til, er ferdige eller blir fjernet av kulisseklienten."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Kjør \"våkne opp kommandoen\" under når XBMC avsluttes eller går i dvalemodus. Tidsstempelet til det neste, planlagte opptaket blir sent som et parameter."
+msgstr "Kjør «våkne opp kommandoen» under, når XBMC avsluttes eller går i dvalemodus. Tidsstempelet til det neste, planlagte opptaket blir sent som et parameter."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
@@ -11259,7 +11331,7 @@ msgstr "Kommandoen vil ikke bli kjørt når et opptak blir startet innen denne t
 
 msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
-msgstr "Kommandoen som skal kjøres. Standarden er '/usr/bin/setwakeup.sh'."
+msgstr "Kommandoen som skal kjøres. Standarden er «/usr/bin/setwakeup.sh»."
 
 msgctxt "#36244"
 msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
@@ -11279,15 +11351,15 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
-msgstr "Spør etter en pin-kode for å få tilgang til låste kanaler. Kanaler kan bli markert som låste i kanalhåndtereren på generelt-fanen. Låste kanaler kan ikke spilles av eller bli tatt opp uten å oppgi en pin-kode, og for disse kanalene er EPG-informasjonen skjult."
+msgstr "Spør etter en PIN-kode for å få tilgang til låste kanaler. Kanaler kan bli markert som låste i kanalhåndtereren på generelt-fanen. Låste kanaler kan ikke spilles av eller bli tatt opp uten å oppgi en pin-kode, og for disse kanalene er EPG-informasjonen skjult."
 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
-msgstr "Vennligst oppgi en ny pin-kode for å låse opp låste kanaler."
+msgstr "Vennligst oppgi en ny PIN-kode for å låse opp låste kanaler."
 
 msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
-msgstr "Spør etter pin-koden på nytt når det forsøkes å få tilgang til en låst kanal og det i denne tidsperioden ikke er blitt spurt etter koden. Standarden er 300 sekunder."
+msgstr "Spør etter PIN-koden på nytt når det forsøkes å få tilgang til en låst kanal og det i denne tidsperioden ikke er blitt spurt etter koden. Standarden er 300 sekunder."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11319,11 +11391,11 @@ msgstr "Velg standardkilden for albuminformasjon"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Velg standardkilden for artistinformasjon. Se tilleggshåndtereren for alternativer."
+msgstr "Velg standardkilden for artistinformasjon. Se tilleggsbehandleren for alternativer."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
-msgstr "Skjekk etter nye og fjernede mediefiler når XBMC starter."
+msgstr "Se etter nye og fjernede mediefiler når XBMC starter."
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
@@ -11339,7 +11411,7 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
-msgstr "XBMC vil automatisk spille av det neste elementet i den gjendende mappen. For eksempel, i Filviser: Etter at et spor er blitt spilt av vil XBMC automatisk spille av det neste sporet i samme mappe."
+msgstr "XBMC vil automatisk spille av den neste oppføringen i den gjeldende mappen. For eksempel, i «Visning»: Etter at et spor er blitt spilt av vil XBMC automatisk spille av det neste sporet i samme mappe."
 
 msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
@@ -11371,7 +11443,7 @@ msgstr "Tillat at det tones ut mellom spor som er fra det samme albumet."
 
 msgctxt "#36273"
 msgid "Select the visualization that will be displayed while listening to music."
-msgstr "Velg visualiseringen som vil bli vist når musikk spilles av."
+msgstr "Velg visualiseringen som vil bli vist når du lytter til musikk."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11379,11 +11451,11 @@ msgstr "Les knagginformasjonen fra låtfiler. For store mapper kan dette øke le
 
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
-msgstr "Reguler måten låtnavn blir vist i brukergrensesnittet. ID3-knagger må være aktivert for at dette skal fungere korrekt."
+msgstr "Kontroller måten låtnavn blir vist i brukergrensesnittet. ID3-knagger må være aktivert for at dette skal fungere korrekt."
 
 msgctxt "#36276"
 msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
-msgstr "Brukes til informasjonen på høyresiden av brukergrensesnittet. Brukes vanligvis for å vise en låts lengde."
+msgstr "Brukes til informasjonen på høyresiden av brukergrensesnittet. Brukes vanligvis for å vise et spors varighet."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11403,7 +11475,7 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
-msgstr "XMBC vil søke etter miniatyrer på delte ressurser og optiske medier. Dette kan forsinke visningen av nettverksmapper."
+msgstr "XMBC vil søke etter miniatyrer på nettverksstasjoner og optiske medier. Dette kan forsinke visningen av nettverksmapper."
 
 msgctxt "#36282"
 msgid "No info available yet."
@@ -11507,11 +11579,11 @@ msgstr "Hvis EXIF-informasjon (dato, tid, kameratype, etc.) eksisterer, vil den 
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
-msgstr "Automatisk generer bildeminiatyrer når en bildemappe åpnes."
+msgstr "Automatisk skap bildeminiatyrer når en bildemappe åpnes."
 
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr "Bilder vil automatisk bli rotert i henhold til EXIF-informasjon, hvis denne finnes."
+msgstr "Bilder vil automatisk bli rotert i henhold til informasjonen i EXIF-knaggen, hvis dette finnes."
 
 msgctxt "#36309"
 msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
@@ -11535,7 +11607,7 @@ msgstr "Bilder i en lysbildefremvisning vil panorere og zoome mens de vises."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Vis lysbilder i tilfeldig rekkefølge."
+msgstr "Vis lysbilder i en tilfeldig rekkefølge."
 
 msgctxt "#36315"
 msgid "No info available yet."
@@ -11551,7 +11623,7 @@ msgstr "Velg opp til tre plasseringer hvor været kan vises."
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Spesifiser standardkilden for værinformasjon. Se tilleggshåndtereren for alternativer."
+msgstr "Spesifiser standardkilden for værinformasjon. Se tilleggsbehandleren for alternativer."
 
 msgctxt "#36319"
 msgid "No info available yet."
@@ -11571,11 +11643,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36323"
 msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "Aktiver UPnP-tjerneren. Dette vil gjøre det mulig å strømme media til enhver UPnP-tjener."
+msgstr "Aktiver UPnP-tjerneren. Dette vil gjøre det mulig å strømme media til enhver UPnP-klient."
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
-msgstr "Når biblioteket oppdateres manuelt eller automatisk, gi beskjed til UPnP-tjenere."
+msgstr "Når biblioteket oppdateres manuelt eller automatisk, gi beskjed til UPnP-klienter."
 
 msgctxt "#36325"
 msgid "No info available yet."
@@ -11591,23 +11663,23 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
-msgstr "Aktiver at fjernbrukere kan kontrollere XBMC gjennom den innebygde nett-tjeneren."
+msgstr "Aktiver at nettverksbrukere kan kontrollere XBMC gjennom den innebygde nettjeneren."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
-msgstr "Spesifiser nett-tjenerporten."
+msgstr "Spesifiser nettjenerporten."
 
 msgctxt "#36330"
 msgid "Define the webserver username."
-msgstr "Spesifiser brukernavnet for nett-tjeneren."
+msgstr "Spesifiser brukernavnet for nettjeneren."
 
 msgctxt "#36331"
 msgid "Define webserver password."
-msgstr "Spesifiser passordet for nett-tjeneren."
+msgstr "Spesifiser passordet for nettjeneren."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Velg mellom de installerte nettgrensesnitt-tilleggene."
+msgstr "Velg mellom nettgrensesnitt-tilleggene installert ved hjelp av tilleggsbehandleren."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
@@ -11689,6 +11761,22 @@ msgctxt "#36354"
 msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
 msgstr "Hovedfordelen er for flerskjermskonfigurasjoner, slik at XMBC kan brukes uten å automatisk minimere andre applikasjoner. Dette bruker litt flere ressurser og kan resultere i litt ujevn avspilling."
 
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "I en flerskjermskonfigurasjon blir skjermene hvor XBMC ikke vises mørklagt."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Eliminer vertikalskjæring."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Kalibrer brukergrensesnittet ved å juster for overskanning. Bruk dette vertøyet hvis bildet blir vist for stort eller for lite på skjermen."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Testmønster for maskinvarekalibrering av visning."
+
 msgctxt "#36359"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11697,9 +11785,57 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Tilkoblingstype til lydutstyret."
+
 msgctxt "#36362"
 msgid "Select your physical speaker layout."
 msgstr "Velg hvordan høyttalerne er plassert i rommet."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Forsterk AC3-strømmer som har blitt nedmikset til 2 kanaler."
+
+msgctxt "#36364"
+msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgstr "Oppmiks 2-kanals stereokilder slik at antall kanaler svarer til antallet høytalere."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode AC3-strømmer."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode DTS-strømmer."
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode AAC-strømmer."
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode LPCM-strømmer."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode TrueHD-strømmer."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode DTS-HD-strømmer."
+
+msgctxt "#36371"
+msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
+msgstr "Velg apparatet du bruker til å spille av lyd utkodet av XBMC slik som MP3 eller FLAC."
+
+msgctxt "#36372"
+msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
+msgstr "Velg apparatet du benytter til å spille av innkodede formater, dette er ethvert format huket av i «receiver kan ta imot»-alternativene ovenfor."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Kofigurer hvordan grensesnittlyder blir håndtert, slik som menynavigasjon og viktige varsler."
 
 msgctxt "#36374"
 msgid "No info available yet."
@@ -11708,6 +11844,10 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36375"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "Når aktivert, så vil tastaturpilene flytte det valgte området på det virituelle tastaturet. Når deaktivert, så vil tastatupilene flytte pekeren fra teksten din."
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
@@ -11721,13 +11861,81 @@ msgctxt "#36379"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Hvis internettilkoblingen din benytter en proxy, konfigurer den her."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Konfigurer hvilken proxy-type som benyttes."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Konfigurer proxy-tjeneradressen."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Konfigurer proxy-tjenerporten."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Konfigurer brukernavnet for proxy-tjeneren."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Konfigurer passordet til proxy-tjeneren."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Hvis du har begrenset båndbredde, så vil XBMC forsøke å holde seg innenfor disse verdiene."
+
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Skru av skjermen hvis inaktiv. Praktisk for TV-er som skrur seg av når det ikke oppdages et skjermsignal, men du ønsker ikke å avslutte eller sette datamaskinen i hvilemodus."
+
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Bestem hvor lenge XBMC bør være inaktiv før systemet avsluttes."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Bestem hva XBMC skal gjøre når systemet har vært inaktivt i en lang tidsperiode."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Skru feilrettingsloggen av eller på. Nyttig ved feilsøking."
+
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Mappen hvor skjermbildene fra XBMC lagres."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Spesifiser ytterlige biblioteker som skal inkluderes i fejlrettingsloggen."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgstr "Åpne systemlåsdialogen, hvor du kan konfigurere dine systemlåsalternativer."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Definer PIN-koden brukt for systemlåsen."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "Hvis aktivert, så kreves systemlåspassordet får å kunne låse opp XBMC ved oppstart."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Definer høyeste antall forsøk før XBMC blir avsluttet."
 
 msgctxt "#36399"
 msgid "No info available yet."
@@ -11797,6 +12005,10 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "Bestem standarden for Apple fjernkontroll."
+
 msgctxt "#36417"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11808,3 +12020,35 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Nedsatt syn)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Regissørkommentarer)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Regissørkommentarer 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(Undertekster)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Tvunget)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Regissørkommentarer)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Sist brukte profil"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Utforsk"
