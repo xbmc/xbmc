@@ -35,11 +35,11 @@ Please follow this process; it's the best way to get your work included in the p
 
 ```bash
    # clone your fork of the repo into the current directory in terminal
-   git clone git@github.com:<your username>/OpenELEC.tv.git
+   git clone git@github.com:<your username>/xbmc.git
    # navigate to the newly cloned directory
-   cd OpenELEC.tv
+   cd xbmc
    # assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/OpenELEC/OpenELEC.tv.git
+   git remote add upstream https://github.com/xbmc/xbmc.git
    ```
 
 - If you cloned a while ago, get the latest changes from upstream:
