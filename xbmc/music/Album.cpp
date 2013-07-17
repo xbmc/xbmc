@@ -55,8 +55,18 @@ CStdString CAlbum::GetGenreString() const
 
 bool CAlbum::operator<(const CAlbum &a) const
 {
-  if (strAlbum < a.strAlbum) return true;
-  if (strAlbum > a.strAlbum) return false;
+  // If both albums have empty musicBrainzAlbumIDs use album/artist match
+  // If either album has a musicbrainzID only use musicbrainz IDs
+  // Therefore an album with musicBrainz IDs will never match an album without musicBrainz IDs
+  if (strMusicBrainzAlbumID.IsEmpty() && a.strMusicBrainzAlbumID.IsEmpty())
+  {
+    if (strAlbum < a.strAlbum) return true;
+    if (strAlbum > a.strAlbum) return false;
+    if (artist < a.artist) return true;
+    if (artist > a.artist) return false;
+    return false;
+  }
+
   if (strMusicBrainzAlbumID < a.strMusicBrainzAlbumID) return true;
   if (strMusicBrainzAlbumID > a.strMusicBrainzAlbumID) return false;
   return false;
