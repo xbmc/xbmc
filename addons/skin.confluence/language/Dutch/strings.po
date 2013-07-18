@@ -539,3 +539,43 @@ msgstr "Weersvoorspelling ophalen..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Kaart & Waarschuwingen"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "WEER"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "AFBEELDINGEN"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "LIVE TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEO'S"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "SPEELFILMS"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV-SERIES"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUZIEK"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMMA'S"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "DISC AFSPELEN"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTEEM"
