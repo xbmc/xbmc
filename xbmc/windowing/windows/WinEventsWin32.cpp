@@ -531,6 +531,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               return(0);
             }
           }
+          break;
         case VK_CONTROL:
           if ( lParam & EXTENDED_KEYMASK )
             wParam = VK_RCONTROL;
