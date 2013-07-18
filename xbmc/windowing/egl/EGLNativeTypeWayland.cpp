@@ -1286,7 +1286,7 @@ bool CEGLNativeTypeWayland::CreateNativeDisplay()
     return false;
   }
   
-  CWinEventsWayland::SetWaylandDisplay(&priv->m_clientLibrary,
+  CWinEventsWayland::SetWaylandDisplay(priv->m_clientLibrary,
                                        priv->m_display->GetWlDisplay());
 
   priv->m_registry.reset(new xw::Registry(priv->m_clientLibrary,
