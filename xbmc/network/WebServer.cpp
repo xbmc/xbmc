@@ -838,17 +838,7 @@ void CWebServer::SetCredentials(const string &username, const string &password)
 
 bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
-  bool exists = false;
-  CFile *file = new CFile();
-  if (file->Open(path))
-  {
-    exists = true;
-    file->Close();
-  }
-
-  delete file;
-
-  if (exists)
+  if (CFile::Exists(path))
   {
     protocol = "http";
     string url;
@@ -861,9 +851,10 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
     CURL::Encode(strPath);
     url += strPath;
     details["path"] = url;
+    return true;
   }
 
-  return exists;
+  return false;
 }
 
 bool CWebServer::Download(const char *path, CVariant &result)
