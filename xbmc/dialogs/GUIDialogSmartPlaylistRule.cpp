@@ -257,7 +257,19 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     {
       CFileItemPtr item = items[i];
       CSmartPlaylist playlist;
-      if (playlist.OpenAndReadName(item->GetPath()))
+      // don't list unloadable smartplaylists or any referencable smartplaylists
+      // which do not match the type of the current smartplaylist
+      if (!playlist.Load(item->GetPath()) ||
+         (m_rule.m_field == FieldPlaylist &&
+         (!CSmartPlaylist::CheckTypeCompatibility(m_type, playlist.GetType()) ||
+         (!playlist.GetGroup().empty() || playlist.IsGroupMixed()))))
+      {
+        items.Remove(i);
+        i -= 1;
+        continue;
+      }
+
+      if (!playlist.GetName().empty())
         item->SetLabel(playlist.GetName());
     }
     iLabel = 559;
