@@ -488,7 +488,7 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
   }
 }
 
-bool CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortBy sortBy /* = SortByPlaylistOrder */, SortOrder sortOrder /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */)
+bool CGUIViewState::AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks /* = LABEL_MASKS() */, SortBy sortBy /* = SortByPlaylistOrder */, SortOrder sortOrder /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */)
 {
   bool add = false;
   int sortLabel = 559;
@@ -520,9 +520,9 @@ bool CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS lab
   return add;
 }
 
-bool CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription)
+bool CGUIViewState::AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription)
 {
-  return AddPlaylistOrder(items, label_masks, sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes);
+  return AddAndSetSortMethod(items, label_masks, sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes);
 }
 
 

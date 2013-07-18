@@ -81,8 +81,8 @@ protected:
    \param label_mask the label masks for formatting items.
    \return True if a special playlist order has been added, false otherwise
    */
-  bool AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortBy sortBy = SortByPlaylistOrder, SortOrder sortOrder = SortOrderAscending, SortAttribute sortAttributes = SortAttributeNone);
-  bool AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription);
+  bool AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks = LABEL_MASKS(), SortBy sortBy = SortByPlaylistOrder, SortOrder sortOrder = SortOrderAscending, SortAttribute sortAttributes = SortAttributeNone);
+  bool AddAndSetSortMethod(const CFileItemList &items, LABEL_MASKS label_masks, SortDescription sortDescription);
 
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);
