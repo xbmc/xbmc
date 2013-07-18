@@ -2310,7 +2310,7 @@ bool CApplication::OnKey(const CKey& key)
           if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
 #elif defined(TARGET_LINUX)
           // In Linux paste is ctrl-shift-V
-          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == (CKey::MODIFIER_CTRL | CKey::MODIFIER_SHIFT))
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
 #else
           // Placeholder for other operating systems
           if (false)
