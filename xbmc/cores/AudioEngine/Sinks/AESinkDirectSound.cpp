@@ -403,7 +403,8 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames, 
     DWORD size = 0, sizeWrap = 0;
     if (m_BufferOffset >= m_dwBufferLen) // Wrap-around manually
       m_BufferOffset = 0;
-    HRESULT res = m_pBuffer->Lock(m_BufferOffset, m_dwChunkSize, &start, &size, &startWrap, &sizeWrap, 0);
+    DWORD dwWriteBytes = std::min((int)m_dwChunkSize, (int)len);
+    HRESULT res = m_pBuffer->Lock(m_BufferOffset, dwWriteBytes, &start, &size, &startWrap, &sizeWrap, 0);
     if (DS_OK != res)
     {
       CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);

@@ -191,7 +191,9 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_isDirty(false),
   m_uiBufferLen(0),
   m_avgTimeWaiting(50),
-  m_sinkLatency(0.0)
+  m_sinkLatency(0.0),
+  m_pBuffer(NULL),
+  m_bufferPtr(0)
 {
   m_channelLayout.Reset();
 }
@@ -315,6 +317,14 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   m_initialized = true;
   m_isDirty     = false;
 
+  // allow feeding less samples than buffer size
+  // if the device is opened exclusive and event driven, provided samples must match buffersize
+  // ActiveAE tries to align provided samples with buffer size but cannot guarantee (e.g. transcoding)
+  // this can be avoided by dropping the event mode which has not much benefit; SoftAE polls anyway
+  delete [] m_pBuffer;
+  m_pBuffer = new uint8_t[format.m_frames * format.m_frameSize];
+  m_bufferPtr = 0;
+
   return true;
 
 failed:
@@ -359,6 +369,9 @@ void CAESinkWASAPI::Deinitialize()
   SAFE_RELEASE(m_pDevice);
 
   m_initialized = false;
+
+  delete [] m_pBuffer;
+  m_bufferPtr = 0;
 }
 
 bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string &device)
@@ -446,7 +459,15 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
   LARGE_INTEGER timerFreq;
 #endif
 
-  unsigned int NumFramesRequested = frames;
+  unsigned int NumFramesRequested = m_format.m_frames;
+  unsigned int FramesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
+  if (m_bufferPtr != 0 || frames != m_format.m_frames)
+  {
+    memcpy(m_pBuffer+m_bufferPtr*m_format.m_frameSize, data, FramesToCopy*m_format.m_frameSize);
+    m_bufferPtr += FramesToCopy;
+    if (frames != m_format.m_frames)
+      return frames;
+  }
 
   if (!m_running) //first time called, pre-fill buffer then start audio client
   {
@@ -547,7 +568,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     #endif
     return INT_MAX;
   }
-  memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer
+  memcpy(buf, m_bufferPtr == 0 ? data : m_pBuffer, NumFramesRequested * m_format.m_frameSize); //fill buffer
+  m_bufferPtr = 0;
   hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
   if (FAILED(hr))
   {
@@ -557,7 +579,13 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames, bool 
     return INT_MAX;
   }
 
-  return NumFramesRequested;
+  if (FramesToCopy != frames)
+  {
+    m_bufferPtr = frames-FramesToCopy;
+    memcpy(m_pBuffer, data+FramesToCopy*m_format.m_frameSize, m_bufferPtr*m_format.m_frameSize);
+  }
+
+  return frames;
 }
 
 bool CAESinkWASAPI::SoftSuspend()
