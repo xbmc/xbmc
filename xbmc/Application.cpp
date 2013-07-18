@@ -2304,8 +2304,17 @@ bool CApplication::OnKey(const CKey& key)
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         {
-          // Check for ctrl-V
+          // Check for paste keypress
+#ifdef TARGET_WINDOWS
+          // In Windows paste is ctrl-V
           if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == CKey::MODIFIER_CTRL)
+#elif defined(TARGET_LINUX)
+          // In Linux paste is ctrl-shift-V
+          if (key.GetVKey() == XBMCVK_V && key.GetModifiers() == (CKey::MODIFIER_CTRL | CKey::MODIFIER_SHIFT))
+#else
+          // Placeholder for other operating systems
+          if (false)
+#endif
             action = CAction(ACTION_PASTE);
           // If the unicode is non-zero the keypress is a non-printing character
           else if (key.GetUnicode())
