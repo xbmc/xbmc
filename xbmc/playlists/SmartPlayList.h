@@ -79,7 +79,12 @@ public:
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
 
+  CStdString                  GetParameter() const;
+  void                        SetParameter(const CStdString &value);
+  void                        SetParameter(const std::vector<CStdString> &values);
+  CStdString                  GetLocalizedRule() const;
   CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+
   static Field                TranslateField(const char *field);
   static CStdString           TranslateField(Field field);
   static SortBy               TranslateOrder(const char *order);
@@ -100,10 +105,6 @@ public:
   static FIELD_TYPE           GetFieldType(Field field);
   static bool                 IsFieldBrowseable(Field field);
 
-  CStdString                  GetLocalizedRule() const;
-  CStdString                  GetParameter() const;
-  void                        SetParameter(const CStdString &value);
-  void                        SetParameter(const std::vector<CStdString> &values);
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;
@@ -136,6 +137,7 @@ public:
   virtual bool Save(CVariant &obj) const;
 
   CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
+  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
   std::string TranslateCombinationType() const;
 
   Combination GetType() const { return m_type; }
@@ -206,6 +208,7 @@ public:
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
   CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
+  void GetVirtualFolders(std::vector<CStdString> &virtualFolders) const;
 
   CStdString GetSaveLocation() const;
 
