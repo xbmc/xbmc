@@ -45,6 +45,7 @@ public:
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
     virtual bool         SoftSuspend                 ();
     virtual bool         SoftResume                  ();
+    virtual void         Drain                       ();
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
@@ -81,4 +82,5 @@ private:
 
     uint8_t            *m_pBuffer;
     int                 m_bufferPtr;
+    REFERENCE_TIME      m_hnsRequestedDuration;
 };
