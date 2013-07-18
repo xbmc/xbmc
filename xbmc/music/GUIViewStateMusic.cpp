@@ -259,7 +259,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   }
 
-  AddPlaylistOrder(items, labelMask, sorting);
+  AddAndSetSortMethod(items, labelMask, sorting);
   SetViewAsControl(view);
 
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
@@ -356,7 +356,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   else
     CLog::Log(LOGERROR,"Music Smart Playlist must be one of songs, mixed, albums or artists");
 
-  AddPlaylistOrder(items, labelMask, sorting);
+  AddAndSetSortMethod(items, labelMask, sorting);
   SetViewAsControl(view);
   
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
@@ -438,7 +438,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     sorting.sortOrder = SortOrderAscending;
   }
 
-  AddPlaylistOrder(items, LABEL_MASKS(), sorting);
+  AddAndSetSortMethod(items, LABEL_MASKS(), sorting);
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
@@ -555,7 +555,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     view = viewState->m_viewMode;
   }
 
-  AddPlaylistOrder(items, LABEL_MASKS(), sorting);
+  AddAndSetSortMethod(items, LABEL_MASKS(), sorting);
   if (view != VIEW_TYPE_NONE)
     SetViewAsControl(view);
 
