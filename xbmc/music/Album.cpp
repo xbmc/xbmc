@@ -38,6 +38,16 @@ CAlbum::CAlbum(const CFileItem& item)
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   genre = tag.GetGenre();
   artist = tag.GetAlbumArtist();
+  bool hasMusicBrainzAlbumArtist = !tag.GetMusicBrainzAlbumArtistID().empty();
+  const vector<string>& artists = hasMusicBrainzAlbumArtist ? tag.GetMusicBrainzAlbumArtistID() : tag.GetAlbumArtist();
+  for (vector<string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+  {
+    CStdString artistName = hasMusicBrainzAlbumArtist && !artist.empty() ? artist[0] : *it;
+    CStdString artistId = hasMusicBrainzAlbumArtist ? *it : StringUtils::EmptyString;
+    CStdString strJoinPhrase = (it == --artists.end() ? "" : g_advancedSettings.m_musicItemSeparator);
+    CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
+    artistCredits.push_back(artistCredit);
+  }
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
@@ -55,8 +65,17 @@ CStdString CAlbum::GetGenreString() const
 
 bool CAlbum::operator<(const CAlbum &a) const
 {
-  if (strAlbum < a.strAlbum) return true;
-  if (strAlbum > a.strAlbum) return false;
+  if (strMusicBrainzAlbumID.IsEmpty() && a.strMusicBrainzAlbumID.IsEmpty())
+  {
+    if (strAlbum < a.strAlbum) return true;
+    if (strAlbum > a.strAlbum) return false;
+
+    // This will do an std::vector compare (i.e. item by item)
+    if (artist < a.artist) return true;
+    if (artist > a.artist) return false;
+    return false;
+  }
+
   if (strMusicBrainzAlbumID < a.strMusicBrainzAlbumID) return true;
   if (strMusicBrainzAlbumID > a.strMusicBrainzAlbumID) return false;
   return false;

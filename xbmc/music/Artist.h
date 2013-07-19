@@ -36,8 +36,13 @@ public:
   long idArtist;
   bool operator<(const CArtist& a) const
   {
-    if (strArtist < a.strArtist) return true;
-    if (strArtist > a.strArtist) return false;
+    if (strMusicBrainzArtistID.IsEmpty() && a.strMusicBrainzArtistID.IsEmpty())
+    {
+      if (strArtist < a.strArtist) return true;
+      if (strArtist > a.strArtist) return false;
+      return false;
+    }
+
     if (strMusicBrainzArtistID < a.strMusicBrainzArtistID) return true;
     if (strMusicBrainzArtistID > a.strMusicBrainzArtistID) return false;
     return false;
@@ -102,8 +107,13 @@ public:
   : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID), m_strJoinPhrase(strJoinPhrase), m_boolFeatured(false)  {  }
   bool operator<(const CArtistCredit& a) const
   {
-    if (m_strArtist < a.m_strArtist) return true;
-    if (m_strArtist > a.m_strArtist) return false;
+    if (m_strMusicBrainzArtistID.empty() && a.m_strMusicBrainzArtistID.empty())
+    {
+      if (m_strArtist < a.m_strArtist) return true;
+      if (m_strArtist > a.m_strArtist) return false;
+      return false;
+    }
+
     if (m_strMusicBrainzArtistID < a.m_strMusicBrainzArtistID) return true;
     if (m_strMusicBrainzArtistID > a.m_strMusicBrainzArtistID) return false;
     return false;

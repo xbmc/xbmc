@@ -364,12 +364,15 @@ int CMusicDatabase::AddSong(const int idAlbum,
     bHasKaraoke = CKaraokeLyricsFactory::HasLyrics(strPathAndFileName);
 #endif
 
-    strSQL=PrepareSQL("SELECT * FROM song WHERE (idAlbum = %i AND strMusicBrainzTrackID = '%s') OR (idAlbum=%i AND dwFileNameCRC='%ul' AND strTitle='%s' AND strMusicBrainzTrackID IS NULL)",
-                      idAlbum,
-                      strMusicBrainzTrackID.c_str(),
-                      idAlbum,
-                      crc,
-                      strTitle.c_str());
+    if (!strMusicBrainzTrackID.empty())
+      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum = %i AND strMusicBrainzTrackID = '%s'",
+                          idAlbum,
+                          strMusicBrainzTrackID.c_str());
+    else
+      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum=%i AND dwFileNameCRC='%ul' AND strTitle='%s' AND strMusicBrainzTrackID IS NULL",
+                          idAlbum,
+                          crc,
+                          strTitle.c_str());
 
     if (!m_pDS->query(strSQL.c_str()))
       return -1;
@@ -497,10 +500,13 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    strSQL=PrepareSQL("SELECT * FROM album WHERE strMusicBrainzAlbumID = '%s' OR (strArtists = '%s' AND strAlbum like '%s' and strMusicBrainzAlbumID IS NULL)",
-                      strMusicBrainzAlbumID.c_str(),
-                      strArtist.c_str(),
-                      strAlbum.c_str());
+    if (!strMusicBrainzAlbumID.empty())
+      strSQL = PrepareSQL("SELECT * FROM album WHERE strMusicBrainzAlbumID = '%s'",
+                        strMusicBrainzAlbumID.c_str());
+    else
+      strSQL = PrepareSQL("SELECT * FROM album WHERE strArtists = '%s' AND strAlbum like '%s' and strMusicBrainzAlbumID IS NULL",
+                          strArtist.c_str(),
+                          strAlbum.c_str());
     m_pDS->query(strSQL.c_str());
 
     if (m_pDS->num_rows() == 0)
@@ -607,9 +613,13 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist, const CStdString& str
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-     strSQL = PrepareSQL("SELECT * FROM artist WHERE strMusicBrainzArtistID = '%s' OR (strArtist = '%s' AND strMusicBrainzArtistID IS NULL)",
-                         strMusicBrainzArtistID.IsEmpty() ? "x" : strMusicBrainzArtistID.c_str(),
-                         strArtist.c_str());
+    if (!strMusicBrainzArtistID.empty())
+      strSQL = PrepareSQL("SELECT * FROM artist WHERE strMusicBrainzArtistID = '%s'",
+                          strMusicBrainzArtistID.c_str());
+    else
+      strSQL = PrepareSQL("SELECT * FROM artist WHERE strArtist = '%s' AND strMusicBrainzArtistID IS NULL",
+                          strArtist.c_str());
+
     m_pDS->query(strSQL.c_str());
 
     if (m_pDS->num_rows() == 0)
