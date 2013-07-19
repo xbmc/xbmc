@@ -1203,8 +1203,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType,
       if (!playlist.Load(playlistFile))
         continue;
 
-      if (playlist.GetType().IsEmpty() || playlist.GetType().Equals(strType) ||
-         (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")))
+      if (CSmartPlaylist::CheckTypeCompatibility(playlist.GetType(), strType))
         playlist.GetVirtualFolders(virtualFolders);
     }
   }
@@ -1708,4 +1707,20 @@ bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
     empty = m_limit <= 0 && m_orderField == SortByNone && m_orderDirection == SortOrderNone;
 
   return empty;
+}
+
+bool CSmartPlaylist::CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight)
+{
+  if (typeLeft.Equals(typeRight))
+    return true;
+
+  if (typeLeft.Equals("mixed") &&
+     (typeRight.Equals("songs") || typeRight.Equals("musicvideos")))
+    return true;
+
+  if (typeRight.Equals("mixed") &&
+     (typeLeft.Equals("songs") || typeLeft.Equals("musicvideos")))
+    return true;
+
+  return false;
 }

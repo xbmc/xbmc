@@ -219,6 +219,7 @@ public:
 
   static bool IsVideoType(const CStdString &type);
   static bool IsMusicType(const CStdString &type);
+  static bool CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
 private:
