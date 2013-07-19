@@ -296,6 +296,12 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
           CStdString strItemName = pIt->FirstChild()->Value();
 
           pIt = pNode->FirstChild("reference");
+
+          // Workaround for the url encode in strFilter so the compare in the next IF works fine.
+          strFilter.Replace("%3a",":");
+  			  strFilter.Replace("%2f","/");
+				  strFilter.Replace("&submode=4","");
+          
           if (strFilter.Equals(pIt->FirstChild()->Value()))
           {
             pIt = pNode->FirstChild("service");
