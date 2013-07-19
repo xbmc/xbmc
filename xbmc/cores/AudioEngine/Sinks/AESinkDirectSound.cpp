@@ -442,6 +442,23 @@ void CAESinkDirectSound::Stop()
     m_pBuffer->Stop();
 }
 
+void CAESinkDirectSound::Drain()
+{
+  if (!m_initialized || m_isDirtyDS)
+    return;
+
+  m_pBuffer->Stop();
+  HRESULT res = m_pBuffer->SetCurrentPosition(0);
+  if (DS_OK != res)
+  {
+    CLog::Log(LOGERROR,__FUNCTION__ ": SetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
+    m_isDirtyDS = true;
+    return;
+  }
+  m_BufferOffset = 0;
+  UpdateCacheStatus();
+}
+
 double CAESinkDirectSound::GetDelay()
 {
   if (!m_initialized)
@@ -683,10 +700,6 @@ void CAESinkDirectSound::CheckPlayStatus()
 bool CAESinkDirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_runLock);
-  // TODO: Check to see if we may have cycled around since last time
-  unsigned int time = XbmcThreads::SystemClockMillis();
-  if (time == m_LastCacheCheck)
-    return true; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
   DWORD playCursor = 0, writeCursor = 0;
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
@@ -697,7 +710,6 @@ bool CAESinkDirectSound::UpdateCacheStatus()
     return false;
   }
 
-  m_LastCacheCheck = time;
   // Check the state of the ring buffer (P->O->W == underrun)
   // These are the logical situations that can occur
   // O: CurrentOffset  W: WriteCursor  P: PlayCursor
@@ -729,7 +741,8 @@ bool CAESinkDirectSound::UpdateCacheStatus()
       return false;
     }
   }
-  else m_BufferTimeouts = 0;
+  else 
+    m_BufferTimeouts = 0;
 
   // Calculate available space in the ring buffer
   if (playCursor == m_BufferOffset && m_BufferOffset ==  writeCursor) // Playback is stopped and we are all at the same place

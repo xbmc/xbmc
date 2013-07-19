@@ -39,6 +39,7 @@ public:
   virtual bool IsCompatible(const AEAudioFormat format, const std::string &device);
 
   virtual void         Stop               ();
+  virtual void         Drain              ();
   virtual double       GetDelay           ();
   virtual double       GetCacheTime       ();
   virtual double       GetCacheTotal      ();
