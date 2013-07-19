@@ -179,6 +179,8 @@ public:
   void SetType(const CStdString &type); // music, video, mixed
   const CStdString& GetName() const { return m_playlistName; };
   const CStdString& GetType() const { return m_playlistType; };
+  bool IsVideoType() const;
+  bool IsMusicType() const;
 
   void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
   bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
@@ -214,6 +216,9 @@ public:
 
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
+
+  static bool IsVideoType(const CStdString &type);
+  static bool IsMusicType(const CStdString &type);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
 private:

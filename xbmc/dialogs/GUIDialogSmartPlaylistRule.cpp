@@ -103,7 +103,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   videodatabase.Open();
 
   std::string basePath;
-  if (m_type.Equals("songs") || m_type.Equals("albums") || m_type.Equals("artists") || m_type.Equals("mixed"))
+  if (CSmartPlaylist::IsMusicType(m_type))
     basePath = "musicdb://";
   else
     basePath = "videodb://";
@@ -153,7 +153,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums") || m_type.Equals("artists"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetArtistsNav("musicdb://artists/", items, m_rule.m_field == FieldAlbumArtist, -1);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
@@ -165,7 +165,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldAlbum)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetAlbumsNav("musicdb://albums/", items);
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
@@ -182,9 +182,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldYear)
   {
-    if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))
+    if (CSmartPlaylist::IsMusicType(m_type))
       database.GetYearsNav("musicdb://years/", items);
-    if (!m_type.Equals("songs") && !m_type.Equals("albums"))
+    if (!m_type.Equals("songs") && !m_type.Equals("albums") && !m_type.Equals("artists"))
     {
       CFileItemList items2;
       videodatabase.GetYearsNav(basePath + "years/", items2, type);

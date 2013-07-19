@@ -160,9 +160,7 @@ namespace XFILE
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
-    else if (playlist.GetType().Equals("artists") ||
-             playlist.GetType().Equals("albums") ||
-             playlist.GetType().Equals("songs") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
+    else if (playlist.IsMusicType() || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
       if (db.Open())
@@ -329,7 +327,7 @@ namespace XFILE
   {
     CFileItemList list;
     bool filesExist = false;
-    if (playlistType == "songs" || playlistType == "albums" || playlistType == "artists")
+    if (CSmartPlaylist::IsMusicType(playlistType))
       filesExist = CDirectory::GetDirectory("special://musicplaylists/", list, ".xsp", false);
     else // all others are video
       filesExist = CDirectory::GetDirectory("special://videoplaylists/", list, ".xsp", false);

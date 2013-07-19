@@ -1640,6 +1640,28 @@ void CSmartPlaylist::SetType(const CStdString &type)
   m_playlistType = type;
 }
 
+bool CSmartPlaylist::IsVideoType() const
+{
+  return IsVideoType(m_playlistType);
+}
+
+bool CSmartPlaylist::IsMusicType() const
+{
+  return IsMusicType(m_playlistType);
+}
+
+bool CSmartPlaylist::IsVideoType(const CStdString &type)
+{
+  return type == "movies" || type == "tvshows" || type == "episodes" ||
+         type == "musicvideos" || type == "mixed";
+}
+
+bool CSmartPlaylist::IsMusicType(const CStdString &type)
+{
+  return type == "artists" || type == "albums" ||
+         type == "songs" || type == "mixed";
+}
+
 CStdString CSmartPlaylist::GetWhereClause(const CDatabase &db, set<CStdString> &referencedPlaylists) const
 {
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
@@ -1652,10 +1674,10 @@ void CSmartPlaylist::GetVirtualFolders(std::vector<CStdString> &virtualFolders) 
 
 CStdString CSmartPlaylist::GetSaveLocation() const
 {
-  if (m_playlistType == "songs" || m_playlistType == "albums" || m_playlistType == "artists")
-    return "music";
-  else if (m_playlistType == "mixed")
+  if (m_playlistType == "mixed")
     return "mixed";
+  if (IsMusicType())
+    return "music";
   // all others are video
   return "video";
 }
