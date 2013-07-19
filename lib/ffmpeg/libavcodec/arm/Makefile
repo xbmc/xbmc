@@ -60,6 +60,7 @@ ARMV6-OBJS                             += arm/dsputil_init_armv6.o      \
 
 VFP-OBJS-$(CONFIG_DCA_DECODER)         += arm/dcadsp_vfp.o              \
                                           arm/synth_filter_vfp.o
+VFP-OBJS-$(CONFIG_FFT)                 += arm/fft_vfp.o
 VFP-OBJS-$(CONFIG_MDCT)                += arm/mdct_vfp.o
 VFP-OBJS-$(HAVE_ARMV6)                 += arm/fmtconvert_vfp.o
 
