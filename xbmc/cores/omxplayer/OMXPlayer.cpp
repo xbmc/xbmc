@@ -1183,15 +1183,6 @@ void COMXPlayer::Process()
           m_av_clock.OMXMediaTime(0.0);
       }
     }
-    else if (not_accepts_data && (audio_fifo_low || video_fifo_low))
-    {
-      CLog::Log(LOGDEBUG, "%s - Flush! M:%.6f-%.6f (A:%.6f V:%.6f) PEF:%d%d%d S:%.2f A:%.2f V:%.2f/T:%.2f (A:%d%d V:%d%d) A:%d%% V:%d%% (%.2f,%.2f)", __FUNCTION__,
-        stamp*1e-6, m_av_clock.OMXClockAdjustment()*1e-6, audio_pts*1e-6, video_pts*1e-6, m_av_clock.OMXIsPaused(), bOmxSentEOFs, not_accepts_data, m_playSpeed * (1.0f/DVD_PLAYSPEED_NORMAL),
-        audio_pts == DVD_NOPTS_VALUE ? 0.0:audio_fifo, video_pts == DVD_NOPTS_VALUE ? 0.0:video_fifo, m_threshold,
-        audio_fifo_low, audio_fifo_high, video_fifo_low, video_fifo_high,
-        m_omxPlayerAudio.GetLevel(), m_omxPlayerVideo.GetLevel(), m_omxPlayerAudio.GetDelay(), (float)m_omxPlayerAudio.GetCacheTotal());
-      FlushBuffers(false);
-    }
     else if(!m_Pause && (bOmxSentEOFs || not_accepts_data || (audio_fifo_high && video_fifo_high)))
     {
       if (m_av_clock.OMXIsPaused())
