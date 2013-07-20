@@ -65,7 +65,8 @@ wstring trimRight(const wstring &str)
 int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  int64_t result = strtoll(trimRight(str).c_str(), &end, 0);
+  string tmp = trimRight(str);
+  int64_t result = strtoll(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -75,7 +76,8 @@ int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  int64_t result = wcstoll(trimRight(str).c_str(), &end, 0);
+  wstring tmp = trimRight(str);
+  int64_t result = wcstoll(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -85,7 +87,8 @@ int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
 uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  uint64_t result = strtoull(trimRight(str).c_str(), &end, 0);
+  string tmp = trimRight(str);
+  uint64_t result = strtoull(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -95,7 +98,8 @@ uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
 uint64_t str2uint64(const wstring &str, uint64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  uint64_t result = wcstoull(trimRight(str).c_str(), &end, 0);
+  wstring tmp = trimRight(str);
+  uint64_t result = wcstoull(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -105,7 +109,8 @@ uint64_t str2uint64(const wstring &str, uint64_t fallback /* = 0 */)
 double str2double(const string &str, double fallback /* = 0.0 */)
 {
   char *end = NULL;
-  double result = strtod(trimRight(str).c_str(), &end);
+  string tmp = trimRight(str);
+  double result = strtod(tmp.c_str(), &end);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -115,7 +120,8 @@ double str2double(const string &str, double fallback /* = 0.0 */)
 double str2double(const wstring &str, double fallback /* = 0.0 */)
 {
   wchar_t *end = NULL;
-  double result = wcstod(trimRight(str).c_str(), &end);
+  wstring tmp = trimRight(str);
+  double result = wcstod(tmp.c_str(), &end);
   if (end == NULL || *end == '\0')
     return result;
 
