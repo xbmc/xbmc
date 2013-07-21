@@ -4662,10 +4662,35 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
   if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
   {
     CStdString localPath = mediaPart->GetProperty("file").asString();
+    CStdString mediaKey = mediaPart->GetProperty("key").asString();
     if (CFile::Exists(localPath))
     {
       item.SetPath(localPath);
       usingLocalPath = true;
+    }
+    else if (mediaKey.find("/plugins/") != -1 || mediaKey.find("/serviceFunction/") != -1)
+    {
+      CStdString mediaItemKey = mediaItem->GetPath();
+      /* ugly hacky code to grab the actual media key _without_ the plexserver path */
+      int begin, end;
+      for (int i = 0; i < mediaItemKey.size(); i++)
+      {
+        if (mediaItemKey[i] != mediaKey[i])
+        {
+          begin = i + 1;
+          break;
+        }
+      }
+      for (int i = 1; i < mediaItemKey.size(); i++)
+      {
+        if (mediaItemKey[0 - i] != mediaKey[0 - i])
+        {
+          end = i + 1;
+          break;
+        }
+      }
+      CStdString newKey = mediaKey.substr(begin,(0 - end));
+      item.SetPath(newKey);
     }
     else
       item.SetPath(mediaPart->GetPath());
