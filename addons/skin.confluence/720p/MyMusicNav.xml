@@ -56,9 +56,9 @@
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
 				<posx>0</posx>
-				<posy>110</posy>
+				<posy>60</posy>
 				<width>250</width>
-				<height>600</height>
+				<height>650</height>
 				<onleft>9000</onleft>
 				<onright>50</onright>
 				<onup>9000</onup>

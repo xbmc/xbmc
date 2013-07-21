@@ -28,6 +28,10 @@
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
+	<variable name="PlayList">
+		<value condition="Player.HasVideo">ActivateWindow(videoplaylist)</value>
+		<value condition="Player.HasAudio">ActivateWindow(musicplaylist)</value>
+	</variable>
 
 	<include name="BehindDialogFadeOut">
 		<control type="image">
@@ -148,7 +152,7 @@
 		<control type="image">
 			<description>LOGO</description>
 			<posx>15</posx>
-			<posy>50</posy>
+			<posy>0</posy>
 			<width>220</width>
 			<height>80</height>
 			<aspectratio>keep</aspectratio>
@@ -886,6 +890,15 @@
 			<textureradiofocus>GoFullscreen.png</textureradiofocus>
 			<textureradionofocus>GoFullscreen.png</textureradionofocus>
 			<visible>Player.HasMedia</visible>
+		</control>
+		<control type="button" id="612">
+			<description>Go to playlist</description>
+			<include>ButtonCommonValues</include>
+			<label>13350</label>
+			<onclick>$VAR[PlayList]</onclick>
+			<visible>Player.HasMedia</visible>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
+			<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist)</visible>
 		</control>
 	</include>
 	<include name="ScrollOffsetLabel">
