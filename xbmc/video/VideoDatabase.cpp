@@ -9146,42 +9146,49 @@ bool CVideoDatabase::CommitTransaction()
   return false;
 }
 
-void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
-                               VIDEODB_CONTENT_TYPE type)
+bool CVideoDatabase::SetSingleValue(VIDEODB_CONTENT_TYPE type, int dbId, int dbField, const std::string &strValue)
 {
+  string strSQL;
   try
   {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
 
-    CStdString strTable, strField;
+    string strTable, strField;
     if (type == VIDEODB_CONTENT_MOVIES)
     {
       strTable = "movie";
       strField = "idMovie";
     }
-    if (type == VIDEODB_CONTENT_TVSHOWS)
+    else if (type == VIDEODB_CONTENT_TVSHOWS)
     {
       strTable = "tvshow";
       strField = "idShow";
     }
-    if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+    else if (type == VIDEODB_CONTENT_EPISODES)
+    {
+      strTable = "episode";
+      strField = "idEpisode";
+    }
+    else if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       strTable = "musicvideo";
       strField = "idMVideo";
     }
 
-    if (strTable.IsEmpty())
-      return;
+    if (strTable.empty())
+      return false;
 
-    CStdString strSQL = PrepareSQL("update %s set c%02u='%s' where %s=%u",
-                                  strTable.c_str(), field, strDetail.c_str(), strField.c_str(), id);
-    m_pDS->exec(strSQL.c_str());
+    strSQL = PrepareSQL("UPDATE %s SET c%02u='%s' WHERE %s=%u",
+                                   strTable.c_str(), dbField, strValue.c_str(), strField.c_str(), dbId);
+    if (m_pDS->exec(strSQL.c_str()) == 0)
+      return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
   }
+  return false;
 }
 
 CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &name) const

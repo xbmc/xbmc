@@ -342,9 +342,9 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           CVideoDatabase database;
           if(database.Open())
           {
-            database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
-                               m_movieItem->GetVideoInfoTag()->m_iDbId,
-                               VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
+            database.SetSingleValue(VIDEODB_CONTENT_MOVIES, VIDEODB_ID_TRAILER,
+                                    m_movieItem->GetVideoInfoTag()->m_iDbId,
+                                    m_movieItem->GetVideoInfoTag()->m_strTrailer);
             database.Close();
             CUtil::DeleteVideoDatabaseDirectoryCache();
           }
