@@ -31,6 +31,7 @@
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfilesManager.h"
 #include "video/VideoDatabase.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
@@ -657,7 +658,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_RENAME:
-    CGUIWindowVideoBase::UpdateVideoTitle(item.get());
+    CGUIDialogVideoInfo::UpdateVideoItemTitle(item);
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Refresh();
     return true;

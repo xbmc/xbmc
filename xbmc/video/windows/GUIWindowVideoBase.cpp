@@ -1674,57 +1674,6 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
   }
 }
 
-//Add change a title's name
-void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
-{
-  // dont allow update while scanning
-  if (g_application.IsVideoScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
-  }
-
-  CVideoInfoTag detail;
-  CVideoDatabase database;
-  database.Open();
-  CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  dir.GetQueryParams(pItem->GetPath(),params);
-  int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
-
-  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-  if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
-      pItem->GetVideoInfoTag()->m_iEpisode > 0))
-  {
-    iType = VIDEODB_CONTENT_TVSHOWS;
-  }
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-    iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_artist.empty())
-    iType = VIDEODB_CONTENT_MUSICVIDEOS;
-  if (params.GetSetId() != -1 && params.GetMovieId() == -1)
-    iType = VIDEODB_CONTENT_MOVIE_SETS;
-  if (iType == VIDEODB_CONTENT_MOVIES)
-    database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == VIDEODB_CONTENT_MOVIE_SETS)
-    database.GetSetInfo(params.GetSetId(), detail);
-  if (iType == VIDEODB_CONTENT_EPISODES)
-    database.GetEpisodeInfo(pItem->GetPath(),detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == VIDEODB_CONTENT_TVSHOWS)
-    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
-    database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-
-  CStdString strInput;
-  strInput = detail.m_strTitle;
-
-  //Get the new title
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
-    return;
-
-  database.UpdateMovieTitle(iDbId, strInput, iType);
-}
-
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
 {
   // if partymode is active, we disable it

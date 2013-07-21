@@ -6710,7 +6710,11 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr ""
 
-#empty strings from id 16106 to 16199
+msgctxt "#16106"
+msgid "Manage ..."
+msgstr ""
+
+#empty strings from id 16107 to 16199
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#16200"

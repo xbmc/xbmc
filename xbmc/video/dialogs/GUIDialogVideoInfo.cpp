@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogVideoInfo.h"
+#include "Application.h"
 #include "guilib/GUIWindow.h"
 #include "Util.h"
 #include "guilib/GUIImage.h"
@@ -51,6 +52,7 @@
 #include "URL.h"
 #include "video/VideoThumbLoader.h"
 #include "filesystem/Directory.h"
+#include "filesystem/VideoDatabaseDirectory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -927,4 +929,68 @@ void CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
     itemSource.strPath = itemDir;
     sources.push_back(itemSource);
   }
+}
+
+int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
+{
+  if (item == NULL || !item->IsVideoDb() || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
+    return -1;
+
+  CContextButtons buttons;
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
+
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+  if (button < 0)
+    return -1;
+
+  bool result = false;
+  switch ((CONTEXT_BUTTON)button)
+  {
+    case CONTEXT_BUTTON_EDIT:
+      result = UpdateVideoItemTitle(item);
+
+    default:
+      return -1;
+  }
+
+  if (result)
+    return button;
+
+  return -1;
+}
+
+//Add change a title's name
+bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
+{
+  // dont allow update while scanning
+  if (g_application.IsVideoScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
+  CVideoDatabase database;
+  if (!database.Open())
+    return false;
+
+  int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
+  CVideoInfoTag detail;
+  VIDEODB_CONTENT_TYPE iType = (VIDEODB_CONTENT_TYPE)pItem->GetVideoContentType();
+  if (iType == VIDEODB_CONTENT_MOVIES)
+    database.GetMovieInfo("", detail, iDbId);
+  else if (iType == VIDEODB_CONTENT_MOVIE_SETS)
+    database.GetSetInfo(iDbId, detail);
+  else if (iType == VIDEODB_CONTENT_EPISODES)
+    database.GetEpisodeInfo(pItem->GetPath(), detail, iDbId);
+  else if (iType == VIDEODB_CONTENT_TVSHOWS)
+    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
+  else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
+    database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
+
+  // get the new title
+  if (!CGUIKeyboardFactory::ShowAndGetInput(detail.m_strTitle, g_localizeStrings.Get(16105), false))
+    return false;
+
+  database.UpdateMovieTitle(iDbId, detail.m_strTitle, iType);
+  return true;
 }
