@@ -941,6 +941,14 @@ bool CFileItem::IsSmartPlayList() const
   return URIUtils::HasExtension(m_strPath, ".xsp");
 }
 
+bool CFileItem::IsLibraryFolder() const
+{
+  if (HasProperty("library.filter") && GetProperty("library.filter").asBoolean())
+    return true;
+
+  return URIUtils::IsLibraryFolder(m_strPath);
+}
+
 bool CFileItem::IsPlayList() const
 {
   return CPlayListFactory::IsPlaylist(*this);

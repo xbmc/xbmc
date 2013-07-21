@@ -1699,7 +1699,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
   if (!items.IsVideoDb())
     filterWatched = true;
   if (items.GetContent() == "tvshows" &&
-     (items.IsSmartPlayList() || (items.HasProperty("library.filter") && items.GetProperty("library.filter").asBoolean())))
+     (items.IsSmartPlayList() || items.IsLibraryFolder()))
     node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
 
   int watchMode = CMediaSettings::Get().GetWatchedMode(m_vecItems->GetContent());
