@@ -124,11 +124,11 @@ namespace MUSIC_INFO
     static TagLib::uint bufferSize() { return 1024; };
 
   private:
-    std::string m_strFileName;
-    XFILE::CFile       m_file;
-    bool        m_bIsReadOnly;
-    bool        m_bIsOpen;
-    int         m_bufferSize;
+    std::string   m_strFileName;
+    XFILE::CFile  m_file;
+    bool          m_bIsReadOnly;
+    bool          m_bIsOpen;
+    int           m_bufferSize;
   };
 }
 
