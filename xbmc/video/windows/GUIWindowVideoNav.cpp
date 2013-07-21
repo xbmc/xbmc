@@ -1070,7 +1070,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
-  CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
 }
 
 // predicate used by sorting and set_difference
