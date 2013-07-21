@@ -102,7 +102,12 @@ msgctxt "#31033"
 msgid "Info"
 msgstr ""
 
-#empty strings from id 31034 to 31039
+#empty strings from id 31034 to 31038
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr ""
+
 #Extra labels
 
 msgctxt "#31040"

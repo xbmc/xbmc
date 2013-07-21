@@ -105,7 +105,7 @@
 					<include>ButtonCommonValues</include>
 					<label>587</label>
 				</control>
-				<control type="radiobutton" id="20">
+				<control type="radiobutton" id="98">
 					<visible>Container.CanFilterAdvanced</visible>
 					<description>Filter</description>
 					<include>ButtonCommonValues</include>
@@ -169,6 +169,24 @@
 					<onclick>xbmc.mastermode</onclick>
 					<selected>system.ismaster</selected>
 					<visible>system.haslocks</visible>
+				</control>
+				<control type="label" id="203">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31039</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="togglebutton" id="20">
+					<description>Update library</description>
+					<include>ButtonCommonValues</include>
+					<label>653</label>
+					<altlabel>13353</altlabel>
+					<alttexturefocus border="5">button-focus.png</alttexturefocus>
+					<alttexturenofocus>-</alttexturenofocus>
+					<usealttexture>library.isscanningvideo</usealttexture>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
