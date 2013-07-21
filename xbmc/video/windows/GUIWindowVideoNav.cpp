@@ -80,6 +80,8 @@ using namespace std;
 #define CONTROL_BTNFLATTEN        17
 #define CONTROL_LABELEMPTY        18
 
+#define CONTROL_UPDATE_LIBRARY    20
+
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
@@ -187,6 +189,14 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           CMediaSettings::Get().SetWatchedMode(m_vecItems->GetContent(), WatchedModeAll);
         CSettings::Get().Save();
         OnFilterItems(GetProperty("filter").asString());
+        return true;
+      }
+      else if (iControl == CONTROL_UPDATE_LIBRARY)
+      {
+        if (!g_application.IsVideoScanning())
+          OnScan("");
+        else
+          g_application.StopVideoScan();
         return true;
       }
     }
@@ -543,6 +553,8 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, CSettings::Get().GetBool("myvideos.flatten"));
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
 }
 
 bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemList &items)
@@ -857,10 +869,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (!item)
   {
-    if (g_application.IsVideoScanning())
-      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-    else
-      buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
+    // nothing to do here
   }
   else if (m_vecItems->GetPath().Equals("sources://video/"))
   {
@@ -945,7 +954,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (g_application.IsVideoScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           else
-            buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
+            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
         if (!item->IsPlugin() && !item->IsScript() && !item->IsLiveTV() && !item->IsAddonsPath() &&
              item->GetPath() != "sources://video/" && item->GetPath() != "special://videoplaylists/" &&
@@ -1029,18 +1038,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             }
           }
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
-        }
-
-        // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
-        if (g_application.IsVideoScanning())
-        {
-          if (node != NODE_TYPE_TITLE_TVSHOWS)
-            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        }
-        else
-        {
-          if (!(item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin()))
-            buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
         }
       }
 
@@ -1375,11 +1372,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // we need to clear any cached version of this tag's listing
       if (refreshNeeded) 
         Refresh();
-      return true;
-    }
-  case CONTEXT_BUTTON_UPDATE_LIBRARY:
-    {
-      OnScan("");
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:

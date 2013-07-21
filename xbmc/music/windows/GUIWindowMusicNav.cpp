@@ -72,6 +72,8 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BTN_FILTER        19
 #define CONTROL_LABELEMPTY        18
 
+#define CONTROL_UPDATE_LIBRARY    20
+
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
@@ -163,6 +165,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CStdString search(GetProperty("search").asString());
         CGUIKeyboardFactory::ShowAndGetFilter(search, true);
         SetProperty("search", search);
+        return true;
+      }
+      else if (iControl == CONTROL_UPDATE_LIBRARY)
+      {
+        if (!g_application.IsMusicScanning())
+          g_application.StartMusicScan("");
+        else
+          g_application.StopMusicScan();
         return true;
       }
     }
@@ -381,6 +391,8 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -535,14 +547,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   // noncontextual buttons
 
-  if (g_application.IsMusicScanning())
-    buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
-  else
-  {
-    if (!m_vecItems->IsPlugin())
-      buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
-  }
-
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }
 
@@ -609,12 +613,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO_ALL:
     OnInfoAll(itemNumber);
     return true;
-
-  case CONTEXT_BUTTON_UPDATE_LIBRARY:
-    {
-      g_application.StartMusicScan("");
-      return true;
-    }
 
   case CONTEXT_BUTTON_SET_DEFAULT:
     CSettings::Get().SetString("mymusic.defaultlibview", GetQuickpathName(item->GetPath()));

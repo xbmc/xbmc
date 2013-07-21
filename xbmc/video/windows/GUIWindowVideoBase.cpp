@@ -1405,13 +1405,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnInfo(itemNumber);
     return true;
 
-  case CONTEXT_BUTTON_STOP_SCANNING:
-    {
-      g_application.StopVideoScan();
-      return true;
-    }
   case CONTEXT_BUTTON_SCAN:
-  case CONTEXT_BUTTON_UPDATE_TVSHOW:
     {
       if( !item)
         return false;
