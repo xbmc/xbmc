@@ -143,12 +143,6 @@
 					<include>ButtonCommonValues</include>
 					<label>137</label>
 				</control>
-				<control type="radiobutton" id="17">
-					<description>Flatten</description>
-					<textwidth>170</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>20411</label>
-				</control>
 				<control type="radiobutton" id="16">
 					<description>PartyMode</description>
 					<label>589</label>

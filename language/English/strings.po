@@ -10068,7 +10068,10 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr ""
 
-#empty string with id 20456
+#: system/settings/settings.xml
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr ""
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -12975,7 +12978,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36183"
-msgid "No info available yet."
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr ""
 
 #: system/settings/settings.xml

@@ -602,8 +602,8 @@
           <level>1</level>
           <default>false</default>
         </setting>
-        <setting id="myvideos.flatten" type="boolean" label="0" help="36183">
-          <level>4</level>
+        <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
+          <level>1</level>
           <default>false</default>
         </setting>
       </group>
