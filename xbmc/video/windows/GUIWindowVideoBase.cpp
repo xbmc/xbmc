@@ -92,7 +92,6 @@ using namespace PVR;
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
-#define CONTROL_BTNSCAN            8
 
 #define PROPERTY_GROUP_BY           "group.by"
 #define PROPERTY_GROUP_MIXED        "group.mixed"
@@ -262,8 +261,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   // Select the current window as default item
   int nWindow = CSettings::Get().GetInt("myvideos.startwindow")-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
-
-  CONTROL_ENABLE(CONTROL_BTNSCAN);
   
   CGUIMediaWindow::UpdateButtons();
 }
