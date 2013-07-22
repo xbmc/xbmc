@@ -24,9 +24,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	mkdir -p $(PREFIX)/include/rpc
-	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
 	cd $(SOURCE); ./bootstrap
-	cd $(PLATFORM); patch -p0 < ../timeval.patch
+	cd $(SOURCE); patch -p0 < ../timeval.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
