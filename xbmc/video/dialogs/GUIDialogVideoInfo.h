@@ -23,6 +23,8 @@
 #include "guilib/GUIDialog.h"
 #include "FileItem.h"
 
+class CVideoDatabase;
+
 class CGUIDialogVideoInfo :
       public CGUIDialog
 {
@@ -60,6 +62,8 @@ protected:
   void OnGetArt();
   void OnGetFanart();
   void PlayTrailer();
+
+  static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
 
   CFileItemPtr m_movieItem;
   CFileItemList *m_castList;

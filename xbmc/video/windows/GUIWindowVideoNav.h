@@ -64,7 +64,6 @@ protected:
   virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   virtual void OnItemLoaded(CFileItem* pItem) {};
-  void OnLinkMovieToTvShow(int itemnumber, bool bRemove);
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();

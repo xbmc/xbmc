@@ -980,14 +980,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
-        if (m_database.HasContent(VIDEODB_CONTENT_TVSHOWS) && item->HasVideoInfoTag() &&
-           !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 &&
-            item->GetVideoInfoTag()->m_artist.empty() && item->GetVideoInfoTag()->m_iDbId >= 0) // movie entry
-        {
-          if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
-            buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
-          buttons.Add(CONTEXT_BUTTON_LINK_MOVIE,20384);
-        }
         if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_type == "movie") // movie entry
         {
           buttons.Add(CONTEXT_BUTTON_SET_MOVIESET,20465); // set or change movie set the movie belongs to
@@ -1374,17 +1366,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         Refresh();
       return true;
     }
-  case CONTEXT_BUTTON_UNLINK_MOVIE:
-    {
-      OnLinkMovieToTvShow(itemNumber, true);
-      Refresh();
-      return true;
-    }
-  case CONTEXT_BUTTON_LINK_MOVIE:
-    {
-      OnLinkMovieToTvShow(itemNumber, false);
-      return true;
-    }
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
       CStdString strPath;
@@ -1487,63 +1468,6 @@ void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
   Refresh();
-}
-
-void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
-{
-  CFileItemList list;
-  if (bRemove)
-  {
-    vector<int> ids;
-    if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
-      return;
-    for (unsigned int i=0;i<ids.size();++i)
-    {
-      CVideoInfoTag tag;
-      m_database.GetTvShowInfo("",tag,ids[i]);
-      CFileItemPtr show(new CFileItem(tag));
-      list.Add(show);
-    }
-  }
-  else
-  {
-    m_database.GetTvShowsNav("videodb://tvshows/titles",list);
-
-    // remove already linked shows
-    vector<int> ids;
-    if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
-      return;
-    for (int i=0;i<list.Size();)
-    {
-      unsigned int j;
-      for (j=0;j<ids.size();++j)
-      {
-        if (list[i]->GetVideoInfoTag()->m_iDbId == ids[j])
-          break;
-      }
-      if (j == ids.size())
-        i++;
-      else
-        list.Remove(i);
-    }
-  }
-  int iSelectedLabel = 0;
-  if (list.Size() > 1)
-  {
-    list.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
-    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-    pDialog->Reset();
-    pDialog->SetItems(&list);
-    pDialog->SetHeading(20356);
-    pDialog->DoModal();
-    iSelectedLabel = pDialog->GetSelectedLabel();
-  }
-  if (iSelectedLabel > -1)
-  {
-    m_database.LinkMovieToTvshow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,
-                                 list[iSelectedLabel]->GetVideoInfoTag()->m_iDbId, bRemove);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-  }
 }
 
 bool CGUIWindowVideoNav::OnClick(int iItem)
