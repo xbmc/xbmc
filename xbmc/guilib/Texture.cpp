@@ -87,7 +87,11 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     // we crash in CPicture::ScaleImage in ffmpegs swscale
     // because it tries to access beyond the source memory
     // (happens on osx and ios)
-    m_textureWidth = ((m_textureWidth + 1) / 2) * 2;
+    // UPDATE: don't just update to be on an even width;
+    // ffmpegs swscale relies on a 16-byte stride on some systems
+    // so the textureWidth needs to be a multiple of 16. see ffmpeg
+    // swscale headers for more info.
+    m_textureWidth = ((m_textureWidth + 15) / 16) * 16;
   }
 
   // check for max texture size
