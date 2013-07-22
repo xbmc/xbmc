@@ -977,6 +977,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
   }
 
+  if (type == VIDEODB_CONTENT_EPISODES &&
+      item->GetVideoInfoTag()->m_iBookmarkId > 0)
+    buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
+
   bool result = false;
   int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
   if (button >= 0)
@@ -1010,6 +1014,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
           result = SetMovieSet(item.get(), selectedSet.get());
         break;
       }
+
+      case CONTEXT_BUTTON_UNLINK_BOOKMARK:
+        database.DeleteBookMarkForEpisode(*item->GetVideoInfoTag());
+        result = true;
+        break;
 
       default:
         result = false;
