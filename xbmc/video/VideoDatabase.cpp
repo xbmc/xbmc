@@ -4741,6 +4741,33 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovie
   }
 }
 
+bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const CStdString& strNewSortTitle, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
+{
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+    if (iType != VIDEODB_CONTENT_MOVIES && iType != VIDEODB_CONTENT_TVSHOWS)
+      return false;
+
+    CStdString content = "movie";
+    if (iType == VIDEODB_CONTENT_TVSHOWS)
+      content = "tvshow";
+
+    if (SetSingleValue(iType, idDb, FieldSortTitle, strNewSortTitle))
+    {
+      AnnounceUpdate(content, idDb);
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (int idDb, const CStdString& strNewSortTitle, VIDEODB_CONTENT_TYPE iType) failed on ID: %i and Sort Title: %s", __FUNCTION__, idDb, strNewSortTitle.c_str());
+  }
+
+  return false;
+}
+
 /// \brief EraseVideoSettings() Erases the videoSettings table and reconstructs it
 void CVideoDatabase::EraseVideoSettings()
 {

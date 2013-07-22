@@ -68,6 +68,7 @@ protected:
   void OnGetFanart();
   void PlayTrailer();
 
+  static bool UpdateVideoItemSortTitle(const CFileItemPtr &pItem);
   static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
 
   CFileItemPtr m_movieItem;

@@ -949,6 +949,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   CContextButtons buttons;
   buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
+  if (type == VIDEODB_CONTENT_MOVIES || type == VIDEODB_CONTENT_TVSHOWS)
+    buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
+
   if (item->m_bIsFolder)
   {
     // Have both options for folders since we don't know whether all childs are watched/unwatched
@@ -989,6 +992,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
     {
       case CONTEXT_BUTTON_EDIT:
         result = UpdateVideoItemTitle(item);
+        break;
+
+      case CONTEXT_BUTTON_EDIT_SORTTITLE:
+        result = UpdateVideoItemSortTitle(item);
         break;
 
       case CONTEXT_BUTTON_MARK_WATCHED:
@@ -1270,6 +1277,34 @@ bool CGUIDialogVideoInfo::SetMovieSet(const CFileItem *movieItem, const CFileIte
 
   videodb.SetMovieSet(movieItem->GetVideoInfoTag()->m_iDbId, selectedSet->GetVideoInfoTag()->m_iDbId);
   return true;
+}
+
+bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
+{
+  // dont allow update while scanning
+  if (g_application.IsVideoScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
+  CVideoDatabase database;
+  if (!database.Open())
+    return false;
+
+  int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
+  CVideoInfoTag detail;
+  VIDEODB_CONTENT_TYPE iType = (VIDEODB_CONTENT_TYPE)pItem->GetVideoContentType();
+  if (iType == VIDEODB_CONTENT_MOVIES)
+    database.GetMovieInfo("", detail, iDbId);
+  else if (iType == VIDEODB_CONTENT_TVSHOWS)
+    database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
+
+  // get the new sort title
+  if (!CGUIKeyboardFactory::ShowAndGetInput(detail.m_strTitle, g_localizeStrings.Get(16107), false))
+    return false;
+
+  return database.UpdateVideoSortTitle(iDbId, detail.m_strTitle, iType);
 }
 
 bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database)
