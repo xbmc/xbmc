@@ -50,7 +50,6 @@ public:
 
   void AddToDatabase(int iItem);
   virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
-  static void MarkWatched(const CFileItemPtr &pItem, bool bMark);
 
   /*! \brief Show dialog allowing selection of wanted playback item */
   static bool ShowPlaySelection(CFileItemPtr& item);

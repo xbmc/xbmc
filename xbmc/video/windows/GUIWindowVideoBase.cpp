@@ -1438,7 +1438,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_MARK_WATCHED:
     {
       int newSelection = m_viewControl.GetSelectedItem() + 1;
-      MarkWatched(item,true);
+      CGUIDialogVideoInfo::MarkWatched(item, true);
       m_viewControl.SetSelectedItem(newSelection);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1446,7 +1446,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
-    MarkWatched(item,false);
+    CGUIDialogVideoInfo::MarkWatched(item, false);
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Refresh();
     return true;
@@ -1619,59 +1619,6 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
        m_vecItems->GetPath().Equals("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
-}
-
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
-{
-  if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
-    return;
-  // dont allow update while scanning
-  if (g_application.IsVideoScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
-  }
-
-  CVideoDatabase database;
-  if (database.Open())
-  {
-    CFileItemList items;
-    if (item->m_bIsFolder)
-    {
-      CStdString strPath = item->GetPath();
-      CDirectory::GetDirectory(strPath, items);
-    }
-    else
-      items.Add(item);
-
-    for (int i=0;i<items.Size();++i)
-    {
-      CFileItemPtr pItem=items[i];
-      if (pItem->m_bIsFolder)
-      {
-        MarkWatched(pItem, bMark);
-        continue;
-      }
-
-      if (pItem->HasVideoInfoTag() &&
-          (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-           (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-        continue;
-
-#ifdef HAS_UPNP
-      if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pItem, bMark))
-#endif
-      {
-        // Clear resume bookmark
-        if (bMark)
-          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-
-        database.SetPlayCount(*pItem, bMark ? 1 : 0);
-      }
-    }
-    
-    database.Close(); 
-  }
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)

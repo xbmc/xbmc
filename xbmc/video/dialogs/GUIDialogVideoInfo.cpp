@@ -53,6 +53,9 @@
 #include "video/VideoThumbLoader.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#ifdef HAS_UPNP
+#include "network/upnp/UPnP.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -946,6 +949,20 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   CContextButtons buttons;
   buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
+  if (item->m_bIsFolder)
+  {
+    // Have both options for folders since we don't know whether all childs are watched/unwatched
+    buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+    buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+  }
+  else
+  {
+    if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+    else
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+  }
+
   if (type == VIDEODB_CONTENT_MOVIES)
   {
     // only show link/unlink if there are tvshows available
@@ -968,6 +985,14 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
     {
       case CONTEXT_BUTTON_EDIT:
         result = UpdateVideoItemTitle(item);
+        break;
+
+      case CONTEXT_BUTTON_MARK_WATCHED:
+        result = MarkWatched(item, true);
+        break;
+
+      case CONTEXT_BUTTON_MARK_UNWATCHED:
+        result = MarkWatched(item, false);
         break;
 
       case CONTEXT_BUTTON_LINK_MOVIE:
@@ -1033,6 +1058,62 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
     return false;
 
   database.UpdateMovieTitle(iDbId, detail.m_strTitle, iType);
+  return true;
+}
+
+bool CGUIDialogVideoInfo::MarkWatched(const CFileItemPtr &item, bool bMark)
+{
+  if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
+    return false;
+
+  // dont allow update while scanning
+  if (g_application.IsVideoScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
+  CVideoDatabase database;
+  if (!database.Open())
+    return false;
+
+  CFileItemList items;
+  if (item->m_bIsFolder)
+  {
+    CStdString strPath = item->GetPath();
+    CDirectory::GetDirectory(strPath, items);
+  }
+  else
+    items.Add(item);
+
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pTmpItem = items[i];
+    if (pTmpItem->m_bIsFolder)
+    {
+      MarkWatched(pTmpItem, bMark);
+      continue;
+    }
+
+    if (pTmpItem->HasVideoInfoTag() &&
+       ((bMark && pTmpItem->GetVideoInfoTag()->m_playCount) ||
+        (!bMark && !pTmpItem->GetVideoInfoTag()->m_playCount)))
+      continue;
+
+#ifdef HAS_UPNP
+    if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pTmpItem, bMark))
+#endif
+    {
+      // Clear resume bookmark
+      if (bMark)
+        database.ClearBookMarksOfFile(pTmpItem->GetPath(), CBookmark::RESUME);
+
+      database.SetPlayCount(*pTmpItem, bMark ? 1 : 0);
+    }
+  }
+
+  database.Close();
+
   return true;
 }
 
