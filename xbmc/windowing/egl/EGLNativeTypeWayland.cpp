@@ -1253,7 +1253,7 @@ bool CEGLNativeTypeWayland::CheckCompatibility()
 
   return true;
 #else
-  return false
+  return false;
 #endif
 }
 
