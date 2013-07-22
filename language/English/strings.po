@@ -9976,7 +9976,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr ""
 
-#empty string with id 20435
+#: system/settings/settings.xml
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr ""
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -12967,7 +12970,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36182"
-msgid "No info available yet."
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
 msgstr ""
 
 #: system/settings/settings.xml

@@ -92,7 +92,6 @@ using namespace PVR;
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
-#define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
 
 #define PROPERTY_GROUP_BY           "group.by"
@@ -156,21 +155,15 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_STACK)
-      {
-        CSettings::Get().ToggleBool("myvideos.stackvideos");
-        CSettings::Get().Save();
-        UpdateButtons();
-        Update( m_vecItems->GetPath() );
-      }
 #if defined(HAS_DVD_DRIVE)
-      else if (iControl == CONTROL_PLAY_DVD)
+      if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
         MEDIA_DETECT::CAutorun::PlayDiscAskResume(g_mediaManager.TranslateDevicePath(""));
       }
+      else
 #endif
-      else if (iControl == CONTROL_BTNTYPE)
+      if (iControl == CONTROL_BTNTYPE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNTYPE);
         g_windowManager.SendMessage(msg);
@@ -271,10 +264,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
-
-  SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
-  SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, CSettings::Get().GetBool("myvideos.stackvideos"));
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_STACK, m_stackingAvailable);
   
   CGUIMediaWindow::UpdateButtons();
 }

@@ -143,12 +143,6 @@
 					<include>ButtonCommonValues</include>
 					<label>137</label>
 				</control>
-				<control type="radiobutton" id="7">
-					<description>Stack Toggle</description>
-					<textwidth>170</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>346</label>
-				</control>
 				<control type="radiobutton" id="17">
 					<description>Flatten</description>
 					<textwidth>170</textwidth>
