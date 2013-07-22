@@ -3,7 +3,7 @@ DEPS= ../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.5.0
+VERSION=1.6.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -23,6 +23,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
+	cd $(PLATFORM); patch -p0 < ../timeval.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
@@ -31,7 +32,7 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
 	rm -f $(PREFIX)/lib/libnfs.la $(PREFIX)/lib/libnfs.so $(PREFIX)/lib/libnfs.so.1
-	mv -f $(PREFIX)/lib/libnfs.so.1.0.5 $(PREFIX)/lib/libnfs.so
+	mv -f $(PREFIX)/lib/libnfs.so.1.0.6 $(PREFIX)/lib/libnfs.so
 	$(RPL) -e "libnfs.so.1" "libnfs.so\x00\x00" $(PREFIX)/lib/libnfs.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libnfs.so | grep ibrary
 	touch $@
