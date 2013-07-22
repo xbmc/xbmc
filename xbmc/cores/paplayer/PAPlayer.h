@@ -26,6 +26,7 @@
 #include "threads/Thread.h"
 #include "AudioDecoder.h"
 #include "threads/SharedSection.h"
+#include "utils/Job.h"
 
 #include "cores/IAudioCallback.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
@@ -33,8 +34,9 @@
 class IAEStream;
 
 class CFileItem;
-class PAPlayer : public IPlayer, public CThread
+class PAPlayer : public IPlayer, public CThread, public IJobCallback
 {
+friend class CQueueNextFileJob;
 public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
@@ -70,6 +72,8 @@ public:
   virtual bool SkipNext();
 
   static bool HandlesType(const CStdString &type);
+
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   struct
   {
@@ -136,8 +140,10 @@ private:
   CSharedSection      m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */
+  int                 m_jobCounter;
+  CEvent              m_jobEvent;
 
-  bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
+  bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true, bool job = false);
   void SoftStart(bool wait = false);
   void SoftStop(bool wait = false, bool close = true);
   void CloseAllStreams(bool fade = true);
