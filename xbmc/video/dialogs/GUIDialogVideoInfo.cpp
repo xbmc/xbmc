@@ -946,12 +946,18 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   CContextButtons buttons;
   buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
-  if (type == VIDEODB_CONTENT_MOVIES &&
-      database.HasContent(VIDEODB_CONTENT_TVSHOWS))
+  if (type == VIDEODB_CONTENT_MOVIES)
   {
-    buttons.Add(CONTEXT_BUTTON_LINK_MOVIE, 20384);
-    if (database.IsLinkedToTvshow(dbId))
-      buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE, 20385);
+    // only show link/unlink if there are tvshows available
+    if (database.HasContent(VIDEODB_CONTENT_TVSHOWS))
+    {
+      buttons.Add(CONTEXT_BUTTON_LINK_MOVIE, 20384);
+      if (database.IsLinkedToTvshow(dbId))
+        buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE, 20385);
+    }
+
+    // set or change movie set the movie belongs to
+    buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
   }
 
   bool result = false;
@@ -971,6 +977,14 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
       case CONTEXT_BUTTON_UNLINK_MOVIE:
         result = LinkMovieToTvShow(item, true, database);
         break;
+
+      case CONTEXT_BUTTON_SET_MOVIESET:
+      {
+        CFileItemPtr selectedSet;
+        if (GetSetForMovie(item.get(), selectedSet))
+          result = SetMovieSet(item.get(), selectedSet.get());
+        break;
+      }
 
       default:
         result = false;
@@ -1019,6 +1033,152 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
     return false;
 
   database.UpdateMovieTitle(iDbId, detail.m_strTitle, iType);
+  return true;
+}
+
+bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return false;
+
+  CStdString strHeading; strHeading.Format(g_localizeStrings.Get(20457));
+  CStdString baseDir;
+  baseDir.Format("videodb://movies/sets/%d", setItem->GetVideoInfoTag()->m_iDbId);
+
+  if (!CDirectory::GetDirectory(baseDir, originalMovies) || originalMovies.Size() <= 0) // keep a copy of the original members of the set
+    return false;
+
+  CFileItemList listItems;
+  if (!videodb.GetSortedVideos(MediaTypeMovie, "videodb://movies", SortDescription(), listItems) || listItems.Size() <= 0)
+    return false;
+
+  CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog == NULL)
+    return false;
+
+  listItems.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
+
+  dialog->Reset();
+  dialog->SetMultiSelection(true);
+  dialog->SetHeading(strHeading);
+  dialog->SetItems(&listItems);
+  vector<int> selectedIndices;
+  for (int i = 0; i < originalMovies.Size(); i++)
+  {
+    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++)
+    {
+      if (listItems.Get(listIndex)->GetVideoInfoTag()->m_iDbId == originalMovies[i]->GetVideoInfoTag()->m_iDbId)
+      {
+        selectedIndices.push_back(listIndex);
+        break;
+      }
+    }
+  }
+  dialog->SetSelected(selectedIndices);
+  dialog->EnableButton(true, 186);
+  dialog->DoModal();
+
+  if (dialog->IsConfirmed())
+  {
+    selectedMovies.Copy(dialog->GetSelectedItems());
+    return (selectedMovies.Size() > 0);
+  }
+  else
+    return false;
+}
+
+bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return false;
+
+  CFileItemList listItems;
+  CStdString baseDir = "videodb://movies/sets/";
+  if (!CDirectory::GetDirectory(baseDir, listItems) || listItems.Size() <= 0)
+    return false;
+  listItems.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
+
+  int currentSetId = 0;
+  CStdString currentSetLabel;
+
+  if (movieItem->GetVideoInfoTag()->m_iSetId > currentSetId)
+  {
+    currentSetId = movieItem->GetVideoInfoTag()->m_iSetId;
+    currentSetLabel = videodb.GetSetById(currentSetId);
+  }
+
+  if (currentSetId > 0)
+  {
+    // add clear item
+    CStdString strClear; strClear.Format(g_localizeStrings.Get(20467), currentSetLabel);
+    CFileItemPtr clearItem(new CFileItem(strClear));
+    clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
+    listItems.AddFront(clearItem, 0);
+    // add keep current set item
+    CStdString strKeep; strKeep.Format(g_localizeStrings.Get(20469), currentSetLabel);
+    CFileItemPtr keepItem(new CFileItem(strKeep));
+    keepItem->GetVideoInfoTag()->m_iDbId = currentSetId;
+    listItems.AddFront(keepItem, 1);
+  }
+
+  CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog == NULL)
+    return false;
+
+  CStdString strHeading; 
+  strHeading.Format(g_localizeStrings.Get(20466));
+  dialog->Reset();
+  dialog->SetHeading(strHeading);
+  dialog->SetItems(&listItems);
+  if (currentSetId >= 0)
+  {
+    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++) 
+    {
+      if (listItems.Get(listIndex)->GetVideoInfoTag()->m_iDbId == currentSetId)
+      {
+        dialog->SetSelected(listIndex);
+        break;
+      }
+    }
+  }
+  dialog->EnableButton(true, 20468); // new set via button
+  dialog->DoModal();
+
+  if (dialog->IsButtonPressed())
+  { // creating new set
+    CStdString newSetTitle;
+    if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, g_localizeStrings.Get(20468), false))
+      return false;
+    int idSet = videodb.AddSet(newSetTitle);
+    map<string, string> movieArt, setArt;
+    if (!videodb.GetArtForItem(idSet, "set", setArt))
+    {
+      videodb.GetArtForItem(movieItem->GetVideoInfoTag()->m_iDbId, "movie", movieArt);
+      videodb.SetArtForItem(idSet, "set", movieArt);
+    }
+    CFileItemPtr newSet(new CFileItem(newSetTitle));
+    newSet->GetVideoInfoTag()->m_iDbId = idSet;
+    selectedSet = newSet;
+    return true;
+  }
+  else if (dialog->IsConfirmed())
+  {
+    selectedSet = dialog->GetSelectedItem();
+    return (selectedSet != NULL);
+  }
+  else
+    return false;
+}
+
+bool CGUIDialogVideoInfo::SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return false;
+
+  videodb.SetMovieSet(movieItem->GetVideoInfoTag()->m_iDbId, selectedSet->GetVideoInfoTag()->m_iDbId);
   return true;
 }
 

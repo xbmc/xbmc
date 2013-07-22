@@ -48,6 +48,10 @@ public:
 
   static int ManageVideoItem(const CFileItemPtr &item);
   static bool UpdateVideoItemTitle(const CFileItemPtr &pItem);
+
+  static bool GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
+  static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
+  static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 protected:
   virtual void OnInitWindow();
   void Update();
