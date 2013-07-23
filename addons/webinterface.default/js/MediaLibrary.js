@@ -39,6 +39,7 @@ MediaLibrary.prototype = {
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
     $(document).bind('keydown', jQuery.proxy(this.handleKeyPress, this));
+    $(document).on('contextmenu', jQuery.proxy(this.handleContextMenu, this));
   },
   resetPage: function() {
     $('#musicLibrary').removeClass('selected');
@@ -120,10 +121,12 @@ MediaLibrary.prototype = {
 
     $('#spinner').hide();
   },
-  handleKeyPress: function(event) {
-    if (!$('#remoteControl').hasClass('selected')) {
-      return;
-    }
+  shouldHandleEvent: function (event) {
+    var inRemoteControl = $('#remoteControl').hasClass('selected');
+    return (!event.ctrlKey && !event.altKey && inRemoteControl);
+  },
+  handleKeyPress: function (event) {
+    if (!this.shouldHandleEvent(event)) { return true; }
 
     var keys = {
       8: 'back',        // Back space
@@ -134,8 +137,11 @@ MediaLibrary.prototype = {
       38: 'up',         // Up
       39: 'right',      // Right
       40: 'down',       // Down
-      107: 'volumeup',  // +
-      109: 'volumedown' // -
+      93: 'contextmenu',// "Right Click"
+      107: 'volumeup',  // + (num keypad)
+      109: 'volumedown',// - (num keypad)
+      187: 'volumeup',  // + (alnum keypad)
+      189: 'volumedown' // - (alnum keypad)
     };
 
     var which = event.which;
@@ -165,110 +171,46 @@ MediaLibrary.prototype = {
       return false;
     }
   },
-  pressRemoteKey: function(event) {
+  handleContextMenu: function (event) {
+    if (!this.shouldHandleEvent(event)) { return true; }
+    if (
+      (event.target == document) || //Chrome/Opera
+      (event.clientX === event.clientY && event.clientX === 0) //FF/IE
+    ) { return false; } //keyboard event. cancel it.
+    return true;
+  },
+  rpcCall: function (method, params) {
+    var callObj = {'method': method};
+    if (params) { callObj.params = params; }
+    return xbmc.rpc.request(callObj);
+  },
+  pressRemoteKey: function (event) {
     var player = -1,
       keyPressed = event.data.key;
     $('#spinner').show();
 
     switch(keyPressed) {
-      case 'up':
-        return xbmc.rpc.request({
-          'method': 'Input.Up'
-        });
-      case 'down':
-        return xbmc.rpc.request({
-          'method': 'Input.Down'
-        });
-      case 'left':
-        return xbmc.rpc.request({
-          'method': 'Input.Left'
-        });
-      case 'right':
-        return xbmc.rpc.request({
-          'method': 'Input.Right'
-        });
-      case 'ok':
-        return xbmc.rpc.request({
-          'method': 'Input.Select'
-        });
-      case 'cleanlib_a':
-        return xbmc.rpc.request({
-          'method': 'AudioLibrary.Clean'
-        });
-      case 'updatelib_a':
-        return xbmc.rpc.request({
-          'method': 'AudioLibrary.Scan'
-        });
-      case 'cleanlib_v':
-        return xbmc.rpc.request({
-          'method': 'VideoLibrary.Clean'
-        });
-      case 'updatelib_v':
-        return xbmc.rpc.request({
-          'method': 'VideoLibrary.Scan'
-        });
-      case 'back':
-        return xbmc.rpc.request({
-          'method': 'Input.Back'
-        });
-      case 'home':
-        return xbmc.rpc.request({
-          'method': 'Input.Home'
-        });
+      case 'up': return this.rpcCall('Input.Up');
+      case 'down': return this.rpcCall('Input.Down');
+      case 'left': return this.rpcCall('Input.Left');
+      case 'right': return this.rpcCall('Input.Right');
+      case 'ok': return this.rpcCall('Input.Select');
+      case 'cleanlib_a': return this.rpcCall('AudioLibrary.Clean');
+      case 'updatelib_a': return this.rpcCall('AudioLibrary.Scan');
+      case 'cleanlib_v': return this.rpcCall('VideoLibrary.Clean');
+      case 'updatelib_v': return this.rpcCall('VideoLibrary.Scan');
+      case 'back': return this.rpcCall('Input.Back');
+      case 'home': return this.rpcCall('Input.Home');
+      case 'power': return this.rpcCall('System.Shutdown');
+      case 'contextmenu': return this.rpcCall('Input.ContextMenu');
       case 'mute':
-        return xbmc.rpc.request({
-          'method': 'Application.SetMute',
-          'params': {
-            'mute': 'toggle'
-          }
-        });
-      case 'power':
-        return xbmc.rpc.request({
-          'method': 'System.Shutdown'
-        });
+        return this.rpcCall('Application.SetMute', {'mute': 'toggle'});
       case 'volumeup':
-        return xbmc.rpc.request({
-          'method': 'Application.GetProperties',
-          'params': {
-            'properties': [
-              'volume'
-            ]
-          },
-          'success': function(data) {
-            var volume = data.result.volume + 1;
-            xbmc.rpc.request({
-              'method': 'Application.SetVolume',
-              'params': {
-                'volume': volume
-              }
-            });
-          }
-        });
+        return this.rpcCall('Application.SetVolume', {'volume': 'increment'});
       case 'volumedown':
-        return xbmc.rpc.request({
-          'method': 'Application.GetProperties',
-          'params': {
-            'properties': [
-              'volume'
-            ]
-          },
-          'success': function(data) {
-            var volume = data.result.volume - 1;
-            xbmc.rpc.request({
-              'method': 'Application.SetVolume',
-              'params': {
-                'volume': volume
-              }
-            });
-          }
-        });
+        return this.rpcCall('Application.SetVolume', {'volume': 'decrement'});
       case 'text':
-        return xbmc.rpc.request({
-          'method': 'Input.SendText',
-          'params': {
-            'text': event.data.text
-          }
-        });
+        return this.rpcCall('Input.SendText', {'text': event.data.text});
     }
 
     // TODO: Get active player
@@ -281,51 +223,23 @@ MediaLibrary.prototype = {
     {
       switch(keyPressed) {
         case 'playpause':
-          return xbmc.rpc.request({
-            'method': 'Player.PlayPause',
-            'params': {
-              'playerid': player
-            }
-          });
+          return this.rpcCall('Player.PlayPause', {'playerid': player});
         case 'stop':
-          return xbmc.rpc.request({
-            'method': 'Player.Stop',
-            'params': {
-              'playerid': player
-            }
-          });
+          return this.rpcCall('Player.Stop', {'playerid': player});
         case 'next':
-          return xbmc.rpc.request({
-            'method': 'Player.GoTo',
-            'params': {
-              'playerid': player,
-              'to': 'next'
-            }
-          });
+          return this.rpcCall('Player.GoTo', {'playerid': player, 'to': 'next'});
         case 'previous':
-          return xbmc.rpc.request({
-            'method': 'Player.GoTo',
-            'params': {
-              'playerid': player,
-              'to': 'previous'
-            }
-          });
+          return this.rpcCall('Player.GoTo',
+            {'playerid': player, 'to': 'previous'}
+          );
         case 'forward':
-          return xbmc.rpc.request({
-            'method': 'Player.SetSpeed',
-            'params': {
-              'playerid': player,
-              'speed': 'increment'
-            }
-          });
+          return this.rpcCall('Player.SetSpeed',
+            {'playerid': player, 'speed': 'increment'}
+          );
         case 'rewind':
-          return xbmc.rpc.request({
-            'method': 'Player.SetSpeed',
-            'params': {
-              'playerid': player,
-              'speed': 'decrement'
-            }
-          });
+          return this.rpcCall('Player.SetSpeed',
+            {'playerid': player, 'speed': 'decrement'}
+          );
       }
     }
   },
@@ -392,26 +306,22 @@ MediaLibrary.prototype = {
     return thumbnail ? ('image/' + encodeURI(thumbnail)) : xbmc.core.DEFAULT_ALBUM_COVER;
   },
   generateThumb: function(type, thumbnail, title, artist) {
+    title = title || ''; artist = artist ||'';
+    var showTitle = title, showArtist = artist;
     var floatableAlbum = $('<div>');
     var path = this.getThumbnailPath(thumbnail);
-    title = title || '';
-    artist = artist ||'';
-    if (title.length > 18 && !(title.length <= 21)) {
-      title = title.substring(0, 18) + '...';
-    }
-    if (artist.length > 20 && !(artist.length <= 22)) {
-      artist = artist.substring(0, 20) + '...';
-    }
+    if (title.length > 21) { showTitle = $.trim(title.substr(0, 18)) + '...'; }
+    if (artist.length > 22) { showArtist = $.trim(artist.substr(0, 20)) + '...'; }
     var className = '';
     var code = '';
     switch(type) {
       case 'album':
         className = 'floatableAlbum';
-        code = '<p class="album" title="' + title + '">' + title + '</p><p class="artist" title="' + artist + '">' + artist + '</p>';
+        code = '<p class="album" title="' + title + '">' + showTitle + '</p><p class="artist" title="' + artist + '">' + artist + '</p>';
         break;
       case 'movie':
         className = 'floatableMovieCover';
-        code = '<p class="album" title="' + title + '">' + title + '</p>';
+        code = '<p class="album" title="' + title + '">' + showTitle + '</p>';
         break;
       case 'tvshow':
         className = 'floatableTVShowCover';
@@ -422,7 +332,7 @@ MediaLibrary.prototype = {
       case 'image':
       case 'directory':
         className = 'floatableAlbum';
-        code = '<p class="album" title="' + title + '">' + title + '</p>';
+        code = '<p class="album" title="' + title + '">' + showTitle + '</p>';
         break;
     }
     return floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="' + title + '" /></div></div>' + code);
