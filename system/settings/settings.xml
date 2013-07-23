@@ -1596,7 +1596,7 @@
             <allowempty>true</allowempty>
           </constraints>
         </setting>
-        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36103">
+        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36419">
           <level>0</level>
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />

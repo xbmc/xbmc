@@ -14122,7 +14122,10 @@ msgctxt "#36418"
 msgid "No info available yet."
 msgstr ""
 
-#empty string with id 36419
+#: system/settings/settings.xml
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36420"
