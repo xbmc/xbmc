@@ -597,7 +597,9 @@ void CLinuxRendererGL::Flush()
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
 {
+#if defined(HAVE_LIBVDPAU) || defined(HAVE_LIBVA) || defined(TARGET_DARWIN)
   YUVBUFFER &buf = m_buffers[idx];
+#endif
 #ifdef HAVE_LIBVDPAU
   SAFE_RELEASE(buf.vdpau);
 #endif
