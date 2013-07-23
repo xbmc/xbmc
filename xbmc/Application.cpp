@@ -643,19 +643,19 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(TARGET_DARWIN_OSX)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on %s (GCC version %i.%i.%i). Platform: Darwin OSX (%s)", 
-              g_infoManager.GetVersion().c_str(), __DATE__, __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Darwin OSX (%s)", 
+              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_DARWIN_IOS)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on %s (GCC version %i.%i.%i). Platform: Darwin iOS (%s)",
-              g_infoManager.GetVersion().c_str(), __DATE__, __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Darwin iOS (%s)",
+              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_FREEBSD)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on %s (GCC version %i.%i.%i). Platform: FreeBSD (%s)",
-              g_infoManager.GetVersion().c_str(), __DATE__, __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: FreeBSD (%s)",
+              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on %s (GCC version %i.%i.%i). Platform: Linux (%s, %s)",
-              g_infoManager.GetVersion().c_str(), __DATE__, __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (GCC version %i.%i.%i). Platform: Linux (%s, %s)",
+              g_infoManager.GetVersion().c_str(), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on %s (compiler %i). Platform: %s", g_infoManager.GetVersion().c_str(), __DATE__, _MSC_VER, g_sysinfo.GetKernelVersion().c_str());
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (MSVC version %i). Platform: %s", g_infoManager.GetVersion().c_str(), _MSC_VER, g_sysinfo.GetKernelVersion().c_str());
 #endif
 #if defined(_DEBUG)
   CLog::Log(LOGINFO, "Using Debug XBMC build");
