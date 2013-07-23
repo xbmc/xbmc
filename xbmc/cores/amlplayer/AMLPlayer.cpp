@@ -1800,7 +1800,7 @@ int CAMLPlayer::UpdatePlayerInfo(int pid, player_info_t *info)
   // we get called when status changes or after update time expires.
   // static callback from libamplayer, since it does not pass an opaque,
   // we have to retreve our player class reference the hard way.
-  CAMLPlayer *amlplayer = dynamic_cast<CAMLPlayer*>(g_application.m_pPlayer);
+  CAMLPlayer *amlplayer = boost::dynamic_cast<CAMLPlayer*>(g_application.m_pPlayer);
   if (amlplayer)
   {
     CSingleLock lock(amlplayer->m_aml_state_csection);
