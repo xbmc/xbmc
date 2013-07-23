@@ -614,24 +614,32 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 {
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
+  IMMDevice*           pDefaultDevice = NULL;
   CAEDeviceInfo        deviceInfo;
   CAEChannelInfo       deviceChannels;
+  LPWSTR               pwszID = NULL;
+  std::wstring         wstrDDID;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
   HRESULT              hr;
-
-  // add default device entry
-  deviceInfo.m_deviceName       = std::string("default");
-  deviceInfo.m_displayName      = std::string("default");
-
-  /* Store the device info */
-  deviceInfoList.push_back(deviceInfo);
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
 
   UINT uiCount = 0;
 
+  // get the default audio endpoint
+  if(pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDefaultDevice) == S_OK)
+  {
+    if(pDefaultDevice->GetId(&pwszID) == S_OK)
+    {
+      wstrDDID = pwszID;
+      CoTaskMemFree(pwszID);
+    }
+    SAFE_RELEASE(pDefaultDevice);
+  }
+
+  // enumerate over all audio endpoints
   hr = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &pEnumDevices);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of audio endpoint enumeration failed.")
 
@@ -903,9 +911,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       CLog::Log(LOGDEBUG, __FUNCTION__": Failed to activate device for passthrough capability testing.");
     }
 
-    SAFE_RELEASE(pDevice);
-    SAFE_RELEASE(pProperty);
-
     deviceInfo.m_deviceName       = strDevName;
     deviceInfo.m_displayName      = strWinDevType.append(strFriendlyName);
     deviceInfo.m_displayNameExtra = std::string("WASAPI: ").append(strFriendlyName);
@@ -914,6 +919,21 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     /* Store the device info */
     deviceInfoList.push_back(deviceInfo);
+
+    if(pDevice->GetId(&pwszID) == S_OK)
+    {
+      if(wstrDDID.compare(pwszID) == 0)
+      {
+        deviceInfo.m_deviceName = std::string("default");
+        deviceInfo.m_displayName = std::string("default");
+        deviceInfo.m_displayNameExtra = std::string("");
+        deviceInfoList.push_back(deviceInfo);
+      }
+      CoTaskMemFree(pwszID);
+    }
+
+    SAFE_RELEASE(pDevice);
+    SAFE_RELEASE(pProperty);
   }
   return;
 
