@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIUserMessages.h"
+#include "settings/DisplaySettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #ifdef HAS_SDL_JOYSTICK
@@ -363,6 +364,16 @@ bool CWinEventsSDL::MessagePump()
       }
       case SDL_VIDEORESIZE:
       {
+        // Under linux returning from fullscreen, SDL sends an extra event to resize to the desktop
+        // resolution causing the previous window dimensions to be lost. This is needed to rectify
+        // that problem.
+        if(!g_Windowing.IsFullScreen())
+        {
+          int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+          if((event.resize.w == CDisplaySettings::Get().GetResolutionInfo(RES_SCREEN).iWidth) &&
+              (event.resize.h == CDisplaySettings::Get().GetResolutionInfo(RES_SCREEN).iHeight))
+            break;
+        }
         XBMC_Event newEvent;
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
