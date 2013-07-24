@@ -56,6 +56,14 @@ class CWinEventsBase
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL
 
+#elif defined(HAVE_WAYLAND)
+#include "WinEventsWayland.h"
+#define CWinEvents CWinEventsWayland
+
+#elif defined(HAVE_MIR)
+#include "WinEventsMir.h"
+#define CWinEvents CWinEventsMir
+
 #elif defined(TARGET_LINUX) && defined(HAS_LINUX_EVENTS)
 #include "WinEventsLinux.h"
 #define CWinEvents CWinEventsLinux

@@ -25,7 +25,9 @@
 #include "utils/log.h"
 #include "EGLNativeTypeAndroid.h"
 #include "EGLNativeTypeAmlogic.h"
+#include "EGLNativeTypeMir.h"
 #include "EGLNativeTypeRaspberryPI.h"
+#include "EGLNativeTypeWayland.h"
 #include "EGLWrapper.h"
 
 #define CheckError() m_result = eglGetError(); if(m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
@@ -79,7 +81,9 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
 
   // Try to create each backend in sequence and go with the first one
   // that we know will work
-  if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
+  if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeMir>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)))
   {
