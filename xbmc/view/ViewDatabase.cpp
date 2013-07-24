@@ -106,7 +106,7 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString path1(path);
@@ -141,7 +141,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString path1(path);
@@ -175,7 +175,7 @@ bool CViewDatabase::ClearViewStates(int windowID)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("delete from view where window = %i", windowID);

@@ -150,7 +150,7 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", url.c_str());
@@ -188,7 +188,7 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDet
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("DELETE FROM texture WHERE url='%s'", url.c_str());
@@ -214,7 +214,7 @@ bool CTextureDatabase::ClearCachedTexture(const CStdString &url, CStdString &cac
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
 
     CStdString sql = PrepareSQL("select id, cachedurl from texture where url='%s'", url.c_str());
@@ -250,7 +250,7 @@ CStdString CTextureDatabase::GetTextureForPath(const CStdString &url, const CStd
 {
   try
   {
-    if (NULL == m_pDB.get()) return "";
+    if (isNullDb()) return "";
     if (NULL == m_pDS.get()) return "";
 
     if (url.empty())
@@ -278,7 +278,7 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
 {
   try
   {
-    if (NULL == m_pDB.get()) return;
+    if (isNullDb()) return;
     if (NULL == m_pDS.get()) return;
 
     if (url.empty())
@@ -311,7 +311,7 @@ void CTextureDatabase::ClearTextureForPath(const CStdString &url, const CStdStri
 {
   try
   {
-    if (NULL == m_pDB.get()) return;
+    if (isNullDb()) return;
     if (NULL == m_pDS.get()) return;
 
     CStdString sql = PrepareSQL("DELETE FROM path WHERE url='%s' and type='%s'", url.c_str(), type.c_str());

@@ -31,7 +31,6 @@
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
-#include "threads/SingleLock.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -237,7 +236,7 @@ bool CDatabase::ExecuteQuery(const CStdString &strQuery)
   {
     {
       CSingleLock l(lock);
-      if (NULL == m_pDB.get()) return bReturn;
+      if (isNullDb()) return bReturn;
     }
     if (NULL == m_pDS.get()) return bReturn;
     m_pDS->exec(strQuery.c_str());
@@ -258,10 +257,7 @@ bool CDatabase::ResultQuery(const CStdString &strQuery)
 
   try
   {
-    {
-      CSingleLock l(lock);
-      if (NULL == m_pDB.get()) return bReturn;
-    }
+    if (isNullDb()) return bReturn;
     if (NULL == m_pDS.get()) return bReturn;
 
     CStdString strPreparedQuery = PrepareSQL(strQuery.c_str());
@@ -284,10 +280,7 @@ bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 
   if (!m_bMultiWrite)
   {
-    {
-      CSingleLock l(lock);
-      if (NULL == m_pDB.get()) return false;
-    }
+    if (isNullDb()) return false;
     if (NULL == m_pDS2.get()) return false;
 
     m_bMultiWrite = true;
@@ -528,6 +521,8 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   return true;
 }
 
+dbiplus::Dataset* CDatabase::CreateDataset() const { CSingleLock l(lock); return m_pDB->CreateDataset(); }
+
 int CDatabase::GetDBVersion()
 {
   m_pDS->query("SELECT idVersion FROM version\n");
@@ -608,10 +603,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
 
   try
   {
-    {
-      CSingleLock l(lock);
-      if (NULL == m_pDB.get()) return false;
-    }
+    if (isNullDb()) return false;
     if (NULL == m_pDS.get()) return false;
     if (!bForce)
     {
