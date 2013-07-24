@@ -1,26 +1,30 @@
-/*****************************************************************************
+/*
  * fastmemcpy.h : fast memcpy routines
  *****************************************************************************
- * $Id: fastmemcpy.h 13905 2006-01-12 23:10:04Z dionoea $
+ *      $Id: fastmemcpy.h 13905 2006-01-12 23:10:04Z dionoea $
  *
- * Authors: various Linux kernel hackers
- *          various MPlayer hackers
- *          Nick Kurshev <nickols_k@mail.ru>
+ *      Authors: various Linux kernel hackers
+ *               various MPlayer hackers
+ *               Nick Kurshev <nickols_k@mail.ru>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *      Copyright (C) 2011-2013 Team XBMC
+ *      http://xbmc.org
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
- *****************************************************************************/
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
 #if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) 
 #define HAVE_MMX2
 #define HAVE_SSE
