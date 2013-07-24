@@ -27,6 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
+#include "utils/JobManager.h"
 
 #include "threads/SingleLock.h"
 #include "cores/AudioEngine/AEFactory.h"
@@ -41,6 +42,21 @@ CAEChannelInfo ICodec::GetChannelInfo()
 {
   return CAEUtil::GuessChLayout(m_Channels);
 }
+
+class CQueueNextFileJob : public CJob
+{
+  CFileItem m_item;
+  PAPlayer &m_player;
+
+public:
+                CQueueNextFileJob(const CFileItem& item, PAPlayer &player)
+                  : m_item(item), m_player(player) {}
+  virtual       ~CQueueNextFileJob() {}
+  virtual bool  DoWork()
+  {
+    return m_player.QueueNextFileEx(m_item, true, true);
+  }
+};
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
@@ -58,7 +74,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_upcomingCrossfadeMS(0),
   m_currentStream      (NULL ),
   m_audioCallback      (NULL ),
-  m_FileItem           (new CFileItem())
+  m_FileItem           (new CFileItem()),
+  m_jobCounter         (0)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
 }
@@ -281,10 +298,15 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
-  return QueueNextFileEx(file);
+  {
+    CExclusiveLock lock(m_streamsLock);
+    m_jobCounter++;
+  }
+  CJobManager::GetInstance().AddJob(new CQueueNextFileJob(file, *this), this);
+  return true;
 }
 
-bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
+bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, bool job /* = false */)
 {
   StreamInfo *si = new StreamInfo();
 
@@ -293,6 +315,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
     delete si;
+    // advance playlist
+    if (job)
+      m_callback.OnPlayBackStarted();
     m_callback.OnQueueNextItem();
     return false;
   }
@@ -310,6 +335,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
 
       si->m_decoder.Destroy();
       delete si;
+      // advance playlist
+      if (job)
+        m_callback.OnPlayBackStarted();
       m_callback.OnQueueNextItem();
       return false;
     }
@@ -355,6 +383,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
     
     si->m_decoder.Destroy();
     delete si;
+    // advance playlist
+    if (job)
+      m_callback.OnPlayBackStarted();
     m_callback.OnQueueNextItem();
     return false;
   }
@@ -489,6 +520,17 @@ void PAPlayer::Process()
       CThread::Sleep(MathUtils::round_int((delay - watermark) * 1000.0));
 
     GetTimeInternal(); //update for GUI
+  }
+
+  // wait for any pending jobs to complete
+  {
+    CSharedLock lock(m_streamsLock);
+    while (m_jobCounter > 0)
+    {
+      lock.Leave();
+      m_jobEvent.WaitMSec(100);
+      lock.Enter();
+    }
   }
 
   if(m_isFinished && !m_bStop)
@@ -933,4 +975,11 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
     total = m_currentStream->m_endOffset;
   total -= m_currentStream->m_startOffset;
   m_playerGUIData.m_totalTime = total;
+}
+
+void PAPlayer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CExclusiveLock lock(m_streamsLock);
+  m_jobCounter--;
+  m_jobEvent.Set();
 }
