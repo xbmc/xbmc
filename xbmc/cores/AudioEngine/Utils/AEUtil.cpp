@@ -30,7 +30,7 @@ using namespace std;
 
 /* declare the rng seed and initialize it */
 unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
-#ifdef __SSE__
+#ifdef __SSE2__
   /* declare the SSE seed and initialize it */
   MEMALIGN(16, __m128i CAEUtil::m_sseSeed) = _mm_set_epi32(CAEUtil::m_seed, CAEUtil::m_seed+1, CAEUtil::m_seed, CAEUtil::m_seed+1);
 #endif
@@ -386,7 +386,7 @@ float CAEUtil::FloatRand1(const float min, const float max)
 
 void CAEUtil::FloatRand4(const float min, const float max, float result[4], __m128 *sseresult/* = NULL */)
 {
-  #ifdef __SSE__
+  #ifdef __SSE2__
     /*
       this method may be called from other SSE code, we need
       to calculate the delta & factor using SSE as the FPU
