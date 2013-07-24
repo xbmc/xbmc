@@ -31,6 +31,7 @@
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
+#include "threads/SingleLock.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -162,6 +163,7 @@ CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
 {
   CStdString strResult = "";
 
+  CSingleLock l(lock);
   if (NULL != m_pDB.get())
   {
     va_list args;
@@ -178,8 +180,11 @@ std::string CDatabase::GetSingleValue(const std::string &query, std::auto_ptr<Da
   std::string ret;
   try
   {
-    if (!m_pDB.get() || !ds.get())
-      return ret;
+    {
+      CSingleLock l(lock);
+      if (!m_pDB.get() || !ds.get())
+        return ret;
+    }
 
     if (ds->query(query.c_str()) && ds->num_rows() > 0)
       ret = ds->fv(0).get_asString();
@@ -230,7 +235,10 @@ bool CDatabase::ExecuteQuery(const CStdString &strQuery)
 
   try
   {
-    if (NULL == m_pDB.get()) return bReturn;
+    {
+      CSingleLock l(lock);
+      if (NULL == m_pDB.get()) return bReturn;
+    }
     if (NULL == m_pDS.get()) return bReturn;
     m_pDS->exec(strQuery.c_str());
     bReturn = true;
@@ -250,7 +258,10 @@ bool CDatabase::ResultQuery(const CStdString &strQuery)
 
   try
   {
-    if (NULL == m_pDB.get()) return bReturn;
+    {
+      CSingleLock l(lock);
+      if (NULL == m_pDB.get()) return bReturn;
+    }
     if (NULL == m_pDS.get()) return bReturn;
 
     CStdString strPreparedQuery = PrepareSQL(strQuery.c_str());
@@ -273,7 +284,10 @@ bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 
   if (!m_bMultiWrite)
   {
-    if (NULL == m_pDB.get()) return false;
+    {
+      CSingleLock l(lock);
+      if (NULL == m_pDB.get()) return false;
+    }
     if (NULL == m_pDS2.get()) return false;
 
     m_bMultiWrite = true;
@@ -390,6 +404,7 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 
         try
         {
+          CSingleLock l(lock);
           m_pDB->copy(latestDb);
         }
         catch(...)
@@ -433,6 +448,7 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 
 bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSettings, bool create)
 {
+  CSingleLock l(lock);
   // create the appropriate database structure
   if (dbSettings.type.Equals("sqlite3"))
   {
@@ -576,6 +592,7 @@ void CDatabase::Close()
 
   m_openCount = 0;
 
+  CSingleLock l(lock);
   if (NULL == m_pDB.get() ) return ;
   if (NULL != m_pDS.get()) m_pDS->close();
   m_pDB->disconnect();
@@ -591,7 +608,10 @@ bool CDatabase::Compress(bool bForce /* =true */)
 
   try
   {
-    if (NULL == m_pDB.get()) return false;
+    {
+      CSingleLock l(lock);
+      if (NULL == m_pDB.get()) return false;
+    }
     if (NULL == m_pDS.get()) return false;
     if (!bForce)
     {
@@ -629,6 +649,7 @@ void CDatabase::BeginTransaction()
 {
   try
   {
+    CSingleLock l(lock);
     if (NULL != m_pDB.get())
       m_pDB->start_transaction();
   }
@@ -642,6 +663,7 @@ bool CDatabase::CommitTransaction()
 {
   try
   {
+    CSingleLock l(lock);
     if (NULL != m_pDB.get())
       m_pDB->commit_transaction();
   }
@@ -657,6 +679,7 @@ void CDatabase::RollbackTransaction()
 {
   try
   {
+    CSingleLock l(lock);
     if (NULL != m_pDB.get())
       m_pDB->rollback_transaction();
   }
@@ -668,6 +691,7 @@ void CDatabase::RollbackTransaction()
 
 bool CDatabase::InTransaction()
 {
+  CSingleLock l(lock);
   if (NULL != m_pDB.get()) return false;
   return m_pDB->in_transaction();
 }

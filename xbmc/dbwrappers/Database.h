@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "threads/CriticalSection.h"
 
 namespace dbiplus {
   class Database;
@@ -162,6 +163,8 @@ protected:
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
+  // The critical section protects the m_pDB
+  CCriticalSection lock;
   std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
