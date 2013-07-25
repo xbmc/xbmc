@@ -48,7 +48,7 @@ public:
   };
 
   //FIXME remove this, kept for current repo handling
-  CSkinInfo(const ADDON::AddonProps &props, const RESOLUTION_INFO &res = RESOLUTION_INFO());
+  CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &res = RESOLUTION_INFO());
   CSkinInfo(const cp_extension_t *ext);
   virtual ~CSkinInfo();
 
