@@ -12,10 +12,10 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+
 You should have received a copy of the GNU General Public License
-along with GCC; see the file COPYING.  If not, write to
-the Free Software Foundation, 51 Franklin Street, Fifth Floor,
-Boston, MA 02110-1301, USA.  */
+along with XBMC; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.*/
 
 /* As a special exception, if you include this header file into source
    files compiled by GCC, this header file does not by itself cause
