@@ -24,13 +24,11 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDAudioCodecPcm.h"
 
-#define LPCM_BUFFER_SIZE (AVCODEC_MAX_AUDIO_FRAME_SIZE / 2)
-
 class CDVDAudioCodecLPcm : public CDVDAudioCodecPcm
 {
 public:
   CDVDAudioCodecLPcm();
-  virtual ~CDVDAudioCodecLPcm() {}
+  virtual ~CDVDAudioCodecLPcm();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual int Decode(uint8_t* pData, int iSize);
   virtual const char* GetName()  { return "lpcm"; }
@@ -38,7 +36,11 @@ public:
 protected:
 
   int m_bufferSize;
-  uint8_t m_buffer[LPCM_BUFFER_SIZE];
+  uint8_t *m_buffer;
 
   AVCodecID m_codecID;
+
+private:
+  CDVDAudioCodecLPcm(const CDVDAudioCodecLPcm&);
+  CDVDAudioCodecLPcm const& operator=(CDVDAudioCodecLPcm const&);
 };

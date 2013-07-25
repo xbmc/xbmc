@@ -24,8 +24,13 @@
 CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {
   m_codecID = AV_CODEC_ID_NONE;
-  m_bufferSize = LPCM_BUFFER_SIZE;
-  memset(m_buffer, 0, sizeof(m_buffer));
+  m_bufferSize = 0;
+  m_buffer = NULL;
+}
+
+CDVDAudioCodecLPcm::~CDVDAudioCodecLPcm()
+{
+  delete m_buffer;
 }
 
 bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -48,7 +53,14 @@ int CDVDAudioCodecLPcm::Decode(uint8_t* pData, int iSize)
   uint8_t* d = m_buffer;
   uint8_t* s = pData;
 
-  if (iSize > m_bufferSize) iSize = m_bufferSize;
+  if (iSize > m_bufferSize)
+  {
+    delete m_buffer;
+    d = m_buffer = new uint8_t[iSize];
+    if(!m_buffer)
+      return -1;
+    m_bufferSize = iSize;
+  }
 
   if (iSize >= 12)
   {
