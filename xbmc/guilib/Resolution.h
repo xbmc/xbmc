@@ -88,6 +88,7 @@ struct RESOLUTION_INFO
   int iScreen;
   int iWidth;
   int iHeight;
+  int iBlanking; /**< number of pixels of padding between stereoscopic frames */
   int iScreenWidth;
   int iScreenHeight;
   int iSubtitles;
@@ -102,6 +103,7 @@ public:
   {
     iWidth = width;
     iHeight = height;
+    iBlanking = 0;
     iScreenWidth = width;
     iScreenHeight = height;
     fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
@@ -122,5 +124,6 @@ public:
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
     fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
     strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;
+    iBlanking = res.iBlanking;
   }
 };

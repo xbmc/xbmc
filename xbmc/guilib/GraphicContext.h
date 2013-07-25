@@ -223,8 +223,8 @@ public:
   }
 
   /* modifies final coordinates according to stereo mode if needed */
-  CRect StereoCorrection(const CRect &rect, bool scale) const;
-  CPoint StereoCorrection(const CPoint &point, bool scale) const;
+  CRect StereoCorrection(const CRect &rect) const;
+  CPoint StereoCorrection(const CPoint &point) const;
 
   CRect generateAABB(const CRect &rect) const;
 

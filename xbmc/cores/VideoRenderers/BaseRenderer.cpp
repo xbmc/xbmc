@@ -610,10 +610,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
   float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
   float screenHeight = (float)(info.Overscan.bottom - info.Overscan.top);
 
-  if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    screenWidth /= 2;
-  else if(g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
