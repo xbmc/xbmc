@@ -49,7 +49,7 @@ public:
 
   struct EventInjector
   {
-    typedef void (*SetWaylandDisplay)(IDllWaylandClient *clientLibrary,
+    typedef void (*SetWaylandDisplay)(IDllWaylandClient &clientLibrary,
                                       struct wl_display *display);
     typedef void (*DestroyWaylandDisplay)();
     typedef void (*SetWaylandSeat)(IDllWaylandClient &clientLibrary,

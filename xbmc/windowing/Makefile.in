@@ -7,7 +7,8 @@ SRCS=WinEventsSDL.cpp \
 # Wayland implementation detail
 ifeq (@USE_WAYLAND@,1)
 SRCS += wayland/Seat.cpp \
-        wayland/Pointer.cpp
+        wayland/Pointer.cpp \
+        wayland/Keyboard.cpp
 endif
 
 LIB=windowing.a

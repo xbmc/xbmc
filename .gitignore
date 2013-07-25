@@ -591,6 +591,9 @@ lib/cmyth/Makefile
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/input
+/xbmc/input/linux/Makefile
+
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
 /xbmc/interfaces/python/Makefile
