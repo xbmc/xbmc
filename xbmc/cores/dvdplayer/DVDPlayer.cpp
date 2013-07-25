@@ -2921,6 +2921,15 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
+    // For audio files, don't open (M)JPEG artwork as video
+    if (m_pInputStream->GetContent().substr(0, 6) == "audio/" && hint.codec == AV_CODEC_ID_MJPEG)
+    {
+      CLog::Log(LOGDEBUG, "%s - Ignoring video (art) in audio file %s", __FUNCTION__, m_filename.c_str());
+      pStream->disabled = true;
+      pStream->SetDiscard(AVDISCARD_ALL);
+      return false;
+    }
+
     if (!m_dvdPlayerVideo.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts */
