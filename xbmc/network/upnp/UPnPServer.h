@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -18,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #include "PltMediaConnect.h"
 #include "interfaces/IAnnouncer.h"
 #include "FileItem.h"

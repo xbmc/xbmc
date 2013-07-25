@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2013 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *      Test patterns designed by Ofer LaOr - hometheater.co.il
  *

@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://www.xbmc.org
@@ -18,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#pragma once
 #include <string>
 
 #include "settings/ISettingsHandler.h"

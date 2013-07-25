@@ -1,9 +1,6 @@
-#ifndef NETWORK_LINUX_H_
-#define NETWORK_LINUX_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#ifndef NETWORK_LINUX_H_
+#define NETWORK_LINUX_H_
+ 
 #include <vector>
 #include "utils/StdString.h"
 #include "network/Network.h"
