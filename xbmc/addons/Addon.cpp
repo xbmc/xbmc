@@ -187,7 +187,6 @@ void AddonProps::Serialize(CVariant &variant) const
   variant["version"] = version.c_str();
   variant["minversion"] = minversion.c_str();
   variant["name"] = name;
-  variant["parent"] = parent;
   variant["license"] = license;
   variant["summary"] = summary;
   variant["description"] = description;

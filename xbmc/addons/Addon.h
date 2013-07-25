@@ -72,7 +72,6 @@ public:
   AddonVersion version;
   AddonVersion minversion;
   CStdString name;
-  CStdString parent;
   CStdString license;
   CStdString summary;
   CStdString description;
