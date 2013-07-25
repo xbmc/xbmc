@@ -61,7 +61,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
   if (preserveAspect)
   {
     // font always displayed in the aspect specified by the aspect parameter
-    *aspect /= g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
+    *aspect /= g_graphicsContext.GetResInfo().fPixelRatio;
   }
   else
   {

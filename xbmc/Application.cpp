@@ -939,11 +939,11 @@ bool CApplication::CreateGUI()
   if (!CButtonTranslator::GetInstance().Load())
     return false;
 
-  int iResolution = g_graphicsContext.GetVideoResolution();
+  RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
-            CDisplaySettings::Get().GetResolutionInfo(iResolution).iWidth,
-            CDisplaySettings::Get().GetResolutionInfo(iResolution).iHeight,
-            CDisplaySettings::Get().GetResolutionInfo(iResolution).strMode.c_str());
+            info.iWidth,
+            info.iHeight,
+            info.strMode.c_str());
   g_windowManager.Initialize();
 
   return true;

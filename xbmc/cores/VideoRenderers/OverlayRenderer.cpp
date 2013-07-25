@@ -196,7 +196,7 @@ void CRenderer::Render(COverlay* o)
   RESOLUTION_INFO res;
   g_renderManager.GetVideoRect(rs, rd);
   rv  = g_graphicsContext.GetViewWindow();
-  res = CDisplaySettings::Get().GetResolutionInfo(g_renderManager.GetResolution());
+  res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
 
   SRenderState state;
   state.x       = o->m_x;

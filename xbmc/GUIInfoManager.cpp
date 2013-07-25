@@ -1708,13 +1708,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case SYSTEM_SCREEN_MODE:
-    strLabel = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).strMode;
+    strLabel = g_graphicsContext.GetResInfo().strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenWidth);
+    strLabel.Format("%i", g_graphicsContext.GetResInfo().iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel.Format("%i", CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).iScreenHeight);
+    strLabel.Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());

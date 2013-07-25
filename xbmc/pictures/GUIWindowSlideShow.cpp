@@ -399,6 +399,8 @@ void CGUIWindowSlideShow::SetDirection(int direction)
 
 void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
+  const RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+
   // reset the screensaver if we're in a slideshow
   // (unless we are the screensaver!)
   if (m_bSlideShow && !m_bPause && !g_application.IsInScreenSaver())
@@ -512,8 +514,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
       // load using the background loader
       int maxWidth, maxHeight;
-      GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
-                     (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
+
+      GetCheckedSize((float)res.iWidth * m_fZoom,
+                     (float)res.iHeight * m_fZoom,
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, picturePath, maxWidth, maxHeight);
       m_iLastFailedNextSlide = -1;
@@ -538,8 +541,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
         CLog::Log(LOGDEBUG, "Loading the next image %d: %s", m_iNextSlide, item->GetPath().c_str());
       
       int maxWidth, maxHeight;
-      GetCheckedSize((float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iWidth * m_fZoom,
-                     (float)CDisplaySettings::Get().GetResolutionInfo(m_Resolution).iHeight * m_fZoom,
+      GetCheckedSize((float)res.iWidth * m_fZoom,
+                     (float)res.iHeight * m_fZoom,
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, picturePath, maxWidth, maxHeight);
     }

@@ -470,9 +470,6 @@ bool CRenderSystemGL::TestRender()
 {
   static float theta = 0.0;
 
-  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(CDisplaySettings::Get().GetCurrentResolution()];
-  //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
-
   glPushMatrix();
   glRotatef( theta, 0.0f, 0.0f, 1.0f );
   glBegin( GL_TRIANGLES );

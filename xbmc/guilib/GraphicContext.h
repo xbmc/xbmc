@@ -112,14 +112,20 @@ public:
   void ResetScreenParameters(RESOLUTION res);
   void Lock() { lock(); }
   void Unlock() { unlock(); }
-  float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear(color_t color = 0);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
-  const RESOLUTION_INFO &GetResInfo() const;
+  const RESOLUTION_INFO GetResInfo() const
+  {
+    return GetResInfo(m_Resolution);
+  }
+  const RESOLUTION_INFO GetResInfo(RESOLUTION res) const;
+  void SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info);
+
+
   void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;

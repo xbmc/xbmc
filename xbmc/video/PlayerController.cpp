@@ -290,7 +290,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
     case ACTION_SUBTITLE_VSHIFT_UP:
     {
-      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+      RESOLUTION_INFO res_info = g_graphicsContext.GetResInfo();
       int subalign = CSettings::Get().GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
@@ -311,12 +311,13 @@ bool CPlayerController::OnAction(const CAction &action)
         else
           ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles - res_info.iHeight, (float) -res_info.iHeight, -1.0f, 0.0f);
       }
+      g_graphicsContext.SetResInfo(g_graphicsContext.GetVideoResolution(), res_info);
       return true;
     }
 
     case ACTION_SUBTITLE_VSHIFT_DOWN:
     {
-      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+      RESOLUTION_INFO res_info =  g_graphicsContext.GetResInfo();
       int subalign = CSettings::Get().GetInt("subtitles.align");
       if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
       {
@@ -337,12 +338,13 @@ bool CPlayerController::OnAction(const CAction &action)
         else
           ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles - res_info.iHeight, (float) -res_info.iHeight, -1.0f, 0.0f);
       }
+      g_graphicsContext.SetResInfo(g_graphicsContext.GetVideoResolution(), res_info);
       return true;
     }
 
     case ACTION_SUBTITLE_ALIGN:
     {
-      RESOLUTION_INFO& res_info =  CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+      RESOLUTION_INFO res_info = g_graphicsContext.GetResInfo();
       int subalign = CSettings::Get().GetInt("subtitles.align");
 
       subalign++;
@@ -356,6 +358,7 @@ bool CPlayerController::OnAction(const CAction &action)
                                             g_localizeStrings.Get(21460),
                                             g_localizeStrings.Get(21461 + subalign), 
                                             TOAST_DISPLAY_TIME, false);
+      g_graphicsContext.SetResInfo(g_graphicsContext.GetVideoResolution(), res_info);
       return true;
     }
 
