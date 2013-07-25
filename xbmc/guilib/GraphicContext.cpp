@@ -666,13 +666,13 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
     if((info.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
     {
       info.fPixelRatio     /= 2;
-      info.iHeight         /= 2;
-      info.Overscan.top    /= 2;
-      info.Overscan.bottom /= 2;
-      info.iSubtitles      /= 2;
       info.iBlanking        = 0;
       info.dwFlags         |= D3DPRESENTFLAG_MODE3DTB;
     }
+    info.iHeight          = (info.iHeight         - info.iBlanking) / 2;
+    info.Overscan.top    /= 2;
+    info.Overscan.bottom  = (info.Overscan.bottom - info.iBlanking) / 2;
+    info.iSubtitles       = (info.iSubtitles      - info.iBlanking) / 2;
   }
 
   if(m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
@@ -680,12 +680,12 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
     if((info.dwFlags & D3DPRESENTFLAG_MODE3DSBS) == 0)
     {
       info.fPixelRatio     *= 2;
-      info.iWidth          /= 2;
-      info.Overscan.left   /= 2;
-      info.Overscan.right  /= 2;
       info.iBlanking        = 0;
       info.dwFlags         |= D3DPRESENTFLAG_MODE3DSBS;
     }
+    info.iWidth           = (info.iWidth         - info.iBlanking) / 2;
+    info.Overscan.left   /= 2;
+    info.Overscan.right   = (info.Overscan.right - info.iBlanking) / 2;
   }
   return info;
 }
