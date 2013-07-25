@@ -34,7 +34,6 @@
 #include <boost/weak_ptr.hpp>
 
 #include <sys/poll.h>
-#include <sys/mman.h>
 
 #include <wayland-client.h>
 #include <xkbcommon/xkbcommon.h>
@@ -44,6 +43,7 @@
 #include "WinEvents.h"
 #include "WinEventsWayland.h"
 #include "utils/Stopwatch.h"
+#include "utils/log.h"
 
 #include "DllWaylandClient.h"
 #include "DllXKBCommon.h"
@@ -51,15 +51,32 @@
 
 #include "wayland/Seat.h"
 #include "wayland/Pointer.h"
+#include "wayland/Keyboard.h"
 
-namespace
-{
-IDllWaylandClient *g_clientLibrary = NULL;
-struct wl_display *g_display = NULL;
-}
+#include "input/linux/XKBCommonKeymap.h"
+#include "input/linux/Keymap.h"
 
 namespace xbmc
 {
+/* ITimeoutManager defines an interface for arbitary classes
+ * to register full closures to be called initially on a timeout
+ * specified by initial and then subsequently on a timeout specified
+ * by timeout. The interface is more or less artificial and exists to
+ * break the dependency between keyboard processing code and
+ * actual system timers, whcih is useful for testing purposes */
+class ITimeoutManager
+{
+public:
+  
+  typedef boost::function<void()> Callback;
+  typedef boost::shared_ptr <Callback> CallbackPtr;
+  
+  virtual ~ITimeoutManager() {}
+  virtual CallbackPtr RepeatAfterMs (const Callback &callback,
+                                     uint32_t initial, 
+                                     uint32_t timeout) = 0;
+};
+
 /* IEventListener defines an interface for WaylandInput to deliver
  * simple events to. This interface is more or less artificial and used
  * to break the dependency between the event transformation code
@@ -131,6 +148,70 @@ private:
   
 };
 
+/* KeyboardProcessor implements IKeyboardReceiver and transforms
+ * keyboard events into XBMC events for further processing.
+ * 
+ * It needs to know whether or not a surface is in focus, so as soon
+ * as a surface is available, SetXBMCSurface should be called.
+ * 
+ * KeyboardProcessor also performs key-repeat and registers a callback
+ * function to repeat the currently depressed key if it has not been
+ * released within a certain period. As such it depends on
+ * ITimeoutManager */
+class KeyboardProcessor :
+  public wayland::IKeyboardReceiver
+{
+public:
+
+  KeyboardProcessor(IDllXKBCommon &m_xkbCommonLibrary,
+                    IEventListener &listener,
+                    ITimeoutManager &timeouts);
+  ~KeyboardProcessor();
+  
+  void SetXBMCSurface(struct wl_surface *xbmcWindow);
+
+private:
+
+  void UpdateKeymap(uint32_t format,
+                    int fd,
+                    uint32_t size);
+  void Enter(uint32_t serial,
+             struct wl_surface *surface,
+             struct wl_array *keys);
+  void Leave(uint32_t serial,
+             struct wl_surface *surface);
+  void Key(uint32_t serial,
+           uint32_t time,
+           uint32_t key,
+           enum wl_keyboard_key_state state);
+  void Modifier(uint32_t serial,
+                uint32_t depressed,
+                uint32_t latched,
+                uint32_t locked,
+                uint32_t group);
+                
+  void SendKeyToXBMC(uint32_t key,
+                     uint32_t sym,
+                     uint32_t type);
+  void RepeatCallback(uint32_t key,
+                      uint32_t sym);
+
+  IDllXKBCommon &m_xkbCommonLibrary;
+
+  /* KeyboardProcessor owns a keymap and does parts of its processing
+   * by delegating to the keymap the job of looking up generic keysyms
+   * for keycodes */
+  boost::scoped_ptr<ILinuxKeymap> m_keymap;
+  IEventListener &m_listener;
+  ITimeoutManager &m_timeouts;
+  struct wl_surface *m_xbmcWindow;
+  
+  ITimeoutManager::CallbackPtr m_repeatCallback;
+  uint32_t m_repeatSym;
+  
+  struct xkb_context *m_context;
+};
+
 class EventDispatch :
   public IEventListener
 {
@@ -146,6 +227,48 @@ namespace xw = xbmc::wayland;
 
 namespace
 {
+/* WaylandEventLoop encapsulates the entire process of dispatching
+ * wayland events and timers that might be in place for duplicate
+ * processing. Calling its Dispatch() method will cause any pending
+ * timers and events to be dispatched. It implements ITimeoutManager
+ * and timeouts can be added directly to it */
+class WaylandEventLoop :
+  public xbmc::ITimeoutManager
+{
+public:
+
+  WaylandEventLoop(IDllWaylandClient &clientLibrary,
+                   struct wl_display *display);
+  
+  void Dispatch();
+  
+  struct CallbackTracker
+  {
+    typedef boost::weak_ptr <Callback> CallbackObserver;
+    
+    CallbackTracker(uint32_t time,
+                    uint32_t initial,
+                    const CallbackPtr &callback);
+    
+    uint32_t time;
+    uint32_t remaining;
+    CallbackObserver callback;
+  };
+  
+private:
+
+  CallbackPtr RepeatAfterMs(const Callback &callback,
+                            uint32_t initial,
+                            uint32_t timeout);
+  void DispatchTimers();
+  
+  IDllWaylandClient &m_clientLibrary;
+  
+  struct wl_display *m_display;
+  std::vector<CallbackTracker> m_callbackQueue;
+  CStopWatch m_stopWatch;
+};
+
 /* WaylandInput is effectively just a manager class that encapsulates
  * all input related information and ties together a wayland seat with
  * the rest of the XBMC input handling subsystem. It is an internal
@@ -159,7 +282,8 @@ public:
   WaylandInput(IDllWaylandClient &clientLibrary,
                IDllXKBCommon &xkbCommonLibrary,
                struct wl_seat *seat,
-               xbmc::EventDispatch &dispatch);
+               xbmc::EventDispatch &dispatch,
+               xbmc::ITimeoutManager &timeouts);
 
   void SetXBMCSurface(struct wl_surface *s);
 
@@ -171,8 +295,10 @@ private:
                  double surfaceY);
 
   bool InsertPointer(struct wl_pointer *);
+  bool InsertKeyboard(struct wl_keyboard *);
 
   void RemovePointer();
+  void RemoveKeyboard();
 
   bool OnEvent(XBMC_Event &);
 
@@ -180,13 +306,16 @@ private:
   IDllXKBCommon &m_xkbCommonLibrary;
 
   xbmc::PointerProcessor m_pointerProcessor;
+  xbmc::KeyboardProcessor m_keyboardProcessor;
 
   boost::scoped_ptr<xw::Seat> m_seat;
   boost::scoped_ptr<xw::Pointer> m_pointer;
+  boost::scoped_ptr<xw::Keyboard> m_keyboard;
 };
 
 xbmc::EventDispatch g_dispatch;
 boost::scoped_ptr <WaylandInput> g_inputInstance;
+boost::scoped_ptr <WaylandEventLoop> g_eventLoop;
 }
 
 xbmc::PointerProcessor::PointerProcessor(IEventListener &listener,
@@ -311,6 +440,215 @@ xbmc::PointerProcessor::Enter(struct wl_surface *surface,
   m_cursorManager.SetCursor(0, NULL, 0, 0);
 }
 
+xbmc::KeyboardProcessor::KeyboardProcessor(IDllXKBCommon &xkbCommonLibrary,
+                                           IEventListener &listener,
+                                           ITimeoutManager &timeouts) :
+  m_xkbCommonLibrary(xkbCommonLibrary),
+  m_listener(listener),
+  m_timeouts(timeouts),
+  m_xbmcWindow(NULL),
+  m_repeatSym(0),
+  m_context(NULL)
+{
+  enum xkb_context_flags flags =
+    static_cast<enum xkb_context_flags>(0);
+
+  /* KeyboardProcessor and not XKBKeymap owns the xkb_context. The
+   * xkb_context is merely just a detail for construction of the
+   * more interesting xkb_state and xkb_keymap objects.
+   * 
+   * Failure to create the context effectively means that we will
+   * be unable to create a keymap or serve any useful purpose in
+   * processing key events. As such, it makes this an incomplete
+   * object and a runtime_error will be thrown */
+  m_context = m_xkbCommonLibrary.xkb_context_new(flags);
+  
+  if (!m_context)
+    throw std::runtime_error("Failed to create xkb context");
+}
+
+xbmc::KeyboardProcessor::~KeyboardProcessor()
+{
+  m_xkbCommonLibrary.xkb_context_unref(m_context);
+}
+
+void
+xbmc::KeyboardProcessor::SetXBMCSurface(struct wl_surface *s)
+{
+  m_xbmcWindow = s;
+}
+
+/* Creates a new internal keymap representation for a serialized
+ * keymap as represented in shared memory as referred to by fd.
+ * 
+ * Since the fd is sent to us via sendmsg(), the currently running
+ * process has ownership over it. As such, it MUST close the file
+ * descriptor after it has decided what to do with it in order to
+ * avoid a leak.
+ */
+void
+xbmc::KeyboardProcessor::UpdateKeymap(uint32_t format,
+                                      int fd,
+                                      uint32_t size)
+{
+  /* The file descriptor must always be closed */
+  BOOST_SCOPE_EXIT((fd))
+  {
+    close(fd);
+  } BOOST_SCOPE_EXIT_END
+
+  /* We don't understand anything other than xkbv1. If we get some
+   * other keyboard, then we can't process keyboard events reliably
+   * and that's a runtime error. */
+  if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1)
+    throw std::runtime_error("Server gave us a keymap we don't understand");
+
+  bool successfullyCreatedKeyboard = false;
+  
+  /* Either throws or returns a valid struct xkb_keymap * */
+  struct xkb_keymap *keymap =
+    CXKBKeymap::ReceiveXKBKeymapFromSharedMemory(m_xkbCommonLibrary, m_context, fd, size);
+
+  BOOST_SCOPE_EXIT((&m_xkbCommonLibrary)(&successfullyCreatedKeyboard)(keymap))
+  {
+    if (!successfullyCreatedKeyboard)
+      m_xkbCommonLibrary.xkb_keymap_unref(keymap);
+  } BOOST_SCOPE_EXIT_END
+
+  struct xkb_state *state =
+    CXKBKeymap::CreateXKBStateFromKeymap(m_xkbCommonLibrary, keymap);
+
+  m_keymap.reset(new CXKBKeymap(m_xkbCommonLibrary,
+                                keymap,
+                                state));
+  
+  successfullyCreatedKeyboard = true;
+}
+
+void
+xbmc::KeyboardProcessor::Enter(uint32_t serial,
+                               struct wl_surface *surface,
+                               struct wl_array *keys)
+{
+  if (surface == m_xbmcWindow)
+  {
+    m_listener.OnFocused();
+  }
+}
+
+void
+xbmc::KeyboardProcessor::Leave(uint32_t serial,
+                               struct wl_surface *surface)
+{
+  if (surface == m_xbmcWindow)
+  {
+    m_listener.OnUnfocused();
+  }
+}
+
+void
+xbmc::KeyboardProcessor::SendKeyToXBMC(uint32_t key,
+                                       uint32_t sym,
+                                       uint32_t eventType)
+{
+  XBMC_Event event;
+  event.type = eventType;
+  event.key.keysym.scancode = key;
+  event.key.keysym.sym = static_cast<XBMCKey>(sym);
+  event.key.keysym.unicode = static_cast<XBMCKey>(sym);
+  event.key.keysym.mod =
+    static_cast<XBMCMod>(m_keymap->ActiveXBMCModifiers());
+  event.key.state = 0;
+  event.key.type = event.type;
+  event.key.which = '0';
+
+  m_listener.OnEvent(event);
+}
+
+void
+xbmc::KeyboardProcessor::RepeatCallback(uint32_t key,
+                                        uint32_t sym)
+{
+  /* Release and press the key again */
+  SendKeyToXBMC(key, sym, XBMC_KEYUP);
+  SendKeyToXBMC(key, sym, XBMC_KEYDOWN);
+}
+
+/* If this function is called before a keymap is set, then that
+ * is a precondition violation and a logic_error results */
+void
+xbmc::KeyboardProcessor::Key(uint32_t serial,
+                             uint32_t time,
+                             uint32_t key,
+                             enum wl_keyboard_key_state state)
+{
+  if (!m_keymap.get())
+    throw std::logic_error("a keymap must be set before processing key events");
+
+  uint32_t sym = XKB_KEY_NoSymbol;
+
+  /* If we're unable to process a single key, then catch the error
+   * and report it, but don't allow it to be fatal */
+  try
+  {
+    sym = m_keymap->XBMCKeysymForKeycode(key);
+  }
+  catch (const std::runtime_error &err)
+  {
+    CLog::Log(LOGERROR, "%s: Failed to process keycode %i: %s",
+              __FUNCTION__, key, err.what());
+    return;
+  }
+
+  uint32_t keyEventType = 0;
+
+  switch (state)
+  {
+    case WL_KEYBOARD_KEY_STATE_PRESSED:
+      keyEventType = XBMC_KEYDOWN;
+      break;
+    case WL_KEYBOARD_KEY_STATE_RELEASED:
+      keyEventType = XBMC_KEYUP;
+      break;
+    default:
+      CLog::Log(LOGERROR, "%s: Unrecognized key state", __FUNCTION__);
+      return;
+  }
+  
+  /* Key-repeat is handled on the client side so we need to add a new
+   * timeout here to repeat this symbol if it is still being held down
+   */
+  if (keyEventType == XBMC_KEYDOWN)
+  {
+    m_repeatCallback =
+      m_timeouts.RepeatAfterMs(boost::bind (
+                                 &KeyboardProcessor::RepeatCallback,
+                                 this,
+                                 key,
+                                 sym),
+                               1000,
+                               250);
+    m_repeatSym = sym;
+  }
+  else if (keyEventType == XBMC_KEYUP &&
+           sym == m_repeatSym)
+    m_repeatCallback.reset();
+  
+  SendKeyToXBMC(key, sym, keyEventType);
+}
+
+/* We MUST update the keymap mask whenever we receive a new modifier
+ * event */
+void
+xbmc::KeyboardProcessor::Modifier(uint32_t serial,
+                                  uint32_t depressed,
+                                  uint32_t latched,
+                                  uint32_t locked,
+                                  uint32_t group)
+{
+  m_keymap->UpdateMask(depressed, latched, locked, group);
+}
+
 /* Once EventDispatch recieves some information it just forwards
  * it all on to XBMC */
 bool xbmc::EventDispatch::OnEvent(XBMC_Event &e)
@@ -335,17 +673,19 @@ bool xbmc::EventDispatch::OnUnfocused()
 WaylandInput::WaylandInput(IDllWaylandClient &clientLibrary,
                            IDllXKBCommon &xkbCommonLibrary,
                            struct wl_seat *seat,
-                           xbmc::EventDispatch &dispatch) :
+                           xbmc::EventDispatch &dispatch,
+                           xbmc::ITimeoutManager &timeouts) :
   m_clientLibrary(clientLibrary),
   m_xkbCommonLibrary(xkbCommonLibrary),
   m_pointerProcessor(dispatch, *this),
+  m_keyboardProcessor(m_xkbCommonLibrary, dispatch, timeouts),
   m_seat(new xw::Seat(clientLibrary, seat, *this))
 {
 }
 
-void
-WaylandInput::SetXBMCSurface(struct wl_surface *s)
+void WaylandInput::SetXBMCSurface(struct wl_surface *s)
 {
+  m_keyboardProcessor.SetXBMCSurface(s);
 }
 
 void WaylandInput::SetCursor(uint32_t serial,
@@ -367,31 +707,96 @@ bool WaylandInput::InsertPointer(struct wl_pointer *p)
   return true;
 }
 
+bool WaylandInput::InsertKeyboard(struct wl_keyboard *k)
+{
+  if (m_keyboard.get())
+    return false;
+
+  m_keyboard.reset(new xw::Keyboard(m_clientLibrary,
+                                    k,
+                                    m_keyboardProcessor));
+  return true;
+}
+
 void WaylandInput::RemovePointer()
 {
   m_pointer.reset();
 }
 
-CWinEventsWayland::CWinEventsWayland()
+void WaylandInput::RemoveKeyboard()
+{
+  m_keyboard.reset();
+}
+
+WaylandEventLoop::WaylandEventLoop(IDllWaylandClient &clientLibrary,
+                                   struct wl_display *display) :
+  m_clientLibrary(clientLibrary),
+  m_display(display)
+{
+  m_stopWatch.StartZero();
+}
+
+namespace
+{
+bool TimeoutInactive(const WaylandEventLoop::CallbackTracker &tracker)
+{
+  return tracker.callback.expired();
+}
+
+void SubtractTimeoutAndTrigger(WaylandEventLoop::CallbackTracker &tracker,
+                               int time)
+{
+  int value = std::max(0, static_cast <int> (tracker.remaining - time));
+  if (value == 0)
+  {
+    tracker.remaining = time;
+    xbmc::ITimeoutManager::CallbackPtr callback (tracker.callback.lock());
+    
+    (*callback) ();
+  }
+  else
+    tracker.remaining = value;
+}
+
+bool ByRemaining(const WaylandEventLoop::CallbackTracker &a,
+                 const WaylandEventLoop::CallbackTracker &b)
+{
+  return a.remaining < b.remaining; 
+}
+}
+
+WaylandEventLoop::CallbackTracker::CallbackTracker(uint32_t time,
+                                                   uint32_t initial,
+                                                   const xbmc::ITimeoutManager::CallbackPtr &cb) :
+  time(time),
+  remaining(time > initial ? time : initial),
+  callback(cb)
 {
 }
 
-void CWinEventsWayland::RefreshDevices()
+void WaylandEventLoop::DispatchTimers()
 {
+  float elapsedMs = m_stopWatch.GetElapsedMilliseconds();
+  m_stopWatch.Stop();
+  /* We must subtract the elapsed time from each tracked timeout and
+   * trigger any remaining ones. If a timeout is triggered, then its
+   * remaining time will return to the original timeout value */
+  std::for_each(m_callbackQueue.begin(), m_callbackQueue.end (),
+                boost::bind(SubtractTimeoutAndTrigger,
+                            _1,
+                            static_cast<int>(elapsedMs)));
+  /* Timeout times may have changed so that the timeouts are no longer
+   * in order. Sort them so that they are. If they are unsorted,
+   * the ordering of two timeouts, one which was added just before
+   * the other which both reach a zero value at the same time,
+   * will be undefined. */
+  std::sort(m_callbackQueue.begin(), m_callbackQueue.end(),
+            ByRemaining);
+  m_stopWatch.StartZero();
 }
 
-bool CWinEventsWayland::IsRemoteLowBattery()
+void WaylandEventLoop::Dispatch()
 {
-  return false;
-}
-
-/* This function reads the display connection and dispatches
- * any events through the specified object listeners */
-bool CWinEventsWayland::MessagePump()
-{
-  if (!g_display)
-    return false;
-
   /* It is very important that these functions occurr in this order.
    * Deadlocks might occurr otherwise.
    * 
@@ -412,9 +817,94 @@ bool CWinEventsWayland::MessagePump()
    * are a particular culprit here), or where events that we need to
    * dispatch in order to keep going are never read.
    */
-  g_clientLibrary->wl_display_dispatch_pending(g_display);
-  g_clientLibrary->wl_display_flush(g_display);
-  g_clientLibrary->wl_display_dispatch(g_display);
+  m_clientLibrary.wl_display_dispatch_pending(m_display);
+  m_clientLibrary.wl_display_flush(m_display);
+
+  /* Remove any timers which are no longer active */
+  m_callbackQueue.erase (std::remove_if(m_callbackQueue.begin(),
+                                        m_callbackQueue.end(),
+                                        TimeoutInactive),
+                         m_callbackQueue.end());
+
+  DispatchTimers();
+  
+  /* Calculate the poll timeout based on any current
+   * timers on the main loop. */
+  uint32_t minTimeout = 0;
+  for (std::vector<CallbackTracker>::iterator it = m_callbackQueue.begin();
+       it != m_callbackQueue.end();
+       ++it)
+  {
+    if (minTimeout < it->remaining)
+      minTimeout = it->remaining;
+  }
+  
+  struct pollfd pfd;
+  pfd.events = POLLIN | POLLHUP | POLLERR;
+  pfd.revents = 0;
+  pfd.fd = m_clientLibrary.wl_display_get_fd(m_display);
+  
+  int pollTimeout = minTimeout == 0 ?
+                    -1 : minTimeout;
+
+  if (poll(&pfd, 1, pollTimeout) == -1)
+    throw std::runtime_error(strerror(errno));
+
+  DispatchTimers();
+  m_clientLibrary.wl_display_dispatch(m_display);
+}
+
+xbmc::ITimeoutManager::CallbackPtr
+WaylandEventLoop::RepeatAfterMs(const xbmc::ITimeoutManager::Callback &cb,
+                                uint32_t initial,
+                                uint32_t time)
+{
+  CallbackPtr ptr(new Callback(cb));
+  
+  bool     inserted = false;
+  
+  for (std::vector<CallbackTracker>::iterator it = m_callbackQueue.begin();
+       it != m_callbackQueue.end();
+       ++it)
+  {
+    /* The appropriate place to insert is just before an existing
+     * timer which has a greater remaining time than ours */
+    if (it->remaining > time)
+    {
+      m_callbackQueue.insert(it, CallbackTracker(time, initial, ptr));
+      inserted = true;
+      break;
+    }
+  }
+  
+  /* Insert at the back */
+  if (!inserted)
+    m_callbackQueue.push_back(CallbackTracker(time, initial, ptr));
+
+  return ptr;
+}
+
+CWinEventsWayland::CWinEventsWayland()
+{
+}
+
+void CWinEventsWayland::RefreshDevices()
+{
+}
+
+bool CWinEventsWayland::IsRemoteLowBattery()
+{
+  return false;
+}
+
+/* This function reads the display connection and dispatches
+ * any events through the specified object listeners */
+bool CWinEventsWayland::MessagePump()
+{
+  if (!g_eventLoop.get())
+    return false;
+
+  g_eventLoop->Dispatch();
 
   return true;
 }
@@ -425,11 +915,10 @@ size_t CWinEventsWayland::GetQueueSize()
   return 0;
 }
 
-void CWinEventsWayland::SetWaylandDisplay(IDllWaylandClient *clientLibrary,
+void CWinEventsWayland::SetWaylandDisplay(IDllWaylandClient &clientLibrary,
                                           struct wl_display *d)
 {
-  g_clientLibrary = clientLibrary;
-  g_display = d;
+  g_eventLoop.reset(new WaylandEventLoop(clientLibrary, d));
 }
 
 void CWinEventsWayland::DestroyWaylandDisplay()
@@ -438,7 +927,7 @@ void CWinEventsWayland::DestroyWaylandDisplay()
    * destroying the display */
   MessagePump();
 
-  g_display = NULL;
+  g_eventLoop.reset();
 }
 
 /* Once we know about a wayland seat, we can just create our manager
@@ -449,14 +938,15 @@ void CWinEventsWayland::SetWaylandSeat(IDllWaylandClient &clientLibrary,
                                        IDllXKBCommon &xkbCommonLibrary,
                                        struct wl_seat *s)
 {
-  if (!g_display)
+  if (!g_eventLoop.get())
     throw std::logic_error("Must have a wl_display set before setting "
                            "the wl_seat in CWinEventsWayland ");
-  
+
   g_inputInstance.reset(new WaylandInput(clientLibrary,
                                          xkbCommonLibrary,
                                          s,
-                                         g_dispatch));
+                                         g_dispatch,
+                                         *g_eventLoop));
 }
 
 void CWinEventsWayland::DestroyWaylandSeat()
@@ -471,6 +961,11 @@ void CWinEventsWayland::DestroyWaylandSeat()
  * a seat has been registered */
 void CWinEventsWayland::SetXBMCSurface(struct wl_surface *s)
 {
+  if (!g_inputInstance.get())
+    throw std::logic_error("Must have a wl_seat set before setting "
+                           "the wl_surface in CWinEventsWayland");
+  
+  g_inputInstance->SetXBMCSurface(s);
 }
 
 #endif

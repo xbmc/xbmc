@@ -88,8 +88,25 @@ void xw::Seat::HandleCapabilities(enum wl_seat_capability cap)
     m_input.InsertPointer(pointer);
   }
 
+  if (newCaps & WL_SEAT_CAPABILITY_KEYBOARD)
+  {
+    struct wl_keyboard *keyboard =
+      protocol::CreateWaylandObject<struct wl_keyboard *,
+                                    struct wl_seat *>(m_clientLibrary,
+                                                      m_seat,
+                                                      m_clientLibrary.Get_wl_keyboard_interface());
+    protocol::CallMethodOnWaylandObject(m_clientLibrary,
+                                        m_seat,
+                                        WL_SEAT_GET_KEYBOARD,
+                                        keyboard);
+    m_input.InsertKeyboard(keyboard);
+  }
+
   if (lostCaps & WL_SEAT_CAPABILITY_POINTER)
     m_input.RemovePointer();
+
+  if (lostCaps & WL_SEAT_CAPABILITY_KEYBOARD)
+    m_input.RemoveKeyboard();
 
   m_currentCapabilities = cap;
 }

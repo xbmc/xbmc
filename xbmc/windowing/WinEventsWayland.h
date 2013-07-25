@@ -40,7 +40,7 @@ public:
   static void RefreshDevices();
   static bool IsRemoteLowBattery();
 
-  static void SetWaylandDisplay(IDllWaylandClient *clientLibrary,
+  static void SetWaylandDisplay(IDllWaylandClient &clientLibrary,
                                 struct wl_display *d);
   static void DestroyWaylandDisplay();
 

@@ -132,7 +132,7 @@ xw::XBMCConnection::Private::Private(IDllWaylandClient &clientLibrary,
   /* Tell CWinEvents what our display is. That way
    * CWinEvents::MessagePump is now able to dispatch events from
    * the display whenever it is called */ 
-  (*m_eventInjector.setDisplay)(&clientLibrary,
+  (*m_eventInjector.setDisplay)(clientLibrary,
                                 m_display->GetWlDisplay());
 	
   WaitForSynchronize();
