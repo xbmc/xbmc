@@ -415,7 +415,7 @@ void CRenderSystemGLES::Project(float &x, float &y, float &z)
   if (g_matrices.Project(x, y, z, m_view, m_projection, m_viewPort, &coordX, &coordY, &coordZ))
   {
     x = coordX;
-    y = (float)(m_viewPort[3] - coordY);
+    y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
     z = 0;
   }
 }
