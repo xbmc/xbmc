@@ -531,31 +531,31 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     info.iWidth = 640;
     info.iHeight = 720;
     info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
-    info.fPixelRatio = 1.0f;
+    info.fPixelRatio = 2.0f;
     info.strMode = "720pSBS 16:9";
     break;
   case RES_HDTV_720pTB:
-    info.iSubtitles = (int)(0.965 * 360);
+    info.iSubtitles = (int)(0.965 * 720);
     info.iWidth = 1280;
-    info.iHeight = 360;
+    info.iHeight = 720;
     info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
-    info.fPixelRatio = 1.0f;
+    info.fPixelRatio = 0.5f;
     info.strMode = "720pTB 16:9";
     break;
   case RES_HDTV_1080pSBS:
     info.iSubtitles = (int)(0.965 * 1080);
-    info.iWidth = 960;
+    info.iWidth = 1920;
     info.iHeight = 1080;
     info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
-    info.fPixelRatio = 1.0f;
+    info.fPixelRatio = 2.0f;
     info.strMode = "1080pSBS 16:9";
     break;
   case RES_HDTV_1080pTB:
-    info.iSubtitles = (int)(0.965 * 540);
+    info.iSubtitles = (int)(0.965 * 1080);
     info.iWidth = 1920;
-    info.iHeight = 540;
+    info.iHeight = 1080;
     info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
-    info.fPixelRatio = 1.0f;
+    info.fPixelRatio = 0.5f;
     info.strMode = "1080pTB 16:9";
     break;
   case RES_HDTV_720p:
