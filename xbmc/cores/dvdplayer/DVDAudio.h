@@ -44,21 +44,6 @@ extern "C" {
 
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
-class CPTSOutputQueue
-{
-private:
-  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
-  TPTSItem m_current;
-  std::queue<TPTSItem> m_queue;
-  CCriticalSection m_sync;
-
-public:
-  CPTSOutputQueue();
-  void Add(double pts, double delay, double duration, double timestamp);
-  void Flush();
-  double Current(double timestamp);
-};
-
 class CSingleLock;
 class IAudioCallback;
 
@@ -94,7 +79,6 @@ public:
 
   IAEStream *m_pAudioStream;
 protected:
-  CPTSOutputQueue m_time;
   unsigned int AddPacketsRenderer(unsigned char* data, unsigned int len, CSingleLock &lock);
   uint8_t*     m_pBuffer; // should be [m_dwPacketSize]
   unsigned int m_iBufferSize;
@@ -107,6 +91,7 @@ protected:
   bool m_bPassthrough;
   CAEChannelInfo m_channelLayout;
   bool m_bPaused;
+  double m_pts;
 
   volatile bool& m_bStop;
   IAudioCallback* m_pAudioCallback; //the viz audio callback
