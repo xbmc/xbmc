@@ -229,6 +229,15 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     // reinitialize the filters/shaders
     m_bFilterInitialized = false;
   }
+  else
+  {
+    if (m_VideoBuffers[m_iYV12RenderBuffer] != NULL)
+      m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
+
+    m_iYV12RenderBuffer = 0;
+    if (m_VideoBuffers[0] != NULL)
+      m_VideoBuffers[0]->StartRender();
+  }
 
   m_fps = fps;
   m_iFlags = flags;
