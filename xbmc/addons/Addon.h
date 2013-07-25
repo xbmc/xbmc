@@ -238,6 +238,8 @@ public:
   CAddonLibrary(const AddonProps &props);
   CAddonLibrary(const cp_extension_t *ext);
 
+  virtual AddonPtr Clone() const;
+
 private:
   virtual bool IsAddonLibrary() { return true; }
   TYPE SetAddonType();

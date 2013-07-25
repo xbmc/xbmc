@@ -621,6 +621,11 @@ CAddonLibrary::CAddonLibrary(const AddonProps& props)
 {
 }
 
+AddonPtr CAddonLibrary::Clone() const
+{
+  return AddonPtr(new CAddonLibrary(*this));
+}
+
 TYPE CAddonLibrary::SetAddonType()
 {
   if (Type() == ADDON_VIZ_LIBRARY)
