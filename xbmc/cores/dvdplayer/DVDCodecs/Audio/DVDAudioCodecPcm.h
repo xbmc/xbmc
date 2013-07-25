@@ -41,7 +41,8 @@ public:
 protected:
   virtual void SetDefault();
 
-  short m_decodedData[131072]; // could be a bit to big
+  short* m_decodedData;
+  int m_decodedDataBufSize;
   int m_decodedDataSize;
 
   AVCodecID m_codecID;
@@ -52,4 +53,8 @@ protected:
   int m_iOutputChannels;
 
   short table[256];
+
+private:
+  CDVDAudioCodecPcm(const CDVDAudioCodecPcm&);
+  CDVDAudioCodecPcm const& operator=(CDVDAudioCodecPcm const&);
 };
