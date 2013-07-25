@@ -30,8 +30,8 @@ using namespace ActiveAE;
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
-#define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
-#define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds
+#define MAX_CACHE_LEVEL 0.4   // total cache time of stream in seconds
+#define MAX_WATER_LEVEL 0.2   // buffered time after stream stages in seconds
 
 void CEngineStats::Reset(unsigned int sampleRate)
 {
