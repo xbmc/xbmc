@@ -39,4 +39,8 @@ protected:
   uint8_t *m_buffer;
 
   AVCodecID m_codecID;
+
+private:
+  CDVDAudioCodecLPcm(const CDVDAudioCodecLPcm&);
+  CDVDAudioCodecLPcm const& operator=(CDVDAudioCodecLPcm const&);
 };

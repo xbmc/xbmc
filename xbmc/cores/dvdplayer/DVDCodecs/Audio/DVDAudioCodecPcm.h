@@ -53,4 +53,8 @@ protected:
   int m_iOutputChannels;
 
   short table[256];
+
+private:
+  CDVDAudioCodecPcm(const CDVDAudioCodecPcm&);
+  CDVDAudioCodecPcm const& operator=(CDVDAudioCodecPcm const&);
 };
