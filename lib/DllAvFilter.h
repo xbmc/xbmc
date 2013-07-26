@@ -60,6 +60,10 @@ extern "C" {
   #define LIBAVFILTER_FROM_LIBAV
 #endif
 
+#if ( defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100)) || \
+    ( defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0))
+#define LIBAVFILTER_AVFRAME_BASED
+#endif
 
 #include "threads/SingleLock.h"
 
@@ -84,11 +88,19 @@ public:
 #else
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
 #endif
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
+#endif
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  virtual int av_buffersink_get_frame(AVFilterContext *ctx, AVFrame *frame) = 0;
+#else
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags)=0;
+#endif
   virtual AVBufferSinkParams *av_buffersink_params_alloc()=0;
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual int av_buffersink_poll_frame(AVFilterContext *ctx)=0;
+#endif
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -142,11 +154,19 @@ public:
 #else
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
 #endif
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
+#endif
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  virtual int av_buffersink_get_frame(AVFilterContext *ctx, AVFrame *frame) { return ::av_buffersink_get_frame(ctx, frame); }
+#else
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags) { return ::av_buffersink_get_buffer_ref(buffer_sink, bufref, flags); }
+#endif
   virtual AVBufferSinkParams *av_buffersink_params_alloc() { return ::av_buffersink_params_alloc(); }
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual int av_buffersink_poll_frame(AVFilterContext *ctx) { return ::av_buffersink_poll_frame(ctx); }
+#endif
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
@@ -182,11 +202,19 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 #else
   DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
 #endif
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
+#endif
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  DEFINE_FUNC_ALIGNED2(int                , __cdecl, av_buffersink_get_frame, AVFilterContext *, AVFrame *);
+#else
   DEFINE_FUNC_ALIGNED3(int                , __cdecl, av_buffersink_get_buffer_ref, AVFilterContext *, AVFilterBufferRef **, int);
+#endif
   DEFINE_FUNC_ALIGNED0(AVBufferSinkParams*, __cdecl, av_buffersink_params_alloc);
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   DEFINE_FUNC_ALIGNED1(int                , __cdecl, av_buffersink_poll_frame, AVFilterContext *);
+#endif
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(avfilter_free, avfilter_free_dont_call)
@@ -204,11 +232,19 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 #else
     RESOLVE_METHOD(av_buffersrc_add_frame)
 #endif
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
     RESOLVE_METHOD(avfilter_unref_buffer)
+#endif
     RESOLVE_METHOD(avfilter_link)
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+    RESOLVE_METHOD(av_buffersink_get_frame)
+#else
     RESOLVE_METHOD(av_buffersink_get_buffer_ref)
+#endif
     RESOLVE_METHOD(av_buffersink_params_alloc)
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
     RESOLVE_METHOD(av_buffersink_poll_frame)
+#endif
   END_METHOD_RESOLVE()
 
   /* dependencies of libavfilter */
