@@ -45,13 +45,17 @@ extern "C" {
   #include <libavfilter/avfilter.h>
   #include <libavfilter/avfiltergraph.h>
   #include <libavfilter/buffersink.h>
+#if LIBAVFILTER_VERSION_MICRO >= 100 && LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,43,100)
   #include <libavfilter/avcodec.h>
+#endif
   #include <libavfilter/buffersrc.h>
 #else
   #include "libavfilter/avfilter.h"
   #include "libavfilter/avfiltergraph.h"
   #include "libavfilter/buffersink.h"
+#if LIBAVFILTER_VERSION_MICRO >= 100 && LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,43,100)
   #include "libavfilter/avcodec.h"
+#endif
   #include "libavfilter/buffersrc.h"
 #endif
 }
