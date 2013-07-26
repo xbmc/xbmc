@@ -66,7 +66,11 @@ extern "C" {
 #endif
 
 #if ( defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,78,100) )
-#define HAVE_AVFILTER_GRAPH_PARSE_PTR
+  #define HAVE_AVFILTER_GRAPH_PARSE_PTR
+#elif defined(LIBAVFILTER_FROM_LIBAV)
+  #define AVFILTER_GRAPH_PARSE_TAKES_SINGLE_PTR_ARG
+#else
+  #define AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG
 #endif
 
 #include "threads/SingleLock.h"
@@ -84,8 +88,11 @@ public:
   virtual void avfilter_inout_free(AVFilterInOut **inout)=0;
 #if defined(HAVE_AVFILTER_GRAPH_PARSE_PTR)
   virtual int avfilter_graph_parse_ptr(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
-#endif
+#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
+#else
+  virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut *inputs, AVFilterInOut *outputs, void *log_ctx)=0;
+#endif
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
 #if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
     (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
@@ -150,12 +157,19 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_graph_parse_ptr(graph, filters, inputs, outputs, log_ctx);
   }
-#endif
+#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_graph_parse(graph, filters, inputs, outputs, log_ctx);
   }
+#else
+  virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut *inputs, AVFilterInOut *outputs, void *log_ctx)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return ::avfilter_graph_parse(graph, filters, inputs, outputs, log_ctx);
+  }
+#endif
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)
   {
     return ::avfilter_graph_config(graphctx, log_ctx);
@@ -208,8 +222,11 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD1(void, avfilter_inout_free_dont_call, (AVFilterInOut **p1))
 #if defined(HAVE_AVFILTER_GRAPH_PARSE_PTR)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_ptr_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
-#endif
+#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
+#else
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut *, AVFilterInOut *, void *)
+#endif
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
 #if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
     (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
@@ -244,8 +261,9 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD_RENAME(avfilter_inout_free, avfilter_inout_free_dont_call)
 #if defined(HAVE_AVFILTER_GRAPH_PARSE_PTR)
     RESOLVE_METHOD_RENAME(avfilter_graph_parse_ptr, avfilter_graph_parse_ptr_dont_call)
-#endif
+#else
     RESOLVE_METHOD_RENAME(avfilter_graph_parse, avfilter_graph_parse_dont_call)
+#endif
     RESOLVE_METHOD_RENAME(avfilter_graph_config, avfilter_graph_config_dont_call)
 #if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
     RESOLVE_METHOD(av_vsrc_buffer_add_frame)
@@ -299,12 +317,19 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return avfilter_graph_parse_ptr_dont_call(graph, filters, inputs, outputs, log_ctx);
   }
-#endif
+#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
   int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
     return avfilter_graph_parse_dont_call(graph, filters, inputs, outputs, log_ctx);
   }
+#else
+  int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut *inputs, AVFilterInOut *outputs, void *log_ctx)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return avfilter_graph_parse_dont_call(graph, filters, inputs, outputs, log_ctx);
+  }
+#endif
   void avfilter_inout_free(AVFilterInOut **inout)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
