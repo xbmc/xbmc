@@ -792,12 +792,15 @@ void CWinRenderer::ScaleFixedPipeline()
     FLOAT tu, tv;
   };
 
+  // Vertex format ignores viewport offsets, so correct for that here
+  CRect dest = g_graphicsContext.StereoCorrection(m_destRect);
+
   VERTEX vertex[] =
   {
-    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
-    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {dest.x1, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {dest.x2, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {dest.x2, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {dest.x1, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
   };
 
   // Compensate for D3D coordinates system
@@ -874,7 +877,7 @@ void CWinRenderer::Stage1()
 {
   if (!m_bUseHQScaler)
   {
-      m_colorShader->Render(m_sourceRect, m_destRect,
+    m_colorShader->Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect),
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
                             m_iFlags,
@@ -908,7 +911,7 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -925,7 +928,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(m_sourceRect, m_destRect, target, image->id, flags);
+  m_processor.Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect), target, image->id, flags);
 
   target->Release();
 }
