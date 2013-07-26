@@ -97,10 +97,8 @@ public:
 #if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
     (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame)=0;
-#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
-  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
 #else
-  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
 #endif
 #if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
@@ -177,10 +175,8 @@ public:
 #if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
     (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame) { return ::av_buffersrc_add_frame(buffer_filter, frame); }
-#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
-  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame, int flags) { return ::av_buffersrc_add_frame(buffer_filter, frame, flags); }
 #else
-  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame, int flags) { return ::av_buffersrc_add_frame(buffer_filter, frame, flags); }
 #endif
 #if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
@@ -231,10 +227,8 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 #if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
     (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
   DEFINE_METHOD2(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2))
-#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
-  DEFINE_METHOD3(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
 #else
-  DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
+  DEFINE_METHOD3(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
 #endif
 #if !defined(LIBAVFILTER_AVFRAME_BASED)
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
@@ -265,11 +259,7 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD_RENAME(avfilter_graph_parse, avfilter_graph_parse_dont_call)
 #endif
     RESOLVE_METHOD_RENAME(avfilter_graph_config, avfilter_graph_config_dont_call)
-#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
-    RESOLVE_METHOD(av_vsrc_buffer_add_frame)
-#else
     RESOLVE_METHOD(av_buffersrc_add_frame)
-#endif
 #if !defined(LIBAVFILTER_AVFRAME_BASED)
     RESOLVE_METHOD(avfilter_unref_buffer)
 #endif
