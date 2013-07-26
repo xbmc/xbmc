@@ -59,6 +59,13 @@ extern "C" {
 #endif
 }
 
+#if LIBAVUTIL_VERSION_MICRO >= 100
+  #define LIBAVUTIL_FROM_FFMPEG
+#else
+  #define LIBAVUTIL_FROM_LIBAV
+#endif
+
+
 #ifndef __GNUC__
 #pragma warning(pop)
 #endif
