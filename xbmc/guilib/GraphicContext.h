@@ -48,6 +48,7 @@
 #include "utils/GlobalsHandling.h"
 #include "DirtyRegion.h"
 #include "settings/ISettingCallback.h"
+#include "rendering/RenderSystem.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -149,6 +150,9 @@ public:
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
+  void SetStereoView(RENDER_STEREO_VIEW view);
+  RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
+  RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
   /*! \brief Set a region in which to clip all rendering
    Anything that is rendered after setting a clip region will be clipped so that no part renders
@@ -217,6 +221,10 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
+  /* modifies final coordinates according to stereo mode if needed */
+  CRect StereoCorrection(const CRect &rect, bool scale) const;
+  CPoint StereoCorrection(const CPoint &point, bool scale) const;
+
   CRect generateAABB(const CRect &rect) const;
 
 protected:
@@ -245,6 +253,8 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
+  RENDER_STEREO_VIEW m_stereoView;
+  RENDER_STEREO_MODE m_stereoMode;
 
   CRect m_scissors;
 };

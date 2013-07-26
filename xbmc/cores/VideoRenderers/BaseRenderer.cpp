@@ -600,9 +600,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  if (m_iFlags & (CONF_FLAGS_STEREO_MODE_SBS | CONF_FLAGS_STEREO_MODE_TAB))
-    viewMode = ViewModeNormal;
-
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution

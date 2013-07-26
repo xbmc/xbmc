@@ -65,3 +65,16 @@ bool CRenderSystemBase::SupportsBGRAApple() const
   return (m_renderCaps & RENDER_CAPS_BGRA_APPLE) == RENDER_CAPS_BGRA_APPLE;
 }
 
+bool CRenderSystemBase::SupportsStereo(RENDER_STEREO_MODE mode) const
+{
+  switch(mode)
+  {
+    case RENDER_STEREO_MODE_OFF:
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      return true;
+    default:
+      return false;
+  }
+}
+
