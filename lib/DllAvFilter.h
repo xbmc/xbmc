@@ -67,7 +67,6 @@ class DllAvFilterInterface
 {
 public:
   virtual ~DllAvFilterInterface() {}
-  virtual int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)=0;
   virtual void avfilter_free(AVFilterContext *filter)=0;
   virtual void avfilter_graph_free(AVFilterGraph **graph)=0;
   virtual int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt, const char *name, const char *args, void *opaque, AVFilterGraph *graph_ctx)=0;
@@ -98,11 +97,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 {
 public:
   virtual ~DllAvFilter() {}
-  virtual int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
-  {
-    CSingleLock lock(DllAvCodec::m_critSection);
-    return ::avfilter_open(filter_ctx, filter, inst_name);
-  }
   virtual void avfilter_free(AVFilterContext *filter)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
@@ -170,7 +164,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 
   LOAD_SYMBOLS()
 
-  DEFINE_METHOD3(int, avfilter_open_dont_call, (AVFilterContext **p1, AVFilter *p2, const char *p3))
   DEFINE_METHOD1(void, avfilter_free_dont_call, (AVFilterContext *p1))
   DEFINE_METHOD1(void, avfilter_graph_free_dont_call, (AVFilterGraph **p1))
   DEFINE_METHOD0(void, avfilter_register_all_dont_call)
@@ -196,7 +189,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_FUNC_ALIGNED1(int                , __cdecl, av_buffersink_poll_frame, AVFilterContext *);
 
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(avfilter_open, avfilter_open_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_free, avfilter_free_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_graph_free, avfilter_graph_free_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_register_all, avfilter_register_all_dont_call)
@@ -225,11 +217,6 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DllAvFormat m_dllAvFormat;
 
 public:
-  int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
-  {
-    CSingleLock lock(DllAvCodec::m_critSection);
-    return avfilter_open_dont_call(filter_ctx, filter, inst_name);
-  }
   void avfilter_free(AVFilterContext *filter)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
