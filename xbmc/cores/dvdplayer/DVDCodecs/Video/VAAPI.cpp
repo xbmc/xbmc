@@ -396,6 +396,12 @@ bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
 {
   CLog::Log(LOGDEBUG, "VAAPI - making sure %d surfaces are allocated for given %d references", n_surfaces_count, avctx->refs);
 
+  if(n_surfaces_count > m_surfaces_max)
+  {
+    CLog::Log(LOGERROR, "VAAPI - Failed to ensure surfaces! Requested %d surfaces. Maximum possible count is %d!", n_surfaces_count, m_surfaces_max);
+    return false;
+  }
+
   if(n_surfaces_count <= m_surfaces_count)
     return true;
 
