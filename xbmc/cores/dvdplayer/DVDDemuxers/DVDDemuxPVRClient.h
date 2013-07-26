@@ -24,22 +24,6 @@
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 
-#ifndef TARGET_POSIX
-#include <libavformat/avformat.h>
-#else
-extern "C" {
-#if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
-    #include <libavformat/avformat.h>
-  #elif (defined HAVE_FFMPEG_AVFORMAT_H)
-    #include <ffmpeg/avformat.h>
-  #endif
-#else
-  #include "libavformat/avformat.h"
-#endif
-}
-#endif
-
 #include "pvr/addons/PVRClient.h"
 
 class CDVDDemuxPVRClient;
