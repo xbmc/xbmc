@@ -115,6 +115,7 @@ public:
   virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt) = 0;
 #if defined(AVFRAME_IN_LAVU)
   virtual void av_frame_free(AVFrame **frame)=0;
+  virtual AVFrame *av_frame_alloc(void)=0;
 #endif
 };
 
@@ -166,6 +167,7 @@ public:
     { return ::av_samples_copy(dst, src, dst_offset, src_offset, nb_samples, nb_channels, sample_fmt); }
 #if defined(AVFRAME_IN_LAVU)
   virtual void av_frame_free(AVFrame **frame) { return ::av_frame_free(frame); }
+  virtual AVFrame *av_frame_alloc() { return ::av_frame_alloc(); }
 #endif
 
    // DLL faking.
@@ -221,6 +223,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD7(int, av_samples_copy, (uint8_t **p1, uint8_t *const *p2, int p3, int p4, int p5, int p6, enum AVSampleFormat p7))
 #if defined(AVFRAME_IN_LAVU)
   DEFINE_METHOD1(void, av_frame_free, (AVFrame **p1))
+  DEFINE_METHOD0(AVFrame *, av_frame_alloc)
 #endif
 
   public:
@@ -259,6 +262,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_samples_copy)
 #if defined(AVFRAME_IN_LAVU)
     RESOLVE_METHOD(av_frame_free)
+    RESOLVE_METHOD(av_frame_alloc)
 #endif
   END_METHOD_RESOLVE()
 };
