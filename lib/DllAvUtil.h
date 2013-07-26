@@ -65,6 +65,10 @@ extern "C" {
   #define LIBAVUTIL_FROM_LIBAV
 #endif
 
+#if (defined LIBAVUTIL_FROM_FFMPEG && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52,29,100)) || \
+    (defined LIBAVUTIL_FROM_LIBAV  && LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52,8,0))
+#define AVFRAME_IN_LAVU
+#endif
 
 #ifndef __GNUC__
 #pragma warning(pop)
@@ -109,6 +113,9 @@ public:
   virtual int av_get_channel_layout_channel_index (uint64_t channel_layout, uint64_t channel) = 0;
   virtual int av_samples_fill_arrays(uint8_t **audio_data, int *linesize, const uint8_t *buf, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
   virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt) = 0;
+#if defined(AVFRAME_IN_LAVU)
+  virtual void av_frame_free(AVFrame **frame)=0;
+#endif
 };
 
 #if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -157,6 +164,9 @@ public:
     { return ::av_samples_fill_arrays(audio_data, linesize, buf, nb_channels, nb_samples, AVSampleFormat sample_fmt, align); }
   virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt)
     { return ::av_samples_copy(dst, src, dst_offset, src_offset, nb_samples, nb_channels, sample_fmt); }
+#if defined(AVFRAME_IN_LAVU)
+  virtual void av_frame_free(AVFrame **frame) { return ::av_frame_free(frame); }
+#endif
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -209,6 +219,9 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD2(int, av_get_channel_layout_channel_index, (uint64_t p1, uint64_t p2))
   DEFINE_METHOD7(int, av_samples_fill_arrays, (uint8_t **p1, int *p2, const uint8_t *p3, int p4, int p5, enum AVSampleFormat p6, int p7))
   DEFINE_METHOD7(int, av_samples_copy, (uint8_t **p1, uint8_t *const *p2, int p3, int p4, int p5, int p6, enum AVSampleFormat p7))
+#if defined(AVFRAME_IN_LAVU)
+  DEFINE_METHOD1(void, av_frame_free, (AVFrame **p1))
+#endif
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -244,6 +257,9 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_get_channel_layout_channel_index)
     RESOLVE_METHOD(av_samples_fill_arrays)
     RESOLVE_METHOD(av_samples_copy)
+#if defined(AVFRAME_IN_LAVU)
+    RESOLVE_METHOD(av_frame_free)
+#endif
   END_METHOD_RESOLVE()
 };
 
