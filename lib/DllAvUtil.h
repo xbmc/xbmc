@@ -117,6 +117,7 @@ public:
   virtual void av_frame_free(AVFrame **frame)=0;
   virtual AVFrame *av_frame_alloc(void)=0;
   virtual void av_frame_unref(AVFrame *frame)=0;
+  virtual void av_frame_move_ref(AVFrame *dst, AVFrame *src)=0;
 #endif
 };
 
@@ -170,6 +171,7 @@ public:
   virtual void av_frame_free(AVFrame **frame) { return ::av_frame_free(frame); }
   virtual AVFrame *av_frame_alloc() { return ::av_frame_alloc(); }
   virtual void av_frame_unref(AVFrame *frame) { return ::av_frame_unref(frame); }
+  virtual void av_frame_move_ref(AVFrame *dst, AVFrame *src) { return ::av_frame_move_ref(dst,src); }
 #endif
 
    // DLL faking.
@@ -227,6 +229,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD1(void, av_frame_free, (AVFrame **p1))
   DEFINE_METHOD0(AVFrame *, av_frame_alloc)
   DEFINE_METHOD1(void, av_frame_unref, (AVFrame *p1))
+  DEFINE_METHOD2(void, av_frame_move_ref, (AVFrame *p1, AVFrame* p2))
 #endif
 
   public:
@@ -267,6 +270,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_frame_free)
     RESOLVE_METHOD(av_frame_alloc)
     RESOLVE_METHOD(av_frame_unref)
+    RESOLVE_METHOD(av_frame_move_ref)
 #endif
   END_METHOD_RESOLVE()
 };
