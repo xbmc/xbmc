@@ -746,17 +746,17 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
 #ifdef HAS_DX
   struct VERTEX
   {
-    D3DXVECTOR4 p;
+    D3DXVECTOR3 p;
     D3DCOLOR col;
     FLOAT tu, tv;
   };
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+  static const DWORD FVF_VERTEX = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
   VERTEX vertex[5];
 
   for (int i = 0; i < 4; i++)
   {
-    vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 1.0f);
+    vertex[i].p = D3DXVECTOR3( x[i], y[i], 0);
     vertex[i].tu = 0;
     vertex[i].tv = 0;
     vertex[i].col = color;
