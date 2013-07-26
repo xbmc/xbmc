@@ -42,11 +42,13 @@ extern "C" {
 #endif
 
 #if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavfilter/avfilter.h>
   #include <libavfilter/avfiltergraph.h>
   #include <libavfilter/buffersink.h>
   #include <libavfilter/avcodec.h>
   #include <libavfilter/buffersrc.h>
 #else
+  #include "libavfilter/avfilter.h"
   #include "libavfilter/avfiltergraph.h"
   #include "libavfilter/buffersink.h"
   #include "libavfilter/avcodec.h"
