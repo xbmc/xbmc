@@ -3378,7 +3378,7 @@ public:
   {
         // Range check the count.
 
-    nCount = SSMAX(0, SSMIN(nCount, static_cast<int>(this->size())));
+    nCount = SSMIN(SSMAX(0, nCount), static_cast<int>(this->size()));
     return this->substr(0, static_cast<MYSIZE>(nCount));
   }
 
