@@ -40,6 +40,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "windowing/egl/EGLWrapper.h"
+#include "windowing/WindowingFactory.h"
 
 #include <new>
 
@@ -228,34 +229,25 @@ public:
 
       if (frame->status == OK)
       {
+        frame->width = p->width;
+        frame->height = p->height;
+        frame->pts = 0;
+
         sp<MetaData> outFormat = p->decoder->getFormat();
         outFormat->findInt32(kKeyWidth , &w);
         outFormat->findInt32(kKeyHeight, &h);
 
-        if (!outFormat->findInt32(kKeyDisplayWidth , &dw))
-          dw = w;
-        if (!outFormat->findInt32(kKeyDisplayHeight, &dh))
-          dh = h;
-
-        if (!outFormat->findInt32(kKeyIsSyncFrame, &keyframe))
-          keyframe = 0;
-        if (!outFormat->findInt32(kKeyIsUnreadable, &unreadable))
-          unreadable = 0;
-
-        frame->pts = 0;
-
         // The OMX.SEC decoder doesn't signal the modified width/height
-        if (p->decoder_component && !strncmp(p->decoder_component, "OMX.SEC", 7) &&
-          (w & 15 || h & 15))
+        if (p->decoder_component && (w & 15 || h & 15) && !strncmp(p->decoder_component, "OMX.SEC", 7))
         {
           if (((w + 15)&~15) * ((h + 15)&~15) * 3/2 == frame->medbuf->range_length())
           {
             w = (w + 15)&~15;
             h = (h + 15)&~15;
+            frame->width = w;
+            frame->height = h;
           }
         }
-        frame->width = w;
-        frame->height = h;
         frame->medbuf->meta_data()->findInt64(kKeyTime, &(frame->pts));
       }
       else if (frame->status == INFO_FORMAT_CHANGED)
@@ -267,7 +259,7 @@ public:
         outFormat->findInt32(kKeyHeight, &p->height);
 
         cropLeft = cropTop = cropRight = cropBottom = 0;
-       if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom))
+        if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom))
         {
           p->x = 0;
           p->y = 0;
@@ -409,6 +401,21 @@ public:
 
 /***********************************************************/
 
+CStageFrightVideo::CStageFrightVideo(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
+{
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::ctor: %d\n", CLASSNAME, sizeof(CStageFrightVideo));
+#endif
+  p = new CStageFrightVideoPrivate;
+  p->m_g_Windowing = windowing;
+  p->m_g_advancedSettings = advsettings;
+}
+
+CStageFrightVideo::~CStageFrightVideo()
+{
+  delete p;
+}
+
 bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 {
 #if defined(DEBUG_VERBOSE)
@@ -423,12 +430,10 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"null size, cannot handle");
     return false;
   }
-
-  p = new CStageFrightVideoPrivate;
   p->width     = hints.width;
   p->height    = hints.height;
 
-  if (g_advancedSettings.m_stagefrightConfig.useSwRenderer)
+  if (p->m_g_advancedSettings->m_stagefrightConfig.useSwRenderer)
     p->quirks |= QuirkSWRender;
 
   sp<MetaData> outFormat;
@@ -438,26 +443,27 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   p->meta = new MetaData;
   if (p->meta == NULL)
   {
-    goto fail;
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"cannot allocate MetaData");
+    return false;
   }
 
   const char* mimetype;
   switch (hints.codec)
   {
   case CODEC_ID_H264:
-    if (g_advancedSettings.m_stagefrightConfig.useAVCcodec == 0)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useAVCcodec == 0)
       return false;
     mimetype = MEDIA_MIMETYPE_VIDEO_AVC;
     if ( *(char*)hints.extradata == 1 )
       p->meta->setData(kKeyAVCC, kTypeAVCC, hints.extradata, hints.extrasize);
     break;
   case CODEC_ID_MPEG4:
-    if (g_advancedSettings.m_stagefrightConfig.useMP4codec == 0)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useMP4codec == 0)
       return false;
     mimetype = MEDIA_MIMETYPE_VIDEO_MPEG4;
     break;
   case CODEC_ID_MPEG2VIDEO:
-    if (g_advancedSettings.m_stagefrightConfig.useMPEG2codec == 0)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useMPEG2codec == 0)
       return false;
     mimetype = MEDIA_MIMETYPE_VIDEO_MPEG2;
     break;
@@ -465,13 +471,13 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   case CODEC_ID_VP6:
   case CODEC_ID_VP6F:
   case CODEC_ID_VP8:
-    if (g_advancedSettings.m_stagefrightConfig.useVPXcodec == 0)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
       return false;
     mimetype = MEDIA_MIMETYPE_VIDEO_VPX;
     break;
   case CODEC_ID_VC1:
   case CODEC_ID_WMV3:
-    if (g_advancedSettings.m_stagefrightConfig.useVC1codec == 0)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVC1codec == 0)
       return false;
     mimetype = MEDIA_MIMETYPE_VIDEO_WMV;
     break;
@@ -491,7 +497,8 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 
   if (p->source == NULL || p->client == NULL)
   {
-    goto fail;
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot obtain source / client");
+    return false;
   }
 
   if (p->client->connect() !=  OK)
@@ -499,7 +506,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     delete p->client;
     p->client = NULL;
     CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot connect OMX client");
-    goto fail;
+    return false;
   }
 
   if ((p->quirks & QuirkSWRender) == 0)
@@ -514,14 +521,14 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   if (!(p->decoder != NULL && p->decoder->start() ==  OK))
   {
     p->decoder = NULL;
-    goto fail;
+    return false;
   }
 
   outFormat = p->decoder->getFormat();
 
   if (!outFormat->findInt32(kKeyWidth, &p->width) || !outFormat->findInt32(kKeyHeight, &p->height)
         || !outFormat->findInt32(kKeyColorFormat, &p->videoColorFormat))
-    goto fail;
+    return false;
 
   const char *component;
   if (outFormat->findCString(kKeyDecoderComponent, &component))
@@ -533,13 +540,13 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     {
       // On some platforms, software decoders are returned anyway
       CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (software)");
-      goto fail;
+      return false;
     }
-    else if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && g_advancedSettings.m_stagefrightConfig.useMP4codec != 1)
+    else if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && p->m_g_advancedSettings->m_stagefrightConfig.useMP4codec != 1)
     {
       // Has issues with some XVID encoded MP4. Only fails after actual decoding starts...
       CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MP4)");
-      goto fail;
+      return false;
     }
   }
 
@@ -576,20 +583,6 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 #endif
 
   return true;
-
-fail:
-  if (p->decoder != 0)
-    p->decoder->stop();
-  if (p->client)
-  {
-    p->client->disconnect();
-    delete p->client;
-  }
-  if (p->decoder_component)
-    free(&p->decoder_component);
-  if ((p->quirks & QuirkSWRender) == 0)
-    p->UninitStagefrightSurface();
-  return false;
 }
 
 /*** Decode ***/
@@ -612,7 +605,7 @@ int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts
       return VC_ERROR;
 
     frame->status  = OK;
-    if (g_advancedSettings.m_stagefrightConfig.useInputDTS)
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useInputDTS)
       frame->pts = (dts != DVD_NOPTS_VALUE) ? pts_dtoi(dts) : ((pts != DVD_NOPTS_VALUE) ? pts_dtoi(pts) : 0);
     else
       frame->pts = (pts != DVD_NOPTS_VALUE) ? pts_dtoi(pts) : ((dts != DVD_NOPTS_VALUE) ? pts_dtoi(dts) : 0);
@@ -708,7 +701,6 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayWidth = frame->width;
   pDvdVideoPicture->iDisplayHeight = frame->height;
   pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->stf = this;
   pDvdVideoPicture->eglimg = EGL_NO_IMAGE_KHR;
 
   if (status != OK)
@@ -827,8 +819,10 @@ void CStageFrightVideo::Close()
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "Stopping omxcodec\n");
 #endif
-  p->decoder->stop();
-  p->client->disconnect();
+  if (p->decoder != NULL)
+    p->decoder->stop();
+  if (p->client)
+    p->client->disconnect();
 
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "Cleaning IN(%d)\n", p->in_queue.size());
@@ -843,22 +837,30 @@ void CStageFrightVideo::Close()
       frame->medbuf->release();
     free(frame);
   }
+  
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "Cleaning libstagefright\n", p->in_queue.size());
+#endif
+  if ((p->quirks & QuirkSWRender) == 0)
+    p->UninitStagefrightSurface();
 
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "Final Cleaning\n", p->in_queue.size());
+#endif
   if (p->decoder_component)
     free(&p->decoder_component);
 
   delete p->client;
 
-  if ((p->quirks & QuirkSWRender) == 0)
-    p->UninitStagefrightSurface();
-
   for (int i=0; i<INBUFCOUNT; ++i)
   {
-    p->inbuf[i]->setObserver(NULL);
-    p->inbuf[i]->release();
+    if (p->inbuf[i])
+    {
+      p->inbuf[i]->setObserver(NULL);
+      p->inbuf[i]->release();
+      p->inbuf[i] = NULL;
+    }
   }
-
-  delete p;
 }
 
 void CStageFrightVideo::Reset(void)
