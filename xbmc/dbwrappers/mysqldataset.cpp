@@ -1403,9 +1403,15 @@ bool MysqlDataset::query(const char *query) {
 
   close();
 
+  size_t loc;
+
+  // mysql doesn't understand CAST(foo as integer) => change to CAST(foo as signed integer)
+  if ((loc = ci_find(qry, "as integer)")) != string::npos)
+    qry = qry.insert(loc + 3, "signed ");
+
   MYSQL_RES *stmt = NULL;
 
-  if ( static_cast<MysqlDatabase*>(db)->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(query), query) != MYSQL_OK )
+  if ( static_cast<MysqlDatabase*>(db)->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK )
     throw DbErrors(db->getErrorMsg());
 
   MYSQL* conn = handle();
