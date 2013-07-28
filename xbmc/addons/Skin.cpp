@@ -102,11 +102,6 @@ CSkinInfo::~CSkinInfo()
 {
 }
 
-bool CSkinInfo::HasSettings()
-{
-  return HasSkinFile("SkinSettings.xml");
-}
-
 struct closestRes
 {
   closestRes(const RESOLUTION_INFO &target) : m_target(target) { };

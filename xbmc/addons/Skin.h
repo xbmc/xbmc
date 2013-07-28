@@ -52,8 +52,6 @@ public:
   CSkinInfo(const cp_extension_t *ext);
   virtual ~CSkinInfo();
 
-  virtual bool HasSettings();
-
   /*! \brief Load resultion information from directories in Path().
    */
   void Start();
