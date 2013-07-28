@@ -7511,7 +7511,7 @@ void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList&
       int setId = m_pDS->fv("movie.idSet").get_asInt();
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
       CStdString path;
-      if (setId <= 0)
+      if (setId <= 0 || !CSettings::Get().GetBool("videolibrary.groupmoviesets"))
         path.Format("videodb://movies/titles/%i", movieId);
       else
         path.Format("videodb://movies/sets/%i/%i", setId, movieId);
