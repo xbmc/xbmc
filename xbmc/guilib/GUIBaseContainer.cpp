@@ -315,7 +315,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         m_lastHoldTime = CTimeUtils::GetFrameTime();
 
         if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
-          return false;
+          return true;
 
         while (m_scrollItemsPerFrame >= 1)
         {
