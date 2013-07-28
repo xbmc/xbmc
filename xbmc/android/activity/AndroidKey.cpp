@@ -139,6 +139,9 @@ static KeyMap keyMap[] = {
   { AKEYCODE_BUTTON_MODE     , XBMCK_LAST },
   { AKEYCODE_ESCAPE          , XBMCK_ESCAPE },
   { AKEYCODE_FORWARD_DEL     , XBMCK_DELETE }
+  { AKEYCODE_CTRL_LEFT       , XBMCK_LCTRL }
+  { AKEYCODE_CTRL_RIGHT      , XBMCK_RCTRL }
+  { AKEYCODE_CAPS_LOCK       , XBMCK_CAPSLOCK }
 };
 
 bool CAndroidKey::onKeyboardEvent(AInputEvent* event)

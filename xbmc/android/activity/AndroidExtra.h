@@ -24,3 +24,6 @@
  //Additional defines from android.view.KeyEvent (http://developer.android.com/reference/android/view/KeyEvent.html)
 #define AKEYCODE_ESCAPE 111
 #define AKEYCODE_FORWARD_DEL 112
+#define AKEYCODE_CTRL_LEFT 113
+#define AKEYCODE_CTRL_RIGHT 114
+#define AKEYCODE_CAPS_LOCK 115
