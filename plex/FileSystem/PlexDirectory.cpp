@@ -185,6 +185,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("samplingRate", g_parserInt)
                                      ("dialogNorm", g_parserInt)
                                      ("viewMode", g_parserInt)
+                                     ("autoRefresh", g_parserInt)
 
                                      ("filters", g_parserBool)
                                      ("refreshing", g_parserBool)
@@ -195,6 +196,8 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("indirect", g_parserBool)
                                      ("popup", g_parserBool)
                                      ("installed", g_parserBool)
+                                     ("settings", g_parserBool)
+                                     ("search", g_parserBool)
 
                                      ("key", g_parserKey)
                                      ("theme", g_parserKey)
@@ -343,7 +346,6 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   if (mediaContainer.HasProperty("viewMode"))
   {
     int viewMode = mediaContainer.GetProperty("viewMode").asInteger();
-    mediaContainer.SetDefaultViewMode(viewMode);
     CGUIViewState *state = CGUIViewState::GetViewState(0, mediaContainer);
     state->SaveViewAsControl(viewMode);
   }

@@ -75,11 +75,9 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
        (dir->m_cacheType == XFILE::DIR_CACHE_ONCE && retrieveAll))
     {
       /* PLEX - Preserve view mode, which may have been updated */
-      int defaultViewMode = items.GetDefaultViewMode();
-
+      int defaultViewMode = items.GetProperty("viewMode").asInteger();
       items.Copy(*dir->m_Items);
-
-      items.SetDefaultViewMode(defaultViewMode);
+      items.SetProperty("viewMode", defaultViewMode);
       /* END PLEX */
       dir->SetLastAccess(m_accessCounter);
 #ifdef _DEBUG

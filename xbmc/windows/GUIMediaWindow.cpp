@@ -530,7 +530,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
       /* PLEX */
       g_plexMediaServerClient.SetViewMode(*m_vecItems, viewMode);
-      m_vecItems->SetDefaultViewMode(viewMode);
+      m_vecItems->SetProperty("viewMode", viewMode);
       /* END PLEX */
 
       UpdateButtons();
@@ -628,7 +628,7 @@ void CGUIMediaWindow::UpdateButtons()
 
     // Check the list of disabled view modes for this directory
     CStdStringArray viewModes;
-    StringUtils::SplitString(CurrentDirectory().GetDisabledViewModes(), ",", viewModes);
+    StringUtils::SplitString(CurrentDirectory().GetProperty("disabledViewModes").asString(), ",", viewModes);
     for (unsigned int i = 0; i < viewModes.size(); i++)
     {
       if (atoi(viewModes[i]) == viewMode)
@@ -636,8 +636,8 @@ void CGUIMediaWindow::UpdateButtons()
     }
 
     // If we have a default view mode, use that instead
-    if (CurrentDirectory().GetDefaultViewMode() > 0)
-      m_viewControl.SetCurrentView(CurrentDirectory().GetDefaultViewMode());
+    if (CurrentDirectory().HasProperty("viewMode"))
+      m_viewControl.SetCurrentView(CurrentDirectory().GetProperty("viewMode").asInteger());
 
     // Otherwise, use the global default
     else
@@ -678,9 +678,9 @@ void CGUIMediaWindow::ClearFileItems()
 void CGUIMediaWindow::ClearFileItems()
 {
   m_viewControl.Clear();
-  int defaultViewMode = m_vecItems->GetDefaultViewMode();
+  int defaultViewMode = m_vecItems->GetProperty("viewMode").asInteger();
   m_vecItems->Clear(); // will clean up everything
-  m_vecItems->SetDefaultViewMode(defaultViewMode);
+  m_vecItems->SetProperty("viewMode", defaultViewMode);
 
   m_unfilteredItems->Clear();
 }
@@ -810,7 +810,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   if (strDirectory.size() == 0)
   {
     int viewMode = 131131;
-    items.SetDefaultViewMode(viewMode);
+    items.SetProperty("viewMode", viewMode);
   }
   /* END PLEX */
 
@@ -897,7 +897,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   /* PLEX */
   // Save the default view mode.
   if (strDirectory == strCurrentDirectory)
-    items.SetDefaultViewMode(m_vecItems->GetDefaultViewMode());
+    items.SetProperty("viewMode", m_vecItems->GetProperty("viewMode"));
 
 #ifndef __PLEX__
   if (!GetDirectory(directory, items))
@@ -1159,7 +1159,7 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 
   /* PLEX */
   // Check whether the refresh timer is required
-  if (m_vecItems->GetAutoRefresh() > 0)
+  if (m_vecItems->HasProperty("autoRefresh") && m_vecItems->GetProperty("autoRefresh").asBoolean() > 0)
   {
     if (!m_refreshTimer.IsRunning())
       m_refreshTimer.StartZero();
@@ -1267,10 +1267,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     /* PLEX */
     // Show on-screen keyboard for PMS search queries
-    if (pItem->IsSearchDir())
+    if (pItem->GetProperty("search").asBoolean())
     {
       CStdString strSearchTerm = "";
-      if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, pItem->GetSearchPrompt(), false))
+      if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, pItem->GetProperty("prompt").asString(), false))
       {
         // Encode the query.
         CURL::Encode(strSearchTerm);
@@ -1322,7 +1322,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // Show preferences.
-    if (pItem->IsSettingsDir())
+    if (pItem->GetProperty("settings").asBoolean())
     {
       CFileItemList fileItems;
       vector<CStdString> items;
@@ -2335,7 +2335,8 @@ void CGUIMediaWindow::RefreshShares(bool update)
 
 void CGUIMediaWindow::Render()
 {
-  if (m_refreshTimer.IsRunning() && m_vecItems->GetAutoRefresh() > 0 && m_refreshTimer.GetElapsedSeconds() >= m_vecItems->GetAutoRefresh())
+  if (m_refreshTimer.IsRunning() && m_vecItems->GetProperty("autoRefresh").asInteger() > 0 &&
+      m_refreshTimer.GetElapsedSeconds() >= m_vecItems->GetProperty("autoRefresh").asInteger())
   {
     if (m_mediaRefresher == NULL)
     {
@@ -2347,7 +2348,7 @@ void CGUIMediaWindow::Render()
       // Assign the new stuff over.
       m_vecItems->ClearItems();
       m_vecItems->Append(m_mediaRefresher->getItemList());
-      m_vecItems->SetAutoRefresh(m_mediaRefresher->getItemList().GetAutoRefresh());
+      m_vecItems->SetProperty("autoRefresh", m_mediaRefresher->getItemList().GetProperty("autoRefresh"));
 
       OnPrepareFileItems(*m_vecItems);
       m_vecItems->FillInDefaultIcons();

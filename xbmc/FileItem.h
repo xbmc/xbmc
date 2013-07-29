@@ -436,37 +436,10 @@ public:
   bool IsPlexMediaServerLibrary() const;
   bool IsPlexWebkit() const;
 
-  void SetDefaultViewMode(int viewMode) { m_defaultViewMode = viewMode; }
-  int GetDefaultViewMode() const { return m_defaultViewMode; }
-
-  void SetDisabledViewModes(const CStdString &viewModes) { m_disabledViewModes = viewModes; }
-  const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
-
   void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
   std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
 
-  bool GetSaveInHistory() const { return m_saveInHistory; }
-  void SetSaveInHistory(bool save) { m_saveInHistory = save; }
-
-  bool GetAutoRefresh() const { return m_autoRefresh; }
-  void SetAutoRefresh(bool autorefresh) { m_autoRefresh = autorefresh; }
-
-  int GetBitrate() const { return m_iBitrate; }
-  void SetBitrate(int br) { m_iBitrate = br; }
-
-  bool GetIncludeStandardContextItems() const { return m_includeStandardContextItems; }
-  void SetIncludeStandardContextItems(bool includeStandardContextItems) { m_includeStandardContextItems = includeStandardContextItems; }
-
   void SetEpisodeData(int total, int watchedCount);
-
-  void SetIsSearchDir(bool issearch) { m_bIsSearchDir = issearch; }
-  bool IsSearchDir() const { return m_bIsSearchDir; }
-
-  void SetSearchPrompt(const CStdString &prompt) { m_strSearchPrompt = prompt; }
-  CStdString GetSearchPrompt() const { return m_strSearchPrompt; }
-
-  void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
-  bool IsSettingsDir() const { return m_bIsSettingsDir; }
 
   void MarkAsWatched();
   void MarkAsUnWatched();
@@ -497,18 +470,7 @@ private:
 
   /* PLEX */
 protected:
-  int m_defaultViewMode;
-  CStdString m_disabledViewModes;
   std::vector<CFileItemPtr> m_chainedProviders;
-  CStdString m_strFanartUrl;
-  CStdString m_strBannerUrl;
-  bool m_saveInHistory;
-  bool m_autoRefresh;
-  int m_iBitrate;
-  bool m_includeStandardContextItems;
-  bool m_bIsSearchDir;            // whether to show keyboard & append input as query
-  CStdString m_strSearchPrompt;   // text to show as keyboard header
-  bool m_bIsSettingsDir;
   /* END PLEX */
 };
 

@@ -4542,7 +4542,7 @@ CStdString CDVDPlayer::TranscodeURL(CStdString& stopURL, const CStdString& url, 
   //
   static int bitrateQualities[] = {64,96,208,320,720,1500,2000,3000,4000,8000,10000,12000,20000};
   CFileItem& file = g_application.CurrentFileItem();
-  file.SetBitrate(bitrateQualities[quality] * 4);
+  file.SetProperty("bitrate", bitrateQualities[quality] * 4);
 
   // Append the session ID
   options += "&session=" + g_guiSettings.GetString("system.uuid");
