@@ -74,6 +74,7 @@ public:
   static void SettingOptionsAudioDevicesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
   static void RegisterAudioCallback(IAudioCallback* pCallback);
   static void UnregisterAudioCallback();

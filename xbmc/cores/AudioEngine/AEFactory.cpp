@@ -363,6 +363,21 @@ void CAEFactory::SettingOptionsAudioOutputModesFiller(const CSetting *setting, s
   list.push_back(std::make_pair(g_localizeStrings.Get(420), AUDIO_HDMI));
 }
 
+void CAEFactory::SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  if (!AE)
+    return;
+
+  if(AE->SupportsQualityLevel(AE_QUALITY_LOW))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13506), AE_QUALITY_LOW));
+  if(AE->SupportsQualityLevel(AE_QUALITY_MID))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13507), AE_QUALITY_MID));
+  if(AE->SupportsQualityLevel(AE_QUALITY_HIGH))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13508), AE_QUALITY_HIGH));
+  if(AE->SupportsQualityLevel(AE_QUALITY_REALLYHIGH))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
+}
+
 void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
 {
   current = ((const CSettingString*)setting)->GetValue();
