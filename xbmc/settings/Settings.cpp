@@ -362,6 +362,7 @@ void CSettings::Uninitialize()
   // unregister setting option fillers
   m_settingsManager->UnregisterSettingOptionsFiller("audiocdactions");
   m_settingsManager->UnregisterSettingOptionsFiller("audiocdencoders");
+  m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
   m_settingsManager->UnregisterSettingOptionsFiller("audiooutputmodes");
@@ -666,6 +667,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiocdencoders", MEDIA_DETECT::CAutorun::SettingOptionAudioCdEncodersFiller);
 #endif
+  m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiooutputmodes", CAEFactory::SettingOptionsAudioOutputModesFiller);
@@ -766,6 +768,9 @@ void CSettings::InitializeConditions()
   if (CAEFactory::SupportsDrain())
     m_settingsManager->AddCondition("audiosupportsdrain");
 
+  if(CAEFactory::SupportsQualitySetting())
+    m_settingsManager->AddCondition("has_ae_quality_levels");
+
   // add more complex conditions
   m_settingsManager->AddCondition("addonhassettings", AddonHasSettings);
   m_settingsManager->AddCondition("checkmasterlock", CheckMasterLock);
@@ -848,6 +853,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert("audiooutput.mode");
   settingSet.insert("audiooutput.channels");
+  settingSet.insert("audiooutput.processquality");
   settingSet.insert("audiooutput.guisoundmode");
   settingSet.insert("audiooutput.stereoupmix");
   settingSet.insert("audiooutput.ac3passthrough");

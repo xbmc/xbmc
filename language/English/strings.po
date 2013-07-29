@@ -12893,7 +12893,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36169"
-msgid "No info available yet."
+msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
 msgstr ""
 
 #: system/settings/settings.xml

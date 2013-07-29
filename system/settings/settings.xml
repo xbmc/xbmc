@@ -1954,6 +1954,15 @@
           <level>2</level>
           <default>true</default>
         </setting>
+        <setting id="audiooutput.processquality" type="integer" label="13505" help="36169">
+          <visible>HAS_AE_QUALITY_LEVELS</visible>
+          <level>2</level>
+          <default>30</default> <!-- AE_QUALITY_MID -->
+          <constraints>
+            <options>aequalitylevels</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
         <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
           <level>2</level>
           <default>false</default>
