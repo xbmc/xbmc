@@ -4116,8 +4116,14 @@ void CGUIInfoManager::UpdateAVInfo()
   {
     if (!m_AVInfoValid)
     {
-      g_application.m_pPlayer->GetVideoStreamInfo(m_videoInfo);
-      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), m_audioInfo);
+      SPlayerVideoStreamInfo video;
+      SPlayerAudioStreamInfo audio;
+
+      g_application.m_pPlayer->GetVideoStreamInfo(video);
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), audio);
+
+      m_videoInfo = video;
+      m_audioInfo = audio;
       m_AVInfoValid = true;
     }
   }
