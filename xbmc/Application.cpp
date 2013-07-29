@@ -657,9 +657,9 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Built on " __DATE__ " (MSVC version %i). Platform: %s", g_infoManager.GetVersion().c_str(), _MSC_VER, g_sysinfo.GetKernelVersion().c_str());
 #endif
 #if defined(_DEBUG)
-  CLog::Log(LOGINFO, "Using Debug XBMC build");
+  CLog::Log(LOGNOTICE, "Using Debug XBMC build");
 #elif defined(NDEBUG)
-  CLog::Log(LOGINFO, "Using Release XBMC build");
+  CLog::Log(LOGNOTICE, "Using Release XBMC build");
 #endif
 #if defined(TARGET_WINDOWS)
   CLog::Log(LOGNOTICE, "%s", g_cpuInfo.getCPUModel().c_str());
