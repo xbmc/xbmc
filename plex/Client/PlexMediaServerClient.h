@@ -65,6 +65,9 @@ public:
   void ReportItemProgress(const CFileItemPtr& item, MediaState state, int64_t currentPosition = 0);
   void ReportItemProgress(const CFileItemPtr& item, const CStdString& state, int64_t currentPosition = 0);
   
+  /* Set viewMode */
+  void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);
+
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const
   {

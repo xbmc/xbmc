@@ -529,11 +529,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 #endif
 
       /* PLEX */
-      /*
-      PlexMediaServerQueue::Get().onViewModeChanged(m_vecItems->GetProperty("identifier").asString(),
-                                                    m_vecItems->GetPath(),
-                                                    m_vecItems->GetProperty("viewGroup").asString(),
-                                                    viewMode, -1, -1);*/
+      g_plexMediaServerClient.SetViewMode(*m_vecItems, viewMode);
       m_vecItems->SetDefaultViewMode(viewMode);
       /* END PLEX */
 

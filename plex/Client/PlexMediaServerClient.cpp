@@ -114,3 +114,17 @@ CPlexMediaServerClient::SetItemRating(const CFileItemPtr &item, float rating)
   AddJob(new CPlexMediaServerClientJob(u));
 }
 
+void
+CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sortMode, int sortAsc)
+{
+  CURL u(item.GetPath());
+  u.SetFileName("/:/viewChange");
+  u.SetOption("identifier", item.GetProperty("identifier").asString());
+  u.SetOption("viewGroup", item.GetProperty("viewGroup").asString());
+
+  u.SetOption("viewMode", boost::lexical_cast<CStdString>(viewMode));
+  u.SetOption("sortMode", boost::lexical_cast<CStdString>(sortMode));
+  u.SetOption("sortAsc", boost::lexical_cast<CStdString>(sortAsc));
+
+  AddJob(new CPlexMediaServerClientJob(u));
+}

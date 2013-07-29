@@ -29,6 +29,8 @@
 #include "Client/PlexServerDataLoader.h"
 #include "Client/MyPlex/MyPlexManager.h"
 
+#include "GUIViewState.h"
+
 using namespace XFILE;
 
 /* IDirectory Interface */
@@ -182,7 +184,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("bitrate", g_parserInt)
                                      ("samplingRate", g_parserInt)
                                      ("dialogNorm", g_parserInt)
-
+                                     ("viewMode", g_parserInt)
 
                                      ("filters", g_parserBool)
                                      ("refreshing", g_parserBool)
@@ -337,6 +339,16 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   CPlexDirectory::CopyAttributes(root, mediaContainer, m_url);
   g_parserKey->Process(m_url, "key", m_url.GetFileName(), mediaContainer);
   
+  /* set the view mode */
+  if (mediaContainer.HasProperty("viewMode"))
+  {
+    int viewMode = mediaContainer.GetProperty("viewMode").asInteger();
+    mediaContainer.SetDefaultViewMode(viewMode);
+    CGUIViewState *state = CGUIViewState::GetViewState(0, mediaContainer);
+    state->SaveViewAsControl(viewMode);
+  }
+
+  /* now read all the childs to the mediaContainer */
   ReadChildren(root, mediaContainer);
 
   /* We just use the first item Type, it might be wrong and we should maybe have a look... */
