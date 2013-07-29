@@ -18,19 +18,15 @@
  *
  */
 
-var MediaLibrary = function() {
-  this.init();
-  return true;
-};
-
+var MediaLibrary = function () { this.init(); };
 MediaLibrary.prototype = {
   playlists: { },
 
-  init: function() {
+  init: function () {
     this.bindControls();
     this.getPlaylists();
   },
-  bindControls: function() {
+  bindControls: function () {
     $('#musicLibrary').click(jQuery.proxy(this.musicLibraryOpen, this));
     $('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
     $('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
@@ -38,10 +34,10 @@ MediaLibrary.prototype = {
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
-    $(document).bind('keydown', jQuery.proxy(this.handleKeyPress, this));
+    $(document).on('keydown', jQuery.proxy(this.handleKeyPress, this));
     $(document).on('contextmenu', jQuery.proxy(this.handleContextMenu, this));
   },
-  resetPage: function() {
+  resetPage: function () {
     $('#musicLibrary').removeClass('selected');
     $('#movieLibrary').removeClass('selected');
     $('#tvshowLibrary').removeClass('selected');
@@ -49,61 +45,61 @@ MediaLibrary.prototype = {
     $('#pictureLibrary').removeClass('selected');
     this.hideOverlay();
   },
-  replaceAll: function(haystack, needle, thread) {
+  replaceAll: function (haystack, needle, thread) {
     return (haystack || '').split(needle || '').join(thread || '');
   },
-  getPlaylists: function() {
+  getPlaylists: function () {
     xbmc.rpc.request({
       'context': this,
       'method': 'Playlist.GetPlaylists',
       'timeout': 3000,
-      'success': function(data) {
+      'success': function (data) {
         if (data && data.result && data.result.length > 0) {
-          $.each($(data.result), jQuery.proxy(function(i, item) {
+          $.each($(data.result), jQuery.proxy(function (i, item) {
             this.playlists[item.type] = item.playlistid;
           }, this));
         }
       },
-      'error': function(data, error) {
+      'error': function (data, error) {
         xbmc.core.displayCommunicationError();
         setTimeout(jQuery.proxy(this.updateState, this), 2000);
       }
     });
   },
-  remoteControlOpen: function(event) {
+  remoteControlOpen: function (event) {
     this.resetPage();
     $('#remoteControl').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#remoteContainer');
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       libraryContainer = $('<div>');
       libraryContainer.attr('id', 'remoteContainer')
         .addClass('contentContainer');
       $('#content').append(libraryContainer);
       var keys=[
-          {name:'up',width:'40px',height:'30px',top:'28px',left:'58px'}
-          ,{name:'down',width:'40px',height:'30px',top:'122px',left:'58px'}
-          ,{name:'left',width:'40px',height:'30px',top:'74px',left:'15px'}
-          ,{name:'right',width:'40px',height:'30px',top:'74px',left:'104px'}
-          ,{name:'ok',width:'40px',height:'30px',top:'74px',left:'58px'}
-          ,{name:'back',width:'40px',height:'30px',top:'13px',left:'161px'}
-          ,{name:'home',width:'40px',height:'30px',top:'154px',left:'8px'}
-          ,{name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'}
-          ,{name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'}
-          ,{name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'}
-          ,{name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'}
-          ,{name:'playpause',width:'32px',height:'23px',top:'62px',left:'260px'}
-          ,{name:'stop',width:'32px',height:'23px',top:'62px',left:'211px'}
-          ,{name:'next',width:'38px',height:'25px',top:'102px',left:'304px'}
-          ,{name:'previous',width:'38px',height:'25px',top:'101px',left:'160px'}
-          ,{name:'forward',width:'32px',height:'23px',top:'102px',left:'259px'}
-          ,{name:'rewind',width:'32px',height:'23px',top:'101px',left:'211px'}
-          ,{name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'}
-          ,{name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'}
-          ,{name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'}
-          ,{name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'}
-         ];
+        {name:'up',width:'40px',height:'30px',top:'28px',left:'58px'},
+        {name:'down',width:'40px',height:'30px',top:'122px',left:'58px'},
+        {name:'left',width:'40px',height:'30px',top:'74px',left:'15px'},
+        {name:'right',width:'40px',height:'30px',top:'74px',left:'104px'},
+        {name:'ok',width:'40px',height:'30px',top:'74px',left:'58px'},
+        {name:'back',width:'40px',height:'30px',top:'13px',left:'161px'},
+        {name:'home',width:'40px',height:'30px',top:'154px',left:'8px'},
+        {name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'},
+        {name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'},
+        {name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'},
+        {name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'},
+        {name:'playpause',width:'32px',height:'23px',top:'62px',left:'260px'},
+        {name:'stop',width:'32px',height:'23px',top:'62px',left:'211px'},
+        {name:'next',width:'38px',height:'25px',top:'102px',left:'304px'},
+        {name:'previous',width:'38px',height:'25px',top:'101px',left:'160px'},
+        {name:'forward',width:'32px',height:'23px',top:'102px',left:'259px'},
+        {name:'rewind',width:'32px',height:'23px',top:'101px',left:'211px'},
+        {name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'},
+        {name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'},
+        {name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'},
+        {name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'}
+      ];
       for (var akey in keys) {
         var aremotekey=$('<p>').attr('id',keys[akey]['name']);
         aremotekey.addClass('remote_key')
@@ -143,13 +139,10 @@ MediaLibrary.prototype = {
       187: 'volumeup',  // + (alnum keypad)
       189: 'volumedown' // - (alnum keypad)
     };
-
     var which = event.which;
     var key = keys[which];
 
-    event.data = {
-      key: key
-    };
+    event.data = {key: key};
 
     if (!key) {
       event.data.key = 'text';
@@ -214,13 +207,13 @@ MediaLibrary.prototype = {
     }
 
     // TODO: Get active player
-    if($('#videoDescription').is(':visible'))
+    if ($('#videoDescription').is(':visible')) {
       player = this.playlists["video"];
-    else if($('#audioDescription').is(':visible'))
+    } else if ($('#audioDescription').is(':visible')) {
       player = this.playlists["audio"];
+    }
 
-    if (player >= 0)
-    {
+    if (player >= 0) {
       switch(keyPressed) {
         case 'playpause':
           return this.rpcCall('Player.PlayPause', {'playerid': player});
@@ -243,12 +236,12 @@ MediaLibrary.prototype = {
       }
     }
   },
-  musicLibraryOpen: function(event) {
+  musicLibraryOpen: function (event) {
     this.resetPage();
     $('#musicLibrary').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#libraryContainer');
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       libraryContainer = $('<div>');
       libraryContainer.attr('id', 'libraryContainer')
@@ -279,10 +272,10 @@ MediaLibrary.prototype = {
             'method': 'artist'
           }
         },
-        'success': function(data) {
+        'success': function (data) {
           if (data && data.result && data.result.albums) {
             this.albumList = data.result.albums;
-            $.each($(this.albumList), jQuery.proxy(function(i, item) {
+            $.each($(this.albumList), jQuery.proxy(function (i, item) {
               var floatableAlbum = this.generateThumb('album', item.thumbnail, item.title, item.artist);
               floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
               libraryContainer.append(floatableAlbum);
@@ -302,11 +295,13 @@ MediaLibrary.prototype = {
       libraryContainer.trigger('scroll');
     }
   },
-  getThumbnailPath: function(thumbnail) {
+  getThumbnailPath: function (thumbnail) {
     return thumbnail ? ('image/' + encodeURI(thumbnail)) : xbmc.core.DEFAULT_ALBUM_COVER;
   },
-  generateThumb: function(type, thumbnail, title, artist) {
-    title = title || ''; artist = artist ||'';
+  generateThumb: function (type, thumbnail, title, artist) {
+    title = title || '';
+    artist = artist ||'';
+
     var showTitle = title, showArtist = artist;
     var floatableAlbum = $('<div>');
     var path = this.getThumbnailPath(thumbnail);
@@ -337,11 +332,11 @@ MediaLibrary.prototype = {
     }
     return floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="' + title + '" /></div></div>' + code);
   },
-  showAlbumSelectorBlock: function(album) {
+  showAlbumSelectorBlock: function (album) {
     if (album) {
       var prevAlbum = null,
         nextAlbum = null;
-      $.each($(this.albumList), jQuery.proxy(function(i, item) {
+      $.each($(this.albumList), jQuery.proxy(function (i, item) {
         if (item.albumid == album.albumid) {
           if (this.albumList.length > 1) {
             prevAlbum = this.albumList[i <= 0 ? this.albumList.length-1 : i-1];
@@ -351,7 +346,7 @@ MediaLibrary.prototype = {
         }
       }, this));
       var albumSelectorBlock = $('#albumSelector');
-      if (!albumSelectorBlock || albumSelectorBlock.length == 0) {
+      if (!albumSelectorBlock || albumSelectorBlock.length === 0) {
         albumSelectorBlock = $('<div>');
         albumSelectorBlock.attr('id', 'albumSelector')
           .html('<table><tr><td class="allAlbums">All Albums</td><td class="activeAlbumTitle"></td><td class="prevAlbum">&nbsp;</td><td class="nextAlbum">&nbsp;</td></tr></table>');
@@ -370,15 +365,15 @@ MediaLibrary.prototype = {
       albumSelectorBlock.show();
     }
   },
-  hideAlbumDetails: function() {
+  hideAlbumDetails: function () {
     $('.contentContainer').hide();
     this.musicLibraryOpen();
   },
-  displayAlbumDetails: function(event) {
+  displayAlbumDetails: function (event) {
     this.showAlbumSelectorBlock(event.data.album);
     var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
     $('#topScrollFade').hide();
-    if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
+    if (!albumDetailsContainer || albumDetailsContainer.length === 0) {
       $('#spinner').show();
       xbmc.rpc.request({
         'context': this,
@@ -398,7 +393,7 @@ MediaLibrary.prototype = {
             'albumid' : event.data.album.albumid
           }
         },
-        'success': function(data) {
+        'success': function (data) {
           albumDetailsContainer = $('<div>');
           albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
             .addClass('contentContainer')
@@ -410,22 +405,21 @@ MediaLibrary.prototype = {
           var albumTitle = event.data.album.title||'Unknown Album';
           var albumArtist = event.data.album.artist.join(', ') || 'Unknown Artist';
           var trackCount = data.result.limits.total;
-          $.each($(data.result.songs), jQuery.proxy(function(i, item) {
-            if (i == 0) {
-              var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
+          $.each($(data.result.songs), jQuery.proxy(function (i, item) {
+            var trackRow, trackNumberTD;
+            if (i === 0) {
+              trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
               trackRow.append($('<td>').attr('rowspan', ++trackCount + 1).addClass('albumThumb'));
               for (var a = 0; a < 5; a++) {
                 trackRow.append($('<td>').html('&nbsp').attr('style', 'display: none'));
               }
               $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
             }
-            var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2).bind('click', { album: event.data.album, itmnbr: i }, jQuery.proxy(this.playTrack,this));
-            var trackNumberTD = $('<td>')
-              .html(item.track)
+            trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2).bind('click', { album: event.data.album, itmnbr: i }, jQuery.proxy(this.playTrack,this));
+            trackNumberTD = $('<td>').html(item.track);
 
             trackRow.append(trackNumberTD);
-            var trackTitleTD = $('<td>')
-              .html(item.title);
+            var trackTitleTD = $('<td>').html(item.title);
 
             trackRow.append(trackTitleTD);
             var trackDurationTD = $('<td>')
@@ -433,26 +427,24 @@ MediaLibrary.prototype = {
               .html(xbmc.core.durationToString(item.duration));
 
             trackRow.append(trackDurationTD);
-            var trackArtistTD = $('<td>')
-              .html(item.artist.join(', '));
+            var trackArtistTD = $('<td>').html(item.artist.join(', '));
 
             trackRow.append(trackArtistTD);
-            var trackGenreTD = $('<td>')
-              .html(item.genre.join(', '));
+            var trackGenreTD = $('<td>').html(item.genre.join(', '));
 
             trackRow.append(trackGenreTD);
             $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
           }, this));
           if (trackCount > 0) {
-            var trackRow = $('<tr>').addClass('fillerTrackRow');
-            for (var i = 0; i < 5; i++) {
+            var trackRow = $('<tr>').addClass('fillerTrackRow'), i;
+            for (i = 0; i < 5; i++) {
               trackRow.append($('<td>').html('&nbsp'));
             }
             $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 
             var trackRow2 = $('<tr>').addClass('fillerTrackRow2');
             trackRow2.append($('<td>').addClass('albumBG').html('&nbsp'));
-            for (var i = 0; i < 5; i++) {
+            for (i = 0; i < 5; i++) {
               trackRow2.append($('<td>').html('&nbsp'));
             }
             $('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow2);
@@ -469,7 +461,7 @@ MediaLibrary.prototype = {
       $('#albumDetails' + event.data.album.albumid).show();
     }
   },
-  togglePosterView: function(event){
+  togglePosterView: function (event) {
     var view=event.data.mode;
     var wthumblist,hthumblist,hthumbdetails;
     $("#toggleBanner").removeClass('activeMode');
@@ -501,11 +493,11 @@ MediaLibrary.prototype = {
     $(".floatableTVShowCover, .floatableTVShowCover div.imgWrapper, .floatableTVShowCover img, .floatableTVShowCover div.imgWrapper div.inner").css('width',wthumblist).css('height',hthumblist);
     $(".floatableTVShowCoverSeason div.imgWrapper, .floatableTVShowCoverSeason div.imgWrapper div.inner,.floatableTVShowCoverSeason img, .floatableTVShowCoverSeason").css('height',hthumbdetails);
   },
-  displayTVShowDetails: function(event) {
+  displayTVShowDetails: function (event) {
     var tvshowDetailsContainer = $('#tvShowDetails' + event.data.tvshow.tvshowid);
     $('#topScrollFade').hide();
     toggle=this.toggle.detach();
-    if (!tvshowDetailsContainer || tvshowDetailsContainer.length == 0) {
+    if (!tvshowDetailsContainer || tvshowDetailsContainer.length === 0) {
       $('#spinner').show();
       xbmc.rpc.request({
         'context': this,
@@ -521,7 +513,7 @@ MediaLibrary.prototype = {
           ],
           'tvshowid' : event.data.tvshow.tvshowid
         },
-        'success': function(data) {
+        'success': function (data) {
           tvshowDetailsContainer = $('<div>');
           tvshowDetailsContainer.attr('id', 'tvShowDetails' + event.data.tvshow.tvshowid)
             .css('display', 'none')
@@ -534,7 +526,7 @@ MediaLibrary.prototype = {
             showDetails.append($('<p>').html(data.result.seasons[0].showtitle).addClass('showTitle'));
             var seasonSelectionSelect = $('<select>').addClass('seasonPicker');
             this.tvActiveShowContainer = tvshowDetailsContainer;
-            $.each($(data.result.seasons), function(i, item) {
+            $.each($(data.result.seasons), function (i, item) {
               var season = $('<option>').attr('value',i);
               season.text(item.label);
               seasonSelectionSelect.append(season);
@@ -545,14 +537,16 @@ MediaLibrary.prototype = {
             tvshowDetailsContainer.append(showThumb);
             seasonSelectionSelect.trigger('change');
             $('#content').append(tvshowDetailsContainer);
-            if(xbmc.core.getCookie('TVView')!=null && xbmc.core.getCookie('TVView')!='banner'){
+            if (xbmc.core.getCookie('TVView') !== null &&
+                xbmc.core.getCookie('TVView') !== 'banner'
+            ) {
             var view=xbmc.core.getCookie('TVView');
             switch(view) {
               case 'poster':
                 togglePoster.trigger('click');
                 break;
               case 'landscape':
-                toggleLandscape.trigger('click')
+                toggleLandscape.trigger('click');
                 break;
             }
           }
@@ -567,7 +561,7 @@ MediaLibrary.prototype = {
       $('#tvShowDetails' + event.data.tvshow.tvshowid +' select').trigger('change');
     }
   },
-  displaySeasonListings: function(event) {
+  displaySeasonListings: function (event) {
     var selectedVal=event.data.element.val();
     var seasons=event.data.seasons;
     $('#topScrollFade').hide();
@@ -587,10 +581,10 @@ MediaLibrary.prototype = {
         'season': seasons[selectedVal].season,
         'tvshowid': event.data.tvshow
       },
-      'success': function(data) {
+      'success': function (data) {
         var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
         var episodeTable= $('<table>').addClass('seasonView').html('<thead><tr class="headerRow"><th class="thumbHeader">N&deg;</th><th>Title</th><th class="thumbHeader">Thumb</th><th class="thumbHeader">Details</th></tr></thead><tbody class="resultSet"></tbody>');
-        $.each($(data.result.episodes), jQuery.proxy(function(i, item) {
+        $.each($(data.result.episodes), jQuery.proxy(function (i, item) {
           var episodeRow = $('<tr>').addClass('episodeRow').addClass('tr' + i % 2);
           var episodePictureImg = $('<img>').bind('click', { episode: item }, jQuery.proxy(this.playTVShow, this)).css('cursor','pointer');
           episodePictureImg.attr('src', this.getThumbnailPath(item.thumbnail));
@@ -606,7 +600,7 @@ MediaLibrary.prototype = {
       }
     });
   },
-  displayEpisodeDetails: function(event) {
+  displayEpisodeDetails: function (event) {
     var episodeDetails = $('<div>').attr('id', 'episode-' + event.data.episode.episodeid).addClass('episodePopoverContainer');
     episodeDetails.append($('<img>').attr('src', 'images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
     episodeDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.episode.thumbnail)).addClass('episodeCover'));
@@ -638,7 +632,7 @@ MediaLibrary.prototype = {
     $('#overlay').show();
     this.updatePlayButtonLocation();
   },
-  playTVShow: function(event) {
+  playTVShow: function (event) {
     xbmc.rpc.request({
       'context': this,
       'method': 'Player.Open',
@@ -647,22 +641,22 @@ MediaLibrary.prototype = {
           'episodeid': event.data.episode.episodeid
         }
       },
-      'success': function(data) {
+      'success': function (data) {
         this.hideOverlay();
       }
     });
   },
-  hideOverlay: function(event) {
+  hideOverlay: function (event) {
     if (this.activeCover) {
       $(this.activeCover).remove();
       this.activeCover = null;
     }
     $('#overlay').hide();
   },
-  updatePlayButtonLocation: function(event) {
-    var movieContainer = $('.movieCover');
+  updatePlayButtonLocation: function (event) {
+    var movieContainer = $('.movieCover'), playIcon;
     if (movieContainer.length > 0) {
-      var playIcon = $('.playIcon');
+      playIcon = $('.playIcon');
       if (playIcon.length > 0) {
         var heightpi=$(movieContainer[0]).height();
         playIcon.width(Math.floor(0.65*heightpi));
@@ -671,7 +665,7 @@ MediaLibrary.prototype = {
     }
     var episodeContainer = $('.episodeCover');
     if (episodeContainer.length > 0) {
-      var playIcon = $('.playIcon');
+      playIcon = $('.playIcon');
       if (playIcon.length > 0) {
         var widthpi=$(episodeContainer[0]).width();
         playIcon.width(widthpi);
@@ -680,7 +674,7 @@ MediaLibrary.prototype = {
       }
     }
   },
-  playMovie: function(event) {
+  playMovie: function (event) {
     xbmc.rpc.request({
       'context': this,
       'method': 'Player.Open',
@@ -689,12 +683,12 @@ MediaLibrary.prototype = {
           'movieid': event.data.movie.movieid
         }
       },
-      'success': function(data) {
+      'success': function (data) {
         this.hideOverlay();
       }
     });
   },
-  displayMovieDetails: function(event) {
+  displayMovieDetails: function (event) {
     var movieDetails = $('<div>').attr('id', 'movie-' + event.data.movie.movieid).addClass('moviePopoverContainer');
     movieDetails.append($('<img>').attr('src', 'images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
     movieDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.movie.thumbnail)).addClass('movieCover'));
@@ -720,14 +714,14 @@ MediaLibrary.prototype = {
     $('#overlay').show();
     this.updatePlayButtonLocation();
   },
-  playTrack: function(event) {
+  playTrack: function (event) {
     xbmc.rpc.request({
       'context': this,
       'method': 'Playlist.Clear',
       'params': {
         'playlistid': this.playlists["audio"]
       },
-      'success': function(data) {
+      'success': function (data) {
         xbmc.rpc.request({
           'context': this,
           'method': 'Playlist.Add',
@@ -737,7 +731,7 @@ MediaLibrary.prototype = {
               'albumid': event.data.album.albumid
             }
           },
-          'success': function(data) {
+          'success': function (data) {
             xbmc.rpc.request({
               'method': 'Player.Open',
               'params': {
@@ -746,19 +740,19 @@ MediaLibrary.prototype = {
                   'position': event.data.itmnbr
                 }
               },
-              'success': function() {}
+              'success': function () {}
             });
           }
         });
       }
     });
   },
-  movieLibraryOpen: function() {
+  movieLibraryOpen: function () {
     this.resetPage();
     $('#movieLibrary').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#movieLibraryContainer');
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       xbmc.rpc.request({
         'context': this,
@@ -789,7 +783,7 @@ MediaLibrary.prototype = {
             'ignorearticle': true
           }
         },
-        'success': function(data) {
+        'success': function (data) {
           if (data && data.result && data.result.movies) {
               libraryContainer = $('<div>');
               libraryContainer.attr('id', 'movieLibraryContainer')
@@ -798,7 +792,7 @@ MediaLibrary.prototype = {
           } else {
             libraryContainer.html('');
           }
-          $.each($(data.result.movies), jQuery.proxy(function(i, item) {
+          $.each($(data.result.movies), jQuery.proxy(function (i, item) {
             var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title);
             floatableMovieCover.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
             libraryContainer.append(floatableMovieCover);
@@ -815,12 +809,12 @@ MediaLibrary.prototype = {
       libraryContainer.trigger('scroll');
     }
   },
-  tvshowLibraryOpen: function() {
+  tvshowLibraryOpen: function () {
     this.resetPage();
     $('#tvshowLibrary').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#tvshowLibraryContainer');
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       toggle=$('<p>').addClass('toggle');
       togglePoster= $('<span>Poster</span>');
@@ -857,7 +851,7 @@ MediaLibrary.prototype = {
             'premiered'
           ]
         },
-        'success': function(data) {
+        'success': function (data) {
           if (data && data.result && data.result.tvshows) {
             libraryContainer = $('<div>');
             libraryContainer.append(toggle);
@@ -867,7 +861,7 @@ MediaLibrary.prototype = {
           } else {
             libraryContainer.html('');
           }
-          $.each($(data.result.tvshows), jQuery.proxy(function(i, item) {
+          $.each($(data.result.tvshows), jQuery.proxy(function (i, item) {
             var floatableTVShowCover = this.generateThumb('tvshow', item.thumbnail, item.title);
             floatableTVShowCover.bind('click', { tvshow: item }, jQuery.proxy(this.displayTVShowDetails, this));
             libraryContainer.append(floatableTVShowCover);
@@ -877,14 +871,16 @@ MediaLibrary.prototype = {
           libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
           libraryContainer.trigger('scroll');
           myScroll = new iScroll('tvshowLibraryContainer');
-          if(xbmc.core.getCookie('TVView')!=null && xbmc.core.getCookie('TVView')!='banner') {
+          if (xbmc.core.getCookie('TVView') !== null &&
+              xbmc.core.getCookie('TVView') !== 'banner'
+          ) {
             var view=xbmc.core.getCookie('TVView');
             switch(view) {
               case 'poster':
                 togglePoster.trigger('click');
                 break;
               case 'landscape':
-                toggleLandscape.trigger('click')
+                toggleLandscape.trigger('click');
                 break;
             }
           }
@@ -895,14 +891,14 @@ MediaLibrary.prototype = {
       libraryContainer.trigger('scroll');
     }
   },
-  updateScrollEffects: function(event) {
+  updateScrollEffects: function (event) {
     if (event.data.activeLibrary && $(event.data.activeLibrary).scrollTop() > 0) {
       $('#topScrollFade').fadeIn();
     } else {
       $('#topScrollFade').fadeOut();
     }
   },
-  startSlideshow: function(event) {
+  startSlideshow: function (event) {
     xbmc.rpc.request({
       'method': 'Player.Open',
       'params': {
@@ -912,17 +908,17 @@ MediaLibrary.prototype = {
           'path' : this.replaceAll(event.data.directory.file, "\\", "\\\\")
         }
       },
-      'success': function() {}
+      'success': function () {}
     });
   },
-  showDirectory: function(event) {
+  showDirectory: function (event) {
     var directory = event.data.directory.file;
     var jsonDirectory = this.replaceAll(directory, "\\", "\\\\");
     this.resetPage();
     $('#pictureLibrary').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#pictureLibraryDirContainer' + directory);
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       xbmc.rpc.request({
         'context': this,
@@ -931,7 +927,7 @@ MediaLibrary.prototype = {
           'media' : 'pictures',
           'directory': jsonDirectory
         },
-        'success': function(data) {
+        'success': function (data) {
           if (data && data.result && ( data.result.directories || data.result.files )) {
             libraryContainer = $('<div>');
             libraryContainer.attr('id', 'pictureLibraryDirContainer' + directory)
@@ -941,8 +937,8 @@ MediaLibrary.prototype = {
             var seperator = '/';
             var item = '';
             var directoryArray = directory.split(seperator);
-            jQuery.each(directoryArray, function(i,v) {
-              if(v != '') {
+            jQuery.each(directoryArray, function (i,v) {
+              if (v !== '') {
                 item += v + seperator;
                 breadcrumb.append($('<div>').text(' > ' + v).css('float','left').addClass('breadcrumb'));
               }
@@ -950,7 +946,7 @@ MediaLibrary.prototype = {
             libraryContainer.append(breadcrumb);
             libraryContainer.append($('<div>').css('clear','both'));
             if (data.result.files) {
-              $.each($(data.result.files), jQuery.proxy(function(i, item) {
+              $.each($(data.result.files), jQuery.proxy(function (i, item) {
                 if (item.filetype == "file")
                 {
                   var floatableImage = this.generateThumb('image', item.file, item.label);
@@ -979,12 +975,12 @@ MediaLibrary.prototype = {
       libraryContainer.trigger('scroll');
     }
   },
-  pictureLibraryOpen: function() {
+  pictureLibraryOpen: function () {
     this.resetPage();
     $('#pictureLibrary').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#pictureLibraryContainer');
-    if (!libraryContainer || libraryContainer.length == 0) {
+    if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       xbmc.rpc.request({
         'context': this,
@@ -992,7 +988,7 @@ MediaLibrary.prototype = {
         'params': {
           'media' : 'pictures'
         },
-        'success': function(data) {
+        'success': function (data) {
           if (data && data.result && data.result.shares) {
             libraryContainer = $('<div>');
             libraryContainer.attr('id', 'pictureLibraryContainer')
@@ -1001,7 +997,7 @@ MediaLibrary.prototype = {
           } else {
             libraryContainer.html('');
           }
-          $.each($(data.result.shares), jQuery.proxy(function(i, item) {
+          $.each($(data.result.shares), jQuery.proxy(function (i, item) {
             var floatableShare = this.generateThumb('directory', item.thumbnail, item.label);
             floatableShare.bind('click', { directory: item }, jQuery.proxy(this.showDirectory, this));
             libraryContainer.append(floatableShare);
@@ -1018,4 +1014,4 @@ MediaLibrary.prototype = {
       libraryContainer.trigger('scroll');
     }
   }
-}
+};
