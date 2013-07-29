@@ -5,7 +5,7 @@
 #include "PlexMediaPart.h"
 #include "PlexMediaStream.h"
 #include "FileItem.h"
-#include "client/PlexMediaServerClient.h"
+#include "Client/PlexMediaServerClient.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>

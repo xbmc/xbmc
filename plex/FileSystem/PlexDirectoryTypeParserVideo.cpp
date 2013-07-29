@@ -12,7 +12,7 @@
 #include "video/VideoInfoTag.h"
 #include "PlexTypes.h"
 #include "utils/log.h"
-#include "Utils/StringUtils.h"
+#include "utils/StringUtils.h"
 #include "AdvancedSettings.h"
 
 #include <boost/foreach.hpp>
