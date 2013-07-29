@@ -41,6 +41,21 @@ class IAudioCallback;
 #define AE_SOUND_IDLE   1 /* only play sounds while no streams are running */
 #define AE_SOUND_ALWAYS 2 /* always play sounds */
 
+enum AEQuality
+{
+  AE_QUALITY_UNKNOWN    = -1, /* Unset, unknown or incorrect quality level */
+  AE_QUALITY_DEFAULT    =  0, /* Engine's default quality level */
+
+  /* Basic quality levels */
+  AE_QUALITY_LOW        = 20, /* Low quality level */
+  AE_QUALITY_MID        = 30, /* Standard quality level */
+  AE_QUALITY_HIGH       = 50, /* Best sound processing quality */
+
+  /* Optional quality levels */
+  AE_QUALITY_REALLYHIGH = 100 /* Uncompromised optional quality level,
+                               usually with unmeasurable and unnoticeable improvement */ 
+};
+
 /**
  * IAE Interface
  */
