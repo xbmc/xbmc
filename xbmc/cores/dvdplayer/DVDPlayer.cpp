@@ -4658,7 +4658,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 
   /* FIXME: we really need to handle multiple parts */
   CFileItemPtr mediaPart = mediaItem->m_mediaParts[0];
-
+  CStdString unprocessed_key = mediaPart->GetProperty("unprocessed_key").asString();
   if (!mediaPart->IsRemotePlexMediaServerLibrary() && mediaPart->HasProperty("file"))
   {
     CStdString localPath = mediaPart->GetProperty("file").asString();
@@ -4666,6 +4666,10 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     {
       item.SetPath(localPath);
       usingLocalPath = true;
+    }
+    else if (boost::starts_with(unprocessed_key, "rtmp"))
+    {
+      item.SetPath(unprocessed_key);
     }
     else
       item.SetPath(mediaPart->GetPath());
