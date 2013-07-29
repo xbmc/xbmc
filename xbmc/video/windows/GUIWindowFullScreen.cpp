@@ -262,7 +262,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
           if (!channel || !channel->HasPVRChannelInfoTag())
             return false;
 
-          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
+          g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
         }
       }
       else
@@ -487,7 +487,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
               CFileItemPtr switchChannel = selectedGroup->GetByChannelNumber(1);
 
               if (switchChannel && switchChannel->HasPVRChannelInfoTag())
-                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->GetPVRChannelInfoTag()->ChannelNumber()));
+                g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->GetPVRChannelInfoTag()->ChannelNumber()));
               else
               {
                 CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
