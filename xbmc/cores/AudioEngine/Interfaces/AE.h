@@ -209,5 +209,11 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
 
   virtual void UnregisterAudioCallback() {}
+
+  /**
+   * Returns true if AudioEngine supports specified quality level
+   * @return true if specified quality level is supported, otherwise false
+   */
+  virtual bool SupportsQualityLevel(enum AEQuality level) { return false; }
 };
 
