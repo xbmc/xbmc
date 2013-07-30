@@ -390,6 +390,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SILENCEMODE, &silence, sizeof(bool));
           }
           LoadSettings();
+          ChangeResampleQuality();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
           m_state = AE_TOP_RECONFIGURING;
@@ -440,8 +441,11 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           par = (MsgStreamParameter*)msg->data;
           if (par->stream->m_resampleBuffers)
           {
-            par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
-            par->stream->m_resampleBuffers->m_changeRatio = true;
+            if ((unsigned int)(par->stream->m_resampleBuffers->m_format.m_sampleRate * par->parameter.double_par) != par->stream->m_resampleBuffers->m_outSampleRate)
+            {
+              par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
+              par->stream->m_resampleBuffers->m_changeResampler = true;
+            }
           }
           return;
         case CActiveAEControlProtocol::STREAMFADE:
@@ -954,7 +958,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       }
       if (!(*it)->m_resampleBuffers)
       {
-        (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat);
+        (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
@@ -974,7 +978,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         AEAudioFormat vizFormat = m_internalFormat;
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
         vizFormat.m_dataFormat = AE_FMT_FLOAT;
-        m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat);
+        m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         // TODO use cache of sync + water level
         m_vizBuffers->Create(2000, false);
         m_vizInitialized = false;
@@ -990,7 +994,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
   if (!m_sinkBuffers)
   {
-    m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat);
+    m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
     m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true);
   }
 
@@ -1134,6 +1138,17 @@ float CActiveAE::CalcStreamAmplification(CActiveAEStream *stream, CSampleBuffer 
     amp = std::min(amp, tamp);
   }
   return amp;
+}
+
+void CActiveAE::ChangeResampleQuality()
+{
+  std::list<CActiveAEStream*>::iterator it;
+  for(it=m_streams.begin(); it!=m_streams.end(); ++it)
+  {
+    if ((*it)->m_resampleBuffers && (*it)->m_resampleBuffers->m_resampler && ((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality))
+      (*it)->m_resampleBuffers->m_changeResampler = true;
+    (*it)->m_resampleBuffers->m_resampleQuality = m_settings.resampleQuality;
+  }
 }
 
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, bool setmode)
@@ -1758,6 +1773,8 @@ void CActiveAE::LoadSettings()
   m_settings.dtshdpassthrough = CSettings::Get().GetBool("audiooutput.dtshdpassthrough");
   m_settings.aacpassthrough = CSettings::Get().GetBool("audiooutput.passthroughaac");
   m_settings.multichannellpcm = CSettings::Get().GetBool("audiooutput.multichannellpcm");
+
+  m_settings.resampleQuality = static_cast<AEQuality>(CSettings::Get().GetInt("audiooutput.processquality"));
 }
 
 bool CActiveAE::Initialize()
@@ -1823,7 +1840,8 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.channels"          ||
       setting == "audiooutput.multichannellpcm"  ||
       setting == "audiooutput.stereoupmix"       ||
-      setting == "audiooutput.streamsilence")
+      setting == "audiooutput.streamsilence"     ||
+      setting == "audiooutput.processquality")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
@@ -1837,6 +1855,14 @@ bool CActiveAE::SupportsRaw()
 bool CActiveAE::SupportsDrain()
 {
   return true;
+}
+
+bool CActiveAE::SupportsQualityLevel(enum AEQuality level)
+{
+  if (level == AE_QUALITY_LOW || level == AE_QUALITY_MID || level == AE_QUALITY_HIGH)
+    return true;
+
+  return false;
 }
 
 void CActiveAE::Shutdown()
@@ -2126,7 +2152,8 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   orig_config.channels,
                   orig_config.sample_rate,
                   orig_config.fmt,
-                  NULL);
+                  NULL,
+                  AE_QUALITY_MID);
 
   dst_samples = resampler->CalcDstSampleCount(sound->GetSound(true)->nb_samples,
                                               m_internalFormat.m_sampleRate,

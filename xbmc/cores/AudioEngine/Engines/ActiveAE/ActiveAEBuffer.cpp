@@ -129,7 +129,7 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
 
 //-----------------------------------------------------------------------------
 
-CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat)
+CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality)
   : CActiveAEBufferPool(outputFormat)
 {
   m_inputFormat = inputFormat;
@@ -141,7 +141,8 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_empty = true;
   m_procSample = NULL;
   m_resampleRatio = 1.0;
-  m_changeRatio = false;
+  m_resampleQuality = quality;
+  m_changeResampler = false;
 }
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
@@ -166,7 +167,8 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap)
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
-                                remap ? &m_format.m_channelLayout : NULL);
+                                remap ? &m_format.m_channelLayout : NULL,
+                                m_resampleQuality);
   }
 
   // store output sampling rate, needed when ratio gets changed
@@ -175,11 +177,8 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap)
   return true;
 }
 
-void CActiveAEBufferPoolResample::ChangeRatio()
+void CActiveAEBufferPoolResample::ChangeResampler()
 {
-//  CLog::Log(LOGNOTICE,"---------- sample rate changed from: %d, to: %d",
-//      m_outSampleRate, (int)(m_format.m_sampleRate * m_resampleRatio));
-
   m_outSampleRate = m_format.m_sampleRate * m_resampleRatio;
 
   delete m_resampler;
@@ -193,9 +192,10 @@ void CActiveAEBufferPoolResample::ChangeRatio()
                                 m_inputFormat.m_channelLayout.Count(),
                                 m_inputFormat.m_sampleRate,
                                 CActiveAEResample::GetAVSampleFormat(m_inputFormat.m_dataFormat),
-                                NULL);
+                                NULL,
+                                m_resampleQuality);
 
-  m_changeRatio = false;
+  m_changeResampler = false;
 }
 
 bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
@@ -203,17 +203,11 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
   bool busy = false;
   CSampleBuffer *in;
 
-  if (m_changeRatio)
-  {
-    if ((unsigned int)(m_format.m_sampleRate * m_resampleRatio) == m_outSampleRate)
-      m_changeRatio = false;
-  }
-
   if (!m_resampler)
   {
-    if (m_changeRatio)
+    if (m_changeResampler)
     {
-      ChangeRatio();
+      ChangeResampler();
       return true;
     }
     while(!m_inputSamples.empty())
@@ -242,14 +236,14 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
 
     bool hasInput = !m_inputSamples.empty();
 
-    if (hasInput || skipInput || m_drain || m_changeRatio)
+    if (hasInput || skipInput || m_drain || m_changeResampler)
     {
       if (!m_procSample)
       {
         m_procSample = GetFreeBuffer();
       }
 
-      if (hasInput && !skipInput && !m_changeRatio)
+      if (hasInput && !skipInput && !m_changeResampler)
       {
         in = m_inputSamples.front();
         m_inputSamples.pop_front();
@@ -275,7 +269,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
       busy = true;
       m_empty = (out_samples == 0);
 
-      if ((m_drain || m_changeRatio) && m_empty)
+      if ((m_drain || m_changeResampler) && m_empty)
       {
         if (m_fillPackets && m_procSample->pkt->nb_samples != 0)
         {
@@ -301,8 +295,8 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(unsigned int timestamp)
           m_outputSamples.push_back(m_procSample);
 
         m_procSample = NULL;
-        if (m_changeRatio)
-          ChangeRatio();
+        if (m_changeResampler)
+          ChangeResampler();
       }
       // some methods like encode require completely filled packets
       else if (!m_fillPackets || (m_procSample->pkt->nb_samples == m_procSample->pkt->max_nb_samples))

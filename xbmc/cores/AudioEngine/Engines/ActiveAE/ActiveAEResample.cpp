@@ -36,7 +36,7 @@ CActiveAEResample::~CActiveAEResample()
   m_dllSwResample.Unload();
 }
 
-bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, CAEChannelInfo *remapLayout)
+bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, CAEChannelInfo *remapLayout, AEQuality quality)
 {
   if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
     return false;
@@ -58,6 +58,22 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   m_pContext = m_dllSwResample.swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
                                                         m_src_chan_layout, m_src_fmt, m_src_rate,
                                                         0, NULL);
+  if(quality == AE_QUALITY_HIGH)
+  {
+    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
+    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 256, 0);
+  }
+  else if(quality == AE_QUALITY_MID)
+  {
+    // 0.97 is default cutoff so use (1.0 - 0.97) / 2.0 + 0.97
+    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 0.985, 0);
+    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 64, 0);
+  }
+  else if(quality == AE_QUALITY_LOW)
+  {
+    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
+    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 32, 0);
+  }
 
   if(!m_pContext)
   {

@@ -22,6 +22,7 @@
 #include "DllAvUtil.h"
 #include "DllSwResample.h"
 #include "AEAudioFormat.h"
+#include "Interfaces/AE.h"
 #include <deque>
 
 namespace ActiveAE
@@ -86,10 +87,10 @@ class CActiveAEResample;
 class CActiveAEBufferPoolResample : public CActiveAEBufferPool
 {
 public:
-  CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat);
+  CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality);
   virtual ~CActiveAEBufferPoolResample();
   virtual bool Create(unsigned int totaltime, bool remap);
-  void ChangeRatio();
+  void ChangeResampler();
   bool ResampleBuffers(unsigned int timestamp = 0);
   float GetDelay();
   void Flush();
@@ -102,8 +103,9 @@ public:
   bool m_fillPackets;
   bool m_drain;
   bool m_empty;
-  bool m_changeRatio;
+  bool m_changeResampler;
   double m_resampleRatio;
+  AEQuality m_resampleQuality;
   unsigned int m_outSampleRate;
 };
 

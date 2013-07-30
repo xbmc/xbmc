@@ -57,6 +57,7 @@ struct AudioSettings
   bool dtshdpassthrough;
   bool multichannellpcm;
   bool stereoupmix;
+  AEQuality resampleQuality;
 };
 
 class CActiveAEControlProtocol : public Protocol
@@ -214,6 +215,7 @@ public:
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw();
   virtual bool SupportsDrain();
+  virtual bool SupportsQualityLevel(enum AEQuality level);
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -257,6 +259,7 @@ protected:
   void SStopSound(CActiveAESound *sound);
   void DiscardSound(CActiveAESound *sound);
   float CalcStreamAmplification(CActiveAEStream *stream, CSampleBuffer *buf);
+  void ChangeResampleQuality();
 
   bool RunStages();
   bool HasWork();
