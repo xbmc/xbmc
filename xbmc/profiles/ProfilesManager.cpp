@@ -510,7 +510,6 @@ std::string CProfilesManager::GetLibraryFolder() const
 
 std::string CProfilesManager::GetSettingsFile() const
 {
-  CStdString settings;
   if (m_currentProfile == 0)
     return "special://masterprofile/guisettings.xml";
 

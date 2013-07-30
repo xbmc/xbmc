@@ -3339,6 +3339,14 @@ void CApplication::Stop(int exitCode)
     else
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
+    // Delete settings backup file
+    if (CFile::Exists(CProfilesManager::Get().GetSettingsFile().append(".bak")))
+      CFile::Delete(CProfilesManager::Get().GetSettingsFile().append(".bak"));
+
+    // Save new settings backup file
+    CLog::Log(LOGNOTICE, "Saving settings to backup file");
+    CSettings::Get().Save(CProfilesManager::Get().GetSettingsFile().append(".bak"));
+
     m_bStop = true;
     m_AppFocused = false;
     m_ExitCode = exitCode;
