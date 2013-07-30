@@ -36,9 +36,29 @@ msgctxt "#30004"
 msgid "Maximum"
 msgstr "En fazla"
 
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Karıştırma Modu"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Akıcı Ön Ayar Süresi"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Ön Ayar Süresi"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Ritm Hassasiyeti"
+
 msgctxt "#30009"
 msgid "Preset Pack"
 msgstr "Önayar Paketi"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Varsayılan Paket"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
@@ -47,3 +67,11 @@ msgstr "Kullanıcı Tanımlı Ön Ayar Klasörü"
 msgctxt "#30012"
 msgid "User Preset Folder"
 msgstr "Kullanıcı Ön Ayar Klasörü"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f saniye"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

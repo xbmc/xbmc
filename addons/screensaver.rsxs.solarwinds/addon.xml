@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.5"
+  version="1.0.6"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -23,7 +23,6 @@
     <summary lang="de">Ein faszinierender Bildschirmschoner mit Partikeleffekten</summary>
     <summary lang="el">Μία μαγευτική σωματιδιακή προφύλαξη οθόνης</summary>
     <summary lang="en">A mesmerizing particle effects screensaver</summary>
-    <summary lang="en_GB">A mesmerising particle effects screensaver</summary>
     <summary lang="es">Un salvapatallas con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_AR">Un protector de pantalla con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_MX">Un sorprendente protector de pantalla de partículas</summary>
@@ -34,6 +33,7 @@
     <summary lang="he">שומר מסך מהפנט</summary>
     <summary lang="hr">Čuvar zaslona - Očaravajuće kretanje čestica.</summary>
     <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
+    <summary lang="id">Penyelamat layar dengan efek partikel yang mencuri perhatian</summary>
     <summary lang="it">Un salvaschermo con effetti particellari ipnotizzanti</summary>
     <summary lang="ja">パーティクルによる幻想的なスクリーンセーバー</summary>
     <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
@@ -67,7 +67,6 @@
     <description lang="de">Dies ist ein faszinierender Bildschirmschoner mit Partikeleffekten. Du kannst eine verblüffend große Anzahl an verschiedenen Animationen einstellen.</description>
     <description lang="el">Αυτή είναι μία μαγευτική σωματιδιακή προφύλαξη οθόνης. Θα διαπιστώσετε ότι μπορείτε να επιτύχετε έναν απίστευτο αριθμό διαφορετικών σχεδίων.</description>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
-    <description lang="en_GB">This is a very mesmerising particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="es">Este es un salvapatallas con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_AR">Este es un protector de pantalla con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_MX">Éste es un sorprendente protector de pantalla de partículas.  Encontrará que puede obtener un gran número de patrones diferentes.</description>
@@ -78,6 +77,7 @@
     <description lang="he">זהו שומר מסך מהפנט מאוד. אתה תמצא את עצמך משיג כמויות שונות ומרהיבות של צורות.</description>
     <description lang="hr">Ovo je zaista očaravajuči čuvar zaslona. Moguće je ostvariti zapanjujući broj različitih uzoraka.</description>
     <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
+    <description lang="id">Ini adalah penyelamat layar dengan efek partikel yang sangat mencuri perhatian. Anda akan lihat bahwa Anda bisa mendapat sejumlah yang mengagumkan dari pola yang berbeda.</description>
     <description lang="it">Questo è un salvaschermo con effetti particellari è veramente ipnotizzante. E' inoltre possibile ottenere un incredibile numero di differenti schemi.</description>
     <description lang="ja">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
