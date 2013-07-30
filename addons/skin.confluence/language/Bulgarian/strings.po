@@ -535,3 +535,43 @@ msgstr "Изтегляне на прогнозата..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Карта и тревоги"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ВРЕМЕТО"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "СНИМКИ"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "ТВ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ВИДЕО"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ФИЛМИ"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "ТВ СЕРИАЛИ"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "МУЗИКА"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "ПРОГРАМИ"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ДИСК"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "СИСТЕМА"

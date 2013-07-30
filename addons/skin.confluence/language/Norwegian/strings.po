@@ -434,35 +434,35 @@ msgstr "[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Endre skallet · Oppgi d
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]ENDRE DINE GRAFIKKINNSTILLINGER:[/B][CR][CR]Håndter ditt filmbibliotek · Oppgi videoavspillingsalternativer · Endre videolistealternativer[CR]Konfigurer skrifttype for undertekster"
+msgstr "[B]ENDRE DINE GRAFIKKINNSTILLINGER:[/B][CR][CR]Håndter ditt filmbibliotek · Oppgi videoavspillingsalternativer · Endre videolistealternativer[CR]Oppgi skrifttype for undertekster"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ENDRE DINE MUSIKKINNSTILLINGER:[/B][CR][CR]Håndter ditt musikkbibliotek · Oppgi musikkavspillingsalternativer · Velg visualisering[CR]Oppgi din Last.FM konto · Endre karaokeskrifttype og -innstillinger"
+msgstr "[B]ENDRE DINE MUSIKKINNSTILLINGER:[/B][CR][CR]Håndter ditt musikkbibliotek · Oppgi musikkavspillingsalternativer · Endre lyttealternativer[CR]Oppgi din Last.FM konto · Endre karaokealternativer"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]ENDRE DINE BILDEINNSTILLINGER:[/B][CR][CR]Aktiver automatisk miniatyrgenerering og lesing av EXIF-tagger · Juster overgangseffekter for bildeframvising · Oppgi din XBMC skjermdumpsmappe"
+msgstr "[B]ENDRE DINE BILDEINNSTILLINGER[/B][CR][CR] Oppgi bildelistealternativer · Konfigurer lysbildefremvisninger"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]ENDRE DINE VÆRINNSTILLINGER:[/B][CR][CR]Oppgi de tre stedene som XBMC viser på værskjermen · Endre dine regionale innstillinger, inklusive temperaturenheter"
+msgstr "[B]ENDRE DINE VÆRINNSTILLINGER:[/B][CR][CR]Oppgi de tre stedene som XBMC viser på værskjermen"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]ENDRE DINE SYSTEMINNSTILLINGER:[/B][CR][CR]Konfigurer videomaskinvare · Konfigurer lydmaskinvare · Still inn fjernkontrollere[CR]Endre standarden for strømsparingsmodus · Aktiver debugging · Konfigurer hovedbrukerens passord- og systemlåser"
+msgstr "[B]ENDRE SYSTEMVALG[/B][CR][CR]Oppsett og kalibrering av skjerm · Konfigurer lydmaskinvare · Still inn fjernkontrollere[CR]Endre alternativer for strømsparing · Aktiver feilsøking · Sett opp systemlås"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURER TILLEGG[/B][CR][CR]Håndter installerte tillegg · Let etter og installer tillegg fra xbmc.org[CR]Endre tilleggsinnstillinger"
+msgstr "[B]ENDRE DINE TILLEGG[/B][CR][CR]Håndter innstallerte tillegg · Let etter og installer tillegg fra xbmc.org[CR]Endre tilleggsinnstillinger"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURER TV-INNSTILLINGER[/B][CR][CR]Endre fullskjermsinfo · Administrer datainnstillinger for EPG"
+msgstr "[B]ENDRE DINE TV-INNSTILLINGER[/B][CR][CR]Endre fullskjermsinfo · Administrer datainnstillinger for EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURER TJENESTEINNSTILLINGER[/B][CR][CR]Konfigurer kontroll av XBMC via UPnP og HTTP · Konfigurer fildeling[CR]Aktiver Zeroconf · Konfigurer AirPlay"
+msgstr "[B]ENDRE DINE TJENESTEINNSTILLINGER[/B][CR][CR]Konfigurer kontroll av XBMC via UPnP og HTTP · Konfigurer fildeling[CR]Aktiver Zeroconf · Konfigurer AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."

@@ -570,7 +570,7 @@ msgstr "FILMID"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV ŠHOWD"
+msgstr "SERIAALID"
 
 msgctxt "#31956"
 msgid "MUSIC"
