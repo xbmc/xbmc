@@ -71,7 +71,7 @@ fi
 config="$config --disable-libvorbis"
 config="$config --enable-gpl --enable-postproc --enable-static --enable-pthreads"
 config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac"
-config="$config --enable-protocol=http --enable-runtime-cpudetect"
+config="$config --enable-protocol=http --enable-runtime-cpudetect --enable-gnutls"
 config="$config --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
 
 case $CC in
@@ -82,6 +82,9 @@ case $CC in
 esac
 
 extra_cflags="$extra_cflags -I$outputpath/include"
+
+#GNUTLS only uses pkg-config, we need to export this for it to work
+export PKG_CONFIG_PATH="$outputpath/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 #echo $config
 echo ./configure $config --as="$AS" --extra-cflags="$extra_cflags" --extra-ldflags="-arch $arch -L$outputpath/lib"
