@@ -8701,6 +8701,10 @@ msgctxt "#20466"
 msgid "Select movie set"
 msgstr "Seleccionar conxunto de filmes"
 
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Sen estabelecer (Eliminar de %s)"
+
 msgctxt "#20468"
 msgid "Add movie to a new set"
 msgstr "Engadir o filme a un novo conxunto"
@@ -9316,6 +9320,10 @@ msgstr "Sublocalización"
 msgctxt "#21858"
 msgid "Image type"
 msgstr "Tipo de imaxe"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Hora de creación"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -10785,6 +10793,10 @@ msgctxt "#36108"
 msgid "Resize the view of the GUI."
 msgstr "Redimensionar a vista da Interface."
 
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Seleccionar a xanela que XBMC amosará ao iniciar."
+
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
 msgstr "Escoller ou desactivar o esquema de sons usado na Interface de Usuario."
@@ -10833,6 +10845,10 @@ msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
 
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Amosar el elemento (..) nas listaxes para ir ao cartafol pai."
+
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Amosar as extensións dos ficheiros de medios. Por exemplo, 'You Enjoy Myself.mp3' amosaríase simplemente coma 'You Enjoy Myself'."
@@ -10840,6 +10856,10 @@ msgstr "Amosar as extensións dos ficheiros de medios. Por exemplo, 'You Enjoy M
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Permitir eliminar e renomear ficheiros na interface de usuario, mediante o menú contextual (prema o C do teclado, por exemplo, para amosar o menú)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Amosar o botón engadir fonte nas seccións raiz da interface do usuario."
 
 msgctxt "#36127"
 msgid "Show hidden files and directories."
@@ -10949,6 +10969,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Axustar o método usado para procesar e reproducir vídeo."
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "Activar a decodificación por hardware dos ficheiros de vídeo."
@@ -11000,6 +11024,10 @@ msgstr "Aínda non hai info. dispoñíbel."
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Activar o Teletexto cando se está a ver a TV."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
@@ -11141,13 +11169,33 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
 
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Non importar os datos da Guía mentres se está a ver a TV para minimizar o uso da CPU."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "Por defecto, os datos da Guía gárdanse nunha base de datos local para axilizar a importación cando se reinicia o XBMC ."
+
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Agochar as etiquetas \"sen información dispoñíbel\" caneo no se poda obter datos da canle."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "Eliminar a base de datos da Guía e volver importar os datos dende o motor."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Reproducir o fluxo da canle seleccionada nunha xanela pequena no canto da pantalla completa."
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Amosar a última canle vista ao trocar a TV en directo."
 
 msgctxt "#36230"
 msgid "No info available yet."
@@ -11393,6 +11441,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Escoller entre varias interfaces web instaladas mediante o Xestor de Complementos."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Aínda non hai info. dispoñíbel."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Permitir ás aplicacións deste computador controlar o XBMC mediante o Interface Web ou o protocolo da interface JSON-RPC."
@@ -11520,6 +11572,10 @@ msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos TrueHD."
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Escolla esta opción se o seu receptor pode decodificar fluxos DTS-HD."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Configurar o uso dos sons da interface, como os da navegación nos menús e notificacións importantes."
 
 msgctxt "#36374"
 msgid "No info available yet."
@@ -11696,6 +11752,10 @@ msgstr "Aínda non hai info. dispoñíbel."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Definir as localización das que obter a súa info. meteorolóxica."
 
 msgctxt "#36420"
 msgid "No info available yet."

@@ -4117,6 +4117,10 @@ msgctxt "#13030"
 msgid "Waiting for server to wake up..."
 msgstr "等待服务器启恢复工作…"
 
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "等待唤醒服务器"
+
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
 msgstr "等待服务器启动…"
@@ -10377,6 +10381,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "扬声器设置"
@@ -10941,6 +10953,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "调整处理和显示视频的方式。"
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "启用视频文件的硬件解码。"
@@ -11197,17 +11213,57 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "默认电子节目单窗口显示。默认为时间表。"
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "从后端导入电子节目单天数。默认为2天。"
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "从后端导入电子节目单时间间隔。默认为120分钟。"
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
-msgstr "请勿在播放电视时导入EPG数据以减少CPU占用。"
+msgstr "请勿在播放电视时导入电子节目单数据，以减少CPU占用。"
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "默认情况下，电子节目单数据保存在本地数据库以提高XBMC启动时导入速度。"
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "隐藏当某频道未取得电子节目单数据时的“无可用信息”标签。"
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "删除xbmc的电子节目单数据库并重新从后端导入数据。"
 
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "在小窗格显示选中频道视频流而非全屏显示。"
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "切换到直播电视时显示前次浏览的频道。"
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
+msgstr "在编码信息窗显示信号质量信息（如果插件和后端支持）。"
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "在全屏模式按数字键将于1秒后自动切换到相应频道。"
 
 msgctxt "#36232"
 msgid "No info available yet."
@@ -11370,6 +11426,10 @@ msgid "No info available yet."
 msgstr "无可用信息。"
 
 msgctxt "#36327"
+msgid "No info available yet."
+msgstr "无可用信息。"
+
+msgctxt "#36333"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
@@ -11537,6 +11597,10 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "定义使用的苹果遥控器标准。"
+
 msgctxt "#36417"
 msgid "No info available yet."
 msgstr "无可用信息。"
@@ -11545,6 +11609,18 @@ msgctxt "#36418"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "定义要获取天气信息的地点。"
+
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "最近使用的用户配置"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "浏览"

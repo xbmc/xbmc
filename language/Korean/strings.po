@@ -10693,6 +10693,22 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "선택한 스킨의 색상을 바꾸세요."
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "사용자 인터페이스에 사용될 글꼴을 선택합니다. 글꼴은 사용하는 스킨에 따라 설정됩니다."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "XBMC를 시작할 때 표시할 화면을 선택합니다."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "사용자 인터페이스에 사용할 사운드 모음을 선택하거나 비활성화합니다."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "RSS 뉴스 표시를 사용하지 않으려면 이 옵션을 끕니다."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "RSS 피드를 편집하세요."
@@ -10769,6 +10785,10 @@ msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
 msgstr "음악이 재생중인 경우 XBMC는 화면보호기 대신, 선택한 시각화를 실행합니다."
 
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "미디어 재생 일시 정지 중에 화면을 흐리게 합니다. 'Dim' 화면 보호시 선택시는 옵션을 사용할 수 없습니다."
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "비디오 라이브러리에서 미시청 미디어의 줄거리 정보 표시."
@@ -10816,3 +10836,67 @@ msgstr "비디오 처리와 화면 표시 방법을 조정합니다."
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "비디오 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "와이드스크린 디스플레이에 4:3 동영상 재생시 확대 방법을 선택합니다."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "TV 시청시 텔레텍스트를 표시합니다."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "텔레텍스트를 4:3 화면비에 맞추어 변경합니다."
+
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will an select item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "항목을 선택할 때의 동작을 선택, 재생 (기본값), 되시작, 정보 보기로 변경합니다. 되시작은 시스템을 다시 시작한 이후라도 자동으로 지난번에 재생했던 위치에서 재생을 시작합니다."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "파일을 라이브러리에 추가한 이후라면 파일명 대신 메타데이터 제목을 표시합니다."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "썸네일과 코덱, 화면비 등의 정보를 추출해서 라이브러리에 표시할 수 있도록 합니다."
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "자막이 저장되어 있는 디렉토리를 설정합니다. 네트워크 공유 폴더도 가능합니다."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "화면에서 자막이 표시될 위치"
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "DVD를 드라이브에 삽입하면 자동으로 재생을 시작합니다."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "DVD 리젼을 강제로 설정합니다."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "DVD 메뉴 이전에 재생되는 '건너뛸 수 없는' 인트로를 건너뛰려 시도합니다."
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "기본 영화 정보 소스를 선택합니다. 추가기능 관리자에서 옵션을 확인할 수 있습니다."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "기본 TV 쇼 정보 소스를 선택합니다. 추가기능 관리자에서 옵션을 확인할 수 있습니다."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "기본 뮤직비디오 스크래퍼"
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
+msgstr "XBMC에서 PVR 기능을 사용합니다. 적어도 하나의 PVR 추가기능이 설치되어 있어야 합니다."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "PVR 백엔드에서 채널 그룹을 가져옵니다. 백엔드에서 그룹이 발견되지 않으면 사용자가 만든 그룹을 지웁니다."

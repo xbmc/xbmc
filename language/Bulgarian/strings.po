@@ -289,6 +289,10 @@ msgctxt "#91"
 msgid "East"
 msgstr "изток"
 
+msgctxt "#92"
+msgid "Variable"
+msgstr "Променливо"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Вид: Автоматичен"
@@ -675,7 +679,7 @@ msgstr "Web интерфейс"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "Tagline [подзаглавие]"
+msgstr "Лозунг"
 
 msgctxt "#203"
 msgid "Plot outline"
@@ -861,6 +865,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Брой на каналите"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Ресивърът ми поддържа DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1033,6 +1041,22 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Отметки"
 
+msgctxt "#299"
+msgid "AAC capable receiver"
+msgstr "Ресивърът ми поддържа AAC"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Ресивърът ми поддържа MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Ресивърът ми поддържа MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Ресивърът ми поддържа MP3"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Закъснение"
@@ -1197,6 +1221,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Усили звука при смесване за намаляване броя на каналите"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Ресивърът ми поддържа DTS-HD"
+
+msgctxt "#348"
+msgid "Multichannel LPCM capable receiver"
+msgstr "Ресивърът ми поддържа Multichannel LPCM"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Ресивърът ми поддържа TrueHD"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "програми"
@@ -1252,6 +1288,10 @@ msgstr "Степен на затъмняване от скрийнсейвъра
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Сорт. по: Файл"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Ресивърът ми поддържа Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2341,6 +2381,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Мрежа"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "Сървър"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Ползвай HTTP proxy сървър (посредник) за достъп до интернет"
@@ -2368,6 +2412,18 @@ msgstr "Ръчно (Статично)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP адрес"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Маска"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Стандартен gateway"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS сървър"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2412,6 +2468,14 @@ msgstr "Без парола"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Набор от знаци"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Стил"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Цвят"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2645,6 +2709,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Валидни са портовете в диапазона 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Добави снимки..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Добави музика..."
@@ -2853,6 +2921,26 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Въведете web адрес"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Тип proxy"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB клиент"
@@ -2992,6 +3080,10 @@ msgstr "Име на устройството"
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3269,9 +3361,45 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Настройки - Профили"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Нулиране"
+
+msgctxt "#10036"
+msgid "Level: Basic"
+msgstr "Основни настр."
+
+msgctxt "#10037"
+msgid "Level: Standard"
+msgstr "Стандартни настр."
+
+msgctxt "#10038"
+msgid "Level: Advanced"
+msgstr "Допълнителни настр."
+
+msgctxt "#10039"
+msgid "Level: Expert"
+msgstr "Експертни настр."
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "Браузyр за добавки"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "Нулиране на насройките"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Наистина ли желаете нулирането на настройките от категорията?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Помощ"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Не е налична помощ"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3280,6 +3408,18 @@ msgstr "С/Без прозорец"
 msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "Прозорец за напредъка"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Браузер на файлове"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Медиини източници"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Настройки на профила"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -3789,6 +3929,46 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Откачен е джойстик"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Включване по мрежата (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Изчаква се свързване към мрежа..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Събуждането по мрежата се провали!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Изчаква се включването на сървъра..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Удължаване на периода за изчакване..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Изчакване стартирането на услуги..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Откриване на MAC адрес"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Актуализиран за %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Открит е за %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Не е открит за %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Батерията е изтощена"
@@ -3919,7 +4099,7 @@ msgstr "Subnet маска"
 
 msgctxt "#13160"
 msgid "Gateway"
-msgstr "Gateway [Шлюз]"
+msgstr "Gateway"
 
 msgctxt "#13161"
 msgid "Primary DNS"
@@ -4108,6 +4288,10 @@ msgstr "Автоматично контролиране на температа"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Замени скоростта на вентилатора"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Шрифтове"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4785,6 +4969,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Видео кеш - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Локална мрежа"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Интернет"
@@ -4793,6 +4981,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Аудио кеш - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Локална мрежа"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Интернет"
@@ -4800,6 +4992,10 @@ msgstr "Интернет"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD кеш  - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Локална мрежа"
 
 msgctxt "#14036"
 msgid "Services"
@@ -4949,6 +5145,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Премахни от любимите"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Цветове"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Часови пояс на държава"
@@ -5084,6 +5284,10 @@ msgstr "Звуци при навигиране"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "От облика"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Тема"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5481,6 +5685,10 @@ msgctxt "#19003"
 msgid "Find similar programs"
 msgstr "Намиране на подобни програми"
 
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Внасяне на EPG от клиентите"
+
 msgctxt "#19006"
 msgid "Receiving device"
 msgstr "Приемащо устройство"
@@ -5492,6 +5700,18 @@ msgstr "Състояние на устройството"
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Качество на сигнала"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
 
 msgctxt "#19014"
 msgid "Fixed"
@@ -5680,6 +5900,10 @@ msgstr "Събитието вече се записва"
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
 msgstr "Записът не може да бъде изтрит.\nПроверете дневника за подробности."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -5973,6 +6197,10 @@ msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
 msgstr "Записът не може да бъде започнат.\nПроверете дневника за подробности."
 
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR информация"
+
 msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Сканирай за липсващи икони"
@@ -6013,6 +6241,10 @@ msgctxt "#19184"
 msgid "Channel information duration"
 msgstr "Показвай инф. за канала в продължение на"
 
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Нулиране базата от данни на PVR"
+
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "При стартиране продължи от последно гледания канал"
@@ -6020,6 +6252,10 @@ msgstr "При стартиране продължи от последно гл�
 msgctxt "#19190"
 msgid "Minimized"
 msgstr "Минимизиран"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR услуга"
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -6040,6 +6276,10 @@ msgstr "Записът стартиран на: %s"
 msgctxt "#19199"
 msgid "Channel manager"
 msgstr "Диспечер на каналите"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG източник:"
 
 msgctxt "#19201"
 msgid "Channel name:"
@@ -6096,6 +6336,10 @@ msgstr "Негрупирани канали"
 msgctxt "#19220"
 msgid "Channels in"
 msgstr "Канали в"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6200,6 +6444,14 @@ msgstr "Неправилен код"
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Въведеният коде е неправилен."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Заключен за деца"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Заключен за деца:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
@@ -7877,6 +8129,38 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Групирай филмите в поредици"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Етикети"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Нов етикет..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "Вече съществува етикет с името \"%s\"."
+
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Управление на передица"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Изберете филмова поредица"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Без (Премахване от \"%s\")"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Добавяне към нова поредица"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Запазване на текущата (\"%s\")"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Показвай скритите папки и файлове"
@@ -7916,6 +8200,14 @@ msgstr "Добави споделен медиен ресурс..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Споделяне на видео и музикалната библиотеката чрез UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Търсене на отдалечени UPnP плеъри"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Създадена е отметка"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8281,9 +8573,21 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Запълванена е преди да се кешират достатъчно данни за непрекъснато възпроизвеждане."
 
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Външна памет"
+
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Брой гледани епизода"
+
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Групиране по"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "смесено"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8440,6 +8744,14 @@ msgstr "GPS височина"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "Ориентация"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Тип изображение"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Дата на създаване"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -8609,6 +8921,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Скривай напредъка при актуализиране на библиотеката"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS наставка"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -8704,6 +9020,14 @@ msgstr "Шрифт"
 msgctxt "#22031"
 msgid "Size"
 msgstr "Размер"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Цветове"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Набор от знаци"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -8868,6 +9192,10 @@ msgstr "Информация за артисти"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Услуги"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR клиенти"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9441,6 +9769,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Включи персоналните скрипт бутони"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Автоматично вписване"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Стартирането се провали"
@@ -9484,6 +9816,14 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -9553,9 +9893,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Не може да бъде намерен предходен елемент за възпроизвеждане"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Стартирането на Zeroconf се провали"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Инсталиурана ли е услугата Apple's Bonjour? Вижте дневника за допълнителна информация."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay изисква включването на Zeroconf."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Спирането на Zeroconf не е възможно"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay и AirTunes исикват включването на Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -9633,6 +9989,14 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Не ползвай персоналната клавишна карта за устройството"
 
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Включи поддръжката на gamepad"
+
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Изключване на джойстика при наличие на устройството"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Място"
@@ -9692,6 +10056,10 @@ msgstr "При излизане от/спиране на XBMC изключи:"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Задай режим \"Изчакване\" за устройствата при активен скрийнсейвър"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Събуждане на устройства при деактивиране на скриинсейвъра"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -9796,3 +10164,823 @@ msgstr "Телевизора и AVR (изрично)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Версията на libCEC интерфейса не се поддържа. %x е по-стара от необходимата %x"
+
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Ползвай ограничена цветова гама (16-256)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Променете външния вид на потребителския интерфейс."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Изберете облик за потребителския интерфейс. Това ще промени начина по който изглежда XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Променете настройки специфични за облика. Наличните настройки зависят от избрания облик."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Променете темата на избрания облик."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Променете цветовете на избрания облик."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Избере цветовете на потребителския интерфейс. Цветовите комбинации се настройват от избрания облик."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Преоразмерява графичния интерфейс."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "При стартиране на  XBMC коя от началните страници да се отвори."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Изберете (изключете) пакет от звуци, който да се ползва при работата с потребителския интерфейс."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Изключете и лентата (от дъното на екрана) с новини от RSS емисии ще изчезне."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Редактиране на RSS емисиите."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Изберете език за потребителския интерфйс."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Изберете формат за темпратура, дата и час. Наличните опции зависят от избрания език за потребителския интерфейс. "
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Изберете кой набор от знаци да се ползва за изобразяване на текст в поребителския интерфейс."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Изберете местоположението на сраната, в която се намирате."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Изберете часавия пояс, в който се намирате."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Изберете стандартен аудио запис, за случайте когато са налични аудио записи на различни езици."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Изберете стандартни субтитри, за случаите когато са налични субтитри на различни езици."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Изобразява елемента \"...\" (многоточие) в списъци, който служи за връщане в по-горна директория."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Показва разширенията на медийните файлове. Например файлът \"You Enjoy Myself.mp3\" ще бъде изобразен като \"You Enjoy Myself\"."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Разрешава изтриването и преименуването на файлове от потребителския интерфейс на XBMC, чрез контекстното меню (извиква се с клавиша \"C\" от клавиатурата)."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Показва скритите папки и файлове."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Задава количеството време бездействие след което се задейства скрийнсейвъра."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "Изберете скрийнсейвър. XBMC ще наложи \"Dim\" (затъмняващия скрийнсейвър) при неактивност по време  а въпроизвождане на целия екран и при неактивност на даден прозорец."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Променете настройките специфични за скрийнсейвъра. Наличните опции зависият от избрания скрийнсейвър."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Преглед на избрания скрийнсейвър."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "Ако се възпроизвежда музика XBMC ще стартира избраната визуализация вместо скрийсейвъра."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Затъмняване на екрана при състояние \"На пауза\". Неважи при режим със скрийсейвър \"Dim\"."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Показва сюжета и за негледаните файлове в библиотеката."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Сваля миниатюри на актюрите по време на сканирането за ново медийно съдържание."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Групира филмите във \"Филмови поредици\" при преглеждане на филмовата библиотека."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Проверява за нови медийни файлове при всяко стартиране на XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Скрива лентата с прогреса на сканирането."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Премахва елементи от библиотеката Ви които не могат да бъдат намерени (които са били преименувани или се намират на външен носител на данни, който към монета не е свързан с XBMC)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Изнася информацията от базата данни на видео библиотеката в .XML файлове. Ако вече съществуват такива файлове те ще бъдат презаписани!"
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Внася съдържанието на .XML файл в базата от данни на видео библиотеката."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Включва автоматичното възпризвеждане на следващия файл от списъка с избрани елементи."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Променя използвания метод за обработка и изобразяване на видео."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Включва хардуерното декодиране на видео файлове."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Определете кога да се коригира честотата на обновяване."
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Синхронизира видеото към честотата на обновяване на монитора."
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Позициониране на субтитрите на екрана."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Проверява за нови и премахнати медийни файлове при стартиране на XBMC."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Изнася информацията от базата данни на музикалната библиотеката в .XML файлове. Ако вече съществуват такива файлове те ще бъдат презаписани!"
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Внася .XML файл в базата от данни на музикалната библиотека."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Възпроизвежда автоматично дисковете при поставянето им в дисковото устройство."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Изберете къде точно на твърдия диск да се съхраняват аудио записите следд извлеченето им от дискове."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Етикети: [B]%N[/B]: № на аудио записа, [B]%S[/B]: № на диска, [B]%A[/B]: артист, [B]%T[/B]: заглавие, [B]%B[/B]: албум, [B]%G[/B]: жанр, [B]%Y[/B]: година, [B]%F[/B]: име на файла, [B]%D[/B]: времетраене, [B]%J[/B]: дата, [B]%R[/B]: оценка, [B]%I[/B]: размер на файла."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "За FLAC опреелете ниво на компресия. Стандартното е 5."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Автоматично генериране на миниатюри на изображенията при отваряне на папката, в която се намират."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Автоматично ротиране на изображенията съобразно съдържанието на EXIF етикета, ако имат такъв."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Определя по колко време ще бъде иобразявано всяко изображение по време на слайдшоу."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr "Изберете до 3 локации, за които да се изобразява метеорологичната прогноза."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr "Името с което ще се предсавя XBMC пред останалите мрежови услуги."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
+msgstr "Включва UPnP сървъра на XBMC. Това ще позволи поточното предаване на медийни файлове (с цел възпроизвеждане на отдалечени устройства) към UPnP клиенти."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Изветява UPnP клиентите при актуалииране на библиотеката (ръчно или автоматично)."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Включва UPnP клиента на XBMC. Това ще позволи поточното приемане на медийни файлове, с цел локално възпроизвеждане, от UPnP сървър (поседством UPnP контролна точка)."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Разрешава контролирането на XBMC от разстояние посредством вградения уеб сървър. "
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Определете порт за уеб сървъра."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Определете потребителско име за уеб съръвъра."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Определете парола за уебсървъра."
+
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "Избиерете измежду уеб интерфейси инсталирани посредством диспечера на добавки."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Разрешава на програми от мрежата да контролират XBMC."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Тип на връката между аудио компонентите."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Изберете подредбата на високоговорителите."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира AC3 поток."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира DTS поток."
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира AAC поток."
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира LPCM поток."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира TrueHD поток."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Изберете опцията ако приемникът Ви може да декодира DTS-HD поток."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Задайте адреса на proxy сървъра."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Задайте порта на proxy сървъра."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Задайте потребителското име за proxy сървъра."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Задайте паролата за proxy сървъра."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Определете колко дълго XBMC може да бездейства преди да изключи устройството."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Определете какво действие трябва да предприеме XBMC, след като бездейства дълъг период от време."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Все още не е налична инфомация."
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Последно ползван профил"

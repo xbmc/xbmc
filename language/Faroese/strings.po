@@ -919,7 +919,7 @@ msgstr "Eydnaðist ikki at innlesa stillingar"
 
 msgctxt "#280"
 msgid "Using default settings"
-msgstr "Brúki grund stillingar"
+msgstr "Brúki grundstillingar"
 
 msgctxt "#281"
 msgid "Please check the XML files"
@@ -935,7 +935,7 @@ msgstr "Úrslit av leiting"
 
 msgctxt "#284"
 msgid "No results found"
-msgstr "Fann onki úrslit"
+msgstr "Fann onki"
 
 msgctxt "#285"
 msgid "Preferred audio language"
@@ -951,7 +951,7 @@ msgstr "Undirtekstir"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Skrivttypa"
+msgstr "Skrivtslag"
 
 msgctxt "#289"
 msgid "Size"
@@ -967,7 +967,7 @@ msgstr "Ljóð"
 
 msgctxt "#293"
 msgid "Browse for subtitles"
-msgstr "Leita eftir undirteksti"
+msgstr "Leita eftir undirtekstum"
 
 msgctxt "#294"
 msgid "Create bookmark"
@@ -1003,7 +1003,7 @@ msgstr "Mál á brúkaraflatu"
 
 msgctxt "#313"
 msgid "Cleaning database"
-msgstr "Ruddi dátugrunnin"
+msgstr "Ruddi dátugrunn"
 
 msgctxt "#314"
 msgid "Preparing..."
@@ -1011,11 +1011,11 @@ msgstr "Fyrireiki..."
 
 msgctxt "#315"
 msgid "Database error"
-msgstr "Feilur í dátugrunni"
+msgstr "Brek í dátugrunni"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "Leiti millum sangir..."
+msgstr "Leiti í sangum..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1479,7 +1479,7 @@ msgstr "Endurtak"
 
 msgctxt "#487"
 msgid "Repeat one"
-msgstr "Endurtak einafer"
+msgstr "Eina endurtøku"
 
 msgctxt "#488"
 msgid "Repeat folder"
@@ -1491,7 +1491,7 @@ msgstr "Spæl næsta sang automatiskt"
 
 msgctxt "#491"
 msgid "- Use big icons"
-msgstr "- Brúka stórar myndir"
+msgstr "- Brúka stórar ímyndir"
 
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
@@ -2039,7 +2039,7 @@ msgstr "Striki gomul løg frá savni"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
-msgstr "Hesin stíggi er longu innlisin"
+msgstr "Hesin stíður er longu innlisin"
 
 msgctxt "#705"
 msgid "Network"
@@ -2079,7 +2079,7 @@ msgstr "við tølum millum 0 og 255."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
-msgstr "Broyting ikki goymd. Framhald uttan goymslu?"
+msgstr "Broyting ikki goymd. Framhald uttan at goyma?"
 
 msgctxt "#727"
 msgid "Web server"
@@ -2151,7 +2151,7 @@ msgstr "Tillaga stíggjan"
 
 msgctxt "#749"
 msgid "Mirror image"
-msgstr "Avrita mynd"
+msgstr "Spegla mynd"
 
 msgctxt "#750"
 msgid "Are you sure?"

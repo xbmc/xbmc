@@ -359,7 +359,7 @@ msgstr "နာမည်ပြင်ရန်"
 
 msgctxt "#119"
 msgid "New folder"
-msgstr "ဖိုဒါ အသစ်"
+msgstr "ဖိုင်တွဲ အသစ်"
 
 msgctxt "#120"
 msgid "Confirm file copy"
@@ -681,6 +681,10 @@ msgctxt "#231"
 msgid "None"
 msgstr "ဘာမှမဟုတ်"
 
+msgctxt "#232"
+msgid "Point"
+msgstr "ပွိုင့်"
+
 msgctxt "#234"
 msgid "Anisotropic"
 msgstr "Anisotropic"
@@ -700,6 +704,10 @@ msgstr "ပြီးပါက ဖွင့်မည့်စာရင်း က�
 msgctxt "#241"
 msgid "Full Screen #%d"
 msgstr "မျက်နှာပြင်အပြည့် #%d"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Refresh နှုန်း"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -767,7 +775,7 @@ msgstr "စီရန် - အယ်လ်ဘမ်အရ"
 
 msgctxt "#271"
 msgid "Top 100"
-msgstr "ထပ်ဆုံး ၁၀၀"
+msgstr "ထိပ်ဆုံး 100"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
@@ -1068,6 +1076,14 @@ msgstr "မိုးရွာသော"
 msgctxt "#377"
 msgid "Light"
 msgstr "အလင်း"
+
+msgctxt "#378"
+msgid "AM"
+msgstr "AM"
+
+msgctxt "#379"
+msgid "PM"
+msgstr "PM"
 
 msgctxt "#381"
 msgid "Few"
@@ -1383,7 +1399,7 @@ msgstr "တစ်ခေါက်ပြန်ဖွင့်မည်"
 
 msgctxt "#488"
 msgid "Repeat folder"
-msgstr "ဖိုလ်ဒါလ်အလိုက်ပြန်ဖွင့်မည်"
+msgstr "ဖိုင်တွဲ အလိုက်ပြန်ဖွင့်မည်"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
@@ -1636,6 +1652,10 @@ msgstr "ဖွင့်ခဲ့သောအကြိမ်"
 msgctxt "#581"
 msgid "Sort method"
 msgstr "စီမည့်နည်းလမ်း"
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "ဖိုင်တွဲ အမျိုးမျိုး ရဲ့ ပုံသဏ္ဍန်ကို မှတ်ထားရန်"
 
 msgctxt "#586"
 msgid "Edit playlist"
@@ -3771,7 +3791,7 @@ msgstr "အမည် -"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr "ဖိုလ်ဒါလ်-"
+msgstr "ဖိုင်တွဲ -"
 
 msgctxt "#19077"
 msgid "Radio:"
@@ -3844,6 +3864,10 @@ msgstr "__-__-__-__-__-နေ-နွေ"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "သတိပေးချက်"
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "ကူးယူရန် ဖိုင်တွဲ အမည် ထည့်ပါ"
 
 msgctxt "#19114"
 msgid "Version"
@@ -4084,6 +4108,14 @@ msgstr "external DVD player ကိုသုံးမည်"
 msgctxt "#20002"
 msgid "External DVD player"
 msgstr "External DVD player"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "စကင်ဖမ်းပြီးထည့်ရန် ဖိုင်တွဲ"
+
+msgctxt "#20006"
+msgid "Playlists folder"
+msgstr "ဖွင့်မည့်စာရင်း ဖိုင်တွဲ"
 
 msgctxt "#20007"
 msgid "Recordings"
@@ -4499,7 +4531,7 @@ msgstr "DHCP server:"
 
 msgctxt "#20309"
 msgid "Make new folder"
-msgstr "ဖိုလ်ဒါလ်အသစ်တစ်ခုဖန်တီးမည်"
+msgstr "ဖိုင်တွဲ အသစ်တစ်ခုဖန်တီးမည်"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
@@ -4731,7 +4763,7 @@ msgstr "TuxBox device"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
-msgstr "စာတန်းထိုး ဖိုလ်ဒါလ်"
+msgstr "စာတန်းထိုး ဖိုင်တွဲ"
 
 msgctxt "#21371"
 msgid "Thumbnail"

@@ -10949,9 +10949,29 @@ msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
 msgstr "Hapus butir-butir yang tidak dapat ditemukan (entah diubah nama, dihapus, atau di penyimpanan lepasan yang sedang tidak terpasang) dari pustaka."
 
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Ekspor basis data Pustaka Video ke berkas XML. Ini secara opsional menimpa berkas XML Anda saat ini."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Impor suatu berkas XML ke dalam basis data Pustaka Video"
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Fungsikan pemutaran otomatis berkas selanjutnya dalam daftar butir yang dipilih."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Setel metoda yang dipakai untuk memroses dan menampilkan video."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Fungsikan pendekodean perangkat keras atas berkas video."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10985,6 +11005,18 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Pilih kapan penyesuaian laju penyegaran mesti terjadi."
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Selaraskan video ke laju penyegaran monitor."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Audio mesti tetap selaras, ini bisa dilakukan dengan pencuplikan ulang, melompati/menggandakan paket, atau menyetel jam bila tak selaras terlalu jauh."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
@@ -10992,6 +11024,14 @@ msgstr "Belum ada info tersedia."
 msgctxt "#36169"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Ijinkan pemutar video mengabaikan rasio aspek sampai sejumlah tertentu untuk memenuhi lebih besar bagian layar dengan video."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Pilih tingkat zum untuk menampilkan video 4:3 pada tampilan layar lebar."
 
 msgctxt "#36173"
 msgid "No info available yet."

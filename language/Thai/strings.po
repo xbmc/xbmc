@@ -10977,6 +10977,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "ปรับกระบวนการที่ใช้ ในการประมวลผลและแสดงผลวิดีโอ."
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "เปิดใช้งาน การถอดรหัสด้วยฮาร์ดแวร์สำหรับไฟล์วิดีโอ."
@@ -11681,6 +11685,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "เลือกใช้ส่วนติดต่อผ่านเว็บ ที่ได้ติดตั้งผ่าน ตัวจัดการ ส่วนเสริม."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "ยังไม่มีข้อมูล."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "อนุญาตให้โปรแกรมบนคอมพิวเตอร์เครื่องนี้ ควบคุม XBMC ผ่านเว็บอินเตอร์เฟส หรือ โปรโตคอล อินเตอร์เฟซ JSON-RPC."
@@ -12016,6 +12024,10 @@ msgstr "ยังไม่มีข้อมูล."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "กำหนดตำแหน่งพื้นที่ ที่ใช้เพื่อรับข้อมูลสภาพอากาศ."
 
 msgctxt "#36420"
 msgid "No info available yet."

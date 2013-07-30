@@ -303,7 +303,7 @@ msgstr "Görünüm: Otomatik büyük"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Görünüm: Simge"
+msgstr "Görünüm: Simgeler"
 
 msgctxt "#101"
 msgid "View: List"
@@ -799,7 +799,7 @@ msgstr "Çizgisel"
 
 msgctxt "#234"
 msgid "Anisotropic"
-msgstr "Anisotropic"
+msgstr "Anizotropic"
 
 msgctxt "#235"
 msgid "Quincunx"
@@ -811,11 +811,11 @@ msgstr "Gaussian cubic"
 
 msgctxt "#237"
 msgid "Minification"
-msgstr "Küçültmek"
+msgstr "Küçültme"
 
 msgctxt "#238"
 msgid "Magnification"
-msgstr "Büyültmek"
+msgstr "Büyültme"
 
 msgctxt "#239"
 msgid "Clear playlist on finish"
@@ -872,6 +872,10 @@ msgstr "Stereo ses çıkışını bütün hoparlörlere ver"
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanal sayısı"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS duyarlı alıcı"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -2925,6 +2929,10 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "İnternet adresini girin"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Vekil sunucu tipi"
+
 msgctxt "#1181"
 msgid "HTTP"
 msgstr "HTTP"
@@ -4076,6 +4084,10 @@ msgstr "Sunucunun uyanması için fazladan bekleniyor..."
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
 msgstr "Servislerin başlaması bekleniyor..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC araştırması"
 
 msgctxt "#13034"
 msgid "Updated for %s"
@@ -5928,6 +5940,10 @@ msgstr "Bilgi"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Bu kanal kaydı zaten başlamış."
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s oynatılamıyor. Detaylı bilgi için lütfen kayıtlara bakınız."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -10629,6 +10645,30 @@ msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Henüz bilgi mevcut değil."
 
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Kullanıcı arabirimi için bir kaplama seçiniz. Bu seçim XBMC nin nasıl görüneceğini belirleyecektir."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Özel kaplama ayarlarını değiştir. Kullanılan kaplamaya bağlı olarak seçenekler değişecektir."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Seçtiğiniz kaplamaya bağlı olan temayı değştirin."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Seçtiğiniz kaplamanın renklerini değiştirin."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "XBMC nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Kullanıcı arabiriminde kullanılacak ses grubunu seçiniz ya da kapatınız."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "RSS beslemelerini düzenle."
@@ -10664,6 +10704,10 @@ msgstr "Farklı dil seçenekleri mevcut olduğunda geçerli altyazı dilini seç
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Gizli dosya ve klasörleri göster."
 
 msgctxt "#36128"
 msgid "No info available yet."
@@ -10708,6 +10752,10 @@ msgstr "XMBC başlatılırken yeni medya dosyalarını kontrol et."
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Video dosyalarının donanımsal çözülmesini etkinleştir."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10801,6 +10849,10 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Altyazıların ekrandaki konumu."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -10857,6 +10909,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Canlı TV ye geçildiğinde son seyredilen kanala geç."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -10873,9 +10929,21 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Hergün belirtilen zamanda uyandırma komutunu çalıştır."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Günlük uyandırma komutunun çalıştırılma zamanı."
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Erişkin erişimi için kilitli kanallar için yeni bir PIN kodu giriniz."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -10897,6 +10965,14 @@ msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Standartlara göre 89dB ayarlıdır. Lütfen dikkatle değiştirin."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Standartlara göre 89dB ayarlıdır. Lütfen dikkatle değiştirin."
+
 msgctxt "#36277"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -10917,6 +10993,14 @@ msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "CD lerin sürücüye konulduklarında otomatik olarak başlatır."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "FLAC için sıkıştırma düzeyini belirleyiniz, geçerli değer 5 dir."
+
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -10924,6 +11008,22 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Karaoke sırasında kullanılacak geçerli yazı tipini seçiniz."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Karaoke sırasında kullanılacak geçerli yazı tipi büyüklüğünü seçiniz."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Karaoke sırasında kullanılacak geçerli yazı tipi rengini seçiniz."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Karaoke sırasında kullanılacak geçerli karakter setini seçiniz."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11073,6 +11173,10 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Ekran donanım kalibrasyonu için test kalıpları."
+
 msgctxt "#36359"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -11080,6 +11184,10 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Ses ekipmanının bağlantı tipi."
 
 msgctxt "#36362"
 msgid "Select your physical speaker layout."
@@ -11129,9 +11237,17 @@ msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Hata ayıklamayı aç ya da kapat. Hata araması yapılırken kullanışlıdır."
+
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Ana kilitleme için kullanılacak PIN kodunu belirleyiniz."
 
 msgctxt "#36399"
 msgid "No info available yet."

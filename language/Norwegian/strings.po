@@ -1159,7 +1159,7 @@ msgstr "Skriver endringer..."
 
 msgctxt "#329"
 msgid "Error writing changes"
-msgstr "Feil under skriving"
+msgstr "Feil under endringsskriving"
 
 msgctxt "#330"
 msgid "This may take some time..."
@@ -1843,7 +1843,7 @@ msgstr "Oppstartsmeny"
 
 msgctxt "#513"
 msgid "Home window"
-msgstr "Hovedmeny"
+msgstr "Hovedvindu"
 
 msgctxt "#514"
 msgid "Manual settings"
@@ -2079,7 +2079,7 @@ msgstr "Land"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "Pågår"
+msgstr "Igangsatt"
 
 msgctxt "#576"
 msgid "Times played"
@@ -2123,11 +2123,11 @@ msgstr "Filtrer"
 
 msgctxt "#588"
 msgid "Cancel party mode"
-msgstr "Avbryt partymodus"
+msgstr "Avbryt festmodus"
 
 msgctxt "#589"
 msgid "Party mode"
-msgstr "Partymodus"
+msgstr "Festmodus"
 
 msgctxt "#590"
 msgid "Random"
@@ -2239,7 +2239,7 @@ msgstr "Alle låter fra"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "TV-serier som pågår"
+msgstr "Igangsatte TV-serier"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2471,7 +2471,7 @@ msgstr "med tall mellom 0 og 255."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
-msgstr "Forandringer er ikke lagret. Vil du fortsette uten å lagre?"
+msgstr "Endringer er ikke lagret. Vil du fortsette uten å lagre?"
 
 msgctxt "#727"
 msgid "Web server"
@@ -3167,11 +3167,11 @@ msgstr "kjølig"
 
 msgctxt "#1399"
 msgid "Late"
-msgstr "sent"
+msgstr "Sent"
 
 msgctxt "#1400"
 msgid "Isolated"
-msgstr "isolerte"
+msgstr "Isolert"
 
 msgctxt "#1401"
 msgid "Thundershowers"
@@ -4527,7 +4527,7 @@ msgstr "Rekursiv lysbildefremvisning"
 
 msgctxt "#13319"
 msgid "Randomize"
-msgstr "Tilfeldig"
+msgstr "Bland"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -5183,11 +5183,11 @@ msgstr "Tjenester"
 
 msgctxt "#14038"
 msgid "Network settings changed"
-msgstr "Nettverksinnstillingene er forandret"
+msgstr "Nettverksinnstillingene er endret"
 
 msgctxt "#14039"
 msgid "XBMC requires to restart to change your"
-msgstr "XBMC må starte på nytt for å forandre"
+msgstr "XBMC må starte på nytt for å endre dine"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
@@ -5303,7 +5303,7 @@ msgstr "Bruk disse innstillingene nå?"
 
 msgctxt "#14070"
 msgid "Apply changes now"
-msgstr "Lagre endringer nå"
+msgstr "Bruk endringer nå"
 
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
@@ -5627,7 +5627,7 @@ msgstr "Sjekk loggfilen for detaljer"
 
 msgctxt "#16030"
 msgid "Party mode aborted."
-msgstr "Partymodus stoppet."
+msgstr "Festmodus stoppet."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
@@ -5963,7 +5963,7 @@ msgstr "Ingen søkeresultater"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr "Ingen EPG-oppføringer"
+msgstr "Ingen EPG-opptegnelser"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -7627,7 +7627,7 @@ msgstr "eller kopier fra standard?"
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
-msgstr "Lagre innstillinger i profil?"
+msgstr "Lagre endringer i profil?"
 
 msgctxt "#20104"
 msgid "Old settings found."
@@ -7991,7 +7991,7 @@ msgstr "Standardtjeneste for artistinformasjon"
 
 msgctxt "#20195"
 msgid "Change scraper"
-msgstr "Bytt skraper"
+msgstr "Endre skraper"
 
 msgctxt "#20196"
 msgid "Export music library"
@@ -9067,7 +9067,7 @@ msgstr "%c Stasjon"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
-msgstr "Rediger regler for partymodus"
+msgstr "Rediger regler for festmodus"
 
 msgctxt "#21440"
 msgid "Home folder"
@@ -9255,7 +9255,7 @@ msgstr "Brennvidde"
 
 msgctxt "#21828"
 msgid "Focus distance"
-msgstr "Fokusdistanse"
+msgstr "Fokuseringsavstand"
 
 msgctxt "#21829"
 msgid "Exposure"
@@ -9671,11 +9671,11 @@ msgstr "Spill av alle"
 
 msgctxt "#23049"
 msgid "Teletext not available"
-msgstr "Tekst-tv utilgjengelig"
+msgstr "Tekst-TV er ikke tilgjengelig"
 
 msgctxt "#23050"
 msgid "Activate Teletext"
-msgstr "Aktiver tekst-tv"
+msgstr "Aktiver Tekst-TV"
 
 msgctxt "#23051"
 msgid "Part %i"
@@ -9695,7 +9695,7 @@ msgstr "Kjører"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Skaler tekst-tv til 4:3"
+msgstr "Skaler Tekst-TV til 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9835,7 +9835,7 @@ msgstr "Tvungen oppdatering"
 
 msgctxt "#24036"
 msgid "Change log"
-msgstr "Endringslogg"
+msgstr "Endre logg"
 
 msgctxt "#24037"
 msgid "Uninstall"
@@ -10783,7 +10783,7 @@ msgstr "Endre spesifike skallinnstillinger. De tilgjengelige valgene avhenger av
 
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
-msgstr "Bytt temaet assosiert med ditt valgte skall."
+msgstr "Endre temaet assosiert med ditt valgte skall."
 
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."
@@ -11055,11 +11055,11 @@ msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
-msgstr "Aktiver teletekst når direktesente TV-strømmer sees."
+msgstr "Aktiver Tekst-TV når direktesente TV-strømmer sees."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
-msgstr "Skaler tekst-tv til 4:3"
+msgstr "Skaler Tekst-TV til 4:3"
 
 msgctxt "#36176"
 msgid "No info available yet."

@@ -2733,6 +2733,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Aggiornamento Libreria"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "La raccolta musicale deve riacquisire le informazioni dai files."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Vuoi eseguire una scansione adesso?"
@@ -8705,6 +8709,10 @@ msgctxt "#20468"
 msgid "Add movie to a new set"
 msgstr "Aggiungi filmato al nuovo set"
 
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Mantieni il set corrente (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Mostra i files e le cartelle nascoste"
@@ -8744,6 +8752,18 @@ msgstr "Aggiungi condivisione media..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Condividi gli archivi musicali e video attraverso UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Cerca riproduttori UPnP remoti"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Segnalibro creato"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Segnalibro dell'Episodio creato"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9117,6 +9137,14 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Conteggio degli episodi visti"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Raggruppa per"
+
+msgctxt "#21459"
+msgid "mixed"
+msgstr "mixed"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Cartella dei sottotitoli"
@@ -9285,9 +9313,17 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Orientamento"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Sub-locazione"
+
 msgctxt "#21858"
 msgid "Image type"
 msgstr "TIpo immagine"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Orario di creazione"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9360,6 +9396,10 @@ msgstr "Referenza originale Tx"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Data creazione"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Urgenza"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -10429,9 +10469,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Non trovo il precedente elemento da riprodurre"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Avvio di Zeroconf fallito"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Il servizio Apple Bonjour è installato? Controllare i log per maggiori informazioni."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay richiede Zeroconf per essere abilitato."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Impossibile fermare Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay e AirTunes richiedono che Zeroconf sia in esecuzione."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10513,6 +10569,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Abilita supporto per joystick e gamepad"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Disabilita joystick quando questo dispositivo è presente"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Posizione"
@@ -10572,6 +10632,10 @@ msgstr "Spegni la TV all'uscita da XBMC"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Imposta il dispositivo in stanby all'attivazione dello screensaver"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Sveglia dispositivi alla disattivazione dello screensaver"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10685,9 +10749,53 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Cartella oggetti"
 
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr "Utilizza una gamma di colori limitata (16-235)"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Cambia l'aspetto dell'Interfaccia Utente"
+
 msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Selezione la skin per l'Interfaccia Utente. Questa definirà l'aspetto di XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Cambia specifiche impostazioni della skin. Le opzioni disponibili dipendono dalla skin usata."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Cambia il tema associato con la skin scelta."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Cambia i colori della skin scelta."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Seleziona i font per l'interfaccia utente. I set di font sono configurati dalla tua skin."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Ridimensiona la visuale dalla GUI."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Seleziona la finestra che XBMC deve visualizzare all'avvio."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Seleziona o disabilita la combinazione di suoni usata nell'interfaccia utente."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Disattiva per rimuovere lo scorrimento del ticker RSS."
 
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
@@ -10697,17 +10805,89 @@ msgctxt "#36113"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Scegli la lingua dell'Interfaccia Utente."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Seleziona i formati per la temperatura, l'orario e la data. Le opzioni disponibili dipendono dalla lingua selezionata."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Seleziona il set di caratteri da usare per il testo della GUI."
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Seleziona paese."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Seleziona il fuso orario."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Seleziona la traccia audio predefinita nel caso siano disponibili diverse tracce."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Seleziona i sottotitoli predefiniti nel caso diverse lingue siano disponibili."
 
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Visualizza l'elemento (..) nelle liste per navigare alla cartella superiore."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Mostra l'estensione del file per i file multimediali. Per esempio, 'You Enjoy Myself.mp3' verrebbe mostrato semplicemente come 'You Enjoy Myself'."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Ignora alcuni simboli durante le operazioni di ordinamento. Per esempio, 'The Simpsons' verrebbe considerato semplicemente come 'Simpsons'. Per configurare i simboli, guarda http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Permetti di cancellare e rinominare i file tramite l'interfaccia utente, attraverso il menu contestuale (premi C sulla tastiera, per esempio, per far apparire questo menu)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Mostra il pulsante \"aggiungi fonte\" dalle sezioni root dell'interfaccia utente."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Mostra file e cartelle nascoste."
+
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Stabilisci il tempo di inattività oltre il quale mostrare il salvaschermo."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialog box is active."
+msgstr "Seleziona lo screensaver. XBMC forzerà lo screensaver \"Dim\" quando la riproduzione video a schermo intero è in pausa o è aperta una finestra di dialogo."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Cambia impostazioni del salvaschermo specifiche. Le opzioni disponibili dipendono dal salvaschermo utilizzato."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Mostra anteprima del salvaschermo selezionato."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualization instead of displaying the screensaver."
+msgstr "Mentre la musica è in esecuzione, XBMC avvierà la visualizzazione selezionata invece dello screensaver."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Offusca il display quando la riproduzione è in pausa. Non valido per la modalità screensaver \"Dim\"."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10733,13 +10913,61 @@ msgctxt "#36140"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Visualizza informazioni trama per film non visti nella Libreria Video."
+
 msgctxt "#36142"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Ottieni le miniature degli attori quando scansioni un file multimediale."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Rimuovi il nodo dalla Serie TV, scambia tra \"Se solo una stagione\" (default), \"Sempre\" e \"Mai\"."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Raggruppa i film in \"Set di film\" mentre sfogli la libreria."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Controlla la disponibilità di nuovi file multimediali all'avvio di XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Nascondi la barra di progresso della scansione libreria durante le scansioni."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Rimuovi dalla tua libreria gli elementi che non possono essere trovati (qualora siano stati rinominati, cancellati o siano su un supporto di memorizzazione removibile che non è presente al momento)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Esporta il database della Libreria Video su file XML. Questo potrebbe sovrascrivere i tuoi file XML attuali."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importa un file XML nel database della Libreria Video."
+
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Abilita la riproduzione automatica del file successivo nella lista dell'elemento selezionato."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Configura il metodo usato per elaborare e visualizzare i video."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Abilita la decodifica hardware dei file video."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10773,6 +11001,22 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Seleziona quando devono avvenire gli aggiustamenti alla frequenza di aggiornamento."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Metti in pausa per pochi secondi durante un cambiamento della frequenza di aggiornamento. Attiva questa opzione per impostare automaticamente la frequenza di aggiornamento migliore per il video in riproduzione. Ciò permette una riproduzione video omogenea, poiché il materiale video può essere registrato in diversi frame rate che devono essere adeguatamente abbinati alla frequenza di aggiornamento dello schermo per essere riprodotti fedelmente. "
+
+msgctxt "#36166"
+msgid "Synchronize the video to the refresh rate of the monitor."
+msgstr "Sincronizza il video alla frequenza di aggiornamento dello schermo."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "L'audio deve essere sincronizzato: ciò può essere fatto attraverso il ricampionamento, il salto/duplicazione dei pacchetti o la correzione dell'orologio se risulta troppo fuori sincrono."
+
 msgctxt "#36168"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -10781,9 +11025,17 @@ msgctxt "#36169"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Permetti al player video di ignorare il rapporto aspetto di un certo ammontare, in modo da riempire una più larga parte dello schermo con il video."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Scala televideo con rapporto 4:3"
 
 msgctxt "#36176"
 msgid "No info available yet."
@@ -10833,13 +11085,25 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Posizione dei sottotitoli sullo schermo."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Avvio automatico del DVD  quando viene inserito nel lettore."
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Scraper predefinito per aggiungere video musicali alla tua raccolta."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -10905,6 +11169,10 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Quando eseguire il comando wakeup giornaliero"
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -10925,9 +11193,33 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Selezionare la sorgente di default per le informazioni sugli album."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Esporta il database della raccolta musicale in files XML. Opzionalmente sovrascriverà gli attuali files XML."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Importa un file XML nel database della Raccolta Musicale."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Di default è 89dB. Cambiare con cautela."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Di default è 89dB. Cambiare con cautela."
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "Seleziona la visualizzazione che verrà mostrata durante l'ascolto della musica."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -10949,9 +11241,17 @@ msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Rimuovi il disco automaticamente  appena il rip è stato completato."
+
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Durante l'esecuzione di un file musicale, XBMC cercherà il file .cdg corrispondente e ne mostrerà la grafica."
 
 msgctxt "#36294"
 msgid "No info available yet."
@@ -10993,6 +11293,10 @@ msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Visualizza uno slideshow delle immagini in ordine casuale."
+
 msgctxt "#36315"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -11013,6 +11317,10 @@ msgctxt "#36322"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36323"
+msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
+msgstr "Abilita UPnP server. Questo permette di effettuare uno stream media su qualsiasi UPnP client"
+
 msgctxt "#36325"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -11020,6 +11328,18 @@ msgstr "Nessuna informazione disponibile."
 msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Definire la porta per il webserver."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Definire l'username per il webserver."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Definire la password per il webserver."
 
 msgctxt "#36335"
 msgid "No info available yet."

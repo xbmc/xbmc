@@ -10979,7 +10979,7 @@ msgstr "Ρύθμιση της μεθόδου επεξεργασίας και α�
 
 msgctxt "#36154"
 msgid "No info available yet."
-msgstr "-"
+msgstr "Μη διαθέσιμες πληροφορίες."
 
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
@@ -11687,7 +11687,7 @@ msgstr "Επιλογή μεταξύ των διεπαφών ιστού που ε
 
 msgctxt "#36333"
 msgid "No info available yet."
-msgstr "-"
+msgstr "Μη διαθέσιμες πληροφορίες."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
@@ -12024,6 +12024,10 @@ msgstr "Μη διαθέσιμες πληροφορίες."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Ορισμός τοποθεσιών για λήψη πληροφοριών καιρού."
 
 msgctxt "#36420"
 msgid "No info available yet."

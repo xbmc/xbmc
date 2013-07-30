@@ -10405,6 +10405,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Конфигурация динамиков"
@@ -11011,7 +11019,7 @@ msgstr "Подстраивать частоту дисплея в зависим
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
-msgstr "Кратковременная пауза при смене частоты обновления. Активируйте, для автоустановки частоты обновления, наиболее согласованой с воспроизводимым видео. Это потенциально позволяет идеально гладкое воспроизводение видео, т.к. видеоматериал может быть записан с разной частотой кадров, которую для гладкости показа нужно согласовать с частотой обновления дисплея"
+msgstr "Кратковременная пауза при смене частоты обновления. Включите для автоматической установки частоты обновления, наиболее согласованной с воспроизводимым видео. Может обеспечить идеальную плавность при воспроизведении видео, потому как видеоматериал может быть записан с разной частотой кадров, которую для плавности восприятия нужно согласовать с частотой обновления дисплея."
 
 msgctxt "#36166"
 msgid "Synchronize the video to the refresh rate of the monitor."
@@ -11325,6 +11333,10 @@ msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
 msgstr "Команда для выполнения. По-умолчанию '/usr/bin/setwakeup.sh'."
 
+msgctxt "#36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr "Вычитаемое время от начала следующей запланированной записи. По умолчанию 15 минут."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Выполнять команду включения каждый день в заданное время"
@@ -11337,9 +11349,17 @@ msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Запрашивает пин-код для доступа к заблокированным от детей каналам. Каналы могут быть помечены как заблокированные в редакторе каналов на основной вкладке. Заблокированные от детей каналы можно просматривать или записывать только после ввода пин-кода, а данные EPG для этих каналов скрыты."
+
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Введите новый пин-код для разблокировки заблокированных родительским контролем каналов"
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Если в течении этого интервала времени не было попыток доступа к заблокированным от детей каналам, при очередной попытке пин-код будет запрошен вновь. По умолчанию - 300 секунд."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11357,9 +11377,85 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Показывать ли в библиотеке при просмотре исполнителей тех из них, которые представлены только на сборниках."
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Автоматически загружать альбом и информацию об исполнителе через скребки во время сканирования."
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Выберите заданный по умолчанию источник информацию об альбомах"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "Выберите заданный по умолчанию источник информации об исполнителях. См. Менеджер надстроек для вариантов."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Проверить новые и удаленные media-файлы при запуске XBMC."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Экспорт музыкальной библиотеку в XML файлы. Может опционально перезаписать Ваши текущие XML файлы."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Импорт музыкальной библиотеки из XML файла."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC автоматически проигрывает следующий файл текущей директории. К примеру, в Просмотр Файлов: После того, как дорожка будет проиграна, XBMC автоматически продолжит проигрывать следующую дорожку."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "Добавленные в плейлист композиции не воспроизводятся сразу же, а попадают в очередь воспроизведения."
+
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr "XBMC будет читать Replay Gain информацию закодированную в Ваших audio-файлах для таких программ как MP3Gain и нормализовать однородность уровня звука соответственно."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "По умолчанию - 89 дБ, согласно стандарту. Будьте осторожны при изменении."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "По умолчанию - 89 дБ, согласно стандарту. Будьте осторожны при изменении."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Уменьшить громкость файла если он отсечен."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Плавный переход между аудио дорожками. Можно выбрать продолжительность перехода 1-15 секунд."
+
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Разрешить плавный переход, даже когда обе композиции с одного альбома."
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "Выбрать визуализацию, которая будет использоваться при прослушивании музыки."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Читать данные тэгов из файлов с композициями. Может замедлить время чтения в случае объёмных директорий, особенно при чтении из сети."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr "Настройка отображения имен песен в интерфейсе пользователя. Для функционирования необходимы ID3-теги."
+
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr "Используется в качестве информации на правой части интерфейса пользователя."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11377,13 +11473,45 @@ msgctxt "#36280"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "XBMC будет искать тумбы на удаленных ресурсах и оптических дисках. Процесс просмотра сетевых папок занимает некоторое время."
+
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Автоматический запуск CD-диска при его вставке."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Читать информацию о audio-диске из интернет-базы данных."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Выбрать место расположение считанных дорожек для сохранения на жестком диске."
+
 msgctxt "#36286"
 msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
 msgstr "Теги: [B]%N[/B]: НомерТрека, [B]%S[/B]: НомерДиска, [B]%A[/B]: Исполнитель, [B]%T[/B]: Название, [B]%B[/B]: Альбом, [B]%G[/B]: Жанр, [B]%Y[/B]: Год, [B]%F[/B]: ИмяФайла, [B]%D[/B]: Длительность, [B]%J[/B]: Дата, [B]%R[/B]: Рейтинг, [B]%I[/B]: РазмерФайла."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Выбрать кодировщик audio для считывания дорожек."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Выбрать качество звучания считываемых файлов."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Выбор битрейта компрессии audio-кодировщика."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "Определить степень сжатия для FLAC, по умолчанию 5"
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -11392,6 +11520,10 @@ msgstr "Автоизвлечение диска после копировани�
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Во время проигрывания любых музыкальных файлов, XBMC будет сопоставлять .cdg файл и отображать графики."
 
 msgctxt "#36294"
 msgid "No info available yet."
@@ -11441,6 +11573,18 @@ msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Показывать данные EXIF (дата, время, модель фотоаппарата и т.п.), если они существуют."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Автоматически создавать миниатюры при открытии папки с изображениями."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Автоматически поворачивать изображения, если необходимые данные присутствуют в EXIF."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11448,6 +11592,10 @@ msgstr "Информация пока недоступна."
 msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Укажите промежуток времени, отведённый для показа изображения в режиме слайдшоу."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
@@ -11481,6 +11629,22 @@ msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Разрешить удалённым пользователям управлять XBMC с помощью встроенного веб-сервера."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Установите номер порта веб-сервера."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Установите имя пользователя веб-сервера."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Установите пароль веб-сервера."
+
 msgctxt "#36335"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11492,6 +11656,10 @@ msgstr "Информация пока недоступна."
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Разрешить программам по сети управлять XBMC."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -11549,6 +11717,22 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "Полезно для систем с несколькими экранами, на которых XBMC может работать без автоматического сворачивания прочих приложений. Использует чуть больше ресурсов системы, возможно менее плавное воспроизведение."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "На системах с несколькими экранами затемнять все экраны, кроме экрана с XBMC."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Устранить вертикальные разрывы кадров."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Образцы для проверки аппаратной калибровки дисплея."
+
 msgctxt "#36359"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11565,6 +11749,30 @@ msgctxt "#36362"
 msgid "Select your physical speaker layout."
 msgstr "Выберите физическое расположение динамиков"
 
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате AC3."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате DTS."
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате AAC."
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате LPCM."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате TrueHD."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Отметьте эту опцию, если ваш ресивер поддерживает аудио потоки в формате DTS-HD."
+
 msgctxt "#36374"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11573,9 +11781,41 @@ msgctxt "#36375"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Управлять XBMC с помощью джойстика."
+
 msgctxt "#36379"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Если вы соединены с интернетом через прокси, укажите его настройки здесь."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Укажите тип используемого прокси."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Укажите адрес прокси-сервера."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Укажите номер порта прокси-сервера."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Укажите имя пользователя прокси-сервера."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Укажите пароль для доступа к прокси-серверу."
+
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Выключать дисплей при простое. Полезно в том случае, если нет желания усыплять/выключать весь компьютер, а только телевизор, который выключается при отсутствии сигнала."
 
 msgctxt "#36388"
 msgid "No info available yet."
@@ -11584,6 +11824,26 @@ msgstr "Информация пока недоступна."
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Папка для сохранения скриншотов, снятых в XBMC."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgstr "Открыть окно Общей блокировки, где можно указать различные настройки Общей блокировки."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Задать пин-код для общей блокировки."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "Заданный пин-код для общей блокировки необходимо вводить при каждом запуске XBMC."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Укажите предельное количество попыток ввода, после которых XBMC закроется."
 
 msgctxt "#36399"
 msgid "No info available yet."

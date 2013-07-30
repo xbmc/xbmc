@@ -10405,6 +10405,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Podešavanje zvučnika"
@@ -10968,6 +10976,10 @@ msgstr "Omogući automatsku reprodukciju slijedeće datoteke u popisu odabranih 
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Podesite način korištenja obrade i prikaza videa."
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Informacije još nisu dostupne."
 
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
@@ -11673,6 +11685,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Odaberite web sučelje instalirano u Upravitelju dodatka."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Informacije još nisu dostupne."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Dopusti programima na ovom računalu da upravljaju XBMC-om putem web sučelja ili JSON-RPC protokolom sučelja."
@@ -12008,6 +12024,10 @@ msgstr "Informacije još nisu dostupne."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Informacije još nisu dostupne."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Definiranjem mjesta koristite za pronalaženje informacija o vremenu."
 
 msgctxt "#36420"
 msgid "No info available yet."

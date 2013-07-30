@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "檔案管理員"
+msgstr "檔案總管"
 
 msgctxt "#8"
 msgid "Weather"
@@ -131,31 +131,31 @@ msgstr "十二月"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "周一"
+msgstr "週一"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "周二"
+msgstr "週二"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "周三"
+msgstr "週三"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "周四"
+msgstr "週四"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "周五"
+msgstr "週五"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "周六"
+msgstr "週六"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "周日"
+msgstr "週日"
 
 msgctxt "#51"
 msgid "Jan"
@@ -679,7 +679,7 @@ msgstr "正在查詢 %s 的資訊"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "載入影片詳細資料"
+msgstr "載入電影詳細資料"
 
 msgctxt "#199"
 msgid "Web interface"
@@ -687,7 +687,7 @@ msgstr "Web 介面"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "標題"
+msgstr "標語"
 
 msgctxt "#203"
 msgid "Plot outline"
@@ -711,11 +711,11 @@ msgstr "播放"
 
 msgctxt "#209"
 msgid "Next"
-msgstr "向後"
+msgstr "下一項目"
 
 msgctxt "#210"
 msgid "Previous"
-msgstr "向前"
+msgstr "上一項目"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
@@ -1211,7 +1211,7 @@ msgstr "播放光碟"
 
 msgctxt "#342"
 msgid "Movies"
-msgstr "影片"
+msgstr "電影"
 
 msgctxt "#343"
 msgid "Adjust framerate"
@@ -2385,6 +2385,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "壓縮等級"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "詳細記錄..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "清除音樂資料庫"
@@ -2400,6 +2404,10 @@ msgstr "目前路徑曾經搜尋過"
 msgctxt "#705"
 msgid "Network"
 msgstr "網路設定"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "伺服器"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2428,6 +2436,18 @@ msgstr "手動(靜態分配)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP 位址"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "子網路遮罩"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "預設閘道器"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS 伺服器"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2472,6 +2492,14 @@ msgstr "無密碼"
 msgctxt "#735"
 msgid "Character set"
 msgstr "字元集"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "風格"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "色彩"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2605,6 +2633,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "無線網路帳號(ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "無線密碼"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "無線安全"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "儲存並套用網路界面設定"
@@ -2705,6 +2741,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "合法的連接埠範圍是 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "新增圖片..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "新增音樂..."
@@ -2712,6 +2752,10 @@ msgstr "新增音樂..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "新增影片..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "預覽"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2913,6 +2957,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "輸入網路位址"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "代理伺服器類型"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 與遠端 DNS 解析"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB 客戶端"
@@ -3049,9 +3117,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "裝置名稱"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "使用密碼保護"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3409,9 +3485,25 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "設定 - 使用者設定檔"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "重置"
+
 msgctxt "#10040"
 msgid "Addon browser"
 msgstr "附加元件瀏覽器"
+
+msgctxt "#10041"
+msgid "Reset settings"
+msgstr "重置設定"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "說明"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "無說明內容"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3421,17 +3513,57 @@ msgctxt "#10101"
 msgid "Progress dialog"
 msgstr "進度對話框"
 
+msgctxt "#10126"
+msgid "File browser"
+msgstr "檔案瀏覽器"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "網路設定"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "媒體來源"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "設定檔選項"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "鎖定系統設定"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "內容設定"
 
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "我的最愛"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "歌曲/資訊"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "智慧型播放清單編輯器"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "智慧型播放清單規則編輯器"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "圖片/資訊"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "附加元件設定"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "附加元件/資訊"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -4253,6 +4385,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "指定風扇轉速"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "字型"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "啟用 轉換雙向字串"
@@ -4929,6 +5065,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "視訊緩衝區 - 光碟機"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "區域網路"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "網際網路"
@@ -4937,6 +5077,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "音效緩衝區 - 光碟機"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "區域網路"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "網際網路"
@@ -4944,6 +5088,10 @@ msgstr "網際網路"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "光碟緩衝區 - 光碟機"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "區域網路"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5093,6 +5241,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "從我的最愛中移除"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "色彩"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "時區國家"
@@ -5229,6 +5381,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "佈景主題預設"
 
+msgctxt "#15111"
+msgid "Theme"
+msgstr "主題"
+
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "預設主題"
@@ -5307,7 +5463,7 @@ msgstr "輸入新標題"
 
 msgctxt "#16009"
 msgid "Enter the movie name"
-msgstr "輸入影片名稱"
+msgstr "輸入電影名稱"
 
 msgctxt "#16010"
 msgid "Enter the profile name"
@@ -7955,7 +8111,7 @@ msgstr "演員"
 
 msgctxt "#20338"
 msgid "Movie"
-msgstr "影片"
+msgstr "電影"
 
 msgctxt "#20339"
 msgid "Director"
@@ -7971,7 +8127,7 @@ msgstr "移除此路徑內所有項目？"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "影片"
+msgstr "電影"
 
 msgctxt "#20343"
 msgid "TV shows"
@@ -8147,7 +8303,7 @@ msgstr "移除電視劇連結"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "最近加入的電影"
+msgstr "最近新增的電影"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
@@ -8216,6 +8372,10 @@ msgstr "自動擷取演員的縮圖"
 msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "設定演員縮圖"
+
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "移除書籤"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
@@ -8444,6 +8604,18 @@ msgstr "名稱為 '%s' 的標籤已經存在。"
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "選擇 %s"
+
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "管理電影集"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "選擇電影集"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "新增電影至新電影集"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8857,6 +9029,10 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "已觀看的集數"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "群組分類依據"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "字幕位置"
@@ -9024,6 +9200,10 @@ msgstr "GPS 高度"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "方位"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "影像類型"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9193,6 +9373,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "總是在幕後更新資料庫"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS 尾碼"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3f秒"
@@ -9288,6 +9472,14 @@ msgstr "字型"
 msgctxt "#22031"
 msgid "Size"
 msgstr "大小"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "色彩"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "字元編碼"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10037,6 +10229,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "啟用自訂腳本按鈕"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "自動登入"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "起始失敗"
@@ -10149,9 +10345,17 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "找不到前一個播放項目"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "無法啟動 Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "已經安裝蘋果的 Bonjour 服務了嗎？請查閱記錄以取得更多資訊。"
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "無法停止 Zeroconf"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10404,3 +10608,539 @@ msgstr "未支援的 libECE 介面版本。版本 %x 小於 XBMC 所支援的版
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* 項目資料夾"
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "編輯 RSS 來源。"
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "選擇國家位置。"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "選擇目前所在時區。"
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "顯示隱藏的檔案和目錄。"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "預覽選擇的螢幕保護程式。"
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36168"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36169"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36182"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36183"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "上次使用的設定"

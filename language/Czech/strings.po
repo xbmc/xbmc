@@ -4049,6 +4049,10 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Joystick odpojen"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Probuzení počítače na dálku (%s)"
+
 msgctxt "#13028"
 msgid "Waiting for network to connect..."
 msgstr "Čeká se na spojení se sítí..."

@@ -31,7 +31,7 @@ msgstr "Videos"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "Guía-TV"
+msgstr "Guia-TV"
 
 msgctxt "#5"
 msgid "Settings"
@@ -51,7 +51,7 @@ msgstr "Clima"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc media center"
+msgstr "centro multimedia xbmc"
 
 msgctxt "#11"
 msgid "Monday"
@@ -63,7 +63,7 @@ msgstr "Martes"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "Miércoles"
+msgstr "Miercoles"
 
 msgctxt "#14"
 msgid "Thursday"
@@ -75,7 +75,7 @@ msgstr "Viernes"
 
 msgctxt "#16"
 msgid "Saturday"
-msgstr "Sábado"
+msgstr "Sabado"
 
 msgctxt "#17"
 msgid "Sunday"
@@ -139,7 +139,7 @@ msgstr "Mar"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Mié"
+msgstr "Mie"
 
 msgctxt "#44"
 msgid "Thu"
@@ -299,7 +299,7 @@ msgstr "Ver: Auto"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Ver: Auto Gr."
+msgstr "Ver: Auto agrandar"
 
 msgctxt "#100"
 msgid "View: Icons"
@@ -315,15 +315,15 @@ msgstr "Analizar"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Ord x Nombre"
+msgstr "Ordenar por: Nombre"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Ord x Fecha"
+msgstr "Ordenar por: Fecha"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Ord x Tamaño"
+msgstr "Ordenar por: Tamaño"
 
 msgctxt "#106"
 msgid "No"
@@ -335,7 +335,7 @@ msgstr "Sí"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "Presentación"
+msgstr "Presentacion"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -355,11 +355,11 @@ msgstr "Pausado"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Falló Actualiz."
+msgstr "Fallo la Actualizacion"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Falló Instalac."
+msgstr "Fallo la instalacion"
 
 msgctxt "#115"
 msgid "Copy"
@@ -383,27 +383,27 @@ msgstr "Nueva carpeta"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Confirmar copiar"
+msgstr "Confirmar copiar archivo"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Confirmar mover"
+msgstr "Confirmar mover archivo"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Confirmar eliminar"
+msgstr "Confirmar eliminar archivo?"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "¿Copiar estos archivos?"
+msgstr "Copiar estos archivos?"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "¿Mover estos archivos?"
+msgstr "Mover estos archivos?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "¿Eliminar estos archivos? - ¡No puede deshacerse!"
+msgstr "Eliminar estos archivos? - No puede deshacerse!"
 
 msgctxt "#126"
 msgid "Status"
@@ -419,7 +419,7 @@ msgstr "General"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Presentación"
+msgstr "Presentacion"
 
 msgctxt "#130"
 msgid "System info"
@@ -431,11 +431,11 @@ msgstr "Pantalla"
 
 msgctxt "#132"
 msgid "Albums"
-msgstr "Álbumes"
+msgstr "Albumes"
 
 msgctxt "#133"
 msgid "Artists"
-msgstr "Intérpretes"
+msgstr "Interpretes"
 
 msgctxt "#134"
 msgid "Songs"
@@ -443,11 +443,11 @@ msgstr "Canciones"
 
 msgctxt "#135"
 msgid "Genres"
-msgstr "Géneros"
+msgstr "Generos"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Listas de reproducción"
+msgstr "Listas de reproduccion"
 
 msgctxt "#137"
 msgid "Search"
@@ -455,7 +455,7 @@ msgstr "Buscar"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Información del Sistema"
+msgstr "Informacion del Sistema"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -491,7 +491,7 @@ msgstr "Tipo:"
 
 msgctxt "#147"
 msgid "Static"
-msgstr "IP Fija"
+msgstr "Estatica"
 
 msgctxt "#148"
 msgid "DHCP"
@@ -499,15 +499,15 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC"
+msgstr "Direccion MAC"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP"
+msgstr "Direccion IP"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "Conexión: "
+msgstr "Enlace: "
 
 msgctxt "#152"
 msgid "Half duplex"
@@ -527,7 +527,7 @@ msgstr "Unidad"
 
 msgctxt "#156"
 msgid "Free"
-msgstr "Libres"
+msgstr "Libre"
 
 msgctxt "#157"
 msgid "Video"
@@ -539,11 +539,11 @@ msgstr "Memoria libre"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Sin conexión"
+msgstr "No hay enlace"
 
 msgctxt "#160"
 msgid "Free"
-msgstr "Libres"
+msgstr "Libre"
 
 msgctxt "#161"
 msgid "Unavailable"
@@ -567,7 +567,7 @@ msgstr "Disco Presente"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "Skin"
+msgstr "Mascara"
 
 msgctxt "#167"
 msgid "Cancel file operations"
@@ -823,7 +823,7 @@ msgstr "Borrar lista de reproducción al finalizar"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Display Mode"
+msgstr "Modo de Pantalla"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -2631,7 +2631,7 @@ msgstr "Buscando"
 
 msgctxt "#774"
 msgid "Slideshow folder"
-msgstr "Carpeta de diapositivas"
+msgstr "Carpeta de presentacion de diapositivas"
 
 msgctxt "#775"
 msgid "Network interface"
@@ -3371,7 +3371,7 @@ msgstr "Parcial"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
-msgstr "Apagar pantalla cuando esté desocupado"
+msgstr "Poner pantalla en reposo cuando este inactiva"
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -3947,7 +3947,7 @@ msgstr "Esto eliminará cualquier valor previamente salvado"
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
-msgstr "Mostrar cada imagen durante"
+msgstr "Cantidad de tiempo para mostrar cada imagen"
 
 msgctxt "#12379"
 msgid "Use pan and zoom effects"
@@ -4227,7 +4227,7 @@ msgstr "Conversión de color VDPAU con calidad de estudio"
 
 msgctxt "#13130"
 msgid "Blank other displays"
-msgstr "Mostrar refresco"
+msgstr "Blanquear otras pantallas"
 
 msgctxt "#13131"
 msgid "Disabled"
@@ -4235,7 +4235,7 @@ msgstr "Deshabilitado"
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr "Pantallas de refresco"
+msgstr "Blanquear pantallas"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -4519,11 +4519,11 @@ msgstr "Miniaturas recursivas"
 
 msgctxt "#13317"
 msgid "View slideshow"
-msgstr "Ver Presentación"
+msgstr "Ver presentacion de diapositivas"
 
 msgctxt "#13318"
 msgid "Recursive slideshow"
-msgstr "Presentación recursiva"
+msgstr "Presentacion de diapositivas recursivo"
 
 msgctxt "#13319"
 msgid "Randomize"
@@ -4875,7 +4875,7 @@ msgstr "VDPAU"
 
 msgctxt "#13422"
 msgid "Start slideshow here"
-msgstr "Comenzar presentación aquí"
+msgstr "Comenzar presentacion de diapositivas aqui"
 
 msgctxt "#13423"
 msgid "Remember for this path"
@@ -5083,11 +5083,11 @@ msgstr "Carpeta de Juegos"
 
 msgctxt "#14010"
 msgid "Auto switch to thumbs based on"
-msgstr "Cambiar autom. a miniaturas según"
+msgstr "Auto cambiar a miniaturas basadas en "
 
 msgctxt "#14011"
 msgid "Enable auto switching to thumbs view"
-msgstr "Activar cambio auto. a miniaturas"
+msgstr "Habilitar auto cambio a vista de miniaturas"
 
 msgctxt "#14012"
 msgid "- Use large icons"
@@ -5407,11 +5407,11 @@ msgstr "Play"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr "Expulsar disco al terminar la extracción del CD"
+msgstr "Expulsar disco al terminar el ripeo del CD"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr "Detener la extraccion de pistas del CD"
+msgstr "Detener el ripeo del CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -8547,7 +8547,7 @@ msgstr "Falso"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Presentación de fanart"
+msgstr "Presentación de diapositivas fanart"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -10405,6 +10405,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Configuración de parlantes"
@@ -11429,6 +11437,26 @@ msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Suavemente desaparecer de una pista de audio a la siguiente. Usted puede ajustar la cantidad de superposicion de 1-15 segundos."
 
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Permitir fundido entre ambas pistas cuando son del mismo album."
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "Selecciona la visualizacion que permite se mostrada mientras se escucha musica."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Leer la informacion de etiquetas de los archivos de musica. Para directorios grandes esto puede relentizar el tiempo de lectura, especialmente sobre una red."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr "Controla la forma en que los nombres de las canciones se muestran en la Interfaz de Usuario. Para funcionar correctamente, las etiquetas ID3 necesitan ser habilitadas."
+
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr "Utilizado para la información en el lado derecho de la Interfaz de Usuario. Eso es comunmente usado para mostrar la longitud de las pistas."
+
 msgctxt "#36277"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11445,17 +11473,77 @@ msgctxt "#36280"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "XBMC buscara miniaturas en recursos compartidos remotos y medios opticos. Esto a menudo puede ralentizar la lista de carpetas de red."
+
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Autoejecutar CDs cuando sean insertados en la unidad."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Leer la informacion perteneciente al CD de audio desde una base de datos de internet."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Selecciona la ubicacion de su disco duro donde las pistas ripeadas seran guardadas."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Etiquetas: [B]%N[/B]: Numero de Pista, [B]%S[/B]: Numero de Disco, [B]%A[/B]: Artista, [B]%T[/B]: Titulo, [B]%B[/B]: Album, [B]%G[/B]: Genero, [B]%Y[/B]: Año, [B]%F[/B]: Nombre de Archivo, [B]%D[/B]: Duracion, [B]%J[/B]: Fecha, [B]%R[/B]: Valoracion, [B]%I[/B]: Tamaño de Archivo."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Seleccione que codificador de audio usar para el ripeo."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Seleccione cual calidad desea para ripear sus archivos."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Seleccione la tasa de bits a usar en el codificador de audio especifico para la compresion de audio."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "Para FLAC definir el nivel de compresion , predeterminado 5"
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Auto expulsar disco al completarse el ripeo."
 
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Cuando se reproduce cualquier archivo de musica, XBMC buscara un archivo .cdg que coincida y mostrara sus graficos. "
+
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Seleccione el tipo de  letra utilizado durante el karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Seleccione el tamaño del tipo de letra utilizado durante el karaoke."
+
+msgctxt "#36297"
+msgid "Select the font color used during karoake."
+msgstr "Seleccione el color del tipo de letra utilizado durante el karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Selecciona el juego de caracteres utilizado durante el karaoke."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11485,6 +11573,22 @@ msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Si informacion EXIF existe (fecha, hora, camara usada, etc), eso puede ser mostrado."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Automaticamente generar imegenes miniatura al entrar a una carpeta de imagenes."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Las imagenes pueden rotar automaticamente acordemente ala informacion en la etiqueta EXIF, si se encuentra."
+
+msgctxt "#36309"
+msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
+msgstr "Mostrar medios de video en las listas de archivos de imagenes, Ya que la mayoria de la camaras digitales de hoy en dia tienen la capacidad de grabar video."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11492,6 +11596,18 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Seleccione la cantidad de tiempo que cada imagen se muestra en una presentacion de diapositivas."
+
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "Las imagenes de una presentacion de diapositivas pueden verse panoramicamente y hacer zoom mientras se muestran."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Ver presentacion de diapositivas de imagenes en un orden al azar. "
 
 msgctxt "#36315"
 msgid "No info available yet."
@@ -11501,6 +11617,14 @@ msgctxt "#36316"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr "Selecciona arriba de tres ubicaciones para que el clima sea mostrado."
+
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr "Especifica la fuente de informacion predeterminada del clima. Ver el Administrador de Complementos para mas opciones."
+
 msgctxt "#36319"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11509,17 +11633,57 @@ msgctxt "#36320"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr "Mostrar el nombre de la instalacion de XBMC cuando se usen varios servicios de red."
+
 msgctxt "#36322"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
+msgstr "Habilitar el servidor UPnP. Esto puede permitirle transmitir multimedia a cualquier cliente UPnP."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Cuando una actualizacion manual o automatica de la biblioteca ocurre, noficara a los clientes UPnP."
 
 msgctxt "#36325"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Habilitar el cliente UPnP. Esto puede permitir transmitirle multimedia desde cualquier servidor UPnP con un punto de control y control de reproduccion de ese servidor."
+
 msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Habilitar usuarios remotos para controlar XBMC atravez de su propio servidor web."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Define el puerto del servidor web."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Define el nombre de usuario del servidor web."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Define la contraseña del servidor web."
+
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "Seleccione entre las interfaces web instaladas a traves del Administrador de Complementos."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Permitir a los programas en esta computadora controlar XBMC a travez de la Interfaz Web o el protocolo de interfaz JSON-RPC ."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -11532,6 +11696,10 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Permitir a los programas en la red controlar XBMC."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -11589,6 +11757,26 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimizing other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "El principal beneficio para la configuracion multi-pantalla, XBMC puede ser usado sin minimizar automaticamente las otras aplicaciones. Utiliza un poco mas de recursos y la reproduccion puede ser ligeramente menos suave."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "En una configuracion multi-pantalla, las pantallas donde XBMC no se muestra estan oscurecidas."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Eliminar el rasgado vertical."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Calibrar la interfaz de usuario mediante el ajuste de overscan. Utilice esta herramienta si la imagen que se muestra es demasiado grande o pequeño para su pantalla."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Patrones de prueba para la calibración de hardware de la pantalla."
+
 msgctxt "#36359"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11596,6 +11784,58 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Tipo de conexion para el equipo de audio."
+
+msgctxt "#36362"
+msgid "Select your physical speaker layout."
+msgstr "Selecciona su plantilla fisica de bocinas."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Las emisiones Boost AC3  han sido mezcladas a 2 canales."
+
+msgctxt "#36364"
+msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
+msgstr "Mezclar fuentes de 2 canales estereo si el numero de canales de audio coincide con el numero de bocinas."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones AC3."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones DTS."
+
+msgctxt "#36367"
+msgid "Select this option if your receiver is capable of decoding AAC streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones AC3."
+
+msgctxt "#36368"
+msgid "Select this option if your receiver is capable of decoding LPCM streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones LPCM."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones TrueHD."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Selecciona esta opcion si su receptor es capaz de decodificar emisiones DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
+msgstr "Seleccione el dispositivo que usara para reproducir el audio decodificado por XBMC como mp3's y FLAC."
+
+msgctxt "#36372"
+msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
+msgstr "Seleccione el dispositivo que usara para reproducir formatos codificados, estos son cualquiera de los formatos marcados arriba en las opciones de 'receptor compatible'."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Configure como se manejan los sonidos de la interfaz, como la navegacion por menus y las notificaciones importantes."
 
 msgctxt "#36374"
 msgid "No info available yet."
@@ -11605,17 +11845,97 @@ msgctxt "#36375"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "Cuando es activado, las flechas de su teclado moveran la seleccion en el teclado virtual. Cuando se desactiva, se movera el cursor de su texto."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr "Use un raton o dispositivo de pantalla tactil para controlar XBMC. Nota: deshabilitarlo puede causar que usted pierda el control sobre XBMC cuando no esta presente un teclado o control remoto."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Usar una palanca de mando para controlar XBMC."
+
 msgctxt "#36379"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Si su conexion a internet utiliza un proxy, configurelo aqui."
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Configure que tipo de proxy utilizar. "
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Configure la direccion del servidor proxy."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Configure el puerto del servidor proxy."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Configure el nombre de usuario del servidor proxy."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Configure la contraseña del servidor proxy."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Si usted tiene un ancho de banda limitado disponible, XBMC tratara de mantener esos limites."
+
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Apagar la pantalla cuando este inactiva. Util en TVs que se apagan al no detectar señal de imagen , pero usted no quiere que se suspenda/apague toda la computadora."
 
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Define cuanto tiempo XBMC debe estar inactivo antes de apagarse."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Define que acciones debe hacer XBMC cuando ha estado inactivo por un largo periodo de tiempo."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Apague o prenda el registro de depuracion. Util para solucionar problemas."
+
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Carpeta usada para guardar las capturas de pantalla tomadas dentro de XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Especifique las bibliotecas adicionales que se incluiran en el registro de depuracion."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialog, where you can configure your Master Lock options."
+msgstr "Abrir el cuadro de dialogo del Bloqueo Maestro, donde usted puede configurar las opciones del Bloqueo Maestro."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Define el codigo PIN usado para el bloqueo maetro."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "Si habilita, el codigo del bloqueo maestro es necesario para desbloquear XBMC al inicio"
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Define el maximo numero de intentos entes de que XBMC sea cerrado."
 
 msgctxt "#36399"
 msgid "No info available yet."
@@ -11685,6 +12005,10 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36416"
+msgid "Define the Apple remote standard used."
+msgstr "Define el estandar remoto usado de Apple."
+
 msgctxt "#36417"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11696,3 +12020,35 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Visualmente Emparejado)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Comentarios del Director)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Comentarios del Director 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(CC)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Forzado)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Comentarios del Director)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Ultimo perfil usado"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Navegar Dentro"

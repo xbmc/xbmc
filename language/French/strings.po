@@ -10977,6 +10977,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ajuster la méthode utilisée pour afficher et effectuer le rendu de la vidéo."
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Pas d'information disponible pour le moment."
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "Activer le décodage matériel des fichiers."
@@ -11417,6 +11421,10 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Quand des sons sont ajoutés à une liste de lecture ils sont mis en attente au lieu d'être lus immédiatement. "
 
+msgctxt "#36267"
+msgid "XBMC will read the Replay Gain information encoded in your audio files by a program such as MP3Gain and normalize the sound levels accordingly."
+msgstr "XBMC lira l'information de 'ReplayGain' codé dans vos fichiers audios par un programme tel que MP3Gain et normalisera les niveaux de son en conséquence."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "89dB est la valeur standard conseillée par défaut. Attention lors de la modification de cette valeur."
@@ -11425,9 +11433,33 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "89dB est la valeur standard conseillée par défaut. Attention lors de la modification de cette valeur."
 
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Réduit le volume du fichier si des coupures sont susceptibles de se produire."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Fondu entre deux pistes audio. Vous pouvez régler le niveau de chevauchement de 1 à 15 secondes."
+
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Permettre le fondu quand deux pistes proviennent d'un même album."
+
+msgctxt "#36273"
+msgid "Select the visualization that will be displayed while listening to music."
+msgstr "Sélectionner la visualisation qui sera affichée pendant l'écoute de la musique."
+
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Lis les informations taguées d'une fichier son. Pour un gros dossier cela peut ralentir la vitesse de lecture, en particulier sur un réseau."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr "Contrôler la manière dont les noms de chansons sont affichés dans l'Interface Utilisateur. Afin de fonctionner correctement, les étiquettes ID3 doivent être activées."
+
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr "Utilisé pour les informations de l'interface utilisateur du côté droit. Cela est traditionnellement utilisé pour afficher la durée des pistes."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11445,6 +11477,10 @@ msgctxt "#36280"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "XBMC cherchera les minitatures sur les disques partagés et les supports optiques. Cela peut régulièrement ralentir l'affichage des dossiers réseaux."
+
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11453,6 +11489,18 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "Lire automatiquement le CD après insertion dans le lecteur."
 
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Lire les informations appartenant à un CD audio à partir d'une base de données sur internet."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Sélectionnez l'emplacement de votre disque dur où seront enregistrées les pistes copiées."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Étiquettes: [B]%N[/B]: Numéro de la piste, [B]%S[/B]: Numéro du disque, [B]%A[/B]: Artiste, [B]%T[/B]: Titre, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Année, [B]%F[/B]: Nom du fichier, [B]%D[/B]: Durée, [B]%J[/B]: Date, [B]%R[/B]: Note, [B]%I[/B]: Taille du fichier."
+
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "Sélectionner l'encodeur audio que vous voulez utiliser pour l'encodage."
@@ -11460,6 +11508,10 @@ msgstr "Sélectionner l'encodeur audio que vous voulez utiliser pour l'encodage.
 msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "Sélectionner la qualité que vous voulez pour encoder vos fichiers."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Sélectionner le taux d'échantillonnage à utiliser pour l'encodeur audio spécifié pour la compression audio."
 
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5"
@@ -11472,6 +11524,10 @@ msgstr "Éjecte automatiquement le CD à la fin de l'extraction."
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Pendant la lecture d'un fichier musique, XBMC recherchera le fichier .cdg correspondant et affichera ses images."
 
 msgctxt "#36294"
 msgid "No info available yet."
@@ -11488,6 +11544,10 @@ msgstr "Choississez la taille de police pour le karaoké."
 msgctxt "#36297"
 msgid "Select the font color used during karoake."
 msgstr "Choississez la couleur de police pour le karaoké."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Sélectionner le jeux de caractères utilisé pendant un karaoké."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11516,6 +11576,18 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Si les information EXIF existent (date, heure, appareil utilisé, etc.), elles seront affichées."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Générer automatiquement les miniatures d'image lors de l'accès à un dossier d'images."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Les images seront automatiquement retourner en fonction des informations EXIF, s'il y en a."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11565,6 +11637,10 @@ msgctxt "#36331"
 msgid "Define webserver password."
 msgstr "Définisser le mot de passe du serveur web."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Pas d'information disponible pour le moment."
+
 msgctxt "#36335"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11576,6 +11652,10 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Autoriser le contrôle de XBMC par les programmes sur le réseau."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -11641,6 +11721,10 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36361"
+msgid "Type of connection to the audio equipment."
+msgstr "Type de connection à votre matériel audio."
+
 msgctxt "#36374"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11689,6 +11773,14 @@ msgctxt "#36388"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Définissez pendant combien de temps XBMC devra rester en veille avant de s'éteindre."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Définissez le comportement de XBMC lorsqu'il est resté en veille pendant une longue période de temps."
+
 msgctxt "#36392"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11696,6 +11788,10 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr "Dossier pour enregistrer les captures d'écran prises avec XBMC."
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Spécifiez des librairies supplémentaires à ajouter aux logs de debug."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11784,6 +11880,10 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Définissez des lieux pour trouver des informations sur la météo."
 
 msgctxt "#36420"
 msgid "No info available yet."

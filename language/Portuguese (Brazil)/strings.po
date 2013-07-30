@@ -10977,6 +10977,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ajustar o método utilizado para processar e exibir vídeo."
 
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Nenhuma informação disponível ainda"
+
 msgctxt "#36155"
 msgid "Enable hardware decoding of video files."
 msgstr "Ativa a decodificação por hardware de arquivos de vídeo."
@@ -11681,6 +11685,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Escolher entre várias interfaces web instaladas através do Gestor de Add-ons."
 
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Nenhuma informação disponível ainda"
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Permitir que programas neste computador controlem o XBMC através da interface web ou do protocolo de interface JSON-RPC."
@@ -12016,6 +12024,10 @@ msgstr "Nenhuma informação disponível ainda."
 msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Nenhuma informação disponível ainda."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Definir locais utilizados para a recuperação de informações meteorológicas."
 
 msgctxt "#36420"
 msgid "No info available yet."
