@@ -63,6 +63,10 @@
 #include <linux/version.h>
 #endif
 
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()
@@ -624,16 +628,17 @@ std::string CSysInfo::GetUserDefaultLanguageTag()
   if (g_LangCodeExpander.ConvertWindowsLCIDtoLanguageTag(GetUserDefaultLCID(), langTag))
     return langTag;
   return "";
-#elif defined(TARGET_ANDROID)
-  // TODO: Implement for Android
-  return "";
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#elif defined(TARGET_ANDROID) || defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   std::string sysLang;
+#if defined(TARGET_ANDROID)
+  sysLang = CXBMCApp::GetSystemLanguage();
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   sysLang = CEnvironment::getenv("LC_ALL");
   if (sysLang.empty())
     sysLang = CEnvironment::getenv("LANG");
   if (sysLang == "C")
     return "";
+#endif // defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   if (sysLang.length() < 2)
     return "";
   size_t pos = sysLang.find('.');
@@ -674,7 +679,7 @@ std::string CSysInfo::GetUserDefaultLanguageTag()
 
   return sysLang + regTag;
 #else
-  // TODO: Implement for other platforms
+  // TODO: Implement for darwin targets
   return "";
 #endif
 }
