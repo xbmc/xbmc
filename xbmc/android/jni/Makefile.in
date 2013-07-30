@@ -36,6 +36,7 @@ SRCS      += BaseColumns.cpp
 SRCS      += MediaStore.cpp
 SRCS      += Surface.cpp
 SRCS      += SurfaceTexture.cpp
+SRCS      += Locale.cpp
 
 LIB        = jni.a
 
