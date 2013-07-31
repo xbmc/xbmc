@@ -706,7 +706,7 @@ MediaLibrary.prototype = {
     episodeTitle.html(event.data.episode.title + yearText);
     episodeDetails.append(episodeTitle);
     if (event.data.episode.runtime) {
-      episodeDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.episode.runtime + ' minutes'));
+      episodeDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + Math.ceil(event.data.episode.runtime / 60) + ' minutes'));
     }
     if (event.data.episode.season) {
       episodeDetails.append($('<p>').addClass('season').html('<strong>Season:</strong> ' + event.data.episode.season));
@@ -794,7 +794,7 @@ MediaLibrary.prototype = {
     movieTitle.html(event.data.movie.title + yearText);
     movieDetails.append(movieTitle);
     if (event.data.movie.runtime) {
-      movieDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.movie.runtime + ' minutes'));
+      movieDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + Math.ceil(event.data.movie.runtime / 60) + ' minutes'));
     }
     if (event.data.movie.plot) {
       movieDetails.append($('<p>').addClass('plot').html(event.data.movie.plot));
