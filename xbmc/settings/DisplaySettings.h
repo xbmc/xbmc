@@ -108,7 +108,7 @@ protected:
   static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
   static RESOLUTION GetResolutionForScreen();
 
-  static RESOLUTION FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, bool interlaced);
+  static RESOLUTION FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, unsigned int flags);
 
 private:
   // holds the real gui resolution
