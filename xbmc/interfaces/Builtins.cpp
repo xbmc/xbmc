@@ -620,7 +620,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CFileItemList items;
       CStdString extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
-
+      
       bool containsMusic = false, containsVideo = false;
       for (int i = 0; i < items.Size(); i++)
       {
@@ -630,23 +630,18 @@ int CBuiltins::Execute(const CStdString& execString)
         
         if (containsMusic && containsVideo)
           break;
-      } //for
-		
-      int playlist;
+      }
+      
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
       if (containsMusic && containsVideo) //mixed content found in the folder
       {
-        playlist = PLAYLIST_VIDEO;
         for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
         {
           if (!items[i]->IsVideo())
             items.Remove(i);
-        } //for
+        }
       }
-      else
-      {
-        playlist = (containsMusic? PLAYLIST_MUSIC : PLAYLIST_VIDEO);
-      } //if-else
-
+      
       g_playlistPlayer.ClearPlaylist(playlist);
       g_playlistPlayer.Add(playlist, items);
       g_playlistPlayer.SetCurrentPlaylist(playlist);
