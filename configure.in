@@ -547,6 +547,13 @@ AC_ARG_ENABLE([external-ffmpeg],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
 
+AC_ARG_ENABLE([libav-compat],
+  [AS_HELP_STRING([--enable-libav-compat],
+  [build a wrapper around libav to provide the functions needed by XBMC. This is
+   *not* supported by XBMC developers and is provided only for convenience. (default is no) 'Linux only'])],
+  [use_libav_hacks=$enableval],
+  [use_libav_hacks=no])
+
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -1617,6 +1624,15 @@ fi
 
 ### External libraries checks
 
+# Hacks for supporting libav
+
+USE_LIBAV_HACKS=0
+if test "$use_libav_hacks" = "yes"; then
+    export PKG_CONFIG_PATH="${srcdir}/lib/xbmc-libav-hacks/pkgconfig/:$PKG_CONFIG_PATH"
+    USE_LIBAV_HACKS=1
+    AC_DEFINE([USE_LIBAV_HACKS], [1], [Whether to use libav compatibility hacks.])
+fi
+
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
   FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale libswresample"
@@ -2422,6 +2438,7 @@ AC_SUBST(DISABLE_FISHBMC)
 AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
+AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
