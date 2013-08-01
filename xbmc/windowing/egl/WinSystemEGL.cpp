@@ -343,6 +343,7 @@ void CWinSystemEGL::UpdateResolutions()
        resDesktop.iHeight == resolutions[i].iHeight &&
        resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
        resDesktop.iScreenHeight == resolutions[i].iScreenHeight &&
+       (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (resolutions[i].dwFlags & D3DPRESENTFLAG_MODEMASK) &&
        resDesktop.fRefreshRate == resolutions[i].fRefreshRate)
     {
       ResDesktop = res_index;
