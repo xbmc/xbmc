@@ -409,8 +409,30 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 
   Lock();
 
+  RESOLUTION_INFO info_org  = CDisplaySettings::Get().GetResolutionInfo(res);
+  RESOLUTION_INFO info_last = CDisplaySettings::Get().GetResolutionInfo(lastRes);
+
+  RENDER_STEREO_MODE stereo_mode = m_stereoMode;
+
+  // if the new mode is an actual stereo mode, switch to that
+  // if the old mode was an actual stereo mode, switch to no 3d mode
+  if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DTB)
+    stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
+  else if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+    stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
+  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DSBS) != 0
+        || (info_last.dwFlags & D3DPRESENTFLAG_MODE3DTB)  != 0)
+    stereo_mode = RENDER_STEREO_MODE_OFF;
+
+  if(stereo_mode != m_stereoMode)
+  {
+    m_stereoView     = RENDER_STEREO_VIEW_OFF;
+    m_stereoMode     = stereo_mode;
+    m_nextStereoMode = stereo_mode;
+    CSettings::Get().SetInt("videoscreen.stereoscopicmode", (int)m_stereoMode);
+  }
+
   RESOLUTION_INFO info_mod = GetResInfo(res);
-  RESOLUTION_INFO info_org = CDisplaySettings::Get().GetResolutionInfo(res);
 
   m_iScreenWidth  = info_mod.iWidth;
   m_iScreenHeight = info_mod.iHeight;
@@ -434,6 +456,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     g_Windowing.SetFullScreen(false, info_org, false);
   else
     g_Windowing.ResizeWindow(info_org.iWidth, info_org.iHeight, -1, -1);
+
+  // make sure all stereo stuff are correctly setup
+  SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   // update anyone that relies on sizing information
   g_renderManager.Recover();
@@ -964,7 +989,6 @@ void CGraphicContext::Flip(const CDirtyRegionList& dirty)
   {
     m_stereoMode = m_nextStereoMode;
     SetVideoResolution(GetVideoResolution(), true);
-    SetStereoView(RENDER_STEREO_VIEW_OFF);
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 }
