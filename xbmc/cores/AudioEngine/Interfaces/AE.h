@@ -34,11 +34,27 @@ typedef std::vector<AEDevice> AEDeviceList;
 class IAEStream;
 class IAESound;
 class IAEPacketizer;
+class IAudioCallback;
 
 /* sound options */
 #define AE_SOUND_OFF    0 /* disable sounds */
 #define AE_SOUND_IDLE   1 /* only play sounds while no streams are running */
 #define AE_SOUND_ALWAYS 2 /* always play sounds */
+
+enum AEQuality
+{
+  AE_QUALITY_UNKNOWN    = -1, /* Unset, unknown or incorrect quality level */
+  AE_QUALITY_DEFAULT    =  0, /* Engine's default quality level */
+
+  /* Basic quality levels */
+  AE_QUALITY_LOW        = 20, /* Low quality level */
+  AE_QUALITY_MID        = 30, /* Standard quality level */
+  AE_QUALITY_HIGH       = 50, /* Best sound processing quality */
+
+  /* Optional quality levels */
+  AE_QUALITY_REALLYHIGH = 100 /* Uncompromised optional quality level,
+                               usually with unmeasurable and unnoticeable improvement */ 
+};
 
 /**
  * IAE Interface
@@ -183,5 +199,21 @@ public:
    * @returns true if the AudioEngine is capable of RAW output
    */
   virtual bool SupportsRaw() { return false; }
+
+   /**
+   * Returns true if the AudioEngine supports drain mode which is not streaming silence when idle
+   * @returns true if the AudioEngine is capable of drain mode
+   */
+  virtual bool SupportsDrain() { return false; }
+
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
+
+  virtual void UnregisterAudioCallback() {}
+
+  /**
+   * Returns true if AudioEngine supports specified quality level
+   * @return true if specified quality level is supported, otherwise false
+   */
+  virtual bool SupportsQualityLevel(enum AEQuality level) { return false; }
 };
 

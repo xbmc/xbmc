@@ -31,7 +31,8 @@ enum AEEngine
   AE_ENGINE_NULL,
   AE_ENGINE_SOFT,
   AE_ENGINE_COREAUDIO,
-  AE_ENGINE_PULSE
+  AE_ENGINE_PULSE,
+  AE_ENGINE_ACTIVE
 };
 
 class CAEFactory
@@ -53,6 +54,13 @@ public:
   static void VerifyOutputDevice(std::string &device, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
   static bool SupportsRaw();
+  static bool SupportsDrain();
+
+  /**
+   * Returns true if current AudioEngine supports at lest two basic quality levels
+   * @return true if quality setting is supported, otherwise false
+   */
+  static bool SupportsQualitySetting(void);
   static void SetMute(const bool enabled);
   static bool IsMuted();
   static float GetVolume();
@@ -66,6 +74,10 @@ public:
   static void SettingOptionsAudioDevicesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsAudioOutputModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+  static void SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+
+  static void RegisterAudioCallback(IAudioCallback* pCallback);
+  static void UnregisterAudioCallback();
 
 private:
   static bool LoadEngine(enum AEEngine engine);

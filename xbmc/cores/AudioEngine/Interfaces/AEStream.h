@@ -97,7 +97,7 @@ public:
    * Start draining the stream
    * @note Once called AddData will not consume more data.
    */
-  virtual void Drain() = 0;
+  virtual void Drain(bool wait) = 0;
 
   /**
    * Returns true if the is stream draining

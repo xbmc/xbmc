@@ -73,7 +73,7 @@ public:
 
   virtual void Pause();
   virtual void Resume();
-  virtual void Drain();
+  virtual void Drain(bool wait);
   virtual void Flush();
 
   virtual float GetVolume();

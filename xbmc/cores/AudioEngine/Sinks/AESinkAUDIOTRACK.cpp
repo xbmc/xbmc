@@ -212,7 +212,7 @@ double CAESinkAUDIOTRACK::GetCacheTotal()
   return m_sinkbuffer_sec + m_audiotrackbuffer_sec;
 }
 
-unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
+unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   // write as many frames of audio as we can fit into our internal buffer.
 
@@ -243,6 +243,11 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
         break;
     }
   }
+  // AddPackets runs under a non-idled AE thread we must block or sleep.
+  // Trying to calc the optimal sleep is tricky so just a minimal sleep.
+  if(blocking)
+    Sleep(10);
+
   return hasAudio ? write_frames:frames;
 }
 
