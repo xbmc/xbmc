@@ -23,6 +23,8 @@
 #include "guilib/GUIKeyboard.h"
 #include "guilib/GUIDialog.h"
 #include "utils/Variant.h"
+#include <map>
+#include <vector>
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS };
 
@@ -60,6 +62,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void OnSymbols();
     void OnIPAddress();
     void OnOK();
+    void OnLang();
 
   private:
     void OnClickButton(int iButtonControl);
@@ -70,6 +73,10 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void ResetShiftAndSymbols();
     void Backspace();
     void SendSearchMessage();
+    void LoadLangMappings();
+    void LoadLangMapping(const CStdString&);
+    CStdString MapLanguage(const CStdString &);
+    CStdStringW MapLanguageW(const CStdString &);
 
     CStdStringW m_strEdit;
     int m_iCursorPos;
@@ -84,6 +91,9 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     int m_iMode;
     bool m_bShift;
     bool m_hiddenInput;
+    unsigned int m_iCurrentMapping;
+
+    std::vector<std::map<CStdString, CStdString> > m_Mappings;
 
     unsigned int m_lastRemoteClickTime;
     WORD m_lastRemoteKeyClicked;

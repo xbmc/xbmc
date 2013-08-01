@@ -33,7 +33,14 @@
 #include "ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/CharsetConverter.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "FileItem.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
+#include <map>
+#include <vector>
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -43,6 +50,7 @@ static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 #define CTL_BUTTON_SHIFT      302
 #define CTL_BUTTON_CAPS       303
 #define CTL_BUTTON_SYMBOLS    304
+#define CTL_BUTTON_LANG       312
 #define CTL_BUTTON_LEFT       305
 #define CTL_BUTTON_RIGHT      306
 #define CTL_BUTTON_IP_ADDRESS 307
@@ -62,6 +70,7 @@ static char symbolButtons[] = "._-@/\\";
 CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 , CGUIKeyboard()
+, m_Mappings(1)
 , m_pCharCallback(NULL)
 {
   m_bIsConfirmed = false;
@@ -73,6 +82,99 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_iEditingOffset = 0;
   m_lastRemoteClickTime = 0;
   m_loadType = KEEP_IN_MEMORY;
+  m_iCurrentMapping = 0;
+  m_Mappings[0] = std::map<CStdString, CStdString>();
+  LoadLangMappings();
+}
+
+void CGUIDialogKeyboardGeneric::LoadLangMapping(const CStdString &languagemapPath)
+{
+  CXBMCTinyXML xmlDoc;
+
+  CLog::Log(LOGINFO, "Loading %s", languagemapPath.c_str());
+  if (!xmlDoc.LoadFile(languagemapPath))
+  {
+    CLog::Log(LOGERROR, "Error loading languagemap: %s, Line %d\n%s", languagemapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return;
+  }
+  TiXmlElement* pRoot = xmlDoc.RootElement();
+  if (!pRoot)
+  {
+    CLog::Log(LOGERROR, "Error getting languagemap root: %s", languagemapPath.c_str());
+    return;
+  }
+  CStdString strValue = pRoot->Value();
+  if ( strValue != "keys")
+  {
+    CLog::Log(LOGERROR, "%s Doesn't contain <keys>", languagemapPath.c_str());
+    return;
+  }
+
+  // run through our window groups
+  TiXmlNode* pWindow = pRoot->FirstChild();
+  std::map<CStdString, CStdString> langmap;
+  while (pWindow)
+  {
+    if (pWindow->Type() == TiXmlNode::TINYXML_ELEMENT)
+    {
+      const char *szWindow = pWindow->Value();
+      if (szWindow && stricmp(szWindow, "key") == 0)
+      {
+          if (pWindow->FirstChild("from") && pWindow->FirstChild("from")->FirstChild()
+            && pWindow->FirstChild("to") && pWindow->FirstChild("to")->FirstChild()
+                  ) {
+            CStdString key(pWindow->FirstChild("from")->FirstChild()->Value());
+            CStdString utf8String(pWindow->FirstChild("to")->FirstChild()->Value());
+            langmap[key] = utf8String;
+          }
+      }
+    }
+    pWindow = pWindow->NextSibling();
+  }
+  if (langmap.size()) m_Mappings.push_back(langmap);
+}
+
+void CGUIDialogKeyboardGeneric::LoadLangMappings()
+{
+  // Directories to search for keymaps. They're applied in this order,
+  // so keymaps in profile/keymaps/ override e.g. system/keymaps
+  static const char* DIRS_TO_CHECK[] = {
+    "special://xbmc/system/keytranslators/",
+    "special://masterprofile/keytranslators/",
+    "special://profile/keytranslators/"
+  };
+
+  for (unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
+  {
+    if (XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]))
+    {
+      CFileItemList files;
+      XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
+      // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      files.Sort(SORT_METHOD_FILE, SortOrderAscending);
+      for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+      {
+        if (!files[fileIndex]->m_bIsFolder)
+            LoadLangMapping(files[fileIndex]->GetPath());
+      }
+    }
+  }
+}
+
+CStdString CGUIDialogKeyboardGeneric::MapLanguage(const CStdString &ch)
+{
+  if (m_Mappings[m_iCurrentMapping].find(ch) != m_Mappings[m_iCurrentMapping].end()) {
+    return m_Mappings[m_iCurrentMapping][ch];
+  }
+  return CStdString(ch);
+}
+
+CStdStringW CGUIDialogKeyboardGeneric::MapLanguageW(const CStdString &ch)
+{
+  CStdString utf8 = MapLanguage(ch);
+  CStdStringW wide;
+  g_charsetConverter.utf8ToW(utf8, wide);
+  return wide;
 }
 
 void CGUIDialogKeyboardGeneric::OnInitWindow()
@@ -80,6 +182,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   CGUIDialog::OnInitWindow();
 
   m_bIsConfirmed = false;
+  m_iCurrentMapping = 0;
 
   // set alphabetic (capitals)
   UpdateButtons();
@@ -262,6 +365,9 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
       case CTL_BUTTON_SYMBOLS:
         OnSymbols();
         break;
+      case CTL_BUTTON_LANG:
+        OnLang();
+        break;        
       case CTL_BUTTON_LEFT:
         MoveCursor( -1);
         break;
@@ -350,7 +456,12 @@ void CGUIDialogKeyboardGeneric::Character(WCHAR ch)
   m_strEditing.Empty();
   m_iEditingOffset = 0;
   // TODO: May have to make this routine take a WCHAR for the symbols?
-  m_strEdit.Insert(GetCursorPos(), ch);
+  char buf[sizeof(ch) + 1];
+  memcpy(buf, &ch, sizeof(ch));
+  buf[sizeof(ch)] = 0;
+  CStdString input(buf);
+  CStdStringW wide = MapLanguageW(input);
+  m_strEdit.Insert(GetCursorPos(), wide);
   UpdateLabel();
   MoveCursor(1);
 }
@@ -637,6 +748,13 @@ void CGUIDialogKeyboardGeneric::OnSymbols()
   UpdateButtons();
 }
 
+void CGUIDialogKeyboardGeneric::OnLang()
+{
+  ++m_iCurrentMapping;
+  if (m_iCurrentMapping >= m_Mappings.size()) m_iCurrentMapping = 0;
+  UpdateButtons();
+}
+
 void CGUIDialogKeyboardGeneric::OnShift()
 {
   m_bShift = !m_bShift;
@@ -684,7 +802,11 @@ const char* CGUIDialogKeyboardGeneric::s_charsSeries[10] = { " 0!@#$%^&*()[]{}<>
 void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const CStdString &label)
 { // find all controls with this id, and set all their labels
   CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
-  message.SetLabel(label);
+  CStdString utf8 = label;
+  if (label.size() == 1) {
+      utf8 = MapLanguage(label);
+  }
+  message.SetLabel(utf8);
   for (unsigned int i = 0; i < m_children.size(); i++)
   {
     if (m_children[i]->GetID() == id || m_children[i]->IsGroup())

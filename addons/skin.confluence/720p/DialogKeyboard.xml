@@ -653,11 +653,25 @@
 					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
+				<control type="button" id="312">
+					<description>LANG switcher</description>
+					<posx>100</posx>
+					<posy>150</posy>
+					<width>100</width>
+					<height>50</height>
+					<label>36042</label>
+					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+					<texturefocus border="5">KeyboardKey.png</texturefocus>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<focusedcolor>black</focusedcolor>
+				</control>
 				<control type="radiobutton" id="304">
 					<description>Symbols button</description>
 					<posx>0</posx>
 					<posy>150</posy>
-					<width>200</width>
+					<width>100</width>
 					<height>50</height>
 					<label>20180</label>
 					<onleft>8</onleft>
