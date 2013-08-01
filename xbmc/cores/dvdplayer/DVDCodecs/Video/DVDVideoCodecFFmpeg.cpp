@@ -147,7 +147,11 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_pFilterGraph  = NULL;
   m_pFilterIn     = NULL;
   m_pFilterOut    = NULL;
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  m_pFilterFrame  = NULL;
+#else
   m_pBufferRef    = NULL;
+#endif
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
@@ -305,6 +309,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
   if (!m_pFrame) return false;
 
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  m_pFilterFrame = m_dllAvUtil.av_frame_alloc();
+  if (!m_pFilterFrame) return false;
+#endif
+
   UpdateName();
   return true;
 }
@@ -313,6 +322,10 @@ void CDVDVideoCodecFFmpeg::Dispose()
 {
   if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
   m_pFrame = NULL;
+
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  m_dllAvUtil.av_frame_free(&m_pFilterFrame);
+#endif
 
   if (m_pCodecContext)
   {
@@ -553,14 +566,16 @@ void CDVDVideoCodecFFmpeg::Reset()
 
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 {
-  pDvdVideoPicture->iWidth = m_pCodecContext->width;
-  pDvdVideoPicture->iHeight = m_pCodecContext->height;
+  pDvdVideoPicture->iWidth = m_pFrame->width;
+  pDvdVideoPicture->iHeight = m_pFrame->height;
 
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   if(m_pBufferRef)
   {
     pDvdVideoPicture->iWidth  = m_pBufferRef->video->w;
     pDvdVideoPicture->iHeight = m_pBufferRef->video->h;
   }
+#endif
 
   /* crop of 10 pixels if demuxer asked it */
   if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < (int)pDvdVideoPicture->iWidth
@@ -574,12 +589,14 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   double aspect_ratio;
 
   /* use variable in the frame */
-  AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
+  AVRational pixel_aspect = m_pFrame->sample_aspect_ratio;
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   if (m_pBufferRef)
 #if defined(LIBAVFILTER_FROM_FFMPEG)
     pixel_aspect = m_pBufferRef->video->sample_aspect_ratio;
 #else
     pixel_aspect = m_pBufferRef->video->pixel_aspect;
+#endif
 #endif
 
   if (pixel_aspect.num == 0)
@@ -675,10 +692,12 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->extended_format = 0;
 
   PixelFormat pix_fmt;
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   if(m_pBufferRef)
     pix_fmt = (PixelFormat)m_pBufferRef->format;
   else
-    pix_fmt = m_pCodecContext->pix_fmt;
+#endif
+    pix_fmt = (PixelFormat)m_pFrame->format;
 
   pDvdVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
   return true;
@@ -756,7 +775,13 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
     inputs->pad_idx = 0;
     inputs->next    = NULL;
 
+#if defined(HAVE_AVFILTER_GRAPH_PARSE_PTR)
+    if ((result = m_dllAvFilter.avfilter_graph_parse_ptr(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
+#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
     if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
+#else
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+#endif
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");
       return result;
@@ -785,11 +810,13 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
 
 void CDVDVideoCodecFFmpeg::FilterClose()
 {
+#if !defined(LIBAVFILTER_AVFRAME_BASED)
   if(m_pBufferRef)
   {
     m_dllAvFilter.avfilter_unref_buffer(m_pBufferRef);
     m_pBufferRef = NULL;
   }
+#endif
 
   if (m_pFilterGraph)
   {
@@ -803,7 +830,7 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 
 int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 {
-  int result, frames;
+  int result;
 
   if (frame)
   {
@@ -815,20 +842,36 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
     // libav: commit 7e350379f87e7f74420b4813170fe808e2313911 (28 Nov 2012)
     //        release v9 (5 January 2013)
     result = m_dllAvFilter.av_buffersrc_add_frame(m_pFilterIn, frame);
-#elif defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,72,105)
+#else
     // API changed in:
     // ffmpeg: commit 7bac2a78c2241df4bcc1665703bb71afd9a3e692 (28 Apr 2012)
     //         release 0.11 (25 May 2012)
     result = m_dllAvFilter.av_buffersrc_add_frame(m_pFilterIn, frame, 0);
-#else
-    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
 #endif
     if (result < 0)
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersrc_add_frame/av_vsrc_buffer_add_frame");
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersrc_add_frame");
       return VC_ERROR;
     }
   }
+
+#if defined(LIBAVFILTER_AVFRAME_BASED)
+  result = m_dllAvFilter.av_buffersink_get_frame(m_pFilterOut, m_pFilterFrame);
+
+  if(result  == AVERROR(EAGAIN) || result == AVERROR_EOF)
+    return VC_BUFFER;
+  else if(result < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersink_get_frame");
+    return VC_ERROR;
+  }
+
+  m_dllAvUtil.av_frame_unref(m_pFrame);
+  m_dllAvUtil.av_frame_move_ref(m_pFrame, m_pFilterFrame);
+
+  return VC_PICTURE;
+#else
+  int frames;
 
   if(m_pBufferRef)
   {
@@ -870,6 +913,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
   }
 
   return VC_BUFFER;
+#endif
 }
 
 unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
