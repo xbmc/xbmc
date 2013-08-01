@@ -55,7 +55,10 @@ void CGUIFontTTFDX::Begin()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_nestedBeginCount == 0)
+  if (pD3DDevice == NULL)
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to get Direct3D device");
+
+  if (m_nestedBeginCount == 0 && pD3DDevice != NULL && m_texture != NULL)
   {
     int unit = 0;
     // just have to blit from our texture.
