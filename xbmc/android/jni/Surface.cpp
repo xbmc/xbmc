@@ -1,7 +1,5 @@
-#ifndef _RENDER_FORMATS_H_
-#define _RENDER_FORMATS_H_
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,21 +18,27 @@
  *
  */
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_OMXEGL,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_EGLIMG,
-};
+#include "Surface.h"
+#include "SurfaceTexture.h"
+#include "jutils/jutils-details.hpp"
 
-#endif
+using namespace jni;
+
+CJNISurface::CJNISurface(CJNISurfaceTexture *surf_texture) : CJNIBase("android/view/Surface")
+{
+  m_object = new_object(GetClassName(),
+    "<init>", "(Landroid/graphics/SurfaceTexture;)V", 
+    surf_texture->get_raw());
+  m_object.setGlobal();
+}
+
+CJNISurface::~CJNISurface()
+{
+  release();
+}
+
+void CJNISurface::release()
+{
+  call_method<jhobject>(m_object,
+    "release", "()V");
+}

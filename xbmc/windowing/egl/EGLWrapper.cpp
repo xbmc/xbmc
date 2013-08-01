@@ -378,5 +378,17 @@ bool CEGLWrapper::GetConfigAttrib(EGLDisplay display, EGLConfig config, EGLint a
     return eglGetConfigAttrib(display, config, attribute, value);
   return false;
 }
+
+void* CEGLWrapper::GetProcAddress(const char* function)
+{
+  void* ext = (void*) eglGetProcAddress(function);
+  if (!ext)
+  {
+    CLog::Log(LOGERROR, "EGL error in %s - cannot get proc addr of %s", __FUNCTION__, function);
+    return NULL;
+  }
+  
+  return ext;
+}
 #endif
 
