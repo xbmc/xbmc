@@ -16,15 +16,16 @@ using namespace std;
 void
 CPlexServerReachabilityThread::Process()
 {
-  bool success = false;
   if (m_force == true ||
       !m_server->GetActiveConnection())
   {
-    success = m_server->UpdateReachability();
+    if (m_server->UpdateReachability())
+      g_plexServerManager.ServerReachabilityDone(m_server, true);
+    else
+      g_plexServerManager.ServerReachabilityDone(m_server, false);
   }
-  success = m_server->GetActiveConnection();
 
-  g_plexServerManager.ServerReachabilityDone(m_server, success);
+  
 }
 
 CPlexServerManager::CPlexServerManager()
@@ -156,6 +157,7 @@ CPlexServerManager::ServerRefreshComplete(int connectionType)
 
   BOOST_FOREACH(CStdString uuid, serversToRemove)
   {
+    CLog::Log(LOGDEBUG, "CPlexServerManager::ServerRefreshComplete removing server %s", uuid.c_str());
     NotifyAboutServer(m_serverMap.find(uuid)->second, false);
     m_serverMap.erase(uuid);
   }
@@ -198,10 +200,8 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   {
     if (server->GetOwned() &&
         (server->GetServerClass().empty() || !server->GetServerClass().Equals(PLEX_SERVER_CLASS_SECONDARY)))
-    {
       SetBestServer(server, false);
-      NotifyAboutServer(server);
-    }
+    NotifyAboutServer(server);
   }
   else
   {

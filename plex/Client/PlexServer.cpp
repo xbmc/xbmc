@@ -36,6 +36,9 @@ CPlexServerConnTestThread::Process()
   }
 
   m_server->OnConnectionTest(m_conn, success);
+  
+  m_conn.reset();
+  m_server.reset();
 }
 
 bool
@@ -113,6 +116,8 @@ bool
 CPlexServer::MarkUpdateFinished(int connType)
 {
   vector<CPlexConnectionPtr> connsToRemove;
+  
+  CSingleLock lk(m_serverLock);
 
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
   {
@@ -202,53 +207,25 @@ void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, bool success)
   }
 }
 
-bool
+void
 CPlexServer::Merge(CPlexServerPtr otherServer)
 {
   CSingleLock lk(m_serverLock);
 
-  bool changed = false;
-
-  if (m_name != otherServer->m_name)
-  {
-    m_name = otherServer->m_name;
-    changed = true;
-  }
-
-  if (m_version != otherServer->m_version)
-  {
-    m_version = otherServer->m_version;
-    changed = true;
-  }
-
-  if (m_owned != otherServer->m_owned)
-  {
-    m_owned = otherServer->m_owned;
-    changed = true;
-  }
-
-  if (m_owner != otherServer->m_owner) {
-    m_owner = otherServer->m_owner;
-    changed = true;
-  }
+  m_name = otherServer->m_name;
+  m_version = otherServer->m_version;
+  m_owned = otherServer->m_owned;
+  m_owner = otherServer->m_owner;
 
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
   {
     vector<CPlexConnectionPtr>::iterator it;
     it = find(m_connections.begin(), m_connections.end(), conn);
     if (it != m_connections.end())
-    {
-      if ((*it)->Merge(conn))
-        changed = true;
-    }
+      (*it)->Merge(conn);
     else
-    {
       m_connections.push_back(conn);
-      changed = true;
-    }
   }
-
-  return changed;
 }
 
 void

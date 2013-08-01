@@ -11,6 +11,7 @@ CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, con
 {
   m_url.SetHostName(host);
   m_url.SetPort(port);
+  m_refreshed = true;
   if (port == 443)
     m_url.SetProtocol("https");
   else
@@ -66,32 +67,14 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   return m_state;
 }
 
-bool
+void
 CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 {
-  bool changed = false;
-
-  if (m_url.Get() != otherConnection->m_url.Get())
-  {
-    m_url = otherConnection->m_url;
-    changed = true;
-  }
-
-  if (m_token != otherConnection->m_token)
-  {
-    m_token = otherConnection->m_token;
-    changed = true;
-  }
-
-  if (m_type != otherConnection->m_type)
-  {
-    m_type |= otherConnection->m_type;
-    changed = true;
-  }
+  m_url = otherConnection->m_url;
+  m_token = otherConnection->m_token;
+  m_type |= otherConnection->m_type;
 
   m_refreshed = true;
-
-  return changed;
 }
 
 bool CPlexConnection::operator ==(const CPlexConnection &other)

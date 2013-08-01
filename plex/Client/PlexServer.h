@@ -45,7 +45,7 @@ public:
   void MarkAsRefreshing();
   bool MarkUpdateFinished(int connType);
 
-  bool Merge(CPlexServerPtr otherServer);
+  void Merge(CPlexServerPtr otherServer);
 
   bool UpdateReachability();
 
