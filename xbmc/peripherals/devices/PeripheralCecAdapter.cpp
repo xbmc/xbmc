@@ -1703,6 +1703,7 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
     ActivateSource();
     return true;
   }
+  return m_cecAdapter->IsLibCECActiveSource();
 }
 
 #endif
