@@ -1399,6 +1399,8 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
         button_id |= CKey::MODIFIER_ALT;
       else if (substr == "super" || substr == "win")
         button_id |= CKey::MODIFIER_SUPER;
+      else if (substr == "meta" || substr == "cmd")
+        button_id |= CKey::MODIFIER_META;
       else
         CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
      }
