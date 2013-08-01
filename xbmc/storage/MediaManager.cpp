@@ -50,7 +50,8 @@
 #include "filesystem/File.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/Directory.h"
-#include "utils/Crc32.h"
+
+#include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"
@@ -496,108 +497,54 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 
 CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 {
-  CStdString strDevice = devicePath;
+  CStdString mediaPath;
 
-  if (strDevice.IsEmpty()) // if no value passed, use the current default disc path.
-    strDevice = GetDiscPath();    // in case of non-Windows we must obtain the disc path
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo(devicePath);
+  if (pInfo == NULL)
+    return "";
+
+  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+    mediaPath = "cdda://local/";
+
+  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+    mediaPath = "iso9660://";
+
+  if (mediaPath.IsEmpty())
+    mediaPath = devicePath;
 
 #ifdef TARGET_WINDOWS
-  if (!m_bhasoptical)
-    return "";
-  strDevice = TranslateDevicePath(strDevice);
-  URIUtils::AddSlashAtEnd(strDevice);
-#endif
-
-  CStdString strDrive = g_mediaManager.TranslateDevicePath(strDevice);
-
-#ifndef TARGET_WINDOWS
+  if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
   {
-    CSingleLock waitLock(m_muAutoSource);
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-    if ( pInfo  )
-    {
-      if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
-        strDrive = "iso9660://";
-      else
-        strDrive = "D:\\";
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "GetDiskUniqueId: Failed getting CD info");
-      return "";
-    }
+    mediaPath = g_mediaManager.TranslateDevicePath("");
+    URIUtils::AddSlashAtEnd(mediaPath);
   }
 #endif
 
-  CStdString pathVideoTS = URIUtils::AddFileToFolder(strDrive, "VIDEO_TS");
-  if(! CDirectory::Exists(pathVideoTS) )
+  // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted 
+  CStdString pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS"); 
+  if(!CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO"))) 
     return ""; // return empty
+
+  // correct the filename if needed 
+  if (pathVideoTS.Left(6).CompareNoCase("dvd://") == 0 || pathVideoTS.Left(10).CompareNoCase("iso9660://") == 0)
+    pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
 
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
   uint32_t dvdcrc = 0;
   CStdString strID;
 
-  if (HashDVD(pathVideoTS, dvdcrc))
-  {
-    strID.Format("removable://%s_%08x", GetDiskLabel(devicePath), dvdcrc);
-    CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
-  }
+  CDVDInputStreamNavigator dvdNavigator(NULL);
+  dvdNavigator.Open(pathVideoTS, "");
+  CStdString labelString;
+  dvdNavigator.GetDVDTitleString(labelString);
+  CStdString serialString;
+  dvdNavigator.GetDVDSerialString(serialString);
+
+  strID.Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
+  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
 
   return strID;
 }
-
-bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
-{
-  CFileItemList vecItemsTS;
-  bool success = false;
-
-  // first try to open the VIDEO_TS folder of the DVD
-  if (!CDirectory::GetDirectory( dvdpath, vecItemsTS, ".ifo" ))
-  {
-    CLog::Log(LOGERROR, "%s - Cannot open dvd VIDEO_TS folder -- ABORTING", __FUNCTION__);
-    return false;
-  }
-
-  Crc32 crc32;
-  bool dataRead = false;
-
-  vecItemsTS.Sort(SORT_METHOD_FILE, SortOrderAscending);
-  for (int i = 0; i < vecItemsTS.Size(); i++)
-  {
-    CFileItemPtr videoTSItem = vecItemsTS[i];
-    success = true;
-
-    // get the file name for logging purposes
-    CStdString fileName = URIUtils::GetFileName(videoTSItem->GetPath());
-    CLog::Log(LOGDEBUG, "%s - Adding file content for dvd file: %s", __FUNCTION__, fileName.c_str());
-    CFile file;
-    if(!file.Open(videoTSItem->GetPath()))
-    {
-      CLog::Log(LOGERROR, "%s - Cannot open dvd file: %s -- ABORTING", __FUNCTION__, fileName.c_str());
-      return false;
-    }
-    int res;
-    char buf[2048];
-    while( (res = file.Read(buf, sizeof(buf))) > 0)
-    {
-      dataRead = true;
-      crc32.Compute(buf, res);
-    }
-    file.Close();
-  }
-
-  if (!dataRead)
-  {
-    CLog::Log(LOGERROR, "%s - Did not read any data from the IFO files -- ABORTING", __FUNCTION__);
-    return false;
-  }
-
-  // put result back in reference parameter
-  crc = (uint32_t) crc32;
-
-  return success;
-}
-
 
 CStdString CMediaManager::GetDiscPath()
 {
