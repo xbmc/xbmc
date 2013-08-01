@@ -21,7 +21,7 @@
 
 
 #define FAILURE_TMOUT 3600
-#define SUCCESS_TMOUT 60
+#define SUCCESS_TMOUT 60 * 3
 
 void
 CMyPlexManager::Process()
@@ -305,7 +305,6 @@ void CMyPlexManager::Logout()
 
 CStdString CMyPlexManager::GetAuthToken() const
 {
-  CLog::Log(LOGDEBUG, "CMyPlexManager::GetAuthToken PIN: %s CurrentUser: %s Settings: %s", m_currentPinInfo.authToken.empty() ? "NO" : "YES", m_currentUserInfo.authToken.empty() ? "NO" : "YES", g_guiSettings.GetString("myplex.token").c_str());
   /* First, if we have a authToken in the Pin info, we use that */
   if (!m_currentPinInfo.authToken.empty())
     return m_currentPinInfo.authToken;

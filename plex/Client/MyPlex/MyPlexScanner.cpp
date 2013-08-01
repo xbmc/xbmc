@@ -72,7 +72,6 @@ bool CMyPlexScanner::DoScan()
         }
       }
 
-      g_plexServerManager.UpdateFromDiscovery(server);
       serverList.push_back(server);
     }
   }
