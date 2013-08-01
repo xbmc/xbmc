@@ -164,7 +164,7 @@ public:
   virtual int av_sample_fmt_is_planar(enum AVSampleFormat sample_fmt) { return ::av_sample_fmt_is_planar(sample_fmt); }
   virtual int av_get_channel_layout_channel_index (uint64_t channel_layout, uint64_t channel) { return ::av_get_channel_layout_channel_index(channel_layout, channel); }
   virtual int av_samples_fill_arrays(uint8_t **audio_data, int *linesize, const uint8_t *buf, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align)
-    { return ::av_samples_fill_arrays(audio_data, linesize, buf, nb_channels, nb_samples, AVSampleFormat sample_fmt, align); }
+    { return ::av_samples_fill_arrays(audio_data, linesize, buf, nb_channels, nb_samples, sample_fmt, align); }
   virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt)
     { return ::av_samples_copy(dst, src, dst_offset, src_offset, nb_samples, nb_channels, sample_fmt); }
 #if defined(AVFRAME_IN_LAVU)
