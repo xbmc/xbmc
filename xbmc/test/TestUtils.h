@@ -54,6 +54,9 @@ public:
   /* Function to get path of a tempfile */
   CStdString TempFilePath(XFILE::CFile const* const tempfile);
 
+  /* Get the containing directory of a tempfile */
+  CStdString TempFileDirectory(XFILE::CFile const* const tempfile);
+
   /* Functions to get variables used in the TestFileFactory tests. */
   std::vector<CStdString> &getTestFileFactoryReadUrls();
 
