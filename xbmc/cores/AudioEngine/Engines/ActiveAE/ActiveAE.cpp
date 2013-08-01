@@ -444,6 +444,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             if ((unsigned int)(par->stream->m_resampleBuffers->m_format.m_sampleRate * par->parameter.double_par) != par->stream->m_resampleBuffers->m_outSampleRate)
             {
               par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
+              par->stream->m_resampleBuffers->m_resampleQuality = AE_QUALITY_LOW;
               par->stream->m_resampleBuffers->m_changeResampler = true;
             }
           }
