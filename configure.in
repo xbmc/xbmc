@@ -45,6 +45,15 @@ AC_DEFUN([XB_ADD_CODEC],
   esac
 ])
 
+# force enable a codec
+AC_DEFUN([XB_FORCE_CODEC],
+[
+  AC_MSG_CHECKING([for $2])
+  AC_SUBST([USE_$1], 1)
+  AC_DEFINE([HAS_$1], 1, [using $2])
+  AC_MSG_RESULT([enabling $2])
+])
+
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
@@ -530,7 +539,7 @@ AC_ARG_ENABLE([gtest],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, libstagefright)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -1844,6 +1853,17 @@ case $add_codecs in
   *amcodec*)
       AC_CHECK_HEADER([amlplayer/codec_error.h],, AC_MSG_ERROR($missing_headers))
       XB_ADD_CODEC([LIBAMCODEC], [amcodec])
+      ;;
+  *libstagefright*)
+      LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui"
+      XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright])
+      ;;
+  *)
+      # if no codec specified and android -> enable libstagefright
+      if test "$target_platform" = "target_android" ; then
+        LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui"
+        XB_FORCE_CODEC([LIBSTAGEFRIGHT], [libstagefright])
+      fi
       ;;
 esac
 
