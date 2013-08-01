@@ -91,16 +91,18 @@ void CBaseRenderer::ChooseBestResolution(float fps)
     }
 
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
-        CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution, weight);
+        g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution, weight);
   }
   else
 #endif
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)",
-        m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution);
+        m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution);
 }
 
 bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fallback)
 {
+  RESOLUTION_INFO curr = g_graphicsContext.GetResInfo(m_resolution);
+
   //try to find a refreshrate from the override
   for (int i = 0; i < (int)g_advancedSettings.m_videoAdjustRefreshOverrides.size(); i++)
   {
@@ -115,29 +117,31 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
 
     for (size_t j = (int)RES_DESKTOP; j < CDisplaySettings::Get().ResolutionInfoSize(); j++)
     {
-      if (CDisplaySettings::Get().GetResolutionInfo(j).iScreenWidth  == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenWidth
-       && CDisplaySettings::Get().GetResolutionInfo(j).iScreenHeight == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenHeight
-       && CDisplaySettings::Get().GetResolutionInfo(j).iScreen       == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreen)
+      RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)j);
+
+      if (info.iScreenWidth  == curr.iScreenWidth
+       && info.iScreenHeight == curr.iScreenHeight
+       && info.iScreen       == curr.iScreen)
       {
-        if (CDisplaySettings::Get().GetResolutionInfo(j).fRefreshRate <= override.refreshmax
-         && CDisplaySettings::Get().GetResolutionInfo(j).fRefreshRate >= override.refreshmin)
+        if (info.fRefreshRate <= override.refreshmax
+         && info.fRefreshRate >= override.refreshmin)
         {
           m_resolution = (RESOLUTION)j;
 
           if (fallback)
           {
             CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from fallback (refreshmin:%.3f refreshmax:%.3f)",
-                      CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution,
+                      info.strMode.c_str(), m_resolution,
                       override.refreshmin, override.refreshmax);
           }
           else
           {
             CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from override of fps %.3f (fpsmin:%.3f fpsmax:%.3f refreshmin:%.3f refreshmax:%.3f)",
-                      CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution, fps,
+                      info.strMode.c_str(), m_resolution, fps,
                       override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
           }
 
-          weight = RefreshWeight(CDisplaySettings::Get().GetResolutionInfo(m_resolution).fRefreshRate, fps);
+          weight = RefreshWeight(info.fRefreshRate, fps);
 
           return true; //fps and refresh match with this override, use this resolution
         }
@@ -151,113 +155,88 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
 void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 {
   const float maxWeight = 0.0021f;
+  RESOLUTION_INFO curr;
 
   m_resolution = FindClosestResolution(fps, 1.0, m_resolution, weight);
+  curr = g_graphicsContext.GetResInfo(m_resolution);
 
   if (weight >= maxWeight) //not a very good match, try a 2:3 cadence instead
   {
     CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f (weight: %.3f), trying 2:3 cadence",
-        CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution, fps, weight);
+        curr.strMode.c_str(), m_resolution, fps, weight);
 
     m_resolution = FindClosestResolution(fps, 2.5, m_resolution, weight);
+    curr = g_graphicsContext.GetResInfo(m_resolution);
 
     if (weight >= maxWeight) //2:3 cadence not a good match
     {
       CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f with 2:3 cadence (weight: %.3f), choosing 60 hertz",
-          CDisplaySettings::Get().GetResolutionInfo(m_resolution).strMode.c_str(), m_resolution, fps, weight);
+          curr.strMode.c_str(), m_resolution, fps, weight);
 
       //get the resolution with the refreshrate closest to 60 hertz
       for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
       {
-        if (MathUtils::round_int(CDisplaySettings::Get().GetResolutionInfo(i).fRefreshRate) == 60
-         && CDisplaySettings::Get().GetResolutionInfo(i).iScreenWidth  == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenWidth
-         && CDisplaySettings::Get().GetResolutionInfo(i).iScreenHeight == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenHeight
-         && CDisplaySettings::Get().GetResolutionInfo(i).iScreen       == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreen)
-        {
-          if (fabs(CDisplaySettings::Get().GetResolutionInfo(i).fRefreshRate - 60.0) < fabs(CDisplaySettings::Get().GetResolutionInfo(m_resolution).fRefreshRate - 60.0))
-            m_resolution = (RESOLUTION)i;
-        }
-      }
+        RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)i);
 
-      //60 hertz not available, get the highest refreshrate
-      if (MathUtils::round_int(CDisplaySettings::Get().GetResolutionInfo(m_resolution).fRefreshRate) != 60)
-      {
-        CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
-        for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
+        if (MathUtils::round_int(info.fRefreshRate) == 60
+         && info.iScreenWidth  == curr.iScreenWidth
+         && info.iScreenHeight == curr.iScreenHeight
+         && info.iScreen       == curr.iScreen)
         {
-          if (CDisplaySettings::Get().GetResolutionInfo(i).fRefreshRate  >  CDisplaySettings::Get().GetResolutionInfo(m_resolution).fRefreshRate
-           && CDisplaySettings::Get().GetResolutionInfo(i).iScreenWidth  == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenWidth
-           && CDisplaySettings::Get().GetResolutionInfo(i).iScreenHeight == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreenHeight
-           && CDisplaySettings::Get().GetResolutionInfo(i).iScreen       == CDisplaySettings::Get().GetResolutionInfo(m_resolution).iScreen)
-          {
+          if (fabs(info.fRefreshRate - 60.0) < fabs(curr.fRefreshRate - 60.0)) {
             m_resolution = (RESOLUTION)i;
+            curr = info;
           }
         }
       }
 
-      weight = RefreshWeight(CDisplaySettings::Get().GetResolutionInfo(m_resolution).fRefreshRate, fps);
+      //60 hertz not available, get the highest refreshrate
+      if (MathUtils::round_int(curr.fRefreshRate) != 60)
+      {
+        CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
+        for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
+        {
+          RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)i);
+
+          if (info.fRefreshRate  >  curr.fRefreshRate
+           && info.iScreenWidth  == curr.iScreenWidth
+           && info.iScreenHeight == curr.iScreenHeight
+           && info.iScreen       == curr.iScreen)
+          {
+            m_resolution = (RESOLUTION)i;
+            curr = info;
+          }
+        }
+      }
+
+      weight = RefreshWeight(curr.fRefreshRate, fps);
     }
   }
 }
 
 RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
-  RESOLUTION_INFO &curr = CDisplaySettings::Get().GetResolutionInfo(current);
+  RESOLUTION_INFO curr = g_graphicsContext.GetResInfo(current);
 
-  int iScreenWidth  = curr.iScreenWidth;
-  int iScreenHeight = curr.iScreenHeight;
   float fRefreshRate = fps;
-
-  /*
-   * For 3D modes the following is assumed :
-   *
-   * side-by-side :
-   *
-   * width is width / 2 : 1920 -> 960
-   *
-   * tob-bottom :
-   *
-   * height is height / 2 : 1080 -> 540
-   *
-   */
-
-  // work out current non-3D resolution (in case we are currently in 3D mode)
-  if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-  {
-    iScreenWidth *= 2;
-  }
-  else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-  {
-    iScreenHeight *= 2;
-  }
-  // work out resolution if we switch to 3D mode
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
-  {
-    iScreenWidth /= 2;
-  }
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
-  {
-    iScreenHeight /= 2;
-  }
 
   float last_diff = fRefreshRate;
 
   // Find closest refresh rate
   for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
   {
-    RESOLUTION_INFO &info = CDisplaySettings::Get().GetResolutionInfo(i);
-    RESOLUTION_INFO &best = CDisplaySettings::Get().GetResolutionInfo(current);
+    const RESOLUTION_INFO info = g_graphicsContext.GetResInfo((RESOLUTION)i);
 
     //discard resolutions that are not the same width and height
     //or have a too low refreshrate
-    if (info.iScreenWidth  != iScreenWidth
-    ||  info.iScreenHeight != iScreenHeight
-    ||  info.iScreen != curr.iScreen
+    if (info.iScreenWidth  != curr.iScreenWidth
+    ||  info.iScreenHeight != curr.iScreenHeight
+    ||  info.iScreen       != curr.iScreen
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
 
     // For 3D choose the closest refresh rate 
-    if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+    if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     {
       float diff = (info.fRefreshRate - fRefreshRate);
       if(diff < 0)
@@ -267,25 +246,27 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       {
         last_diff = diff;
         current = (RESOLUTION)i;
+        curr = info;
       }
     }
     else
     {
-      int c_weight = MathUtils::round_int(RefreshWeight(best.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
       int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
 
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
-      ||  (i_weight == c_weight && info.fRefreshRate > best.fRefreshRate))
+      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
         current = (RESOLUTION)i;
+        curr    = info;
     }
   }
 
   // For 3D overwrite weight
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS || m_iFlags & CONF_FLAGS_FORMAT_TB)
+  if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
     weight = 0;
   else
-    weight = RefreshWeight(CDisplaySettings::Get().GetResolutionInfo(current).fRefreshRate, fRefreshRate * multiplier);
+    weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
 
   return current;
 }
@@ -430,7 +411,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float outputFrameRatio = inputFrameRatio / CDisplaySettings::Get().GetResolutionInfo(GetResolution()).fPixelRatio;
+  float outputFrameRatio = inputFrameRatio / g_graphicsContext.GetResInfo(GetResolution()).fPixelRatio;
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
@@ -574,10 +555,44 @@ void CBaseRenderer::ManageDisplay()
 {
   const CRect view = g_graphicsContext.GetViewWindow();
 
-  m_sourceRect.x1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
-  m_sourceRect.y1 = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
-  m_sourceRect.x2 = (float)m_sourceWidth - CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
-  m_sourceRect.y2 = (float)m_sourceHeight - CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
+  m_sourceRect.x1 = 0.0f;
+  m_sourceRect.y1 = 0.0f;
+  m_sourceRect.x2 = (float)m_sourceWidth;
+  m_sourceRect.y2 = (float)m_sourceHeight;
+
+  unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
+  int          stereo_view  = g_graphicsContext.GetStereoView();
+
+  if(CONF_FLAGS_STEREO_CADENCE(m_iFlags) == CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT)
+  {
+    if     (stereo_view == RENDER_STEREO_VIEW_LEFT)  stereo_view = RENDER_STEREO_VIEW_RIGHT;
+    else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
+  }
+
+  switch(stereo_mode)
+  {
+    case CONF_FLAGS_STEREO_MODE_TAB:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.y2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      break;
+
+    case CONF_FLAGS_STEREO_MODE_SBS:
+      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
+        m_sourceRect.x2 *= 0.5f;
+      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+        m_sourceRect.x1 += m_sourceRect.x2*0.5f;
+      break;
+
+    default:
+      break;
+  }
+
+  m_sourceRect.x1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
+  m_sourceRect.y1 += (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
+  m_sourceRect.x2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
+  m_sourceRect.y2 -= (float)CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
@@ -587,20 +602,14 @@ void CBaseRenderer::SetViewMode(int viewMode)
   if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
     viewMode = ViewModeNormal;
 
-  if (m_iFlags & (CONF_FLAGS_FORMAT_SBS | CONF_FLAGS_FORMAT_TB))
-    viewMode = ViewModeNormal;
-
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution
   RESOLUTION res = GetResolution();
-  float screenWidth = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left);
-  float screenHeight = (float)(CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top);
+  RESOLUTION_INFO info = g_graphicsContext.GetResInfo(m_resolution);
+  float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
+  float screenHeight = (float)(info.Overscan.bottom - info.Overscan.top);
 
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
-    screenWidth /= 2;
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
-    screenHeight /= 2;
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
@@ -608,8 +617,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
               CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeNormal);
 
   // Splitres scaling factor
-  float xscale = (float)CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth  / (float)CDisplaySettings::Get().GetResolutionInfo(res).iWidth;
-  float yscale = (float)CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight / (float)CDisplaySettings::Get().GetResolutionInfo(res).iHeight;
+  float xscale = (float)info.iScreenWidth  / (float)info.iWidth;
+  float yscale = (float)info.iScreenHeight / (float)info.iHeight;
 
   screenWidth   *= xscale;
   screenHeight  *= yscale;
@@ -622,7 +631,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // zoom image so no black bars
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / info.fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
@@ -640,7 +649,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
     else
     {
@@ -652,7 +661,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
            (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeWideZoom))
   { // super zoom
-    float stretchAmount = (screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio;
+    float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     CDisplaySettings::Get().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
     CDisplaySettings::Get().SetZoomAmount(pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0)));
     CDisplaySettings::Get().SetNonLinearStretched(true);
@@ -669,7 +678,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio / sourceFrameRatio);
+      CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
@@ -677,7 +686,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // get the size of the media file
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / CDisplaySettings::Get().GetResolutionInfo(res).fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * CDisplaySettings::Get().GetPixelRatio() / info.fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full width.
     float newHeight = screenWidth / outputFrameRatio;
     if (newHeight > screenHeight)

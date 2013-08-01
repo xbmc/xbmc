@@ -62,11 +62,11 @@ bool KaraokeVideoBackground::openVideoFile( const CStdString& filename )
   m_curVideoFile = filename;
   
   // Find out the necessary aspect ratio for height (assuming fit by width) and width (assuming fit by height)
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  m_displayLeft = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
-  m_displayRight = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right;
-  m_displayTop = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top;
-  m_displayBottom = CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom;
+  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  m_displayLeft   = info.Overscan.left;
+  m_displayRight  = info.Overscan.right;
+  m_displayTop    = info.Overscan.top;
+  m_displayBottom = info.Overscan.bottom;
   
   int screen_width = m_displayRight - m_displayLeft;
   int screen_height = m_displayBottom - m_displayTop;

@@ -38,6 +38,7 @@
 #include "guilib/GUIMessage.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
@@ -318,4 +319,5 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();
+  CStereoscopicsManager::Get().Initialize();
 }

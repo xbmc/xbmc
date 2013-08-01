@@ -25,6 +25,7 @@
 #include "utils/MathUtils.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 #endif
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -68,6 +69,9 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
 #define VIDEO_SETTINGS_DEINTERLACEMODE    24
+
+#define VIDEO_SETTINGS_STEREOSCOPICMODE   25
+#define VIDEO_SETTINGS_STEREOSCOPICINVERT 26
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -188,6 +192,14 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
     AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch);
 #endif
+
+  vector<pair<int, int> > stereomode;
+  stereomode.push_back(make_pair(RENDER_STEREO_MODE_OFF             , 16316));
+  stereomode.push_back(make_pair(RENDER_STEREO_MODE_SPLIT_HORIZONTAL, 36503));
+  stereomode.push_back(make_pair(RENDER_STEREO_MODE_SPLIT_VERTICAL  , 36504));
+  AddSpin(VIDEO_SETTINGS_STEREOSCOPICMODE  , 36535, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode, stereomode);
+  AddBool(VIDEO_SETTINGS_STEREOSCOPICINVERT, 36536, &CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert);
+
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);

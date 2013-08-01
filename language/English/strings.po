@@ -14145,8 +14145,132 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36421 to 36999
+#empty strings from id 36421 to 36499
 #end reservation
+
+#: system/settings/settings.xml
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36502"
+msgid "None"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36504"
+msgid "Side by side"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr ""
+
+#reserved strings for 3d modes 36509 - 36520
+
+#: system/settings/settings.xml
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36521"
+msgid "Ask me"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr ""
+
+#: settings/DisplaySettings.cpp
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr ""
+
+#: settings/DisplaySettings.cpp
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr ""
+
+#: guilib/StereoscopicsManager.cpp
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr ""
+
+#reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"

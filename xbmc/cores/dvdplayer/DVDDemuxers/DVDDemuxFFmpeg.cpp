@@ -1140,6 +1140,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         AVDictionaryEntry *rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
           st->iOrientation = atoi(rtag->value);
+
+        rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "stereo_mode", NULL, 0);
+        if (rtag && rtag->value)
+          st->stereo_mode = rtag->value;
+
         
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
         {

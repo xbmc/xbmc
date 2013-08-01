@@ -138,6 +138,8 @@ public:
   int m_CropBottom;
   int m_CropLeft;
   int m_CropRight;
+  int m_StereoMode;
+  bool m_StereoInvert;
 
 private:
 };

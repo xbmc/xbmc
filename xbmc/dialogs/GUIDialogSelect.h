@@ -37,8 +37,8 @@ public:
   virtual bool OnBack(int actionID);
 
   void Reset();
-  void Add(const CStdString& strLabel);
-  void Add(const CFileItem* pItem);
+  int  Add(const CStdString& strLabel);
+  int  Add(const CFileItem* pItem);
   void Add(const CFileItemList& items);
   void SetItems(CFileItemList* items);
   int GetSelectedLabel() const;

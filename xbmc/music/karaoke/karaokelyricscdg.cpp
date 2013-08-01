@@ -186,11 +186,11 @@ void CKaraokeLyricsCDG::Render()
 				  (float)(CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT) / CDG_FULL_HEIGHT);
 
   // Get screen coordinates
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  CRect vertCoords((float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left,
-                   (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.top,
-                   (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right,
-                   (float)CDisplaySettings::Get().GetResolutionInfo(res).Overscan.bottom);
+  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  CRect vertCoords((float)info.Overscan.left,
+                   (float)info.Overscan.top,
+                   (float)info.Overscan.right,
+                   (float)info.Overscan.bottom);
 
   CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
 }

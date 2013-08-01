@@ -25,7 +25,6 @@
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/DisplaySettings.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "utils/Variant.h"
@@ -634,7 +633,7 @@ namespace XBMCAddon
         throw WindowException("Invalid resolution.");
 
       SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
-      ref(window)->SetCoordsRes(CDisplaySettings::Get().GetResolutionInfo(res));
+      ref(window)->SetCoordsRes(g_graphicsContext.GetResInfo((RESOLUTION)res));
     }
 
     void Window::setProperty(const char* key, const String& value)

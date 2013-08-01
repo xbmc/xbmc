@@ -26,6 +26,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Setting.h"
 #include "settings/Settings.h"
@@ -48,6 +49,26 @@ float square_error(float x, float y)
   float yonx = (x > 0) ? y / x : 0;
   float xony = (y > 0) ? x / y : 0;
   return std::max(yonx, xony);
+}
+
+static CStdString ModeFlagsToString(unsigned int flags, bool identifier)
+{
+  CStdString res;
+  if(flags & D3DPRESENTFLAG_INTERLACED)
+    res += "i";
+  else
+    res += "p";
+
+  if(!identifier)
+    res += " ";
+
+  if(flags & D3DPRESENTFLAG_MODE3DSBS)
+    res += "sbs";
+  else if(flags & D3DPRESENTFLAG_MODE3DTB)
+    res += "tab";
+  else if(identifier)
+    res += "std";
+  return res;
 }
 
 CDisplaySettings::CDisplaySettings()
@@ -250,8 +271,11 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
     std::string screenmode = screenmodeSetting->GetValue();
     // in Eden there was no character ("i" or "p") indicating interlaced/progressive
     // at the end so we just add a "p" and assume progressive
+    // no 3d mode existed before, so just assume std modes
     if (screenmode.size() == 20)
-      return screenmodeSetting->SetValue(screenmode + "p");
+      return screenmodeSetting->SetValue(screenmode + "pstd");
+    if (screenmode.size() == 21)
+      return screenmodeSetting->SetValue(screenmode + "std");
   }
 
   return false;
@@ -318,7 +342,27 @@ RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(RESOLUTION resolution)
 void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
 {
   CSingleLock lock(m_critical);
-  m_resolutions.push_back(resolution);
+  RESOLUTION_INFO res(resolution);
+
+  if((res.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
+  {
+    /* add corrections for some special case modes frame packing modes */
+
+    if(res.iScreenWidth  == 1920
+    && res.iScreenHeight == 2205)
+    {
+      res.iBlanking = 45;
+      res.dwFlags  |= D3DPRESENTFLAG_MODE3DTB;
+    }
+
+    if(res.iScreenWidth  == 1280
+    && res.iScreenHeight == 1470)
+    {
+      res.iBlanking = 30;
+      res.dwFlags  |= D3DPRESENTFLAG_MODE3DTB;
+    }
+  }
+  m_resolutions.push_back(res);
 }
 
 void CDisplaySettings::ApplyCalibrations()
@@ -407,23 +451,24 @@ DisplayMode CDisplaySettings::GetCurrentDisplayMode() const
   return GetCurrentResolutionInfo().iScreen;
 }
 
-RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, bool interlaced)
+RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, unsigned flags)
 {
-  int interlace = interlaced ? 100 : 200;
-
   // find the closest match to these in our res vector.  If we have the screen, we score the res
   RESOLUTION bestRes = RES_DESKTOP;
   float bestScore = FLT_MAX;
+  flags &= D3DPRESENTFLAG_MODEMASK;
 
   for (std::map<RESOLUTION, RESOLUTION_INFO>::const_iterator it = resolutionInfos.begin(); it != resolutionInfos.end(); ++it)
   {
     const RESOLUTION_INFO &info = it->second;
-    if (info.iScreen != screen)
+
+    if ( info.iScreen               != screen
+    ||  (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != flags)
       continue;
+
     float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
                   square_error((float)info.iScreenHeight, (float)height) +
-                  square_error(info.fRefreshRate, refreshrate) +
-                  square_error((float)((info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? 100 : 200), (float)interlace));
+                  square_error(info.fRefreshRate, refreshrate));
     if (score < bestScore)
     {
       bestScore = score;
@@ -440,22 +485,29 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
     return RES_DESKTOP;
   else if (strResolution == "WINDOW")
     return RES_WINDOW;
-  else if (strResolution.size() == 21)
+  else if (strResolution.size() >= 21)
   {
-    // format: SWWWWWHHHHHRRR.RRRRRP, where S = screen, W = width, H = height, R = refresh, P = interlace
+    // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
     int screen = strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
     int width = strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
     int height = strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
     float refresh = (float)strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
+    unsigned flags = 0;
+
     // look for 'i' and treat everything else as progressive,
-    // and use 100/200 to get a nice square_error.
-    bool interlaced = StringUtils::EndsWith(strResolution, "i");
+    if(StringUtils::Mid(strResolution, 20,1) == "i")
+      flags |= D3DPRESENTFLAG_INTERLACED;
+
+    if(StringUtils::Mid(strResolution, 21,3) == "sbs")
+      flags |= D3DPRESENTFLAG_MODE3DSBS;
+    else if(StringUtils::Mid(strResolution, 21,3) == "tab")
+      flags |= D3DPRESENTFLAG_MODE3DTB;
 
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
     for (size_t resolution = RES_DESKTOP; resolution < CDisplaySettings::Get().ResolutionInfoSize(); resolution++)
       resolutionInfos.insert(make_pair((RESOLUTION)resolution, CDisplaySettings::Get().GetResolutionInfo(resolution)));
 
-    return FindBestMatchingResolution(resolutionInfos, screen, width, height, refresh, interlaced);
+    return FindBestMatchingResolution(resolutionInfos, screen, width, height, refresh, flags);
   }
 
   return RES_DESKTOP;
@@ -474,8 +526,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
     {
       return StringUtils::Format("%1i%05i%05i%09.5f%s", info.iScreen,
                                  info.iScreenWidth, info.iScreenHeight,
-                                 refreshrate > 0.0f ? refreshrate : info.fRefreshRate,
-                                 (info.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i":"p");
+                                 refreshrate > 0.0f ? refreshrate : info.fRefreshRate, ModeFlagsToString(info.dwFlags, true).c_str());
     }
   }
 
@@ -554,7 +605,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const CSetting *setting, 
     {
       list.push_back(make_pair(
         StringUtils::Format("%dx%d%s", resolution->width, resolution->height,
-                            (resolution->interlaced == D3DPRESENTFLAG_INTERLACED) ? "i" : "p"),
+                            ModeFlagsToString(resolution->flags, false).c_str()),
                             resolution->ResInfo_Index));
 
       resolutionInfos.insert(make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::Get().GetResolutionInfo(resolution->ResInfo_Index)));
@@ -562,7 +613,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const CSetting *setting, 
 
     current = FindBestMatchingResolution(resolutionInfos, info.iScreen,
                                          info.iScreenWidth, info.iScreenHeight,
-                                         info.fRefreshRate, info.dwFlags & D3DPRESENTFLAG_INTERLACED);
+                                         info.fRefreshRate, info.dwFlags);
   }
 }
 
@@ -595,4 +646,20 @@ void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting
   list.push_back(make_pair(g_localizeStrings.Get(13106), VSYNC_DISABLED));
   list.push_back(make_pair(g_localizeStrings.Get(13107), VSYNC_VIDEO));
   list.push_back(make_pair(g_localizeStrings.Get(13108), VSYNC_ALWAYS));
+}
+
+void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
+  {
+    RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
+    if (g_Windowing.SupportsStereo(mode))
+      list.push_back(make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(mode), mode));
+  }
+}
+
+void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  SettingOptionsStereoscopicModesFiller(setting, list, current);
+  list.push_back(make_pair(g_localizeStrings.Get(36525), RENDER_STEREO_MODE_AUTO)); // option for autodetect
 }

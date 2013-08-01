@@ -37,6 +37,11 @@
 #define D3DPRESENTFLAG_MODE3DSBS    8
 #define D3DPRESENTFLAG_MODE3DTB    16
 
+/* what types are important for mode setting */
+#define D3DPRESENTFLAG_MODEMASK ( D3DPRESENTFLAG_INTERLACED \
+                                | D3DPRESENTFLAG_MODE3DSBS  \
+                                | D3DPRESENTFLAG_MODE3DTB   )
+
 #define D3DFMT_LIN_A8R8G8B8 D3DFMT_A8R8G8B8
 #define D3DFMT_LIN_X8R8G8B8 D3DFMT_X8R8G8B8
 #define D3DFMT_LIN_L8       D3DFMT_L8
