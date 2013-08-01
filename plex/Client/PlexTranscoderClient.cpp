@@ -1,0 +1,135 @@
+//
+//  PlexTranscoderClient.cpp
+//  Plex Home Theater
+//
+//  Created by Tobias Hieta on 2013-08-01.
+//
+//
+
+#include <string>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/assign.hpp>
+
+#include "PlexTranscoderClient.h"
+#include "settings/GUISettings.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "plex/PlexUtils.h"
+#include "Client/PlexConnection.h"
+#include "FileSystem/PlexFile.h"
+
+#include <map>
+
+typedef std::map<std::string, std::string> str2str;
+
+static str2str _resolutions = boost::assign::list_of<std::pair<std::string, std::string> >
+  ("64", "220x180") ("96", "220x128") ("208", "284x160") ("320", "420x240") ("720", "576x320") ("1500", "720x480") ("2000", "1024x768")
+  ("3000", "1280x720") ("4000", "1280x720") ("8000", "1920x1080") ("10000", "1920x1080") ("12000", "1920x1080") ("20000", "1920x1080");
+
+static str2str _qualities = boost::assign::list_of<std::pair<std::string, std::string> >
+  ("64", "10") ("96", "20") ("208", "30") ("320", "30") ("720", "40") ("1500", "60") ("2000", "60")
+  ("3000", "75") ("4000", "100") ("8000", "60") ("10000", "75") ("12000", "90") ("20000", "100");
+
+
+///////////////////////////////////////////////////////////////////////////////
+int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int currentQuality)
+{
+  std::vector<std::string> qualities = server->GetTranscoderBitrates();
+  
+  CGUIDialogSelect *select = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  select->Add(g_localizeStrings.Get(42999));
+  
+  if (currentQuality == 0)
+    select->SetSelected(0);
+  
+  if (server->SupportsVideoTranscoding())
+  {
+    int idx = 1;
+    BOOST_FOREACH(std::string qual, qualities)
+    {
+      int qualint = 0;
+      try { qualint = boost::lexical_cast<int>(qual); }
+      catch (...) {}
+
+      select->Add(GetPrettyBitrate(qualint));
+      if (currentQuality == qualint)
+        select->SetSelected(idx);
+      
+      idx++;
+    }
+  }
+  
+  select->DoModal();
+  int newqual = select->GetSelectedLabel();
+  if (newqual > 0)
+  {
+    try {
+      return boost::lexical_cast<int>(qualities[newqual-1]);
+    } catch (...) {
+      return currentQuality;
+    }
+  }
+  
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string CPlexTranscoderClient::GetCurrentBitrate(bool local)
+{
+  return boost::lexical_cast<std::string>(g_guiSettings.GetInt(local ? "plexmediaserver.localquality" : "plexmediaserver.remotequality"));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string CPlexTranscoderClient::GetPrettyBitrate(int rawbitrate)
+{
+  if (rawbitrate < 1000)
+    return boost::lexical_cast<std::string>(rawbitrate) + " kbps";
+  else
+    return boost::lexical_cast<std::string>(rawbitrate / 1000) + " Mbps";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileItem& item)
+{
+  if (server->GetActiveConnection()->IsLocal())
+    return g_guiSettings.GetInt("plexmediaserver.localquality") != 0;
+  else
+    return g_guiSettings.GetInt("plexmediaserver.remotequality") != 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+typedef std::pair<std::string, std::string> stringPair;
+CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileItem& item)
+{
+  bool isLocal = server->GetActiveConnection()->IsLocal();
+  
+  /* Note that we are building a HTTP URL here, because XBMC will pass the
+   * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
+   * plexserver:// protocol */
+  CURL tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
+  
+  tURL.SetOption("path", item.GetProperty("unprocessed_key").asString());
+  tURL.SetOption("session", g_guiSettings.GetString("system.uuid"));
+  tURL.SetOption("protocol", "hls");
+  tURL.SetOption("directPlay", "0");
+  tURL.SetOption("directStream", "1");
+  
+  std::string bitrate = GetCurrentBitrate(isLocal);
+  tURL.SetOption("maxVideoBitrate", bitrate);
+  tURL.SetOption("videoQuality", _qualities[bitrate]);
+  tURL.SetOption("videoResolution", _resolutions[bitrate]);
+  tURL.SetOption("fastSeek", "1");
+  
+  /* PHT can render subtitles itself no need to include them in the transcoded video */
+  tURL.SetOption("skipSubtitles", "1");
+  
+  /* since we are passing the URL to FFMPEG we need to pass our 
+   * headers as well */
+  std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
+  BOOST_FOREACH(stringPair p, hdrs)
+    tURL.SetOption(p.first, p.second);
+  
+  return tURL;
+}

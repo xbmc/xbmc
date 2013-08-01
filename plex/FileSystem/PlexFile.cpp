@@ -3,34 +3,50 @@
 #include "utils/log.h"
 #include "settings/GUISettings.h"
 #include "boost/lexical_cast.hpp"
+#include <boost/assign.hpp>
+#include <boost/foreach.hpp>
 #include <string>
 
 using namespace XFILE;
+using namespace std;
+
+typedef pair<string, string> stringPair;
+
+vector<stringPair> CPlexFile::GetHeaderList()
+{
+  std::vector<std::pair<std::string, std::string> > hdrs;
+  
+  hdrs.push_back(stringPair("X-Plex-Version", PLEX_VERSION));
+  hdrs.push_back(stringPair("X-Plex-Client-Platform", PlexUtils::GetMachinePlatform()));
+
+  hdrs.push_back(stringPair("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
+  hdrs.push_back(stringPair("X-Plex-Provides", "player"));
+  hdrs.push_back(stringPair("X-Plex-Product", "Plex for Home Theater"));
+  hdrs.push_back(stringPair("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename")));
+  
+  hdrs.push_back(stringPair("X-Plex-Platform", "Plex Home Theater"));
+  hdrs.push_back(stringPair("X-Plex-Model", PlexUtils::GetMachinePlatform()));
+#ifdef TARGET_RPI
+  hdrs.push_back(stringPair("X-Plex-Device", "RaspberryPi"));
+#elif defined(TARGET_DARWIN_IOS)
+  hdrs.push_back(stringPair("X-Plex-Device", "AppleTV"));
+#else
+  hdrs.push_back(stringPair("X-Plex-Device", "PC"));
+#endif
+  
+  if (g_myplexManager.IsSignedIn())
+  {
+    hdrs.push_back(stringPair("X-Plex-Account", boost::lexical_cast<std::string>(g_myplexManager.GetCurrentUserInfo().id)));
+    hdrs.push_back(stringPair("X-Plex-Username", g_myplexManager.GetCurrentUserInfo().username));
+  }
+
+  return hdrs;
+}
 
 CPlexFile::CPlexFile(void) : CCurlFile()
 {
-  SetRequestHeader("X-Plex-Version", PLEX_VERSION);
-  SetRequestHeader("X-Plex-Client-Platform", PlexUtils::GetMachinePlatform());
-  SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
-  SetRequestHeader("X-Plex-Provides", "player");
-  SetRequestHeader("X-Plex-Product", "Plex for Home Theater");
-  SetRequestHeader("X-Plex-Device-Name", g_guiSettings.GetString("services.devicename"));
-
-  SetRequestHeader("X-Plex-Platform", "PlexHomeTheater");
-  SetRequestHeader("X-Plex-Model", PlexUtils::GetMachinePlatform());
-#ifdef TARGET_RPI
-  SetRequestHeader("X-Plex-Device", "RaspberryPi");
-#elif defined(TARGET_DARWIN_IOS)
-  SetRequestHeader("X-Plex-Device", "AppleTV");
-#else
-  SetRequestHeader("X-Plex-Device", "PC");
-#endif
-
-  if (g_myplexManager.IsSignedIn())
-  {
-    SetRequestHeader("X-Plex-Account", boost::lexical_cast<std::string>(g_myplexManager.GetCurrentUserInfo().id));
-    SetRequestHeader("X-Plex-Username", g_myplexManager.GetCurrentUserInfo().username);
-  }
+  BOOST_FOREACH(stringPair sp, GetHeaderList())
+    SetRequestHeader(sp.first, sp.second);
 }
 
 bool

@@ -907,3 +907,11 @@ msgstr "Select Subtitle"
 msgctxt "#52102"
 msgid "Channels"
 msgstr "Channels"
+
+msgctxt "#52201"
+msgid "Local Video Quality"
+msgstr "Local Video Quality"
+
+msgctxt "#52202"
+msgid "Remote Video Quality"
+msgstr "Remote Video Quality"

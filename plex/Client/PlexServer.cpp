@@ -64,26 +64,26 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
       }
     }
 
-    if (root->QueryBoolAttribute("allowMediaDeletion", &boolValue))
+    if (root->QueryBoolAttribute("allowMediaDeletion", &boolValue) == TIXML_SUCCESS)
       m_supportsDeletion = boolValue;
 
-    if (root->QueryBoolAttribute("transcoderAudio", &boolValue))
+    if (root->QueryBoolAttribute("transcoderAudio", &boolValue) == TIXML_SUCCESS)
       m_supportsAudioTranscoding = boolValue;
 
-    if (root->QueryBoolAttribute("transcoderVideo", &boolValue))
+    if (root->QueryBoolAttribute("transcoderVideo", &boolValue) == TIXML_SUCCESS)
       m_supportsVideoTranscoding = boolValue;
 
     root->QueryStringAttribute("serverClass", &m_serverClass);
     root->QueryStringAttribute("version", &m_version);
 
     CStdString stringValue;
-    if (root->QueryStringAttribute("transcoderVideoResolutions", &stringValue))
+    if (root->QueryStringAttribute("transcoderVideoResolutions", &stringValue) == TIXML_SUCCESS)
       m_transcoderResolutions = StringUtils::Split(stringValue, ",");
 
-    if (root->QueryStringAttribute("transcoderVideoBitrates", &stringValue))
+    if (root->QueryStringAttribute("transcoderVideoBitrates", &stringValue) == TIXML_SUCCESS)
       m_transcoderBitrates = StringUtils::Split(stringValue, ",");
 
-    if (root->QueryStringAttribute("transcoderVideoQualities", &stringValue))
+    if (root->QueryStringAttribute("transcoderVideoQualities", &stringValue) == TIXML_SUCCESS)
       m_transcoderQualities = StringUtils::Split(stringValue, ",");
 
     CLog::Log(LOGDEBUG, "CPlexServer::CollectDataFromRoot knowledge complete: %s", toString().c_str());

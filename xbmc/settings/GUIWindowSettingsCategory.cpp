@@ -131,6 +131,7 @@
 #include "PlexApplication.h"
 #include "BackgroundMusicPlayer.h"
 #include "Client/PlexServerManager.h"
+#include "Client/PlexTranscoderClient.h"
 /* END PLEX */
 
 using namespace std;
@@ -1093,12 +1094,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("plexmediaserver.address"))
     {
       bool enabled = g_guiSettings.GetBool("plexmediaserver.manualaddress");
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(enabled);
-    }
-    else if (strSetting.Equals("plexmediaserver.localtranscodequality"))
-    {
-      bool enabled = g_guiSettings.GetBool("plexmediaserver.forcelocaltranscode");
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
@@ -2158,9 +2153,36 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Left(15).Equals("plexmediaserver"))
   {
+    if (strSetting.Equals("plexmediaserver.localqualitystr"))
+    {
+      CPlexServerPtr server = g_plexServerManager.GetBestServer();
+      if (server)
+      {
+        int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.localquality"));
+        g_guiSettings.SetInt("plexmediaserver.localquality", quality);
+        if (quality > 0)
+          g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+        else
+          g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
+      }
+    }
+    else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
+    {
+      CPlexServerPtr server = g_plexServerManager.GetBestServer();
+      if (server)
+      {
+        int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.remotequality"));
+        g_guiSettings.SetInt("plexmediaserver.remotequality", quality);
+        if (quality > 0)
+          g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+        else
+          g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
+      }
+    }
     // Check manual server.
     if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
     {
+      
       string address = g_guiSettings.GetString("plexmediaserver.address");
       if (PlexUtils::IsValidIP(address))
       {

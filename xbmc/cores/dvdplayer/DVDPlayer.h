@@ -551,7 +551,6 @@ protected:
 
   /* PLEX */
   void RelinkPlexStreams();
-  virtual CStdString TranscodeURL(CStdString& stopURL, const CStdString& url, int quality=-1, const CStdString& transcodeHost = "", const CStdString& extraOptions = "");
 
   CStdString   m_strError;
   CFileItemPtr m_itemWithDetails;

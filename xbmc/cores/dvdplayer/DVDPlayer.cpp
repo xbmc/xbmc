@@ -108,6 +108,7 @@
 #include "ApplicationMessenger.h"
 
 #include "Network/NetworkInterface.h"
+#include "Client/PlexTranscoderClient.h"
 /* END PLEX */
 
 using namespace std;
@@ -4508,79 +4509,6 @@ void CDVDPlayer::RelinkPlexStreams()
 }
 
 
-CStdString CDVDPlayer::TranscodeURL(CStdString& stopURL, const CStdString& url, int quality, const CStdString& transcodeHost, const CStdString& extraOptions)
-{
-  // Figure out quality.
-  if (quality == -1)
-    quality = g_guiSettings.GetInt("myplex.remoteplexquality");
-
-  // Initialise the transcode URL.
-  CURL transcodeURL(m_filename);
-  transcodeURL.SetFileName("video/:/transcode/segmented/start.m3u8");
-
-  // Override the hostname if provided
-  if (transcodeHost != "")
-    transcodeURL.SetHostName(transcodeHost);
-
-  // Encode the media URL.
-  CStdString encodedURL(url);
-  CURL::Encode(encodedURL);
-
-  // Initialise the options string
-  CStdString options = "?url=" + encodedURL;
-
-  // Append any extra options
-  if (extraOptions != "")
-    options += "&" + extraOptions;
-
-  // Append the quality option
-  quality = (quality > -1) ? (quality+3) : 7;
-  options += "&quality=" + boost::lexical_cast<string>(quality);
-
-  // Set the quality on the file item, since the demuxer seems to get it wrong. We'll multiply
-  // by a factor since we're doing a remote stream, seems to work better.
-  //
-  static int bitrateQualities[] = {64,96,208,320,720,1500,2000,3000,4000,8000,10000,12000,20000};
-  CFileItem& file = g_application.CurrentFileItem();
-  file.SetProperty("bitrate", bitrateQualities[quality] * 4);
-
-  // Append the session ID
-  options += "&session=" + g_guiSettings.GetString("system.uuid");
-
-  // Build the stop URL while we're here.
-  CURL stopTranscodeURL(m_filename);
-  stopTranscodeURL.SetFileName("video/:/transcode/segmented/stop");
-  stopTranscodeURL.SetOptions("?session=" + g_guiSettings.GetString("system.uuid"));
-  stopURL = stopTranscodeURL.Get();
-
-  // Sign it with the public key.
-  time_t time = ::time(0);
-  string apiKey = "KQMIY6GATPC63AIMC4R2";
-  string secretKey = CBase64::Decode("k3U6GLkZOoNIoSgjDshPErvqMIFdE0xMTx8kgsrhnC0=");
-
-  // Compute the message.
-  string message = "/" + transcodeURL.GetFileName() + options;
-  message += "@" + boost::lexical_cast<string>(time);
-
-  // Compute the HMAC.
-  unsigned char mac[32];
-  hmac_sha256((unsigned char* )secretKey.c_str(), secretKey.size(), (unsigned char* )message.c_str(), message.size(), mac, 32);
-  string sig = CBase64::Encode((unsigned char *)mac, 32);
-  boost::replace_all(sig, "/", "%2F");
-  boost::replace_all(sig, "=", "%3D");
-
-  if (transcodeURL.GetOptions().empty() == false)
-    options += "&" + transcodeURL.GetOptions().substr(1);
-
-  options += "&X-Plex-Access-Key=" + apiKey;
-  options += "&X-Plex-Access-Time=" + boost::lexical_cast<string>(time);
-  options += "&X-Plex-Access-Code=" + sig;
-
-  transcodeURL.SetOptions(options);
-
-  return transcodeURL.Get();
-}
-
 bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 {
   bool usingLocalPath = false;
@@ -4711,44 +4639,17 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     extraOptions += "&webkit=1";
 
     // Generate a transcode URL and set the filename
-    m_filename = TranscodeURL(stopURL, mediaURLString, -1, serverHost, extraOptions);
+    //m_filename = TranscodeURL(stopURL, mediaURLString, -1, serverHost, extraOptions);
     dprintf("Transcode URL for WebKit content: %s\n", m_filename.c_str());
   }
 
   // Get details on the item we're playing.
   else if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
   {
-    CURL mediaURL(m_filename);
-
-    int quality = 0;
-    bool transcode = false;
-
-    if (item.IsRemotePlexMediaServerLibrary() == true && g_guiSettings.GetInt("myplex.remoteplexquality") != -1)
-    {
-      // This is a remote transcode.
-      transcode = true;
-      quality = g_guiSettings.GetInt("myplex.remoteplexquality");
-    }
-    else if (g_guiSettings.GetBool("plexmediaserver.forcelocaltranscode") == true &&
-             usingLocalPath == false &&
-             NetworkInterface::IsLocalAddress(mediaURL.GetHostName()) == false)
-    {
-      // This is a forced local transcode.
-      transcode = true;
-      quality = g_guiSettings.GetInt("plexmediaserver.localtranscodequality");
-    }
-
-    // If it's remote, see if we're transcoding (or if it's on the local network and we've force enabled transcoding.
-    if (transcode)
-    {
-      // Build the media URL.
-      mediaURL.SetHostName("127.0.0.1");
-      mediaURL.SetPort(32400);
-      mediaURL.SetOptions("");
-
-      m_filename = TranscodeURL(stopURL, mediaURL.Get(), quality);
-      dprintf("Transcode URL for remote content: %s", m_filename.c_str());
-    }
+    /* find the server for the item */
+    CPlexServerPtr server = g_plexServerManager.FindByUUID(item.GetProperty("plexserver").asString());
+    if (server && CPlexTranscoderClient::ShouldTranscode(server, item))
+      m_filename = CPlexTranscoderClient::GetTranscodeURL(server, item).Get();
   }
   return true;
 }

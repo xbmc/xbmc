@@ -73,7 +73,15 @@ public:
   void AddConnection(CPlexConnectionPtr connection);
 
   void SetOwner(const CStdString &owner) { m_owner = owner; }
-
+  
+  std::vector<std::string> GetTranscoderQualities() const { return m_transcoderQualities; }
+  std::vector<std::string> GetTranscoderBitrates() const { return m_transcoderBitrates; }
+  std::vector<std::string> GetTranscoderResolutions() const { return m_transcoderResolutions; }
+  
+  bool SupportsVideoTranscoding() const { return m_supportsVideoTranscoding; }
+  bool SupportsAudioTranscoding() const { return m_supportsAudioTranscoding; }
+  bool SupportsDeletion() const { return m_supportsDeletion; }
+  
 private:
   bool m_owned;
   CStdString m_uuid;
