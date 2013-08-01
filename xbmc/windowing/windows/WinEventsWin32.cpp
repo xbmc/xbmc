@@ -511,27 +511,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       switch (wParam)
       {
-        case VK_V:
-          if(GetKeyState(VK_CONTROL) & 0x8000)
-          {
-            // CTRL+V
-            if(OpenClipboard(NULL))
-            {
-              CStdString strtext;
-              HANDLE htext = GetClipboardData(CF_UNICODETEXT);
-              CStdStringW strwtext = (WCHAR*)htext;
-              g_charsetConverter.wToUTF8(strwtext, strtext);
-              if(!strtext.empty())
-              {
-                CGUIMessage msg(GUI_MSG_INPUT_TEXT, 0, 0);
-                msg.SetLabel(strtext);
-                g_windowManager.SendMessage(msg, g_windowManager.GetFocusedWindow());
-              }
-              CloseClipboard();
-              return(0);
-            }
-          }
-          break;
         case VK_CONTROL:
           if ( lParam & EXTENDED_KEYMASK )
             wParam = VK_RCONTROL;
