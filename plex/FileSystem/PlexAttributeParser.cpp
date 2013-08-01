@@ -17,9 +17,9 @@
 #include "AdvancedSettings.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserBase::Process(const CURL& url, const CStdString& key, const CStdString& value, CFileItem& item)
+void CPlexAttributeParserBase::Process(const CURL& url, const CStdString& key, const CStdString& value, CFileItem *item)
 {
-  item.SetProperty(key, value);
+  item->SetProperty(key, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,26 +31,26 @@ int64_t CPlexAttributeParserInt::GetInt(const CStdString &value)
   return intval;
 }
 
-void CPlexAttributeParserInt::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserInt::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   int64_t intval = GetInt(value);
   if (intval == -1) return;
 
-  item.SetProperty(key, intval);
+  item->SetProperty(key, intval);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserBool::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserBool::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   int64_t intval = GetInt(value);
   if (intval == -1)
-    item.SetProperty(key, (bool)!value.empty());
+    item->SetProperty(key, (bool)!value.empty());
   else
-    item.SetProperty(key, (bool)intval);
+    item->SetProperty(key, (bool)intval);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CURL keyUrl(url);
 
@@ -69,12 +69,12 @@ void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, co
     PlexUtils::AppendPathToURL(keyUrl, value);
   }
 
-  item.SetProperty(key, keyUrl.Get());
-  item.SetProperty("unprocessed_" + key, value);
+  item->SetProperty(key, keyUrl.Get());
+  item->SetProperty("unprocessed_" + key, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CURL mediaUrl(url);
   CURL imageURL;
@@ -129,11 +129,11 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   mediaUrl.SetFileName("photo/:/transcode");
 
   //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaUrl::Process setting %s = %s for item %s", propertyName.c_str(), mediaUrl.Get().c_str(), item.GetLabel().c_str());
-  item.SetArt(propertyName, mediaUrl.Get());
+  item->SetArt(propertyName, mediaUrl.Get());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CURL mediaTagUrl;
 
@@ -141,14 +141,14 @@ void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &k
   mediaTagUrl.SetHostName("127.0.0.1");
   mediaTagUrl.SetPort(32400);
 
-  if (!item.HasProperty("mediaTagPrefix"))
+  if (!item->HasProperty("mediaTagPrefix"))
   {
     CLog::Log(LOGWARNING, "CPlexAttributeParserMediaFlag::Process got a mediaflag on %s but we don't have any mediaTagPrefix", url.Get().c_str());
     return;
   }
 
-  CStdString mediaTagPrefix = item.GetProperty("mediaTagPrefix").asString();
-  CStdString mediaTagVersion = item.GetProperty("mediaTagVersion").asString();
+  CStdString mediaTagPrefix = item->GetProperty("mediaTagPrefix").asString();
+  CStdString mediaTagVersion = item->GetProperty("mediaTagVersion").asString();
 
   CStdString flagUrl = mediaTagPrefix;
 
@@ -167,40 +167,40 @@ void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &k
   CPlexAttributeParserMediaUrl::Process(url, "mediaTag::" + key, mediaTagUrl.Get(), item);
 
   /* also store the raw value */
-  item.SetProperty("mediaTag-" + key, value);
+  item->SetProperty("mediaTag-" + key, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserType::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserType::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CStdString lookupVal = boost::algorithm::to_lower_copy(std::string(value));
   EPlexDirectoryType dirType = XFILE::CPlexDirectory::GetDirectoryType(lookupVal);
 
   if (dirType != PLEX_DIR_TYPE_UNKNOWN)
   {
-    item.SetProperty(key, lookupVal);
-    item.SetPlexDirectoryType(dirType);
+    item->SetProperty(key, lookupVal);
+    item->SetPlexDirectoryType(dirType);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserLabel::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserLabel::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
-  item.SetLabel(value);
-  item.SetProperty(key, value);
+  item->SetLabel(value);
+  item->SetProperty(key, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserDateTime::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem &item)
+void CPlexAttributeParserDateTime::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   CStdString XBMCFormat = value + " 00:00:00";
   CDateTime time;
 
   time.SetFromDBDate(XBMCFormat);
   if (time.IsValid())
-    item.m_dateTime = time;
+    item->m_dateTime = time;
   else
     CLog::Log(LOGDEBUG, "CPlexAttributeParserDateTime::Process failed to parse %s into something sensible.", XBMCFormat.c_str());
 
-  item.SetProperty(key, value);
+  item->SetProperty(key, value);
 }

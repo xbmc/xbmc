@@ -81,20 +81,22 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return false;
   }
 
-  CXBMCTinyXML doc;
-
-  if (!doc.Parse(data))
   {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", m_url.Get().c_str());
-    CancelAugmentations();
-    return false;
-  }
+    CXBMCTinyXML doc;
 
-  if (!ReadMediaContainer(doc.RootElement(), fileItems))
-  {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
-    CancelAugmentations();
-    return false;
+    if (!doc.Parse(data))
+    {
+      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s", m_url.Get().c_str());
+      CancelAugmentations();
+      return false;
+    }
+
+    if (!ReadMediaContainer(doc.RootElement(), fileItems))
+    {
+      CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
+      CancelAugmentations();
+      return false;
+    }
   }
 
   if (m_isAugmented)
@@ -235,7 +237,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
 static CPlexAttributeParserBase* g_defaultAttr = new CPlexAttributeParserBase;
 
 void
-CPlexDirectory::CopyAttributes(TiXmlElement* el, CFileItem& item, const CURL &url)
+CPlexDirectory::CopyAttributes(TiXmlElement* el, CFileItem* item, const CURL &url)
 {
   TiXmlAttribute *attr = el->FirstAttribute();
 
@@ -259,7 +261,7 @@ CPlexDirectory::CopyAttributes(TiXmlElement* el, CFileItem& item, const CURL &ur
 }
 
 CFileItemPtr
-CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, const CURL &baseUrl)
+CPlexDirectory::NewPlexElement(TiXmlElement *element, const CFileItem &parentItem, const CURL &baseUrl)
 {
   CFileItemPtr newItem = CFileItemPtr(new CFileItem);
 
@@ -273,13 +275,13 @@ CPlexDirectory::NewPlexElement(TiXmlElement *element, CFileItem &parentItem, con
       newItem->SetProperty("mediaTagVersion", parentItem.GetProperty("mediaTagVersion").asString());
   }
 
-  CPlexDirectory::CopyAttributes(element, *newItem, baseUrl);
+  CPlexDirectory::CopyAttributes(element, newItem.get(), baseUrl);
 
   if (newItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_UNKNOWN)
   {
     /* no type attribute, let's try to use the name of the XML element */
     CPlexAttributeParserType t;
-    t.Process(baseUrl, "type", element->ValueStr(), *newItem);
+    t.Process(baseUrl, "type", element->ValueStr(), newItem.get());
   }
 
   if (newItem->HasProperty("key"))
@@ -319,7 +321,7 @@ CPlexDirectory::ReadChildren(TiXmlElement* root, CFileItemList& container)
       item->SetArt(PLEX_ART_THUMB, container.GetArt(PLEX_ART_THUMB));
 
     
-    item->m_bIsFolder = IsFolder(*item, element);
+    item->m_bIsFolder = IsFolder(item, element);
 
     container.Add(item);
   }
@@ -338,9 +340,10 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   mediaContainer.SetPath(m_url.Get());
   mediaContainer.SetProperty("plex", true);
   mediaContainer.SetProperty("plexserver", m_url.GetHostName());
-
-  CPlexDirectory::CopyAttributes(root, mediaContainer, m_url);
-  g_parserKey->Process(m_url, "key", m_url.GetFileName(), mediaContainer);
+  
+  CPlexDirectory::CopyAttributes(root, &mediaContainer, m_url);
+  g_parserKey->Process(m_url, "key", m_url.GetFileName(), &mediaContainer);
+  
   
   /* set the view mode */
   if (mediaContainer.HasProperty("viewMode"))
@@ -348,6 +351,7 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     int viewMode = mediaContainer.GetProperty("viewMode").asInteger();
     CGUIViewState *state = CGUIViewState::GetViewState(0, mediaContainer);
     state->SaveViewAsControl(viewMode);
+    delete state;
   }
 
   /* now read all the childs to the mediaContainer */
@@ -446,7 +450,7 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
   if (m_augmentationEvent.WaitMSec(5 * 1000))
   {
     CLog::Log(LOGDEBUG, "CPlexDirectory::DoAugmentation got it...");
-    BOOST_FOREACH(CFileItemListPtr augList, m_augmentationItems)
+    BOOST_FOREACH(CFileItemList *augList, m_augmentationItems)
     {
       if (augList->Size() > 0)
       {
@@ -507,6 +511,11 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
   }
   else
     CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation failed to get augmentation URL");
+  
+  /* clean up */
+  BOOST_FOREACH(CFileItemList* item, m_augmentationItems)
+    delete item;
+  m_augmentationItems.clear();
 }
 
 
@@ -520,10 +529,12 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (success)
   {
     CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
-    m_augmentationItems.push_back(fjob->m_items);
+    CFileItemList* list = new CFileItemList;
+    list->Copy(fjob->m_items);
+    
+    m_augmentationItems.push_back(list);
 
     /* Fire off some more augmentation events if needed */
-    CFileItemListPtr list = fjob->m_items;
     if (list->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON &&
         list->Size() > 0 &&
         list->Get(0)->HasProperty("parentKey"))
@@ -541,12 +552,12 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::IsFolder(CFileItem& item, TiXmlElement* element)
+bool CPlexDirectory::IsFolder(const CFileItemPtr& item, TiXmlElement* element)
 {
   if (element->ValueStr() == "Directory")
     return true;
 
-  switch(item.GetPlexDirectoryType())
+  switch(item->GetPlexDirectoryType())
   {
     case PLEX_DIR_TYPE_VIDEO:
     case PLEX_DIR_TYPE_EPISODE:
@@ -575,9 +586,7 @@ bool CPlexDirectory::IsFolder(CFileItem& item, TiXmlElement* element)
 bool CPlexDirectory::CPlexDirectoryFetchJob::DoWork()
 {
   CPlexDirectory dir;
-
-  m_items = CFileItemListPtr(new CFileItemList);
-  return dir.GetDirectory(m_url.Get(), *m_items);
+  return dir.GetDirectory(m_url.Get(), m_items);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -589,11 +598,12 @@ bool CPlexDirectory::GetSharedServerDirectory(CFileItemList &items)
   for (int i = 0 ; i < sharedSections->Size(); i++)
   {
     CFileItemPtr sectionItem = sharedSections->Get(i);
-    CFileItemPtr item = CFileItemPtr(new CFileItem());
-    item->m_bIsFolder = true;
-
     CPlexServerPtr server = g_plexServerManager.FindByUUID(sectionItem->GetProperty("serverUUID").asString());
-
+    if (!server) continue;
+    
+    CFileItemPtr item(CFileItemPtr(new CFileItem()));
+    
+    item->m_bIsFolder = true;
     item->SetPath(sectionItem->GetPath());
     item->SetLabel(sectionItem->GetLabel());
 

@@ -49,7 +49,7 @@ namespace XFILE
 
           virtual bool DoWork();
 
-          CFileItemListPtr m_items;
+          CFileItemList m_items;
           CURL m_url;
       };
 
@@ -83,10 +83,10 @@ namespace XFILE
       static CFileItemListPtr GetFilterList() { return CFileItemListPtr(); }
       CStdString GetData() const { return m_data; }
 
-      static void CopyAttributes(TiXmlElement* element, CFileItem& fileItem, const CURL &url);
-      static CFileItemPtr NewPlexElement(TiXmlElement *element, CFileItem &parentItem, const CURL &url = CURL());
+      static void CopyAttributes(TiXmlElement* element, CFileItem* fileItem, const CURL &url);
+      static CFileItemPtr NewPlexElement(TiXmlElement *element, const CFileItem& parentItem, const CURL &url = CURL());
 
-      static bool IsFolder(CFileItem& item, TiXmlElement* element);
+      static bool IsFolder(const CFileItemPtr& item, TiXmlElement* element);
 
       virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
@@ -118,7 +118,7 @@ namespace XFILE
       std::vector<int> m_augmentationJobs;
       bool m_isAugmented;
 
-      std::vector<CFileItemListPtr> m_augmentationItems;
+      std::vector<CFileItemList*> m_augmentationItems;
       CEvent m_augmentationEvent;
 
       CStdString m_body;
