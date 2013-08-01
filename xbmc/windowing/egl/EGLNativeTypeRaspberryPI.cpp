@@ -557,6 +557,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
         RESOLUTION_INFO res2 = res;
         res2.dwFlags |= D3DPRESENTFLAG_MODE3DSBS;
         res2.fPixelRatio    = get_display_aspect_ratio((HDMI_ASPECT_T)tv->aspect_ratio) / ((float)res2.iScreenWidth / (float)res2.iScreenHeight);
+        res2.fPixelRatio   *= 2.0f;
         res2.strMode.Format("%dx%d", res2.iScreenWidth, res2.iScreenHeight);
         res2.strMode.Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
             res2.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -571,6 +572,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
         RESOLUTION_INFO res2 = res;
         res2.dwFlags |= D3DPRESENTFLAG_MODE3DTB;
         res2.fPixelRatio    = get_display_aspect_ratio((HDMI_ASPECT_T)tv->aspect_ratio) / ((float)res2.iScreenWidth / (float)res2.iScreenHeight);
+        res2.fPixelRatio   *= 0.5f;
         res2.strMode.Format("%dx%d", res2.iScreenWidth, res2.iScreenHeight);
         res2.strMode.Format("%dx%d @ %.2f%s - Full Screen", res2.iScreenWidth, res2.iScreenHeight, res2.fRefreshRate,
             res2.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
