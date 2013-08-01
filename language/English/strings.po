@@ -13351,7 +13351,15 @@ msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
 msgstr ""
 
-#empty strings from id 36260 to 36261
+#: system/settings/settings.xml
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36261"
+msgid "Path where taken screenshots will be stored."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36262"
@@ -13793,7 +13801,10 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr ""
 
-#empty string with id 36350
+#: system/settings/settings.xml
+msgctxt "#36350"
+msgid "No info available yet."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36351"
@@ -14268,6 +14279,26 @@ msgstr ""
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36540"
+msgid "No info available yet."
 msgstr ""
 
 #reserved strings 365XX
