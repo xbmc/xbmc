@@ -83,6 +83,8 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     modifiers |= CKey::MODIFIER_ALT;
   if (keysym.mod & XBMCKMOD_SUPER)
     modifiers |= CKey::MODIFIER_SUPER;
+  if (keysym.mod & XBMCKMOD_META)
+    modifiers |= CKey::MODIFIER_META;
 
   CLog::Log(LOGDEBUG, "Keyboard: scancode: 0x%02x, sym: 0x%04x, unicode: 0x%04x, modifier: 0x%x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
@@ -203,6 +205,8 @@ CStdString CKeyboardStat::GetKeyName(int KeyID)
     keyname.append("alt-");
   if (KeyID & CKey::MODIFIER_SUPER)
     keyname.append("win-");
+  if (KeyID & CKey::MODIFIER_META)
+    keyname.append("meta-");
 
 // Now get the key name
 
