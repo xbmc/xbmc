@@ -142,6 +142,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       ClearMD5();
       OnPasteClipboard();
+      return true;
     }
     else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
     {
