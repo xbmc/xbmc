@@ -27,6 +27,7 @@
   #include "settings/SettingsManager.h"
 #else
   #include "Engines/SoftAE/SoftAE.h"
+  #include "Engines/ActiveAE/ActiveAE.h"
 #endif
 
 #if defined(HAS_PULSEAUDIO)
@@ -67,6 +68,22 @@ bool CAEFactory::LoadEngine()
     #endif
     if (!loaded && engine == "SOFT" )
       loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+    if (!loaded && engine == "ACTIVE")
+      loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
+  }
+#endif
+
+#if defined(TARGET_WINDOWS)
+  std::string engine;
+  if (getenv("AE_ENGINE"))
+  {
+    engine = (std::string)getenv("AE_ENGINE");
+    std::transform(engine.begin(), engine.end(), engine.begin(), ::toupper);
+
+    if (!loaded && engine == "SOFT" )
+      loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+    if (!loaded && engine == "ACTIVE")
+      loaded = CAEFactory::LoadEngine(AE_ENGINE_ACTIVE);
   }
 #endif
 
@@ -99,6 +116,7 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
     case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else
     case AE_ENGINE_SOFT     : AE = new CSoftAE(); break;
+    case AE_ENGINE_ACTIVE   : AE = new ActiveAE::CActiveAE(); break;
 #endif
 #if defined(HAS_PULSEAUDIO)
     case AE_ENGINE_PULSE    : AE = new CPulseAE(); break;
@@ -243,6 +261,28 @@ bool CAEFactory::SupportsRaw()
   return false;
 }
 
+bool CAEFactory::SupportsDrain()
+{
+  if(AE)
+    return AE->SupportsDrain();
+
+  return false;
+}
+
+/**
+  * Returns true if current AudioEngine supports at lest two basic quality levels
+  * @return true if quality setting is supported, otherwise false
+  */
+bool CAEFactory::SupportsQualitySetting(void) 
+{
+  if (!AE)
+    return false;
+
+  return ((AE->SupportsQualityLevel(AE_QUALITY_LOW)? 1 : 0) + 
+          (AE->SupportsQualityLevel(AE_QUALITY_MID)? 1 : 0) +
+          (AE->SupportsQualityLevel(AE_QUALITY_HIGH)? 1 : 0)) >= 2; 
+}
+  
 void CAEFactory::SetMute(const bool enabled)
 {
   if(AE)
@@ -323,6 +363,21 @@ void CAEFactory::SettingOptionsAudioOutputModesFiller(const CSetting *setting, s
   list.push_back(std::make_pair(g_localizeStrings.Get(420), AUDIO_HDMI));
 }
 
+void CAEFactory::SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  if (!AE)
+    return;
+
+  if(AE->SupportsQualityLevel(AE_QUALITY_LOW))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13506), AE_QUALITY_LOW));
+  if(AE->SupportsQualityLevel(AE_QUALITY_MID))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13507), AE_QUALITY_MID));
+  if(AE->SupportsQualityLevel(AE_QUALITY_HIGH))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13508), AE_QUALITY_HIGH));
+  if(AE->SupportsQualityLevel(AE_QUALITY_REALLYHIGH))
+    list.push_back(std::make_pair(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
+}
+
 void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, bool passthrough)
 {
   current = ((const CSettingString*)setting)->GetValue();
@@ -357,4 +412,16 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
 
   if (!foundValue)
     current = firstDevice;
+}
+
+void CAEFactory::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  if (AE)
+    AE->RegisterAudioCallback(pCallback);
+}
+
+void CAEFactory::UnregisterAudioCallback()
+{
+  if (AE)
+    AE->UnregisterAudioCallback();
 }

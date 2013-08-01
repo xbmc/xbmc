@@ -555,7 +555,7 @@ void CSoftAEStream::Resume()
   AE.ResumeStream(this);
 }
 
-void CSoftAEStream::Drain()
+void CSoftAEStream::Drain(bool wait)
 {
   CSingleLock lock(m_lock);
   m_draining = true;

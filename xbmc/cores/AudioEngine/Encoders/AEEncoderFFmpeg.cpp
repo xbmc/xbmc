@@ -98,7 +98,7 @@ unsigned int CAEEncoderFFmpeg::BuildChannelLayout(const int64_t ffmap, CAEChanne
   return layout.Count();
 }
 
-bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
+bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input)
 {
   Reset();
 
@@ -150,6 +150,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     bool hasS32    = false;
     bool hasS16    = false;
     bool hasU8     = false;
+    bool hasFloatP = false;
     bool hasUnknownFormat = false;
 
     for(int i = 0; codec->sample_fmts[i] != AV_SAMPLE_FMT_NONE; ++i)
@@ -161,6 +162,12 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
         case AV_SAMPLE_FMT_S32: hasS32    = true; break;
         case AV_SAMPLE_FMT_S16: hasS16    = true; break;
         case AV_SAMPLE_FMT_U8 : hasU8     = true; break;
+        case AV_SAMPLE_FMT_FLTP:
+          if (allow_planar_input)
+            hasFloatP  = true;
+          else
+            hasUnknownFormat = true;
+          break;
         case AV_SAMPLE_FMT_NONE: return false;
         default: hasUnknownFormat = true; break;
       }
@@ -170,6 +177,11 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     {
       m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_FLT;
       format.m_dataFormat    = AE_FMT_FLOAT;
+    }
+    else if (hasFloatP)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_FLTP;
+      format.m_dataFormat    = AE_FMT_FLOATP;
     }
     else if (hasDouble)
     {
@@ -214,7 +226,6 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     return false;
   }
 
-  format.m_dataFormat    = AE_FMT_FLOAT;
   format.m_frames        = m_CodecCtx->frame_size;
   format.m_frameSamples  = m_CodecCtx->frame_size * m_CodecCtx->channels;
   format.m_frameSize     = m_CodecCtx->channels * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
@@ -350,6 +361,57 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   /* return the number of frames used */
   return m_NeededFrames;
 }
+
+int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_size)
+{
+  int got_output;
+  AVFrame *frame;
+
+  if (!m_CodecCtx)
+    return 0;
+
+  /* allocate the input frame
+   * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
+   * data argument will be constant over iterated calls and the frame needs to
+   * setup pointers inside data */
+  frame = m_dllAvCodec.avcodec_alloc_frame();
+  if (!frame)
+    return 0;
+
+  frame->nb_samples     = m_CodecCtx->frame_size;
+  frame->format         = m_CodecCtx->sample_fmt;
+  frame->channel_layout = m_CodecCtx->channel_layout;
+
+  m_dllAvCodec.avcodec_fill_audio_frame(frame, m_CodecCtx->channels, m_CodecCtx->sample_fmt,
+                    in, in_size, 0);
+
+  /* initialize the output packet */
+  m_dllAvCodec.av_init_packet(&m_Pkt);
+  m_Pkt.size      = out_size - IEC61937_DATA_OFFSET;
+  m_Pkt.data      = out + IEC61937_DATA_OFFSET;
+
+  /* encode it */
+  int ret = m_dllAvCodec.avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
+
+  /* free temporary data */
+  m_dllAvCodec.avcodec_free_frame(&frame);
+
+  if (ret < 0 || !got_output)
+  {
+    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Encoding failed");
+    return 0;
+  }
+
+  /* pack it into an IEC958 frame */
+  m_PackFunc(NULL, m_Pkt.size, out);
+
+  /* free the packet */
+  m_dllAvCodec.av_free_packet(&m_Pkt);
+
+  /* return the number of frames used */
+  return m_NeededFrames;
+}
+
 
 int CAEEncoderFFmpeg::GetData(uint8_t **data)
 {

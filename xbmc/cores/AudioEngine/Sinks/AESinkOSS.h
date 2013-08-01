@@ -41,7 +41,7 @@ public:
   virtual double       GetDelay        ();
   virtual double       GetCacheTime    () { return 0.0; } /* FIXME */
   virtual double       GetCacheTotal   () { return 0.0; } /* FIXME */
-  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio);
+  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
   virtual void         Drain           ();
   static  void         EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:

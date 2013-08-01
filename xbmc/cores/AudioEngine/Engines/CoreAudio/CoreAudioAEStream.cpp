@@ -603,7 +603,7 @@ void CCoreAudioAEStream::Resume()
   m_paused = false;
 }
 
-void CCoreAudioAEStream::Drain()
+void CCoreAudioAEStream::Drain(bool wait)
 {
   m_draining = true;
 }
