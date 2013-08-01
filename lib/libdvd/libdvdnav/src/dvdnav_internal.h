@@ -125,6 +125,45 @@ typedef struct {
 } ATTRIBUTE_PACKED spu_status_t;
 #endif
 
+/*
+ * Describes a given time, and the closest sector, vobu and tmap index
+ */
+typedef struct {
+  uint64_t            time;
+  uint32_t            sector;
+  uint32_t            vobu_idx;
+  int32_t             tmap_idx;
+} dvdnav_pos_data_t;
+
+/*
+ * Encapsulates cell data
+ */
+typedef struct {
+  int32_t             idx;
+  dvdnav_pos_data_t   *bgn;
+  dvdnav_pos_data_t   *end;
+} dvdnav_cell_data_t;
+
+/*
+ * Encapsulates common variables used by internal functions of jump_to_time
+ */
+typedef struct {
+  vobu_admap_t        *admap;
+  int32_t             admap_len;
+  vts_tmap_t          *tmap;
+  int32_t             tmap_len;
+  int32_t             tmap_interval;
+} dvdnav_jump_args_t;
+
+/*
+ * Utility constants for jump_to_time
+ */
+#define TMAP_IDX_EDGE_BGN  -1
+#define TMAP_IDX_EDGE_END  -2
+#define JUMP_MODE_TIME_AFTER 1
+#define JUMP_MODE_TIME_DEFAULT 0
+#define JUMP_MODE_TIME_BEFORE -1
+
 typedef struct dvdnav_vobu_s {
   int32_t vobu_start;  /* Logical Absolute. MAX needed is 0x300000 */
   int32_t vobu_length;
