@@ -44,7 +44,6 @@ public:
   int GetSampleRate();
   int GetBitsPerSample();
   static const char* GetName() { return "FFmpeg"; }
-  int GetBufferSize() { return m_iBuffered; }
   int GetBitRate();
 
 protected:
@@ -55,21 +54,17 @@ protected:
   CAEChannelInfo      m_channelLayout;
 
   AVFrame* m_pFrame1;
-  int   m_iBufferSize1;
 
-  BYTE *m_pBuffer2;
-  int   m_iBufferSize2;
-
-  BYTE *m_pBufferUpmix;
-  int   m_iBufferUpmixSize;
+  BYTE *m_pBufferOutput;
+  int   m_iBufferOutputAlloced;
 
   bool m_bOpenedCodec;
-  int m_iBuffered;
 
   int     m_channels;
   uint64_t m_layout;
 
   bool m_bFirstFrame;
+  bool m_bGotFrame;
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
   DllSwResample m_dllSwResample;

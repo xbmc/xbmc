@@ -100,6 +100,8 @@ public:
   virtual int av_samples_alloc(uint8_t **audio_data, int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
   virtual int av_sample_fmt_is_planar(enum AVSampleFormat sample_fmt) = 0;
   virtual int av_get_channel_layout_channel_index (uint64_t channel_layout, uint64_t channel) = 0;
+  virtual int av_samples_fill_arrays(uint8_t **audio_data, int *linesize, const uint8_t *buf, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
+  virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt) = 0;
 };
 
 #if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -144,6 +146,10 @@ public:
     { return ::av_samples_alloc(audio_data, linesize, nb_channels, nb_samples, sample_fmt, align); }
   virtual int av_sample_fmt_is_planar(enum AVSampleFormat sample_fmt) { return ::av_sample_fmt_is_planar(sample_fmt); }
   virtual int av_get_channel_layout_channel_index (uint64_t channel_layout, uint64_t channel) { return ::av_get_channel_layout_channel_index(channel_layout, channel); }
+  virtual int av_samples_fill_arrays(uint8_t **audio_data, int *linesize, const uint8_t *buf, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align)
+    { return ::av_samples_fill_arrays(audio_data, linesize, buf, nb_channels, nb_samples, AVSampleFormat sample_fmt, align); }
+  virtual int av_samples_copy(uint8_t **dst, uint8_t *const *src, int dst_offset, int src_offset, int nb_samples, int nb_channels, enum AVSampleFormat sample_fmt)
+    { return ::av_samples_copy(dst, src, dst_offset, src_offset, nb_samples, nb_channels, sample_fmt); }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -194,6 +200,8 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD6(int, av_samples_alloc, (uint8_t **p1, int *p2, int p3, int p4, enum AVSampleFormat p5, int p6))
   DEFINE_METHOD1(int, av_sample_fmt_is_planar, (enum AVSampleFormat p1))
   DEFINE_METHOD2(int, av_get_channel_layout_channel_index, (uint64_t p1, uint64_t p2))
+  DEFINE_METHOD7(int, av_samples_fill_arrays, (uint8_t **p1, int *p2, const uint8_t *p3, int p4, int p5, enum AVSampleFormat p6, int p7))
+  DEFINE_METHOD7(int, av_samples_copy, (uint8_t **p1, uint8_t *const *p2, int p3, int p4, int p5, int p6, enum AVSampleFormat p7))
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -227,7 +235,8 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_samples_alloc)
     RESOLVE_METHOD(av_sample_fmt_is_planar)
     RESOLVE_METHOD(av_get_channel_layout_channel_index)
-
+    RESOLVE_METHOD(av_samples_fill_arrays)
+    RESOLVE_METHOD(av_samples_copy)
   END_METHOD_RESOLVE()
 };
 
