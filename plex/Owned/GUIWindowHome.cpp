@@ -101,21 +101,18 @@ CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes secti
 }
 
 //////////////////////////////////////////////////////////////////////////////
-CFileItemListPtr CPlexSectionFanout::GetContentList(int type)
+void CPlexSectionFanout::GetContentList(int type, CFileItemList& list)
 {
   CSingleLock lk(m_critical);
-  return m_fileLists[type];
+  list.Copy(*m_fileLists[type]);
 }
 
 //////////////////////////////////////////////////////////////////////////////
-std::vector<contentListPair> CPlexSectionFanout::GetContentLists()
+void CPlexSectionFanout::GetContentTypes(std::vector<int> &lists)
 {
   CSingleLock lk(m_critical);
-  std::vector<contentListPair> ret;
   BOOST_FOREACH(contentListPair p, m_fileLists)
-    ret.push_back(p);
-
-  return ret;
+    lists.push_back(p.first);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -142,6 +139,10 @@ void CPlexSectionFanout::Refresh()
   CPlexDirectory dir;
 
   CSingleLock lk(m_critical);
+  
+  BOOST_FOREACH(contentListPair p, m_fileLists)
+    delete p.second;
+  
   m_fileLists.clear();
 
   CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Refresh for %s", m_url.Get().c_str());
@@ -213,13 +214,17 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
   CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
   if (success)
   {
-    m_fileLists[load->GetContentType()] = load->GetFileItemList();
+    int type = load->GetContentType();
+    if (m_fileLists.find(type) != m_fileLists.end() && m_fileLists[type] != NULL)
+      delete m_fileLists[type];
+    
+    CFileItemList* newList = new CFileItemList;
+    newList->Copy(load->m_list);
+    m_fileLists[type] = newList;
     
     /* Pre-cache stuff */
-    if (load->GetContentType() != CONTENT_LIST_FANART)
-    {
-      m_videoThumb.Load(*m_fileLists[load->GetContentType()].get());
-    }
+    if (type != CONTENT_LIST_FANART)
+      m_videoThumb.Load(*newList);
   }
 
   m_age.restart();
@@ -527,13 +532,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         if (url == sectionToLoad || url == "global://art/")
         {
-          CFileItemListPtr list = GetContentListFromSection(url, CONTENT_LIST_FANART);
-          if (list)
+          CFileItemList list;
+          if (GetContentListFromSection(url, CONTENT_LIST_FANART, list))
           {
             SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
 
-            CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage activating global fanart with %d photos", list->Size());
-            CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, list.get());
+            CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage activating global fanart with %d photos", list.Size());
+            CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, &list);
             OnMessage(msg);
           }
           else
@@ -548,17 +553,23 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         {
           HideAllLists();
 
-          BOOST_FOREACH(contentListPair p, GetContentListsFromSection(url))
+          std::vector<int> types;
+          if (GetContentTypesFromSection(url, types))
           {
-            if(p.second && p.second->Size() > 0)
+            BOOST_FOREACH(int p, types)
             {
-              CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p.first, 0, 0, p.second.get());
-              CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage sending BIND to %d", p.first);
-              OnMessage(msg);
-              SET_CONTROL_VISIBLE(p.first);
+              CFileItemList list;
+              GetContentListFromSection(url, p, list);
+              if(list.Size() > 0)
+              {
+                CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p, 0, 0, &list);
+                CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage sending BIND to %d", p);
+                OnMessage(msg);
+                SET_CONTROL_VISIBLE(p);
+              }
+              else
+                SET_CONTROL_HIDDEN(p);
             }
-            else
-              SET_CONTROL_HIDDEN(p.first);
           }
         }
       }
@@ -777,6 +788,7 @@ void CGUIWindowHome::AddSection(const CStdString &url, SectionTypes type)
 {
   if (m_sections.find(url) == m_sections.end())
   {
+    CLog::Log(LOG_LEVEL_DEBUG, "CGUIWindowHome::AddSection Adding section %s", url.c_str());
     CPlexSectionFanout* fan = new CPlexSectionFanout(url, type);
     m_sections[url] = fan;
   }
@@ -794,25 +806,26 @@ void CGUIWindowHome::RemoveSection(const CStdString &url)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<contentListPair> CGUIWindowHome::GetContentListsFromSection(const CStdString &url)
+bool CGUIWindowHome::GetContentTypesFromSection(const CStdString &url, std::vector<int> &list)
 {
   if (m_sections.find(url) != m_sections.end())
   {
     CPlexSectionFanout* section = m_sections[url];
-    return section->GetContentLists();
+    section->GetContentTypes(list);
+    return true;
   }
-  return std::vector<contentListPair>();
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CFileItemListPtr CGUIWindowHome::GetContentListFromSection(const CStdString &url, int contentType)
+bool CGUIWindowHome::GetContentListFromSection(const CStdString &url, int contentType, CFileItemList &l)
 {
   if (m_sections.find(url) != m_sections.end())
   {
     CPlexSectionFanout* section = m_sections[url];
-    CFileItemListPtr list = section->GetContentList(contentType);
-    if ((list && list->Size() > 0) || contentType != CONTENT_LIST_FANART)
-      return section->GetContentList(contentType);
+    section->GetContentList(contentType, l);
+    if (l.Size() > 0 || contentType != CONTENT_LIST_FANART)
+      return true;
   }
 
   if (contentType == CONTENT_LIST_FANART &&
@@ -820,11 +833,10 @@ CFileItemListPtr CGUIWindowHome::GetContentListFromSection(const CStdString &url
   {
     /* Special case */
     CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(MAIN_MENU);
-    CFileItemList* list = new CFileItemList();
-    CFileItemPtr defaultItem = CFileItemPtr(new CFileItem(CPlexSectionFanout::GetBestServerUrl(":/resources/show-fanart.jpg"), false));
+    CFileItemPtr defaultItem(new CFileItem(CPlexSectionFanout::GetBestServerUrl(":/resources/show-fanart.jpg"), false));
 
     if (!container)
-      list->Add(defaultItem);
+      l.Add(defaultItem);
 
     BOOST_FOREACH(CGUIListItemPtr fileItem, container->GetItems())
     {
@@ -832,20 +844,20 @@ CFileItemListPtr CGUIWindowHome::GetContentListFromSection(const CStdString &url
           fileItem->GetProperty("sectionPath").asString() == url)
       {
         if (fileItem->HasArt(PLEX_ART_FANART))
-          list->Add(CFileItemPtr(new CFileItem(fileItem->GetArt(PLEX_ART_FANART), false)));
+          l.Add(CFileItemPtr(new CFileItem(fileItem->GetArt(PLEX_ART_FANART), false)));
         else
-          list->Add(defaultItem);
+          l.Add(defaultItem);
         break;
       }
     }
 
-    if (list->Size() == 0)
-      list->Add(defaultItem);
+    if (l.Size() == 0)
+      l.Add(defaultItem);
 
-    return CFileItemListPtr(list);
+    return true;
   }
 
-  return CFileItemListPtr();
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

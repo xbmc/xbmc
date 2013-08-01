@@ -62,28 +62,28 @@ enum SectionTypes
   SECTION_TYPE_CHANNELS
 };
 
-typedef std::pair<int, CFileItemListPtr> contentListPair;
+typedef std::pair<int, CFileItemList*> contentListPair;
 
 class CPlexSectionLoadJob : public CJob
 {
   public:
     CPlexSectionLoadJob(const CURL& url, int contentType) :
-      CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
-
+      CJob(), m_url(url), m_contentType(contentType) {}
+  
     bool DoWork()
     {
       XFILE::CPlexDirectory dir;
-      m_list->Clear();
-      return dir.GetDirectory(m_url, *m_list.get());
+      bool success = dir.GetDirectory(m_url, m_list);
+      return success;
     }
 
     int GetContentType() const { return m_contentType; }
-    CFileItemListPtr GetFileItemList() const { return m_list; }
     CURL GetUrl() const { return m_url; }
+  
+    CFileItemList m_list;
 
   private:
     CURL m_url;
-    CFileItemListPtr m_list;
     int m_contentType;
 };
 
@@ -92,8 +92,8 @@ class CPlexSectionFanout : public IJobCallback
   public:
     CPlexSectionFanout(const CStdString& url, SectionTypes sectionType);
 
-    std::vector<contentListPair> GetContentLists();
-    CFileItemListPtr GetContentList(int type);
+    void GetContentTypes(std::vector<int> &types);
+    void GetContentList(int type, CFileItemList& list);
     void Refresh();
     void Show();
 
@@ -105,7 +105,7 @@ class CPlexSectionFanout : public IJobCallback
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {}
 
-    std::map<int, CFileItemListPtr> m_fileLists;
+    std::map<int, CFileItemList*> m_fileLists;
     CURL m_url;
     boost::timer m_age;
     CCriticalSection m_critical;
@@ -139,8 +139,8 @@ public:
   void RemoveSection(const CStdString& url);
   bool ShowSection(const CStdString& url);
   bool ShowCurrentSection();
-  std::vector<contentListPair> GetContentListsFromSection(const CStdString& url);
-  CFileItemListPtr GetContentListFromSection(const CStdString& url, int contentType);
+  bool GetContentTypesFromSection(const CStdString& url, std::vector<int> &types);
+  bool GetContentListFromSection(const CStdString& url, int contentType, CFileItemList &list);
 
   CStdString GetCurrentItemName(bool onlySections=false);
   CFileItem* GetCurrentFileItem();
