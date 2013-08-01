@@ -1159,16 +1159,17 @@ bool CAESinkALSA::SoftSuspend()
 bool CAESinkALSA::SoftResume()
 {
     // reinit all the clibber
-    bool ret = true; // all fine
     if(!m_pcm)
     {
       if (!snd_config)
         snd_config_update();
 
-      ret = Initialize(m_initFormat, m_initDevice);
+    // Initialize what we had before again, SoftAE might keep it
+    // but ignore ret value to give the chance to do reopening
+    Initialize(m_initFormat, m_initDevice);
     }
-   //we want that AE loves us again - reinit when initialize failed
-   return ret; // force reinit if false
+   // make sure that OpenInternalSink is done again
+   return false;
 }
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
