@@ -1619,14 +1619,7 @@ fi
 
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
-
-  # one of libswresample or libavresample is needed
-  PKG_CHECK_EXISTS([libswresample], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libswresample",
-                   [PKG_CHECK_EXISTS([libavresample],
-                                     FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavresample",
-                                     AC_MSG_ERROR([You need either libswresample
-                                                   or libavresample.]))])
+  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale libswresample"
 
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
@@ -1638,9 +1631,6 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])
-
-  # Check for libswresample or libavresample headers.
-  AC_CHECK_HEADERS([libswresample/swresample.h libavresample/avresample.h])
 
   AC_MSG_NOTICE($external_ffmpeg_enabled)
   USE_EXTERNAL_FFMPEG=1
