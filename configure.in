@@ -45,15 +45,6 @@ AC_DEFUN([XB_ADD_CODEC],
   esac
 ])
 
-# force enable a codec
-AC_DEFUN([XB_FORCE_CODEC],
-[
-  AC_MSG_CHECKING([for $2])
-  AC_SUBST([USE_$1], 1)
-  AC_DEFINE([HAS_$1], 1, [using $2])
-  AC_MSG_RESULT([enabling $2])
-])
-
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
@@ -1859,12 +1850,6 @@ case $add_codecs in
       XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright])
       ;;
   *)
-      # if no codec specified and android -> enable libstagefright
-      if test "$target_platform" = "target_android" ; then
-        LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lstagefright -lbinder -lui -lgui"
-        XB_FORCE_CODEC([LIBSTAGEFRIGHT], [libstagefright])
-      fi
-      ;;
 esac
 
 # platform specific bin utilities

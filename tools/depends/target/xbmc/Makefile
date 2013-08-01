@@ -6,9 +6,12 @@ export CXXFLAGS+=-O3
 export CFLAGS+=-O3
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
+CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
   ./configure --prefix=$(PREFIX)
 
+ifeq ($(OS),android)
+CONFIGURE += --enable-codec=libstagefright
+endif
 
 all: $(SOURCE)/libxbmc.so
 
