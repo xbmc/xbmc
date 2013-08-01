@@ -79,6 +79,7 @@ protected:
   std::vector<int> m_vecIntervals;
   bool m_rtl;
   CScrollInfo m_scrollInfo;
+  bool m_dirty;
   bool m_stopped;
   int  m_urlset;
 };

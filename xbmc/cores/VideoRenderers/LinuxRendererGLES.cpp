@@ -443,9 +443,9 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (m_RenderUpdateCallBackFn)
       (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
-    RESOLUTION res = GetResolution();
-    int iWidth = CDisplaySettings::Get().GetResolutionInfo(res).iWidth;
-    int iHeight = CDisplaySettings::Get().GetResolutionInfo(res).iHeight;
+    const RESOLUTION_INFO info = g_graphicsContext.GetResInfo(GetResolution());
+    int iWidth  = info.iWidth;
+    int iHeight = info.iHeight;
 
     g_graphicsContext.BeginPaint();
 

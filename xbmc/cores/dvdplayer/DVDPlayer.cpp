@@ -47,6 +47,7 @@
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "DVDPerformanceCounter.h"
@@ -2918,6 +2919,9 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(pMenus && pMenus->IsInMenu())
     hint.stills = true;
 
+  if (hint.stereo_mode.empty())
+    hint.stereo_mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
+
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
@@ -3825,6 +3829,9 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   info.videoCodecName = retVal;
   info.videoAspectRatio = m_dvdPlayerVideo.GetAspectRatio();
   m_dvdPlayerVideo.GetVideoRect(info.SrcRect, info.DestRect);
+  info.stereoMode = m_dvdPlayerVideo.GetStereoMode();
+  if (info.stereoMode == "mono")
+    info.stereoMode = "";
 }
 
 int CDVDPlayer::GetSourceBitrate()

@@ -300,6 +300,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, int bpp, void* data, GLuint* pbo = NULL );
 
+  void GetPlaneTextureSize(YUVPLANE& plane);
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;

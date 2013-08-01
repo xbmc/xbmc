@@ -264,6 +264,10 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
   if (!m_bRenderCreated)
     return false;
 
+  /* clear is not affected by stipple pattern, so we can only clear on first frame */
+  if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    return true;
+
   float r = GET_R(color) / 255.0f;
   float g = GET_G(color) / 255.0f;
   float b = GET_B(color) / 255.0f;
@@ -441,7 +445,7 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
+  glTranslatef(-(w + offset.x), +(h + offset.y), 0);
   gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -461,7 +465,7 @@ void CRenderSystemGL::Project(float &x, float &y, float &z)
   if (gluProject(x, y, z, m_view, m_projection, m_viewPort, &coordX, &coordY, &coordZ) == GLU_TRUE)
   {
     x = (float)coordX;
-    y = (float)(m_viewPort[3] - coordY);
+    y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
     z = 0;
   }
 }
@@ -469,9 +473,6 @@ void CRenderSystemGL::Project(float &x, float &y, float &z)
 bool CRenderSystemGL::TestRender()
 {
   static float theta = 0.0;
-
-  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(CDisplaySettings::Get().GetCurrentResolution()];
-  //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   glPushMatrix();
   glRotatef( theta, 0.0f, 0.0f, 1.0f );
@@ -621,5 +622,105 @@ void CRenderSystemGL::ResetGLErrors()
     }
   }
 }
+static const GLubyte stipple_3d[] = {
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+  0xFF, 0xFF, 0xFF, 0xFF,
+  0x00, 0x00, 0x00, 0x00,
+};
+
+void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
+{
+  CRenderSystemBase::SetStereoMode(mode, view);
+
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  glDisable(GL_POLYGON_STIPPLE);
+  glDrawBuffer(GL_BACK);
+
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+  }
+  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
+  }
+
+  if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED)
+  {
+    glEnable(GL_POLYGON_STIPPLE);
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glPolygonStipple(stipple_3d);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glPolygonStipple(stipple_3d+4);
+  }
+
+  if(m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
+  {
+    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
+      glDrawBuffer(GL_BACK_LEFT);
+    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+      glDrawBuffer(GL_BACK_RIGHT);
+  }
+
+}
+
+bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
+{
+  switch(mode)
+  {
+    case RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN:
+    case RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA:
+    case RENDER_STEREO_MODE_INTERLACED:
+      return true;
+    case RENDER_STEREO_MODE_HARDWAREBASED: {
+      //This is called by setting init, at which point GL is not inited
+      //luckily if GL doesn't support this, it will just behave as if
+      //it was not in effect.
+      //GLboolean stereo = GL_FALSE;
+      //glGetBooleanv(GL_STEREO, &stereo);
+      //return stereo == GL_TRUE ? true : false;
+      return true;
+    }
+    default:
+      return CRenderSystemBase::SupportsStereo(mode);
+  }
+}
+
 
 #endif

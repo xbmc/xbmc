@@ -313,9 +313,9 @@ void CKaraokeLyricsText::Render()
   }
 
   // Calculate drawing parameters
-  RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-  float maxWidth = (float) CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.left;
+  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  g_graphicsContext.SetRenderingResolution(info, false);
+  float maxWidth = (float) info.Overscan.right - info.Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
   if ( updateText )
@@ -375,9 +375,9 @@ void CKaraokeLyricsText::Render()
     m_preambleLayout->Update( m_currentPreamble, maxWidth * 0.9f );
   }
 
-  float x = maxWidth * 0.5f + CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.left;
-  float y = (float)CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.top +
-      (CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.bottom - CDisplaySettings::Get().GetResolutionInfo(resolution).Overscan.top) / 8;
+  float x = maxWidth * 0.5f + info.Overscan.left;
+  float y = (float)info.Overscan.top +
+      (info.Overscan.bottom - info.Overscan.top) / 8;
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
@@ -460,8 +460,8 @@ void CKaraokeLyricsText::rescanLyrics()
 
   // Second, add spaces if less than 5%, and rescan to gather more data.
   bool add_spaces = (syllables && (spaces * 100 / syllables < 5)) ? true : false;
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  float maxWidth = (float) CDisplaySettings::Get().GetResolutionInfo(res).Overscan.right - CDisplaySettings::Get().GetResolutionInfo(res).Overscan.left;
+  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  float maxWidth = (float) info.Overscan.right - info.Overscan.left;
 
   CStdString line_text;
   int prev_line_idx = -1;

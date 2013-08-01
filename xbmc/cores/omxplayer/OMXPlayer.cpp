@@ -81,6 +81,7 @@
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "DVDPerformanceCounter.h"
@@ -3181,6 +3182,9 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(pMenus && pMenus->IsInMenu())
     hint.stills = true;
 
+  if (hint.stereo_mode.empty())
+    hint.stereo_mode = CStereoscopicsManager::Get().DetectStereoModeByString(m_filename);
+
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
@@ -3204,13 +3208,6 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   }
   else if (reset)
     m_omxPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-
-  unsigned flags = 0;
-  if(m_filename.find("3DSBS") != string::npos || m_filename.find("HSBS") != string::npos)
-    flags = CONF_FLAGS_FORMAT_SBS;
-  else if(m_filename.find("3DTAB") != string::npos || m_filename.find("HTAB") != string::npos)
-    flags = CONF_FLAGS_FORMAT_TB;
-  m_omxPlayerVideo.SetFlags(flags);
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
@@ -4094,6 +4091,10 @@ void COMXPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   info.videoCodecName = retVal;
   info.videoAspectRatio = g_renderManager.GetAspectRatio();
   g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
+  if (m_CurrentVideo.hint.stereo_mode == "mono")
+    info.stereoMode = "";
+  else
+    info.stereoMode = m_CurrentVideo.hint.stereo_mode;
 }
 
 int COMXPlayer::GetSourceBitrate()

@@ -132,6 +132,8 @@ void Renderer::RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInp
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
 	
 	totalframes++;		
 	
@@ -228,7 +230,7 @@ void Renderer::RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInp
 	}
 	else 
 #endif
-	glViewport( vx, vy, this->vw + vx, this->vh + vy );
+		glViewport( viewport[0], viewport[1], viewport[2], viewport[3] );
 	
 	
 	

@@ -196,7 +196,7 @@ void CRenderer::Render(COverlay* o)
   RESOLUTION_INFO res;
   g_renderManager.GetVideoRect(rs, rd);
   rv  = g_graphicsContext.GetViewWindow();
-  res = CDisplaySettings::Get().GetResolutionInfo(g_renderManager.GetResolution());
+  res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
 
   SRenderState state;
   state.x       = o->m_x;
@@ -262,9 +262,6 @@ void CRenderer::Render(COverlay* o)
     {
       float scale_x = rd.Width() / rs.Width();
       float scale_y = rd.Height() / rs.Height();
-
-      state.x      -= rs.x1;
-      state.y      -= rs.y1;
 
       state.x      *= scale_x;
       state.y      *= scale_y;

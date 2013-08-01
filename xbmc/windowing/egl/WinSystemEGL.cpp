@@ -237,7 +237,8 @@ bool CWinSystemEGL::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   if ((m_bWindowCreated && m_egl && m_egl->GetNativeResolution(&current_resolution)) &&
     current_resolution.iWidth == res.iWidth && current_resolution.iHeight == res.iHeight &&
     current_resolution.iScreenWidth == res.iScreenWidth && current_resolution.iScreenHeight == res.iScreenHeight &&
-    m_bFullScreen == fullScreen && current_resolution.fRefreshRate == res.fRefreshRate)
+    m_bFullScreen == fullScreen && current_resolution.fRefreshRate == res.fRefreshRate &&
+    (current_resolution.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK))
   {
     CLog::Log(LOGDEBUG, "CWinSystemEGL::CreateNewWindow: No need to create a new window");
     return true;
@@ -343,6 +344,7 @@ void CWinSystemEGL::UpdateResolutions()
        resDesktop.iHeight == resolutions[i].iHeight &&
        resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
        resDesktop.iScreenHeight == resolutions[i].iScreenHeight &&
+       (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (resolutions[i].dwFlags & D3DPRESENTFLAG_MODEMASK) &&
        resDesktop.fRefreshRate == resolutions[i].fRefreshRate)
     {
       ResDesktop = res_index;
@@ -458,24 +460,6 @@ bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
     int searchWidth = curr.iScreenWidth;
     int searchHeight = curr.iScreenHeight;
 
-    // work out current non-3D resolution (in case we are currently in 3D mode)
-    if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-    {
-      searchWidth *= 2;
-    }
-    else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-    {
-      searchHeight *= 2;
-    }
-    // work out resolution if we switch to 3D mode
-    if (mode & D3DPRESENTFLAG_MODE3DSBS)
-    {
-      searchWidth /= 2;
-    }
-    else if (mode & D3DPRESENTFLAG_MODE3DTB)
-    {
-      searchHeight /= 2;
-    }
     // only search the custom resolutions
     for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
     {

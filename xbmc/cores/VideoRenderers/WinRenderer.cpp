@@ -247,8 +247,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  m_destWidth = CDisplaySettings::Get().GetResolutionInfo(m_resolution).iWidth;
-  m_destHeight = CDisplaySettings::Get().GetResolutionInfo(m_resolution).iHeight;
+  m_destWidth = g_graphicsContext.GetResInfo(m_resolution).iWidth;
+  m_destHeight = g_graphicsContext.GetResInfo(m_resolution).iHeight;
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -334,7 +334,7 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   if (clear)
-    pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
+    g_graphicsContext.Clear(m_clearColour);
 
   if(alpha < 255)
     pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
@@ -792,12 +792,15 @@ void CWinRenderer::ScaleFixedPipeline()
     FLOAT tu, tv;
   };
 
+  // Vertex format ignores viewport offsets, so correct for that here
+  CRect dest = g_graphicsContext.StereoCorrection(m_destRect);
+
   VERTEX vertex[] =
   {
-    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
-    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {dest.x1, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {dest.x2, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {dest.x2, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {dest.x1, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
   };
 
   // Compensate for D3D coordinates system
@@ -843,7 +846,6 @@ void CWinRenderer::ScaleFixedPipeline()
   pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
   pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
   pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
 
   pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
   pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
@@ -875,7 +877,7 @@ void CWinRenderer::Stage1()
 {
   if (!m_bUseHQScaler)
   {
-      m_colorShader->Render(m_sourceRect, m_destRect,
+    m_colorShader->Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect),
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
                             m_iFlags,
@@ -909,7 +911,7 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -926,7 +928,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(m_sourceRect, m_destRect, target, image->id, flags);
+  m_processor.Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect), target, image->id, flags);
 
   target->Release();
 }

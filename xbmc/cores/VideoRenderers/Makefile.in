@@ -3,6 +3,7 @@ SRCS += OverlayRenderer.cpp
 SRCS += OverlayRendererUtil.cpp
 SRCS += RenderCapture.cpp
 SRCS += RenderManager.cpp
+SRCS += RenderFlags.cpp
 
 ifeq ($(findstring arm,@ARCH@),arm)
 SRCS += yuv2rgb.neon.S

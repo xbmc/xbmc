@@ -161,10 +161,11 @@ void CGUIDialogSelect::Reset()
   m_selectedItems->Clear();
 }
 
-void CGUIDialogSelect::Add(const CStdString& strLabel)
+int CGUIDialogSelect::Add(const CStdString& strLabel)
 {
   CFileItemPtr pItem(new CFileItem(strLabel));
   m_vecList->Add(pItem);
+  return m_vecList->Size() - 1;
 }
 
 void CGUIDialogSelect::Add(const CFileItemList& items)
@@ -176,10 +177,11 @@ void CGUIDialogSelect::Add(const CFileItemList& items)
   }
 }
 
-void CGUIDialogSelect::Add(const CFileItem* pItem)
+int CGUIDialogSelect::Add(const CFileItem* pItem)
 {
   CFileItemPtr item(new CFileItem(*pItem));
   m_vecList->Add(item);
+  return m_vecList->Size() - 1;
 }
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)

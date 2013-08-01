@@ -87,11 +87,12 @@ void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &
 void CGUIWindowTestPattern::Render()
 {
   BeginRender();
+  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
 
-  int top = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.top;
-  int bottom = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.bottom;
-  int left = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.left;
-  int right = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution()).Overscan.right;
+  int top    = info.Overscan.top;
+  int bottom = info.Overscan.bottom;
+  int left   = info.Overscan.left;
+  int right  = info.Overscan.right;
 
   switch (m_pattern)
   {
