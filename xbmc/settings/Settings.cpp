@@ -79,6 +79,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/URIUtils.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
 
@@ -967,7 +968,7 @@ void CSettings::InitializeISettingCallbacks()
 bool CSettings::Reset()
 {
   std::string settingsFile = CProfilesManager::Get().GetSettingsFile();
-  std::string settingsBackupFile = CProfilesManager::Get().GetSettingsFile().append(".bak");
+  std::string settingsBackupFile = URIUtils::GetBackupPath(settingsFile);
 
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))

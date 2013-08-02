@@ -158,6 +158,17 @@ public:
    */
   static bool UpdateUrlEncoding(std::string &strFilename);
 
+  /*!
+   \brief Get the backup path for the given path
+
+   This method is used to return the backup file for the given settings file
+   by adding '.bak' at the end.
+
+   \param strPath path to settings file
+   \return Actual path to settings backup file
+   */
+  static std::string URIUtils::GetBackupPath(const std::string &strPath);
+
 private:
   static std::string resolvePath(const std::string &path);
 };

@@ -1144,3 +1144,18 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
   strFilename = newFilename;
   return true;
 }
+
+std::string URIUtils::GetBackupPath(const std::string &strPath)
+{
+  std::string strReturn = strPath;
+
+  if (strReturn.length() > 0)
+  {
+    if (HasSlashAtEnd(strReturn))
+      strReturn.insert(strReturn.length() - 1,".bak");
+    else
+      strReturn.append(".bak");
+  }
+
+  return strReturn;
+}
