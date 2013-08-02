@@ -607,7 +607,7 @@ int udf25::DVDReadLBUDF( uint32_t lb_number, size_t block_count, unsigned char *
 {
   int ret;
   size_t  len = block_count * DVD_VIDEO_LB_LEN;
-  int64_t pos = lb_number   * DVD_VIDEO_LB_LEN;
+  int64_t pos = lb_number   * (int64_t)DVD_VIDEO_LB_LEN;
 
   ret = ReadAt(pos, len, data);
   if(ret < 0)

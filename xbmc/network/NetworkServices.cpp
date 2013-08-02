@@ -740,7 +740,6 @@ bool CNetworkServices::StartUPnP()
   ret |= StartUPnPClient();
   ret |= StartUPnPServer();
   ret |= StartUPnPRenderer();
-    return true;
 #endif // HAS_UPNP
   return ret;
 }

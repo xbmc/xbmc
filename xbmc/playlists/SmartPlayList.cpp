@@ -111,7 +111,7 @@ static const translateField fields[] = {
   { "died",              FieldDied,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21897 }
 };
 
-#define NUM_FIELDS sizeof(fields) / sizeof(translateField)
+static const size_t NUM_FIELDS = sizeof(fields) / sizeof(translateField);
 
 typedef struct
 {
@@ -138,7 +138,7 @@ static const operatorField operators[] = {
   { "between",         CSmartPlaylistRule::OPERATOR_BETWEEN,           21456 }
 };
 
-#define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
+static const size_t NUM_OPERATORS = sizeof(operators) / sizeof(operatorField);
 
 typedef struct
 {
@@ -163,7 +163,7 @@ static const group groups[] = { { "",           FieldUnknown,   false,    571 },
                                 { "tags",       FieldTag,       false,  20459 },
                               };
 
-#define NUM_GROUPS sizeof(groups) / sizeof(group)
+static const size_t NUM_GROUPS = sizeof(groups) / sizeof(group);
 
 CSmartPlaylistRule::CSmartPlaylistRule()
 {
