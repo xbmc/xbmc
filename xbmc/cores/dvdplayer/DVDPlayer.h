@@ -322,7 +322,7 @@ public:
   }
   virtual bool CanOpenAsync() { return false; }
   virtual void Abort() { m_bAbortRequest = true; }
-  bool PlexProcess(CStdString& stopURL);
+  bool PlexProcess(bool* isTranscoding);
   /* END PLEX */
 protected:
   friend class CSelectionStreams;

@@ -22,6 +22,7 @@ public:
   static bool ShouldTranscode(CPlexServerPtr server, const CFileItem& item);
   static CURL GetTranscodeURL(CPlexServerPtr server, const CFileItem& item);
   static std::string GetCurrentBitrate(bool local);
+  static CURL GetTranscodeStopURL(CPlexServerPtr server);
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexTranscoderClient__) */

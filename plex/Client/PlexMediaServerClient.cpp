@@ -11,6 +11,7 @@
 #include <string>
 #include "PlexFile.h"
 #include "video/VideoInfoTag.h"
+#include "client/PlexTranscoderClient.h"
 
 using namespace XFILE;
 
@@ -127,4 +128,9 @@ CPlexMediaServerClient::SetViewMode(const CFileItem &item, int viewMode, int sor
   u.SetOption("sortAsc", boost::lexical_cast<CStdString>(sortAsc));
 
   AddJob(new CPlexMediaServerClientJob(u));
+}
+
+void CPlexMediaServerClient::StopTranscodeSession(CPlexServerPtr server)
+{
+  AddJob(new CPlexMediaServerClientJob(CPlexTranscoderClient::GetTranscodeStopURL(server)));
 }

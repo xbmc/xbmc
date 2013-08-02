@@ -116,11 +116,18 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   tURL.SetOption("directPlay", "0");
   tURL.SetOption("directStream", "1");
   
+  /*
+  if (item.HasProperty("viewOffset"))
+  {
+    int offset = item.GetProperty("viewOffset").asInteger() / 1000;
+    tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
+  }*/
+  tURL.SetOption("fastSeek", "1");
+  
   std::string bitrate = GetCurrentBitrate(isLocal);
   tURL.SetOption("maxVideoBitrate", bitrate);
   tURL.SetOption("videoQuality", _qualities[bitrate]);
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
-  tURL.SetOption("fastSeek", "1");
   
   /* PHT can render subtitles itself no need to include them in the transcoded video */
   tURL.SetOption("skipSubtitles", "1");
@@ -132,4 +139,12 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
     tURL.SetOption(p.first, p.second);
   
   return tURL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+CURL CPlexTranscoderClient::GetTranscodeStopURL(CPlexServerPtr server)
+{
+  CURL url = server->BuildPlexURL("/video/:/transcode/universal/stop");
+  url.SetOption("session", g_guiSettings.GetString("system.uuid"));
+  return url;
 }

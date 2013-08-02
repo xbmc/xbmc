@@ -67,6 +67,9 @@ public:
   
   /* Set viewMode */
   void SetViewMode(const CFileItem& item, int viewMode, int sortMode = -1, int sortAsc = 1);
+  
+  /* stop a transcode session */
+  void StopTranscodeSession(CPlexServerPtr server);
 
 private:
   CStdString GetPrefix(const CFileItemPtr& item) const

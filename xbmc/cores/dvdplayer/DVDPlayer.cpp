@@ -1102,8 +1102,8 @@ void CDVDPlayer::Process()
   }
 #else
 
-  CStdString stopURL;
-  if (m_item.IsPlexMediaServer() && !PlexProcess(stopURL))
+  bool isTranscoding;
+  if (m_item.IsPlexMediaServer() && !PlexProcess(&isTranscoding))
     return;
 
   try
@@ -1414,12 +1414,12 @@ void CDVDPlayer::Process()
   }
 
   /* PLEX */
-  // We're done, if we have a URL to hit on exit, do so now.
-  if (stopURL.empty() == false)
+  // We're done, if we transcoded we need to stop that now
+  if (isTranscoding)
   {
-    CCurlFile http;
-    CStdString out;
-    http.Get(stopURL, out);
+    CPlexServerPtr server = g_plexServerManager.FindByUUID(m_item.GetProperty("plexserver").asString());
+    if (server)
+      g_plexMediaServerClient.StopTranscodeSession(server);
   }
   /* END PLEX */
 }
@@ -4509,9 +4509,10 @@ void CDVDPlayer::RelinkPlexStreams()
 }
 
 
-bool CDVDPlayer::PlexProcess(CStdString& stopURL)
+bool CDVDPlayer::PlexProcess(bool* isTranscoding)
 {
   bool usingLocalPath = false;
+  *isTranscoding = false;
 
   int64_t mediaItemIdx = 0;
   if (m_item.HasProperty("selectedMediaItem"))
@@ -4649,7 +4650,10 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     /* find the server for the item */
     CPlexServerPtr server = g_plexServerManager.FindByUUID(item.GetProperty("plexserver").asString());
     if (server && CPlexTranscoderClient::ShouldTranscode(server, item))
+    {
       m_filename = CPlexTranscoderClient::GetTranscodeURL(server, item).Get();
+      *isTranscoding = true;
+    }
   }
   return true;
 }
