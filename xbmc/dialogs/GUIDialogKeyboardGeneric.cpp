@@ -754,9 +754,7 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
 
 // Get text from the clipboard
 #if defined(TARGET_DARWIN_OSX)
-  const char *szStr = Cocoa_Paste();
-  if (szStr)
-    pasted_text = szStr;
+  pasted_text = g_Windowing.GetClipboard();
 #elif defined TARGET_WINDOWS
   pasted_text = g_Windowing.GetClipboard();
 #endif
