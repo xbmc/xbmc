@@ -515,14 +515,14 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   plane.flipindex = flipindex;
 }
 
-void CLinuxRendererGL::UploadYV12Texture(int source)
+bool CLinuxRendererGL::UploadYV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags&IMAGE_FLAG_READY))
-    return;
+    return false;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -587,6 +587,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
+  return true;
 }
 
 void CLinuxRendererGL::Reset()
@@ -1183,7 +1184,8 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     m_currentField = FIELD_FULL;
 
   // call texture load function
-  (this->*m_textureUpload)(renderBuffer);
+  if (!(this->*m_textureUpload)(renderBuffer))
+    return;
 
   if (m_renderMethod & RENDER_GLSL)
   {
@@ -2026,14 +2028,14 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 //********************************************************************************************************
 // NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-void CLinuxRendererGL::UploadNV12Texture(int source)
+bool CLinuxRendererGL::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-    return;
+    return false;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -2086,6 +2088,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
+  return true;
 }
 
 bool CLinuxRendererGL::CreateNV12Texture(int index)
@@ -2338,11 +2341,12 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
   return true;
 }
 
-void CLinuxRendererGL::UploadVDPAUTexture(int index)
+bool CLinuxRendererGL::UploadVDPAUTexture(int index)
 {
 #ifdef HAVE_LIBVDPAU
   glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
 #endif
+  return true;
 }
 
 
@@ -2406,7 +2410,7 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   return true;
 }
 
-void CLinuxRendererGL::UploadVAAPITexture(int index)
+bool CLinuxRendererGL::UploadVAAPITexture(int index)
 {
 #ifdef HAVE_LIBVA
   YUVPLANE       &plane = m_buffers[index].fields[0][0];
@@ -2414,7 +2418,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   VAStatus status;
 
   if(!va.surface)
-    return;
+    return false;
 
   if(va.display && va.surface->m_display != va.display)
   {
@@ -2426,7 +2430,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   CSingleLock lock(*va.display);
 
   if(va.display->lost())
-    return;
+    return false;
 
   if(!va.surfglx)
   {
@@ -2439,7 +2443,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
     if(status != VA_STATUS_SUCCESS)
     {
       CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to create vaapi glx surface (%d)", status);
-      return;
+      return false;
     }
     va.surfglx = VAAPI::CSurfaceGLPtr(new VAAPI::CSurfaceGL(surface, va.display));
   }
@@ -2487,12 +2491,13 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
     CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
 
 #endif
+  return true;
 }
 
 //********************************************************************************************************
 // CoreVideoRef Texture creation, deletion, copying + clearing
 //********************************************************************************************************
-void CLinuxRendererGL::UploadCVRefTexture(int index)
+bool CLinuxRendererGL::UploadCVRefTexture(int index)
 {
 #ifdef TARGET_DARWIN
   CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
@@ -2554,6 +2559,7 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
   glDisable(m_textureTarget);
 
 #endif
+  return true;
 }
 
 void CLinuxRendererGL::DeleteCVRefTexture(int index)
@@ -2615,14 +2621,14 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   return true;
 }
 
-void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
+bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-    return;
+    return false;
 
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
@@ -2659,7 +2665,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
-
+  return true;
 }
 
 void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
@@ -3045,14 +3051,14 @@ void CLinuxRendererGL::SetupRGBBuffer()
     m_rgbBuffer = new BYTE[m_rgbBufferSize];
 }
 
-void CLinuxRendererGL::UploadRGBTexture(int source)
+bool CLinuxRendererGL::UploadRGBTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags&IMAGE_FLAG_READY))
-    return;
+    return false;
 
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
@@ -3155,6 +3161,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
+  return true;
 }
 
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
