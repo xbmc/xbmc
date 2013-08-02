@@ -371,20 +371,23 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
       auto_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
       auto_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
-        
-      if (pNewUrl.get())
+
+      if (pImp.get())
       {
-        if (pImp.get() && !pImp->Exists(*pNewUrl))
+        if (pNewUrl.get())
         {
-          return false;
+          if (bUseCache)
+          {
+            bool bPathInCache;
+            if (g_directoryCache.FileExists(pNewUrl->Get(), bPathInCache))
+              return true;
+            if (bPathInCache)
+              return false;
+          }
+          return pImp->Exists(*pNewUrl);
         }
-      }
-      else     
-      {
-        if (pImp.get() && !pImp->Exists(url))
-        {
-          return false;
-        }
+        else
+          return pImp->Exists(url);
       }
     }
   }
