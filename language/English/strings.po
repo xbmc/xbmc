@@ -5775,7 +5775,12 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr ""
 
-#empty strings from id 13437 to 13499
+#: system/settings/settings.xml
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr ""
+
+#empty strings from id 13438 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6850,7 +6855,7 @@ msgid "Software Blend"
 msgstr ""
 
 msgctxt "#16325"
-msgid "Auto - ION Optimized"
+msgid "VDPAU - Bob"
 msgstr ""
 
 #empty strings from id 16326 to 16399

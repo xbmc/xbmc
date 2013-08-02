@@ -75,11 +75,11 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur) && CSettings::Get().GetBool("videoplayer.usevdpau"))
+    if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CSettings::Get().GetBool("videoplayer.usevdpau"))
     {
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
-      CVDPAU* vdp = new CVDPAU();
-      if(vdp->Open(avctx, *cur))
+      VDPAU::CDecoder* vdp = new VDPAU::CDecoder();
+      if(vdp->Open(avctx, *cur, ctx->m_uSurfacesCount))
       {
         ctx->SetHardware(vdp);
         return *cur;
