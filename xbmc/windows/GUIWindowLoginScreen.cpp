@@ -104,7 +104,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            LoadProfile(iItem);
+            if (iItem >= 0)
+              LoadProfile((unsigned int)iItem);
           }
           else
           {
@@ -248,7 +249,8 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   {
     int iDelete = m_viewControl.GetSelectedItem();
     m_viewControl.Clear();
-    CProfilesManager::Get().DeleteProfile(iDelete);
+    if (iDelete >= 0)
+      CProfilesManager::Get().DeleteProfile((size_t)iDelete);
     Update();
     m_viewControl.SetSelectedItem(0);
   }

@@ -75,9 +75,11 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
 
   // get the attributes label and help
   int tmp = -1;
-  if (element->QueryIntAttribute(XML_ATTR_LABEL, &m_label) == TIXML_SUCCESS && tmp > 0)
+  if (element->QueryIntAttribute(XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_label = tmp;
-  if (element->QueryIntAttribute(XML_ATTR_HELP, &m_help) == TIXML_SUCCESS && tmp > 0)
+  
+  tmp = -1;
+  if (element->QueryIntAttribute(XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
     m_help = tmp;
   const char *parentSetting = element->Attribute("parent");
   if (parentSetting != NULL)

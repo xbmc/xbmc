@@ -786,7 +786,7 @@ bool CWebServer::Start(int port, const string &username, const string &password)
   if (!m_running)
   {
     int v6testSock;
-    if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) > 0)
+    if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) >= 0)
     {
       closesocket(v6testSock);
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);

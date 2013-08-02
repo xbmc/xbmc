@@ -74,8 +74,9 @@ bool KaraokeVideoBackground::openVideoFile( const CStdString& filename )
   // Do we need to modify the output video size? This could happen in two cases:
   // 1. Either video dimension is larger than the screen - video needs to be downscaled
   // 2. Both video dimensions are smaller than the screen - video needs to be upscaled
-  if ( (m_videoWidth > screen_width || m_videoHeight > screen_height )
-  || (  m_videoWidth < screen_width && m_videoHeight < screen_height ) )
+  if ( ( m_videoWidth > 0 && m_videoHeight > 0 )
+  && ( ( m_videoWidth > screen_width || m_videoHeight > screen_height )
+  || ( m_videoWidth < screen_width && m_videoHeight < screen_height ) ) )
   {
     // Calculate the scale coefficients for width/height separately
     double scale_width = (double) screen_width / (double) m_videoWidth;
