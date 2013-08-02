@@ -1190,7 +1190,8 @@ int CGUIWindowSlideShow::CurrentSlide() const
 
 void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
                                       bool bRecursive, 
-                                      SORT_METHOD method, SortOrder order, const CStdString &strExtensions)
+                                      SortBy method, SortOrder order, SortAttribute sortAttributes,
+                                      const CStdString &strExtensions)
 {
   if (strPath!="")
   {
@@ -1200,24 +1201,25 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
     if (bRecursive)
     {
       path_set recursivePaths;
-      AddItems(strPath, &recursivePaths, method, order);
+      AddItems(strPath, &recursivePaths, method, order, sortAttributes);
     }
     else
-      AddItems(strPath, NULL, method, order);
+      AddItems(strPath, NULL, method, order, sortAttributes);
   }
 }
 
 void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
-                                       bool bRecursive /* = false */, bool bRandom /* = false */, 
+                                       bool bRecursive /* = false */, bool bRandom /* = false */,
                                        bool bNotRandom /* = false */, const CStdString &beginSlidePath /* = "" */,
-                                       bool startSlideShow /* = true */, SORT_METHOD method /* = SORT_METHOD_LABEL */,
-                                       SortOrder order /* = SortOrderAscending */, const CStdString &strExtensions /* = "" */)
+                                       bool startSlideShow /* = true */, SortBy method /* = SortByLabel */, 
+                                       SortOrder order /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */,
+                                       const CStdString &strExtensions)
 {
   // stop any video
   if (g_application.IsPlayingVideo())
     g_application.StopPlaying();
 
-  AddFromPath(strPath, bRecursive, method, order, strExtensions);
+  AddFromPath(strPath, bRecursive, method, order, sortAttributes, strExtensions);
 
   if (!NumSlides())
     return;
@@ -1247,7 +1249,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths, SORT_METHOD method, SortOrder order)
+void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)
 {
   // check whether we've already added this path
   if (recursivePaths)
@@ -1264,7 +1266,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
   if (!CDirectory::GetDirectory(strPath, items, m_strExtensions.IsEmpty()?g_advancedSettings.m_pictureExtensions:m_strExtensions,DIR_FLAG_NO_FILE_DIRS,true))
     return;
 
-  items.Sort(method, order);
+  items.Sort(method, order, sortAttributes);
 
   // need to go into all subdirs
   for (int i = 0; i < items.Size(); i++)

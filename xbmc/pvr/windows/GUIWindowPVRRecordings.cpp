@@ -145,13 +145,13 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
   // Update sort by button
-//if (m_guiState->GetSortMethod()!=SORT_METHOD_NONE)
+//if (m_guiState->GetSortMethod()!=SortByNone)
 //{
 //  CStdString sortLabel;
 //  sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
 //  buttons.Add(CONTEXT_BUTTON_SORTBY, sortLabel);   /* Sort method */
 //
-//  if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
+//  if (m_guiState->GetDisplaySortOrder()==SortOrderAscending)
 //    buttons.Add(CONTEXT_BUTTON_SORTASC, 584);        /* Sort up or down */
 //  else
 //    buttons.Add(CONTEXT_BUTTON_SORTASC, 585);        /* Sort up or down */

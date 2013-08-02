@@ -752,7 +752,7 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
   }
 
   // sort the items
-  selectItems.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+  selectItems.Sort(SortByLabel, SortOrderAscending);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();

@@ -33,6 +33,7 @@
 #include "threads/Event.h"
 
 class CURL;
+class CFileItem;
 class CFileItemList;
 
 namespace XFILE

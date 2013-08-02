@@ -37,9 +37,9 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 {
   if (items.IsVirtualDirectoryRoot())
   {
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS());
-    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS());
-    SetSortMethod(SORT_METHOD_LABEL);
+    AddSortMethod(SortByLabel, 551, LABEL_MASKS());
+    AddSortMethod(SortByDriveType, 564, LABEL_MASKS());
+    SetSortMethod(SortByLabel);
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
@@ -47,16 +47,16 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-    AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-    AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-    AddSortMethod(SORT_METHOD_DATE_TAKEN, 577, LABEL_MASKS("%L", "%t", "%L", "%J"));  // Filename, DateTaken | Foldername, Date
-    AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
+    AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
+    AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
+    AddSortMethod(SortByDateTaken, 577, LABEL_MASKS("%L", "%t", "%L", "%J"));  // Filename, DateTaken | Foldername, Date
+    AddSortMethod(SortByFile, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
     const CViewState *viewState = CViewStateSettings::Get().Get("pictures");
-    SetSortMethod(viewState->m_sortMethod);
+    SetSortMethod(viewState->m_sortDescription);
     SetViewAsControl(viewState->m_viewMode);
-    SetSortOrder(viewState->m_sortOrder);
+    SetSortOrder(viewState->m_sortDescription.sortOrder);
   }
   LoadViewState(items.GetPath(), WINDOW_PICTURES);
 }

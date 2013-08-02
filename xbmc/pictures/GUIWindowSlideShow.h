@@ -78,11 +78,15 @@ public:
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
                     const CStdString &beginSlidePath="", bool startSlideShow = true,
-                    SORT_METHOD method = SORT_METHOD_LABEL,
-                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
+                    SortBy method = SortByLabel,
+                    SortOrder order = SortOrderAscending,
+                    SortAttribute sortAttributes = SortAttributeNone,
+                    const CStdString &strExtensions="");
   void AddFromPath(const CStdString &strPath, bool bRecursive,
-                   SORT_METHOD method=SORT_METHOD_LABEL, 
-                   SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
+                   SortBy method = SortByLabel, 
+                   SortOrder order = SortOrderAscending,
+                   SortAttribute sortAttributes = SortAttributeNone,
+                   const CStdString &strExtensions="");
   void StartSlideShow();
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
@@ -102,8 +106,9 @@ public:
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
-                SORT_METHOD method = SORT_METHOD_LABEL,
-                SortOrder order = SortOrderAscending);
+                SortBy method = SortByLabel,
+                SortOrder order = SortOrderAscending,
+                SortAttribute sortAttributes = SortAttributeNone);
   bool PlayVideo();
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();

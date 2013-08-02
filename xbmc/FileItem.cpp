@@ -1532,8 +1532,6 @@ CFileItemList::CFileItemList()
   m_fastLookup = false;
   m_bIsFolder = true;
   m_cacheToDisc = CACHE_IF_SLOW;
-  m_sortMethod = SORT_METHOD_NONE;
-  m_sortOrder = SortOrderNone;
   m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
@@ -1542,8 +1540,6 @@ CFileItemList::CFileItemList(const CStdString& strPath) : CFileItem(strPath, tru
 {
   m_fastLookup = false;
   m_cacheToDisc = CACHE_IF_SLOW;
-  m_sortMethod = SORT_METHOD_NONE;
-  m_sortOrder = SortOrderNone;
   m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
@@ -1613,8 +1609,9 @@ void CFileItemList::Clear()
   CSingleLock lock(m_lock);
 
   ClearItems();
-  m_sortMethod = SORT_METHOD_NONE;
-  m_sortOrder = SortOrderNone;
+  m_sortDescription.sortBy = SortByNone;
+  m_sortDescription.sortOrder = SortOrderNone;
+  m_sortDescription.sortAttributes = SortAttributeNone;
   m_sortIgnoreFolders = false;
   m_cacheToDisc = CACHE_IF_SLOW;
   m_sortDetails.clear();
@@ -1715,8 +1712,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   SetPath(itemlist.GetPath());
   SetLabel(itemlist.GetLabel());
   m_sortDetails = itemlist.m_sortDetails;
-  m_sortMethod = itemlist.m_sortMethod;
-  m_sortOrder = itemlist.m_sortOrder;
+  m_sortDescription = itemlist.m_sortDescription;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
@@ -1729,13 +1725,12 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   *(CFileItem*)this = *(CFileItem*)&items;
 
   // assign the rest of the CFileItemList properties
-  m_replaceListing = items.m_replaceListing;
-  m_content        = items.m_content;
-  m_mapProperties  = items.m_mapProperties;
-  m_cacheToDisc    = items.m_cacheToDisc;
-  m_sortDetails    = items.m_sortDetails;
-  m_sortMethod     = items.m_sortMethod;
-  m_sortOrder      = items.m_sortOrder;
+  m_replaceListing  = items.m_replaceListing;
+  m_content         = items.m_content;
+  m_mapProperties   = items.m_mapProperties;
+  m_cacheToDisc     = items.m_cacheToDisc;
+  m_sortDetails     = items.m_sortDetails;
+  m_sortDescription = items.m_sortDescription;
   m_sortIgnoreFolders = items.m_sortIgnoreFolders;
 
   if (copyItems)
@@ -1847,26 +1842,24 @@ void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
   std::for_each(m_items.begin(), m_items.end(), func);
 }
 
-void CFileItemList::Sort(SORT_METHOD sortMethod, SortOrder sortOrder)
+void CFileItemList::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute sortAttributes /* = SortAttributeNone */)
 {
-  //  Already sorted?
-  if (sortMethod == m_sortMethod && m_sortOrder == sortOrder)
+  if (sortBy == SortByNone ||
+     (m_sortDescription.sortBy == sortBy && m_sortDescription.sortOrder == sortOrder &&
+      m_sortDescription.sortAttributes == sortAttributes))
     return;
 
-  SortDescription sorting = SortUtils::TranslateOldSortMethod(sortMethod);
+  SortDescription sorting;
+  sorting.sortBy = sortBy;
   sorting.sortOrder = sortOrder;
+  sorting.sortAttributes = sortAttributes;
 
   Sort(sorting);
-
-  m_sortMethod = sortMethod;
-  m_sortOrder = sortOrder;
+  m_sortDescription = sorting;
 }
 
 void CFileItemList::Sort(SortDescription sortDescription)
 {
-  if (sortDescription.sortBy == SortByNone)
-    return;
-
   if (sortDescription.sortBy == SortByFile ||
       sortDescription.sortBy == SortBySortTitle ||
       sortDescription.sortBy == SortByDateAdded ||
@@ -1876,6 +1869,11 @@ void CFileItemList::Sort(SortDescription sortDescription)
       sortDescription.sortBy == SortByLastPlayed ||
       sortDescription.sortBy == SortByPlaycount)
     sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+
+  if (sortDescription.sortBy == SortByNone ||
+     (m_sortDescription.sortBy == sortDescription.sortBy && m_sortDescription.sortOrder == sortDescription.sortOrder &&
+      m_sortDescription.sortAttributes == sortDescription.sortAttributes))
+    return;
 
   if (m_sortIgnoreFolders)
     sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
@@ -1927,8 +1925,9 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << m_fastLookup;
 
-    ar << (int)m_sortMethod;
-    ar << (int)m_sortOrder;
+    ar << (int)m_sortDescription.sortBy;
+    ar << (int)m_sortDescription.sortOrder;
+    ar << (int)m_sortDescription.sortAttributes;
     ar << m_sortIgnoreFolders;
     ar << (int)m_cacheToDisc;
 
@@ -1936,7 +1935,9 @@ void CFileItemList::Archive(CArchive& ar)
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
       const SORT_METHOD_DETAILS &details = m_sortDetails[j];
-      ar << (int)details.m_sortMethod;
+      ar << (int)details.m_sortDescription.sortBy;
+      ar << (int)details.m_sortDescription.sortOrder;
+      ar << (int)details.m_sortDescription.sortAttributes;
       ar << details.m_buttonLabel;
       ar << details.m_labelMasks.m_strLabelFile;
       ar << details.m_labelMasks.m_strLabelFolder;
@@ -1986,9 +1987,11 @@ void CFileItemList::Archive(CArchive& ar)
 
     int tempint;
     ar >> (int&)tempint;
-    m_sortMethod = SORT_METHOD(tempint);
+    m_sortDescription.sortBy = (SortBy)tempint;
     ar >> (int&)tempint;
-    m_sortOrder = SortOrder(tempint);
+    m_sortDescription.sortOrder = (SortOrder)tempint;
+    ar >> (int&)tempint;
+    m_sortDescription.sortAttributes = (SortAttribute)tempint;
     ar >> m_sortIgnoreFolders;
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
@@ -1999,7 +2002,11 @@ void CFileItemList::Archive(CArchive& ar)
     {
       SORT_METHOD_DETAILS details;
       ar >> (int&)tempint;
-      details.m_sortMethod = SORT_METHOD(tempint);
+      details.m_sortDescription.sortBy = (SortBy)tempint;
+      ar >> (int&)tempint;
+      details.m_sortDescription.sortOrder = (SortOrder)tempint;
+      ar >> (int&)tempint;
+      details.m_sortDescription.sortAttributes = (SortAttribute)tempint;
       ar >> details.m_buttonLabel;
       ar >> details.m_labelMasks.m_strLabelFile;
       ar >> details.m_labelMasks.m_strLabelFolder;
@@ -2245,7 +2252,7 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   SetProperty("isstacked", true);
 
   // items needs to be sorted for stuff below to work properly
-  Sort(SORT_METHOD_LABEL, SortOrderAscending);
+  Sort(SortByLabel, SortOrderAscending);
 
   StackFolders();
 
@@ -2364,7 +2371,7 @@ void CFileItemList::StackFolders()
             item->SetPath(dvdPath);
             item->SetLabel2("");
             item->SetLabelPreformated(true);
-            m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
+            m_sortDescription.sortBy = SortByNone; /* sorting is now broken */
           }
         }
       }
@@ -2558,7 +2565,8 @@ bool CFileItemList::Load(int windowID)
     CLog::Log(LOGDEBUG,"Loading fileitems [%s]",GetPath().c_str());
     CArchive ar(&file, CArchive::load);
     ar >> *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s",Size(),GetPath().c_str(), m_sortMethod, m_sortOrder ? "true" : "false");
+    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s", Size(), GetPath().c_str(), m_sortDescription.sortBy,
+      m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
     ar.Close();
     file.Close();
     return true;
@@ -2580,7 +2588,7 @@ bool CFileItemList::Save(int windowID)
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s",iSize,m_sortMethod, m_sortOrder ? "true" : "false");
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s", iSize, m_sortDescription.sortBy, m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
     ar.Close();
     file.Close();
     return true;
@@ -3070,12 +3078,26 @@ bool CFileItemList::UpdateItem(const CFileItem *item)
   return false;
 }
 
-void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)
+void CFileItemList::AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes /* = SortAttributeNone */)
+{
+  AddSortMethod(sortBy, sortAttributes, buttonLabel, labelMasks);
+}
+
+void CFileItemList::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks)
+{
+  SortDescription sorting;
+  sorting.sortBy = sortBy;
+  sorting.sortAttributes = sortAttributes;
+
+  AddSortMethod(sorting, buttonLabel, labelMasks);
+}
+
+void CFileItemList::AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks)
 {
   SORT_METHOD_DETAILS sort;
-  sort.m_sortMethod=sortMethod;
-  sort.m_buttonLabel=buttonLabel;
-  sort.m_labelMasks=labelMasks;
+  sort.m_sortDescription = sortDescription;
+  sort.m_buttonLabel = buttonLabel;
+  sort.m_labelMasks = labelMasks;
 
   m_sortDetails.push_back(sort);
 }
@@ -3087,8 +3109,9 @@ void CFileItemList::SetReplaceListing(bool replace)
 
 void CFileItemList::ClearSortState()
 {
-  m_sortMethod = SORT_METHOD_NONE;
-  m_sortOrder = SortOrderNone;
+  m_sortDescription.sortBy = SortByNone;
+  m_sortDescription.sortOrder = SortOrderNone;
+  m_sortDescription.sortAttributes = SortAttributeNone;
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()

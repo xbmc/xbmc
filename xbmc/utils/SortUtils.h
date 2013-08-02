@@ -24,6 +24,7 @@
 
 #include "DatabaseUtils.h"
 #include "SortFileItem.h"
+#include "LabelFormatter.h"
 
 typedef enum {
   SortOrderNone = 0,
@@ -104,6 +105,13 @@ typedef struct SortDescription {
       limitStart(0), limitEnd(-1)
   { }
 } SortDescription;
+
+typedef struct
+{
+  SortDescription m_sortDescription;
+  int m_buttonLabel;
+  LABEL_MASKS m_labelMasks;
+} SORT_METHOD_DETAILS;
 
 typedef DatabaseResult SortItem;
 typedef DatabaseResults SortItems;
