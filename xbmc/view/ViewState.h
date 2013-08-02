@@ -32,20 +32,20 @@
 class CViewState
 {
 public:
-  CViewState(int viewMode, SORT_METHOD sortMethod, SortOrder sortOrder)
+  CViewState(int viewMode, SortBy sortMethod, SortOrder sortOrder, SortAttribute sortAttributes = SortAttributeNone)
   {
     m_viewMode = viewMode;
-    m_sortMethod = sortMethod;
-    m_sortOrder = sortOrder;
+    m_sortDescription.sortBy = sortMethod;
+    m_sortDescription.sortOrder = sortOrder;
+    m_sortDescription.sortAttributes = sortAttributes;
   };
   CViewState()
   {
     m_viewMode = 0;
-    m_sortMethod = SORT_METHOD_LABEL;
-    m_sortOrder = SortOrderAscending;
+    m_sortDescription.sortBy = SortByLabel;
+    m_sortDescription.sortOrder = SortOrderAscending;
   };
 
   int m_viewMode;
-  SORT_METHOD m_sortMethod;
-  SortOrder m_sortOrder;
+  SortDescription m_sortDescription;
 };

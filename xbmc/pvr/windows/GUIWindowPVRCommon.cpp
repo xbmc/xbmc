@@ -62,11 +62,14 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
   m_bUpdateRequired = false;
   m_iSelected       = 0;
   m_iSortOrder      = SortOrderAscending;
-  m_iSortMethod     = SORT_METHOD_DATE;
+  m_iSortMethod     = SortByDate;
+  m_iSortAttributes = SortAttributeNone;
   if( m_parent->GetViewState() )
   {
-    m_iSortOrder      = m_parent->GetViewState()->GetSortOrder();
-    m_iSortMethod     = m_parent->GetViewState()->GetSortMethod();
+    SortDescription sorting = m_parent->GetViewState()->GetSortMethod();
+    m_iSortOrder      = sorting.sortOrder;
+    m_iSortMethod     = sorting.sortBy;
+    m_iSortAttributes = sorting.sortAttributes;
   }
 }
 
@@ -230,9 +233,9 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByDate(CFileItem *item, CONTEXT_BUT
   {
     bReturn = true;
 
-    if (m_iSortMethod != SORT_METHOD_DATE)
+    if (m_iSortMethod != SortByDate)
     {
-      m_iSortMethod = SORT_METHOD_DATE;
+      m_iSortMethod = SortByDate;
       m_iSortOrder  = SortOrderAscending;
       CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_parent->GetID(), 0, m_iSortMethod, 0); 
       m_parent->OnMessage(message);
@@ -257,9 +260,9 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByName(CFileItem *item, CONTEXT_BUT
   {
     bReturn = true;
 
-    if (m_iSortMethod != SORT_METHOD_LABEL)
+    if (m_iSortMethod != SortByLabel)
     {
-      m_iSortMethod = SORT_METHOD_LABEL;
+      m_iSortMethod = SortByLabel;
       m_iSortOrder  = SortOrderAscending;
       CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_parent->GetID(), 0, m_iSortMethod, 0); 
       m_parent->OnMessage(message);
@@ -284,9 +287,9 @@ bool CGUIWindowPVRCommon::OnContextButtonSortByChannel(CFileItem *item, CONTEXT_
   {
     bReturn = true;
 
-    if (m_iSortMethod != SORT_METHOD_CHANNEL)
+    if (m_iSortMethod != SortByChannel)
     {
-      m_iSortMethod = SORT_METHOD_CHANNEL;
+      m_iSortMethod = SortByChannel;
       m_iSortOrder  = SortOrderAscending;
     }
     else
@@ -638,7 +641,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
       CFileItemList items;
       CDirectory::GetDirectory(dir, items);
-      items.Sort(SORT_METHOD_FILE, SortOrderAscending);
+      items.Sort(SortByFile, SortOrderAscending);
 
       vector<int> stack;
       for (int i = 0; i < items.Size(); ++i)

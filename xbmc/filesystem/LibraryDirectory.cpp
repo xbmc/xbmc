@@ -140,7 +140,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       items.Add(item);
     }
   }
-  items.Sort(SORT_METHOD_PLAYLIST_ORDER, SortOrderAscending);
+  items.Sort(SortByPlaylistOrder, SortOrderAscending);
   return true;
 }
 

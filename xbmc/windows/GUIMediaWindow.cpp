@@ -546,14 +546,11 @@ void CGUIMediaWindow::UpdateButtons()
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
 
     // Update sort by button
-    if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)
-    {
+    if (m_guiState->GetSortMethod().sortBy == SortByNone)
       CONTROL_DISABLE(CONTROL_BTNSORTBY);
-    }
     else
-    {
       CONTROL_ENABLE(CONTROL_BTNSORTBY);
-    }
+
     CStdString sortLabel;
     sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
@@ -580,35 +577,30 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
   if (guiState.get())
   {
-    bool sorted = false;
-    SORT_METHOD sortMethod = guiState->GetSortMethod();
+    SortDescription sorting = guiState->GetSortMethod();
+    sorting.sortOrder = guiState->GetDisplaySortOrder();
     // If the sort method is "sort by playlist" and we have a specific
     // sort order available we can use the specified sort order to do the sorting
     // We do this as the new SortBy methods are a superset of the SORT_METHOD methods, thus
     // not all are available. This may be removed once SORT_METHOD_* have been replaced by
     // SortBy.
-    if ((sortMethod == SORT_METHOD_PLAYLIST_ORDER) && items.HasProperty(PROPERTY_SORT_ORDER))
+    if ((sorting.sortBy == SortByPlaylistOrder) && items.HasProperty(PROPERTY_SORT_ORDER))
     {
       SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
       if (sortBy != SortByNone && sortBy != SortByPlaylistOrder && sortBy != SortByProgramCount)
       {
-        SortDescription sorting;
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
         sorting.sortAttributes = CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
-        // in CGUIViewState::AddPlaylistOrder that SORT_METHOD_PLAYLIST_ORDER is ascending.
+        // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
         if (guiState->GetDisplaySortOrder() == SortOrderDescending)
           sorting.sortOrder = sorting.sortOrder == SortOrderDescending ? SortOrderAscending : SortOrderDescending;
-
-        items.Sort(sorting);
-        sorted = true;
       }
     }
 
-    if (!sorted)
-      items.Sort(sortMethod, guiState->GetDisplaySortOrder());
+    items.Sort(sorting);
   }
 }
 
@@ -630,8 +622,7 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
       fileFormatter.FormatLabels(pItem.get());
   }
 
-  if(items.GetSortMethod() == SORT_METHOD_LABEL_IGNORE_THE
-  || items.GetSortMethod() == SORT_METHOD_LABEL)
+  if (items.GetSortMethod() == SortByLabel)
     items.ClearSortState();
 }
 
@@ -646,7 +637,7 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
     viewState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(items, labelMasks);
 
-    items.Sort(viewState->GetSortMethod(), viewState->GetDisplaySortOrder());
+    items.Sort(viewState->GetSortMethod().sortBy, viewState->GetDisplaySortOrder(), viewState->GetSortMethod().sortAttributes);
   }
 }
 

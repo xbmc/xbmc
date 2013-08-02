@@ -228,7 +228,7 @@ bool CGUIDialogSelect::IsButtonPressed()
 
 void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 {
-  m_vecList->Sort(SORT_METHOD_LABEL, bSortOrder ? SortOrderAscending : SortOrderDescending);
+  m_vecList->Sort(SortByLabel, bSortOrder ? SortOrderAscending : SortOrderDescending);
 }
 
 void CGUIDialogSelect::SetSelected(int iSelected)
