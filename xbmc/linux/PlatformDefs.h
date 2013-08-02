@@ -360,7 +360,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
   #define __stat64 stat
   #define fstat64 fstat
   typedef int64_t off64_t;
-  #if defined(TARGET_DARWIN_IOS) || defined(TARGET_FREEBSD)
+  #if defined(TARGET_FREEBSD)
     #define statfs64 statfs
   #endif
 #else
