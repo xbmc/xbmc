@@ -37,7 +37,11 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #if (defined USE_EXTERNAL_FFMPEG)
-  #include <libswresample/swresample.h>
+  #if (defined USE_LIBAV_HACKS)
+    #include "xbmc-libav-hacks/libav_hacks.h"
+  #else
+    #include <libswresample/swresample.h>
+  #endif
 #else
   #include "libswresample/swresample.h"
 #endif

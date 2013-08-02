@@ -46,6 +46,9 @@ extern "C" {
   #include <libavutil/opt.h>
   #include <libavutil/mem.h>
   #include <libavutil/mathematics.h>
+  #if (defined USE_LIBAV_HACKS)
+    #include "xbmc-libav-hacks/libav_hacks.h"
+  #endif
 #else
   #include "libavutil/avutil.h"
   //for av_get_default_channel_layout
