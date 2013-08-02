@@ -178,35 +178,35 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGL::*m_textureUpload)(int index);
+  bool (CLinuxRendererGL::*m_textureUpload)(int index);
   void (CLinuxRendererGL::*m_textureDelete)(int index);
   bool (CLinuxRendererGL::*m_textureCreate)(int index);
 
-  void UploadYV12Texture(int index);
+  bool UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
-  void UploadNV12Texture(int index);
+  bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
   
-  void UploadVDPAUTexture(int index);
+  bool UploadVDPAUTexture(int index);
   void DeleteVDPAUTexture(int index);
   bool CreateVDPAUTexture(int index);
 
-  void UploadVAAPITexture(int index);
+  bool UploadVAAPITexture(int index);
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
-  void UploadCVRefTexture(int index);
+  bool UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
 
-  void UploadYUV422PackedTexture(int index);
+  bool UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
 
-  void UploadRGBTexture(int index);
+  bool UploadRGBTexture(int index);
   void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
   void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
   void SetupRGBBuffer();
