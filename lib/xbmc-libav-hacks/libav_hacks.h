@@ -37,6 +37,8 @@
 
 // libavutil
 
+#define AVFRAME_IN_LAVU
+
 #define AV_CODEC_ID_OTF AV_CODEC_ID_TTF
 
 AVDictionary *av_frame_get_metadata       (const AVFrame *frame);
