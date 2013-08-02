@@ -777,10 +777,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
 
 #if defined(HAVE_AVFILTER_GRAPH_PARSE_PTR)
     if ((result = m_dllAvFilter.avfilter_graph_parse_ptr(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
-#elif defined(AVFILTER_GRAPH_PARSE_TAKES_PTR_PTR_ARG)
-    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
 #else
-    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
 #endif
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");

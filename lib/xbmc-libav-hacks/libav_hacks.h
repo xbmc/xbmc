@@ -26,6 +26,7 @@
 #include <libavutil/opt.h>
 #include <libavresample/avresample.h>
 #include <libavformat/avformat.h>
+#include <libavfilter/avfilter.h>
 
 #if LIBAVUTIL_VERSION_MICRO >= 100
 #error "You should not enable libav hacks when building against FFmpeg."
@@ -81,5 +82,11 @@ typedef struct {
 } AVBufferSinkParams;
 
 AVBufferSinkParams *av_buffersink_params_alloc(void);
+
+#define HAVE_AVFILTER_GRAPH_PARSE_PTR
+
+int avfilter_graph_parse_ptr(AVFilterGraph *graph, const char *filters,
+                             AVFilterInOut **inputs, AVFilterInOut **outputs,
+                             void *log_ctx);
 
 #endif
