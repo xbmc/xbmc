@@ -758,20 +758,7 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
   if (szStr)
     pasted_text = szStr;
 #elif defined TARGET_WINDOWS
-  if (OpenClipboard(NULL))
-  {
-    HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
-    if (hglb != NULL)
-    {
-      LPWSTR lpwstr = (LPWSTR) GlobalLock(hglb);
-      if (lpwstr != NULL)
-      {
-        pasted_text = lpwstr;
-        GlobalUnlock(hglb);
-      }
-    }
-    CloseClipboard();
-  }
+  pasted_text = g_Windowing.GetClipboard();
 #endif
 
   // Insert the pasted text at the current cursor position.
