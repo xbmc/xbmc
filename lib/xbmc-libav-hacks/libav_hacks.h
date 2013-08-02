@@ -74,6 +74,8 @@ int swr_set_matrix(struct SwrContext *s, const double *matrix, int stride);
 
 // libavfilter
 
+#define LIBAVFILTER_AVFRAME_BASED
+
 typedef struct {
     const enum AVPixelFormat *pixel_fmts; ///< list of allowed pixel formats, terminated by AV_PIX_FMT_NONE
 } AVBufferSinkParams;
