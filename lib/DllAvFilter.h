@@ -60,12 +60,6 @@ extern "C" {
 #endif
 }
 
-#if LIBAVFILTER_VERSION_MICRO >= 100
-  #define LIBAVFILTER_FROM_FFMPEG
-#else
-  #define LIBAVFILTER_FROM_LIBAV
-#endif
-
 #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100)
 #define LIBAVFILTER_AVFRAME_BASED
 #endif
@@ -93,13 +87,10 @@ public:
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
 #endif
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
-#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
-    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+#if defined(LIBAVFILTER_AVFRAME_BASED)
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame)=0;
 #else
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
-#endif
-#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
 #endif
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
@@ -165,13 +156,10 @@ public:
   {
     return ::avfilter_graph_config(graphctx, log_ctx);
   }
-#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
-    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+#if defined(LIBAVFILTER_AVFRAME_BASED)
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame) { return ::av_buffersrc_add_frame(buffer_filter, frame); }
 #else
   virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame, int flags) { return ::av_buffersrc_add_frame(buffer_filter, frame, flags); }
-#endif
-#if !defined(LIBAVFILTER_AVFRAME_BASED)
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
 #endif
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
@@ -215,13 +203,10 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
 #endif
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
-#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
-    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+#if defined(LIBAVFILTER_AVFRAME_BASED)
   DEFINE_METHOD2(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2))
 #else
   DEFINE_METHOD3(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
-#endif
-#if !defined(LIBAVFILTER_AVFRAME_BASED)
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
 #endif
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
