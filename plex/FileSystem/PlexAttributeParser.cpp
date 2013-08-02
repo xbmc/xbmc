@@ -204,3 +204,11 @@ void CPlexAttributeParserDateTime::Process(const CURL &url, const CStdString &ke
 
   item->SetProperty(key, value);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void CPlexAttributeParserTitleSort::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
+{
+  item->SetSortLabel(value);
+  item->SetProperty(key, value);
+}
+

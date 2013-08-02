@@ -166,6 +166,7 @@ CPlexAttributeParserBase *g_parserType = new CPlexAttributeParserType;
 CPlexAttributeParserBase *g_parserLabel = new CPlexAttributeParserLabel;
 CPlexAttributeParserBase *g_parserMediaFlag = new CPlexAttributeParserMediaFlag;
 CPlexAttributeParserBase *g_parserDateTime = new CPlexAttributeParserDateTime;
+CPlexAttributeParserBase *g_parserTitleSort = new CPlexAttributeParserTitleSort;
 
 typedef std::map<CStdString, CPlexAttributeParserBase*> AttributeMap;
 typedef std::pair<CStdString, CPlexAttributeParserBase*> AttributePair;
@@ -232,6 +233,8 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("name", g_parserLabel)
 
                                      ("originallyAvailableAt", g_parserDateTime)
+
+                                     ("titleSort", g_parserTitleSort)
                                      ;
 
 static CPlexAttributeParserBase* g_defaultAttr = new CPlexAttributeParserBase;
