@@ -46,6 +46,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     bool IsConfirmed() { return m_bIsConfirmed; };
     void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
     void Character(WCHAR wch);
+    void OnPasteClipboard(void);
 
   protected:
     virtual void OnInitWindow();
