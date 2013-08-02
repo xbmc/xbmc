@@ -753,11 +753,7 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
   CStdStringW pasted_text;
 
 // Get text from the clipboard
-#if defined(TARGET_DARWIN_OSX)
   pasted_text = g_Windowing.GetClipboard();
-#elif defined TARGET_WINDOWS
-  pasted_text = g_Windowing.GetClipboard();
-#endif
 
   // Insert the pasted text at the current cursor position.
   if (pasted_text.length() > 0)
