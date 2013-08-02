@@ -390,5 +390,12 @@ void* CEGLWrapper::GetProcAddress(const char* function)
   
   return ext;
 }
+
+bool CEGLWrapper::SurfaceAttrib(EGLDisplay display, EGLSurface surface, EGLint attribute, EGLint value)
+{
+  if ((display == EGL_NO_DISPLAY) || (surface == EGL_NO_SURFACE))
+    return false;
+  return eglSurfaceAttrib(display, surface, attribute, value);
+}
 #endif
 
