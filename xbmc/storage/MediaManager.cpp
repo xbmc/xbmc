@@ -530,7 +530,6 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
     pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
 
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
-  uint32_t dvdcrc = 0;
   CStdString strID;
 
   CDVDInputStreamNavigator dvdNavigator(NULL);

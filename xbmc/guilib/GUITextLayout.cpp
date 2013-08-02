@@ -137,7 +137,6 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
   //       any difference to the smoothness of scrolling though which will be
   //       jumpy with this sort of thing.  It's not exactly a well used situation
   //       though, so this hack is probably OK.
-  float speed = scrollInfo.pixelSpeed;
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
     const CGUIString &string = *i;
