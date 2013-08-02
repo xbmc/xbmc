@@ -592,11 +592,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   AVRational pixel_aspect = m_pFrame->sample_aspect_ratio;
 #if !defined(LIBAVFILTER_AVFRAME_BASED)
   if (m_pBufferRef)
-#if defined(LIBAVFILTER_FROM_FFMPEG)
     pixel_aspect = m_pBufferRef->video->sample_aspect_ratio;
-#else
-    pixel_aspect = m_pBufferRef->video->pixel_aspect;
-#endif
 #endif
 
   if (pixel_aspect.num == 0)
@@ -832,8 +828,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if (defined(LIBAVFILTER_FROM_LIBAV) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,5,0)) || \
-    (defined(LIBAVFILTER_FROM_FFMPEG) && LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(3,43,100))
+#if defined(LIBAVFILTER_AVFRAME_BASED)
     // API changed in:
     // ffmpeg: commit 7e350379f87e7f74420b4813170fe808e2313911 (28 Nov 2012)
     //         not released (post 1.2)
