@@ -49,12 +49,6 @@ extern "C" {
 #endif
 }
 
-#if LIBAVCODEC_VERSION_MICRO >= 100
-  #define LIBAVCODEC_FROM_FFMPEG
-#else
-  #define LIBAVCODEC_FROM_LIBAV
-#endif
-
 #include "threads/SingleLock.h"
 
 class DllAvCodecInterface
