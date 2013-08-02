@@ -34,6 +34,9 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/CharsetConverter.h"
 
+#if defined(TARGET_DARWIN)
+#include "osx/CocoaInterface.h"
+#endif
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -751,10 +754,9 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
 
 // Get text from the clipboard
 #if defined(TARGET_DARWIN_OSX)
-// NB - not tested on OSX yet. I'll uncomment this when I've tested it.
-//  const char *szStr = Cocoa_Paste();
-//  if (szStr)
-//    pasted_text = szStr;
+  const char *szStr = Cocoa_Paste();
+  if (szStr)
+    pasted_text = szStr;
 #elif defined TARGET_WINDOWS
   if (OpenClipboard(NULL))
   {
