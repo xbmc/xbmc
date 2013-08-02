@@ -104,7 +104,8 @@ CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes secti
 void CPlexSectionFanout::GetContentList(int type, CFileItemList& list)
 {
   CSingleLock lk(m_critical);
-  list.Copy(*m_fileLists[type]);
+  if (m_fileLists.find(type) != m_fileLists.end())
+    list.Copy(*m_fileLists[type]);
 }
 
 //////////////////////////////////////////////////////////////////////////////
