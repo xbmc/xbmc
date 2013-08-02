@@ -59,9 +59,10 @@ int swr_convert(struct SwrContext *s, uint8_t **out, int out_count,
 
 int64_t swr_get_delay(struct SwrContext *s, int64_t base)
 {
-    int64_t in_sr;
+    int64_t in_sr, out_sr;
     av_opt_get_int(s, "in_sample_rate", 0, &in_sr);
-    return avresample_available(s) + av_rescale_rnd(avresample_get_delay(s), base, in_sr, AV_ROUND_UP);
+    av_opt_get_int(s, "out_sample_rate", 0, &out_sr);
+    return av_rescale_rnd(avresample_available(s), base, out_sr, AV_ROUND_UP) + av_rescale_rnd(avresample_get_delay(s), base, in_sr, AV_ROUND_UP);
 }
 
 int swr_set_channel_mapping(struct SwrContext *s, const int *channel_map)
