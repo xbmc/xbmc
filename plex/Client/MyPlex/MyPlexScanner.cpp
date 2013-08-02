@@ -62,7 +62,8 @@ bool CMyPlexScanner::DoScan()
       CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, address, port, token));
       server->AddConnection(connection);
 
-      if (!localAddresses.empty())
+      /* only add localConnections for non-shared servers */
+      if (owned && !localAddresses.empty())
       {
         CStdStringArray addressList = StringUtils::SplitString(localAddresses, ",", 0);
         BOOST_FOREACH(CStdString laddress, addressList)
