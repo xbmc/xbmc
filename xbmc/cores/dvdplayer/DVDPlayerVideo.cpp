@@ -571,6 +571,9 @@ void CDVDPlayerVideo::Process()
         m_iDroppedFrames++;
         iDropped++;
       }
+      // reset the request, the following while loop may break before
+      // setting the flag to a new value
+      bRequestDrop = false;
 
       // loop while no error
       while (!m_bStop)
