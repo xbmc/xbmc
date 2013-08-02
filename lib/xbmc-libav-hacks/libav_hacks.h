@@ -50,6 +50,8 @@ AVDictionary *av_frame_get_metadata       (const AVFrame *frame);
 int avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat,
                 const char *format_name, const char *filename);
 
+#define AVFORMAT_HAS_STREAM_GET_R_FRAME_RATE
+
 AVRational av_stream_get_r_frame_rate(const AVStream *s);
 
 // libavresample
