@@ -620,6 +620,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
 
   if(m_texture == NULL)
   {
+    FT_Done_Glyph(glyph);
     CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: no texture to cache character to");
     return false;
   }
