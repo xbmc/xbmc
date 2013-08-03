@@ -58,6 +58,10 @@ ARMV6-OBJS                             += arm/dsputil_init_armv6.o      \
                                           arm/dsputil_armv6.o           \
                                           arm/simple_idct_armv6.o       \
 
+VFP-OBJS-$(CONFIG_DCA_DECODER)         += arm/dcadsp_vfp.o              \
+                                          arm/synth_filter_vfp.o
+VFP-OBJS-$(CONFIG_FFT)                 += arm/fft_vfp.o
+VFP-OBJS-$(CONFIG_MDCT)                += arm/mdct_vfp.o
 VFP-OBJS-$(HAVE_ARMV6)                 += arm/fmtconvert_vfp.o
 
 NEON-OBJS-$(CONFIG_FFT)                += arm/fft_neon.o                \

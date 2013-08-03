@@ -94,6 +94,7 @@ my %macro_args;
 my %macro_args_default;
 my $macro_count = 0;
 my $altmacro = 0;
+my $in_irp = 0;
 
 my @pass1_lines;
 my @ifstack;
@@ -134,7 +135,10 @@ while (<ASMFILE>) {
 
 sub eval_expr {
     my $expr = $_[0];
-    $expr =~ s/([A-Za-z._][A-Za-z0-9._]*)/$symbols{$1}/g;
+    while ($expr =~ /([A-Za-z._][A-Za-z0-9._]*)/g) {
+        my $sym = $1;
+        $expr =~ s/$sym/$symbols{$sym}/ if defined $symbols{$sym};
+    }
     eval $expr;
 }
 
@@ -173,35 +177,42 @@ sub handle_if {
     }
 }
 
-sub parse_line {
+sub parse_if_line {
     my $line = @_[0];
 
     # evaluate .if blocks
     if (scalar(@ifstack)) {
-        if (/\.endif/) {
+        if ($line =~ /\.endif/) {
             pop(@ifstack);
-            return;
+            return 1;
         } elsif ($line =~ /\.elseif\s+(.*)/) {
             if ($ifstack[-1] == 0) {
                 $ifstack[-1] = !!eval_expr($1);
             } elsif ($ifstack[-1] > 0) {
                 $ifstack[-1] = -$ifstack[-1];
             }
-            return;
-        } elsif (/\.else/) {
+            return 1;
+        } elsif ($line =~ /\.else/) {
             $ifstack[-1] = !$ifstack[-1];
-            return;
+            return 1;
         } elsif (handle_if($line)) {
-            return;
+            return 1;
         }
 
         # discard lines in false .if blocks
         foreach my $i (0 .. $#ifstack) {
             if ($ifstack[$i] <= 0) {
-                return;
+                return 1;
             }
         }
     }
+    return 0;
+}
+
+sub parse_line {
+    my $line = @_[0];
+
+    return if (parse_if_line($line));
 
     if (/\.macro/) {
         $macro_level++;
@@ -216,6 +227,10 @@ sub parse_line {
             $current_macro = '';
             return;
         }
+    } elsif (/\.irp/ or /\.rept/) {
+        $in_irp = 1;
+    } elsif (/.endr/) {
+        $in_irp = 0;
     }
 
     if ($macro_level > 1) {
@@ -248,12 +263,19 @@ sub parse_line {
     }
 }
 
+sub handle_set {
+    my $line = $_[0];
+    if ($line =~ /\.set\s+(.*),\s*(.*)/) {
+        $symbols{$1} = eval_expr($2);
+    }
+}
+
 sub expand_macros {
     my $line = @_[0];
 
     # handle .if directives; apple's assembler doesn't support important non-basic ones
     # evaluating them is also needed to handle recursive macros
-    if (handle_if($line)) {
+    if (!$in_irp && handle_if($line)) {
         return;
     }
 
@@ -276,9 +298,7 @@ sub expand_macros {
 
     $line =~ s/\%([^,]*)/eval_expr($1)/eg if $altmacro;
 
-    if ($line =~ /\.set\s+(.*),\s*(.*)/) {
-        $symbols{$1} = eval_expr($2);
-    }
+    handle_set($line);
 
     if ($line =~ /(\S+:|)\s*([\w\d\.]+)\s*(.*)/ && exists $macro_lines{$2}) {
         push(@pass1_lines, $1);
@@ -375,7 +395,7 @@ if ($ENV{GASPP_DEBUG}) {
 
 my @sections;
 my $num_repts;
-my $rept_lines;
+my @rept_lines;
 
 my %literal_labels;     # for ldr <reg>, =<expr>
 my $literal_num = 0;
@@ -385,13 +405,10 @@ my $thumb = 0;
 my %thumb_labels;
 my %call_targets;
 
-my $in_irp = 0;
 my @irp_args;
 my $irp_param;
 
 # pass 2: parse .rept and .if variants
-# NOTE: since we don't implement a proper parser, using .rept with a
-# variable assigned from .set is not supported
 foreach my $line (@pass1_lines) {
     # handle .previous (only with regard to .section not .subsection)
     if ($line =~ /\.(section|text|const_data)/) {
@@ -462,24 +479,24 @@ foreach my $line (@pass1_lines) {
     if ($fix_unreq) {
         if ($line =~ /\.unreq\s+(.*)/) {
             $line = ".unreq " . lc($1) . "\n";
-            print ASMFILE ".unreq " . uc($1) . "\n";
+            $line .= ".unreq " . uc($1) . "\n";
         }
     }
 
     if ($line =~ /\.rept\s+(.*)/) {
         $num_repts = $1;
-        $rept_lines = "\n";
+        @rept_lines = ("\n");
 
         # handle the possibility of repeating another directive on the same line
         # .endr on the same line is not valid, I don't know if a non-directive is
         if ($num_repts =~ s/(\.\w+.*)//) {
-            $rept_lines .= "$1\n";
+            push(@rept_lines, "$1\n");
         }
-        $num_repts = eval($num_repts);
+        $num_repts = eval_expr($num_repts);
     } elsif ($line =~ /\.irp\s+([\d\w\.]+)\s*(.*)/) {
         $in_irp = 1;
         $num_repts = 1;
-        $rept_lines = "\n";
+        @rept_lines = ("\n");
         $irp_param = $1;
 
         # only use whitespace as the separator
@@ -490,7 +507,7 @@ foreach my $line (@pass1_lines) {
     } elsif ($line =~ /\.irpc\s+([\d\w\.]+)\s*(.*)/) {
         $in_irp = 1;
         $num_repts = 1;
-        $rept_lines = "\n";
+        @rept_lines = ("\n");
         $irp_param = $1;
 
         my $irp_arglist = $2;
@@ -500,22 +517,33 @@ foreach my $line (@pass1_lines) {
     } elsif ($line =~ /\.endr/) {
         if ($in_irp != 0) {
             foreach my $i (@irp_args) {
-                my $line = $rept_lines;
-                $line =~ s/\\$irp_param/$i/g;
-                $line =~ s/\\\(\)//g;     # remove \()
-                print ASMFILE $line;
+                foreach my $origline (@rept_lines) {
+                    my $line = $origline;
+                    $line =~ s/\\$irp_param/$i/g;
+                    $line =~ s/\\\(\)//g;     # remove \()
+                    if (!parse_if_line($line) && !handle_if($line)) {
+                        handle_set($line);
+                        print ASMFILE $line;
+                    }
+                }
             }
         } else {
             for (1 .. $num_repts) {
-                print ASMFILE $rept_lines;
+                foreach my $line (@rept_lines) {
+                    if (!parse_if_line($line) && !handle_if($line)) {
+                        handle_set($line);
+                        print ASMFILE $line;
+                    }
+                }
             }
         }
-        $rept_lines = '';
+        @rept_lines = ();
         $in_irp = 0;
         @irp_args = '';
-    } elsif ($rept_lines) {
-        $rept_lines .= $line;
+    } elsif (scalar(@rept_lines)) {
+        push(@rept_lines, $line);
     } else {
+        handle_set($line);
         print ASMFILE $line;
     }
 }
