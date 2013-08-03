@@ -11,7 +11,7 @@
 #include <string>
 #include "PlexFile.h"
 #include "video/VideoInfoTag.h"
-#include "client/PlexTranscoderClient.h"
+#include "Client/PlexTranscoderClient.h"
 
 using namespace XFILE;
 
