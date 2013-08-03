@@ -45,6 +45,8 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
 
+  CStdStringW GetClipboard(void);
+
 protected:
   virtual void UpdateMonitor();
   bool UseWindowedDX(bool fullScreen);

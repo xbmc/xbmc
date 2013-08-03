@@ -98,4 +98,26 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
   return true;
 }
 
+CStdStringW CWinSystemWin32DX::GetClipboard(void)
+{
+  CStdStringW pasted_text;
+
+  if (OpenClipboard(NULL))
+  {
+    HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
+    if (hglb != NULL)
+    {
+      LPWSTR lpwstr = (LPWSTR) GlobalLock(hglb);
+      if (lpwstr != NULL)
+      {
+        pasted_text = lpwstr;
+        GlobalUnlock(hglb);
+      }
+    }
+    CloseClipboard();
+  }
+
+  return pasted_text;
+}
+
 #endif

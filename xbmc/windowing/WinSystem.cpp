@@ -235,3 +235,8 @@ bool CWinSystemBase::UseLimitedColor()
   return false;
 #endif
 }
+
+CStdStringW CWinSystemBase::GetClipboard(void)
+{
+  return "";
+}
