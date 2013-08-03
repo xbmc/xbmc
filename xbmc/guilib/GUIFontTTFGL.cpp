@@ -52,7 +52,7 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 void CGUIFontTTFGL::Begin()
 {
-  if (m_nestedBeginCount == 0)
+  if (m_nestedBeginCount == 0 && m_texture != NULL)
   {
     if (!m_bTextureLoaded)
     {
