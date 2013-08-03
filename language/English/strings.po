@@ -3603,9 +3603,13 @@ msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr ""
 
-#empty strings from id 1261 to 1269
+#empty strings from id 1261 to 1268
 
 #: system/settings/settings.xml
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr ""
+
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
 msgstr ""
@@ -14299,6 +14303,11 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36540"
 msgid "No info available yet."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
 msgstr ""
 
 #reserved strings 365XX
