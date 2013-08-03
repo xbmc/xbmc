@@ -23,6 +23,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../01-SDL_SetWidthHeight.patch
 	cd $(PLATFORM); patch -p0 < ../02-mmx.patch
+	cd $(PLATFORM); patch -p0 < ../03-OSX_interpretKeyEvents.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
