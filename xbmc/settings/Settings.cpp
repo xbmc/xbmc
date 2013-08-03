@@ -933,6 +933,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("services.webserverpassword");
   settingSet.insert("services.zeroconf");
   settingSet.insert("services.airplay");
+  settingSet.insert("services.airplayvolumecontrol");
   settingSet.insert("services.useairplaypassword");
   settingSet.insert("services.airplaypassword");
   settingSet.insert("services.upnpserver");

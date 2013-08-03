@@ -38,6 +38,7 @@
 #include "ApplicationMessenger.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
+#include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
 #include "cores/IPlayer.h"
@@ -670,7 +671,7 @@ void CAirPlayServer::backupVolume()
 
 void CAirPlayServer::restoreVolume()
 {
-  if (ServerInstance->m_origVolume != -1)
+  if (ServerInstance->m_origVolume != -1 && CSettings::Get().GetBool("services.airplayvolumecontrol"))
   {
     g_application.SetVolume((float)ServerInstance->m_origVolume);
     ServerInstance->m_origVolume = -1;
@@ -762,7 +763,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         float oldVolume = g_application.GetVolume();
         volume *= 100;
-        if(oldVolume != volume)
+        if(oldVolume != volume && CSettings::Get().GetBool("services.airplayvolumecontrol"))
         {
           backupVolume();
           g_application.SetVolume(volume);          

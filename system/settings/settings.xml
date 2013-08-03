@@ -1815,6 +1815,13 @@
           <level>1</level>
           <default>false</default>
         </setting>
+        <setting id="services.airplayvolumecontrol" type="boolean" parent="services.airplay" label="1269" help="36541">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="services.airplay">true</dependency>
+          </dependencies>
+        </setting>
         <setting id="services.useairplaypassword" type="boolean" parent="services.airplay" label="1272" help="36344">
           <level>1</level>
           <default>false</default>
