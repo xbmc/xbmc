@@ -666,6 +666,10 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   // just baseline width and height should include the descent
   const float width = ch->right - ch->left;
   const float height = ch->bottom - ch->top;
+  
+  // return early if nothing to render
+  if (width == 0 || height == 0)
+    return;
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
