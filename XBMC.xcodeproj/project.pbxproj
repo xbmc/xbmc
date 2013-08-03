@@ -3076,6 +3076,9 @@
 		F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
 		F599CD2B108E65370010EC2A /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD29108E65370010EC2A /* IoSupport.cpp */; };
 		F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
+		F59EED7E17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */; };
+		F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */; };
+		F59EED8017AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
 		F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
@@ -5382,6 +5385,8 @@
 		F599CD2A108E65370010EC2A /* IoSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IoSupport.h; sourceTree = "<group>"; };
 		F599CD72108E6A7A0010EC2A /* DarwinStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinStorageProvider.h; sourceTree = "<group>"; };
 		F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DarwinStorageProvider.cpp; sourceTree = "<group>"; };
+		F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationPlayer.cpp; sourceTree = "<group>"; };
+		F59EED7D17AD5174005BB7C6 /* ApplicationPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationPlayer.h; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
@@ -7163,6 +7168,8 @@
 				E38E14650D25F9F900618676 /* Application.h */,
 				E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */,
 				E38E14670D25F9F900618676 /* ApplicationMessenger.h */,
+				F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */,
+				F59EED7D17AD5174005BB7C6 /* ApplicationPlayer.h */,
 				F56352C616E5436900D21BAD /* AppParamParser.cpp */,
 				F56352C716E5436900D21BAD /* AppParamParser.h */,
 				E38E146E0D25F9F900618676 /* Autorun.cpp */,
@@ -10578,6 +10585,7 @@
 				DFBB430A178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 				55611BA31766672F00754072 /* RenderFlags.cpp in Sources */,
 				5558ED10176396CD00118C35 /* StereoscopicsManager.cpp in Sources */,
+				F59EED7E17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11603,6 +11611,7 @@
 				DFBB4309178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 				F55BA70C17AB2265002A36D1 /* StereoscopicsManager.cpp in Sources */,
 				F55BA71117AB2293002A36D1 /* RenderFlags.cpp in Sources */,
+				F59EED8017AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12630,6 +12639,7 @@
 				DFBB4308178B574E006CC20A /* AddonCallbacksCodec.cpp in Sources */,
 				F55BA70B17AB2264002A36D1 /* StereoscopicsManager.cpp in Sources */,
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
+				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
