@@ -61,6 +61,7 @@ public:
   static std::string& Trim(std::string &str);
   static std::string& TrimLeft(std::string &str);
   static std::string& TrimRight(std::string &str);
+  static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
   static bool StartsWith(const std::string &str, const std::string &str2, bool useCase = false);
