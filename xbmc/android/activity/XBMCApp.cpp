@@ -553,7 +553,6 @@ void CXBMCApp::SetupEnv()
   setenv("XBMC_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
   std::string cacheDir = getCacheDir().getAbsolutePath();
-  setenv("XBMC_TEMP", (cacheDir + "/temp").c_str(), 0);
   setenv("XBMC_BIN_HOME", (cacheDir + "/apk/assets").c_str(), 0);
   setenv("XBMC_HOME", (cacheDir + "/apk/assets").c_str(), 0);
 
