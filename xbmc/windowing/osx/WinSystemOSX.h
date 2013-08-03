@@ -69,6 +69,8 @@ public:
   
   void* GetCGLContextObj();
 
+  CStdStringW GetClipboard(void);
+
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
