@@ -131,7 +131,7 @@ protected:
    Accounts for spacing between lines to avoid characters overlapping.
    */
   unsigned int GetTextureLineHeight() const;
-  static unsigned int spacing_between_characters_in_texture;
+  static const unsigned int spacing_between_characters_in_texture;
 
   color_t m_color;
 

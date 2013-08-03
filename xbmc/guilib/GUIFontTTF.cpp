@@ -457,7 +457,7 @@ float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
   return 0.0f;
 }
 
-unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
+const unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
 
 unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
 {
