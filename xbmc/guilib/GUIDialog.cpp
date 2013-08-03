@@ -245,11 +245,6 @@ void CGUIDialog::Show()
     Show_Internal();
 }
 
-void CGUIDialog::FrameMove()
-{
-  CGUIWindow::FrameMove();
-}
-
 void CGUIDialog::Render()
 {
   if (!m_active)
