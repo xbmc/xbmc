@@ -149,7 +149,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::st
     return true;
   }
   strStringValue.clear();
-  return false;
+  return true;
 }
 
 bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
