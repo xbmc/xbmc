@@ -41,7 +41,6 @@ public:
 
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void FrameMove();
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
