@@ -257,8 +257,10 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
       ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
+      {
         current = (RESOLUTION)i;
         curr    = info;
+      }
     }
   }
 
