@@ -584,60 +584,64 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   }
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
-  if (bitGlyph->left < 0)
-    m_posX += -bitGlyph->left;
+  bool isEmptyGlyph = (bitmap.width == 0 || bitmap.rows == 0);
 
-  // check we have enough room for the character
-  if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
-  { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
-    m_posX = 0;
-    m_posY += GetTextureLineHeight();
+  if (!isEmptyGlyph)
+  {
     if (bitGlyph->left < 0)
       m_posX += -bitGlyph->left;
 
-    if(m_posY + GetTextureLineHeight() >= m_textureHeight)
-    {
-      // create the new larger texture
-      unsigned int newHeight = m_posY + GetTextureLineHeight();
-      // check for max height
-      if (newHeight > g_Windowing.GetMaxTextureSize())
-      {
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%u > %u pixels long)", newHeight, g_Windowing.GetMaxTextureSize());
-        FT_Done_Glyph(glyph);
-        return false;
-      }
+    // check we have enough room for the character
+    if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
+    { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
+      m_posX = 0;
+      m_posY += GetTextureLineHeight();
+      if (bitGlyph->left < 0)
+        m_posX += -bitGlyph->left;
 
-      CBaseTexture* newTexture = NULL;
-      newTexture = ReallocTexture(newHeight);
-      if(newTexture == NULL)
+      if(m_posY + GetTextureLineHeight() >= m_textureHeight)
       {
-        FT_Done_Glyph(glyph);
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Failed to allocate new texture of height %u", newHeight);
-        return false;
+        // create the new larger texture
+        unsigned int newHeight = m_posY + GetTextureLineHeight();
+        // check for max height
+        if (newHeight > g_Windowing.GetMaxTextureSize())
+        {
+          CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%u > %u pixels long)", newHeight, g_Windowing.GetMaxTextureSize());
+          FT_Done_Glyph(glyph);
+          return false;
+        }
+
+        CBaseTexture* newTexture = NULL;
+        newTexture = ReallocTexture(newHeight);
+        if(newTexture == NULL)
+        {
+          FT_Done_Glyph(glyph);
+          CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Failed to allocate new texture of height %u", newHeight);
+          return false;
+        }
+        m_texture = newTexture;
       }
-      m_texture = newTexture;
+    }
+
+    if(m_texture == NULL)
+    {
+      FT_Done_Glyph(glyph);
+      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: no texture to cache character to");
+      return false;
     }
   }
-
-  if(m_texture == NULL)
-  {
-    FT_Done_Glyph(glyph);
-    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: no texture to cache character to");
-    return false;
-  }
-
   // set the character in our table
   ch->letterAndStyle = (style << 16) | letter;
   ch->offsetX = (short)bitGlyph->left;
   ch->offsetY = (short)m_cellBaseLine - bitGlyph->top;
-  ch->left = (float)m_posX + ch->offsetX;
-  ch->top = (float)m_posY + ch->offsetY;
+  ch->left = isEmptyGlyph ? 0 : ((float)m_posX + ch->offsetX);
+  ch->top = isEmptyGlyph ? 0 : ((float)m_posY + ch->offsetY);
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
   ch->advance = (float)MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
 
   // we need only render if we actually have some pixels
-  if (bitmap.width * bitmap.rows)
+  if (!isEmptyGlyph)
   {
     // ensure our rect will stay inside the texture (it *should* but we need to be certain)
     unsigned int x1 = max(m_posX + ch->offsetX, 0);
@@ -645,8 +649,9 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
     unsigned int x2 = min(x1 + bitmap.width, m_textureWidth);
     unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
+  
+    m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   }
-  m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
 
   // free the glyph
