@@ -448,8 +448,8 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   }
 
   // DXVA has this as a max resolution
-  if(avctx->width  >= 1920
-  || avctx->height >= 1088)
+  if(avctx->width  > 1920
+  || avctx->height > 1088)
   {
     CLog::Log(LOGDEBUG, "DXVA - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
     return false;

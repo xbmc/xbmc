@@ -266,8 +266,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   CLog::Log(LOGDEBUG, "VAAPI - attempting to open codec %d with profile %d at level %d with %d reference frames", avctx->codec_id, avctx->profile, avctx->level, avctx->refs);
 
-  if(avctx->width  >= 1920
-  || avctx->height >= 1088)
+  if(avctx->width  > 1920
+  || avctx->height > 1088)
   {
     CLog::Log(LOGDEBUG, "VAAPI - frame size (%dx%d) too large - disallowing", avctx->width, avctx->height);
     return false;
