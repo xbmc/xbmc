@@ -735,8 +735,8 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     if (!m_vertex)
     {
       free(old);
-      printf("realloc failed in CGUIFontTTF::RenderCharacter. aborting\n");
-      abort();
+      CLog::Log(LOGSEVERE, "%s: can't allocate %"PRIdS" bytes for texture", __FUNCTION__ , m_vertex_size * sizeof(SVertex));
+      return;
     }
   }
 
