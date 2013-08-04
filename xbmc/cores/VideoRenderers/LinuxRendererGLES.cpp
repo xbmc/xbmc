@@ -451,7 +451,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    g_graphicsContext.SetScissor(old);
+    g_graphicsContext.SetScissors(old);
     g_graphicsContext.EndPaint();
     return;
   }
