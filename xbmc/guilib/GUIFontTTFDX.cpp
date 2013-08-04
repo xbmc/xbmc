@@ -55,7 +55,10 @@ void CGUIFontTTFDX::Begin()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_nestedBeginCount == 0)
+  if (pD3DDevice == NULL)
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to get Direct3D device");
+
+  if (m_nestedBeginCount == 0 && pD3DDevice != NULL && m_texture != NULL)
   {
     int unit = 0;
     // just have to blit from our texture.
@@ -160,6 +163,16 @@ void CGUIFontTTFDX::End()
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
+  assert(newHeight != 0);
+  assert(m_textureWidth != 0);
+  if(m_textureHeight == 0)
+  {
+    delete m_texture;
+    m_texture = NULL;
+    delete m_speedupTexture;
+    m_speedupTexture = NULL;
+  }
+
   CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   pNewTexture->CreateTextureObject();
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
@@ -265,6 +278,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   SAFE_DELETE(m_texture);
   SAFE_DELETE(m_speedupTexture);
   m_textureHeight = newHeight;
+  m_textureScaleY = 1.0f / m_textureHeight;
   m_speedupTexture = newSpeedupTexture;
 
   return pNewTexture;

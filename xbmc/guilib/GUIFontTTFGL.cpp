@@ -52,7 +52,7 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 void CGUIFontTTFGL::Begin()
 {
-  if (m_nestedBeginCount == 0)
+  if (m_nestedBeginCount == 0 && m_texture != NULL)
   {
     if (!m_bTextureLoaded)
     {
@@ -203,7 +203,11 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
     return NULL;
   }
   m_textureHeight = newTexture->GetHeight();
+  m_textureScaleY = 1.0f / m_textureHeight;
   m_textureWidth = newTexture->GetWidth();
+  m_textureScaleX = 1.0f / m_textureWidth;
+  if (m_textureHeight < newHeight)
+    CLog::Log(LOGWARNING, "%s: allocated new texture with height of %d, requested %d", __FUNCTION__, m_textureHeight, newHeight);
 
   memset(newTexture->GetPixels(), 0, m_textureHeight * newTexture->GetPitch());
   if (m_texture)
