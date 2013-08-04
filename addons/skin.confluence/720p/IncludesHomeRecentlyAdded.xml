@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<include name="HomeRecentlyAddedInfo">
 		<control type="group" id="9003">
@@ -662,7 +663,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.1.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.1.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.1.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.1.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.1.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.1.Title))</visible>
@@ -671,7 +672,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.2.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.2.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.2.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.2.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.2.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.2.Title))</visible>
@@ -680,7 +681,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.3.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.3.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.3.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.3.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.3.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.3.Title))</visible>
@@ -689,7 +690,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.4.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.4.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.4.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.4.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.4.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.4.Title))</visible>
@@ -698,7 +699,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.5.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.5.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.5.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.5.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.5.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.5.Title))</visible>
@@ -707,7 +708,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.6.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.6.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.6.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.6.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.6.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.6.Title))</visible>
@@ -716,7 +717,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.7.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.7.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.7.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.7.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.7.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.7.Title))</visible>
@@ -725,7 +726,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.8.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.8.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.8.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.8.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.8.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.8.Title))</visible>
@@ -734,7 +735,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.9.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.9.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.9.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.9.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.9.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.9.Title))</visible>
@@ -743,7 +744,7 @@
 							<label>$INFO[Window.Property(LatestAlbum.10.Title)]</label>
 							<label2>$INFO[Window.Property(LatestAlbum.10.Artist)]</label2>
 							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.10.Path)]&quot;)</onclick>
+							<onclick>PlayMedia($ESCINFO[Window.Property(LatestAlbum.10.Path)])</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.10.Thumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestAlbum.10.Title))</visible>

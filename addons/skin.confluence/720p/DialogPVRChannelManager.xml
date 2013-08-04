@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">20</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
@@ -7,7 +8,6 @@
 		<posy>30</posy>
 	</coordinates>
 	<include>dialogeffect</include>
-
 	<controls>
 		<control type="image">
 			<posx>0</posx>
@@ -270,7 +270,7 @@
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
-				<control type="radiobutton" id ="7">
+				<control type="radiobutton" id="7">
 					<description>Channel activated</description>
 					<posx>0</posx>
 					<posy>25</posy>
@@ -291,7 +291,7 @@
 					<onup>9000</onup>
 					<ondown>8</ondown>
 				</control>
-				<control type="edit" id ="8">
+				<control type="edit" id="8">
 					<description>Channel name</description>
 					<posx>0</posx>
 					<posy>65</posy>
@@ -309,7 +309,7 @@
 					<onup>7</onup>
 					<ondown>9</ondown>
 				</control>
-				<control type="button" id ="9">
+				<control type="button" id="9">
 					<description>Channel logo Button</description>
 					<posx>0</posx>
 					<posy>105</posy>
@@ -324,7 +324,7 @@
 					<onup>8</onup>
 					<ondown>12</ondown>
 				</control>
-				<control type="image" id ="10">
+				<control type="image" id="10">
 					<description>Current Channel Icon</description>
 					<posx>345</posx>
 					<posy>107</posy>
@@ -333,7 +333,7 @@
 					<aspectratio>keep</aspectratio>
 					<info>ListItem.Property(Icon)</info>
 				</control>
-				<control type="radiobutton" id ="12">
+				<control type="radiobutton" id="12">
 					<description>EPG activated</description>
 					<posx>0</posx>
 					<posy>145</posy>
@@ -354,7 +354,7 @@
 					<onup>9</onup>
 					<ondown>13</ondown>
 				</control>
-				<control type="spincontrolex" id ="13">
+				<control type="spincontrolex" id="13">
 					<description>EPG source</description>
 					<posx>0</posx>
 					<posy>185</posy>
@@ -369,7 +369,7 @@
 					<onup>12</onup>
 					<ondown>14</ondown>
 				</control>
-				<control type="radiobutton" id ="14">
+				<control type="radiobutton" id="14">
 					<description>Parental locked</description>
 					<posx>0</posx>
 					<posy>225</posy>
@@ -407,7 +407,7 @@
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
-				<control type="button" id ="30">
+				<control type="button" id="30">
 					<description>Group Manager Button</description>
 					<posx>0</posx>
 					<posy>25</posy>
@@ -423,7 +423,7 @@
 					<onup>14</onup>
 					<ondown>31</ondown>
 				</control>
-				<control type="button" id ="34">
+				<control type="button" id="34">
 					<description>TV/Radio Button</description>
 					<posx>195</posx>
 					<posy>25</posy>
@@ -440,7 +440,7 @@
 					<onup>14</onup>
 					<ondown>31</ondown>
 				</control>
-				<control type="button" id ="34">
+				<control type="button" id="34">
 					<description>TV/Radio Button</description>
 					<posx>195</posx>
 					<posy>25</posy>
@@ -457,7 +457,7 @@
 					<onup>14</onup>
 					<ondown>31</ondown>
 				</control>
-				<control type="button" id ="31">
+				<control type="button" id="31">
 					<description>Edit channel Button</description>
 					<posx>0</posx>
 					<posy>65</posy>
@@ -473,7 +473,7 @@
 					<onup>30</onup>
 					<ondown>32</ondown>
 				</control>
-				<control type="button" id ="32">
+				<control type="button" id="32">
 					<description>Delete channel Button</description>
 					<posx>0</posx>
 					<posy>105</posy>
@@ -489,7 +489,7 @@
 					<onup>31</onup>
 					<ondown>33</ondown>
 				</control>
-				<control type="button" id ="33">
+				<control type="button" id="33">
 					<description>New channel Button</description>
 					<posx>0</posx>
 					<posy>145</posy>
@@ -510,7 +510,7 @@
 		<control type="group" id="9000">
 			<posx>70</posx>
 			<posy>590</posy>
-			<control type="button" id ="4">
+			<control type="button" id="4">
 				<description>OK Button</description>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -525,7 +525,7 @@
 				<onup>33</onup>
 				<ondown>7</ondown>
 			</control>
-			<control type="button" id ="5">
+			<control type="button" id="5">
 				<description>Apply changes Button</description>
 				<posx>260</posx>
 				<posy>0</posy>
@@ -540,7 +540,7 @@
 				<onup>33</onup>
 				<ondown>7</ondown>
 			</control>
-			<control type="button" id ="6">
+			<control type="button" id="6">
 				<description>Cancel Button</description>
 				<posx>520</posx>
 				<posy>0</posy>

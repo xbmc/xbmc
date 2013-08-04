@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">29</defaultcontrol>
 	<controls>
@@ -423,7 +424,6 @@
 			</control>
 		</control>
 		<include>Clock</include>
-
 		<control type="label" id="20">
 			<description>Fake Label used to pass on name label</description>
 			<visible>false</visible>

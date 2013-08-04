@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol>1</defaultcontrol>
 	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD)]</visible>
@@ -97,7 +98,6 @@
 					<texture>OSDPlay.png</texture>
 					<visible>Player.Playing</visible>
 				</control>
-
 				<control type="image">
 					<posx>28</posx>
 					<posy>4</posy>
@@ -138,7 +138,6 @@
 					<texture>OSD32x.png</texture>
 					<visible>Player.Rewinding32x</visible>
 				</control>
-
 				<control type="image">
 					<posx>34</posx>
 					<posy>4</posy>
@@ -180,7 +179,6 @@
 					<visible>Player.Forwarding32x</visible>
 				</control>
 			</control>
-
 			<control type="label">
 				<description>Playing Label</description>
 				<posx>20</posx>

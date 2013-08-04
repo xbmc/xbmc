@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">5</defaultcontrol>
 	<coordinates>
@@ -53,7 +54,6 @@
 			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-
 		<control type="grouplist" id="5">
 			<description>control area</description>
 			<posx>30</posx>
@@ -82,7 +82,6 @@
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 		</control>
-
 		<control type="button" id="7">
 			<description>Default Button</description>
 			<posx>0</posx>
@@ -141,7 +140,6 @@
 			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<texturefocus border="5">button-focus2.png</texturefocus>
 		</control>
-
 		<control type="group" id="9001">
 			<posx>190</posx>
 			<posy>435</posy>

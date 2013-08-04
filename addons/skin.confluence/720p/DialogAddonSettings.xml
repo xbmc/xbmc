@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">9</defaultcontrol>
 	<coordinates>
@@ -172,7 +173,6 @@
 				<ondown>9</ondown>
 			</control>
 		</control>
-
 		<control type="button" id="13">
 			<description>Default Category Button</description>
 			<height>40</height>
