@@ -278,6 +278,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   SAFE_DELETE(m_texture);
   SAFE_DELETE(m_speedupTexture);
   m_textureHeight = newHeight;
+  m_textureScaleY = 1.0f / m_textureHeight;
   m_speedupTexture = newSpeedupTexture;
 
   return pNewTexture;
