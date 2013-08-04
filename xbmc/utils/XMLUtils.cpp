@@ -279,7 +279,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
 bool XMLUtils::GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date)
 {
   CStdString strDate;
-  if (GetString(pRootNode, strTag, strDate))
+  if (GetString(pRootNode, strTag, strDate) && !strDate.empty())
   {
     date.SetFromDBDate(strDate);
     return true;
@@ -291,7 +291,7 @@ bool XMLUtils::GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime
 bool XMLUtils::GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime)
 {
   CStdString strDateTime;
-  if (GetString(pRootNode, strTag, strDateTime))
+  if (GetString(pRootNode, strTag, strDateTime) && !strDateTime.empty())
   {
     dateTime.SetFromDBDateTime(strDateTime);
     return true;
