@@ -37,6 +37,8 @@
 #include "ApplicationOperations.h"
 #include "PVROperations.h"
 #include "FavouritesOperations.h"
+#include "PictureLibrary.h"
+#include "ContactLibrary.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -95,6 +97,14 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Files.PrepareDownload",                        CFileOperations::PrepareDownload },
   { "Files.Download",                               CFileOperations::Download },
 
+// Picture Library
+  { "PictureLibrary.GetPictures",                    CPictureLibrary::GetPictures },
+  { "PictureLibrary.GetPictureDetails",              CPictureLibrary::GetPictureDetails },
+
+// Picture Library
+  { "ContactLibrary.GetContacts",                    CContactLibrary::GetContacts },
+  { "ContactLibrary.GetContactDetails",              CContactLibrary::GetContactDetails },
+    
 // Music Library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },
   { "AudioLibrary.GetArtistDetails",                CAudioLibrary::GetArtistDetails },
@@ -115,6 +125,10 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.Clean",                           CAudioLibrary::Clean },
 
 // Video Library
+  { "VideoLibrary.GetVideos",                       CVideoLibrary::GetVideos },
+  { "VideoLibrary.GetVideoDetails",                 CVideoLibrary::GetVideoDetails },
+  { "VideoLibrary.GetStreams",                      CVideoLibrary::GetStreams },
+  { "VideoLibrary.GetStreamDetails",                CVideoLibrary::GetStreamDetails },
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
@@ -141,7 +155,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
-  
+      
 // Addon operations
   { "Addons.GetAddons",                             CAddonsOperations::GetAddons },
   { "Addons.GetAddonDetails",                       CAddonsOperations::GetAddonDetails },

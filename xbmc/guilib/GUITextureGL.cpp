@@ -37,7 +37,7 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 }
 
 void CGUITextureGL::Begin(color_t color)
-{
+{ 
   int range, unit = 0;
   if(g_Windowing.UseLimitedColor())
     range = 235 - 16;

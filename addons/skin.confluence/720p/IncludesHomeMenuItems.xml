@@ -1,4 +1,219 @@
 <includes>
+	<include name="HomeSubMenuPhotos">
+		<control type="image" id="90220">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90221">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Tags</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90222">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Albums</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90223">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>People</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90224">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Location</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuVideos">
+		<control type="image" id="90225">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90226">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Tags</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90227">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Albums</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90228">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Events</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90229">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Dates</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuStreams">
+		<control type="image" id="90230">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90231">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>YouTube</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90232">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>TVB</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90233">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>PPS</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90234">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Channel 1</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuMusic">
+		<control type="image" id="90234">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90235">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Albums</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90236">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Artists</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90237">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Playlists</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90238">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Genre</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuMoviesEzee">
+		<control type="image" id="90239">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90240">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Latest</label>
+			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+			<!--<visible>Library.HasContent(Movies) + Skin.HasSetting(HomeMenuNoMovieButton)</visible>-->
+		</control>
+		<control type="button" id="90241">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Comedy</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90242">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Action</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90243">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Drama</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuTVShows">
+		<control type="image" id="90245">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90246">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Latest</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90247">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Sit-Com</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90248">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Soap</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90249">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Action</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuContacts">
+		<control type="image" id="90250">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90251">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Friends</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90252">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Family</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90253">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Favorites</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+		<control type="button" id="90254">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Recent</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuWeather">
+		<control type="image" id="90255">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90256">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Today</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</onclick>
+		</control>
+		<control type="button" id="90257">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Tomorrow</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</onclick>
+		</control>
+		<control type="button" id="90258">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Week</label>
+			<onclick>ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</onclick>
+		</control>
+	</include>
+
+
+
 	<include name="HomeSubMenuVideos">
 		<control type="image" id="90101">
 			<width>35</width>

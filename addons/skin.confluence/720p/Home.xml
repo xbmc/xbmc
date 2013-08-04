@@ -1,7 +1,7 @@
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
-	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
+	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9024).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
 	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
 	<controls>
 		<include>CommonBackground</include>
@@ -717,7 +717,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<posy>400</posy>
+			<posy>610</posy>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
 				<effect type="fade" start="0" end="100" time="300" />
@@ -765,6 +765,62 @@
 					<onright>9012</onright>
 					<visible>Container(9000).HasFocus(5)</visible>
 					<include>HomeSubMenuSystem</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9020">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9020</onleft>
+					<onright>9020</onright>
+					<visible>Container(9000).HasFocus(20)</visible>
+					<include>HomeSubMenuPhotos</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9021">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9021</onleft>
+					<onright>9021</onright>
+					<visible>Container(9000).HasFocus(21)</visible>
+					<include>HomeSubMenuVideos</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9022">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9022</onleft>
+					<onright>9022</onright>
+					<visible>Container(9000).HasFocus(22)</visible>
+					<include>HomeSubMenuStreams</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9023">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9023</onleft>
+					<onright>9023</onright>
+					<visible>Container(9000).HasFocus(23)</visible>
+					<include>HomeSubMenuMusic</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9024">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9024</onleft>
+					<onright>9024</onright>
+					<visible>Container(9000).HasFocus(24)</visible>
+					<include>HomeSubMenuMoviesEzee</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9025">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9025</onleft>
+					<onright>9025</onright>
+					<visible>Container(9000).HasFocus(25)</visible>
+					<include>HomeSubMenuTVShows</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9026">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9026</onleft>
+					<onright>9026</onright>
+					<visible>Container(9000).HasFocus(26)</visible>
+					<include>HomeSubMenuContacts</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9027">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9027</onleft>
+					<onright>9027</onright>
+					<visible>Container(9000).HasFocus(27)</visible>
+					<include>HomeSubMenuWeather</include> <!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9013">
 					<include>HomeSubMenuCommonValues</include>
@@ -953,7 +1009,56 @@
 					<item id="5">
 						<label>31959</label>
 						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/settings.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="20">
+						<label>Photos</label>
+						<onclick>ActivateWindow(Photos)</onclick>
+						<icon>special://skin/backgrounds/photos</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="21">
+						<label>Videos</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="22">
+						<label>Streams</label>
+						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+						<icon>special://skin/backgrounds/movies.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="23">
+						<label>Music</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/fire.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="24">
+						<label>Movies</label>
+						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoMovieButton) + Library.HasContent(Movies)</visible>
+					</item>
+					<item id="25">
+						<label>TV Shows</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/tvshows.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="26">
+						<label>Contacts</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/contacts.jpg</icon>
+						<thumb>-</thumb>
+					</item>
+					<item id="27">
+						<label>Weather</label>
+						<onclick>ActivateWindow(Weather)</onclick>
+						<icon>special://skin/backgrounds/weather.jpg</icon>
 						<thumb>-</thumb>
 					</item>
 				</content>
@@ -1051,6 +1156,7 @@
 				<texture>icon-rss.png</texture>
 			</control>
 		</control>
+		<!--
 		<control type="group" id="10">
 			<posx>20</posx>
 			<posy>55r</posy>
@@ -1108,6 +1214,7 @@
 				<texture>icon_favourites.png</texture>
 			</control>
 		</control>
+			-->
 		<control type="group">
 			<posx>20</posx>
 			<posy>0</posy>

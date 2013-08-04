@@ -3134,6 +3134,8 @@
 		F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */; };
 		F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
+		FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */; };
+		FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5501,6 +5503,10 @@
 		F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VTPSession.cpp; sourceTree = "<group>"; };
 		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
+		FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureLibrary.cpp; sourceTree = "<group>"; };
+		FE6D10CC17AD556E00D819D5 /* PictureLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureLibrary.h; sourceTree = "<group>"; };
+		FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactLibrary.cpp; sourceTree = "<group>"; };
+		FE6D10CF17ADD2FC00D819D5 /* ContactLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactLibrary.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8934,6 +8940,10 @@
 				F5AE409913415D9E0004BD79 /* VideoLibrary.h */,
 				F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */,
 				F5AE409B13415D9E0004BD79 /* XBMCOperations.h */,
+				FE6D10CB17AD556E00D819D5 /* PictureLibrary.cpp */,
+				FE6D10CC17AD556E00D819D5 /* PictureLibrary.h */,
+				FE6D10CE17ADD2FA00D819D5 /* ContactLibrary.cpp */,
+				FE6D10CF17ADD2FC00D819D5 /* ContactLibrary.h */,
 			);
 			path = "json-rpc";
 			sourceTree = "<group>";
@@ -10518,6 +10528,8 @@
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
+				FE6D10CD17AD556E00D819D5 /* PictureLibrary.cpp in Sources */,
+				FE6D10D017ADD2FD00D819D5 /* ContactLibrary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
