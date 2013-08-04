@@ -1119,7 +1119,7 @@
 							<label>-</label>
 							<font>-</font>
 							<textcolor>-</textcolor>
-							</control>
+						</control>
 						<control type="panel" id="151">
 							<visible>Container(9000).HasFocus(5)</visible>
 							<include>VisibleFadeEffect</include>

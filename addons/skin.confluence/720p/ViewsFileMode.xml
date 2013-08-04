@@ -1,10 +1,11 @@
+<?xml version="1.0"?>
 <includes>
 	<include name="CommonRootView">
 		<control type="group">
 			<visible>Control.IsVisible(50)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="50">
-				<posx>70</posx>
+			<posx>70</posx>
 				<posy>78</posy>
 				<width>690</width>
 				<height>561</height>

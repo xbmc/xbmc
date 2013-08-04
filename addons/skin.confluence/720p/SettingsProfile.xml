@@ -155,7 +155,7 @@
 				<font>font13caps</font> 
 				<textcolor>grey2</textcolor> 
 				<align>right</align> 
- 				<aligny>center</aligny> 
+				<aligny>center</aligny> 
 				<label>$INFO[System.ProfileAutoLogin]</label> 
 				<scroll>Control.HasFocus(5)</scroll> 
 				<scrollspeed>30</scrollspeed> 

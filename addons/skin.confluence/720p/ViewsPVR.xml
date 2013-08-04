@@ -633,7 +633,7 @@
 				<pagecontrol>72</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="40" width="760">
-				<control type="image">
+					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>760</width>

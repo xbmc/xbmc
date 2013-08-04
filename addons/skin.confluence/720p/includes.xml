@@ -1208,8 +1208,8 @@
 		</focusedlayout>
 	</include>
 	<include name="backgroundfade">
-		 <animation effect="fade" time="600">Visible</animation>
-		 <animation effect="fade" time="600">Hidden</animation>
+		<animation effect="fade" time="600">Visible</animation>
+		<animation effect="fade" time="600">Hidden</animation>
 	</include>
 	<include name="Window_OpenClose_Animation">
 		<animation effect="fade" time="250">WindowOpen</animation>

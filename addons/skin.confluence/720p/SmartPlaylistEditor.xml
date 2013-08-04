@@ -324,7 +324,7 @@
 				<onup>19</onup>
 				<ondown>9001</ondown>
 			</control>
-      
+
 			<control type="group" id="9001">
 				<control type="button" id="20">
 					<description>Ok Button</description>

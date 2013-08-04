@@ -1,5 +1,5 @@
 <window>
- <defaultcontrol>-</defaultcontrol>
+	<defaultcontrol>-</defaultcontrol>
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
