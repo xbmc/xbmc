@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<variable name="typehackflagging">
 		<value condition="[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip) | substring(ListItem.FilenameAndPath,bd25) | substring(ListItem.FilenameAndPath,bd50)]">bluray</value>
