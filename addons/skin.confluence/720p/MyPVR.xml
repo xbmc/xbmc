@@ -107,7 +107,7 @@
 
 		<control type="group" id="50">
 			<include>Window_OpenClose_Animation</include>
-			<include>EPGTimelineView</include>--> <!-- view id = 10 -->
+			<include>EPGTimelineView</include> <!-- view id = 10 -->
 			<include>LiveTVChannelView</include> <!-- view id = 11 -->
 			<include>LiveRadioChannelView</include> <!-- view id = 12 -->
 			<include>LiveTVRecordingsView</include> <!-- view id = 13 -->
