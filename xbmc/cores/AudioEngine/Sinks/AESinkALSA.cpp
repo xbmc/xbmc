@@ -205,7 +205,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   return true;
 }
 
-bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CAESinkALSA::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   return (
       /* compare against the requested format and the real format */

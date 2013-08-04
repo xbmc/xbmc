@@ -231,11 +231,10 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
     return -1;
   }
 
-  int navresult;
   int iBytesRead;
 
   while(true) {
-    navresult = ProcessBlock(buf, &iBytesRead);
+    int navresult = ProcessBlock(buf, &iBytesRead);
     if (navresult == NAVRESULT_HOLD)       return 0; // return 0 bytes read;
     else if (navresult == NAVRESULT_ERROR) return -1;
     else if (navresult == NAVRESULT_DATA)  return iBytesRead;
@@ -845,7 +844,7 @@ bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStream
   return false;
 }
 
-void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t subp_attributes)
+void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes)
 {
   if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
     subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
@@ -932,7 +931,7 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
   return activeStream;
 }
 
-void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t audio_attributes)
+void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes)
 {
   switch( audio_attributes.code_extension )
   {

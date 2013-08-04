@@ -215,10 +215,10 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
 {
   int titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
 
-  BLURAY_TITLE_INFO *t, *s = NULL;
+  BLURAY_TITLE_INFO *s = NULL;
   for(int i=0; i < titles; i++)
   {
-    t = m_dll->bd_get_title_info(m_bd, i, 0);
+    BLURAY_TITLE_INFO *t = m_dll->bd_get_title_info(m_bd, i, 0);
     if(!t)
     {
       CLog::Log(LOGDEBUG, "get_main_title - unable to get title %d", i);

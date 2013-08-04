@@ -141,7 +141,7 @@ inet_pton6(const char *src, u_char *dst)
 #define NS_IN6ADDRSZ    16
 #define NS_INT16SZ  2
     u_char tmp[NS_IN6ADDRSZ], *tp, *endp, *colonp;
-    const char *xdigits, *curtok;
+    const char *curtok;
     int ch, seen_xdigits;
     u_int val;
 
@@ -156,7 +156,7 @@ inet_pton6(const char *src, u_char *dst)
     seen_xdigits = 0;
     val = 0;
     while ((ch = *src++) != '\0') {
-        const char *pch;
+      const char *xdigits, *pch;
 
         if ((pch = strchr((xdigits = xdigits_l), ch)) == NULL)
             pch = strchr((xdigits = xdigits_u), ch);

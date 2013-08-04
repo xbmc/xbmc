@@ -392,7 +392,7 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
   else
   {
 #endif
-    for (AEDeviceList::const_iterator sink = sinkList.begin(); sink != sinkList.end(); sink++)
+    for (AEDeviceList::const_iterator sink = sinkList.begin(); sink != sinkList.end(); ++sink)
     {
       if (sink == sinkList.begin())
         firstDevice = sink->second;

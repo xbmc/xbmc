@@ -133,14 +133,14 @@ bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
 {
   double pts = DVD_MSEC_TO_TIME(time);
   m_Timestamp = m_Timestamps.begin();
-  for(;m_Timestamp != m_Timestamps.end();m_Timestamp++)
+  for(;m_Timestamp != m_Timestamps.end();++m_Timestamp)
   {
     if(m_Timestamp->pts > pts)
       break;
   }
   for(unsigned i=0;i<m_Streams.size() && m_Timestamps.begin() != m_Timestamp;i++)
   {
-    m_Timestamp--;
+    --m_Timestamp;
   }
   return true;
 }

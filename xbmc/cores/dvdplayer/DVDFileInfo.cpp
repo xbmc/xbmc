@@ -138,11 +138,10 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
   if (pStreamDetails)
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
-  CDemuxStream* pStream = NULL;
   int nVideoStream = -1;
   for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
   {
-    pStream = pDemuxer->GetStream(i);
+    CDemuxStream* pStream = pDemuxer->GetStream(i);
     if (pStream)
     {
       if(pStream->type == STREAM_VIDEO)
@@ -181,7 +180,6 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
       CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, strPath.c_str());
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
-        DemuxPacket* pPacket = NULL;
         int iDecoderState = VC_ERROR;
         DVDVideoPicture picture;
 
@@ -191,7 +189,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
         int abort_index = pDemuxer->GetNrOfStreams() * 80;
         do
         {
-          pPacket = pDemuxer->Read();
+          DemuxPacket* pPacket = pDemuxer->Read();
           packetsTried++;
 
           if (!pPacket)

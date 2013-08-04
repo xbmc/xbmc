@@ -466,7 +466,6 @@ CAUOutputDevice *CCoreAudioGraph::DestroyUnit(CAUOutputDevice *outputUnit)
   outputUnit->SetInputSource(NULL);
   outputUnit->Close();
   delete outputUnit;
-  outputUnit = NULL;
 
   AUGraphUpdate(m_audioGraph, NULL);
 

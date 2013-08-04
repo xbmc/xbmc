@@ -375,7 +375,7 @@ void CAESinkWASAPI::Deinitialize()
   m_bufferPtr = 0;
 }
 
-bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CAESinkWASAPI::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   if (!m_initialized || m_isDirty)
     return false;
