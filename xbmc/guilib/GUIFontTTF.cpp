@@ -296,6 +296,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   if (m_textureWidth > g_Windowing.GetMaxTextureSize())
     m_textureWidth = g_Windowing.GetMaxTextureSize();
+  m_textureScaleX = 1.0f / m_textureWidth;
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
@@ -647,9 +648,6 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   }
   m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
-
-  m_textureScaleX = 1.0f / m_textureWidth;
-  m_textureScaleY = 1.0f / m_textureHeight;
 
   // free the glyph
   FT_Done_Glyph(glyph);
