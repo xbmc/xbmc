@@ -163,6 +163,16 @@ void CGUIFontTTFDX::End()
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
+  assert(newHeight != 0);
+  assert(m_textureWidth != 0);
+  if(m_textureHeight == 0)
+  {
+    delete m_texture;
+    m_texture = NULL;
+    delete m_speedupTexture;
+    m_speedupTexture = NULL;
+  }
+
   CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   pNewTexture->CreateTextureObject();
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
