@@ -247,13 +247,7 @@ msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr ""
 
-#empty strings from id 31120 to 31121
-
-msgctxt "#31122"
-msgid "Weather Page"
-msgstr ""
-
-#empty string with id 31123
+#empty strings from id 31120 to 31123
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -562,9 +556,7 @@ msgstr ""
 #empty strings from id 31422 to 31499
 #PVR labels
 
-msgctxt "#31500"
-msgid "Recording Timers"
-msgstr ""
+#empty string id #31500
 
 msgctxt "#31501"
 msgid "Scheduled Time"
