@@ -135,10 +135,9 @@ public:
 
   virtual ~CDVDOverlayText()
   {
-    CElement* pTemp;
     while (m_pHead)
     {
-      pTemp = m_pHead;
+      CElement* pTemp = m_pHead;
       m_pHead = m_pHead->pNext;
       delete pTemp;
     }

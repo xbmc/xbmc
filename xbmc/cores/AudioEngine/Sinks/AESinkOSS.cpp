@@ -375,7 +375,7 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(AEAudioFormat format)
   return info;
 }
 
-bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CAESinkOSS::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   AEAudioFormat tmp  = format;
   tmp.m_channelLayout = GetChannelLayout(format);
