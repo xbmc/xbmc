@@ -3075,6 +3075,7 @@
     <ClCompile Include="..\..\xbmc\utils\ActorProtocol.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\ApplicationPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6029,6 +6030,7 @@
     <ClInclude Include="..\..\xbmc\utils\ActorProtocol.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

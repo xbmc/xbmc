@@ -97,7 +97,7 @@ void CTuxBoxService::Process()
   CStdString strCurrentServiceName = g_tuxbox.sCurSrvData.service_name;
   CStdString strURL;
 
-  while(!CThread::m_bStop && g_application.IsPlaying())
+  while(!CThread::m_bStop && g_application.m_pPlayer->IsPlaying())
   {
     strURL = g_application.CurrentFileItem().GetPath();
     if(!URIUtils::IsTuxBox(strURL))
@@ -119,7 +119,7 @@ void CTuxBoxService::Process()
         //Detect Channel Change
         //We need to detect the channel on the TuxBox Device!
         //On changing the channel on the device we will loose the stream and mplayer seems not able to detect it to stop
-        if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
+        if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.m_pPlayer->IsPlaying() && !g_tuxbox.sZapstream.available)
         {
           CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
           CApplicationMessenger::Get().MediaStop();
@@ -602,7 +602,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         streamURL.SetPort(g_advancedSettings.m_iTuxBoxZapstreamPort);
       }
 
-      if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
+      if (g_application.m_pPlayer->IsPlaying() && !g_tuxbox.sZapstream.available)
         CApplicationMessenger::Get().MediaStop();
 
       strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
@@ -1462,7 +1462,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
     return false;
 
   // IsPlaying, Stop it..
-  if(g_application.IsPlaying())
+  if(g_application.m_pPlayer->IsPlaying())
     CApplicationMessenger::Get().MediaStop();
 
   // popup the context menu

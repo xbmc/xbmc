@@ -230,7 +230,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     return;
   }
 
-  if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer)
+  if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer->HasPlayer())
   {
     CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
     if (!g_PVRManager.CheckParentalLock(*channel) ||

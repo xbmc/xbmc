@@ -1062,7 +1062,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
   if (!database)
     return;
 
-  if (g_application.m_pPlayer)
+  if (g_application.m_pPlayer->HasPlayer())
   {
     /* set the default settings first */
     CVideoSettings loadedChannelSettings = CMediaSettings::Get().GetDefaultVideoSettings();

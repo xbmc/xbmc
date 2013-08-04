@@ -48,7 +48,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
 {
   CSingleLock lock (m_CritSection);
 
-  if ( !m_Lyrics || !g_application.IsPlayingAudio() )
+  if ( !m_Lyrics || !g_application.m_pPlayer->IsPlayingAudio() )
     return false;
 
   CGUIDialogKaraokeSongSelectorSmall * songSelector = (CGUIDialogKaraokeSongSelectorSmall *)

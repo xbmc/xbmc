@@ -287,25 +287,25 @@ namespace XBMCAddon
     bool Player::isPlaying()
     {
       TRACE;
-      return g_application.IsPlaying();
+      return g_application.m_pPlayer->IsPlaying();
     }
 
     bool Player::isPlayingAudio()
     {
       TRACE;
-      return g_application.IsPlayingAudio();
+      return g_application.m_pPlayer->IsPlayingAudio();
     }
 
     bool Player::isPlayingVideo()
     {
       TRACE;
-      return g_application.IsPlayingVideo();
+      return g_application.m_pPlayer->IsPlayingVideo();
     }
 
     String Player::getPlayingFile() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any file");
 
       return g_application.CurrentFile();
@@ -314,7 +314,7 @@ namespace XBMCAddon
     InfoTagVideo* Player::getVideoInfoTag() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlayingVideo())
+      if (!g_application.m_pPlayer->IsPlayingVideo())
         throw PlayerException("XBMC is not playing any videofile");
 
       const CVideoInfoTag* movie = g_infoManager.GetCurrentMovieTag();
@@ -327,7 +327,7 @@ namespace XBMCAddon
     InfoTagMusic* Player::getMusicInfoTag() throw (PlayerException)
     {
       TRACE;
-      if (g_application.IsPlayingVideo() || !g_application.IsPlayingAudio())
+      if (g_application.m_pPlayer->IsPlayingVideo() || !g_application.m_pPlayer->IsPlayingAudio())
         throw PlayerException("XBMC is not playing any music file");
 
       const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
@@ -340,7 +340,7 @@ namespace XBMCAddon
     double Player::getTotalTime() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       return g_application.GetTotalTime();
@@ -349,7 +349,7 @@ namespace XBMCAddon
     double Player::getTime() throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       return g_application.GetTime();
@@ -358,7 +358,7 @@ namespace XBMCAddon
     void Player::seekTime(double pTime) throw (PlayerException)
     {
       TRACE;
-      if (!g_application.IsPlaying())
+      if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any media file");
 
       g_application.SeekTime( pTime );
@@ -367,7 +367,7 @@ namespace XBMCAddon
     void Player::setSubtitles(const char* cLine)
     {
       TRACE;
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int nStream = g_application.m_pPlayer->AddSubtitle(cLine);
         if(nStream >= 0)
@@ -383,7 +383,7 @@ namespace XBMCAddon
     void Player::showSubtitles(bool bVisible)
     {
       TRACE;
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible != 0;
         g_application.m_pPlayer->SetSubtitleVisible(bVisible != 0);
@@ -393,7 +393,7 @@ namespace XBMCAddon
     String Player::getSubtitles()
     {
       TRACE;
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         SPlayerSubtitleStreamInfo info;
         g_application.m_pPlayer->GetSubtitleStreamInfo(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream, info);
@@ -411,7 +411,7 @@ namespace XBMCAddon
     {
       TRACE;
       CLog::Log(LOGWARNING,"'xbmc.Player().disableSubtitles()' is deprecated and will be removed in future releases, please use 'xbmc.Player().showSubtitles(false)' instead");
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
         g_application.m_pPlayer->SetSubtitleVisible(false);
@@ -420,7 +420,7 @@ namespace XBMCAddon
 
     std::vector<String>* Player::getAvailableSubtitleStreams()
     {
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int subtitleCount = g_application.m_pPlayer->GetSubtitleCount();
         std::vector<String>* ret = new std::vector<String>(subtitleCount);
@@ -442,7 +442,7 @@ namespace XBMCAddon
 
     void Player::setSubtitleStream(int iStream)
     {
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int streamCount = g_application.m_pPlayer->GetSubtitleCount();
         if(iStream < streamCount)
@@ -455,7 +455,7 @@ namespace XBMCAddon
 
     std::vector<String>* Player::getAvailableAudioStreams()
     {
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
         std::vector<String>* ret = new std::vector<String>(streamCount);
@@ -477,7 +477,7 @@ namespace XBMCAddon
 
     void Player::setAudioStream(int iStream)
     {
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
         if(iStream < streamCount)

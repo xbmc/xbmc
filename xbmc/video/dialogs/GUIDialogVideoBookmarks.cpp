@@ -278,7 +278,7 @@ void CGUIDialogVideoBookmarks::Clear()
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 {
   if (item < 0 || item >= (int)m_bookmarks.size()) return;
-  if (g_application.m_pPlayer)
+  if (g_application.m_pPlayer->HasPlayer())
   {
     g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
     g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
@@ -307,7 +307,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   bookmark.timeInSeconds = (int)g_application.GetTime();
   bookmark.totalTimeInSeconds = (int)g_application.GetTotalTime();
 
-  if( g_application.m_pPlayer )
+  if( g_application.m_pPlayer->HasPlayer() )
     bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
   else
     bookmark.playerState.Empty();

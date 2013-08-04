@@ -233,7 +233,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
   {
     case Video:
     case Audio:
-      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanPause())
+      if (!g_application.m_pPlayer->CanPause())
         return FailedToExecute;
       
       if (parameterObject["play"].isString())
@@ -242,15 +242,15 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
       {
         if (parameterObject["play"].asBoolean())
         {
-          if (g_application.IsPaused())
+          if (g_application.m_pPlayer->IsPausedPlayback())
             CApplicationMessenger::Get().MediaPause();
-          else if (g_application.GetPlaySpeed() != 1)
-            g_application.SetPlaySpeed(1);
+          else if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+            g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
         }
-        else if (!g_application.IsPaused())
+        else if (!g_application.m_pPlayer->IsPausedPlayback())
           CApplicationMessenger::Get().MediaPause();
       }
-      result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -303,9 +303,9 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
         if (speed != 0)
         {
           // If the player is paused we first need to unpause
-          if (g_application.IsPaused())
+          if (g_application.m_pPlayer->IsPausedPlayback())
             g_application.m_pPlayer->Pause();
-          g_application.SetPlaySpeed(speed);
+          g_application.m_pPlayer->SetPlaySpeed(speed, g_application.IsMutedInternal());
         }
         else
           g_application.m_pPlayer->Pause();
@@ -320,7 +320,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportL
       else
         return InvalidParams;
 
-      result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+      result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
       return OK;
 
     case Picture:
@@ -337,7 +337,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanSeek())
+      if (!g_application.m_pPlayer->CanSeek())
         return FailedToExecute;
       
       if (parameterObject["value"].isObject())
@@ -795,7 +795,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const CStdString &method, ITran
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int index = -1;
         if (parameterObject["stream"].isString())
@@ -842,7 +842,7 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const CStdString &method, ITranspo
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         int index = -1;
         if (parameterObject["subtitle"].isString())
@@ -902,9 +902,9 @@ int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
 
-  if (g_application.IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
+  if (g_application.m_pPlayer->IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
     activePlayers |= Video;
-  if (g_application.IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
+  if (g_application.m_pPlayer->IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
     activePlayers |= Audio;
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
@@ -1052,7 +1052,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
+        result = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
         break;
 
       case Picture:
@@ -1255,10 +1255,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        if (g_application.m_pPlayer)
-          result = g_application.m_pPlayer->CanSeek();
-        else
-          result = false;
+        result = g_application.m_pPlayer->CanSeek();
         break;
 
       case Picture:
@@ -1363,7 +1360,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           result = CVariant(CVariant::VariantTypeObject);
           int index = g_application.m_pPlayer->GetAudioStream();
@@ -1396,7 +1393,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
           {
@@ -1427,8 +1424,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
-          result = g_application.m_pPlayer->GetSubtitleVisible();
+        result = g_application.m_pPlayer->GetSubtitleVisible();
         break;
         
       case Audio:
@@ -1443,7 +1439,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           result = CVariant(CVariant::VariantTypeObject);
           int index = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
@@ -1474,7 +1470,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     switch (player)
     {
       case Video:
-        if (g_application.m_pPlayer)
+        if (g_application.m_pPlayer->HasPlayer())
         {
           for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
           {
