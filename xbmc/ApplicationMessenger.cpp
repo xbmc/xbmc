@@ -391,7 +391,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (!pSlideShow) return ;
 
         // stop playing file
-        if (g_application.IsPlayingVideo()) g_application.StopPlaying();
+        if (g_application.m_pPlayer->IsPlayingVideo()) g_application.StopPlaying();
 
         if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
           g_windowManager.PreviousWindow();
@@ -439,7 +439,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
-        if (g_application.IsPlayingVideo())
+        if (g_application.m_pPlayer->IsPlayingVideo())
           g_application.StopPlaying();
 
         g_graphicsContext.Lock();
@@ -499,12 +499,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.WakeUpScreenSaverAndDPMS();
 
         // stop playing file
-        if (g_application.IsPlaying()) g_application.StopPlaying();
+        if (g_application.m_pPlayer->IsPlaying()) g_application.StopPlaying();
       }
       break;
 
     case TMSG_MEDIA_PAUSE:
-      if (g_application.m_pPlayer)
+      if (g_application.m_pPlayer->HasPlayer())
       {
         g_application.ResetScreenSaver();
         g_application.WakeUpScreenSaverAndDPMS();
@@ -513,7 +513,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_MEDIA_UNPAUSE:
-      if (g_application.IsPaused())
+      if (g_application.m_pPlayer->IsPausedPlayback())
       {
         g_application.ResetScreenSaver();
         g_application.WakeUpScreenSaverAndDPMS();
@@ -522,7 +522,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_MEDIA_PAUSE_IF_PLAYING:
-      if (g_application.IsPlaying() && !g_application.IsPaused())
+      if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
       {
         g_application.ResetScreenSaver();
         g_application.WakeUpScreenSaverAndDPMS();

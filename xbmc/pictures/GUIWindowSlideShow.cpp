@@ -1216,7 +1216,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
                                        const CStdString &strExtensions)
 {
   // stop any video
-  if (g_application.IsPlayingVideo())
+  if (g_application.m_pPlayer->IsPlayingVideo())
     g_application.StopPlaying();
 
   AddFromPath(strPath, bRecursive, method, order, sortAttributes, strExtensions);

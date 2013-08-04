@@ -956,7 +956,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
-        if (g_application.IsPlaying() && !g_application.IsPaused())
+        if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
           CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
         break;
       default:
@@ -970,7 +970,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 - (void)enterBackground
 {
   PRINT_SIGNATURE();
-  if (g_application.IsPlaying() && !g_application.IsPaused())
+  if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::Get().MediaPauseIfPlaying();
@@ -994,7 +994,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   LOG(@"%s: was interrupted: %d", __PRETTY_FUNCTION__,  m_isInterrupted);
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
-  if (g_application.IsPlayingVideo() && !g_application.IsPaused())
+  if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::Get().MediaPauseIfPlaying();

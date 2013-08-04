@@ -325,7 +325,7 @@ int CAirTunesServer::AudioOutputFunctions::ao_play(ao_device *device, char *outp
   if (!device)
     return 0;
 
-  /*if (num_bytes && g_application.m_pPlayer)
+  /*if (num_bytes && g_application.m_pPlayer->HasPlayer())
     g_application.m_pPlayer->SetCaching(CACHESTATE_NONE);*///TODO
 
   ao_device_xbmc* device_xbmc = (ao_device_xbmc*) device;

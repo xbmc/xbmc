@@ -739,10 +739,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (parameter.Equals("play"))
     { // play/pause
       // either resume playing, or pause
-      if (g_application.IsPlaying())
+      if (g_application.m_pPlayer->IsPlaying())
       {
-        if (g_application.GetPlaySpeed() != 1)
-          g_application.SetPlaySpeed(1);
+        if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+          g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
         else
           g_application.m_pPlayer->Pause();
       }
@@ -753,9 +753,9 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Equals("rewind") || parameter.Equals("forward"))
     {
-      if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
+      if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
       {
-        int iPlaySpeed = g_application.GetPlaySpeed();
+        int iPlaySpeed = g_application.m_pPlayer->GetPlaySpeed();
         if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
         else if (parameter.Equals("rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
@@ -771,7 +771,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (iPlaySpeed > 32 || iPlaySpeed < -32)
           iPlaySpeed = 1;
 
-        g_application.SetPlaySpeed(iPlaySpeed);
+        g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
       }
     }
     else if (parameter.Equals("next"))
@@ -784,22 +784,22 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Equals("bigskipbackward"))
     {
-      if (g_application.IsPlaying())
+      if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(false, true);
     }
     else if (parameter.Equals("bigskipforward"))
     {
-      if (g_application.IsPlaying())
+      if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, true);
     }
     else if (parameter.Equals("smallskipbackward"))
     {
-      if (g_application.IsPlaying())
+      if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(false, false);
     }
     else if (parameter.Equals("smallskipforward"))
     {
-      if (g_application.IsPlaying())
+      if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, false);
     }
     else if (parameter.Left(14).Equals("seekpercentage"))
@@ -816,18 +816,18 @@ int CBuiltins::Execute(const CStdString& execString)
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
-        else if (g_application.IsPlaying())
+        else if (g_application.m_pPlayer->IsPlaying())
           g_application.SeekPercentage(offsetpercent);
       }
     }
     else if( parameter.Equals("showvideomenu") )
     {
-      if( g_application.IsPlaying() && g_application.m_pPlayer )
+      if( g_application.m_pPlayer->IsPlaying() )
         g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
     }
     else if( parameter.Equals("record") )
     {
-      if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
+      if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
     }
     else if (parameter.Left(9).Equals("partymode"))
@@ -985,7 +985,7 @@ int CBuiltins::Execute(const CStdString& execString)
     // play the desired offset
     int pos = atol(strPos.c_str());
     // playlist is already playing
-    if (g_application.IsPlaying())
+    if (g_application.m_pPlayer->IsPlaying())
       g_playlistPlayer.PlayNext(pos);
     // we start playing the 'other' playlist so we need to use play to initialize the player state
     else
